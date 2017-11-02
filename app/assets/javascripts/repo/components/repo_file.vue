@@ -1,11 +1,15 @@
 <script>
   import { mapActions, mapGetters } from 'vuex';
   import timeAgoMixin from '../../vue_shared/mixins/timeago';
+  import skeletonLoadingContainer from '../../vue_shared/components/skeleton_loading_container.vue';
 
   export default {
     mixins: [
       timeAgoMixin,
     ],
+    components: {
+      skeletonLoadingContainer,
+    },
     props: {
       file: {
         type: Object,
@@ -87,17 +91,10 @@
         >
           {{ file.lastCommit.message }}
         </a>
-        <div
+        <skeleton-loading-container
           v-else
-          class="animation-container animation-container-small"
-        >
-          <div
-            v-for="n in 6"
-            :key="n"
-            :class="'skeleton-line-' + n"
-          >
-          </div>
-        </div>
+          :small="true"
+        />
       </td>
 
       <td class="commit-update hidden-xs text-right">
@@ -107,17 +104,11 @@
         >
           {{ timeFormated(file.lastCommit.updatedAt) }}
         </span>
-        <div
+        <skeleton-loading-container
           v-else
-          class="animation-container animation-container-small animation-container-right"
-        >
-          <div
-            v-for="n in 6"
-            :key="n"
-            :class="'skeleton-line-' + n"
-          >
-          </div>
-        </div>
+          class="animation-container-right"
+          :small="true"
+        />
       </td>
     </template>
   </tr>

@@ -1,16 +1,15 @@
 <script>
   import { mapGetters } from 'vuex';
+  import skeletonLoadingContainer from '../../vue_shared/components/skeleton_loading_container.vue';
 
   export default {
+    components: {
+      skeletonLoadingContainer,
+    },
     computed: {
       ...mapGetters([
         'isCollapsed',
       ]),
-    },
-    methods: {
-      lineOfCode(n) {
-        return `skeleton-line-${n}`;
-      },
     },
   };
 </script>
@@ -21,36 +20,24 @@
     aria-label="Loading files"
   >
     <td>
-      <div
-        class="animation-container animation-container-small">
-        <div
-          v-for="n in 6"
-          :key="n"
-          :class="lineOfCode(n)">
-        </div>
-      </div>
+      <skeleton-loading-container
+        :small="true"
+      />
     </td>
     <template v-if="!isCollapsed">
       <td
         class="hidden-sm hidden-xs">
-        <div class="animation-container animation-container-small">
-          <div
-            v-for="n in 6"
-            :key="n"
-            :class="lineOfCode(n)">
-          </div>
-        </div>
+        <skeleton-loading-container
+          :small="true"
+        />
       </td>
 
       <td
         class="hidden-xs">
-        <div class="animation-container animation-container-small animation-container-right">
-          <div
-            v-for="n in 6"
-            :key="n"
-            :class="lineOfCode(n)">
-          </div>
-        </div>
+        <skeleton-loading-container
+          class="animation-container-right"
+          :small="true"
+        />
       </td>
     </template>
   </tr>

@@ -59,7 +59,8 @@ class Projects::RefsController < Projects::ApplicationController
         {
           file_name: content.name,
           commit: last_commit,
-          type: content.type
+          type: content.type,
+          commit_path: project_commit_path(@project, last_commit)
         }
       end
     end
@@ -72,7 +73,7 @@ class Projects::RefsController < Projects::ApplicationController
     respond_to do |format|
       format.html { render_404 }
       format.json do
-        response.headers["Log-Url"] = @more_log_url
+        response.headers["More-Logs-Url"] = @more_log_url
 
         render json: @logs
       end

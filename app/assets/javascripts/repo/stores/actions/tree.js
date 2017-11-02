@@ -7,6 +7,7 @@ import {
   setPageTitle,
   findEntry,
   createTemp,
+  createOrMergeEntry,
 } from '../utils';
 
 export const getTreeData = (
@@ -24,15 +25,19 @@ export const getTreeData = (
       return res.json();
     })
     .then((data) => {
+      const prevLastCommitPath = tree.lastCommitPath;
       if (!state.isInitialRoot) {
         commit(types.SET_ROOT, data.path === '/');
       }
 
-      commit(types.SET_DIRECTORY_DATA, { data, tree });
+      dispatch('updateDirectoryData', { data, tree });
       commit(types.SET_PARENT_TREE_URL, data.parent_tree_url);
       commit(types.SET_LAST_COMMIT_URL, { tree, url: data.last_commit_path });
       commit(types.TOGGLE_LOADING, tree);
-      dispatch('getLastCommitData', tree);
+
+      if (prevLastCommitPath !== null) {
+        dispatch('getLastCommitData', tree);
+      }
 
       pushState(endpoint);
     })
@@ -50,7 +55,7 @@ export const toggleTreeOpen = ({ commit, dispatch }, { endpoint, tree }) => {
     pushState(tree.parentTreeUrl);
 
     commit(types.SET_PREVIOUS_URL, tree.parentTreeUrl);
-    commit(types.SET_DIRECTORY_DATA, { data, tree });
+    dispatch('updateDirectoryData', { data, tree });
   } else {
     commit(types.SET_PREVIOUS_URL, endpoint);
     dispatch('getTreeData', { endpoint, tree });
@@ -112,11 +117,11 @@ export const createTempTree = ({ state, commit, dispatch }, name) => {
 };
 
 export const getLastCommitData = ({ state, commit, dispatch, getters }, tree = state) => {
-  if (tree.lastCommitPath === '' || getters.isCollapsed) return;
+  if (tree.lastCommitPath === null || getters.isCollapsed) return;
 
   service.getTreeLastCommit(tree.lastCommitPath)
     .then((res) => {
-      const lastCommitPath = normalizeHeaders(res.headers)['LOG-URL'];
+      const lastCommitPath = normalizeHeaders(res.headers)['MORE-LOGS-URL'] || null;
 
       commit(types.SET_LAST_COMMIT_URL, { tree, url: lastCommitPath });
 
@@ -134,4 +139,24 @@ export const getLastCommitData = ({ state, commit, dispatch, getters }, tree = s
       dispatch('getLastCommitData', tree);
     })
     .catch(() => flash('Error fetching log data.'));
+};
+
+export const updateDirectoryData = ({ commit, state }, { data, tree }) => {
+  const level = tree.level !== undefined ? tree.level + 1 : 0;
+  const parentTreeUrl = data.parent_tree_url ? `${data.parent_tree_url}${data.path}` : state.endpoints.rootUrl;
+  const createEntry = (entry, type) => createOrMergeEntry({
+    tree,
+    entry,
+    level,
+    type,
+    parentTreeUrl,
+  });
+
+  const formattedData = [
+    ...data.trees.map(t => createEntry(t, 'tree')),
+    ...data.submodules.map(m => createEntry(m, 'submodule')),
+    ...data.blobs.map(b => createEntry(b, 'blob')),
+  ];
+
+  commit(types.SET_DIRECTORY_DATA, { tree, data: formattedData });
 };

@@ -104,3 +104,22 @@ export const createTemp = ({ name, path, type, level, changed, content, base64 }
     renderError: base64,
   });
 };
+
+export const createOrMergeEntry = ({ tree, entry, type, parentTreeUrl, level }) => {
+  const found = findEntry(tree, type, entry.name);
+
+  if (found) {
+    return Object.assign({}, found, {
+      id: entry.id,
+      url: entry.url,
+      tempFile: false,
+    });
+  }
+
+  return decorateData({
+    ...entry,
+    type,
+    parentTreeUrl,
+    level,
+  });
+};

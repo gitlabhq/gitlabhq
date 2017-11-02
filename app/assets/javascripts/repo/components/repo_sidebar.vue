@@ -80,7 +80,7 @@ export default {
       />
       <repo-file
         v-for="(file, index) in treeList"
-        :key="index"
+        :key="file.name + file.type"
         :file="file"
       />
     </tbody>
