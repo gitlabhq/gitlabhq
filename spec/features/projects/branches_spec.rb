@@ -67,11 +67,7 @@ describe 'Branches' do
 
         expect(page).to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 1)
-        # To work with Chrome headless, this needs an updated version of
-        # Capybara with two bug fixes:
-        # * https://github.com/teamcapybara/capybara/pull/1902/
-        # * https://github.com/teamcapybara/capybara/pull/1903/
-        accept_alert { find('.js-branch-fix .btn-remove').click }
+        accept_confirm { find('.js-branch-fix .btn-remove').click }
 
         expect(page).not_to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 0)
