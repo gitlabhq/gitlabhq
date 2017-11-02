@@ -269,41 +269,25 @@ class User < ActiveRecord::Base
     end
 
     # Find a User by their primary email or any associated secondary email
-    def find_by_any_email(email)
-      sql = 'SELECT *
-      FROM users
-      WHERE id IN (
-        SELECT id FROM users WHERE email = :email
-        UNION
-        SELECT emails.user_id FROM emails WHERE email = :email
-      )
-      LIMIT 1;'
-
-      User.find_by_sql([sql, { email: email }]).first
-    end
-
-    # Find a User by their primary email or any associated secondary email
     # if there are multiple unconfirmed emails, return the user that first
     # created that email
-    def find_by_any_email_created_first(email)
-      sql = 'SELECT *
-      FROM users
-      WHERE id IN (
-        SELECT id FROM users WHERE email = :email AND confirmed_at IS NOT NULL
-        UNION
-        SELECT emails.user_id FROM emails WHERE email = :email AND confirmed_at IS NOT NULL
-      )
-      LIMIT 1;'
+    def find_by_any_email(email)
+      user_ids       = User.where(email: email).select('id AS user_id', :confirmed_at, :created_at)
+      email_user_ids = Email.where(email: email).select(:user_id, :confirmed_at, :created_at)
+      temp_user_ids  = Arel::Table.new(:temp_user_ids)
 
-      item = User.find_by_sql([sql, { email: email }]).first
+      union = Gitlab::SQL::Union.new([user_ids, email_user_ids])
 
-      unless item
-        users  = User.where(email: email)
-        emails = Email.where(email: email)
-        item   = (users + emails).sort {|a, b| a.created_at <=> b.created_at}.first
-        item   = item.user if item.is_a?(Email)
-      end
-      item
+      user_ids_query = temp_user_ids.
+        from(Arel.sql("(#{union.to_sql})").as(temp_user_ids.name)).
+        project(temp_user_ids[:user_id]).
+        order(
+          Gitlab::Database.nulls_last_order('confirmed_at', 'ASC'),
+          temp_user_ids[:created_at]
+        ).
+        take(1)
+
+      User.where("id IN (#{user_ids_query.to_sql})").first
     end
 
     def filter(filter_name)
@@ -538,7 +522,7 @@ class User < ActiveRecord::Base
   # user can specify an email that someone else has added as a secondary,
   # as long as it hasn't been confirmed yet
   def unique_email
-    if !emails.exists?(email: email) && Email.confirmed.exists?(email: email)
+    if Email.where.not(user_id: self).confirmed.exists?(email: email)
       errors.add(:email, 'has already been taken')
     end
   end

@@ -12,18 +12,16 @@ class ConfirmationService
       email = resource.email
 
       # verify email being confirmed is not already confirmed elsewhere
-      unless Email.confirmed.exists?(email: email) || User.confirmed.exists?(email: email)
+      if !Email.confirmed.exists?(email: email) && !User.confirmed.exists?(email: email)
         resource = @resource_class.confirm_by_token(@confirmation_token)
         if resource.errors.empty?
           # remove any duplicate emails from the emails table
-          Email.unconfirmed.where(email: email).each do |email|
-            email.destroy
-          end
+          Email.unconfirmed.where(email: email).destroy_all
 
           # nothing to do about the duplicate user emails, just leave unconfirmed
         end
       else
-        resource.errors.add(:base, 'This email address was confirmed by someone else')
+        resource.errors.add(:base, 'This email address was confirmed to belong to another account')
       end
     end
     resource

@@ -180,12 +180,12 @@ class Commit
   end
 
   def author
-    User.find_by_any_email_created_first(author_email.downcase)
+    User.find_by_any_email(author_email.downcase)
   end
   request_cache(:author) { author_email.downcase }
 
   def committer
-    @committer ||= User.find_by_any_email_created_first(committer_email.downcase)
+    @committer ||= User.find_by_any_email(committer_email.downcase)
   end
 
   def parents
