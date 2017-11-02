@@ -1,7 +1,6 @@
 require 'rails_helper'
 
 describe 'Issue Boards', :js do
-  include CookieHelper
   include DragTo
 
   let(:group) { create(:group, :nested) }

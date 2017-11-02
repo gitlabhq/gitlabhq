@@ -1,9 +1,6 @@
 require 'spec_helper'
 
 feature 'Multi-file editor new file', :js do
-  include CookieHelper
-  include WaitForRequests
-
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 

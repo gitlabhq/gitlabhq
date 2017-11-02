@@ -1,7 +1,6 @@
 require 'spec_helper'
 
 feature 'Merge requests > User posts diff notes', :js do
-  include CookieHelper
   include MergeRequestDiffHelpers
 
   let(:user) { create(:user) }

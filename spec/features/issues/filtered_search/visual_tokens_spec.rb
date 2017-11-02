@@ -1,9 +1,7 @@
 require 'rails_helper'
 
 describe 'Visual tokens', :js do
-  include CookieHelper
   include FilteredSearchHelpers
-  include WaitForRequests
 
   let!(:project) { create(:project) }
   let!(:user) { create(:user, name: 'administrator', username: 'root') }

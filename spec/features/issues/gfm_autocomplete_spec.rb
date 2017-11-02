@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 feature 'GFM autocomplete', :js do
-  include InputHelper
-
   let(:user)    { create(:user, name: '💃speciąl someone💃', username: 'someone.special') }
   let(:project) { create(:project) }
   let(:label) { create(:label, project: project, title: 'special+') }

@@ -1,8 +1,6 @@
 require 'rails_helper'
 
 feature 'Ref switcher', :js do
-  include CookieHelper
-
   let(:user)      { create(:user) }
   let(:project)   { create(:project, :public, :repository) }
 
