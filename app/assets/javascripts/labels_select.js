@@ -391,13 +391,13 @@ export default class LabelsSelect {
               .then(fadeOutLoader)
               .catch(fadeOutLoader);
           }
+          else if (handleClick) {
+            e.preventDefault();
+            handleClick(label);
+          }
           else {
             if ($dropdown.hasClass('js-multiselect')) {
 
-            }
-            else if (handleClick) {
-              e.preventDefault();
-              handleClick(label);
             }
             else {
               return saveLabelData();
