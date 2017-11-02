@@ -117,7 +117,7 @@ describe 'New/edit issue', :js do
       page.within '.js-assignee-search' do
         expect(page).to have_content user2.name
       end
-      expect(find('a', text: 'Assign to me')).to be_visible
+      find('body').click
 
       find('a', text: 'Assign to me').click
       assignee_ids = page.all('input[name="issue[assignee_ids][]"]', visible: false)
