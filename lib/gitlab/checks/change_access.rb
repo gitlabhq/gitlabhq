@@ -16,9 +16,8 @@ module Gitlab
         delete_protected_tag: 'Protected tags cannot be deleted.',
         create_protected_tag: 'You are not allowed to create this tag as it is protected.',
         push_rule_branch_name: "Branch name does not follow the pattern '%{branch_name_regex}'",
-        push_rule_committer_unknown: "Committer '%{committer_email}' unknown, do you need to add that email to your profile?",
-        push_rule_committer_not_verified: "Committer email '%{committer_email}' not verified. Verify the email on your profile page.",
-        push_rule_committer_not_allowed: "You cannot push commits for '%{committer_email}', you can only push your own commits."
+        push_rule_committer_not_verified: "Comitter email '%{commiter_email}' is not verified.",
+        push_rule_committer_not_allowed: "You cannot push commits for '%{committer_email}'. You can only push commits that were committed with one of your own verified emails."
       }.freeze
 
       # protocol is currently used only in EE
@@ -241,9 +240,9 @@ module Gitlab
 
       def committer_check(commit, push_rule)
         unless push_rule.committer_allowed?(commit.committer_email, user_access.user)
-          if commit.committer.nil?
-            ERROR_MESSAGES[:push_rule_committer_unknown] % { committer_email: commit.committer_email }
-          elsif !commit.committer.verified_email?(commit.committer_email)
+          committer_is_current_user = commit.committer == user_access.user
+
+          if committer_is_current_user && !commit.committer.verified_email?(commit.committer_email)
             ERROR_MESSAGES[:push_rule_committer_not_verified] % { committer_email: commit.committer_email }
           else
             ERROR_MESSAGES[:push_rule_committer_not_allowed] % { committer_email: commit.committer_email }

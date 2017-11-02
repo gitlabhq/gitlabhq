@@ -6,7 +6,8 @@ module PushRulesHelper
   end
 
   def commit_committer_check_description(push_rule)
-    message = s_("ProjectSettings|Only the committer of a commit can push changes to this repository.")
+    message = s_("ProjectSettings|Users can only push commits to this repository "\
+                 "that were committed with one of their own verified emails.")
 
     push_rule_update_description(message, push_rule, :commit_committer_check)
   end

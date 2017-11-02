@@ -7,7 +7,7 @@ describe PushRulesHelper do
   let(:project_owner) { push_rule.project.owner }
   let(:possible_help_texts) do
     {
-      commit_committer_check_base_help: /Only the committer of a commit can push changes to this repository/,
+      commit_committer_check_base_help: /Users can only push commits to this repository that were committed with one of their own verified emails/,
       reject_unsigned_commits_base_help: /Only signed commits can be pushed to this repository/,
       default_admin_help: /This setting will be applied to all projects unless overridden by an admin/,
       setting_can_be_overridden: /This setting is applied on the server level and can be overridden by an admin/,

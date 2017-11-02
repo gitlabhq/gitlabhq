@@ -490,14 +490,14 @@ describe Gitlab::Checks::ChangeAccess do
 
           expect { subject }
             .to raise_error(Gitlab::GitAccess::UnauthorizedError,
-                            "Committer email 'secondary_email@user.com' not verified. Verify the email on your profile page.")
+                            "Comitter email '%{commiter_email}' is not verified.")
         end
 
         it 'raises an error when using an unknown email' do
           allow_any_instance_of(Commit).to receive(:committer_email).and_return('some@mail.com')
           expect { subject }
             .to raise_error(Gitlab::GitAccess::UnauthorizedError,
-                            "Committer 'some@mail.com' unknown, do you need to add that email to your profile?")
+                            "You cannot push commits for 'some@mail.com'. You can only push commits that were committed with one of your own verified emails.")
         end
       end
 

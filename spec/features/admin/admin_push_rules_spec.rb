@@ -9,7 +9,7 @@ describe "Admin::PushRules"  do
 
   push_rules_with_titles = {
     reject_unsigned_commits: 'Reject unsigned commits',
-    commit_committer_check: 'Author restriction'
+    commit_committer_check: 'Committer restriction'
   }
 
   push_rules_with_titles.each do |rule_attr, title|
