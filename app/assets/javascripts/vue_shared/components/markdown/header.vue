@@ -53,7 +53,7 @@
           class="js-write-link"
           href="#md-write-holder"
           tabindex="-1"
-          @click.prevent="writeMarkdownTab($event, form)">
+          @click.prevent="writeMarkdownTab($event)">
           Write
         </a>
       </li>
@@ -62,7 +62,7 @@
           class="js-preview-link"
           href="#md-preview-holder"
           tabindex="-1"
-          @click.prevent="previewMarkdownTab($event, form)">
+          @click.prevent="previewMarkdownTab($event)">
           Preview
         </a>
       </li>
