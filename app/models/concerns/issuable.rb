@@ -14,7 +14,6 @@ module Issuable
   include StripAttribute
   include Awardable
   include Taskable
-  include TimeTrackable
   include Importable
   include Editable
   include AfterCommitQueue
@@ -97,8 +96,6 @@ module Issuable
     participant :notes_with_associations
 
     strip_attributes :title
-
-    acts_as_paranoid
 
     after_save :record_metrics, unless: :imported?
 

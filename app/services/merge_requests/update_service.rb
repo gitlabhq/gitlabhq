@@ -52,10 +52,6 @@ module MergeRequests
         reset_approvals(merge_request)
       end
 
-      if merge_request.previous_changes.include?('milestone_id')
-        create_milestone_note(merge_request)
-      end
-
       if merge_request.previous_changes.include?('assignee_id')
         create_assignee_note(merge_request)
         notification_service.reassigned_merge_request(merge_request, current_user)
@@ -130,6 +126,12 @@ module MergeRequests
                          when 'unwip' then MergeRequest.wipless_title(title)
                          end
       end
+    end
+
+    def create_branch_change_note(issuable, branch_type, old_branch, new_branch)
+      SystemNoteService.change_branch(
+        issuable, issuable.project, current_user, branch_type,
+        old_branch, new_branch)
     end
   end
 end

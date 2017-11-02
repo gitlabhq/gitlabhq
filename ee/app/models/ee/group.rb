@@ -8,6 +8,7 @@ module EE
 
     included do
       has_many :boards
+      has_many :epics
 
       state_machine :ldap_sync_status, namespace: :ldap_sync, initial: :ready do
         state :ready
