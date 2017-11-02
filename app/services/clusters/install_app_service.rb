@@ -14,7 +14,7 @@ module Clusters
         end
       rescue KubeException => ke
         app.make_errored!("Kubernetes error: #{ke.message}")
-      rescue StandardError => e
+      rescue StandardError
         app.make_errored!("Can't start installation process")
       end
     end
