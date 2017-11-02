@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'Environment' do
-  include InspectRequests
-
   given(:project) { create(:project) }
   given(:user) { create(:user) }
   given(:role) { :developer }

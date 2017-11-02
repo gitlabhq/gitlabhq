@@ -2,7 +2,6 @@ require 'rails_helper'
 
 feature 'User creates snippet', :js do
   include DropzoneHelper
-  include InspectRequests
 
   let(:user) { create(:user) }
 
