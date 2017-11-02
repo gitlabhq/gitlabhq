@@ -17,7 +17,7 @@ module Clusters
     end
 
     def helm_api
-      @helm ||= Gitlab::Clusters::Helm.new(kubeclient)
+      @helm ||= Gitlab::Kubernetes::Helm.new(kubeclient)
     end
   end
 end

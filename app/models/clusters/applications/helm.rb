@@ -9,7 +9,7 @@ module Clusters
 
       belongs_to :cluster, class_name: 'Clusters::Cluster', foreign_key: :cluster_id
 
-      default_value_for :version, Gitlab::Clusters::Helm::HELM_VERSION
+      default_value_for :version, Gitlab::Kubernetes::Helm::HELM_VERSION
 
       def name
         NAME

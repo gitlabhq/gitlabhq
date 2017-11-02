@@ -1,7 +1,6 @@
 module Gitlab
-  module Clusters
+  module Kubernetes
     class Helm
-      Error = Class.new(StandardError)
       HELM_VERSION = '2.7.0'.freeze
       NAMESPACE = 'gitlab-managed-apps'.freeze
       COMMAND_SCRIPT = <<-EOS.freeze
@@ -18,12 +17,11 @@ module Gitlab
       end
 
       def init!
-        ensure_namespace!
-        @kubeclient.create_pod(pod_resource(OpenStruct.new(name: 'helm')))
+        install(OpenStruct.new(name: 'helm'))
       end
 
       def install(app)
-        ensure_namespace!
+        create_namespace! unless has_namespace?
         @kubeclient.create_pod(pod_resource(app))
       end
 
@@ -86,18 +84,24 @@ module Gitlab
         "install #{app.chart} --name #{app.name} --namespace #{NAMESPACE}"
       end
 
-      def ensure_namespace!
+      def has_namespace?
+        return @has_namespace if defined?(@has_namespace)
+
         begin
           @kubeclient.get_namespace(NAMESPACE)
+          @has_namespace = true
         rescue KubeException => ke
           raise ke unless ke.error_code == 404
-
-          namespace_resource = ::Kubeclient::Resource.new
-          namespace_resource.metadata = {}
-          namespace_resource.metadata.name = NAMESPACE
-
-          @kubeclient.create_namespace(namespace_resource)
+          false
         end
+      end
+
+      def create_namespace!
+        namespace_resource = ::Kubeclient::Resource.new
+        namespace_resource.metadata = {}
+        namespace_resource.metadata.name = NAMESPACE
+
+        @kubeclient.create_namespace(namespace_resource)
       end
     end
   end

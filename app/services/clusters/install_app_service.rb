@@ -15,7 +15,6 @@ module Clusters
       rescue KubeException => ke
         app.make_errored!("Kubernetes error: #{ke.message}")
       rescue StandardError => e
-        Rails.logger.warn(e.message)
         app.make_errored!("Can't start installation process")
       end
     end
