@@ -49,7 +49,7 @@ module Gitlab
 
       project = Projects::CreateService.new(user,
                                             name: project_name,
-                                            path: full_path,
+                                            path: project_name,
                                             namespace_id: group&.id).execute
 
       if project.persisted?
