@@ -9,7 +9,7 @@ class CreateClustersKubernetesHelmApps < ActiveRecord::Migration
 
       t.datetime_with_timezone :created_at, null: false
       t.datetime_with_timezone :updated_at, null: false
-      
+
       t.integer :status, null: false
       t.string :version, null: false
       t.text :status_reason

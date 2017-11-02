@@ -91,7 +91,7 @@ module Clusters
           api_url: api_url,
           namespace: namespace,
           token: token,
-          ca_pem: ca_cert,
+          ca_pem: ca_cert
         )
       end
 

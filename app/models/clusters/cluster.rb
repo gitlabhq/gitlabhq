@@ -6,7 +6,7 @@ module Clusters
 
     APPLICATIONS = {
       Clusters::Applications::Helm::NAME => Clusters::Applications::Helm
-    }
+    }.freeze
 
     belongs_to :user
 
