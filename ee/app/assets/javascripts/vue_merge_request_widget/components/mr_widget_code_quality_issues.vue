@@ -14,11 +14,8 @@
       },
     },
     computed: {
-      plusIcon() {
-        return spriteIcon('plus');
-      },
-      minusIcon() {
-        return spriteIcon('cut');
+      icon() {
+        return this.isTypeFailed ? spriteIcon('cut') : spriteIcon('plus');
       },
       isTypeFailed() {
         return this.type === 'failed';
@@ -39,22 +36,10 @@
       "v-for="issue in issues">
       <span
         class="mr-widget-code-quality-icon"
-        v-if="isTypeFailed"
-        v-html="minusIcon">
+        v-html="icon">
       </span>
-      <span
-        class="mr-widget-code-quality-icon"
-        v-else-if="isTypeSuccess"
-        v-html="plusIcon">
-      </span>
-      <span
-        class="mr-widget-code-quality-title"
-        v-if="isTypeSuccess">
-        Fixed:
-      </span>
-      <span class="mr-widget-code-quality-title">
-        {{issue.check_name}}
-      </span>
+      <template v-if="isTypeSuccess">Fixed:</template>
+      {{issue.check_name}}
       <template v-if="issue.location.path">in</template>
       <a
         :href="issue.location.urlPath"

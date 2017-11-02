@@ -132,10 +132,7 @@ export default {
       v-if="isLoading"
       class="media">
       <div class="mr-widget-icon">
-        <i
-          class="fa fa-spinner fa-spin"
-          aria-hidden="true">
-        </i>
+        <loading-icon />
       </div>
       <div class="media-body">
         Loading codeclimate report

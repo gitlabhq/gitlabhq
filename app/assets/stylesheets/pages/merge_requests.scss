@@ -803,25 +803,16 @@
         }
       }
 
-
-      li.success {
-        .mr-widget-code-quality-title {
-          color: $green-500;
-        }
-
-        .mr-widget-code-quality-icon svg {
-          fill: $green-500;
-        }
+      .mr-widget-code-quality-icon {
+        fill: currentColor;
       }
 
-      li.failed {
-        .mr-widget-code-quality-title {
-          color: $red-500;
-        }
+      .success {
+        color: $green-500;
+      }
 
-        .mr-widget-code-quality-icon svg {
-          fill: $red-500;
-        }
+      .failed {
+        color: $red-500;
       }
     }
   }
