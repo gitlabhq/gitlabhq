@@ -58,16 +58,19 @@ describe('SmartInterval', function () {
       }, DEFAULT_LONG_TIMEOUT);
     });
 
-    it('does not increment while waiting for callback', function (done) {
+    it('does not increment while waiting for callback', function () {
+      jasmine.clock().install();
+
       const smartInterval = createDefaultSmartInterval({
         callback: () => new Promise($.noop),
       });
 
-      setTimeout(() => {
-        const oneInterval = smartInterval.cfg.startingInterval * DEFAULT_INCREMENT_FACTOR;
-        expect(smartInterval.getCurrentInterval()).toEqual(oneInterval);
-        done();
-      }, DEFAULT_SHORT_TIMEOUT);
+      jasmine.clock().tick(DEFAULT_SHORT_TIMEOUT);
+
+      const oneInterval = smartInterval.cfg.startingInterval * DEFAULT_INCREMENT_FACTOR;
+      expect(smartInterval.getCurrentInterval()).toEqual(oneInterval);
+
+      jasmine.clock().uninstall();
     });
   });
 
