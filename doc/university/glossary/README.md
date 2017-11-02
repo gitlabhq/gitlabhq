@@ -460,7 +460,7 @@ A route table contains rules (called routes) that determine where network traffi
 
 ### Runners
 
-Actual build machines/containers that [run and execute tests](https://gitlab.com/gitlab-org/gitlab-ci-multi-runner) you have specified to be run on GitLab CI.
+Actual build machines/containers that [run and execute tests](https://gitlab.com/gitlab-org/gitlab-runner) you have specified to be run on GitLab CI.
 
 ### Sidekiq
 
