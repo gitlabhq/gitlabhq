@@ -63,7 +63,7 @@
 
   .nav-links {
     margin-bottom: 0;
-    border-bottom: none;
+    border-bottom: 0;
     float: left;
 
     &.wide {
@@ -335,7 +335,7 @@
     border-bottom: 1px solid $border-color;
 
     .nav-links {
-      border-bottom: none;
+      border-bottom: 0;
     }
   }
 }

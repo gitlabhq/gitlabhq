@@ -16,7 +16,7 @@
 .discussion {
   .new-note {
     margin: 0;
-    border: none;
+    border: 0;
   }
 }
 
@@ -106,7 +106,7 @@
   background-color: $orange-100;
   border-radius: $border-radius-default $border-radius-default 0 0;
   border: 1px solid $border-gray-normal;
-  border-bottom: none;
+  border-bottom: 0;
   padding: 3px 12px;
   margin: auto;
   align-items: center;

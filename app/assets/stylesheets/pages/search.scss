@@ -5,7 +5,7 @@
     margin-bottom: $gl-padding;
 
     &:last-child {
-      border-bottom: none;
+      border-bottom: 0;
     }
   }
 
@@ -57,7 +57,7 @@ input[type="checkbox"]:hover {
   }
 
   .search-input {
-    border: none;
+    border: 0;
     font-size: 14px;
     padding: 0 20px 0 0;
     margin-left: 5px;
