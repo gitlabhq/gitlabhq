@@ -1165,6 +1165,18 @@ From this page, you can repeat delivery with the same data by clicking `Resend R
 
 >**Note:** If URL or secret token of the webhook were updated, data will be delivered to the new address.
 
+### Receiving duplicate or multiple web hook requests triggered by one event
+
+When GitLab sends a webhook it expects a response in 10 seconds (set default value). If it does not receive one, it'll retry the webhook.
+If the endpoint doesn't send its HTTP response within those 10 seconds, GitLab may decide the hook failed and retry it.
+
+If you are receiving multiple requests, you can try increasing the default value to wait for the HTTP response after sending the webhook 
+by uncommenting or adding the following setting to your `/etc/gitlab/gitlab.rb`:
+
+```
+gitlab_rails['webhook_timeout'] = 10 
+```
+
 ## Example webhook receiver
 
 If you want to see GitLab's webhooks in action for testing purposes you can use

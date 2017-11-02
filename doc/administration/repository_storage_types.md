@@ -76,7 +76,7 @@ To migrate your existing projects to the new storage type, check the specific [r
 We are incrementally moving every storable object in GitLab to the Hashed Storage pattern. You can check the current
 coverage status below.
 
-Not that things stored in S3 compatible endpoint, will not have the downsides mentioned earlier, if they are not
+Note that things stored in an S3 compatible endpoint will not have the downsides mentioned earlier, if they are not
 prefixed with `#{namespace}/#{project_name}`, which is true for CI Cache and LFS Objects.
 
 | Storable Object | Legacy Storage | Hashed Storage | S3 Compatible | GitLab Version | 

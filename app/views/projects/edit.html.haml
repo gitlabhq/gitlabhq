@@ -81,8 +81,11 @@
         .js-project-permissions-form
         = f.submit 'Save changes', class: "btn btn-save"
 
+<<<<<<< HEAD
   = render 'projects/ee/issues_settings'
 
+=======
+>>>>>>> ce/master
   %section.settings.merge-requests-feature.no-animate{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)] }
     .settings-header
       %h4
@@ -92,8 +95,11 @@
       %p
         Customize your merge request restrictions.
     .settings-content
+<<<<<<< HEAD
       = render 'shared/promotions/promote_mr_features'
 
+=======
+>>>>>>> ce/master
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "merge-request-settings-form" }, authenticity_token: true do |f|
         = render 'projects/ee/merge_request_settings', form: f
         = f.submit 'Save changes', class: "btn btn-save"

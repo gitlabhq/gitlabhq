@@ -1,6 +1,9 @@
 /* eslint-disable no-new */
 /* global MilestoneSelect */
+<<<<<<< HEAD
 /* global WeightSelect */
+=======
+>>>>>>> ce/master
 import LabelsSelect from './labels_select';
 import IssuableContext from './issuable_context';
 /* global Sidebar */
