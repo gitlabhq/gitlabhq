@@ -23,15 +23,14 @@
 }
 
 .settings {
-  overflow: hidden;
   border-bottom: 1px solid $gray-darker;
 
   &:first-of-type {
     margin-top: 10px;
   }
 
-  &.expanded {
-    overflow: visible;
+  &.animating {
+    overflow: hidden;
   }
 }
 
@@ -56,14 +55,18 @@
   overflow-y: scroll;
   padding-right: 110px;
   animation: collapseMaxHeight 300ms ease-out;
+  // Keep the section from expanding when we scroll over it
+  pointer-events: none;
 
-  &.expanded {
+  .settings.expanded & {
     max-height: none;
     overflow-y: visible;
     animation: expandMaxHeight 300ms ease-in;
+    // Reset and allow clicks again when expanded
+    pointer-events: auto;
   }
 
-  &.no-animate {
+  .settings.no-animate & {
     animation: none;
   }
 

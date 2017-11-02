@@ -1,6 +1,6 @@
 - if @project.feature_available?(:issuable_default_templates)
   - expanded = Rails.env.test?
-  %section.settings.issues-feature{ class: ("hidden" if @project.project_feature.send(:issues_access_level) == 0) }
+  %section.settings.issues-feature.no-animate{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:issues_access_level) == 0)] }
     .settings-header
       %h4
         Issue settings
@@ -8,7 +8,7 @@
         = expanded ? 'Collapse' : 'Expand'
       %p
         Customize your issue restrictions.
-    .settings-content.no-animate{ class: ('expanded' if expanded) }
+    .settings-content
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "issue-settings-form" }, authenticity_token: true do |f|
         .form-group
           = f.label :issues_template, class: 'label-light' do
