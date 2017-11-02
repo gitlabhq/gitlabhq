@@ -6,7 +6,7 @@ class CreateJobArtifacts < ActiveRecord::Migration
   def change
     create_table :ci_job_artifacts do |t|
       t.belongs_to :project, null: false, index: true, foreign_key: { on_delete: :cascade }
-      t.integer :ci_job_id, null: false, index: true
+      t.integer :job_id, null: false, index: true
       t.integer :size, limit: 8
       t.integer :file_type, null: false, index: true
 
@@ -15,5 +15,7 @@ class CreateJobArtifacts < ActiveRecord::Migration
 
       t.string :file
     end
+
+    add_foreign_key :ci_job_artifacts, :ci_builds, column: :job_id, on_delete: :cascade
   end
 end

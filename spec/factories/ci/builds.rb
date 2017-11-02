@@ -158,6 +158,7 @@ FactoryGirl.define do
       after(:create) do |build|
         create(:ci_job_artifact, job: build)
         create(:ci_job_metadata, job: build)
+        build.reload
       end
     end
 

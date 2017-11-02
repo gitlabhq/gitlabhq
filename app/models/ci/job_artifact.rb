@@ -3,7 +3,7 @@ module Ci
     extend Gitlab::Ci::Model
 
     belongs_to :project
-    belongs_to :job, class_name: "Ci::Build", foreign_key: :ci_job_id
+    belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id
 
     before_save :set_size, if: :file_changed?
     after_commit :remove_file!, on: :destroy
