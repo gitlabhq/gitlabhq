@@ -261,7 +261,7 @@ Dialog modals are only used for having a conversation and confirmation with the 
 ### Usage
 
 * When the action is irreversible, dialog modals provide the details and confirm with the user before they take an advanced action.
-* When the action will affect privacy or authorization, dialog modals provide the advanced information and confirm with the user.
+* When the action will affect privacy or authorization, dialog modals provide advanced information and confirm with the user.
 
 ### Style
 
@@ -276,11 +276,13 @@ Dialog modals are only used for having a conversation and confirmation with the 
 
 ### Placement
 
-* Dialog modals should always be the center of the screen horizontally and have **72px** from the top of the screen.
+* Dialog modals should always be the center of the screen horizontally and be positioned **72px** from the top.
 
 | Dialog with 2 actions | Dialog with 3 actions | Special confirmation |
 | --------------------- | --------------------- | -------------------- |
 | ![two-actions](img/modals-general-confimation-dialog.png) | ![three-actions](img/modals-three-buttons.png) | ![spcial-confirmation](img/modals-special-confimation-dialog.png) |
+
+> TODO: Special case for dialog modal.
 
 ---
 
