@@ -106,7 +106,7 @@ describe('Merge Request Code Quality', () => {
 
           Vue.nextTick(() => {
             expect(
-              vm.$el.querySelector('.code-quality-container').geAttribute('style'),
+              vm.$el.querySelector('.code-quality-container').getAttribute('style'),
             ).toEqual(null);
             expect(
               vm.$el.querySelector('button').textContent.trim(),
@@ -116,7 +116,7 @@ describe('Merge Request Code Quality', () => {
 
             Vue.nextTick(() => {
               expect(
-                vm.$el.querySelector('.code-quality-container').geAttribute('style'),
+                vm.$el.querySelector('.code-quality-container').getAttribute('style'),
               ).toEqual('display: none;');
               expect(
                 vm.$el.querySelector('button').textContent.trim(),
