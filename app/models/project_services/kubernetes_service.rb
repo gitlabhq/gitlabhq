@@ -3,8 +3,6 @@ class KubernetesService < DeploymentService
   include Gitlab::Kubernetes
   include ReactiveCaching
 
-  has_one :helm_app, class_name: 'Clusters::Kubernetes::HelmApp', foreign_key: :service_id
-
   self.reactive_cache_key = ->(service) { [service.class.model_name.singular, service.project_id] }
 
   # Namespace defaults to the project path, but can be overridden in case that
@@ -138,8 +136,8 @@ class KubernetesService < DeploymentService
     { pods: read_pods }
   end
 
-  def helm
-    Gitlab::Clusters::Helm.new(build_kubeclient!)
+  def kubeclient
+    @kubeclient ||= build_kubeclient!
   end
 
   TEMPLATE_PLACEHOLDER = 'Kubernetes namespace'.freeze

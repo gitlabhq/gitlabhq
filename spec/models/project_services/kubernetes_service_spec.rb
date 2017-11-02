@@ -9,7 +9,6 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
 
   describe 'Associations' do
     it { is_expected.to belong_to :project }
-    it { is_expected.to have_one(:helm_app) }
   end
 
   describe 'Validations' do

@@ -60,6 +60,10 @@ module Clusters
         self.class.namespace_for_project(project) if project
       end
 
+      def kubeclient
+        @kubeclient ||= kubernetes_service.kubeclient if manages_kubernetes_service?
+      end
+
       private
 
       def enforce_namespace_to_lower_case

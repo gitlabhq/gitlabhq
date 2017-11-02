@@ -1,12 +1,12 @@
 class CreateClustersKubernetesHelmApps < ActiveRecord::Migration
   def change
-    create_table :clusters_kubernetes_helm_apps do |t|
-      t.integer :status, null: false
+    create_table :clusters_applications_helm do |t|
+      t.references :cluster, null: false, unique: true, foreign_key: { on_delete: :cascade }
 
       t.datetime_with_timezone :created_at, null: false
       t.datetime_with_timezone :updated_at, null: false
-
-      t.references :service, index: true, null: false, foreign_key: { on_delete: :cascade }
+      
+      t.integer :status, null: false
       t.string :version, null: false
       t.text :status_reason
     end

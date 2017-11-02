@@ -4,6 +4,10 @@ module Clusters
 
     self.table_name = 'clusters'
 
+    APPLICATIONS = {
+      Clusters::Applications::Helm::NAME => Clusters::Applications::Helm
+    }
+
     belongs_to :user
 
     has_many :cluster_projects, class_name: 'Clusters::Project'
@@ -15,13 +19,14 @@ module Clusters
     # We have to ":destroy" it today to ensure that we clean also the Kubernetes Integration
     has_one :platform_kubernetes, class_name: 'Clusters::Platforms::Kubernetes', autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
+    has_one :application_helm, class_name: 'Clusters::Applications::Helm'
+
     accepts_nested_attributes_for :provider_gcp, update_only: true
     accepts_nested_attributes_for :platform_kubernetes, update_only: true
 
     validates :name, cluster_name: true
     validate :restrict_modification, on: :update
 
-    delegate :status, to: :provider, allow_nil: true
     delegate :status_reason, to: :provider, allow_nil: true
     delegate :status_name, to: :provider, allow_nil: true
     delegate :on_creation?, to: :provider, allow_nil: true
@@ -38,6 +43,14 @@ module Clusters
     scope :enabled, -> { where(enabled: true) }
     scope :disabled, -> { where(enabled: false) }
 
+    def status_name
+      if provider
+        provider.status_name
+      else
+        :created
+      end
+    end
+
     def provider
       return provider_gcp if gcp?
     end
@@ -52,6 +65,10 @@ module Clusters
       @first_project = projects.first
     end
     alias_method :project, :first_project
+
+    def kubeclient
+      platform_kubernetes.kubeclient if kubernetes?
+    end
 
     private
 

@@ -190,6 +190,10 @@ constraints(ProjectUrlConstrainer.new) do
 
         member do
           get :status, format: :json
+
+          scope '*application' do
+            resource :applications, only: [:create]
+          end
         end
       end
 

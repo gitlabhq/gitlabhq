@@ -8,10 +8,16 @@ module Clusters
 
     protected
 
-    def helm
-      return @helm if defined?(@helm)
+    def cluster
+      app.cluster
+    end
 
-      @helm = @app.cluster.helm
+    def kubeclient
+      cluster.kubeclient
+    end
+
+    def helm_api
+      @helm ||= Gitlab::Clusters::Helm.new(kubeclient)
     end
   end
 end

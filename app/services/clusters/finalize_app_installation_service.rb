@@ -1,7 +1,7 @@
 module Clusters
   class FinalizeAppInstallationService < BaseHelmService
     def execute
-      helm.delete_installation_pod!(app)
+      helm_api.delete_installation_pod!(app)
 
       app.make_errored!('Installation aborted') if aborted?
     end

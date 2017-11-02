@@ -1,7 +1,7 @@
 require 'rails_helper'
 require_relative '../kubernetes_spec'
 
-RSpec.describe Clusters::Kubernetes::HelmApp, type: :model do
+RSpec.describe Clusters::Applications::Helm, type: :model do
   it_behaves_like 'a registered kubernetes app'
 
   it { is_expected.to belong_to(:kubernetes_service) }
