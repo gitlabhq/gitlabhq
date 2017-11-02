@@ -55,6 +55,10 @@ describe Gitlab::UrlBlocker do
     it 'returns false for legitimate URL' do
       expect(described_class.blocked_url?('https://gitlab.com/foo/foo.git')).to be false
     end
+
+    it 'refuses to import projects whose URLs do not resolve' do
+      expect(described_class.blocked_url?('http://willneverresolve.gitlab.com/foo.git', require_dns: true)).to be true
+    end
   end
 
   # Resolv does not support resolving UTF-8 domain names

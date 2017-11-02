@@ -7,7 +7,7 @@ module Gitlab
       # imports.
       VALID_PORTS = [22, 80, 443].freeze
 
-      def blocked_url?(url)
+      def blocked_url?(url, require_dns: false)
         return false if url.nil?
 
         blocked_ips = ["127.0.0.1", "::1", "0.0.0.0"]
@@ -23,6 +23,7 @@ module Gitlab
           return true if blocked_user_or_hostname?(uri.hostname)
 
           server_ips = Resolv.getaddresses(uri.hostname)
+          return true if require_dns && server_ips.empty?
           return true if (blocked_ips & server_ips).any?
         rescue Addressable::URI::InvalidURIError
           return true
