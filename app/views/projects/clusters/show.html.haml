@@ -66,14 +66,7 @@
       %p= s_('ClusterIntegration|See and edit the details for your cluster')
 
     .settings-content
-
-      .form_group.append-bottom-20
-        %label.append-bottom-10{ for: 'cluster-name' }
-          = s_('ClusterIntegration|Cluster name')
-        .input-group
-          %input.form-control.cluster-name{ value: @cluster.name, disabled: true }
-          %span.input-group-addon.clipboard-addon
-            = clipboard_button(text: @cluster.name, title: s_('ClusterIntegration|Copy cluster name'))
+      = render 'form'
 
   %section.settings.no-animate#js-cluster-advanced-settings{ class: ('expanded' if expanded) }
     .settings-header

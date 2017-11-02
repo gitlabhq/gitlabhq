@@ -29,6 +29,8 @@ module Clusters
     validates :name, cluster_name: true
     validate :restrict_modification, on: :update
 
+    validates_associated :provider_gcp, :platform_kubernetes
+
     # TODO: Move back this into Clusters::Platforms::Kubernetes in 10.3
     # We need callback here because `enabled` belongs to Clusters::Cluster
     # Callbacks in Clusters::Platforms::Kubernetes will not be called after update
@@ -75,6 +77,10 @@ module Clusters
 
     def platform
       return platform_kubernetes if kubernetes?
+    end
+
+    def managed?
+      !user?
     end
 
     def first_project
