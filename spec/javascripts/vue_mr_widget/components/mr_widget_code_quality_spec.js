@@ -106,8 +106,8 @@ describe('Merge Request Code Quality', () => {
 
           Vue.nextTick(() => {
             expect(
-              vm.$el.querySelector('.code-quality-container').geAttribute('style'),
-            ).toEqual(null);
+              vm.$el.querySelector('.code-quality-container').getAttribute('style'),
+            ).toEqual('');
             expect(
               vm.$el.querySelector('button').textContent.trim(),
             ).toEqual('Collapse');
@@ -116,14 +116,15 @@ describe('Merge Request Code Quality', () => {
 
             Vue.nextTick(() => {
               expect(
-                vm.$el.querySelector('.code-quality-container').geAttribute('style'),
+                vm.$el.querySelector('.code-quality-container').getAttribute('style'),
               ).toEqual('display: none;');
               expect(
                 vm.$el.querySelector('button').textContent.trim(),
               ).toEqual('Expand');
+
+              done();
             });
           });
-          done();
         }, 0);
       });
     });

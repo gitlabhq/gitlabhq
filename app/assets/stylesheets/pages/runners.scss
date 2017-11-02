@@ -50,3 +50,10 @@
     font-size: 11px;
   }
 }
+
+@media (max-width: $screen-md-max) {
+  .runners-content {
+    width: 100%;
+    overflow: auto;
+  }
+}

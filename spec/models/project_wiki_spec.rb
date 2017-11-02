@@ -164,36 +164,35 @@ describe ProjectWiki do
   end
 
   describe '#find_file' do
-    before do
-      file = Gollum::File.new(subject.wiki)
-      allow_any_instance_of(Gollum::Wiki)
-                   .to receive(:file).with('image.jpg', 'master')
-                   .and_return(file)
-      allow_any_instance_of(Gollum::File)
-                   .to receive(:mime_type)
-                   .and_return('image/jpeg')
-      allow_any_instance_of(Gollum::Wiki)
-                   .to receive(:file).with('non-existant', 'master')
-                   .and_return(nil)
+    shared_examples 'finding a wiki file' do
+      before do
+        file = File.open(Rails.root.join('spec', 'fixtures', 'dk.png'))
+        subject.wiki # Make sure the wiki repo exists
+
+        BareRepoOperations.new(subject.repository.path_to_repo).commit_file(file, 'image.png')
+      end
+
+      it 'returns the latest version of the file if it exists' do
+        file = subject.find_file('image.png')
+        expect(file.mime_type).to eq('image/png')
+      end
+
+      it 'returns nil if the page does not exist' do
+        expect(subject.find_file('non-existant')).to eq(nil)
+      end
+
+      it 'returns a Gitlab::Git::WikiFile instance' do
+        file = subject.find_file('image.png')
+        expect(file).to be_a Gitlab::Git::WikiFile
+      end
     end
 
-    after do
-      allow_any_instance_of(Gollum::Wiki).to receive(:file).and_call_original
-      allow_any_instance_of(Gollum::File).to receive(:mime_type).and_call_original
+    context 'when Gitaly wiki_find_file is enabled' do
+      it_behaves_like 'finding a wiki file'
     end
 
-    it 'returns the latest version of the file if it exists' do
-      file = subject.find_file('image.jpg')
-      expect(file.mime_type).to eq('image/jpeg')
-    end
-
-    it 'returns nil if the page does not exist' do
-      expect(subject.find_file('non-existant')).to eq(nil)
-    end
-
-    it 'returns a Gitlab::Git::WikiFile instance' do
-      file = subject.find_file('image.jpg')
-      expect(file).to be_a Gitlab::Git::WikiFile
+    context 'when Gitaly wiki_find_file is disabled', :skip_gitaly_mock do
+      it_behaves_like 'finding a wiki file'
     end
   end
 

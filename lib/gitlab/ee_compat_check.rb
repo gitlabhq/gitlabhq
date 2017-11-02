@@ -2,8 +2,8 @@
 module Gitlab
   # Checks if a set of migrations requires downtime or not.
   class EeCompatCheck
-    DEFAULT_CE_REPO = 'https://gitlab.com/gitlab-org/gitlab-ce.git'.freeze
-    EE_REPO = 'https://gitlab.com/gitlab-org/gitlab-ee.git'.freeze
+    DEFAULT_CE_PROJECT_URL = 'https://gitlab.com/gitlab-org/gitlab-ce'.freeze
+    EE_REPO_URL = 'https://gitlab.com/gitlab-org/gitlab-ee.git'.freeze
     CHECK_DIR = Rails.root.join('ee_compat_check')
     IGNORED_FILES_REGEX = /(VERSION|CHANGELOG\.md:\d+)/.freeze
     PLEASE_READ_THIS_BANNER = %Q{
@@ -17,14 +17,16 @@ module Gitlab
       ============================================================\n
     }.freeze
 
-    attr_reader :ee_repo_dir, :patches_dir, :ce_repo, :ce_branch, :ee_branch_found
-    attr_reader :failed_files
+    attr_reader :ee_repo_dir, :patches_dir, :ce_project_url, :ce_repo_url, :ce_branch, :ee_branch_found
+    attr_reader :job_id, :failed_files
 
-    def initialize(branch:, ce_repo: DEFAULT_CE_REPO)
+    def initialize(branch:, ce_project_url: DEFAULT_CE_PROJECT_URL, job_id: nil)
       @ee_repo_dir = CHECK_DIR.join('ee-repo')
       @patches_dir = CHECK_DIR.join('patches')
       @ce_branch = branch
-      @ce_repo = ce_repo
+      @ce_project_url = ce_project_url
+      @ce_repo_url = "#{ce_project_url}.git"
+      @job_id = job_id
     end
 
     def check
@@ -59,8 +61,8 @@ module Gitlab
         step("#{ee_repo_dir} already exists")
       else
         step(
-          "Cloning #{EE_REPO} into #{ee_repo_dir}",
-          %W[git clone --branch master --single-branch --depth=200 #{EE_REPO} #{ee_repo_dir}]
+          "Cloning #{EE_REPO_URL} into #{ee_repo_dir}",
+          %W[git clone --branch master --single-branch --depth=200 #{EE_REPO_URL} #{ee_repo_dir}]
         )
       end
     end
@@ -132,7 +134,7 @@ module Gitlab
     def check_patch(patch_path)
       step("Checking out master", %w[git checkout master])
       step("Resetting to latest master", %w[git reset --hard origin/master])
-      step("Fetching CE/#{ce_branch}", %W[git fetch #{ce_repo} #{ce_branch}])
+      step("Fetching CE/#{ce_branch}", %W[git fetch #{ce_repo_url} #{ce_branch}])
       step(
         "Checking if #{patch_path} applies cleanly to EE/master",
         # Don't use --check here because it can result in a 0-exit status even
@@ -237,7 +239,7 @@ module Gitlab
     end
 
     def patch_url
-      "https://gitlab.com/gitlab-org/gitlab-ce/-/jobs/#{ENV['CI_JOB_ID']}/artifacts/raw/ee_compat_check/patches/#{ce_patch_name}"
+      "#{ce_project_url}/-/jobs/#{job_id}/artifacts/raw/ee_compat_check/patches/#{ce_patch_name}"
     end
 
     def step(desc, cmd = nil)
@@ -304,7 +306,7 @@ module Gitlab
           # In the EE repo
           $ git fetch origin
           $ git checkout -b #{ee_branch_prefix} origin/master
-          $ git fetch #{ce_repo} #{ce_branch}
+          $ git fetch #{ce_repo_url} #{ce_branch}
           $ git cherry-pick SHA # Repeat for all the commits you want to pick
 
           You can squash the `#{ce_branch}` commits into a single "Port of #{ce_branch} to EE" commit.
