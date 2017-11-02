@@ -66,12 +66,12 @@ describe 'Dropdown label', :js do
     end
 
     it 'shows loading indicator when opened and hides it when loaded' do
-      Gitlab::Testing::RequestBlockerMiddleware.slow_requests!
-      filtered_search.set('label:')
+      slow_requests do
+        filtered_search.set('label:')
 
-      expect(page).to have_css("#{js_dropdown_label} .filter-dropdown-loading", visible: true)
+        expect(page).to have_css("#{js_dropdown_label} .filter-dropdown-loading", visible: true)
+      end
       expect(find(js_dropdown_label)).not_to have_css('.filter-dropdown-loading')
-      Gitlab::Testing::RequestBlockerMiddleware.allow_requests!
     end
 
     it 'loads all the labels when opened' do

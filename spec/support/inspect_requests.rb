@@ -9,7 +9,7 @@ module InspectRequests
 
     yield
 
-    block_and_wait_for_requests_complete
+    wait_for_all_requests
     Gitlab::Testing::RequestInspectorMiddleware.requests
   ensure
     Gitlab::Testing::RequestInspectorMiddleware.stop_logging!

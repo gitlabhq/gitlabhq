@@ -179,7 +179,7 @@ describe 'User browses files' do
         click_button('Upload file')
       end
 
-      block_and_wait_for_requests_complete
+      wait_for_all_requests
 
       visit(project_blob_path(project, 'new_branch_name/logo_sample.svg'))
 
