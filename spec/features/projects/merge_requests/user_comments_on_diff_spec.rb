@@ -90,9 +90,8 @@ describe 'User comments on a diff', :js do
           end
 
           # Check the same comments in the side-by-side view.
-          page.execute_script(
-            "document.querySelector('#parallel-diff-btn').click()"
-          )
+          execute_script("window.scrollTo(0,0);")
+          click_link('Side-by-side')
 
           wait_for_requests
 
