@@ -29,6 +29,9 @@ Sidekiq.configure_server do |config|
 end
 
 if Gitlab::Metrics.prometheus_metrics_enabled?
-  Gitlab::Metrics::Samplers::UnicornSampler.initialize_instance(Settings.monitoring.unicorn_sampler_interval).start
+  unless Sidekiq.server?
+    Gitlab::Metrics::Samplers::UnicornSampler.initialize_instance(Settings.monitoring.unicorn_sampler_interval).start
+  end
+
   Gitlab::Metrics::Samplers::RubySampler.initialize_instance(Settings.monitoring.ruby_sampler_interval).start
 end

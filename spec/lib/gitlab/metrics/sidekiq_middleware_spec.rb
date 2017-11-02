@@ -21,10 +21,6 @@ describe Gitlab::Metrics::SidekiqMiddleware do
     let(:test_worker_class) { double(:class, name: 'TestWorker') }
     let(:worker) { double(:worker, class: test_worker_class) }
 
-    it 'reports correct action based on worker class' do
-
-    end
-
     it 'tracks the transaction' do
       run(worker, message)
     end
