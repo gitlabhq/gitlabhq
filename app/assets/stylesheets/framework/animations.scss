@@ -23,6 +23,11 @@
     @include webkit-prefix(animation-duration, 2s);
   }
 
+  &.spin {
+    transform-origin: center;
+    animation: spin 4s linear infinite;
+  }
+
   &.flipOutX,
   &.flipOutY,
   &.bounceIn,
@@ -198,6 +203,13 @@ a {
     height: 12px;
   }
 
+  &.animation-container-right {
+    .skeleton-line-2 {
+      left: 0;
+      right: 150px;
+    }
+  }
+
   &::before {
     animation-duration: 1s;
     animation-fill-mode: forwards;
@@ -262,5 +274,11 @@ a {
 
   100% {
     transform: translateX(468px);
+  }
+}
+
+@keyframes spin {
+  100% {
+    transform: rotate(360deg);
   }
 }

@@ -109,12 +109,14 @@ const sidebarMockData = {
       labels: [],
       web_url: '/root/some-project/issues/5',
     },
+    '/gitlab-org/gitlab-shell/issues/5/toggle_subscription': {},
   },
 };
 
 export default {
   mediator: {
     endpoint: '/gitlab-org/gitlab-shell/issues/5.json',
+    toggleSubscriptionEndpoint: '/gitlab-org/gitlab-shell/issues/5/toggle_subscription',
     moveIssueEndpoint: '/gitlab-org/gitlab-shell/issues/5/move',
     projectsAutocompleteEndpoint: '/autocomplete/projects?project_id=15',
     editable: true,

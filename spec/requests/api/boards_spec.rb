@@ -44,7 +44,7 @@ describe API::Boards do
       it "returns authentication error" do
         get api(base_url)
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -52,7 +52,7 @@ describe API::Boards do
       it "returns the project issue board" do
         get api(base_url, user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
@@ -70,7 +70,7 @@ describe API::Boards do
     it 'returns issue board lists' do
       get api(base_url, user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(response).to include_pagination_headers
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(2)
@@ -80,7 +80,7 @@ describe API::Boards do
     it 'returns 404 if board not found' do
       get api("/projects/#{project.id}/boards/22343/lists", user)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 
@@ -90,7 +90,7 @@ describe API::Boards do
     it 'returns a list' do
       get api("#{base_url}/#{dev_list.id}", user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['id']).to eq(dev_list.id)
       expect(json_response['label']['name']).to eq(dev_label.title)
       expect(json_response['position']).to eq(1)
@@ -99,7 +99,7 @@ describe API::Boards do
     it 'returns 404 if list not found' do
       get api("#{base_url}/5324", user)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 
@@ -113,7 +113,7 @@ describe API::Boards do
 
       post api(base_url, user), label_id: group_label.id
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['label']['name']).to eq(group_label.title)
       expect(json_response['position']).to eq(3)
     end
@@ -121,7 +121,7 @@ describe API::Boards do
     it 'creates a new issue board list for project labels' do
       post api(base_url, user), label_id: ux_label.id
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['label']['name']).to eq(ux_label.title)
       expect(json_response['position']).to eq(3)
     end
@@ -129,13 +129,13 @@ describe API::Boards do
     it 'returns 400 when creating a new list if label_id is invalid' do
       post api(base_url, user), label_id: 23423
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
     end
 
     it 'returns 403 for project members with guest role' do
       put api("#{base_url}/#{test_list.id}", guest), position: 1
 
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
     end
   end
 
@@ -146,7 +146,7 @@ describe API::Boards do
       put api("#{base_url}/#{test_list.id}", user),
         position: 1
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['position']).to eq(1)
     end
 
@@ -154,14 +154,14 @@ describe API::Boards do
       put api("#{base_url}/44444", user),
         position: 1
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     it "returns 403 for project members with guest role" do
       put api("#{base_url}/#{test_list.id}", guest),
         position: 1
 
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
     end
   end
 
@@ -171,19 +171,19 @@ describe API::Boards do
     it "rejects a non member from deleting a list" do
       delete api("#{base_url}/#{dev_list.id}", non_member)
 
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
     end
 
     it "rejects a user with guest role from deleting a list" do
       delete api("#{base_url}/#{dev_list.id}", guest)
 
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
     end
 
     it "returns 404 error if list id not found" do
       delete api("#{base_url}/44444", user)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     context "when the user is project owner" do
@@ -196,7 +196,7 @@ describe API::Boards do
       it "deletes the list if an admin requests it" do
         delete api("#{base_url}/#{dev_list.id}", owner)
 
-        expect(response).to have_http_status(204)
+        expect(response).to have_gitlab_http_status(204)
       end
 
       it_behaves_like '412 response' do

@@ -426,17 +426,22 @@ describe 'project routing' do
     end
   end
 
-  #     project_milestones GET    /:project_id/milestones(.:format)          milestones#index
-  #                        POST   /:project_id/milestones(.:format)          milestones#create
-  #  new_project_milestone GET    /:project_id/milestones/new(.:format)      milestones#new
-  # edit_project_milestone GET    /:project_id/milestones/:id/edit(.:format) milestones#edit
-  #      project_milestone GET    /:project_id/milestones/:id(.:format)      milestones#show
-  #                        PUT    /:project_id/milestones/:id(.:format)      milestones#update
-  #                        DELETE /:project_id/milestones/:id(.:format)      milestones#destroy
+  #     project_milestones    GET    /:project_id/milestones(.:format)          milestones#index
+  #                           POST   /:project_id/milestones(.:format)          milestones#create
+  #  new_project_milestone    GET    /:project_id/milestones/new(.:format)      milestones#new
+  # edit_project_milestone    GET    /:project_id/milestones/:id/edit(.:format) milestones#edit
+  #      project_milestone    GET    /:project_id/milestones/:id(.:format)      milestones#show
+  #                           PUT    /:project_id/milestones/:id(.:format)      milestones#update
+  #                           DELETE /:project_id/milestones/:id(.:format)      milestones#destroy
+  # promote_project_milestone POST /:project_id/milestones/:id/promote          milestones#promote
   describe Projects::MilestonesController, 'routing' do
     it_behaves_like 'RESTful project resources' do
       let(:controller) { 'milestones' }
       let(:actions) { [:index, :create, :new, :edit, :show, :update] }
+    end
+
+    it 'to #promote' do
+      expect(post('/gitlab/gitlabhq/milestones/1/promote')).to route_to('projects/milestones#promote', namespace_id: 'gitlab', project_id: 'gitlabhq', id: "1")
     end
   end
 

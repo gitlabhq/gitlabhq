@@ -1,6 +1,0 @@
----
-title: Replace the 'project/merge_requests/revert.feature' spinach test with an rspec
-  analog
-merge_request: 14201
-author: Vitaliy @blackst0ne Klachkov
-type: other

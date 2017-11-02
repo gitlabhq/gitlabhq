@@ -6,7 +6,7 @@ shared_examples_for 'allows the "read_user" scope' do
       it 'returns a "200" response' do
         get api_call.call(path, user, personal_access_token: token)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
     end
 
@@ -16,7 +16,7 @@ shared_examples_for 'allows the "read_user" scope' do
       it 'returns a "200" response' do
         get api_call.call(path, user, personal_access_token: token)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
     end
 
@@ -30,7 +30,7 @@ shared_examples_for 'allows the "read_user" scope' do
       it 'returns a "403" response' do
         get api_call.call(path, user, personal_access_token: token)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
   end
@@ -44,7 +44,7 @@ shared_examples_for 'allows the "read_user" scope' do
       it 'returns a "200" response' do
         get api_call.call(path, user, oauth_access_token: token)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
     end
 
@@ -54,7 +54,7 @@ shared_examples_for 'allows the "read_user" scope' do
       it 'returns a "200" response' do
         get api_call.call(path, user, oauth_access_token: token)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
     end
 
@@ -64,7 +64,7 @@ shared_examples_for 'allows the "read_user" scope' do
       it 'returns a "403" response' do
         get api_call.call(path, user, oauth_access_token: token)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
   end
@@ -77,7 +77,7 @@ shared_examples_for 'does not allow the "read_user" scope' do
     it 'returns a "403" response' do
       post api_call.call(path, user, personal_access_token: token), attributes_for(:user, projects_limit: 3)
 
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
     end
   end
 end

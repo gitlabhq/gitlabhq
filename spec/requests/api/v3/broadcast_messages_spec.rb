@@ -11,21 +11,21 @@ describe API::V3::BroadcastMessages do
       delete v3_api("/broadcast_messages/#{message.id}"),
         attributes_for(:broadcast_message)
 
-      expect(response).to have_http_status(401)
+      expect(response).to have_gitlab_http_status(401)
     end
 
     it 'returns a 403 for users' do
       delete v3_api("/broadcast_messages/#{message.id}", user),
         attributes_for(:broadcast_message)
 
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
     end
 
     it 'deletes the broadcast message for admins' do
       expect do
         delete v3_api("/broadcast_messages/#{message.id}", admin)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end.to change { BroadcastMessage.count }.by(-1)
     end
   end

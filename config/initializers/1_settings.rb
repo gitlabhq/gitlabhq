@@ -113,12 +113,14 @@ class Settings < Settingslogic
       URI.parse(url_without_path).host
     end
 
-    # Random cron time every Sunday to load balance usage pings
-    def cron_random_weekly_time
+    # Runs every minute in a random ten-minute period on Sundays, to balance the
+    # load on the server receiving these pings. The usage ping is safe to run
+    # multiple times because of a 24 hour exclusive lock.
+    def cron_for_usage_ping
       hour = rand(24)
-      minute = rand(60)
+      minute = rand(6)
 
-      "#{minute} #{hour} * * 0"
+      "#{minute}0-#{minute}9 #{hour} * * 0"
     end
   end
 end
@@ -398,7 +400,7 @@ Settings.cron_jobs['stuck_import_jobs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_import_jobs_worker']['cron'] ||= '15 * * * *'
 Settings.cron_jobs['stuck_import_jobs_worker']['job_class'] = 'StuckImportJobsWorker'
 Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.__send__(:cron_random_weekly_time)
+Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.__send__(:cron_for_usage_ping)
 Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
 
 Settings.cron_jobs['schedule_update_user_activity_worker'] ||= Settingslogic.new({})
@@ -453,17 +455,6 @@ Settings.repositories.storages.each do |key, storage|
 
   # Expand relative paths
   storage['path'] = Settings.absolute(storage['path'])
-  # Set failure defaults
-  storage['failure_count_threshold'] ||= 10
-  storage['failure_wait_time'] ||= 30
-  storage['failure_reset_time'] ||= 1800
-  storage['storage_timeout'] ||= 5
-  # Set turn strings into numbers
-  storage['failure_count_threshold'] = storage['failure_count_threshold'].to_i
-  storage['failure_wait_time'] = storage['failure_wait_time'].to_i
-  storage['failure_reset_time'] = storage['failure_reset_time'].to_i
-  # We might want to have a timeout shorter than 1 second.
-  storage['storage_timeout'] = storage['storage_timeout'].to_f
 
   Settings.repositories.storages[key] = storage
 end

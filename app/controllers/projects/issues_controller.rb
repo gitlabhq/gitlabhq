@@ -16,7 +16,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_create_issue!, only: [:new, :create]
 
   # Allow modify issue
-  before_action :authorize_update_issue!, only: [:update, :move]
+  before_action :authorize_update_issue!, only: [:edit, :update, :move]
 
   # Allow create a new branch and empty WIP merge request from current issue
   before_action :authorize_create_merge_request!, only: [:create_merge_request]
@@ -63,6 +63,10 @@ class Projects::IssuesController < Projects::ApplicationController
     respond_with(@issue)
   end
 
+  def edit
+    respond_with(@issue)
+  end
+
   def show
     @noteable = @issue
     @note     = @project.notes.new(noteable: @issue)
@@ -70,7 +74,7 @@ class Projects::IssuesController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json do
-        render json: serializer.represent(@issue)
+        render json: serializer.represent(@issue, serializer: params[:serializer])
       end
     end
   end
@@ -122,6 +126,10 @@ class Projects::IssuesController < Projects::ApplicationController
     @issue = Issues::UpdateService.new(project, current_user, update_params).execute(issue)
 
     respond_to do |format|
+      format.html do
+        recaptcha_check_with_fallback { render :edit }
+      end
+
       format.json do
         render_issue_json
       end

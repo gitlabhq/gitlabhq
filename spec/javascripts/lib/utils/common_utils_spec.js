@@ -467,15 +467,27 @@ describe('common_utils', () => {
       commonUtils.ajaxPost(requestURL, data);
       expect(ajaxSpy.calls.allArgs()[0][0].type).toEqual('POST');
     });
+  });
 
-    describe('gl.utils.spriteIcon', () => {
-      beforeEach(() => {
-        window.gon.sprite_icons = 'icons.svg';
-      });
+  describe('spriteIcon', () => {
+    let beforeGon;
 
-      it('should return the svg for a linked icon', () => {
-        expect(gl.utils.spriteIcon('test')).toEqual('<svg><use xlink:href="icons.svg#test" /></svg>');
-      });
+    beforeEach(() => {
+      window.gon = window.gon || {};
+      beforeGon = Object.assign({}, window.gon);
+      window.gon.sprite_icons = 'icons.svg';
+    });
+
+    afterEach(() => {
+      window.gon = beforeGon;
+    });
+
+    it('should return the svg for a linked icon', () => {
+      expect(commonUtils.spriteIcon('test')).toEqual('<svg ><use xlink:href="icons.svg#test" /></svg>');
+    });
+
+    it('should set svg className when passed', () => {
+      expect(commonUtils.spriteIcon('test', 'fa fa-test')).toEqual('<svg class="fa fa-test"><use xlink:href="icons.svg#test" /></svg>');
     });
   });
 });

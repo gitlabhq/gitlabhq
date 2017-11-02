@@ -56,6 +56,7 @@ Libraries with the following licenses are acceptable for use:
 - [ISC License][ISC] (also known as the OpenBSD License): A permissive (non-copyleft) license as defined by the Open Source Initiative.
 - [Creative Commons Zero (CC0)][CC0]: A public domain dedication, recommended as a way to disclaim copyright on your work to the maximum extent possible.
 - [Unlicense][UNLICENSE]: Another public domain dedication.
+- [OWFa 1.0][OWFa1]: An open-source license and patent grant designed for specifications.
 
 ## Unacceptable Licenses
 
@@ -105,6 +106,7 @@ Gems which are included only in the "development" or "test" groups by Bundler ar
 [OSL-GNU]: https://www.gnu.org/licenses/license-list.en.html#OSL
 [Org-Repo]: https://gitlab.com/gitlab-com/organization
 [UNLICENSE]: https://unlicense.org
+[OWFa1]: http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0
 [Facebook]: https://code.facebook.com/pages/850928938376556
 [x-list]: https://www.apache.org/legal/resolved.html#category-x
 [Acceptable-Licenses]: #acceptable-licenses

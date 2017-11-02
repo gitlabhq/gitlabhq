@@ -63,6 +63,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(issue.reload.updated_at.to_s).to eq('2016-06-14 15:02:47 UTC')
       end
 
+      it 'has issue assignees' do
+        expect(Issue.where(title: 'Voluptatem').first.issue_assignees).not_to be_empty
+      end
+
       it 'contains the merge access levels on a protected branch' do
         expect(ProtectedBranch.first.merge_access_levels).not_to be_empty
       end

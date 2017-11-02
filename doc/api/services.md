@@ -478,8 +478,8 @@ PUT /projects/:id/services/jira
 | --------- | ---- | -------- | ----------- |
 | `url`           | string | yes | The URL to the JIRA project which is being linked to this GitLab project, e.g., `https://jira.example.com`. |
 | `project_key`   | string | yes | The short identifier for your JIRA project, all uppercase, e.g., `PROJ`. |
-| `username`      | string | no  | The username of the user created to be used with GitLab/JIRA. |
-| `password`      | string | no  | The password of the user created to be used with GitLab/JIRA. |
+| `username`      | string | yes  | The username of the user created to be used with GitLab/JIRA. |
+| `password`      | string | yes  | The password of the user created to be used with GitLab/JIRA. |
 | `jira_issue_transition_id` | integer | no | The ID of a transition that moves issues to a closed state. You can find this number under the JIRA workflow administration (**Administration > Issues > Workflows**) by selecting **View** under **Operations** of the desired workflow of your project. The ID of each state can be found inside the parenthesis of each transition name under the **Transitions (id)** column ([see screenshot][trans]). By default, this ID is set to `2`. |
 
 ### Delete JIRA service
@@ -580,6 +580,40 @@ Delete Mattermost slash command service for a project.
 
 ```
 DELETE /projects/:id/services/mattermost-slash-commands
+```
+
+## Packagist
+
+Update your project on Packagist, the main Composer repository, when commits or tags are pushed to GitLab.
+
+### Create/Edit Packagist service
+
+Set Packagist service for a project.
+
+```
+PUT /projects/:id/services/packagist
+```
+
+Parameters:
+
+- `username` (**required**)
+- `token` (**required**)
+- `server` (optional)
+
+### Delete Packagist service
+
+Delete Packagist service for a project.
+
+```
+DELETE /projects/:id/services/packagist
+```
+
+### Get Packagist service settings
+
+Get Packagist service settings for a project.
+
+```
+GET /projects/:id/services/packagist
 ```
 
 ## Pipeline-Emails

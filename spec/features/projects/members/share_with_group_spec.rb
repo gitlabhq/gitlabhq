@@ -149,7 +149,7 @@ feature 'Project > Members > Share with Group', :js do
         create(:group).add_owner(master)
 
         visit project_settings_members_path(project)
-        execute_script 'GroupsSelect.PER_PAGE = 1;'
+        execute_script 'GROUP_SELECT_PER_PAGE = 1;'
         open_select2 '#link_group_id'
       end
 

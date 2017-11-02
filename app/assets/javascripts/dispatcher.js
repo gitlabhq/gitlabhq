@@ -1,18 +1,19 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
 /* global ProjectSelect */
-/* global IssuableIndex */
+import IssuableIndex from './issuable_index';
 /* global Milestone */
-/* global IssuableForm */
+import IssuableForm from './issuable_form';
 /* global LabelsSelect */
 /* global MilestoneSelect */
 /* global NewBranchForm */
 /* global NotificationsForm */
 /* global NotificationsDropdown */
-/* global GroupAvatar */
+import groupAvatar from './group_avatar';
+import GroupLabelSubscription from './group_label_subscription';
 /* global LineHighlighter */
 import BuildArtifacts from './build_artifacts';
 import CILintEditor from './ci_lint_editor';
-/* global GroupsSelect */
+import groupsSelect from './groups_select';
 /* global Search */
 /* global Admin */
 /* global NamespaceSelects */
@@ -73,6 +74,7 @@ import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
 import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
+import NewGroupChild from './groups/new_group_child';
 import AbuseReports from './abuse_reports';
 import { ajaxGet, convertPermissionToBoolean } from './lib/utils/common_utils';
 import AjaxLoadingSpinner from './ajax_loading_spinner';
@@ -85,6 +87,8 @@ import ShortcutsIssuable from './shortcuts_issuable';
 import U2FAuthenticate from './u2f/authenticate';
 import Members from './members';
 import memberExpirationDate from './member_expiration_date';
+import DueDateSelectors from './due_date_select';
+import Diff from './diff';
 
 (function() {
   var Dispatcher;
@@ -168,11 +172,8 @@ import memberExpirationDate from './member_expiration_date';
             const filteredSearchManager = new gl.FilteredSearchManager(page === 'projects:issues:index' ? 'issues' : 'merge_requests');
             filteredSearchManager.setup();
           }
-          if (page === 'projects:merge_requests:index') {
-            new UserCallout({ setCalloutPerProject: true });
-          }
           const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
-          IssuableIndex.init(pagePrefix);
+          new IssuableIndex(pagePrefix);
 
           shortcut_handler = new ShortcutsNavigation();
           new UsersSelect();
@@ -230,16 +231,21 @@ import memberExpirationDate from './member_expiration_date';
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
         case 'projects:milestones:update':
+          new ZenMode();
+          new DueDateSelectors();
+          new GLForm($('.milestone-form'), true);
+          break;
         case 'groups:milestones:new':
         case 'groups:milestones:edit':
         case 'groups:milestones:update':
           new ZenMode();
-          new gl.DueDateSelectors();
-          new GLForm($('.milestone-form'), true);
+          new DueDateSelectors();
+          new GLForm($('.milestone-form'), false);
           break;
         case 'projects:compare:show':
-          new gl.Diff();
-          initChangesDropdown();
+          new Diff();
+          const paddingTop = 16;
+          initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - paddingTop);
           break;
         case 'projects:branches:new':
         case 'projects:branches:create':
@@ -274,7 +280,7 @@ import memberExpirationDate from './member_expiration_date';
           }
         case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
-          new gl.Diff();
+          new Diff();
           shortcut_handler = new ShortcutsNavigation();
           new GLForm($('.merge-request-form'), true);
           new IssuableForm($('.merge-request-form'));
@@ -308,7 +314,7 @@ import memberExpirationDate from './member_expiration_date';
           new GLForm($('.release-form'), true);
           break;
         case 'projects:merge_requests:show':
-          new gl.Diff();
+          new Diff();
           shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
 
@@ -324,7 +330,7 @@ import memberExpirationDate from './member_expiration_date';
           new gl.Activities();
           break;
         case 'projects:commit:show':
-          new gl.Diff();
+          new Diff();
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
           new MiniPipelineGraph({
@@ -352,7 +358,10 @@ import memberExpirationDate from './member_expiration_date';
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
-          new UserCallout({ setCalloutPerProject: true });
+          new UserCallout({
+            setCalloutPerProject: true,
+            className: 'js-autodevops-banner',
+          });
 
           if ($('#tree-slider').length) new TreeView();
           if ($('.blob-viewer').length) new BlobViewer();
@@ -371,9 +380,6 @@ import memberExpirationDate from './member_expiration_date';
           break;
         case 'projects:pipelines:new':
           new NewBranchForm($('.js-new-pipeline-form'));
-          break;
-        case 'projects:pipelines:index':
-          new UserCallout({ setCalloutPerProject: true });
           break;
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
@@ -395,10 +401,15 @@ import memberExpirationDate from './member_expiration_date';
           new gl.Activities();
           break;
         case 'groups:show':
+          const newGroupChildWrapper = document.querySelector('.js-new-project-subgroup');
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
           new NotificationsDropdown();
           new ProjectsList();
+
+          if (newGroupChildWrapper) {
+            new NewGroupChild(newGroupChildWrapper);
+          }
           break;
         case 'groups:group_members:index':
           memberExpirationDate();
@@ -407,7 +418,7 @@ import memberExpirationDate from './member_expiration_date';
           break;
         case 'projects:project_members:index':
           memberExpirationDate('.js-access-expiration-date-groups');
-          new GroupsSelect();
+          groupsSelect();
           memberExpirationDate();
           new Members();
           new UsersSelect();
@@ -418,11 +429,11 @@ import memberExpirationDate from './member_expiration_date';
         case 'admin:groups:create':
           BindInOut.initAll();
           new Group();
-          new GroupAvatar();
+          groupAvatar();
           break;
         case 'groups:edit':
         case 'admin:groups:edit':
-          new GroupAvatar();
+          groupAvatar();
           break;
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
@@ -432,7 +443,6 @@ import memberExpirationDate from './member_expiration_date';
           new TreeView();
           new BlobViewer();
           new NewCommitForm($('.js-create-dir-form'));
-          new UserCallout({ setCalloutPerProject: true });
           $('#tree-slider').waitForImages(function() {
             ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
           });
@@ -470,7 +480,7 @@ import memberExpirationDate from './member_expiration_date';
             const $el = $(el);
 
             if ($el.find('.dropdown-group-label').length) {
-              new gl.GroupLabelSubscription($el);
+              new GroupLabelSubscription($el);
             } else {
               new gl.ProjectLabelSubscription($el);
             }
@@ -530,7 +540,7 @@ import memberExpirationDate from './member_expiration_date';
           break;
         case 'profiles:personal_access_tokens:index':
         case 'admin:impersonation_tokens:index':
-          new gl.DueDateSelectors();
+          new DueDateSelectors();
           break;
         case 'projects:clusters:show':
           import(/* webpackChunkName: "clusters" */ './clusters')

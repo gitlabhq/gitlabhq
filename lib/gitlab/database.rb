@@ -4,6 +4,10 @@ module Gitlab
     # https://www.postgresql.org/docs/9.2/static/datatype-numeric.html
     # http://dev.mysql.com/doc/refman/5.7/en/integer-types.html
     MAX_INT_VALUE = 2147483647
+    # The max value between MySQL's TIMESTAMP and PostgreSQL's timestampz:
+    # https://www.postgresql.org/docs/9.1/static/datatype-datetime.html
+    # https://dev.mysql.com/doc/refman/5.7/en/datetime.html
+    MAX_TIMESTAMP_VALUE = Time.at((1 << 31) - 1).freeze
 
     def self.config
       ActiveRecord::Base.configurations[Rails.env]
@@ -118,6 +122,10 @@ module Gitlab
         INSERT INTO #{table} (#{columns.join(', ')})
         VALUES #{tuples.map { |tuple| "(#{tuple.join(', ')})" }.join(', ')}
       EOF
+    end
+
+    def self.sanitize_timestamp(timestamp)
+      MAX_TIMESTAMP_VALUE > timestamp ? timestamp : MAX_TIMESTAMP_VALUE.dup
     end
 
     # pool_size - The size of the DB pool.

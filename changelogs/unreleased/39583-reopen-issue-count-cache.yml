@@ -1,0 +1,5 @@
+---
+title: Refresh open Issue and Merge Request project counter caches when re-opening.
+merge_request: 15085
+author: Rob Ede @robjtede
+type: fixed

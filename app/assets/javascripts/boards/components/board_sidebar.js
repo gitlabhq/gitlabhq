@@ -1,5 +1,4 @@
 /* eslint-disable comma-dangle, space-before-function-paren, no-new */
-/* global IssuableContext */
 /* global MilestoneSelect */
 /* global LabelsSelect */
 /* global Sidebar */
@@ -9,7 +8,9 @@ import Flash from '../../flash';
 import eventHub from '../../sidebar/event_hub';
 import AssigneeTitle from '../../sidebar/components/assignees/assignee_title';
 import Assignees from '../../sidebar/components/assignees/assignees';
+import DueDateSelectors from '../../due_date_select';
 import './sidebar/remove_issue';
+import IssuableContext from '../../issuable_context';
 
 const Store = gl.issueBoards.BoardsStore;
 
@@ -113,7 +114,7 @@ gl.issueBoards.BoardSidebar = Vue.extend({
   mounted () {
     new IssuableContext(this.currentUser);
     new MilestoneSelect();
-    new gl.DueDateSelectors();
+    new DueDateSelectors();
     new LabelsSelect();
     new Sidebar();
     gl.Subscription.bindAll('.subscription');

@@ -33,15 +33,17 @@ module IssuablesHelper
   end
 
   def serialize_issuable(issuable)
-    case issuable
-    when Issue
-      IssueSerializer.new(current_user: current_user, project: issuable.project).represent(issuable).to_json
-    when MergeRequest
-      MergeRequestSerializer
-        .new(current_user: current_user, project: issuable.project)
-        .represent(issuable)
-        .to_json
-    end
+    serializer_klass = case issuable
+                       when Issue
+                         IssueSerializer
+                       when MergeRequest
+                         MergeRequestSerializer
+                       end
+
+    serializer_klass
+      .new(current_user: current_user, project: issuable.project)
+      .represent(issuable)
+      .to_json
   end
 
   def template_dropdown_tag(issuable, &block)
@@ -357,7 +359,8 @@ module IssuablesHelper
 
   def issuable_sidebar_options(issuable, can_edit_issuable)
     {
-      endpoint: "#{issuable_json_path(issuable)}?basic=true",
+      endpoint: "#{issuable_json_path(issuable)}?serializer=sidebar",
+      toggleSubscriptionEndpoint: toggle_subscription_path(issuable),
       moveIssueEndpoint: move_namespace_project_issue_path(namespace_id: issuable.project.namespace.to_param, project_id: issuable.project, id: issuable),
       projectsAutocompleteEndpoint: autocomplete_projects_path(project_id: @project.id),
       editable: can_edit_issuable,

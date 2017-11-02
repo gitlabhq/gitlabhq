@@ -58,7 +58,7 @@ describe 'Profile > Password' do
 
         visit edit_profile_password_path
 
-        expect(page).to have_http_status(200)
+        expect(page).to have_gitlab_http_status(200)
       end
     end
 
@@ -68,7 +68,7 @@ describe 'Profile > Password' do
       it 'renders 404' do
         visit edit_profile_password_path
 
-        expect(page).to have_http_status(404)
+        expect(page).to have_gitlab_http_status(404)
       end
     end
   end

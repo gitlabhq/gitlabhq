@@ -26,7 +26,7 @@ describe Projects::PagesDomainsController do
     it "displays the 'show' page" do
       get(:show, request_params.merge(id: pages_domain.domain))
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(response).to render_template('show')
     end
   end
@@ -35,7 +35,7 @@ describe Projects::PagesDomainsController do
     it "displays the 'new' page" do
       get(:new, request_params)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(response).to render_template('new')
     end
   end
@@ -69,7 +69,7 @@ describe Projects::PagesDomainsController do
       it 'returns 404 status' do
         get(:show, request_params.merge(id: pages_domain.domain))
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -77,7 +77,7 @@ describe Projects::PagesDomainsController do
       it 'returns 404 status' do
         get :new, request_params
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -85,7 +85,7 @@ describe Projects::PagesDomainsController do
       it "returns 404 status" do
         post(:create, request_params.merge(pages_domain: pages_domain_params))
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -93,7 +93,7 @@ describe Projects::PagesDomainsController do
       it "deletes the pages domain" do
         delete(:destroy, request_params.merge(id: pages_domain.domain))
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end

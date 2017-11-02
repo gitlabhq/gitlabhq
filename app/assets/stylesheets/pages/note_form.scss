@@ -249,13 +249,12 @@
       width: 100%;
       padding-right: 5px;
     }
-
   }
 
   .discussion-actions {
     display: table;
 
-    .new-issue-for-discussion path {
+    .btn-default path {
       fill: $gray-darkest;
     }
 

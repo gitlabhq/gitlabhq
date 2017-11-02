@@ -25,7 +25,7 @@ feature 'Issue Detail', :js do
       wait_for_requests
 
       click_link 'Edit'
-      fill_in 'issue-title', with: 'issue title'
+      fill_in 'issuable-title', with: 'issue title'
       click_button 'Save'
 
       Users::DestroyService.new(user).execute(user)

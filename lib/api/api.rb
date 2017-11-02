@@ -4,6 +4,10 @@ module API
 
     LOG_FILENAME = Rails.root.join("log", "api_json.log")
 
+    NO_SLASH_URL_PART_REGEX = %r{[^/]+}
+    PROJECT_ENDPOINT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
+    COMMIT_ENDPOINT_REQUIREMENTS = PROJECT_ENDPOINT_REQUIREMENTS.merge(sha: NO_SLASH_URL_PART_REGEX).freeze
+
     use GrapeLogging::Middleware::RequestLogger,
         logger: Logger.new(LOG_FILENAME),
         formatter: Gitlab::GrapeLogging::Formatters::LogrageWithTimestamp.new,
@@ -96,9 +100,6 @@ module API
     helpers ::API::Helpers
     helpers ::API::Helpers::CommonHelpers
 
-    NO_SLASH_URL_PART_REGEX = %r{[^/]+}
-    PROJECT_ENDPOINT_REQUIREMENTS = { id: NO_SLASH_URL_PART_REGEX }.freeze
-
     # Keep in alphabetical order
     mount ::API::AccessRequests
     mount ::API::AwardEmoji
@@ -130,6 +131,7 @@ module API
     mount ::API::Namespaces
     mount ::API::Notes
     mount ::API::NotificationSettings
+    mount ::API::PagesDomains
     mount ::API::Pipelines
     mount ::API::PipelineSchedules
     mount ::API::ProjectHooks
