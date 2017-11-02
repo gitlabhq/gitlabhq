@@ -71,9 +71,14 @@ feature 'Protected Branches', :js do
         within form do
           find(".js-allowed-to-merge").click
           click_link 'No one'
+        end
+        find('body').click
+
+        within form do
           find(".js-allowed-to-push").click
           click_link 'Developers + Masters'
         end
+        find('body').click
 
         visit project_protected_branches_path(project)
 
