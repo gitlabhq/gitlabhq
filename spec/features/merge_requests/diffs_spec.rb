@@ -10,7 +10,9 @@ feature 'Diffs URL', :js do
     it 'renders the notes' do
       create :note_on_merge_request, project: project, noteable: merge_request, note: 'Rebasing with master'
 
-      visit diffs_project_merge_request_path(project, merge_request)
+      inspect_requests(inject_headers: { 'Accept' => '*/*' }) do
+        visit diffs_project_merge_request_path(project, merge_request)
+      end
 
       # Load notes and diff through AJAX
       expect(page).to have_css('.note-text', visible: false, text: 'Rebasing with master')
