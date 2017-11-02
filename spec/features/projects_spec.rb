@@ -14,9 +14,7 @@ feature 'Project' do
 
     it "allows creation from templates", :js do
       find('#create-from-template-tab').click
-      page.execute_script(
-        "document.querySelector('##{template.name}').click()"
-      )
+      find("label[for=#{template.name}]").click
       fill_in("project_path", with: template.name)
 
       page.within '#content-body' do
