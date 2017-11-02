@@ -2,40 +2,35 @@ module Gitlab
   class BareRepositoryImporter
     NoAdminError = Class.new(StandardError)
 
-    def self.execute
-      Gitlab.config.repositories.storages.each do |storage_name, repository_storage|
-        git_base_path = repository_storage['path']
-        repos_to_import = Dir.glob(git_base_path + '/**/*.git')
+    def self.execute(import_path)
+      import_path << '/' unless import_path.ends_with?('/')
+      repos_to_import = Dir.glob(import_path + '/**/*.git')
 
-        repos_to_import.each do |repo_path|
-          if repo_path.end_with?('.wiki.git')
-            log " * Skipping wiki repo"
-            next
-          end
-
-          log "Processing #{repo_path}".color(:yellow)
-
-          repo_relative_path = repo_path[repository_storage['path'].length..-1]
-                                 .sub(/^\//, '') # Remove leading `/`
-                                 .sub(/\.git$/, '') # Remove `.git` at the end
-          new(storage_name, repo_relative_path).create_project_if_needed
+      repos_to_import.each do |repo_path|
+        if repo_path.end_with?('.wiki.git')
+          log " * Skipping wiki repo"
+          next
         end
+
+        log "Processing #{repo_path}".color(:yellow)
+
+        repo_relative_path = repo_path.sub(/\A#{import_path}\//, '').sub(/\.git$/, '') # Remove root path and `.git` at the end
+        new(repo_relative_path).create_project_if_needed
       end
     end
 
-    attr_reader :storage_name, :full_path, :group_path, :project_path, :user
+    attr_reader :storage_name, :full_path, :group_path, :user, :project_name
     delegate :log, to: :class
 
-    def initialize(storage_name, repo_path)
-      @storage_name = storage_name
-      @full_path = repo_path
-
+    def initialize(repo_path)
       unless @user = User.admins.order_id_asc.first
         raise NoAdminError.new('No admin user found to import repositories')
       end
 
-      @group_path, @project_path = File.split(repo_path)
-      @group_path = nil if @group_path == '.'
+      @full_path = repo_path
+
+      # Split path into 'all/the/namespaces' and 'project_name'
+      @group_path, _sep, @project_name = @full_path.rpartition('/')
     end
 
     def create_project_if_needed
@@ -50,17 +45,12 @@ module Gitlab
     private
 
     def create_project
-      group = find_or_create_group
+      group = find_or_create_groups
 
-      project_params = {
-        name: project_path,
-        path: project_path,
-        repository_storage: storage_name,
-        namespace_id: group&.id,
-        skip_disk_validation: true
-      }
-
-      project = Projects::CreateService.new(user, project_params).execute
+      project = Projects::CreateService.new(user,
+                                            name: project_name,
+                                            path: full_path,
+                                            namespace_id: group&.id).execute
 
       if project.persisted?
         log " * Created #{project.name} (#{full_path})".color(:green)
@@ -73,15 +63,11 @@ module Gitlab
       project
     end
 
-    def find_or_create_group
-      return nil unless group_path
+    def find_or_create_groups
+      return nil unless group_path.present?
 
-      if namespace = Namespace.find_by_full_path(group_path)
-        log " * Namespace #{group_path} exists.".color(:green)
-        return namespace
-      end
+      log " * Using namespace: #{group_path}"
 
-      log " * Creating Group: #{group_path}"
       Groups::NestedCreateService.new(user, group_path: group_path).execute
     end
 
