@@ -49,17 +49,17 @@ module Gitlab
       private
 
       def env_http_headers(env)
-        Hash[*env.select {|k, v| k.start_with? 'HTTP_'}
-          .collect {|k, v| [k.sub(/^HTTP_/, ''), v]}
-          .collect {|k, v| [k.split('_').collect(&:capitalize).join('-'), v]}
+        Hash[*env.select { |k, v| k.start_with? 'HTTP_' }
+          .collect { |k, v| [k.sub(/^HTTP_/, ''), v] }
+          .collect { |k, v| [k.split('_').collect(&:capitalize).join('-'), v] }
           .sort
           .flatten]
       end
 
       def http_headers_env(headers)
         Hash[*headers
-          .collect {|k, v| [k.split('-').collect(&:upcase).join('_'), v]}
-          .collect {|k, v| [k.prepend('HTTP_'), v]}
+          .collect { |k, v| [k.split('-').collect(&:upcase).join('_'), v] }
+          .collect { |k, v| [k.prepend('HTTP_'), v] }
           .flatten]
       end
 
