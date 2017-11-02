@@ -1163,6 +1163,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   describe "#ls_files" do
     let(:master_file_paths) { repository.ls_files("master") }
+    let(:utf8_file_paths) { repository.ls_files("ls-files-utf8") }
     let(:not_existed_branch) { repository.ls_files("not_existed_branch") }
 
     it "read every file paths of master branch" do
@@ -1183,6 +1184,10 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     it "returns empty array when not existed branch" do
       expect(not_existed_branch.length).to equal(0)
+    end
+
+    it "returns valid utf-8 data" do
+      expect(utf8_file_paths.map { |file| file.force_encoding('utf-8') }).to all(be_valid_encoding)
     end
   end
 
