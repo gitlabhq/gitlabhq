@@ -1,0 +1,31 @@
+.row
+  .col-sm-8.col-sm-offset-4
+    %p
+      - link_to_help_page = link_to(s_('ClusterIntegration|help page'), help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
+      = s_('ClusterIntegration|Read our %{link_to_help_page} on cluster integration.').html_safe % { link_to_help_page: link_to_help_page}
+
+      = form_for @cluster, url: platforms_kubernetes_namespace_project_clusters_path(@project.namespace, @project), as: :cluster do |field|
+        = form_errors(@cluster)
+        .form-group
+          = field.label :name, s_('ClusterIntegration|Cluster name')
+          = field.text_field :name, class: 'form-control'
+
+        = field.fields_for :platform_kubernetes, @cluster.platform_kubernetes do |platform_kubernetes_field|
+          .form-group
+          = platform_kubernetes_field.label :api_url, s_('ClusterIntegration|API URL')
+          = platform_kubernetes_field.text_field :api_url, class: 'form-control'
+
+          .form-group
+          = platform_kubernetes_field.label :token, s_('ClusterIntegration|Token')
+          = platform_kubernetes_field.text_field :token, class: 'form-control'
+
+          .form-group
+          = platform_kubernetes_field.label :ca_cert, s_('ClusterIntegration|Token')
+          = platform_kubernetes_field.text_field :ca_cert, class: 'form-control'
+
+          .form-group
+          = platform_kubernetes_field.label :namespace, s_('ClusterIntegration|Project namespace (optional, unique)')
+          = platform_kubernetes_field.text_field :namespace, class: 'form-control', placeholder: Clusters::Platforms::Kubernetes.namespace_for_project(@project)
+
+        .form-group
+          = field.submit s_('ClusterIntegration|Create cluster'), class: 'btn btn-save'

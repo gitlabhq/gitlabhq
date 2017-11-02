@@ -28,6 +28,8 @@ module Clusters
     validates :name, cluster_name: true
     validate :restrict_modification, on: :update
 
+    validates_associated :provider_gcp, :platform_kubernetes
+
     delegate :status, to: :provider, allow_nil: true
     delegate :status_reason, to: :provider, allow_nil: true
     delegate :on_creation?, to: :provider, allow_nil: true
@@ -68,6 +70,10 @@ module Clusters
 
     def platform
       return platform_kubernetes if kubernetes?
+    end
+
+    def managed?
+      !user?
     end
 
     def first_project
