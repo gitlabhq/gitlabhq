@@ -37,6 +37,31 @@ module Gitlab
         end
       end
 
+      def update_page(page_path, title, format, content, commit_details)
+        request = Gitaly::WikiUpdatePageRequest.new(
+          repository: @gitaly_repo,
+          page_path: GitalyClient.encode(page_path),
+          title: GitalyClient.encode(title),
+          format: format.to_s,
+          commit_details: gitaly_commit_details(commit_details)
+        )
+
+        strio = StringIO.new(content)
+
+        enum = Enumerator.new do |y|
+          until strio.eof?
+            chunk = strio.read(MAX_MSG_SIZE)
+            request.content = GitalyClient.encode(chunk)
+
+            y.yield request
+
+            request = Gitaly::WikiUpdatePageRequest.new
+          end
+        end
+
+        GitalyClient.call(@repository.storage, :wiki_service, :wiki_update_page, enum)
+      end
+
       def delete_page(page_path, commit_details)
         request = Gitaly::WikiDeletePageRequest.new(
           repository: @gitaly_repo,
