@@ -127,8 +127,8 @@ describe API::Users do
     context "when admin" do
       context 'when sudo is defined' do
         it 'does not return 500' do
-          admin_personal_access_token = create(:personal_access_token, user: admin).token
-          get api("/users?private_token=#{admin_personal_access_token}&sudo=#{user.id}", admin)
+          admin_personal_access_token = create(:personal_access_token, user: admin, scopes: [:sudo])
+          get api("/users?sudo=#{user.id}", admin, personal_access_token: admin_personal_access_token)
 
           expect(response).to have_gitlab_http_status(:success)
         end
@@ -1097,14 +1097,6 @@ describe API::Users do
         end
       end
 
-      context 'with private token' do
-        it 'returns 403 without private token when sudo defined' do
-          get api("/user?private_token=#{user.private_token}&sudo=123")
-
-          expect(response).to have_gitlab_http_status(403)
-        end
-      end
-
       it 'returns current user without private token when sudo not defined' do
         get api("/user", user)
 
@@ -1133,24 +1125,6 @@ describe API::Users do
 
         it 'returns initial current user without private token but with is_admin when sudo not defined' do
           get api("/user?private_token=#{admin_personal_access_token}")
-
-          expect(response).to have_gitlab_http_status(200)
-          expect(response).to match_response_schema('public_api/v4/user/admin')
-          expect(json_response['id']).to eq(admin.id)
-        end
-      end
-
-      context 'with private token' do
-        it 'returns sudoed user with private token when sudo defined' do
-          get api("/user?private_token=#{admin.private_token}&sudo=#{user.id}")
-
-          expect(response).to have_gitlab_http_status(200)
-          expect(response).to match_response_schema('public_api/v4/user/login')
-          expect(json_response['id']).to eq(user.id)
-        end
-
-        it 'returns initial current user without private token but with is_admin when sudo not defined' do
-          get api("/user?private_token=#{admin.private_token}")
 
           expect(response).to have_gitlab_http_status(200)
           expect(response).to match_response_schema('public_api/v4/user/admin')

@@ -27,6 +27,8 @@ export default {
       'changeFileContent',
     ]),
     initMonaco() {
+      if (this.shouldHideEditor) return;
+
       if (this.monacoInstance) {
         this.monacoInstance.setModel(null);
       }
@@ -94,8 +96,12 @@ export default {
 <template>
   <div
     id="ide"
-    v-if='!shouldHideEditor'
     class="blob-viewer-container blob-editor-container"
   >
+    <div
+      v-if="shouldHideEditor"
+      v-html="activeFile.html"
+    >
+    </div>
   </div>
 </template>

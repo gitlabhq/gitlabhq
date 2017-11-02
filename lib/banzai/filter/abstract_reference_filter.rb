@@ -95,7 +95,7 @@ module Banzai
       end
 
       def call
-        return doc if project.nil?
+        return doc unless project || group
 
         ref_pattern = object_class.reference_pattern
         link_pattern = object_class.link_reference_pattern
@@ -288,10 +288,14 @@ module Banzai
       end
 
       def current_project_path
+        return unless project
+
         @current_project_path ||= project.full_path
       end
 
       def current_project_namespace_path
+        return unless project
+
         @current_project_namespace_path ||= project.namespace.full_path
       end
 

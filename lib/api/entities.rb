@@ -57,10 +57,6 @@ module API
       expose :admin?, as: :is_admin
     end
 
-    class UserWithPrivateDetails < UserWithAdmin
-      expose :private_token
-    end
-
     class Email < Grape::Entity
       expose :id, :email
     end

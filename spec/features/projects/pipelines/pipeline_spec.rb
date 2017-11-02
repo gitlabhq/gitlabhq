@@ -67,7 +67,7 @@ describe 'Pipeline', :js do
         it 'shows a running icon and a cancel action for the running build' do
           page.within('#ci-badge-deploy') do
             expect(page).to have_selector('.js-ci-status-icon-running')
-            expect(page).to have_selector('.js-icon-action-cancel')
+            expect(page).to have_selector('.js-icon-cancel')
             expect(page).to have_content('deploy')
           end
         end
@@ -86,8 +86,8 @@ describe 'Pipeline', :js do
             expect(page).to have_content('build')
           end
 
-          page.within('#ci-badge-build .ci-action-icon-container') do
-            expect(page).to have_selector('.js-icon-action-retry')
+          page.within('#ci-badge-build .ci-action-icon-container.js-icon-retry') do
+            expect(page).to have_selector('svg')
           end
         end
 
@@ -105,8 +105,8 @@ describe 'Pipeline', :js do
             expect(page).to have_content('test')
           end
 
-          page.within('#ci-badge-test .ci-action-icon-container') do
-            expect(page).to have_selector('.js-icon-action-retry')
+          page.within('#ci-badge-test .ci-action-icon-container.js-icon-retry') do
+            expect(page).to have_selector('svg')
           end
         end
 
@@ -124,8 +124,8 @@ describe 'Pipeline', :js do
             expect(page).to have_content('manual')
           end
 
-          page.within('#ci-badge-manual-build .ci-action-icon-container') do
-            expect(page).to have_selector('.js-icon-action-play')
+          page.within('#ci-badge-manual-build .ci-action-icon-container.js-icon-play') do
+            expect(page).to have_selector('svg')
           end
         end
 

@@ -52,6 +52,7 @@ RSpec.configure do |config|
   config.include InputHelper, :js
   config.include InspectRequests, :js
   config.include WaitForRequests, :js
+  config.include LiveDebugger, :js
   config.include StubConfiguration
   config.include EmailHelpers, :mailer, type: :mailer
   config.include TestEnv

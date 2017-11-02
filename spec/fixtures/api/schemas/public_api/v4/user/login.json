@@ -27,11 +27,9 @@
     "can_create_group",
     "can_create_project",
     "two_factor_enabled",
-    "external",
-    "private_token"
+    "external"
   ],
   "properties": {
-    "$ref": "full.json",
-    "private_token": { "type": "string" }
+    "$ref": "full.json"
   }
 }

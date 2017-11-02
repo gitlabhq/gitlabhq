@@ -28,37 +28,9 @@ describe API::Helpers do
     allow_any_instance_of(self.class).to receive(:options).and_return({})
   end
 
-  def set_env(user_or_token, identifier)
-    clear_env
-    clear_param
-    env[API::APIGuard::PRIVATE_TOKEN_HEADER] = user_or_token.respond_to?(:private_token) ? user_or_token.private_token : user_or_token
-    env[API::Helpers::SUDO_HEADER] = identifier.to_s
-  end
-
-  def set_param(user_or_token, identifier)
-    clear_env
-    clear_param
-    params[API::APIGuard::PRIVATE_TOKEN_PARAM] = user_or_token.respond_to?(:private_token) ? user_or_token.private_token : user_or_token
-    params[API::Helpers::SUDO_PARAM] = identifier.to_s
-  end
-
-  def clear_env
-    env.delete(API::APIGuard::PRIVATE_TOKEN_HEADER)
-    env.delete(API::Helpers::SUDO_HEADER)
-  end
-
-  def clear_param
-    params.delete(API::APIGuard::PRIVATE_TOKEN_PARAM)
-    params.delete(API::Helpers::SUDO_PARAM)
-  end
-
   def warden_authenticate_returns(value)
     warden = double("warden", authenticate: value)
     env['warden'] = warden
-  end
-
-  def doorkeeper_guard_returns(value)
-    allow_any_instance_of(self.class).to receive(:doorkeeper_guard) { value }
   end
 
   def error!(message, status, header)
@@ -69,10 +41,6 @@ describe API::Helpers do
     subject { current_user }
 
     describe "Warden authentication", :allow_forgery_protection do
-      before do
-        doorkeeper_guard_returns false
-      end
-
       context "with invalid credentials" do
         context "GET request" do
           before do
@@ -160,74 +128,31 @@ describe API::Helpers do
       end
     end
 
-    describe "when authenticating using a user's private token" do
-      it "returns a 401 response for an invalid token" do
-        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = 'invalid token'
-        allow_any_instance_of(self.class).to receive(:doorkeeper_guard) { false }
-
-        expect { current_user }.to raise_error /401/
-      end
-
-      it "returns a 401 response for a user without access" do
-        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = user.private_token
-        allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
-
-        expect { current_user }.to raise_error /401/
-      end
-
-      it 'returns a 401 response for a user who is blocked' do
-        user.block!
-        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = user.private_token
-
-        expect { current_user }.to raise_error /401/
-      end
-
-      it "leaves user as is when sudo not specified" do
-        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = user.private_token
-
-        expect(current_user).to eq(user)
-
-        clear_env
-
-        params[API::APIGuard::PRIVATE_TOKEN_PARAM] = user.private_token
-
-        expect(current_user).to eq(user)
-      end
-    end
-
     describe "when authenticating using a user's personal access tokens" do
       let(:personal_access_token) { create(:personal_access_token, user: user) }
 
-      before do
-        allow_any_instance_of(self.class).to receive(:doorkeeper_guard) { false }
-      end
-
       it "returns a 401 response for an invalid token" do
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = 'invalid token'
 
         expect { current_user }.to raise_error /401/
       end
 
-      it "returns a 401 response for a user without access" do
+      it "returns a 403 response for a user without access" do
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
 
-        expect { current_user }.to raise_error /401/
+        expect { current_user }.to raise_error /403/
       end
 
-      it 'returns a 401 response for a user who is blocked' do
+      it 'returns a 403 response for a user who is blocked' do
         user.block!
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
-        expect { current_user }.to raise_error /401/
+        expect { current_user }.to raise_error /403/
       end
 
-      it "leaves user as is when sudo not specified" do
+      it "sets current_user" do
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
-        expect(current_user).to eq(user)
-        clear_env
-        params[API::APIGuard::PRIVATE_TOKEN_PARAM] = personal_access_token.token
-
         expect(current_user).to eq(user)
       end
 
@@ -250,210 +175,6 @@ describe API::Helpers do
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
         expect { current_user }.to raise_error API::APIGuard::ExpiredError
-      end
-    end
-
-    context 'sudo usage' do
-      context 'with admin' do
-        context 'with header' do
-          context 'with id' do
-            it 'changes current_user to sudo' do
-              set_env(admin, user.id)
-
-              expect(current_user).to eq(user)
-            end
-
-            it 'memoize the current_user: sudo permissions are not run against the sudoed user' do
-              set_env(admin, user.id)
-
-              expect(current_user).to eq(user)
-              expect(current_user).to eq(user)
-            end
-
-            it 'handles sudo to oneself' do
-              set_env(admin, admin.id)
-
-              expect(current_user).to eq(admin)
-            end
-
-            it 'throws an error when user cannot be found' do
-              id = user.id + admin.id
-              expect(user.id).not_to eq(id)
-              expect(admin.id).not_to eq(id)
-
-              set_env(admin, id)
-
-              expect { current_user }.to raise_error(Exception)
-            end
-          end
-
-          context 'with username' do
-            it 'changes current_user to sudo' do
-              set_env(admin, user.username)
-
-              expect(current_user).to eq(user)
-            end
-
-            it 'handles sudo to oneself' do
-              set_env(admin, admin.username)
-
-              expect(current_user).to eq(admin)
-            end
-
-            it "throws an error when the user cannot be found for a given username" do
-              username = "#{user.username}#{admin.username}"
-              expect(user.username).not_to eq(username)
-              expect(admin.username).not_to eq(username)
-
-              set_env(admin, username)
-
-              expect { current_user }.to raise_error(Exception)
-            end
-          end
-        end
-
-        context 'with param' do
-          context 'with id' do
-            it 'changes current_user to sudo' do
-              set_param(admin, user.id)
-
-              expect(current_user).to eq(user)
-            end
-
-            it 'handles sudo to oneself' do
-              set_param(admin, admin.id)
-
-              expect(current_user).to eq(admin)
-            end
-
-            it 'handles sudo to oneself using string' do
-              set_env(admin, user.id.to_s)
-
-              expect(current_user).to eq(user)
-            end
-
-            it 'throws an error when user cannot be found' do
-              id = user.id + admin.id
-              expect(user.id).not_to eq(id)
-              expect(admin.id).not_to eq(id)
-
-              set_param(admin, id)
-
-              expect { current_user }.to raise_error(Exception)
-            end
-          end
-
-          context 'with username' do
-            it 'changes current_user to sudo' do
-              set_param(admin, user.username)
-
-              expect(current_user).to eq(user)
-            end
-
-            it 'handles sudo to oneself' do
-              set_param(admin, admin.username)
-
-              expect(current_user).to eq(admin)
-            end
-
-            it "throws an error when the user cannot be found for a given username" do
-              username = "#{user.username}#{admin.username}"
-              expect(user.username).not_to eq(username)
-              expect(admin.username).not_to eq(username)
-
-              set_param(admin, username)
-
-              expect { current_user }.to raise_error(Exception)
-            end
-          end
-        end
-
-        context 'when user is blocked' do
-          before do
-            user.block!
-          end
-
-          it 'changes current_user to sudo' do
-            set_env(admin, user.id)
-
-            expect(current_user).to eq(user)
-          end
-        end
-      end
-
-      context 'with regular user' do
-        context 'with env' do
-          it 'changes current_user to sudo when admin and user id' do
-            set_env(user, admin.id)
-
-            expect { current_user }.to raise_error(Exception)
-          end
-
-          it 'changes current_user to sudo when admin and user username' do
-            set_env(user, admin.username)
-
-            expect { current_user }.to raise_error(Exception)
-          end
-        end
-
-        context 'with params' do
-          it 'changes current_user to sudo when admin and user id' do
-            set_param(user, admin.id)
-
-            expect { current_user }.to raise_error(Exception)
-          end
-
-          it 'changes current_user to sudo when admin and user username' do
-            set_param(user, admin.username)
-
-            expect { current_user }.to raise_error(Exception)
-          end
-        end
-      end
-    end
-  end
-
-  describe '.sudo?' do
-    context 'when no sudo env or param is passed' do
-      before do
-        doorkeeper_guard_returns(nil)
-      end
-
-      it 'returns false' do
-        expect(sudo?).to be_falsy
-      end
-    end
-
-    context 'when sudo env or param is passed', 'user is not an admin' do
-      before do
-        set_env(user, '123')
-      end
-
-      it 'returns an 403 Forbidden' do
-        expect { sudo? }.to raise_error '403 - {"message"=>"403 Forbidden  - Must be admin to use sudo"}'
-      end
-    end
-
-    context 'when sudo env or param is passed', 'user is admin' do
-      context 'personal access token is used' do
-        before do
-          personal_access_token = create(:personal_access_token, user: admin)
-          set_env(personal_access_token.token, user.id)
-        end
-
-        it 'returns an 403 Forbidden' do
-          expect { sudo? }.to raise_error '403 - {"message"=>"403 Forbidden  - Private token must be specified in order to use sudo"}'
-        end
-      end
-
-      context 'private access token is used' do
-        before do
-          set_env(admin.private_token, user.id)
-        end
-
-        it 'returns true' do
-          expect(sudo?).to be_truthy
-        end
       end
     end
   end
@@ -579,6 +300,149 @@ describe API::Helpers do
 
       it 'does not raise an error' do
         expect { authenticate! }.not_to raise_error
+      end
+    end
+  end
+
+  context 'sudo' do
+    shared_examples 'successful sudo' do
+      it 'sets current_user' do
+        expect(current_user).to eq(user)
+      end
+
+      it 'sets sudo?' do
+        expect(sudo?).to be_truthy
+      end
+    end
+
+    shared_examples 'sudo' do
+      context 'when admin' do
+        before do
+          token.user = admin
+          token.save!
+        end
+
+        context 'when token has sudo scope' do
+          before do
+            token.scopes = %w[sudo]
+            token.save!
+          end
+
+          context 'when user exists' do
+            context 'when using header' do
+              context 'when providing username' do
+                before do
+                  env[API::Helpers::SUDO_HEADER] = user.username
+                end
+
+                it_behaves_like 'successful sudo'
+              end
+
+              context 'when providing user ID' do
+                before do
+                  env[API::Helpers::SUDO_HEADER] = user.id.to_s
+                end
+
+                it_behaves_like 'successful sudo'
+              end
+            end
+
+            context 'when using param' do
+              context 'when providing username' do
+                before do
+                  params[API::Helpers::SUDO_PARAM] = user.username
+                end
+
+                it_behaves_like 'successful sudo'
+              end
+
+              context 'when providing user ID' do
+                before do
+                  params[API::Helpers::SUDO_PARAM] = user.id.to_s
+                end
+
+                it_behaves_like 'successful sudo'
+              end
+            end
+          end
+
+          context 'when user does not exist' do
+            before do
+              params[API::Helpers::SUDO_PARAM] = 'nonexistent'
+            end
+
+            it 'raises an error' do
+              expect { current_user }.to raise_error /User with ID or username 'nonexistent' Not Found/
+            end
+          end
+        end
+
+        context 'when token does not have sudo scope' do
+          before do
+            token.scopes = %w[api]
+            token.save!
+
+            params[API::Helpers::SUDO_PARAM] = user.id.to_s
+          end
+
+          it 'raises an error' do
+            expect { current_user }.to raise_error API::APIGuard::InsufficientScopeError
+          end
+        end
+      end
+
+      context 'when not admin' do
+        before do
+          token.user = user
+          token.save!
+
+          params[API::Helpers::SUDO_PARAM] = user.id.to_s
+        end
+
+        it 'raises an error' do
+          expect { current_user }.to raise_error /Must be admin to use sudo/
+        end
+      end
+    end
+
+    context 'using an OAuth token' do
+      let(:token) { create(:oauth_access_token) }
+
+      before do
+        env['HTTP_AUTHORIZATION'] = "Bearer #{token.token}"
+      end
+
+      it_behaves_like 'sudo'
+    end
+
+    context 'using a personal access token' do
+      let(:token) { create(:personal_access_token) }
+
+      context 'passed as param' do
+        before do
+          params[API::APIGuard::PRIVATE_TOKEN_PARAM] = token.token
+        end
+
+        it_behaves_like 'sudo'
+      end
+
+      context 'passed as header' do
+        before do
+          env[API::APIGuard::PRIVATE_TOKEN_HEADER] = token.token
+        end
+
+        it_behaves_like 'sudo'
+      end
+    end
+
+    context 'using warden authentication' do
+      before do
+        warden_authenticate_returns admin
+        env[API::Helpers::SUDO_HEADER] = user.username
+      end
+
+      it 'raises an error' do
+        expect { current_user }.to raise_error /Must be authenticated using an OAuth or Personal Access Token to use sudo/
       end
     end
   end
