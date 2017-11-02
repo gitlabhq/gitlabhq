@@ -18,9 +18,11 @@ feature 'Project mirror', :js do
       end
 
       it 'returns 404' do
-        visit project_mirror_path(project)
+        reqs = inspect_requests do
+          visit project_mirror_path(project)
+        end
 
-        expect(page.status_code).to eq(404)
+        expect(reqs.first.status_code).to eq(404)
       end
     end
 

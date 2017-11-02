@@ -16,9 +16,11 @@ feature 'Projects > Audit Events', :js do
     end
 
     it 'returns 404' do
-      visit project_audit_events_path(project)
+      reqs = inspect_requests do
+        visit project_audit_events_path(project)
+      end
 
-      expect(page.status_code).to eq(404)
+      expect(reqs.first.status_code).to eq(404)
     end
 
     it 'does not have Audit Events button in head nav bar' do
@@ -37,9 +39,11 @@ feature 'Projects > Audit Events', :js do
     end
 
     it 'returns 200' do
-      visit project_audit_events_path(project)
+      reqs = inspect_requests do
+        visit project_audit_events_path(project)
+      end
 
-      expect(page.status_code).to eq(200)
+      expect(reqs.first.status_code).to eq(200)
     end
 
     it 'does not have Audit Events button in head nav bar' do
