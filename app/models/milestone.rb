@@ -218,7 +218,7 @@ class Milestone < ActiveRecord::Base
   end
 
   def human_total_time_spent
-    Gitlab::TimeTrackingFormatter.output(total_time_spent) || 0
+    Gitlab::TimeTrackingFormatter.output(total_time_spent)
   end
 
   private
