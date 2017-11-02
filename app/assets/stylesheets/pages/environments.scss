@@ -292,12 +292,11 @@
 }
 
 .folder-row {
-  padding: 15px 0;
-  border-bottom: 1px solid $white-normal;
+  border-left: none;
+  border-right: none;
 
-  @media (max-width: $screen-sm-max) {
-    border-top: 1px solid $white-normal;
-    margin-top: 10px;
+  @media (min-width: $screen-sm-max) {
+    border-top: none;
   }
 }
 
