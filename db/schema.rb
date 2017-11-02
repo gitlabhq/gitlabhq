@@ -640,6 +640,41 @@ ActiveRecord::Schema.define(version: 20171017145932) do
   add_index "environments", ["project_id", "name"], name: "index_environments_on_project_id_and_name", unique: true, using: :btree
   add_index "environments", ["project_id", "slug"], name: "index_environments_on_project_id_and_slug", unique: true, using: :btree
 
+  create_table "epic_metrics", force: :cascade do |t|
+    t.integer "epic_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+  end
+
+  add_index "epic_metrics", ["epic_id"], name: "index_epic_metrics", using: :btree
+
+  create_table "epics", force: :cascade do |t|
+    t.integer "milestone_id"
+    t.integer "group_id", null: false
+    t.integer "author_id", null: false
+    t.integer "assignee_id"
+    t.integer "iid", null: false
+    t.integer "cached_markdown_version"
+    t.integer "updated_by_id"
+    t.integer "last_edited_by_id"
+    t.integer "lock_version"
+    t.date "start_date"
+    t.date "end_date"
+    t.datetime_with_timezone "last_edited_at"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.string "title", null: false
+    t.string "title_html", null: false
+    t.text "description"
+    t.text "description_html"
+  end
+
+  add_index "epics", ["assignee_id"], name: "index_epics_on_assignee_id", using: :btree
+  add_index "epics", ["author_id"], name: "index_epics_on_author_id", using: :btree
+  add_index "epics", ["group_id"], name: "index_epics_on_group_id", using: :btree
+  add_index "epics", ["iid"], name: "index_epics_on_iid", using: :btree
+  add_index "epics", ["milestone_id"], name: "index_milestone", using: :btree
+
   create_table "events", force: :cascade do |t|
     t.integer "project_id"
     t.integer "author_id", null: false
@@ -2193,6 +2228,11 @@ ActiveRecord::Schema.define(version: 20171017145932) do
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade
   add_foreign_key "environments", "projects", name: "fk_d1c8c1da6a", on_delete: :cascade
+  add_foreign_key "epic_metrics", "epics", on_delete: :cascade
+  add_foreign_key "epics", "milestones", on_delete: :nullify
+  add_foreign_key "epics", "namespaces", column: "group_id", name: "fk_f081aa4489", on_delete: :cascade
+  add_foreign_key "epics", "users", column: "assignee_id", name: "fk_dccd3f98fc", on_delete: :nullify
+  add_foreign_key "epics", "users", column: "author_id", name: "fk_3654b61b03", on_delete: :cascade
   add_foreign_key "events", "projects", on_delete: :cascade
   add_foreign_key "events", "users", column: "author_id", name: "fk_edfd187b6f", on_delete: :cascade
   add_foreign_key "fork_network_members", "fork_networks", on_delete: :cascade

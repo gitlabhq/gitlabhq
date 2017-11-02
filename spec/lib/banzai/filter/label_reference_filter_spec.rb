@@ -594,4 +594,16 @@ describe Banzai::Filter::LabelReferenceFilter do
       expect(reference_filter(act).to_html).to eq exp
     end
   end
+
+  describe 'group context' do
+    it 'points to referenced project issues page' do
+      project = create(:project)
+      label = create(:label, project: project)
+      reference = "#{project.full_path}~#{label.name}"
+
+      result = reference_filter("See #{reference}", { project: nil, group: create(:group) } )
+
+      expect(result.css('a').first.attr('href')).to eq(urls.project_issues_url(project, label_name: label.name))
+    end
+  end
 end

@@ -199,6 +199,12 @@ class Group < Namespace
     add_user(user, :owner, current_user: current_user)
   end
 
+  def member?(user, min_access_level = Gitlab::Access::GUEST)
+    return false unless user
+
+    max_member_access_for_user(user) >= min_access_level
+  end
+
   def has_owner?(user)
     return false unless user
 

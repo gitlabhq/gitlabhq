@@ -40,6 +40,7 @@ var config = {
     diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',
     environments_folder:  './environments/folder/environments_folder_bundle.js',
+    epic_show:            'ee/epics/epic_show/epic_show_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
     graphs:               './graphs/graphs_bundle.js',
     graphs_charts:        './graphs/graphs_charts.js',

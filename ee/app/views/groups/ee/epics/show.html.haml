@@ -1,0 +1,19 @@
+- @no_breadcrumb_container = false
+- @no_container = false
+- @content_class = "limit-container-width" unless fluid_layout
+
+-# TODO: Move this to @epic.to_reference when implementing gitlab-ee#3853
+- epic_reference = "&#{@epic.iid}"
+- add_to_breadcrumbs _("Epics"), group_epics_path(@group)
+- breadcrumb_title epic_reference
+
+- page_title           "#{@epic.title} (#{epic_reference})", _("Epics")
+- page_description     @epic.description
+
+- page_card_attributes @epic.card_attributes
+
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag 'common_vue'
+  = webpack_bundle_tag 'epic_show'
+
+#epic-show-app{ data: { initial: issuable_initial_data(@epic), meta: epic_meta_data } }
