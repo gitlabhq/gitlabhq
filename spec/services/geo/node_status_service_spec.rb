@@ -6,7 +6,7 @@ describe Geo::NodeStatusService do
 
   subject { described_class.new }
 
-  describe 'KEYS' do
+  describe '#status_keys' do
     it 'matches the serializer keys' do
       exceptions = %w[
         id
@@ -22,7 +22,7 @@ describe Geo::NodeStatusService do
         .keys
         .map(&:to_s) - exceptions
 
-      expect(described_class::KEYS).to match_array(expected)
+      expect(subject.status_keys).to match_array(expected)
     end
   end
 
@@ -41,7 +41,7 @@ describe Geo::NodeStatusService do
 
     it 'parses a 200 response' do
       data = { health: 'OK',
-               db_replication_lag: 0,
+               db_replication_lag_seconds: 0,
                repositories_count: 10,
                repositories_synced_count: 1,
                repositories_failed_count: 2,
@@ -52,15 +52,16 @@ describe Geo::NodeStatusService do
                attachments_synced_count: 30,
                attachments_failed_count: 25,
                last_event_id: 2,
-               last_event_date: Time.now,
+               last_event_timestamp: Time.now.to_i,
                cursor_last_event_id: 1,
-               cursor_last_event_date: Time.now }
+               cursor_last_event_timestamp: Time.now.to_i }
       request = double(success?: true, parsed_response: data.stringify_keys, code: 200)
       allow(described_class).to receive(:get).and_return(request)
 
       status = subject.call(secondary)
 
       expect(status).to have_attributes(data)
+      expect(status.success).to be true
     end
 
     it 'omits full response text in status' do
@@ -73,6 +74,7 @@ describe Geo::NodeStatusService do
       status = subject.call(secondary)
 
       expect(status.health).to eq("Could not connect to Geo node - HTTP Status Code: 401 Unauthorized\n")
+      expect(status.success).to be false
     end
 
     it 'alerts on bad SSL certficate' do

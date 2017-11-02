@@ -1,7 +1,7 @@
 class GeoNodeStatus
   include ActiveModel::Model
 
-  attr_accessor :id
+  attr_accessor :id, :success
   attr_writer :health
 
   def health
@@ -14,14 +14,14 @@ class GeoNodeStatus
     health.blank?
   end
 
-  def db_replication_lag
-    return @db_replication_lag if defined?(@db_replication_lag)
+  def db_replication_lag_seconds
+    return @db_replication_lag_seconds if defined?(@db_replication_lag_seconds)
 
-    @db_replication_lag = Gitlab::Geo::HealthCheck.db_replication_lag if Gitlab::Geo.secondary?
+    @db_replication_lag_seconds = Gitlab::Geo::HealthCheck.db_replication_lag_seconds if Gitlab::Geo.secondary?
   end
 
-  def db_replication_lag=(value)
-    @db_replication_lag = value
+  def db_replication_lag_seconds=(value)
+    @db_replication_lag_seconds = value
   end
 
   def last_event_id
@@ -32,12 +32,12 @@ class GeoNodeStatus
     @last_event_id = value
   end
 
-  def last_event_date
-    @last_event_date ||= Geo::EventLog.latest_event&.created_at
+  def last_event_timestamp
+    @last_event_timestamp ||= Geo::EventLog.latest_event&.created_at&.to_i
   end
 
-  def last_event_date=(value)
-    @last_event_date = value
+  def last_event_timestamp=(value)
+    @last_event_timestamp = value
   end
 
   def cursor_last_event_id
@@ -50,16 +50,16 @@ class GeoNodeStatus
     @cursor_last_event_id = value
   end
 
-  def cursor_last_event_date
+  def cursor_last_event_timestamp
     event_id = cursor_last_event_id
 
     return unless event_id
 
-    @cursor_last_event_date ||= Geo::EventLog.find_by(id: event_id)&.created_at
+    @cursor_last_event_timestamp ||= Geo::EventLog.find_by(id: event_id)&.created_at&.to_i
   end
 
-  def cursor_last_event_date=(value)
-    @cursor_last_event_date = value
+  def cursor_last_event_timestamp=(value)
+    @cursor_last_event_timestamp = value
   end
 
   def repositories_count
@@ -157,6 +157,10 @@ class GeoNodeStatus
 
   def attachments_synced_in_percentage
     sync_percentage(attachments_count, attachments_synced_count)
+  end
+
+  def [](key)
+    public_send(key) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   private

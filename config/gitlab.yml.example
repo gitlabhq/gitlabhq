@@ -241,13 +241,18 @@ production: &base
     ldap_sync_worker:
       cron: "30 1 * * *"
 
-    # GitLab Geo repository sync worker
+    # GitLab Geo metrics update worker
     # NOTE: This will only take effect if Geo is enabled
+    geo_metrics_update_worker:
+      cron: "*/1 * * * *"
+
+    # GitLab Geo repository sync worker
+    # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
     geo_repository_sync_worker:
       cron: "*/5 * * * *"
 
     # GitLab Geo file download dispatch worker
-    # NOTE: This will only take effect if Geo is enabled
+    # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
     geo_file_download_dispatch_worker:
       cron: "*/10 * * * *"
 

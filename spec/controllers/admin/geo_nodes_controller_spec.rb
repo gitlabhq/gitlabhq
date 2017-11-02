@@ -273,9 +273,9 @@ describe Admin::GeoNodesController, :postgresql do
           repositories_synced_count: 5,
           repositories_failed_count: 0,
           last_event_id: 2,
-          last_event_date: Time.now.iso8601,
+          last_event_timestamp: Time.now.to_i,
           cursor_last_event_id: 1,
-          cursor_last_event_date: Time.now.iso8601
+          cursor_last_event_timestamp: Time.now.to_i
         )
       end
 
