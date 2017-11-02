@@ -20,28 +20,27 @@
         return form && !form.find('.js-vue-markdown-field').length;
       },
 
-      toggleMarkdownPreview(e, isPreview, form) {
-        if (e.target.blur) e.target.blur();
+      previewMarkdownTab(event, form) {
+        if (event.target.blur) event.target.blur();
         if (this.isMarkdownForm(form)) return;
 
-        this.$emit('toggle-markdown', isPreview);
+        this.$emit('preview-markdown');
       },
 
-      toggleMarkdownPreviewShow(event, form) {
-        return this.toggleMarkdownPreview(event, true, form);
-      },
+      writeMarkdownTab(event, form) {
+        if (event.target.blur) event.target.blur();
+        if (this.isMarkdownForm(form)) return;
 
-      toggleMarkdownPreviewHide(event, form) {
-        return this.toggleMarkdownPreview(event, false, form);
+        this.$emit('write-markdown');
       },
     },
     mounted() {
-      $(document).on('markdown-preview:show.vue', this.toggleMarkdownPreviewShow);
-      $(document).on('markdown-preview:hide.vue', this.toggleMarkdownPreviewHide);
+      $(document).on('markdown-preview:show.vue', this.previewMarkdownTab);
+      $(document).on('markdown-preview:hide.vue', this.writeMarkdownTab);
     },
     beforeDestroy() {
-      $(document).off('markdown-preview:show.vue', this.toggleMarkdownPreviewShow);
-      $(document).off('markdown-preview:hide.vue', this.toggleMarkdownPreviewHide);
+      $(document).off('markdown-preview:show.vue', this.previewMarkdownTab);
+      $(document).off('markdown-preview:hide.vue', this.writeMarkdownTab);
     },
   };
 </script>
@@ -54,7 +53,7 @@
           class="js-write-link"
           href="#md-write-holder"
           tabindex="-1"
-          @click.prevent="toggleMarkdownPreview($event, false)">
+          @click.prevent="writeMarkdownTab($event, form)">
           Write
         </a>
       </li>
@@ -63,7 +62,7 @@
           class="js-preview-link"
           href="#md-preview-holder"
           tabindex="-1"
-          @click.prevent="toggleMarkdownPreview($event, true)">
+          @click.prevent="previewMarkdownTab($event, form)">
           Preview
         </a>
       </li>
