@@ -39,8 +39,21 @@ export default class CreateMergeRequestDropdown {
     this.inputsAreValid = true;
     this.mergeRequestCreated = false;
     this.refsPath = this.wrapperEl.dataset.refsPath;
-    this.delay = null;
     this.refs = {};
+
+    // These regexps are used to replace
+    // a backend generated new branch name and its source (ref)
+    // with user's inputs.
+    this.regexps = {
+      branch: {
+        createBranchPath: new RegExp('(branch_name=)(.+?)(?=&issue)'),
+        createMrPath: new RegExp('(branch_name=)(.+?)(?=&ref)'),
+      },
+      ref: {
+        createBranchPath: new RegExp('(ref=)(.+?)$'),
+        createMrPath: new RegExp('(ref=)(.+?)$'),
+      },
+    };
 
     this.init();
   }
@@ -218,6 +231,13 @@ export default class CreateMergeRequestDropdown {
     });
   }
 
+  getTargetData(target) {
+    return {
+      input: this[`${target}Input`],
+      message: this[`${target}Message`],
+    };
+  }
+
   hide() {
     this.wrapperEl.classList.add('hide');
   }
@@ -321,41 +341,31 @@ export default class CreateMergeRequestDropdown {
   }
 
   removeMessage(target) {
-    const input = target === 'branch' ? this.branchInput : this.refInput;
-    const message = target === 'branch' ? this.branchMessage : this.refMessage;
+    const { input, message } = this.getTargetData(target);
     const inputClasses = ['gl-field-error-outline', 'gl-field-success-outline'];
     const messageClasses = ['gl-field-hint', 'gl-field-error-message', 'gl-field-success-message'];
 
-    inputClasses.forEach((cssClass) => { input.classList.remove(cssClass); });
-    messageClasses.forEach((cssClass) => { message.classList.remove(cssClass); });
+    inputClasses.forEach(cssClass => input.classList.remove(cssClass));
+    messageClasses.forEach(cssClass => message.classList.remove(cssClass));
   }
 
   setUnavailableButtonState(isLoading = true) {
     if (isLoading) {
-      this.unavailableButtonArrow.classList.add('fa-spinner', 'fa-spin');
+      this.unavailableButtonArrow.classList.add('fa-spin');
+      this.unavailableButtonArrow.classList.add('fa-spinner');
       this.unavailableButtonArrow.classList.remove('fa-exclamation-triangle');
       this.unavailableButtonText.textContent = 'Checking branch availability…';
     } else {
-      this.unavailableButtonArrow.classList.remove('fa-spinner', 'fa-spin');
+      this.unavailableButtonArrow.classList.remove('fa-spin');
+      this.unavailableButtonArrow.classList.remove('fa-spinner');
       this.unavailableButtonArrow.classList.add('fa-exclamation-triangle');
       this.unavailableButtonText.textContent = 'New branch unavailable';
     }
   }
 
   showAvailableMessage(target) {
-    let input;
-    let message;
-    let text;
-
-    if (target === 'branch') {
-      input = this.branchInput;
-      message = this.branchMessage;
-      text = 'branch name';
-    } else {
-      input = this.refInput;
-      message = this.refMessage;
-      text = 'source';
-    }
+    const { input, message } = this.getTargetData(target);
+    const text = target === 'branch' ? 'branch name' : 'source';
 
     this.removeMessage(target);
     input.classList.add('gl-field-success-outline');
@@ -365,16 +375,8 @@ export default class CreateMergeRequestDropdown {
   }
 
   showCheckingMessage(target) {
-    let message;
-    let text;
-
-    if (target === 'branch') {
-      message = this.branchMessage;
-      text = 'branch name';
-    } else {
-      message = this.refMessage;
-      text = 'source';
-    }
+    const { message } = this.getTargetData(target);
+    const text = target === 'branch' ? 'branch name' : 'source';
 
     this.removeMessage(target);
     message.classList.add('gl-field-hint');
@@ -383,19 +385,8 @@ export default class CreateMergeRequestDropdown {
   }
 
   showNotAvailableMessage(target) {
-    let input;
-    let message;
-    let text;
-
-    if (target === 'branch') {
-      input = this.branchInput;
-      message = this.branchMessage;
-      text = __('Branch is already taken');
-    } else {
-      input = this.refInput;
-      message = this.refMessage;
-      text = __('Source is not available');
-    }
+    const { input, message } = this.getTargetData(target);
+    const text = target === 'branch' ? __('Branch is already taken') : __('Source is not available');
 
     this.removeMessage(target);
     input.classList.add('gl-field-error-outline');
@@ -410,20 +401,6 @@ export default class CreateMergeRequestDropdown {
   }
 
   updateInputState(target, ref, result) {
-    // These regexps are used to replace
-    // a backend generated new branch name and its source (ref)
-    // with user's inputs.
-    const regexps = {
-      branch: {
-        createBranchPath: new RegExp('(branch_name=)(.+?)(?=&issue)'),
-        createMrPath: new RegExp('(branch_name=)(.+?)(?=&ref)'),
-      },
-      ref: {
-        createBranchPath: new RegExp('(ref=)(.+?)$'),
-        createMrPath: new RegExp('(ref=)(.+?)$'),
-      },
-    };
-
     // If a found branch equals exact the same as a user typed,
     // that means a new branch cannot be created as it is already exists.
     if (ref === result) {
@@ -435,15 +412,15 @@ export default class CreateMergeRequestDropdown {
         this.inputsAreValid = true;
         this.enable();
         this.showAvailableMessage('ref');
-        this.createBranchPath = this.createBranchPath.replace(regexps.ref.createBranchPath, `$1${ref}`);
-        this.createMrPath = this.createMrPath.replace(regexps.ref.createMrPath, `$1${ref}`);
+        this.createBranchPath = this.createBranchPath.replace(this.regexps.ref.createBranchPath, `$1${ref}`);
+        this.createMrPath = this.createMrPath.replace(this.regexps.ref.createMrPath, `$1${ref}`);
       }
     } else if (target === 'branch') {
       this.inputsAreValid = true;
       this.enable();
       this.showAvailableMessage('branch');
-      this.createBranchPath = this.createBranchPath.replace(regexps.branch.createBranchPath, `$1${ref}`);
-      this.createMrPath = this.createMrPath.replace(regexps.branch.createMrPath, `$1${ref}`);
+      this.createBranchPath = this.createBranchPath.replace(this.regexps.branch.createBranchPath, `$1${ref}`);
+      this.createMrPath = this.createMrPath.replace(this.regexps.branch.createMrPath, `$1${ref}`);
     } else {
       this.inputsAreValid = false;
       this.disableCreateAction();
