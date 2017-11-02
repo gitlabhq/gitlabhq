@@ -52,6 +52,47 @@
   .label.label-gray {
     background-color: $well-expand-item;
   }
+
+  .limit-box-branch {
+    width: 160px;
+  }
+
+  .limit-box-tag {
+    width: 125px;
+  }
+
+  .branches {
+    display: inline;
+  }
+
+  .limit-box {
+    background: $blue-100;
+    border-radius: 3px;
+    display: inline-block;
+    margin-left: 5px;
+    padding: 1px 1px 0.5px 0;
+    text-align: center;
+    vertical-align: bottom;
+
+    &:hover {
+      background: $blue-200;
+    }
+
+    .limit-icon {
+      float: left;
+      width: 15%;
+    }
+
+    .limit-message {
+      background: $white-light;
+      border-radius: 0 3px 3px 0;
+      font-family: $regular_font;
+      font-size: 12px;
+      float: right;
+      margin-top: 1px;
+      width: 85%;
+    }
+  }
 }
 
 .light-well {

@@ -18,7 +18,6 @@ describe 'projects/commit/branches.html.haml' do
     end
 
     it 'shows branch and tag links' do
-      expect(rendered).to have_selector('.js-details-expand')
       expect(rendered).to have_link('master')
       expect(rendered).to have_link('test-branch')
       expect(rendered).to have_link('tag1')
@@ -36,9 +35,8 @@ describe 'projects/commit/branches.html.haml' do
     end
 
     it 'shows too many to search' do
-      expect(rendered).to have_selector('.js-details-expand')
-      expect(rendered).to have_link('Too many branches to search', href: '#')
-      expect(rendered).to have_link('Too many tags to search', href: '#')
+      expect(rendered).to have_text('Branches unavailable')
+      expect(rendered).to have_text('Tags unavailable')
     end
   end
 end

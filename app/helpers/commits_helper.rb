@@ -81,18 +81,6 @@ module CommitsHelper
     end
   end
 
-  def branches_unavailable_message
-    link_to('#', class: 'label label-gray ref-name', title: 'Project has too many branches to search') do
-      icon('tag') + ' Branches unavailable'
-    end
-  end
-
-  def tags_unavailable_message
-    link_to('#', class: 'label label-gray ref-name', title: 'Project has too many tags to search') do
-      icon('tag') + ' Tags unavailable'
-    end
-  end
-
   # Returns the sorted links to tags, separated by a comma
   def commit_tags_links(project, tags)
     sorted = VersionSorter.rsort(tags)

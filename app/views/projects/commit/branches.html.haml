@@ -1,12 +1,9 @@
 - if @branches_limit_exceeded
-  = branches_unavailable_message
+  = render 'limit_exceeded_message', objects: 'branches'
 - elsif @branches.any?
-  - branch = commit_default_branch(@project, @branches)
-  = commit_branch_link(project_ref_path(@project, branch), branch)
+  = commit_branches_links(@project, @branches)
 
--# `commit_default_branch` deletes the default branch from `@branches`,
-  -# so only render this if we have more branches or tags left
 - if @tags_limit_exceeded
-  = tags_unavailable_message
+  = render 'limit_exceeded_message', objects: 'tags'
 - elsif @tags.any?
   = commit_tags_links(@project, @tags)

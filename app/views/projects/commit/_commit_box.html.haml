@@ -61,7 +61,7 @@
     %span.cgray= n_('parent', 'parents', @commit.parents.count)
     - @commit.parents.each do |parent|
       = link_to parent.short_id, project_commit_path(@project, parent), class: "commit-sha"
-    %span.commit-info.branches
+    %div.commit-info.branches
       %i.fa.fa-spinner.fa-spin
 
   - if @commit.last_pipeline
