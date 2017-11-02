@@ -155,8 +155,10 @@ FactoryGirl.define do
     end
 
     trait :artifacts do
-      job_archive factory: :ci_job_artifact
-      job_metadata factory: :ci_job_metadata
+      after(:create) do |build|
+        create(:ci_job_artifact, job: build)
+        create(:ci_job_metadata, job: build)
+      end
     end
 
     trait :expired do

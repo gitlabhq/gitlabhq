@@ -15,10 +15,10 @@ module Ci
     has_one :last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
 
-    has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :ci_job_id
+    # TODO: what to do with dependent destroy
+    has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :ci_job_id, dependent: :destroy
     has_one :job_archive, -> () { where(file_type: Ci::JobArtifact.file_types[:archive]) }, class_name: 'Ci::JobArtifact', foreign_key: :ci_job_id
     has_one :job_metadata, -> () { where(file_type: Ci::JobArtifact.file_types[:metadata]) }, class_name: 'Ci::JobArtifact', foreign_key: :ci_job_id
-
 
     # The "environment" field for builds is a String, and is the unexpanded name
     def persisted_environment

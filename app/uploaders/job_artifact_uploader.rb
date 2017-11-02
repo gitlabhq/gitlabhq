@@ -3,12 +3,6 @@ class JobArtifactUploader < ArtifactUploader
     @artifact = artifact
   end
 
-  # If this record exists, the associatied artifact is there. Every artifact
-  # persisted will have an associated file
-  def exists?
-    true
-  end
-
   def size
     return super unless @artifact.size
 

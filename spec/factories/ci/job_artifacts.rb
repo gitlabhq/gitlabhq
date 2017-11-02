@@ -2,15 +2,17 @@ include ActionDispatch::TestProcess
 
 FactoryGirl.define do
   factory :ci_job_artifact, class: Ci::JobArtifact do
-    project
     job factory: :ci_build
     file_type :archive
+
+    after :build do |artifact|
+      artifact.project ||= artifact.job.project
+    end
 
     after :create do |artifact|
       if artifact.archive?
         artifact.file = fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts.zip'),
                                             'application/zip')
-
         artifact.save
       end
     end
