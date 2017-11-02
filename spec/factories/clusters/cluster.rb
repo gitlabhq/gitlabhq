@@ -2,8 +2,6 @@ FactoryGirl.define do
   factory :cluster, class: Clusters::Cluster do
     user
     name 'test-cluster'
-    provider_type :user
-    platform_type :kubernetes
 
     trait :project do
       after(:create) do |cluster, evaluator|
@@ -24,27 +22,17 @@ FactoryGirl.define do
       provider_type :gcp
       platform_type :kubernetes
 
-      platform_kubernetes do
-        create(:platform_kubernetes, :configured)
-      end
-
-      provider_gcp do
-        create(:provider_gcp, :created)
+      before(:create) do |cluster, evaluator|
+        cluster.platform_kubernetes = build(:platform_kubernetes, :configured)
+        cluster.provider_gcp = build(:provider_gcp, :created)
       end
     end
 
     trait :providing_by_gcp do
       provider_type :gcp
-      platform_type :kubernetes
 
       provider_gcp do
         create(:provider_gcp, :creating)
-      end
-
-      after(:create) do |cluster, evaluator|
-        build(:platform_kubernetes, cluster: cluster).tap do |platform|
-          platform.save!(validate: false)
-        end
       end
     end
   end

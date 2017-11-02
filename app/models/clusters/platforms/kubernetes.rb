@@ -58,7 +58,7 @@ module Clusters
       def update_kubernetes_integration!
         raise 'Kubernetes service already configured' unless manages_kubernetes_service?
 
-        ensure_kubernetes_service.update!(
+        ensure_kubernetes_service&.update!(
           active: enabled?,
           api_url: api_url,
           namespace: namespace,
@@ -83,7 +83,7 @@ module Clusters
       def destroy_kubernetes_integration!
         return unless manages_kubernetes_service?
 
-        kubernetes_service.destroy!
+        kubernetes_service&.destroy!
       end
 
       def kubernetes_service

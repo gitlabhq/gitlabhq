@@ -62,6 +62,7 @@ describe Clusters::Gcp::FinalizeCreationService do
 
         it 'has corresponded data' do
           described_class.new.execute(provider)
+          cluster.reload
           provider.reload
           platform.reload
 

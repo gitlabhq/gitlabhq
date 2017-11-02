@@ -92,7 +92,6 @@ class Projects::ClustersController < Projects::ApplicationController
     params.require(:cluster).permit(
       :enabled,
       :name,
-      :platform_type,
       :provider_type,
       provider_gcp_attributes: [
         :gcp_project_id,
