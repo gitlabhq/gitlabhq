@@ -5,7 +5,7 @@ module Clusters
 
       NAME = 'helm'.freeze
 
-      include ::Clusters::Concerns::AppStatus
+      include ::Clusters::Concerns::ApplicationStatus
 
       belongs_to :cluster, class_name: 'Clusters::Cluster', foreign_key: :cluster_id
 

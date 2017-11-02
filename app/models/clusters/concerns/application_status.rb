@@ -1,14 +1,15 @@
 module Clusters
   module Concerns
-    module AppStatus
+    module ApplicationStatus
       extend ActiveSupport::Concern
 
       included do
-        state_machine :status, initial: :scheduled do
+        state_machine :status, initial: :installable do
           state :errored, value: -1
-          state :scheduled, value: 0
-          state :installing, value: 1
-          state :installed, value: 2
+          state :installable, value: 0
+          state :scheduled, value: 1
+          state :installing, value: 2
+          state :installed, value: 3
 
           event :make_installing do
             transition any - [:installing] => :installing

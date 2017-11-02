@@ -51,6 +51,12 @@ module Clusters
       end
     end
 
+    def applications
+      [ 
+        application_helm || build_application_helm
+      ]
+    end
+
     def provider
       return provider_gcp if gcp?
     end
