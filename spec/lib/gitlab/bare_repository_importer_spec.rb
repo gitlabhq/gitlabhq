@@ -1,12 +1,14 @@
 require 'spec_helper'
 
 describe Gitlab::BareRepositoryImporter, repository: true do
-  subject(:importer) { described_class.new(project_path) }
-
   let!(:admin) { create(:admin) }
+  let(:project_repo_path) { Gitlab::ProjectRepoPath.new(TestEnv.repos_path, File.join(TestEnv.repos_path, "#{project_path}.git")) }
+
+  subject(:importer) { described_class.new(project_repo_path) }
 
   before do
     allow(described_class).to receive(:log)
+    allow_any_instance_of(described_class).to receive(:import_repo).and_return(true)
   end
 
   shared_examples 'importing a repository' do
@@ -15,8 +17,7 @@ describe Gitlab::BareRepositoryImporter, repository: true do
         FileUtils.mkdir_p(File.join(TestEnv.repos_path, "#{project_path}.git"))
         fake_importer = double
 
-        expect(described_class).to receive(:new).with(project_path)
-                                     .and_return(fake_importer)
+        expect(described_class).to receive(:new).and_return(fake_importer)
         expect(fake_importer).to receive(:create_project_if_needed)
 
         described_class.execute(TestEnv.repos_path)

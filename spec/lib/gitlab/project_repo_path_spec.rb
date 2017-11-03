@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe ::Gitlab::ProjectRepoPath do
-  let(:project_repo_path) { described_class.new('/full/path', '/full/path/to/repo.git') }
+  let(:project_repo_path) { described_class.new('/full/path/', '/full/path/to/repo.git') }
 
   it 'stores the repo path' do
     expect(project_repo_path.repo_path).to eq('/full/path/to/repo.git')

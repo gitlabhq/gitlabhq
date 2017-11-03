@@ -22,7 +22,7 @@ module Gitlab
 
     def repo_relative_path
       # Remove root path and `.git` at the end
-      repo_path.sub(/\A#{@root_path}\//, '').sub(/\.git$/, '')
+      repo_path.sub(/\A#{@root_path}/, '').sub(/\.git$/, '')
     end
   end
 end
