@@ -27,7 +27,8 @@ to enable it.
 1. First, ask your system administrator to enable GitLab Container Registry
    following the [administration documentation](../../administration/container_registry.md).
    If you are using GitLab.com, this is enabled by default so you can start using
-   the Registry immediately.
+   the Registry immediately. We don’t *enforce* a restriction for registry on 
+   GitLab.com, however it’s part of the same repository restriction (10G).
 1. Go to your [project's General settings](settings/index.md#sharing-and-permissions)
    and enable the **Container Registry** feature on your project. For new
    projects this might be enabled by default. For existing projects
