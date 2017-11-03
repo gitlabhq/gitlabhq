@@ -15,9 +15,11 @@ describe 'Admin::AuditLogs', :js do
     end
 
     it 'returns 404' do
-      visit admin_audit_logs_path
+      reqs = inspect_requests do
+        visit admin_audit_logs_path
+      end
 
-      expect(page.status_code).to eq(404)
+      expect(reqs.first.status_code).to eq(404)
     end
   end
 
