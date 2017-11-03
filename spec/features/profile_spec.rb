@@ -65,7 +65,7 @@ describe 'Profile account page', :js do
       within('.rss-token-reset') do
         previous_token = find("#rss_token").value
 
-        click_link('reset it')
+        accept_confirm { click_link('reset it') }
 
         expect(find('#rss_token').value).not_to eq(previous_token)
       end
@@ -84,7 +84,7 @@ describe 'Profile account page', :js do
       within('.incoming-email-token-reset') do
         previous_token = find('#incoming_email_token').value
 
-        click_link('reset it')
+        accept_confirm { click_link('reset it') }
 
         expect(find('#incoming_email_token').value).not_to eq(previous_token)
       end
