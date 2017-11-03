@@ -1,10 +1,16 @@
 require 'spec_helper'
 
 describe EE::API::Helpers do
-  let(:helper) { Class.new { include API::Helpers }.new }
+  let(:env) { { 'rack.input' => StringIO.new } }
+
+  let(:helper) do
+    Class.new { include API::Helpers, API::APIGuard::HelperMethods }.new
+  end
 
   before do
-    allow(helper).to receive(:env).and_return({})
+    allow(helper).to receive(:env).and_return(env)
+    allow(helper).to receive(:params).and_return({})
+    allow(helper).to receive(:options).and_return({})
     allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)
   end
 
@@ -19,7 +25,7 @@ describe EE::API::Helpers do
       allow(helper).to receive(:initial_current_user).and_return(user)
 
       expect(Gitlab::Database::LoadBalancing::RackMiddleware)
-        .to receive(:stick_or_unstick).with({}, :user, 42)
+        .to receive(:stick_or_unstick).with(env, :user, 42)
 
       helper.current_user
     end
