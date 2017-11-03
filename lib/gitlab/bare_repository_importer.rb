@@ -13,6 +13,7 @@ module Gitlab
 
         if project_repo_path.wiki?
           log " * Skipping wiki repo"
+
           next
         end
 
