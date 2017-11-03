@@ -279,25 +279,7 @@ describe Admin::GeoNodesController, :postgresql do
     end
 
     context 'with add-on license' do
-      let(:geo_node_status) do
-        GeoNodeStatus.new(
-          id: 1,
-          health: nil,
-          attachments_count: 329,
-          attachments_failed_count: 13,
-          attachments_synced_count: 141,
-          lfs_objects_count: 256,
-          lfs_objects_failed_count: 12,
-          lfs_objects_synced_count: 123,
-          repositories_count: 10,
-          repositories_synced_count: 5,
-          repositories_failed_count: 0,
-          last_event_id: 2,
-          last_event_timestamp: Time.now.to_i,
-          cursor_last_event_id: 1,
-          cursor_last_event_timestamp: Time.now.to_i
-        )
-      end
+      let(:geo_node_status) { build(:geo_node_status, :healthy) }
 
       before do
         allow(Gitlab::Geo).to receive(:license_allows?).and_return(true)

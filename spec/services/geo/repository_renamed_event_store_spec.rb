@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Geo::RepositoryRenamedEventStore do
-  let(:project) { create(:project, path: 'bar') }
+  set(:project) { create(:project, path: 'bar') }
+  set(:secondary_node) { create(:geo_node) }
   let(:old_path) { 'foo' }
   let(:old_path_with_namespace) { "#{project.namespace.full_path}/foo" }
 
@@ -17,6 +18,12 @@ describe Geo::RepositoryRenamedEventStore do
     context 'when running on a primary node' do
       before do
         allow(Gitlab::Geo).to receive(:primary?) { true }
+      end
+
+      it 'does not create an event when there are no secondary nodes' do
+        allow(Gitlab::Geo).to receive(:secondary_nodes) { [] }
+
+        expect { subject.create }.not_to change(Geo::RepositoryRenamedEvent, :count)
       end
 
       it 'creates a renamed event' do
