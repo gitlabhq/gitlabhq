@@ -117,7 +117,6 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
       let(:kubernetes_service) { project.kubernetes_service }
 
       it 'updates KubernetesService' do
-        # TODO: This doesn't work as intended because `enabled?` in Clusters::Platforms::Kubernetes is still true without `reload`
         cluster.update(enabled: enabled)
 
         expect(kubernetes_service.active).to eq(enabled)
@@ -135,7 +134,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
       end
 
       it 'raises an error' do
-        expect{ cluster.save! }.to raise_error('Kubernetes service already configured')
+        expect { cluster.save! }.to raise_error('Kubernetes service already configured')
       end
     end
   end

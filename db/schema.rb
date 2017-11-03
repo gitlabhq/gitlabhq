@@ -507,7 +507,7 @@ ActiveRecord::Schema.define(version: 20171026082505) do
   add_index "cluster_providers_gcp", ["cluster_id"], name: "index_cluster_providers_gcp_on_cluster_id", unique: true, using: :btree
 
   create_table "clusters", force: :cascade do |t|
-    t.integer "user_id", null: false
+    t.integer "user_id"
     t.integer "provider_type"
     t.integer "platform_type"
     t.datetime_with_timezone "created_at", null: false

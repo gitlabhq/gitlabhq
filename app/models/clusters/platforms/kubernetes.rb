@@ -58,6 +58,9 @@ module Clusters
       def update_kubernetes_integration!
         raise 'Kubernetes service already configured' unless manages_kubernetes_service?
 
+        # This is neccesary, otheriwse enabled? returns true even though cluster updated with enabled: false
+        cluster.reload
+
         ensure_kubernetes_service&.update!(
           active: enabled?,
           api_url: api_url,
