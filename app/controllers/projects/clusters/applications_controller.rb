@@ -9,7 +9,7 @@ class Projects::Clusters::ApplicationsController < Projects::ApplicationControll
                                                                         application_class: @application_class,
                                                                         cluster: @cluster).execute
     if scheduled
-      head :no_data
+      head :no_content
     else
       head :bad_request
     end
