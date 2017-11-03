@@ -2,6 +2,24 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.0.5 (2017-11-03)
+
+- [FIXED] Fix incorrect X-axis labels in Prometheus graphs. !14258
+- [FIXED] Fix `rake gitlab:incoming_email:check` and make it report the actual error. !14423
+- [FIXED] Does not check if an invariant hashed storage path exists on disk when renaming projects. !14428
+- [FIXED] Fix bottom spacing for dropdowns that open upwards. !14535
+- [FIXED] Fix the project import with issues and milestones. !14657
+- [FIXED] Fix broken Y-axis scaling in some Prometheus graphs. !14693
+- [FIXED] Fixed duplicate notifications when added multiple labels on an issue. !14798
+- [FIXED] Don't rename paths that were freed up when upgrading. !15029
+- [FIXED] Fixed issue/merge request breadcrumb titles not having links.
+- [FIXED] Fix application setting to cache nil object.
+- [FIXED] Fix missing Import/Export issue assignees.
+- [FIXED] Allow boards as top level route.
+- [FIXED] Fixed milestone breadcrumb links.
+- [FIXED] Fixed merge request widget merged & closed date tooltip text.
+- [FIXED] fix merge request widget status icon for failed CI.
+
 ## 10.0.4 (2017-10-16)
 
 - [SECURITY] Move project repositories between namespaces when renaming users.
