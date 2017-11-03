@@ -83,7 +83,7 @@ feature 'Mini Pipeline Graph', :js do
     end
 
     before do
-      toggle.trigger('click')
+      toggle.click
       wait_for_requests
     end
 
