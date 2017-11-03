@@ -478,6 +478,11 @@ class Repository
     nil
   end
 
+  # items is an Array like: [[oid, path], [oid1, path1]]
+  def blobs_at(items)
+    raw_repository.batch_blobs(items).map { |blob| Blob.decorate(blob, project) }
+  end
+
   def root_ref
     if raw_repository
       raw_repository.root_ref

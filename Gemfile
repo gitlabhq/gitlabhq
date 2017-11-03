@@ -263,6 +263,8 @@ gem 'gettext_i18n_rails', '~> 1.8.0'
 gem 'gettext_i18n_rails_js', '~> 1.2.0'
 gem 'gettext', '~> 3.2.2', require: false, group: :development
 
+gem 'batch-loader'
+
 # Perf bar
 gem 'peek', '~> 1.0.1'
 gem 'peek-gc', '~> 0.0.2'
