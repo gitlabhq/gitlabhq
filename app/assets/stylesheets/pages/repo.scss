@@ -257,11 +257,6 @@
     }
 
     tr {
-      .repo-file-options {
-        padding: 2px 16px;
-        width: 100%;
-      }
-
       .title {
         font-size: 10px;
         text-transform: uppercase;
@@ -289,6 +284,10 @@
       color: $almost-black;
     }
   }
+}
+
+.multi-file-list-header {
+  background-color: $common-gray-light;
 }
 
 .render-error {

@@ -1,5 +1,5 @@
 <script>
-  import { mapState } from 'vuex';
+  import { mapState, mapActions } from 'vuex';
   import newModal from './modal.vue';
   import upload from './upload.vue';
 
@@ -8,25 +8,16 @@
       newModal,
       upload,
     },
-    data() {
-      return {
-        openModal: false,
-        modalType: '',
-      };
-    },
     computed: {
       ...mapState([
         'path',
+        'newEntryModalOpen',
       ]),
     },
     methods: {
-      createNewItem(type) {
-        this.modalType = type;
-        this.toggleModalOpen();
-      },
-      toggleModalOpen() {
-        this.openModal = !this.openModal;
-      },
+      ...mapActions([
+        'openNewEntryModal',
+      ]),
     },
   };
 </script>
@@ -52,7 +43,7 @@
             <a
               href="#"
               role="button"
-              @click.prevent="createNewItem('blob')"
+              @click.prevent="openNewEntryModal('blob')"
             >
               {{ __('New file') }}
             </a>
@@ -66,7 +57,7 @@
             <a
               href="#"
               role="button"
-              @click.prevent="createNewItem('tree')"
+              @click.prevent="openNewEntryModal('tree')"
             >
               {{ __('New directory') }}
             </a>
@@ -75,10 +66,9 @@
       </li>
     </ul>
     <new-modal
-      v-if="openModal"
-      :type="modalType"
+      v-if="newEntryModalOpen"
       :path="path"
-      @toggle="toggleModalOpen"
+      @toggle="openNewEntryModal"
     />
   </div>
 </template>

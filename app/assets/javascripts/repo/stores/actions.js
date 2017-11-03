@@ -140,6 +140,10 @@ export const scrollToTab = () => {
   });
 };
 
+export const openNewEntryModal = ({ commit }, type = '') => {
+  commit(types.TOGGLE_NEW_ENTRY_MODAL, type);
+};
+
 export * from './actions/tree';
 export * from './actions/file';
 export * from './actions/branch';

@@ -11,6 +11,8 @@ export default () => ({
   lastCommitPath: '',
   loading: false,
   onTopOfBranch: false,
+  newEntryModalOpen: false,
+  newEntryModalType: '',
   openFiles: [],
   path: '',
   project: {

@@ -55,6 +55,12 @@ export default {
       updatedAt: lastCommit.commit.authored_date,
     });
   },
+  [types.TOGGLE_NEW_ENTRY_MODAL](state, type) {
+    Object.assign(state, {
+      newEntryModalType: type,
+      newEntryModalOpen: !state.newEntryModalOpen,
+    });
+  },
   ...fileMutations,
   ...treeMutations,
   ...branchMutations,

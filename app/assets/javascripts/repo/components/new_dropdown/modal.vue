@@ -1,14 +1,10 @@
 <script>
-  import { mapActions } from 'vuex';
+  import { mapState, mapActions } from 'vuex';
   import { __ } from '../../../locale';
   import popupDialog from '../../../vue_shared/components/popup_dialog.vue';
 
   export default {
     props: {
-      type: {
-        type: String,
-        required: true,
-      },
       path: {
         type: String,
         required: true,
@@ -39,6 +35,9 @@
       },
     },
     computed: {
+      ...mapState({
+        type: 'newEntryModalType',
+      }),
       modalTitle() {
         if (this.type === 'tree') {
           return __('Create new directory');

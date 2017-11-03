@@ -3,12 +3,14 @@ import { mapState, mapGetters, mapActions } from 'vuex';
 import RepoPreviousDirectory from './repo_prev_directory.vue';
 import RepoFile from './repo_file.vue';
 import RepoLoadingFile from './repo_loading_file.vue';
+import listHeader from './list_header.vue';
 
 export default {
   components: {
     'repo-previous-directory': RepoPreviousDirectory,
     'repo-file': RepoFile,
     'repo-loading-file': RepoLoadingFile,
+    listHeader,
   },
   created() {
     window.addEventListener('popstate', this.popHistoryState);
@@ -24,11 +26,6 @@ export default {
       'loading',
       'isRoot',
     ]),
-    ...mapState({
-      projectName(state) {
-        return state.project.name;
-      },
-    }),
     ...mapGetters([
       'treeList',
       'isCollapsed',
@@ -45,28 +42,21 @@ export default {
 
 <template>
 <div id="sidebar" :class="{'sidebar-mini' : isCollapsed}">
+  <list-header
+    v-if="isCollapsed"
+  />
   <table class="table">
-    <thead>
+    <thead v-if="!isCollapsed">
       <tr>
-        <th
-          v-if="isCollapsed"
-          class="repo-file-options title"
-        >
-          <strong class="clgray">
-            {{ projectName }}
-          </strong>
+        <th class="name multi-file-table-col-name">
+          Name
         </th>
-        <template v-else>
-          <th class="name multi-file-table-col-name">
-            Name
-          </th>
-          <th class="hidden-sm hidden-xs last-commit">
-            Last commit
-          </th>
-          <th class="hidden-xs last-update text-right">
-            Last update
-          </th>
-        </template>
+        <th class="hidden-sm hidden-xs last-commit">
+          Last commit
+        </th>
+        <th class="hidden-xs last-update text-right">
+          Last update
+        </th>
       </tr>
     </thead>
     <tbody>

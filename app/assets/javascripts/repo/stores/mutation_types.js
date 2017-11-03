@@ -5,6 +5,7 @@ export const SET_PARENT_TREE_URL = 'SET_PARENT_TREE_URL';
 export const SET_ROOT = 'SET_ROOT';
 export const SET_PREVIOUS_URL = 'SET_PREVIOUS_URL';
 export const SET_LAST_COMMIT_DATA = 'SET_LAST_COMMIT_DATA';
+export const TOGGLE_NEW_ENTRY_MODAL = 'TOGGLE_NEW_ENTRY_MODAL';
 
 // Tree mutation types
 export const SET_DIRECTORY_DATA = 'SET_DIRECTORY_DATA';
