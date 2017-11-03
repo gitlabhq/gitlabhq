@@ -100,10 +100,8 @@ shared_examples "protected branches > access control > EE" do
         find(".dropdown-input-field").set(users.last.name) # Find a user that is not loaded
         wait_for_requests
 
-        expect(page).to have_selector('.dropdown-header', count: 3)
-
-        %w{Roles Groups Users}.each_with_index do |header, index|
-          expect(all('.dropdown-header')[index]).to have_content(header)
+        %w{Roles Groups Users}.each do |header|
+          expect(page).to have_selector('.dropdown-header', text: header)
         end
 
         click_on users.last.name
