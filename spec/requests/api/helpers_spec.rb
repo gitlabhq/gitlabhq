@@ -31,6 +31,7 @@ describe API::Helpers do
       .and_return(route_authentication_setting)
   end
 
+<<<<<<< HEAD
   def set_env(user_or_token, identifier)
     clear_env
     clear_param
@@ -57,13 +58,11 @@ describe API::Helpers do
     params.delete(API::Helpers::SUDO_PARAM)
   end
 
+=======
+>>>>>>> upstream/master
   def warden_authenticate_returns(value)
     warden = double("warden", authenticate: value)
     env['warden'] = warden
-  end
-
-  def doorkeeper_guard_returns(value)
-    allow_any_instance_of(self.class).to receive(:doorkeeper_guard) { value }
   end
 
   def error!(message, status, header)
@@ -74,10 +73,6 @@ describe API::Helpers do
     subject { current_user }
 
     describe "Warden authentication", :allow_forgery_protection do
-      before do
-        doorkeeper_guard_returns false
-      end
-
       context "with invalid credentials" do
         context "GET request" do
           before do
@@ -165,74 +160,31 @@ describe API::Helpers do
       end
     end
 
-    describe "when authenticating using a user's private token" do
-      it "returns a 401 response for an invalid token" do
-        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = 'invalid token'
-        allow_any_instance_of(self.class).to receive(:doorkeeper_guard) { false }
-
-        expect { current_user }.to raise_error /401/
-      end
-
-      it "returns a 401 response for a user without access" do
-        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = user.private_token
-        allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
-
-        expect { current_user }.to raise_error /401/
-      end
-
-      it 'returns a 401 response for a user who is blocked' do
-        user.block!
-        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = user.private_token
-
-        expect { current_user }.to raise_error /401/
-      end
-
-      it "leaves user as is when sudo not specified" do
-        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = user.private_token
-
-        expect(current_user).to eq(user)
-
-        clear_env
-
-        params[API::APIGuard::PRIVATE_TOKEN_PARAM] = user.private_token
-
-        expect(current_user).to eq(user)
-      end
-    end
-
     describe "when authenticating using a user's personal access tokens" do
       let(:personal_access_token) { create(:personal_access_token, user: user) }
 
-      before do
-        allow_any_instance_of(self.class).to receive(:doorkeeper_guard) { false }
-      end
-
       it "returns a 401 response for an invalid token" do
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = 'invalid token'
 
         expect { current_user }.to raise_error /401/
       end
 
-      it "returns a 401 response for a user without access" do
+      it "returns a 403 response for a user without access" do
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
 
-        expect { current_user }.to raise_error /401/
+        expect { current_user }.to raise_error /403/
       end
 
-      it 'returns a 401 response for a user who is blocked' do
+      it 'returns a 403 response for a user who is blocked' do
         user.block!
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
-        expect { current_user }.to raise_error /401/
+        expect { current_user }.to raise_error /403/
       end
 
-      it "leaves user as is when sudo not specified" do
+      it "sets current_user" do
         env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
-        expect(current_user).to eq(user)
-        clear_env
-        params[API::APIGuard::PRIVATE_TOKEN_PARAM] = personal_access_token.token
-
         expect(current_user).to eq(user)
       end
 
@@ -257,6 +209,7 @@ describe API::Helpers do
         expect { current_user }.to raise_error API::APIGuard::ExpiredError
       end
     end
+<<<<<<< HEAD
 
     describe "when authenticating using a job token" do
       let(:job) { create(:ci_build, user: current_user) }
@@ -490,6 +443,8 @@ describe API::Helpers do
         end
       end
     end
+=======
+>>>>>>> upstream/master
   end
 
   describe '.handle_api_exception' do
@@ -613,6 +568,149 @@ describe API::Helpers do
 
       it 'does not raise an error' do
         expect { authenticate! }.not_to raise_error
+      end
+    end
+  end
+
+  context 'sudo' do
+    shared_examples 'successful sudo' do
+      it 'sets current_user' do
+        expect(current_user).to eq(user)
+      end
+
+      it 'sets sudo?' do
+        expect(sudo?).to be_truthy
+      end
+    end
+
+    shared_examples 'sudo' do
+      context 'when admin' do
+        before do
+          token.user = admin
+          token.save!
+        end
+
+        context 'when token has sudo scope' do
+          before do
+            token.scopes = %w[sudo]
+            token.save!
+          end
+
+          context 'when user exists' do
+            context 'when using header' do
+              context 'when providing username' do
+                before do
+                  env[API::Helpers::SUDO_HEADER] = user.username
+                end
+
+                it_behaves_like 'successful sudo'
+              end
+
+              context 'when providing user ID' do
+                before do
+                  env[API::Helpers::SUDO_HEADER] = user.id.to_s
+                end
+
+                it_behaves_like 'successful sudo'
+              end
+            end
+
+            context 'when using param' do
+              context 'when providing username' do
+                before do
+                  params[API::Helpers::SUDO_PARAM] = user.username
+                end
+
+                it_behaves_like 'successful sudo'
+              end
+
+              context 'when providing user ID' do
+                before do
+                  params[API::Helpers::SUDO_PARAM] = user.id.to_s
+                end
+
+                it_behaves_like 'successful sudo'
+              end
+            end
+          end
+
+          context 'when user does not exist' do
+            before do
+              params[API::Helpers::SUDO_PARAM] = 'nonexistent'
+            end
+
+            it 'raises an error' do
+              expect { current_user }.to raise_error /User with ID or username 'nonexistent' Not Found/
+            end
+          end
+        end
+
+        context 'when token does not have sudo scope' do
+          before do
+            token.scopes = %w[api]
+            token.save!
+
+            params[API::Helpers::SUDO_PARAM] = user.id.to_s
+          end
+
+          it 'raises an error' do
+            expect { current_user }.to raise_error API::APIGuard::InsufficientScopeError
+          end
+        end
+      end
+
+      context 'when not admin' do
+        before do
+          token.user = user
+          token.save!
+
+          params[API::Helpers::SUDO_PARAM] = user.id.to_s
+        end
+
+        it 'raises an error' do
+          expect { current_user }.to raise_error /Must be admin to use sudo/
+        end
+      end
+    end
+
+    context 'using an OAuth token' do
+      let(:token) { create(:oauth_access_token) }
+
+      before do
+        env['HTTP_AUTHORIZATION'] = "Bearer #{token.token}"
+      end
+
+      it_behaves_like 'sudo'
+    end
+
+    context 'using a personal access token' do
+      let(:token) { create(:personal_access_token) }
+
+      context 'passed as param' do
+        before do
+          params[API::APIGuard::PRIVATE_TOKEN_PARAM] = token.token
+        end
+
+        it_behaves_like 'sudo'
+      end
+
+      context 'passed as header' do
+        before do
+          env[API::APIGuard::PRIVATE_TOKEN_HEADER] = token.token
+        end
+
+        it_behaves_like 'sudo'
+      end
+    end
+
+    context 'using warden authentication' do
+      before do
+        warden_authenticate_returns admin
+        env[API::Helpers::SUDO_HEADER] = user.username
+      end
+
+      it 'raises an error' do
+        expect { current_user }.to raise_error /Must be authenticated using an OAuth or Personal Access Token to use sudo/
       end
     end
   end

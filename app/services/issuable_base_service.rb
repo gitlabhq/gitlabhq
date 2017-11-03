@@ -1,6 +1,9 @@
 class IssuableBaseService < BaseService
+<<<<<<< HEAD
   prepend ::EE::IssuableBaseService
 
+=======
+>>>>>>> upstream/master
   private
 
   def filter_params(issuable)

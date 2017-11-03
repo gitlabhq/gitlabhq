@@ -73,7 +73,7 @@ module Gitlab
           decorate(repo, commit) if commit
         rescue Rugged::ReferenceError, Rugged::InvalidError, Rugged::ObjectError,
                Gitlab::Git::CommandError, Gitlab::Git::Repository::NoRepository,
-               Rugged::OdbError, Rugged::TreeError
+               Rugged::OdbError, Rugged::TreeError, ArgumentError
           nil
         end
 

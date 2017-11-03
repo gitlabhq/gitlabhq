@@ -186,7 +186,7 @@ Runner.
 We recommend using a separate machine for each GitLab Runner, if you plan to
 use the CI features.
 
-[security reasons]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/blob/master/docs/security/index.md
+[security reasons]: https://gitlab.com/gitlab-org/gitlab-runner/blob/master/docs/security/index.md
 
 ## Supported web browsers
 

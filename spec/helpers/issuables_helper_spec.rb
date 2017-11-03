@@ -190,6 +190,7 @@ describe IssuablesHelper do
       }
       expect(JSON.parse(helper.issuable_initial_data(issue))).to eq(expected_data)
     end
+<<<<<<< HEAD
 
     it 'returns the correct json for an epic' do
       epic = create(:epic, author: user, description: 'epic text')
@@ -212,5 +213,7 @@ describe IssuablesHelper do
       }
       expect(JSON.parse(helper.issuable_initial_data(epic))).to eq(expected_data)
     end
+=======
+>>>>>>> upstream/master
   end
 end
