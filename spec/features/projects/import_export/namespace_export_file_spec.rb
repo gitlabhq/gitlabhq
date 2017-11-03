@@ -52,7 +52,7 @@ feature 'Import/Export - Namespace export file cleanup', :js do
 
       expect(page).to have_content('Export project')
 
-      click_link 'Export project'
+      find(:link, 'Export project').send_keys(:return)
 
       visit edit_project_path(project)
 

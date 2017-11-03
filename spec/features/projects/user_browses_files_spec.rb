@@ -175,10 +175,11 @@ describe 'User browses files' do
 
       page.within('#modal-upload-blob') do
         fill_in(:commit_message, with: 'New commit message')
+        fill_in(:branch_name, with: 'new_branch_name', visible: true)
+        click_button('Upload file')
       end
 
-      fill_in(:branch_name, with: 'new_branch_name', visible: true)
-      click_button('Upload file')
+      wait_for_all_requests
 
       visit(project_blob_path(project, 'new_branch_name/logo_sample.svg'))
 

@@ -485,8 +485,6 @@ ul.notes {
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  // For PhantomJS that does not support flex
-  float: right;
   margin-left: 10px;
   color: $gray-darkest;
 
@@ -497,7 +495,6 @@ ul.notes {
 }
 
 .more-actions {
-  float: right; // phantomjs fallback
   display: flex;
   align-items: flex-end;
 

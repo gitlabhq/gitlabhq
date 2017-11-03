@@ -66,9 +66,11 @@ describe 'Dropdown label', :js do
     end
 
     it 'shows loading indicator when opened and hides it when loaded' do
-      filtered_search.set('label:')
+      slow_requests do
+        filtered_search.set('label:')
 
-      expect(find(js_dropdown_label)).to have_css('.filter-dropdown-loading')
+        expect(page).to have_css("#{js_dropdown_label} .filter-dropdown-loading", visible: true)
+      end
       expect(find(js_dropdown_label)).not_to have_css('.filter-dropdown-loading')
     end
 
