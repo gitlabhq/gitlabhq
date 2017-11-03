@@ -72,7 +72,7 @@ describe Projects::ClustersController do
           go
 
           expect(assigns(:authorize_url)).to include(key)
-          expect(session[session_key_for_redirect_uri]).to eq(project_clusters_url(project))
+          expect(session[session_key_for_redirect_uri]).to eq(providers_gcp_new_project_clusters_url(project))
         end
       end
 
