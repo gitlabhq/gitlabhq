@@ -25,7 +25,7 @@ feature 'Update Epic', :js do
     end
 
     it 'updates the issue' do
-      find('.btn-edit').trigger('click')
+      find('.btn-edit').click
 
       fill_in 'issuable-title', with: 'New epic title'
       fill_in 'issue-description', with: 'New epic description'
