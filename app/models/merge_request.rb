@@ -3,10 +3,8 @@ class MergeRequest < ActiveRecord::Base
   include Issuable
   include Noteable
   include Referable
-  include Sortable
   include Elastic::MergeRequestsSearch
   include IgnorableColumn
-  include CreatedAtFilterable
   include TimeTrackable
 
   ignore_column :locked_at
