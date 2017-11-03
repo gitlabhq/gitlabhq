@@ -18,7 +18,6 @@ class Repository
 
   include Gitlab::ShellAdapter
   include Elastic::RepositoriesSearch
-  include RepositoryMirroring
   prepend EE::Repository
 
   attr_accessor :full_path, :disk_path, :project, :is_wiki

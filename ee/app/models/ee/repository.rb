@@ -4,6 +4,7 @@ module EE
   # This module is intended to encapsulate EE-specific model logic
   # and be prepended in the `Repository` model
   module Repository
+    prepend RepositoryMirroring
     extend ActiveSupport::Concern
 
     # Transiently sets a configuration variable
