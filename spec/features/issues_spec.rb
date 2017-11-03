@@ -619,6 +619,18 @@ describe 'Issues' do
 
         expect(page.find_field("issue_description").value).not_to match /\n\n$/
       end
+
+      it "cancels a file upload correctly" do
+        slow_requests do
+          dropzone_file([Rails.root.join('spec', 'fixtures', 'dk.png')], 0, false)
+
+          click_button 'Cancel'
+        end
+
+        expect(page).to have_button('Attach a file')
+        expect(page).not_to have_button('Cancel')
+        expect(page).not_to have_selector('.uploading-progress-container', visible: true)
+      end
     end
 
     context 'form filled by URL parameters' do
