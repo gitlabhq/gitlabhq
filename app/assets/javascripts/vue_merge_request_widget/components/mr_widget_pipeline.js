@@ -1,11 +1,8 @@
 import PipelineStage from '../../pipelines/components/stage.vue';
 import ciIcon from '../../vue_shared/components/ci_icon.vue';
-<<<<<<< HEAD
+import icon from '../../vue_shared/components/icon.vue';
 import { statusIconEntityMap } from '../../vue_shared/ci_status_icons';
 import linkedPipelinesMiniList from '../../vue_shared/components/linked_pipelines_mini_list.vue';
-=======
-import icon from '../../vue_shared/components/icon.vue';
->>>>>>> upstream/master
 
 export default {
   name: 'MRWidgetPipeline',
@@ -15,11 +12,8 @@ export default {
   components: {
     'pipeline-stage': PipelineStage,
     ciIcon,
-<<<<<<< HEAD
-    linkedPipelinesMiniList,
-=======
     icon,
->>>>>>> upstream/master
+    linkedPipelinesMiniList,
   },
   computed: {
     hasPipeline() {

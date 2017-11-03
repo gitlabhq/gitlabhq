@@ -31,7 +31,6 @@ describe API::Helpers do
       .and_return(route_authentication_setting)
   end
 
-<<<<<<< HEAD
   def set_env(user_or_token, identifier)
     clear_env
     clear_param
@@ -58,8 +57,6 @@ describe API::Helpers do
     params.delete(API::Helpers::SUDO_PARAM)
   end
 
-=======
->>>>>>> upstream/master
   def warden_authenticate_returns(value)
     warden = double("warden", authenticate: value)
     env['warden'] = warden
@@ -209,7 +206,6 @@ describe API::Helpers do
         expect { current_user }.to raise_error API::APIGuard::ExpiredError
       end
     end
-<<<<<<< HEAD
 
     describe "when authenticating using a job token" do
       let(:job) { create(:ci_build, user: current_user) }
@@ -443,8 +439,6 @@ describe API::Helpers do
         end
       end
     end
-=======
->>>>>>> upstream/master
   end
 
   describe '.handle_api_exception' do

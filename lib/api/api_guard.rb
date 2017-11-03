@@ -44,18 +44,14 @@ module API
 
     # Helper Methods for Grape Endpoint
     module HelperMethods
-<<<<<<< HEAD
-      def find_current_user
+      def find_current_user!
         user =
-          find_user_from_private_token ||
+          find_user_from_access_token ||
           find_user_from_oauth_token ||
           find_user_from_warden ||
           find_user_by_job_token
-=======
-      def find_current_user!
-        user = find_user_from_access_token || find_user_from_warden
+
         return unless user
->>>>>>> upstream/master
 
         forbidden!('User is blocked') unless Gitlab::UserAccess.new(user).allowed? && user.can?(:access_api)
 

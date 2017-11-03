@@ -49,10 +49,8 @@ module MergeRequests
         create_branch_change_note(merge_request, 'target',
                                   merge_request.previous_changes['target_branch'].first,
                                   merge_request.target_branch)
-<<<<<<< HEAD
+
         reset_approvals(merge_request)
-=======
->>>>>>> upstream/master
       end
 
       if merge_request.previous_changes.include?('assignee_id')

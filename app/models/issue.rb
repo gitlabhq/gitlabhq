@@ -15,14 +15,11 @@ class Issue < ActiveRecord::Base
   include RelativePositioning
   include CreatedAtFilterable
   include TimeTrackable
-<<<<<<< HEAD
 
   WEIGHT_RANGE = 1..9
   WEIGHT_ALL = 'Everything'.freeze
   WEIGHT_ANY = 'Any Weight'.freeze
   WEIGHT_NONE = 'No Weight'.freeze
-=======
->>>>>>> upstream/master
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
