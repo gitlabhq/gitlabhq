@@ -2,25 +2,34 @@ module Gitlab
   module Metrics
     # Class for tracking timing information about method calls
     class MethodCall
+      MUTEX = Mutex.new
       BASE_LABELS = { module: nil, method: nil }.freeze
       attr_reader :real_time, :cpu_time, :call_count, :labels
 
       def self.call_real_duration_histogram
-        @call_real_duration_histogram ||= Gitlab::Metrics.histogram(
-          :gitlab_method_call_real_duration_seconds,
-          'Method calls real duration',
-          Transaction::BASE_LABELS.merge(BASE_LABELS),
-          [0.1, 0.2, 0.5, 1, 2, 5, 10]
-        )
+        return @call_real_duration_histogram if @call_real_duration_histogram
+
+        MUTEX.synchronize do
+          @call_real_duration_histogram ||= Gitlab::Metrics.histogram(
+            :gitlab_method_call_real_duration_seconds,
+            'Method calls real duration',
+            Transaction::BASE_LABELS.merge(BASE_LABELS),
+            [0.1, 0.2, 0.5, 1, 2, 5, 10]
+          )
+        end
       end
 
       def self.call_cpu_duration_histogram
-        @call_duration_histogram ||= Gitlab::Metrics.histogram(
-          :gitlab_method_call_cpu_duration_seconds,
-          'Method calls cpu duration',
-          Transaction::BASE_LABELS.merge(BASE_LABELS),
-          [0.1, 0.2, 0.5, 1, 2, 5, 10]
-        )
+        return @call_cpu_duration_histogram if @call_cpu_duration_histogram
+
+        MUTEX.synchronize do
+          @call_duration_histogram ||= Gitlab::Metrics.histogram(
+            :gitlab_method_call_cpu_duration_seconds,
+            'Method calls cpu duration',
+            Transaction::BASE_LABELS.merge(BASE_LABELS),
+            [0.1, 0.2, 0.5, 1, 2, 5, 10]
+          )
+        end
       end
 
       # name - The full name of the method (including namespace) such as
