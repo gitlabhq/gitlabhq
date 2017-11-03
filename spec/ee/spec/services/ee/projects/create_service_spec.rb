@@ -202,6 +202,29 @@ describe Projects::CreateService, '#execute' do
     end
   end
 
+  context 'audit events' do
+    include_examples 'audit event logging' do
+      let(:operation) { create_project(user, opts) }
+      let(:fail_condition!) do
+        allow(Gitlab::VisibilityLevel).to receive(:allowed_for?).and_return(false)
+      end
+      let(:attributes) do
+        {
+           author_id: user.id,
+           entity_id: @resource.id,
+           entity_type: 'Project',
+           details: {
+             add: 'project',
+             author_name: user.name,
+             target_id: @resource.full_path,
+             target_type: 'Project',
+             target_details: @resource.full_path
+           }
+         }
+      end
+    end
+  end
+
   def create_project(user, opts)
     described_class.new(user, opts).execute
   end

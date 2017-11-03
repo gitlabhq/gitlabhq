@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe AuditEventPresenter do
+  include Gitlab::Routing.url_helpers
+
   let(:details) do
     {
       author_name: 'author',
@@ -18,8 +20,16 @@ describe AuditEventPresenter do
     described_class.new(audit_event)
   end
 
-  it 'exposes the author name' do
-    expect(presenter.author_name).to eq(details[:author_name])
+  context 'exposes the author' do
+    it 'shows a link if it exists' do
+      expect(presenter.author_name).to eq("<a href=\"#{user_path(audit_event.user)}\">#{audit_event.user.name}</a>")
+    end
+
+    it 'stores the name if it has been deleted' do
+      audit_event.user = nil
+
+      expect(presenter.author_name).to be_blank
+    end
   end
 
   it 'exposes the target' do
@@ -30,8 +40,16 @@ describe AuditEventPresenter do
     expect(presenter.ip_address).to eq(details[:ip_address])
   end
 
-  it 'exposes the object' do
-    expect(presenter.object).to eq(details[:entity_path])
+  context 'exposes the object' do
+    it 'link if it exists' do
+      expect(presenter.object).to eq("<a href=\"#{url_for(audit_event.entity)}\">#{details[:entity_path]}</a>")
+    end
+
+    it 'stored name if it has been deleted' do
+      audit_event.entity_id = nil
+
+      expect(presenter.object).to be_blank
+    end
   end
 
   it 'exposes the date' do
