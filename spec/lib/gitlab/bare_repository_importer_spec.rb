@@ -63,6 +63,16 @@ describe Gitlab::BareRepositoryImporter, repository: true do
 
         expect(Project.find_by_full_path(project_path)).not_to be_nil
       end
+
+      context 'hashed storage enabled' do
+        it 'creates a project with the correct path in the database' do
+          stub_application_setting(hashed_storage_enabled: true)
+
+          importer.create_project_if_needed
+
+          expect(Project.find_by_full_path(project_path)).not_to be_nil
+        end
+      end
     end
   end
 
