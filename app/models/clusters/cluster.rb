@@ -52,7 +52,7 @@ module Clusters
     end
 
     def applications
-      [ 
+      [
         application_helm || build_application_helm
       ]
     end

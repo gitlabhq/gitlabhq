@@ -9,7 +9,7 @@ module Clusters
 
           if app.make_installing
             ClusterWaitForAppInstallationWorker.perform_in(
-              ClusterWaitForAppInstallationWorker::INITIAL_INTERVAL, app.name, app.id)
+              ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
           else
             app.make_errored!("Failed to update app record; #{app.errors}")
           end
