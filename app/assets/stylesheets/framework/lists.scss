@@ -299,40 +299,40 @@ ul.indent-list {
   }
 }
 
-.group-list-tree .avatar-container.content-loading {
-  position: relative;
+.group-list-tree {
+  .avatar-container.content-loading {
+    position: relative;
 
-  > a,
-  > a .avatar {
-    height: 100%;
-    border-radius: 50%;
-  }
+    > a,
+    > a .avatar {
+      height: 100%;
+      border-radius: 50%;
+    }
 
-  > a {
-    padding: 2px;
-  }
+    > a {
+      padding: 2px;
 
-  > a .avatar {
-    border: 2px solid $white-normal;
+      .avatar {
+        border: 2px solid $white-normal;
 
-    &.identicon {
-      line-height: 30px;
+        &.identicon {
+          line-height: 30px;
+        }
+      }
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      background-color: transparent;
+      border: 2px outset $kdb-border;
+      border-radius: 50%;
+      animation: spin-avatar 3s infinite linear;
     }
   }
 
-  &::after {
-    content: "";
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    background-color: transparent;
-    border: 2px outset $kdb-border;
-    border-radius: 50%;
-    animation: spin-avatar 3s infinite linear;
-  }
-}
-
-.group-list-tree {
   .folder-toggle-wrap {
     float: left;
     line-height: $list-text-height;

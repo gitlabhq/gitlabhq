@@ -52,7 +52,7 @@ feature 'Dashboard Todos' do
       end
 
       it 'updates todo count' do
-        expect(page).to have_content 'To do 0'
+        expect(page).to have_content 'Todos 0'
         expect(page).to have_content 'Done 1'
       end
 
@@ -81,7 +81,7 @@ feature 'Dashboard Todos' do
       end
 
       it 'updates todo count' do
-        expect(page).to have_content 'To do 1'
+        expect(page).to have_content 'Todos 1'
         expect(page).to have_content 'Done 0'
       end
     end
@@ -200,7 +200,7 @@ feature 'Dashboard Todos' do
       end
 
       it 'updates todo count' do
-        expect(page).to have_content 'To do 1'
+        expect(page).to have_content 'Todos 1'
         expect(page).to have_content 'Done 0'
       end
     end
@@ -256,7 +256,7 @@ feature 'Dashboard Todos' do
       end
 
       it 'shows "All done" message!' do
-        expect(page).to have_content 'To do 0'
+        expect(page).to have_content 'Todos 0'
         expect(page).to have_content "You're all done!"
         expect(page).not_to have_selector('.gl-pagination')
       end
@@ -283,7 +283,7 @@ feature 'Dashboard Todos' do
       it 'updates todo count' do
         mark_all_and_undo
 
-        expect(page).to have_content 'To do 2'
+        expect(page).to have_content 'Todos 2'
         expect(page).to have_content 'Done 0'
       end
 

@@ -111,24 +111,9 @@
   margin: auto;
   align-items: center;
 
-  .icon {
-    margin-right: $issuable-warning-icon-margin;
-  }
-}
-
-.disabled-comment .issuable-note-warning {
-  border: none;
-  border-radius: $label-border-radius;
-  padding-top: $gl-vert-padding;
-  padding-bottom: $gl-vert-padding;
-
-  .icon svg {
-    position: relative;
-    top: 2px;
-    margin-right: $btn-xs-side-margin;
-    width: $gl-font-size;
-    height: $gl-font-size;
-    fill: $orange-600;
+  + .md-area {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
   }
 }
 
@@ -153,11 +138,6 @@
       flex-grow: 1;
     }
   }
-}
-
-.issuable-note-warning + .md-area {
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
 }
 
 .discussion-form {

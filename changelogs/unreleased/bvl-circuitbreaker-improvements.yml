@@ -1,5 +1,0 @@
----
-title: Store circuitbreaker settings in the database instead of config
-merge_request: 14842
-author:
-type: changed
