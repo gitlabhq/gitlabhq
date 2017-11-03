@@ -213,7 +213,9 @@ export default {
   "commit_change_content_path": "/root/acets-app/merge_requests/22/commit_change_content",
   "codeclimate": {
     "head_path": "head.json",
-    "base_path": "base.json"
+    "head_blob_path": "/root/acets-app/blob/abcdef",
+    "base_path": "base.json",
+    "base_blob_path": "/root/acets-app/blob/abcdef"
   }
 };
 
