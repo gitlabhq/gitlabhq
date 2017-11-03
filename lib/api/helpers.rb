@@ -408,7 +408,7 @@ module API
     end
 
     def job_token_authentication?
-      initial_current_user && initial_current_user == find_user_by_job_token
+      initial_current_user && @job_token_authentication
     end
 
     def warden

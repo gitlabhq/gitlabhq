@@ -45,7 +45,7 @@ module API
     # Helper Methods for Grape Endpoint
     module HelperMethods
       def find_current_user!
-        user = find_user_from_access_token || find_user_from_warden || find_user_by_job_token
+        user = find_user_from_access_token || find_user_from_job_token || find_user_from_warden
         return unless user
 
         forbidden!('User is blocked') unless Gitlab::UserAccess.new(user).allowed? && user.can?(:access_api)
@@ -82,6 +82,20 @@ module API
         access_token.user || raise(UnauthorizedError)
       end
 
+      def find_user_from_job_token
+        return unless route_authentication_setting[:job_token_allowed]
+
+        token = (params[JOB_TOKEN_PARAM] || env[JOB_TOKEN_HEADER]).to_s
+        return unless token.present?
+
+        job = Ci::Build.find_by(token: token)
+        raise UnauthorizedError unless job
+
+        @job_token_authentication = true
+
+        job.user
+      end
+
       # Check the Rails session for valid authentication details
       def find_user_from_warden
         warden.try(:authenticate) if verified_request?
@@ -94,16 +108,6 @@ module API
       # Check if the request is GET/HEAD, or if CSRF token is valid.
       def verified_request?
         Gitlab::RequestForgeryProtection.verified?(env)
-      end
-
-      def find_user_by_job_token
-        return @user_by_job_token if defined?(@user_by_job_token)
-
-        @user_by_job_token =
-          if route_authentication_setting[:job_token_allowed]
-            token_string = params[JOB_TOKEN_PARAM].presence || env[JOB_TOKEN_HEADER].presence
-            Ci::Build.find_by_token(token_string)&.user if token_string
-          end
       end
 
       def route_authentication_setting
