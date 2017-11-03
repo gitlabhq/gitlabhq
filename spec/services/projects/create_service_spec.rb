@@ -149,6 +149,9 @@ describe Projects::CreateService, '#execute' do
     end
 
     context 'when another repository already exists on disk' do
+      let(:repository_storage) { 'default' }
+      let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
+
       let(:opts) do
         {
           name: 'Existing',
@@ -156,30 +159,59 @@ describe Projects::CreateService, '#execute' do
         }
       end
 
-      let(:repository_storage_path) { Gitlab.config.repositories.storages['default']['path'] }
+      context 'with legacy storage' do
+        before do
+          gitlab_shell.add_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+        end
 
-      before do
-        gitlab_shell.add_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+        after do
+          gitlab_shell.remove_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+        end
+
+        it 'does not allow to create a project when path matches existing repository on disk' do
+          project = create_project(user, opts)
+
+          expect(project).not_to be_persisted
+          expect(project).to respond_to(:errors)
+          expect(project.errors.messages).to have_key(:base)
+          expect(project.errors.messages[:base].first).to match('There is already a repository with that name on disk')
+        end
+
+        it 'does not allow to import project when path matches existing repository on disk' do
+          project = create_project(user, opts.merge({ import_url: 'https://gitlab.com/gitlab-org/gitlab-test.git' }))
+
+          expect(project).not_to be_persisted
+          expect(project).to respond_to(:errors)
+          expect(project.errors.messages).to have_key(:base)
+          expect(project.errors.messages[:base].first).to match('There is already a repository with that name on disk')
+        end
       end
 
-      after do
-        gitlab_shell.remove_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
-      end
+      context 'with hashed storage' do
+        let(:hash) { '6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b' }
+        let(:hashed_path) { '@hashed/6b/86/6b86b273ff34fce19d6b804eff5a3f5747ada4eaa22f1d49c01e52ddb7875b4b' }
 
-      it 'does not allow to create project with same path' do
-        project = create_project(user, opts)
+        before do
+          stub_application_setting(hashed_storage_enabled: true)
+          allow(Digest::SHA2).to receive(:hexdigest) { hash }
+        end
 
-        expect(project).to respond_to(:errors)
-        expect(project.errors.messages).to have_key(:base)
-        expect(project.errors.messages[:base].first).to match('There is already a repository with that name on disk')
-      end
+        before do
+          gitlab_shell.add_repository(repository_storage_path, hashed_path)
+        end
 
-      it 'does not allow to import a project with the same path' do
-        project = create_project(user, opts.merge({ import_url: 'https://gitlab.com/gitlab-org/gitlab-test.git' }))
+        after do
+          gitlab_shell.remove_repository(repository_storage_path, hashed_path)
+        end
 
-        expect(project).to respond_to(:errors)
-        expect(project.errors.messages).to have_key(:base)
-        expect(project.errors.messages[:base].first).to match('There is already a repository with that name on disk')
+        it 'does not allow to create a project when path matches existing repository on disk' do
+          project = create_project(user, opts)
+
+          expect(project).not_to be_persisted
+          expect(project).to respond_to(:errors)
+          expect(project.errors.messages).to have_key(:base)
+          expect(project.errors.messages[:base].first).to match('There is already a repository with that name on disk')
+        end
       end
     end
   end

@@ -277,3 +277,6 @@ timelogs:
 - user
 push_event_payload:
 - event
+issue_assignees:
+- issue
+- assignee

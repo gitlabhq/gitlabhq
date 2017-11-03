@@ -288,8 +288,14 @@
     fill: $black;
   }
 
-  .tick > text {
-    font-size: 12px;
+  .tick {
+    > line {
+      stroke: $gray-darker;
+    }
+
+    > text {
+      font-size: 12px;
+    }
   }
 
   .text-metric-title {

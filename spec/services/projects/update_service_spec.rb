@@ -149,24 +149,43 @@ describe Projects::UpdateService, '#execute' do
   end
 
   context 'when renaming a project' do
-    let(:repository_storage_path) { Gitlab.config.repositories.storages['default']['path'] }
+    let(:repository_storage) { 'default' }
+    let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
 
-    before do
-      gitlab_shell.add_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+    context 'with legacy storage' do
+      before do
+        gitlab_shell.add_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+      end
+
+      after do
+        gitlab_shell.remove_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+      end
+
+      it 'does not allow renaming when new path matches existing repository on disk' do
+        result = update_project(project, admin, path: 'existing')
+
+        expect(result).to include(status: :error)
+        expect(result[:message]).to match('There is already a repository with that name on disk')
+        expect(project).not_to be_valid
+        expect(project.errors.messages).to have_key(:base)
+        expect(project.errors.messages[:base]).to include('There is already a repository with that name on disk')
+      end
     end
 
-    after do
-      gitlab_shell.remove_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
-    end
+    context 'with hashed storage' do
+      let(:project) { create(:project, :repository, creator: user, namespace: user.namespace) }
 
-    it 'does not allow renaming when new path matches existing repository on disk' do
-      result = update_project(project, admin, path: 'existing')
+      before do
+        stub_application_setting(hashed_storage_enabled: true)
+      end
 
-      expect(result).to include(status: :error)
-      expect(result[:message]).to match('There is already a repository with that name on disk')
-      expect(project).not_to be_valid
-      expect(project.errors.messages).to have_key(:base)
-      expect(project.errors.messages[:base]).to include('There is already a repository with that name on disk')
+      it 'does not check if new path matches existing repository on disk' do
+        expect(project).not_to receive(:repository_with_same_path_already_exists?)
+
+        result = update_project(project, admin, path: 'existing')
+
+        expect(result).to include(status: :success)
+      end
     end
   end
 

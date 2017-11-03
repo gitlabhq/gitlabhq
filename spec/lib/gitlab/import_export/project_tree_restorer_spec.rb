@@ -24,7 +24,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
 
     context 'JSON' do
       it 'restores models based on JSON' do
-        expect(@restored_project_json).to be true
+        expect(@restored_project_json).to be_truthy
       end
 
       it 'restore correct project features' do
@@ -61,6 +61,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         issue = Issue.where(description: 'Aliquam enim illo et possimus.').first
 
         expect(issue.reload.updated_at.to_s).to eq('2016-06-14 15:02:47 UTC')
+      end
+
+      it 'has issue assignees' do
+        expect(Issue.where(title: 'Voluptatem').first.issue_assignees).not_to be_empty
       end
 
       it 'contains the merge access levels on a protected branch' do
@@ -182,6 +186,53 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
     end
   end
 
+  shared_examples 'restores project successfully' do
+    it 'correctly restores project' do
+      expect(shared.errors).to be_empty
+      expect(restored_project_json).to be_truthy
+    end
+  end
+
+  shared_examples 'restores project correctly' do |**results|
+    it 'has labels' do
+      expect(project.labels.size).to eq(results.fetch(:labels, 0))
+    end
+
+    it 'has label priorities' do
+      expect(project.labels.first.priorities).not_to be_empty
+    end
+
+    it 'has milestones' do
+      expect(project.milestones.size).to eq(results.fetch(:milestones, 0))
+    end
+
+    it 'has issues' do
+      expect(project.issues.size).to eq(results.fetch(:issues, 0))
+    end
+
+    it 'has issue with group label and project label' do
+      labels = project.issues.first.labels
+
+      expect(labels.where(type: "ProjectLabel").count).to eq(results.fetch(:first_issue_labels, 0))
+    end
+  end
+
+  shared_examples 'restores group correctly' do |**results|
+    it 'has group label' do
+      expect(project.group.labels.size).to eq(results.fetch(:labels, 0))
+    end
+
+    it 'has group milestone' do
+      expect(project.group.milestones.size).to eq(results.fetch(:milestones, 0))
+    end
+
+    it 'has issue with group label' do
+      labels = project.issues.first.labels
+
+      expect(labels.where(type: "GroupLabel").count).to eq(results.fetch(:first_issue_labels, 0))
+    end
+  end
+
   context 'Light JSON' do
     let(:user) { create(:user) }
     let(:shared) { Gitlab::ImportExport::Shared.new(relative_path: "", project_path: 'path') }
@@ -190,33 +241,45 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
     let(:restored_project_json) { project_tree_restorer.restore }
 
     before do
-      project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.light.json")
-
       allow(shared).to receive(:export_path).and_return('spec/lib/gitlab/import_export/')
     end
 
-    context 'project.json file access check' do
-      it 'does not read a symlink' do
-        Dir.mktmpdir do |tmpdir|
-          setup_symlink(tmpdir, 'project.json')
-          allow(shared).to receive(:export_path).and_call_original
+    context 'with a simple project' do
+      before do
+        project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.light.json")
 
-          restored_project_json
+        restored_project_json
+      end
 
-          expect(shared.errors.first).to be_nil
+      it_behaves_like 'restores project correctly',
+                      issues: 1,
+                      labels: 1,
+                      milestones: 1,
+                      first_issue_labels: 1
+
+      context 'project.json file access check' do
+        it 'does not read a symlink' do
+          Dir.mktmpdir do |tmpdir|
+            setup_symlink(tmpdir, 'project.json')
+            allow(shared).to receive(:export_path).and_call_original
+
+            restored_project_json
+
+            expect(shared.errors).to be_empty
+          end
         end
       end
-    end
 
-    context 'when there is an existing build with build token' do
-      it 'restores project json correctly' do
-        create(:ci_build, token: 'abcd')
+      context 'when there is an existing build with build token' do
+        before do
+          create(:ci_build, token: 'abcd')
+        end
 
-        expect(restored_project_json).to be true
+        it_behaves_like 'restores project successfully'
       end
     end
 
-    context 'with group' do
+    context 'with a project that has a group' do
       let!(:project) do
         create(:project,
                :builds_disabled,
@@ -227,43 +290,22 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
       end
 
       before do
-        project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.light.json")
+        project_tree_restorer.instance_variable_set(:@path, "spec/lib/gitlab/import_export/project.group.json")
 
         restored_project_json
       end
 
-      it 'correctly restores project' do
-        expect(restored_project_json).to be_truthy
-        expect(shared.errors).to be_empty
-      end
+      it_behaves_like 'restores project successfully'
+      it_behaves_like 'restores project correctly',
+                      issues: 2,
+                      labels: 1,
+                      milestones: 1,
+                      first_issue_labels: 1
 
-      it 'has labels' do
-        expect(project.labels.count).to eq(2)
-      end
-
-      it 'creates group label' do
-        expect(project.group.labels.count).to eq(1)
-      end
-
-      it 'has label priorities' do
-        expect(project.labels.first.priorities).not_to be_empty
-      end
-
-      it 'has milestones' do
-        expect(project.milestones.count).to eq(1)
-      end
-
-      it 'has issue' do
-        expect(project.issues.count).to eq(1)
-        expect(project.issues.first.labels.count).to eq(2)
-      end
-
-      it 'has issue with group label and project label' do
-        labels = project.issues.first.labels
-
-        expect(labels.where(type: "GroupLabel").count).to eq(1)
-        expect(labels.where(type: "ProjectLabel").count).to eq(1)
-      end
+      it_behaves_like 'restores group correctly',
+                      labels: 1,
+                      milestones: 1,
+                      first_issue_labels: 1
     end
   end
 end

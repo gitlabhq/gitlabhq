@@ -44,6 +44,19 @@ Rails.application.routes.draw do
     get 'readiness' => 'health#readiness'
     resources :metrics, only: [:index]
     mount Peek::Railtie => '/peek'
+
+    # Boards resources shared between group and projects
+    resources :boards, only: [] do
+      resources :lists, module: :boards, only: [:index, :create, :update, :destroy] do
+        collection do
+          post :generate
+        end
+
+        resources :issues, only: [:index, :create, :update]
+      end
+
+      resources :issues, module: :boards, only: [:index, :update]
+    end
   end
 
   # Koding route
@@ -73,19 +86,6 @@ Rails.application.routes.draw do
 
   # Notification settings
   resources :notification_settings, only: [:create, :update]
-
-  # Boards resources shared between group and projects
-  resources :boards do
-    resources :lists, module: :boards, only: [:index, :create, :update, :destroy] do
-      collection do
-        post :generate
-      end
-
-      resources :issues, only: [:index, :create, :update]
-    end
-
-    resources :issues, module: :boards, only: [:index, :update]
-  end
 
   draw :import
   draw :uploads

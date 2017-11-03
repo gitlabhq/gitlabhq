@@ -194,7 +194,10 @@ class ApplicationSetting < ActiveRecord::Base
     ensure_cache_setup
 
     Rails.cache.fetch(CACHE_KEY) do
-      ApplicationSetting.last
+      ApplicationSetting.last.tap do |settings|
+        # do not cache nils
+        raise 'missing settings' unless settings
+      end
     end
   rescue
     # Fall back to an uncached value if there are any problems (e.g. redis down)

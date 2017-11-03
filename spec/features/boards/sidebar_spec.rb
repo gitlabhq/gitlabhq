@@ -1,6 +1,8 @@
 require 'rails_helper'
 
-describe 'Issue Boards', js: true do
+describe 'Issue Boards', :js do
+  include BoardHelpers
+
   let(:user)         { create(:user) }
   let(:user2)        { create(:user) }
   let(:project)      { create(:project, :public) }
@@ -309,6 +311,21 @@ describe 'Issue Boards', js: true do
       expect(card).to have_selector('.label', count: 1)
       expect(card).not_to have_content(stretch.title)
     end
+
+    it 'creates new label' do
+      click_card(card)
+
+      page.within('.labels') do
+        click_link 'Edit'
+        click_link 'Create new label'
+        fill_in 'new_label_name', with: 'test label'
+        first('.suggest-colors-dropdown a').click
+        click_button 'Create'
+        wait_for_requests
+
+        expect(page).to have_link 'test label'
+      end
+    end
   end
 
   context 'subscription' do
@@ -320,21 +337,6 @@ describe 'Issue Boards', js: true do
         wait_for_requests
         expect(page).to have_content("Unsubscribe")
       end
-    end
-  end
-
-  def click_card(card)
-    page.within(card) do
-      first('.card-number').click
-    end
-
-    wait_for_sidebar
-  end
-
-  def wait_for_sidebar
-    # loop until the CSS transition is complete
-    Timeout.timeout(0.5) do
-      loop until evaluate_script('$(".right-sidebar").outerWidth()') == 290
     end
   end
 end
