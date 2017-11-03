@@ -98,7 +98,7 @@ pull mirror settings page.
 
 When a project is hard failed, it will no longer get picked up for mirroring.
 A user can resume the project mirroring again by either [forcing an update](#forcing-an-update)
-or by changing the import URL field in the repository settings.
+or by changing the import URL in repository settings.
 
 ### SSH authentication
 

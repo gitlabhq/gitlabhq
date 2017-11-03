@@ -5,16 +5,6 @@ module EE
 
       included do
         state_machine :import_status, initial: :none do
-          event :import_hard_fail do
-            transition failed: :hard_failed
-          end
-
-          event :import_resume do
-            transition hard_failed: :failed
-          end
-
-          state :hard_failed
-
           before_transition [:none, :finished, :failed] => :scheduled do |project, _|
             project.mirror_data&.last_update_scheduled_at = Time.now
           end
@@ -25,9 +15,8 @@ module EE
 
           before_transition scheduled: :failed do |project, _|
             if project.mirror?
-              timestamp = Time.now
-              project.mirror_last_update_at = timestamp
-              project.mirror_data.next_execution_timestamp = timestamp
+              project.mirror_last_update_at = Time.now
+              project.mirror_data.set_next_execution_to_now
             end
           end
 
@@ -40,10 +29,8 @@ module EE
               project.mirror_last_update_at = Time.now
 
               mirror_data = project.mirror_data
-              mirror_data.increment_retry_count!
-              mirror_data.set_next_execution_timestamp!
-
-              project.run_after_commit { import_hard_fail } if mirror_data.retry_limit_exceeded?
+              mirror_data.increment_retry_count
+              mirror_data.set_next_execution_timestamp
             end
           end
 
@@ -54,8 +41,8 @@ module EE
               project.mirror_last_successful_update_at = timestamp
 
               mirror_data = project.mirror_data
-              mirror_data.reset_retry_count!
-              mirror_data.set_next_execution_timestamp!
+              mirror_data.reset_retry_count
+              mirror_data.set_next_execution_timestamp
             end
 
             if ::Gitlab::CurrentSettings.current_application_settings.elasticsearch_indexing?
@@ -63,13 +50,6 @@ module EE
                 last_indexed_commit = project.index_status&.last_commit
                 ElasticCommitIndexerWorker.perform_async(project.id, last_indexed_commit)
               end
-            end
-          end
-
-          before_transition hard_failed: :failed do |project, _|
-            if project.mirror?
-              project.mirror_data.reset_retry_count!
-              project.force_import_job!
             end
           end
 

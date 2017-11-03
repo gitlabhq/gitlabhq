@@ -7,21 +7,19 @@ class ProjectMirrorData < ActiveRecord::Base
   validates :project, presence: true
   validates :next_execution_timestamp, presence: true
 
-  before_validation on: :create do
-    self.next_execution_timestamp = Time.now
-  end
+  before_validation :set_next_execution_to_now, on: :create
 
-  def reset_retry_count!
+  def reset_retry_count
     self.retry_count = 0
   end
 
-  def increment_retry_count!
+  def increment_retry_count
     self.retry_count += 1
   end
 
   # We schedule the next sync time based on the duration of the
   # last mirroring period and add it a fixed backoff period with a random jitter
-  def set_next_execution_timestamp!
+  def set_next_execution_timestamp
     timestamp = Time.now
     retry_factor = [1, self.retry_count].max
     delay = [base_delay(timestamp), Gitlab::Mirror.min_delay].max
@@ -30,8 +28,8 @@ class ProjectMirrorData < ActiveRecord::Base
     self.next_execution_timestamp = timestamp + delay
   end
 
-  def set_next_execution_to_now!
-    self.update_attributes(next_execution_timestamp: Time.now)
+  def set_next_execution_to_now
+    self.next_execution_timestamp = Time.now
   end
 
   def retry_limit_exceeded?

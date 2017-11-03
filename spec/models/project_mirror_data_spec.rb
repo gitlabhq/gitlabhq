@@ -23,36 +23,25 @@ describe ProjectMirrorData, type: :model do
     end
   end
 
-  describe 'when update' do
-    context 'when retry limit reached' do
-      it 'marks mirror as hard failed' do
-        project = create(:project, :mirror, :import_started)
-        project.mirror_data.update_attributes(retry_count: Gitlab::Mirror::MAX_RETRY)
-
-        expect { project.import_fail }.to change(project, :import_status).from('started').to('hard_failed')
-      end
-    end
-  end
-
-  describe '#reset_retry_count!' do
+  describe '#reset_retry_count' do
     let(:mirror_data) { create(:project, :mirror, :import_finished).mirror_data }
 
     it 'resets retry_count to 0' do
       mirror_data.retry_count = 3
 
-      expect { mirror_data.reset_retry_count! }.to change { mirror_data.retry_count }.from(3).to(0)
+      expect { mirror_data.reset_retry_count }.to change { mirror_data.retry_count }.from(3).to(0)
     end
   end
 
-  describe '#increment_retry_count!' do
+  describe '#increment_retry_count' do
     let(:mirror_data) { create(:project, :mirror, :import_finished).mirror_data }
 
     it 'increments retry_count' do
-      expect { mirror_data.increment_retry_count! }.to change { mirror_data.retry_count }.from(0).to(1)
+      expect { mirror_data.increment_retry_count }.to change { mirror_data.retry_count }.from(0).to(1)
     end
   end
 
-  describe '#set_next_execution_timestamp!' do
+  describe '#set_next_execution_timestamp' do
     let(:mirror_data) { create(:project, :mirror, :import_finished).mirror_data }
     let!(:timestamp) { Time.now }
     let!(:jitter) { 2.seconds }
@@ -75,7 +64,7 @@ describe ProjectMirrorData, type: :model do
       context 'when incrementing retry count' do
         it 'applies transition successfully' do
           mirror_data.retry_count = 2
-          mirror_data.increment_retry_count!
+          mirror_data.increment_retry_count
 
           expect_next_execution_timestamp(mirror_data, timestamp + 78.minutes)
         end
@@ -103,7 +92,7 @@ describe ProjectMirrorData, type: :model do
         context 'when incrementing retry count' do
           it 'applies transition successfully' do
             mirror_data.retry_count = 3
-            mirror_data.increment_retry_count!
+            mirror_data.increment_retry_count
 
             expect_next_execution_timestamp(mirror_data, timestamp + 62.minutes)
           end
@@ -126,7 +115,7 @@ describe ProjectMirrorData, type: :model do
         context 'when incrementing retry count' do
           it 'applies transition successfully' do
             mirror_data.retry_count = 2
-            mirror_data.increment_retry_count!
+            mirror_data.increment_retry_count
 
             expect_next_execution_timestamp(mirror_data, max_timestamp + mirror_jitter)
           end
@@ -137,7 +126,7 @@ describe ProjectMirrorData, type: :model do
     def expect_next_execution_timestamp(mirror_data, new_timestamp)
       Timecop.freeze(timestamp) do
         expect do
-          mirror_data.set_next_execution_timestamp!
+          mirror_data.set_next_execution_timestamp
         end.to change { mirror_data.next_execution_timestamp }.to eq(new_timestamp)
       end
     end

@@ -78,15 +78,21 @@ FactoryGirl.define do
     end
 
     trait :import_finished do
+      timestamp = Time.now
+
       import_status :finished
+      mirror_last_update_at timestamp
+      mirror_last_successful_update_at timestamp
     end
 
     trait :import_failed do
       import_status :failed
+      mirror_last_update_at Time.now
     end
 
     trait :import_hard_failed do
-      import_status :hard_failed
+      import_status :failed
+      mirror_last_update_at Time.now - 1.minute
 
       after(:create) do |project|
         project.mirror_data&.update_attributes(retry_count: Gitlab::Mirror::MAX_RETRY + 1)
