@@ -1,7 +1,6 @@
 import PipelineStage from '../../pipelines/components/stage.vue';
 import ciIcon from '../../vue_shared/components/ci_icon.vue';
 import icon from '../../vue_shared/components/icon.vue';
-import { statusIconEntityMap } from '../../vue_shared/ci_status_icons';
 import linkedPipelinesMiniList from '../../vue_shared/components/linked_pipelines_mini_list.vue';
 
 export default {
