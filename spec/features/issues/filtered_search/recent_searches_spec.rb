@@ -81,7 +81,7 @@ describe 'Recent searches', :js do
     visit project_issues_path(project_1)
 
     find('.filtered-search-history-dropdown-toggle-button').click
-    all('.filtered-search-history-dropdown-item')[0].click
+    all('.filtered-search-history-dropdown-item', count: 2)[0].click
     wait_for_filtered_search('foo')
 
     expect(find('.filtered-search').value.strip).to eq('foo')
@@ -92,13 +92,10 @@ describe 'Recent searches', :js do
     visit project_issues_path(project_1)
 
     find('.filtered-search-history-dropdown-toggle-button').click
-    items_before = all('.filtered-search-history-dropdown-item')
-
-    expect(items_before.count).to eq(1)
+    all('.filtered-search-history-dropdown-item', count: 1)
 
     find('.filtered-search-history-clear-button').click
-    find('.filtered-search-history-dropdown-toggle-button').click
-    items_after = all('.filtered-search-history-dropdown-item')
+    items_after = all('.filtered-search-history-dropdown-item', count: 0)
 
     expect(items_after.count).to eq(0)
   end
