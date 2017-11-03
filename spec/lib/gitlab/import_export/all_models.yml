@@ -147,6 +147,9 @@ deploy_keys:
 - user
 - deploy_keys_projects
 - projects
+cluster:
+- projects
+- user
 clusters:
 - projects
 - user

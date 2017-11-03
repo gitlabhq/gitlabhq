@@ -13,7 +13,7 @@ describe MigrateGcpClustersToNewClustersArchitectures, :migration do
   let(:gcp_cluster_size) { 1 }
   let(:created_at) { '2017-10-17 20:24:02.219679' }
   let(:updated_at) { '2017-10-17 20:28:44.738998' }
-  let(:enabled) { true }
+  let(:enabled) { 1 } # true
   let(:status_reason) { 'general error' }
   let(:project_namespace) { 'sample-app' }
   let(:endpoint) { '111.111.111.111' }
@@ -50,7 +50,7 @@ describe MigrateGcpClustersToNewClustersArchitectures, :migration do
     expect(Clusters::Platforms::Kubernetes.count).to eq(1)
 
     expect(cluster.user).to eq(user)
-    expect(cluster.enabled).to eq(enabled)
+    expect(cluster.enabled).to be_truthy
     expect(cluster.name).to eq(gcp_cluster_name)
     expect(cluster.provider_type).to eq('gcp')
     expect(cluster.platform_type).to eq('kubernetes')
