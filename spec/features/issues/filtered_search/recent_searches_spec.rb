@@ -76,7 +76,8 @@ describe 'Recent searches', :js do
     set_recent_searches(project_1_local_storage_key, '["foo", "bar"]')
     visit project_issues_path(project_1)
 
-    all('.filtered-search-history-dropdown-item', visible: false, count: 2)[0].click
+    find('.filtered-search-history-dropdown-toggle-button').click
+    all('.filtered-search-history-dropdown-item', count: 2)[0].click
     wait_for_filtered_search('foo')
 
     expect(find('.filtered-search').value.strip).to eq('foo')
@@ -86,10 +87,11 @@ describe 'Recent searches', :js do
     set_recent_searches(project_1_local_storage_key, '["foo"]')
     visit project_issues_path(project_1)
 
-    all('.filtered-search-history-dropdown-item', visible: false, count: 1)
+    find('.filtered-search-history-dropdown-toggle-button').click
+    all('.filtered-search-history-dropdown-item', count: 1)
 
-    find('.filtered-search-history-clear-button', visible: false).click
-    items_after = all('.filtered-search-history-dropdown-item', visible: false, count: 0)
+    find('.filtered-search-history-clear-button').click
+    items_after = all('.filtered-search-history-dropdown-item', count: 0)
 
     expect(items_after.count).to eq(0)
   end
