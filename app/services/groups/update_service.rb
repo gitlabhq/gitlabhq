@@ -1,6 +1,7 @@
 module Groups
   class UpdateService < Groups::BaseService
     include UpdateVisibilityLevel
+    prepend ::EE::Groups::UpdateService
 
     def execute
       reject_parent_id!
