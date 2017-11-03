@@ -72,6 +72,8 @@ module Gitlab
         @metrics << Metric.new(EVENT_SERIES, { count: 1 }, tags.merge(event: event_name), :event)
       end
 
+      #
+      # Deprecated
       def add_event_with_values(event_name, values, tags = {})
         @metrics << Metric.new(EVENT_SERIES,
                                { count: 1 }.merge(values),

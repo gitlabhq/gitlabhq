@@ -46,10 +46,10 @@ describe Geo::MetricsUpdateService, :geo do
       it 'attempts to retrieve metrics from all nodes' do
         subject.execute
 
-        expect(Gitlab::Metrics.provide_metric(:geo_db_replication_lag_seconds).values.count).to eq(2)
-        expect(Gitlab::Metrics.provide_metric(:geo_repositories).values.count).to eq(2)
-        expect(Gitlab::Metrics.provide_metric(:geo_repositories).get({ url: secondary.url })).to eq(10)
-        expect(Gitlab::Metrics.provide_metric(:geo_repositories).get({ url: secondary.url })).to eq(10)
+        expect(Gitlab::Metrics.registry.get(:geo_db_replication_lag_seconds).values.count).to eq(2)
+        expect(Gitlab::Metrics.registry.get(:geo_repositories).values.count).to eq(2)
+        expect(Gitlab::Metrics.registry.get(:geo_repositories).get({ url: secondary.url })).to eq(10)
+        expect(Gitlab::Metrics.registry.get(:geo_repositories).get({ url: secondary.url })).to eq(10)
       end
     end
 
@@ -92,7 +92,7 @@ describe Geo::MetricsUpdateService, :geo do
       end
 
       def metric_value(metric_name)
-        Gitlab::Metrics.provide_metric(metric_name).get({ url: secondary.url })
+        Gitlab::Metrics.registry.get(metric_name).get({ url: secondary.url })
       end
     end
   end
