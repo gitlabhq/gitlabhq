@@ -11,6 +11,8 @@ module Clusters
 
       default_value_for :version, Gitlab::Kubernetes::Helm::HELM_VERSION
 
+      validates :cluster, presence: true
+
       def name
         NAME
       end

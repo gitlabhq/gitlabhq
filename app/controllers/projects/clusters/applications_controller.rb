@@ -5,12 +5,12 @@ class Projects::Clusters::ApplicationsController < Projects::ApplicationControll
   before_action :authorize_create_cluster!, only: [:create]
 
   def create
-    return render_404 if application
-
     respond_to do |format|
       format.json do
-        # TODO: Do that via Service
-        if application_class.create(cluster: cluster).persisted?
+        scheduled = Clusters::Applications::ScheduleInstallationService.new(project, current_user,
+                                                                            application_class: @application_class,
+                                                                            cluster: @cluster).execute
+        if scheduled
           head :no_data
         else
           head :bad_request
@@ -26,10 +26,6 @@ class Projects::Clusters::ApplicationsController < Projects::ApplicationControll
   end
 
   def application_class
-    Clusters::Cluster::APPLICATIONS[params[:application]] || render_404
-  end
-
-  def application
-    application_class.find_by(cluster: cluster)
+    @application_class ||= Clusters::Cluster::APPLICATIONS[params[:application]] || render_404
   end
 end
