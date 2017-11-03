@@ -378,7 +378,7 @@ describe 'Issues' do
     it 'changes incoming email address token', :js do
       find('.issue-email-modal-btn').click
       previous_token = find('input#issue_email').value
-      find('.incoming-email-token-reset').trigger('click')
+      find('.incoming-email-token-reset').click
 
       wait_for_requests
 

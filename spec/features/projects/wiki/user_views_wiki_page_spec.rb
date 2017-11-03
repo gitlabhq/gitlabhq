@@ -138,7 +138,7 @@ describe 'User views a wiki page' do
   it 'opens a default wiki page', :js do
     visit(project_path(project))
 
-    find('.shortcuts-wiki').trigger('click')
+    find('.shortcuts-wiki').click
 
     expect(page).to have_content('Home · Create Page')
   end
