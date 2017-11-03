@@ -43,10 +43,11 @@ describe Geo::PruneEventLogWorker, :geo do
         end
 
         it 'deletes everything from the Geo event log' do
-          expect(worker).to receive(:log_info).with('No secondary nodes, delete all Geo Event Log entries')
-          expect(Geo::EventLog).to receive(:delete_all)
+          create_list(:geo_event_log, 2)
 
-          worker.perform
+          expect(worker).to receive(:log_info).with('No secondary nodes, delete all Geo Event Log entries')
+
+          expect { worker.perform }.to change { Geo::EventLog.count }.by(-2)
         end
       end
 
@@ -64,28 +65,29 @@ describe Geo::PruneEventLogWorker, :geo do
         it 'contacts all secondary nodes for their status' do
           expect(node_status_service).to receive(:call).twice { healthy_status }
           expect(worker).to receive(:log_info).with('Delete Geo Event Log entries up to id', anything)
-          expect(Geo::EventLog).to receive(:delete_all)
 
           worker.perform
         end
 
         it 'aborts when there are unhealthy nodes' do
+          create_list(:geo_event_log, 2)
+
           expect(node_status_service).to receive(:call).twice.and_return(healthy_status, unhealthy_status)
           expect(worker).to receive(:log_info).with('Could not get status of all nodes, not deleting any entries from Geo Event Log', unhealthy_node_count: 1)
-          expect(Geo::EventLog).not_to receive(:delete_all)
 
-          worker.perform
+          expect { worker.perform }.not_to change { Geo::EventLog.count }
         end
 
-        it 'takes the integer-minimum value of all nodes' do
-          allow(node_status_service).to receive(:call).twice.and_return(
-            build(:geo_node_status, :healthy, cursor_last_event_id: 3),
-            build(:geo_node_status, :healthy, cursor_last_event_id: 10)
-          )
-          expect(worker).to receive(:log_info).with('Delete Geo Event Log entries up to id', geo_event_log_id: 3)
-          expect(Geo::EventLog).to receive(:delete_all).with(['id < ?', 3])
+        it 'takes the integer-minimum value of all cursor_last_event_ids' do
+          events = create_list(:geo_event_log, 12)
 
-          worker.perform
+          allow(node_status_service).to receive(:call).twice.and_return(
+            build(:geo_node_status, :healthy, cursor_last_event_id: events[3]),
+            build(:geo_node_status, :healthy, cursor_last_event_id: events.last)
+          )
+          expect(worker).to receive(:log_info).with('Delete Geo Event Log entries up to id', geo_event_log_id: events[3])
+
+          expect { worker.perform }.to change { Geo::EventLog.count }.by(-3)
         end
       end
     end

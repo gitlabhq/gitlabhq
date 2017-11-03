@@ -31,7 +31,7 @@ module Geo
         end
 
         log_info('Delete Geo Event Log entries up to id', geo_event_log_id: cursor_last_event_ids.min)
-        Geo::EventLog.delete_all(['id < ?', cursor_last_event_ids.min])
+        Geo::EventLog.where('id < ?', cursor_last_event_ids.min).delete_all
       end
     end
   end
