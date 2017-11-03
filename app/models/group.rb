@@ -56,6 +56,7 @@ class Group < Namespace
   after_create :post_create_hook
   after_destroy :post_destroy_hook
   after_save :update_two_factor_requirement
+  after_update :path_changed_hook, if: :path_changed?
 
   scope :where_group_links_with_provider, ->(provider) do
     joins(:ldap_group_links).where(ldap_group_links: { provider: provider })
@@ -341,12 +342,22 @@ class Group < Namespace
     list_of_ids.reverse.map { |group| variables[group.id] }.compact.flatten
   end
 
+  def full_path_was
+    return path_was unless has_parent?
+
+    "#{parent.full_path}/#{path_was}"
+  end
+
   private
 
   def update_two_factor_requirement
     return unless require_two_factor_authentication_changed? || two_factor_grace_period_changed?
 
     users.find_each(&:update_two_factor_requirement)
+  end
+
+  def path_changed_hook
+    system_hook_service.execute_hooks_for(self, :rename)
   end
 
   def visibility_level_allowed_by_parent

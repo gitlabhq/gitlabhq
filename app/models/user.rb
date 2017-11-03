@@ -171,6 +171,7 @@ class User < ActiveRecord::Base
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
   after_save :ensure_namespace_correct
+  after_update :username_changed_hook, if: :username_changed?
   after_destroy :post_destroy_hook
   after_commit :update_emails_with_primary_email, on: :update, if: -> { previous_changes.key?('email') }
   after_commit :update_invalid_gpg_signatures, on: :update, if: -> { previous_changes.key?('email') }
@@ -888,6 +889,10 @@ class User < ActiveRecord::Base
         raise ActiveRecord::RecordInvalid.new(namespace)
       end
     end
+  end
+
+  def username_changed_hook
+    system_hook_service.execute_hooks_for(self, :rename)
   end
 
   def post_destroy_hook
