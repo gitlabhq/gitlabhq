@@ -27,9 +27,15 @@ module Clusters
     validates :name, cluster_name: true
     validate :restrict_modification, on: :update
 
+    # TODO: Move back this into Clusters::Platforms::Kubernetes in 10.3
+    # We need callback here because `enabled` belongs to Clusters::Cluster
+    # Callbacks in Clusters::Platforms::Kubernetes will not be called after update
+    after_save :update_kubernetes_integration!
+
     delegate :status, to: :provider, allow_nil: true
     delegate :status_reason, to: :provider, allow_nil: true
     delegate :on_creation?, to: :provider, allow_nil: true
+    delegate :update_kubernetes_integration!, to: :platform, allow_nil: true
 
     enum platform_type: {
       kubernetes: 1

@@ -464,7 +464,9 @@ ActiveRecord::Schema.define(version: 20171031100710) do
 
   create_table "cluster_platforms_kubernetes", force: :cascade do |t|
     t.integer "cluster_id", null: false
-    t.string "api_url"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.text "api_url"
     t.text "ca_cert"
     t.string "namespace"
     t.string "username"
@@ -491,6 +493,9 @@ ActiveRecord::Schema.define(version: 20171031100710) do
   create_table "cluster_providers_gcp", force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.integer "status"
+    t.integer "num_nodes", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.text "status_reason"
     t.string "gcp_project_id", null: false
     t.string "zone", null: false
@@ -508,6 +513,10 @@ ActiveRecord::Schema.define(version: 20171031100710) do
 
   create_table "clusters", force: :cascade do |t|
     t.integer "user_id"
+    t.integer "provider_type"
+    t.integer "platform_type"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.boolean "enabled", default: true
     t.string "name", null: false
     t.integer "provider_type"

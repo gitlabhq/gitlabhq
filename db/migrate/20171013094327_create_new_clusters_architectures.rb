@@ -3,7 +3,7 @@ class CreateNewClustersArchitectures < ActiveRecord::Migration
 
   def change
     create_table :clusters do |t|
-      t.references :user, null: false, index: true, foreign_key: { on_delete: :nullify }
+      t.references :user, index: true, foreign_key: { on_delete: :nullify }
 
       t.integer :provider_type
       t.integer :platform_type

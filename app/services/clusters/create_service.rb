@@ -13,11 +13,7 @@ module Clusters
     private
 
     def create_cluster
-      Clusters::Cluster.create!(
-        cluster_params.merge(
-          projects: [project]))
-    rescue ActiveRecord::RecordInvalid => e
-      e.record
+      Clusters::Cluster.create(cluster_params)
     end
 
     def cluster_params
@@ -27,7 +23,7 @@ module Clusters
         provider[:access_token] = access_token
       end
 
-      @cluster_params = params.merge(user: current_user)
+      @cluster_params = params.merge(user: current_user, projects: [project])
     end
   end
 end

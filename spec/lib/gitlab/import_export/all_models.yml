@@ -147,10 +147,16 @@ deploy_keys:
 - user
 - deploy_keys_projects
 - projects
-cluster:
-- project
+clusters:
+- projects
 - user
-- service
+cluster_projects:
+- projects
+- clusters
+provider_gcp:
+- cluster
+platform_kubernetes:
+- cluster
 services:
 - project
 - service_hook

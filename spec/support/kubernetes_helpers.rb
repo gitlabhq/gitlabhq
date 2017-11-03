@@ -27,7 +27,7 @@ module KubernetesHelpers
 
   def stub_kubeclient_get_secrets_error(api_url)
     WebMock.stub_request(:get, api_url + '/api/v1/secrets')
-      .to_return(status: [500, "Internal Server Error"])
+      .to_return(status: [404, "Internal Server Error"])
   end
 
   def kube_v1_secrets_body(**options)

@@ -1,8 +1,6 @@
 module Clusters
   module Platforms
     class Kubernetes < ActiveRecord::Base
-      include Gitlab::CurrentSettings
-
       self.table_name = 'cluster_platforms_kubernetes'
 
       belongs_to :cluster, inverse_of: :platform_kubernetes, class_name: 'Clusters::Cluster'
@@ -28,13 +26,10 @@ module Clusters
         }
 
       # We expect to be `active?` only when enabled and cluster is created (the api_url is assigned)
-      with_options presence: true, if: :enabled? do
-        validates :api_url, url: true, presence: true
-        validates :token, presence: true
-      end
+      validates :api_url, url: true, presence: true
+      validates :token, presence: true
 
       # TODO: Glue code till we migrate Kubernetes Integration into Platforms::Kubernetes
-      after_save :update_kubernetes_integration!
       after_destroy :destroy_kubernetes_integration!
 
       alias_attribute :ca_pem, :ca_cert
@@ -64,6 +59,21 @@ module Clusters
         @kubeclient ||= kubernetes_service.kubeclient if manages_kubernetes_service?
       end
 
+      def update_kubernetes_integration!
+        raise 'Kubernetes service already configured' unless manages_kubernetes_service?
+
+        # This is neccesary, otheriwse enabled? returns true even though cluster updated with enabled: false
+        cluster.reload
+
+        ensure_kubernetes_service&.update!(
+          active: enabled?,
+          api_url: api_url,
+          namespace: namespace,
+          token: token,
+          ca_pem: ca_cert
+        )
+      end
+
       private
 
       def enforce_namespace_to_lower_case
@@ -80,27 +90,15 @@ module Clusters
       def destroy_kubernetes_integration!
         return unless manages_kubernetes_service?
 
-        kubernetes_service.destroy!
-      end
-
-      def update_kubernetes_integration!
-        return raise 'Kubernetes service already configured' unless manages_kubernetes_service?
-
-        ensure_kubernetes_service.update!(
-          active: enabled?,
-          api_url: api_url,
-          namespace: namespace,
-          token: token,
-          ca_pem: ca_cert
-        )
+        kubernetes_service&.destroy!
       end
 
       def kubernetes_service
-        @kubernetes_service ||= project.kubernetes_service || project.build_kubernetes_service
+        @kubernetes_service ||= project&.kubernetes_service
       end
 
       def ensure_kubernetes_service
-        @kubernetes_service ||= kubernetes_service || project.build_kubernetes_service
+        @kubernetes_service ||= kubernetes_service || project&.build_kubernetes_service
       end
     end
   end
