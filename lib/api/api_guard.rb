@@ -72,30 +72,6 @@ module API
         end
       end
 
-      private
-
-      def find_user_from_access_token
-        return unless access_token
-
-        validate_access_token!
-
-        access_token.user || raise(UnauthorizedError)
-
-        @access_token = find_oauth_access_token || find_personal_access_token
-      end
-
-      def validate_access_token!(scopes: [])
-        return unless access_token
-
-        case AccessTokenValidationService.new(access_token, request: request).validate(scopes: scopes)
-        when AccessTokenValidationService::INSUFFICIENT_SCOPE
-          raise InsufficientScopeError.new(scopes)
-        when AccessTokenValidationService::EXPIRED
-          raise ExpiredError
-        when AccessTokenValidationService::REVOKED
-          raise RevokedError
-        end
-      end
 
       private
 
