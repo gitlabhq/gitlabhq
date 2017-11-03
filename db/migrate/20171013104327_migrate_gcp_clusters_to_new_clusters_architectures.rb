@@ -71,7 +71,7 @@ class MigrateGcpClustersToNewClustersArchitectures < ActiveRecord::Migration
   def params_for_cluster_platforms_kubernetes(gcp_cluster)
     {
       cluster_id: gcp_cluster['id'],
-      api_url: 'https://' + gcp_cluster['endpoint'],
+      api_url: api_url(gcp_cluster['endpoint']),
       ca_cert: gcp_cluster['ca_cert'],
       namespace: gcp_cluster['project_namespace'],
       username: gcp_cluster['username'],
@@ -82,5 +82,9 @@ class MigrateGcpClustersToNewClustersArchitectures < ActiveRecord::Migration
       created_at: gcp_cluster['created_at'],
       updated_at: gcp_cluster['updated_at']
     }
+  end
+
+  def api_url(endpoint)
+    endpoint ? 'https://' + endpoint : nil
   end
 end
