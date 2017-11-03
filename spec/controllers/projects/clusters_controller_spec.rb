@@ -113,7 +113,7 @@ describe Projects::ClustersController do
     end
   end
 
-  describe 'GET new' do
+  describe 'GET new_gcp' do
     let(:project) { create(:project) }
 
     describe 'functionality' do
@@ -161,7 +161,7 @@ describe Projects::ClustersController do
     end
 
     def go
-      get :new, namespace_id: project.namespace, project_id: project
+      get :new_gcp, namespace_id: project.namespace, project_id: project
     end
   end
 
