@@ -1017,6 +1017,10 @@ class Project < ActiveRecord::Base
     !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
   end
 
+  def fork_source
+    forked_from_project || fork_network&.root_project
+  end
+
   def personal?
     !group
   end
