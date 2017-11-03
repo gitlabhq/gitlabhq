@@ -20,6 +20,7 @@ class Email < ActiveRecord::Base
 
   devise :confirmable
   self.reconfirmable = false  # currently email can't be changed, no need to reconfirm
+  include DeviseConfirmable
 
   delegate :username, to: :user
 

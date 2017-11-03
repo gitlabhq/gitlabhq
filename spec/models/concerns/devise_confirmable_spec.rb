@@ -1,20 +1,19 @@
 require 'spec_helper'
 
-describe ConfirmationService do
+describe DeviseConfirmable do
 
-  describe '#execute' do
+  describe '#confirm' do
     let(:user)  { create(:user) }
     let(:user2) { create(:user) }
 
-    context 'confirming secondary email' do
+    context 'confirming secondary Email' do
       it 'removes secondary email duplicates' do
         user.emails.create(email: 'new@email.com', confirmation_token: 'token_1')
         user2.emails.create(email: 'New@email.com')
-        
+
         expect(Email.where(email: 'new@email.com').count).to eq 2
 
-        service  = described_class.new(Email, 'token_1')
-        resource = service.execute
+        resource = Email.confirm_by_token('token_1')
 
         expect(resource.errors.empty?).to be_truthy
         expect(Email.where(email: 'new@email.com').count).to eq 1
@@ -29,10 +28,10 @@ describe ConfirmationService do
         expect(User.confirmed.count).to eq 2
         expect(Email.confirmed.count).to eq 0
 
-        service  = described_class.new(Email, 'token_1')
-        resource = service.execute
+        resource = Email.confirm_by_token('token_1')
 
         expect(resource.errors.empty?).to be_falsy
+        expect(resource.errors[:base]).to include('This email address was confirmed to belong to another account')
         expect(User.confirmed.count).to eq 2
         expect(Email.confirmed.count).to eq 0
       end
@@ -43,21 +42,20 @@ describe ConfirmationService do
 
         expect(Email.confirmed.count).to eq 1
 
-        service  = described_class.new(Email, 'token_1')
-        resource = service.execute
+        resource = Email.confirm_by_token('token_1')
 
         expect(resource.errors.empty?).to be_falsy
+        expect(resource.errors[:base]).to include('This email address was confirmed to belong to another account')
         expect(Email.confirmed.count).to eq 1
       end
     end
 
-    context 'confirming user email' do
+    context 'confirming User email' do
       it 'removes secondary email duplicates' do
         user.update_attributes(confirmed_at: nil, confirmation_token: 'token_1')
         user2.emails.create(email: user.email)
 
-        service  = described_class.new(User, 'token_1')
-        resource = service.execute
+        resource = User.confirm_by_token('token_1')
 
         expect(resource.errors.empty?).to be_truthy
         expect(Email.count).to eq 0

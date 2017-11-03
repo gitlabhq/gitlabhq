@@ -50,7 +50,8 @@ class User < ActiveRecord::Base
   serialize :otp_backup_codes, JSON # rubocop:disable Cop/ActiveRecordSerialize
 
   devise :lockable, :recoverable, :rememberable, :trackable,
-    :validatable, :omniauthable, :confirmable, :registerable
+         :validatable, :omniauthable, :confirmable, :registerable
+  include DeviseConfirmable
 
   # Override Devise::Models::Trackable#update_tracked_fields!
   # to limit database writes to at most once every hour
