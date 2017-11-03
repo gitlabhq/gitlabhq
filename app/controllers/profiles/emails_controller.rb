@@ -8,8 +8,10 @@ class Profiles::EmailsController < Profiles::ApplicationController
 
   def create
     @email = Emails::CreateService.new(current_user, email_params.merge(user: current_user)).execute
-    unless @email.errors.blank?
+    if !@email.errors.blank?
       flash[:alert] = @email.errors.full_messages.first
+    elsif (user = User.find_by_any_email(@email.email)) != current_user
+      flash[:alert] = "Commits made using this email address will be attributed to user '#{user.username}' until you confirm your ownership"
     end
 
     redirect_to profile_emails_url

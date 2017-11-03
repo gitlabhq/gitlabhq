@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 feature 'Profile > Emails' do
-  let(:user) { create(:user) }
+  let(:user)  { create(:user) }
+  let(:user2) { create(:user) }
 
   before do
     sign_in(user)
@@ -21,34 +22,51 @@ feature 'Profile > Emails' do
       expect(page).to have_content('Resend confirmation email')
     end
 
-    scenario 'does not add a duplicate email' do
+    scenario 'does not add a duplicate email for the same user' do
       fill_in('Email', with: user.email)
       click_button('Add email address')
 
       email = user.emails.find_by(email: user.email)
+
       expect(email).to be_nil
       expect(page).to have_content('Email has already been taken')
+    end
+
+    scenario 'adds duplicate email and informs user' do
+      user2.emails.create(email: 'my@email.com')
+      fill_in('Email', with: 'my@email.com')
+      click_button('Add email address')
+
+      email = user.emails.find_by(email: user.email)
+
+      expect(email).to be_nil
+      expect(page).to have_content("will be attributed to user '#{user2.username}'")
     end
   end
 
   scenario 'User removes email' do
     user.emails.create(email: 'my@email.com')
     visit profile_emails_path
+
     expect(page).to have_content("my@email.com")
 
     click_link('Remove')
+
     expect(page).not_to have_content("my@email.com")
   end
 
   scenario 'User confirms email' do
     email = user.emails.create(email: 'my@email.com')
     visit profile_emails_path
+
     expect(page).to have_content("#{email.email} Unverified")
 
     email.confirm
+
     expect(email.confirmed?).to be_truthy
 
     visit profile_emails_path
+
     expect(page).to have_content("#{email.email} Verified")
   end
 
