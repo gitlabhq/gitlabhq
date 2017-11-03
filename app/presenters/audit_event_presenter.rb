@@ -27,7 +27,7 @@ AuditEventPresenter < Gitlab::View::Presenter::Simple
 
     return nil unless entity
 
-    link_to(details[:entity_path], entity).html_safe
+    link_to(details[:entity_path] || entity.name, entity).html_safe
   end
 
   def date

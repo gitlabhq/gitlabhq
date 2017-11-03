@@ -1,5 +1,7 @@
 module Groups
   class DestroyService < Groups::BaseService
+    prepend ::EE::Groups::DestroyService
+
     def async_execute
       group.soft_delete_without_removing_associations
       job_id = GroupDestroyWorker.perform_async(group.id, current_user.id)
