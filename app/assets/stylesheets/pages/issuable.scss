@@ -613,6 +613,8 @@
   float: none;
   display: inline-block;
   margin-top: 0;
+  height: auto;
+  align-self: center;
 
   @media (max-width: $screen-xs-max) {
     position: absolute;
@@ -626,6 +628,8 @@
   padding-left: 45px;
   padding-right: 45px;
   line-height: 35px;
+  display: flex;
+  flex-grow: 1;
 
   @media (min-width: $screen-sm-min) {
     float: left;
@@ -637,11 +641,12 @@
 .issuable-actions {
   @include new-style-dropdown;
 
-  padding-top: 10px;
+  align-self: center;
+  flex-shrink: 0;
+  flex: 0 0 auto;
 
   @media (min-width: $screen-sm-min) {
     float: right;
-    padding-top: 0;
   }
 }
 
@@ -655,8 +660,9 @@
 
 .issuable-meta {
   display: inline-block;
-  line-height: 18px;
   font-size: 14px;
+  line-height: 24px;
+  align-self: center;
 }
 
 .js-issuable-selector-wrap {
