@@ -6,7 +6,7 @@ module Gitlab
       SUCCEEDED = 'Succeeded'.freeze
       FAILED    = 'Failed'.freeze
       UNKNOWN   = 'Unknown'.freeze
-      PHASES    = [PENDING, RUNNING, SUCCEEDED, FAILED, UNKNONW].freeze
+      PHASES    = [PENDING, RUNNING, SUCCEEDED, FAILED, UNKNOWN].freeze
     end
   end
 end
