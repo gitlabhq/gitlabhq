@@ -27,8 +27,8 @@ module Clusters
     validates :name, cluster_name: true
     validate :restrict_modification, on: :update
 
+    delegate :status, to: :provider, allow_nil: true
     delegate :status_reason, to: :provider, allow_nil: true
-    delegate :status_name, to: :provider, allow_nil: true
     delegate :on_creation?, to: :provider, allow_nil: true
 
     enum platform_type: {
