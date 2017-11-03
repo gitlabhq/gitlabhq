@@ -246,6 +246,11 @@ production: &base
     geo_metrics_update_worker:
       cron: "*/1 * * * *"
 
+    # GitLab Geo prune event log worker
+    # NOTE: This will only take effect if Geo is enabled (primary node only)
+    geo_prune_event_log_worker:
+      cron: "0 */6 * * *"
+
     # GitLab Geo repository sync worker
     # NOTE: This will only take effect if Geo is enabled (secondary nodes only)
     geo_repository_sync_worker:

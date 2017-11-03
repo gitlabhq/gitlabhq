@@ -2,6 +2,7 @@ module Geo
   class BaseSchedulerWorker
     include Sidekiq::Worker
     include CronjobQueue
+    include ExclusiveLeaseGuard
 
     DB_RETRIEVE_BATCH_SIZE = 1000
     LEASE_TIMEOUT = 60.minutes
@@ -72,10 +73,6 @@ module Geo
       DB_RETRIEVE_BATCH_SIZE
     end
 
-    def lease_key
-      @lease_key ||= self.class.name.underscore
-    end
-
     def lease_timeout
       LEASE_TIMEOUT
     end
@@ -137,33 +134,6 @@ module Geo
 
     def scheduled_job_ids
       scheduled_jobs.map { |data| data[:job_id] }
-    end
-
-    def try_obtain_lease
-      lease = exclusive_lease.try_obtain
-
-      unless lease
-        log_error('Cannot obtain an exclusive lease. There must be another worker already in execution.')
-        return
-      end
-
-      begin
-        yield lease
-      ensure
-        release_lease(lease)
-      end
-    end
-
-    def exclusive_lease
-      @lease ||= Gitlab::ExclusiveLease.new(lease_key, timeout: lease_timeout)
-    end
-
-    def renew_lease!
-      exclusive_lease.renew
-    end
-
-    def release_lease(uuid)
-      Gitlab::ExclusiveLease.cancel(lease_key, uuid)
     end
 
     def current_node

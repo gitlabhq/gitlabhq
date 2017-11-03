@@ -12,8 +12,12 @@ module Gitlab
       # Raises GeoNodeNotFoundError if current node is not a Geo node
       def headers
         {
-          'Authorization' => geo_auth_token(request_data)
+          'Authorization' => authorization
         }
+      end
+
+      def authorization
+        geo_auth_token(request_data)
       end
 
       private

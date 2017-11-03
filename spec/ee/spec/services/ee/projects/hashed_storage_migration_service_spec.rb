@@ -7,9 +7,10 @@ describe Projects::HashedStorageMigrationService do
   let(:hashed_storage) { Storage::HashedProject.new(project) }
 
   describe '#execute' do
-    it 'creates a Geo::RepositoryRenamedEvent on success' do
-      allow(Gitlab::Geo).to receive(:primary?).and_return(true)
+    set(:primary) { create(:geo_node, :primary) }
+    set(:secondary) { create(:geo_node) }
 
+    it 'creates a Geo::RepositoryRenamedEvent on success' do
       expect { service.execute }.to change { Geo::EventLog.count }.by(1)
 
       event = Geo::EventLog.first.event
@@ -32,7 +33,6 @@ describe Projects::HashedStorageMigrationService do
       allow(service).to receive(:move_repository).and_call_original
       allow(service).to receive(:move_repository).with(from_name, to_name).once { false } # will disable first move only
 
-      allow(Gitlab::Geo).to receive(:primary?).and_return(true)
       expect { service.execute }.not_to change { Geo::EventLog.count }
     end
   end

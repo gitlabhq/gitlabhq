@@ -1,6 +1,8 @@
 module Gitlab
   module Auth
     Result = Struct.new(:actor, :project, :type, :authentication_abilities) do
+      prepend ::EE::Gitlab::Auth::Result
+
       def ci?(for_project)
         type == :ci &&
           project &&

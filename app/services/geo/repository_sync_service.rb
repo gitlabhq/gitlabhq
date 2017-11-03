@@ -15,9 +15,9 @@ module Geo
 
       begin
         project.ensure_repository
-        project.repository.fetch_geo_mirror(ssh_url_to_repo)
-
+        fetch_geo_mirror(project.repository)
         update_registry(finished_at: DateTime.now)
+
         log_info("Finished repository sync",
                  update_delay_s: update_delay_in_seconds,
                  download_time_s: download_time_in_seconds)

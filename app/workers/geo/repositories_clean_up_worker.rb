@@ -3,6 +3,7 @@ module Geo
     include Sidekiq::Worker
     include GeoQueue
     include Gitlab::ShellAdapter
+    include ExclusiveLeaseGuard
 
     BATCH_SIZE = 250
     LEASE_TIMEOUT = 60.minutes
@@ -40,31 +41,8 @@ module Geo
       end
     end
 
-    def try_obtain_lease
-      lease = exclusive_lease.try_obtain
-
-      unless lease
-        log_error('Cannot obtain an exclusive lease. There must be another worker already in execution.')
-        return
-      end
-
-      begin
-        yield lease
-      ensure
-        release_lease(lease)
-      end
-    end
-
-    def lease_key
-      @lease_key ||= self.class.name.underscore
-    end
-
-    def exclusive_lease
-      @lease ||= Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT)
-    end
-
-    def release_lease(uuid)
-      Gitlab::ExclusiveLease.cancel(lease_key, uuid)
+    def lease_timeout
+      LEASE_TIMEOUT
     end
 
     def log_info(message, params = {})

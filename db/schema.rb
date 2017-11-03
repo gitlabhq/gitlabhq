@@ -802,6 +802,7 @@ ActiveRecord::Schema.define(version: 20171026082505) do
     t.string "clone_url_prefix"
     t.integer "files_max_capacity", default: 10, null: false
     t.integer "repos_max_capacity", default: 25, null: false
+    t.string "clone_protocol", default: "http", null: false
   end
 
   add_index "geo_nodes", ["access_key"], name: "index_geo_nodes_on_access_key", using: :btree
@@ -1751,6 +1752,7 @@ ActiveRecord::Schema.define(version: 20171026082505) do
     t.boolean "prevent_secrets", default: false, null: false
     t.string "branch_name_regex"
     t.boolean "reject_unsigned_commits"
+    t.boolean "commit_committer_check"
   end
 
   add_index "push_rules", ["is_sample"], name: "index_push_rules_on_is_sample", where: "is_sample", using: :btree

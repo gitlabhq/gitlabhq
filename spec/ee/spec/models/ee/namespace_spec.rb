@@ -67,7 +67,8 @@ describe Namespace do
 
   describe '#move_dir' do
     context 'when running on a primary node' do
-      let!(:geo_node) { create(:geo_node, :primary) }
+      set(:primary) { create(:geo_node, :primary) }
+      set(:secondary) { create(:geo_node) }
       let(:gitlab_shell) { Gitlab::Shell.new }
 
       it 'logs the Geo::RepositoryRenamedEvent for each project inside namespace' do
@@ -84,7 +85,6 @@ describe Namespace do
         allow(parent).to receive(:full_path).and_return(new_path)
 
         allow(gitlab_shell).to receive(:mv_namespace)
-          .ordered
           .with(project_1.repository_storage_path, full_path_was, new_path)
           .and_return(true)
 

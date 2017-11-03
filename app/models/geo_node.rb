@@ -11,7 +11,8 @@ class GeoNode < ActiveRecord::Base
                  host: lambda { Gitlab.config.gitlab.host },
                  port: lambda { Gitlab.config.gitlab.port },
                  relative_url_root: lambda { Gitlab.config.gitlab.relative_url_root },
-                 primary: false
+                 primary: false,
+                 clone_protocol: 'http'
 
   accepts_nested_attributes_for :geo_node_key
 
@@ -21,8 +22,9 @@ class GeoNode < ActiveRecord::Base
   validates :relative_url_root, length: { minimum: 0, allow_nil: false }
   validates :access_key, presence: true
   validates :encrypted_secret_access_key, presence: true
+  validates :clone_protocol, presence: true, inclusion: %w(ssh http)
 
-  validates :geo_node_key, presence: true, if: :secondary?
+  validates :geo_node_key, presence: true, if: :uses_ssh_key?
   validate :check_not_adding_primary_as_secondary, if: :secondary?
 
   after_initialize :build_dependents
@@ -44,6 +46,10 @@ class GeoNode < ActiveRecord::Base
 
   def secondary?
     !primary
+  end
+
+  def uses_ssh_key?
+    secondary? && clone_protocol == 'ssh'
   end
 
   def uri
@@ -205,9 +211,11 @@ class GeoNode < ActiveRecord::Base
   def update_dependents_attributes
     if primary?
       self.geo_node_key = nil
-    else
+    elsif uses_ssh_key?
       self.geo_node_key&.title = "Geo node: #{self.url}"
     end
+
+    self.geo_node_key = nil unless uses_ssh_key? || geo_node_key&.persisted?
 
     if self.primary?
       self.oauth_application = nil

@@ -2,12 +2,15 @@ FactoryGirl.define do
   factory :geo_node do
     host { Gitlab.config.gitlab.host }
     sequence(:port) {|n| n}
-    association :geo_node_key
+
+    trait :ssh do
+      clone_protocol 'ssh'
+      association :geo_node_key
+    end
 
     trait :primary do
       primary true
       port { Gitlab.config.gitlab.port }
-      geo_node_key nil
     end
   end
 end

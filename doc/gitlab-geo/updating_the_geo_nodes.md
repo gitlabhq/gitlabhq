@@ -14,6 +14,31 @@ all you need to do is update GitLab itself:
    the tracking database is enabled.
 1. [Test](#check-status-after-updating) primary and secondary nodes, and check version in each.
 
+## Upgrading to GitLab 10.2
+
+Support for replicating repositories and wikis over HTTP/HTTPS has been added.
+Replicating over SSH has been deprecated, and support for this option will be
+removed in a future release.
+
+To switch to HTTP/HTTPS replication, log into the primary node as an admin and visit
+**Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`). For each secondary listed,
+press the "Edit" button, change the "Repository cloning" setting from
+"SSH (deprecated)" to "HTTP/HTTPS", and press "Save changes". This should take
+effect immediately.
+
+Any new secondaries should be created using HTTP/HTTPS replication - this is the
+default setting.
+
+After you've verified that HTTP/HTTPS replication is working, you should remove
+the now-unused SSH keys from your secondaries, as they may cause problems if the
+secondary if ever promoted to a primary:
+
+1. **[secondary]** Login to **all** your secondary nodes and run:
+
+    ```ruby
+    sudo -u git -H rm ~git/.ssh/id_rsa ~git/.ssh/id_rsa.pub
+    ```
+
 ## Upgrading to GitLab 10.1
 
 [Hashed storage](../administration/repository_storage_types.md) was introduced

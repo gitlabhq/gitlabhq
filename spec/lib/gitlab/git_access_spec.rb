@@ -355,18 +355,25 @@ describe Gitlab::GitAccess do
       let(:key) { build(:geo_node_key, geo_node: geo_node) }
       let(:actor) { key }
 
-      context 'assigned to primary geo node' do
-        let(:geo_node) { build(:geo_node, primary: true) }
+      context 'assigned to ssh primary geo node' do
+        let(:geo_node) { build(:geo_node, :ssh, primary: true) }
 
         it { expect { pull_access_check }.to raise_not_found }
         it { expect { push_access_check }.to raise_not_found }
       end
 
-      context 'assigned to secondary geo node' do
-        let(:geo_node) { build(:geo_node, primary: false) }
+      context 'assigned to ssh secondary geo node' do
+        let(:geo_node) { build(:geo_node, :ssh, primary: false) }
 
         it { expect { pull_access_check }.not_to raise_error }
         it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload]) }
+      end
+
+      context 'assigned to http secondary  geo node' do
+        let(:geo_node) { build(:geo_node, primary: false) }
+
+        it { expect { pull_access_check }.to raise_not_found }
+        it { expect { push_access_check }.to raise_not_found }
       end
     end
 

@@ -31,7 +31,8 @@ describe Projects::DestroyService do
   end
 
   context 'when running on a primary node' do
-    let!(:geo_node) { create(:geo_node, :primary) }
+    set(:primary) { create(:geo_node, :primary) }
+    set(:secondary) { create(:geo_node) }
 
     it 'logs an event to the Geo event log' do
       # Run Sidekiq immediately to check that renamed repository will be removed

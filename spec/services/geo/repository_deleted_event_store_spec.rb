@@ -1,13 +1,14 @@
 require 'spec_helper'
 
 describe Geo::RepositoryDeletedEventStore do
-  let(:project) { create(:project, path: 'bar') }
-  let!(:project_id) { project.id }
-  let!(:project_name) { project.name }
-  let!(:repo_path) { project.full_path }
-  let!(:wiki_path) { "#{project.full_path}.wiki" }
-  let!(:storage_name) { project.repository_storage }
-  let!(:storage_path) { project.repository_storage_path }
+  set(:project) { create(:project, path: 'bar') }
+  set(:secondary_node) { create(:geo_node) }
+  let(:project_id) { project.id }
+  let(:project_name) { project.name }
+  let(:repo_path) { project.full_path }
+  let(:wiki_path) { "#{project.full_path}.wiki" }
+  let(:storage_name) { project.repository_storage }
+  let(:storage_path) { project.repository_storage_path }
 
   subject { described_class.new(project, repo_path: repo_path, wiki_path: wiki_path) }
 
@@ -21,6 +22,12 @@ describe Geo::RepositoryDeletedEventStore do
     context 'when running on a primary node' do
       before do
         allow(Gitlab::Geo).to receive(:primary?) { true }
+      end
+
+      it 'does not create an event when there are no secondary nodes' do
+        allow(Gitlab::Geo).to receive(:secondary_nodes) { [] }
+
+        expect { subject.create }.not_to change(Geo::RepositoryDeletedEvent, :count)
       end
 
       it 'creates a deleted event' do

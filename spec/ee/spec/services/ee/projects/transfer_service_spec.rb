@@ -12,7 +12,8 @@ describe Projects::TransferService do
   end
 
   context 'when running on a primary node' do
-    let!(:geo_node) { create(:geo_node, :primary) }
+    set(:primary) { create(:geo_node, :primary) }
+    set(:secondary) { create(:geo_node) }
 
     it 'logs an event to the Geo event log' do
       expect { subject.execute(group) }.to change(Geo::RepositoryRenamedEvent, :count).by(1)

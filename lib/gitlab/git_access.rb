@@ -2,8 +2,10 @@
 # class return an instance of `GitlabAccessStatus`
 module Gitlab
   class GitAccess
+    prepend ::EE::Gitlab::GitAccess
     include ActionView::Helpers::SanitizeHelper
     include PathLocksHelper
+
     UnauthorizedError = Class.new(StandardError)
     NotFoundError = Class.new(StandardError)
     ProjectMovedError = Class.new(NotFoundError)
@@ -46,8 +48,6 @@ module Gitlab
       check_command_disabled!(cmd)
       check_command_existence!(cmd)
       check_repository_existence!
-
-      check_geo_license!
 
       case cmd
       when *DOWNLOAD_COMMANDS
@@ -92,7 +92,7 @@ module Gitlab
     end
 
     def check_active_user!
-      return if deploy_key? || geo_node_key?
+      return if deploy_key?
 
       if user && !user_access.allowed?
         raise UnauthorizedError, ERROR_MESSAGES[:account_blocked]
@@ -146,12 +146,6 @@ module Gitlab
       end
     end
 
-    def check_geo_license!
-      if Gitlab::Geo.secondary? && !Gitlab::Geo.license_allows?
-        raise UnauthorizedError, 'Your current license does not have GitLab Geo add-on enabled.'
-      end
-    end
-
     def check_repository_existence!
       unless project.repository.exists?
         raise UnauthorizedError, ERROR_MESSAGES[:no_repo]
@@ -159,7 +153,7 @@ module Gitlab
     end
 
     def check_download_access!
-      return if deploy_key? || geo_node_key?
+      return if deploy_key?
 
       passed = user_can_download_code? ||
         build_can_download_code? ||
@@ -253,14 +247,6 @@ module Gitlab
       actor.is_a?(DeployKey)
     end
 
-    def geo_node_key
-      actor if geo_node_key?
-    end
-
-    def geo_node_key?
-      actor.is_a?(GeoNodeKey)
-    end
-
     def ci?
       actor == :ci
     end
@@ -268,8 +254,6 @@ module Gitlab
     def can_read_project?
       if deploy_key?
         deploy_key.has_access_to?(project)
-      elsif geo_node_key?
-        geo_node_key.active?
       elsif user
         user.can?(:read_project, project)
       elsif ci?
@@ -306,8 +290,6 @@ module Gitlab
         case actor
         when User
           actor
-        when GeoNodeKey
-          nil
         when Key
           actor.user unless actor.is_a?(DeployKey)
         when :ci
