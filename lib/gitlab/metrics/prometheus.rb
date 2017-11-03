@@ -5,6 +5,9 @@ module Gitlab
     module Prometheus
       include Gitlab::CurrentSettings
 
+      REGISTRY_MUTEX = Mutex.new
+      PROVIDER_MUTEX = Mutex.new
+
       def metrics_folder_present?
         multiprocess_files_dir = ::Prometheus::Client.configuration.multiprocess_files_dir
 
@@ -20,23 +23,38 @@ module Gitlab
       end
 
       def registry
-        @registry ||= ::Prometheus::Client.registry
+        return @registry if @registry
+
+        REGISTRY_MUTEX.synchronize do
+          @registry ||= ::Prometheus::Client.registry
+        end
       end
 
       def counter(name, docstring, base_labels = {})
-        provide_metric(name) || registry.counter(name, docstring, base_labels)
+        safe_provide_metric(:counter, name, docstring, base_labels)
       end
 
       def summary(name, docstring, base_labels = {})
-        provide_metric(name) || registry.summary(name, docstring, base_labels)
+        safe_provide_metric(:summary, name, docstring, base_labels)
       end
 
       def gauge(name, docstring, base_labels = {}, multiprocess_mode = :all)
-        provide_metric(name) || registry.gauge(name, docstring, base_labels, multiprocess_mode)
+        safe_provide_metric(:gauge, name, docstring, base_labels, multiprocess_mode)
       end
 
       def histogram(name, docstring, base_labels = {}, buckets = ::Prometheus::Client::Histogram::DEFAULT_BUCKETS)
-        provide_metric(name) || registry.histogram(name, docstring, base_labels, buckets)
+        safe_provide_metric(:histogram, name, docstring, base_labels, buckets)
+      end
+
+      private
+
+      def safe_provide_metric(method, name, *args)
+        metric = provide_metric(name)
+        return metric if metric
+
+        PROVIDER_MUTEX.synchronize do
+          provide_metric(name) || registry.method(method).call(name, *args)
+        end
       end
 
       def provide_metric(name)
@@ -46,8 +64,6 @@ module Gitlab
           NullMetric.new
         end
       end
-
-      private
 
       def prometheus_metrics_enabled_unmemoized
         metrics_folder_present? && current_application_settings[:prometheus_metrics_enabled] || false
