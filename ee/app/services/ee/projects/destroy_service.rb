@@ -9,6 +9,7 @@ module EE
         if succeeded
           mirror_cleanup(project)
           log_geo_event(project)
+          log_audit_event(project)
         end
 
         succeeded
@@ -44,6 +45,16 @@ module EE
         return unless ::Gitlab::Geo.secondary?
 
         ::Geo::ProjectRegistry.where(project_id: project.id).delete_all
+      end
+
+      private
+
+      def log_audit_event(project)
+        ::AuditEventService.new(
+          current_user,
+          project,
+          action: :destroy
+        ).for_project.security_event
       end
     end
   end

@@ -15,7 +15,9 @@ describe Audit::Details do
       end
 
       it 'humanizes user login action' do
-        expect(described_class.humanize(login_action)).to eq('Signed in with LDAP authentication')
+        string = described_class.humanize(login_action)
+
+        expect(string).to eq('Signed in with LDAP authentication')
       end
     end
 
@@ -35,7 +37,9 @@ describe Audit::Details do
       end
 
       it 'humanizes add project member access action' do
-        expect(described_class.humanize(member_access_action)).to eq('Added user access as Developer')
+        string = described_class.humanize(member_access_action)
+
+        expect(string).to eq('Added user access as Developer')
       end
     end
 
@@ -56,7 +60,9 @@ describe Audit::Details do
       end
 
       it 'humanizes add group member access action' do
-        expect(described_class.humanize(member_access_action)).to eq('Changed access level from Guest to Owner')
+        string = described_class.humanize(member_access_action)
+
+        expect(string).to eq('Changed access level from Guest to Owner')
       end
     end
 
@@ -72,7 +78,9 @@ describe Audit::Details do
       end
 
       it 'humanizes the removal action' do
-        expect(described_class.humanize(removal_action)).to eq('Removed deploy key')
+        string = described_class.humanize(removal_action)
+
+        expect(string).to eq('Removed deploy key')
       end
     end
 
@@ -90,7 +98,9 @@ describe Audit::Details do
       end
 
       it 'humanizes the removal action' do
-        expect(described_class.humanize(action)).to eq('Changed email from a@b.com to c@b.com')
+        string = described_class.humanize(action)
+
+        expect(string).to eq('Changed email from a@b.com to c@b.com')
       end
     end
   end

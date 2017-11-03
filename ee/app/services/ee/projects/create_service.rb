@@ -20,7 +20,10 @@ module EE
           end
         end
 
-        log_geo_event(project) if project&.persisted?
+        if project&.persisted?
+          log_geo_event(project)
+          log_audit_event(project)
+        end
 
         project
       end
@@ -50,6 +53,14 @@ module EE
           push_rule = predefined_push_rule.dup.tap { |gh| gh.is_sample = false }
           project.push_rule = push_rule
         end
+      end
+
+      def log_audit_event(project)
+        ::AuditEventService.new(
+          current_user,
+          project,
+          action: :create
+        ).for_project.security_event
       end
     end
   end

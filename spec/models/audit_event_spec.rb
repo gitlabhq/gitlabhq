@@ -43,6 +43,26 @@ RSpec.describe AuditEvent, type: :model do
     end
   end
 
+  describe '#entity' do
+    context 'when entity exists' do
+      let(:user) { create(:user, name: 'John Doe') }
+
+      subject(:event) { described_class.new(entity_id: user.id, entity_type: user.class.name) }
+
+      it 'returns the entity object' do
+        expect(event.entity).to eq user
+      end
+    end
+
+    context 'when entity does not exist' do
+      subject(:event) { described_class.new(entity_id: 99999, entity_type: 'User') }
+
+      it 'returns nil' do
+        expect(event.entity).to be_blank
+      end
+    end
+  end
+
   describe '#present' do
     it 'returns a presenter' do
       expect(subject.present).to be_an_instance_of(AuditEventPresenter)
