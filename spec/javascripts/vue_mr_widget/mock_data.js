@@ -249,6 +249,28 @@ export const headIssues = [
   }
 ];
 
+export const parsedHeadIssues = [
+  {
+    "check_name": "Rubocop/Lint/UselessAssignment",
+    "location": {
+      "path": "lib/six.rb",
+      "positions": {
+        "begin": {
+          "column": 6,
+          "line": 59
+        },
+        "end": {
+          "column": 7,
+          "line": 59
+        }
+      }
+    },
+    "fingerprint": "e879dd9bbc0953cad5037cde7ff0f627",
+    name: 'Rubocop/Lint/UselessAssignment',
+    path: 'lib/six.rb',
+  }
+];
+
 export const baseIssues = [
   {
     "categories": ["Security"],
@@ -274,4 +296,65 @@ export const baseIssues = [
     },
     "fingerprint": "ca2354534dee94ae60ba2f54e3857c50e5",
   }
-]
+];
+
+export const parsedBaseIssues = [
+  {
+    "categories": ["Security"],
+    "check_name": "Insecure Dependency",
+    "location": {
+      "path": "Gemfile.lock",
+      "lines": {
+        "begin": 21,
+        "end": 21
+      }
+    },
+    "fingerprint": "ca2354534dee94ae60ba2f54e3857c50e5",
+    name: "Insecure Dependency",
+    path: "Gemfile.lock",
+    line: 21,
+    urlPath: 'undefined/Gemfile.lock#L21',
+  },
+];
+
+export const codequalityParsedIssues = [
+  {
+    name: 'Insecure Dependency',
+    fingerprint: 'ca2e59451e98ae60ba2f54e3857c50e5',
+    path: 'Gemfile.lock',
+    line: 12,
+    urlPath: 'foo/Gemfile.lock',
+  },
+];
+
+export const securityParsedIssues = [
+  {
+    name: 'Arbitrary file existence disclosure in Action Pack',
+    path: 'Gemfile.lock',
+    line: 12,
+    priority: 'High',
+    urlPath: 'foo/Gemfile.lock',
+  },
+];
+
+export const securityIssues = [
+  {
+    tool: 'bundler_audit',
+    message: 'Arbitrary file existence disclosure in Action Pack',
+    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/rMTQy4oRCGk',
+    cve: 'CVE-2014-7829',
+    file: 'Gemfile.lock',
+    solution: 'upgrade to ~> 3.2.21, ~> 4.0.11.1, ~> 4.0.12, ~> 4.1.7.1, >= 4.1.8',
+    priority:'High',
+    line: 12,
+  },
+  {
+    tool: 'bundler_audit',
+    message: 'Possible Information Leak Vulnerability in Action View',
+    url: 'https://groups.google.com/forum/#!topic/rubyonrails-security/335P1DcLG00',
+    cve: 'CVE-2016-0752',
+    file: 'Gemfile.lock',
+    solution: 'upgrade to >= 5.0.0.beta1.1, >= 4.2.5.1, ~> 4.2.5, >= 4.1.14.1, ~> 4.1.14, ~> 3.2.22.1',
+    priority: 'Medium',
+  }
+];

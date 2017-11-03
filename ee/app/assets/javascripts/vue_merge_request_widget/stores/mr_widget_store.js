@@ -4,6 +4,7 @@ export default class MergeRequestStore extends CEMergeRequestStore {
   constructor(data) {
     super(data);
     this.initCodeclimate(data);
+    this.initSecurityReport(data);
   }
 
   setData(data) {
@@ -56,12 +57,82 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     };
   }
 
-  compareCodeclimateMetrics(headIssues, baseIssues) {
-    this.codeclimateMetrics.newIssues = this.filterByFingerprint(headIssues, baseIssues);
-    this.codeclimateMetrics.resolvedIssues = this.filterByFingerprint(baseIssues, headIssues);
+  initSecurityReport(data) {
+    this.security = data.security;
+    this.securityReport = [];
   }
 
-  filterByFingerprint(firstArray, secondArray) { // eslint-disable-line
+  setSecurityReport(issues) {
+    this.securityReport = MergeRequestStore.parseIssues(issues);
+  }
+  // TODO: get changes from codequality MR
+  compareCodeclimateMetrics(headIssues, baseIssues, headBlobPath, baseBlobPath) {
+    const parsedHeadIssues = MergeRequestStore.parseIssues(headIssues, headBlobPath);
+    const parsedBaseIssues = MergeRequestStore.parseIssues(baseIssues, baseBlobPath);
+
+    this.codeclimateMetrics.newIssues = MergeRequestStore.filterByFingerprint(
+      parsedHeadIssues,
+      parsedBaseIssues,
+    );
+    this.codeclimateMetrics.resolvedIssues = MergeRequestStore.filterByFingerprint(
+      parsedBaseIssues,
+      parsedHeadIssues,
+    );
+  }
+  /**
+   * In order to reuse the same component we need
+   * to set both codequality and security issues to have the same data structure:
+   * [
+   *   {
+   *     name: String,
+   *     priority: String,
+   *     fingerprint: String,
+   *     path: String,
+   *     line: Number,
+   *     urlPath: String
+   *   }
+   * ]
+   * @param {array} issues
+   * @return {array}
+   */
+  static parseIssues(issues, path) {
+    return issues.map((issue) => {
+      const parsedIssue = {
+        name: issue.check_name || issue.message,
+        ...issue,
+      };
+
+      // code quality
+      if (issue.location) {
+        let parseCodeQualityUrl;
+
+        if (issue.location.path) {
+          parseCodeQualityUrl = `${path}/${issue.location.path}`;
+          parsedIssue.path = issue.location.path;
+        }
+
+        if (issue.location.lines && issue.location.lines.begin) {
+          parsedIssue.line = issue.location.lines.begin;
+          parsedIssue.urlPath = parseCodeQualityUrl += `#L${issue.location.lines.begin}`;
+        }
+      } else {
+        // security
+        let parsedSecurityUrl;
+        if (issue.file) {
+          parsedSecurityUrl = `${path}/${issue.file}`;
+          parsedIssue.path = issue.file;
+        }
+
+        if (issue.line) {
+          parsedIssue.urlPath = parsedSecurityUrl += `#L${issue.line}`;
+        }
+      }
+
+      return parsedIssue;
+    });
+  }
+
+  static filterByFingerprint(firstArray, secondArray) {
     return firstArray.filter(item => !secondArray.find(el => el.fingerprint === item.fingerprint));
   }
 }

@@ -1,5 +1,11 @@
 import MergeRequestStore from 'ee/vue_merge_request_widget/stores/mr_widget_store';
-import mockData, { headIssues, baseIssues } from '../mock_data';
+import mockData, {
+  headIssues,
+  baseIssues,
+  securityIssues,
+  parsedBaseIssues,
+  parsedHeadIssues,
+} from '../mock_data';
 
 describe('MergeRequestStore', () => {
   let store;
@@ -60,11 +66,24 @@ describe('MergeRequestStore', () => {
     });
 
     it('should return the new issues', () => {
-      expect(store.codeclimateMetrics.newIssues[0]).toEqual(headIssues[0]);
+      expect(store.codeclimateMetrics.newIssues[0]).toEqual(parsedHeadIssues[0]);
     });
 
     it('should return the resolved issues', () => {
-      expect(store.codeclimateMetrics.resolvedIssues[0]).toEqual(baseIssues[1]);
+      expect(store.codeclimateMetrics.resolvedIssues[0]).toEqual(parsedBaseIssues[0]);
+    });
+  });
+
+  describe('parseIssues', () => {
+    it('should parse the received issues', () => {
+      const codequality = MergeRequestStore.parseIssues(baseIssues, 'path')[0];
+      expect(codequality.name).toEqual(baseIssues[0].check_name);
+      expect(codequality.path).toEqual(baseIssues[0].location.path);
+      expect(codequality.line).toEqual(baseIssues[0].location.lines.begin);
+
+      const security = MergeRequestStore.parseIssues(securityIssues, 'path')[0];
+      expect(security.name).toEqual(securityIssues[0].message);
+      expect(security.path).toEqual(securityIssues[0].file);
     });
   });
 });
