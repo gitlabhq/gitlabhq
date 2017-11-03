@@ -179,6 +179,8 @@ module Gitlab
               )
             end
           end
+        rescue Rugged::ReferenceError
+          nil
         end
 
         def rugged_raw(repository, sha, limit:)

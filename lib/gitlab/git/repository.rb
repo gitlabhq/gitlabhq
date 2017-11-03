@@ -1161,6 +1161,11 @@ module Gitlab
         Gitlab::Git::Blob.find(self, sha, path) unless Gitlab::Git.blank_ref?(sha)
       end
 
+      # Items should be of format [[commit_id, path], [commit_id1, path1]]
+      def batch_blobs(items, blob_size_limit: nil)
+        Gitlab::Git::Blob.batch(self, items, blob_size_limit: blob_size_limit)
+      end
+
       def commit_index(user, branch_name, index, options)
         committer = user_to_committer(user)
 
