@@ -12,6 +12,8 @@ and there is significant chance of data loss. For the latest updates, check the
   We recommend you use it with at least GitLab Enterprise Edition 10.0 for
   basic Geo features, or latest version for a better experience.
 - You should make sure that all nodes run the same GitLab version.
+- GitLab Geo requires PostgreSQL 9.6 and Git 2.9 in addition to GitLab's usual
+  [minimum requirements](../install/requirements.md)
 
 GitLab Geo allows you to replicate your GitLab instance to other geographical
 locations as a read-only fully operational version.
@@ -54,7 +56,7 @@ The following diagram illustrates the underlying architecture of GitLab Geo:
 
 ![GitLab Geo architecture](img/geo-architecture.png)
 
-[Source diagram](https://docs.google.com/drawings/d/1L44flo2Mxng928yAcHduaCJyGtKNEjk2WQkxaCU_cT8/edit)
+[Source diagram](https://docs.google.com/drawings/d/1Abw0P_H0Ew1-2Lj_xPDRWP87clGIke-1fil7_KQqrtE/edit)
 
 In this diagram, there is one Geo primary node and one secondary. The
 secondary clones repositories via git over SSH. Attachments, LFS objects, and

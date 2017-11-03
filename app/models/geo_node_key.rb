@@ -22,6 +22,6 @@ class GeoNodeKey < Key
   # but if it is made a primary and the keys are not removed, every user on the
   # GitLab instance will be able to access every project using this key.
   def active?
-    geo_node&.secondary?
+    geo_node&.uses_ssh_key?
   end
 end

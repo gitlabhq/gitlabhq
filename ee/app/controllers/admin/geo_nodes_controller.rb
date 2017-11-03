@@ -18,6 +18,9 @@ class Admin::GeoNodesController < Admin::ApplicationController
       redirect_to admin_geo_nodes_path, notice: 'Node was successfully created.'
     else
       @nodes = GeoNode.all
+      @node = GeoNode.new(geo_node_params)
+      flash.now[:alert] = 'Failed to create new node'
+
       render :index
     end
   end
@@ -83,6 +86,7 @@ class Admin::GeoNodesController < Admin::ApplicationController
       :namespace_ids,
       :repos_max_capacity,
       :files_max_capacity,
+      :clone_protocol,
       geo_node_key_attributes: [:key]
     )
   end

@@ -1,0 +1,5 @@
+---
+title: Allow Geo repository sync over HTTPS
+merge_request: 3341
+author:
+type: added

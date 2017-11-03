@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe SystemCheck::App::GitUserDefaultSSHConfigCheck do
+  include ::EE::GeoHelpers
+
   let(:username) { '_this_user_will_not_exist_unless_it_is_stubbed' }
   let(:base_dir) { Dir.mktmpdir }
   let(:home_dir) { File.join(base_dir, "/var/lib/#{username}") }
@@ -40,10 +42,12 @@ describe SystemCheck::App::GitUserDefaultSSHConfigCheck do
       it { is_expected.to eq(expected_result) }
     end
 
-    it 'skips GitLab read-only instances' do
+    it 'skips Geo secondaries with SSH' do
       stub_user
       stub_home_dir
-      allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+      node = create(:geo_node, :ssh)
+
+      stub_current_geo_node(node)
 
       is_expected.to be_truthy
     end
@@ -78,6 +82,7 @@ describe SystemCheck::App::GitUserDefaultSSHConfigCheck do
   end
 
   def stub_user
+    allow(File).to receive(:expand_path).and_call_original
     allow(File).to receive(:expand_path).with("~#{username}").and_return(home_dir)
   end
 

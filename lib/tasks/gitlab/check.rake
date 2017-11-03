@@ -458,6 +458,7 @@ namespace :gitlab do
       checks = [
         SystemCheck::Geo::LicenseCheck,
         SystemCheck::Geo::EnabledCheck,
+        SystemCheck::Geo::GitVersionCheck,
         SystemCheck::Geo::GeoDatabaseConfiguredCheck,
         SystemCheck::Geo::DatabaseReplicationCheck,
         SystemCheck::Geo::HttpConnectionCheck,
