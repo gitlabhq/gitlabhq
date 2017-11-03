@@ -40,7 +40,7 @@ module Clusters
         end
       end
 
-      def finilize_installation
+      def finalize_installation
         FinalizeInstallationService.new(app).execute
       end
 
