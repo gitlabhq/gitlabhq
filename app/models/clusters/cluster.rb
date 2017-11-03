@@ -5,7 +5,7 @@ module Clusters
     self.table_name = 'clusters'
 
     APPLICATIONS = {
-      Clusters::Applications::Helm::NAME => Clusters::Applications::Helm
+      Applications::Helm.application_name => Applications::Helm
     }.freeze
 
     belongs_to :user
