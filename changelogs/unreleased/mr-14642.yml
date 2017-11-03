@@ -1,6 +1,0 @@
----
-title: Auto Devops kubernetes default namespace is now correctly built out of gitlab
-  project group-name
-merge_request: 14642
-author: Mircea Danila Dumitrescu
-type: fixed
