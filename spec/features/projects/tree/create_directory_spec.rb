@@ -31,10 +31,5 @@ feature 'Multi-file editor new directory', :js do
     click_button('Commit 1 file')
 
     expect(page).to have_selector('td', text: 'commit message')
-
-    click_link('foldername')
-
-    expect(page).to have_selector('td', text: 'commit message', count: 2)
-    expect(page).to have_selector('td', text: '.gitkeep')
   end
 end

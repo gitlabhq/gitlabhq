@@ -60,7 +60,7 @@ class Projects::RefsController < Projects::ApplicationController
           file_name: content.name,
           commit: last_commit,
           type: content.type,
-          commit_path: project_commit_path(@project, last_commit)
+          commit_path: (project_commit_path(@project, last_commit) unless last_commit.nil?)
         }
       end
     end

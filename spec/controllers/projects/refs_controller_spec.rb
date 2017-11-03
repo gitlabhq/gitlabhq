@@ -19,13 +19,13 @@ describe Projects::RefsController do
           format: format
     end
 
-    def xhr_get(format = :html, path = 'foo/bar/baz.html')
+    def xhr_get(format = :html)
       xhr :get,
           :logs_tree,
           namespace_id: project.namespace.to_param,
           project_id: project,
           id: 'master',
-          path: path,
+          path: 'foo/bar/baz.html',
           format: format
     end
 
@@ -47,12 +47,10 @@ describe Projects::RefsController do
     end
 
     it 'renders JSON' do
-      xhr_get(:json, '/')
+      xhr_get(:json)
 
       expect(response).to be_success
       expect(json_response).to be_kind_of(Array)
-      expect(json_response[0]['type']).to eq('tree')
-      expect(json_response[0]['file_name']).to eq('bar')
     end
   end
 end
