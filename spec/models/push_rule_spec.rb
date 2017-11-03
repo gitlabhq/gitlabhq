@@ -24,6 +24,7 @@ describe PushRule do
       author_email_regex: 'regex',
       file_name_regex: 'regex',
       reject_unsigned_commits: true,
+      commit_committer_check: true,
       member_check: true,
       prevent_secrets: true,
       max_file_size: 1
