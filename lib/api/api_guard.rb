@@ -72,7 +72,6 @@ module API
         end
       end
 
-
       private
 
       def find_user_from_access_token
