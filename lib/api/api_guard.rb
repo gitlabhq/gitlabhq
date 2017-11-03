@@ -47,7 +47,6 @@ module API
       def find_current_user!
         user =
           find_user_from_access_token ||
-          find_user_from_oauth_token ||
           find_user_from_warden ||
           find_user_by_job_token
 
