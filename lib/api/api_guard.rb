@@ -44,73 +44,56 @@ module API
 
     # Helper Methods for Grape Endpoint
     module HelperMethods
-      def find_current_user
-        user =
-          find_user_from_private_token ||
-          find_user_from_oauth_token ||
-          find_user_from_warden ||
-          find_user_by_job_token
+      def find_current_user!
+        user = find_user_from_access_token || find_user_from_job_token || find_user_from_warden
+        return unless user
 
-        return nil unless user
-
-        raise UnauthorizedError unless Gitlab::UserAccess.new(user).allowed? && user.can?(:access_api)
+        forbidden!('User is blocked') unless Gitlab::UserAccess.new(user).allowed? && user.can?(:access_api)
 
         user
       end
 
-      def private_token
-        params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]
+      def access_token
+        return @access_token if defined?(@access_token)
+
+        @access_token = find_oauth_access_token || find_personal_access_token
+      end
+
+      def validate_access_token!(scopes: [])
+        return unless access_token
+
+        case AccessTokenValidationService.new(access_token, request: request).validate(scopes: scopes)
+        when AccessTokenValidationService::INSUFFICIENT_SCOPE
+          raise InsufficientScopeError.new(scopes)
+        when AccessTokenValidationService::EXPIRED
+          raise ExpiredError
+        when AccessTokenValidationService::REVOKED
+          raise RevokedError
+        end
       end
 
       private
 
-      def find_user_from_private_token
-        token_string = private_token.to_s
-        return nil unless token_string.present?
-
-        user =
-          find_user_by_authentication_token(token_string) ||
-          find_user_by_personal_access_token(token_string)
-
-        raise UnauthorizedError unless user
-
-        user
-      end
-
-      # Invokes the doorkeeper guard.
-      #
-      # If token is presented and valid, then it sets @current_user.
-      #
-      # If the token does not have sufficient scopes to cover the requred scopes,
-      # then it raises InsufficientScopeError.
-      #
-      # If the token is expired, then it raises ExpiredError.
-      #
-      # If the token is revoked, then it raises RevokedError.
-      #
-      # If the token is not found (nil), then it returns nil
-      #
-      # Arguments:
-      #
-      #   scopes: (optional) scopes required for this guard.
-      #           Defaults to empty array.
-      #
-      def find_user_from_oauth_token
-        access_token = find_oauth_access_token
+      def find_user_from_access_token
         return unless access_token
 
-        find_user_by_access_token(access_token)
+        validate_access_token!
+
+        access_token.user || raise(UnauthorizedError)
       end
 
-      def find_user_by_authentication_token(token_string)
-        User.find_by_authentication_token(token_string)
-      end
+      def find_user_from_job_token
+        return unless route_authentication_setting[:job_token_allowed]
 
-      def find_user_by_personal_access_token(token_string)
-        access_token = PersonalAccessToken.find_by_token(token_string)
-        return unless access_token
+        token = (params[JOB_TOKEN_PARAM] || env[JOB_TOKEN_HEADER]).to_s
+        return unless token.present?
 
-        find_user_by_access_token(access_token)
+        job = Ci::Build.find_by(token: token)
+        raise UnauthorizedError unless job
+
+        @job_token_authentication = true
+
+        job.user
       end
 
       # Check the Rails session for valid authentication details
@@ -127,16 +110,6 @@ module API
         Gitlab::RequestForgeryProtection.verified?(env)
       end
 
-      def find_user_by_job_token
-        return @user_by_job_token if defined?(@user_by_job_token)
-
-        @user_by_job_token =
-          if route_authentication_setting[:job_token_allowed]
-            token_string = params[JOB_TOKEN_PARAM].presence || env[JOB_TOKEN_HEADER].presence
-            Ci::Build.find_by_token(token_string)&.user if token_string
-          end
-      end
-
       def route_authentication_setting
         return {} unless respond_to?(:route_setting)
 
@@ -144,34 +117,26 @@ module API
       end
 
       def find_oauth_access_token
-        return @oauth_access_token if defined?(@oauth_access_token)
-
         token = Doorkeeper::OAuth::Token.from_request(doorkeeper_request, *Doorkeeper.configuration.access_token_methods)
-        return @oauth_access_token = nil unless token
+        return unless token
 
-        @oauth_access_token = OauthAccessToken.by_token(token)
-        raise UnauthorizedError unless @oauth_access_token
+        # Expiration, revocation and scopes are verified in `find_user_by_access_token`
+        access_token = OauthAccessToken.by_token(token)
+        raise UnauthorizedError unless access_token
 
-        @oauth_access_token.revoke_previous_refresh_token!
-        @oauth_access_token
+        access_token.revoke_previous_refresh_token!
+        access_token
       end
 
-      def find_user_by_access_token(access_token)
-        scopes = scopes_registered_for_endpoint
+      def find_personal_access_token
+        token = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
+        return unless token.present?
 
-        case AccessTokenValidationService.new(access_token, request: request).validate(scopes: scopes)
-        when AccessTokenValidationService::INSUFFICIENT_SCOPE
-          raise InsufficientScopeError.new(scopes)
+        # Expiration, revocation and scopes are verified in `find_user_by_access_token`
+        access_token = PersonalAccessToken.find_by(token: token)
+        raise UnauthorizedError unless access_token
 
-        when AccessTokenValidationService::EXPIRED
-          raise ExpiredError
-
-        when AccessTokenValidationService::REVOKED
-          raise RevokedError
-
-        when AccessTokenValidationService::VALID
-          access_token.user
-        end
+        access_token
       end
 
       def doorkeeper_request
@@ -255,7 +220,7 @@ module API
     class InsufficientScopeError < StandardError
       attr_reader :scopes
       def initialize(scopes)
-        @scopes = scopes
+        @scopes = scopes.map { |s| s.try(:name) || s }
       end
     end
   end

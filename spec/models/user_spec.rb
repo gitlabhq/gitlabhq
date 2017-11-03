@@ -374,7 +374,6 @@ describe User do
   describe "Respond to" do
     it { is_expected.to respond_to(:admin?) }
     it { is_expected.to respond_to(:name) }
-    it { is_expected.to respond_to(:private_token) }
     it { is_expected.to respond_to(:external?) }
   end
 
@@ -551,14 +550,6 @@ describe User do
       user = create(:user, password: 'abcdefghe')
 
       expect(user.password).to eq('abcdefghe')
-    end
-  end
-
-  describe 'authentication token' do
-    it "has authentication token" do
-      user = create(:user)
-
-      expect(user.authentication_token).not_to be_blank
     end
   end
 
