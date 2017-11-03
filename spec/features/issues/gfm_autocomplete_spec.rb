@@ -183,7 +183,6 @@ feature 'GFM autocomplete', :js do
       page.within '.timeline-content-form' do
         note.native.send_keys('')
         note.native.send_keys("@#{user.username[0]}")
-        note.click
       end
 
       user_item = find('.atwho-view li', text: user.username)
