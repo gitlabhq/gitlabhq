@@ -4,6 +4,7 @@ import _ from 'underscore';
 import d3 from 'd3';
 import { ContributorsGraph, ContributorsAuthorGraph, ContributorsMasterGraph } from './stat_graph_contributors_graph';
 import ContributorsStatGraphUtil from './stat_graph_contributors_util';
+import { n__ } from '../locale';
 
 export default (function() {
   function ContributorsStatGraph() {}
@@ -44,7 +45,7 @@ export default (function() {
     commits = $('<span/>', {
       "class": 'graph-author-commits-count'
     });
-    commits.text(author.commits + " commits");
+    commits.text(n__('%d commit', '%d commits', author.commits));
     return $('<span/>').append(commits);
   };
 

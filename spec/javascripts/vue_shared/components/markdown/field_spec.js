@@ -42,12 +42,14 @@ describe('Markdown field component', () => {
 
       beforeEach(() => {
         spyOn(Vue.http, 'post').and.callFake(() => new Promise((resolve) => {
-          resolve({
-            json() {
-              return {
-                body: '<p>markdown preview</p>',
-              };
-            },
+          setTimeout(() => {
+            resolve({
+              json() {
+                return {
+                  body: '<p>markdown preview</p>',
+                };
+              },
+            });
           });
         }));
 

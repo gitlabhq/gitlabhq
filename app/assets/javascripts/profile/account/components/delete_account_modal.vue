@@ -98,7 +98,7 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
       @toggle="toggleOpen"
       @submit="onSubmit">
 
-      <template slot="body" scope="props">
+      <template slot="body" slot-scope="props">
         <p v-html="props.text"></p>
 
         <form

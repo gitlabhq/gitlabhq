@@ -211,21 +211,25 @@ module IssuablesHelper
 
   def issuable_initial_data(issuable)
     data = {
-      endpoint: project_issue_path(@project, issuable),
-      canUpdate: can?(current_user, :update_issue, issuable),
-      canDestroy: can?(current_user, :destroy_issue, issuable),
+      endpoint: issuable_path(issuable),
+      canUpdate: can?(current_user, :"update_#{issuable.to_ability_name}", issuable),
+      canDestroy: can?(current_user, :"destroy_#{issuable.to_ability_name}", issuable),
       issuableRef: issuable.to_reference,
-      markdownPreviewPath: preview_markdown_path(@project),
+      markdownPreviewPath: preview_markdown_path(parent),
       markdownDocsPath: help_page_path('user/markdown'),
       issuableTemplates: issuable_templates(issuable),
-      projectPath: ref_project.path,
-      projectNamespace: ref_project.namespace.full_path,
       initialTitleHtml: markdown_field(issuable, :title),
       initialTitleText: issuable.title,
       initialDescriptionHtml: markdown_field(issuable, :description),
       initialDescriptionText: issuable.description,
       initialTaskStatus: issuable.task_status
     }
+
+    if parent.is_a?(Group)
+      data[:groupPath] = parent.path
+    else
+      data.merge!(projectPath: ref_project.path, projectNamespace: ref_project.namespace.full_path)
+    end
 
     data.merge!(updated_at_by(issuable))
 
@@ -263,12 +267,7 @@ module IssuablesHelper
   end
 
   def issuable_path(issuable, *options)
-    case issuable
-    when Issue
-      issue_path(issuable, *options)
-    when MergeRequest
-      merge_request_path(issuable, *options)
-    end
+    polymorphic_path(issuable, *options)
   end
 
   def issuable_url(issuable, *options)
@@ -368,5 +367,9 @@ module IssuablesHelper
       rootPath: root_path,
       fullPath: @project.full_path
     }
+  end
+
+  def parent
+    @project || @group
   end
 end

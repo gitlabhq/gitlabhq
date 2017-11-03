@@ -49,6 +49,7 @@ RSpec.configure do |config|
   config.include LoginHelpers, type: :feature
   config.include SearchHelpers, type: :feature
   config.include WaitForRequests, :js
+  config.include LiveDebugger, :js
   config.include StubConfiguration
   config.include EmailHelpers, :mailer, type: :mailer
   config.include TestEnv
