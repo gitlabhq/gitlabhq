@@ -63,8 +63,8 @@ module EE
             to: @details[:to],
             author_name: @author.name,
             target_id: @entity.id,
-            target_type: @entity.class,
-            target_details: @entity.name
+            target_type: @entity.class.name,
+            target_details: @details[:target_details] || @entity.name
         }
       self
     end
@@ -91,6 +91,10 @@ module EE
         entity_type: 'User',
         details: @details
       )
+    end
+
+    def for_project
+      for_custom_model('project', @entity.full_path)
     end
 
     def entity_audit_events_enabled?
