@@ -22,6 +22,10 @@ class UpdateBuildMinutesService < BaseService
   end
 
   def namespace
-    project.namespace
+    if Feature.enabled(:account_on_top_level)
+      project.namespace.top_level_parent
+    else
+      project.namespace
+    end
   end
 end

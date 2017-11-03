@@ -500,6 +500,10 @@ class Project < ActiveRecord::Base
       .base_and_ancestors(upto: top)
   end
 
+  def top_level_ancestor
+    @top_level_ancestor ||= ancestors_upto.last
+  end
+
   def lfs_enabled?
     return namespace.lfs_enabled? if self[:lfs_enabled].nil?
 
