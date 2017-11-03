@@ -421,7 +421,11 @@ export default {
 </script>
 <template>
   <div
-    :class="{ 'js-child-row environment-child-row': model.isChildren, 'folder-row': model.isFolder, 'gl-responsive-table-row': !model.isFolder }"
+    class="gl-responsive-table-row"
+    :class="{
+      'js-child-row environment-child-row': model.isChildren,
+      'folder-row': model.isFolder,
+    }"
     role="row">
     <div class="table-section section-10" role="gridcell">
       <div
@@ -495,15 +499,16 @@ export default {
       </a>
     </div>
 
-    <div class="table-section section-25" role="gridcell">
+    <div
+      v-if="!model.isFolder"
+      class="table-section section-25" role="gridcell">
       <div
-        v-if="!model.isFolder"
         role="rowheader"
         class="table-mobile-header">
         Commit
       </div>
       <div
-        v-if="!model.isFolder && hasLastDeploymentKey"
+        v-if="hasLastDeploymentKey"
         class="js-commit-component table-mobile-content">
         <commit-component
           :tag="commitTag"
@@ -514,21 +519,22 @@ export default {
           :author="commitAuthor"/>
       </div>
       <div
-        v-if="!model.isFolder && !hasLastDeploymentKey"
+        v-if="!hasLastDeploymentKey"
         class="commit-title table-mobile-content">
         No deployments yet
       </div>
     </div>
 
-    <div class="table-section section-10" role="gridcell">
+    <div
+      v-if="!model.isFolder"
+      class="table-section section-10" role="gridcell">
       <div
-        v-if="!model.isFolder"
         role="rowheader"
         class="table-mobile-header">
         Updated
       </div>
       <span
-        v-if="!model.isFolder && canShowDate"
+        v-if="canShowDate"
         class="environment-created-date-timeago table-mobile-content">
         {{createdDate}}
       </span>

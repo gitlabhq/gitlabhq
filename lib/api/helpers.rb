@@ -41,6 +41,8 @@ module API
 
       sudo!
 
+      validate_access_token!(scopes: scopes_registered_for_endpoint) unless sudo?
+
       @current_user
     end
 
@@ -385,7 +387,7 @@ module API
       return @initial_current_user if defined?(@initial_current_user)
 
       begin
-        @initial_current_user = Gitlab::Auth::UniqueIpsLimiter.limit_user! { find_current_user }
+        @initial_current_user = Gitlab::Auth::UniqueIpsLimiter.limit_user! { find_current_user! }
       rescue APIGuard::UnauthorizedError
         unauthorized!
       end
@@ -393,24 +395,23 @@ module API
 
     def sudo!
       return unless sudo_identifier
-      return unless initial_current_user
+
+      unauthorized! unless initial_current_user
 
       unless initial_current_user.admin?
         forbidden!('Must be admin to use sudo')
       end
 
-      # Only private tokens should be used for the SUDO feature
-      unless private_token == initial_current_user.private_token
-        forbidden!('Private token must be specified in order to use sudo')
+      unless access_token
+        forbidden!('Must be authenticated using an OAuth or Personal Access Token to use sudo')
       end
+
+      validate_access_token!(scopes: [:sudo])
 
       sudoed_user = find_user(sudo_identifier)
+      not_found!("User with ID or username '#{sudo_identifier}'") unless sudoed_user
 
-      if sudoed_user
-        @current_user = sudoed_user
-      else
-        not_found!("No user id or username for: #{sudo_identifier}")
-      end
+      @current_user = sudoed_user
     end
 
     def sudo_identifier

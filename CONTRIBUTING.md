@@ -1,9 +1,13 @@
-## Contributor license agreement
+## Developer Certificate of Origin + License
 
-By submitting code as an individual you agree to the
-[individual contributor license agreement](doc/legal/individual_contributor_license_agreement.md).
-By submitting code as an entity you agree to the
-[corporate contributor license agreement](doc/legal/corporate_contributor_license_agreement.md).
+By contributing to GitLab B.V., You accept and agree to the following terms and
+conditions for Your present and future Contributions submitted to GitLab B.V.
+Except for the license granted herein to GitLab B.V. and recipients of software
+distributed by GitLab B.V., You reserve all right, title, and interest in and to
+Your Contributions. All Contributions are subject to the following DCO + License
+terms.
+
+[DCO + License](https://gitlab.com/gitlab-org/dco/blob/master/README.md)
 
 _This notice should stay as the first item in the CONTRIBUTING.md file._
 
@@ -100,8 +104,7 @@ the remaining issues on the GitHub issue tracker.
 
 ## I want to contribute!
 
-If you want to contribute to GitLab, but are not sure where to start,
-look for [issues with the label `Accepting Merge Requests` and small weight][accepting-mrs-weight].
+If you want to contribute to GitLab, [issues with the label `Accepting Merge Requests` and small weight][accepting-mrs-weight] is a great place to start. Issues with a lower weight (1 or 2) are deemed suitable for beginners.
 These issues will be of reasonable size and challenge, for anyone to start
 contributing to GitLab.
 

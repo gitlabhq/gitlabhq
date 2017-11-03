@@ -1,4 +1,4 @@
-## Enable or disable GitLab CI/CD
+# How to enable or disable GitLab CI/CD
 
 To effectively use GitLab CI/CD, you need a valid [`.gitlab-ci.yml`](yaml/README.md)
 file present at the root directory of your project and a
@@ -21,7 +21,7 @@ individually under each project's settings, or site-wide by modifying the
 settings in `gitlab.yml` and `gitlab.rb` for source and Omnibus installations
 respectively.
 
-### Per-project user setting
+## Per-project user setting
 
 The setting to enable or disable GitLab CI/CD can be found under your project's
 **Settings > General > Permissions**. Choose one of "Disabled", "Only team members"
@@ -29,7 +29,7 @@ or "Everyone with access" and hit **Save changes** for the settings to take effe
 
 ![Sharing & Permissions settings](../user/project/settings/img/sharing_and_permissions_settings.png)
 
-### Site-wide admin setting
+## Site-wide admin setting
 
 You can disable GitLab CI/CD site-wide, by modifying the settings in `gitlab.yml`
 and `gitlab.rb` for source and Omnibus installations respectively.

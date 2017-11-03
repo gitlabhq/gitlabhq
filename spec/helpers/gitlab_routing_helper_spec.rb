@@ -63,4 +63,30 @@ describe GitlabRoutingHelper do
       it { expect(resend_invite_group_member_path(group_member)).to eq resend_invite_group_group_member_path(group_member.source, group_member) }
     end
   end
+
+  describe '#preview_markdown_path' do
+    let(:project) { create(:project) }
+
+    it 'returns group preview markdown path for a group parent' do
+      group = create(:group)
+
+      expect(preview_markdown_path(group)).to eq("/groups/#{group.path}/preview_markdown")
+    end
+
+    it 'returns project preview markdown path for a project parent' do
+      expect(preview_markdown_path(project)).to eq("/#{project.full_path}/preview_markdown")
+    end
+
+    it 'returns snippet preview markdown path for a personal snippet' do
+      @snippet = create(:personal_snippet)
+
+      expect(preview_markdown_path(nil)).to eq("/snippets/preview_markdown")
+    end
+
+    it 'returns project preview markdown path for a project snippet' do
+      @snippet = create(:project_snippet, project: project)
+
+      expect(preview_markdown_path(project)).to eq("/#{project.full_path}/preview_markdown")
+    end
+  end
 end

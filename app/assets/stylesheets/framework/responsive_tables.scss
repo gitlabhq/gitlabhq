@@ -3,57 +3,74 @@
   max-width: #{$max + '%'};
 }
 
-.gl-responsive-table-row {
-  margin-top: 10px;
-  border: 1px solid $border-color;
+.gl-responsive-table-row-layout {
+  width: 100%;
 
   @media (min-width: $screen-md-min) {
-    padding: 15px 0;
-    margin: 0;
     display: flex;
     align-items: center;
-    border: none;
-    border-bottom: 1px solid $white-normal;
-  }
 
-  .table-section {
-    white-space: nowrap;
-
-    $section-widths: 10 15 20 25 30 40;
-    @each $width in $section-widths {
-      &.section-#{$width} {
-        flex: 0 0 #{$width + '%'};
-
-        @media (min-width: $screen-md-min) {
-          max-width: #{$width + '%'};
-        }
-      }
-    }
-
-    &:not(.table-button-footer) {
-      @media (max-width: $screen-sm-max) {
-        display: flex;
-        align-self: stretch;
-        padding: 10px;
-        align-items: center;
-        min-height: 62px;
-
-        &:not(:first-of-type) {
-          border-top: 1px solid $white-normal;
-        }
-      }
-    }
-
-    &.section-wrap {
-      white-space: normal;
-
-      @media (max-width: $screen-sm-max) {
-        flex-wrap: wrap;
-      }
+    & > &:not(:first-child) {
+      margin-top: $gl-padding;
     }
   }
 }
 
+.gl-responsive-table-row {
+  @extend .gl-responsive-table-row-layout;
+  margin-top: 10px;
+  border: 1px solid $border-color;
+
+  @media (min-width: $screen-md-min) {
+    margin: 0;
+    padding: $gl-padding 0;
+    border: none;
+    border-bottom: 1px solid $white-normal;
+  }
+}
+
+.gl-responsive-table-row-col-span {
+  flex-wrap: wrap;
+}
+
+.table-section {
+  white-space: nowrap;
+
+  $section-widths: 10 15 20 25 30 40 100;
+  @each $width in $section-widths {
+    &.section-#{$width} {
+      flex: 0 0 #{$width + '%'};
+
+      @media (min-width: $screen-md-min) {
+        max-width: #{$width + '%'};
+      }
+    }
+  }
+
+  @media (max-width: $screen-sm-max) {
+    display: flex;
+    align-self: stretch;
+    padding: 10px;
+    align-items: center;
+    min-height: 62px;
+
+    &:not(:first-child) {
+      border-top: 1px solid $white-normal;
+    }
+  }
+
+  &.section-wrap {
+    white-space: normal;
+
+    @media (max-width: $screen-sm-max) {
+      flex-wrap: wrap;
+    }
+  }
+
+  &.section-align-top {
+    align-self: flex-start;
+  }
+}
 
 .table-button-footer {
   @media (min-width: $screen-md-min) {
@@ -61,12 +78,13 @@
   }
 
   @media (max-width: $screen-sm-max) {
-    background-color: $gray-normal;
+    display: block;
     align-self: stretch;
+    min-height: 0;
+    background-color: $gray-normal;
     border-top: 1px solid $border-color;
 
     .table-action-buttons {
-      padding: 10px 5px;
       display: flex;
 
       .btn {
@@ -77,7 +95,14 @@
       > .external-url,
       > .btn {
         flex: 1 1 28px;
-        margin: 0 5px;
+
+        &:not(:first-child) {
+          margin-left: 5px;
+        }
+
+        &:not(:last-child) {
+          margin-right: 5px;
+        }
       }
 
       .dropdown-new {

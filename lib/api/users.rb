@@ -507,9 +507,7 @@ module API
       end
       get do
         entity =
-          if sudo?
-            Entities::UserWithPrivateDetails
-          elsif current_user.admin?
+          if current_user.admin?
             Entities::UserWithAdmin
           else
             Entities::UserPublic
