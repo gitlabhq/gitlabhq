@@ -28,7 +28,6 @@ feature 'GFM autocomplete', :js do
 
   it 'opens autocomplete menu when field starts with text' do
     page.within '.timeline-content-form' do
-      find('#note-body').native.send_keys('')
       find('#note-body').native.send_keys('@')
     end
 
@@ -46,7 +45,6 @@ feature 'GFM autocomplete', :js do
 
   it 'doesnt select the first item for non-assignee dropdowns' do
     page.within '.timeline-content-form' do
-      find('#note-body').native.send_keys('')
       find('#note-body').native.send_keys(':')
     end
 
@@ -86,7 +84,6 @@ feature 'GFM autocomplete', :js do
 
   it 'selects the first item for assignee dropdowns' do
     page.within '.timeline-content-form' do
-      find('#note-body').native.send_keys('')
       find('#note-body').native.send_keys('@')
     end
 
@@ -112,7 +109,6 @@ feature 'GFM autocomplete', :js do
 
   it 'selects the first item for non-assignee dropdowns if a query is entered' do
     page.within '.timeline-content-form' do
-      find('#note-body').native.send_keys('')
       find('#note-body').native.send_keys(':1')
     end
 
@@ -127,9 +123,8 @@ feature 'GFM autocomplete', :js do
     it 'wraps the result in double quotes' do
       note = find('#note-body')
       page.within '.timeline-content-form' do
-        note.native.send_keys('')
+        find('#note-body').native.send_keys('')
         simulate_input('#note-body', "~#{label.title[0]}")
-        note.click
       end
 
       label_item = find('.atwho-view li', text: label.title)
@@ -152,16 +147,13 @@ feature 'GFM autocomplete', :js do
     it "does not show dropdown when preceded with a special character" do
       note = find('#note-body')
       page.within '.timeline-content-form' do
-        note.native.send_keys('')
         note.native.send_keys("@")
-        note.click
       end
 
       expect(page).to have_selector('.atwho-container')
 
       page.within '.timeline-content-form' do
         note.native.send_keys("@")
-        note.click
       end
 
       expect(page).to have_selector('.atwho-container', visible: false)
@@ -170,9 +162,7 @@ feature 'GFM autocomplete', :js do
     it "does not throw an error if no labels exist" do
       note = find('#note-body')
       page.within '.timeline-content-form' do
-        note.native.send_keys('')
         note.native.send_keys('~')
-        note.click
       end
 
       expect(page).to have_selector('.atwho-container', visible: false)
@@ -181,7 +171,6 @@ feature 'GFM autocomplete', :js do
     it 'doesn\'t wrap for assignee values' do
       note = find('#note-body')
       page.within '.timeline-content-form' do
-        note.native.send_keys('')
         note.native.send_keys("@#{user.username[0]}")
       end
 
@@ -193,9 +182,7 @@ feature 'GFM autocomplete', :js do
     it 'doesn\'t wrap for emoji values' do
       note = find('#note-body')
       page.within '.timeline-content-form' do
-        note.native.send_keys('')
         note.native.send_keys(":cartwheel_")
-        note.click
       end
 
       emoji_item = find('.atwho-view li', text: 'cartwheel_tone1')
@@ -222,9 +209,7 @@ feature 'GFM autocomplete', :js do
     it 'triggers autocomplete after selecting a quick action' do
       note = find('#note-body')
       page.within '.timeline-content-form' do
-        note.native.send_keys('')
         note.native.send_keys('/as')
-        note.click
       end
 
       find('.atwho-view li', text: '/assign')
