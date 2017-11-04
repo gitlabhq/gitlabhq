@@ -113,6 +113,12 @@ sensitive data in the database. Any secondary node must have the
     gitlab-ctl reconfigure
     ```
 
+Once reconfigured, the secondary will start automatically
+replicating missing data from the primary in a process known as backfill.
+Meanwhile, the primary node will start to notify changes to the secondary, which
+will act on those notifications immediately. Make sure the secondary instance is
+running and accessible.
+
 ### Step 3. Enabling hashed storage (from GitLab 10.0)
 
 1. Visit the **primary** node's **Admin Area ➔ Settings**
@@ -125,27 +131,18 @@ Using hashed storage significantly improves Geo replication - project and group
 renames no longer require synchronization between nodes - so we recommend it is
 used for all GitLab Geo installations.
 
-### Step 4. Enabling the secondary GitLab node
+### Step 4. Managing the secondary GitLab node
 
-1. Visit the **primary** node's **Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`)
-   in your browser.
-1. Add the secondary node by providing its full URL. **Do NOT** check the box
-   'This is a primary node'.
-1. Added in GitLab 9.5: Choose which namespaces should be replicated by the secondary node. Leave blank to replicate all. Read more in [selective replication](#selective-replication).
-1. Click the **Add node** button.
-1. Restart GitLab on the secondary:
+You can monitor the status of the syncing process on a secondary node
+by visiting the primary node's **Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`)
+in your browser.
 
-    ```
-    gitlab-ctl restart
-    ```
+Please note that if `git_data_dirs` is customized on the primary for multiple
+repository shards you must duplicate the same configuration on the secondary.
 
----
+![GitLab Geo dashboard](img/geo-node-dashboard.png)
 
-After the **Add Node** button is pressed, the secondary will start automatically
-replicating missing data from the primary in a process known as backfill.
-Meanwhile, the primary node will start to notify changes to the secondary, which
-will act on those notifications immediately. Make sure the secondary instance is
-running and accessible.
+Disabling a secondary node stops the syncing process.
 
 The two most obvious issues that replication can have here are:
 
@@ -163,17 +160,6 @@ Currently, this is what is synced:
 * LFS objects
 * Issue, merge request, snippet and comment attachments
 * User, group, and project avatars
-
-You can monitor the status of the syncing process on a secondary node
-by visiting the primary node's **Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`)
-in your browser.
-
-Please note that if `git_data_dirs` is customized on the primary for multiple
-repository shards you must duplicate the same configuration on the secondary.
-
-![GitLab Geo dashboard](img/geo-node-dashboard.png)
-
-Disabling a secondary node stops the syncing process.
 
 ## Next steps
 
