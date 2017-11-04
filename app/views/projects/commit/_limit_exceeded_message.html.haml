@@ -1,8 +1,8 @@
-.has-tooltip{class: "limit-box limit-box-#{objects.singularize}", data: { title: "Project has too many #{objects} to search"} }
+.has-tooltip{ class: "limit-box limit-box-#{objects.singularize}", data: { title: "Project has too many #{objects} to search"} }
   .limit-icon
     - if objects == "branches"
       = icon('code-fork')
     - else
       = icon('tag')
   .limit-message
-    %span= "#{objects.capitalize} unavailable"
+    %span #{objects.capitalize} unavailable
