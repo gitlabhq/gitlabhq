@@ -1,6 +1,11 @@
 import Vue from 'vue';
 import fieldComponent from '~/vue_shared/components/markdown/field.vue';
-import setTimeoutPromise from '../../../helpers/set_timeout_promise_helper';
+
+function assertMarkdownTabs(isWrite, writeLink, previewLink, vm) {
+  expect(writeLink.parentNode.classList.contains('active')).toEqual(isWrite);
+  expect(previewLink.parentNode.classList.contains('active')).toEqual(!isWrite);
+  expect(vm.$el.querySelector('.md-preview').style.display).toEqual(isWrite ? 'none' : '');
+}
 
 describe('Markdown field component', () => {
   let vm;
@@ -107,26 +112,19 @@ describe('Markdown field component', () => {
         }, 0);
       });
 
-      function assertLinks(isWrite) {
-        expect(writeLink.parentNode.classList.contains('active')).toEqual(isWrite);
-        expect(previewLink.parentNode.classList.contains('active')).toEqual(!isWrite);
-        expect(vm.$el.querySelector('.md-preview').style.display).toEqual(isWrite ? 'none' : '');
-      }
-
       it('clicking already active write or preview link does nothing', (done) => {
         writeLink.click();
-
-        setTimeoutPromise()
-          .then(() => assertLinks(true))
+        Vue.nextTick()
+          .then(() => assertMarkdownTabs(true, writeLink, previewLink, vm))
           .then(() => writeLink.click())
-          .then(() => setTimeoutPromise())
-          .then(() => assertLinks(true))
+          .then(() => Vue.nextTick())
+          .then(() => assertMarkdownTabs(true, writeLink, previewLink, vm))
           .then(() => previewLink.click())
-          .then(() => setTimeoutPromise())
-          .then(() => assertLinks(false))
+          .then(() => Vue.nextTick())
+          .then(() => assertMarkdownTabs(false, writeLink, previewLink, vm))
           .then(() => previewLink.click())
-          .then(() => setTimeoutPromise())
-          .then(() => assertLinks(false))
+          .then(() => Vue.nextTick())
+          .then(() => assertMarkdownTabs(false, writeLink, previewLink, vm))
           .then(done)
           .catch(done.fail);
       });
