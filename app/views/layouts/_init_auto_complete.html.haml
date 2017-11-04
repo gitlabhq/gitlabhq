@@ -12,5 +12,6 @@
       mergeRequests: "#{merge_requests_project_autocomplete_sources_path(project)}",
       labels: "#{labels_project_autocomplete_sources_path(project)}",
       milestones: "#{milestones_project_autocomplete_sources_path(project)}",
-      commands: "#{commands_project_autocomplete_sources_path(project, type: noteable_type, type_id: params[:id])}"
+      commands: "#{commands_project_autocomplete_sources_path(project, type: noteable_type, type_id: params[:id])}",
+      custom_emoji: "#{autocomplete_custom_emoji_path(project_id: project.id)}"
     };
