@@ -16,7 +16,7 @@ import CILintEditor from './ci_lint_editor';
 import groupsSelect from './groups_select';
 /* global Search */
 /* global Admin */
-/* global NamespaceSelects */
+import NamespaceSelect from './namespace_select';
 /* global NewCommitForm */
 /* global NewBranchForm */
 /* global Project */
@@ -650,7 +650,8 @@ import initGroupAnalytics from './init_group_analytics';
               new UsersSelect();
               break;
             case 'projects':
-              new NamespaceSelects();
+              document.querySelectorAll('.js-namespace-select')
+                .forEach(dropdown => new NamespaceSelect({ dropdown }));
               break;
             case 'labels':
               switch (path[2]) {

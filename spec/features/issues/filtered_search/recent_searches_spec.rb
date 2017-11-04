@@ -27,9 +27,8 @@ describe 'Recent searches', :js do
     input_filtered_search('foo', submit: true)
     input_filtered_search('bar', submit: true)
 
-    items = all('.filtered-search-history-dropdown-item', visible: false)
+    items = all('.filtered-search-history-dropdown-item', visible: false, count: 2)
 
-    expect(items.count).to eq(2)
     expect(items[0].text).to eq('bar')
     expect(items[1].text).to eq('foo')
   end
@@ -38,9 +37,8 @@ describe 'Recent searches', :js do
     visit project_issues_path(project_1, label_name: 'foo', search: 'bar')
     visit project_issues_path(project_1, label_name: 'qux', search: 'garply')
 
-    items = all('.filtered-search-history-dropdown-item', visible: false)
+    items = all('.filtered-search-history-dropdown-item', visible: false, count: 2)
 
-    expect(items.count).to eq(2)
     expect(items[0].text).to eq('label:~qux garply')
     expect(items[1].text).to eq('label:~foo bar')
   end
@@ -50,9 +48,8 @@ describe 'Recent searches', :js do
 
     visit project_issues_path(project_1, search: 'foo')
 
-    items = all('.filtered-search-history-dropdown-item', visible: false)
+    items = all('.filtered-search-history-dropdown-item', visible: false, count: 3)
 
-    expect(items.count).to eq(3)
     expect(items[0].text).to eq('foo')
     expect(items[1].text).to eq('saved1')
     expect(items[2].text).to eq('saved2')
@@ -69,9 +66,8 @@ describe 'Recent searches', :js do
     input_filtered_search('more', submit: true)
     input_filtered_search('things', submit: true)
 
-    items = all('.filtered-search-history-dropdown-item', visible: false)
+    items = all('.filtered-search-history-dropdown-item', visible: false, count: 2)
 
-    expect(items.count).to eq(2)
     expect(items[0].text).to eq('things')
     expect(items[1].text).to eq('more')
   end

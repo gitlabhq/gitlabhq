@@ -49,6 +49,7 @@ module MergeRequests
         create_branch_change_note(merge_request, 'target',
                                   merge_request.previous_changes['target_branch'].first,
                                   merge_request.target_branch)
+
         reset_approvals(merge_request)
       end
 

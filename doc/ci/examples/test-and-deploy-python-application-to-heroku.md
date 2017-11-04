@@ -64,7 +64,7 @@ To build this project you also need to have [GitLab Runner](https://docs.gitlab.
 You can use public runners available on `gitlab.com`, but you can register your own:
 
 ```
-gitlab-ci-multi-runner register \
+gitlab-runner register \
   --non-interactive \
   --url "https://gitlab.com/" \
   --registration-token "PROJECT_REGISTRATION_TOKEN" \
