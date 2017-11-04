@@ -1,6 +1,8 @@
 module Projects
   module GroupLinks
     class CreateService < BaseService
+      prepend ::EE::Projects::GroupLinks::CreateService
+
       def execute(group)
         return false unless group
 

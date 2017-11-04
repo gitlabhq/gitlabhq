@@ -378,7 +378,7 @@ describe 'Issues' do
     it 'changes incoming email address token', :js do
       find('.issue-email-modal-btn').click
       previous_token = find('input#issue_email').value
-      find('.incoming-email-token-reset').trigger('click')
+      find('.incoming-email-token-reset').click
 
       wait_for_requests
 
@@ -621,9 +621,11 @@ describe 'Issues' do
       end
 
       it "cancels a file upload correctly" do
-        dropzone_file([Rails.root.join('spec', 'fixtures', 'dk.png')], 0, false)
+        slow_requests do
+          dropzone_file([Rails.root.join('spec', 'fixtures', 'dk.png')], 0, false)
 
-        click_button 'Cancel'
+          click_button 'Cancel'
+        end
 
         expect(page).to have_button('Attach a file')
         expect(page).not_to have_button('Cancel')

@@ -52,7 +52,7 @@ describe 'Issue Boards', :js do
 
     expect(page).to have_selector('.issue-boards-sidebar')
 
-    find('.gutter-toggle').trigger('click')
+    find('.gutter-toggle').click
 
     expect(page).not_to have_selector('.issue-boards-sidebar')
   end
@@ -172,7 +172,7 @@ describe 'Issue Boards', :js do
       end
 
       page.within(find('.board:nth-child(2)')) do
-        find('.card:nth-child(2)').trigger('click')
+        find('.card:nth-child(2)').click
       end
 
       page.within('.assignee') do

@@ -49,7 +49,6 @@ describe ProjectMirrorData, type: :model do
     let(:mirror_data) { create(:project, :mirror, :import_finished).mirror_data }
     let!(:timestamp) { Time.now }
     let!(:jitter) { 2.seconds }
-    let(:interval) { 2.minutes }
 
     before do
       allow_any_instance_of(ProjectMirrorData).to receive(:rand).and_return(jitter)
@@ -62,9 +61,7 @@ describe ProjectMirrorData, type: :model do
 
       context 'when retry count is 0' do
         it 'applies transition successfully' do
-          expect do
-            mirror_data.set_next_execution_timestamp!
-          end.to change { mirror_data.next_execution_timestamp }.to be_within(interval).of(timestamp + 26.minutes)
+          expect_next_execution_timestamp(mirror_data, timestamp + 26.minutes)
         end
       end
 
@@ -73,9 +70,7 @@ describe ProjectMirrorData, type: :model do
           mirror_data.retry_count = 2
           mirror_data.increment_retry_count!
 
-          expect do
-            mirror_data.set_next_execution_timestamp!
-          end.to change { mirror_data.next_execution_timestamp }.to be_within(interval).of(timestamp + 79.minutes)
+          expect_next_execution_timestamp(mirror_data, timestamp + 78.minutes)
         end
       end
     end
@@ -83,28 +78,27 @@ describe ProjectMirrorData, type: :model do
     context 'when boundaries are surpassed' do
       let!(:mirror_jitter) { 30.seconds }
 
+      before do
+        allow(Gitlab::Mirror).to receive(:rand).and_return(mirror_jitter)
+      end
+
       context 'when base delay is lower than mirror min_delay' do
         before do
-          allow_any_instance_of(Gitlab::Mirror).to receive(:rand).and_return(mirror_jitter)
           mirror_data.last_update_started_at = timestamp - 1.second
         end
 
         context 'when resetting retry count' do
           it 'applies transition successfully' do
-            expect do
-              mirror_data.set_next_execution_timestamp!
-            end.to change { mirror_data.next_execution_timestamp }.to be_within(interval).of(timestamp + 15.minutes)
+            expect_next_execution_timestamp(mirror_data, timestamp + 15.minutes + mirror_jitter)
           end
         end
 
         context 'when incrementing retry count' do
           it 'applies transition successfully' do
-            mirror_data.retry_count = 2
+            mirror_data.retry_count = 3
             mirror_data.increment_retry_count!
 
-            expect do
-              mirror_data.set_next_execution_timestamp!
-            end.to change { mirror_data.next_execution_timestamp }.to be_within(interval).of(timestamp + 45.minutes)
+            expect_next_execution_timestamp(mirror_data, timestamp + 62.minutes)
           end
         end
       end
@@ -113,15 +107,12 @@ describe ProjectMirrorData, type: :model do
         let(:max_timestamp) { timestamp + current_application_settings.mirror_max_delay.minutes }
 
         before do
-          allow_any_instance_of(Gitlab::Mirror).to receive(:rand).and_return(mirror_jitter)
           mirror_data.last_update_started_at = timestamp - 1.hour
         end
 
         context 'when resetting retry count' do
           it 'applies transition successfully' do
-            expect do
-              mirror_data.set_next_execution_timestamp!
-            end.to change { mirror_data.next_execution_timestamp }.to be_within(interval).of(max_timestamp + mirror_jitter)
+            expect_next_execution_timestamp(mirror_data, max_timestamp + mirror_jitter)
           end
         end
 
@@ -130,11 +121,17 @@ describe ProjectMirrorData, type: :model do
             mirror_data.retry_count = 2
             mirror_data.increment_retry_count!
 
-            expect do
-              mirror_data.set_next_execution_timestamp!
-            end.to change { mirror_data.next_execution_timestamp }.to be_within(interval).of(max_timestamp + mirror_jitter)
+            expect_next_execution_timestamp(mirror_data, max_timestamp + mirror_jitter)
           end
         end
+      end
+    end
+
+    def expect_next_execution_timestamp(mirror_data, new_timestamp)
+      Timecop.freeze(timestamp) do
+        expect do
+          mirror_data.set_next_execution_timestamp!
+        end.to change { mirror_data.next_execution_timestamp }.to eq(new_timestamp)
       end
     end
   end

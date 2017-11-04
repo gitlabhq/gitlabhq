@@ -42,6 +42,14 @@ Please view this file on the master branch, on stable branches it's out of date.
 - [OTHER] Add partial index on push_rules.is_sample.
 - Add new push rule to reject unsigned commits. !2913
 
+## 10.0.5 (2017-11-03)
+
+- [FIXED] Find stuck scheduled import jobs and also mark them as failed. !3055
+- [FIXED] Fix removing the username from the git repository URL for pull mirroring. !3060
+- [FIXED] Fix base link for issues on group boards.
+- [FIXED] Move group boards routes under - and remove "boards" from reserved paths.
+- [FIXED] Geo: Fix attachments/avatars saving to the wrong directory.
+
 ## 10.0.4 (2017-10-16)
 
 - [SECURITY] Prevent Related Issues from leaking confidential issues. !541

@@ -50,6 +50,14 @@ describe Groups::GroupMembersController do
         expect(group.users).to include group_user
       end
 
+      it 'creates an audit event' do
+        expect do
+          post :create, group_id: group,
+                        user_ids: group_user.id,
+                        access_level: Gitlab::Access::GUEST
+        end.to change(AuditEvent, :count).by(1)
+      end
+
       it 'adds no user to members' do
         post :create, group_id: group,
                       user_ids: '',
@@ -147,6 +155,10 @@ describe Groups::GroupMembersController do
           expect(response).to have_gitlab_http_status(200)
           expect(json_response['notice']).to eq "You left the \"#{group.name}\" group."
         end
+
+        it 'creates an audit event' do
+          expect { delete :leave, group_id: group }.to change(AuditEvent, :count).by(1)
+        end
       end
 
       context 'and is an owner' do
@@ -158,6 +170,10 @@ describe Groups::GroupMembersController do
           delete :leave, group_id: group
 
           expect(response).to have_gitlab_http_status(403)
+        end
+
+        it 'does not create an audit event' do
+          expect { delete :leave, group_id: group }.not_to change(AuditEvent, :count)
         end
       end
 
@@ -173,6 +189,10 @@ describe Groups::GroupMembersController do
           expect(response).to redirect_to(group_path(group))
           expect(group.requesters).to be_empty
           expect(group.users).not_to include user
+        end
+
+        it 'creates an audit event' do
+          expect { delete :leave, group_id: group }.to change(AuditEvent, :count).by(1)
         end
       end
     end

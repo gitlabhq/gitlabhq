@@ -1,5 +1,7 @@
 module Groups
   class CreateService < Groups::BaseService
+    prepend ::EE::Groups::CreateService
+
     def initialize(user, params = {})
       @current_user, @params = user, params.dup
       @chat_team = @params.delete(:create_chat_team)
