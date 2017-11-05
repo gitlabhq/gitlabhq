@@ -226,7 +226,7 @@ feature 'Issues > User uses quick actions', :js do
         end
 
         it 'applies the commands to both issues and moves the issue' do
-          write_note("/label ~#{bug.title} ~#{wontfix.title}\n/milestone %\"#{milestone.title}\"\n/move #{target_project.full_path}")
+          write_note("/label ~#{bug.title} ~#{wontfix.title}\n\n/milestone %\"#{milestone.title}\"\n\n/move #{target_project.full_path}")
 
           expect(page).to have_content 'Commands applied'
           expect(issue.reload).to be_closed
@@ -245,7 +245,7 @@ feature 'Issues > User uses quick actions', :js do
         end
 
         it 'moves the issue and applies the commands to both issues' do
-          write_note("/move #{target_project.full_path}\n/label ~#{bug.title} ~#{wontfix.title}\n/milestone %\"#{milestone.title}\"")
+          write_note("/move #{target_project.full_path}\n\n/label ~#{bug.title} ~#{wontfix.title}\n\n/milestone %\"#{milestone.title}\"")
 
           expect(page).to have_content 'Commands applied'
           expect(issue.reload).to be_closed

@@ -12,6 +12,9 @@ describe Projects::UnlinkForkService do
 
   context 'with opened merge request on the source project' do
     let(:merge_request) { create(:merge_request, source_project: forked_project, target_project: fork_link.forked_from_project) }
+    let(:merge_request2) { create(:merge_request, source_project: forked_project, target_project: fork_project(project)) }
+    let(:merge_request_in_fork) { create(:merge_request, source_project: forked_project, target_project: forked_project) }
+
     let(:mr_close_service) { MergeRequests::CloseService.new(forked_project, user) }
 
     before do
@@ -22,8 +25,13 @@ describe Projects::UnlinkForkService do
 
     it 'close all pending merge requests' do
       expect(mr_close_service).to receive(:execute).with(merge_request)
+      expect(mr_close_service).to receive(:execute).with(merge_request2)
 
       subject.execute
+    end
+
+    it 'does not close merge requests for the project being unlinked' do
+      expect(mr_close_service).not_to receive(:execute).with(merge_request_in_fork)
     end
   end
 
@@ -52,5 +60,15 @@ describe Projects::UnlinkForkService do
     subject.execute
 
     expect(source.forks_count).to be_zero
+  end
+
+  context 'when the original project was deleted' do
+    it 'does not fail when the original project is deleted' do
+      source = forked_project.forked_from_project
+      source.destroy
+      forked_project.reload
+
+      expect { subject.execute }.not_to raise_error
+    end
   end
 end

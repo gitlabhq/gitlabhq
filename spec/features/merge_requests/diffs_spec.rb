@@ -7,14 +7,12 @@ feature 'Diffs URL', :js do
   let(:merge_request) { create(:merge_request, source_project: project) }
 
   context 'when visit with */* as accept header' do
-    before do
-      page.driver.add_header('Accept', '*/*')
-    end
-
     it 'renders the notes' do
       create :note_on_merge_request, project: project, noteable: merge_request, note: 'Rebasing with master'
 
-      visit diffs_project_merge_request_path(project, merge_request)
+      inspect_requests(inject_headers: { 'Accept' => '*/*' }) do
+        visit diffs_project_merge_request_path(project, merge_request)
+      end
 
       # Load notes and diff through AJAX
       expect(page).to have_css('.note-text', visible: false, text: 'Rebasing with master')
@@ -90,7 +88,7 @@ feature 'Diffs URL', :js do
         visit diffs_project_merge_request_path(project, merge_request)
 
         # Throws `Capybara::Poltergeist::InvalidSelector` if we try to use `#hash` syntax
-        find("[id=\"#{changelog_id}\"] .js-edit-blob").trigger('click')
+        find("[id=\"#{changelog_id}\"] .js-edit-blob").click
 
         expect(page).to have_selector('.js-fork-suggestion-button', count: 1)
         expect(page).to have_selector('.js-cancel-fork-suggestion-button', count: 1)

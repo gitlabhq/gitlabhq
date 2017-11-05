@@ -22,7 +22,7 @@ feature 'Diff note avatars', :js do
     project.team << [user, :master]
     sign_in user
 
-    page.driver.set_cookie('sidebar_collapsed', 'true')
+    set_cookie('sidebar_collapsed', 'true')
   end
 
   context 'discussion tab' do
@@ -56,7 +56,7 @@ feature 'Diff note avatars', :js do
     end
 
     it 'does not render avatar after commenting' do
-      first('.diff-line-num').trigger('mouseover')
+      first('.diff-line-num').click
       find('.js-add-diff-note-button').click
 
       page.within('.js-discussion-note-form') do
@@ -85,7 +85,7 @@ feature 'Diff note avatars', :js do
 
       it 'shows note avatar' do
         page.within find_line(position.line_code(project.repository)) do
-          find('.diff-notes-collapse').click
+          find('.diff-notes-collapse').send_keys(:return)
 
           expect(page).to have_selector('img.js-diff-comment-avatar', count: 1)
         end
@@ -93,7 +93,7 @@ feature 'Diff note avatars', :js do
 
       it 'shows comment on note avatar' do
         page.within find_line(position.line_code(project.repository)) do
-          find('.diff-notes-collapse').click
+          find('.diff-notes-collapse').send_keys(:return)
 
           expect(first('img.js-diff-comment-avatar')["data-original-title"]).to eq("#{note.author.name}: #{note.note.truncate(17)}")
         end
@@ -101,7 +101,7 @@ feature 'Diff note avatars', :js do
 
       it 'toggles comments when clicking avatar' do
         page.within find_line(position.line_code(project.repository)) do
-          find('.diff-notes-collapse').click
+          find('.diff-notes-collapse').send_keys(:return)
         end
 
         expect(page).to have_selector('.notes_holder', visible: false)
@@ -117,7 +117,7 @@ feature 'Diff note avatars', :js do
         open_more_actions_dropdown(note)
 
         page.within find(".note-row-#{note.id}") do
-          find('.js-note-delete').click
+          accept_confirm { find('.js-note-delete').click }
         end
 
         wait_for_requests
@@ -139,7 +139,7 @@ feature 'Diff note avatars', :js do
         end
 
         page.within find_line(position.line_code(project.repository)) do
-          find('.diff-notes-collapse').trigger('click')
+          find('.diff-notes-collapse').send_keys(:return)
 
           expect(page).to have_selector('img.js-diff-comment-avatar', count: 2)
         end
@@ -152,14 +152,14 @@ feature 'Diff note avatars', :js do
           page.within '.js-discussion-note-form' do
             find('.js-note-text').native.send_keys('Test')
 
-            find('.js-comment-button').trigger('click')
+            find('.js-comment-button').click
 
             wait_for_requests
           end
         end
 
         page.within find_line(position.line_code(project.repository)) do
-          find('.diff-notes-collapse').trigger('click')
+          find('.diff-notes-collapse').send_keys(:return)
 
           expect(page).to have_selector('img.js-diff-comment-avatar', count: 3)
           expect(find('.diff-comments-more-count')).to have_content '+1'
@@ -177,7 +177,7 @@ feature 'Diff note avatars', :js do
 
         it 'shows extra comment count' do
           page.within find_line(position.line_code(project.repository)) do
-            find('.diff-notes-collapse').click
+            find('.diff-notes-collapse').send_keys(:return)
 
             expect(find('.diff-comments-more-count')).to have_content '+1'
           end
