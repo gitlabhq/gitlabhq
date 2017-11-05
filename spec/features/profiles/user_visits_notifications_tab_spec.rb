@@ -13,7 +13,7 @@ feature 'User visits the notifications tab', :js do
   it 'changes the project notifications setting' do
     expect(page).to have_content('Notifications')
 
-    first('#notifications-button').trigger('click')
+    first('#notifications-button').click
     click_link('On mention')
 
     expect(page).to have_content('On mention')

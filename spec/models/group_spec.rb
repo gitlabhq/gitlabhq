@@ -488,6 +488,47 @@ describe Group do
     end
   end
 
+  describe '#path_changed_hook' do
+    let(:system_hook_service) { SystemHooksService.new }
+
+    context 'for a new group' do
+      let(:group) { build(:group) }
+
+      before do
+        expect(group).to receive(:system_hook_service).and_return(system_hook_service)
+      end
+
+      it 'does not trigger system hook' do
+        expect(system_hook_service).to receive(:execute_hooks_for).with(group, :create)
+
+        group.save!
+      end
+    end
+
+    context 'for an existing group' do
+      let(:group) { create(:group, path: 'old-path') }
+
+      context 'when the path is changed' do
+        let(:new_path) { 'very-new-path' }
+
+        it 'triggers the rename system hook' do
+          expect(group).to receive(:system_hook_service).and_return(system_hook_service)
+          expect(system_hook_service).to receive(:execute_hooks_for).with(group, :rename)
+
+          group.update_attributes!(path: new_path)
+        end
+      end
+
+      context 'when the path is not changed' do
+        it 'does not trigger system hook' do
+          expect(group).not_to receive(:system_hook_service)
+
+          group.update_attributes!(name: 'new name')
+        end
+      end
+    end
+  end
+
   describe '#secret_variables_for' do
     let(:project) { create(:project, group: group) }
 

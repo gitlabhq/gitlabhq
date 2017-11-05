@@ -71,26 +71,28 @@ shared_examples 'discussion comments' do |resource_name|
       expect(page).not_to have_selector menu_selector
 
       find(toggle_selector).click
-      find('body').trigger 'click'
+      find('body').click
 
       expect(page).not_to have_selector menu_selector
     end
 
     it 'clicking the ul padding or divider should not change the text' do
-      find(menu_selector).trigger 'click'
+      execute_script("document.querySelector('#{menu_selector}').click()")
 
+      # on issues page, the menu closes when clicking anywhere, on other pages it will
+      # remain open if clicking divider or menu padding, but should not change button action
       if resource_name == 'issue'
         expect(find(dropdown_selector)).to have_content 'Comment'
 
         find(toggle_selector).click
-        find("#{menu_selector} .divider").trigger 'click'
+        execute_script("document.querySelector('#{menu_selector} .divider').click()")
       else
-        find(menu_selector).trigger 'click'
+        execute_script("document.querySelector('#{menu_selector}').click()")
 
         expect(page).to have_selector menu_selector
         expect(find(dropdown_selector)).to have_content 'Comment'
 
-        find("#{menu_selector} .divider").trigger 'click'
+        execute_script("document.querySelector('#{menu_selector} .divider').click()")
 
         expect(page).to have_selector menu_selector
       end
@@ -105,7 +107,12 @@ shared_examples 'discussion comments' do |resource_name|
       end
 
       it 'updates the submit button text and closes the dropdown' do
-        expect(find(dropdown_selector)).to have_content 'Start discussion'
+        # on issues page, the submit input is a <button>, on other pages it is <input>
+        if resource_name == 'issue'
+          expect(find(submit_selector)).to have_content 'Start discussion'
+        else
+          expect(find(submit_selector).value).to eq 'Start discussion'
+        end
         expect(page).not_to have_selector menu_selector
       end
 
@@ -187,7 +194,12 @@ shared_examples 'discussion comments' do |resource_name|
           end
 
           it 'updates the submit button text and closes the dropdown' do
-            expect(find(dropdown_selector)).to have_content 'Comment'
+            # on issues page, the submit input is a <button>, on other pages it is <input>
+            if resource_name == 'issue'
+              expect(find(submit_selector)).to have_content 'Comment'
+            else
+              expect(find(submit_selector).value).to eq 'Comment'
+            end
             expect(page).not_to have_selector menu_selector
           end
 
@@ -226,6 +238,7 @@ shared_examples 'discussion comments' do |resource_name|
     describe "on a closed #{resource_name}" do
       before do
         find("#{form_selector} .js-note-target-close").click
+        wait_for_requests
 
         find("#{form_selector} .note-textarea").send_keys('a')
       end

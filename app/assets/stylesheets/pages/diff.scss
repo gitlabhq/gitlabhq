@@ -380,15 +380,15 @@
       }
     }
   }
+
+  .line_content {
+    white-space: pre-wrap;
+  }
 }
 
 .file-content .diff-file {
   margin: 0;
   border: none;
-}
-
-.diff-file .line_content {
-  white-space: pre-wrap;
 }
 
 .diff-wrap-lines .line_content {

@@ -88,7 +88,8 @@
   transition: background 2s ease-out;
 
   &:disabled {
-    opacity: 0.75;
+    opacity: 0.5;
+    pointer-events: none;
   }
 
   .highlight-changes & {
@@ -778,35 +779,35 @@ a.deploy-project-label {
   .nav {
     padding-top: 12px;
     padding-bottom: 12px;
-  }
 
-  .nav > li {
-    display: inline-block;
+    > li {
+      display: inline-block;
 
-    &:not(:last-child) {
-      margin-right: $gl-padding;
-    }
-
-    &.right {
-      vertical-align: top;
-      margin-top: 0;
-
-      @media (min-width: $screen-lg-min) {
-        float: right;
+      &:not(:last-child) {
+        margin-right: $gl-padding;
       }
-    }
-  }
 
-  .nav > li > a {
-    padding: 0;
-    background-color: transparent;
-    font-size: 14px;
-    line-height: 29px;
-    color: $notes-light-color;
+      &.right {
+        vertical-align: top;
+        margin-top: 0;
 
-    &:hover,
-    &:focus {
-      color: $gl-text-color;
+        @media (min-width: $screen-lg-min) {
+          float: right;
+        }
+      }
+
+      > a {
+        padding: 0;
+        background-color: transparent;
+        font-size: 14px;
+        line-height: 29px;
+        color: $notes-light-color;
+
+        &:hover,
+        &:focus {
+          color: $gl-text-color;
+        }
+      }
     }
   }
 
@@ -1157,13 +1158,6 @@ pre.light-well {
     @media (min-width: $screen-sm-min) {
       padding-left: 90px;
     }
-  }
-}
-
-.project-repo-select {
-  &.disabled {
-    opacity: 0.5;
-    pointer-events: none;
   }
 }
 

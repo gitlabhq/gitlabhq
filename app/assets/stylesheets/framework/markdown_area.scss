@@ -173,21 +173,8 @@
   ul > li {
     white-space: nowrap;
   }
-}
 
-@media(max-width: $screen-xs-max) {
-  .atwho-view-ul {
-    width: 350px;
-  }
-
-  .atwho-view ul li {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
-
-// TODO: fallback to global style
-.atwho-view {
+  // TODO: fallback to global style
   .atwho-view-ul {
     padding: 8px 1px;
 
@@ -218,5 +205,16 @@
         color: $gl-text-color;
       }
     }
+  }
+}
+
+@media(max-width: $screen-xs-max) {
+  .atwho-view-ul {
+    width: 350px;
+  }
+
+  .atwho-view ul li {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
