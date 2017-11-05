@@ -285,6 +285,80 @@ shared_examples 'issuable record that supports quick actions in its description 
         expect(issuable.reload.assignees).to eq [maintainer]
       end
     end
+
+    context "with a note locking the #{issuable_type} discussion" do
+      before do
+        issuable.update(discussion_locked: false)
+        expect(issuable).not_to be_discussion_locked
+      end
+
+      context "when current user can lock #{issuable_type} discussion" do
+        it "locks the #{issuable_type} discussion" do
+          add_note("/lock")
+
+          expect(page).not_to have_content '/lock'
+          expect(page).to have_content 'Commands applied'
+
+          expect(issuable.reload).to be_discussion_locked
+        end
+      end
+
+      context "when current user cannot lock #{issuable_type}" do
+        before do
+          guest = create(:user)
+          project.add_guest(guest)
+
+          gitlab_sign_out
+          gitlab_sign_in(guest)
+          visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
+        end
+
+        it "does not lock the #{issuable_type} discussion" do
+          add_note("/lock")
+
+          expect(page).not_to have_content 'Commands applied'
+
+          expect(issuable).not_to be_discussion_locked
+        end
+      end
+    end
+
+    context "with a note unlocking the #{issuable_type} discussion" do
+      before do
+        issuable.update(discussion_locked: true)
+        expect(issuable).to be_discussion_locked
+      end
+
+      context "when current user can unlock #{issuable_type} discussion" do
+        it "unlocks the #{issuable_type} discussion" do
+          add_note("/unlock")
+
+          expect(page).not_to have_content '/unlock'
+          expect(page).to have_content 'Commands applied'
+
+          expect(issuable.reload).not_to be_discussion_locked
+        end
+      end
+
+      context "when current user cannot unlock #{issuable_type}" do
+        before do
+          guest = create(:user)
+          project.add_guest(guest)
+
+          gitlab_sign_out
+          gitlab_sign_in(guest)
+          visit public_send("namespace_project_#{issuable_type}_path", project.namespace, project, issuable)
+        end
+
+        it "does not unlock the #{issuable_type} discussion" do
+          add_note("/unlock")
+
+          expect(page).not_to have_content 'Commands applied'
+
+          expect(issuable).to be_discussion_locked
+        end
+      end
+    end
   end
 
   describe "preview of note on #{issuable_type}", :js do
