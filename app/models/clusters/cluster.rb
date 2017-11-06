@@ -60,6 +60,8 @@ module Clusters
     end
 
     def applications
+      return [] unless kubernetes?
+
       [
         application_helm || build_application_helm,
         application_ingress || build_application_ingress
