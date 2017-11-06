@@ -8,7 +8,7 @@ class LfsProjectCleanupWorker
 
     return unless project
 
-    LfsCleanupService.new(project).remove_unreferenced
+    LfsCleanupService.new(project).execute
   end
 
   def self.perform_async_with_lease(project_id)

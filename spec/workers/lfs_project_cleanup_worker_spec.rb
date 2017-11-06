@@ -5,7 +5,7 @@ describe LfsProjectCleanupWorker do
   subject(:worker) { described_class.new }
 
   it 'calls service to cleanup unreferenced LFS pointers' do
-    expect_any_instance_of(LfsCleanupService).to receive(:remove_unreferenced)
+    expect_any_instance_of(LfsCleanupService).to receive(:execute)
 
     worker.perform(project.id)
   end
@@ -18,7 +18,7 @@ describe LfsProjectCleanupWorker do
       end
 
       it "schedules the worker" do
-        expect_any_instance_of(LfsCleanupService).to receive(:remove_unreferenced)
+        expect_any_instance_of(LfsCleanupService).to receive(:execute)
 
         described_class.perform_async_with_lease(project.id)
       end
@@ -30,7 +30,7 @@ describe LfsProjectCleanupWorker do
       end
 
       it "doesn't run again" do
-        expect_any_instance_of(LfsCleanupService).not_to receive(:remove_unreferenced)
+        expect_any_instance_of(LfsCleanupService).not_to receive(:execute)
 
         described_class.perform_async_with_lease(project.id)
       end

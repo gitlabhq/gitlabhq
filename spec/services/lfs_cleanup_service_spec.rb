@@ -16,37 +16,37 @@ describe LfsCleanupService do
     project.statistics.refresh!(only: [:lfs_objects_size])
   end
 
-  describe '#remove_unreferenced' do
+  describe '#execute' do
     it 'skips project if it has LFS disabled' do
       allow(Gitlab.config.lfs).to receive(:enabled).and_return(false)
 
-      expect(subject).not_to receive(:unreferenced_pointers)
+      expect(subject).not_to receive(:delete_unreferenced_pointers!)
 
-      subject.remove_unreferenced
+      subject.execute
     end
 
     it 'skips project if no LfsPointers have been detected' do
       lfs_pointer.destroy!
 
-      expect(subject).not_to receive(:unreferenced_pointers)
+      expect(subject).not_to receive(:delete_unreferenced_pointers!)
 
-      subject.remove_unreferenced
+      subject.execute
     end
 
     it 'skips project if newly pushed changes could contain LFS pointers' do
       create(:unprocessed_lfs_push, project: project)
 
-      expect(subject).not_to receive(:unreferenced_pointers)
+      expect(subject).not_to receive(:delete_unreferenced_pointers!)
 
-      subject.remove_unreferenced
+      subject.execute
     end
 
     it 'skips project if no LfsObjects exist to clean up' do
       LfsObject.destroy_all
 
-      expect(subject).not_to receive(:unreferenced_pointers)
+      expect(subject).not_to receive(:delete_unreferenced_pointers!)
 
-      subject.remove_unreferenced
+      subject.execute
     end
 
     context 'with less than 5MB of LFS files in the project' do
@@ -56,16 +56,16 @@ describe LfsCleanupService do
       end
 
       it 'skips cleanup' do
-        expect(subject).not_to receive(:unreferenced_pointers)
+        expect(subject).not_to receive(:delete_unreferenced_pointers!)
 
-        subject.remove_unreferenced
+        subject.execute
       end
     end
 
     it 'removes LfsPointers which no longer exist in the project' do
       allow(subject).to receive(:unreferenced_pointers).and_return(LfsPointer.where(id: lfs_pointer.id))
 
-      expect { subject.remove_unreferenced }.to change(LfsPointer, :count).by(-1)
+      expect { subject.execute }.to change(LfsPointer, :count).by(-1)
     end
 
     describe 'LfsObjectProjects' do
@@ -74,7 +74,7 @@ describe LfsCleanupService do
       it 'are removed when no longer referenced by pointers' do
         allow(subject).to receive(:removed_pointer_oids).and_return([lfs_pointer.blob_oid])
 
-        expect { subject.remove_unreferenced }.to change(LfsObjectsProject, :count).by(-1)
+        expect { subject.execute }.to change(LfsObjectsProject, :count).by(-1)
       end
 
       it 'cause LFS storage statistics to be updated' do
@@ -82,19 +82,19 @@ describe LfsCleanupService do
 
         expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:lfs_objects_size])
 
-        subject.remove_unreferenced
+        subject.execute
       end
 
       it "don't cause LfsObjects to be removed" do
         allow(subject).to receive(:removed_pointer_oids).and_return([lfs_pointer.blob_oid])
 
-        expect { subject.remove_unreferenced }.not_to change(LfsObject, :count)
+        expect { subject.execute }.not_to change(LfsObject, :count)
       end
 
       it "are not removed when pointers haven't been removed" do
         allow(subject).to receive(:removed_pointer_oids).and_return([])
 
-        expect { subject.remove_unreferenced }.not_to change(LfsObjectsProject, :count)
+        expect { subject.execute }.not_to change(LfsObjectsProject, :count)
       end
 
       it 'are not removed if other pointers still reference them' do
@@ -104,7 +104,7 @@ describe LfsCleanupService do
 
         allow(subject).to receive(:removed_pointer_oids).and_return([lfs_pointer.blob_oid])
 
-        expect { subject.remove_unreferenced }.not_to change(LfsObjectsProject, :count)
+        expect { subject.execute }.not_to change(LfsObjectsProject, :count)
       end
     end
   end
