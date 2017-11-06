@@ -240,10 +240,8 @@ class Project < ActiveRecord::Base
               message: Gitlab::Regex.project_name_regex_message }
   validates :path,
     presence: true,
-    dynamic_path: true,
+    project_path: true,
     length: { maximum: 255 },
-    format: { with: Gitlab::PathRegex.project_path_format_regex,
-              message: Gitlab::PathRegex.project_path_format_message },
     uniqueness: { scope: :namespace_id }
 
   validates :namespace, presence: true

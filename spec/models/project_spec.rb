@@ -276,6 +276,12 @@ describe Project do
 
         expect(project).to be_valid
       end
+
+      it 'allows a path ending in a period' do
+        project = build(:project, path: 'foo.')
+
+        expect(project).to be_valid
+      end
     end
   end
 
