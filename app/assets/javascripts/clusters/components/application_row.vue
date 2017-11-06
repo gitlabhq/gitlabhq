@@ -1,5 +1,5 @@
 <script>
-import { s__ } from '../../locale';
+import { s__, sprintf } from '../../locale';
 import eventHub from '../event_hub';
 import loadingButton from '../../vue_shared/components/loading_button.vue';
 import {
@@ -56,9 +56,6 @@ export default {
     rowJsClass() {
       return `js-cluster-application-row-${this.id}`;
     },
-    titleElementType() {
-      return this.titleLink ? 'a' : 'span';
-    },
     installButtonLoading() {
       return !this.status ||
         this.status === APPLICATION_SCHEDULED ||
@@ -92,6 +89,13 @@ export default {
     hasError() {
       return this.status === APPLICATION_ERROR || this.requestStatus === REQUEST_FAILURE;
     },
+    generalErrorDescription() {
+      return sprintf(
+        s__('ClusterIntegration|Something went wrong while installing %{title}'), {
+          title: this.title,
+        },
+      );
+    }
   },
   methods: {
     installClicked() {
@@ -110,8 +114,8 @@ export default {
       class="gl-responsive-table-row-layout"
       role="row"
     >
-      <component
-        :is="titleElementType"
+      <a
+        v-if="titleLink"
         :href="titleLink"
         target="blank"
         rel="noopener noreferrer"
@@ -119,7 +123,13 @@ export default {
         class="table-section section-15 section-align-top js-cluster-application-title"
       >
         {{ title }}
-      </component>
+      </a>
+      <span
+        v-else
+        class="table-section section-15 section-align-top js-cluster-application-title"
+      >
+        {{ title }}
+      </span>
       <div
         class="table-section section-wrap"
         role="gridcell"
@@ -152,7 +162,7 @@ export default {
       >
         <div>
           <p class="js-cluster-application-general-error-message">
-            Something went wrong while installing {{ title }}
+            {{ generalErrorDescription }}
           </p>
           <ul v-if="statusReason || requestReason">
             <li

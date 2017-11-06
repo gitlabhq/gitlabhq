@@ -45,7 +45,7 @@ export default {
       const extraCostParagraph = sprintf(
         _.escape(s__('ClusterIntegration|%{boldNotice} This will add some extra resources like a load balancer, which incur additional costs. See %{pricingLink}')), {
           boldNotice: `<strong>${_.escape(s__('ClusterIntegration|Note:'))}</strong>`,
-          pricingLink: `<a href="https://cloud.google.com/compute/pricing#lb" target="blank" rel="noopener noreferrer">
+          pricingLink: `<a href="https://cloud.google.com/compute/pricing#lb" target="_blank" rel="noopener noreferrer">
             ${_.escape(s__('ClusterIntegration|GKE pricing'))}
           </a>`,
         },
@@ -85,7 +85,7 @@ export default {
     </div>
 
     <div class="settings-content">
-      <div class="form_group append-bottom-20">
+      <div class="append-bottom-20">
         <application-row
           id="helm"
           :title="applications.helm.title"
