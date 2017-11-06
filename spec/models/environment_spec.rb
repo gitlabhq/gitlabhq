@@ -18,7 +18,6 @@ describe Environment do
   it { is_expected.to validate_length_of(:slug).is_at_most(24) }
 
   it { is_expected.to validate_length_of(:external_url).is_at_most(255) }
-  it { is_expected.to validate_uniqueness_of(:external_url).scoped_to(:project_id) }
 
   describe '.order_by_last_deployed_at' do
     let(:project) { create(:project, :repository) }

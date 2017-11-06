@@ -109,6 +109,8 @@ module NotesActions
             diff_discussion_html: diff_discussion_html(discussion),
             discussion_html: discussion_html(discussion)
           )
+
+          attrs[:discussion_line_code] = discussion.line_code if discussion.diff_discussion?
         end
       end
     else

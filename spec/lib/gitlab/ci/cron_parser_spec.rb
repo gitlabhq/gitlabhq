@@ -77,8 +77,20 @@ describe Gitlab::Ci::CronParser do
 
           it_behaves_like "returns time in the future"
 
-          it 'converts time in server time zone' do
-            expect(subject.hour).to eq(hour_in_utc)
+          context 'when PST (Pacific Standard Time)' do
+            it 'converts time in server time zone' do
+              Timecop.freeze(Time.utc(2017, 1, 1)) do
+                expect(subject.hour).to eq(hour_in_utc)
+              end
+            end
+          end
+
+          context 'when PDT (Pacific Daylight Time)' do
+            it 'converts time in server time zone' do
+              Timecop.freeze(Time.utc(2017, 6, 1)) do
+                expect(subject.hour).to eq(hour_in_utc)
+              end
+            end
           end
         end
       end
@@ -100,8 +112,20 @@ describe Gitlab::Ci::CronParser do
 
           it_behaves_like "returns time in the future"
 
-          it 'converts time in server time zone' do
-            expect(subject.hour).to eq(hour_in_utc)
+          context 'when CET (Central European Time)' do
+            it 'converts time in server time zone' do
+              Timecop.freeze(Time.utc(2017, 1, 1)) do
+                expect(subject.hour).to eq(hour_in_utc)
+              end
+            end
+          end
+
+          context 'when CEST (Central European Summer Time)' do
+            it 'converts time in server time zone' do
+              Timecop.freeze(Time.utc(2017, 6, 1)) do
+                expect(subject.hour).to eq(hour_in_utc)
+              end
+            end
           end
         end
 
@@ -111,8 +135,20 @@ describe Gitlab::Ci::CronParser do
 
           it_behaves_like "returns time in the future"
 
-          it 'converts time in server time zone' do
-            expect(subject.hour).to eq(hour_in_utc)
+          context 'when EST (Eastern Standard Time)' do
+            it 'converts time in server time zone' do
+              Timecop.freeze(Time.utc(2017, 1, 1)) do
+                expect(subject.hour).to eq(hour_in_utc)
+              end
+            end
+          end
+
+          context 'when EDT (Eastern Daylight Time)' do
+            it 'converts time in server time zone' do
+              Timecop.freeze(Time.utc(2017, 6, 1)) do
+                expect(subject.hour).to eq(hour_in_utc)
+              end
+            end
           end
         end
       end
