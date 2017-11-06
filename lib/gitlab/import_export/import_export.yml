@@ -54,7 +54,8 @@ project_tree:
   - :auto_devops
   - :triggers
   - :pipeline_schedules
-  - :cluster
+  - clusters:
+    - :application_helm
   - :services
   - :hooks
   - protected_branches:
