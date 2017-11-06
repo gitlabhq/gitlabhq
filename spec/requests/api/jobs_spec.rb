@@ -491,6 +491,8 @@ describe API::Jobs do
 
   describe 'POST /projects/:id/jobs/:job_id/erase' do
     before do
+      project.add_master(user)
+
       post api("/projects/#{project.id}/jobs/#{job.id}/erase", user)
     end
 

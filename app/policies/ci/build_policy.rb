@@ -10,11 +10,15 @@ module Ci
       end
     end
 
-    condition(:owner_of_build) do
-      can?(:developer_access) && @subject.owned_by?(@user)
+    condition(:owner_of_job) do
+      can?(:developer_access) && @subject.triggered_by?(@user)
     end
 
-    rule { protected_ref }.prevent :update_build
-    rule { can?(:master_access) | owner_of_build }.enable :erase_build
+    rule { protected_ref }.policy do
+      prevent :update_build
+      prevent :erase_build
+    end
+
+    rule { can?(:master_access) | owner_of_job }.enable :erase_build
   end
 end

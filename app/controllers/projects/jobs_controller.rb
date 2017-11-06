@@ -4,7 +4,7 @@ class Projects::JobsController < Projects::ApplicationController
   before_action :authorize_read_build!,
     only: [:index, :show, :status, :raw, :trace]
   before_action :authorize_update_build!,
-    except: [:index, :show, :status, :raw, :trace, :cancel_all]
+    except: [:index, :show, :status, :raw, :trace, :cancel_all, :erase]
   before_action :authorize_erase_build!, only: [:erase]
 
   layout 'project'

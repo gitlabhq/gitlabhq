@@ -270,8 +270,8 @@ describe Ci::Build do
     end
   end
 
-  describe '#owned_by?' do
-    subject { build.owned_by?(user) }
+  describe '#triggered_by?' do
+    subject { build.triggered_by?(user) }
 
     context 'when user is owner' do
       let(:build) { create(:ci_build, pipeline: pipeline, user: user) }

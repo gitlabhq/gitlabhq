@@ -197,6 +197,7 @@ instance and project. In addition, all admins can use the admin interface under
 |---------------------------------------|-----------------|-------------|----------|--------|
 | See commits and jobs                  | ✓               | ✓           | ✓        | ✓      |
 | Retry or cancel job                   |                 | ✓           | ✓        | ✓      |
+| Erase job artifacts and trace         |                 | ✓ [^7]      | ✓        | ✓      |
 | Remove project                        |                 |             | ✓        | ✓      |
 | Create project                        |                 |             | ✓        | ✓      |
 | Change project configuration          |                 |             | ✓        | ✓      |
@@ -261,5 +262,6 @@ only.
 [^4]: Not allowed for Guest, Reporter, Developer, Master, or Owner
 [^5]: Only if user is not external one.
 [^6]: Only if user is a member of the project.
+[^7]: Only if the build was triggered by the user
 [ce-18994]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18994
 [new-mod]: project/new_ci_build_permissions_model.md

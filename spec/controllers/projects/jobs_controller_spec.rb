@@ -372,11 +372,13 @@ describe Projects::JobsController do
 
   describe 'POST erase' do
     before do
-      project.add_developer(user)
+      project.team << [user, role]
       sign_in(user)
 
       post_erase
     end
+
+    let(:role) { :master }
 
     context 'when job is erasable' do
       let(:job) { create(:ci_build, :erasable, :trace, pipeline: pipeline) }
@@ -401,6 +403,27 @@ describe Projects::JobsController do
 
       it 'returns unprocessable_entity' do
         expect(response).to have_gitlab_http_status(:unprocessable_entity)
+      end
+    end
+
+    context 'when user is developer' do
+      let(:role) { :developer }
+      let(:job) { create(:ci_build, :erasable, :trace, pipeline: pipeline, user: triggered_by) }
+
+      context 'when triggered by same user' do
+        let(:triggered_by) { user }
+
+        it 'has successful status' do
+          expect(response).to have_gitlab_http_status(:found)
+        end
+      end
+
+      context 'when triggered by different user' do
+        let(:triggered_by) { create(:user) }
+
+        it 'does not have successful status' do
+          expect(response).to have_gitlab_http_status(:not_found)
+        end
       end
     end
 

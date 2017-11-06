@@ -192,7 +192,7 @@ module Ci
       project.build_timeout
     end
 
-    def owned_by?(current_user)
+    def triggered_by?(current_user)
       user == current_user
     end
 
