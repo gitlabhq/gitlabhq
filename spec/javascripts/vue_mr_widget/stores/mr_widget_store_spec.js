@@ -62,7 +62,7 @@ describe('MergeRequestStore', () => {
 
   describe('compareCodeclimateMetrics', () => {
     beforeEach(() => {
-      store.compareCodeclimateMetrics(headIssues, baseIssues);
+      store.compareCodeclimateMetrics(headIssues, baseIssues, 'headPath', 'basePath');
     });
 
     it('should return the new issues', () => {

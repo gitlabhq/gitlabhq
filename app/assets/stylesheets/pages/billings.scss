@@ -120,10 +120,10 @@
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
+          }
 
-            &:hover {
-              background-color: $gray-light;
-            }
+          &:last-child:hover {
+            background-color: $gray-light;
           }
         }
       }

@@ -14,6 +14,7 @@ class Issue < ActiveRecord::Base
   include FasterCacheKeys
   include RelativePositioning
   include CreatedAtFilterable
+  include TimeTrackable
 
   WEIGHT_RANGE = 1..9
   WEIGHT_ALL = 'Everything'.freeze
@@ -85,6 +86,8 @@ class Issue < ActiveRecord::Base
       issue.closed_at = Time.zone.now
     end
   end
+
+  acts_as_paranoid
 
   def self.reference_prefix
     '#'

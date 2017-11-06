@@ -558,17 +558,6 @@ a.deploy-project-label {
   }
 }
 
-.fork-thumbnail-container {
-  display: flex;
-  flex-wrap: wrap;
-  margin-left: -$gl-padding;
-  margin-right: -$gl-padding;
-
-  > h5 {
-    width: 100%;
-  }
-}
-
 .project-template {
   > .form-group {
     margin-bottom: 0;
@@ -1056,17 +1045,14 @@ a.allowed-to-push {
       border-right: solid 1px transparent;
     }
   }
+
+  .flash-container {
+    padding: 0;
+  }
 }
 
 .disabled-item {
   @extend .btn.disabled;
-}
-
-.protected-branches-list,
-.protected-tags-list {
-  .flash-container {
-    padding: 0;
-  }
 }
 
 .protected-tags-list {

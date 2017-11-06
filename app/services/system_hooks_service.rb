@@ -38,18 +38,21 @@ class SystemHooksService
       end
     when User
       data.merge!(user_data(model))
+
+      if event == :rename
+        data[:old_username] = model.username_was
+      end
     when ProjectMember
       data.merge!(project_member_data(model))
     when Group
-      owner = model.owner
+      data.merge!(group_data(model))
 
-      data.merge!(
-        name: model.name,
-        path: model.path,
-        group_id: model.id,
-        owner_name: owner.respond_to?(:name) ? owner.name : nil,
-        owner_email: owner.respond_to?(:email) ? owner.email : nil
-      )
+      if event == :rename
+        data.merge!(
+          old_path: model.path_was,
+          old_full_path: model.full_path_was
+        )
+      end
     when GroupMember
       data.merge!(group_member_data(model))
     end
@@ -80,7 +83,7 @@ class SystemHooksService
       project_id: model.id,
       owner_name: owner.name,
       owner_email: owner.respond_to?(:email) ? owner.email : "",
-      project_visibility: Project.visibility_levels.key(model.visibility_level_value).downcase
+      project_visibility: model.visibility.downcase
     }
   end
 
@@ -98,6 +101,19 @@ class SystemHooksService
       user_id:                      model.user.id,
       access_level:                 model.human_access,
       project_visibility:           Project.visibility_levels.key(project.visibility_level_value).downcase
+    }
+  end
+
+  def group_data(model)
+    owner = model.owner
+
+    {
+      name: model.name,
+      path: model.path,
+      full_path: model.full_path,
+      group_id: model.id,
+      owner_name: owner.try(:name),
+      owner_email: owner.try(:email)
     }
   end
 

@@ -6,7 +6,7 @@ feature 'Group elastic search', :js do
   let(:project) { create(:project, :repository, namespace: group) }
 
   def choose_group(group)
-    find('.js-search-group-dropdown').trigger('click')
+    find('.js-search-group-dropdown').click
     wait_for_requests
 
     page.within '.search-holder' do
@@ -41,7 +41,7 @@ feature 'Group elastic search', :js do
 
       choose_group group
       fill_in 'search', with: 'chosen'
-      find('.btn-search').trigger('click')
+      find('.btn-search').click
 
       select_filter('Issues')
       expect(page).to have_content('chosen issue title')
@@ -60,7 +60,7 @@ feature 'Group elastic search', :js do
 
       choose_group group
       fill_in 'search', with: 'def'
-      find('.btn-search').trigger('click')
+      find('.btn-search').click
 
       select_filter('Code')
 
@@ -83,7 +83,7 @@ feature 'Group elastic search', :js do
 
       choose_group group
       fill_in "search", with: "term"
-      find('.btn-search').trigger('click')
+      find('.btn-search').click
 
       select_filter("Wiki")
 
@@ -104,7 +104,7 @@ feature 'Group elastic search', :js do
 
       choose_group group
       fill_in 'search', with: 'add'
-      find('.btn-search').trigger('click')
+      find('.btn-search').click
 
       select_filter('Commits')
 

@@ -98,7 +98,7 @@ feature 'Merge request approvals', :js do
         visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature' })
 
         within('.approver-list li.approver-group') do
-          click_on "Remove"
+          accept_confirm { click_on "Remove" }
         end
 
         expect(page).to have_css('.approver-list li', count: 1)
@@ -153,7 +153,7 @@ feature 'Merge request approvals', :js do
         visit edit_project_merge_request_path(project, merge_request)
 
         within('.approver-list li.approver-group') do
-          click_on "Remove"
+          accept_confirm { click_on "Remove" }
         end
 
         expect(page).to have_css('.approver-list li', count: 1)

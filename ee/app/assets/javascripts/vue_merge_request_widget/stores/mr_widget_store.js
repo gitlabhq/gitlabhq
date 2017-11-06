@@ -136,3 +136,4 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     return firstArray.filter(item => !secondArray.find(el => el.fingerprint === item.fingerprint));
   }
 }
+

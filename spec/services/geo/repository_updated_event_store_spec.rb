@@ -1,7 +1,8 @@
 require 'spec_helper'
 
 describe Geo::RepositoryUpdatedEventStore do
-  let(:project)  { create(:project, :repository) }
+  set(:project)  { create(:project, :repository) }
+  set(:secondary_node) { create(:geo_node) }
   let(:blankrev) { Gitlab::Git::BLANK_SHA }
   let(:refs)     { ['refs/heads/tést', 'refs/tags/tag'] }
 
@@ -24,6 +25,14 @@ describe Geo::RepositoryUpdatedEventStore do
     context 'when running on a primary node' do
       before do
         allow(Gitlab::Geo).to receive(:primary?) { true }
+      end
+
+      it 'does not create an event when there are no secondary nodes' do
+        allow(Gitlab::Geo).to receive(:secondary_nodes) { [] }
+
+        subject = described_class.new(project, refs: refs, changes: changes)
+
+        expect { subject.create }.not_to change(Geo::RepositoryUpdatedEvent, :count)
       end
 
       it 'creates a push event' do

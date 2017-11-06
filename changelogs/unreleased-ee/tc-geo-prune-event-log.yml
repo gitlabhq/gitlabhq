@@ -1,0 +1,5 @@
+---
+title: Add worker to prune the Geo Event Log
+merge_request: 3172
+author:
+type: added

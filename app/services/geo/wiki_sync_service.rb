@@ -14,13 +14,14 @@ module Geo
 
       begin
         project.wiki.ensure_repository
-        project.wiki.repository.fetch_geo_mirror(ssh_url_to_wiki)
-
+        fetch_geo_mirror(project.wiki.repository)
         update_registry(finished_at: DateTime.now)
+
         log_info("Finished wiki sync",
                  update_delay_s: update_delay_in_seconds,
                  download_time_s: download_time_in_seconds)
       rescue Gitlab::Git::Repository::NoRepository,
+             Gitlab::Git::RepositoryMirroring::RemoteError,
              Gitlab::Shell::Error,
              ProjectWiki::CouldNotCreateWikiError,
              Geo::EmptyCloneUrlPrefixError => e

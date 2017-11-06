@@ -12,15 +12,31 @@
   .col-sm-10
     = form.text_field :url, class: 'form-control'
 
+.form-group.js-hide-if-geo-primary{ class: ('hidden' unless geo_node.secondary?) }
+  = form.label :clone_protocol, s_('Geo|Repository cloning'), class: 'control-label'
+  .col-sm-10
+    .radio
+      = form.label :clone_protocol_http do
+        = form.radio_button :clone_protocol, :http, class: 'js-use-http'
+        .option-title
+          HTTP/HTTPS
+        .option-description= _('Clone repositories and wikis from the primary using HTTP/HTTPS.')
+
+    .radio
+      = form.label :clone_protocol_ssh do
+        = form.radio_button :clone_protocol, :ssh, class: 'js-use-ssh'
+        .option-title
+          SSH (deprecated)
+        .option-description= _('Authentication must be manually configured. Deprecated since GitLab 10.2.')
 
 = form.fields_for :geo_node_key, geo_node.geo_node_key, include_id: !disable_key_edit do |fg|
-  .form-group.js-hide-if-geo-primary{ class: ('hidden' unless geo_node.secondary?) }
+  .form-group.js-ssh-key{ class: ('hidden' unless geo_node.secondary? && geo_node.clone_protocol == 'ssh') }
     = fg.label :key, 'Public Key', class: 'control-label'
     .col-sm-10
       = fg.text_area :key, class: 'form-control thin_area', rows: 5, disabled: disable_key_edit
       - unless disable_key_edit
         %p.help-block
-          Paste the ssh public key used by the node you are adding. Read more about it
+          For SSH authentication, paste the public key used by the node you are adding. Read more about it
           = link_to 'here', help_page_path('gitlab-geo/configuration.html', anchor: 'step-5-enabling-the-secondary-gitlab-node')
 
 .form-group.js-hide-if-geo-primary{ class: ('hidden' unless geo_node.secondary?) }

@@ -18,10 +18,9 @@ class Repository
 
   include Gitlab::ShellAdapter
   include Elastic::RepositoriesSearch
-  include RepositoryMirroring
   prepend EE::Repository
 
-  attr_accessor :full_path, :disk_path, :project
+  attr_accessor :full_path, :disk_path, :project, :is_wiki
 
   delegate :ref_name_for_sha, to: :raw_repository
 
@@ -79,11 +78,12 @@ class Repository
     end
   end
 
-  def initialize(full_path, project, disk_path: nil)
+  def initialize(full_path, project, disk_path: nil, is_wiki: false)
     @full_path = full_path
     @disk_path = disk_path || full_path
     @project = project
     @commit_cache = {}
+    @is_wiki = is_wiki
   end
 
   def ==(other)
@@ -1020,19 +1020,6 @@ class Repository
     run_git(args).first.lines.map(&:strip)
   end
 
-  def add_remote(name, url)
-    raw_repository.remote_add(name, url)
-  rescue Rugged::ConfigError
-    raw_repository.remote_update(name, url: url)
-  end
-
-  def remove_remote(name)
-    raw_repository.remote_delete(name)
-    true
-  rescue Rugged::ConfigError
-    false
-  end
-
   def fetch_remote(remote, forced: false, ssh_auth: nil, no_tags: false)
     gitlab_shell.fetch_remote(raw_repository, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
   end
@@ -1202,7 +1189,7 @@ class Repository
   end
 
   def initialize_raw_repository
-    Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', Gitlab::GlRepository.gl_repository(project, false))
+    Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', Gitlab::GlRepository.gl_repository(project, is_wiki))
   end
 
   def find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)

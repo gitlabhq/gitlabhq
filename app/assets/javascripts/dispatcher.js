@@ -3,7 +3,7 @@
 import IssuableIndex from './issuable_index';
 /* global Milestone */
 import IssuableForm from './issuable_form';
-/* global LabelsSelect */
+import LabelsSelect from './labels_select';
 /* global MilestoneSelect */
 /* global NewBranchForm */
 /* global NotificationsForm */
@@ -16,7 +16,7 @@ import CILintEditor from './ci_lint_editor';
 import groupsSelect from './groups_select';
 /* global Search */
 /* global Admin */
-/* global NamespaceSelects */
+import NamespaceSelect from './namespace_select';
 /* global NewCommitForm */
 /* global NewBranchForm */
 /* global Project */
@@ -256,12 +256,16 @@ import initGroupAnalytics from './init_group_analytics';
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
         case 'projects:milestones:update':
+          new ZenMode();
+          new DueDateSelectors();
+          new GLForm($('.milestone-form'), true);
+          break;
         case 'groups:milestones:new':
         case 'groups:milestones:edit':
         case 'groups:milestones:update':
           new ZenMode();
           new DueDateSelectors();
-          new GLForm($('.milestone-form'), true);
+          new GLForm($('.milestone-form'), false);
           break;
         case 'projects:compare:show':
           new Diff();
@@ -646,7 +650,8 @@ import initGroupAnalytics from './init_group_analytics';
               new UsersSelect();
               break;
             case 'projects':
-              new NamespaceSelects();
+              document.querySelectorAll('.js-namespace-select')
+                .forEach(dropdown => new NamespaceSelect({ dropdown }));
               break;
             case 'labels':
               switch (path[2]) {

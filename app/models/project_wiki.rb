@@ -150,7 +150,7 @@ class ProjectWiki
   end
 
   def repository
-    @repository ||= Repository.new(full_path, @project, disk_path: disk_path)
+    @repository ||= Repository.new(full_path, @project, disk_path: disk_path, is_wiki: true)
   end
 
   def default_branch

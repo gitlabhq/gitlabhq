@@ -21,6 +21,11 @@ module EE
       end
 
       with_scope :global
+      condition(:commit_committer_check_disabled_globally) do
+        !PushRule.global&.commit_committer_check
+      end
+
+      with_scope :global
       condition(:remote_mirror_available) do
         ::Gitlab::CurrentSettings.current_application_settings.remote_mirror_available
       end
@@ -84,6 +89,8 @@ module EE
       rule { ~can?(:push_code) }.prevent :push_code_to_protected_branches
 
       rule { admin | (reject_unsigned_commits_disabled_globally & can?(:master_access)) }.enable :change_reject_unsigned_commits
+
+      rule { admin | (commit_committer_check_disabled_globally & can?(:master_access)) }.enable :change_commit_committer_check
     end
   end
 end

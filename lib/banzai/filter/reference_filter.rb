@@ -55,6 +55,10 @@ module Banzai
         context[:project]
       end
 
+      def group
+        context[:group]
+      end
+
       def skip_project_check?
         context[:skip_project_check]
       end

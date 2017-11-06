@@ -17,6 +17,19 @@ module EE
           .allow_group_owners_to_manage_ldap
       end
 
+      rule { public_group }.enable :read_epic
+
+      rule { logged_in_viewable }.enable :read_epic
+
+      rule { guest }.enable :read_epic
+
+      rule { reporter }.policy do
+        enable :create_epic
+        enable :admin_epic
+        enable :update_epic
+        enable :destroy_epic
+      end
+
       rule { auditor }.enable :read_group
 
       rule { admin | (can_owners_manage_ldap & owner) }.enable :admin_ldap_group_links

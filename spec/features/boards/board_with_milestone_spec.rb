@@ -210,9 +210,9 @@ describe 'Board with milestone', :js do
 
       find('#board-new-name').set 'test'
 
-      find('button', text: 'Any Milestone').trigger('click')
+      find('button', text: 'Any Milestone').click
 
-      find('a', text: milestone.title).trigger('click')
+      find('a', text: milestone.title).click
 
       click_button 'Create'
     end

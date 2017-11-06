@@ -269,7 +269,7 @@ ul.notes {
           display: none;
         }
 
-        &.system-note-commit-list {
+        &.system-note-commit-list:not(.hide-shade) {
           max-height: 70px;
           overflow: hidden;
           display: block;
@@ -290,16 +290,6 @@ ul.notes {
             left: 0;
             bottom: 0;
             background: linear-gradient(rgba($white-light, 0.1) -100px, $white-light 100%);
-          }
-
-          &.hide-shade {
-            max-height: 100%;
-            overflow: auto;
-
-            &::after {
-              display: none;
-              background: transparent;
-            }
           }
         }
       }
@@ -479,8 +469,6 @@ ul.notes {
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  // For PhantomJS that does not support flex
-  float: right;
   margin-left: 10px;
   color: $gray-darkest;
 
@@ -491,7 +479,6 @@ ul.notes {
 }
 
 .more-actions {
-  float: right; // phantomjs fallback
   display: flex;
   align-items: flex-end;
 

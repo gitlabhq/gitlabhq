@@ -7,6 +7,7 @@ class MergeRequest < ActiveRecord::Base
   include Elastic::MergeRequestsSearch
   include IgnorableColumn
   include CreatedAtFilterable
+  include TimeTrackable
 
   ignore_column :locked_at
 
@@ -122,6 +123,8 @@ class MergeRequest < ActiveRecord::Base
   participant :assignee
 
   after_save :keep_around_commit
+
+  acts_as_paranoid
 
   def self.reference_prefix
     '!'
@@ -404,6 +407,10 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def merge_ongoing?
+    # While the MergeRequest is locked, it should present itself as 'merge ongoing'.
+    # The unlocking process is handled by StuckMergeJobsWorker scheduled in Cron.
+    return true if locked?
+
     !!merge_jid && !merged? && Gitlab::SidekiqStatus.running?(merge_jid)
   end
 
@@ -899,7 +906,7 @@ class MergeRequest < ActiveRecord::Base
   #
   def all_commit_shas
     if persisted?
-      column_shas = MergeRequestDiffCommit.where(merge_request_diff: merge_request_diffs).pluck('DISTINCT(sha)')
+      column_shas = MergeRequestDiffCommit.where(merge_request_diff: merge_request_diffs).limit(10_000).pluck('sha')
       serialised_shas = merge_request_diffs.where.not(st_commits: nil).flat_map(&:commit_shas)
 
       (column_shas + serialised_shas).uniq

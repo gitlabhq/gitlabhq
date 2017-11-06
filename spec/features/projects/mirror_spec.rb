@@ -18,9 +18,11 @@ feature 'Project mirror', :js do
       end
 
       it 'returns 404' do
-        visit project_mirror_path(project)
+        reqs = inspect_requests do
+          visit project_mirror_path(project)
+        end
 
-        expect(page.status_code).to eq(404)
+        expect(reqs.first.status_code).to eq(404)
       end
     end
 
@@ -143,7 +145,7 @@ feature 'Project mirror', :js do
         expect(page).to have_content(first_key)
 
         # Check regenerating the public key works
-        click_without_sidekiq 'Regenerate key'
+        accept_confirm { click_without_sidekiq 'Regenerate key' }
         wait_for_requests
 
         expect(page).not_to have_content(first_key)

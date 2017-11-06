@@ -96,7 +96,7 @@ export default {
       return length === 1 ? 'vulnerability' : 'vulnerabilities';
     },
     fetchCodeQuality() {
-      const { head_path, base_path } = this.mr.codeclimate;
+      const { head_path, head_blob_path, base_path, base_blob_path } = this.mr.codeclimate;
 
       this.isLoadingCodequality = true;
 
@@ -105,7 +105,7 @@ export default {
         this.service.fetchReport(base_path),
       ])
         .then((values) => {
-          this.mr.compareCodeclimateMetrics(values[0], values[1]);
+          this.mr.compareCodeclimateMetrics(values[0], values[1], head_blob_path, base_blob_path);
           this.isLoadingCodequality = false;
         })
         .catch(() => {

@@ -6,6 +6,7 @@ require "rubygems/package"
 module Gitlab
   module Git
     class Repository
+      include Gitlab::Git::RepositoryMirroring
       include Gitlab::Git::Popen
 
       ALLOWED_OBJECT_DIRECTORIES_VARIABLES = %w[
@@ -287,6 +288,14 @@ module Gitlab
           else
             rugged_branch_exists?(name)
           end
+        end
+      end
+
+      def batch_existence(object_ids, existing: true)
+        filter_method = existing ? :select : :reject
+
+        object_ids.public_send(filter_method) do |oid| # rubocop:disable GitlabSecurity/PublicSend
+          rugged.exists?(oid)
         end
       end
 
@@ -750,13 +759,13 @@ module Gitlab
       end
 
       def ff_merge(user, source_sha, target_branch)
-        OperationService.new(user, self).with_branch(target_branch) do |our_commit|
-          raise ArgumentError, 'Invalid merge target' unless our_commit
-
-          source_sha
+        gitaly_migrate(:operation_user_ff_branch) do |is_enabled|
+          if is_enabled
+            gitaly_ff_merge(user, source_sha, target_branch)
+          else
+            rugged_ff_merge(user, source_sha, target_branch)
+          end
         end
-      rescue Rugged::ReferenceError
-        raise ArgumentError, 'Invalid merge source'
       end
 
       def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
@@ -890,16 +899,25 @@ module Gitlab
         end
       end
 
-      # Delete the specified remote from this repository.
-      def remote_delete(remote_name)
-        rugged.remotes.delete(remote_name)
-        nil
+      def add_remote(remote_name, url)
+        rugged.remotes.create(remote_name, url)
+      rescue Rugged::ConfigError
+        remote_update(remote_name, url: url)
       end
 
-      # Add a new remote to this repository.
-      def remote_add(remote_name, url)
-        rugged.remotes.create(remote_name, url)
-        nil
+      def remove_remote(remote_name)
+        # When a remote is deleted all its remote refs are deleted too, but in
+        # the case of mirrors we map its refs (that would usualy go under
+        # [remote_name]/) to the top level namespace. We clean the mapping so
+        # those don't get deleted.
+        if rugged.config["remote.#{remote_name}.mirror"]
+          rugged.config.delete("remote.#{remote_name}.fetch")
+        end
+
+        rugged.remotes.delete(remote_name)
+        true
+      rescue Rugged::ConfigError
+        false
       end
 
       # Update the specified remote using the values in the +options+ hash
@@ -1169,10 +1187,10 @@ module Gitlab
         Gitlab::GitalyClient.migrate(method, status: status, &block)
       rescue GRPC::NotFound => e
         raise NoRepository.new(e)
-      rescue GRPC::BadStatus => e
-        raise CommandError.new(e)
       rescue GRPC::InvalidArgument => e
         raise ArgumentError.new(e)
+      rescue GRPC::BadStatus => e
+        raise CommandError.new(e)
       end
 
       private
@@ -1613,6 +1631,22 @@ module Gitlab
         args = %W(fetch --no-tags -f ssh://gitaly/internal.git #{source_ref}:#{target_ref})
 
         run_git(args, env: env)
+      end
+
+      def gitaly_ff_merge(user, source_sha, target_branch)
+        gitaly_operations_client.user_ff_branch(user, source_sha, target_branch)
+      rescue GRPC::FailedPrecondition => e
+        raise CommitError, e
+      end
+
+      def rugged_ff_merge(user, source_sha, target_branch)
+        OperationService.new(user, self).with_branch(target_branch) do |our_commit|
+          raise ArgumentError, 'Invalid merge target' unless our_commit
+
+          source_sha
+        end
+      rescue Rugged::ReferenceError
+        raise ArgumentError, 'Invalid merge source'
       end
     end
   end

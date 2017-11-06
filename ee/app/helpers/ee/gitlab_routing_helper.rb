@@ -23,5 +23,9 @@ module EE
         geo_primary_http_url_to_repo(project)
       end
     end
+
+    def epic_path(entity, *args)
+      group_epic_path(entity.group, entity, *args)
+    end
   end
 end

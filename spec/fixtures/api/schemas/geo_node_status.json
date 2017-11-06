@@ -10,14 +10,14 @@
     "lfs_objects_count",
     "lfs_objects_failed_count",
     "lfs_objects_synced_count",
-    "db_replication_lag",
+    "db_replication_lag_seconds",
     "repositories_count",
     "repositories_failed_count",
     "repositories_synced_count",
     "last_event_id",
-    "last_event_date",
+    "last_event_timestamp",
     "cursor_last_event_id",
-    "cursor_last_event_date"
+    "cursor_last_event_timestamp"
   ],
   "properties" : {
     "id": { "type": "integer" },
@@ -27,7 +27,7 @@
     "attachments_failed_count": { "type": "integer" },
     "attachments_synced_count": { "type": "integer" },
     "attachments_synced_in_percentage": { "type": "string" },
-    "db_replication_lag": { "type": ["integer", "null"] },
+    "db_replication_lag_seconds": { "type": ["integer", "null"] },
     "lfs_objects_count": { "type": "integer" },
     "lfs_objects_failed_count": { "type": "integer" },
     "lfs_objects_synced_count": { "type": "integer" },
@@ -37,9 +37,9 @@
     "repositories_synced_count": { "type": "integer" },
     "repositories_synced_in_percentage": { "type": "string" },
     "last_event_id": { "type": ["integer", "null"] },
-    "last_event_date": { "type": ["string", "null"] },
+    "last_event_timestamp": { "type": ["integer", "null"] },
     "cursor_last_event_id": { "type": ["integer", "null"] },
-    "cursor_last_event_date": { "type": ["string", "null"] }
+    "cursor_last_event_timestamp": { "type": ["integer", "null"] }
   },
   "additionalProperties": false
 }

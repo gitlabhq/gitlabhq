@@ -33,6 +33,10 @@ class Projects::PushRulesController < Projects::ApplicationController
       allowed_fields << :reject_unsigned_commits
     end
 
+    if can?(current_user, :change_commit_committer_check, project)
+      allowed_fields << :commit_committer_check
+    end
+
     params.require(:push_rule).permit(allowed_fields)
   end
 end

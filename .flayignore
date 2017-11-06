@@ -11,3 +11,5 @@ app/models/concerns/relative_positioning.rb
 app/workers/stuck_merge_jobs_worker.rb
 lib/gitlab/redis/*.rb
 lib/gitlab/gitaly_client/operation_service.rb
+app/models/project_services/packagist_service.rb
+lib/gitlab/background_migration/normalize_ldap_extern_uids_range.rb

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-10-22 16:40+0300\n"
-"PO-Revision-Date: 2017-10-22 16:40+0300\n"
+"POT-Creation-Date: 2017-11-02 14:42+0100\n"
+"PO-Revision-Date: 2017-11-02 14:42+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -36,6 +36,11 @@ msgstr[1] ""
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr ""
 
+msgid "%{count} participant"
+msgid_plural "%{count} participants"
+msgstr[0] ""
+msgstr[1] ""
+
 msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
 msgstr ""
 
@@ -54,6 +59,12 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "(checkout the %{link} for information on how to install it)."
+msgstr ""
+
+msgid "+ %{moreCount} more"
+msgstr ""
+
+msgid "- show less"
 msgstr ""
 
 msgid "1 pipeline"
@@ -480,9 +491,6 @@ msgstr ""
 msgid "ClusterIntegration|A %{link_to_container_project} must have been created under this account"
 msgstr ""
 
-msgid "ClusterIntegration|Advanced settings"
-msgstr ""
-
 msgid "ClusterIntegration|Cluster details"
 msgstr ""
 
@@ -567,9 +575,6 @@ msgstr ""
 msgid "ClusterIntegration|See and edit the details for your cluster"
 msgstr ""
 
-msgid "ClusterIntegration|See and edit the details for your cluster"
-msgstr ""
-
 msgid "ClusterIntegration|See machine types"
 msgstr ""
 
@@ -617,6 +622,11 @@ msgstr ""
 
 msgid "Commit"
 msgid_plural "Commits"
+msgstr[0] ""
+msgstr[1] ""
+
+msgid "Commit %d file"
+msgid_plural "Commit %d files"
 msgstr[0] ""
 msgstr[1] ""
 
@@ -728,10 +738,19 @@ msgstr ""
 msgid "Create empty bare repository"
 msgstr ""
 
+msgid "Create file"
+msgstr ""
+
 msgid "Create merge request"
 msgstr ""
 
 msgid "Create new branch"
+msgstr ""
+
+msgid "Create new directory"
+msgstr ""
+
+msgid "Create new file"
 msgstr ""
 
 msgid "Create new..."
@@ -902,6 +921,9 @@ msgid "Failed to change the owner"
 msgstr ""
 
 msgid "Failed to remove the pipeline schedule"
+msgstr ""
+
+msgid "File name"
 msgstr ""
 
 msgid "Files"
@@ -1343,6 +1365,12 @@ msgstr ""
 msgid "Notifications"
 msgstr ""
 
+msgid "Number of access attempts"
+msgstr ""
+
+msgid "Number of failures before backing off"
+msgstr ""
+
 msgid "OfSearchInADropdown|Filter"
 msgstr ""
 
@@ -1598,6 +1626,9 @@ msgstr ""
 msgid "ProjectSettings|This setting will be applied to all projects unless overridden by an admin."
 msgstr ""
 
+msgid "ProjectSettings|Users can only push commits to this repository that were committed with one of their own verified emails."
+msgstr ""
+
 msgid "Projects"
 msgstr ""
 
@@ -1632,6 +1663,9 @@ msgid "Push Rules"
 msgstr ""
 
 msgid "Push events"
+msgstr ""
+
+msgid "PushRule|Committer restriction"
 msgstr ""
 
 msgid "Read more"
@@ -1906,6 +1940,9 @@ msgstr ""
 msgid "Subgroups"
 msgstr ""
 
+msgid "Subscribe"
+msgstr ""
+
 msgid "Switch branch/tag"
 msgstr ""
 
@@ -1932,6 +1969,9 @@ msgstr ""
 msgid "The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
 msgstr ""
 
+msgid "The circuitbreaker backoff threshold should be lower than the failure count threshold"
+msgstr ""
+
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr ""
 
@@ -1942,6 +1982,12 @@ msgid "The fork relationship has been removed."
 msgstr ""
 
 msgid "The issue stage shows the time it takes from creating an issue to assigning the issue to a milestone, or add the issue to a list on your Issue Board. Begin creating issues to see data for this stage."
+msgstr ""
+
+msgid "The number of attempts GitLab will make to access a storage."
+msgstr ""
+
+msgid "The number of failures after which GitLab will start temporarily disabling access to a storage shard on a host"
 msgstr ""
 
 msgid "The number of failures of after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
@@ -2177,6 +2223,9 @@ msgid "Unlocked"
 msgstr ""
 
 msgid "Unstar"
+msgstr ""
+
+msgid "Unsubscribe"
 msgstr ""
 
 msgid "Upgrade your plan to activate Advanced Global Search."

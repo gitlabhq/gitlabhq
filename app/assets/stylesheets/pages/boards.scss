@@ -117,10 +117,7 @@
   white-space: nowrap;
 
   @media (min-width: $screen-sm-min) {
-    height: 475px; // Needed for PhantomJS
-    // scss-lint:disable DuplicateProperty
     height: calc(100vh - 222px);
-    // scss-lint:enable DuplicateProperty
     min-height: 475px;
   }
 }
@@ -430,6 +427,7 @@
 .card-number {
   font-size: 12px;
   color: $gl-text-color-secondary;
+  display: inline-block;
 }
 
 .issue-boards-search {

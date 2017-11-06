@@ -20,7 +20,7 @@
         - elsif params[:event_type] == 'Project'
           .filter-item.inline
             = project_select_tag(:project_id, { class: 'project-item-select hidden-filter-value', toggle_class: 'js-project-search js-project-filter js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-project js-filter-submit',
-              placeholder: admin_project_dropdown_label('Search projects'), idAttribute: 'id', data: { order_by: 'last_activity_at', idattribute: 'id', allprojects: 'true'} })
+              placeholder: admin_project_dropdown_label('Search projects'), idAttribute: 'id', data: { order_by: 'last_activity_at', idattribute: 'id', all_projects: 'true', simple_filter: true} })
         - elsif params[:event_type] == 'Group'
           .filter-item.inline
             = groups_select_tag(:group_id, { required: true, class: 'group-item-select project-item-select hidden-filter-value', toggle_class: 'js-group-search js-group-filter js-filter-submit', dropdown_class: 'dropdown-menu-selectable dropdown-menu-group js-filter-submit',
@@ -39,8 +39,16 @@
       %tbody
         - @events.map(&:present).each do |event|
           %tr
-            %td= event.author_name
-            %td= event.object
+            %td
+              - if (author_link = event.author_name)
+                = author_link
+              - else
+                #{event.details[:author_name]} <small>(removed)</small>
+            %td
+              - if (object_link = event.object)
+                = object_link
+              - else
+                #{event.details[:entity_path]} <small>(removed)</small>
             %td= event.action
             %td= event.target
             %td= event.ip_address

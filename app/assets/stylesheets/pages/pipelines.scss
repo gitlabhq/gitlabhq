@@ -58,7 +58,6 @@
     }
 
     .pipeline-actions {
-      padding-right: 0;
       min-width: 170px; //Guarantees buttons don't break in several lines.
 
       .btn-default {
@@ -481,7 +480,7 @@
     }
 
     // Action Icons in big pipeline-graph nodes
-    .ci-action-icon-container .ci-action-icon-wrapper {
+    .ci-action-icon-container.ci-action-icon-wrapper {
       height: 30px;
       width: 30px;
       background: $white-light;
@@ -497,8 +496,18 @@
       svg {
         fill: $gl-text-color-secondary;
         position: relative;
-        left: -1px;
-        top: -1px;
+        left: 5px;
+        top: 2px;
+        width: 18px;
+        height: 18px;
+      }
+
+      &.play {
+        svg {
+          width: #{$ci-action-icon-size - 8};
+          height: #{$ci-action-icon-size - 8};
+          left: 8px;
+        }
       }
 
       &:hover svg {
@@ -751,17 +760,49 @@ a.linked-pipeline-mini-item {
 
       svg {
         fill: $gl-text-color-secondary;
-        width: $ci-action-icon-size;
-        height: $ci-action-icon-size;
-        left: -6px;
+        width: #{$ci-action-icon-size - 6};
+        height: #{$ci-action-icon-size - 6};
+        left: -3px;
         position: relative;
-        top: -3px;
+        top: -2px;
       }
 
       &:hover svg,
       &:focus svg {
         fill: $gl-text-color;
       }
+
+      &.icon-action-retry,
+      &.icon-action-play {
+        svg {
+          width: #{$ci-action-icon-size - 6};
+          height: #{$ci-action-icon-size - 6};
+          left: 8px;
+        }
+      }
+
+      svg.icon-action-stop,
+      svg.icon-action-cancel {
+        width: 12px;
+        height: 12px;
+        top: 1px;
+        left: -1px;
+      }
+
+      svg.icon-action-play {
+        width: 11px;
+        height: 11px;
+        top: 1px;
+        left: 1px;
+      }
+
+      svg.icon-action-retry {
+        width: 16px;
+        height: 16px;
+        top: 0;
+        left: -3px;
+      }
+
     }
 
     // link to the build

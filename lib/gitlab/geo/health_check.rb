@@ -7,7 +7,7 @@ module Gitlab
         return '' unless Gitlab::Geo.secondary?
         return 'The Geo database configuration file is missing.' unless Gitlab::Geo.geo_database_configured?
         return 'The Geo node has a database that is not configured for streaming replication with the primary node.' unless self.database_secondary?
-        return 'The Geo node does not appear to be replicating data from the primary node.' unless self.db_replication_lag.present?
+        return 'The Geo node does not appear to be replicating data from the primary node.' unless self.db_replication_lag_seconds.present?
 
         database_version  = self.get_database_version.to_i
         migration_version = self.get_migration_version.to_i
@@ -60,9 +60,10 @@ module Gitlab
           .fetch('pg_is_in_recovery') == 't'
       end
 
-      def self.db_replication_lag
+      def self.db_replication_lag_seconds
         # Obtain the replication lag in seconds
-        ActiveRecord::Base.connection.execute('
+        lag =
+          ActiveRecord::Base.connection.execute('
           SELECT CASE
                  WHEN pg_last_xlog_receive_location() = pg_last_xlog_replay_location()
                   THEN 0
@@ -72,6 +73,8 @@ module Gitlab
                  AS replication_lag')
           .first
           .fetch('replication_lag')
+
+        lag.present? ? lag.to_i : lag
       end
     end
   end

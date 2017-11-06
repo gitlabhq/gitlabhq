@@ -17,9 +17,11 @@ feature 'Groups > Audit Events', :js do
     end
 
     it 'returns 404' do
-      visit group_audit_events_path(group)
+      reqs = inspect_requests do
+        visit group_audit_events_path(group)
+      end
 
-      expect(page.status_code).to eq(404)
+      expect(reqs.first.status_code).to eq(404)
     end
 
     it 'does not have Audit Events button in head nav bar' do
@@ -46,8 +48,7 @@ feature 'Groups > Audit Events', :js do
         click_link 'Master'
       end
 
-      # This is to avoid a Capybara::Poltergeist::MouseEventFailed error
-      find(:link, text: 'Settings').trigger('click')
+      find(:link, text: 'Settings').click
 
       click_link 'Audit Events'
 

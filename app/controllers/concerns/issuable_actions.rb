@@ -7,6 +7,54 @@ module IssuableActions
     before_action :authorize_admin_issuable!, only: :bulk_update
   end
 
+  def show
+    respond_to do |format|
+      format.html do
+        render show_view
+      end
+      format.json do
+        render json: serializer.represent(issuable, serializer: params[:serializer])
+      end
+    end
+  end
+
+  def update
+    @issuable = update_service.execute(issuable)
+
+    respond_to do |format|
+      format.html do
+        recaptcha_check_with_fallback { render :edit }
+      end
+
+      format.json do
+        render_entity_json
+      end
+    end
+
+  rescue ActiveRecord::StaleObjectError
+    render_conflict_response
+  end
+
+  def realtime_changes
+    Gitlab::PollingInterval.set_header(response, interval: 3_000)
+
+    response = {
+      title: view_context.markdown_field(issuable, :title),
+      title_text: issuable.title,
+      description: view_context.markdown_field(issuable, :description),
+      description_text: issuable.description,
+      task_status: issuable.task_status
+    }
+
+    if issuable.edited?
+      response[:updated_at] = issuable.updated_at
+      response[:updated_by_name] = issuable.last_edited_by.name
+      response[:updated_by_path] = user_path(issuable.last_edited_by)
+    end
+
+    render json: response
+  end
+
   def destroy
     issuable.destroy
     destroy_method = "destroy_#{issuable.class.name.underscore}".to_sym
@@ -68,6 +116,10 @@ module IssuableActions
     end
   end
 
+  def authorize_update_issuable!
+    render_404 unless can?(current_user, :"update_#{resource_name}", issuable)
+  end
+
   def bulk_update_params
     permitted_keys = [
       :issuable_ids,
@@ -91,5 +143,25 @@ module IssuableActions
 
   def resource_name
     @resource_name ||= controller_name.singularize
+  end
+
+  def render_entity_json
+    if @issuable.valid?
+      render json: serializer.represent(@issuable)
+    else
+      render json: { errors: @issuable.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
+  def show_view
+    'show'
+  end
+
+  def serializer
+    raise NotImplementedError
+  end
+
+  def update_service
+    raise NotImplementedError
   end
 end

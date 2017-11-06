@@ -2,6 +2,8 @@ module EE
   module API
     module Helpers
       def current_user
+        return @current_user if defined?(@current_user)
+
         user = super
 
         ::Gitlab::Database::LoadBalancing::RackMiddleware

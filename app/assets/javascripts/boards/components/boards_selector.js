@@ -46,8 +46,13 @@ import './board_new_form';
       currentPage() {
         return this.state.currentPage;
       },
-      reload() {
-        return this.state.reload;
+      reload: {
+        get() {
+          return this.state.reload;
+        },
+        set(newValue) {
+          this.state.reload = newValue;
+        },
       },
       board() {
         return this.state.currentBoard;

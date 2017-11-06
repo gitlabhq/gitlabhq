@@ -1,5 +1,6 @@
 class Projects::GitHttpController < Projects::GitHttpClientController
   include WorkhorseRequest
+  prepend ::EE::Projects::GitHttpController
 
   before_action :access_check
 

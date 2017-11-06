@@ -156,7 +156,7 @@ describe 'Filter issues', :js do
         input_filtered_search('label:none')
 
         expect_tokens([label_token('none', false)])
-        expect_issues_list_count(8)
+        expect_issues_list_count(4)
         expect_filtered_search_input_empty
       end
 
@@ -520,7 +520,7 @@ describe 'Filter issues', :js do
 
     it 'updates atom feed link for group issues' do
       visit issues_group_path(group, milestone_title: milestone.title, assignee_id: user.id)
-      link = find('.nav-controls a', text: 'Subscribe')
+      link = find('.nav-controls a', text: 'Subscribe', visible: false)
       params = CGI.parse(URI.parse(link[:href]).query)
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
       auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)

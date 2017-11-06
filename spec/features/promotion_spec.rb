@@ -86,7 +86,7 @@ describe 'Promotions', :js do
       visit edit_project_path(project)
 
       within('#promote_service_desk') do
-        find('.close').trigger('click')
+        find('.close').click
       end
 
       visit edit_project_path(project)
@@ -113,7 +113,7 @@ describe 'Promotions', :js do
       visit edit_project_path(project)
 
       within('#promote_mr_features') do
-        find('.close').trigger('click')
+        find('.close').click
       end
 
       visit edit_project_path(project)
@@ -141,7 +141,7 @@ describe 'Promotions', :js do
       visit project_settings_repository_path(project)
 
       within('#promote_repository_features') do
-        find('.close').trigger('click')
+        find('.close').click
       end
 
       visit project_settings_repository_path(project)
@@ -168,7 +168,7 @@ describe 'Promotions', :js do
       visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature' })
 
       within('#promote_squash_commits') do
-        find('.close').trigger('click')
+        find('.close').click
       end
 
       visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature' })
@@ -195,7 +195,7 @@ describe 'Promotions', :js do
       visit project_milestone_path(project, milestone)
 
       within('#promote_burndown_charts') do
-        find('.close').trigger('click')
+        find('.close').click
       end
 
       visit project_milestone_path(project, milestone)
@@ -222,7 +222,7 @@ describe 'Promotions', :js do
       visit project_boards_path(project)
 
       within('.board-promotion-state') do
-        find('#hide-btn').trigger('click')
+        find('#hide-btn').click
       end
 
       visit project_boards_path(project, milestone)
@@ -338,7 +338,7 @@ describe 'Promotions', :js do
       visit search_path
 
       fill_in 'search', with: 'chosen'
-      find('.btn-search').trigger('click')
+      find('.btn-search').click
 
       expect(find('#promote_advanced_search')).to have_content 'Improve search with Advanced Global Search and GitLab Enterprise Edition.'
     end
@@ -347,16 +347,16 @@ describe 'Promotions', :js do
       visit search_path
 
       fill_in 'search', with: 'chosen'
-      find('.btn-search').trigger('click')
+      find('.btn-search').click
 
       within('#promote_advanced_search') do
-        find('.close').trigger('click')
+        find('.close').click
       end
 
       visit search_path
 
       fill_in 'search', with: 'chosen'
-      find('.btn-search').trigger('click')
+      find('.btn-search').click
 
       expect(page).not_to have_selector('#promote_advanced_search')
     end

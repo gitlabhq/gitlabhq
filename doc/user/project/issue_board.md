@@ -77,8 +77,7 @@ each team can have their own board to organize their workflow individually.
 
 #### Scrum team
 
-With multiple Issue Boards, each team has one board. For each sprint, you can
-[associate a milestone](#board-with-a-milestone). Now you can move issues through each
+With multiple Issue Boards, each team has one board. Now you can move issues through each
 part of the process. For instance: **To Do**, **Doing**, and **Done**.
 
 #### Organization of topics
@@ -269,25 +268,25 @@ existing one.
 
 ![Multiple Issue Boards](img/issue_boards_multiple.png)
 
-## Board with a milestone
+## Board with configuration
 
-> Introduced in [GitLab Enterprise Edition 9.0](https://about.gitlab.com/2017/03/22/gitlab-9-0-released/#boards-with-milestones-ees-eep).
+> Introduced in [GitLab Starter Edition 10.2](https://about.gitlab.com/2017/11/22/gitlab-10-2-released/#issue-boards-configuration).
 
-An Issue Board can be associated with a GitLab [Milestone](milestones/index.md#milestones)
-which will automatically filter the issue to that milestone. This allows you to
-create unique boards for individual milestones.
+An Issue Board can be associated with GitLab [Milestone](milestones/index.md#milestones),
+[Labels](labels.md), Assignee and Weight
+which will automatically filter the Board issues according to these fields.
+This allows you to create unique boards according to your team's need.
 
-You can assign a milestone to a board when creating a new Issue Board or you
-can update current Issue Boards to also have a milestone. Once a specific
-milestone is assigned to an Issue Board, you will no longer be able to filter
-through any other milestone. In order to do that, you need to remove the
-defined milestone from the Issue Board.
+![Create scoped board](img/issue_board_creation.png)
 
-There are also two pre-defined milestones, **Any milestone** which will filter
-the issues with any milestone, and **Upcoming** which will filter issues to the
-milestone with the due date that is next.
+You can define the scope of your board when creating it or by clicking on the "Edit board" button. Once a milestone, assignee or weight is assigned to an Issue Board, you will no longer be able to filter
+through these in the search bar. In order to do that, you need to remove the desired scope (e.g. milestone, assignee or weight) from the Issue Board.
 
-![Update boards milestone](img/issue_board_multiple_milestone.png)
+![Edit board configuration](img/issue_board_edit_button.png)
+
+If you don't have editing permission in a board, you're still able to see the configuration by clicking on "View scope".
+
+![Viewing board configuration](img/issue_board_view_scope.png)
 
 ## Group Issue Boards
 

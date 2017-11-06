@@ -164,8 +164,9 @@
       z-index: 300;
     }
 
-    .ci-action-icon-wrapper {
-      line-height: 16px;
+    .ci-action-icon-wrapper svg {
+      width: 16px;
+      height: 16px;
     }
   }
 
@@ -777,10 +778,9 @@
 }
 
 .mr-widget-code-quality {
-  ci-status-icon-warning svg {
+  .ci-status-icon-warning svg {
     fill: $theme-gray-600;
   }
-
 
   .code-quality-container {
     border-top: 1px solid $gray-darker;
@@ -791,7 +791,7 @@
 
     .mr-widget-code-quality-list {
       list-style: none;
-      padding: 0px 12px;
+      padding: 0 12px;
       margin: 0;
       line-height: $code_line_height;
 

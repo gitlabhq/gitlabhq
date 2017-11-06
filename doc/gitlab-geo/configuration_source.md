@@ -46,7 +46,7 @@ first two steps of the [Setup instructions](README.md#setup-instructions):
 1. You have already installed on the secondary server the same version of
    GitLab Enterprise Edition that is present on the primary server.
 1. You have set up the database replication.
-1. Your secondary node is allowed to communicate via HTTP/HTTPS and SSH with
+1. Your secondary node is allowed to communicate via HTTP/HTTPS with
    your primary node (make sure your firewall is not blocking that).
 1. Your nodes must have an NTP service running to synchronize the clocks.
    You can use different timezones, but the hour relative to UTC can't be more
@@ -73,31 +73,7 @@ logins opened on all nodes as we will be moving back and forth.
     bundle exec rake geo:set_primary_node
     ```
 
-### Step 2. Updating the `known_hosts` file of the secondary nodes
-
-1. SSH into the **secondary** node and login as root:
-
-    ```
-    sudo -i
-    ```
-
-1. The secondary nodes need to know the SSH fingerprint of the primary node that
-   will be used for the Git clone/fetch operations. In order to add it to the
-   `known_hosts` file, run the following command and type `yes` when asked:
-
-    ```
-    sudo -u git -H ssh git@<primary-node-url>
-    ```
-
-    Replace `<primary-node-url>` with the FQDN of the primary node.
-
-1. Verify that the fingerprint was added by checking `known_hosts`:
-
-    ```
-    cat /home/git/.ssh/known_hosts
-    ```
-
-### Step 3. Copying the database encryption key
+### Step 2. Copying the database encryption key
 
 GitLab stores a unique encryption key in disk that we use to safely store
 sensitive data in the database. Any secondary node must have the
@@ -130,7 +106,7 @@ sensitive data in the database. Any secondary node must have the
 
 1. Save and close the file.
 
-### Step 4. Enabling hashed storage (from GitLab 10.0)
+### Step 3. Enabling hashed storage (from GitLab 10.0)
 
 1. Visit the **primary** node's **Admin Area ➔ Settings**
    (`/admin/application_settings`) in your browser
@@ -143,41 +119,27 @@ renames no longer require synchronization between nodes - so we recommend it is
 used for all GitLab Geo installations.
 
 
-### Step 5. Enabling the secondary GitLab node
-
-1. SSH into the **secondary** node and login as root:
-
-    ```
-    sudo -i
-    ```
-
-1. Create a new SSH key pair for the secondary node. Choose the default location
-   and leave the password blank by hitting 'Enter' three times:
-
-    ```bash
-    sudo -u git -H ssh-keygen -b 4096 -C 'Secondary GitLab Geo node'
-    ```
-
-    Read more in [additional info for SSH key pairs](#additional-information-for-the-ssh-key-pairs).
-
-1. Get the contents of `id_rsa.pub` the was just created:
-
-    ```
-    sudo -u git cat /home/git/.ssh/id_rsa.pub
-    ```
+### Step 4. Enabling the secondary GitLab node
 
 1. Visit the **primary** node's **Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`)
    in your browser.
-1. Add the secondary node by providing its full URL and the public SSH key
-   you created previously. **Do NOT** check the box 'This is a primary node'.
+1. Add the secondary node by providing its full URL. **Do NOT** check the box
+   'This is a primary node'.
 1. Added in GitLab 9.5: Choose which namespaces should be replicated by the secondary node. Leave blank to replicate all. Read more in [selective replication](#selective-replication).
 1. Click the **Add node** button.
+1. Restart GitLab on the secondary:
+
+    ```
+    gitlab-ctl restart
+    ```
 
 ---
 
-After the **Add Node** button is pressed, the primary node will start to notify
-changes to the secondary. Make sure the secondary instance is running and
-accessible.
+After the **Add Node** button is pressed, the secondary will start automatically
+replicating missing data from the primary in a process known as backfill.
+Meanwhile, the primary node will start to notify changes to the secondary, which
+will act on those notifications immediately. Make sure the secondary instance is
+running and accessible.
 
 The two most obvious issues that replication can have here are:
 
@@ -188,20 +150,12 @@ The two most obvious issues that replication can have here are:
        [Troubleshooting](configuration.md#troubleshooting) section)
      - Instance is firewalled (check your firewall rules)
 
-### Step 6. Replicating the repositories data
-
-Getting a new secondary Geo node up and running, will also require the
-repositories data to be synced.
-
-With GitLab 9.0 the syncing process starts automatically from the
-secondary node after the **Add Node** button is pressed.
-
 Currently, this is what is synced:
 
 * Git repositories
 * Wikis
 * LFS objects
-* Issue, merge request, and comment attachments
+* Issue, merge request, snippet and comment attachments
 * User, group, and project avatars
 
 You can monitor the status of the syncing process on a secondary node
@@ -214,39 +168,6 @@ repository shards you must duplicate the same configuration on the secondary.
 ![GitLab Geo dashboard](img/geo-node-dashboard.png)
 
 Disabling a secondary node stops the syncing process.
-
-With GitLab 8.14 this process is started manually from the primary node.
-You can start the syncing process by clicking the "Backfill all repositories"
-button on `Admin > Geo Nodes` screen.
-
-On previous versions, you can use `rsync` for that:
-
-Make sure `rsync` is installed in both primary and secondary servers and root
-SSH access with a password is enabled. Otherwise, you can set up an SSH key-based
-connection between the servers.
-
-1. SSH into the **secondary** node and login as root:
-
-    ```
-    sudo -i
-    ```
-
-1. Assuming `1.2.3.4` is the IP of the primary node, run the following command
-   to start the sync:
-
-    ```bash
-    # Installations from source
-    rsync -guavrP root@1.2.3.4:/home/git/repositories/ /home/git/repositories/
-    chmod ug+rwX,o-rwx /home/git/repositories
-    ```
-
-If this step is not followed, the secondary node will eventually clone and
-fetch every missing repository as they are updated with new commits on the
-primary node, so syncing the repositories beforehand will buy you some time.
-
-While active repositories will be eventually replicated, if you don't rsync,
-the files, any archived/inactive repositories will not get in the secondary node
-as Geo doesn't run any routine task to look for missing repositories.
 
 ## Next steps
 
@@ -267,12 +188,12 @@ Read [Selective replication](configuration.md#selective-replication).
 ## Adding another secondary Geo node
 
 To add another Geo node in an already Geo configured infrastructure, just follow
-[the steps starting from step 2](#step-2-updating-the-known_hosts-file-of-the-secondary-nodes).
+[the steps starting from step 2](#step-2-copying-the-database-encryption-key).
 Just omit the first step that sets up the primary node.
 
-## Additional information for the SSH key pairs
+## Replicating wikis and repositories over SSH
 
-Read [Additional information for the SSH key pairs](configuration.md#additional-information-for-the-ssh-key-pairs).
+Read [Replicating wikis and repositories over SSH](configuration.md#replicating-wikis-and-repositories-over-ssh).
 
 ## Troubleshooting
 

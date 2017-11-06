@@ -5,6 +5,11 @@ module Gitlab
     class JwtRequestDecoder
       IAT_LEEWAY = 60.seconds.to_i
 
+      def self.geo_auth_attempt?(header)
+        token_type, _ = header&.split(' ', 2)
+        token_type == ::Gitlab::Geo::BaseRequest::GITLAB_GEO_AUTH_TOKEN_TYPE
+      end
+
       attr_reader :auth_header
 
       def initialize(auth_header)

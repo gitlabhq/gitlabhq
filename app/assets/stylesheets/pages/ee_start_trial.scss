@@ -5,14 +5,14 @@
   top: 52px;
 }
 
-/* Secondary Nav Overrides - Old Nav */
 .page-with-sidebar.has-trial-banner {
+  /* Secondary Nav Overrides - Old Nav */
   margin-top: 102px;
-}
 
-/* Sidebar Nav Overrides - New Nav */
-.page-with-sidebar.has-trial-banner .nav-sidebar {
-  top: 102px;
+  /* Sidebar Nav Overrides - New Nav */
+  .nav-sidebar {
+    top: 102px;
+  }
 }
 
 /* Trial Banner */
@@ -30,6 +30,9 @@
   .close {
     color: $white-dark;
     opacity: 0.7;
+    position: absolute;
+    top: 12px;
+    right: $gl-padding;
 
     &:hover {
       color: $black;
@@ -44,12 +47,6 @@
       color: $white-dark;
       text-decoration: underline;
     }
-  }
-
-  .close {
-    position: absolute;
-    top: 12px;
-    right: $gl-padding;
   }
 }
 
@@ -74,9 +71,6 @@
     .confirmation-desc {
       max-width: 80%;
       margin: auto;
-    }
-
-    .confirmation-desc {
       color: $gl-text-color-secondary;
     }
 
@@ -87,10 +81,8 @@
       overflow-y: auto;
     }
   }
-}
 
-/* Pure CSS License Key Preview Toggle */
-.modal-upload-trial-license {
+  /* Pure CSS License Key Preview Toggle */
   .trial-license-preview,
   .show-license,
   .hide-license:target {

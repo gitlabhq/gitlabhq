@@ -83,15 +83,15 @@ describe Projects::MergeRequestsController do
     end
 
     describe 'as json' do
-      context 'with basic param' do
+      context 'with basic serializer param' do
         it 'renders basic MR entity as json' do
-          go(basic: true, format: :json)
+          go(serializer: 'basic', format: :json)
 
           expect(response).to match_response_schema('entities/merge_request_basic')
         end
       end
 
-      context 'without basic param' do
+      context 'without basic serializer param' do
         it 'renders the merge request in the json format' do
           go(format: :json)
 
@@ -186,21 +186,41 @@ describe Projects::MergeRequestsController do
   end
 
   describe 'PUT update' do
+    def update_merge_request(mr_params, additional_params = {})
+      params = {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: merge_request.iid,
+        merge_request: mr_params
+      }.merge(additional_params)
+
+      put :update, params
+    end
+
     context 'changing the assignee' do
       it 'limits the attributes exposed on the assignee' do
         assignee = create(:user)
         project.add_developer(assignee)
 
-        put :update,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: merge_request.iid,
-          merge_request: { assignee_id: assignee.id },
-          format: :json
+        update_merge_request({ assignee_id: assignee.id }, format: :json)
         body = JSON.parse(response.body)
 
         expect(body['assignee'].keys)
           .to match_array(%w(name username avatar_url))
+      end
+    end
+
+    context 'when user does not have access to update issue' do
+      before do
+        reporter = create(:user)
+        project.add_reporter(reporter)
+        sign_in(reporter)
+      end
+
+      it 'responds with 404' do
+        update_merge_request(title: 'New title')
+
+        expect(response).to have_http_status(:not_found)
       end
     end
 
@@ -214,13 +234,7 @@ describe Projects::MergeRequestsController do
       end
 
       it 'closes MR without errors' do
-        post :update,
-            namespace_id: project.namespace,
-            project_id: project,
-            id: merge_request.iid,
-            merge_request: {
-              state_event: 'close'
-            }
+        update_merge_request(state_event: 'close')
 
         expect(response).to redirect_to([merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request])
         expect(merge_request.reload.closed?).to be_truthy
@@ -229,13 +243,7 @@ describe Projects::MergeRequestsController do
       it 'allows editing of a closed merge request' do
         merge_request.close!
 
-        put :update,
-            namespace_id: project.namespace,
-            project_id: project,
-            id: merge_request.iid,
-            merge_request: {
-              title: 'New title'
-            }
+        update_merge_request(title: 'New title')
 
         expect(response).to redirect_to([merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request])
         expect(merge_request.reload.title).to eq 'New title'
@@ -244,13 +252,7 @@ describe Projects::MergeRequestsController do
       it 'does not allow to update target branch closed merge request' do
         merge_request.close!
 
-        put :update,
-            namespace_id: project.namespace,
-            project_id: project,
-            id: merge_request.iid,
-            merge_request: {
-              target_branch: 'new_branch'
-            }
+        update_merge_request(target_branch: 'new_branch')
 
         expect { merge_request.reload.target_branch }.not_to change { merge_request.target_branch }
       end

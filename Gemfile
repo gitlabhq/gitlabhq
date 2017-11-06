@@ -93,7 +93,7 @@ gem 'kaminari', '~> 1.0'
 gem 'hamlit', '~> 2.6.1'
 
 # Files attachments
-gem 'carrierwave', '~> 1.1'
+gem 'carrierwave', '~> 1.2'
 
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
@@ -336,9 +336,9 @@ group :development, :test do
   # Generate Fake data
   gem 'ffaker', '~> 2.4'
 
-  gem 'capybara', '~> 2.15.0'
+  gem 'capybara', '~> 2.15'
   gem 'capybara-screenshot', '~> 1.0.0'
-  gem 'poltergeist', '~> 1.9.0'
+  gem 'selenium-webdriver', '~> 3.5'
 
   gem 'spring', '~> 2.0.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
@@ -414,7 +414,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.48.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.51.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

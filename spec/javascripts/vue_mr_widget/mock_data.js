@@ -213,7 +213,9 @@ export default {
   "commit_change_content_path": "/root/acets-app/merge_requests/22/commit_change_content",
   "codeclimate": {
     "head_path": "head.json",
-    "base_path": "base.json"
+    "head_blob_path": "/root/acets-app/blob/abcdef",
+    "base_path": "base.json",
+    "base_blob_path": "/root/acets-app/blob/abcdef"
   }
 };
 
@@ -222,15 +224,9 @@ export const headIssues = [
     "check_name": "Rubocop/Lint/UselessAssignment",
     "location": {
       "path": "lib/six.rb",
-      "positions": {
-        "begin": {
-          "column": 6,
-          "line": 59
-        },
-        "end": {
-          "column": 7,
-          "line": 59
-        }
+      "lines": {
+        "begin": 6,
+        "end": 7,
       }
     },
     "fingerprint": "e879dd9bbc0953cad5037cde7ff0f627",

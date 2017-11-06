@@ -20,9 +20,9 @@ it, the client IP needs to be [included in a whitelist][whitelist].
 Currently the embedded Prometheus server is not automatically configured to
 collect metrics from this endpoint. We recommend setting up another Prometheus
 server, because the embedded server configuration is overwritten once every
-[reconfigure of GitLab][reconfigure]. In the future this will not be required. 
+[reconfigure of GitLab][reconfigure]. In the future this will not be required.
 
-## Metrics available
+## Unicorn Metrics available
 
 In this experimental phase, only a few metrics are available:
 
@@ -45,6 +45,32 @@ In this experimental phase, only a few metrics are available:
 | redis_ping_success                | Gauge     | 9.4   | Whether or not the last redis ping succeeded |
 | redis_ping_latency_seconds        | Gauge     | 9.4   | Round trip time of the redis ping |
 | user_session_logins_total         | Counter   | 9.4   | Counter of how many users have logged in |
+| filesystem_circuitbreaker_latency_seconds | Histogram | 9.5 | Latency of the stat check the circuitbreaker uses to probe a shard |
+| filesystem_circuitbreaker         | Gauge     | 9.5   | Wether or not the circuit for a certain shard is broken or not |
+
+## Sidekiq Metrics available
+
+Sidekiq jobs may also gather metrics, and these metrics can be accessed if the Sidekiq exporter is enabled (e.g. via
+the `monitoring.sidekiq_exporter` configuration option in `gitlab.yml`.
+
+| Metric                            | Type      | Since | Description | Labels |
+|:--------------------------------- |:--------- |:----- |:----------- |:------ |
+|geo_db_replication_lag_seconds     | Gauge     | 10.2  | Database replication lag (seconds) | url
+|geo_repositories                   | Gauge     | 10.2  | Total number of repositories available on primary | url
+|geo_repositories_synced            | Gauge     | 10.2  | Number of repositories synced on secondary | url
+|geo_repositories_failed            | Gauge     | 10.2  | Number of repositories failed to sync on secondary | url
+|geo_lfs_objects                    | Gauge     | 10.2  | Total number of LFS objects available on primary | url
+|geo_lfs_objects_synced             | Gauge     | 10.2  | Number of LFS objects synced on secondary | url
+|geo_lfs_objects_failed             | Gauge     | 10.2  | Number of LFS objects failed to sync on secondary | url
+|geo_attachments                    | Gauge     | 10.2  | Total number of file attachments available on primary | url
+|geo_attachments_synced             | Gauge     | 10.2  | Number of attachments synced on secondary | url
+|geo_attachments_failed             | Gauge     | 10.2  | Number of attachments failed to sync on secondary | url
+|geo_last_event_id                  | Gauge     | 10.2  | Database ID of the latest event log entry on the primary | url
+|geo_last_event_timestamp           | Gauge     | 10.2  | UNIX timestamp of the latest event log entry on the primary | url
+|geo_cursor_last_event_id           | Gauge     | 10.2  | Last database ID of the event log processed by the secondary | url
+|geo_cursor_last_event_timestamp    | Gauge     | 10.2  | Last UNIX timestamp of the event log processed by the secondary | url
+|geo_status_last_updated_timestamp  | Gauge     | 10.2  | Last timestamp when the status was successfully updated | url
+|geo_status_failed_total            | Counter   | 10.2  | Number of times retrieving the status from the Geo Node failed | url
 
 ## Metrics shared directory
 
