@@ -12,7 +12,7 @@ module Gcp
 
     default_value_for :gcp_cluster_zone, 'us-central1-a'
     default_value_for :gcp_cluster_size, 3
-    default_value_for :gcp_machine_type, 'n1-standard-4'
+    default_value_for :gcp_machine_type, 'n1-standard-2'
 
     attr_encrypted :password,
       mode: :per_attribute_iv,

@@ -7,7 +7,7 @@ FactoryGirl.define do
     gcp_cluster_name 'test-cluster'
     gcp_cluster_zone 'us-central1-a'
     gcp_cluster_size 1
-    gcp_machine_type 'n1-standard-4'
+    gcp_machine_type 'n1-standard-2'
 
     trait :with_kubernetes_service do
       after(:create) do |cluster, evaluator|

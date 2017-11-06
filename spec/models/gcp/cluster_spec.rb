@@ -36,7 +36,7 @@ describe Gcp::Cluster do
 
     it { expect(cluster.gcp_cluster_zone).to eq('us-central1-a') }
     it { expect(cluster.gcp_cluster_size).to eq(3) }
-    it { expect(cluster.gcp_machine_type).to eq('n1-standard-4') }
+    it { expect(cluster.gcp_machine_type).to eq('n1-standard-2') }
   end
 
   describe '#validates' do
