@@ -3,8 +3,6 @@ module Clusters
     class Helm < ActiveRecord::Base
       self.table_name = 'clusters_applications_helm'
 
-      NAME = 'helm'.freeze
-
       include ::Clusters::Concerns::ApplicationStatus
 
       belongs_to :cluster, class_name: 'Clusters::Cluster', foreign_key: :cluster_id
@@ -13,8 +11,12 @@ module Clusters
 
       validates :cluster, presence: true
 
+      def self.application_name
+        self.to_s.demodulize.underscore
+      end
+
       def name
-        NAME
+        self.class.application_name
       end
     end
   end
