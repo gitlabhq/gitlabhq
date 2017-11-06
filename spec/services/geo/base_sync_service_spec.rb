@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Geo::BaseSyncService do
   let(:project) { build('project')}
+
   subject { described_class.new(project) }
 
   it_behaves_like 'geo base sync execution'
