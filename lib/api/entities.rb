@@ -822,6 +822,7 @@ module API
     class Job < Grape::Entity
       expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
+      expose :duration
       expose :user, with: User
       expose :artifacts_file, using: JobArtifactFile, if: -> (job, opts) { job.artifacts? }
       expose :commit, with: Commit

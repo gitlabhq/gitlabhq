@@ -150,18 +150,6 @@
     display: block;
   }
 
-  .mr-widget-body {
-    @include clearfix;
-
-    &.media > *:first-child {
-      margin-right: 10px;
-    }
-
-    .approve-btn {
-      margin-right: 5px;
-    }
-  }
-
   .mr-widget-pipeline-graph {
     padding: 0 4px;
 
@@ -169,9 +157,8 @@
       z-index: 300;
     }
 
-    .ci-action-icon-wrapper svg {
-      width: 16px;
-      height: 16px;
+    .ci-action-icon-wrapper {
+      line-height: 16px;
     }
   }
 
@@ -195,10 +182,6 @@
     overflow: hidden;
     word-break: break-all;
 
-    &.media > *:first-child {
-      margin-right: 10px;
-    }
-
     &.label-truncated {
       position: relative;
       display: inline-block;
@@ -215,6 +198,18 @@
         font-family: $regular_font;
         background-color: $gray-light;
       }
+    }
+  }
+
+  .mr-widget-body {
+    @include clearfix;
+
+    &.media > *:first-child {
+      margin-right: 10px;
+    }
+
+    .approve-btn {
+      margin-right: 5px;
     }
 
     h4 {
@@ -237,10 +232,6 @@
     .btn-grouped {
       margin-left: 0;
       margin-right: 7px;
-    }
-
-    .approve-btn {
-      margin-right: 5px;
     }
 
     label {
@@ -339,17 +330,6 @@
           margin-top: $gl-padding;
         }
       }
-    }
-  }
-
-  .mini-pipeline-graph-dropdown-menu .mini-pipeline-graph-dropdown-item {
-    display: flex;
-    align-items: center;
-
-    .ci-status-text,
-    .ci-status-icon {
-      top: 0;
-      margin-right: 10px;
     }
   }
 

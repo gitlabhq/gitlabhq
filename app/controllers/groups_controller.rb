@@ -155,6 +155,8 @@ class GroupsController < Groups::ApplicationController
     @events = EventCollection
       .new(@projects, offset: params[:offset].to_i, filter: event_filter)
       .to_a
+
+    Events::RenderService.new(current_user).execute(@events, atom_request: request.format.atom?)
   end
 
   def user_actions

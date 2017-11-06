@@ -18,7 +18,7 @@ describe Banzai::Renderer do
       let(:commit) { create(:project, :repository).commit }
 
       it 'returns cacheless render field' do
-        expect(renderer).to receive(:cacheless_render_field).with(commit, :title)
+        expect(renderer).to receive(:cacheless_render_field).with(commit, :title, {})
 
         renderer.render_field(commit, :title)
       end

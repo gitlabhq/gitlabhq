@@ -28,7 +28,7 @@
 pre {
   &.clean {
     background: none;
-    border: none;
+    border: 0;
     margin: 0;
     padding: 0;
   }
@@ -142,7 +142,7 @@ li.note {
   img { max-width: 100%; }
   .note-title {
     li {
-      border-bottom: none !important;
+      border-bottom: 0 !important;
     }
   }
 }
@@ -187,7 +187,7 @@ li.note {
 
   pre {
     background: $white-light;
-    border: none;
+    border: 0;
     font-size: 12px;
   }
 }
@@ -386,7 +386,7 @@ img.emoji {
 }
 
 .hide-bottom-border {
-  border-bottom: none !important;
+  border-bottom: 0 !important;
 }
 
 .gl-accessibility {

@@ -1047,7 +1047,6 @@ ActiveRecord::Schema.define(version: 20171106101200) do
     t.datetime "last_edited_at"
     t.integer "last_edited_by_id"
     t.integer "head_pipeline_id"
-    t.boolean "ref_fetched"
     t.string "merge_jid"
     t.boolean "discussion_locked"
     t.integer "latest_merge_request_diff_id"

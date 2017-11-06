@@ -623,8 +623,6 @@ describe API::MergeRequests do
 
       before do
         forked_project.add_reporter(user2)
-
-        allow_any_instance_of(MergeRequest).to receive(:write_ref)
       end
 
       it "returns merge_request" do

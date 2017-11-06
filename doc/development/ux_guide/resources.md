@@ -11,3 +11,7 @@ you can use during GitLab development.
 
 All design files are stored in the [gitlab-design](https://gitlab.com/gitlab-org/gitlab-design)
 repository and maintained by GitLab UX designers.
+
+## [brand.ai](https://brand.ai/git-lab/primary-brand)
+
+We are in the process of capturing our UI paradigms on brand.ai, see https://brand.ai/git-lab/primary-brand

@@ -456,7 +456,7 @@ describe Projects::MergeRequestsController do
       end
 
       it 'delegates the update of the todos count cache to TodoService' do
-        expect_any_instance_of(TodoService).to receive(:destroy_merge_request).with(merge_request, owner).once
+        expect_any_instance_of(TodoService).to receive(:destroy_issuable).with(merge_request, owner).once
 
         delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
       end
