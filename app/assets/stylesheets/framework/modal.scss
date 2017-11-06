@@ -7,6 +7,7 @@
 }
 
 .modal-body {
+  background-color: $modal-body-bg;
   position: relative;
   padding: #{3 * $grid-size} #{2 * $grid-size};
 
@@ -47,6 +48,3 @@ body.modal-open {
   display: block;
 }
 
-.modal-body {
-  background-color: $modal-body-bg;
-}
