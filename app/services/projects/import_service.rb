@@ -32,7 +32,7 @@ module Projects
     end
 
     def import_repository
-      raise Error, 'Blocked import URL.' if Gitlab::UrlBlocker.blocked_url?(project.import_url, require_dns: true)
+      raise Error, 'Blocked import URL.' if Gitlab::UrlBlocker.blocked_url?(project.import_url)
 
       # We should return early for a GitHub import because the new GitHub
       # importer fetch the project repositories for us.
