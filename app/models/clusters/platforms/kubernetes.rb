@@ -74,6 +74,10 @@ module Clusters
         )
       end
 
+      def active?
+        manages_kubernetes_service?
+      end
+
       private
 
       def enforce_namespace_to_lower_case
