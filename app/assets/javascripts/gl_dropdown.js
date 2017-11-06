@@ -543,6 +543,8 @@ GitLabDropdown = (function() {
       this.options.opened.call(this, e);
     }
 
+    if (this.options.filterable) this.filter.filter();
+
     return this.dropdown.trigger('shown.gl.dropdown');
   };
 
