@@ -39,6 +39,9 @@ module Clusters
     delegate :on_creation?, to: :provider, allow_nil: true
     delegate :update_kubernetes_integration!, to: :platform, allow_nil: true
 
+    delegate :active?, to: :platform_kubernetes, prefix: true, allow_nil: true
+    delegate :installed?, to: :application_helm, prefix: true, allow_nil: true
+
     enum platform_type: {
       kubernetes: 1
     }
@@ -60,8 +63,6 @@ module Clusters
     end
 
     def applications
-      return [] unless kubernetes?
-
       [
         application_helm || build_application_helm,
         application_ingress || build_application_ingress

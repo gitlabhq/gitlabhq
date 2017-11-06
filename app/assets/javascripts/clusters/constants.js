@@ -1,5 +1,7 @@
 // These need to match what is returned from the server
+export const APPLICATION_NOT_INSTALLABLE = 'not_installable';
 export const APPLICATION_INSTALLABLE = 'installable';
+export const APPLICATION_SCHEDULED = 'scheduled';
 export const APPLICATION_INSTALLING = 'installing';
 export const APPLICATION_INSTALLED = 'installed';
 export const APPLICATION_ERROR = 'error';

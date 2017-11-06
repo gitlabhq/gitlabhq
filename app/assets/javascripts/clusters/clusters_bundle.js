@@ -134,9 +134,12 @@ export default class Clusters {
 
   handleSuccess(data) {
     const prevApplicationMap = Object.assign({}, this.store.state.applications);
+    const prevStatus = this.store.state.status;
     this.store.updateStateFromServer(data.data);
     this.checkForNewInstalls(prevApplicationMap, this.store.state.applications);
-    this.updateContainer(this.store.state.status, this.store.state.statusReason);
+    if (prevStatus.length == 0 || prevStatus !== this.store.state.status) {
+      this.updateContainer(this.store.state.status, this.store.state.statusReason);
+    }
   }
 
   toggle() {
