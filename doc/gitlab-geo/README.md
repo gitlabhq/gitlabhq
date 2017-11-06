@@ -15,6 +15,14 @@ and there is significant chance of data loss. For the latest updates, check the
 - GitLab Geo requires PostgreSQL 9.6 and Git 2.9 in addition to GitLab's usual
   [minimum requirements](../install/requirements.md)
 
+>**Note:**
+GitLab Geo changes significantly from release to release. Upgrades **are**
+supported and [documented](#updating-the-geo-nodes), but you should ensure that
+you're following the right version of the documentation for your installation!
+The best way to do this is to follow the documentation from the `/help` endpoint
+on your **primary** node, but you can also navigate to [this page on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/gitlab-geo/README.md)
+and choose the appropriate release from the `tags` dropdown, e.g., `v10.0.0-ee`.
+
 GitLab Geo allows you to replicate your GitLab instance to other geographical
 locations as a read-only fully operational version.
 
