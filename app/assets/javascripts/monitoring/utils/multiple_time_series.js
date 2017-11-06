@@ -13,7 +13,7 @@ const defaultColorOrder = ['blue', 'orange', 'red', 'green', 'purple'];
 
 const defaultStyleOrder = ['solid', 'dashed', 'dotted'];
 
-function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, maxValue, lineStyle) {
+function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom, yDom, lineStyle) {
   let usedColors = [];
 
   function pickColor(name) {
@@ -44,9 +44,9 @@ function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, maxV
     const timeSeriesScaleY = d3.scale.linear()
       .range([graphHeight - graphHeightOffset, 0]);
 
-    timeSeriesScaleX.domain(d3.extent(timeSeries.values, d => d.time));
+    timeSeriesScaleX.domain(xDom);
     timeSeriesScaleX.ticks(d3.time.minute, 60);
-    timeSeriesScaleY.domain([0, maxValue]);
+    timeSeriesScaleY.domain(yDom);
 
     const defined = d => !isNaN(d.value) && d.value != null;
 
@@ -93,17 +93,17 @@ function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, maxV
 }
 
 export default function createTimeSeries(queries, graphWidth, graphHeight, graphHeightOffset) {
-  const maxValue =
-    d3.max(queries.map(query => (
-      d3.max(query.result.map(resultSet => (
-        d3.max(resultSet.values.map(d => d.value))
-      )))
-    )));
+  const allValues = queries.reduce((allQueryResults, query) => allQueryResults.concat(
+    query.result.reduce((allResults, result) => allResults.concat(result.values), []),
+  ), []);
+
+  const xDom = d3.extent(allValues, d => d.time);
+  const yDom = [0, d3.max(allValues.map(d => d.value))];
 
   return queries.reduce((series, query, index) => {
     const lineStyle = defaultStyleOrder[index % defaultStyleOrder.length];
     return series.concat(
-      queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, maxValue, lineStyle),
+      queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, xDom, yDom, lineStyle),
     );
   }, []);
 }

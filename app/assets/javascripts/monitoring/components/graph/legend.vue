@@ -79,7 +79,7 @@
       },
 
       formatMetricUsage(series) {
-        const value = series.values[this.currentDataIndex].value;
+        const value = series.values[this.currentDataIndex] && series.values[this.currentDataIndex].value;
         if (isNaN(value)) {
           return '-';
         }
