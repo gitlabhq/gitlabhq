@@ -11,8 +11,9 @@ const defaultColorPalette = {
 
 const defaultColorOrder = ['blue', 'orange', 'red', 'green', 'purple'];
 
-export default function createTimeSeries(queries, graphWidth, graphHeight, graphHeightOffset) {
-  const queryData = queries[0];
+const defaultStyleOrder = ['solid', 'dashed', 'dotted'];
+
+function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, maxValue, lineStyle) {
   let usedColors = [];
 
   function pickColor(name) {
@@ -32,17 +33,7 @@ export default function createTimeSeries(queries, graphWidth, graphHeight, graph
     return defaultColorPalette[pick];
   }
 
-  const maxValues = queryData.result.map((timeSeries, index) => {
-    const maxValue = d3.max(timeSeries.values.map(d => d.value));
-    return {
-      maxValue,
-      index,
-    };
-  });
-
-  const maxValueFromSeries = _.max(maxValues, val => val.maxValue);
-
-  return queryData.result.map((timeSeries, timeSeriesNumber) => {
+  return query.result.map((timeSeries, timeSeriesNumber) => {
     let metricTag = '';
     let lineColor = '';
     let areaColor = '';
@@ -55,7 +46,7 @@ export default function createTimeSeries(queries, graphWidth, graphHeight, graph
 
     timeSeriesScaleX.domain(d3.extent(timeSeries.values, d => d.time));
     timeSeriesScaleX.ticks(d3.time.minute, 60);
-    timeSeriesScaleY.domain([0, maxValueFromSeries.maxValue]);
+    timeSeriesScaleY.domain([0, maxValue]);
 
     const defined = d => !isNaN(d.value) && d.value != null;
 
@@ -73,8 +64,8 @@ export default function createTimeSeries(queries, graphWidth, graphHeight, graph
       .y1(d => timeSeriesScaleY(d.value));
 
     const timeSeriesMetricLabel = timeSeries.metric[Object.keys(timeSeries.metric)[0]];
-    const seriesCustomizationData = queryData.series != null &&
-                                    _.findWhere(queryData.series[0].when,
+    const seriesCustomizationData = query.series != null &&
+                                    _.findWhere(query.series[0].when,
                                     { value: timeSeriesMetricLabel });
     if (seriesCustomizationData != null) {
       metricTag = seriesCustomizationData.value || timeSeriesMetricLabel;
@@ -89,9 +80,26 @@ export default function createTimeSeries(queries, graphWidth, graphHeight, graph
       areaPath: areaFunction(timeSeries.values),
       timeSeriesScaleX,
       values: timeSeries.values,
+      lineStyle,
       lineColor,
       areaColor,
       metricTag,
     };
   });
+}
+
+export default function createTimeSeries(queries, graphWidth, graphHeight, graphHeightOffset) {
+  const maxValue =
+    d3.max(queries.map(query => (
+      d3.max(query.result.map(resultSet => (
+        d3.max(resultSet.values.map(d => d.value))
+      )))
+    )));
+
+  return queries.reduce((series, query, index) => {
+    const lineStyle = defaultStyleOrder[index % defaultStyleOrder.length];
+    return series.concat(
+      queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, maxValue, lineStyle),
+    );
+  }, []);
 }
