@@ -14,7 +14,7 @@
     },
     computed: {
       lineClasses() {
-        return new Array(this.lines).fill().map((_, i) => `skeleton-line-${i}`);
+        return new Array(this.lines).fill().map((_, i) => `skeleton-line-${i + 1}`);
       },
     },
   };

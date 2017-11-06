@@ -56,11 +56,12 @@ class Projects::RefsController < Projects::ApplicationController
       contents[@offset, @limit].to_a.map do |content|
         file = @path ? File.join(@path, content.name) : content.name
         last_commit = @repo.last_commit_for_path(@commit.id, file)
+        commit_path = project_commit_path(@project, last_commit) if last_commit
         {
           file_name: content.name,
           commit: last_commit,
           type: content.type,
-          commit_path: (project_commit_path(@project, last_commit) unless last_commit.nil?)
+          commit_path: commit_path
         }
       end
     end
