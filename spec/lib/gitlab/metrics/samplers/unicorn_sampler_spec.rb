@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Metrics::UnicornSampler do
+describe Gitlab::Metrics::Samplers::UnicornSampler do
   subject { described_class.new(1.second) }
 
   describe '#sample' do
