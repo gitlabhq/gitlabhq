@@ -40,6 +40,7 @@ module Gitlab
     config.eager_load_paths.push(*%W[
       #{config.root}/ee/lib
       #{config.root}/ee/app/controllers
+      #{config.root}/ee/app/finders
       #{config.root}/ee/app/helpers
       #{config.root}/ee/app/mailers
       #{config.root}/ee/app/models

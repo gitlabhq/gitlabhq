@@ -1,10 +1,27 @@
 class Groups::EpicsController < Groups::ApplicationController
   include IssuableActions
+  include IssuableCollections
 
-  before_action :epic
+  before_action :epic, except: :index
+  before_action :set_issuables_index, only: :index
   before_action :authorize_update_issuable!, only: :update
 
   skip_before_action :labels
+
+  def index
+    @epics = @issuables
+
+    respond_to do |format|
+      format.html do
+        render 'groups/ee/epics/index'
+      end
+      format.json do
+        render json: {
+          html: view_to_html_string("groups/ee/epics/_epics")
+        }
+      end
+    end
+  end
 
   private
 
@@ -40,5 +57,9 @@ class Groups::EpicsController < Groups::ApplicationController
 
   def show_view
     'groups/ee/epics/show'
+  end
+
+  def finder_type
+    EpicsFinder
   end
 end

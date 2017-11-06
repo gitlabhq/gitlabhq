@@ -143,6 +143,8 @@ module IssuableCollections
                            'Issue'
                          when MergeRequestsFinder
                            'MergeRequest'
+                         when EpicsFinder
+                           'Epic'
                          end
   end
 
@@ -155,6 +157,8 @@ module IssuableCollections
                                     :source_project, :target_project, :author, :assignee, :labels, :milestone,
                                     head_pipeline: :project, target_project: :namespace, merge_request_diff: :merge_request_diff_commits
                                   ]
+                                when 'Epic'
+                                  [:group, :author]
                                 end
   end
 end
