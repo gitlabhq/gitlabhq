@@ -111,9 +111,29 @@
   margin: auto;
   align-items: center;
 
+  .icon {
+    margin-right: $issuable-warning-icon-margin;
+  }
+
   + .md-area {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+  }
+
+  .disabled-comment {
+    border: none;
+    border-radius: $label-border-radius;
+    padding-top: $gl-vert-padding;
+    padding-bottom: $gl-vert-padding;
+
+    .icon svg {
+      position: relative;
+      top: 2px;
+      margin-right: $btn-xs-side-margin;
+      width: $gl-font-size;
+      height: $gl-font-size;
+      fill: $orange-600;
+    }
   }
 }
 

@@ -476,6 +476,10 @@ ul.notes {
     float: none;
     margin-left: 0;
   }
+
+  .btn-group > .discussion-next-btn {
+    margin-left: -1px;
+  }
 }
 
 .note-actions {
