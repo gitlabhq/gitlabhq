@@ -18,4 +18,5 @@ module IssuesAction
       format.atom { render layout: 'xml.atom' }
     end
   end
+  # rubocop:enable Cop/ModuleWithInstanceVariables
 end

@@ -12,6 +12,7 @@ module MergeRequestsAction
     @collection_type    = "MergeRequest"
     @issuable_meta_data = issuable_meta_data(@merge_requests, @collection_type)
   end
+  # rubocop:enable Cop/ModuleWithInstanceVariables
 
   private
 

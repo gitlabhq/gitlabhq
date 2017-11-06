@@ -30,36 +30,28 @@ module ResolvableDiscussion
               allow_nil: true
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def resolvable?
-    return @resolvable if @resolvable.present?
-
-    @resolvable = potentially_resolvable? && notes.any?(&:resolvable?)
+    @resolvable ||= potentially_resolvable? && notes.any?(&:resolvable?)
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def resolved?
-    return @resolved if @resolved.present?
-
-    @resolved = resolvable? && notes.none?(&:to_be_resolved?)
+    @resolved ||= resolvable? && notes.none?(&:to_be_resolved?)
   end
 
   def first_note
     @first_note ||= notes.first
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def first_note_to_resolve
     return unless resolvable?
 
-    @first_note_to_resolve ||= notes.find(&:to_be_resolved?)
+    @first_note_to_resolve ||= notes.find(&:to_be_resolved?) # rubocop:disable Cop/ModuleWithInstanceVariables
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def last_resolved_note
     return unless resolved?
 
-    @last_resolved_note ||= resolved_notes.sort_by(&:resolved_at).last
+    @last_resolved_note ||= resolved_notes.sort_by(&:resolved_at).last # rubocop:disable Cop/ModuleWithInstanceVariables
   end
 
   def resolved_notes
@@ -100,7 +92,7 @@ module ResolvableDiscussion
     yield(notes_relation)
 
     # Set the notes array to the updated notes
-    @notes = notes_relation.fresh.to_a
+    @notes = notes_relation.fresh.to_a # rubocop:disable Cop/ModuleWithInstanceVariables
 
     self.class.memoized_values.each do |var|
       instance_variable_set(:"@#{var}", nil)

@@ -99,9 +99,8 @@ module IssuableActions
     end
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def labels
-    @labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute
+    @labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute   # rubocop:disable Cop/ModuleWithInstanceVariables
   end
 
   def authorize_destroy_issuable!
@@ -110,9 +109,8 @@ module IssuableActions
     end
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def authorize_admin_issuable!
-    unless can?(current_user, :"admin_#{resource_name}", @project)
+    unless can?(current_user, :"admin_#{resource_name}", @project) # rubocop:disable Cop/ModuleWithInstanceVariables
       return access_denied!
     end
   end

@@ -1,4 +1,3 @@
-# rubocop:disable Cop/ModuleWithInstanceVariables
 module MilestoneActions
   extend ActiveSupport::Concern
 
@@ -7,7 +6,7 @@ module MilestoneActions
       format.html { redirect_to milestone_redirect_path }
       format.json do
         render json: tabs_json("shared/milestones/_merge_requests_tab", {
-          merge_requests: @milestone.sorted_merge_requests,
+          merge_requests: @milestone.sorted_merge_requests, # rubocop:disable Cop/ModuleWithInstanceVariables
           show_project_name: true
         })
       end
@@ -19,7 +18,7 @@ module MilestoneActions
       format.html { redirect_to milestone_redirect_path }
       format.json do
         render json: tabs_json("shared/milestones/_participants_tab", {
-          users: @milestone.participants
+          users: @milestone.participants # rubocop:disable Cop/ModuleWithInstanceVariables
         })
       end
     end
@@ -30,7 +29,8 @@ module MilestoneActions
       format.html { redirect_to milestone_redirect_path }
       format.json do
         render json: tabs_json("shared/milestones/_labels_tab", {
-          labels: @milestone.labels
+          labels: @milestone.labels # rubocop:disable Cop/ModuleWithInstanceVariables
+
         })
       end
     end
@@ -44,6 +44,7 @@ module MilestoneActions
     }
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def milestone_redirect_path
     if @project
       project_milestone_path(@project, @milestone)
@@ -53,4 +54,5 @@ module MilestoneActions
       dashboard_milestone_path(@milestone.safe_title, title: @milestone.title)
     end
   end
+  # rubocop:enable Cop/ModuleWithInstanceVariables
 end

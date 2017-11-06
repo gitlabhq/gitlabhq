@@ -26,6 +26,7 @@ module IssuableCollections
 
     @users = []
   end
+  # rubocop:enable Cop/ModuleWithInstanceVariables
 
   def issues_collection
     issues_finder.execute.preload(:project, :author, :assignees, :labels, :milestone, project: :namespace)
@@ -110,6 +111,7 @@ module IssuableCollections
 
     @filter_params.permit(IssuableFinder::VALID_PARAMS)
   end
+  # rubocop:enable Cop/ModuleWithInstanceVariables
 
   def set_default_state
     params[:state] = 'opened' if params[:state].blank?

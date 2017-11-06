@@ -46,6 +46,7 @@ module CreatesCommit
       end
     end
   end
+  # rubocop:enable Cop/ModuleWithInstanceVariables
 
   def authorize_edit_tree!
     return if can_collaborate_with_project?
@@ -90,6 +91,7 @@ module CreatesCommit
       }
     )
   end
+  # rubocop:enable Cop/ModuleWithInstanceVariables
 
   def existing_merge_request_path
     project_merge_request_path(@project, @merge_request)
@@ -102,18 +104,17 @@ module CreatesCommit
     @merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened
       .find_by(source_project_id: @project_to_commit_into, source_branch: @branch_name, target_branch: @start_branch)
   end
+  # rubocop:enable Cop/ModuleWithInstanceVariables
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def different_project?
-    @project_to_commit_into != @project
+    @project_to_commit_into != @project # rubocop:disable Cop/ModuleWithInstanceVariables
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def create_merge_request?
     # Even if the field is set, if we're checking the same branch
     # as the target branch in the same project,
     # we don't want to create a merge request.
     params[:create_merge_request].present? &&
-      (different_project? || @start_branch != @branch_name)
+      (different_project? || @start_branch != @branch_name) # rubocop:disable Cop/ModuleWithInstanceVariables
   end
 end

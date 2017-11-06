@@ -23,14 +23,12 @@ module BoardsResponses
     return render_403 unless can?(current_user, ability, resource)
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def respond_with_boards
-    respond_with(@boards)
+    respond_with(@boards) # rubocop:disable Cop/ModuleWithInstanceVariables
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def respond_with_board
-    respond_with(@board)
+    respond_with(@board) # rubocop:disable Cop/ModuleWithInstanceVariables
   end
 
   def respond_with(resource)
