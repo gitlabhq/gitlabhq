@@ -59,12 +59,15 @@ class Projects::RefsController < Projects::ApplicationController
       contents[@offset, @limit].to_a.map do |content|
         file = @path ? File.join(@path, content.name) : content.name
         last_commit = @repo.last_commit_for_path(@commit.id, file)
+        commit_path = project_commit_path(@project, last_commit) if last_commit
         path_lock = show_path_locks && @project.find_path_lock(file)
 
         {
           file_name: content.name,
           commit: last_commit,
-          lock_label: path_lock && text_label_for_lock(path_lock, file)
+          type: content.type,
+          lock_label: path_lock && text_label_for_lock(path_lock, file),
+          commit_path: commit_path
         }
       end
     end
@@ -77,6 +80,11 @@ class Projects::RefsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html { render_404 }
+      format.json do
+        response.headers["More-Logs-Url"] = @more_log_url
+
+        render json: @logs
+      end
       format.js
     end
   end
