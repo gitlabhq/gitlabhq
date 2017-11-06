@@ -63,7 +63,8 @@ describe LfsCleanupService do
     end
 
     it 'removes LfsPointers which no longer exist in the project' do
-      allow(subject).to receive(:unreferenced_pointers).and_return(LfsPointer.where(id: lfs_pointer.id))
+      allow(LfsPointer).to receive(:missing_on_disk).and_return(LfsPointer.where(id: lfs_pointer.id))
+      expect(subject).to receive(:delete_unreferenced_pointers!).and_call_original
 
       expect { subject.execute }.to change(LfsPointer, :count).by(-1)
     end
@@ -72,13 +73,13 @@ describe LfsCleanupService do
       let!(:project) { create(:project, :repository) }
 
       it 'are removed when no longer referenced by pointers' do
-        allow(subject).to receive(:removed_pointer_oids).and_return([lfs_pointer.blob_oid])
+        allow(LfsPointer).to receive(:missing_on_disk).and_return(LfsPointer.all)
 
         expect { subject.execute }.to change(LfsObjectsProject, :count).by(-1)
       end
 
       it 'cause LFS storage statistics to be updated' do
-        allow(subject).to receive(:removed_pointer_oids).and_return([lfs_pointer.blob_oid])
+        allow(LfsPointer).to receive(:missing_on_disk).and_return(LfsPointer.all)
 
         expect(ProjectCacheWorker).to receive(:perform_async).with(project.id, [], [:lfs_objects_size])
 
@@ -86,13 +87,13 @@ describe LfsCleanupService do
       end
 
       it "don't cause LfsObjects to be removed" do
-        allow(subject).to receive(:removed_pointer_oids).and_return([lfs_pointer.blob_oid])
+        allow(LfsPointer).to receive(:missing_on_disk).and_return(LfsPointer.all)
 
         expect { subject.execute }.not_to change(LfsObject, :count)
       end
 
       it "are not removed when pointers haven't been removed" do
-        allow(subject).to receive(:removed_pointer_oids).and_return([])
+        allow(LfsPointer).to receive(:missing_on_disk).and_return(LfsPointer.none)
 
         expect { subject.execute }.not_to change(LfsObjectsProject, :count)
       end
@@ -102,32 +103,9 @@ describe LfsCleanupService do
                              lfs_oid: lfs_object.oid,
                              blob_oid: 'b7f094b759e6b023278323195812ce1019cb57ff')
 
-        allow(subject).to receive(:removed_pointer_oids).and_return([lfs_pointer.blob_oid])
+        allow(LfsPointer).to receive(:missing_on_disk).and_return(LfsPointer.where(id: lfs_pointer.id))
 
         expect { subject.execute }.not_to change(LfsObjectsProject, :count)
-      end
-    end
-  end
-
-  describe '#unreferenced_pointers' do
-    let(:removed_pointer_oids) { [lfs_pointer.blob_oid] }
-
-    before do
-      allow(project.repository).to receive(:batch_existence)
-                                          .with([lfs_pointer.blob_oid],
-                                                existing: false)
-                                          .and_return(removed_pointer_oids)
-    end
-
-    it 'detects LFS pointers which no longer exist in the project' do
-      expect(subject.unreferenced_pointers.first).to eq lfs_pointer
-    end
-
-    context 'with no removed pointer blobs' do
-      let(:removed_pointer_oids) { [] }
-
-      it 'returns an empty relation' do
-        expect(subject.unreferenced_pointers).to be_empty
       end
     end
   end

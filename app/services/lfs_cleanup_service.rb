@@ -22,19 +22,8 @@ class LfsCleanupService
   end
 
   def delete_unreferenced_pointers!
-    unreferenced_pointers.delete_all
-  end
-
-  private
-
-  def unreferenced_pointers
-    project.lfs_pointers.where(blob_oid: removed_pointer_oids)
-  end
-
-  def removed_pointer_oids
-    @removed_pointer_oids ||= begin
-      pointer_oids = project.lfs_pointers.pluck(:blob_oid)
-      project.repository.batch_existence(pointer_oids, existing: false)
+    project.lfs_pointers.each_batch do |lfs_pointers_batch|
+      lfs_pointers_batch.missing_on_disk(project.repository).delete_all
     end
   end
 end
