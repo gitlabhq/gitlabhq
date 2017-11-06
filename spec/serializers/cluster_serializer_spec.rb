@@ -9,7 +9,7 @@ describe ClusterSerializer do
       let(:provider) { create(:provider_gcp, :errored) }
 
       it 'serializes only status' do
-        expect(subject.keys).to contain_exactly(:status, :status_reason)
+        expect(subject.keys).to contain_exactly(:status, :status_reason, :applications)
       end
     end
 

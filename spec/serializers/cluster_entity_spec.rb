@@ -35,8 +35,17 @@ describe ClusterEntity do
       end
     end
 
-    it 'contains applications' do
-      expect(subject[:applications]).to eq({})
+    context 'when no application has been installed' do
+      let(:cluster) { create(:cluster) }
+      subject { described_class.new(cluster).as_json[:applications]}
+
+      it 'contains helm as installable' do
+        expect(subject).not_to be_empty
+
+        helm = subject[0]
+        expect(helm[:name]).to eq('helm')
+        expect(helm[:status]).to eq(:installable)
+      end
     end
   end
 end
