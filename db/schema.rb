@@ -1705,6 +1705,16 @@ ActiveRecord::Schema.define(version: 20171106180641) do
   add_index "u2f_registrations", ["key_handle"], name: "index_u2f_registrations_on_key_handle", using: :btree
   add_index "u2f_registrations", ["user_id"], name: "index_u2f_registrations_on_user_id", using: :btree
 
+  create_table "unhashed_upload_files", force: :cascade do |t|
+    t.string "path", null: false
+    t.boolean "tracked", default: false, null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+  end
+
+  add_index "unhashed_upload_files", ["path"], name: "index_unhashed_upload_files_on_path", unique: true, using: :btree
+  add_index "unhashed_upload_files", ["tracked"], name: "index_unhashed_upload_files_on_tracked", using: :btree
+
   create_table "uploads", force: :cascade do |t|
     t.integer "size", limit: 8, null: false
     t.string "path", null: false
