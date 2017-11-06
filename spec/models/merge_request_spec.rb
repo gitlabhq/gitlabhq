@@ -1756,7 +1756,7 @@ describe MergeRequest do
   end
 
   describe '#fetch_ref!' do
-    it 'fetch the ref correctly' do
+    it 'fetches the ref correctly' do
       expect { subject.target_project.repository.delete_refs(subject.ref_path) }.not_to raise_error
 
       subject.fetch_ref!
