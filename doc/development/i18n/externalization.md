@@ -110,7 +110,7 @@ You can mark that content for translation with:
 In JavaScript we added the `__()` (double underscore parenthesis) function
 for translations.
 
-### Updating the PO files with the new content
+## Updating the PO files with the new content
 
 Now that the new content is marked for translation, we need to update the PO
 files with the following command:
@@ -119,23 +119,20 @@ files with the following command:
 bundle exec rake gettext:find
 ```
 
-This command will update the `locale/**/gitlab.edit.po` file with the
-new content that the parser has found.
+This command will update the `locale/gitlab.pot` file with the newly externalized
+strings and remove any strings that aren't used anymore. You should check this
+file in. Once the changes are on master, they will be picked up by
+[Crowdin](http://translate.gitlab.com) and be presented for translation.
 
-New translations will be added with their default content and will be marked
-fuzzy. To use the translation, look for the `#, fuzzy` mention in `gitlab.edit.po`
-and remove it.
+The command also updates the translation files for each language: `locale/*/gitlab.po`
+These changes can be discarded, the languange files will be updated by Crowdin
+automatically.
 
-We need to make sure we remove the `fuzzy` translations before generating the
-`locale/**/gitlab.po` file. When they aren't removed, the resulting `.po` will
-be treated as a binary file which could overwrite translations that were merged
-before the new translations.
+Discard all of them at once like this:
 
-When we are just preparing a page to be translated, but not actually adding any
-translations. There's no need to generate `.po` files.
-
-Translations that aren't used in the source code anymore will be marked with
-`~#`; these can be removed to keep our translation files clutter-free.
+```sh
+git checkout locale/*/gitlab.po
+```
 
 ### Validating PO files
 
