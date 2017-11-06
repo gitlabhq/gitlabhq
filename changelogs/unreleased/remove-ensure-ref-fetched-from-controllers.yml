@@ -1,5 +1,5 @@
 ---
-title: Removed merge requests fetching their refs on every action.
+title: Stop merge requests from fetching their refs when the data is already available.
 merge_request: 15129
 author:
 type: removed

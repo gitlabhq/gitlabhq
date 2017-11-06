@@ -8,7 +8,8 @@ class MergeRequest < ActiveRecord::Base
   include CreatedAtFilterable
   include TimeTrackable
 
-  ignore_column :locked_at
+  ignore_column :locked_at,
+                :ref_fetched
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
