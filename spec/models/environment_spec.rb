@@ -547,6 +547,15 @@ describe Environment do
 
       expect(environment.slug).to eq(original_slug)
     end
+
+    it "regenerates the slug if nil" do
+      environment = build(:environment, slug: nil)
+
+      new_slug = environment.slug
+
+      expect(new_slug).not_to be_nil
+      expect(environment.slug).to eq(new_slug)
+    end
   end
 
   describe '#generate_slug' do
@@ -572,6 +581,22 @@ describe Environment do
 
         expect(slug).to match(/\A#{matcher}\z/)
       end
+    end
+  end
+
+  describe '#ref_path' do
+    subject(:environment) do
+      create(:environment, name: 'staging / review-1')
+    end
+
+    it 'returns a path that uses the slug and does not have spaces' do
+      expect(environment.ref_path).to start_with('refs/environments/staging-review-1-')
+    end
+
+    it "doesn't change when the slug is nil initially" do
+      environment.slug = nil
+
+      expect(environment.ref_path).to eq(environment.ref_path)
     end
   end
 

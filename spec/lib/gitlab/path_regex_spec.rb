@@ -213,7 +213,7 @@ describe Gitlab::PathRegex do
     it 'accepts group routes' do
       expect(subject).to match('activity/')
       expect(subject).to match('group_members/')
-      expect(subject).to match('subgroups/')
+      expect(subject).to match('labels/')
     end
 
     it 'is not case sensitive' do
@@ -246,7 +246,7 @@ describe Gitlab::PathRegex do
         it 'accepts group routes' do
           expect(subject).to match('activity/')
           expect(subject).to match('group_members/')
-          expect(subject).to match('subgroups/')
+          expect(subject).to match('labels/')
         end
       end
 
@@ -268,7 +268,7 @@ describe Gitlab::PathRegex do
         it 'accepts group routes' do
           expect(subject).to match('activity/more/')
           expect(subject).to match('group_members/more/')
-          expect(subject).to match('subgroups/more/')
+          expect(subject).to match('labels/more/')
         end
       end
     end
@@ -292,7 +292,7 @@ describe Gitlab::PathRegex do
         it 'rejects group routes' do
           expect(subject).not_to match('root/activity/')
           expect(subject).not_to match('root/group_members/')
-          expect(subject).not_to match('root/subgroups/')
+          expect(subject).not_to match('root/labels/')
         end
       end
 
@@ -314,7 +314,7 @@ describe Gitlab::PathRegex do
         it 'rejects group routes' do
           expect(subject).not_to match('root/activity/more/')
           expect(subject).not_to match('root/group_members/more/')
-          expect(subject).not_to match('root/subgroups/more/')
+          expect(subject).not_to match('root/labels/more/')
         end
       end
     end
@@ -349,7 +349,7 @@ describe Gitlab::PathRegex do
     it 'accepts group routes' do
       expect(subject).to match('activity/')
       expect(subject).to match('group_members/')
-      expect(subject).to match('subgroups/')
+      expect(subject).to match('labels/')
     end
 
     it 'is not case sensitive' do
@@ -382,7 +382,7 @@ describe Gitlab::PathRegex do
     it 'accepts group routes' do
       expect(subject).to match('root/activity/')
       expect(subject).to match('root/group_members/')
-      expect(subject).to match('root/subgroups/')
+      expect(subject).to match('root/labels/')
     end
 
     it 'is not case sensitive' do

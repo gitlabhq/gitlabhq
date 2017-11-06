@@ -63,13 +63,16 @@
         required: false,
         default: () => ({}),
       },
+      showBranch: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
     computed: {
       /**
        * Used to verify if all the properties needed to render the commit
        * ref section were provided.
-       *
-       * TODO: Improve this! Use lodash _.has when we have it.
        *
        * @returns {Boolean}
        */
@@ -79,8 +82,6 @@
       /**
        * Used to verify if all the properties needed to render the commit
        * author section were provided.
-       *
-       * TODO: Improve this! Use lodash _.has when we have it.
        *
        * @returns {Boolean}
        */
@@ -114,31 +115,30 @@
 </script>
 <template>
   <div class="branch-commit">
-    <div
-      v-if="hasCommitRef"
-      class="icon-container hidden-xs">
-      <i
-        v-if="tag"
-        class="fa fa-tag"
-        aria-hidden="true">
-      </i>
-      <i
-        v-if="!tag"
-        class="fa fa-code-fork"
-        aria-hidden="true">
-      </i>
-    </div>
+    <template v-if="hasCommitRef && showBranch">
+      <div
+        class="icon-container hidden-xs">
+        <i
+          v-if="tag"
+          class="fa fa-tag"
+          aria-hidden="true">
+        </i>
+        <i
+          v-if="!tag"
+          class="fa fa-code-fork"
+          aria-hidden="true">
+        </i>
+      </div>
 
-    <a
-      v-if="hasCommitRef"
-      class="ref-name hidden-xs"
-      :href="commitRef.ref_url"
-      v-tooltip
-      data-container="body"
-      :title="commitRef.name">
-      {{commitRef.name}}
-    </a>
-
+      <a
+        class="ref-name hidden-xs"
+        :href="commitRef.ref_url"
+        v-tooltip
+        data-container="body"
+        :title="commitRef.name">
+        {{commitRef.name}}
+      </a>
+    </template>
     <div
       v-html="commitIconSvg"
       class="commit-icon js-commit-icon">

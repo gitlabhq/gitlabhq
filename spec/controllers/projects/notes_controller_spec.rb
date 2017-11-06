@@ -105,6 +105,19 @@ describe Projects::NotesController do
           expect(note_json[:discussion_html]).to be_nil
           expect(note_json[:diff_discussion_html]).to be_nil
         end
+
+        context 'when user cannot read commit' do
+          before do
+            allow(Ability).to receive(:allowed?).and_call_original
+            allow(Ability).to receive(:allowed?).with(user, :download_code, project).and_return(false)
+          end
+
+          it 'renders 404' do
+            get :index, params
+
+            expect(response).to have_gitlab_http_status(404)
+          end
+        end
       end
     end
 
@@ -180,13 +193,13 @@ describe Projects::NotesController do
     it "returns status 302 for html" do
       post :create, request_params
 
-      expect(response).to have_http_status(302)
+      expect(response).to have_gitlab_http_status(302)
     end
 
     it "returns status 200 for json" do
       post :create, request_params.merge(format: :json)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
 
     context 'when merge_request_diff_head_sha present' do
@@ -205,7 +218,7 @@ describe Projects::NotesController do
       it "returns status 302 for html" do
         post :create, request_params
 
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
       end
     end
 
@@ -240,7 +253,7 @@ describe Projects::NotesController do
         it 'returns a 404' do
           post_create(note_project_id: Project.maximum(:id).succ)
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
 
@@ -248,7 +261,7 @@ describe Projects::NotesController do
         it 'returns a 404' do
           post_create
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
 
@@ -278,7 +291,7 @@ describe Projects::NotesController do
           request_params[:note][:noteable_id] = 9999
           post :create, request_params.merge(format: :json)
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
 
@@ -286,13 +299,13 @@ describe Projects::NotesController do
         it 'returns 302 status for html' do
           post :create, request_params
 
-          expect(response).to have_http_status(302)
+          expect(response).to have_gitlab_http_status(302)
         end
 
         it 'returns 200 status for json' do
           post :create, request_params.merge(format: :json)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
         end
 
         it 'creates a new note' do
@@ -308,7 +321,7 @@ describe Projects::NotesController do
         it 'returns 404 status' do
           post :create, request_params
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
 
         it 'does not create a new note' do
@@ -337,7 +350,7 @@ describe Projects::NotesController do
       it "returns status 200 for html" do
         delete :destroy, request_params
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
 
       it "deletes the note" do
@@ -354,7 +367,7 @@ describe Projects::NotesController do
       it "returns status 404" do
         delete :destroy, request_params
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -370,7 +383,7 @@ describe Projects::NotesController do
         post(:toggle_award_emoji, request_params.merge(name: "thumbsup"))
       end.to change { note.award_emoji.count }.by(1)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
 
     it "removes the already awarded emoji" do
@@ -380,7 +393,7 @@ describe Projects::NotesController do
         post(:toggle_award_emoji, request_params.merge(name: "thumbsup"))
       end.to change { AwardEmoji.count }.by(-1)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
   end
 
@@ -398,7 +411,7 @@ describe Projects::NotesController do
         it "returns status 404" do
           post :resolve, request_params
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
 
@@ -415,7 +428,7 @@ describe Projects::NotesController do
           it "returns status 404" do
             post :resolve, request_params
 
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
 
@@ -442,7 +455,7 @@ describe Projects::NotesController do
           it "returns status 200" do
             post :resolve, request_params
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
         end
       end
@@ -459,7 +472,7 @@ describe Projects::NotesController do
         it "returns status 404" do
           delete :unresolve, request_params
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
 
@@ -476,7 +489,7 @@ describe Projects::NotesController do
           it "returns status 404" do
             delete :unresolve, request_params
 
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
 
@@ -490,7 +503,7 @@ describe Projects::NotesController do
           it "returns status 200" do
             delete :unresolve, request_params
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
         end
       end

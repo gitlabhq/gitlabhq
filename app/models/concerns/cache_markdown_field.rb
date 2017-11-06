@@ -49,7 +49,8 @@ module CacheMarkdownField
 
     # Always include a project key, or Banzai complains
     project = self.project if self.respond_to?(:project)
-    context = cached_markdown_fields[field].merge(project: project)
+    group = self.group if self.respond_to?(:group)
+    context = cached_markdown_fields[field].merge(project: project, group: group)
 
     # Banzai is less strict about authors, so don't always have an author key
     context[:author] = self.author if self.respond_to?(:author)

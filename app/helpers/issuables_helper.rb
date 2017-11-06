@@ -33,15 +33,17 @@ module IssuablesHelper
   end
 
   def serialize_issuable(issuable)
-    case issuable
-    when Issue
-      IssueSerializer.new(current_user: current_user, project: issuable.project).represent(issuable).to_json
-    when MergeRequest
-      MergeRequestSerializer
-        .new(current_user: current_user, project: issuable.project)
-        .represent(issuable)
-        .to_json
-    end
+    serializer_klass = case issuable
+                       when Issue
+                         IssueSerializer
+                       when MergeRequest
+                         MergeRequestSerializer
+                       end
+
+    serializer_klass
+      .new(current_user: current_user, project: issuable.project)
+      .represent(issuable)
+      .to_json
   end
 
   def template_dropdown_tag(issuable, &block)
@@ -209,21 +211,25 @@ module IssuablesHelper
 
   def issuable_initial_data(issuable)
     data = {
-      endpoint: project_issue_path(@project, issuable),
-      canUpdate: can?(current_user, :update_issue, issuable),
-      canDestroy: can?(current_user, :destroy_issue, issuable),
+      endpoint: issuable_path(issuable),
+      canUpdate: can?(current_user, :"update_#{issuable.to_ability_name}", issuable),
+      canDestroy: can?(current_user, :"destroy_#{issuable.to_ability_name}", issuable),
       issuableRef: issuable.to_reference,
-      markdownPreviewPath: preview_markdown_path(@project),
+      markdownPreviewPath: preview_markdown_path(parent),
       markdownDocsPath: help_page_path('user/markdown'),
       issuableTemplates: issuable_templates(issuable),
-      projectPath: ref_project.path,
-      projectNamespace: ref_project.namespace.full_path,
       initialTitleHtml: markdown_field(issuable, :title),
       initialTitleText: issuable.title,
       initialDescriptionHtml: markdown_field(issuable, :description),
       initialDescriptionText: issuable.description,
       initialTaskStatus: issuable.task_status
     }
+
+    if parent.is_a?(Group)
+      data[:groupPath] = parent.path
+    else
+      data.merge!(projectPath: ref_project.path, projectNamespace: ref_project.namespace.full_path)
+    end
 
     data.merge!(updated_at_by(issuable))
 
@@ -261,12 +267,7 @@ module IssuablesHelper
   end
 
   def issuable_path(issuable, *options)
-    case issuable
-    when Issue
-      issue_path(issuable, *options)
-    when MergeRequest
-      merge_request_path(issuable, *options)
-    end
+    polymorphic_path(issuable, *options)
   end
 
   def issuable_url(issuable, *options)
@@ -357,7 +358,8 @@ module IssuablesHelper
 
   def issuable_sidebar_options(issuable, can_edit_issuable)
     {
-      endpoint: "#{issuable_json_path(issuable)}?basic=true",
+      endpoint: "#{issuable_json_path(issuable)}?serializer=sidebar",
+      toggleSubscriptionEndpoint: toggle_subscription_path(issuable),
       moveIssueEndpoint: move_namespace_project_issue_path(namespace_id: issuable.project.namespace.to_param, project_id: issuable.project, id: issuable),
       projectsAutocompleteEndpoint: autocomplete_projects_path(project_id: @project.id),
       editable: can_edit_issuable,
@@ -365,5 +367,9 @@ module IssuablesHelper
       rootPath: root_path,
       fullPath: @project.full_path
     }
+  end
+
+  def parent
+    @project || @group
   end
 end

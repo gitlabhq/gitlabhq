@@ -36,8 +36,8 @@ module Gitlab
       end
 
       def track_query(raw_query, bindings, start, finish)
-        query = Gitlab::Sherlock::Query.new(raw_query, start, finish)
-        query_info = { duration: query.duration.round(3), sql: query.formatted_query }
+        duration = (finish - start) * 1000.0
+        query_info = { duration: duration.round(3), sql: raw_query }
 
         PEEK_DB_CLIENT.query_details << query_info
       end

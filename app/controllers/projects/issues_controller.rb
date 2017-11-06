@@ -16,7 +16,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_action :authorize_create_issue!, only: [:new, :create]
 
   # Allow modify issue
-  before_action :authorize_update_issue!, only: [:update, :move]
+  before_action :authorize_update_issuable!, only: [:edit, :update, :move]
 
   # Allow create a new branch and empty WIP merge request from current issue
   before_action :authorize_create_merge_request!, only: [:create_merge_request]
@@ -63,16 +63,8 @@ class Projects::IssuesController < Projects::ApplicationController
     respond_with(@issue)
   end
 
-  def show
-    @noteable = @issue
-    @note     = @project.notes.new(noteable: @issue)
-
-    respond_to do |format|
-      format.html
-      format.json do
-        render json: serializer.represent(@issue)
-      end
-    end
+  def edit
+    respond_with(@issue)
   end
 
   def discussions
@@ -114,21 +106,6 @@ class Projects::IssuesController < Projects::ApplicationController
         @link = @issue.attachment.url.to_js
       end
     end
-  end
-
-  def update
-    update_params = issue_params.merge(spammable_params)
-
-    @issue = Issues::UpdateService.new(project, current_user, update_params).execute(issue)
-
-    respond_to do |format|
-      format.json do
-        render_issue_json
-      end
-    end
-
-  rescue ActiveRecord::StaleObjectError
-    render_conflict_response
   end
 
   def move
@@ -188,26 +165,6 @@ class Projects::IssuesController < Projects::ApplicationController
     end
   end
 
-  def realtime_changes
-    Gitlab::PollingInterval.set_header(response, interval: 3_000)
-
-    response = {
-      title: view_context.markdown_field(@issue, :title),
-      title_text: @issue.title,
-      description: view_context.markdown_field(@issue, :description),
-      description_text: @issue.description,
-      task_status: @issue.task_status
-    }
-
-    if @issue.edited?
-      response[:updated_at] = @issue.updated_at
-      response[:updated_by_name] = @issue.last_edited_by.name
-      response[:updated_by_path] = user_path(@issue.last_edited_by)
-    end
-
-    render json: response
-  end
-
   def create_merge_request
     result = ::MergeRequests::CreateFromIssueService.new(project, current_user, issue_iid: issue.iid).execute
 
@@ -223,7 +180,8 @@ class Projects::IssuesController < Projects::ApplicationController
   def issue
     return @issue if defined?(@issue)
     # The Sortable default scope causes performance issues when used with find_by
-    @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take!
+    @issuable = @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take!
+    @note = @project.notes.new(noteable: @issuable)
 
     return render_404 unless can?(current_user, :read_issue, @issue)
 
@@ -236,14 +194,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def spammable_path
     project_issue_path(@project, @issue)
-  end
-
-  def authorize_update_issue!
-    render_404 unless can?(current_user, :update_issue, @issue)
-  end
-
-  def authorize_admin_issues!
-    render_404 unless can?(current_user, :admin_issue, @project)
   end
 
   def authorize_create_merge_request!
@@ -296,5 +246,10 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def serializer
     IssueSerializer.new(current_user: current_user, project: issue.project)
+  end
+
+  def update_service
+    update_params = issue_params.merge(spammable_params)
+    Issues::UpdateService.new(project, current_user, update_params)
   end
 end

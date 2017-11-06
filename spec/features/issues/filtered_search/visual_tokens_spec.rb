@@ -2,7 +2,6 @@ require 'rails_helper'
 
 describe 'Visual tokens', :js do
   include FilteredSearchHelpers
-  include WaitForRequests
 
   let!(:project) { create(:project) }
   let!(:user) { create(:user, name: 'administrator', username: 'root') }
@@ -28,7 +27,7 @@ describe 'Visual tokens', :js do
     sign_in(user)
     create(:issue, project: project)
 
-    page.driver.set_cookie('sidebar_collapsed', 'true')
+    set_cookie('sidebar_collapsed', 'true')
 
     visit project_issues_path(project)
   end

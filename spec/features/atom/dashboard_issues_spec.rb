@@ -13,8 +13,10 @@ describe "Dashboard Issues Feed"  do
     end
 
     describe "atom feed" do
-      it "renders atom feed via private token" do
-        visit issues_dashboard_path(:atom, private_token: user.private_token)
+      it "renders atom feed via personal access token" do
+        personal_access_token = create(:personal_access_token, user: user)
+
+        visit issues_dashboard_path(:atom, private_token: personal_access_token.token)
 
         expect(response_headers['Content-Type']).to have_content('application/atom+xml')
         expect(body).to have_selector('title', text: "#{user.name} issues")

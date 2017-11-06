@@ -40,6 +40,10 @@
 
   &.top-block {
     border-top: none;
+
+    .container-fluid {
+      background-color: inherit;
+    }
   }
 
   &.middle-block {
@@ -97,10 +101,6 @@
   &.build-content {
     background-color: $white-light;
     border-top: none;
-  }
-
-  &.top-block .container-fluid {
-    background-color: inherit;
   }
 }
 
@@ -209,13 +209,20 @@
     padding: 24px 0 0;
 
     .nav-links {
-      justify-content: center;
       width: 100%;
       float: none;
 
       &.scrolling-tabs {
         float: none;
       }
+    }
+
+    li:first-child {
+      margin-left: auto;
+    }
+
+    li:last-child {
+      margin-right: auto;
     }
   }
 

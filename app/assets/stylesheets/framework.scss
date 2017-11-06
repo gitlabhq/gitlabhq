@@ -5,8 +5,10 @@
 @import "framework/layout";
 
 @import "framework/animations";
+@import "framework/vue_transitions";
 @import "framework/avatar";
 @import "framework/asciidoctor";
+@import "framework/banner";
 @import "framework/blocks";
 @import "framework/buttons";
 @import "framework/badges";
@@ -35,7 +37,7 @@
 @import "framework/secondary-navigation-elements";
 @import "framework/selects";
 @import "framework/sidebar";
-@import "framework/new-sidebar";
+@import "framework/contextual-sidebar";
 @import "framework/tables";
 @import "framework/notes";
 @import "framework/tabs";
@@ -54,4 +56,4 @@
 @import "framework/icons";
 @import "framework/snippets";
 @import "framework/memory_graph";
-@import "framework/responsive-tables";
+@import "framework/responsive_tables";

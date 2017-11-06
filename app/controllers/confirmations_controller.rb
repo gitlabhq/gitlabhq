@@ -10,7 +10,7 @@ class ConfirmationsController < Devise::ConfirmationsController
     users_almost_there_path
   end
 
-  def after_confirmation_path_for(_resource_name, resource)
+  def after_confirmation_path_for(resource_name, resource)
     # incoming resource can either be a :user or an :email
     if signed_in?(:user)
       after_sign_in(resource)

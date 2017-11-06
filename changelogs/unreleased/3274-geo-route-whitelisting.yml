@@ -1,0 +1,5 @@
+---
+title: Tighten up whitelisting of certain Geo routes
+merge_request: 15082
+author:
+type: fixed

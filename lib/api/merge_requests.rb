@@ -295,7 +295,7 @@ module API
 
         unauthorized! unless merge_request.can_cancel_merge_when_pipeline_succeeds?(current_user)
 
-        ::MergeRequest::MergeWhenPipelineSucceedsService
+        ::MergeRequests::MergeWhenPipelineSucceedsService
           .new(merge_request.target_project, current_user)
           .cancel(merge_request)
       end

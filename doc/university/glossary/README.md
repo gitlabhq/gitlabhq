@@ -1,4 +1,8 @@
-## What is the Glossary
+---
+comments: false
+---
+
+# What is the Glossary
 
 This contains a simplified list and definitions of some of the terms that you will encounter in your day to day activities when working with GitLab.
 Please add any terms that you discover that you think would be useful for others.
@@ -456,7 +460,7 @@ A route table contains rules (called routes) that determine where network traffi
 
 ### Runners
 
-Actual build machines/containers that [run and execute tests](https://gitlab.com/gitlab-org/gitlab-ci-multi-runner) you have specified to be run on GitLab CI.
+Actual build machines/containers that [run and execute tests](https://gitlab.com/gitlab-org/gitlab-runner) you have specified to be run on GitLab CI.
 
 ### Sidekiq
 

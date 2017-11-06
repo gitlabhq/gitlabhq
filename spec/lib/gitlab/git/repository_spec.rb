@@ -1135,8 +1135,35 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#merged_branch_names' do
+    context 'when branch names are passed' do
+      it 'only returns the names we are asking' do
+        names = repository.merged_branch_names(%w[merge-test])
+
+        expect(names).to contain_exactly('merge-test')
+      end
+
+      it 'does not return unmerged branch names' do
+        names = repository.merged_branch_names(%w[feature])
+
+        expect(names).to be_empty
+      end
+    end
+
+    context 'when no branch names are specified' do
+      it 'returns all merged branch names' do
+        names = repository.merged_branch_names
+
+        expect(names).to include('merge-test')
+        expect(names).to include('fix-mode')
+        expect(names).not_to include('feature')
+      end
+    end
+  end
+
   describe "#ls_files" do
     let(:master_file_paths) { repository.ls_files("master") }
+    let(:utf8_file_paths) { repository.ls_files("ls-files-utf8") }
     let(:not_existed_branch) { repository.ls_files("not_existed_branch") }
 
     it "read every file paths of master branch" do
@@ -1157,6 +1184,10 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     it "returns empty array when not existed branch" do
       expect(not_existed_branch.length).to equal(0)
+    end
+
+    it "returns valid utf-8 data" do
+      expect(utf8_file_paths.map { |file| file.force_encoding('utf-8') }).to all(be_valid_encoding)
     end
   end
 
@@ -1307,6 +1338,24 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'when Gitaly ref_exists_branches feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'checks the existence of branches'
+    end
+  end
+
+  describe '#batch_existence' do
+    let(:refs) { ['deadbeef', SeedRepo::RubyBlob::ID, '909e6157199'] }
+
+    it 'returns existing refs back' do
+      result = repository.batch_existence(refs)
+
+      expect(result).to eq([SeedRepo::RubyBlob::ID])
+    end
+
+    context 'existing: true' do
+      it 'inverts meaning and returns non-existing refs' do
+        result = repository.batch_existence(refs, existing: false)
+
+        expect(result).to eq(%w(deadbeef 909e6157199))
+      end
     end
   end
 
@@ -1561,6 +1610,78 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'without gitaly', :skip_gitaly_mock do
       it_behaves_like '#merge'
+    end
+  end
+
+  describe '#ff_merge' do
+    let(:repository) do
+      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
+    end
+    let(:branch_head) { '6d394385cf567f80a8fd85055db1ab4c5295806f' }
+    let(:source_sha) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
+    let(:user) { build(:user) }
+    let(:target_branch) { 'test-ff-target-branch' }
+
+    before do
+      repository.create_branch(target_branch, branch_head)
+    end
+
+    after do
+      ensure_seeds
+    end
+
+    subject { repository.ff_merge(user, source_sha, target_branch) }
+
+    shared_examples '#ff_merge' do
+      it 'performs a ff_merge' do
+        expect(subject.newrev).to eq(source_sha)
+        expect(subject.repo_created).to be(false)
+        expect(subject.branch_created).to be(false)
+
+        expect(repository.commit(target_branch).id).to eq(source_sha)
+      end
+
+      context 'with a non-existing target branch' do
+        subject { repository.ff_merge(user, source_sha, 'this-isnt-real') }
+
+        it 'throws an ArgumentError' do
+          expect { subject }.to raise_error(ArgumentError)
+        end
+      end
+
+      context 'with a non-existing source commit' do
+        let(:source_sha) { 'f001' }
+
+        it 'throws an ArgumentError' do
+          expect { subject }.to raise_error(ArgumentError)
+        end
+      end
+
+      context 'when the source sha is not a descendant of the branch head' do
+        let(:source_sha) { '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863' }
+
+        it "doesn't perform the ff_merge" do
+          expect { subject }.to raise_error(Gitlab::Git::CommitError)
+
+          expect(repository.commit(target_branch).id).to eq(branch_head)
+        end
+      end
+    end
+
+    context 'with gitaly' do
+      it "calls Gitaly's OperationService" do
+        expect_any_instance_of(Gitlab::GitalyClient::OperationService)
+          .to receive(:user_ff_branch).with(user, source_sha, target_branch)
+          .and_return(nil)
+
+        subject
+      end
+
+      it_behaves_like '#ff_merge'
+    end
+
+    context 'without gitaly', :skip_gitaly_mock do
+      it_behaves_like '#ff_merge'
     end
   end
 

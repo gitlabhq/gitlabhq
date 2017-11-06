@@ -17,6 +17,7 @@ class Project < ActiveRecord::Base
   include ProjectFeaturesCompatibility
   include SelectForProjectAuthorization
   include Routable
+  include GroupDescendant
 
   extend Gitlab::ConfigHelper
   extend Gitlab::CurrentSettings
@@ -25,7 +26,15 @@ class Project < ActiveRecord::Base
 
   NUMBER_OF_PERMITTED_BOARDS = 1
   UNKNOWN_IMPORT_URL = 'http://unknown.git'.freeze
-  LATEST_STORAGE_VERSION = 1
+  # Hashed Storage versions handle rolling out new storage to project and dependents models:
+  # nil: legacy
+  # 1: repository
+  # 2: attachments
+  LATEST_STORAGE_VERSION = 2
+  HASHED_STORAGE_FEATURES = {
+    repository: 1,
+    attachments: 2
+  }.freeze
 
   cache_markdown_field :description, pipeline: :description
 
@@ -81,6 +90,8 @@ class Project < ActiveRecord::Base
   belongs_to :creator, class_name: 'User'
   belongs_to :group, -> { where(type: 'Group') }, foreign_key: 'namespace_id'
   belongs_to :namespace
+  alias_method :parent, :namespace
+  alias_attribute :parent_id, :namespace_id
 
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event'
   has_many :boards, before_add: :validate_board_limit
@@ -117,6 +128,7 @@ class Project < ActiveRecord::Base
   has_one :mock_deployment_service
   has_one :mock_monitoring_service
   has_one :microsoft_teams_service
+  has_one :packagist_service
 
   # TODO: replace these relations with the fork network versions
   has_one  :forked_project_link,  foreign_key: "forked_to_project_id"
@@ -479,6 +491,13 @@ class Project < ActiveRecord::Base
     end
   end
 
+  # returns all ancestor-groups upto but excluding the given namespace
+  # when no namespace is given, all ancestors upto the top are returned
+  def ancestors_upto(top = nil)
+    Gitlab::GroupHierarchy.new(Group.where(id: namespace_id))
+      .base_and_ancestors(upto: top)
+  end
+
   def lfs_enabled?
     return namespace.lfs_enabled? if self[:lfs_enabled].nil?
 
@@ -530,6 +549,10 @@ class Project < ActiveRecord::Base
     repository.commit(ref)
   end
 
+  def commit_by(oid:)
+    repository.commit_by(oid: oid)
+  end
+
   # ref can't be HEAD, can only be branch/tag name or SHA
   def latest_successful_builds_for(ref = default_branch)
     latest_pipeline = pipelines.latest_successful_for(ref)
@@ -543,7 +566,7 @@ class Project < ActiveRecord::Base
 
   def merge_base_commit(first_commit_id, second_commit_id)
     sha = repository.merge_base(first_commit_id, second_commit_id)
-    repository.commit(sha) if sha
+    commit_by(oid: sha) if sha
   end
 
   def saved?
@@ -1017,6 +1040,10 @@ class Project < ActiveRecord::Base
     !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
   end
 
+  def fork_source
+    forked_from_project || fork_network&.root_project
+  end
+
   def personal?
     !group
   end
@@ -1069,6 +1096,7 @@ class Project < ActiveRecord::Base
 
   def hook_attrs(backward: true)
     attrs = {
+      id: id,
       name: name,
       description: description,
       web_url: web_url,
@@ -1262,7 +1290,7 @@ class Project < ActiveRecord::Base
 
     # self.forked_from_project will be nil before the project is saved, so
     # we need to go through the relation
-    original_project = forked_project_link.forked_from_project
+    original_project = forked_project_link&.forked_from_project
     return true unless original_project
 
     level <= original_project.visibility_level
@@ -1380,6 +1408,19 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def after_rename_repo
+    path_before_change = previous_changes['path'].first
+
+    # We need to check if project had been rolled out to move resource to hashed storage or not and decide
+    # if we need execute any take action or no-op.
+
+    unless hashed_storage?(:attachments)
+      Gitlab::UploadsTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
+    end
+
+    Gitlab::PagesTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
+  end
+
   def rename_repo_notify!
     send_move_instructions(full_path_was)
     expires_full_path_cache
@@ -1388,13 +1429,6 @@ class Project < ActiveRecord::Base
     SystemHooksService.new.execute_hooks_for(self, :rename)
 
     reload_repository!
-  end
-
-  def after_rename_repo
-    path_before_change = previous_changes['path'].first
-
-    Gitlab::UploadsTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
-    Gitlab::PagesTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
   end
 
   def running_or_pending_build_count(force: false)
@@ -1458,7 +1492,8 @@ class Project < ActiveRecord::Base
       { key: 'CI_PROJECT_PATH', value: full_path, public: true },
       { key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug, public: true },
       { key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true },
-      { key: 'CI_PROJECT_URL', value: web_url, public: true }
+      { key: 'CI_PROJECT_URL', value: web_url, public: true },
+      { key: 'CI_PROJECT_VISIBILITY', value: Gitlab::VisibilityLevel.string_level(visibility_level), public: true }
     ]
   end
 
@@ -1549,10 +1584,6 @@ class Project < ActiveRecord::Base
     map.public_path_for_source_path(path)
   end
 
-  def parent
-    namespace
-  end
-
   def parent_changed?
     namespace_id_changed?
   end
@@ -1590,8 +1621,13 @@ class Project < ActiveRecord::Base
     [nil, 0].include?(self.storage_version)
   end
 
-  def hashed_storage?
-    self.storage_version && self.storage_version >= 1
+  # Check if Hashed Storage is enabled for the project with at least informed feature rolled out
+  #
+  # @param [Symbol] feature that needs to be rolled out for the project (:repository, :attachments)
+  def hashed_storage?(feature)
+    raise ArgumentError, "Invalid feature" unless HASHED_STORAGE_FEATURES.include?(feature)
+
+    self.storage_version && self.storage_version >= HASHED_STORAGE_FEATURES[feature]
   end
 
   def renamed?
@@ -1627,7 +1663,7 @@ class Project < ActiveRecord::Base
   end
 
   def migrate_to_hashed_storage!
-    return if hashed_storage?
+    return if hashed_storage?(:repository)
 
     update!(repository_read_only: true)
 
@@ -1652,7 +1688,7 @@ class Project < ActiveRecord::Base
 
   def storage
     @storage ||=
-      if hashed_storage?
+      if hashed_storage?(:repository)
         Storage::HashedProject.new(self)
       else
         Storage::LegacyProject.new(self)

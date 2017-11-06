@@ -18,7 +18,7 @@ describe 'User searches for issues', :js do
 
     it 'finds an issue' do
       fill_in('dashboard_search', with: issue1.title)
-      find('.btn-search').trigger('click')
+      find('.btn-search').click
 
       page.within('.search-filter') do
         click_link('Issues')
@@ -31,14 +31,14 @@ describe 'User searches for issues', :js do
 
     context 'when on a project page' do
       it 'finds an issue' do
-        find('.js-search-project-dropdown').trigger('click')
+        find('.js-search-project-dropdown').click
 
         page.within('.project-filter') do
           click_link(project.name_with_namespace)
         end
 
         fill_in('dashboard_search', with: issue1.title)
-        find('.btn-search').trigger('click')
+        find('.btn-search').click
 
         page.within('.search-filter') do
           click_link('Issues')
@@ -62,7 +62,7 @@ describe 'User searches for issues', :js do
 
     it 'finds an issue' do
       fill_in('dashboard_search', with: issue1.title)
-      find('.btn-search').trigger('click')
+      find('.btn-search').click
 
       page.within('.search-filter') do
         click_link('Issues')

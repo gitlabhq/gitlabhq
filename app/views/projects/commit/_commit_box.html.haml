@@ -77,5 +77,6 @@
         #{ n_(s_('Pipeline|with stage'), s_('Pipeline|with stages'), last_pipeline.stages_count) }
         .mr-widget-pipeline-graph
           = render 'shared/mini_pipeline_graph', pipeline: last_pipeline, klass: 'js-commit-pipeline-graph'
-      in
-      = time_interval_in_words last_pipeline.duration
+      - if last_pipeline.duration
+        in
+        = time_interval_in_words last_pipeline.duration

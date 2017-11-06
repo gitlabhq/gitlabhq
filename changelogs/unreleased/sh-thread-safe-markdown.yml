@@ -1,5 +1,0 @@
----
-title: Make Redcarpet Markdown renderer thread-safe
-merge_request:
-author:
-type: fixed

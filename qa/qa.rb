@@ -8,6 +8,7 @@ module QA
     autoload :Release, 'qa/runtime/release'
     autoload :User, 'qa/runtime/user'
     autoload :Namespace, 'qa/runtime/namespace'
+    autoload :Scenario, 'qa/runtime/scenario'
   end
 
   ##
@@ -18,6 +19,7 @@ module QA
     # Support files
     #
     autoload :Actable, 'qa/scenario/actable'
+    autoload :Entrypoint, 'qa/scenario/entrypoint'
     autoload :Template, 'qa/scenario/template'
 
     ##
@@ -25,6 +27,10 @@ module QA
     #
     module Test
       autoload :Instance, 'qa/scenario/test/instance'
+
+      module Integration
+        autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
+      end
     end
 
     ##
@@ -74,6 +80,11 @@ module QA
 
     module Admin
       autoload :Menu, 'qa/page/admin/menu'
+    end
+
+    module Mattermost
+      autoload :Main, 'qa/page/mattermost/main'
+      autoload :Login, 'qa/page/mattermost/login'
     end
   end
 

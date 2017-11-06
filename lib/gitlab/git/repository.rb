@@ -166,7 +166,7 @@ module Gitlab
       end
 
       def local_branches(sort_by: nil)
-        gitaly_migrate(:local_branches) do |is_enabled|
+        gitaly_migrate(:local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.local_branches(sort_by: sort_by)
           else
@@ -287,6 +287,14 @@ module Gitlab
           else
             rugged_branch_exists?(name)
           end
+        end
+      end
+
+      def batch_existence(object_ids, existing: true)
+        filter_method = existing ? :select : :reject
+
+        object_ids.public_send(filter_method) do |oid| # rubocop:disable GitlabSecurity/PublicSend
+          rugged.exists?(oid)
         end
       end
 
@@ -509,6 +517,10 @@ module Gitlab
       # Returns true is +from+ is direct ancestor to +to+, otherwise false
       def ancestor?(from, to)
         gitaly_commit_client.ancestor?(from, to)
+      end
+
+      def merged_branch_names(branch_names = [])
+        Set.new(git_merged_branch_names(branch_names))
       end
 
       # Return an array of Diff objects that represent the diff
@@ -743,6 +755,16 @@ module Gitlab
         end
       rescue Gitlab::Git::CommitError # when merge_index.conflicts?
         nil
+      end
+
+      def ff_merge(user, source_sha, target_branch)
+        gitaly_migrate(:operation_user_ff_branch) do |is_enabled|
+          if is_enabled
+            gitaly_ff_merge(user, source_sha, target_branch)
+          else
+            rugged_ff_merge(user, source_sha, target_branch)
+          end
+        end
       end
 
       def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
@@ -1072,6 +1094,13 @@ module Gitlab
       end
 
       # Refactoring aid; allows us to copy code from app/models/repository.rb
+      def run_git_with_timeout(args, timeout, env: {})
+        circuit_breaker.perform do
+          popen_with_timeout([Gitlab.config.git.bin_path, *args], timeout, path, env)
+        end
+      end
+
+      # Refactoring aid; allows us to copy code from app/models/repository.rb
       def commit(ref = 'HEAD')
         Gitlab::Git::Commit.find(self, ref)
       end
@@ -1102,6 +1131,24 @@ module Gitlab
         popen(args, @path).last.zero?
       end
 
+      def blob_at(sha, path)
+        Gitlab::Git::Blob.find(self, sha, path) unless Gitlab::Git.blank_ref?(sha)
+      end
+
+      def commit_index(user, branch_name, index, options)
+        committer = user_to_committer(user)
+
+        OperationService.new(user, self).with_branch(branch_name) do
+          commit_params = options.merge(
+            tree: index.write_tree(rugged),
+            author: committer,
+            committer: committer
+          )
+
+          create_commit(commit_params)
+        end
+      end
+
       def gitaly_repository
         Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
       end
@@ -1130,10 +1177,10 @@ module Gitlab
         Gitlab::GitalyClient.migrate(method, status: status, &block)
       rescue GRPC::NotFound => e
         raise NoRepository.new(e)
-      rescue GRPC::BadStatus => e
-        raise CommandError.new(e)
       rescue GRPC::InvalidArgument => e
         raise ArgumentError.new(e)
+      rescue GRPC::BadStatus => e
+        raise CommandError.new(e)
       end
 
       private
@@ -1153,6 +1200,13 @@ module Gitlab
         end
 
         sort_branches(branches, sort_by)
+      end
+
+      def git_merged_branch_names(branch_names = [])
+        lines = run_git(['branch', '--merged', root_ref] + branch_names)
+          .first.lines
+
+        lines.map(&:strip)
       end
 
       def log_using_shell?(options)
@@ -1567,6 +1621,22 @@ module Gitlab
         args = %W(fetch --no-tags -f ssh://gitaly/internal.git #{source_ref}:#{target_ref})
 
         run_git(args, env: env)
+      end
+
+      def gitaly_ff_merge(user, source_sha, target_branch)
+        gitaly_operations_client.user_ff_branch(user, source_sha, target_branch)
+      rescue GRPC::FailedPrecondition => e
+        raise CommitError, e
+      end
+
+      def rugged_ff_merge(user, source_sha, target_branch)
+        OperationService.new(user, self).with_branch(target_branch) do |our_commit|
+          raise ArgumentError, 'Invalid merge target' unless our_commit
+
+          source_sha
+        end
+      rescue Rugged::ReferenceError
+        raise ArgumentError, 'Invalid merge source'
       end
     end
   end

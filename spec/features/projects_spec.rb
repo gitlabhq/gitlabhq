@@ -13,8 +13,8 @@ feature 'Project' do
     end
 
     it "allows creation from templates", :js do
-      find('#create-from-template-tab').trigger('click')
-      find("##{template.name}").trigger('click')
+      find('#create-from-template-tab').click
+      find("label[for=#{template.name}]").click
       fill_in("project_path", with: template.name)
 
       page.within '#content-body' do
@@ -139,7 +139,7 @@ feature 'Project' do
 
     it 'removes a project' do
       expect { remove_with_confirm('Remove project', project.path) }.to change {Project.count}.by(-1)
-      expect(page).to have_content "Project 'test / project1' will be deleted."
+      expect(page).to have_content "Project 'test / project1' is in the process of being deleted."
       expect(Project.all.count).to be_zero
       expect(project.issues).to be_empty
       expect(project.merge_requests).to be_empty

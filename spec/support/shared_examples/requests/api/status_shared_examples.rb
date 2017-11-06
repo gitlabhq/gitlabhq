@@ -3,6 +3,8 @@
 # Requires an API request:
 #   let(:request) { get api("/projects/#{project.id}/repository/branches", user) }
 shared_examples_for '400 response' do
+  let(:message) { nil }
+
   before do
     # Fires the request
     request
@@ -10,6 +12,10 @@ shared_examples_for '400 response' do
 
   it 'returns 400' do
     expect(response).to have_gitlab_http_status(400)
+
+    if message.present?
+      expect(json_response['message']).to eq(message)
+    end
   end
 end
 
@@ -26,6 +32,7 @@ end
 
 shared_examples_for '404 response' do
   let(:message) { nil }
+
   before do
     # Fires the request
     request

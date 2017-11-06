@@ -60,7 +60,7 @@ describe Projects::ArtifactsController do
         it 'renders the file view' do
           get :file, namespace_id: project.namespace, project_id: project, job_id: job, path: 'ci_artifacts.txt'
 
-          expect(response).to have_http_status(302)
+          expect(response).to have_gitlab_http_status(302)
         end
       end
 
@@ -78,7 +78,7 @@ describe Projects::ArtifactsController do
         it 'renders the file view' do
           get :file, namespace_id: project.namespace, project_id: project, job_id: job, path: 'ci_artifacts.txt'
 
-          expect(response).to have_http_status(:ok)
+          expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template('projects/artifacts/file')
         end
       end
@@ -106,7 +106,7 @@ describe Projects::ArtifactsController do
       it 'does not redirect the request' do
         get :file, namespace_id: private_project.namespace, project_id: private_project, job_id: job, path: 'ci_artifacts.txt'
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template('projects/artifacts/file')
       end
     end
@@ -143,7 +143,7 @@ describe Projects::ArtifactsController do
 
     context 'cannot find the job' do
       shared_examples 'not found' do
-        it { expect(response).to have_http_status(:not_found) }
+        it { expect(response).to have_gitlab_http_status(:not_found) }
       end
 
       context 'has no such ref' do

@@ -8,7 +8,7 @@ module Gitlab
       end
 
       def disk_path
-        "#{project.disk_path}.wiki"
+        project.wiki.disk_path
       end
 
       def import_url

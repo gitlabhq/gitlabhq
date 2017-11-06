@@ -24,6 +24,7 @@ feature 'Users', :js do
     user.reload
     expect(user.reset_password_token).not_to be_nil
 
+    find('a[href="#login-pane"]').click
     gitlab_sign_in(user)
     expect(current_path).to eq root_path
 

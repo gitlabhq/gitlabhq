@@ -35,7 +35,7 @@ describe Groups::MilestonesController do
     it 'shows group milestones page' do
       get :index, group_id: group.to_param
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
 
     context 'as JSON' do
@@ -51,7 +51,7 @@ describe Groups::MilestonesController do
         expect(milestones.count).to eq(2)
         expect(milestones.first["title"]).to eq("group milestone")
         expect(milestones.second["title"]).to eq("legacy")
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response.content_type).to eq 'application/json'
       end
     end
@@ -153,7 +153,7 @@ describe Groups::MilestonesController do
             it 'does not redirect' do
               get :index, group_id: group.to_param
 
-              expect(response).not_to have_http_status(301)
+              expect(response).not_to have_gitlab_http_status(301)
             end
           end
 
@@ -172,7 +172,7 @@ describe Groups::MilestonesController do
             it 'does not redirect' do
               get :show, group_id: group.to_param, id: title
 
-              expect(response).not_to have_http_status(301)
+              expect(response).not_to have_gitlab_http_status(301)
             end
           end
 
@@ -242,7 +242,7 @@ describe Groups::MilestonesController do
              group_id: group.to_param,
              milestone: { title: title }
 
-        expect(response).not_to have_http_status(404)
+        expect(response).not_to have_gitlab_http_status(404)
       end
 
       it 'does not redirect to the correct casing' do
@@ -250,7 +250,7 @@ describe Groups::MilestonesController do
              group_id: group.to_param,
              milestone: { title: title }
 
-        expect(response).not_to have_http_status(301)
+        expect(response).not_to have_gitlab_http_status(301)
       end
     end
 
@@ -262,7 +262,7 @@ describe Groups::MilestonesController do
              group_id: redirect_route.path,
              milestone: { title: title }
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end

@@ -281,7 +281,58 @@ ul.indent-list {
 
 
 // Specific styles for tree list
+@keyframes spin-avatar {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.groups-list-tree-container {
+  .has-no-search-results {
+    text-align: center;
+    padding: $gl-padding;
+    font-style: italic;
+    color: $well-light-text-color;
+  }
+
+  > .group-list-tree > .group-row.has-children:first-child {
+    border-top: none;
+  }
+}
+
 .group-list-tree {
+  .avatar-container.content-loading {
+    position: relative;
+
+    > a,
+    > a .avatar {
+      height: 100%;
+      border-radius: 50%;
+    }
+
+    > a {
+      padding: 2px;
+
+      .avatar {
+        border: 2px solid $white-normal;
+
+        &.identicon {
+          line-height: 30px;
+        }
+      }
+    }
+
+    &::after {
+      content: "";
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      background-color: transparent;
+      border: 2px outset $kdb-border;
+      border-radius: 50%;
+      animation: spin-avatar 3s infinite linear;
+    }
+  }
+
   .folder-toggle-wrap {
     float: left;
     line-height: $list-text-height;
@@ -293,7 +344,7 @@ ul.indent-list {
   }
 
   .folder-caret,
-  .folder-icon {
+  .item-type-icon {
     display: inline-block;
   }
 
@@ -301,11 +352,11 @@ ul.indent-list {
     width: 15px;
   }
 
-  .folder-icon {
+  .item-type-icon {
     width: 20px;
   }
 
-  > .group-row:not(.has-subgroups) {
+  > .group-row:not(.has-children) {
     .folder-caret .fa {
       opacity: 0;
     }
@@ -351,12 +402,23 @@ ul.indent-list {
         top: 30px;
         bottom: 0;
       }
+
+      &.being-removed {
+        opacity: 0.5;
+      }
     }
   }
 
   .group-row {
     padding: 0;
-    border: none;
+
+    &.has-children {
+      border-top: none;
+    }
+
+    &:first-child {
+      border-top: 1px solid $white-normal;
+    }
 
     &:last-of-type {
       .group-row-contents:not(:hover) {
@@ -378,6 +440,25 @@ ul.indent-list {
 
     .avatar-container > a {
       width: 100%;
+    }
+
+    &.has-more-items {
+      display: block;
+      padding: 20px 10px;
+    }
+  }
+}
+
+ul.group-list-tree {
+  li.group-row {
+    &.has-description {
+      .title {
+        line-height: inherit;
+      }
+    }
+
+    .title {
+      line-height: $list-text-height;
     }
   }
 }

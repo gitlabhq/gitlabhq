@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # Security
 
 - [Password length limits](password_length_limits.md)

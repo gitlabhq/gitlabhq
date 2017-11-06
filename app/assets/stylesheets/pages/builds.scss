@@ -68,18 +68,18 @@
 
     &.affix {
       top: $header-height;
-    }
 
-    // with sidebar
-    &.affix.sidebar-expanded {
-      right: 306px;
-      left: 16px;
-    }
+      // with sidebar
+      &.sidebar-expanded {
+        right: 306px;
+        left: 16px;
+      }
 
-    // without sidebar
-    &.affix.sidebar-collapsed {
-      right: 16px;
-      left: 16px;
+      // without sidebar
+      &.sidebar-collapsed {
+        right: 16px;
+        left: 16px;
+      }
     }
 
     &.affix-top {
@@ -333,8 +333,10 @@
 
     svg {
       position: relative;
-      top: 2px;
+      top: 3px;
       margin-right: 3px;
+      width: 14px;
+      height: 14px;
     }
   }
 
@@ -348,9 +350,10 @@
 
     svg {
       position: relative;
-      top: 2px;
+      top: 3px;
       margin-right: 3px;
-      height: 13px;
+      height: 14px;
+      width: 14px;
     }
 
     a {
@@ -369,7 +372,7 @@
     .build-job {
       position: relative;
 
-      .fa-arrow-right {
+      .icon-arrow-right {
         position: absolute;
         left: 15px;
         top: 20px;
@@ -379,7 +382,7 @@
       &.active {
         font-weight: $gl-font-weight-bold;
 
-        .fa-arrow-right {
+        .icon-arrow-right {
           display: block;
         }
       }
@@ -392,8 +395,7 @@
         background-color: $row-hover;
       }
 
-      .fa-refresh {
-        font-size: 13px;
+      .icon-retry {
         margin-left: 3px;
       }
     }

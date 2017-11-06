@@ -15,7 +15,7 @@ describe API::Deployments do
       it 'returns projects deployments' do
         get api("/projects/#{project.id}/deployments", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
@@ -28,7 +28,7 @@ describe API::Deployments do
       it 'returns a 404 status code' do
         get api("/projects/#{project.id}/deployments", non_member)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -38,7 +38,7 @@ describe API::Deployments do
       it 'returns the projects deployment' do
         get api("/projects/#{project.id}/deployments/#{deployment.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['sha']).to match /\A\h{40}\z/
         expect(json_response['id']).to eq(deployment.id)
       end
@@ -48,7 +48,7 @@ describe API::Deployments do
       it 'returns a 404 status code' do
         get api("/projects/#{project.id}/deployments/#{deployment.id}", non_member)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end

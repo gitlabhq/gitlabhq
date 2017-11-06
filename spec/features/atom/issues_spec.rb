@@ -28,10 +28,12 @@ describe 'Issues Feed'  do
       end
     end
 
-    context 'when authenticated via private token' do
+    context 'when authenticated via personal access token' do
       it 'renders atom feed' do
+        personal_access_token = create(:personal_access_token, user: user)
+
         visit project_issues_path(project, :atom,
-                                            private_token: user.private_token)
+                                            private_token: personal_access_token.token)
 
         expect(response_headers['Content-Type'])
           .to have_content('application/atom+xml')

@@ -76,6 +76,7 @@ class Repository
     @full_path = full_path
     @disk_path = disk_path || full_path
     @project = project
+    @commit_cache = {}
   end
 
   def ==(other)
@@ -103,18 +104,17 @@ class Repository
 
   def commit(ref = 'HEAD')
     return nil unless exists?
+    return ref if ref.is_a?(::Commit)
 
-    commit =
-      if ref.is_a?(Gitlab::Git::Commit)
-        ref
-      else
-        Gitlab::Git::Commit.find(raw_repository, ref)
-      end
+    find_commit(ref)
+  end
 
-    commit = ::Commit.new(commit, @project) if commit
-    commit
-  rescue Rugged::OdbError, Rugged::TreeError
-    nil
+  # Finding a commit by the passed SHA
+  # Also takes care of caching, based on the SHA
+  def commit_by(oid:)
+    return @commit_cache[oid] if @commit_cache.key?(oid)
+
+    @commit_cache[oid] = find_commit(oid)
   end
 
   def commits(ref, path: nil, limit: nil, offset: nil, skip_merges: false, after: nil, before: nil)
@@ -231,7 +231,7 @@ class Repository
   # branches or tags, but we want to keep some of these commits around, for
   # example if they have comments or CI builds.
   def keep_around(sha)
-    return unless sha && commit(sha)
+    return unless sha && commit_by(oid: sha)
 
     return if kept_around?(sha)
 
@@ -468,9 +468,7 @@ class Repository
   end
 
   def blob_at(sha, path)
-    unless Gitlab::Git.blank_ref?(sha)
-      Blob.decorate(Gitlab::Git::Blob.find(self, sha, path), project)
-    end
+    Blob.decorate(raw_repository.blob_at(sha, path), project)
   rescue Gitlab::Git::Repository::NoRepository
     nil
   end
@@ -864,22 +862,12 @@ class Repository
   end
 
   def ff_merge(user, source, target_branch, merge_request: nil)
-    our_commit = rugged.branches[target_branch].target
-    their_commit =
-      if source.is_a?(Gitlab::Git::Commit)
-        source.raw_commit
-      else
-        rugged.lookup(source)
-      end
+    their_commit_id = commit(source)&.id
+    raise 'Invalid merge source' if their_commit_id.nil?
 
-    raise 'Invalid merge target' if our_commit.nil?
-    raise 'Invalid merge source' if their_commit.nil?
+    merge_request&.update(in_progress_merge_commit_sha: their_commit_id)
 
-    with_branch(user, target_branch) do |start_commit|
-      merge_request&.update(in_progress_merge_commit_sha: their_commit.oid)
-
-      their_commit.oid
-    end
+    with_cache_hooks { raw.ff_merge(user, their_commit_id, target_branch) }
   end
 
   def revert(
@@ -914,25 +902,26 @@ class Repository
     end
   end
 
-  def resolve_conflicts(user, branch_name, params)
-    with_branch(user, branch_name) do
-      committer = user_to_committer(user)
+  def merged_to_root_ref?(branch_or_name, pre_loaded_merged_branches = nil)
+    branch = Gitlab::Git::Branch.find(self, branch_or_name)
 
-      create_commit(params.merge(author: committer, committer: committer))
-    end
-  end
+    if branch
+      root_ref_sha = commit(root_ref).sha
+      same_head = branch.target == root_ref_sha
+      merged =
+        if pre_loaded_merged_branches
+          pre_loaded_merged_branches.include?(branch.name)
+        else
+          ancestor?(branch.target, root_ref_sha)
+        end
 
-  def merged_to_root_ref?(branch_name)
-    branch_commit = commit(branch_name)
-    root_ref_commit = commit(root_ref)
-
-    if branch_commit
-      same_head = branch_commit.id == root_ref_commit.id
-      !same_head && ancestor?(branch_commit.id, root_ref_commit.id)
+      !same_head && merged
     else
       nil
     end
   end
+
+  delegate :merged_branch_names, to: :raw_repository
 
   def merge_base(first_commit_id, second_commit_id)
     first_commit_id = commit(first_commit_id).try(:id) || first_commit_id
@@ -1041,6 +1030,10 @@ class Repository
     if instance_variable_defined?(ivar)
       instance_variable_get(ivar)
     else
+      # If the repository doesn't exist and a fallback was specified we return
+      # that value inmediately. This saves us Rugged/gRPC invocations.
+      return fallback unless fallback.nil? || exists?
+
       begin
         value =
           if memoize_only
@@ -1050,8 +1043,9 @@ class Repository
           end
         instance_variable_set(ivar, value)
       rescue Rugged::ReferenceError, Gitlab::Git::Repository::NoRepository
-        # if e.g. HEAD or the entire repository doesn't exist we want to
-        # gracefully handle this and not cache anything.
+        # Even if the above `#exists?` check passes these errors might still
+        # occur (for example because of a non-existing HEAD). We want to
+        # gracefully handle this and not cache anything
         fallback
       end
     end
@@ -1078,6 +1072,18 @@ class Repository
   end
 
   private
+
+  # TODO Generice finder, later split this on finders by Ref or Oid
+  # gitlab-org/gitlab-ce#39239
+  def find_commit(oid_or_ref)
+    commit = if oid_or_ref.is_a?(Gitlab::Git::Commit)
+               oid_or_ref
+             else
+               Gitlab::Git::Commit.find(raw_repository, oid_or_ref)
+             end
+
+    ::Commit.new(commit, @project) if commit
+  end
 
   def blob_data_at(sha, path)
     blob = blob_at(sha, path)
@@ -1117,17 +1123,17 @@ class Repository
 
   def last_commit_for_path_by_gitaly(sha, path)
     c = raw_repository.gitaly_commit_client.last_commit_for_path(sha, path)
-    commit(c)
+    commit_by(oid: c)
   end
 
   def last_commit_for_path_by_rugged(sha, path)
     sha = last_commit_id_for_path_by_shelling_out(sha, path)
-    commit(sha)
+    commit_by(oid: sha)
   end
 
   def last_commit_id_for_path_by_shelling_out(sha, path)
     args = %W(rev-list --max-count=1 #{sha} -- #{path})
-    run_git(args).first.strip
+    raw_repository.run_git_with_timeout(args, Gitlab::Git::Popen::FAST_GIT_PROCESS_TIMEOUT).first.strip
   end
 
   def repository_storage_path

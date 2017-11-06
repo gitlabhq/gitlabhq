@@ -13,7 +13,7 @@ describe API::Variables do
       it 'returns project variables' do
         get api("/projects/#{project.id}/variables", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_a(Array)
       end
     end
@@ -22,7 +22,7 @@ describe API::Variables do
       it 'does not return project variables' do
         get api("/projects/#{project.id}/variables", user2)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -30,7 +30,7 @@ describe API::Variables do
       it 'does not return project variables' do
         get api("/projects/#{project.id}/variables")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
@@ -40,7 +40,7 @@ describe API::Variables do
       it 'returns project variable details' do
         get api("/projects/#{project.id}/variables/#{variable.key}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['value']).to eq(variable.value)
         expect(json_response['protected']).to eq(variable.protected?)
       end
@@ -48,7 +48,7 @@ describe API::Variables do
       it 'responds with 404 Not Found if requesting non-existing variable' do
         get api("/projects/#{project.id}/variables/non_existing_variable", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -56,7 +56,7 @@ describe API::Variables do
       it 'does not return project variable details' do
         get api("/projects/#{project.id}/variables/#{variable.key}", user2)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -64,7 +64,7 @@ describe API::Variables do
       it 'does not return project variable details' do
         get api("/projects/#{project.id}/variables/#{variable.key}")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
@@ -76,7 +76,7 @@ describe API::Variables do
           post api("/projects/#{project.id}/variables", user), key: 'TEST_VARIABLE_2', value: 'VALUE_2', protected: true
         end.to change {project.variables.count}.by(1)
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['key']).to eq('TEST_VARIABLE_2')
         expect(json_response['value']).to eq('VALUE_2')
         expect(json_response['protected']).to be_truthy
@@ -87,7 +87,7 @@ describe API::Variables do
           post api("/projects/#{project.id}/variables", user), key: 'TEST_VARIABLE_2', value: 'VALUE_2'
         end.to change {project.variables.count}.by(1)
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['key']).to eq('TEST_VARIABLE_2')
         expect(json_response['value']).to eq('VALUE_2')
         expect(json_response['protected']).to be_falsey
@@ -98,7 +98,7 @@ describe API::Variables do
           post api("/projects/#{project.id}/variables", user), key: variable.key, value: 'VALUE_2'
         end.to change {project.variables.count}.by(0)
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
     end
 
@@ -106,7 +106,7 @@ describe API::Variables do
       it 'does not create variable' do
         post api("/projects/#{project.id}/variables", user2)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -114,7 +114,7 @@ describe API::Variables do
       it 'does not create variable' do
         post api("/projects/#{project.id}/variables")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
@@ -129,7 +129,7 @@ describe API::Variables do
 
         updated_variable = project.variables.first
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(value_before).to eq(variable.value)
         expect(updated_variable.value).to eq('VALUE_1_UP')
         expect(updated_variable).to be_protected
@@ -138,7 +138,7 @@ describe API::Variables do
       it 'responds with 404 Not Found if requesting non-existing variable' do
         put api("/projects/#{project.id}/variables/non_existing_variable", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -146,7 +146,7 @@ describe API::Variables do
       it 'does not update variable' do
         put api("/projects/#{project.id}/variables/#{variable.key}", user2)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -154,7 +154,7 @@ describe API::Variables do
       it 'does not update variable' do
         put api("/projects/#{project.id}/variables/#{variable.key}")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
@@ -165,14 +165,14 @@ describe API::Variables do
         expect do
           delete api("/projects/#{project.id}/variables/#{variable.key}", user)
 
-          expect(response).to have_http_status(204)
+          expect(response).to have_gitlab_http_status(204)
         end.to change {project.variables.count}.by(-1)
       end
 
       it 'responds with 404 Not Found if requesting non-existing variable' do
         delete api("/projects/#{project.id}/variables/non_existing_variable", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -180,7 +180,7 @@ describe API::Variables do
       it 'does not delete variable' do
         delete api("/projects/#{project.id}/variables/#{variable.key}", user2)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -188,7 +188,7 @@ describe API::Variables do
       it 'does not delete variable' do
         delete api("/projects/#{project.id}/variables/#{variable.key}")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end

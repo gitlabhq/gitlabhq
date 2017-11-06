@@ -1,9 +1,11 @@
 /* globals Flash */
 import Visibility from 'visibilityjs';
 import axios from 'axios';
+import setAxiosCsrfToken from './lib/utils/axios_utils';
 import Poll from './lib/utils/poll';
 import { s__ } from './locale';
-import './flash';
+import initSettingsPanels from './settings_panels';
+import Flash from './flash';
 
 /**
  * Cluster page has 2 separate parts:
@@ -16,6 +18,7 @@ import './flash';
 class ClusterService {
   constructor(options = {}) {
     this.options = options;
+    setAxiosCsrfToken();
   }
   fetchData() {
     return axios.get(this.options.endpoint);
@@ -24,6 +27,8 @@ class ClusterService {
 
 export default class Clusters {
   constructor() {
+    initSettingsPanels();
+
     const dataset = document.querySelector('.js-edit-cluster-form').dataset;
 
     this.state = {
@@ -61,19 +66,16 @@ export default class Clusters {
     this.poll = new Poll({
       resource: this.service,
       method: 'fetchData',
-      successCallback: (data) => {
-        const { status, status_reason } = data.data;
-        this.updateContainer(status, status_reason);
-      },
-      errorCallback: () => {
-        Flash(s__('ClusterIntegration|Something went wrong on our end.'));
-      },
+      successCallback: data => this.handleSuccess(data),
+      errorCallback: () => Clusters.handleError(),
     });
 
     if (!Visibility.hidden()) {
       this.poll.makeRequest();
     } else {
-      this.service.fetchData();
+      this.service.fetchData()
+        .then(data => this.handleSuccess(data))
+        .catch(() => Clusters.handleError());
     }
 
     Visibility.change(() => {
@@ -83,6 +85,15 @@ export default class Clusters {
         this.poll.stop();
       }
     });
+  }
+
+  static handleError() {
+    Flash(s__('ClusterIntegration|Something went wrong on our end.'));
+  }
+
+  handleSuccess(data) {
+    const { status, status_reason } = data.data;
+    this.updateContainer(status, status_reason);
   }
 
   hideAll() {
