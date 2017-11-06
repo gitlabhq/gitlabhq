@@ -46,8 +46,13 @@ import BoardForm from './board_form.vue';
       currentPage() {
         return this.state.currentPage;
       },
-      reload() {
-        return this.state.reload;
+      reload: {
+        get() {
+          return this.state.reload;
+        },
+        set(newValue) {
+          this.state.reload = newValue;
+        },
       },
       board() {
         return this.state.currentBoard;

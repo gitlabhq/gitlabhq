@@ -119,6 +119,7 @@ excluded_attributes:
     - :milestone_id
     - :ref_fetched
     - :merge_jid
+    - :latest_merge_request_diff_id
   award_emoji:
     - :awardable_id
   statuses:

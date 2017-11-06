@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe Geo::RepositoryCreatedEventStore do
   set(:project) { create(:project) }
+  set(:secondary_node) { create(:geo_node) }
 
   subject(:create!) { described_class.new(project).create }
 
@@ -15,6 +16,12 @@ describe Geo::RepositoryCreatedEventStore do
     context 'running on a primary node' do
       before do
         allow(Gitlab::Geo).to receive(:primary?) { true }
+      end
+
+      it 'does not create an event when there are no secondary nodes' do
+        allow(Gitlab::Geo).to receive(:secondary_nodes) { [] }
+
+        expect { create! }.not_to change(Geo::RepositoryCreatedEvent, :count)
       end
 
       it 'creates a created event' do

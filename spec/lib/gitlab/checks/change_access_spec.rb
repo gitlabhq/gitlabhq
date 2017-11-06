@@ -10,15 +10,16 @@ describe Gitlab::Checks::ChangeAccess do
     let(:ref) { 'refs/heads/master' }
     let(:changes) { { oldrev: oldrev, newrev: newrev, ref: ref } }
     let(:protocol) { 'ssh' }
-
-    subject do
+    let(:change_access) do
       described_class.new(
         changes,
         project: project,
         user_access: user_access,
         protocol: protocol
-      ).exec
+      )
     end
+
+    subject { change_access.exec }
 
     before do
       project.add_developer(user)
@@ -453,6 +454,90 @@ describe Gitlab::Checks::ChangeAccess do
 
       it 'returns an error if the changes update a path locked by another user' do
         expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "The path 'README' is locked by #{path_lock.user.name}")
+      end
+    end
+
+    context 'Check commit author rules' do
+      before do
+        stub_licensed_features(commit_committer_check: true)
+      end
+
+      let(:push_rule) { create(:push_rule, commit_committer_check: true) }
+      let(:project) { create(:project, :public, :repository, push_rule: push_rule) }
+
+      context 'with a commit from the authenticated user' do
+        before do
+          allow(project.repository).to receive(:new_commits).and_return(
+            project.repository.commits_between('be93687618e4b132087f430a4d8fc3a609c9b77c', '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51')
+          )
+          allow_any_instance_of(Commit).to receive(:committer_email).and_return(user.email)
+        end
+
+        it 'does not return an error' do
+          expect { subject }.not_to raise_error
+        end
+
+        it 'allows the commit when they were done with another email that belongs to the current user' do
+          user.emails.create(email: 'secondary_email@user.com', confirmed_at: Time.now)
+          allow_any_instance_of(Commit).to receive(:committer_email).and_return('secondary_email@user.com')
+
+          expect { subject }.not_to raise_error
+        end
+
+        it 'raises an error when the commit was done with an unverified email' do
+          user.emails.create(email: 'secondary_email@user.com')
+          allow_any_instance_of(Commit).to receive(:committer_email).and_return('secondary_email@user.com')
+
+          expect { subject }
+            .to raise_error(Gitlab::GitAccess::UnauthorizedError,
+                            "Comitter email '%{commiter_email}' is not verified.")
+        end
+
+        it 'raises an error when using an unknown email' do
+          allow_any_instance_of(Commit).to receive(:committer_email).and_return('some@mail.com')
+          expect { subject }
+            .to raise_error(Gitlab::GitAccess::UnauthorizedError,
+                            "You cannot push commits for 'some@mail.com'. You can only push commits that were committed with one of your own verified emails.")
+        end
+      end
+
+      context 'for an ff merge request' do
+        # the signed-commits branch fast-forwards onto master
+        let(:newrev) { '2d1096e3' }
+
+        it 'does not raise errors for a fast forward' do
+          expect(change_access).not_to receive(:committer_check)
+          expect { subject }.not_to raise_error
+        end
+      end
+
+      context 'for a normal merge' do
+        # This creates a merge commit without adding it to a target branch
+        # that is what the repository would look like during the `pre-receive` hook.
+        #
+        # That means only the merge commit should be validated.
+        let(:newrev) do
+          rugged = project.repository.raw_repository.rugged
+          base = oldrev
+          to_merge = '2d1096e3a0ecf1d2baf6dee036cc80775d4940ba'
+
+          merge_index = rugged.merge_commits(base, to_merge)
+          options = {
+            parents: [base, to_merge],
+            tree: merge_index.write_tree(rugged),
+            message: 'The merge commit',
+            author: { name: user.name, email: user.email, time: Time.now },
+            committer: { name: user.name, email: user.email, time: Time.now }
+          }
+
+          Rugged::Commit.create(rugged, options)
+        end
+
+        it 'does not raise errors for a merge commit' do
+          expect(change_access).to receive(:committer_check).once
+                                     .and_call_original
+          expect { subject }.not_to raise_error
+        end
       end
     end
   end

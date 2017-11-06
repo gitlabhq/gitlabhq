@@ -64,7 +64,7 @@ feature 'Master deletes tag' do
 
   def delete_first_tag
     page.within('.content') do
-      first('.btn-remove').click
+      accept_confirm { first('.btn-remove').click }
     end
   end
 end

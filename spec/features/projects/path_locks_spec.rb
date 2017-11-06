@@ -73,7 +73,7 @@ feature 'Path Locks', :js do
     within '.locks' do
       expect(page).to have_content('encoding')
 
-      find('.btn-remove').click
+      accept_confirm { find('.btn-remove').click }
 
       expect(page).not_to have_content('encoding')
     end

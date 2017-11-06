@@ -1,0 +1,53 @@
+{
+  "type": "object",
+  "properties" : {
+    "id": { "type": "integer" },
+    "iid": { "type": "integer" },
+    "author_id": { "type": "integer" },
+    "group_id": { "type": ["integer", "null"] },
+    "title": { "type": "string" },
+    "lock_version": { "type": ["string", "null"] },
+    "description": { "type": ["string" , "null"] },
+    "confidential": { "type": "boolean" },
+    "milestone_id": { "type": ["string", "null"] },
+    "state": { "type": "string" },
+    "start_date": { "type": ["date", "null"] },
+    "end_date": { "type": ["date", "null"] },
+    "updated_by_id": { "type": ["string", "null"] },
+    "created_at": { "type": "string" },
+    "updated_at": { "type": "string" },
+    "deleted_at": { "type": ["string", "null"] },
+    "web_url": { "type": "string" },
+    "milestone": { "type": ["object", "null"] },
+    "labels": { "type": ["array", "null"] },
+    "group": {
+      "id": { "type": "integer" },
+      "path": { "type": "string" }
+    },
+    "assignee": {
+      "id": { "type": "integer" },
+      "name": { "type": "string" },
+      "username": { "type": "string" },
+      "avatar_url": { "type": "uri" }
+    },
+    "assignees": {
+      "type": "array",
+      "items": {
+        "type": ["object", "null"],
+        "required": [
+          "id",
+          "name",
+          "username",
+          "avatar_url"
+        ],
+        "properties": {
+          "id": { "type": "integer" },
+          "name": { "type": "string" },
+          "username": { "type": "string" },
+          "avatar_url": { "type": "uri" }
+        }
+      }
+    }
+  },
+  "additionalProperties": false
+}

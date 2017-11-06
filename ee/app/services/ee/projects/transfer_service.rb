@@ -8,6 +8,8 @@ module EE
 
         super
 
+        EE::Audit::ProjectChangesAuditor.new(@current_user, project).execute
+
         ::Geo::RepositoryRenamedEventStore.new(
           project,
           old_path: project.path,

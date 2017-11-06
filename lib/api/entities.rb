@@ -60,10 +60,6 @@ module API
       expose :admin?, as: :is_admin
     end
 
-    class UserWithPrivateDetails < UserWithAdmin
-      expose :private_token
-    end
-
     class Email < Grape::Entity
       expose :id, :email
     end
@@ -1020,7 +1016,7 @@ module API
 
     class GeoNodeStatus < Grape::Entity
       expose :id
-      expose :db_replication_lag
+      expose :db_replication_lag_seconds
       expose :health
       expose :healthy?, as: :healthy
       expose :repositories_count
@@ -1033,9 +1029,9 @@ module API
       expose :attachments_synced_count
       expose :attachments_failed_count
       expose :last_event_id
-      expose :last_event_date
+      expose :last_event_timestamp
       expose :cursor_last_event_id
-      expose :cursor_last_event_date
+      expose :cursor_last_event_timestamp
     end
 
     class PersonalAccessToken < Grape::Entity

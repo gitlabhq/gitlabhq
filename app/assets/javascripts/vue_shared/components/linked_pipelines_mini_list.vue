@@ -1,6 +1,6 @@
 <script>
   import arrowSvg from 'icons/_arrow_mini_pipeline_graph.svg';
-  import { borderlessStatusIconEntityMap } from '../../vue_shared/ci_status_icons';
+  import icon from './icon.vue';
   import ciStatus from './ci_icon.vue';
   import tooltip from '../directives/tooltip';
 
@@ -33,6 +33,7 @@
     },
     components: {
       ciStatus,
+      icon,
     },
     computed: {
       // Exactly one of these (triggeredBy and triggered) must be truthy. Never both. Never neither.
@@ -67,8 +68,8 @@
       pipelineTooltipText(pipeline) {
         return `${pipeline.project.name} - ${pipeline.details.status.label}`;
       },
-      getStatusIcon(icon) {
-        return borderlessStatusIconEntityMap[icon];
+      getStatusIcon(iconName) {
+        return `${iconName}_borderless`;
       },
       triggerButtonClass(group) {
         return `ci-status-icon-${group}`;
@@ -102,8 +103,9 @@
       :title="pipelineTooltipText(pipeline)"
       data-placement="top"
       data-container="body"
-      :class="triggerButtonClass(pipeline.details.status.group)"
-      v-html="getStatusIcon(pipeline.details.status.icon)">
+      :class="triggerButtonClass(pipeline.details.status.group)">
+      <icon
+        :name="getStatusIcon(pipeline.details.status.icon)"/>
     </a>
 
     <a

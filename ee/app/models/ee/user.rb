@@ -21,6 +21,8 @@ module EE
       delegate :shared_runners_minutes_limit, :shared_runners_minutes_limit=,
                to: :namespace
 
+      has_many :epics,                    foreign_key: :author_id
+      has_many :assigned_epics,           foreign_key: :assignee_id, class_name: "Epic"
       has_many :path_locks,               dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
 
       has_many :approvals,                dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent

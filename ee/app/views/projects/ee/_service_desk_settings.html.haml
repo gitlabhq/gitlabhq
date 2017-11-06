@@ -1,6 +1,6 @@
 - if EE::Gitlab::ServiceDesk.enabled?(project: @project) || (show_promotions? && show_callout?('promote_service_desk_dismissed'))
   - expanded = Rails.env.test?
-  %section.settings.js-service-desk-setting-wrapper
+  %section.settings.js-service-desk-setting-wrapper.no-animate{ class: ('expanded' if expanded) }
     .settings-header
       %h4
         Service Desk
@@ -9,7 +9,7 @@
       %p
         Customize your service desk settings.
         = link_to "Learn more about service desk.", help_page_path('user/project/service_desk')
-    .settings-content.no-animate{ class: ('expanded' if expanded) }
+    .settings-content
       - if EE::Gitlab::ServiceDesk.enabled?(project: @project)
         .js-service-desk-setting-root{ data: { endpoint: project_service_desk_path(@project),
           enabled: "#{@project.service_desk_enabled}",

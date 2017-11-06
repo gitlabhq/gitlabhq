@@ -129,7 +129,7 @@ describe 'Issue Boards', :js do
       end
 
       page.within(find('.board:nth-child(2)')) do
-        find('.card:nth-child(2)').trigger('click')
+        find('.card:nth-child(2)').click
       end
 
       page.within('.assignee') do

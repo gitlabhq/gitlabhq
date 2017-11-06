@@ -124,18 +124,18 @@ describe GeoNodeStatus do
     end
   end
 
-  describe '#db_replication_lag' do
+  describe '#db_replication_lag_seconds' do
     it 'returns the set replication lag if secondary' do
       allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
-      allow(Gitlab::Geo::HealthCheck).to receive(:db_replication_lag).and_return(1000)
+      allow(Gitlab::Geo::HealthCheck).to receive(:db_replication_lag_seconds).and_return(1000)
 
-      expect(subject.db_replication_lag).to eq(1000)
+      expect(subject.db_replication_lag_seconds).to eq(1000)
     end
 
     it "doesn't attempt to set replication lag if primary" do
-      expect(Gitlab::Geo::HealthCheck).not_to receive(:db_replication_lag)
+      expect(Gitlab::Geo::HealthCheck).not_to receive(:db_replication_lag_seconds)
 
-      expect(subject.db_replication_lag).to eq(nil)
+      expect(subject.db_replication_lag_seconds).to eq(nil)
     end
   end
 
@@ -217,25 +217,25 @@ describe GeoNodeStatus do
     end
   end
 
-  describe '#last_event_id and #last_event_date' do
+  describe '#last_event_id and #last_event_timestamp' do
     it 'returns nil when no events are available' do
       expect(subject.last_event_id).to be_nil
-      expect(subject.last_event_date).to be_nil
+      expect(subject.last_event_timestamp).to be_nil
     end
 
     it 'returns the latest event' do
-      created_at = Date.new(2017, 10, 22)
+      created_at = Date.today.to_time(:utc)
       event = create(:geo_event_log, created_at: created_at)
 
       expect(subject.last_event_id).to eq(event.id)
-      expect(subject.last_event_date).to eq(created_at)
+      expect(subject.last_event_timestamp).to eq(created_at.to_i)
     end
   end
 
-  describe '#cursor_last_event_id and #cursor_last_event_date' do
+  describe '#cursor_last_event_id and #cursor_last_event_timestamp' do
     it 'returns nil when no events are available' do
       expect(subject.cursor_last_event_id).to be_nil
-      expect(subject.cursor_last_event_date).to be_nil
+      expect(subject.cursor_last_event_timestamp).to be_nil
     end
 
     it 'returns the latest event ID if secondary' do
@@ -248,14 +248,25 @@ describe GeoNodeStatus do
     it "doesn't attempt to retrieve cursor if primary" do
       create(:geo_event_log_state)
 
-      expect(subject.cursor_last_event_date).to eq(nil)
+      expect(subject.cursor_last_event_timestamp).to eq(nil)
       expect(subject.cursor_last_event_id).to eq(nil)
+    end
+  end
+
+  describe '#[]' do
+    it 'returns values for each attribute' do
+      expect(subject[:repositories_count]).to eq(4)
+      expect(subject[:repositories_synced_count]).to eq(0)
+    end
+
+    it 'raises an error for invalid attributes' do
+      expect { subject[:testme] }.to raise_error(NoMethodError)
     end
   end
 
   context 'when no values are available' do
     it 'returns 0 for each attribute' do
-      allow(Gitlab::Geo::HealthCheck).to receive(:db_replication_lag).and_return(nil)
+      allow(Gitlab::Geo::HealthCheck).to receive(:db_replication_lag_seconds).and_return(nil)
       subject.attachments_count = nil
       subject.attachments_synced_count = nil
       subject.attachments_failed_count = nil
@@ -266,11 +277,11 @@ describe GeoNodeStatus do
       subject.repositories_synced_count = nil
       subject.repositories_failed_count = nil
       subject.last_event_id = nil
-      subject.last_event_date = nil
+      subject.last_event_timestamp = nil
       subject.cursor_last_event_id = nil
-      subject.cursor_last_event_date = nil
+      subject.cursor_last_event_timestamp = nil
 
-      expect(subject.db_replication_lag).to be_nil
+      expect(subject.db_replication_lag_seconds).to be_nil
       expect(subject.repositories_count).to be_zero
       expect(subject.repositories_synced_count).to be_zero
       expect(subject.repositories_synced_in_percentage).to be_zero
@@ -284,9 +295,9 @@ describe GeoNodeStatus do
       expect(subject.attachments_failed_count).to be_zero
       expect(subject.attachments_synced_in_percentage).to be_zero
       expect(subject.last_event_id).to be_nil
-      expect(subject.last_event_date).to be_nil
+      expect(subject.last_event_timestamp).to be_nil
       expect(subject.cursor_last_event_id).to be_nil
-      expect(subject.cursor_last_event_date).to be_nil
+      expect(subject.cursor_last_event_timestamp).to be_nil
     end
   end
 end

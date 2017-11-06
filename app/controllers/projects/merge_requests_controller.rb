@@ -11,7 +11,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   skip_before_action :merge_request, only: [:index, :bulk_update]
   skip_before_action :ensure_ref_fetched, only: [:index, :bulk_update]
 
-  before_action :authorize_update_merge_request!, only: [:close, :edit, :update, :remove_wip, :sort]
+  before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
 
   before_action :authenticate_user!, only: [:assign_related_issues]
 
@@ -258,14 +258,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   alias_method :subscribable_resource, :merge_request
   alias_method :issuable, :merge_request
   alias_method :awardable, :merge_request
-
-  def authorize_update_merge_request!
-    return render_404 unless can?(current_user, :update_merge_request, @merge_request)
-  end
-
-  def authorize_admin_merge_request!
-    return render_404 unless can?(current_user, :admin_merge_request, @merge_request)
-  end
 
   def validates_merge_request
     # Show git not found page

@@ -6,7 +6,7 @@ describe API::Internal do
 
   describe "POST /internal/allowed", :clean_gitlab_redis_shared_state do
     context 'Geo Node' do
-      let(:geo_node) { create(:geo_node) }
+      let(:geo_node) { create(:geo_node, :ssh) }
 
       it 'recognizes the Geo Node' do
         post(

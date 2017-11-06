@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe MergeRequests::RebaseService do
+  include ProjectForksHelper
+
   let(:user) { create(:user) }
   let(:merge_request) do
     create(:merge_request,
@@ -102,6 +104,31 @@ describe MergeRequests::RebaseService do
               anything)
 
           service.execute(merge_request)
+        end
+      end
+
+      context 'fork' do
+        let(:forked_project) do
+          fork_project(project, user, repository: true)
+        end
+
+        let(:merge_request_from_fork) do
+          forked_project.repository.create_file(
+            user,
+            'new-file-to-target',
+            '',
+            message: 'Add new file to target',
+            branch_name: 'master')
+
+          create(:merge_request,
+                 source_branch: 'master', source_project: forked_project,
+                 target_branch: 'master', target_project: project)
+        end
+
+        it 'rebases source branch' do
+          parent_sha = forked_project.repository.commit(merge_request_from_fork.source_branch).parents.first.sha
+          target_branch_sha = project.repository.commit(merge_request_from_fork.target_branch).sha
+          expect(parent_sha).to eq(target_branch_sha)
         end
       end
     end

@@ -114,8 +114,15 @@ describe Admin::GeoNodesController, :postgresql do
   end
 
   describe '#update' do
-    let(:geo_node_attributes) { { url: 'http://example.com', geo_node_key_attributes: attributes_for(:key) } }
-    let(:geo_node) { create(:geo_node) }
+    let(:geo_node_attributes) do
+      {
+        url: 'http://example.com',
+        clone_protocol: 'ssh',
+        geo_node_key_attributes: attributes_for(:key)
+      }
+    end
+
+    let(:geo_node) { create(:geo_node, :ssh) }
     let!(:original_fingerprint) { geo_node.geo_node_key.fingerprint }
 
     def go
@@ -142,6 +149,19 @@ describe Admin::GeoNodesController, :postgresql do
         geo_node.reload
         expect(geo_node.url.chomp('/')).to eq(geo_node_attributes[:url])
         expect(geo_node.geo_node_key.fingerprint).to eq(original_fingerprint)
+      end
+
+      context 'changing clone protocol' do
+        let(:geo_node_attributes) { { clone_protocol: 'http' } }
+
+        it 'changes the protocol without removing the key' do
+          go
+
+          geo_node.reload
+
+          expect(geo_node.clone_protocol).to eq('http')
+          expect(geo_node.geo_node_key.fingerprint).to eq(original_fingerprint)
+        end
       end
 
       it 'delegates the update of the Geo node to Geo::NodeUpdateService' do
@@ -259,25 +279,7 @@ describe Admin::GeoNodesController, :postgresql do
     end
 
     context 'with add-on license' do
-      let(:geo_node_status) do
-        GeoNodeStatus.new(
-          id: 1,
-          health: nil,
-          attachments_count: 329,
-          attachments_failed_count: 13,
-          attachments_synced_count: 141,
-          lfs_objects_count: 256,
-          lfs_objects_failed_count: 12,
-          lfs_objects_synced_count: 123,
-          repositories_count: 10,
-          repositories_synced_count: 5,
-          repositories_failed_count: 0,
-          last_event_id: 2,
-          last_event_date: Time.now.iso8601,
-          cursor_last_event_id: 1,
-          cursor_last_event_date: Time.now.iso8601
-        )
-      end
+      let(:geo_node_status) { build(:geo_node_status, :healthy) }
 
       before do
         allow(Gitlab::Geo).to receive(:license_allows?).and_return(true)

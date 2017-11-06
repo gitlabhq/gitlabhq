@@ -154,18 +154,6 @@ describe Gitlab::PathRegex do
     end.uniq
   end
 
-  let(:ee_paths_after_group_id) do
-    %w[
-      audit_events
-      analytics
-      ldap
-      ldap_group_links
-      notification_setting
-      pipeline_quota hooks
-      subgroups
-    ]
-  end
-
   describe 'TOP_LEVEL_ROUTES' do
     it 'includes all the top level namespaces' do
       failure_block = lambda do

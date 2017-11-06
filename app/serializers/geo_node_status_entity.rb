@@ -15,7 +15,7 @@ class GeoNodeStatusEntity < Grape::Entity
     number_to_percentage(node.attachments_synced_in_percentage, precision: 2)
   end
 
-  expose :db_replication_lag
+  expose :db_replication_lag_seconds
 
   expose :lfs_objects_count
   expose :lfs_objects_synced_count
@@ -32,7 +32,7 @@ class GeoNodeStatusEntity < Grape::Entity
   end
 
   expose :last_event_id
-  expose :last_event_date
+  expose :last_event_timestamp
   expose :cursor_last_event_id
-  expose :cursor_last_event_date
+  expose :cursor_last_event_timestamp
 end

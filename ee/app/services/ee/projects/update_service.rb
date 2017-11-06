@@ -10,7 +10,17 @@ module EE
           params.delete(:mirror_trigger_builds)
         end
 
-        super
+        result = super
+
+        log_audit_events if result[:status] == :success
+
+        result
+      end
+
+      private
+
+      def log_audit_events
+        EE::Audit::ProjectChangesAuditor.new(current_user, project).execute
       end
     end
   end

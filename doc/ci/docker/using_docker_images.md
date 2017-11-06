@@ -501,8 +501,8 @@ First start with creating a file named `build_script`:
 
 ```bash
 cat <<EOF > build_script
-git clone https://gitlab.com/gitlab-org/gitlab-ci-multi-runner.git /builds/gitlab-org/gitlab-ci-multi-runner
-cd /builds/gitlab-org/gitlab-ci-multi-runner
+git clone https://gitlab.com/gitlab-org/gitlab-runner.git /builds/gitlab-org/gitlab-runner
+cd /builds/gitlab-org/gitlab-runner
 make
 EOF
 ```

@@ -81,6 +81,11 @@ constraints(GroupUrlConstrainer.new) do
       ## EE-specific
       resources :billings, only: [:index]
       resources :boards, only: [:index, :show, :create, :update, :destroy]
+      resources :epics do
+        member do
+          get :realtime_changes
+        end
+      end
     end
 
     ## EE-specific

@@ -118,7 +118,7 @@ feature 'Multiple issue updating from issues#index', :js do
   end
 
   def click_update_issues_button
-    find('.update-selected-issues').trigger('click')
+    find('.update-selected-issues').click
     wait_for_requests
   end
 end

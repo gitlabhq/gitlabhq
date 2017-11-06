@@ -3,6 +3,8 @@
 # A note of this type is never resolvable.
 class Note < ActiveRecord::Base
   extend ActiveModel::Naming
+  prepend EE::Note
+
   include Gitlab::CurrentSettings
   include Participable
   include Mentionable
@@ -70,7 +72,7 @@ class Note < ActiveRecord::Base
   delegate :title, to: :noteable, allow_nil: true
 
   validates :note, presence: true
-  validates :project, presence: true, unless: :for_personal_snippet?
+  validates :project, presence: true, if: :for_project_noteable?
 
   # Attachments are deprecated and are handled by Markdown uploader
   validates :attachment, file_size: { maximum: :max_attachment_size }
@@ -116,7 +118,7 @@ class Note < ActiveRecord::Base
   after_initialize :ensure_discussion_id
   before_validation :nullify_blank_type, :nullify_blank_line_code
   before_validation :set_discussion_id, on: :create
-  after_save :keep_around_commit, unless: :for_personal_snippet?
+  after_save :keep_around_commit, if: :for_project_noteable?
   after_save :expire_etag_cache
   after_destroy :expire_etag_cache
 
@@ -212,6 +214,10 @@ class Note < ActiveRecord::Base
 
   def for_personal_snippet?
     noteable.is_a?(PersonalSnippet)
+  end
+
+  def for_project_noteable?
+    !for_personal_snippet?
   end
 
   def skip_project_check?

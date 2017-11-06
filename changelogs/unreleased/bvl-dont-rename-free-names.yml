@@ -1,5 +1,0 @@
----
-title: Don't rename paths that were freed up when upgrading
-merge_request: 15029
-author:
-type: fixed

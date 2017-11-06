@@ -30,8 +30,17 @@ describe MergeRequestEntity do
                                     :assign_to_closing)
   end
 
+  it 'has Issuable attributes' do
+    expect(subject).to include(:id, :iid, :author_id, :description, :lock_version, :milestone_id,
+                               :title, :updated_by_id, :created_at, :updated_at, :milestone, :labels)
+  end
+
+  it 'has time estimation attributes' do
+    expect(subject).to include(:time_estimate, :total_time_spent, :human_time_estimate, :human_total_time_spent)
+  end
+
   it 'has important MergeRequest attributes' do
-    expect(subject).to include(:diff_head_sha, :merge_commit_message,
+    expect(subject).to include(:state, :deleted_at, :diff_head_sha, :merge_commit_message,
                                :has_conflicts, :has_ci, :merge_path,
                                :conflict_resolution_path,
                                :cancel_merge_when_pipeline_succeeds_path,

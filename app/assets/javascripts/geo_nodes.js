@@ -58,8 +58,8 @@ class GeoNodeStatus {
       this.setHealthStatus(status.healthy);
 
       // Replication lag can be nil if the secondary isn't actually streaming
-      if (status.db_replication_lag) {
-        const parsedTime = parseSeconds(status.db_replication_lag, {
+      if (status.db_replication_lag_seconds !== null && status.db_replication_lag_seconds >= 0) {
+        const parsedTime = parseSeconds(status.db_replication_lag_seconds, {
           hoursPerDay: 24,
           daysPerWeek: 7,
         });
@@ -96,8 +96,17 @@ class GeoNodeStatus {
       this.$attachmentsSynced.text(attachmentText);
       this.$attachmentsFailed.text(attachmentFailedText);
 
-      const eventDate = gl.utils.formatDate(new Date(status.last_event_date));
-      const cursorDate = gl.utils.formatDate(new Date(status.cursor_last_event_date));
+      let eventDate = 'N/A';
+      let cursorDate = 'N/A';
+
+      if (status.last_event_timestamp !== null) {
+        eventDate = gl.utils.formatDate(new Date(status.last_event_timestamp * 1000));
+      }
+
+      if (status.cursor_last_event_timestamp !== null) {
+        cursorDate = gl.utils.formatDate(new Date(status.cursor_last_event_timestamp * 1000));
+      }
+
       this.$lastEventSeen.text(`${status.last_event_id} (${eventDate})`);
       this.$lastCursorEvent.text(`${status.cursor_last_event_id} (${cursorDate})`);
       if (status.health === 'Healthy') {

@@ -8,7 +8,7 @@ module Gitlab
           end
 
           def action_icon
-            'icon_action_cancel'
+            'cancel'
           end
 
           def action_path

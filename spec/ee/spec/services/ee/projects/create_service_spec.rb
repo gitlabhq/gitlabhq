@@ -161,7 +161,8 @@ describe Projects::CreateService, '#execute' do
   end
 
   context 'when running on a primary node' do
-    let!(:geo_node) { create(:geo_node, :primary) }
+    set(:primary) { create(:geo_node, :primary) }
+    set(:secondary) { create(:geo_node) }
 
     it 'logs an event to the Geo event log' do
       expect { create_project(user, opts) }.to change(Geo::RepositoryCreatedEvent, :count).by(1)
@@ -198,6 +199,29 @@ describe Projects::CreateService, '#execute' do
         project = create_project(user, opts)
 
         expect(project).to be_persisted
+      end
+    end
+  end
+
+  context 'audit events' do
+    include_examples 'audit event logging' do
+      let(:operation) { create_project(user, opts) }
+      let(:fail_condition!) do
+        allow(Gitlab::VisibilityLevel).to receive(:allowed_for?).and_return(false)
+      end
+      let(:attributes) do
+        {
+           author_id: user.id,
+           entity_id: @resource.id,
+           entity_type: 'Project',
+           details: {
+             add: 'project',
+             author_name: user.name,
+             target_id: @resource.full_path,
+             target_type: 'Project',
+             target_details: @resource.full_path
+           }
+         }
       end
     end
   end

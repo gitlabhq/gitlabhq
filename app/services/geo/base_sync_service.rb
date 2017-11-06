@@ -4,6 +4,7 @@ module Geo
   EmptyCloneUrlPrefixError = Class.new(StandardError)
 
   class BaseSyncService
+    include ExclusiveLeaseGuard
     include ::Gitlab::Geo::ProjectLogHelpers
 
     class << self
@@ -31,10 +32,18 @@ module Geo
       @lease_key ||= "#{LEASE_KEY_PREFIX}:#{type}:#{project.id}"
     end
 
+    def lease_timeout
+      LEASE_TIMEOUT
+    end
+
     def primary_ssh_path_prefix
       @primary_ssh_path_prefix ||= Gitlab::Geo.primary_node.clone_url_prefix.tap do |prefix|
         raise EmptyCloneUrlPrefixError, 'Missing clone_url_prefix in the primary node' unless prefix.present?
       end
+    end
+
+    def primary_http_path_prefix
+      @primary_http_path_prefix ||= Gitlab::Geo.primary_node.url
     end
 
     private
@@ -43,26 +52,46 @@ module Geo
       raise NotImplementedError, 'This class should implement sync_repository method'
     end
 
-    def registry
-      @registry ||= Geo::ProjectRegistry.find_or_initialize_by(project_id: project.id)
+    def current_node
+      ::Gitlab::Geo.current_node
     end
 
-    def try_obtain_lease
-      log_info("Trying to obtain lease to sync #{type}")
-      repository_lease = Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT).try_obtain
-
-      unless repository_lease
-        log_info("Could not obtain lease to sync #{type}")
-        return
+    def fetch_geo_mirror(repository)
+      case current_node&.clone_protocol
+      when 'http'
+        fetch_http_geo_mirror(repository)
+      when 'ssh'
+        fetch_ssh_geo_mirror(repository)
+      else
+        raise "Unknown clone protocol: #{current_node&.clone_protocol}"
       end
+    end
 
-      yield
+    def build_repository_url(prefix, repository)
+      url = prefix
+      url += '/' unless url.end_with?('/')
 
-      # We should release the lease for a repository, only if we have obtained
-      # it. If something went wrong when syncing the repository, we should wait
-      # for the lease timeout to try again.
-      log_info("Releasing leases to sync #{type}")
-      Gitlab::ExclusiveLease.cancel(lease_key, repository_lease)
+      url + repository.full_path + '.git'
+    end
+
+    def fetch_http_geo_mirror(repository)
+      url = build_repository_url(primary_http_path_prefix, repository)
+
+      # Fetch the repository, using a JWT header for authentication
+      authorization = ::Gitlab::Geo::BaseRequest.new.authorization
+      header = { "http.#{url}.extraHeader" => "Authorization: #{authorization}" }
+
+      repository.with_config(header) { repository.fetch_geo_mirror(url) }
+    end
+
+    def fetch_ssh_geo_mirror(repository)
+      url = build_repository_url(primary_ssh_path_prefix, repository)
+
+      repository.fetch_geo_mirror(url)
+    end
+
+    def registry
+      @registry ||= Geo::ProjectRegistry.find_or_initialize_by(project_id: project.id)
     end
 
     def update_registry(started_at: nil, finished_at: nil)

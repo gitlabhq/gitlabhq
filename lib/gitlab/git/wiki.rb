@@ -68,11 +68,13 @@ module Gitlab
       end
 
       def file(name, version)
-        version ||= self.class.default_ref
-        gollum_file = gollum_wiki.file(name, version)
-        return unless gollum_file
-
-        Gitlab::Git::WikiFile.new(gollum_file)
+        @repository.gitaly_migrate(:wiki_find_file) do |is_enabled|
+          if is_enabled
+            gitaly_find_file(name, version)
+          else
+            gollum_find_file(name, version)
+          end
+        end
       end
 
       def page_versions(page_path)
@@ -156,6 +158,14 @@ module Gitlab
         new_page(gollum_page)
       end
 
+      def gollum_find_file(name, version)
+        version ||= self.class.default_ref
+        gollum_file = gollum_wiki.file(name, version)
+        return unless gollum_file
+
+        Gitlab::Git::WikiFile.new(gollum_file)
+      end
+
       def gitaly_write_page(name, format, content, commit_details)
         gitaly_wiki_client.write_page(name, format, content, commit_details)
       end
@@ -169,6 +179,13 @@ module Gitlab
         return unless wiki_page
 
         Gitlab::Git::WikiPage.new(wiki_page, version)
+      end
+
+      def gitaly_find_file(name, version)
+        wiki_file = gitaly_wiki_client.find_file(name, version)
+        return unless wiki_file
+
+        Gitlab::Git::WikiFile.new(wiki_file)
       end
     end
   end

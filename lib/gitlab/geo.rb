@@ -12,7 +12,8 @@ module Gitlab
       geo_oauth_application
     ).freeze
 
-    SECONDARY_JOBS = %i(repository_sync_job file_download_job).freeze
+    COMMON_CRON_JOBS = %i(geo_metrics_update_worker).freeze
+    SECONDARY_CRON_JOBS = %i(geo_repository_sync_worker geo_file_download_dispatch_worker).freeze
 
     FDW_SCHEMA = 'gitlab_secondary'.freeze
 
@@ -87,26 +88,18 @@ module Gitlab
       FDW_SCHEMA + ".#{table_name}"
     end
 
-    def self.repository_sync_job
-      Sidekiq::Cron::Job.find('geo_repository_sync_worker')
-    end
-
-    def self.file_download_job
-      Sidekiq::Cron::Job.find('geo_file_download_dispatch_worker')
-    end
-
     def self.configure_primary_jobs!
       self.enable_all_cron_jobs!
-      SECONDARY_JOBS.each { |job| self.__send__(job).try(:disable!) } # rubocop:disable GitlabSecurity/PublicSend
+      SECONDARY_CRON_JOBS.each { |job_name| Sidekiq::Cron::Job.find(job_name).try(:disable!) }
     end
 
     def self.configure_secondary_jobs!
       self.disable_all_cron_jobs!
-      SECONDARY_JOBS.each { |job| self.__send__(job).try(:enable!) } # rubocop:disable GitlabSecurity/PublicSend
+      (COMMON_CRON_JOBS + SECONDARY_CRON_JOBS).each { |job_name| Sidekiq::Cron::Job.find(job_name).try(:enable!) }
     end
 
     def self.disable_all_geo_jobs!
-      SECONDARY_JOBS.each { |job| self.__send__(job).try(:disable!) } # rubocop:disable GitlabSecurity/PublicSend
+      (COMMON_CRON_JOBS + SECONDARY_CRON_JOBS).each { |job_name| Sidekiq::Cron::Job.find(job_name).try(:disable!) }
     end
 
     def self.disable_all_cron_jobs!

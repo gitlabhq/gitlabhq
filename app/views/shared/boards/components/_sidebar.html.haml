@@ -8,7 +8,9 @@
             %strong
               {{ issue.title }}
             %br/
-            %span
+            %span<
+              - if @group
+                {{ issue.project && issue.project.path }}
               = precede "#" do
                 {{ issue.iid }}
           %a.gutter-toggle.pull-right{ role: "button",

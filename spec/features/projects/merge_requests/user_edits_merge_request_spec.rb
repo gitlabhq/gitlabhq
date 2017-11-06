@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe 'User edits a merge request', :js do
+  include Select2Helper
+
   let(:project) { create(:project, :repository) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:user) { create(:user) }
@@ -15,8 +17,7 @@ describe 'User edits a merge request', :js do
   it 'changes the target branch' do
     expect(page).to have_content('Target branch')
 
-    first('.target_branch').click
-    select('merge-test', from: 'merge_request_target_branch', visible: false)
+    select2('merge-test', from: '#merge_request_target_branch')
     click_button('Save changes')
 
     expect(page).to have_content("Request to merge #{merge_request.source_branch} into merge-test")

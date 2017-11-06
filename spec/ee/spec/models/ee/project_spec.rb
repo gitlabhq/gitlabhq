@@ -16,6 +16,7 @@ describe Project do
     it { is_expected.to have_many(:path_locks) }
     it { is_expected.to have_many(:sourced_pipelines) }
     it { is_expected.to have_many(:source_pipelines) }
+    it { is_expected.to have_many(:audit_events) }
   end
 
   describe '#push_rule' do
@@ -758,7 +759,8 @@ describe Project do
 
   describe '#rename_repo' do
     context 'when running on a primary node' do
-      let!(:geo_node) { create(:geo_node, :primary) }
+      set(:primary) { create(:geo_node, :primary) }
+      set(:secondary) { create(:geo_node) }
       let(:project) { create(:project, :repository) }
       let(:gitlab_shell) { Gitlab::Shell.new }
 

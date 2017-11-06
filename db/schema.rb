@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171017145932) do
+ActiveRecord::Schema.define(version: 20171026082505) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -655,6 +655,41 @@ ActiveRecord::Schema.define(version: 20171017145932) do
   add_index "environments", ["project_id", "name"], name: "index_environments_on_project_id_and_name", unique: true, using: :btree
   add_index "environments", ["project_id", "slug"], name: "index_environments_on_project_id_and_slug", unique: true, using: :btree
 
+  create_table "epic_metrics", force: :cascade do |t|
+    t.integer "epic_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+  end
+
+  add_index "epic_metrics", ["epic_id"], name: "index_epic_metrics", using: :btree
+
+  create_table "epics", force: :cascade do |t|
+    t.integer "milestone_id"
+    t.integer "group_id", null: false
+    t.integer "author_id", null: false
+    t.integer "assignee_id"
+    t.integer "iid", null: false
+    t.integer "cached_markdown_version"
+    t.integer "updated_by_id"
+    t.integer "last_edited_by_id"
+    t.integer "lock_version"
+    t.date "start_date"
+    t.date "end_date"
+    t.datetime_with_timezone "last_edited_at"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.string "title", null: false
+    t.string "title_html", null: false
+    t.text "description"
+    t.text "description_html"
+  end
+
+  add_index "epics", ["assignee_id"], name: "index_epics_on_assignee_id", using: :btree
+  add_index "epics", ["author_id"], name: "index_epics_on_author_id", using: :btree
+  add_index "epics", ["group_id"], name: "index_epics_on_group_id", using: :btree
+  add_index "epics", ["iid"], name: "index_epics_on_iid", using: :btree
+  add_index "epics", ["milestone_id"], name: "index_milestone", using: :btree
+
   create_table "events", force: :cascade do |t|
     t.integer "project_id"
     t.integer "author_id", null: false
@@ -782,6 +817,7 @@ ActiveRecord::Schema.define(version: 20171017145932) do
     t.string "clone_url_prefix"
     t.integer "files_max_capacity", default: 10, null: false
     t.integer "repos_max_capacity", default: 25, null: false
+    t.string "clone_protocol", default: "http", null: false
   end
 
   add_index "geo_nodes", ["access_key"], name: "index_geo_nodes_on_access_key", using: :btree
@@ -1219,6 +1255,7 @@ ActiveRecord::Schema.define(version: 20171017145932) do
     t.boolean "ref_fetched"
     t.string "merge_jid"
     t.boolean "discussion_locked"
+    t.integer "latest_merge_request_diff_id"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -1227,6 +1264,7 @@ ActiveRecord::Schema.define(version: 20171017145932) do
   add_index "merge_requests", ["deleted_at"], name: "index_merge_requests_on_deleted_at", using: :btree
   add_index "merge_requests", ["description"], name: "index_merge_requests_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
   add_index "merge_requests", ["head_pipeline_id"], name: "index_merge_requests_on_head_pipeline_id", using: :btree
+  add_index "merge_requests", ["latest_merge_request_diff_id"], name: "index_merge_requests_on_latest_merge_request_diff_id", using: :btree
   add_index "merge_requests", ["milestone_id"], name: "index_merge_requests_on_milestone_id", using: :btree
   add_index "merge_requests", ["source_branch"], name: "index_merge_requests_on_source_branch", using: :btree
   add_index "merge_requests", ["source_project_id", "source_branch"], name: "index_merge_requests_on_source_project_id_and_source_branch", using: :btree
@@ -1729,6 +1767,7 @@ ActiveRecord::Schema.define(version: 20171017145932) do
     t.boolean "prevent_secrets", default: false, null: false
     t.string "branch_name_regex"
     t.boolean "reject_unsigned_commits"
+    t.boolean "commit_committer_check"
   end
 
   add_index "push_rules", ["is_sample"], name: "index_push_rules_on_is_sample", where: "is_sample", using: :btree
@@ -2046,7 +2085,6 @@ ActiveRecord::Schema.define(version: 20171017145932) do
     t.string "skype", default: "", null: false
     t.string "linkedin", default: "", null: false
     t.string "twitter", default: "", null: false
-    t.string "authentication_token"
     t.string "bio"
     t.integer "failed_attempts", default: 0
     t.datetime "locked_at"
@@ -2104,7 +2142,6 @@ ActiveRecord::Schema.define(version: 20171017145932) do
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
-  add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", unique: true, using: :btree
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
   add_index "users", ["created_at"], name: "index_users_on_created_at", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
@@ -2212,6 +2249,11 @@ ActiveRecord::Schema.define(version: 20171017145932) do
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade
   add_foreign_key "environments", "projects", name: "fk_d1c8c1da6a", on_delete: :cascade
+  add_foreign_key "epic_metrics", "epics", on_delete: :cascade
+  add_foreign_key "epics", "milestones", on_delete: :nullify
+  add_foreign_key "epics", "namespaces", column: "group_id", name: "fk_f081aa4489", on_delete: :cascade
+  add_foreign_key "epics", "users", column: "assignee_id", name: "fk_dccd3f98fc", on_delete: :nullify
+  add_foreign_key "epics", "users", column: "author_id", name: "fk_3654b61b03", on_delete: :cascade
   add_foreign_key "events", "projects", on_delete: :cascade
   add_foreign_key "events", "users", column: "author_id", name: "fk_edfd187b6f", on_delete: :cascade
   add_foreign_key "fork_network_members", "fork_networks", on_delete: :cascade
@@ -2258,6 +2300,7 @@ ActiveRecord::Schema.define(version: 20171017145932) do
   add_foreign_key "merge_request_metrics", "ci_pipelines", column: "pipeline_id", on_delete: :cascade
   add_foreign_key "merge_request_metrics", "merge_requests", on_delete: :cascade
   add_foreign_key "merge_requests", "ci_pipelines", column: "head_pipeline_id", name: "fk_fd82eae0b9", on_delete: :nullify
+  add_foreign_key "merge_requests", "merge_request_diffs", column: "latest_merge_request_diff_id", name: "fk_06067f5644", on_delete: :nullify
   add_foreign_key "merge_requests", "projects", column: "target_project_id", name: "fk_a6963e8447", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "issues", on_delete: :cascade
   add_foreign_key "merge_requests_closing_issues", "merge_requests", on_delete: :cascade

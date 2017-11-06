@@ -41,6 +41,16 @@ module EE
       self
     end
 
+    def for_project_group_link(group_link)
+      @details = custom_project_link_group_attributes(group_link)
+                 .merge(author_name: @author.name,
+                        target_id: group_link.project.id,
+                        target_type: 'Project',
+                        target_details: group_link.project.full_path)
+
+      self
+    end
+
     def for_failed_login
       ip = @details[:ip_address]
       auth = @details[:with] || 'STANDARD'
@@ -63,8 +73,8 @@ module EE
             to: @details[:to],
             author_name: @author.name,
             target_id: @entity.id,
-            target_type: @entity.class,
-            target_details: @entity.name
+            target_type: @entity.class.name,
+            target_details: @details[:target_details] || @entity.name
         }
       self
     end
@@ -91,6 +101,14 @@ module EE
         entity_type: 'User',
         details: @details
       )
+    end
+
+    def for_project
+      for_custom_model('project', @entity.full_path)
+    end
+
+    def for_group
+      for_custom_model('group', @entity.full_path)
     end
 
     def entity_audit_events_enabled?
@@ -162,6 +180,24 @@ module EE
     def add_security_event_admin_details!
       @details.merge!(ip_address: ip_address,
                       entity_path: @entity.full_path)
+    end
+
+    def custom_project_link_group_attributes(group_link)
+      case @details[:action]
+      when :destroy
+        { remove: 'project_access' }
+      when :create
+        {
+          add: 'project_access',
+          as: group_link.human_access
+        }
+      when :update
+        {
+          change: 'access_level',
+          from: @details[:old_access_level],
+          to: group_link.human_access
+        }
+      end
     end
   end
 end

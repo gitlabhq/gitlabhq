@@ -1,17 +1,25 @@
 require 'spec_helper'
 
 RSpec.describe Geo::RepositorySyncService do
-  let!(:primary) { create(:geo_node, :primary, host: 'primary-geo-node') }
+  include ::EE::GeoHelpers
+
+  set(:primary) { create(:geo_node, :primary, host: 'primary-geo-node', relative_url_root: '/gitlab') }
+  set(:secondary) { create(:geo_node) }
+
   let(:lease) { double(try_obtain: true) }
 
   subject { described_class.new(project) }
+
+  before do
+    stub_current_geo_node(secondary)
+  end
 
   it_behaves_like 'geo base sync execution'
 
   describe '#execute' do
     let(:project) { create(:project_empty_repo) }
     let(:repository) { project.repository }
-    let(:url_to_repo) { "#{primary.clone_url_prefix}#{project.full_path}.git" }
+    let(:url_to_repo) { "#{primary.url}/#{project.full_path}.git" }
 
     before do
       allow(Gitlab::ExclusiveLease).to receive(:new)
@@ -22,7 +30,8 @@ RSpec.describe Geo::RepositorySyncService do
         .and_return(true)
     end
 
-    it 'fetches project repository' do
+    it 'fetches project repository with JWT credentials' do
+      expect(repository).to receive(:with_config).with("http.#{url_to_repo}.extraHeader" => anything).and_call_original
       expect(repository).to receive(:fetch_geo_mirror).with(url_to_repo).once
 
       subject.execute
@@ -36,7 +45,16 @@ RSpec.describe Geo::RepositorySyncService do
       subject.execute
     end
 
-    it 'releases lease' do
+    it 'returns the lease when succeed' do
+      expect(Gitlab::ExclusiveLease).to receive(:cancel).once.with(
+        subject.__send__(:lease_key), anything).and_call_original
+
+      subject.execute
+    end
+
+    it 'returns the lease when sync fail' do
+      allow(repository).to receive(:fetch_geo_mirror).with(url_to_repo) { raise Gitlab::Shell::Error }
+
       expect(Gitlab::ExclusiveLease).to receive(:cancel).once.with(
         subject.__send__(:lease_key), anything).and_call_original
 
@@ -101,7 +119,6 @@ RSpec.describe Geo::RepositorySyncService do
 
       context 'when repository sync fail' do
         let(:registry) { Geo::ProjectRegistry.find_by(project_id: project.id) }
-        let(:url_to_repo) { "#{primary.clone_url_prefix}#{project.full_path}.git" }
 
         before do
           allow(repository).to receive(:fetch_geo_mirror).with(url_to_repo) { raise Gitlab::Shell::Error }
@@ -116,6 +133,22 @@ RSpec.describe Geo::RepositorySyncService do
         it 'resets last_repository_successful_sync_at' do
           expect(registry.last_repository_successful_sync_at).to be_nil
         end
+      end
+    end
+
+    context 'secondary replicates over SSH' do
+      set(:ssh_secondary) { create(:geo_node, :ssh) }
+
+      let(:url_to_repo) { "#{primary.clone_url_prefix}/#{project.full_path}.git" }
+
+      before do
+        stub_current_geo_node(ssh_secondary)
+      end
+
+      it 'fetches wiki repository over SSH' do
+        expect(repository).to receive(:fetch_geo_mirror).with(url_to_repo).once
+
+        subject.execute
       end
     end
   end
