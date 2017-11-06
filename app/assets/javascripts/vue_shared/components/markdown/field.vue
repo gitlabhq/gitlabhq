@@ -1,7 +1,9 @@
 <script>
-  /* global Flash */
+  import Flash from '../../../flash';
+  import GLForm from '../../../gl_form';
   import markdownHeader from './header.vue';
   import markdownToolbar from './toolbar.vue';
+  import icon from '../icon.vue';
 
   export default {
     props: {
@@ -36,6 +38,7 @@
     components: {
       markdownHeader,
       markdownToolbar,
+      icon,
     },
     computed: {
       shouldShowReferencedUsers() {
@@ -85,7 +88,7 @@
       /*
         GLForm class handles all the toolbar buttons
       */
-      return new gl.GLForm($(this.$refs['gl-form']), true);
+      return new GLForm($(this.$refs['gl-form']), true);
     },
     beforeDestroy() {
       const glForm = $(this.$refs['gl-form']).data('gl-form');
@@ -113,10 +116,10 @@
           class="zen-control zen-control-leave js-zen-leave"
           href="#"
           aria-label="Enter zen mode">
-          <i
-            class="fa fa-compress"
-            aria-hidden="true">
-          </i>
+          <icon
+            name="screen-normal"
+            :size="32">
+          </icon>
         </a>
         <markdown-toolbar
           :markdown-docs-path="markdownDocsPath"

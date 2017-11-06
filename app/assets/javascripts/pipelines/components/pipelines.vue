@@ -12,6 +12,15 @@
         type: Object,
         required: true,
       },
+      // Can be rendered in 3 different places, with some visual differences
+      // Accepts root | child
+      // `root` -> main view
+      // `child` -> rendered inside MR or Commit View
+      viewType: {
+        type: String,
+        required: false,
+        default: 'root',
+      },
     },
     components: {
       tablePagination,
@@ -187,7 +196,7 @@
         :empty-state-svg-path="emptyStateSvgPath"
         />
 
-      <error-state 
+      <error-state
         v-if="shouldRenderErrorState"
         :error-state-svg-path="errorStateSvgPath"
         />
@@ -206,6 +215,7 @@
           :pipelines="state.pipelines"
           :update-graph-dropdown="updateGraphDropdown"
           :auto-devops-help-path="autoDevopsPath"
+          :view-type="viewType"
           />
       </div>
 

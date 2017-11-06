@@ -105,18 +105,6 @@ describe NotificationService, :mailer do
     end
   end
 
-  describe 'Email' do
-    describe '#new_email' do
-      let!(:email) { create(:email) }
-
-      it { expect(notification.new_email(email)).to be_truthy }
-
-      it 'sends email to email owner' do
-        expect { notification.new_email(email) }.to change { ActionMailer::Base.deliveries.size }.by(1)
-      end
-    end
-  end
-
   describe 'Notes' do
     context 'issue note' do
       let(:project) { create(:project, :private) }
@@ -741,6 +729,18 @@ describe NotificationService, :mailer do
         should_not_email(@watcher_and_subscriber)
         should_not_email(@unsubscriber)
         should_not_email(@u_participating)
+      end
+
+      it "doesn't send multiple email when a user is subscribed to multiple given labels" do
+        subscriber_to_both = create(:user) do |user|
+          [label_1, label_2].each { |label| label.toggle_subscription(user, project) }
+        end
+
+        notification.relabeled_issue(issue, [label_1, label_2], @u_disabled)
+
+        should_email(subscriber_to_label_1)
+        should_email(subscriber_to_label_2)
+        should_email(subscriber_to_both)
       end
 
       context 'confidential issues' do

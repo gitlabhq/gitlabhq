@@ -55,7 +55,7 @@ window.dateFormat = dateFormat;
       if (!timeagoInstance) {
         const localeRemaining = function(number, index) {
           return [
-            [s__('Timeago|less than a minute ago'), s__('Timeago|a while')],
+            [s__('Timeago|less than a minute ago'), s__('Timeago|in a while')],
             [s__('Timeago|less than a minute ago'), s__('Timeago|%s seconds remaining')],
             [s__('Timeago|about a minute ago'), s__('Timeago|1 minute remaining')],
             [s__('Timeago|%s minutes ago'), s__('Timeago|%s minutes remaining')],
@@ -73,7 +73,7 @@ window.dateFormat = dateFormat;
         };
         locale = function(number, index) {
           return [
-            [s__('Timeago|less than a minute ago'), s__('Timeago|a while')],
+            [s__('Timeago|less than a minute ago'), s__('Timeago|in a while')],
             [s__('Timeago|less than a minute ago'), s__('Timeago|in %s seconds')],
             [s__('Timeago|about a minute ago'), s__('Timeago|in 1 minute')],
             [s__('Timeago|%s minutes ago'), s__('Timeago|in %s minutes')],

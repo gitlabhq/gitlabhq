@@ -16,7 +16,7 @@ describe API::Runner do
         it 'returns 400 error' do
           post api('/runners')
 
-          expect(response).to have_http_status 400
+          expect(response).to have_gitlab_http_status 400
         end
       end
 
@@ -24,7 +24,7 @@ describe API::Runner do
         it 'returns 403 error' do
           post api('/runners'), token: 'invalid'
 
-          expect(response).to have_http_status 403
+          expect(response).to have_gitlab_http_status 403
         end
       end
 
@@ -34,7 +34,7 @@ describe API::Runner do
 
           runner = Ci::Runner.first
 
-          expect(response).to have_http_status 201
+          expect(response).to have_gitlab_http_status 201
           expect(json_response['id']).to eq(runner.id)
           expect(json_response['token']).to eq(runner.token)
           expect(runner.run_untagged).to be true
@@ -47,7 +47,7 @@ describe API::Runner do
           it 'creates runner' do
             post api('/runners'), token: project.runners_token
 
-            expect(response).to have_http_status 201
+            expect(response).to have_gitlab_http_status 201
             expect(project.runners.size).to eq(1)
             expect(Ci::Runner.first.token).not_to eq(registration_token)
             expect(Ci::Runner.first.token).not_to eq(project.runners_token)
@@ -60,7 +60,7 @@ describe API::Runner do
           post api('/runners'), token: registration_token,
                                 description: 'server.hostname'
 
-          expect(response).to have_http_status 201
+          expect(response).to have_gitlab_http_status 201
           expect(Ci::Runner.first.description).to eq('server.hostname')
         end
       end
@@ -70,7 +70,7 @@ describe API::Runner do
           post api('/runners'), token: registration_token,
                                 tag_list: 'tag1, tag2'
 
-          expect(response).to have_http_status 201
+          expect(response).to have_gitlab_http_status 201
           expect(Ci::Runner.first.tag_list.sort).to eq(%w(tag1 tag2))
         end
       end
@@ -82,7 +82,7 @@ describe API::Runner do
                                   run_untagged: false,
                                   tag_list: ['tag']
 
-            expect(response).to have_http_status 201
+            expect(response).to have_gitlab_http_status 201
             expect(Ci::Runner.first.run_untagged).to be false
             expect(Ci::Runner.first.tag_list.sort).to eq(['tag'])
           end
@@ -93,7 +93,7 @@ describe API::Runner do
             post api('/runners'), token: registration_token,
                                   run_untagged: false
 
-            expect(response).to have_http_status 404
+            expect(response).to have_gitlab_http_status 404
           end
         end
       end
@@ -103,7 +103,7 @@ describe API::Runner do
           post api('/runners'), token: registration_token,
                                 locked: true
 
-          expect(response).to have_http_status 201
+          expect(response).to have_gitlab_http_status 201
           expect(Ci::Runner.first.locked).to be true
         end
       end
@@ -116,7 +116,7 @@ describe API::Runner do
             post api('/runners'), token: registration_token,
                                   info: { param => value }
 
-            expect(response).to have_http_status 201
+            expect(response).to have_gitlab_http_status 201
             expect(Ci::Runner.first.read_attribute(param.to_sym)).to eq(value)
           end
         end
@@ -128,7 +128,7 @@ describe API::Runner do
         it 'returns 400 error' do
           delete api('/runners')
 
-          expect(response).to have_http_status 400
+          expect(response).to have_gitlab_http_status 400
         end
       end
 
@@ -136,7 +136,7 @@ describe API::Runner do
         it 'returns 403 error' do
           delete api('/runners'), token: 'invalid'
 
-          expect(response).to have_http_status 403
+          expect(response).to have_gitlab_http_status 403
         end
       end
 
@@ -146,7 +146,7 @@ describe API::Runner do
         it 'deletes Runner' do
           delete api('/runners'), token: runner.token
 
-          expect(response).to have_http_status 204
+          expect(response).to have_gitlab_http_status 204
           expect(Ci::Runner.count).to eq(0)
         end
 
@@ -164,7 +164,7 @@ describe API::Runner do
         it 'returns 400 error' do
           post api('/runners/verify')
 
-          expect(response).to have_http_status :bad_request
+          expect(response).to have_gitlab_http_status :bad_request
         end
       end
 
@@ -172,7 +172,7 @@ describe API::Runner do
         it 'returns 403 error' do
           post api('/runners/verify'), token: 'invalid-token'
 
-          expect(response).to have_http_status 403
+          expect(response).to have_gitlab_http_status 403
         end
       end
 
@@ -180,7 +180,7 @@ describe API::Runner do
         it 'verifies Runner credentials' do
           post api('/runners/verify'), token: runner.token
 
-          expect(response).to have_http_status 200
+          expect(response).to have_gitlab_http_status 200
         end
       end
     end
@@ -216,7 +216,7 @@ describe API::Runner do
         context 'when runner sends version in User-Agent' do
           context 'for stable version' do
             it 'gives 204 and set X-GitLab-Last-Update' do
-              expect(response).to have_http_status(204)
+              expect(response).to have_gitlab_http_status(204)
               expect(response.header).to have_key('X-GitLab-Last-Update')
             end
           end
@@ -225,7 +225,7 @@ describe API::Runner do
             let(:last_update) { runner.ensure_runner_queue_value }
 
             it 'gives 204 and set the same X-GitLab-Last-Update' do
-              expect(response).to have_http_status(204)
+              expect(response).to have_gitlab_http_status(204)
               expect(response.header['X-GitLab-Last-Update']).to eq(last_update)
             end
           end
@@ -235,7 +235,7 @@ describe API::Runner do
             let(:new_update) { runner.tick_runner_queue }
 
             it 'gives 204 and set a new X-GitLab-Last-Update' do
-              expect(response).to have_http_status(204)
+              expect(response).to have_gitlab_http_status(204)
               expect(response.header['X-GitLab-Last-Update']).to eq(new_update)
             end
           end
@@ -243,19 +243,19 @@ describe API::Runner do
           context 'when beta version is sent' do
             let(:user_agent) { 'gitlab-runner 9.0.0~beta.167.g2b2bacc (master; go1.7.4; linux/amd64)' }
 
-            it { expect(response).to have_http_status(204) }
+            it { expect(response).to have_gitlab_http_status(204) }
           end
 
           context 'when pre-9-0 version is sent' do
             let(:user_agent) { 'gitlab-ci-multi-runner 1.6.0 (1-6-stable; go1.6.3; linux/amd64)' }
 
-            it { expect(response).to have_http_status(204) }
+            it { expect(response).to have_gitlab_http_status(204) }
           end
 
           context 'when pre-9-0 beta version is sent' do
             let(:user_agent) { 'gitlab-ci-multi-runner 1.6.0~beta.167.g2b2bacc (master; go1.6.3; linux/amd64)' }
 
-            it { expect(response).to have_http_status(204) }
+            it { expect(response).to have_gitlab_http_status(204) }
           end
         end
       end
@@ -264,7 +264,7 @@ describe API::Runner do
         it 'returns 400 error' do
           post api('/jobs/request')
 
-          expect(response).to have_http_status 400
+          expect(response).to have_gitlab_http_status 400
         end
       end
 
@@ -272,7 +272,7 @@ describe API::Runner do
         it 'returns 403 error' do
           post api('/jobs/request'), token: 'invalid'
 
-          expect(response).to have_http_status 403
+          expect(response).to have_gitlab_http_status 403
         end
       end
 
@@ -283,7 +283,7 @@ describe API::Runner do
           it 'returns 204 error' do
             request_job
 
-            expect(response).to have_http_status 204
+            expect(response).to have_gitlab_http_status 204
           end
         end
 
@@ -360,10 +360,12 @@ describe API::Runner do
                'policy' => 'pull-push' }]
           end
 
+          let(:expected_features) { { 'trace_sections' => true } }
+
           it 'picks a job' do
             request_job info: { platform: :darwin }
 
-            expect(response).to have_http_status(201)
+            expect(response).to have_gitlab_http_status(201)
             expect(response.headers).not_to have_key('X-GitLab-Last-Update')
             expect(runner.reload.platform).to eq('darwin')
             expect(json_response['id']).to eq(job.id)
@@ -379,15 +381,16 @@ describe API::Runner do
             expect(json_response['artifacts']).to eq(expected_artifacts)
             expect(json_response['cache']).to eq(expected_cache)
             expect(json_response['variables']).to include(*expected_variables)
+            expect(json_response['features']).to eq(expected_features)
           end
 
           context 'when job is made for tag' do
-            let!(:job) { create(:ci_build_tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:job) { create(:ci_build, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
 
             it 'sets branch as ref_type' do
               request_job
 
-              expect(response).to have_http_status(201)
+              expect(response).to have_gitlab_http_status(201)
               expect(json_response['git_info']['ref_type']).to eq('tag')
             end
           end
@@ -396,7 +399,7 @@ describe API::Runner do
             it 'sets tag as ref_type' do
               request_job
 
-              expect(response).to have_http_status(201)
+              expect(response).to have_gitlab_http_status(201)
               expect(json_response['git_info']['ref_type']).to eq('branch')
             end
           end
@@ -412,7 +415,7 @@ describe API::Runner do
               it "updates provided Runner's parameter" do
                 request_job info: { param => value }
 
-                expect(response).to have_http_status(201)
+                expect(response).to have_gitlab_http_status(201)
                 expect(runner.reload.read_attribute(param.to_sym)).to eq(value)
               end
             end
@@ -427,14 +430,14 @@ describe API::Runner do
             it 'returns a conflict' do
               request_job
 
-              expect(response).to have_http_status(409)
+              expect(response).to have_gitlab_http_status(409)
               expect(response.headers).not_to have_key('X-GitLab-Last-Update')
             end
           end
 
           context 'when project and pipeline have multiple jobs' do
-            let!(:job) { create(:ci_build_tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
-            let!(:job2) { create(:ci_build_tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
+            let!(:job) { create(:ci_build, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:job2) { create(:ci_build, :tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
             let!(:test_job) { create(:ci_build, pipeline: pipeline, name: 'deploy', stage: 'deploy', stage_idx: 1) }
 
             before do
@@ -445,7 +448,7 @@ describe API::Runner do
             it 'returns dependent jobs' do
               request_job
 
-              expect(response).to have_http_status(201)
+              expect(response).to have_gitlab_http_status(201)
               expect(json_response['id']).to eq(test_job.id)
               expect(json_response['dependencies'].count).to eq(2)
               expect(json_response['dependencies']).to include(
@@ -455,7 +458,7 @@ describe API::Runner do
           end
 
           context 'when pipeline have jobs with artifacts' do
-            let!(:job) { create(:ci_build_tag, :artifacts, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:job) { create(:ci_build, :tag, :artifacts, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
             let!(:test_job) { create(:ci_build, pipeline: pipeline, name: 'deploy', stage: 'deploy', stage_idx: 1) }
 
             before do
@@ -465,7 +468,7 @@ describe API::Runner do
             it 'returns dependent jobs' do
               request_job
 
-              expect(response).to have_http_status(201)
+              expect(response).to have_gitlab_http_status(201)
               expect(json_response['id']).to eq(test_job.id)
               expect(json_response['dependencies'].count).to eq(1)
               expect(json_response['dependencies']).to include(
@@ -475,8 +478,8 @@ describe API::Runner do
           end
 
           context 'when explicit dependencies are defined' do
-            let!(:job) { create(:ci_build_tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
-            let!(:job2) { create(:ci_build_tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
+            let!(:job) { create(:ci_build, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:job2) { create(:ci_build, :tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
             let!(:test_job) do
               create(:ci_build, pipeline: pipeline, token: 'test-job-token', name: 'deploy',
                                 stage: 'deploy', stage_idx: 1,
@@ -491,7 +494,7 @@ describe API::Runner do
             it 'returns dependent jobs' do
               request_job
 
-              expect(response).to have_http_status(201)
+              expect(response).to have_gitlab_http_status(201)
               expect(json_response['id']).to eq(test_job.id)
               expect(json_response['dependencies'].count).to eq(1)
               expect(json_response['dependencies'][0]).to include('id' => job2.id, 'name' => job2.name, 'token' => job2.token)
@@ -499,8 +502,8 @@ describe API::Runner do
           end
 
           context 'when dependencies is an empty array' do
-            let!(:job) { create(:ci_build_tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
-            let!(:job2) { create(:ci_build_tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
+            let!(:job) { create(:ci_build, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:job2) { create(:ci_build, :tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
             let!(:empty_dependencies_job) do
               create(:ci_build, pipeline: pipeline, token: 'test-job-token', name: 'empty_dependencies_job',
                                 stage: 'deploy', stage_idx: 1,
@@ -515,7 +518,7 @@ describe API::Runner do
             it 'returns an empty array' do
               request_job
 
-              expect(response).to have_http_status(201)
+              expect(response).to have_gitlab_http_status(201)
               expect(json_response['id']).to eq(empty_dependencies_job.id)
               expect(json_response['dependencies'].count).to eq(0)
             end
@@ -534,7 +537,7 @@ describe API::Runner do
               it 'picks job' do
                 request_job
 
-                expect(response).to have_http_status 201
+                expect(response).to have_gitlab_http_status 201
               end
             end
 
@@ -568,7 +571,7 @@ describe API::Runner do
               it 'returns variables for triggers' do
                 request_job
 
-                expect(response).to have_http_status(201)
+                expect(response).to have_gitlab_http_status(201)
                 expect(json_response['variables']).to include(*expected_variables)
               end
             end
@@ -680,7 +683,7 @@ describe API::Runner do
         it 'updates a running build' do
           update_job(trace: 'BUILD TRACE UPDATED')
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(job.reload.trace.raw).to eq 'BUILD TRACE UPDATED'
         end
       end
@@ -699,7 +702,7 @@ describe API::Runner do
         it 'responds with forbidden' do
           update_job
 
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
         end
       end
 
@@ -868,7 +871,7 @@ describe API::Runner do
           it 'authorizes posting artifacts to running job' do
             authorize_artifacts_with_token_in_params
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
             expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
             expect(json_response['TempPath']).not_to be_nil
           end
@@ -878,7 +881,7 @@ describe API::Runner do
 
             authorize_artifacts_with_token_in_params(filesize: 100)
 
-            expect(response).to have_http_status(413)
+            expect(response).to have_gitlab_http_status(413)
           end
         end
 
@@ -886,7 +889,7 @@ describe API::Runner do
           it 'authorizes posting artifacts to running job' do
             authorize_artifacts_with_token_in_headers
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
             expect(response.content_type.to_s).to eq(Gitlab::Workhorse::INTERNAL_API_CONTENT_TYPE)
             expect(json_response['TempPath']).not_to be_nil
           end
@@ -896,7 +899,7 @@ describe API::Runner do
 
             authorize_artifacts_with_token_in_headers(filesize: 100)
 
-            expect(response).to have_http_status(413)
+            expect(response).to have_gitlab_http_status(413)
           end
         end
 
@@ -904,7 +907,7 @@ describe API::Runner do
           it 'fails to authorize artifacts posting' do
             authorize_artifacts(token: job.project.runners_token)
 
-            expect(response).to have_http_status(403)
+            expect(response).to have_gitlab_http_status(403)
           end
         end
 
@@ -913,14 +916,14 @@ describe API::Runner do
 
           authorize_artifacts
 
-          expect(response).to have_http_status(500)
+          expect(response).to have_gitlab_http_status(500)
         end
 
         context 'authorization token is invalid' do
           it 'responds with forbidden' do
             authorize_artifacts(token: 'invalid', filesize: 100 )
 
-            expect(response).to have_http_status(403)
+            expect(response).to have_gitlab_http_status(403)
           end
         end
 
@@ -955,14 +958,14 @@ describe API::Runner do
             it 'responds with forbidden' do
               upload_artifacts(file_upload, headers_with_token)
 
-              expect(response).to have_http_status(403)
+              expect(response).to have_gitlab_http_status(403)
             end
           end
 
           context 'when job is running' do
             shared_examples 'successful artifacts upload' do
               it 'updates successfully' do
-                expect(response).to have_http_status(201)
+                expect(response).to have_gitlab_http_status(201)
               end
             end
 
@@ -995,7 +998,7 @@ describe API::Runner do
               it 'responds with forbidden' do
                 upload_artifacts(file_upload, headers.merge(API::Helpers::Runner::JOB_TOKEN_HEADER => job.project.runners_token))
 
-                expect(response).to have_http_status(403)
+                expect(response).to have_gitlab_http_status(403)
               end
             end
           end
@@ -1006,7 +1009,7 @@ describe API::Runner do
 
               upload_artifacts(file_upload, headers_with_token)
 
-              expect(response).to have_http_status(413)
+              expect(response).to have_gitlab_http_status(413)
             end
           end
 
@@ -1014,7 +1017,7 @@ describe API::Runner do
             it 'fails to post artifacts without file' do
               post api("/jobs/#{job.id}/artifacts"), {}, headers_with_token
 
-              expect(response).to have_http_status(400)
+              expect(response).to have_gitlab_http_status(400)
             end
           end
 
@@ -1022,7 +1025,7 @@ describe API::Runner do
             it 'fails to post artifacts without GitLab-Workhorse' do
               post api("/jobs/#{job.id}/artifacts"), { token: job.token }, {}
 
-              expect(response).to have_http_status(403)
+              expect(response).to have_gitlab_http_status(403)
             end
           end
 
@@ -1044,7 +1047,7 @@ describe API::Runner do
               let(:expire_in) { '7 days' }
 
               it 'updates when specified' do
-                expect(response).to have_http_status(201)
+                expect(response).to have_gitlab_http_status(201)
                 expect(job.reload.artifacts_expire_at).to be_within(5.minutes).of(7.days.from_now)
               end
             end
@@ -1053,7 +1056,7 @@ describe API::Runner do
               let(:expire_in) { nil }
 
               it 'ignores if not specified' do
-                expect(response).to have_http_status(201)
+                expect(response).to have_gitlab_http_status(201)
                 expect(job.reload.artifacts_expire_at).to be_nil
               end
 
@@ -1062,7 +1065,7 @@ describe API::Runner do
                   let(:default_artifacts_expire_in) { '5 days' }
 
                   it 'sets to application default' do
-                    expect(response).to have_http_status(201)
+                    expect(response).to have_gitlab_http_status(201)
                     expect(job.reload.artifacts_expire_at).to be_within(5.minutes).of(5.days.from_now)
                   end
                 end
@@ -1071,7 +1074,7 @@ describe API::Runner do
                   let(:default_artifacts_expire_in) { '0' }
 
                   it 'does not set expire_in' do
-                    expect(response).to have_http_status(201)
+                    expect(response).to have_gitlab_http_status(201)
                     expect(job.reload.artifacts_expire_at).to be_nil
                   end
                 end
@@ -1100,7 +1103,7 @@ describe API::Runner do
               end
 
               it 'stores artifacts and artifacts metadata' do
-                expect(response).to have_http_status(201)
+                expect(response).to have_gitlab_http_status(201)
                 expect(stored_artifacts_file.original_filename).to eq(artifacts.original_filename)
                 expect(stored_metadata_file.original_filename).to eq(metadata.original_filename)
                 expect(stored_artifacts_size).to eq(71759)
@@ -1113,7 +1116,7 @@ describe API::Runner do
               end
 
               it 'is expected to respond with bad request' do
-                expect(response).to have_http_status(400)
+                expect(response).to have_gitlab_http_status(400)
               end
 
               it 'does not store metadata' do
@@ -1138,7 +1141,7 @@ describe API::Runner do
           it' "fails to post artifacts for outside of tmp path"' do
             upload_artifacts(file_upload, headers_with_token)
 
-            expect(response).to have_http_status(400)
+            expect(response).to have_gitlab_http_status(400)
           end
         end
 
@@ -1168,7 +1171,7 @@ describe API::Runner do
 
           context 'when using job token' do
             it 'download artifacts' do
-              expect(response).to have_http_status(200)
+              expect(response).to have_gitlab_http_status(200)
               expect(response.headers).to include download_headers
             end
           end
@@ -1177,14 +1180,14 @@ describe API::Runner do
             let(:token) { job.project.runners_token }
 
             it 'responds with forbidden' do
-              expect(response).to have_http_status(403)
+              expect(response).to have_gitlab_http_status(403)
             end
           end
         end
 
         context 'when job does not has artifacts' do
           it 'responds with not found' do
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
 

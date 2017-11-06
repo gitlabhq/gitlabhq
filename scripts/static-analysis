@@ -11,30 +11,40 @@ tasks = [
   %w[bundle exec rake brakeman],
   %w[bundle exec license_finder],
   %w[yarn run eslint],
-  %w[bundle exec rubocop --require rubocop-rspec],
+  %w[bundle exec rubocop --parallel],
   %w[scripts/lint-conflicts.sh],
-  %w[bundle exec rake gettext:lint]
+  %w[bundle exec rake gettext:lint],
+  %w[scripts/lint-changelog-yaml]
 ]
 
 failed_tasks = tasks.reduce({}) do |failures, task|
-  output, status = Gitlab::Popen.popen(task)
+  start = Time.now
+  puts
+  puts "$ #{task.join(' ')}"
 
-  puts "Running: #{task.join(' ')}"
-  puts output
+  output, status = Gitlab::Popen.popen(task)
+  puts "==> Finished in #{Time.now - start} seconds"
+  puts
 
   failures[task.join(' ')] = output unless status.zero?
 
   failures
 end
 
+puts
+puts '==================================================='
+puts
+puts
+
 if failed_tasks.empty?
   puts 'All static analyses passed successfully.'
 else
-  puts "\n===================================================\n\n"
-  puts "Some static analyses failed:"
+  puts 'Some static analyses failed:'
 
   failed_tasks.each do |failed_task, output|
-    puts "\n**** #{failed_task} failed with the following error:\n\n"
+    puts
+    puts "**** #{failed_task} failed with the following error:"
+    puts
     puts output
   end
 

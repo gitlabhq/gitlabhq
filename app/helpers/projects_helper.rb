@@ -15,17 +15,38 @@ module ProjectsHelper
   end
 
   def link_to_member_avatar(author, opts = {})
-    default_opts = { size: 16 }
+    default_opts = { size: 16, lazy_load: false }
     opts = default_opts.merge(opts)
 
     classes = %W[avatar avatar-inline s#{opts[:size]}]
     classes << opts[:avatar_class] if opts[:avatar_class]
 
-    image_tag(avatar_icon(author, opts[:size]), width: opts[:size], class: classes, alt: '')
+    avatar = avatar_icon(author, opts[:size])
+    src = opts[:lazy_load] ? nil : avatar
+
+    image_tag(src, width: opts[:size], class: classes, alt: '', "data-src" => avatar)
+  end
+
+  def author_content_tag(author, opts = {})
+    default_opts = { author_class: 'author', tooltip: false, by_username: false }
+    opts = default_opts.merge(opts)
+
+    has_tooltip = !opts[:by_username] && opts[:tooltip]
+
+    username = opts[:by_username] ? author.to_reference : author.name
+    name_tag_options = { class: [opts[:author_class]] }
+
+    if has_tooltip
+      name_tag_options[:title] = author.to_reference
+      name_tag_options[:data] = { placement: 'top' }
+      name_tag_options[:class] << 'has-tooltip'
+    end
+
+    content_tag(:span, sanitize(username), name_tag_options)
   end
 
   def link_to_member(project, author, opts = {}, &block)
-    default_opts = { avatar: true, name: true, size: 16, author_class: 'author', title: ":name", tooltip: false }
+    default_opts = { avatar: true, name: true, title: ":name" }
     opts = default_opts.merge(opts)
 
     return "(deleted)" unless author
@@ -36,12 +57,7 @@ module ProjectsHelper
     author_html << link_to_member_avatar(author, opts) if opts[:avatar]
 
     # Build name span tag
-    if opts[:by_username]
-      author_html << content_tag(:span, sanitize("@#{author.username}"), class: opts[:author_class]) if opts[:name]
-    else
-      tooltip_data = { placement: 'top' }
-      author_html << content_tag(:span, sanitize(author.name), class: [opts[:author_class], ('has-tooltip' if opts[:tooltip])], title: (author.to_reference if opts[:tooltip]), data: (tooltip_data if opts[:tooltip])) if opts[:name]
-    end
+    author_html << author_content_tag(author, opts) if opts[:name]
 
     author_html << capture(&block) if block
 
@@ -94,7 +110,15 @@ module ProjectsHelper
 
   def remove_fork_project_message(project)
     _("You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?") %
-      { forked_from_project: @project.forked_from_project.name_with_namespace }
+      { forked_from_project: fork_source_name(project) }
+  end
+
+  def fork_source_name(project)
+    if @project.fork_source
+      @project.fork_source.full_name
+    else
+      @project.fork_network&.deleted_root_project_name
+    end
   end
 
   def project_nav_tabs
@@ -124,8 +148,8 @@ module ProjectsHelper
   def can_change_visibility_level?(project, current_user)
     return false unless can?(current_user, :change_visibility_level, project)
 
-    if project.forked?
-      project.forked_from_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE
+    if project.fork_source
+      project.fork_source.visibility_level > Gitlab::VisibilityLevel::PRIVATE
     else
       true
     end
@@ -239,8 +263,8 @@ module ProjectsHelper
     end
   end
 
-  def has_projects_or_name?(projects, params)
-    !!(params[:name] || any_projects?(projects))
+  def show_projects?(projects, params)
+    !!(params[:personal] || params[:name] || any_projects?(projects))
   end
 
   private
@@ -290,6 +314,7 @@ module ProjectsHelper
       snippets:         :read_project_snippet,
       settings:         :admin_project,
       builds:           :read_build,
+      clusters:         :read_cluster,
       labels:           :read_label,
       issues:           :read_issue,
       project_members:  :read_project_member,

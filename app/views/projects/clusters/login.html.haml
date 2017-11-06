@@ -1,0 +1,16 @@
+- breadcrumb_title "Cluster"
+- page_title _("Login")
+
+.row.prepend-top-default
+  .col-sm-4
+    = render 'sidebar'
+  .col-sm-8
+    = render 'header'
+.row
+  .col-sm-8.col-sm-offset-4.signin-with-google
+    - if @authorize_url
+      = link_to @authorize_url do
+        = image_tag('auth_buttons/signin_with_google.png', width: '191px')
+    - else
+      - link = link_to(s_('ClusterIntegration|properly configured'), help_page_path("integration/google"), target: '_blank', rel: 'noopener noreferrer')
+      = s_('Google authentication is not %{link_to_documentation}. Ask your GitLab administrator if you want to use this service.').html_safe % { link_to_documentation: link }

@@ -29,6 +29,7 @@ module Gitlab
                                      #{config.root}/app/models/project_services
                                      #{config.root}/app/workers/concerns
                                      #{config.root}/app/services/concerns
+                                     #{config.root}/app/serializers/concerns
                                      #{config.root}/app/finders/concerns])
 
     config.generators.templates.push("#{config.root}/generator_templates")
@@ -105,8 +106,7 @@ module Gitlab
     config.assets.precompile << "lib/ace.js"
     config.assets.precompile << "vendor/assets/fonts/*"
     config.assets.precompile << "test.css"
-    config.assets.precompile << "new_nav.css"
-    config.assets.precompile << "new_sidebar.css"
+    config.assets.precompile << "locale/**/app.js"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
@@ -154,6 +154,9 @@ module Gitlab
     # This is needed for gitlab-shell
     ENV['GITLAB_PATH_OUTSIDE_HOOK'] = ENV['PATH']
     ENV['GIT_TERMINAL_PROMPT'] = '0'
+
+    # Gitlab Read-only middleware support
+    config.middleware.insert_after ActionDispatch::Flash, 'Gitlab::Middleware::ReadOnly'
 
     config.generators do |g|
       g.factory_girl false

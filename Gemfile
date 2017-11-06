@@ -23,10 +23,10 @@ gem 'faraday', '~> 0.12'
 # Authentication libraries
 gem 'devise', '~> 4.2'
 gem 'doorkeeper', '~> 4.2.0'
-gem 'doorkeeper-openid_connect', '~> 1.1.0'
+gem 'doorkeeper-openid_connect', '~> 1.2.0'
 gem 'omniauth', '~> 1.4.2'
 gem 'omniauth-auth0', '~> 1.4.1'
-gem 'omniauth-azure-oauth2', '~> 0.0.6'
+gem 'omniauth-azure-oauth2', '~> 0.0.9'
 gem 'omniauth-cas3', '~> 1.1.4'
 gem 'omniauth-facebook', '~> 4.0.0'
 gem 'omniauth-github', '~> 1.1.1'
@@ -90,7 +90,7 @@ gem 'kaminari', '~> 1.0'
 gem 'hamlit', '~> 2.6.1'
 
 # Files attachments
-gem 'carrierwave', '~> 1.1'
+gem 'carrierwave', '~> 1.2'
 
 # Drag and Drop UI
 gem 'dropzonejs-rails', '~> 0.7.1'
@@ -102,10 +102,10 @@ gem 'fog-google', '~> 0.5'
 gem 'fog-local', '~> 0.3'
 gem 'fog-openstack', '~> 0.1'
 gem 'fog-rackspace', '~> 0.1.1'
-gem 'fog-aliyun', '~> 0.1.0'
+gem 'fog-aliyun', '~> 0.2.0'
 
 # for Google storage
-gem 'google-api-client', '~> 0.8.6'
+gem 'google-api-client', '~> 0.13.6'
 
 # for aws storage
 gem 'unf', '~> 0.1.4'
@@ -239,7 +239,7 @@ gem 'rack-proxy', '~> 0.6.0'
 gem 'sass-rails', '~> 5.0.6'
 gem 'uglifier', '~> 2.7.2'
 
-gem 'addressable', '~> 2.3.8'
+gem 'addressable', '~> 2.5.2'
 gem 'bootstrap-sass', '~> 3.3.0'
 gem 'font-awesome-rails', '~> 4.7'
 gem 'gemojione', '~> 3.3'
@@ -281,7 +281,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~>0.7.0.beta14'
+  gem 'prometheus-client-mmap', '~>0.7.0.beta18'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -324,9 +324,9 @@ group :development, :test do
   # Generate Fake data
   gem 'ffaker', '~> 2.4'
 
-  gem 'capybara', '~> 2.15.0'
+  gem 'capybara', '~> 2.15'
   gem 'capybara-screenshot', '~> 1.0.0'
-  gem 'poltergeist', '~> 1.9.0'
+  gem 'selenium-webdriver', '~> 3.5'
 
   gem 'spring', '~> 2.0.0'
   gem 'spring-commands-rspec', '~> 1.0.4'
@@ -356,7 +356,7 @@ end
 group :test do
   gem 'shoulda-matchers', '~> 3.1.2', require: false
   gem 'email_spec', '~> 1.6.0'
-  gem 'json-schema', '~> 2.6.2'
+  gem 'json-schema', '~> 2.8.0'
   gem 'webmock', '~> 2.3.2'
   gem 'test_after_commit', '~> 1.1'
   gem 'sham_rack', '~> 1.3.6'
@@ -398,7 +398,7 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.33.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.51.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 

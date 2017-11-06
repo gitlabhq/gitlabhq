@@ -1,6 +1,5 @@
-/* global Flash */
-
-import AjaxFilter from '~/droplab/plugins/ajax_filter';
+import Flash from '../flash';
+import AjaxFilter from '../droplab/plugins/ajax_filter';
 import './filtered_search_dropdown';
 import { addClassIfElementExists } from '../lib/utils/dom_utils';
 
@@ -26,7 +25,7 @@ class DropdownUser extends gl.FilteredSearchDropdown {
         },
         onError() {
           /* eslint-disable no-new */
-          new Flash('An error occured fetching the dropdown data.');
+          new Flash('An error occurred fetching the dropdown data.');
           /* eslint-enable no-new */
         },
       },

@@ -40,6 +40,10 @@
 
   &.top-block {
     border-top: none;
+
+    .container-fluid {
+      background-color: inherit;
+    }
   }
 
   &.middle-block {
@@ -97,10 +101,6 @@
   &.build-content {
     background-color: $white-light;
     border-top: none;
-  }
-
-  &.top-block .container-fluid {
-    background-color: inherit;
   }
 }
 
@@ -207,6 +207,23 @@
 
   &.user-cover-block {
     padding: 24px 0 0;
+
+    .nav-links {
+      width: 100%;
+      float: none;
+
+      &.scrolling-tabs {
+        float: none;
+      }
+    }
+
+    li:first-child {
+      margin-left: auto;
+    }
+
+    li:last-child {
+      margin-right: auto;
+    }
   }
 
   .group-info {
@@ -260,7 +277,7 @@
   position: relative;
   border: 1px solid $blue-300;
   border-radius: $border-radius-default;
-  background-color: $blue-25;
+  background-color: $blue-50;
   justify-content: center;
 
   .dismiss-button {

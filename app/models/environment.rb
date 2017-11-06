@@ -30,7 +30,6 @@ class Environment < ActiveRecord::Base
                       message: Gitlab::Regex.environment_slug_regex_message }
 
   validates :external_url,
-            uniqueness: { scope: :project_id },
             length: { maximum: 255 },
             allow_nil: true,
             addressable_url: true
@@ -110,7 +109,7 @@ class Environment < ActiveRecord::Base
   end
 
   def ref_path
-    "refs/#{Repository::REF_ENVIRONMENTS}/#{Shellwords.shellescape(name)}"
+    "refs/#{Repository::REF_ENVIRONMENTS}/#{slug}"
   end
 
   def formatted_external_url
@@ -162,6 +161,10 @@ class Environment < ActiveRecord::Base
     if has_additional_metrics?
       project.prometheus_service.additional_environment_metrics(self)
     end
+  end
+
+  def slug
+    super.presence || generate_slug
   end
 
   # An environment name is not necessarily suitable for use in URLs, DNS

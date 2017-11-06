@@ -55,6 +55,15 @@
 
 .boards-app {
   position: relative;
+
+  @media (min-width: $screen-sm-min) {
+    transition: width $right-sidebar-transition-duration;
+    width: 100%;
+
+    &.is-compact {
+      width: calc(100% - #{$gutter_width});
+    }
+  }
 }
 
 .boards-app-loading {
@@ -63,7 +72,7 @@
 }
 
 .boards-list {
-  height: calc(100vh - 152px);
+  height: calc(100vh - 105px);
   width: 100%;
   padding-top: 25px;
   padding-bottom: 25px;
@@ -72,17 +81,13 @@
   overflow-x: scroll;
   white-space: nowrap;
 
-  @media (min-width: $screen-sm-min) {
-    height: 475px; // Needed for PhantomJS
-    // scss-lint:disable DuplicateProperty
-    height: calc(100vh - 222px);
-    // scss-lint:enable DuplicateProperty
-    min-height: 475px;
-    transition: width .2s;
+  @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+    height: calc(100vh - 90px);
+  }
 
-    &.is-compact {
-      width: calc(100% - 290px);
-    }
+  @media (min-width: $screen-md-min) {
+    height: calc(100vh - 160px);
+    min-height: 475px;
   }
 }
 
@@ -410,16 +415,7 @@
   margin: 5px;
 }
 
-.page-with-layout-nav.page-with-sub-nav .issue-boards-sidebar,
-.page-with-new-sidebar.page-with-sidebar .issue-boards-sidebar {
-  position: absolute;
-
-  &.right-sidebar {
-    top: 0;
-    bottom: 0;
-    height: 100%;
-  }
-
+.page-with-contextual-sidebar.page-with-sidebar .issue-boards-sidebar {
   .issuable-sidebar-header {
     position: relative;
   }
@@ -457,8 +453,8 @@
 .right-sidebar.right-sidebar-expanded {
   &.boards-sidebar-slide-enter-active,
   &.boards-sidebar-slide-leave-active {
-    transition: width .2s,
-                padding .2s;
+    transition: width $right-sidebar-transition-duration,
+                padding $right-sidebar-transition-duration;
   }
 
   &.boards-sidebar-slide-enter,

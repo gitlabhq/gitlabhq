@@ -28,9 +28,17 @@ module Gitlab
 
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'.freeze
     MAXIMUM_GITALY_CALLS = 30
+    CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
 
     MUTEX = Mutex.new
     private_constant :MUTEX
+
+    class << self
+      attr_accessor :query_time, :migrate_histogram
+    end
+
+    self.query_time = 0
+    self.migrate_histogram = Gitlab::Metrics.histogram(:gitaly_migrate_call_duration, "Gitaly migration call execution timings")
 
     def self.stub(name, storage)
       MUTEX.synchronize do
@@ -69,17 +77,41 @@ module Gitlab
 
     # All Gitaly RPC call sites should use GitalyClient.call. This method
     # makes sure that per-request authentication headers are set.
+    #
+    # This method optionally takes a block which receives the keyword
+    # arguments hash 'kwargs' that will be passed to gRPC. This allows the
+    # caller to modify or augment the keyword arguments. The block must
+    # return a hash.
+    #
+    # For example:
+    #
+    # GitalyClient.call(storage, service, rpc, request) do |kwargs|
+    #   kwargs.merge(deadline: Time.now + 10)
+    # end
+    #
     def self.call(storage, service, rpc, request)
+      start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       enforce_gitaly_request_limits(:call)
 
-      metadata = request_metadata(storage)
-      metadata = yield(metadata) if block_given?
-      stub(service, storage).__send__(rpc, request, metadata) # rubocop:disable GitlabSecurity/PublicSend
+      kwargs = request_kwargs(storage)
+      kwargs = yield(kwargs) if block_given?
+      stub(service, storage).__send__(rpc, request, kwargs) # rubocop:disable GitlabSecurity/PublicSend
+    ensure
+      self.query_time += Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
     end
 
-    def self.request_metadata(storage)
+    def self.request_kwargs(storage)
       encoded_token = Base64.strict_encode64(token(storage).to_s)
-      { metadata: { 'authorization' => "Bearer #{encoded_token}" } }
+      metadata = {
+        'authorization' => "Bearer #{encoded_token}",
+        'client_name' => CLIENT_NAME
+      }
+
+      feature_stack = Thread.current[:gitaly_feature_stack]
+      feature = feature_stack && feature_stack[0]
+      metadata['call_site'] = feature.to_s if feature
+
+      { metadata: metadata }
     end
 
     def self.token(storage)
@@ -137,7 +169,17 @@ module Gitlab
       Gitlab::Metrics.measure(metric_name) do
         # Some migrate calls wrap other migrate calls
         allow_n_plus_1_calls do
-          yield is_enabled
+          feature_stack = Thread.current[:gitaly_feature_stack] ||= []
+          feature_stack.unshift(feature)
+          begin
+            start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+            yield is_enabled
+          ensure
+            total_time = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
+            migrate_histogram.observe({ gitaly_enabled: is_enabled, feature: feature }, total_time)
+            feature_stack.shift
+            Thread.current[:gitaly_feature_stack] = nil if feature_stack.empty?
+          end
         end
       end
     end
@@ -151,7 +193,7 @@ module Gitlab
       actual_call_count = increment_call_count("gitaly_#{call_site}_actual")
 
       # Do no enforce limits in production
-      return if Rails.env.production?
+      return if Rails.env.production? || ENV["GITALY_DISABLE_REQUEST_LIMITS"]
 
       # Check if this call is nested within a allow_n_plus_1_calls
       # block and skip check if it is
@@ -228,8 +270,18 @@ module Gitlab
       path.read.chomp
     end
 
+    def self.timestamp(t)
+      Google::Protobuf::Timestamp.new(seconds: t.to_i)
+    end
+
     def self.encode(s)
+      return "" if s.nil?
+
       s.dup.force_encoding(Encoding::ASCII_8BIT)
+    end
+
+    def self.encode_repeated(a)
+      Google::Protobuf::RepeatedField.new(:bytes, a.map { |s| self.encode(s) } )
     end
 
     # Count a stack. Used for n+1 detection

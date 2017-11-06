@@ -40,6 +40,38 @@ GET /groups
 ]
 ```
 
+When adding the parameter `statistics=true` and the authenticated user is an admin, additional group statistics are returned.
+
+```
+GET /groups?statistics=true
+```
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Foobar Group",
+    "path": "foo-bar",
+    "description": "An interesting group",
+    "visibility": "public",
+    "lfs_enabled": true,
+    "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
+    "web_url": "http://localhost:3000/groups/foo-bar",
+    "request_access_enabled": false,
+    "full_name": "Foobar Group",
+    "full_path": "foo-bar",
+    "parent_id": null,
+    "statistics": {
+      "storage_size" : 212,
+      "repository_size" : 33,
+      "lfs_objects_size" : 123,
+      "job_artifacts_size" : 57
+
+    }
+  }
+]
+```
+
 You can search for groups by name or path, see below.
 
 ## List a group's projects

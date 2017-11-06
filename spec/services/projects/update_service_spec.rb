@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::UpdateService, '#execute' do
+  include ProjectForksHelper
+
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
@@ -76,13 +78,7 @@ describe Projects::UpdateService, '#execute' do
 
   describe 'when updating project that has forks' do
     let(:project) { create(:project, :internal) }
-    let(:forked_project) { create(:forked_project_with_submodules, :internal) }
-
-    before do
-      forked_project.build_forked_project_link(forked_to_project_id: forked_project.id,
-                                               forked_from_project_id: project.id)
-      forked_project.save
-    end
+    let(:forked_project) { fork_project(project) }
 
     it 'updates forks visibility level when parent set to more restrictive' do
       opts = { visibility_level: Gitlab::VisibilityLevel::PRIVATE }
@@ -149,24 +145,43 @@ describe Projects::UpdateService, '#execute' do
   end
 
   context 'when renaming a project' do
-    let(:repository_storage_path) { Gitlab.config.repositories.storages['default']['path'] }
+    let(:repository_storage) { 'default' }
+    let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
 
-    before do
-      gitlab_shell.add_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+    context 'with legacy storage' do
+      before do
+        gitlab_shell.add_repository(repository_storage, "#{user.namespace.full_path}/existing")
+      end
+
+      after do
+        gitlab_shell.remove_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
+      end
+
+      it 'does not allow renaming when new path matches existing repository on disk' do
+        result = update_project(project, admin, path: 'existing')
+
+        expect(result).to include(status: :error)
+        expect(result[:message]).to match('There is already a repository with that name on disk')
+        expect(project).not_to be_valid
+        expect(project.errors.messages).to have_key(:base)
+        expect(project.errors.messages[:base]).to include('There is already a repository with that name on disk')
+      end
     end
 
-    after do
-      gitlab_shell.remove_repository(repository_storage_path, "#{user.namespace.full_path}/existing")
-    end
+    context 'with hashed storage' do
+      let(:project) { create(:project, :repository, creator: user, namespace: user.namespace) }
 
-    it 'does not allow renaming when new path matches existing repository on disk' do
-      result = update_project(project, admin, path: 'existing')
+      before do
+        stub_application_setting(hashed_storage_enabled: true)
+      end
 
-      expect(result).to include(status: :error)
-      expect(result[:message]).to match('There is already a repository with that name on disk')
-      expect(project).not_to be_valid
-      expect(project.errors.messages).to have_key(:base)
-      expect(project.errors.messages[:base]).to include('There is already a repository with that name on disk')
+      it 'does not check if new path matches existing repository on disk' do
+        expect(project).not_to receive(:repository_with_same_path_already_exists?)
+
+        result = update_project(project, admin, path: 'existing')
+
+        expect(result).to include(status: :success)
+      end
     end
   end
 

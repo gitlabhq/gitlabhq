@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Target branch', js: true do
+describe 'Target branch', :js do
   let(:user) { create(:user) }
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.project }

@@ -50,6 +50,25 @@ feature 'Dashboard Projects' do
     end
   end
 
+  context 'when on Your projects tab' do
+    it 'shows all projects by default' do
+      visit dashboard_projects_path
+
+      expect(page).to have_content(project.name)
+    end
+
+    it 'shows personal projects on personal projects tab', :js do
+      project3 = create(:project, namespace: user.namespace)
+
+      visit dashboard_projects_path
+
+      click_link 'Personal'
+
+      expect(page).not_to have_content(project.name)
+      expect(page).to have_content(project3.name)
+    end
+  end
+
   context 'when on Starred projects tab' do
     it 'shows only starred projects' do
       user.toggle_star(project2)
@@ -61,7 +80,7 @@ feature 'Dashboard Projects' do
     end
   end
 
-  describe 'with a pipeline', clean_gitlab_redis_shared_state: true do
+  describe 'with a pipeline', :clean_gitlab_redis_shared_state do
     let(:pipeline) { create(:ci_pipeline, project: project, sha: project.commit.sha) }
 
     before do

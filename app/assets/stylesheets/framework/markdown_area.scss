@@ -138,15 +138,23 @@
 
 .toolbar-btn {
   float: left;
-  padding: 0 5px;
-  color: $gl-text-color-secondary;
+  padding: 0 7px;
   background: transparent;
   border: 0;
   outline: 0;
 
+  svg {
+    width: 14px;
+    height: 14px;
+    margin-top: 3px;
+    fill: $gl-text-color-secondary;
+  }
+
   &:hover,
   &:focus {
-    color: $gl-link-color;
+    svg {
+      fill: $gl-link-color;
+    }
   }
 }
 
@@ -173,21 +181,8 @@
   ul > li {
     white-space: nowrap;
   }
-}
 
-@media(max-width: $screen-xs-max) {
-  .atwho-view-ul {
-    width: 350px;
-  }
-
-  .atwho-view ul li {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
-
-// TODO: fallback to global style
-.atwho-view {
+  // TODO: fallback to global style
   .atwho-view-ul {
     padding: 8px 1px;
 
@@ -218,5 +213,16 @@
         color: $gl-text-color;
       }
     }
+  }
+}
+
+@media(max-width: $screen-xs-max) {
+  .atwho-view-ul {
+    width: 350px;
+  }
+
+  .atwho-view ul li {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

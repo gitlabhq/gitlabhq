@@ -57,15 +57,17 @@ describe ApplicationHelper do
   end
 
   describe 'project_icon' do
+    let(:asset_host) { 'http://assets' }
+
     it 'returns an url for the avatar' do
-      project = create(:project, avatar: File.open(uploaded_image_temp_path))
+      project = create(:project, :public, avatar: File.open(uploaded_image_temp_path))
       avatar_url = "/uploads/-/system/project/avatar/#{project.id}/banana_sample.gif"
 
       expect(helper.project_icon(project.full_path).to_s)
         .to eq "<img data-src=\"#{avatar_url}\" class=\" lazy\" src=\"#{LazyImageTagHelper.placeholder_image}\" />"
 
-      allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-      avatar_url = "#{gitlab_host}/uploads/-/system/project/avatar/#{project.id}/banana_sample.gif"
+      allow(ActionController::Base).to receive(:asset_host).and_return(asset_host)
+      avatar_url = "#{asset_host}/uploads/-/system/project/avatar/#{project.id}/banana_sample.gif"
 
       expect(helper.project_icon(project.full_path).to_s)
         .to eq "<img data-src=\"#{avatar_url}\" class=\" lazy\" src=\"#{LazyImageTagHelper.placeholder_image}\" />"
@@ -304,6 +306,14 @@ describe ApplicationHelper do
     context 'when alternate support url is not specified' do
       it 'builds the support url from the promo_url' do
         expect(helper.support_url).to eq(helper.promo_url + '/getting-help/')
+      end
+    end
+  end
+
+  describe '#locale_path' do
+    it 'returns the locale path with an `_`' do
+      Gitlab::I18n.with_locale('pt-BR') do
+        expect(helper.locale_path).to include('assets/locale/pt_BR/app')
       end
     end
   end

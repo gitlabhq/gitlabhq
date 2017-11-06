@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Import/Export - project import integration test', js: true do
+feature 'Import/Export - project import integration test', :js do
   include Select2Helper
 
   let(:user) { create(:user) }
@@ -27,6 +27,7 @@ feature 'Import/Export - project import integration test', js: true do
 
         select2(namespace.id, from: '#project_namespace_id')
         fill_in :project_path, with: project_path, visible: true
+        click_import_project_tab
         click_link 'GitLab export'
 
         expect(page).to have_content('Import an exported GitLab project')
@@ -51,6 +52,7 @@ feature 'Import/Export - project import integration test', js: true do
     context 'path is not prefilled' do
       scenario 'user imports an exported project successfully' do
         visit new_project_path
+        click_import_project_tab
         click_link 'GitLab export'
 
         fill_in :path, with: 'test-project-path', visible: true
@@ -72,25 +74,13 @@ feature 'Import/Export - project import integration test', js: true do
 
     select2(user.namespace.id, from: '#project_namespace_id')
     fill_in :project_path, with: project.name, visible: true
+    click_import_project_tab
     click_link 'GitLab export'
     attach_file('file', file)
     click_on 'Import project'
 
     page.within('.flash-container') do
       expect(page).to have_content('Project could not be imported')
-    end
-  end
-
-  context 'when limited to the default user namespace' do
-    scenario 'passes correct namespace ID in the URL' do
-      visit new_project_path
-
-      fill_in :project_path, with: 'test-project-path', visible: true
-
-      click_link 'GitLab export'
-
-      expect(page).to have_content('GitLab project export')
-      expect(URI.parse(current_url).query).to eq("namespace_id=#{user.namespace.id}&path=test-project-path")
     end
   end
 
@@ -101,5 +91,9 @@ feature 'Import/Export - project import integration test', js: true do
 
   def project_hook_exists?(project)
     Gitlab::Git::Hook.new('post-receive', project.repository.raw_repository).exists?
+  end
+
+  def click_import_project_tab
+    find('#import-project-tab').click
   end
 end

@@ -1,7 +1,7 @@
-/* global Flash */
 import successSvg from 'icons/_icon_status_success.svg';
 import warningSvg from 'icons/_icon_status_warning.svg';
 import simplePoll from '~/lib/utils/simple_poll';
+import Flash from '../../../flash';
 import statusIcon from '../mr_widget_status_icon';
 import eventHub from '../../event_hub';
 
@@ -38,23 +38,39 @@ export default {
 
       return this.useCommitMessageWithDescription ? withoutDesc : withDesc;
     },
+    status() {
+      const { pipeline, isPipelineActive, isPipelineFailed, hasCI, ciStatus } = this.mr;
+
+      if (hasCI && !ciStatus) {
+        return 'failed';
+      } else if (!pipeline) {
+        return 'success';
+      } else if (isPipelineActive) {
+        return 'pending';
+      } else if (isPipelineFailed) {
+        return 'failed';
+      }
+
+      return 'success';
+    },
     mergeButtonClass() {
       const defaultClass = 'btn btn-sm btn-success accept-merge-request';
       const failedClass = `${defaultClass} btn-danger`;
       const inActionClass = `${defaultClass} btn-info`;
-      const { pipeline, isPipelineActive, isPipelineFailed, hasCI, ciStatus } = this.mr;
 
-      if (hasCI && !ciStatus) {
+      if (this.status === 'failed') {
         return failedClass;
-      } else if (!pipeline) {
-        return defaultClass;
-      } else if (isPipelineActive) {
+      } else if (this.status === 'pending') {
         return inActionClass;
-      } else if (isPipelineFailed) {
-        return failedClass;
       }
 
       return defaultClass;
+    },
+    iconClass() {
+      if (this.status === 'failed' || !this.commitMessage.length || !this.mr.isMergeAllowed || this.mr.preventMerge) {
+        return 'failed';
+      }
+      return 'success';
     },
     mergeButtonText() {
       if (this.isMergingImmediately) {
@@ -84,13 +100,8 @@ export default {
     },
   },
   methods: {
-    isMergeAllowed() {
-      return !this.mr.onlyAllowMergeIfPipelineSucceeds ||
-        this.mr.isPipelinePassing ||
-        this.mr.isPipelineSkipped;
-    },
     shouldShowMergeControls() {
-      return this.isMergeAllowed() || this.shouldShowMergeWhenPipelineSucceedsText;
+      return this.mr.isMergeAllowed || this.shouldShowMergeWhenPipelineSucceedsText;
     },
     updateCommitMessage() {
       const cmwd = this.mr.commitMessageWithDescription;
@@ -156,6 +167,7 @@ export default {
             eventHub.$emit('FetchActionsContent');
             if (window.mergeRequest) {
               window.mergeRequest.updateStatusText('status-box-open', 'status-box-merged', 'Merged');
+              window.mergeRequest.hideCloseButton();
               window.mergeRequest.decreaseCounter();
             }
             stopPolling();
@@ -208,7 +220,7 @@ export default {
   },
   template: `
     <div class="mr-widget-body media">
-      <status-icon status="success" />
+      <status-icon :status="iconClass" />
       <div class="media-body">
         <div class="mr-widget-body-controls media space-children">
           <span class="btn-group append-bottom-5">
@@ -274,6 +286,7 @@ export default {
                 <input
                   id="remove-source-branch-input"
                   v-model="removeSourceBranch"
+                  class="js-remove-source-branch-checkbox"
                   :disabled="isRemoveSourceBranchButtonDisabled"
                   type="checkbox"/> Remove source branch
               </label>
@@ -284,17 +297,23 @@ export default {
                 :mr="mr"
                 :is-merge-button-disabled="isMergeButtonDisabled" />
 
+              <span
+                v-if="mr.ffOnlyEnabled"
+                class="js-fast-forward-message">
+                Fast-forward merge without a merge commit
+              </span>
               <button
+                v-else
                 @click="toggleCommitMessageEditor"
                 :disabled="isMergeButtonDisabled"
-                class="btn btn-default btn-xs"
+                class="js-modify-commit-message-button btn btn-default btn-xs"
                 type="button">
                 Modify commit message
               </button>
             </template>
             <template v-else>
-              <span class="bold">
-                The pipeline for this merge request has not succeeded yet
+              <span class="bold js-resolve-mr-widget-items-message">
+                You can only merge once the items above are resolved
               </span>
             </template>
           </div>

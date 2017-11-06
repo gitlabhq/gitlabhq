@@ -20,7 +20,7 @@
       = visibility_level_icon(group.visibility_level, fw: false)
 
   .avatar-container.s40
-    = image_tag group_icon(group), class: "avatar s40 hidden-xs"
+    = group_icon(group, class: "avatar s40 hidden-xs")
   .title
     = link_to [:admin, group], class: 'group-name' do
       = group.full_name

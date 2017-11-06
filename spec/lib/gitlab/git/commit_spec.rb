@@ -65,34 +65,12 @@ describe Gitlab::Git::Commit, seed_helper: true do
   end
 
   describe "Commit info from gitaly commit" do
-    let(:id) { 'f00' }
-    let(:parent_ids) { %w(b45 b46) }
     let(:subject) { "My commit".force_encoding('ASCII-8BIT') }
     let(:body) { subject + "My body".force_encoding('ASCII-8BIT') }
-    let(:committer) do
-      Gitaly::CommitAuthor.new(
-        name: generate(:name),
-        email: generate(:email),
-        date: Google::Protobuf::Timestamp.new(seconds: 123)
-      )
-    end
-    let(:author) do
-      Gitaly::CommitAuthor.new(
-        name: generate(:name),
-        email: generate(:email),
-        date: Google::Protobuf::Timestamp.new(seconds: 456)
-      )
-    end
-    let(:gitaly_commit) do
-      Gitaly::GitCommit.new(
-        id: id,
-        subject: subject,
-        body: body,
-        author: author,
-        committer: committer,
-        parent_ids: parent_ids
-      )
-    end
+    let(:gitaly_commit) { build(:gitaly_commit, subject: subject, body: body) }
+    let(:id) { gitaly_commit.id }
+    let(:committer) { gitaly_commit.committer }
+    let(:author) { gitaly_commit.author }
     let(:commit) { described_class.new(repository, gitaly_commit) }
 
     it { expect(commit.short_id).to eq(id[0..10]) }
@@ -104,7 +82,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
     it { expect(commit.author_name).to eq(author.name) }
     it { expect(commit.committer_name).to eq(committer.name) }
     it { expect(commit.committer_email).to eq(committer.email) }
-    it { expect(commit.parent_ids).to eq(parent_ids) }
+    it { expect(commit.parent_ids).to eq(gitaly_commit.parent_ids) }
 
     context 'no body' do
       let(:body) { "".force_encoding('ASCII-8BIT') }
@@ -181,7 +159,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
       end
     end
 
-    describe '.where' do
+    shared_examples '.where' do
       context 'path is empty string' do
         subject do
           commits = described_class.where(
@@ -279,6 +257,14 @@ describe Gitlab::Git::Commit, seed_helper: true do
       end
     end
 
+    describe '.where with gitaly' do
+      it_should_behave_like '.where'
+    end
+
+    describe '.where without gitaly', :skip_gitaly_mock do
+      it_should_behave_like '.where'
+    end
+
     describe '.between' do
       subject do
         commits = described_class.between(repository, SeedRepo::Commit::PARENT_ID, SeedRepo::Commit::ID)
@@ -350,7 +336,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
         it_behaves_like 'finding all commits'
       end
 
-      context 'when Gitaly find_all_commits feature is disabled', skip_gitaly_mock: true do
+      context 'when Gitaly find_all_commits feature is disabled', :skip_gitaly_mock do
         it_behaves_like 'finding all commits'
 
         context 'while applying a sort order based on the `order` option' do
@@ -419,7 +405,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
     it_should_behave_like '#stats'
   end
 
-  describe '#stats with gitaly disabled', skip_gitaly_mock: true do
+  describe '#stats with gitaly disabled', :skip_gitaly_mock do
     it_should_behave_like '#stats'
   end
 

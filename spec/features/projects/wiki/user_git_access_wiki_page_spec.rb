@@ -3,14 +3,7 @@ require 'spec_helper'
 describe 'Projects > Wiki > User views Git access wiki page' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public) }
-  let(:wiki_page) do
-    WikiPages::CreateService.new(
-      project,
-      user,
-      title: 'home',
-      content: '[some link](other-page)'
-    ).execute
-  end
+  let(:wiki_page) { create(:wiki_page, wiki: project.wiki, attrs: { title: 'home', content: '[some link](other-page)' }) }
 
   before do
     sign_in(user)

@@ -14,7 +14,6 @@ module Issuable
   include StripAttribute
   include Awardable
   include Taskable
-  include TimeTrackable
   include Importable
   include Editable
   include AfterCommitQueue
@@ -95,8 +94,6 @@ module Issuable
 
     strip_attributes :title
 
-    acts_as_paranoid
-
     after_save :record_metrics, unless: :imported?
 
     # We want to use optimistic lock for cases when only title or description are involved
@@ -143,16 +140,18 @@ module Issuable
     end
 
     def sort(method, excluded_labels: [])
-      sorted = case method.to_s
-               when 'milestone_due_asc' then order_milestone_due_asc
-               when 'milestone_due_desc' then order_milestone_due_desc
-               when 'downvotes_desc' then order_downvotes_desc
-               when 'upvotes_desc' then order_upvotes_desc
-               when 'label_priority' then order_labels_priority(excluded_labels: excluded_labels)
-               when 'priority' then order_due_date_and_labels_priority(excluded_labels: excluded_labels)
-               else
-                 order_by(method)
-               end
+      sorted =
+        case method.to_s
+        when 'downvotes_desc'     then order_downvotes_desc
+        when 'label_priority'     then order_labels_priority(excluded_labels: excluded_labels)
+        when 'milestone'          then order_milestone_due_asc
+        when 'milestone_due_asc'  then order_milestone_due_asc
+        when 'milestone_due_desc' then order_milestone_due_desc
+        when 'popularity'         then order_upvotes_desc
+        when 'priority'           then order_due_date_and_labels_priority(excluded_labels: excluded_labels)
+        when 'upvotes_desc'       then order_upvotes_desc
+        else order_by(method)
+        end
 
       # Break ties with the ID column for pagination
       sorted.order(id: :desc)
@@ -214,7 +213,7 @@ module Issuable
     def grouping_columns(sort)
       grouping_columns = [arel_table[:id]]
 
-      if %w(milestone_due_desc milestone_due_asc).include?(sort)
+      if %w(milestone_due_desc milestone_due_asc milestone).include?(sort)
         milestone_table = Milestone.arel_table
         grouping_columns << milestone_table[:id]
         grouping_columns << milestone_table[:due_date]
@@ -254,23 +253,22 @@ module Issuable
     participants(user).include?(user)
   end
 
-  def to_hook_data(user)
-    hook_data = {
-      object_kind: self.class.name.underscore,
-      user: user.hook_attrs,
-      project: project.hook_attrs,
-      object_attributes: hook_attrs,
-      labels: labels.map(&:hook_attrs),
-      # DEPRECATED
-      repository: project.hook_attrs.slice(:name, :url, :description, :homepage)
-    }
-    if self.is_a?(Issue)
-      hook_data[:assignees] = assignees.map(&:hook_attrs) if assignees.any?
-    else
-      hook_data[:assignee] = assignee.hook_attrs if assignee
+  def to_hook_data(user, old_labels: [], old_assignees: [])
+    changes = previous_changes
+
+    if old_labels != labels
+      changes[:labels] = [old_labels.map(&:hook_attrs), labels.map(&:hook_attrs)]
     end
 
-    hook_data
+    if old_assignees != assignees
+      if self.is_a?(Issue)
+        changes[:assignees] = [old_assignees.map(&:hook_attrs), assignees.map(&:hook_attrs)]
+      else
+        changes[:assignee] = [old_assignees&.first&.hook_attrs, assignee&.hook_attrs]
+      end
+    end
+
+    Gitlab::HookData::IssuableBuilder.new(self).build(user: user, changes: changes)
   end
 
   def labels_array

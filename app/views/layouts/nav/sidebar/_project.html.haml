@@ -146,7 +146,7 @@
                   = number_with_delimiter(@project.open_merge_requests_count)
 
       - if project_nav_tab? :pipelines
-        = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :environments, :artifacts]) do
+        = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :environments, :artifacts, :clusters]) do
           = link_to project_pipelines_path(@project), class: 'shortcuts-pipelines' do
             .nav-icon-container
               = sprite_icon('pipeline')
@@ -188,6 +188,12 @@
                 = link_to charts_project_pipelines_path(@project), title: 'Charts', class: 'shortcuts-pipelines-charts' do
                   %span
                     Charts
+
+            - if project_nav_tab? :clusters
+              = nav_link(controller: :clusters) do
+                = link_to project_clusters_path(@project), title: 'Cluster', class: 'shortcuts-cluster' do
+                  %span
+                    Cluster
 
       - if project_nav_tab? :wiki
         = nav_link(controller: :wikis) do
@@ -266,6 +272,11 @@
               = sprite_icon('users')
             %span.nav-item-name
               Members
+          %ul.sidebar-sub-level-items.is-fly-out-only
+            = nav_link(path: %w[members#show], html_options: { class: "fly-out-top-item" } ) do
+              = link_to project_project_members_path(@project) do
+                %strong.fly-out-top-item-name
+                  #{ _('Members') }
 
       = render 'shared/sidebar_toggle_button'
 

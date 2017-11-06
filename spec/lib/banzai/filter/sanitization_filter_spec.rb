@@ -47,9 +47,11 @@ describe Banzai::Filter::SanitizationFilter do
   describe 'custom whitelist' do
     it 'customizes the whitelist only once' do
       instance = described_class.new('Foo')
+      control_count = instance.whitelist[:transformers].size
+
       3.times { instance.whitelist }
 
-      expect(instance.whitelist[:transformers].size).to eq 5
+      expect(instance.whitelist[:transformers].size).to eq control_count
     end
 
     it 'sanitizes `class` attribute from all elements' do
@@ -101,16 +103,18 @@ describe Banzai::Filter::SanitizationFilter do
       expect(filter(act).to_html).to eq exp
     end
 
-    it 'disallows the `name` attribute globally' do
+    it 'disallows the `name` attribute globally, allows on `a`' do
       html = <<~HTML
         <img name="getElementById" src="">
         <span name="foo" class="bar">Hi</span>
+        <a name="foo" class="bar">Bye</a>
       HTML
 
       doc = filter(html)
 
       expect(doc.at_css('img')).not_to have_attribute('name')
       expect(doc.at_css('span')).not_to have_attribute('name')
+      expect(doc.at_css('a')).to have_attribute('name')
     end
 
     it 'allows `summary` elements' do
@@ -211,6 +215,11 @@ describe Banzai::Filter::SanitizationFilter do
       'protocol-based JS injection: invalid URL char' => {
         input: '<img src=java\script:alert("XSS")>',
         output: '<img>'
+      },
+
+      'protocol-based JS injection: Unicode' => {
+        input: %Q(<a href="\u0001java\u0003script:alert('XSS')">foo</a>),
+        output: '<a>foo</a>'
       },
 
       'protocol-based JS injection: spaces and entities' => {

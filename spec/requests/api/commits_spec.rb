@@ -24,7 +24,7 @@ describe API::Commits do
 
         get api(route, current_user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to match_response_schema('public_api/v4/commits')
         expect(json_response.first['id']).to eq(commit.id)
         expect(json_response.first['committer_name']).to eq(commit.committer_name)
@@ -119,7 +119,7 @@ describe API::Commits do
         it "returns an invalid parameter error message" do
           get api("/projects/#{project_id}/repository/commits?since=invalid-date", user)
 
-          expect(response).to have_http_status(400)
+          expect(response).to have_gitlab_http_status(400)
           expect(json_response['error']).to eq('since is invalid')
         end
       end
@@ -198,13 +198,13 @@ describe API::Commits do
     it 'returns a 403 unauthorized for user without permissions' do
       post api(url, guest)
 
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
     end
 
     it 'returns a 400 bad request if no params are given' do
       post api(url, user)
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
     end
 
     describe 'create' do
@@ -248,7 +248,7 @@ describe API::Commits do
       it 'returns a 400 bad request if file exists' do
         post api(url, user), invalid_c_params
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
 
       context 'with project path containing a dot in URL' do
@@ -257,7 +257,7 @@ describe API::Commits do
         it 'a new file in project repo' do
           post api(url, user), valid_c_params
 
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
         end
       end
     end
@@ -292,14 +292,14 @@ describe API::Commits do
       it 'an existing file in project repo' do
         post api(url, user), valid_d_params
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq(message)
       end
 
       it 'returns a 400 bad request if file does not exist' do
         post api(url, user), invalid_d_params
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
     end
 
@@ -337,14 +337,14 @@ describe API::Commits do
       it 'an existing file in project repo' do
         post api(url, user), valid_m_params
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq(message)
       end
 
       it 'returns a 400 bad request if file does not exist' do
         post api(url, user), invalid_m_params
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
     end
 
@@ -380,14 +380,14 @@ describe API::Commits do
       it 'an existing file in project repo' do
         post api(url, user), valid_u_params
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq(message)
       end
 
       it 'returns a 400 bad request if file does not exist' do
         post api(url, user), invalid_u_params
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
     end
 
@@ -453,14 +453,14 @@ describe API::Commits do
       it 'are commited as one in project repo' do
         post api(url, user), valid_mo_params
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['title']).to eq(message)
       end
 
       it 'return a 400 bad request if there are any issues' do
         post api(url, user), invalid_mo_params
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
     end
   end
@@ -491,6 +491,7 @@ describe API::Commits do
         expect(json_response['stats']['deletions']).to eq(commit.stats.deletions)
         expect(json_response['stats']['total']).to eq(commit.stats.total)
         expect(json_response['status']).to be_nil
+        expect(json_response['last_pipeline']).to be_nil
       end
 
       context 'when ref does not exist' do
@@ -570,9 +571,13 @@ describe API::Commits do
         it 'includes a "created" status' do
           get api(route, current_user)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(response).to match_response_schema('public_api/v4/commit/detail')
           expect(json_response['status']).to eq('created')
+          expect(json_response['last_pipeline']['id']).to eq(pipeline.id)
+          expect(json_response['last_pipeline']['ref']).to eq(pipeline.ref)
+          expect(json_response['last_pipeline']['sha']).to eq(pipeline.sha)
+          expect(json_response['last_pipeline']['status']).to eq(pipeline.status)
         end
 
         context 'when pipeline succeeds' do
@@ -583,7 +588,7 @@ describe API::Commits do
           it 'includes a "success" status' do
             get api(route, current_user)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
             expect(response).to match_response_schema('public_api/v4/commit/detail')
             expect(json_response['status']).to eq('success')
           end

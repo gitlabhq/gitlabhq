@@ -8,7 +8,7 @@ describe 'doorkeeper access' do
   describe "unauthenticated" do
     it "returns authentication success" do
       get api("/user"), access_token: token.token
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
 
     include_examples 'user login request with unique ip limit' do
@@ -21,14 +21,14 @@ describe 'doorkeeper access' do
   describe "when token invalid" do
     it "returns authentication error" do
       get api("/user"), access_token: "123a"
-      expect(response).to have_http_status(401)
+      expect(response).to have_gitlab_http_status(401)
     end
   end
 
-  describe "authorization by private token" do
+  describe "authorization by OAuth token" do
     it "returns authentication success" do
       get api("/user", user)
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
 
     include_examples 'user login request with unique ip limit' do
@@ -39,20 +39,20 @@ describe 'doorkeeper access' do
   end
 
   describe "when user is blocked" do
-    it "returns authentication error" do
+    it "returns authorization error" do
       user.block
       get api("/user"), access_token: token.token
 
-      expect(response).to have_http_status(401)
+      expect(response).to have_gitlab_http_status(403)
     end
   end
 
   describe "when user is ldap_blocked" do
-    it "returns authentication error" do
+    it "returns authorization error" do
       user.ldap_block
       get api("/user"), access_token: token.token
 
-      expect(response).to have_http_status(401)
+      expect(response).to have_gitlab_http_status(403)
     end
   end
 end

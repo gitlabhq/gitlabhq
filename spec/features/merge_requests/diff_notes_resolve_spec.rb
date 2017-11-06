@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Diff notes resolve', js: true do
+feature 'Diff notes resolve', :js do
   let(:user)          { create(:user) }
   let(:project)       { create(:project, :public, :repository) }
   let(:merge_request) { create(:merge_request_with_diffs, source_project: project, author: user, title: "Bug NS-04") }
@@ -88,14 +88,43 @@ feature 'Diff notes resolve', js: true do
         end
       end
 
-      it 'hides resolved discussion' do
-        page.within '.diff-content' do
-          click_button 'Resolve discussion'
+      describe 'resolved discussion' do
+        before do
+          page.within '.diff-content' do
+            click_button 'Resolve discussion'
+          end
+
+          visit_merge_request
         end
 
-        visit_merge_request
+        describe 'timeline view' do
+          it 'hides when resolve discussion is clicked' do
+            expect(page).to have_selector('.discussion-body', visible: false)
+          end
 
-        expect(page).to have_selector('.discussion-body', visible: false)
+          it 'shows resolved discussion when toggled' do
+            find(".timeline-content .discussion[data-discussion-id='#{note.discussion_id}'] .discussion-toggle-button").click
+
+            expect(page.find(".timeline-content #note_#{note.noteable_id}")).to be_visible
+          end
+        end
+
+        describe 'side-by-side view' do
+          before do
+            page.within('.merge-request-tabs') { click_link 'Changes' }
+            page.find('#parallel-diff-btn').click
+          end
+
+          it 'hides when resolve discussion is clicked' do
+            expect(page).to have_selector('.diffs .diff-file .notes_holder', visible: false)
+          end
+
+          it 'shows resolved discussion when toggled' do
+            find('.diff-comment-avatar-holders').click
+
+            expect(find('.diffs .diff-file .notes_holder')).to be_visible
+          end
+        end
       end
 
       it 'allows user to resolve from reply form without a comment' do
@@ -163,7 +192,7 @@ feature 'Diff notes resolve', js: true do
           page.find('.discussion-next-btn').click
         end
 
-        expect(page.evaluate_script("$('body').scrollTop()")).to be > 0
+        expect(page.evaluate_script("window.pageYOffset")).to be > 0
       end
 
       it 'hides jump to next button when all resolved' do
@@ -212,10 +241,8 @@ feature 'Diff notes resolve', js: true do
       end
 
       it 'resolves discussion' do
-        page.all('.note').each do |note|
-          note.all('.line-resolve-btn').each do |button|
-            button.click
-          end
+        page.all('.note .line-resolve-btn').each do |button|
+          button.click
         end
 
         expect(page).to have_content('Resolved by')
@@ -276,10 +303,10 @@ feature 'Diff notes resolve', js: true do
         end
 
         page.within '.line-resolve-all-container' do
-          page.find('.discussion-next-btn').trigger('click')
+          page.find('.discussion-next-btn').click
         end
 
-        expect(page.evaluate_script("$('body').scrollTop()")).to be > 0
+        expect(page.evaluate_script("window.pageYOffset")).to be > 0
       end
 
       it 'updates updated text after resolving note' do

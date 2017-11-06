@@ -57,10 +57,6 @@ module API
       expose :admin?, as: :is_admin
     end
 
-    class UserWithPrivateDetails < UserWithAdmin
-      expose :private_token
-    end
-
     class Email < Grape::Entity
       expose :id, :email
     end
@@ -89,6 +85,9 @@ module API
       expose :ssh_url_to_repo, :http_url_to_repo, :web_url
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
+      expose :avatar_url do |project, options|
+        project.avatar_url(only_path: false)
+      end
       expose :star_count, :forks_count
       expose :created_at, :last_activity_at
     end
@@ -146,9 +145,7 @@ module API
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? }
       expose :import_status
       expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] }
-      expose :avatar_url do |user, options|
-        user.avatar_url(only_path: false)
-      end
+
       expose :open_issues_count, if: lambda { |project, options| project.feature_available?(:issues, options[:current_user]) }
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :public_builds, as: :public_jobs
@@ -193,8 +190,8 @@ module API
     class Group < Grape::Entity
       expose :id, :name, :path, :description, :visibility
       expose :lfs_enabled?, as: :lfs_enabled
-      expose :avatar_url do |user, options|
-        user.avatar_url(only_path: false)
+      expose :avatar_url do |group, options|
+        group.avatar_url(only_path: false)
       end
       expose :web_url
       expose :request_access_enabled
@@ -219,7 +216,7 @@ module API
       expose :shared_projects, using: Entities::Project
     end
 
-    class RepoCommit < Grape::Entity
+    class Commit < Grape::Entity
       expose :id, :short_id, :title, :created_at
       expose :parent_ids
       expose :safe_message, as: :message
@@ -227,19 +224,20 @@ module API
       expose :committer_name, :committer_email, :committed_date
     end
 
-    class RepoCommitStats < Grape::Entity
+    class CommitStats < Grape::Entity
       expose :additions, :deletions, :total
     end
 
-    class RepoCommitDetail < RepoCommit
-      expose :stats, using: Entities::RepoCommitStats
+    class CommitDetail < Commit
+      expose :stats, using: Entities::CommitStats
       expose :status
+      expose :last_pipeline, using: 'API::Entities::PipelineBasic'
     end
 
-    class RepoBranch < Grape::Entity
+    class Branch < Grape::Entity
       expose :name
 
-      expose :commit, using: Entities::RepoCommit do |repo_branch, options|
+      expose :commit, using: Entities::Commit do |repo_branch, options|
         options[:project].repository.commit(repo_branch.dereferenced_target)
       end
 
@@ -263,7 +261,7 @@ module API
       end
     end
 
-    class RepoTreeObject < Grape::Entity
+    class TreeObject < Grape::Entity
       expose :id, :name, :type, :path
 
       expose :mode do |obj, options|
@@ -303,7 +301,7 @@ module API
       expose :state, :created_at, :updated_at
     end
 
-    class RepoDiff < Grape::Entity
+    class Diff < Grape::Entity
       expose :old_path, :new_path, :a_mode, :b_mode
       expose :new_file?, as: :new_file
       expose :renamed_file?, as: :renamed_file
@@ -366,6 +364,7 @@ module API
       end
       expose :due_date
       expose :confidential
+      expose :discussion_locked
 
       expose :web_url do |issue, options|
         Gitlab::UrlBuilder.build(issue)
@@ -462,6 +461,7 @@ module API
       expose :diff_head_sha, as: :sha
       expose :merge_commit_sha
       expose :user_notes_count
+      expose :discussion_locked
       expose :should_remove_source_branch?, as: :should_remove_source_branch
       expose :force_remove_source_branch?, as: :force_remove_source_branch
 
@@ -481,7 +481,7 @@ module API
     end
 
     class MergeRequestChanges < MergeRequest
-      expose :diffs, as: :changes, using: Entities::RepoDiff do |compare, _|
+      expose :diffs, as: :changes, using: Entities::Diff do |compare, _|
         compare.raw_diffs(limits: false).to_a
       end
     end
@@ -492,9 +492,9 @@ module API
     end
 
     class MergeRequestDiffFull < MergeRequestDiff
-      expose :commits, using: Entities::RepoCommit
+      expose :commits, using: Entities::Commit
 
-      expose :diffs, using: Entities::RepoDiff do |compare, _|
+      expose :diffs, using: Entities::Diff do |compare, _|
         compare.raw_diffs(limits: false).to_a
       end
     end
@@ -590,8 +590,7 @@ module API
       expose :target_type
 
       expose :target do |todo, options|
-        target = todo.target_type == 'Commit' ? 'RepoCommit' : todo.target_type
-        Entities.const_get(target).represent(todo.target, options)
+        Entities.const_get(todo.target_type).represent(todo.target, options)
       end
 
       expose :target_url do |todo, options|
@@ -727,15 +726,15 @@ module API
     end
 
     class Compare < Grape::Entity
-      expose :commit, using: Entities::RepoCommit do |compare, options|
-        Commit.decorate(compare.commits, nil).last
+      expose :commit, using: Entities::Commit do |compare, options|
+        ::Commit.decorate(compare.commits, nil).last
       end
 
-      expose :commits, using: Entities::RepoCommit do |compare, options|
-        Commit.decorate(compare.commits, nil)
+      expose :commits, using: Entities::Commit do |compare, options|
+        ::Commit.decorate(compare.commits, nil)
       end
 
-      expose :diffs, using: Entities::RepoDiff do |compare, options|
+      expose :diffs, using: Entities::Diff do |compare, options|
         compare.diffs(limits: false).to_a
       end
 
@@ -771,10 +770,10 @@ module API
       expose :description
     end
 
-    class RepoTag < Grape::Entity
+    class Tag < Grape::Entity
       expose :name, :message
 
-      expose :commit, using: Entities::RepoCommit do |repo_tag, options|
+      expose :commit, using: Entities::Commit do |repo_tag, options|
         options[:project].repository.commit(repo_tag.dereferenced_target)
       end
 
@@ -823,9 +822,10 @@ module API
     class Job < Grape::Entity
       expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
+      expose :duration
       expose :user, with: User
       expose :artifacts_file, using: JobArtifactFile, if: -> (job, opts) { job.artifacts? }
-      expose :commit, with: RepoCommit
+      expose :commit, with: Commit
       expose :runner, with: Runner
       expose :pipeline, with: PipelineBasic
     end
@@ -878,7 +878,7 @@ module API
       expose :deployable,  using: Entities::Job
     end
 
-    class RepoLicense < Grape::Entity
+    class License < Grape::Entity
       expose :key, :name, :nickname
       expose :featured, as: :popular
       expose :url, as: :html_url
@@ -1020,6 +1020,7 @@ module API
         expose :cache, using: Cache
         expose :credentials, using: Credentials
         expose :dependencies, using: Dependency
+        expose :features
       end
     end
 
@@ -1033,6 +1034,28 @@ module API
       expose :storage_name
       expose :failing_on_hosts
       expose :total_failures
+    end
+
+    class CustomAttribute < Grape::Entity
+      expose :key
+      expose :value
+    end
+
+    class PagesDomainCertificate < Grape::Entity
+      expose :subject
+      expose :expired?, as: :expired
+      expose :certificate
+      expose :certificate_text
+    end
+
+    class PagesDomain < Grape::Entity
+      expose :domain
+      expose :url
+      expose :certificate,
+             if: ->(pages_domain, _) { pages_domain.certificate? },
+             using: PagesDomainCertificate do |pages_domain|
+        pages_domain
+      end
     end
   end
 end

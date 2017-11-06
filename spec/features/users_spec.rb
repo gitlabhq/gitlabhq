@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Users', js: true do
+feature 'Users', :js do
   let(:user) { create(:user, username: 'user1', name: 'User 1', email: 'user1@gitlab.com') }
 
   scenario 'GET /users/sign_in creates a new user account' do
@@ -24,6 +24,7 @@ feature 'Users', js: true do
     user.reload
     expect(user.reset_password_token).not_to be_nil
 
+    find('a[href="#login-pane"]').click
     gitlab_sign_in(user)
     expect(current_path).to eq root_path
 

@@ -95,6 +95,12 @@ be an array or a multi-line string.
 `after_script` is used to define the command that will be run after for all
 jobs. This has to be an array or a multi-line string.
 
+> **Note:**
+The `before_script` and the main `script` are concatenated and run in a single context/container.
+The `after_script` is run separately, so depending on the executor, changes done
+outside of the working tree might not be visible, e.g. software installed in the
+`before_script`.
+
 ### stages
 
 `stages` is used to define stages that can be used by jobs.
@@ -1569,6 +1575,11 @@ Read more on [GitLab Pages user documentation](../../user/project/pages/index.md
 
 Each instance of GitLab CI has an embedded debug tool called Lint.
 You can find the link under `/ci/lint` of your gitlab instance.
+
+## Using reserved keywords
+
+If you get validation error when using specific values (e.g., `true` or `false`),
+try to quote them, or change them to a different form (e.g., `/bin/true`).
 
 ## Skipping jobs
 

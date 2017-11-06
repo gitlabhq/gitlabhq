@@ -63,7 +63,7 @@ describe ProjectsHelper do
     end
   end
 
-  describe "#project_list_cache_key", clean_gitlab_redis_shared_state: true do
+  describe "#project_list_cache_key", :clean_gitlab_redis_shared_state do
     let(:project) { create(:project, :repository) }
 
     it "includes the route" do
@@ -200,13 +200,13 @@ describe ProjectsHelper do
     end
 
     it 'returns image tag for member avatar' do
-      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: ["avatar", "avatar-inline", "s16"], alt: "" })
+      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: ["avatar", "avatar-inline", "s16"], alt: "", "data-src" => anything })
 
       helper.link_to_member_avatar(user)
     end
 
     it 'returns image tag with avatar class' do
-      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: ["avatar", "avatar-inline", "s16", "any-avatar-class"], alt: "" })
+      expect(helper).to receive(:image_tag).with(expected, { width: 16, class: ["avatar", "avatar-inline", "s16", "any-avatar-class"], alt: "", "data-src" => anything })
 
       helper.link_to_member_avatar(user, avatar_class: "any-avatar-class")
     end
@@ -420,22 +420,26 @@ describe ProjectsHelper do
     end
   end
 
-  describe '#has_projects_or_name?' do
+  describe '#show_projects' do
     let(:projects) do
       create(:project)
       Project.all
     end
 
     it 'returns true when there are projects' do
-      expect(helper.has_projects_or_name?(projects, {})).to eq(true)
+      expect(helper.show_projects?(projects, {})).to eq(true)
     end
 
     it 'returns true when there are no projects but a name is given' do
-      expect(helper.has_projects_or_name?(Project.none, name: 'foo')).to eq(true)
+      expect(helper.show_projects?(Project.none, name: 'foo')).to eq(true)
+    end
+
+    it 'returns true when there are no projects but personal is present' do
+      expect(helper.show_projects?(Project.none, personal: 'true')).to eq(true)
     end
 
     it 'returns false when there are no projects and there is no name' do
-      expect(helper.has_projects_or_name?(Project.none, {})).to eq(false)
+      expect(helper.show_projects?(Project.none, {})).to eq(false)
     end
   end
 

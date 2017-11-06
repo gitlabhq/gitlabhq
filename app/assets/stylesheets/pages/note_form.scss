@@ -101,44 +101,51 @@
   }
 }
 
-.confidential-issue-warning {
+.issuable-note-warning {
   color: $orange-600;
-  background-color: $orange-50;
+  background-color: $orange-100;
   border-radius: $border-radius-default $border-radius-default 0 0;
   border: 1px solid $border-gray-normal;
   border-bottom: none;
   padding: 3px 12px;
   margin: auto;
   align-items: center;
+
+  + .md-area {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
 }
 
-.confidential-value {
+.sidebar-item-value {
   .fa {
     background-color: inherit;
   }
 }
 
-.confidential-warning-message {
+.sidebar-item-warning-message {
   line-height: 1.5;
   padding: 16px;
 
-  .confidential-warning-message-actions {
+  .text {
+    color: $text-color;
+  }
+
+  .sidebar-item-warning-message-actions {
     display: flex;
 
-    button {
+    .btn {
       flex-grow: 1;
     }
   }
 }
 
-.confidential-issue-warning + .md-area {
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+.discussion-form {
+  background-color: $white-light;
 }
 
-.discussion-form {
+.discussion-form-container {
   padding: $gl-padding-top $gl-padding $gl-padding;
-  background-color: $white-light;
 }
 
 .discussion-notes .disabled-comment {
@@ -222,13 +229,12 @@
       width: 100%;
       padding-right: 5px;
     }
-
   }
 
   .discussion-actions {
     display: table;
 
-    .new-issue-for-discussion path {
+    .btn-default path {
       fill: $gray-darkest;
     }
 
@@ -362,7 +368,7 @@
 
   .dropdown-menu {
     top: initial;
-    bottom: 40px;
+    bottom: 100%;
     width: 298px;
   }
 

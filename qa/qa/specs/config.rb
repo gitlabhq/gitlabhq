@@ -43,8 +43,7 @@ module QA
         Capybara.register_driver :chrome do |app|
           capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
             'chromeOptions' => {
-              'binary' => '/usr/bin/google-chrome-stable',
-              'args' => %w[headless no-sandbox disable-gpu window-size=1280,1024]
+              'args' => %w[headless no-sandbox disable-gpu window-size=1280,1680]
             }
           )
 

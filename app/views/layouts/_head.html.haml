@@ -32,18 +32,14 @@
   = stylesheet_link_tag "test",        media: "all" if Rails.env.test?
   = stylesheet_link_tag 'performance_bar' if performance_bar_enabled?
 
-  // TODO: Combine these 2 stylesheets into application.scss
-  = stylesheet_link_tag "new_nav", media: "all"
-  = stylesheet_link_tag "new_sidebar", media: "all"
-
   = Gon::Base.render_data
 
   - if content_for?(:library_javascripts)
     = yield :library_javascripts
 
+  = javascript_include_tag locale_path unless I18n.locale == :en
   = webpack_bundle_tag "webpack_runtime"
   = webpack_bundle_tag "common"
-  = webpack_bundle_tag "locale"
   = webpack_bundle_tag "main"
   = webpack_bundle_tag "raven" if current_application_settings.clientside_sentry_enabled
   = webpack_bundle_tag "test" if Rails.env.test?

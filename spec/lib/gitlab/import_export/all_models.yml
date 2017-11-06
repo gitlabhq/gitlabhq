@@ -147,6 +147,10 @@ deploy_keys:
 - user
 - deploy_keys_projects
 - projects
+cluster:
+- project
+- user
+- service
 services:
 - project
 - service_hook
@@ -177,6 +181,7 @@ project:
 - tag_taggings
 - tags
 - chat_services
+- cluster
 - creator
 - group
 - namespace
@@ -190,6 +195,7 @@ project:
 - mattermost_slash_commands_service
 - slack_slash_commands_service
 - irker_service
+- packagist_service
 - pivotaltracker_service
 - prometheus_service
 - hipchat_service
@@ -266,6 +272,10 @@ project:
 - container_repositories
 - uploads
 - members_and_requesters
+- build_trace_section_names
+- root_of_fork_network
+- fork_network_member
+- fork_network
 award_emoji:
 - awardable
 - user
@@ -277,3 +287,6 @@ timelogs:
 - user
 push_event_payload:
 - event
+issue_assignees:
+- issue
+- assignee

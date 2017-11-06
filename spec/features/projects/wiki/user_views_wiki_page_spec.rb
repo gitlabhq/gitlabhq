@@ -34,7 +34,7 @@ describe 'User views a wiki page' do
     it 'shows the history of a page that has a path', :js do
       expect(current_path).to include('one/two/three-test')
 
-      click_on('Three')
+      first(:link, text: 'Three').click
       click_on('Page history')
 
       expect(current_path).to include('one/two/three-test')
@@ -48,7 +48,7 @@ describe 'User views a wiki page' do
       expect(current_path).to include('one/two/three-test')
       expect(find('.wiki-pages')).to have_content('Three')
 
-      click_on('Three')
+      first(:link, text: 'Three').click
 
       expect(find('.nav-text')).to have_content('Three')
 
@@ -81,10 +81,15 @@ describe 'User views a wiki page' do
     end
 
     it 'shows a file stored in a page' do
-      file = Gollum::File.new(project.wiki)
+      gollum_file_double = double('Gollum::File',
+                                  mime_type: 'image/jpeg',
+                                  name: 'images/image.jpg',
+                                  path: 'images/image.jpg',
+                                  raw_data: '')
+      wiki_file = Gitlab::Git::WikiFile.new(gollum_file_double)
 
-      allow_any_instance_of(Gollum::Wiki).to receive(:file).with('image.jpg', 'master', true).and_return(file)
-      allow_any_instance_of(Gollum::File).to receive(:mime_type).and_return('image/jpeg')
+      allow(wiki_file).to receive(:mime_type).and_return('image/jpeg')
+      allow_any_instance_of(ProjectWiki).to receive(:find_file).with('image.jpg', nil).and_return(wiki_file)
 
       expect(page).to have_xpath('//img[@data-src="image.jpg"]')
       expect(page).to have_link('image', href: "#{project.wiki.wiki_base_path}/image.jpg")
@@ -133,7 +138,7 @@ describe 'User views a wiki page' do
   it 'opens a default wiki page', :js do
     visit(project_path(project))
 
-    find('.shortcuts-wiki').trigger('click')
+    find('.shortcuts-wiki').click
 
     expect(page).to have_content('Home · Create Page')
   end

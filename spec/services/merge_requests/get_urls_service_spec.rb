@@ -1,6 +1,8 @@
 require "spec_helper"
 
 describe MergeRequests::GetUrlsService do
+  include ProjectForksHelper
+
   let(:project) { create(:project, :public, :repository) }
   let(:service) { described_class.new(project) }
   let(:source_branch) { "merge-test" }
@@ -85,7 +87,7 @@ describe MergeRequests::GetUrlsService do
 
     context 'pushing to existing branch from forked project' do
       let(:user) { create(:user) }
-      let!(:forked_project) { Projects::ForkService.new(project, user).execute }
+      let!(:forked_project) { fork_project(project, user, repository: true) }
       let!(:merge_request) { create(:merge_request, source_project: forked_project, target_project: project, source_branch: source_branch) }
       let(:changes) { existing_branch_changes }
       # Source project is now the forked one

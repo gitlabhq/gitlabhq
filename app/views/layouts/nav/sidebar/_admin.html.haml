@@ -3,7 +3,7 @@
     .context-header
       = link_to admin_root_path, title: 'Admin Overview' do
         .avatar-container.s40.settings-avatar
-          = icon('wrench')
+          = sprite_icon('admin', size: 24)
         .sidebar-context-title Admin Area
     %ul.sidebar-top-level-items
       = nav_link(controller: %w(dashboard admin projects users groups jobs runners cohorts conversational_development_index), html_options: {class: 'home'}) do
@@ -12,7 +12,6 @@
             = sprite_icon('overview')
           %span.nav-item-name
             Overview
-
         %ul.sidebar-sub-level-items
           = nav_link(controller: %w(dashboard admin projects users groups jobs runners cohorts conversational_development_index), html_options: { class: "fly-out-top-item" } ) do
             = link_to admin_root_path do

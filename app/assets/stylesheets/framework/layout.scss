@@ -25,19 +25,15 @@ body {
 
 .content-wrapper {
   padding-bottom: 100px;
-
-  &:not(.page-with-layout-nav) {
-    margin-top: $header-height;
-  }
 }
 
 .container {
   padding-top: 0;
   z-index: 5;
-}
 
-.container .content {
-  margin: 0;
+  .content {
+    margin: 0;
+  }
 }
 
 .navless-container {
@@ -86,26 +82,26 @@ body {
     transition: background-color 0.15s, border-color 0.15s;
     background-color: $orange-500;
     border-color: $orange-500;
-  }
 
-  .alert-warning + .alert-warning {
-    background-color: $orange-600;
-    border-color: $orange-600;
-  }
+    &:only-of-type {
+      background-color: $orange-500;
+      border-color: $orange-500;
+    }
 
-  .alert-warning + .alert-warning + .alert-warning {
-    background-color: $orange-700;
-    border-color: $orange-700;
-  }
+    + .alert-warning {
+      background-color: $orange-600;
+      border-color: $orange-600;
 
-  .alert-warning + .alert-warning + .alert-warning + .alert-warning {
-    background-color: $orange-800;
-    border-color: $orange-800;
-  }
+      + .alert-warning {
+        background-color: $orange-700;
+        border-color: $orange-700;
 
-  .alert-warning:only-of-type {
-    background-color: $orange-500;
-    border-color: $orange-500;
+        + .alert-warning {
+          background-color: $orange-800;
+          border-color: $orange-800;
+        }
+      }
+    }
   }
 }
 

@@ -1,9 +1,9 @@
 - type = impersonation ? "impersonation" : "personal access"
 
 %h5.prepend-top-0
-  Add a #{type} Token
+  Add a #{type} token
 %p.profile-settings-content
-  Pick a name for the application, and we'll give you a unique #{type} Token.
+  Pick a name for the application, and we'll give you a unique #{type} token.
 
 = form_for token, url: path, method: :post, html: { class: 'js-requires-input' } do |f|
 

@@ -139,7 +139,9 @@ class Namespace < ActiveRecord::Base
   end
 
   def find_fork_of(project)
-    projects.joins(:forked_project_link).find_by('forked_project_links.forked_from_project_id = ?', project.id)
+    return nil unless project.fork_network
+
+    project.fork_network.find_forks_in(projects).first
   end
 
   def lfs_enabled?
@@ -158,6 +160,13 @@ class Namespace < ActiveRecord::Base
     Gitlab::GroupHierarchy
       .new(self.class.where(id: parent_id))
       .base_and_ancestors
+  end
+
+  # returns all ancestors upto but excluding the the given namespace
+  # when no namespace is given, all ancestors upto the top are returned
+  def ancestors_upto(top = nil)
+    Gitlab::GroupHierarchy.new(self.class.where(id: id))
+      .ancestors(upto: top)
   end
 
   def self_and_ancestors

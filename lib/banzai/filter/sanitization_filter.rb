@@ -45,8 +45,9 @@ module Banzai
         whitelist[:elements].push('abbr')
         whitelist[:attributes]['abbr'] = %w(title)
 
-        # Disallow `name` attribute globally
+        # Disallow `name` attribute globally, allow on `a`
         whitelist[:attributes][:all].delete('name')
+        whitelist[:attributes]['a'].push('name')
 
         # Allow any protocol in `a` elements...
         whitelist[:protocols].delete('a')
@@ -72,10 +73,21 @@ module Banzai
             return unless node.has_attribute?('href')
 
             begin
+              node['href'] = node['href'].strip
               uri = Addressable::URI.parse(node['href'])
-              uri.scheme = uri.scheme.strip.downcase if uri.scheme
 
-              node.remove_attribute('href') if UNSAFE_PROTOCOLS.include?(uri.scheme)
+              return unless uri.scheme
+
+              # Remove all invalid scheme characters before checking against the
+              # list of unsafe protocols.
+              #
+              # See https://tools.ietf.org/html/rfc3986#section-3.1
+              scheme = uri.scheme
+                .strip
+                .downcase
+                .gsub(/[^A-Za-z0-9\+\.\-]+/, '')
+
+              node.remove_attribute('href') if UNSAFE_PROTOCOLS.include?(scheme)
             rescue Addressable::URI::InvalidURIError
               node.remove_attribute('href')
             end

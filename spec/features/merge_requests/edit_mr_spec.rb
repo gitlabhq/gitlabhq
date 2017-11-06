@@ -29,7 +29,7 @@ feature 'Edit Merge Request' do
       expect(page).to have_content 'Someone edited the merge request the same time you did'
     end
 
-    it 'allows to unselect "Remove source branch"', js: true do
+    it 'allows to unselect "Remove source branch"', :js do
       merge_request.update(merge_params: { 'force_remove_source_branch' => '1' })
       expect(merge_request.merge_params['force_remove_source_branch']).to be_truthy
 
@@ -42,7 +42,7 @@ feature 'Edit Merge Request' do
       expect(page).to have_content 'Remove source branch'
     end
 
-    it 'should preserve description textarea height', js: true do
+    it 'should preserve description textarea height', :js do
       long_description = %q(
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Etiam ac ornare ligula, ut tempus arcu. Etiam ultricies accumsan dolor vitae faucibus. Donec at elit lacus. Mauris orci ante, aliquam quis lorem eget, convallis faucibus arcu. Aenean at pulvinar lacus. Ut viverra quam massa, molestie ornare tortor dignissim a. Suspendisse tristique pellentesque tellus, id lacinia metus elementum id. Nam tristique, arcu rhoncus faucibus viverra, lacus ipsum sagittis ligula, vitae convallis odio lacus a nibh. Ut tincidunt est purus, ac vestibulum augue maximus in. Suspendisse vel erat et mi ultricies semper. Pellentesque volutpat pellentesque consequat.
 
@@ -66,6 +66,7 @@ feature 'Edit Merge Request' do
     end
 
     def get_textarea_height
+      find('#merge_request_description')
       page.evaluate_script('document.getElementById("merge_request_description").offsetHeight')
     end
   end

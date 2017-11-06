@@ -1,6 +1,19 @@
-.discussion-notes
-  %ul.notes{ data: { discussion_id: discussion.id } }
-    = render partial: "shared/notes/note", collection: discussion.notes, as: :note
+- disable_collapse_class = local_assigns.fetch(:disable_collapse_class, false)
+- collapsed_class = 'collapsed' if discussion.resolved? && !disable_collapse_class
+- badge_counter = discussion_counter + 1 if local_assigns[:discussion_counter]
+- show_toggle = local_assigns.fetch(:show_toggle, true)
+- show_image_comment_badge = local_assigns.fetch(:show_image_comment_badge, false)
+
+.discussion-notes{ class: collapsed_class }
+  -# Save the first note position data so that we have a reference and can go
+  -# to the first note position when we click on a badge diff discussion
+  %ul.notes{ id: "discussion_#{discussion.id}", data: { discussion_id: discussion.id, position: discussion.notes[0].position.to_json } }
+    - if discussion.try(:on_image?) && show_toggle
+      %button.diff-notes-collapse.js-diff-notes-toggle{ type: 'button' }
+        = sprite_icon('collapse', css_class: 'collapse-icon')
+      %button.btn-transparent.badge.js-diff-notes-toggle{ type: 'button' }
+        = badge_counter
+    = render partial: "shared/notes/note", collection: discussion.notes, as: :note, locals: { badge_counter: badge_counter, show_image_comment_badge: show_image_comment_badge }
 
   .flash-container
 

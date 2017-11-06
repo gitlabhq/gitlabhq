@@ -1,7 +1,7 @@
 /* eslint-disable no-new */
-/* global Flash */
 
 import Vue from 'vue';
+import Flash from '../../../flash';
 import './lists_dropdown';
 
 const ModalStore = gl.issueBoards.ModalStore;

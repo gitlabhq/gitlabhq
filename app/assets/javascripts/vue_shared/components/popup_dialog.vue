@@ -7,14 +7,19 @@ export default {
       type: String,
       required: true,
     },
-    body: {
+    text: {
       type: String,
-      required: true,
+      required: false,
     },
     kind: {
       type: String,
       required: false,
       default: 'primary',
+    },
+    closeKind: {
+      type: String,
+      required: false,
+      default: 'default',
     },
     closeButtonLabel: {
       type: String,
@@ -31,6 +36,11 @@ export default {
     btnKindClass() {
       return {
         [`btn-${this.kind}`]: true,
+      };
+    },
+    btnCancelKindClass() {
+      return {
+        [`btn-${this.closeKind}`]: true,
       };
     },
   },
@@ -63,20 +73,24 @@ export default {
         <h4 class="modal-title">{{this.title}}</h4>
       </div>
       <div class="modal-body">
-        <p>{{this.body}}</p>
+        <slot name="body" :text="text">
+          <p>{{text}}</p>
+        </slot>
       </div>
       <div class="modal-footer">
         <button
           type="button"
-          class="btn btn-default"
-          @click="emitSubmit(false)">
-            {{closeButtonLabel}}
+          class="btn"
+          :class="btnCancelKindClass"
+          @click="close">
+          {{ closeButtonLabel }}
         </button>
-        <button type="button"
+        <button
+          type="button"
           class="btn"
           :class="btnKindClass"
           @click="emitSubmit(true)">
-            {{primaryButtonLabel}}
+          {{ primaryButtonLabel }}
         </button>
       </div>
     </div>

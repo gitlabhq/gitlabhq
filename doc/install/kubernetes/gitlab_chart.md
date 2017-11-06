@@ -1,9 +1,16 @@
 # GitLab Helm Chart
 > **Note**:
-* This chart will be replaced by the [gitlab-omnibus](gitlab_omnibus.md) chart, once it supports [additional configuration options](https://gitlab.com/charts/charts.gitlab.io/issues/68).
+* This chart is deprecated, and is being replaced by the [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md). For more information on available charts, please see our [overview](index.md#chart-overview).
 * These charts have been tested on Google Container Engine and Azure Container Service. Other Kubernetes installations may work as well, if not please [open an issue](https://gitlab.com/charts/charts.gitlab.io/issues).
 
-The `gitlab` Helm chart deploys just GitLab into your Kubernetes cluster, and offers extensive configuration options. This chart requires advanced knowledge of Kubernetes to successfully use. For most deployments we **strongly recommended** the [gitlab-omnibus](gitlab_omnibus.md) chart, which will replace this chart once it supports [additional configuration options](https://gitlab.com/charts/charts.gitlab.io/issues/68). Due to the difficulty in supporting upgrades to the `omnibus-gitlab` chart, migrating will require exporting data out of this instance and importing it into the new deployment.
+
+For more information on available GitLab Helm Charts, please see our [overview](index.md#chart-overview).
+
+## Introduction
+
+The `gitlab` Helm chart deploys just GitLab into your Kubernetes cluster, and offers extensive configuration options. This chart requires advanced knowledge of Kubernetes to successfully use. We **strongly recommend** the [gitlab-omnibus](gitlab_omnibus.md) chart.
+
+This chart is deprecated, and will be replaced by the [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md). Due to the difficulty in supporting upgrades, migrating will require exporting data out of this instance and importing it into the new deployment.
 
 This chart includes the following:
 
@@ -14,8 +21,6 @@ This chart includes the following:
 - Optional Redis deployment using the [Redis Chart](https://github.com/kubernetes/charts/tree/master/stable/redis) (defaults to enabled)
 - Optional PostgreSQL deployment using the [PostgreSQL Chart](https://github.com/kubernetes/charts/tree/master/stable/postgresql) (defaults to enabled)
 - Optional Ingress (defaults to disabled)
-
-For more information on available GitLab Helm Charts, please see our [overview](index.md#chart-overview).
 
 ## Prerequisites
 

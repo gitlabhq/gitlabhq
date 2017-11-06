@@ -1,5 +1,4 @@
 - breadcrumb_title "General Settings"
-= render "groups/settings_head"
 .panel.panel-default.prepend-top-default
   .panel-heading
     Group settings
@@ -11,7 +10,7 @@
       .form-group
         .col-sm-offset-2.col-sm-10
           .avatar-container.s160
-            = image_tag group_icon(@group), alt: '', class: 'avatar group-avatar s160'
+            = group_icon(@group, alt: '', class: 'avatar group-avatar s160')
           %p.light
             - if @group.avatar?
               You can change your group avatar here

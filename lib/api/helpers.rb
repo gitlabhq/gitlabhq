@@ -42,6 +42,8 @@ module API
 
       sudo!
 
+      validate_access_token!(scopes: scopes_registered_for_endpoint) unless sudo?
+
       @current_user
     end
 
@@ -140,7 +142,7 @@ module API
     end
 
     def authenticate!
-      unauthorized! unless current_user && can?(initial_current_user, :access_api)
+      unauthorized! unless current_user
     end
 
     def authenticate_non_get!
@@ -183,6 +185,10 @@ module API
       unless env['HTTP_GITLAB_WORKHORSE'].present?
         forbidden!('Request should be executed via GitLab Workhorse')
       end
+    end
+
+    def require_pages_enabled!
+      not_found! unless user_project.pages_available?
     end
 
     def can?(object, action, subject = :global)
@@ -286,7 +292,7 @@ module API
       if sentry_enabled? && report_exception?(exception)
         define_params_for_grape_middleware
         sentry_context
-        Raven.capture_exception(exception)
+        Raven.capture_exception(exception, extra: params)
       end
 
       # lifted from https://github.com/rails/rails/blob/master/actionpack/lib/action_dispatch/middleware/debug_exceptions.rb#L60
@@ -378,61 +384,36 @@ module API
 
     private
 
-    def private_token
-      params[APIGuard::PRIVATE_TOKEN_PARAM] || env[APIGuard::PRIVATE_TOKEN_HEADER]
-    end
-
-    def warden
-      env['warden']
-    end
-
-    # Check if the request is GET/HEAD, or if CSRF token is valid.
-    def verified_request?
-      Gitlab::RequestForgeryProtection.verified?(env)
-    end
-
-    # Check the Rails session for valid authentication details
-    def find_user_from_warden
-      warden.try(:authenticate) if verified_request?
-    end
-
-    # rubocop:disable Cop/ModuleWithInstanceVariables
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user)
-      Gitlab::Auth::UniqueIpsLimiter.limit_user! do
-        @initial_current_user ||= find_user_by_private_token(scopes: scopes_registered_for_endpoint)
-        @initial_current_user ||= doorkeeper_guard(scopes: scopes_registered_for_endpoint)
-        @initial_current_user ||= find_user_from_warden
 
-        unless @initial_current_user && Gitlab::UserAccess.new(@initial_current_user).allowed?
-          @initial_current_user = nil
-        end
-
-        @initial_current_user
+      begin
+        @initial_current_user = Gitlab::Auth::UniqueIpsLimiter.limit_user! { find_current_user! }
+      rescue APIGuard::UnauthorizedError
+        unauthorized!
       end
     end
 
     # rubocop:disable Cop/ModuleWithInstanceVariables
     def sudo!
       return unless sudo_identifier
-      return unless initial_current_user
+
+      unauthorized! unless initial_current_user
 
       unless initial_current_user.admin?
         forbidden!('Must be admin to use sudo')
       end
 
-      # Only private tokens should be used for the SUDO feature
-      unless private_token == initial_current_user.private_token
-        forbidden!('Private token must be specified in order to use sudo')
+      unless access_token
+        forbidden!('Must be authenticated using an OAuth or Personal Access Token to use sudo')
       end
+
+      validate_access_token!(scopes: [:sudo])
 
       sudoed_user = find_user(sudo_identifier)
+      not_found!("User with ID or username '#{sudo_identifier}'") unless sudoed_user
 
-      if sudoed_user
-        @current_user = sudoed_user
-      else
-        not_found!("No user id or username for: #{sudo_identifier}")
-      end
+      @current_user = sudoed_user
     end
 
     def sudo_identifier
@@ -457,10 +438,12 @@ module API
       header(*Gitlab::Workhorse.send_artifacts_entry(build, entry))
     end
 
-    # The Grape Error Middleware only has access to env but no params. We workaround this by
-    # defining a method that returns the right value.
+    # The Grape Error Middleware only has access to `env` but not `params` nor
+    # `request`. We workaround this by defining methods that returns the right
+    # values.
     def define_params_for_grape_middleware
-      self.define_singleton_method(:params) { Rack::Request.new(env).params.symbolize_keys }
+      self.define_singleton_method(:request) { Rack::Request.new(env) }
+      self.define_singleton_method(:params) { request.params.symbolize_keys }
     end
 
     # We could get a Grape or a standard Ruby exception. We should only report anything that
@@ -469,23 +452,6 @@ module API
       return true unless exception.respond_to?(:status)
 
       exception.status == 500
-    end
-
-    # An array of scopes that were registered (using `allow_access_with_scope`)
-    # for the current endpoint class. It also returns scopes registered on
-    # `API::API`, since these are meant to apply to all API routes.
-    def scopes_registered_for_endpoint
-      @scopes_registered_for_endpoint ||=
-        begin
-          endpoint_classes = [options[:for].presence, ::API::API].compact
-          endpoint_classes.reduce([]) do |memo, endpoint|
-            if endpoint.respond_to?(:allowed_scopes)
-              memo.concat(endpoint.allowed_scopes)
-            else
-              memo
-            end
-          end
-        end
     end
   end
 end

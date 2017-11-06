@@ -1,3 +1,25 @@
+@mixin btn-comment-icon {
+  border-radius: 50%;
+  background: $white-light;
+  padding: 1px 5px;
+  font-size: 12px;
+  color: $blue-500;
+  width: 23px;
+  height: 23px;
+  border: 1px solid $blue-500;
+
+  &:hover,
+  &.inverted {
+    background: $blue-500;
+    border-color: $blue-600;
+    color: $white-light;
+  }
+
+  &:active {
+    outline: 0;
+  }
+}
+
 @mixin btn-default {
   border-radius: 3px;
   font-size: $gl-font-size;
@@ -270,6 +292,11 @@
   }
 }
 
+.btn-align-content {
+  display: flex;
+  align-items: center;
+}
+
 .btn-group {
   &.btn-grouped {
     @include btn-with-margin;
@@ -381,7 +408,11 @@
   background: transparent;
   border: 0;
 
+  &:hover,
+  &:active,
   &:focus {
     outline: 0;
+    background: transparent;
+    box-shadow: none;
   }
 }

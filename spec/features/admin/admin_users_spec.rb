@@ -288,9 +288,9 @@ describe "Admin::Users" do
       end
     end
 
-    it 'allows group membership to be revoked', js: true do
+    it 'allows group membership to be revoked', :js do
       page.within(first('.group_member')) do
-        find('.btn-remove').click
+        accept_confirm { find('.btn-remove').click }
       end
       wait_for_requests
 
@@ -309,7 +309,7 @@ describe "Admin::Users" do
     end
   end
 
-  describe 'remove users secondary email', js: true do
+  describe 'remove users secondary email', :js do
     let!(:secondary_email) do
       create :email, email: 'secondary@example.com', user: user
     end
@@ -319,7 +319,7 @@ describe "Admin::Users" do
 
       expect(page).to have_content("Secondary email: #{secondary_email.email}")
 
-      find("#remove_email_#{secondary_email.id}").click
+      accept_confirm { find("#remove_email_#{secondary_email.id}").click }
 
       expect(page).not_to have_content(secondary_email.email)
     end

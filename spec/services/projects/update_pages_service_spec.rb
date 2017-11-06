@@ -52,6 +52,11 @@ describe Projects::UpdatePagesService do
         expect(project.pages_deployed?).to be_falsey
         expect(execute).to eq(:success)
         expect(project.pages_deployed?).to be_truthy
+
+        # Check that all expected files are extracted
+        %w[index.html zero .hidden/file].each do |filename|
+          expect(File.exist?(File.join(project.public_pages_path, filename))).to be_truthy
+        end
       end
 
       it 'limits pages size' do

@@ -207,7 +207,11 @@ describe QuickActions::InterpretService do
       it 'populates spend_time: 3600 if content contains /spend 1h' do
         _, updates = service.execute(content, issuable)
 
-        expect(updates).to eq(spend_time: { duration: 3600, user: developer })
+        expect(updates).to eq(spend_time: {
+                                duration: 3600,
+                                user: developer,
+                                spent_at: DateTime.now.to_date
+                              })
       end
     end
 
@@ -215,7 +219,39 @@ describe QuickActions::InterpretService do
       it 'populates spend_time: -1800 if content contains /spend -30m' do
         _, updates = service.execute(content, issuable)
 
-        expect(updates).to eq(spend_time: { duration: -1800, user: developer })
+        expect(updates).to eq(spend_time: {
+                                duration: -1800,
+                                user: developer,
+                                spent_at: DateTime.now.to_date
+                              })
+      end
+    end
+
+    shared_examples 'spend command with valid date' do
+      it 'populates spend time: 1800 with date in date type format' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq(spend_time: {
+                                duration: 1800,
+                                user: developer,
+                                spent_at: Date.parse(date)
+                              })
+      end
+    end
+
+    shared_examples 'spend command with invalid date' do
+      it 'will not create any note and timelog' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq({})
+      end
+    end
+
+    shared_examples 'spend command with future date' do
+      it 'will not create any note and timelog' do
+        _, updates = service.execute(content, issuable)
+
+        expect(updates).to eq({})
       end
     end
 
@@ -666,6 +702,22 @@ describe QuickActions::InterpretService do
 
     it_behaves_like 'spend command with negative time' do
       let(:content) { '/spend -30m' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'spend command with valid date' do
+      let(:date) { '2016-02-02' }
+      let(:content) { "/spend 30m #{date}" }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'spend command with invalid date' do
+      let(:content) { '/spend 30m 17-99-99' }
+      let(:issuable) { issue }
+    end
+
+    it_behaves_like 'spend command with future date' do
+      let(:content) { '/spend 30m 6017-10-10' }
       let(:issuable) { issue }
     end
 

@@ -88,16 +88,31 @@ followed by any global declarations, then a blank newline prior to any imports o
 1. Use ES module syntax to import modules
   ```javascript
     // bad
-    require('foo');
+    const SomeClass = require('some_class');
 
     // good
-    import Foo from 'foo';
+    import SomeClass from 'some_class';
 
     // bad
-    module.exports = Foo;
+    module.exports = SomeClass;
 
     // good
-    export default Foo;
+    export default SomeClass;
+  ```
+  
+  Import statements are following usual naming guidelines, for example object literals use camel case:
+  
+  ```javascript
+    // some_object file
+    export default {
+      key: 'value',
+    };
+    
+    // bad
+    import ObjectLiteral from 'some_object';
+    
+    // good
+    import objectLiteral from 'some_object';
   ```
 
 1. Relative paths: when importing a module in the same directory, a child
@@ -285,6 +300,13 @@ A forEach will cause side effects, it will be mutating the array being iterated.
 1. **Extensions**: Use `.vue` extension for Vue components.
 1. **Reference Naming**: Use camelCase for their instances:
   ```javascript
+    // bad
+    import CardBoard from 'cardBoard'
+
+    components: {
+      CardBoard:
+    };
+
     // good
     import cardBoard from 'cardBoard'
 
@@ -470,7 +492,25 @@ On those a default key should not be provided.
   ```
 
 #### Ordering
-1. Order for a Vue Component:
+
+1. Tag order in `.vue` file
+
+  ```
+  <script>
+    // ...
+  </script>
+
+  <template>
+    // ...
+  </template>
+
+  // We don't use scoped styles but there are few instances of this
+  <style>
+    // ...
+  </style>
+  ```
+
+1. Properties in a Vue Component:
   1. `name`
   1. `props`
   1. `mixins`
@@ -489,6 +529,7 @@ On those a default key should not be provided.
   1. `deactivated`
   1. `beforeDestroy`
   1. `destroyed`
+
 
 #### Vue and Bootstrap
 

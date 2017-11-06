@@ -1,12 +1,14 @@
 require 'spec_helper'
 
 feature 'Merge requests > User posts diff notes', :js do
+  include MergeRequestDiffHelpers
+
   let(:user) { create(:user) }
   let(:merge_request) { create(:merge_request) }
   let(:project) { merge_request.source_project }
 
   before do
-    page.driver.set_cookie('sidebar_collapsed', 'true')
+    set_cookie('sidebar_collapsed', 'true')
 
     project.add_developer(user)
     sign_in(user)
@@ -101,7 +103,10 @@ feature 'Merge requests > User posts diff notes', :js do
       it 'allows commenting' do
         should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
 
-        first('.js-note-delete', visible: false).trigger('click')
+        accept_confirm do
+          first('button.more-actions-toggle').click
+          first('.js-note-delete').click
+        end
 
         should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
       end
@@ -225,6 +230,7 @@ feature 'Merge requests > User posts diff notes', :js do
     write_comment_on_line(line_holder, diff_side)
 
     click_button 'Comment'
+
     wait_for_requests
 
     assert_comment_persistence(line_holder, asset_form_reset: asset_form_reset)
@@ -233,7 +239,7 @@ feature 'Merge requests > User posts diff notes', :js do
   def should_allow_dismissing_a_comment(line_holder, diff_side = nil)
     write_comment_on_line(line_holder, diff_side)
 
-    find('.js-close-discussion-note-form').trigger('click')
+    find('.js-close-discussion-note-form').click
 
     assert_comment_dismissal(line_holder)
   end
@@ -242,36 +248,6 @@ feature 'Merge requests > User posts diff notes', :js do
     line = get_line_components(line_holder, diff_side)
     line[:content].hover
     expect(line[:num]).not_to have_css comment_button_class
-  end
-
-  def get_line_components(line_holder, diff_side = nil)
-    if diff_side.nil?
-      get_inline_line_components(line_holder)
-    else
-      get_parallel_line_components(line_holder, diff_side)
-    end
-  end
-
-  def get_inline_line_components(line_holder)
-    { content: line_holder.find('.line_content', match: :first), num: line_holder.find('.diff-line-num', match: :first) }
-  end
-
-  def get_parallel_line_components(line_holder, diff_side = nil)
-    side_index = diff_side == 'left' ? 0 : 1
-    # Wait for `.line_content`
-    line_holder.find('.line_content', match: :first)
-    # Wait for `.diff-line-num`
-    line_holder.find('.diff-line-num', match: :first)
-    { content: line_holder.all('.line_content')[side_index], num: line_holder.all('.diff-line-num')[side_index] }
-  end
-
-  def click_diff_line(line_holder, diff_side = nil)
-    line = get_line_components(line_holder, diff_side)
-    line[:content].hover
-
-    expect(line[:num]).to have_css comment_button_class
-
-    line[:num].find(comment_button_class).trigger 'click'
   end
 
   def write_comment_on_line(line_holder, diff_side)

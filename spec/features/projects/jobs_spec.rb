@@ -299,14 +299,14 @@ feature 'Jobs' do
       end
 
       shared_examples 'expected variables behavior' do
-        it 'shows variable key and value after click', js: true do
-          expect(page).to have_css('.reveal-variables')
+        it 'shows variable key and value after click', :js do
+          expect(page).to have_css('.js-reveal-variables')
           expect(page).not_to have_css('.js-build-variable')
           expect(page).not_to have_css('.js-build-value')
 
           click_button 'Reveal Variables'
 
-          expect(page).not_to have_css('.reveal-variables')
+          expect(page).not_to have_css('.js-reveal-variables')
           expect(page).to have_selector('.js-build-variable', text: 'TRIGGER_KEY_1')
           expect(page).to have_selector('.js-build-value', text: 'TRIGGER_VALUE_1')
         end
@@ -380,7 +380,6 @@ feature 'Jobs' do
       end
 
       it 'loads the page and shows all needed controls' do
-        expect(page.status_code).to eq(200)
         expect(page).to have_content 'Retry'
       end
     end
@@ -392,11 +391,10 @@ feature 'Jobs' do
         job.run!
         visit project_job_path(project, job)
         find('.js-cancel-job').click()
-        find('.js-retry-button').trigger('click')
+        find('.js-retry-button').click
       end
 
       it 'shows the right status and buttons', :js do
-        expect(page).to have_http_status(200)
         page.within('aside.right-sidebar') do
           expect(page).to have_content 'Cancel'
         end
@@ -443,28 +441,30 @@ feature 'Jobs' do
     context 'access source' do
       context 'job from project' do
         before do
-          Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
           job.run!
-          visit project_job_path(project, job)
-          find('.js-raw-link-controller').click()
         end
 
         it 'sends the right headers' do
-          expect(page.status_code).to eq(200)
-          expect(page.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
-          expect(page.response_headers['X-Sendfile']).to eq(job.trace.send(:current_path))
+          requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
+            visit raw_project_job_path(project, job)
+          end
+
+          expect(requests.first.status_code).to eq(200)
+          expect(requests.first.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
+          expect(requests.first.response_headers['X-Sendfile']).to eq(job.trace.send(:current_path))
         end
       end
 
       context 'job from other project' do
         before do
-          Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
           job2.run!
-          visit raw_project_job_path(project, job2)
         end
 
         it 'sends the right headers' do
-          expect(page.status_code).to eq(404)
+          requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
+            visit raw_project_job_path(project, job2)
+          end
+          expect(requests.first.status_code).to eq(404)
         end
       end
     end
@@ -473,8 +473,6 @@ feature 'Jobs' do
       let(:existing_file) { Tempfile.new('existing-trace-file').path }
 
       before do
-        Capybara.current_session.driver.headers = { 'X-Sendfile-Type' => 'X-Sendfile' }
-
         job.run!
       end
 
@@ -483,16 +481,14 @@ feature 'Jobs' do
           allow_any_instance_of(Gitlab::Ci::Trace)
             .to receive(:paths)
             .and_return([existing_file])
-
-          visit project_job_path(project, job)
-
-          find('.js-raw-link-controller').click
         end
 
         it 'sends the right headers' do
-          expect(page.status_code).to eq(200)
-          expect(page.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
-          expect(page.response_headers['X-Sendfile']).to eq(existing_file)
+          requests = inspect_requests(inject_headers: { 'X-Sendfile-Type' => 'X-Sendfile' }) do
+            visit raw_project_job_path(project, job)
+          end
+          expect(requests.first.response_headers['Content-Type']).to eq('text/plain; charset=utf-8')
+          expect(requests.first.response_headers['X-Sendfile']).to eq(existing_file)
         end
       end
 

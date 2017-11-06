@@ -22,7 +22,7 @@ feature "Pipelines settings" do
   context 'for master' do
     given(:role) { :master }
 
-    scenario 'be allowed to change', js: true do
+    scenario 'be allowed to change' do
       fill_in('Test coverage parsing', with: 'coverage_regex')
       click_on 'Save changes'
 

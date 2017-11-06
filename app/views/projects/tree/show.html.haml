@@ -11,10 +11,6 @@
     = webpack_bundle_tag 'common_vue'
     = webpack_bundle_tag 'repo'
 
-= render "projects/commits/head"
-
 %div{ class: [container_class, ("limit-container-width" unless fluid_layout)] }
-  - if show_auto_devops_callout?(@project)
-    = render 'shared/auto_devops_callout'
   = render 'projects/last_push'
   = render 'projects/files', commit: @last_commit, project: @project, ref: @ref, content_url: project_tree_path(@project, @id)

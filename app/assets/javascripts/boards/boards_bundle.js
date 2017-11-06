@@ -1,10 +1,10 @@
 /* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren */
 /* global BoardService */
-/* global Flash */
 
 import _ from 'underscore';
 import Vue from 'vue';
 import VueResource from 'vue-resource';
+import Flash from '../flash';
 import FilteredSearchBoards from './filtered_search_boards';
 import eventHub from './eventhub';
 import './models/issue';
@@ -77,9 +77,6 @@ $(() => {
       });
       Store.rootPath = this.boardsEndpoint;
 
-      this.filterManager = new FilteredSearchBoards(Store.filter, true);
-      this.filterManager.setup();
-
       // Listen for updateTokens event
       eventHub.$on('updateTokens', this.updateTokens);
     },
@@ -87,6 +84,9 @@ $(() => {
       eventHub.$off('updateTokens', this.updateTokens);
     },
     mounted () {
+      this.filterManager = new FilteredSearchBoards(Store.filter, true);
+      this.filterManager.setup();
+
       Store.disabled = this.disabled;
       gl.boardService.all()
         .then(response => response.json())

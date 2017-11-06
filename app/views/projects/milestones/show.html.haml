@@ -3,7 +3,6 @@
 - breadcrumb_title @milestone.title
 - page_title       @milestone.title, "Milestones"
 - page_description @milestone.description
-= render "shared/mr_head"
 
 %div{ class: container_class }
   .detail-page-header.milestone-page-header
@@ -24,13 +23,17 @@
         = milestone_date_range(@milestone)
     .milestone-buttons
       - if can?(current_user, :admin_milestone, @project)
+        = link_to edit_project_milestone_path(@project, @milestone), class: "btn btn-grouped btn-nr" do
+          Edit
+
+        - if @project.group
+          = link_to promote_project_milestone_path(@milestone.project, @milestone), title: "Promote to Group Milestone", class: 'btn btn-grouped', data: { confirm: "Promoting this milestone will make it available for all projects inside the group. Existing project milestones with the same name will be merged. Are you sure?", toggle: "tooltip" }, method: :post do
+            Promote
+
         - if @milestone.active?
           = link_to 'Close milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-close btn-nr btn-grouped"
         - else
           = link_to 'Reopen milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-reopen btn-nr btn-grouped"
-
-        = link_to edit_project_milestone_path(@project, @milestone), class: "btn btn-grouped btn-nr" do
-          Edit
 
         = link_to project_milestone_path(@project, @milestone), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-grouped btn-danger" do
           Delete
@@ -41,6 +44,7 @@
   .detail-page-description.milestone-detail
     %h2.title
       = markdown_field(@milestone, :title)
+
     %div
       - if @milestone.description.present?
         .description

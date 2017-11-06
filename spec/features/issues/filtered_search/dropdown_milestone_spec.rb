@@ -50,15 +50,16 @@ describe 'Dropdown milestone', :js do
     end
 
     it 'should show loading indicator when opened' do
-      filtered_search.set('milestone:')
+      slow_requests do
+        filtered_search.set('milestone:')
 
-      expect(page).to have_css('#js-dropdown-milestone .filter-dropdown-loading', visible: true)
+        expect(page).to have_css('#js-dropdown-milestone .filter-dropdown-loading', visible: true)
+      end
     end
 
     it 'should hide loading indicator when loaded' do
       filtered_search.set('milestone:')
 
-      expect(find(js_dropdown_milestone)).to have_css('.filter-dropdown-loading')
       expect(find(js_dropdown_milestone)).not_to have_css('.filter-dropdown-loading')
     end
 

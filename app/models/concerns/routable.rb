@@ -107,7 +107,10 @@ module Routable
     RequestStore[full_path_key] ||= uncached_full_path
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
+  def full_path_components
+    full_path.split('/')
+  end
+
   def expires_full_path_cache
     RequestStore.delete(full_path_key) if RequestStore.active?
     @full_path = nil
@@ -155,6 +158,8 @@ module Routable
   end
 
   def update_route
+    return if Gitlab::Database.read_only?
+
     prepare_route
     route.save
   end

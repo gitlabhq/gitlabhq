@@ -12,9 +12,21 @@ module QA
           end
 
           def perform
-            Page::Main::Menu.act { go_to_groups }
-            Page::Dashboard::Groups.act { prepare_test_namespace }
-            Page::Group::Show.act { go_to_new_project }
+            Scenario::Gitlab::Sandbox::Prepare.perform
+
+            Page::Group::Show.perform do |page|
+              if page.has_subgroup?(Runtime::Namespace.name)
+                page.go_to_subgroup(Runtime::Namespace.name)
+              else
+                page.go_to_new_subgroup
+
+                Scenario::Gitlab::Group::Create.perform do |group|
+                  group.path = Runtime::Namespace.name
+                end
+              end
+
+              page.go_to_new_project
+            end
 
             Page::Project::New.perform do |page|
               page.choose_test_namespace

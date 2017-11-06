@@ -84,6 +84,62 @@ describe('common_utils', () => {
       expectGetElementIdToHaveBeenCalledWith('definição');
       expectGetElementIdToHaveBeenCalledWith('user-content-definição');
     });
+
+    it('scrolls element into view', () => {
+      document.body.innerHTML += `
+        <div id="parent">
+          <div style="height: 2000px;"></div>
+          <div id="test" style="height: 2000px;"></div>
+        </div>
+      `;
+
+      window.history.pushState({}, null, '#test');
+      commonUtils.handleLocationHash();
+
+      expectGetElementIdToHaveBeenCalledWith('test');
+      expect(window.scrollY).toBe(document.getElementById('test').offsetTop);
+
+      document.getElementById('parent').remove();
+    });
+
+    it('scrolls user content element into view', () => {
+      document.body.innerHTML += `
+        <div id="parent">
+          <div style="height: 2000px;"></div>
+          <div id="user-content-test" style="height: 2000px;"></div>
+        </div>
+      `;
+
+      window.history.pushState({}, null, '#test');
+      commonUtils.handleLocationHash();
+
+      expectGetElementIdToHaveBeenCalledWith('test');
+      expectGetElementIdToHaveBeenCalledWith('user-content-test');
+      expect(window.scrollY).toBe(document.getElementById('user-content-test').offsetTop);
+
+      document.getElementById('parent').remove();
+    });
+
+    it('scrolls to element with offset from navbar', () => {
+      spyOn(window, 'scrollBy').and.callThrough();
+      document.body.innerHTML += `
+        <div id="parent">
+          <div class="navbar-gitlab" style="position: fixed; top: 0; height: 50px;"></div>
+          <div style="height: 2000px; margin-top: 50px;"></div>
+          <div id="user-content-test" style="height: 2000px;"></div>
+        </div>
+      `;
+
+      window.history.pushState({}, null, '#test');
+      commonUtils.handleLocationHash();
+
+      expectGetElementIdToHaveBeenCalledWith('test');
+      expectGetElementIdToHaveBeenCalledWith('user-content-test');
+      expect(window.scrollY).toBe(document.getElementById('user-content-test').offsetTop - 50);
+      expect(window.scrollBy).toHaveBeenCalledWith(0, -50);
+
+      document.getElementById('parent').remove();
+    });
   });
 
   describe('setParamInURL', () => {
@@ -411,15 +467,27 @@ describe('common_utils', () => {
       commonUtils.ajaxPost(requestURL, data);
       expect(ajaxSpy.calls.allArgs()[0][0].type).toEqual('POST');
     });
+  });
 
-    describe('gl.utils.spriteIcon', () => {
-      beforeEach(() => {
-        window.gon.sprite_icons = 'icons.svg';
-      });
+  describe('spriteIcon', () => {
+    let beforeGon;
 
-      it('should return the svg for a linked icon', () => {
-        expect(gl.utils.spriteIcon('test')).toEqual('<svg><use xlink:href="icons.svg#test" /></svg>');
-      });
+    beforeEach(() => {
+      window.gon = window.gon || {};
+      beforeGon = Object.assign({}, window.gon);
+      window.gon.sprite_icons = 'icons.svg';
+    });
+
+    afterEach(() => {
+      window.gon = beforeGon;
+    });
+
+    it('should return the svg for a linked icon', () => {
+      expect(commonUtils.spriteIcon('test')).toEqual('<svg ><use xlink:href="icons.svg#test" /></svg>');
+    });
+
+    it('should set svg className when passed', () => {
+      expect(commonUtils.spriteIcon('test', 'fa fa-test')).toEqual('<svg class="fa fa-test"><use xlink:href="icons.svg#test" /></svg>');
     });
   });
 });

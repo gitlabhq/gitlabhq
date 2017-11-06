@@ -1,5 +1,9 @@
-## GitLab CI Services
+---
+comments: false
+---
 
-+ [Using MySQL](mysql.md)
-+ [Using PostgreSQL](postgres.md)
-+ [Using Redis](redis.md)
+# GitLab CI Services
+
+- [Using MySQL](mysql.md)
+- [Using PostgreSQL](postgres.md)
+- [Using Redis](redis.md)
