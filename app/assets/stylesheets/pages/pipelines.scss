@@ -202,25 +202,6 @@
     }
   }
 
-  /**
-   * Play button with icon in dropdowns
-   */
-  .no-btn {
-    border: none;
-    background: none;
-    outline: none;
-    width: 100%;
-    text-align: left;
-
-    .icon-play {
-      position: relative;
-      top: 2px;
-      margin-right: 5px;
-      height: 13px;
-      width: 12px;
-    }
-  }
-
   .duration,
   .finished-at {
     color: $gl-text-color-secondary;
@@ -498,44 +479,41 @@
       @extend .build-content:hover;
     }
 
-    .ci-action-icon-container {
+    // Action Icons in big pipeline-graph nodes
+    .ci-action-icon-container.ci-action-icon-wrapper {
       position: absolute;
       right: 5px;
       top: 5px;
+      height: 30px;
+      width: 30px;
+      background: $white-light;
+      border: 1px solid $border-color;
+      border-radius: 100%;
+      display: block;
 
-      // Action Icons in big pipeline-graph nodes
-      &.ci-action-icon-wrapper {
-        height: 30px;
-        width: 30px;
-        background: $white-light;
-        border: 1px solid $border-color;
-        border-radius: 100%;
-        display: block;
-
-        &:hover {
-          background-color: $stage-hover-bg;
-          border: 1px solid $dropdown-toggle-active-border-color;
-
-          svg {
-            fill: $gl-text-color;
-          }
-        }
+      &:hover {
+        background-color: $stage-hover-bg;
+        border: 1px solid $dropdown-toggle-active-border-color;
 
         svg {
-          fill: $gl-text-color-secondary;
-          position: relative;
-          left: 5px;
-          top: 2px;
-          width: 18px;
-          height: 18px;
+          fill: $gl-text-color;
         }
+      }
 
-        &.play {
-          svg {
-            width: #{$ci-action-icon-size - 8};
-            height: #{$ci-action-icon-size - 8};
-            left: 8px;
-          }
+      svg {
+        fill: $gl-text-color-secondary;
+        position: relative;
+        left: 5px;
+        top: 2px;
+        width: 18px;
+        height: 18px;
+      }
+
+      &.play {
+        svg {
+          width: #{$ci-action-icon-size - 8};
+          height: #{$ci-action-icon-size - 8};
+          left: 8px;
         }
       }
     }
@@ -995,7 +973,6 @@ a.linked-pipeline-mini-item {
   }
 }
 
-<<<<<<< HEAD
 /**
  * Play button with icon in dropdowns
  */
@@ -1217,8 +1194,6 @@ a.linked-pipeline-mini-item {
   vertical-align: top;
 }
 
-=======
->>>>>>> ce-com/master
 .ci-header-container {
   min-height: 55px;
 
