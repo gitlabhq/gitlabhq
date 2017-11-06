@@ -1,10 +1,10 @@
 /* eslint-disable one-var, quote-props, comma-dangle, space-before-function-paren */
 /* global BoardService */
-/* global Flash */
 
 import _ from 'underscore';
 import Vue from 'vue';
 import VueResource from 'vue-resource';
+import Flash from '../flash';
 import FilteredSearchBoards from './filtered_search_boards';
 import eventHub from './eventhub';
 import './models/issue';
@@ -53,7 +53,8 @@ $(() => {
     data: {
       state: Store.state,
       loading: true,
-      endpoint: $boardApp.dataset.endpoint,
+      boardsEndpoint: $boardApp.dataset.boardsEndpoint,
+      listsEndpoint: $boardApp.dataset.listsEndpoint,
       boardId: $boardApp.dataset.boardId,
       disabled: $boardApp.dataset.disabled === 'true',
       issueLinkBase: $boardApp.dataset.issueLinkBase,
@@ -68,10 +69,13 @@ $(() => {
       },
     },
     created () {
-      gl.boardService = new BoardService(this.endpoint, this.bulkUpdatePath, this.boardId);
-
-      this.filterManager = new FilteredSearchBoards(Store.filter, true);
-      this.filterManager.setup();
+      gl.boardService = new BoardService({
+        boardsEndpoint: this.boardsEndpoint,
+        listsEndpoint: this.listsEndpoint,
+        bulkUpdatePath: this.bulkUpdatePath,
+        boardId: this.boardId,
+      });
+      Store.rootPath = this.boardsEndpoint;
 
       // Listen for updateTokens event
       eventHub.$on('updateTokens', this.updateTokens);
@@ -80,6 +84,9 @@ $(() => {
       eventHub.$off('updateTokens', this.updateTokens);
     },
     mounted () {
+      this.filterManager = new FilteredSearchBoards(Store.filter, true);
+      this.filterManager.setup();
+
       Store.disabled = this.disabled;
       gl.boardService.all()
         .then(response => response.json())
@@ -112,19 +119,21 @@ $(() => {
   gl.IssueBoardsSearch = new Vue({
     el: document.getElementById('js-add-list'),
     data: {
-      filters: Store.state.filters
+      filters: Store.state.filters,
     },
     mounted () {
       gl.issueBoards.newListDropdownInit();
-    }
+    },
   });
 
   gl.IssueBoardsModalAddBtn = new Vue({
     mixins: [gl.issueBoards.ModalMixins],
     el: document.getElementById('js-add-issues-btn'),
-    data: {
-      modal: ModalStore.store,
-      store: Store.state,
+    data() {
+      return {
+        modal: ModalStore.store,
+        store: Store.state,
+      };
     },
     watch: {
       disabled() {
@@ -133,6 +142,9 @@ $(() => {
     },
     computed: {
       disabled() {
+        if (!this.store) {
+          return true;
+        }
         return !this.store.lists.filter(list => !list.preset).length;
       },
       tooltipTitle() {
@@ -145,7 +157,7 @@ $(() => {
     },
     methods: {
       updateTooltip() {
-        const $tooltip = $(this.$el);
+        const $tooltip = $(this.$refs.addIssuesButton);
 
         this.$nextTick(() => {
           if (this.disabled) {
@@ -165,16 +177,19 @@ $(() => {
       this.updateTooltip();
     },
     template: `
-      <button
-        class="btn btn-create pull-right prepend-left-10"
-        type="button"
-        data-placement="bottom"
-        :class="{ 'disabled': disabled }"
-        :title="tooltipTitle"
-        :aria-disabled="disabled"
-        @click="openModal">
-        Add issues
-      </button>
+      <div class="board-extra-actions">
+        <button
+          class="btn btn-create prepend-left-10"
+          type="button"
+          data-placement="bottom"
+          ref="addIssuesButton"
+          :class="{ 'disabled': disabled }"
+          :title="tooltipTitle"
+          :aria-disabled="disabled"
+          @click="openModal">
+          Add issues
+        </button>
+      </div>
     `,
   });
 });

@@ -6,7 +6,6 @@ class Spinach::Features::Project < Spinach::FeatureSteps
 
   step 'change project settings' do
     fill_in 'project_name_edit', with: 'NewName'
-    select 'Disabled', from: 'project_project_feature_attributes_issues_access_level'
   end
 
   step 'I save project' do

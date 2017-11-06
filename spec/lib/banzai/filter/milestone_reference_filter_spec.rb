@@ -296,7 +296,7 @@ describe Banzai::Filter::MilestoneReferenceFilter do
 
   context 'project milestones' do
     let(:milestone) { create(:milestone, project: project) }
-    let(:reference) { milestone.to_reference }
+    let(:reference) { milestone.to_reference(format: :iid) }
 
     include_examples 'reference parsing'
 
@@ -341,6 +341,17 @@ describe Banzai::Filter::MilestoneReferenceFilter do
       doc = reference_filter("See #{project_reference}#{reference}")
 
       expect(doc.css('a')).to be_empty
+    end
+  end
+
+  context 'group context' do
+    it 'links to a valid reference' do
+      milestone = create(:milestone, project: project)
+      reference = "#{project.full_path}%#{milestone.iid}"
+
+      result = reference_filter("See #{reference}", { project: nil, group: create(:group) } )
+
+      expect(result.css('a').first.attr('href')).to eq(urls.milestone_url(milestone))
     end
   end
 end

@@ -44,6 +44,10 @@ class Namespace < ActiveRecord::Base
 
   after_commit :refresh_access_of_projects_invited_groups, on: :update, if: -> { previous_changes.key?('share_with_group_lock') }
 
+  before_create :sync_share_with_group_lock_with_parent
+  before_update :sync_share_with_group_lock_with_parent, if: :parent_changed?
+  after_update :force_share_with_group_lock_on_descendants, if: -> { share_with_group_lock_changed? && share_with_group_lock? }
+
   # Legacy Storage specific hooks
 
   after_update :move_dir, if: :path_changed?
@@ -135,7 +139,9 @@ class Namespace < ActiveRecord::Base
   end
 
   def find_fork_of(project)
-    projects.joins(:forked_project_link).find_by('forked_project_links.forked_from_project_id = ?', project.id)
+    return nil unless project.fork_network
+
+    project.fork_network.find_forks_in(projects).first
   end
 
   def lfs_enabled?
@@ -154,6 +160,13 @@ class Namespace < ActiveRecord::Base
     Gitlab::GroupHierarchy
       .new(self.class.where(id: parent_id))
       .base_and_ancestors
+  end
+
+  # returns all ancestors upto but excluding the the given namespace
+  # when no namespace is given, all ancestors upto the top are returned
+  def ancestors_upto(top = nil)
+    Gitlab::GroupHierarchy.new(self.class.where(id: id))
+      .ancestors(upto: top)
   end
 
   def self_and_ancestors
@@ -218,5 +231,22 @@ class Namespace < ActiveRecord::Base
     if ancestors.count > Group::NUMBER_OF_ANCESTORS_ALLOWED
       errors.add(:parent_id, "has too deep level of nesting")
     end
+  end
+
+  def sync_share_with_group_lock_with_parent
+    if parent&.share_with_group_lock?
+      self.share_with_group_lock = true
+    end
+  end
+
+  def force_share_with_group_lock_on_descendants
+    return unless Group.supports_nested_groups?
+
+    # We can't use `descendants.update_all` since Rails will throw away the WITH
+    # RECURSIVE statement. We also can't use WHERE EXISTS since we can't use
+    # different table aliases, hence we're just using WHERE IN. Since we have a
+    # maximum of 20 nested groups this should be fine.
+    Namespace.where(id: descendants.select(:id))
+      .update_all(share_with_group_lock: true)
   end
 end

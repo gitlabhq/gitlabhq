@@ -22,7 +22,7 @@ To share 'Project Acme' with the 'Engineering' group, go to the project settings
 
 Then select the 'Share with group' tab by clicking it.
 
-Now you can add the 'Engineering' group with the maximum access level of your choice. Click 'Share' to share it. 
+Now you can add the 'Engineering' group with the maximum access level of your choice. Click 'Share' to share it.
 
 ![share project with groups tab](img/share_project_with_groups_tab.png)
 
@@ -34,11 +34,10 @@ After sharing 'Project Acme' with 'Engineering', the project will be listed on t
 
 In the example above, the maximum access level of 'Developer' for members from 'Engineering' means that users with higher access levels in 'Engineering' ('Master' or 'Owner') will only have 'Developer' access to 'Project Acme'.
 
-## Share project with group lock (EES/EEP)
+## Share project with group lock
 
-In [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/)
-it is possible to prevent projects in a group from [sharing
+It is possible to prevent projects in a group from [sharing
 a project with another group](../members/share_project_with_groups.md).
 This allows for tighter control over project access.
 
-Learn more about [Share with group lock](https://docs.gitlab.com/ee/user/group/index.html#share-with-group-lock-ees-eep).
+Learn more about [Share with group lock](../../group/index.html#share-with-group-lock).

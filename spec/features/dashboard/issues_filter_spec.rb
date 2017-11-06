@@ -50,7 +50,7 @@ feature 'Dashboard Issues filtering', :js do
     it 'updates atom feed link' do
       visit_issues(milestone_title: '', assignee_id: user.id)
 
-      link = find('.breadcrumbs a[title="Subscribe"]')
+      link = find('.nav-controls a[title="Subscribe"]')
       params = CGI.parse(URI.parse(link[:href]).query)
       auto_discovery_link = find('link[type="application/atom+xml"]', visible: false)
       auto_discovery_params = CGI.parse(URI.parse(auto_discovery_link[:href]).query)
@@ -90,17 +90,17 @@ feature 'Dashboard Issues filtering', :js do
 
   context 'sorting' do
     it 'shows sorted issues' do
-      sorting_by('Oldest updated')
+      sorting_by('Created date')
       visit_issues
 
-      expect(find('.issues-filters')).to have_content('Oldest updated')
+      expect(find('.issues-filters')).to have_content('Created date')
     end
 
     it 'keeps sorting issues after visiting Projects Issues page' do
-      sorting_by('Oldest updated')
+      sorting_by('Created date')
       visit project_issues_path(project)
 
-      expect(find('.issues-filters')).to have_content('Oldest updated')
+      expect(find('.issues-filters')).to have_content('Created date')
     end
   end
 

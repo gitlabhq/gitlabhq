@@ -9,6 +9,9 @@ class GpgKey < ActiveRecord::Base
 
   belongs_to :user
   has_many :gpg_signatures
+  has_many :subkeys, class_name: 'GpgKeySubkey'
+
+  scope :with_subkeys, -> { includes(:subkeys) }
 
   validates :user, presence: true
 
@@ -36,11 +39,12 @@ class GpgKey < ActiveRecord::Base
 
   before_validation :extract_fingerprint, :extract_primary_keyid
   after_commit :update_invalid_gpg_signatures, on: :create
-  after_commit :notify_user, on: :create
+  after_create :generate_subkeys
 
   def primary_keyid
     super&.upcase
   end
+  alias_method :keyid, :primary_keyid
 
   def fingerprint
     super&.upcase
@@ -48,6 +52,10 @@ class GpgKey < ActiveRecord::Base
 
   def key=(value)
     super(value&.strip)
+  end
+
+  def keyids
+    [keyid].concat(subkeys.map(&:keyid))
   end
 
   def user_infos
@@ -74,7 +82,7 @@ class GpgKey < ActiveRecord::Base
   end
 
   def verified_and_belongs_to_email?(email)
-    emails_with_verified_status.fetch(email, false)
+    emails_with_verified_status.fetch(email.downcase, false)
   end
 
   def update_invalid_gpg_signatures
@@ -83,10 +91,11 @@ class GpgKey < ActiveRecord::Base
 
   def revoke
     GpgSignature
-      .where(gpg_key: self)
+      .with_key_and_subkeys(self)
       .where.not(verification_status: GpgSignature.verification_statuses[:unknown_key])
       .update_all(
         gpg_key_id: nil,
+        gpg_key_subkey_id: nil,
         verification_status: GpgSignature.verification_statuses[:unknown_key],
         updated_at: Time.zone.now
       )
@@ -108,7 +117,11 @@ class GpgKey < ActiveRecord::Base
     self.primary_keyid = Gitlab::Gpg.primary_keyids_from_key(key).first
   end
 
-  def notify_user
-    NotificationService.new.new_gpg_key(self)
+  def generate_subkeys
+    gpg_subkeys = Gitlab::Gpg.subkeys_from_key(key)
+
+    gpg_subkeys[primary_keyid]&.each do |subkey_data|
+      subkeys.create!(keyid: subkey_data[:keyid], fingerprint: subkey_data[:fingerprint])
+    end
   end
 end

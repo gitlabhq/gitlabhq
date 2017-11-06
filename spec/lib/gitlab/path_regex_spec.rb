@@ -84,9 +84,9 @@ describe Gitlab::PathRegex do
   let(:top_level_words) do
     words = routes_not_starting_in_wildcard.map do |route|
       route.split('/')[1]
-    end.compact.uniq
+    end.compact
 
-    words + ee_top_level_words + files_in_public + Array(API::API.prefix.to_s)
+    (words + ee_top_level_words + files_in_public + Array(API::API.prefix.to_s)).uniq
   end
 
   let(:ee_top_level_words) do
@@ -95,10 +95,11 @@ describe Gitlab::PathRegex do
 
   let(:files_in_public) do
     git = Gitlab.config.git.bin_path
-    `cd #{Rails.root} && #{git} ls-files public`
+    tracked = `cd #{Rails.root} && #{git} ls-files public`
       .split("\n")
       .map { |entry| entry.gsub('public/', '') }
       .uniq
+    tracked + %w(assets uploads)
   end
 
   # All routes that start with a namespaced path, that have 1 or more
@@ -212,7 +213,7 @@ describe Gitlab::PathRegex do
     it 'accepts group routes' do
       expect(subject).to match('activity/')
       expect(subject).to match('group_members/')
-      expect(subject).to match('subgroups/')
+      expect(subject).to match('labels/')
     end
 
     it 'is not case sensitive' do
@@ -245,7 +246,7 @@ describe Gitlab::PathRegex do
         it 'accepts group routes' do
           expect(subject).to match('activity/')
           expect(subject).to match('group_members/')
-          expect(subject).to match('subgroups/')
+          expect(subject).to match('labels/')
         end
       end
 
@@ -267,7 +268,7 @@ describe Gitlab::PathRegex do
         it 'accepts group routes' do
           expect(subject).to match('activity/more/')
           expect(subject).to match('group_members/more/')
-          expect(subject).to match('subgroups/more/')
+          expect(subject).to match('labels/more/')
         end
       end
     end
@@ -291,7 +292,7 @@ describe Gitlab::PathRegex do
         it 'rejects group routes' do
           expect(subject).not_to match('root/activity/')
           expect(subject).not_to match('root/group_members/')
-          expect(subject).not_to match('root/subgroups/')
+          expect(subject).not_to match('root/labels/')
         end
       end
 
@@ -313,7 +314,7 @@ describe Gitlab::PathRegex do
         it 'rejects group routes' do
           expect(subject).not_to match('root/activity/more/')
           expect(subject).not_to match('root/group_members/more/')
-          expect(subject).not_to match('root/subgroups/more/')
+          expect(subject).not_to match('root/labels/more/')
         end
       end
     end
@@ -348,7 +349,7 @@ describe Gitlab::PathRegex do
     it 'accepts group routes' do
       expect(subject).to match('activity/')
       expect(subject).to match('group_members/')
-      expect(subject).to match('subgroups/')
+      expect(subject).to match('labels/')
     end
 
     it 'is not case sensitive' do
@@ -381,7 +382,7 @@ describe Gitlab::PathRegex do
     it 'accepts group routes' do
       expect(subject).to match('root/activity/')
       expect(subject).to match('root/group_members/')
-      expect(subject).to match('root/subgroups/')
+      expect(subject).to match('root/labels/')
     end
 
     it 'is not case sensitive' do

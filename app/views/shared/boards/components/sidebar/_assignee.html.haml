@@ -1,0 +1,32 @@
+.block.assignee{ ref: "assigneeBlock" }
+  %template{ "v-if" => "issue.assignees" }
+    %assignee-title{ ":number-of-assignees" => "issue.assignees.length",
+      ":loading" => "loadingAssignees",
+      ":editable" => can_admin_issue? }
+    %assignees.value{ "root-path" => "#{root_url}",
+      ":users" => "issue.assignees",
+      ":editable" => can_admin_issue?,
+      "@assign-self" => "assignSelf" }
+
+  - if can_admin_issue?
+    .selectbox.hide-collapsed
+      %input.js-vue{ type: "hidden",
+        name: "issue[assignee_ids][]",
+        ":value" => "assignee.id",
+        "v-if" => "issue.assignees",
+        "v-for" => "assignee in issue.assignees",
+        ":data-avatar_url" => "assignee.avatar",
+        ":data-name" => "assignee.name",
+        ":data-username" => "assignee.username" }
+      .dropdown
+        - dropdown_options = issue_assignees_dropdown_options
+        %button.dropdown-menu-toggle.js-user-search.js-author-search.js-multiselect.js-save-user-data.js-issue-board-sidebar{ type: 'button', ref: 'assigneeDropdown', data: board_sidebar_user_data,
+          ":data-issuable-id" => "issue.iid",
+          ":data-issue-update" => "'#{build_issue_link_base}/' + issue.iid + '.json'" }
+          = dropdown_options[:title]
+          = icon("chevron-down")
+        .dropdown-menu.dropdown-select.dropdown-menu-user.dropdown-menu-selectable.dropdown-menu-author
+          = dropdown_title("Assign to")
+          = dropdown_filter("Search users")
+          = dropdown_content
+          = dropdown_loading

@@ -3,10 +3,9 @@
 import '~/gl_dropdown';
 import '~/search_autocomplete';
 import '~/lib/utils/common_utils';
-import 'vendor/fuzzaldrin-plus';
 
 (function() {
-  var addBodyAttributes, assertLinks, dashboardIssuesPath, dashboardMRsPath, groupIssuesPath, groupMRsPath, groupName, mockDashboardOptions, mockGroupOptions, mockProjectOptions, projectIssuesPath, projectMRsPath, projectName, userId, widget;
+  var assertLinks, dashboardIssuesPath, dashboardMRsPath, groupIssuesPath, groupMRsPath, groupName, mockDashboardOptions, mockGroupOptions, mockProjectOptions, projectIssuesPath, projectMRsPath, projectName, userId, widget;
   var userName = 'root';
 
   widget = null;
@@ -29,25 +28,31 @@ import 'vendor/fuzzaldrin-plus';
 
   groupName = 'Gitlab Org';
 
-  // Add required attributes to body before starting the test.
-  // section would be dashboard|group|project
-  addBodyAttributes = function(section) {
-    var $body;
-    if (section == null) {
-      section = 'dashboard';
-    }
-    $body = $('body');
+  const removeBodyAttributes = function() {
+    const $body = $('body');
+
     $body.removeAttr('data-page');
     $body.removeAttr('data-project');
     $body.removeAttr('data-group');
+  };
+
+  // Add required attributes to body before starting the test.
+  // section would be dashboard|group|project
+  const addBodyAttributes = function(section) {
+    if (section == null) {
+      section = 'dashboard';
+    }
+
+    const $body = $('body');
+    removeBodyAttributes();
     switch (section) {
       case 'dashboard':
-        return $body.data('page', 'root:index');
+        return $body.attr('data-page', 'root:index');
       case 'group':
-        $body.data('page', 'groups:show');
+        $body.attr('data-page', 'groups:show');
         return $body.data('group', 'gitlab-org');
       case 'project':
-        $body.data('page', 'projects:show');
+        $body.attr('data-page', 'projects:show');
         return $body.data('project', 'gitlab-ce');
     }
   };
@@ -108,7 +113,7 @@ import 'vendor/fuzzaldrin-plus';
     preloadFixtures('static/search_autocomplete.html.raw');
     beforeEach(function() {
       loadFixtures('static/search_autocomplete.html.raw');
-      widget = new gl.SearchAutocomplete;
+
       // Prevent turbolinks from triggering within gl_dropdown
       spyOn(window.gl.utils, 'visitUrl').and.returnValue(true);
 
@@ -120,6 +125,8 @@ import 'vendor/fuzzaldrin-plus';
     });
 
     afterEach(function() {
+      // Undo what we did to the shared <body>
+      removeBodyAttributes();
       window.gon = {};
     });
     it('should show Dashboard specific dropdown menu', function() {

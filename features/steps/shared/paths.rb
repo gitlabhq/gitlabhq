@@ -222,7 +222,7 @@ module SharedPaths
   end
 
   step "I visit my project's commits page for a specific path" do
-    visit project_commits_path(@project, root_ref + "/app/models/project.rb", { limit: 5 })
+    visit project_commits_path(@project, root_ref + "/files/ruby/regex.rb", { limit: 5 })
   end
 
   step 'I visit my project\'s commits stats page' do
@@ -454,19 +454,6 @@ module SharedPaths
   # ----------------------------------------
   # Public Projects
   # ----------------------------------------
-
-  step 'I visit the public projects area' do
-    visit explore_projects_path
-  end
-
-  step 'I visit the explore trending projects' do
-    visit trending_explore_projects_path
-  end
-
-  step 'I visit the explore starred projects' do
-    visit starred_explore_projects_path
-  end
-
   step 'I visit the public groups area' do
     visit explore_groups_path
   end

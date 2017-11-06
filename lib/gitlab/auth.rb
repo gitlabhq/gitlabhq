@@ -1,22 +1,17 @@
 module Gitlab
   module Auth
-    MissingPersonalTokenError = Class.new(StandardError)
+    MissingPersonalAccessTokenError = Class.new(StandardError)
 
     REGISTRY_SCOPES = [:read_registry].freeze
 
     # Scopes used for GitLab API access
-    API_SCOPES = [:api, :read_user].freeze
+    API_SCOPES = [:api, :read_user, :sudo].freeze
 
     # Scopes used for OpenID Connect
     OPENID_SCOPES = [:openid].freeze
 
     # Default scopes for OAuth applications that don't define their own
     DEFAULT_SCOPES = [:api].freeze
-
-    AVAILABLE_SCOPES = (API_SCOPES + REGISTRY_SCOPES).freeze
-
-    # Other available scopes
-    OPTIONAL_SCOPES = (AVAILABLE_SCOPES + OPENID_SCOPES - DEFAULT_SCOPES).freeze
 
     class << self
       include Gitlab::CurrentSettings
@@ -43,7 +38,7 @@ module Gitlab
 
         # If sign-in is disabled and LDAP is not configured, recommend a
         # personal access token on failed auth attempts
-        raise Gitlab::Auth::MissingPersonalTokenError
+        raise Gitlab::Auth::MissingPersonalAccessTokenError
       end
 
       def find_with_user_password(login, password)
@@ -111,7 +106,7 @@ module Gitlab
         user = find_with_user_password(login, password)
         return unless user
 
-        raise Gitlab::Auth::MissingPersonalTokenError if user.two_factor_enabled?
+        raise Gitlab::Auth::MissingPersonalAccessTokenError if user.two_factor_enabled?
 
         Gitlab::Auth::Result.new(user, nil, :gitlab_or_ldap, full_authentication_abilities)
       end
@@ -132,8 +127,8 @@ module Gitlab
 
         token = PersonalAccessTokensFinder.new(state: 'active').find_by(token: password)
 
-        if token && valid_scoped_token?(token, AVAILABLE_SCOPES)
-          Gitlab::Auth::Result.new(token.user, nil, :personal_token, abilities_for_scope(token.scopes))
+        if token && valid_scoped_token?(token, available_scopes)
+          Gitlab::Auth::Result.new(token.user, nil, :personal_access_token, abilities_for_scope(token.scopes))
         end
       end
 
@@ -229,6 +224,23 @@ module Gitlab
       # The currently used auth method doesn't allow any actions for this scope
       def read_user_scope_authentication_abilities
         []
+      end
+
+      def available_scopes(current_user = nil)
+        scopes = API_SCOPES + registry_scopes
+        scopes.delete(:sudo) if current_user && !current_user.admin?
+        scopes
+      end
+
+      # Other available scopes
+      def optional_scopes
+        available_scopes + OPENID_SCOPES - DEFAULT_SCOPES
+      end
+
+      def registry_scopes
+        return [] unless Gitlab.config.registry.enabled
+
+        REGISTRY_SCOPES
       end
     end
   end

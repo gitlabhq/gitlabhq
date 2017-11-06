@@ -43,15 +43,8 @@ describe 'gitlab:gitaly namespace rake task' do
     describe 'gmake/make' do
       let(:command_preamble) { %w[/usr/bin/env -u RUBYOPT -u BUNDLE_GEMFILE] }
 
-      before(:all) do
-        @old_env_ci = ENV.delete('CI')
-      end
-
-      after(:all) do
-        ENV['CI'] = @old_env_ci if @old_env_ci
-      end
-
       before do
+        stub_env('CI', false)
         FileUtils.mkdir_p(clone_path)
         expect(Dir).to receive(:chdir).with(clone_path).and_call_original
         allow(Bundler).to receive(:bundle_path).and_return('/fake/bundle_path')

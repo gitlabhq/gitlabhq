@@ -5,7 +5,7 @@ describe Gitlab::Auth do
 
   describe 'constants' do
     it 'API_SCOPES contains all scopes for API access' do
-      expect(subject::API_SCOPES).to eq [:api, :read_user]
+      expect(subject::API_SCOPES).to eq %i[api read_user sudo]
     end
 
     it 'OPENID_SCOPES contains all scopes for OpenID Connect' do
@@ -16,12 +16,32 @@ describe Gitlab::Auth do
       expect(subject::DEFAULT_SCOPES).to eq [:api]
     end
 
-    it 'OPTIONAL_SCOPES contains all non-default scopes' do
-      expect(subject::OPTIONAL_SCOPES).to eq %i[read_user read_registry openid]
+    it 'optional_scopes contains all non-default scopes' do
+      stub_container_registry_config(enabled: true)
+
+      expect(subject.optional_scopes).to eq %i[read_user sudo read_registry openid]
     end
 
-    it 'REGISTRY_SCOPES contains all registry related scopes' do
-      expect(subject::REGISTRY_SCOPES).to eq %i[read_registry]
+    context 'registry_scopes' do
+      context 'when registry is disabled' do
+        before do
+          stub_container_registry_config(enabled: false)
+        end
+
+        it 'is empty' do
+          expect(subject.registry_scopes).to eq []
+        end
+      end
+
+      context 'when registry is enabled' do
+        before do
+          stub_container_registry_config(enabled: true)
+        end
+
+        it 'contains all registry related scopes' do
+          expect(subject.registry_scopes).to eq %i[read_registry]
+        end
+      end
     end
   end
 
@@ -144,28 +164,34 @@ describe Gitlab::Auth do
         personal_access_token = create(:personal_access_token, scopes: ['api'])
 
         expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: '')
-        expect(gl_auth.find_for_git_client('', personal_access_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(personal_access_token.user, nil, :personal_token, full_authentication_abilities))
+        expect(gl_auth.find_for_git_client('', personal_access_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(personal_access_token.user, nil, :personal_access_token, full_authentication_abilities))
       end
 
-      it 'succeeds for personal access tokens with the `read_registry` scope' do
-        personal_access_token = create(:personal_access_token, scopes: ['read_registry'])
+      context 'when registry is enabled' do
+        before do
+          stub_container_registry_config(enabled: true)
+        end
 
-        expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: '')
-        expect(gl_auth.find_for_git_client('', personal_access_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(personal_access_token.user, nil, :personal_token, [:read_container_image]))
+        it 'succeeds for personal access tokens with the `read_registry` scope' do
+          personal_access_token = create(:personal_access_token, scopes: ['read_registry'])
+
+          expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: '')
+          expect(gl_auth.find_for_git_client('', personal_access_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(personal_access_token.user, nil, :personal_access_token, [:read_container_image]))
+        end
       end
 
       it 'succeeds if it is an impersonation token' do
         impersonation_token = create(:personal_access_token, :impersonation, scopes: ['api'])
 
         expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: '')
-        expect(gl_auth.find_for_git_client('', impersonation_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(impersonation_token.user, nil, :personal_token, full_authentication_abilities))
+        expect(gl_auth.find_for_git_client('', impersonation_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(impersonation_token.user, nil, :personal_access_token, full_authentication_abilities))
       end
 
       it 'limits abilities based on scope' do
         personal_access_token = create(:personal_access_token, scopes: ['read_user'])
 
         expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: '')
-        expect(gl_auth.find_for_git_client('', personal_access_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(personal_access_token.user, nil, :personal_token, []))
+        expect(gl_auth.find_for_git_client('', personal_access_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(personal_access_token.user, nil, :personal_access_token, []))
       end
 
       it 'fails if password is nil' do
@@ -208,7 +234,7 @@ describe Gitlab::Auth do
     it 'throws an error suggesting user create a PAT when internal auth is disabled' do
       allow_any_instance_of(ApplicationSetting).to receive(:password_authentication_enabled?) { false }
 
-      expect { gl_auth.find_for_git_client('foo', 'bar', project: nil, ip: 'ip') }.to raise_error(Gitlab::Auth::MissingPersonalTokenError)
+      expect { gl_auth.find_for_git_client('foo', 'bar', project: nil, ip: 'ip') }.to raise_error(Gitlab::Auth::MissingPersonalAccessTokenError)
     end
   end
 

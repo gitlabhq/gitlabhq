@@ -1,5 +1,5 @@
 <script>
-  /* global Flash */
+  import Flash from '../../flash';
   import eventHub from '../eventhub';
   import DeployKeysService from '../service';
   import DeployKeysStore from '../store';

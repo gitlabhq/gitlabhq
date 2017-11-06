@@ -11,7 +11,7 @@ describe('pipeline graph action component', () => {
         tooltipText: 'bar',
         link: 'foo',
         actionMethod: 'post',
-        actionIcon: 'icon_action_cancel',
+        actionIcon: 'cancel',
       },
     }).$mount();
 

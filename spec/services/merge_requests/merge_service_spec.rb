@@ -12,38 +12,6 @@ describe MergeRequests::MergeService do
   end
 
   describe '#execute' do
-    context 'MergeRequest#merge_jid' do
-      before do
-        merge_request.update_column(:merge_jid, 'hash-123')
-      end
-
-      it 'is cleaned when no error is raised' do
-        service = described_class.new(project, user, commit_message: 'Awesome message')
-
-        service.execute(merge_request)
-
-        expect(merge_request.reload.merge_jid).to be_nil
-      end
-
-      it 'is cleaned when expected error is raised' do
-        service = described_class.new(project, user, commit_message: 'Awesome message')
-        allow(service).to receive(:commit).and_raise(described_class::MergeError)
-
-        service.execute(merge_request)
-
-        expect(merge_request.reload.merge_jid).to be_nil
-      end
-
-      it 'is not cleaned when unexpected error is raised' do
-        service = described_class.new(project, user, commit_message: 'Awesome message')
-        allow(service).to receive(:commit).and_raise(StandardError)
-
-        expect { service.execute(merge_request) }.to raise_error(StandardError)
-
-        expect(merge_request.reload.merge_jid).to be_present
-      end
-    end
-
     context 'valid params' do
       let(:service) { described_class.new(project, user, commit_message: 'Awesome message') }
 
@@ -168,7 +136,7 @@ describe MergeRequests::MergeService do
     context 'source branch removal' do
       context 'when the source branch is protected' do
         let(:service) do
-          described_class.new(project, user, should_remove_source_branch: '1')
+          described_class.new(project, user, 'should_remove_source_branch' => true)
         end
 
         before do
@@ -183,7 +151,7 @@ describe MergeRequests::MergeService do
 
       context 'when the source branch is the default branch' do
         let(:service) do
-          described_class.new(project, user, should_remove_source_branch: '1')
+          described_class.new(project, user, 'should_remove_source_branch' => true)
         end
 
         before do
@@ -198,10 +166,10 @@ describe MergeRequests::MergeService do
 
       context 'when the source branch can be removed' do
         context 'when MR author set the source branch to be removed' do
-          let(:service) do
-            merge_request.merge_params['force_remove_source_branch'] = '1'
-            merge_request.save!
-            described_class.new(project, user, commit_message: 'Awesome message')
+          let(:service) { described_class.new(project, user, commit_message: 'Awesome message') }
+
+          before do
+            merge_request.update_attribute(:merge_params, { 'force_remove_source_branch' => '1' })
           end
 
           it 'removes the source branch using the author user' do
@@ -210,11 +178,20 @@ describe MergeRequests::MergeService do
               .and_call_original
             service.execute(merge_request)
           end
+
+          context 'when the merger set the source branch not to be removed' do
+            let(:service) { described_class.new(project, user, commit_message: 'Awesome message', 'should_remove_source_branch' => false) }
+
+            it 'does not delete the source branch' do
+              expect(DeleteBranchService).not_to receive(:new)
+              service.execute(merge_request)
+            end
+          end
         end
 
         context 'when MR merger set the source branch to be removed' do
           let(:service) do
-            described_class.new(project, user, commit_message: 'Awesome message', should_remove_source_branch: '1')
+            described_class.new(project, user, commit_message: 'Awesome message', 'should_remove_source_branch' => true)
           end
 
           it 'removes the source branch using the current user' do

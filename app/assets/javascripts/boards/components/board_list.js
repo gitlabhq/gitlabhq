@@ -77,7 +77,7 @@ export default {
       this.showIssueForm = !this.showIssueForm;
     },
     onScroll() {
-      if ((this.scrollTop() > this.scrollHeight() - this.scrollOffset) && !this.list.loadingMore) {
+      if (!this.loadingMore && (this.scrollTop() > this.scrollHeight() - this.scrollOffset)) {
         this.loadNextPage();
       }
     },
@@ -165,11 +165,9 @@ export default {
         v-if="loading">
         <loading-icon />
       </div>
-      <transition name="slide-down">
-        <board-new-issue
-          :list="list"
-          v-if="list.type !== 'closed' && showIssueForm"/>
-      </transition>
+      <board-new-issue
+        :list="list"
+        v-if="list.type !== 'closed' && showIssueForm"/>
       <ul
         class="board-list"
         v-show="!loading"

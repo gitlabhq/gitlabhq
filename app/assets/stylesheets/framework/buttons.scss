@@ -1,3 +1,25 @@
+@mixin btn-comment-icon {
+  border-radius: 50%;
+  background: $white-light;
+  padding: 1px 5px;
+  font-size: 12px;
+  color: $blue-500;
+  width: 23px;
+  height: 23px;
+  border: 1px solid $blue-500;
+
+  &:hover,
+  &.inverted {
+    background: $blue-500;
+    border-color: $blue-600;
+    color: $white-light;
+  }
+
+  &:active {
+    outline: 0;
+  }
+}
+
 @mixin btn-default {
   border-radius: 3px;
   font-size: $gl-font-size;
@@ -43,15 +65,6 @@
     > .icon {
       color: $hover-text;
     }
-  }
-}
-
-@mixin btn-svg {
-  svg {
-    height: 15px;
-    width: 15px;
-    position: relative;
-    top: 2px;
   }
 }
 
@@ -132,7 +145,6 @@
 .btn {
   @include btn-default;
   @include btn-white;
-  @include btn-svg;
 
   color: $gl-text-color;
 
@@ -140,7 +152,6 @@
     outline: 0;
   }
 
-  &.btn-small,
   &.btn-sm {
     padding: 4px 10px;
     font-size: 13px;
@@ -232,6 +243,13 @@
     }
   }
 
+  svg {
+    height: 15px;
+    width: 15px;
+    position: relative;
+    top: 2px;
+  }
+
   svg,
   .fa {
     &:not(:last-child) {
@@ -272,6 +290,11 @@
   &.btn {
     padding: 6px 0;
   }
+}
+
+.btn-align-content {
+  display: flex;
+  align-items: center;
 }
 
 .btn-group {
@@ -385,7 +408,11 @@
   background: transparent;
   border: 0;
 
+  &:hover,
+  &:active,
   &:focus {
     outline: 0;
+    background: transparent;
+    box-shadow: none;
   }
 }

@@ -1,6 +1,5 @@
-/* global Flash */
-
 import Visibility from 'visibilityjs';
+import Flash from '../flash';
 import Poll from '../lib/utils/poll';
 import PipelineStore from './stores/pipeline_store';
 import PipelineService from './services/pipeline_service';

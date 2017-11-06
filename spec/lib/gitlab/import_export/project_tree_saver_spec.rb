@@ -77,6 +77,10 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         expect(saved_project_json['issues'].first['notes']).not_to be_empty
       end
 
+      it 'has issue assignees' do
+        expect(saved_project_json['issues'].first['issue_assignees']).not_to be_empty
+      end
+
       it 'has author on issue comments' do
         expect(saved_project_json['issues'].first['notes'].first['author']).not_to be_empty
       end
@@ -119,7 +123,7 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
 
       it 'has no when YML attributes but only the DB column' do
         allow_any_instance_of(Ci::Pipeline).to receive(:ci_yaml_file).and_return(File.read(Rails.root.join('spec/support/gitlab_stubs/gitlab_ci.yml')))
-        expect_any_instance_of(Ci::GitlabCiYamlProcessor).not_to receive(:build_attributes)
+        expect_any_instance_of(Gitlab::Ci::YamlProcessor).not_to receive(:build_attributes)
 
         saved_project_json
       end

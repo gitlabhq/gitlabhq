@@ -96,6 +96,9 @@ ipch/
 *.vspx
 *.sap
 
+# Visual Studio Trace Files
+*.e2e
+
 # TFS 2012 Local Workspace
 $tf/
 
@@ -115,6 +118,10 @@ _TeamCity*
 
 # DotCover is a Code Coverage Tool
 *.dotCover
+
+# AxoCover is a Code Coverage Tool
+.axoCover/*
+!.axoCover/settings.json
 
 # Visual Studio code coverage results
 *.coverage
@@ -293,3 +300,6 @@ __pycache__/
 *.btm.cs
 *.odx.cs
 *.xsd.cs
+
+# OpenCover UI analysis results
+OpenCover/

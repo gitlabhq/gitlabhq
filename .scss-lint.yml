@@ -112,7 +112,7 @@ linters:
 
   # Reports when you define the same selector twice in a single sheet.
   MergeableSelector:
-    enabled: false
+    enabled: true
 
   # Functions, mixins, variables, and placeholders should be declared
   # with all lowercase letters and hyphens instead of underscores.
@@ -121,7 +121,8 @@ linters:
 
   # Avoid nesting selectors too deeply.
   NestingDepth:
-    enabled: false
+    enabled: true
+    max_depth: 6
 
   # Always use placeholder selectors in @extend.
   PlaceholderInExtend:

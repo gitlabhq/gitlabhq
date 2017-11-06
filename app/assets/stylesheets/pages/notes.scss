@@ -269,7 +269,7 @@ ul.notes {
           display: none;
         }
 
-        &.system-note-commit-list {
+        &.system-note-commit-list:not(.hide-shade) {
           max-height: 70px;
           overflow: hidden;
           display: block;
@@ -290,16 +290,6 @@ ul.notes {
             left: 0;
             bottom: 0;
             background: linear-gradient(rgba($white-light, 0.1) -100px, $white-light 100%);
-          }
-
-          &.hide-shade {
-            max-height: 100%;
-            overflow: auto;
-
-            &::after {
-              display: none;
-              background: transparent;
-            }
           }
         }
       }
@@ -322,57 +312,72 @@ ul.notes {
   }
 }
 
-.diff-file .notes_holder {
-  font-family: $regular_font;
-
-  td {
-    border: 1px solid $white-normal;
-    border-left: none;
-
-    &.notes_line {
-      vertical-align: middle;
-      text-align: center;
-      padding: 10px 0;
-      background: $gray-light;
-      color: $text-color;
+.diff-file {
+  .is-over {
+    .add-diff-note {
+      display: inline-block;
     }
+  }
 
-    &.notes_line2 {
-      text-align: center;
-      padding: 10px 0;
-      border-left: 1px solid $note-line2-border !important;
-    }
+  // Merge request notes in diffs
+  // Diff is inline
+  .notes_content .note-header .note-headline-light {
+    display: inline-block;
+    position: relative;
+  }
 
-    &.notes_content {
-      background-color: $gray-light;
-      border-width: 1px 0;
-      padding: 0;
-      vertical-align: top;
-      white-space: normal;
+  .notes_holder {
+    font-family: $regular_font;
 
-      &.parallel {
-        border-width: 1px;
+    td {
+      border: 1px solid $white-normal;
+      border-left: none;
+
+      &.notes_line {
+        vertical-align: middle;
+        text-align: center;
+        padding: 10px 0;
+        background: $gray-light;
+        color: $text-color;
       }
 
-      .discussion-notes {
-        &:not(:first-child) {
-          border-top: 1px solid $white-normal;
-          margin-top: 20px;
+      &.notes_line2 {
+        text-align: center;
+        padding: 10px 0;
+        border-left: 1px solid $note-line2-border !important;
+      }
+
+      &.notes_content {
+        background-color: $gray-light;
+        border-width: 1px 0;
+        padding: 0;
+        vertical-align: top;
+        white-space: normal;
+
+        &.parallel {
+          border-width: 1px;
         }
 
-        &:not(:last-child) {
-          border-bottom: 1px solid $white-normal;
-          margin-bottom: 20px;
+        .discussion-notes {
+          &:not(:first-child) {
+            border-top: 1px solid $white-normal;
+            margin-top: 20px;
+          }
+
+          &:not(:last-child) {
+            border-bottom: 1px solid $white-normal;
+            margin-bottom: 20px;
+          }
         }
-      }
 
-      .notes {
-        background-color: $white-light;
-      }
+        .notes {
+          background-color: $white-light;
+        }
 
-      a code {
-        top: 0;
-        margin-right: 0;
+        a code {
+          top: 0;
+          margin-right: 0;
+        }
       }
     }
   }
@@ -466,6 +471,11 @@ ul.notes {
   float: right;
   margin-left: 10px;
   color: $gray-darkest;
+
+  @include notes-media('max', $screen-md-max) {
+    float: none;
+    margin-left: 0;
+  }
 }
 
 .note-actions {
@@ -475,8 +485,6 @@ ul.notes {
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  // For PhantomJS that does not support flex
-  float: right;
   margin-left: 10px;
   color: $gray-darkest;
 
@@ -487,7 +495,6 @@ ul.notes {
 }
 
 .more-actions {
-  float: right; // phantomjs fallback
   display: flex;
   align-items: flex-end;
 
@@ -508,13 +515,6 @@ ul.notes {
   min-width: 180px;
 }
 
-.discussion-actions {
-  @include notes-media('max', $screen-md-max) {
-    float: none;
-    margin-left: 0;
-  }
-}
-
 .note-actions-item {
   margin-left: 12px;
   display: flex;
@@ -531,13 +531,12 @@ ul.notes {
   padding: 0;
   min-width: 16px;
   color: $gray-darkest;
+  fill: $gray-darkest;
 
   .fa {
     position: relative;
     font-size: 16px;
   }
-
-
 
   svg {
     height: 16px;
@@ -566,6 +565,7 @@ ul.notes {
 
     .link-highlight {
       color: $gl-link-color;
+      fill: $gl-link-color;
 
       svg {
         fill: $gl-link-color;
@@ -650,29 +650,12 @@ ul.notes {
 }
 
 .add-diff-note {
+  @include btn-comment-icon;
   opacity: 0;
   margin-top: -2px;
-  border-radius: 50%;
-  background: $white-light;
-  padding: 1px 5px;
-  font-size: 12px;
-  color: $blue-500;
   margin-left: -55px;
   position: absolute;
   z-index: 10;
-  width: 23px;
-  height: 23px;
-  border: 1px solid $blue-500;
-
-  &:hover {
-    background: $blue-500;
-    border-color: $blue-600;
-    color: $white-light;
-  }
-
-  &:active {
-    outline: 0;
-  }
 }
 
 .discussion-body,
@@ -688,20 +671,18 @@ ul.notes {
   }
 }
 
-.diff-file {
-  .is-over {
-    .add-diff-note {
-      display: inline-block;
-    }
-  }
-}
-
 .disabled-comment {
   background-color: $gray-light;
   border-radius: $border-radius-base;
   border: 1px solid $border-gray-normal;
   color: $note-disabled-comment-color;
   padding: 90px 0;
+
+  &.discussion-locked {
+    border: none;
+    background-color: $white-light;
+  }
+
 
   a {
     color: $gl-link-color;
@@ -727,23 +708,25 @@ ul.notes {
     border-bottom-left-radius: 0;
   }
 
-  .btn.discussion-create-issue-btn {
-    margin-left: -4px;
-    border-radius: 0;
-    border-right: 0;
-
-    a {
-      padding: 0;
-      line-height: 0;
-
-      &:hover {
-        text-decoration: none;
-        border: 0;
-      }
+  .btn {
+    svg path {
+      fill: $gray-darkest;
     }
 
-    .new-issue-for-discussion path {
-      fill: $gray-darkest;
+    &.discussion-create-issue-btn {
+      margin-left: -4px;
+      border-radius: 0;
+      border-right: 0;
+
+      a {
+        padding: 0;
+        line-height: 0;
+
+        &:hover {
+          text-decoration: none;
+          border: 0;
+        }
+      }
     }
   }
 }
@@ -778,6 +761,7 @@ ul.notes {
   background-color: transparent;
   border: none;
   outline: 0;
+  color: $gray-darkest;
   transition: color $general-hover-transition-duration $general-hover-transition-curve;
 
   &.is-disabled {
@@ -801,7 +785,7 @@ ul.notes {
   }
 
   svg {
-    fill: $gray-darkest;
+    fill: currentColor;
     height: 16px;
     width: 16px;
   }
@@ -814,23 +798,4 @@ ul.notes {
 
 .line-resolve-text {
   vertical-align: middle;
-}
-
-.discussion-next-btn {
-  svg {
-    margin: 0;
-
-    path {
-      fill: $gray-darkest;
-    }
-  }
-}
-
-// Merge request notes in diffs
-.diff-file {
-  // Diff is inline
-  .notes_content .note-header .note-headline-light {
-    display: inline-block;
-    position: relative;
-  }
 }

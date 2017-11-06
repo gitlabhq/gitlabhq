@@ -1,29 +1,13 @@
 import Jed from 'jed';
+import sprintf from './sprintf';
 
-/**
-  This is required to require all the translation folders in the current directory
-  this saves us having to do this manually & keep up to date with new languages
-**/
-function requireAll(requireContext) { return requireContext.keys().map(requireContext); }
-
-const allLocales = requireAll(require.context('./', true, /^(?!.*(?:index.js$)).*\.js$/));
-const locales = allLocales.reduce((d, obj) => {
-  const data = d;
-  const localeKey = Object.keys(obj)[0];
-
-  data[localeKey] = obj[localeKey];
-
-  return data;
-}, {});
-
-let lang = document.querySelector('html').getAttribute('lang') || 'en';
-lang = lang.replace(/-/g, '_');
-
-const locale = new Jed(locales[lang]);
+const langAttribute = document.querySelector('html').getAttribute('lang');
+const lang = (langAttribute || 'en').replace(/-/g, '_');
+const locale = new Jed(window.translations || {});
+delete window.translations;
 
 /**
   Translates `text`
-
   @param text The text to be translated
   @returns {String} The translated text
 **/
@@ -67,4 +51,5 @@ export { lang };
 export { gettext as __ };
 export { ngettext as n__ };
 export { pgettext as s__ };
+export { sprintf };
 export default locale;

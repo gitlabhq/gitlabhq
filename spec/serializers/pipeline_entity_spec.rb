@@ -36,7 +36,7 @@ describe PipelineEntity do
       it 'contains flags' do
         expect(subject).to include :flags
         expect(subject[:flags])
-          .to include :latest, :stuck,
+          .to include :latest, :stuck, :auto_devops,
                       :yaml_errors, :retryable, :cancelable
       end
     end
@@ -106,6 +106,19 @@ describe PipelineEntity do
 
       it 'does not generate branch path' do
         expect(subject[:ref][:path]).to be_nil
+      end
+    end
+
+    context 'when pipeline has a failure reason set' do
+      let(:pipeline) { create(:ci_empty_pipeline) }
+
+      before do
+        pipeline.drop!(:config_error)
+      end
+
+      it 'has a correct failure reason' do
+        expect(subject[:failure_reason])
+          .to eq 'CI/CD YAML configuration error!'
       end
     end
   end

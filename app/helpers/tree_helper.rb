@@ -99,10 +99,12 @@ module TreeHelper
   end
 
   # returns the relative path of the first subdir that doesn't have only one directory descendant
-  def flatten_tree(tree)
+  def flatten_tree(root_path, tree)
+    return tree.flat_path.sub(/\A#{root_path}\//, '') if tree.flat_path.present?
+
     subtree = Gitlab::Git::Tree.where(@repository, @commit.id, tree.path)
     if subtree.count == 1 && subtree.first.dir?
-      return tree_join(tree.name, flatten_tree(subtree.first))
+      return tree_join(tree.name, flatten_tree(root_path, subtree.first))
     else
       return tree.name
     end

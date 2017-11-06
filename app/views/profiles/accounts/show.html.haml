@@ -9,22 +9,6 @@
 .row.prepend-top-default
   .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0
-      Private Tokens
-    %p
-      Keep these tokens secret, anyone with access to them can interact with
-      GitLab as if they were you.
-  .col-lg-8.private-tokens-reset
-    = render partial: 'reset_token', locals: { label: 'Private token', button_label: 'Reset private token', help_text: 'Your private token is used to access the API and Atom feeds without username/password authentication.' }
-
-    = render partial: 'reset_token', locals: { label: 'RSS token', button_label: 'Reset RSS token', help_text: 'Your RSS token is used to create urls for personalized RSS feeds.' }
-
-    - if incoming_email_token_enabled?
-      = render partial: 'reset_token', locals: { label: 'Incoming email token', button_label: 'Reset incoming email token', help_text: 'Your incoming email token is used to create new issues by email, and is included in your project-specific email addresses.' }
-
-%hr
-.row.prepend-top-default
-  .col-lg-4.profile-settings-sidebar
-    %h4.prepend-top-0
       Two-Factor Authentication
     %p
       Increase your account's security by enabling Two-Factor Authentication (2FA).
@@ -74,7 +58,9 @@
       %h4.prepend-top-0.warning-title
         Change username
       %p
-        Changing your username will change path to all personal projects!
+        Changing your username can have unintended side effects.
+        = succeed '.' do
+          = link_to 'Learn more', help_page_path('user/profile/index', anchor: 'changing-your-username'), target: '_blank'
     .col-lg-8
       = form_for @user, url: update_username_profile_path, method: :put, html: {class: "update-username"} do |f|
         .form-group
@@ -95,21 +81,29 @@
 .row.prepend-top-default
   .col-lg-4.profile-settings-sidebar
     %h4.prepend-top-0.danger-title
-      Remove account
+      = s_('Profiles|Delete account')
   .col-lg-8
     - if @user.can_be_removed? && can?(current_user, :destroy_user, @user)
       %p
-        Deleting an account has the following effects:
+        = s_('Profiles|Deleting an account has the following effects:')
       = render 'users/deletion_guidance', user: current_user
-      = link_to 'Delete account', user_registration_path, data: { confirm: "REMOVE #{current_user.name}? Are you sure?" }, method: :delete, class: "btn btn-remove"
+
+      #delete-account-modal{ data: { action_url: user_registration_path,
+        confirm_with_password: ('true' if current_user.confirm_deletion_with_password?),
+        username: current_user.username } }
+        %button.btn.btn-danger.disabled
+          = s_('Profiles|Delete account')
     - else
       - if @user.solo_owned_groups.present?
         %p
-          Your account is currently an owner in these groups:
+          = s_('Profiles|Your account is currently an owner in these groups:')
           %strong= @user.solo_owned_groups.map(&:name).join(', ')
         %p
-          You must transfer ownership or delete these groups before you can delete your account.
+          = s_('Profiles|You must transfer ownership or delete these groups before you can delete your account.')
       - else
         %p
-          You don't have access to delete this user.
+          = s_("Profiles|You don't have access to delete this user.")
 .append-bottom-default
+
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag('account')

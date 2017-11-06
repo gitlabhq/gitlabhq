@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Merge Request versions', js: true do
+feature 'Merge Request versions', :js do
   let(:merge_request) { create(:merge_request, importing: true) }
   let(:project) { merge_request.source_project }
   let!(:merge_request_diff1) { merge_request.merge_request_diffs.create(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9') }
@@ -67,8 +67,8 @@ feature 'Merge Request versions', js: true do
       line_code = '7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44_2_2'
 
       page.within(diff_file_selector) do
-        find(".line_holder[id='#{line_code}'] td:nth-of-type(1)").trigger 'mouseover'
-        find(".line_holder[id='#{line_code}'] button").trigger 'click'
+        find(".line_holder[id='#{line_code}'] td:nth-of-type(1)").hover
+        find(".line_holder[id='#{line_code}'] button").click
 
         page.within("form[data-line-code='#{line_code}']") do
           fill_in "note[note]", with: "Typo, please fix"
@@ -137,8 +137,8 @@ feature 'Merge Request versions', js: true do
       line_code = '7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44_4_4'
 
       page.within(diff_file_selector) do
-        find(".line_holder[id='#{line_code}'] td:nth-of-type(1)").trigger 'mouseover'
-        find(".line_holder[id='#{line_code}'] button").trigger 'click'
+        find(".line_holder[id='#{line_code}'] td:nth-of-type(1)").hover
+        find(".line_holder[id='#{line_code}'] button").click
 
         page.within("form[data-line-code='#{line_code}']") do
           fill_in "note[note]", with: "Typo, please fix"

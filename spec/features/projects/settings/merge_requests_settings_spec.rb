@@ -19,9 +19,9 @@ feature 'Project settings > Merge Requests', :js do
         expect(page).to have_content('Only allow merge requests to be merged if the pipeline succeeds')
         expect(page).to have_content('Only allow merge requests to be merged if all discussions are resolved')
 
-        select 'Disabled', from: "project_project_feature_attributes_merge_requests_access_level"
         within('.sharing-permissions-form') do
-          click_on('Save changes')
+          find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .project-feature-toggle').click
+          find('input[value="Save changes"]').send_keys(:return)
         end
 
         expect(page).not_to have_content('Only allow merge requests to be merged if the pipeline succeeds')
@@ -39,9 +39,9 @@ feature 'Project settings > Merge Requests', :js do
         expect(page).not_to have_content('Only allow merge requests to be merged if the pipeline succeeds')
         expect(page).to have_content('Only allow merge requests to be merged if all discussions are resolved')
 
-        select 'Everyone with access', from: "project_project_feature_attributes_builds_access_level"
         within('.sharing-permissions-form') do
-          click_on('Save changes')
+          find('.project-feature-controls[data-for="project[project_feature_attributes][builds_access_level]"] .project-feature-toggle').click
+          find('input[value="Save changes"]').send_keys(:return)
         end
 
         expect(page).to have_content('Only allow merge requests to be merged if the pipeline succeeds')
@@ -60,9 +60,9 @@ feature 'Project settings > Merge Requests', :js do
       expect(page).not_to have_content('Only allow merge requests to be merged if the pipeline succeeds')
       expect(page).not_to have_content('Only allow merge requests to be merged if all discussions are resolved')
 
-      select 'Everyone with access', from: "project_project_feature_attributes_merge_requests_access_level"
       within('.sharing-permissions-form') do
-        click_on('Save changes')
+        find('.project-feature-controls[data-for="project[project_feature_attributes][merge_requests_access_level]"] .project-feature-toggle').click
+        find('input[value="Save changes"]').send_keys(:return)
       end
 
       expect(page).to have_content('Only allow merge requests to be merged if the pipeline succeeds')

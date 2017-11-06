@@ -1,6 +1,4 @@
 <script>
-  /* global Flash */
-  import '~/flash';
   import playIconSvg from 'icons/_icon_play.svg';
   import eventHub from '../event_hub';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
@@ -69,8 +67,7 @@
           @click="onClickAction(action.path)"
           :class="{ disabled: isActionDisabled(action) }"
           :disabled="isActionDisabled(action)">
-          <span v-html="playIconSvg"></span>
-          <span>{{action.name}}</span>
+          {{action.name}}
         </button>
       </li>
     </ul>

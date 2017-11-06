@@ -1,6 +1,7 @@
 /* eslint-disable func-names, no-underscore-dangle, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func, no-mixed-operators */
 /* global fuzzaldrinPlus */
 import _ from 'underscore';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { isObject } from './lib/utils/type_utility';
 
 var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote, GitLabDropdownInput;
@@ -175,7 +176,7 @@ GitLabDropdownFilter = (function() {
         elements.show().removeClass('option-hidden');
       }
 
-      elements.parent().find('.dropdown-menu-empty-link').toggleClass('hidden', elements.is(':visible'));
+      elements.parent().find('.dropdown-menu-empty-item').toggleClass('hidden', elements.is(':visible'));
     }
   };
 
@@ -247,7 +248,7 @@ GitLabDropdown = (function() {
 
   currentIndex = -1;
 
-  NON_SELECTABLE_CLASSES = '.divider, .separator, .dropdown-header, .dropdown-menu-empty-link';
+  NON_SELECTABLE_CLASSES = '.divider, .separator, .dropdown-header, .dropdown-menu-empty-item';
 
   SELECTABLE_CLASSES = ".dropdown-content li:not(" + NON_SELECTABLE_CLASSES + ", .option-hidden)";
 
@@ -548,6 +549,7 @@ GitLabDropdown = (function() {
   GitLabDropdown.prototype.positionMenuAbove = function() {
     var $menu = this.dropdown.find('.dropdown-menu');
 
+    $menu.addClass('dropdown-open-top');
     $menu.css('top', 'initial');
     $menu.css('bottom', '100%');
   };
@@ -702,7 +704,7 @@ GitLabDropdown = (function() {
 
   GitLabDropdown.prototype.noResults = function() {
     var html;
-    return html = '<li class="dropdown-menu-empty-link"><a href="#" class="is-focused">No matching results</a></li>';
+    return '<li class="dropdown-menu-empty-item"><a>No matching results</a></li>';
   };
 
   GitLabDropdown.prototype.rowClicked = function(el) {
@@ -737,7 +739,7 @@ GitLabDropdown = (function() {
       : selectedObject.id;
     if (isInput) {
       field = $(this.el);
-    } else if (value) {
+    } else if (value != null) {
       field = this.dropdown.parent().find("input[name='" + fieldName + "'][value='" + value.toString().replace(/'/g, '\\\'') + "']");
     }
 
@@ -745,7 +747,7 @@ GitLabDropdown = (function() {
       return;
     }
 
-    if (el.hasClass(ACTIVE_CLASS)) {
+    if (el.hasClass(ACTIVE_CLASS) && value !== 0) {
       isMarking = false;
       el.removeClass(ACTIVE_CLASS);
       if (field && field.length) {
@@ -851,7 +853,7 @@ GitLabDropdown = (function() {
       if (href && href !== '#') {
         gl.utils.visitUrl(href);
       } else {
-        $el.first().trigger('click');
+        $el.trigger('click');
       }
     }
   };

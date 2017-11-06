@@ -11,6 +11,7 @@ module Ci
 
     has_many :deployments, as: :deployable
     has_one :last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
+    has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
 
     # The "environment" field for builds is a String, and is the unexpanded name
     def persisted_environment
@@ -216,6 +217,7 @@ module Ci
       variables += runner.predefined_variables if runner
       variables += project.container_registry_variables
       variables += project.deployment_variables if has_environment?
+      variables += project.auto_devops_variables
       variables += yaml_variables
       variables += user_variables
       variables += project.group.secret_variables_for(ref, project).map(&:to_runner_variable) if project.group
@@ -226,6 +228,10 @@ module Ci
       variables += persisted_environment_variables if environment
 
       variables
+    end
+
+    def features
+      { trace_sections: true }
     end
 
     def merge_request
@@ -258,6 +264,10 @@ module Ci
     def update_coverage
       coverage = trace.extract_coverage(coverage_regex)
       update_attributes(coverage: coverage) if coverage.present?
+    end
+
+    def parse_trace_sections!
+      ExtractSectionsFromBuildTraceService.new(project, user).execute(self)
     end
 
     def trace
@@ -445,8 +455,8 @@ module Ci
       return unless trace
 
       trace = trace.dup
-      Ci::MaskSecret.mask!(trace, project.runners_token) if project
-      Ci::MaskSecret.mask!(trace, token)
+      Gitlab::Ci::MaskSecret.mask!(trace, project.runners_token) if project
+      Gitlab::Ci::MaskSecret.mask!(trace, token)
       trace
     end
 

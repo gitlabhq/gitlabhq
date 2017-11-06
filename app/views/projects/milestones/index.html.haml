@@ -1,20 +1,14 @@
 - @no_container = true
 - page_title 'Milestones'
 
-- if can?(current_user, :admin_milestone, @project)
-  - content_for :breadcrumbs_extra do
-    = link_to "New milestone", new_namespace_project_milestone_path(@project.namespace, @project), class: 'btn btn-new', title: 'New milestone'
-
-= render "shared/mr_head"
-
 %div{ class: container_class }
   .top-area
     = render 'shared/milestones_filter', counts: milestone_counts(@project.milestones)
 
-    .nav-controls.nav-controls-new-nav
+    .nav-controls
       = render 'shared/milestones_sort_dropdown'
       - if can?(current_user, :admin_milestone, @project)
-        = link_to new_project_milestone_path(@project), class: "btn btn-new visible-xs", title: 'New milestone' do
+        = link_to new_project_milestone_path(@project), class: "btn btn-new", title: 'New milestone' do
           New milestone
 
   .milestones

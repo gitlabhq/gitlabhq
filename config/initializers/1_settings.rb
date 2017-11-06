@@ -113,12 +113,14 @@ class Settings < Settingslogic
       URI.parse(url_without_path).host
     end
 
-    # Random cron time every Sunday to load balance usage pings
-    def cron_random_weekly_time
+    # Runs every minute in a random ten-minute period on Sundays, to balance the
+    # load on the server receiving these pings. The usage ping is safe to run
+    # multiple times because of a 24 hour exclusive lock.
+    def cron_for_usage_ping
       hour = rand(24)
-      minute = rand(60)
+      minute = rand(6)
 
-      "#{minute} #{hour} * * 0"
+      "#{minute}0-#{minute}9 #{hour} * * 0"
     end
   end
 end
@@ -232,6 +234,7 @@ Settings['gitlab'] ||= Settingslogic.new({})
 Settings.gitlab['default_projects_limit'] ||= 100000
 Settings.gitlab['default_branch_protection'] ||= 2
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
+Settings.gitlab['default_theme'] = Gitlab::Themes::APPLICATION_DEFAULT if Settings.gitlab['default_theme'].nil?
 Settings.gitlab['host']       ||= ENV['GITLAB_HOST'] || 'localhost'
 Settings.gitlab['ssh_host']   ||= Settings.gitlab.host
 Settings.gitlab['https']        = false if Settings.gitlab['https'].nil?
@@ -256,7 +259,7 @@ Settings.gitlab['signup_enabled'] ||= true if Settings.gitlab['signup_enabled'].
 Settings.gitlab['password_authentication_enabled'] ||= true if Settings.gitlab['password_authentication_enabled'].nil?
 Settings.gitlab['restricted_visibility_levels'] = Settings.__send__(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
-Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing))(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)' if Settings.gitlab['issue_closing_pattern'].nil?
+Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)|[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)' if Settings.gitlab['issue_closing_pattern'].nil?
 Settings.gitlab['default_projects_features'] ||= {}
 Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab['max_attachment_size'] ||= 10
@@ -269,7 +272,7 @@ Settings.gitlab.default_projects_features['builds']             = true if Settin
 Settings.gitlab.default_projects_features['container_registry'] = true if Settings.gitlab.default_projects_features['container_registry'].nil?
 Settings.gitlab.default_projects_features['visibility_level']   = Settings.__send__(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab.default_projects_features['visibility_level'], Gitlab::VisibilityLevel::PRIVATE)
 Settings.gitlab['domain_whitelist'] ||= []
-Settings.gitlab['import_sources'] ||= %w[github bitbucket gitlab google_code fogbugz git gitlab_project gitea]
+Settings.gitlab['import_sources'] ||= Gitlab::ImportSources.values
 Settings.gitlab['trusted_proxies'] ||= []
 Settings.gitlab['no_todos_messages'] ||= YAML.load_file(Rails.root.join('config', 'no_todos_messages.yml'))
 Settings.gitlab['usage_ping_enabled'] = true if Settings.gitlab['usage_ping_enabled'].nil?
@@ -315,15 +318,16 @@ Settings.registry['path']            = Settings.absolute(Settings.registry['path
 # Pages
 #
 Settings['pages'] ||= Settingslogic.new({})
-Settings.pages['enabled']         = false if Settings.pages['enabled'].nil?
-Settings.pages['path']            = Settings.absolute(Settings.pages['path'] || File.join(Settings.shared['path'], "pages"))
-Settings.pages['https']           = false if Settings.pages['https'].nil?
-Settings.pages['host']            ||= "example.com"
-Settings.pages['port']            ||= Settings.pages.https ? 443 : 80
-Settings.pages['protocol']        ||= Settings.pages.https ? "https" : "http"
-Settings.pages['url']             ||= Settings.__send__(:build_pages_url)
-Settings.pages['external_http']   ||= false unless Settings.pages['external_http'].present?
-Settings.pages['external_https']  ||= false unless Settings.pages['external_https'].present?
+Settings.pages['enabled']           = false if Settings.pages['enabled'].nil?
+Settings.pages['path']              = Settings.absolute(Settings.pages['path'] || File.join(Settings.shared['path'], "pages"))
+Settings.pages['https']             = false if Settings.pages['https'].nil?
+Settings.pages['host']              ||= "example.com"
+Settings.pages['port']              ||= Settings.pages.https ? 443 : 80
+Settings.pages['protocol']          ||= Settings.pages.https ? "https" : "http"
+Settings.pages['url']               ||= Settings.__send__(:build_pages_url)
+Settings.pages['external_http']     ||= false unless Settings.pages['external_http'].present?
+Settings.pages['external_https']    ||= false unless Settings.pages['external_https'].present?
+Settings.pages['artifacts_server']  ||= Settings.pages['enabled'] if Settings.pages['artifacts_server'].nil?
 
 #
 # Git LFS
@@ -396,7 +400,7 @@ Settings.cron_jobs['stuck_import_jobs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_import_jobs_worker']['cron'] ||= '15 * * * *'
 Settings.cron_jobs['stuck_import_jobs_worker']['job_class'] = 'StuckImportJobsWorker'
 Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.__send__(:cron_random_weekly_time)
+Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.__send__(:cron_for_usage_ping)
 Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
 
 Settings.cron_jobs['schedule_update_user_activity_worker'] ||= Settingslogic.new({})
@@ -451,17 +455,6 @@ Settings.repositories.storages.each do |key, storage|
 
   # Expand relative paths
   storage['path'] = Settings.absolute(storage['path'])
-  # Set failure defaults
-  storage['failure_count_threshold'] ||= 10
-  storage['failure_wait_time'] ||= 30
-  storage['failure_reset_time'] ||= 1800
-  storage['storage_timeout'] ||= 5
-  # Set turn strings into numbers
-  storage['failure_count_threshold'] = storage['failure_count_threshold'].to_i
-  storage['failure_wait_time'] = storage['failure_wait_time'].to_i
-  storage['failure_reset_time'] = storage['failure_reset_time'].to_i
-  # We might want to have a timeout shorter than 1 second.
-  storage['storage_timeout'] = storage['storage_timeout'].to_f
 
   Settings.repositories.storages[key] = storage
 end
@@ -498,9 +491,7 @@ Settings.backup['upload']['storage_class'] ||= nil
 # Git
 #
 Settings['git'] ||= Settingslogic.new({})
-Settings.git['max_size']  ||= 20971520 # 20.megabytes
-Settings.git['bin_path']  ||= '/usr/bin/git'
-Settings.git['timeout']   ||= 10
+Settings.git['bin_path'] ||= '/usr/bin/git'
 
 # Important: keep the satellites.path setting until GitLab 9.0 at
 # least. This setting is fed to 'rm -rf' in

@@ -1,4 +1,5 @@
 /* eslint-disable comma-dangle, no-return-assign, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-unused-vars, no-cond-assign, consistent-return, object-shorthand, prefer-arrow-callback, func-names, space-before-function-paren, prefer-template, quotes, class-methods-use-this, no-unused-expressions, no-sequences, wrap-iife, no-lonely-if, no-else-return, no-param-reassign, vars-on-top, max-len */
+import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from './lib/utils/common_utils';
 
 ((global) => {
   const KEYCODE = {
@@ -146,14 +147,14 @@
     }
 
     getCategoryContents() {
-      var dashboardOptions, groupOptions, issuesPath, items, mrPath, name, options, projectOptions, userId, userName, utils;
+      var dashboardOptions, groupOptions, issuesPath, items, mrPath, name, options, projectOptions, userId, userName;
       userId = gon.current_user_id;
       userName = gon.current_username;
-      utils = gl.utils, projectOptions = gl.projectOptions, groupOptions = gl.groupOptions, dashboardOptions = gl.dashboardOptions;
-      if (utils.isInGroupsPage() && groupOptions) {
-        options = groupOptions[utils.getGroupSlug()];
-      } else if (utils.isInProjectPage() && projectOptions) {
-        options = projectOptions[utils.getProjectSlug()];
+      projectOptions = gl.projectOptions, groupOptions = gl.groupOptions, dashboardOptions = gl.dashboardOptions;
+      if (isInGroupsPage() && groupOptions) {
+        options = groupOptions[getGroupSlug()];
+      } else if (isInProjectPage() && projectOptions) {
+        options = projectOptions[getProjectSlug()];
       } else if (dashboardOptions) {
         options = dashboardOptions;
       }
@@ -286,6 +287,7 @@
 
     onClearInputClick(e) {
       e.preventDefault();
+      this.wrap.toggleClass('has-value', !!e.target.value);
       return this.searchInput.val('').focus();
     }
 
@@ -363,7 +365,7 @@
 
     restoreMenu() {
       var html;
-      html = "<ul> <li><a class='dropdown-menu-empty-link is-focused'>Loading...</a></li> </ul>";
+      html = '<ul><li class="dropdown-menu-empty-item"><a>Loading...</a></li></ul>';
       return this.dropdownContent.html(html);
     }
 

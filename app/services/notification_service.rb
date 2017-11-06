@@ -31,13 +31,6 @@ class NotificationService
     end
   end
 
-  # Always notify user about email added to profile
-  def new_email(email)
-    if email.user&.can?(:receive_notifications)
-      mailer.new_email_email(email.id).deliver_later
-    end
-  end
-
   # When create an issue we should send an email to:
   #
   #  * issue assignee if their notification level is not Disabled
@@ -397,7 +390,7 @@ class NotificationService
   end
 
   def relabeled_resource_email(target, labels, current_user, method)
-    recipients = labels.flat_map { |l| l.subscribers(target.project) }
+    recipients = labels.flat_map { |l| l.subscribers(target.project) }.uniq
     recipients = notifiable_users(
       recipients, :subscription,
       target: target,

@@ -4,16 +4,10 @@
 - new_merge_request_path = project_new_merge_request_path(merge_project) if merge_project
 
 - page_title "Merge Requests"
-- unless @project.issues_enabled?
-  = content_for :sub_nav do
-    = render "projects/merge_requests/head"
 
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag 'common_vue'
   = webpack_bundle_tag 'filtered_search'
-
-- content_for :breadcrumbs_extra do
-  = render "projects/merge_requests/nav_btns", merge_project: merge_project, new_merge_request_path: new_merge_request_path
 
 = render 'projects/last_push'
 
@@ -21,7 +15,7 @@
   %div{ class: container_class }
     .top-area
       = render 'shared/issuable/nav', type: :merge_requests
-      .nav-controls.visible-xs
+      .nav-controls
         = render "projects/merge_requests/nav_btns", merge_project: merge_project, new_merge_request_path: new_merge_request_path
 
     = render 'shared/issuable/search_bar', type: :merge_requests

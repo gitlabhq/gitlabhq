@@ -24,41 +24,13 @@ module Gitlab
 
       SERIALIZE_KEYS = %i(diff new_path old_path a_mode b_mode new_file renamed_file deleted_file too_large).freeze
 
+      # The maximum size of a diff to display.
+      SIZE_LIMIT = 100.kilobytes
+
+      # The maximum size before a diff is collapsed.
+      COLLAPSE_LIMIT = 10.kilobytes
+
       class << self
-        # The maximum size of a diff to display.
-        def size_limit
-          if RequestStore.active?
-            RequestStore['gitlab_git_diff_size_limit'] ||= find_size_limit
-          else
-            find_size_limit
-          end
-        end
-
-        # The maximum size before a diff is collapsed.
-        def collapse_limit
-          if RequestStore.active?
-            RequestStore['gitlab_git_diff_collapse_limit'] ||= find_collapse_limit
-          else
-            find_collapse_limit
-          end
-        end
-
-        def find_size_limit
-          if Feature.enabled?('gitlab_git_diff_size_limit_increase')
-            200.kilobytes
-          else
-            100.kilobytes
-          end
-        end
-
-        def find_collapse_limit
-          if Feature.enabled?('gitlab_git_diff_size_limit_increase')
-            100.kilobytes
-          else
-            10.kilobytes
-          end
-        end
-
         def between(repo, head, base, options = {}, *paths)
           straight = options.delete(:straight) || false
 
@@ -172,7 +144,7 @@ module Gitlab
 
       def too_large?
         if @too_large.nil?
-          @too_large = @diff.bytesize >= self.class.size_limit
+          @too_large = @diff.bytesize >= SIZE_LIMIT
         else
           @too_large
         end
@@ -190,7 +162,7 @@ module Gitlab
       def collapsed?
         return @collapsed if defined?(@collapsed)
 
-        @collapsed = !expanded && @diff.bytesize >= self.class.collapse_limit
+        @collapsed = !expanded && @diff.bytesize >= COLLAPSE_LIMIT
       end
 
       def collapse!
@@ -204,6 +176,10 @@ module Gitlab
 
         # the diff is binary, let's make a message for it
         Diff.binary_message(@old_path, @new_path)
+      end
+
+      def has_binary_notice?
+        @diff.start_with?('Binary')
       end
 
       private
@@ -271,14 +247,14 @@ module Gitlab
           hunk.each_line do |line|
             size += line.content.bytesize
 
-            if size >= self.class.size_limit
+            if size >= SIZE_LIMIT
               too_large!
               return true
             end
           end
         end
 
-        if !expanded && size >= self.class.collapse_limit
+        if !expanded && size >= COLLAPSE_LIMIT
           collapse!
           return true
         end

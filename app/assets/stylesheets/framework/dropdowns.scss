@@ -163,12 +163,6 @@
     }
   }
 
-  &.dropdown-menu-empty-link {
-    &.is-focused {
-      background-color: $dropdown-empty-row-bg;
-    }
-  }
-
   &.dropdown-menu-user-link {
     line-height: 16px;
   }
@@ -189,7 +183,7 @@
   width: auto;
   top: 100%;
   left: 0;
-  z-index: 200;
+  z-index: 300;
   min-width: 240px;
   max-width: 500px;
   margin-top: 2px;
@@ -254,6 +248,13 @@
 
   a {
     @include dropdown-link;
+  }
+
+  .dropdown-menu-empty-item a {
+    &:hover,
+    &:focus {
+      background-color: transparent;
+    }
   }
 
   .dropdown-header {
@@ -726,11 +727,16 @@
 
 .pika-single.animate-picker.is-bound {
   @include set-visible;
+
+  &.is-hidden {
+    @include set-invisible;
+    overflow: hidden;
+  }
 }
 
-.pika-single.animate-picker.is-bound.is-hidden {
-  @include set-invisible;
-  overflow: hidden;
+@mixin dropdown-item-hover {
+  background-color: $dropdown-item-hover-bg;
+  color: $gl-text-color;
 }
 
 // TODO: change global style and remove mixin
@@ -738,6 +744,10 @@
   #{$selector}.dropdown-menu,
   #{$selector}.dropdown-menu-nav {
     margin-bottom: 24px;
+
+    &.dropdown-open-top {
+      margin-bottom: $dropdown-vertical-offset;
+    }
 
     li {
       display: block;
@@ -759,15 +769,30 @@
         padding: 8px 16px;
       }
 
+      &.droplab-item-active button {
+        @include dropdown-item-hover;
+      }
+
       a,
       button,
       .menu-item {
+        margin-bottom: 0;
         border-radius: 0;
         box-shadow: none;
         padding: 8px 16px;
         text-align: left;
         white-space: normal;
         width: 100%;
+        font-weight: $gl-font-weight-normal;
+        line-height: normal;
+
+        &.dropdown-menu-user-link {
+          white-space: nowrap;
+
+          .dropdown-menu-user-username {
+            display: block;
+          }
+        }
 
         // make sure the text color is not overriden
         &.text-danger {
@@ -778,6 +803,8 @@
         &:hover,
         &:active,
         &:focus {
+          @include dropdown-item-hover;
+
           background-color: $dropdown-item-hover-bg;
           color: $gl-text-color;
 
@@ -800,6 +827,13 @@
           }
         }
       }
+
+      &.dropdown-menu-empty-item a {
+        &:hover,
+        &:focus {
+          background-color: transparent;
+        }
+      }
     }
 
     &.dropdown-menu-selectable {
@@ -807,6 +841,7 @@
         a {
           padding: 8px 40px;
 
+          &.is-indeterminate::before,
           &.is-active::before {
             left: 16px;
           }
@@ -829,17 +864,37 @@
   }
 }
 
+@media (max-width: $screen-xs-max) {
+  .navbar-gitlab {
+    li.header-projects,
+    li.header-more,
+    li.header-new,
+    li.header-user {
+      position: static;
+    }
+  }
+
+  header.navbar-gitlab .dropdown {
+    .dropdown-menu,
+    .dropdown-menu-nav {
+      width: 100%;
+      min-width: 100%;
+    }
+  }
+
+  header.navbar-gitlab-new .header-content .dropdown {
+    .dropdown-menu {
+      left: 0;
+      min-width: 100%;
+    }
+  }
+}
+
 @include new-style-dropdown('.breadcrumbs-list .dropdown ');
 @include new-style-dropdown('.js-namespace-select + ');
 
-header.navbar-gitlab-new .header-content .dropdown-menu.projects-dropdown-menu {
+header.header-content .dropdown-menu.projects-dropdown-menu {
   padding: 0;
-
-  @media (max-width: $screen-xs-max) {
-    display: table;
-    left: -50px;
-    min-width: 300px;
-  }
 }
 
 .projects-dropdown-container {
@@ -883,9 +938,7 @@ header.navbar-gitlab-new .header-content .dropdown-menu.projects-dropdown-menu {
       border-right: 0;
     }
   }
-}
 
-.projects-dropdown-container {
   .projects-list-frequent-container,
   .projects-list-search-container, {
     padding: 8px 0;
@@ -896,11 +949,6 @@ header.navbar-gitlab-new .header-content .dropdown-menu.projects-dropdown-menu {
   .projects-list-frequent-container li.section-empty,
   .projects-list-search-container li.section-empty {
     padding: 0 15px;
-  }
-
-  .section-header,
-  .projects-list-frequent-container li.section-empty,
-  .projects-list-search-container li.section-empty {
     color: $gl-text-color-secondary;
     font-size: $gl-font-size;
   }

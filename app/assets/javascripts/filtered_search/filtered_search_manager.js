@@ -1,3 +1,4 @@
+import Flash from '../flash';
 import FilteredSearchContainer from './container';
 import RecentSearchesRoot from './recent_searches_root';
 import RecentSearchesStore from './stores/recent_searches_store';
@@ -36,7 +37,7 @@ class FilteredSearchManager {
       .catch((error) => {
         if (error.name === 'RecentSearchesServiceError') return undefined;
         // eslint-disable-next-line no-new
-        new window.Flash('An error occured while parsing recent searches');
+        new Flash('An error occurred while parsing recent searches');
         // Gracefully fail to empty array
         return [];
       })
@@ -332,7 +333,14 @@ class FilteredSearchManager {
     const removeElements = [];
 
     [].forEach.call(this.tokensContainer.children, (t) => {
-      if (t.classList.contains('js-visual-token')) {
+      let canClearToken = t.classList.contains('js-visual-token');
+
+      if (canClearToken) {
+        const tokenKey = t.querySelector('.name').textContent.trim();
+        canClearToken = this.canEdit && this.canEdit(tokenKey);
+      }
+
+      if (canClearToken) {
         removeElements.push(t);
       }
     });
@@ -411,8 +419,14 @@ class FilteredSearchManager {
     });
   }
 
+  // allows for modifying params array when a param can't be included in the URL (e.g. Service Desk)
+  getAllParams(urlParams) {
+    return this.modifyUrlParams ? this.modifyUrlParams(urlParams) : urlParams;
+  }
+
   loadSearchParamsFromURL() {
-    const params = gl.utils.getUrlParamsArray();
+    const urlParams = gl.utils.getUrlParamsArray();
+    const params = this.getAllParams(urlParams);
     const usernameParams = this.getUsernameParams();
     let hasFilteredSearch = false;
 

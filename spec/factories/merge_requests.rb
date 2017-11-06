@@ -22,6 +22,11 @@ FactoryGirl.define do
     trait :with_diffs do
     end
 
+    trait :with_image_diffs do
+      source_branch "add_images_and_changes"
+      target_branch "master"
+    end
+
     trait :without_diffs do
       source_branch "improve/awesome"
       target_branch "master"
@@ -66,6 +71,12 @@ FactoryGirl.define do
     trait :merge_when_pipeline_succeeds do
       merge_when_pipeline_succeeds true
       merge_user author
+    end
+
+    trait :remove_source_branch do
+      merge_params do
+        { 'force_remove_source_branch' => '1' }
+      end
     end
 
     after(:build) do |merge_request|

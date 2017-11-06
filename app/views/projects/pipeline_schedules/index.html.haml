@@ -7,12 +7,6 @@
 - @no_container = true
 - page_title _("Pipeline Schedules")
 
-- if can?(current_user, :create_pipeline_schedule, @project)
-  - content_for :breadcrumbs_extra do
-    = link_to _('New schedule'), new_namespace_project_pipeline_schedule_path(@project.namespace, @project), class: 'btn btn-create'
-
-= render "projects/pipelines/head"
-
 %div{ class: container_class }
   #pipeline-schedules-callout{ data: { docs_url: help_page_path('user/project/pipelines/schedules') } }
   .top-area
@@ -20,7 +14,7 @@
     = render "tabs", schedule_path_proc: schedule_path_proc, all_schedules: @all_schedules, scope: @scope
 
     - if can?(current_user, :create_pipeline_schedule, @project)
-      .nav-controls.visible-xs
+      .nav-controls
         = link_to new_project_pipeline_schedule_path(@project), class: 'btn btn-create' do
           %span= _('New schedule')
 

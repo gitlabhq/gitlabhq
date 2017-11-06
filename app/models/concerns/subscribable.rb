@@ -13,6 +13,8 @@ module Subscribable
   end
 
   def subscribed?(user, project = nil)
+    return false unless user
+
     if subscription = subscriptions.find_by(user: user, project: project)
       subscription.subscribed
     else

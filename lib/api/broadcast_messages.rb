@@ -20,7 +20,7 @@ module API
         use :pagination
       end
       get do
-        messages = BroadcastMessage.all
+        messages = BroadcastMessage.all.order_id_desc
 
         present paginate(messages), with: Entities::BroadcastMessage
       end

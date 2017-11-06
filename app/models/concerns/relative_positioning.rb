@@ -10,8 +10,12 @@ module RelativePositioning
     after_save :save_positionable_neighbours
   end
 
+  def project_ids
+    [project.id]
+  end
+
   def max_relative_position
-    self.class.in_projects(project.id).maximum(:relative_position)
+    self.class.in_projects(project_ids).maximum(:relative_position)
   end
 
   def prev_relative_position
@@ -19,7 +23,7 @@ module RelativePositioning
 
     if self.relative_position
       prev_pos = self.class
-        .in_projects(project.id)
+        .in_projects(project_ids)
         .where('relative_position < ?', self.relative_position)
         .maximum(:relative_position)
     end
@@ -32,7 +36,7 @@ module RelativePositioning
 
     if self.relative_position
       next_pos = self.class
-        .in_projects(project.id)
+        .in_projects(project_ids)
         .where('relative_position > ?', self.relative_position)
         .minimum(:relative_position)
     end
@@ -59,7 +63,7 @@ module RelativePositioning
     pos_after = before.next_relative_position
 
     if before.shift_after?
-      issue_to_move = self.class.in_projects(project.id).find_by!(relative_position: pos_after)
+      issue_to_move = self.class.in_projects(project_ids).find_by!(relative_position: pos_after)
       issue_to_move.move_after
       @positionable_neighbours = [issue_to_move]
 
@@ -74,7 +78,7 @@ module RelativePositioning
     pos_before = after.prev_relative_position
 
     if after.shift_before?
-      issue_to_move = self.class.in_projects(project.id).find_by!(relative_position: pos_before)
+      issue_to_move = self.class.in_projects(project_ids).find_by!(relative_position: pos_before)
       issue_to_move.move_before
       @positionable_neighbours = [issue_to_move]
 

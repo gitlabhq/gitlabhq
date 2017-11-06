@@ -1,9 +1,10 @@
 require 'spec_helper'
 
 describe Ci::RetryBuildService do
-  let(:user) { create(:user) }
-  let(:project) { create(:project) }
-  let(:pipeline) { create(:ci_pipeline, project: project) }
+  set(:user) { create(:user) }
+  set(:project) { create(:project) }
+  set(:pipeline) { create(:ci_pipeline, project: project) }
+
   let(:build) { create(:ci_build, pipeline: pipeline) }
 
   let(:service) do
@@ -19,7 +20,7 @@ describe Ci::RetryBuildService do
        erased_at auto_canceled_by].freeze
 
   IGNORE_ACCESSORS =
-    %i[type lock_version target_url base_tags
+    %i[type lock_version target_url base_tags trace_sections
        commit_id deployments erased_by_id last_deployment project_id
        runner_id tag_taggings taggings tags trigger_request_id
        user_id auto_canceled_by_id retried failure_reason].freeze
@@ -37,7 +38,7 @@ describe Ci::RetryBuildService do
              :queued, :coverage, :tags, :allowed_to_fail, :on_tag,
              :triggered, :trace, :teardown_environment,
              description: 'my-job', stage: 'test',  pipeline: pipeline,
-             auto_canceled_by: create(:ci_empty_pipeline)) do |build|
+             auto_canceled_by: create(:ci_empty_pipeline, project: project)) do |build|
                ##
                # TODO, workaround for FactoryGirl limitation when having both
                # stage (text) and stage_id (integer) columns in the table.
@@ -159,8 +160,9 @@ describe Ci::RetryBuildService do
         expect(new_build).to be_created
       end
 
-      it 'does mark old build as retried' do
+      it 'does mark old build as retried in the database and on the instance' do
         expect(new_build).to be_latest
+        expect(build).to be_retried
         expect(build.reload).to be_retried
       end
     end

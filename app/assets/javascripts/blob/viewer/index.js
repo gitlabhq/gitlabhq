@@ -1,4 +1,6 @@
-/* global Flash */
+import Flash from '../../flash';
+import { handleLocationHash } from '../../lib/utils/common_utils';
+
 export default class BlobViewer {
   constructor() {
     BlobViewer.initAuxiliaryViewer();
@@ -114,7 +116,7 @@ export default class BlobViewer {
       $(viewer).renderGFM();
 
       this.$fileHolder.trigger('highlight:line');
-      gl.utils.handleLocationHash();
+      handleLocationHash();
 
       this.toggleCopyButtonState();
     })

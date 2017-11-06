@@ -24,9 +24,9 @@
       .block.milestone
         .sidebar-collapsed-icon
           = icon('clock-o', 'aria-hidden': 'true')
-          %span
+          %span.milestone-title
             - if issuable.milestone
-              %span.has-tooltip{ title: milestone_remaining_days(issuable.milestone), data: { container: 'body', html: 1, placement: 'left' } }
+              %span.has-tooltip{ title: "#{issuable.milestone.title}<br>#{milestone_tooltip_title(issuable.milestone)}", data: { container: 'body', html: 1, placement: 'left' } }
                 = issuable.milestone.title
             - else
               None
@@ -37,7 +37,7 @@
             = link_to 'Edit', '#', class: 'js-sidebar-dropdown-toggle edit-link pull-right'
         .value.hide-collapsed
           - if issuable.milestone
-            = link_to issuable.milestone.title, milestone_path(issuable.milestone), class: "bold has-tooltip", title: milestone_remaining_days(issuable.milestone), data: { container: "body", html: 1 }
+            = link_to issuable.milestone.title, milestone_path(issuable.milestone), class: "bold has-tooltip", title: milestone_tooltip_title(issuable.milestone), data: { container: "body", html: 1 }
           - else
             %span.no-value None
 
@@ -119,17 +119,14 @@
         %script#js-confidential-issue-data{ type: "application/json" }= { is_confidential: @issue.confidential, is_editable: can_edit_issuable }.to_json.html_safe
         #js-confidential-entry-point
 
-      = render "shared/issuable/participants", participants: issuable.participants(current_user)
+      - if issuable.has_attribute?(:discussion_locked)
+        %script#js-lock-issue-data{ type: "application/json" }= { is_locked: issuable.discussion_locked?, is_editable: can_edit_issuable }.to_json.html_safe
+        #js-lock-entry-point
+
+      .js-sidebar-participants-entry-point
+
       - if current_user
-        - subscribed = issuable.subscribed?(current_user, @project)
-        .block.light.subscription{ data: { url: toggle_subscription_path(issuable) } }
-          .sidebar-collapsed-icon
-            = icon('rss', 'aria-hidden': 'true')
-          %span.issuable-header-text.hide-collapsed.pull-left
-            Notifications
-          - subscribtion_status = subscribed ? 'subscribed' : 'unsubscribed'
-          %button.btn.btn-default.pull-right.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button" }
-            %span= subscribed ? 'Unsubscribe' : 'Subscribe'
+        .js-sidebar-subscriptions-entry-point
 
       - project_ref = cross_project_reference(@project, issuable)
       .block.project-reference

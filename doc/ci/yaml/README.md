@@ -95,6 +95,12 @@ be an array or a multi-line string.
 `after_script` is used to define the command that will be run after for all
 jobs. This has to be an array or a multi-line string.
 
+> **Note:**
+The `before_script` and the main `script` are concatenated and run in a single context/container.
+The `after_script` is run separately, so depending on the executor, changes done
+outside of the working tree might not be visible, e.g. software installed in the
+`before_script`.
+
 ### stages
 
 `stages` is used to define stages that can be used by jobs.
@@ -252,6 +258,8 @@ The `cache:key` variable can use any of the [predefined variables](../variables/
 The default key is **default** across the project, therefore everything is
 shared between each pipelines and jobs by default, starting from GitLab 9.0.
 
+>**Note:** The `cache:key` variable cannot contain the `/` character.
+
 ---
 
 **Example configurations**
@@ -276,7 +284,7 @@ To enable per-job and per-branch caching:
 
 ```yaml
 cache:
-  key: "$CI_JOB_NAME/$CI_COMMIT_REF_NAME"
+  key: "$CI_JOB_NAME-$CI_COMMIT_REF_NAME"
   untracked: true
 ```
 
@@ -284,7 +292,7 @@ To enable per-branch and per-stage caching:
 
 ```yaml
 cache:
-  key: "$CI_JOB_STAGE/$CI_COMMIT_REF_NAME"
+  key: "$CI_JOB_STAGE-$CI_COMMIT_REF_NAME"
   untracked: true
 ```
 
@@ -293,7 +301,7 @@ If you use **Windows Batch** to run your shell scripts you need to replace
 
 ```yaml
 cache:
-  key: "%CI_JOB_STAGE%/%CI_COMMIT_REF_NAME%"
+  key: "%CI_JOB_STAGE%-%CI_COMMIT_REF_NAME%"
   untracked: true
 ```
 
@@ -302,7 +310,7 @@ If you use **Windows PowerShell** to run your shell scripts you need to replace
 
 ```yaml
 cache:
-  key: "$env:CI_JOB_STAGE/$env:CI_COMMIT_REF_NAME"
+  key: "$env:CI_JOB_STAGE-$env:CI_COMMIT_REF_NAME"
   untracked: true
 ```
 
@@ -727,6 +735,9 @@ deployment to the `production` environment.
 - Before GitLab 8.11, the name of an environment could be defined as a string like
   `environment: production`. The recommended way now is to define it under the
   `name` keyword.
+- The `name` parameter can use any of the defined CI variables,
+  including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
+  You however cannot use variables defined under `script`.
 
 The `environment` name can contain:
 
@@ -762,6 +773,9 @@ deploy to production:
 - Introduced in GitLab 8.11.
 - Before GitLab 8.11, the URL could be added only in GitLab's UI. The
   recommended way now is to define it in `.gitlab-ci.yml`.
+- The `url` parameter can use any of the defined CI variables,
+  including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
+  You however cannot use variables defined under `script`.
 
 This is an optional value that when set, it exposes buttons in various places
 in GitLab which when clicked take you to the defined URL.
@@ -841,10 +855,9 @@ The `stop_review_app` job is **required** to have the following keywords defined
 **Notes:**
 - [Introduced][ce-6323] in GitLab 8.12 and GitLab Runner 1.6.
 - The `$CI_ENVIRONMENT_SLUG` was [introduced][ce-7983] in GitLab 8.15.
-
-`environment` can also represent a configuration hash with `name` and `url`.
-These parameters can use any of the defined [CI variables](#variables)
-(including predefined, secure variables and `.gitlab-ci.yml` variables).
+- The `name` and `url` parameters can use any of the defined CI variables,
+  including predefined, secure variables and `.gitlab-ci.yml` [`variables`](#variables).
+  You however cannot use variables defined under `script`.
 
 For example:
 
@@ -1366,25 +1379,31 @@ variables:
   GIT_DEPTH: "3"
 ```
 
-## Hidden keys
+## Hidden keys (jobs)
 
 > Introduced in GitLab 8.6 and GitLab Runner v1.1.1.
 
-Keys that start with a dot (`.`) will be not processed by GitLab CI. You can
-use this feature to ignore jobs, or use the
-[special YAML features](#special-yaml-features) and transform the hidden keys
-into templates.
+If you want to temporarily 'disable' a job, rather than commenting out all the
+lines where the job is defined:
 
-In the following example, `.key_name` will be ignored:
-
-```yaml
-.key_name:
-  script:
-    - rake spec
+```
+#hidden_job:
+#  script:
+#    - run test
 ```
 
-Hidden keys can be hashes like normal CI jobs, but you are also allowed to use
-different types of structures to leverage special YAML features.
+you can instead start its name with a dot (`.`) and it will not be processed by
+GitLab CI. In the following example, `.hidden_job` will be ignored:
+
+```yaml
+.hidden_job:
+  script:
+    - run test
+```
+
+Use this feature to ignore jobs, or use the
+[special YAML features](#special-yaml-features) and transform the hidden keys
+into templates.
 
 ## Special YAML features
 
@@ -1400,7 +1419,7 @@ Read more about the various [YAML features](https://learnxinyminutes.com/docs/ya
 
 YAML has a handy feature called 'anchors', which lets you easily duplicate
 content across your document. Anchors can be used to duplicate/inherit
-properties, and is a perfect example to be used with [hidden keys](#hidden-keys)
+properties, and is a perfect example to be used with [hidden keys](#hidden-keys-jobs)
 to provide templates for your jobs.
 
 The following example uses anchors and map merging. It will create two jobs,
@@ -1556,6 +1575,11 @@ Read more on [GitLab Pages user documentation](../../user/project/pages/index.md
 
 Each instance of GitLab CI has an embedded debug tool called Lint.
 You can find the link under `/ci/lint` of your gitlab instance.
+
+## Using reserved keywords
+
+If you get validation error when using specific values (e.g., `true` or `false`),
+try to quote them, or change them to a different form (e.g., `/bin/true`).
 
 ## Skipping jobs
 

@@ -10,12 +10,13 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action :check_issues_available!
   before_action :issue, except: [:index, :new, :create, :bulk_update]
+  before_action :set_issues_index, only: [:index]
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
 
   # Allow modify issue
-  before_action :authorize_update_issue!, only: [:edit, :update, :move]
+  before_action :authorize_update_issuable!, only: [:edit, :update, :move]
 
   # Allow create a new branch and empty WIP merge request from current issue
   before_action :authorize_create_merge_request!, only: [:create_merge_request]
@@ -23,20 +24,6 @@ class Projects::IssuesController < Projects::ApplicationController
   respond_to :html
 
   def index
-    @collection_type    = "Issue"
-    @issues             = issues_collection
-    @issues             = @issues.page(params[:page])
-    @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
-    @total_pages        = issues_page_count(@issues)
-
-    return if redirect_out_of_range(@issues, @total_pages)
-
-    if params[:label_name].present?
-      @labels = LabelsFinder.new(current_user, project_id: @project.id, title: params[:label_name]).execute
-    end
-
-    @users = []
-
     if params[:assignee_id].present?
       assignee = User.find_by_id(params[:assignee_id])
       @users.push(assignee) if assignee
@@ -80,29 +67,14 @@ class Projects::IssuesController < Projects::ApplicationController
     respond_with(@issue)
   end
 
-  def show
-    @noteable = @issue
-    @note     = @project.notes.new(noteable: @issue)
-
-    @discussions = @issue.discussions
-    @notes = prepare_notes_for_rendering(@discussions.flat_map(&:notes), @noteable)
-
-    respond_to do |format|
-      format.html
-      format.json do
-        render json: serializer.represent(@issue)
-      end
-    end
-  end
-
   def discussions
     notes = @issue.notes
       .inc_relations_for_view
       .includes(:noteable)
       .fresh
-      .reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
-    prepare_notes_for_rendering(notes)
+    notes = prepare_notes_for_rendering(notes)
+    notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
     discussions = Discussion.build_collection(notes, @issue)
 
@@ -134,25 +106,6 @@ class Projects::IssuesController < Projects::ApplicationController
         @link = @issue.attachment.url.to_js
       end
     end
-  end
-
-  def update
-    update_params = issue_params.merge(spammable_params)
-
-    @issue = Issues::UpdateService.new(project, current_user, update_params).execute(issue)
-
-    respond_to do |format|
-      format.html do
-        recaptcha_check_with_fallback { render :edit }
-      end
-
-      format.json do
-        render_issue_json
-      end
-    end
-
-  rescue ActiveRecord::StaleObjectError
-    render_conflict_response
   end
 
   def move
@@ -212,26 +165,6 @@ class Projects::IssuesController < Projects::ApplicationController
     end
   end
 
-  def realtime_changes
-    Gitlab::PollingInterval.set_header(response, interval: 3_000)
-
-    response = {
-      title: view_context.markdown_field(@issue, :title),
-      title_text: @issue.title,
-      description: view_context.markdown_field(@issue, :description),
-      description_text: @issue.description,
-      task_status: @issue.task_status
-    }
-
-    if @issue.edited?
-      response[:updated_at] = @issue.updated_at
-      response[:updated_by_name] = @issue.last_edited_by.name
-      response[:updated_by_path] = user_path(@issue.last_edited_by)
-    end
-
-    render json: response
-  end
-
   def create_merge_request
     result = ::MergeRequests::CreateFromIssueService.new(project, current_user, issue_iid: issue.iid).execute
 
@@ -247,7 +180,8 @@ class Projects::IssuesController < Projects::ApplicationController
   def issue
     return @issue if defined?(@issue)
     # The Sortable default scope causes performance issues when used with find_by
-    @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take!
+    @issuable = @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take!
+    @note = @project.notes.new(noteable: @issuable)
 
     return render_404 unless can?(current_user, :read_issue, @issue)
 
@@ -260,14 +194,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def spammable_path
     project_issue_path(@project, @issue)
-  end
-
-  def authorize_update_issue!
-    render_404 unless can?(current_user, :update_issue, @issue)
-  end
-
-  def authorize_admin_issues!
-    render_404 unless can?(current_user, :admin_issue, @project)
   end
 
   def authorize_create_merge_request!
@@ -302,6 +228,7 @@ class Projects::IssuesController < Projects::ApplicationController
       state_event
       task_num
       lock_version
+      discussion_locked
     ] + [{ label_ids: [], assignee_ids: [] }]
   end
 
@@ -319,5 +246,10 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def serializer
     IssueSerializer.new(current_user: current_user, project: issue.project)
+  end
+
+  def update_service
+    update_params = issue_params.merge(spammable_params)
+    Issues::UpdateService.new(project, current_user, update_params)
   end
 end

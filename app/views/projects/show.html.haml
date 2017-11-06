@@ -7,7 +7,6 @@
 
 = render partial: 'flash_messages', locals: { project: @project }
 
-= render "projects/head"
 = render "projects/last_push"
 = render "home_panel"
 
@@ -27,9 +26,10 @@
         = link_to project_tags_path(@project) do
           #{n_('Tag', 'Tags', @repository.tag_count)} (#{number_with_delimiter(@repository.tag_count)})
 
-      - if default_project_view != 'readme' && @repository.readme
+      - if @repository.readme
         %li
-          = link_to _('Readme'), readme_path(@project)
+          = link_to _('Readme'),
+            default_project_view != 'readme' ? readme_path(@project) : '#readme'
 
       - if @repository.changelog
         %li
@@ -80,6 +80,9 @@
         #{ _('Archived project! Repository is read-only') }
 
   - view_path = default_project_view
+
+  - if show_auto_devops_callout?(@project)
+    = render 'shared/auto_devops_callout'
 
   %div{ class: project_child_container_class(view_path) }
     = render view_path

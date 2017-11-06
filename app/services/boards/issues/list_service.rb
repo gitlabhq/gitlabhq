@@ -1,6 +1,6 @@
 module Boards
   module Issues
-    class ListService < BaseService
+    class ListService < Boards::BaseService
       def execute
         issues = IssuesFinder.new(current_user, filter_params).execute
         issues = without_board_labels(issues) unless movable_list? || closed_list?
@@ -11,7 +11,7 @@ module Boards
       private
 
       def board
-        @board ||= project.boards.find(params[:board_id])
+        @board ||= parent.boards.find(params[:board_id])
       end
 
       def list
@@ -33,14 +33,14 @@ module Boards
       end
 
       def filter_params
-        set_project
+        set_parent
         set_state
 
         params
       end
 
-      def set_project
-        params[:project_id] = project.id
+      def set_parent
+        params[:project_id] = parent.id
       end
 
       def set_state

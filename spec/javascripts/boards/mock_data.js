@@ -1,3 +1,4 @@
+/* global BoardService */
 /* eslint-disable comma-dangle, no-unused-vars, quote-props */
 
 const listObj = {
@@ -28,19 +29,19 @@ const listObjDuplicate = {
 
 const BoardsMockData = {
   'GET': {
-    '/test/issue-boards/board/1/lists{/id}/issues': {
+    '/test/boards/1{/id}/issues': {
       issues: [{
         title: 'Testing',
+        id: 1,
         iid: 1,
         confidential: false,
         labels: [],
         assignees: [],
       }],
-      size: 1
     }
   },
   'POST': {
-    '/test/issue-boards/board/1/lists{/id}': listObj
+    '/test/boards/1{/id}': listObj
   },
   'PUT': {
     '/test/issue-boards/board/1/lists{/id}': {}
@@ -58,7 +59,22 @@ const boardsMockInterceptor = (request, next) => {
   }));
 };
 
+const mockBoardService = (opts = {}) => {
+  const boardsEndpoint = opts.boardsEndpoint || '/test/issue-boards/board';
+  const listsEndpoint = opts.listsEndpoint || '/test/boards/1';
+  const bulkUpdatePath = opts.bulkUpdatePath || '';
+  const boardId = opts.boardId || '1';
+
+  return new BoardService({
+    boardsEndpoint,
+    listsEndpoint,
+    bulkUpdatePath,
+    boardId,
+  });
+};
+
 window.listObj = listObj;
 window.listObjDuplicate = listObjDuplicate;
 window.BoardsMockData = BoardsMockData;
 window.boardsMockInterceptor = boardsMockInterceptor;
+window.mockBoardService = mockBoardService;

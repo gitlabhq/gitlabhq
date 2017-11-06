@@ -36,8 +36,13 @@ module PreferencesHelper
   def project_view_choices
     [
       ['Files and Readme (default)', :files],
-      ['Activity', :activity]
+      ['Activity', :activity],
+      ['Readme', :readme]
     ]
+  end
+
+  def user_application_theme
+    @user_application_theme ||= Gitlab::Themes.for_user(current_user).css_class
   end
 
   def user_color_scheme

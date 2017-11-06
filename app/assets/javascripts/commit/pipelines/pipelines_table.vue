@@ -13,6 +13,23 @@
         type: String,
         required: true,
       },
+      autoDevopsHelpPath: {
+        type: String,
+        required: true,
+      },
+      emptyStateSvgPath: {
+        type: String,
+        required: true,
+      },
+      errorStateSvgPath: {
+        type: String,
+        required: true,
+      },
+      viewType: {
+        type: String,
+        required: false,
+        default: 'child',
+      },
     },
     mixins: [
       pipelinesMixin,
@@ -83,10 +100,12 @@
     <empty-state
       v-if="shouldRenderEmptyState"
       :help-page-path="helpPagePath"
+      :empty-state-svg-path="emptyStateSvgPath"
       />
 
     <error-state
       v-if="shouldRenderErrorState"
+      :error-state-svg-path="errorStateSvgPath"
       />
 
     <div
@@ -95,6 +114,8 @@
       <pipelines-table-component
         :pipelines="state.pipelines"
         :update-graph-dropdown="updateGraphDropdown"
+        :auto-devops-help-path="autoDevopsHelpPath"
+        :view-type="viewType"
         />
     </div>
   </div>

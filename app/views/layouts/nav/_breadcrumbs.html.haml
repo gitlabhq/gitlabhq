@@ -2,7 +2,7 @@
 - hide_top_links = @hide_top_links || false
 
 %nav.breadcrumbs{ role: "navigation", class: [container, @content_class] }
-  .breadcrumbs-container{ class: [container, @content_class] }
+  .breadcrumbs-container
     - if defined?(@left_sidebar)
       = button_tag class: 'toggle-mobile-nav', type: 'button' do
         %span.sr-only Open sidebar
@@ -16,7 +16,5 @@
             = breadcrumb_list_item link_to(extra[:text], extra[:link])
         = render "layouts/nav/breadcrumbs/collapsed_dropdown", location: :after
         %li
-          %h2.breadcrumbs-sub-title= @breadcrumb_title
-    - if content_for?(:breadcrumbs_extra)
-      .breadcrumbs-extra.hidden-xs= yield :breadcrumbs_extra
+          %h2.breadcrumbs-sub-title= link_to @breadcrumb_title, breadcrumb_title_link
     = yield :header_content

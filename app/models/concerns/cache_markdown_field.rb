@@ -49,7 +49,8 @@ module CacheMarkdownField
 
     # Always include a project key, or Banzai complains
     project = self.project if self.respond_to?(:project)
-    context = cached_markdown_fields[field].merge(project: project)
+    group = self.group if self.respond_to?(:group)
+    context = cached_markdown_fields[field].merge(project: project, group: group)
 
     # Banzai is less strict about authors, so don't always have an author key
     context[:author] = self.author if self.respond_to?(:author)
@@ -59,7 +60,7 @@ module CacheMarkdownField
 
   # Update every column in a row if any one is invalidated, as we only store
   # one version per row
-  def refresh_markdown_cache!(do_update: false)
+  def refresh_markdown_cache
     options = { skip_project_check: skip_project_check? }
 
     updates = cached_markdown_fields.markdown_fields.map do |markdown_field|
@@ -71,8 +72,14 @@ module CacheMarkdownField
     updates['cached_markdown_version'] = CacheMarkdownField::CACHE_VERSION
 
     updates.each {|html_field, data| write_attribute(html_field, data) }
+  end
 
-    update_columns(updates) if persisted? && do_update
+  def refresh_markdown_cache!
+    updates = refresh_markdown_cache
+
+    return unless persisted? && Gitlab::Database.read_write?
+
+    update_columns(updates)
   end
 
   def cached_html_up_to_date?(markdown_field)
@@ -124,8 +131,8 @@ module CacheMarkdownField
     end
 
     # Using before_update here conflicts with elasticsearch-model somehow
-    before_create :refresh_markdown_cache!, if: :invalidated_markdown_cache?
-    before_update :refresh_markdown_cache!, if: :invalidated_markdown_cache?
+    before_create :refresh_markdown_cache, if: :invalidated_markdown_cache?
+    before_update :refresh_markdown_cache, if: :invalidated_markdown_cache?
   end
 
   class_methods do

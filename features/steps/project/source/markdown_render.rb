@@ -218,7 +218,7 @@ class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   # Wiki
 
   step 'I go to wiki page' do
-    click_link "Wiki"
+    first(:link, "Wiki").click
     expect(current_path).to eq project_wiki_path(@project, "home")
   end
 

@@ -92,7 +92,7 @@ module SearchHelper
 
   # Autocomplete results for the current user's groups
   def groups_autocomplete(term, limit = 5)
-    current_user.authorized_groups.search(term).limit(limit).map do |group|
+    current_user.authorized_groups.order_id_desc.search(term).limit(limit).map do |group|
       {
         category: "Groups",
         id: group.id,
@@ -104,7 +104,7 @@ module SearchHelper
 
   # Autocomplete results for the current user's projects
   def projects_autocomplete(term, limit = 5)
-    current_user.authorized_projects.search_by_title(term)
+    current_user.authorized_projects.order_id_desc.search_by_title(term)
       .sorted_by_stars.non_archived.limit(limit).map do |p|
       {
         category: "Projects",
@@ -134,19 +134,21 @@ module SearchHelper
   end
 
   def search_filter_input_options(type)
-    opts = {
-      id: "filtered-search-#{type}",
-      placeholder: 'Search or filter results...',
-      data: {
-        'username-params' => @users.to_json(only: [:id, :username])
+    opts =
+      {
+        id: "filtered-search-#{type}",
+        placeholder: 'Search or filter results...',
+        data: {
+          'username-params' => @users.to_json(only: [:id, :username])
+        }
       }
-    }
 
     if @project.present?
       opts[:data]['project-id'] = @project.id
       opts[:data]['base-endpoint'] = project_path(@project)
     else
       # Group context
+      opts[:data]['group-id'] = @group.id
       opts[:data]['base-endpoint'] = group_canonical_path(@group)
     end
 

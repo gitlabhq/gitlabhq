@@ -120,7 +120,7 @@ module API
         get do
           authenticate!
 
-          present_projects current_user.authorized_projects,
+          present_projects current_user.authorized_projects.order_id_desc,
             with: ::API::V3::Entities::ProjectWithAccess
         end
 

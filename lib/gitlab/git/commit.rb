@@ -72,7 +72,8 @@ module Gitlab
 
           decorate(repo, commit) if commit
         rescue Rugged::ReferenceError, Rugged::InvalidError, Rugged::ObjectError,
-               Gitlab::Git::CommandError, Gitlab::Git::Repository::NoRepository
+               Gitlab::Git::CommandError, Gitlab::Git::Repository::NoRepository,
+               Rugged::OdbError, Rugged::TreeError, ArgumentError
           nil
         end
 
@@ -352,7 +353,7 @@ module Gitlab
       end
 
       def stats
-        Gitlab::Git::CommitStats.new(self)
+        Gitlab::Git::CommitStats.new(@repository, self)
       end
 
       def to_patch(options = {})
@@ -411,6 +412,10 @@ module Gitlab
                            else
                              @repository.rev_parse_target(id)
                            end
+      end
+
+      def merge_commit?
+        parent_ids.size > 1
       end
 
       private

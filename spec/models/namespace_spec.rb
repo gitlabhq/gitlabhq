@@ -1,7 +1,10 @@
 require 'spec_helper'
 
 describe Namespace do
+  include ProjectForksHelper
+
   let!(:namespace) { create(:namespace) }
+  let(:gitlab_shell) { Gitlab::Shell.new }
 
   describe 'associations' do
     it { is_expected.to have_many :projects }
@@ -151,23 +154,32 @@ describe Namespace do
     end
   end
 
-  describe '#move_dir' do
-    before do
-      @namespace = create :namespace
-      @project = create(:project_empty_repo, namespace: @namespace)
-      allow(@namespace).to receive(:path_changed?).and_return(true)
+  describe '#ancestors_upto', :nested_groups do
+    let(:parent) { create(:group) }
+    let(:child) { create(:group, parent: parent) }
+    let(:child2) { create(:group, parent: child) }
+
+    it 'returns all ancestors when no namespace is given' do
+      expect(child2.ancestors_upto).to contain_exactly(child, parent)
     end
 
+    it 'includes ancestors upto but excluding the given ancestor' do
+      expect(child2.ancestors_upto(parent)).to contain_exactly(child)
+    end
+  end
+
+  describe '#move_dir', :request_store do
+    let(:namespace) { create(:namespace) }
+    let!(:project) { create(:project_empty_repo, namespace: namespace) }
+
     it "raises error when directory exists" do
-      expect { @namespace.move_dir }.to raise_error("namespace directory cannot be moved")
+      expect { namespace.move_dir }.to raise_error("namespace directory cannot be moved")
     end
 
     it "moves dir if path changed" do
-      new_path = @namespace.full_path + "_new"
-      allow(@namespace).to receive(:full_path_was).and_return(@namespace.full_path)
-      allow(@namespace).to receive(:full_path).and_return(new_path)
-      expect(@namespace).to receive(:remove_exports!)
-      expect(@namespace.move_dir).to be_truthy
+      namespace.update_attributes(path: namespace.full_path + '_new')
+
+      expect(gitlab_shell.exists?(project.repository_storage_path, "#{namespace.path}/#{project.path}.git")).to be_truthy
     end
 
     context "when any project has container images" do
@@ -177,14 +189,14 @@ describe Namespace do
         stub_container_registry_config(enabled: true)
         stub_container_registry_tags(repository: :any, tags: ['tag'])
 
-        create(:project, namespace: @namespace, container_repositories: [container_repository])
+        create(:project, namespace: namespace, container_repositories: [container_repository])
 
-        allow(@namespace).to receive(:path_was).and_return(@namespace.path)
-        allow(@namespace).to receive(:path).and_return('new_path')
+        allow(namespace).to receive(:path_was).and_return(namespace.path)
+        allow(namespace).to receive(:path).and_return('new_path')
       end
 
       it 'raises an error about not movable project' do
-        expect { @namespace.move_dir }.to raise_error(/Namespace cannot be moved/)
+        expect { namespace.move_dir }.to raise_error(/Namespace cannot be moved/)
       end
     end
 
@@ -404,6 +416,139 @@ describe Namespace do
     let!(:project1) { create(:project_empty_repo, namespace: group) }
     let!(:project2) { create(:project_empty_repo, namespace: child) }
 
-    it { expect(group.all_projects.to_a).to eq([project2, project1]) }
+    it { expect(group.all_projects.to_a).to match_array([project2, project1]) }
+  end
+
+  describe '#share_with_group_lock with subgroups', :nested_groups do
+    context 'when creating a subgroup' do
+      let(:subgroup) { create(:group, parent: root_group )}
+
+      context 'under a parent with "Share with group lock" enabled' do
+        let(:root_group) { create(:group, share_with_group_lock: true) }
+
+        it 'enables "Share with group lock" on the subgroup' do
+          expect(subgroup.share_with_group_lock).to be_truthy
+        end
+      end
+
+      context 'under a parent with "Share with group lock" disabled' do
+        let(:root_group) { create(:group) }
+
+        it 'does not enable "Share with group lock" on the subgroup' do
+          expect(subgroup.share_with_group_lock).to be_falsey
+        end
+      end
+    end
+
+    context 'when enabling the parent group "Share with group lock"' do
+      let(:root_group) { create(:group) }
+      let!(:subgroup) { create(:group, parent: root_group )}
+
+      it 'the subgroup "Share with group lock" becomes enabled' do
+        root_group.update!(share_with_group_lock: true)
+
+        expect(subgroup.reload.share_with_group_lock).to be_truthy
+      end
+    end
+
+    context 'when disabling the parent group "Share with group lock" (which was already enabled)' do
+      let(:root_group) { create(:group, share_with_group_lock: true) }
+
+      context 'and the subgroup "Share with group lock" is enabled' do
+        let(:subgroup) { create(:group, parent: root_group, share_with_group_lock: true )}
+
+        it 'the subgroup "Share with group lock" does not change' do
+          root_group.update!(share_with_group_lock: false)
+
+          expect(subgroup.reload.share_with_group_lock).to be_truthy
+        end
+      end
+
+      context 'but the subgroup "Share with group lock" is disabled' do
+        let(:subgroup) { create(:group, parent: root_group )}
+
+        it 'the subgroup "Share with group lock" does not change' do
+          root_group.update!(share_with_group_lock: false)
+
+          expect(subgroup.reload.share_with_group_lock?).to be_falsey
+        end
+      end
+    end
+
+    # Note: Group transfers are not yet implemented
+    context 'when a group is transferred into a root group' do
+      context 'when the root group "Share with group lock" is enabled' do
+        let(:root_group) { create(:group, share_with_group_lock: true) }
+
+        context 'when the subgroup "Share with group lock" is enabled' do
+          let(:subgroup) { create(:group, share_with_group_lock: true )}
+
+          it 'the subgroup "Share with group lock" does not change' do
+            subgroup.parent = root_group
+            subgroup.save!
+
+            expect(subgroup.share_with_group_lock).to be_truthy
+          end
+        end
+
+        context 'when the subgroup "Share with group lock" is disabled' do
+          let(:subgroup) { create(:group)}
+
+          it 'the subgroup "Share with group lock" becomes enabled' do
+            subgroup.parent = root_group
+            subgroup.save!
+
+            expect(subgroup.share_with_group_lock).to be_truthy
+          end
+        end
+      end
+
+      context 'when the root group "Share with group lock" is disabled' do
+        let(:root_group) { create(:group) }
+
+        context 'when the subgroup "Share with group lock" is enabled' do
+          let(:subgroup) { create(:group, share_with_group_lock: true )}
+
+          it 'the subgroup "Share with group lock" does not change' do
+            subgroup.parent = root_group
+            subgroup.save!
+
+            expect(subgroup.share_with_group_lock).to be_truthy
+          end
+        end
+
+        context 'when the subgroup "Share with group lock" is disabled' do
+          let(:subgroup) { create(:group)}
+
+          it 'the subgroup "Share with group lock" does not change' do
+            subgroup.parent = root_group
+            subgroup.save!
+
+            expect(subgroup.share_with_group_lock).to be_falsey
+          end
+        end
+      end
+    end
+  end
+
+  describe '#has_forks_of?' do
+    let(:project) { create(:project, :public) }
+    let!(:forked_project) { fork_project(project, namespace.owner, namespace: namespace) }
+
+    before do
+      # Reset the fork network relation
+      project.reload
+    end
+
+    it 'knows if there is a direct fork in the namespace' do
+      expect(namespace.find_fork_of(project)).to eq(forked_project)
+    end
+
+    it 'knows when there is as fork-of-fork in the namespace' do
+      other_namespace = create(:namespace)
+      other_fork = fork_project(forked_project, other_namespace.owner, namespace: other_namespace)
+
+      expect(other_namespace.find_fork_of(project)).to eq(other_fork)
+    end
   end
 end

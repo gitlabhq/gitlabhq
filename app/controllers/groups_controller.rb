@@ -2,6 +2,7 @@ class GroupsController < Groups::ApplicationController
   include IssuesAction
   include MergeRequestsAction
   include ParamsBackwardCompatibility
+  include PreviewMarkdown
 
   respond_to :html
 
@@ -10,7 +11,7 @@ class GroupsController < Groups::ApplicationController
 
   # Authorize
   before_action :authorize_admin_group!, only: [:edit, :update, :destroy, :projects]
-  before_action :authorize_create_group!, only: [:new, :create]
+  before_action :authorize_create_group!, only: [:new]
 
   before_action :group_projects, only: [:projects, :activity, :issues, :merge_requests]
   before_action :group_merge_requests, only: [:merge_requests]
@@ -25,14 +26,7 @@ class GroupsController < Groups::ApplicationController
   end
 
   def new
-    @group = Group.new
-
-    if params[:parent_id].present?
-      parent = Group.find_by(id: params[:parent_id])
-      if can?(current_user, :create_subgroup, parent)
-        @group.parent = parent
-      end
-    end
+    @group = Group.new(params.permit(:parent_id))
   end
 
   def create
@@ -52,15 +46,11 @@ class GroupsController < Groups::ApplicationController
   end
 
   def show
-    setup_projects
-
     respond_to do |format|
-      format.html
-
-      format.json do
-        render json: {
-          html: view_to_html_string("dashboard/projects/_projects", locals: { projects: @projects })
-        }
+      format.html do
+        @has_children = GroupDescendantsFinder.new(current_user: current_user,
+                                                   parent_group: @group,
+                                                   params: params).has_children?
       end
 
       format.atom do
@@ -68,13 +58,6 @@ class GroupsController < Groups::ApplicationController
         render layout: 'xml.atom'
       end
     end
-  end
-
-  def subgroups
-    return not_found unless Group.supports_nested_groups?
-
-    @nested_groups = GroupsFinder.new(current_user, parent: group).execute
-    @nested_groups = @nested_groups.search(params[:filter_groups]) if params[:filter_groups].present?
   end
 
   def activity
@@ -113,24 +96,15 @@ class GroupsController < Groups::ApplicationController
 
   protected
 
-  def setup_projects
-    set_non_archived_param
-    params[:sort] ||= 'latest_activity_desc'
-    @sort = params[:sort]
-
-    options = {}
-    options[:only_owned] = true if params[:shared] == '0'
-    options[:only_shared] = true if params[:shared] == '1'
-
-    @projects = GroupProjectsFinder.new(params: params, group: group, options: options, current_user: current_user).execute
-    @projects = @projects.includes(:namespace)
-    @projects = @projects.page(params[:page]) if params[:name].blank?
-  end
-
   def authorize_create_group!
-    unless can?(current_user, :create_group)
-      return render_404
-    end
+    allowed = if params[:parent_id].present?
+                parent = Group.find_by(id: params[:parent_id])
+                can?(current_user, :create_subgroup, parent)
+              else
+                can?(current_user, :create_group)
+              end
+
+    render_404 unless allowed
   end
 
   def determine_layout
@@ -167,6 +141,17 @@ class GroupsController < Groups::ApplicationController
   end
 
   def load_events
+    params[:sort] ||= 'latest_activity_desc'
+
+    options = {}
+    options[:only_owned] = true if params[:shared] == '0'
+    options[:only_shared] = true if params[:shared] == '1'
+
+    @projects = GroupProjectsFinder.new(params: params, group: group, options: options, current_user: current_user)
+                  .execute
+                  .includes(:namespace)
+                  .page(params[:page])
+
     @events = EventCollection
       .new(@projects, offset: params[:offset].to_i, filter: event_filter)
       .to_a

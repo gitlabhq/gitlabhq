@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::MigrateEventsToPushEventPayloads::Event do
+describe Gitlab::BackgroundMigration::MigrateEventsToPushEventPayloads::Event, :migration, schema: 20170608152748 do
   describe '#commit_title' do
     it 'returns nil when there are no commits' do
       expect(described_class.new.commit_title).to be_nil
@@ -215,9 +215,17 @@ end
 # to a specific version of the database where said table is still present.
 #
 describe Gitlab::BackgroundMigration::MigrateEventsToPushEventPayloads, :migration, schema: 20170825154015 do
+  let(:user_class) do
+    Class.new(ActiveRecord::Base) do
+      self.table_name = 'users'
+    end
+  end
+
   let(:migration) { described_class.new }
-  let(:project) { create(:project_empty_repo) }
-  let(:author) { create(:user) }
+  let(:user_class) { table(:users) }
+  let(:author) { build(:user).becomes(user_class).tap(&:save!).becomes(User) }
+  let(:namespace) { create(:namespace, owner: author) }
+  let(:project) { create(:project_empty_repo, namespace: namespace, creator: author) }
 
   # We can not rely on FactoryGirl as the state of Event may change in ways that
   # the background migration does not expect, hence we use the Event class of

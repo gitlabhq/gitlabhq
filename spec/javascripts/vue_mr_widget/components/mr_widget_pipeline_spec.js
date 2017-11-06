@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import { statusIconEntityMap } from '~/vue_shared/ci_status_icons';
 import pipelineComponent from '~/vue_merge_request_widget/components/mr_widget_pipeline';
 import mockData from '../mock_data';
 
@@ -29,11 +28,23 @@ describe('MRWidgetPipeline', () => {
   });
 
   describe('computed', () => {
-    describe('svg', () => {
-      it('should have the proper SVG icon', () => {
-        const vm = createComponent({ pipeline: mockData.pipeline });
+    describe('hasPipeline', () => {
+      it('should return true when there is a pipeline', () => {
+        expect(Object.keys(mockData.pipeline).length).toBeGreaterThan(0);
 
-        expect(vm.svg).toEqual(statusIconEntityMap.icon_status_failed);
+        const vm = createComponent({
+          pipeline: mockData.pipeline,
+        });
+
+        expect(vm.hasPipeline).toBeTruthy();
+      });
+
+      it('should return false when there is no pipeline', () => {
+        const vm = createComponent({
+          pipeline: null,
+        });
+
+        expect(vm.hasPipeline).toBeFalsy();
       });
     });
 
@@ -122,6 +133,7 @@ describe('MRWidgetPipeline', () => {
       Vue.nextTick(() => {
         expect(el.querySelectorAll('.js-ci-error').length).toEqual(1);
         expect(el.innerText).toContain('Could not connect to the CI server');
+        expect(el.querySelector('.ci-status-icon svg use').getAttribute('xlink:href')).toContain('status_failed');
         done();
       });
     });

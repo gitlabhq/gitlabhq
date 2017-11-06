@@ -55,6 +55,15 @@
 
 .boards-app {
   position: relative;
+
+  @media (min-width: $screen-sm-min) {
+    transition: width $right-sidebar-transition-duration;
+    width: 100%;
+
+    &.is-compact {
+      width: calc(100% - #{$gutter_width});
+    }
+  }
 }
 
 .boards-app-loading {
@@ -63,7 +72,7 @@
 }
 
 .boards-list {
-  height: calc(100vh - 152px);
+  height: calc(100vh - 105px);
   width: 100%;
   padding-top: 25px;
   padding-bottom: 25px;
@@ -72,17 +81,13 @@
   overflow-x: scroll;
   white-space: nowrap;
 
-  @media (min-width: $screen-sm-min) {
-    height: 475px; // Needed for PhantomJS
-    // scss-lint:disable DuplicateProperty
-    height: calc(100vh - 222px);
-    // scss-lint:enable DuplicateProperty
-    min-height: 475px;
-    transition: width .2s;
+  @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+    height: calc(100vh - 90px);
+  }
 
-    &.is-compact {
-      width: calc(100% - 290px);
-    }
+  @media (min-width: $screen-md-min) {
+    height: calc(100vh - 160px);
+    min-height: 475px;
   }
 }
 
@@ -117,13 +122,12 @@
     }
 
     .board-title {
-      position: initial;
       padding: 0;
       border-bottom: 0;
 
       > span {
         display: block;
-        transform: rotate(90deg) translate(25px, 0);
+        transform: rotate(90deg) translate(35px, 10px);
       }
     }
 
@@ -151,11 +155,18 @@
 }
 
 .board-header {
-  border-top-left-radius: $border-radius-default;
-  border-top-right-radius: $border-radius-default;
+  position: relative;
 
-  &.has-border {
+  &.has-border::before {
     border-top: 3px solid;
+    border-color: inherit;
+    border-top-left-radius: $border-radius-default;
+    border-top-right-radius: $border-radius-default;
+    content: '';
+    position: absolute;
+    width: calc(100% + 2px);
+    top: 0;
+    left: 0;
     margin-top: -1px;
     margin-right: -1px;
     margin-left: -1px;
@@ -176,12 +187,16 @@
 }
 
 .board-title {
-  position: relative;
   margin: 0;
-  padding: $gl-padding;
-  padding-bottom: ($gl-padding + 3px);
+  padding: 12px $gl-padding;
   font-size: 1em;
   border-bottom: 1px solid $border-color;
+  display: flex;
+  align-items: center;
+}
+
+.board-title-text {
+  margin-right: auto;
 }
 
 .board-delete {
@@ -221,43 +236,10 @@
   }
 }
 
-.slide-down-enter {
-  transform: translateY(-100%);
-}
-
-.slide-down-enter-active {
-  transition: transform $fade-in-duration;
-
-  + .board-list {
-    transform: translateY(-136px);
-    transition: none;
-  }
-}
-
-.slide-down-enter-to {
-  + .board-list {
-    transform: translateY(0);
-    transition: transform $fade-in-duration ease;
-  }
-}
-
-.slide-down-leave {
-  transform: translateY(0);
-}
-
-.slide-down-leave-active {
-  transition: all $fade-in-duration;
-  transform: translateY(-136px);
-
-  + .board-list {
-    transition: transform $fade-in-duration ease;
-    transform: translateY(-136px);
-  }
-}
-
 .board-list-component {
   height: calc(100% - 49px);
   overflow: hidden;
+  position: relative;
 }
 
 .board-list {
@@ -429,20 +411,11 @@
 }
 
 .board-new-issue-form {
-  z-index: 1;
+  z-index: 4;
   margin: 5px;
 }
 
-.page-with-layout-nav.page-with-sub-nav .issue-boards-sidebar,
-.page-with-new-sidebar.page-with-sidebar .issue-boards-sidebar {
-  position: absolute;
-
-  &.right-sidebar {
-    top: 0;
-    bottom: 0;
-    height: 100%;
-  }
-
+.page-with-contextual-sidebar.page-with-sidebar .issue-boards-sidebar {
   .issuable-sidebar-header {
     position: relative;
   }
@@ -480,8 +453,8 @@
 .right-sidebar.right-sidebar-expanded {
   &.boards-sidebar-slide-enter-active,
   &.boards-sidebar-slide-leave-active {
-    transition: width .2s,
-                padding .2s;
+    transition: width $right-sidebar-transition-duration,
+                padding $right-sidebar-transition-duration;
   }
 
   &.boards-sidebar-slide-enter,

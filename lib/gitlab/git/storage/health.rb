@@ -23,26 +23,36 @@ module Gitlab
           end
         end
 
-        def self.all_keys_for_storages(storage_names, redis)
+        private_class_method def self.all_keys_for_storages(storage_names, redis)
           keys_per_storage = {}
 
           redis.pipelined do
             storage_names.each do |storage_name|
               pattern = pattern_for_storage(storage_name)
+              matched_keys = redis.scan_each(match: pattern)
 
-              keys_per_storage[storage_name] = redis.keys(pattern)
+              keys_per_storage[storage_name] = matched_keys
             end
           end
 
-          keys_per_storage
+          # We need to make sure each lazy-loaded `Enumerator` for matched keys
+          # is loaded into an array.
+          #
+          # Otherwise it would be loaded in the second `Redis#pipelined` block
+          # within `.load_for_keys`. In this pipelined call, the active
+          # Redis-client changes again, so the values would not be available
+          # until the end of that pipelined-block.
+          keys_per_storage.each do |storage_name, key_future|
+            keys_per_storage[storage_name] = key_future.to_a
+          end
         end
 
-        def self.load_for_keys(keys_per_storage, redis)
+        private_class_method def self.load_for_keys(keys_per_storage, redis)
           info_for_keys = {}
 
           redis.pipelined do
             keys_per_storage.each do |storage_name, keys_future|
-              info_for_storage = keys_future.value.map do |key|
+              info_for_storage = keys_future.map do |key|
                 { name: key, failure_count: redis.hget(key, :failure_count) }
               end
 
@@ -78,7 +88,7 @@ module Gitlab
 
         def failing_circuit_breakers
           @failing_circuit_breakers ||= failing_on_hosts.map do |hostname|
-            CircuitBreaker.new(storage_name, hostname)
+            CircuitBreaker.build(storage_name, hostname)
           end
         end
 

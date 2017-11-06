@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'project commit pipelines', js: true do
+feature 'project commit pipelines', :js do
   given(:project) { create(:project, :repository) }
 
   background do
@@ -20,7 +20,6 @@ feature 'project commit pipelines', js: true do
       visit pipelines_project_commit_path(project, project.commit.sha)
 
       page.within('.table-holder') do
-        expect(page).to have_content project.pipelines[0].status # pipeline status
         expect(page).to have_content project.pipelines[0].id     # pipeline ids
       end
     end

@@ -15,10 +15,6 @@ describe Gitlab::Shell do
   it { is_expected.to respond_to :add_repository }
   it { is_expected.to respond_to :remove_repository }
   it { is_expected.to respond_to :fork_repository }
-  it { is_expected.to respond_to :add_namespace }
-  it { is_expected.to respond_to :rm_namespace }
-  it { is_expected.to respond_to :mv_namespace }
-  it { is_expected.to respond_to :exists? }
 
   it { expect(gitlab_shell.url_to_repo('diaspora')).to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + "diaspora.git") }
 
@@ -48,14 +44,35 @@ describe Gitlab::Shell do
     end
   end
 
-  describe '#add_key' do
-    it 'removes trailing garbage' do
-      allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
-      expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
-        [:gitlab_shell_keys_path, 'add-key', 'key-123', 'ssh-rsa foobar']
-      )
+  describe 'projects commands' do
+    let(:gitlab_shell_path) { File.expand_path('tmp/tests/gitlab-shell') }
+    let(:projects_path) { File.join(gitlab_shell_path, 'bin/gitlab-projects') }
+    let(:gitlab_shell_hooks_path) { File.join(gitlab_shell_path, 'hooks') }
 
-      gitlab_shell.add_key('key-123', 'ssh-rsa foobar trailing garbage')
+    before do
+      allow(Gitlab.config.gitlab_shell).to receive(:path).and_return(gitlab_shell_path)
+      allow(Gitlab.config.gitlab_shell).to receive(:hooks_path).and_return(gitlab_shell_hooks_path)
+      allow(Gitlab.config.gitlab_shell).to receive(:git_timeout).and_return(800)
+    end
+
+    describe '#mv_repository' do
+      it 'executes the command' do
+        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
+          [projects_path, 'mv-project', 'storage/path', 'project/path.git', 'new/path.git']
+        )
+        gitlab_shell.mv_repository('storage/path', 'project/path', 'new/path')
+      end
+    end
+
+    describe '#add_key' do
+      it 'removes trailing garbage' do
+        allow(gitlab_shell).to receive(:gitlab_shell_keys_path).and_return(:gitlab_shell_keys_path)
+        expect(gitlab_shell).to receive(:gitlab_shell_fast_execute).with(
+          [:gitlab_shell_keys_path, 'add-key', 'key-123', 'ssh-rsa foobar']
+        )
+
+        gitlab_shell.add_key('key-123', 'ssh-rsa foobar trailing garbage')
+      end
     end
   end
 
@@ -105,30 +122,42 @@ describe Gitlab::Shell do
     end
 
     describe '#add_repository' do
-      it 'creates a repository' do
-        created_path = File.join(TestEnv.repos_path, 'project', 'path.git')
-        hooks_path = File.join(created_path, 'hooks')
+      shared_examples '#add_repository' do
+        let(:repository_storage) { 'default' }
+        let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
+        let(:repo_name) { 'project/path' }
+        let(:created_path) { File.join(repository_storage_path, repo_name + '.git') }
 
-        begin
-          result = gitlab_shell.add_repository(TestEnv.repos_path, 'project/path')
-
-          repo_stat = File.stat(created_path) rescue nil
-          hooks_stat = File.lstat(hooks_path) rescue nil
-          hooks_dir = File.realpath(hooks_path)
-        ensure
+        after do
           FileUtils.rm_rf(created_path)
         end
 
-        expect(result).to be_truthy
-        expect(repo_stat.mode & 0o777).to eq(0o770)
-        expect(hooks_stat.symlink?).to be_truthy
-        expect(hooks_dir).to eq(gitlab_shell_hooks_path)
+        it 'creates a repository' do
+          expect(gitlab_shell.add_repository(repository_storage, repo_name)).to be_truthy
+
+          expect(File.stat(created_path).mode & 0o777).to eq(0o770)
+
+          hooks_path = File.join(created_path, 'hooks')
+          expect(File.lstat(hooks_path)).to be_symlink
+          expect(File.realpath(hooks_path)).to eq(gitlab_shell_hooks_path)
+        end
+
+        it 'returns false when the command fails' do
+          FileUtils.mkdir_p(File.dirname(created_path))
+          # This file will block the creation of the repo's .git directory. That
+          # should cause #add_repository to fail.
+          FileUtils.touch(created_path)
+
+          expect(gitlab_shell.add_repository(repository_storage, repo_name)).to be_falsy
+        end
       end
 
-      it 'returns false when the command fails' do
-        expect(FileUtils).to receive(:mkdir_p).and_raise(Errno::EEXIST)
+      context 'with gitaly' do
+        it_behaves_like '#add_repository'
+      end
 
-        expect(gitlab_shell.add_repository('current/storage', 'project/path')).to be_falsy
+      context 'without gitaly', :skip_gitaly_mock do
+        it_behaves_like '#add_repository'
       end
     end
 
@@ -136,7 +165,7 @@ describe Gitlab::Shell do
       it 'returns true when the command succeeds' do
         expect(Gitlab::Popen).to receive(:popen)
           .with([projects_path, 'rm-project', 'current/storage', 'project/path.git'],
-                nil, popen_vars).and_return([nil, 0])
+            nil, popen_vars).and_return([nil, 0])
 
         expect(gitlab_shell.remove_repository('current/storage', 'project/path')).to be true
       end
@@ -144,7 +173,7 @@ describe Gitlab::Shell do
       it 'returns false when the command fails' do
         expect(Gitlab::Popen).to receive(:popen)
           .with([projects_path, 'rm-project', 'current/storage', 'project/path.git'],
-                nil, popen_vars).and_return(["error", 1])
+            nil, popen_vars).and_return(["error", 1])
 
         expect(gitlab_shell.remove_repository('current/storage', 'project/path')).to be false
       end
@@ -304,7 +333,7 @@ describe Gitlab::Shell do
       end
     end
 
-    describe '#fetch_remote local', skip_gitaly_mock: true do
+    describe '#fetch_remote local', :skip_gitaly_mock do
       it_should_behave_like 'fetch_remote', false
     end
 
@@ -327,6 +356,54 @@ describe Gitlab::Shell do
               nil, popen_vars).and_return(["error", 1])
 
         expect { gitlab_shell.import_repository('current/storage', 'project/path', 'https://gitlab.com/gitlab-org/gitlab-ce.git') }.to raise_error(Gitlab::Shell::Error, "error")
+      end
+    end
+  end
+
+  describe 'namespace actions' do
+    subject { described_class.new }
+    let(:storage_path) { Gitlab.config.repositories.storages.default.path }
+
+    describe '#add_namespace' do
+      it 'creates a namespace' do
+        subject.add_namespace(storage_path, "mepmep")
+
+        expect(subject.exists?(storage_path, "mepmep")).to be(true)
+      end
+    end
+
+    describe '#exists?' do
+      context 'when the namespace does not exist' do
+        it 'returns false' do
+          expect(subject.exists?(storage_path, "non-existing")).to be(false)
+        end
+      end
+
+      context 'when the namespace exists' do
+        it 'returns true' do
+          subject.add_namespace(storage_path, "mepmep")
+
+          expect(subject.exists?(storage_path, "mepmep")).to be(true)
+        end
+      end
+    end
+
+    describe '#remove' do
+      it 'removes the namespace' do
+        subject.add_namespace(storage_path, "mepmep")
+        subject.rm_namespace(storage_path, "mepmep")
+
+        expect(subject.exists?(storage_path, "mepmep")).to be(false)
+      end
+    end
+
+    describe '#mv_namespace' do
+      it 'renames the namespace' do
+        subject.add_namespace(storage_path, "mepmep")
+        subject.mv_namespace(storage_path, "mepmep", "2mep")
+
+        expect(subject.exists?(storage_path, "mepmep")).to be(false)
+        expect(subject.exists?(storage_path, "2mep")).to be(true)
       end
     end
   end

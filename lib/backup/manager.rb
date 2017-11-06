@@ -79,7 +79,7 @@ module Backup
             # - 1495527122_gitlab_backup.tar
             # - 1495527068_2017_05_23_gitlab_backup.tar
             # - 1495527097_2017_05_23_9.3.0-pre_gitlab_backup.tar
-            next unless file =~ /(\d+)(?:_\d{4}_\d{2}_\d{2}(_\d+\.\d+\.\d+.*)?)?_gitlab_backup\.tar$/
+            next unless file =~ /^(\d{10})(?:_\d{4}_\d{2}_\d{2}(_\d+\.\d+\.\d+((-|\.)(pre|rc\d))?(-ee)?)?)?_gitlab_backup\.tar$/
 
             timestamp = $1.to_i
 
@@ -101,50 +101,52 @@ module Backup
     end
 
     def unpack
-      Dir.chdir(backup_path)
+      Dir.chdir(backup_path) do
+        # check for existing backups in the backup dir
+        if backup_file_list.empty?
+          $progress.puts "No backups found in #{backup_path}"
+          $progress.puts "Please make sure that file name ends with #{FILE_NAME_SUFFIX}"
+          exit 1
+        elsif backup_file_list.many? && ENV["BACKUP"].nil?
+          $progress.puts 'Found more than one backup, please specify which one you want to restore:'
+          $progress.puts 'rake gitlab:backup:restore BACKUP=timestamp_of_backup'
+          exit 1
+        end
 
-      # check for existing backups in the backup dir
-      if backup_file_list.empty?
-        $progress.puts "No backups found in #{backup_path}"
-        $progress.puts "Please make sure that file name ends with #{FILE_NAME_SUFFIX}"
-        exit 1
-      elsif backup_file_list.many? && ENV["BACKUP"].nil?
-        $progress.puts 'Found more than one backup, please specify which one you want to restore:'
-        $progress.puts 'rake gitlab:backup:restore BACKUP=timestamp_of_backup'
-        exit 1
-      end
+        tar_file = if ENV['BACKUP'].present?
+                     "#{ENV['BACKUP']}#{FILE_NAME_SUFFIX}"
+                   else
+                     backup_file_list.first
+                   end
 
-      tar_file = if ENV['BACKUP'].present?
-                   "#{ENV['BACKUP']}#{FILE_NAME_SUFFIX}"
-                 else
-                   backup_file_list.first
-                 end
+        unless File.exist?(tar_file)
+          $progress.puts "The backup file #{tar_file} does not exist!"
+          exit 1
+        end
 
-      unless File.exist?(tar_file)
-        $progress.puts "The backup file #{tar_file} does not exist!"
-        exit 1
-      end
+        $progress.print 'Unpacking backup ... '
 
-      $progress.print 'Unpacking backup ... '
+        unless Kernel.system(*%W(tar -xf #{tar_file}))
+          $progress.puts 'unpacking backup failed'.color(:red)
+          exit 1
+        else
+          $progress.puts 'done'.color(:green)
+        end
 
-      unless Kernel.system(*%W(tar -xf #{tar_file}))
-        $progress.puts 'unpacking backup failed'.color(:red)
-        exit 1
-      else
-        $progress.puts 'done'.color(:green)
-      end
+        ENV["VERSION"] = "#{settings[:db_version]}" if settings[:db_version].to_i > 0
 
-      ENV["VERSION"] = "#{settings[:db_version]}" if settings[:db_version].to_i > 0
-
-      # restoring mismatching backups can lead to unexpected problems
-      if settings[:gitlab_version] != Gitlab::VERSION
-        $progress.puts 'GitLab version mismatch:'.color(:red)
-        $progress.puts "  Your current GitLab version (#{Gitlab::VERSION}) differs from the GitLab version in the backup!".color(:red)
-        $progress.puts '  Please switch to the following version and try again:'.color(:red)
-        $progress.puts "  version: #{settings[:gitlab_version]}".color(:red)
-        $progress.puts
-        $progress.puts "Hint: git checkout v#{settings[:gitlab_version]}"
-        exit 1
+        # restoring mismatching backups can lead to unexpected problems
+        if settings[:gitlab_version] != Gitlab::VERSION
+          $progress.puts(<<~HEREDOC.color(:red))
+            GitLab version mismatch:
+              Your current GitLab version (#{Gitlab::VERSION}) differs from the GitLab version in the backup!
+              Please switch to the following version and try again:
+              version: #{settings[:gitlab_version]}
+          HEREDOC
+          $progress.puts
+          $progress.puts "Hint: git checkout v#{settings[:gitlab_version]}"
+          exit 1
+        end
       end
     end
 

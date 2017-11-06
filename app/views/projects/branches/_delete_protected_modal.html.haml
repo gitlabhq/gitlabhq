@@ -4,31 +4,38 @@
       .modal-header
         %button.close{ data: { dismiss: 'modal' } } ×
         %h3.page-title
-          Delete protected branch
-          = surround "'", "'?" do
-            %span.js-branch-name>[branch name]
+          - title_branch_name = capture do
+            %span.js-branch-name.ref-name>[branch name]
+          = s_("Branches|Delete protected branch '%{branch_name}'?").html_safe % { branch_name: title_branch_name }
 
       .modal-body
         %p
-          You’re about to permanently delete the protected branch
-          = succeed '.' do
-            %strong.js-branch-name [branch name]
+          - branch_name = capture do
+            %strong.js-branch-name.ref-name>[branch name]
+          = s_('Branches|You’re about to permanently delete the protected branch %{branch_name}.').html_safe % { branch_name: branch_name }
+        %p.js-not-merged
+          - default_branch = capture do
+            %span.ref-name= @repository.root_ref
+          = s_('Branches|This branch hasn’t been merged into %{default_branch}.').html_safe % { default_branch: default_branch }
+          = s_('Branches|To avoid data loss, consider merging this branch before deleting it.')
         %p
-          Once you confirm and press
-          = succeed ',' do
-            %strong Delete protected branch
-          it cannot be undone or recovered.
+          - delete_protected_branch = capture do
+            %strong
+              = s_('Branches|Delete protected branch')
+          = s_('Branches|Once you confirm and press %{delete_protected_branch}, it cannot be undone or recovered.').html_safe % { delete_protected_branch: delete_protected_branch }
         %p
-          %strong To confirm, type
-          %kbd.js-branch-name [branch name]
+          - branch_name_confirmation = capture do
+            %kbd.js-branch-name [branch name]
+          %strong
+            = s_('Branches|To confirm, type %{branch_name_confirmation}:').html_safe % { branch_name_confirmation: branch_name_confirmation }
 
         .form-group
         = text_field_tag 'delete_branch_input', '', class: 'form-control js-delete-branch-input'
 
       .modal-footer
         %button.btn{ data: { dismiss: 'modal' } } Cancel
-        = link_to 'Delete protected branch', '',
+        = link_to s_('Branches|Delete protected branch'), '',
           class: "btn btn-danger js-delete-branch",
-          title: 'Delete branch',
+          title: s_('Branches|Delete branch'),
           method: :delete,
-          "aria-label" => "Delete"
+          'aria-label' => s_('Branches|Delete branch')

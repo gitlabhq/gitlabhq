@@ -14,8 +14,8 @@ RSpec.describe 'admin active tab' do
 
   shared_examples 'page has active sub tab' do |title|
     it "activates #{title} sub tab" do
-      expect(page).to have_selector('.sidebar-sub-level-items li.active', count: 1)
-      expect(page.find('.sidebar-sub-level-items li.active')).to have_content(title)
+      expect(page).to have_selector('.sidebar-sub-level-items > li.active', count: 2)
+      expect(page.all('.sidebar-sub-level-items > li.active')[1]).to have_content(title)
     end
   end
 

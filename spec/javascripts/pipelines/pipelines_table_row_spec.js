@@ -9,7 +9,8 @@ describe('Pipelines Table Row', () => {
       el: document.querySelector('.test-dom-element'),
       propsData: {
         pipeline,
-        service: {},
+        autoDevopsHelpPath: 'foo',
+        viewType: 'root',
       },
     }).$mount();
   };

@@ -34,6 +34,8 @@ describe('Fly out sidebar navigation', () => {
     document.body.innerHTML = '';
     breakpointSize = 'lg';
     mousePos.length = 0;
+
+    setSidebar(null);
   });
 
   describe('calculateTop', () => {
@@ -66,6 +68,12 @@ describe('Fly out sidebar navigation', () => {
     });
 
     it('returns 0 if currentOpenMenu is nil', () => {
+      expect(
+        getHideSubItemsInterval(),
+      ).toBe(0);
+    });
+
+    it('returns 0 if mousePos is empty', () => {
       expect(
         getHideSubItemsInterval(),
       ).toBe(0);
@@ -242,13 +250,46 @@ describe('Fly out sidebar navigation', () => {
       ).toBe('block');
     });
 
-    it('sets transform of sub-items', () => {
+    it('shows collapsed only sub-items if icon only sidebar', () => {
       const subItems = el.querySelector('.sidebar-sub-level-items');
+      const sidebar = document.createElement('div');
+      sidebar.classList.add('sidebar-icons-only');
+      subItems.classList.add('is-fly-out-only');
+
+      setSidebar(sidebar);
+
+      showSubLevelItems(el);
+
+      expect(
+        el.querySelector('.sidebar-sub-level-items').style.display,
+      ).toBe('block');
+    });
+
+    it('does not show collapsed only sub-items if icon only sidebar', () => {
+      const subItems = el.querySelector('.sidebar-sub-level-items');
+      subItems.classList.add('is-fly-out-only');
+
+      showSubLevelItems(el);
+
+      expect(
+        subItems.style.display,
+      ).not.toBe('block');
+    });
+
+    it('sets transform of sub-items', () => {
+      const sidebar = document.createElement('div');
+      const subItems = el.querySelector('.sidebar-sub-level-items');
+
+      sidebar.style.width = '200px';
+
+      document.body.appendChild(sidebar);
+
+      setSidebar(sidebar);
       showSubLevelItems(el);
 
       expect(
         subItems.style.transform,
-      ).toBe(`translate3d(0px, ${Math.floor(el.getBoundingClientRect().top) - getHeaderHeight()}px, 0px)`);
+      ).toBe(`translate3d(200px, ${Math.floor(el.getBoundingClientRect().top) - getHeaderHeight()}px, 0px)`);
     });
 
     it('sets is-above when element is above', () => {
@@ -283,10 +324,6 @@ describe('Fly out sidebar navigation', () => {
   });
 
   describe('canShowActiveSubItems', () => {
-    afterEach(() => {
-      setSidebar(null);
-    });
-
     it('returns true by default', () => {
       expect(
         canShowActiveSubItems(el),

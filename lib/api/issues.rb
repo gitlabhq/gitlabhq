@@ -48,6 +48,7 @@ module API
         optional :labels, type: String, desc: 'Comma-separated list of label names'
         optional :due_date, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
         optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential'
+        optional :discussion_locked, type: Boolean, desc: " Boolean parameter indicating if the issue's discussion is locked"
       end
 
       params :issue_params do
@@ -193,7 +194,7 @@ module API
                               desc: 'Date time when the issue was updated. Available only for admins and project owners.'
         optional :state_event, type: String, values: %w[reopen close], desc: 'State of the issue'
         use :issue_params
-        at_least_one_of :title, :description, :assignee_ids, :assignee_id, :milestone_id,
+        at_least_one_of :title, :description, :assignee_ids, :assignee_id, :milestone_id, :discussion_locked,
                         :labels, :created_at, :due_date, :confidential, :state_event
       end
       put ':id/issues/:issue_iid' do

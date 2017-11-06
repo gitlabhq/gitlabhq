@@ -1,6 +1,14 @@
 module Boards
   module Issues
-    class CreateService < BaseService
+    class CreateService < Boards::BaseService
+      attr_accessor :project
+
+      def initialize(parent, project, user, params = {})
+        @project = project
+
+        super(parent, user, params)
+      end
+
       def execute
         create_issue(params.merge(label_ids: [list.label_id]))
       end
@@ -8,7 +16,7 @@ module Boards
       private
 
       def board
-        @board ||= project.boards.find(params.delete(:board_id))
+        @board ||= parent.boards.find(params.delete(:board_id))
       end
 
       def list

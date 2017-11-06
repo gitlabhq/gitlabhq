@@ -19,6 +19,7 @@ project_tree:
     - milestone:
       - events:
         - :push_event_payload
+    - :issue_assignees
   - snippets:
     - :award_emoji
     - notes:
@@ -50,8 +51,10 @@ project_tree:
         - :push_event_payload
     - :stages
     - :statuses
+  - :auto_devops
   - :triggers
   - :pipeline_schedules
+  - :cluster
   - :services
   - :hooks
   - protected_branches:
@@ -111,6 +114,7 @@ excluded_attributes:
     - :milestone_id
     - :ref_fetched
     - :merge_jid
+    - :latest_merge_request_diff_id
   award_emoji:
     - :awardable_id
   statuses:

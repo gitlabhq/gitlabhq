@@ -47,7 +47,7 @@ class Spinach::Features::GroupMilestones < Spinach::FeatureSteps
   end
 
   step 'I click new milestone button' do
-    page.within('.breadcrumbs') do
+    page.within('.nav-controls') do
       click_link "New milestone"
     end
   end

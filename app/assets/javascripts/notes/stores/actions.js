@@ -1,5 +1,5 @@
-/* global Flash */
 import Visibility from 'visibilityjs';
+import Flash from '../../flash';
 import Poll from '../../lib/utils/poll';
 import * as types from './mutation_types';
 import * as utils from './utils';
@@ -7,6 +7,7 @@ import * as constants from '../constants';
 import service from '../services/issue_notes_service';
 import loadAwardsHandler from '../../awards_handler';
 import sidebarTimeTrackingEventHub from '../../sidebar/event_hub';
+import { isInViewport, scrollToElement } from '../../lib/utils/common_utils';
 
 let eTagPoll;
 
@@ -98,7 +99,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
         eTagPoll.makeRequest();
 
         $('.js-gfm-input').trigger('clear-commands-cache.atwho');
-        Flash('Commands applied', 'notice', $(noteData.flashContainer));
+        Flash('Commands applied', 'notice', noteData.flashContainer);
       }
 
       if (commandsChanges) {
@@ -113,8 +114,8 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
             .catch(() => {
               Flash(
                 'Something went wrong while adding your award. Please try again.',
-                null,
-                $(noteData.flashContainer),
+                'alert',
+                noteData.flashContainer,
               );
             });
         }
@@ -125,7 +126,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
       }
 
       if (errors && errors.commands_only) {
-        Flash(errors.commands_only, 'notice', $(noteData.flashContainer));
+        Flash(errors.commands_only, 'notice', noteData.flashContainer);
       }
       commit(types.REMOVE_PLACEHOLDER_NOTES);
 
@@ -186,6 +187,14 @@ export const poll = ({ commit, state, getters }) => {
   });
 };
 
+export const stopPolling = () => {
+  eTagPoll.stop();
+};
+
+export const restartPolling = () => {
+  eTagPoll.restart();
+};
+
 export const fetchData = ({ commit, state, getters }) => {
   const requestData = { endpoint: state.notesData.notesPath, lastFetchedAt: state.lastFetchedAt };
 
@@ -211,7 +220,7 @@ export const toggleAwardRequest = ({ commit, getters, dispatch }, data) => {
 };
 
 export const scrollToNoteIfNeeded = (context, el) => {
-  if (!gl.utils.isInViewport(el[0])) {
-    gl.utils.scrollToElement(el);
+  if (!isInViewport(el[0])) {
+    scrollToElement(el);
   }
 };

@@ -155,6 +155,7 @@ class ProjectPolicy < BasePolicy
 
   rule { can?(:developer_access) }.policy do
     enable :admin_merge_request
+    enable :admin_milestone
     enable :update_merge_request
     enable :create_commit_status
     enable :update_commit_status
@@ -178,7 +179,6 @@ class ProjectPolicy < BasePolicy
     enable :update_project_snippet
     enable :update_environment
     enable :update_deployment
-    enable :admin_milestone
     enable :admin_project_snippet
     enable :admin_project_member
     enable :admin_note
@@ -193,6 +193,8 @@ class ProjectPolicy < BasePolicy
     enable :admin_pages
     enable :read_pages
     enable :update_pages
+    enable :read_cluster
+    enable :create_cluster
   end
 
   rule { can?(:public_user_access) }.policy do

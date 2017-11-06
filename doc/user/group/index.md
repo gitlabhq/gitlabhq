@@ -168,8 +168,7 @@ GitLab administrators can use the admin interface to move any project to any nam
 You can [share your projects with a group](../project/members/share_project_with_groups.md)
 and give your group members access to the project all at once.
 
-Alternatively, with [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/),
-you can [lock the sharing with group feature](#share-with-group-lock-ees-eep).
+Alternatively, you can [lock the sharing with group feature](#share-with-group-lock).
 
 ## Manage group memberships via LDAP
 
@@ -189,11 +188,50 @@ Besides giving you the option to edit any settings you've previously
 set when [creating the group](#create-a-new-group), you can also
 access further configurations for your group.
 
+#### Changing a group's path
+
+> **Note:** If you want to retain ownership over the original namespace and
+protect the URL redirects, then instead of changing a group's path or renaming a
+username, you can create a new group and transfer projects to it.
+
+Changing a group's path can have unintended side effects.
+
+* Existing web URLs for the group and anything under it (i.e. projects) will
+redirect to the new URLs
+* Existing Git remote URLs for projects under the group will no longer work, but
+Git responses will show an error with the new remote URL
+* The original namespace can be claimed again by any group or user, which will
+destroy web redirects and Git remote warnings
+* If you are vacating the path so it can be claimed by another group or user,
+you may need to rename the group name as well since both names and paths must be
+unique
+
+> It is currently not possible to rename a namespace if it contains a
+project with container registry tags, because the project cannot be moved.
+
 #### Enforce 2FA to group members
 
-Add a secury layer to your group by
+Add a security layer to your group by
 [enforcing two-factor authentication (2FA)](../../security/two_factor_authentication.md#enforcing-2fa-for-all-users-in-a-group)
 to all group members.
+
+#### Share with group lock
+
+Prevent projects in a group from [sharing
+a project with another group](../project/members/share_project_with_groups.md).
+This allows for tighter control over project access.
+
+For example, consider you have two distinct teams (Group A and Group B)
+working together in a project.
+To inherit the group membership, you share the project between the
+two groups A and B. **Share with group lock** prevents any project within
+the group from being shared with another group. By doing so, you
+guarantee only the right group members have access to that projects.
+
+To enable this feature, navigate to the group settings page. Select
+**Share with group lock** and **Save the group**.
+
+![Checkbox for share with group lock](img/share_with_group_lock.png)
 
 #### Member Lock (EES/EEP)
 
@@ -202,15 +240,6 @@ with **Member Lock** it is possible to lock membership in project to the
 level of members in group.
 
 Learn more about [Member Lock](https://docs.gitlab.com/ee/user/group/index.html#member-lock-ees-eep).
-
-#### Share with group lock (EES/EEP)
-
-In [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee/)
-it is possible to prevent projects in a group from [sharing
-a project with another group](../project/members/share_project_with_groups.md).
-This allows for tighter control over project access.
-
-Learn more about [Share with group lock](https://docs.gitlab.com/ee/user/group/index.html#share-with-group-lock-ees-eep).
 
 ### Advanced settings
 

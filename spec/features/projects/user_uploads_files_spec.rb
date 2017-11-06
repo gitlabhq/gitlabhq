@@ -23,7 +23,7 @@ describe 'User uploads files' do
       visit(project_tree_path_root_ref)
     end
 
-    it 'uploads and commit a new file', js: true do
+    it 'uploads and commit a new file', :js do
       find('.add-to-tree').click
       click_link('Upload file')
       drop_in_dropzone(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
@@ -39,6 +39,9 @@ describe 'User uploads files' do
       expect(current_path).to eq(project_new_merge_request_path(project))
 
       click_link('Changes')
+      find("a[data-action='diffs']", text: 'Changes').click
+
+      wait_for_requests
 
       expect(page).to have_content('Lorem ipsum dolor sit amet')
       expect(page).to have_content('Sed ut perspiciatis unde omnis')
@@ -51,7 +54,7 @@ describe 'User uploads files' do
       visit(project2_tree_path_root_ref)
     end
 
-    it 'uploads and commit a new fileto a forked project', js: true do
+    it 'uploads and commit a new file to a forked project', :js do
       find('.add-to-tree').click
       click_link('Upload file')
 
@@ -69,11 +72,13 @@ describe 'User uploads files' do
 
       expect(page).to have_content('New commit message')
 
-      fork = user.fork_of(project2)
+      fork = user.fork_of(project2.reload)
 
       expect(current_path).to eq(project_new_merge_request_path(fork))
 
-      click_link('Changes')
+      find("a[data-action='diffs']", text: 'Changes').click
+
+      wait_for_requests
 
       expect(page).to have_content('Lorem ipsum dolor sit amet')
       expect(page).to have_content('Sed ut perspiciatis unde omnis')

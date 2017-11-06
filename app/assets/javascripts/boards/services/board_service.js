@@ -3,21 +3,21 @@
 import Vue from 'vue';
 
 class BoardService {
-  constructor (root, bulkUpdatePath, boardId) {
-    this.boards = Vue.resource(`${root}{/id}.json`, {}, {
+  constructor ({ boardsEndpoint, listsEndpoint, bulkUpdatePath, boardId }) {
+    this.boards = Vue.resource(`${boardsEndpoint}{/id}.json`, {}, {
       issues: {
         method: 'GET',
-        url: `${root}/${boardId}/issues.json`
+        url: `${gon.relative_url_root}/-/boards/${boardId}/issues.json`,
       }
     });
-    this.lists = Vue.resource(`${root}/${boardId}/lists{/id}`, {}, {
+    this.lists = Vue.resource(`${listsEndpoint}{/id}`, {}, {
       generate: {
         method: 'POST',
-        url: `${root}/${boardId}/lists/generate.json`
+        url: `${listsEndpoint}/generate.json`
       }
     });
-    this.issue = Vue.resource(`${root}/${boardId}/issues{/id}`, {});
-    this.issues = Vue.resource(`${root}/${boardId}/lists{/id}/issues`, {}, {
+    this.issue = Vue.resource(`${gon.relative_url_root}/-/boards/${boardId}/issues{/id}`, {});
+    this.issues = Vue.resource(`${listsEndpoint}{/id}/issues`, {}, {
       bulkUpdate: {
         method: 'POST',
         url: bulkUpdatePath,
@@ -60,12 +60,12 @@ class BoardService {
     return this.issues.get(data);
   }
 
-  moveIssue (id, from_list_id = null, to_list_id = null, move_before_iid = null, move_after_iid = null) {
+  moveIssue (id, from_list_id = null, to_list_id = null, move_before_id = null, move_after_id = null) {
     return this.issue.update({ id }, {
       from_list_id,
       to_list_id,
-      move_before_iid,
-      move_after_iid,
+      move_before_id,
+      move_after_id,
     });
   }
 

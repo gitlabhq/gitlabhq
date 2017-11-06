@@ -1,5 +1,4 @@
 - breadcrumb_title "General Settings"
-= render "groups/settings_head"
 .panel.panel-default.prepend-top-default
   .panel-heading
     Group settings
@@ -11,7 +10,7 @@
       .form-group
         .col-sm-offset-2.col-sm-10
           .avatar-container.s160
-            = image_tag group_icon(@group), alt: '', class: 'avatar group-avatar s160'
+            = group_icon(@group, alt: '', class: 'avatar group-avatar s160')
           %p.light
             - if @group.avatar?
               You can change your group avatar here
@@ -28,17 +27,20 @@
         .col-sm-offset-2.col-sm-10
           = render 'shared/allow_request_access', form: f
 
-      = render 'group_admin_settings', f: f
-
       .form-group
-        %hr
-        = f.label :share_with_group_lock, class: 'control-label' do
-          Share with group lock
+        %label.control-label
+          = s_("GroupSettings|Share with group lock")
         .col-sm-10
           .checkbox
-            = f.check_box :share_with_group_lock
-            %span.descr Prevent sharing a project with another group within this group
+            = f.label :share_with_group_lock do
+              = f.check_box :share_with_group_lock, disabled: !can_change_share_with_group_lock?(@group)
+              %strong
+                - group_link = link_to @group.name, group_path(@group)
+                = s_("GroupSettings|Prevent sharing a project within %{group} with other groups").html_safe % { group: group_link }
+              %br
+              %span.descr= share_with_group_lock_help_text(@group)
 
+      = render 'group_admin_settings', f: f
 
       .form-actions
         = f.submit 'Save group', class: "btn btn-save"

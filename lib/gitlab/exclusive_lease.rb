@@ -25,6 +25,12 @@ module Gitlab
       end
     EOS
 
+    def self.get_uuid(key)
+      Gitlab::Redis::SharedState.with do |redis|
+        redis.get(redis_shared_state_key(key)) || false
+      end
+    end
+
     def self.cancel(key, uuid)
       Gitlab::Redis::SharedState.with do |redis|
         redis.eval(LUA_CANCEL_SCRIPT, keys: [redis_shared_state_key(key)], argv: [uuid])
@@ -35,10 +41,10 @@ module Gitlab
       "gitlab:exclusive_lease:#{key}"
     end
 
-    def initialize(key, timeout:)
+    def initialize(key, uuid: nil, timeout:)
       @redis_shared_state_key = self.class.redis_shared_state_key(key)
       @timeout = timeout
-      @uuid = SecureRandom.uuid
+      @uuid = uuid || SecureRandom.uuid
     end
 
     # Try to obtain the lease. Return lease UUID on success,

@@ -23,7 +23,7 @@ feature 'Repository settings' do
   context 'for master' do
     given(:role) { :master }
 
-    context 'Deploy Keys', js: true do
+    context 'Deploy Keys', :js do
       let(:private_deploy_key) { create(:deploy_key, title: 'private_deploy_key', public: false) }
       let(:public_deploy_key) { create(:another_deploy_key, title: 'public_deploy_key', public: true) }
       let(:new_ssh_key) { attributes_for(:key)[:key] }
@@ -34,7 +34,6 @@ feature 'Repository settings' do
 
         visit project_settings_repository_path(project)
 
-        expect(page.status_code).to eq(200)
         expect(page).to have_content('private_deploy_key')
         expect(page).to have_content('public_deploy_key')
       end
@@ -86,7 +85,7 @@ feature 'Repository settings' do
         project.deploy_keys << private_deploy_key
         visit project_settings_repository_path(project)
 
-        find('li', text: private_deploy_key.title).click_button('Remove')
+        accept_confirm { find('li', text: private_deploy_key.title).click_button('Remove') }
 
         expect(page).not_to have_content(private_deploy_key.title)
       end

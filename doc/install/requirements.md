@@ -82,11 +82,11 @@ errors during usage.
 
 We recommend having at least 2GB of swap on your server, even if you currently have
 enough available RAM. Having swap will help reduce the chance of errors occurring
-if your available memory changes. We also recommend [configuring the kernels swappiness setting](https://askubuntu.com/a/103916)
+if your available memory changes. We also recommend [configuring the kernel's swappiness setting](https://askubuntu.com/a/103916)
 to a low value like `10` to make the most of your RAM while still having the swap
 available when needed.
 
-Notice: The 25 workers of Sidekiq will show up as separate processes in your process overview (such as top or htop) but they share the same RAM allocation since Sidekiq is a multithreaded application. Please see the section below about Unicorn workers for information about many you need of those.
+Notice: The 25 workers of Sidekiq will show up as separate processes in your process overview (such as top or htop) but they share the same RAM allocation since Sidekiq is a multithreaded application. Please see the section below about Unicorn workers for information about how many you need of those.
 
 ## Database
 
@@ -121,8 +121,8 @@ Existing users using GitLab with MySQL/MariaDB are advised to
 
 ### PostgreSQL Requirements
 
-As of GitLab 9.3, PostgreSQL 9.2 or newer is required, and earlier versions are
-not supported. We highly recommend users to use at least PostgreSQL 9.6 as this
+As of GitLab 10.0, PostgreSQL 9.6 or newer (but less than 10) is required, and earlier versions are
+not supported. We highly recommend users to use PostgreSQL 9.6 as this
 is the PostgreSQL version used for development and testing.
 
 Users using PostgreSQL must ensure the `pg_trgm` extension is loaded into every
@@ -184,7 +184,7 @@ Runner.
 We recommend using a separate machine for each GitLab Runner, if you plan to
 use the CI features.
 
-[security reasons]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/blob/master/docs/security/index.md
+[security reasons]: https://gitlab.com/gitlab-org/gitlab-runner/blob/master/docs/security/index.md
 
 ## Supported web browsers
 

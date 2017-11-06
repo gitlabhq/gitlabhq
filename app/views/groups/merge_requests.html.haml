@@ -4,26 +4,15 @@
   = webpack_bundle_tag 'common_vue'
   = webpack_bundle_tag 'filtered_search'
 
-- if current_user
-  - content_for :breadcrumbs_extra do
-    = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "New merge request",  type: :merge_requests
-
 - if @group_merge_requests.empty?
   = render 'shared/empty_states/merge_requests', project_select_button: true
 - else
   .top-area
     = render 'shared/issuable/nav', type: :merge_requests
     - if current_user
-      .nav-controls.visible-xs
+      .nav-controls
         = render 'shared/new_project_item_select', path: 'merge_requests/new', label: "New merge request",  type: :merge_requests
 
   = render 'shared/issuable/search_bar', type: :merge_requests
-
-  .row-content-block.second-block
-    Only merge requests from
-    %strong= @group.name
-    group are listed here.
-    - if current_user
-      To see all merge requests you should visit #{link_to 'dashboard', merge_requests_dashboard_path} page.
 
   = render 'shared/merge_requests'

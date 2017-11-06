@@ -21,8 +21,10 @@ let headerHeight = 50;
 
 export const getHeaderHeight = () => headerHeight;
 
+export const isSidebarCollapsed = () => sidebar && sidebar.classList.contains('sidebar-icons-only');
+
 export const canShowActiveSubItems = (el) => {
-  if (el.classList.contains('active') && (sidebar && !sidebar.classList.contains('sidebar-icons-only'))) {
+  if (el.classList.contains('active') && !isSidebarCollapsed()) {
     return false;
   }
 
@@ -32,7 +34,7 @@ export const canShowActiveSubItems = (el) => {
 export const canShowSubItems = () => bp.getBreakpointSize() === 'sm' || bp.getBreakpointSize() === 'md' || bp.getBreakpointSize() === 'lg';
 
 export const getHideSubItemsInterval = () => {
-  if (!currentOpenMenu) return 0;
+  if (!currentOpenMenu || !mousePos.length) return 0;
 
   const currentMousePos = mousePos[mousePos.length - 1];
   const prevMousePos = mousePos[0];
@@ -75,10 +77,11 @@ export const hideMenu = (el) => {
 export const moveSubItemsToPosition = (el, subItems) => {
   const boundingRect = el.getBoundingClientRect();
   const top = calculateTop(boundingRect, subItems.offsetHeight);
+  const left = sidebar ? sidebar.offsetWidth : 50;
   const isAbove = top < boundingRect.top;
 
   subItems.classList.add('fly-out-list');
-  subItems.style.transform = `translate3d(0, ${Math.floor(top) - headerHeight}px, 0)`; // eslint-disable-line no-param-reassign
+  subItems.style.transform = `translate3d(${left}px, ${Math.floor(top) - headerHeight}px, 0)`; // eslint-disable-line no-param-reassign
 
   const subItemsRect = subItems.getBoundingClientRect();
 
@@ -100,12 +103,13 @@ export const moveSubItemsToPosition = (el, subItems) => {
 
 export const showSubLevelItems = (el) => {
   const subItems = el.querySelector('.sidebar-sub-level-items');
+  const isIconOnly = subItems && subItems.classList.contains('is-fly-out-only');
 
   if (!canShowSubItems() || !canShowActiveSubItems(el)) return;
 
   el.classList.add(IS_OVER_CLASS);
 
-  if (!subItems) return;
+  if (!subItems || (!isSidebarCollapsed() && isIconOnly)) return;
 
   subItems.style.display = 'block';
   el.classList.add(IS_SHOWING_FLY_OUT_CLASS);
@@ -145,7 +149,7 @@ export const documentMouseMove = (e) => {
 export const subItemsMouseLeave = (relatedTarget) => {
   clearTimeout(timeoutId);
 
-  if (!relatedTarget.closest(`.${IS_OVER_CLASS}`)) {
+  if (relatedTarget && !relatedTarget.closest(`.${IS_OVER_CLASS}`)) {
     hideMenu(currentOpenMenu);
   }
 };

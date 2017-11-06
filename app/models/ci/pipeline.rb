@@ -1,11 +1,12 @@
 module Ci
   class Pipeline < ActiveRecord::Base
-    extend Ci::Model
+    extend Gitlab::Ci::Model
     include HasStatus
     include Importable
     include AfterCommitQueue
     include Presentable
     include InternalId2
+    include Gitlab::OptimisticLocking
 
     belongs_to :project
     belongs_to :user
@@ -32,6 +33,7 @@ module Ci
     has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
 
     delegate :id, to: :project, prefix: true
+    delegate :full_path, to: :project, prefix: true
 
     validates :source, exclusion: { in: %w(unknown), unless: :importing? }, on: :create
     validates :sha, presence: { unless: :importing? }
@@ -39,6 +41,7 @@ module Ci
     validates :status, presence: { unless: :importing? }
     validate :valid_commit_sha, unless: :importing?
 
+    after_initialize :set_config_source, if: :new_record?
     after_create :keep_around_commits, unless: :importing?
 
     enum source: {
@@ -49,6 +52,17 @@ module Ci
       schedule: 4,
       api: 5,
       external: 6
+    }
+
+    enum config_source: {
+      unknown_source: nil,
+      repository_source: 1,
+      auto_devops_source: 2
+    }
+
+    enum failure_reason: {
+      unknown_failure: 0,
+      config_error: 1
     }
 
     state_machine :status, initial: :created do
@@ -100,6 +114,12 @@ module Ci
 
       before_transition canceled: any - [:canceled] do |pipeline|
         pipeline.auto_canceled_by = nil
+      end
+
+      before_transition any => :failed do |pipeline, transition|
+        transition.args.first.try do |reason|
+          pipeline.failure_reason = reason
+        end
       end
 
       after_transition [:created, :pending] => :running do |pipeline|
@@ -230,9 +250,7 @@ module Ci
     end
 
     def commit
-      @commit ||= project.commit(sha)
-    rescue
-      nil
+      @commit ||= project.commit_by(oid: sha)
     end
 
     def branch?
@@ -256,7 +274,7 @@ module Ci
     end
 
     def cancel_running
-      Gitlab::OptimisticLocking.retry_lock(cancelable_statuses) do |cancelable|
+      retry_optimistic_lock(cancelable_statuses) do |cancelable|
         cancelable.find_each do |job|
           yield(job) if block_given?
           job.cancel
@@ -305,6 +323,10 @@ module Ci
       @stage_seeds ||= config_processor.stage_seeds(self)
     end
 
+    def seeds_size
+      @seeds_size ||= stage_seeds.sum(&:size)
+    end
+
     def has_kubernetes_active?
       project.kubernetes_service&.active?
     end
@@ -317,13 +339,21 @@ module Ci
       builds.latest.failed_but_allowed.any?
     end
 
+    def set_config_source
+      if ci_yaml_from_repo
+        self.config_source = :repository_source
+      elsif implied_ci_yaml_file
+        self.config_source = :auto_devops_source
+      end
+    end
+
     def config_processor
       return unless ci_yaml_file
       return @config_processor if defined?(@config_processor)
 
       @config_processor ||= begin
-        Ci::GitlabCiYamlProcessor.new(ci_yaml_file, project.full_path)
-      rescue Ci::GitlabCiYamlProcessor::ValidationError, Psych::SyntaxError => e
+        Gitlab::Ci::YamlProcessor.new(ci_yaml_file)
+      rescue Gitlab::Ci::YamlProcessor::ValidationError, Psych::SyntaxError => e
         self.yaml_errors = e.message
         nil
       rescue
@@ -343,11 +373,17 @@ module Ci
     def ci_yaml_file
       return @ci_yaml_file if defined?(@ci_yaml_file)
 
-      @ci_yaml_file = begin
-        project.repository.gitlab_ci_yml_for(sha, ci_yaml_file_path)
-      rescue Rugged::ReferenceError, GRPC::NotFound, GRPC::Internal
-        self.yaml_errors =
-          "Failed to load CI/CD config file at #{ci_yaml_file_path}"
+      @ci_yaml_file =
+        if auto_devops_source?
+          implied_ci_yaml_file
+        else
+          ci_yaml_from_repo
+        end
+
+      if @ci_yaml_file
+        @ci_yaml_file
+      else
+        self.yaml_errors = "Failed to load CI/CD config file for #{sha}"
         nil
       end
     end
@@ -382,7 +418,7 @@ module Ci
     end
 
     def update_status
-      Gitlab::OptimisticLocking.retry_lock(self) do
+      retry_optimistic_lock(self) do
         case latest_builds_status
         when 'pending' then enqueue
         when 'running' then run
@@ -414,7 +450,7 @@ module Ci
     def update_duration
       return unless started_at
 
-      self.duration = Gitlab::Ci::PipelineDuration.from_pipeline(self)
+      self.duration = Gitlab::Ci::Pipeline::Duration.from_pipeline(self)
     end
 
     def execute_hooks
@@ -434,7 +470,28 @@ module Ci
         .fabricate!
     end
 
+    def latest_builds_with_artifacts
+      @latest_builds_with_artifacts ||= builds.latest.with_artifacts
+    end
+
     private
+
+    def ci_yaml_from_repo
+      return unless project
+      return unless sha
+
+      project.repository.gitlab_ci_yml_for(sha, ci_yaml_file_path)
+    rescue GRPC::NotFound, Rugged::ReferenceError, GRPC::Internal
+      nil
+    end
+
+    def implied_ci_yaml_file
+      return unless project
+
+      if project.auto_devops_enabled?
+        Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content
+      end
+    end
 
     def pipeline_data
       Gitlab::DataBuilder::Pipeline.build(self)

@@ -2,8 +2,28 @@ module QA
   module Page
     module Group
       class Show < Page::Base
+        def go_to_subgroup(name)
+          click_link name
+        end
+
+        def has_subgroup?(name)
+          page.has_link?(name)
+        end
+
+        def go_to_new_subgroup
+          within '.new-project-subgroup' do
+            find('.dropdown-toggle').click
+            find("li[data-value='new-subgroup']").click
+          end
+          find("input[data-action='new-subgroup']").click
+        end
+
         def go_to_new_project
-          click_link 'New Project'
+          within '.new-project-subgroup' do
+            find('.dropdown-toggle').click
+            find("li[data-value='new-project']").click
+          end
+          find("input[data-action='new-project']").click
         end
       end
     end

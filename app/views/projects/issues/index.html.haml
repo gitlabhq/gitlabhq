@@ -3,8 +3,6 @@
 
 - page_title "Issues"
 - new_issue_email = @project.new_issue_address(current_user)
-= content_for :sub_nav do
-  = render "projects/issues/head"
 
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag 'common_vue'
@@ -13,14 +11,11 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, params.merge(rss_url_options), title: "#{@project.name} issues")
 
-- content_for :breadcrumbs_extra do
-  = render "projects/issues/nav_btns"
-
 - if project_issues(@project).exists?
   %div{ class: (container_class) }
     .top-area
       = render 'shared/issuable/nav', type: :issues
-      .nav-controls.visible-xs
+      .nav-controls
         = render "projects/issues/nav_btns"
     = render 'shared/issuable/search_bar', type: :issues
 

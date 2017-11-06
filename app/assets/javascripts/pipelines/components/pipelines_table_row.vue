@@ -25,6 +25,14 @@ export default {
       required: false,
       default: false,
     },
+    autoDevopsHelpPath: {
+      type: String,
+      required: true,
+    },
+    viewType: {
+      type: String,
+      required: true,
+    },
   },
   components: {
     asyncButtonComponent,
@@ -199,9 +207,13 @@ export default {
 
     displayPipelineActions() {
       return this.pipeline.flags.retryable ||
-             this.pipeline.flags.cancelable ||
-             this.pipeline.details.manual_actions.length ||
-             this.pipeline.details.artifacts.length;
+        this.pipeline.flags.cancelable ||
+        this.pipeline.details.manual_actions.length ||
+        this.pipeline.details.artifacts.length;
+    },
+
+    isChildView() {
+      return this.viewType === 'child';
     },
   },
 };
@@ -214,11 +226,17 @@ export default {
         Status
       </div>
       <div class="table-mobile-content">
-        <ci-badge :status="pipelineStatus"/>
+        <ci-badge
+          :status="pipelineStatus"
+          :show-text="!isChildView"
+          />
       </div>
     </div>
 
-    <pipeline-url :pipeline="pipeline" />
+    <pipeline-url
+      :pipeline="pipeline"
+      :auto-devops-help-path="autoDevopsHelpPath"
+      />
 
     <div class="table-section section-25">
       <div
@@ -233,7 +251,9 @@ export default {
           :commit-url="commitUrl"
           :short-sha="commitShortSha"
           :title="commitTitle"
-          :author="commitAuthor"/>
+          :author="commitAuthor"
+          :show-branch="!isChildView"
+          />
       </div>
     </div>
 

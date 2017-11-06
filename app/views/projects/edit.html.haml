@@ -3,10 +3,8 @@
 - @content_class = "limit-container-width" unless fluid_layout
 - expanded = Rails.env.test?
 
-= render "projects/settings/head"
-
 .project-edit-container
-  %section.settings.general-settings
+  %section.settings.general-settings.no-animate{ class: ('expanded' if expanded) }
     .settings-header
       %h4
         General project settings
@@ -14,7 +12,7 @@
         = expanded ? 'Collapse' : 'Expand'
       %p
         Update your project name, description, avatar, and other general settings.
-    .settings-content.no-animate{ class: ('expanded' if expanded) }
+    .settings-content
       .project-edit-errors
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit-project" }, authenticity_token: true do |f|
         %fieldset
@@ -63,93 +61,21 @@
               = link_to 'Remove avatar', project_avatar_path(@project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
         = f.submit 'Save changes', class: "btn btn-save"
 
-  %section.settings.sharing-permissions
+  %section.settings.sharing-permissions.no-animate{ class: ('expanded' if expanded) }
     .settings-header
       %h4
-        Sharing and permissions
+        Permissions
       %button.btn.js-settings-toggle
         = expanded ? 'Collapse' : 'Expand'
       %p
         Enable or disable certain project features and choose access levels.
-    .settings-content.no-animate{ class: ('expanded' if expanded) }
+    .settings-content
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "sharing-permissions-form" }, authenticity_token: true do |f|
-        .form_group.sharing-and-permissions
-          .row.js-visibility-select
-            .col-md-8
-              .label-light
-                = label_tag :project_visibility, 'Project Visibility', class: 'label-light', for: :project_visibility_level
-                = link_to icon('question-circle'), help_page_path("public_access/public_access")
-              %span.help-block
-            .col-md-4.visibility-select-container
-              = render('projects/visibility_select', model_method: :visibility_level, form: f, selected_level: @project.visibility_level)
-          = f.fields_for :project_feature do |feature_fields|
-            %fieldset.features
-              .row
-                .col-md-8.project-feature
-                  = feature_fields.label :repository_access_level, "Repository", class: 'label-light'
-                  %span.help-block View and edit files in this project
-                .col-md-4.js-repo-access-level
-                  = project_feature_access_select(:repository_access_level)
-
-              .row
-                .col-md-8.project-feature.nested
-                  = feature_fields.label :merge_requests_access_level, "Merge requests", class: 'label-light'
-                  %span.help-block Submit changes to be merged upstream
-                .col-md-4
-                  = project_feature_access_select(:merge_requests_access_level)
-
-              .row
-                .col-md-8.project-feature.nested
-                  = feature_fields.label :builds_access_level, "Pipelines", class: 'label-light'
-                  %span.help-block Build, test, and deploy your changes
-                .col-md-4
-                  = project_feature_access_select(:builds_access_level)
-
-              .row
-                .col-md-8.project-feature
-                  = feature_fields.label :snippets_access_level, "Snippets", class: 'label-light'
-                  %span.help-block Share code pastes with others out of Git repository
-                .col-md-4
-                  = project_feature_access_select(:snippets_access_level)
-
-              .row
-                .col-md-8.project-feature
-                  = feature_fields.label :issues_access_level, "Issues", class: 'label-light'
-                  %span.help-block Lightweight issue tracking system for this project
-                .col-md-4
-                  = project_feature_access_select(:issues_access_level)
-
-              .row
-                .col-md-8.project-feature
-                  = feature_fields.label :wiki_access_level, "Wiki", class: 'label-light'
-                  %span.help-block Pages for project documentation
-                .col-md-4
-                  = project_feature_access_select(:wiki_access_level)
-        .form-group
-          = render 'shared/allow_request_access', form: f
-        - if Gitlab.config.lfs.enabled && current_user.admin?
-          .row.js-lfs-enabled.form-group.sharing-and-permissions
-            .col-md-8
-              = f.label :lfs_enabled, 'Git Large File Storage', class: 'label-light'
-              = link_to icon('question-circle'), help_page_path('workflow/lfs/manage_large_binaries_with_git_lfs')
-              %span.help-block Manages large files such as audio, video and graphics files.
-            .col-md-4
-              .select-wrapper
-                = f.select :lfs_enabled, [%w(Enabled true), %w(Disabled false)], {}, selected: @project.lfs_enabled?, class: 'pull-right form-control project-repo-select select-control', data: { field: 'lfs_enabled' }
-                = icon('chevron-down')
-        - if Gitlab.config.registry.enabled
-          .form-group.js-container-registry{ style: ("display: none;" if @project.project_feature.send(:repository_access_level) == 0) }
-            .checkbox
-              = f.label :container_registry_enabled do
-                = f.check_box :container_registry_enabled
-                %strong Container Registry
-                %br
-                %span.descr Enable Container Registry for this project
-                = link_to icon('question-circle'), help_page_path('user/project/container_registry'), target: '_blank'
+        %script.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data(@project)
+        .js-project-permissions-form
         = f.submit 'Save changes', class: "btn btn-save"
 
-
-  %section.settings.merge-requests-feature{ style: ("display: none;" if @project.project_feature.send(:merge_requests_access_level) == 0) }
+  %section.settings.merge-requests-feature.no-animate{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)] }
     .settings-header
       %h4
         Merge request settings
@@ -157,22 +83,22 @@
         = expanded ? 'Collapse' : 'Expand'
       %p
         Customize your merge request restrictions.
-    .settings-content.no-animate{ class: ('expanded' if expanded) }
+    .settings-content
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "merge-request-settings-form" }, authenticity_token: true do |f|
         = render 'merge_request_settings', form: f
         = f.submit 'Save changes', class: "btn btn-save"
 
   = render 'export', project: @project
 
-  %section.settings.advanced-settings
+  %section.settings.advanced-settings.no-animate{ class: ('expanded' if expanded) }
     .settings-header
       %h4
         Advanced settings
       %button.btn.js-settings-toggle
         = expanded ? 'Collapse' : 'Expand'
       %p
-        Perform advanced options such as housekeeping, exporting, archiving, renaming, transferring, or removing your project.
-    .settings-content.no-animate{ class: ('expanded' if expanded) }
+        Perform advanced options such as housekeeping, archiving, renaming, transferring, or removing your project.
+    .settings-content
       .sub-section
         %h4 Housekeeping
         %p
@@ -247,7 +173,10 @@
           %p
             This will remove the fork relationship to source project
             = succeed "." do
-              = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)
+              - if @project.fork_source
+                = link_to(fork_source_name(@project), project_path(@project.fork_source))
+              - else
+                = fork_source_name(@project)
           = form_for([@project.namespace.becomes(Namespace), @project], url: remove_fork_project_path(@project), method: :delete, remote: true, html: { class: 'transfer-project' }) do |f|
             %p
               %strong Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source.

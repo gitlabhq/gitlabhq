@@ -3,26 +3,64 @@ class PushEvent < Event
   # different "action" value.
   validate :validate_push_action
 
-  # Authors are required as they're used to display who pushed data.
-  #
-  # We're just validating the presence of the ID here as foreign key constraints
-  # should ensure the ID points to a valid user.
-  validates :author_id, presence: true
-
   # The project is required to build links to commits, commit ranges, etc.
   #
   # We're just validating the presence of the ID here as foreign key constraints
   # should ensure the ID points to a valid project.
   validates :project_id, presence: true
 
-  # The "data" field must not be set for push events since it's not used and a
-  # waste of space.
-  validates :data, absence: true
-
   # These fields are also not used for push events, thus storing them would be a
   # waste.
   validates :target_id, absence: true
   validates :target_type, absence: true
+
+  delegate :branch?, to: :push_event_payload
+  delegate :tag?, to: :push_event_payload
+  delegate :commit_from, to: :push_event_payload
+  delegate :commit_to, to: :push_event_payload
+  delegate :ref_type, to: :push_event_payload
+  delegate :commit_title, to: :push_event_payload
+
+  delegate :commit_count, to: :push_event_payload
+  alias_method :commits_count, :commit_count
+
+  # Returns events of pushes that either pushed to an existing ref or created a
+  # new one.
+  def self.created_or_pushed
+    actions = [
+      PushEventPayload.actions[:pushed],
+      PushEventPayload.actions[:created]
+    ]
+
+    joins(:push_event_payload)
+      .where(push_event_payloads: { action: actions })
+  end
+
+  # Returns events of pushes to a branch.
+  def self.branch_events
+    ref_type = PushEventPayload.ref_types[:branch]
+
+    joins(:push_event_payload)
+      .where(push_event_payloads: { ref_type: ref_type })
+  end
+
+  # Returns PushEvent instances for which no merge requests have been created.
+  def self.without_existing_merge_requests
+    existing_mrs = MergeRequest.except(:order)
+      .select(1)
+      .where('merge_requests.source_project_id = events.project_id')
+      .where('merge_requests.source_branch = push_event_payloads.ref')
+
+    # For reasons unknown the use of #eager_load will result in the
+    # "push_event_payload" association not being set. Because of this we're
+    # using "joins" here, which does mean an additional query needs to be
+    # executed in order to retrieve the "push_event_association" when the
+    # returned PushEvent is used.
+    joins(:push_event_payload)
+      .where('NOT EXISTS (?)', existing_mrs)
+      .created_or_pushed
+      .branch_events
+  end
 
   def self.sti_name
     PUSHED
@@ -36,86 +74,35 @@ class PushEvent < Event
     !!(commit_from && commit_to)
   end
 
-  def tag?
-    return super unless push_event_payload
-
-    push_event_payload.tag?
-  end
-
-  def branch?
-    return super unless push_event_payload
-
-    push_event_payload.branch?
-  end
-
   def valid_push?
-    return super unless push_event_payload
-
     push_event_payload.ref.present?
   end
 
   def new_ref?
-    return super unless push_event_payload
-
     push_event_payload.created?
   end
 
   def rm_ref?
-    return super unless push_event_payload
-
     push_event_payload.removed?
   end
 
-  def commit_from
-    return super unless push_event_payload
-
-    push_event_payload.commit_from
-  end
-
-  def commit_to
-    return super unless push_event_payload
-
-    push_event_payload.commit_to
+  def md_ref?
+    !(rm_ref? || new_ref?)
   end
 
   def ref_name
-    return super unless push_event_payload
-
     push_event_payload.ref
   end
 
-  def ref_type
-    return super unless push_event_payload
-
-    push_event_payload.ref_type
-  end
-
-  def branch_name
-    return super unless push_event_payload
-
-    ref_name
-  end
-
-  def tag_name
-    return super unless push_event_payload
-
-    ref_name
-  end
-
-  def commit_title
-    return super unless push_event_payload
-
-    push_event_payload.commit_title
-  end
+  alias_method :branch_name, :ref_name
+  alias_method :tag_name, :ref_name
 
   def commit_id
     commit_to || commit_from
   end
 
-  def commits_count
-    return super unless push_event_payload
-
-    push_event_payload.commit_count
+  def last_push_to_non_root?
+    branch? && project.default_branch != branch_name
   end
 
   def validate_push_action

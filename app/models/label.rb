@@ -34,7 +34,8 @@ class Label < ActiveRecord::Base
 
   scope :templates, -> { where(template: true) }
   scope :with_title, ->(title) { where(title: title) }
-  scope :on_project_boards, ->(project_id) { joins(lists: :board).merge(List.movable).where(boards: { project_id: project_id }) }
+  scope :with_lists_and_board, -> { joins(lists: :board).merge(List.movable) }
+  scope :on_project_boards, ->(project_id) { with_lists_and_board.where(boards: { project_id: project_id }) }
 
   def self.prioritized(project)
     joins(:priorities)
@@ -126,7 +127,12 @@ class Label < ActiveRecord::Base
   end
 
   def priority(project)
-    priorities.find_by(project: project).try(:priority)
+    priority = if priorities.loaded?
+                 priorities.first { |p| p.project == project }
+               else
+                 priorities.find_by(project: project)
+               end
+    priority.try(:priority)
   end
 
   def template?
@@ -172,6 +178,7 @@ class Label < ActiveRecord::Base
 
   def as_json(options = {})
     super(options).tap do |json|
+      json[:type] = self.try(:type)
       json[:priority] = priority(options[:project]) if options.key?(:project)
     end
   end

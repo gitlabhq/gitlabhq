@@ -10,6 +10,22 @@ module IssuableCollections
 
   private
 
+  def set_issues_index
+    @collection_type    = "Issue"
+    @issues             = issues_collection
+    @issues             = @issues.page(params[:page])
+    @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
+    @total_pages        = issues_page_count(@issues)
+
+    return if redirect_out_of_range(@issues, @total_pages)
+
+    if params[:label_name].present?
+      @labels = LabelsFinder.new(current_user, project_id: @project.id, title: params[:label_name]).execute
+    end
+
+    @users = []
+  end
+
   def issues_collection
     issues_finder.execute.preload(:project, :author, :assignees, :labels, :milestone, project: :namespace)
   end
@@ -90,7 +106,7 @@ module IssuableCollections
       # @filter_params[:authorized_only] = true
     end
 
-    @filter_params
+    @filter_params.permit(IssuableFinder::VALID_PARAMS)
   end
 
   def set_default_state
@@ -101,19 +117,32 @@ module IssuableCollections
     key = 'issuable_sort'
 
     cookies[key] = params[:sort] if params[:sort].present?
-
-    # id_desc and id_asc are old values for these two.
-    cookies[key] = sort_value_recently_created if cookies[key] == 'id_desc'
-    cookies[key] = sort_value_oldest_created if cookies[key] == 'id_asc'
-
+    cookies[key] = update_cookie_value(cookies[key])
     params[:sort] = cookies[key]
   end
 
   def default_sort_order
     case params[:state]
-    when 'opened', 'all' then sort_value_recently_created
+    when 'opened', 'all'    then sort_value_created_date
     when 'merged', 'closed' then sort_value_recently_updated
-    else sort_value_recently_created
+    else sort_value_created_date
+    end
+  end
+
+  # Update old values to the actual ones.
+  def update_cookie_value(value)
+    case value
+    when 'id_asc'             then sort_value_oldest_created
+    when 'id_desc'            then sort_value_recently_created
+    when 'created_asc'        then sort_value_created_date
+    when 'created_desc'       then sort_value_created_date
+    when 'due_date_asc'       then sort_value_due_date
+    when 'due_date_desc'      then sort_value_due_date
+    when 'milestone_due_asc'  then sort_value_milestone
+    when 'milestone_due_desc' then sort_value_milestone
+    when 'downvotes_asc'      then sort_value_popularity
+    when 'downvotes_desc'     then sort_value_popularity
+    else value
     end
   end
 end

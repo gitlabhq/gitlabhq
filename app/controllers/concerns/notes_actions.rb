@@ -4,6 +4,7 @@ module NotesActions
 
   included do
     before_action :set_polling_interval_header, only: [:index]
+    before_action :noteable, only: :index
     before_action :authorize_admin_note!, only: [:update, :destroy]
     before_action :note_project, only: [:create]
   end
@@ -15,9 +16,9 @@ module NotesActions
 
     notes = notes_finder.execute
       .inc_relations_for_view
-      .reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
     notes = prepare_notes_for_rendering(notes)
+    notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
     notes_json[:notes] =
       if noteable.discussions_rendered_on_frontend?
@@ -96,7 +97,8 @@ module NotesActions
           id: note.id,
           discussion_id: note.discussion_id(noteable),
           html: note_html(note),
-          note: note.note
+          note: note.note,
+          on_image: note.try(:on_image?)
         )
 
         discussion = note.to_discussion(noteable)
@@ -107,6 +109,8 @@ module NotesActions
             diff_discussion_html: diff_discussion_html(discussion),
             discussion_html: discussion_html(discussion)
           )
+
+          attrs[:discussion_line_code] = discussion.line_code if discussion.diff_discussion?
         end
       end
     else
@@ -122,7 +126,9 @@ module NotesActions
   def diff_discussion_html(discussion)
     return unless discussion.diff_discussion?
 
-    if params[:view] == 'parallel'
+    on_image = discussion.on_image?
+
+    if params[:view] == 'parallel' && !on_image
       template = "discussions/_parallel_diff_discussion"
       locals =
         if params[:line_type] == 'old'
@@ -132,7 +138,9 @@ module NotesActions
         end
     else
       template = "discussions/_diff_discussion"
-      locals = { discussions: [discussion] }
+      @fresh_discussion = true
+
+      locals = { discussions: [discussion], on_image: on_image }
     end
 
     render_to_string(
@@ -183,7 +191,7 @@ module NotesActions
   end
 
   def noteable
-    @noteable ||= notes_finder.target
+    @noteable ||= notes_finder.target || render_404
   end
 
   def last_fetched_at

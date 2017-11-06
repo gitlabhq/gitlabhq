@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 /* global Mousetrap */
-/* global ShortcutsNavigation */
 
+import ShortcutsNavigation from './shortcuts_navigation';
 import findAndFollowLink from './shortcuts_dashboard_navigation';
 
 export default class ShortcutsWiki extends ShortcutsNavigation {

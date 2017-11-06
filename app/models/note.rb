@@ -69,7 +69,7 @@ class Note < ActiveRecord::Base
   delegate :title, to: :noteable, allow_nil: true
 
   validates :note, presence: true
-  validates :project, presence: true, unless: :for_personal_snippet?
+  validates :project, presence: true, if: :for_project_noteable?
 
   # Attachments are deprecated and are handled by Markdown uploader
   validates :attachment, file_size: { maximum: :max_attachment_size }
@@ -114,7 +114,7 @@ class Note < ActiveRecord::Base
   after_initialize :ensure_discussion_id
   before_validation :nullify_blank_type, :nullify_blank_line_code
   before_validation :set_discussion_id, on: :create
-  after_save :keep_around_commit, unless: :for_personal_snippet?
+  after_save :keep_around_commit, if: :for_project_noteable?
   after_save :expire_etag_cache
   after_destroy :expire_etag_cache
 
@@ -134,14 +134,22 @@ class Note < ActiveRecord::Base
       Discussion.build(notes)
     end
 
+    # Group diff discussions by line code or file path.
+    # It is not needed to group by line code when comment is
+    # on an image.
     def grouped_diff_discussions(diff_refs = nil)
       groups = {}
 
       diff_notes.fresh.discussions.each do |discussion|
-        line_code = discussion.line_code_in_diffs(diff_refs)
+        group_key =
+          if discussion.on_image?
+            discussion.file_new_path
+          else
+            discussion.line_code_in_diffs(diff_refs)
+          end
 
-        if line_code
-          discussions = groups[line_code] ||= []
+        if group_key
+          discussions = groups[group_key] ||= []
           discussions << discussion
         end
       end
@@ -161,7 +169,7 @@ class Note < ActiveRecord::Base
   end
 
   def cross_reference?
-    system? && SystemNoteService.cross_reference?(note)
+    system? && matches_cross_reference_regex?
   end
 
   def diff_note?
@@ -198,6 +206,10 @@ class Note < ActiveRecord::Base
 
   def for_personal_snippet?
     noteable.is_a?(PersonalSnippet)
+  end
+
+  def for_project_noteable?
+    !for_personal_snippet?
   end
 
   def skip_project_check?

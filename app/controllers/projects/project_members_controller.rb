@@ -47,6 +47,10 @@ class Projects::ProjectMembersController < Projects::ApplicationController
     end
   end
 
+  def import
+    @projects = current_user.authorized_projects.order_id_desc
+  end
+
   def apply_import
     source_project = Project.find(params[:source_project_id])
 

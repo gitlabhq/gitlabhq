@@ -9,7 +9,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   skip_before_action :merge_request, only: [:index, :bulk_update]
   skip_before_action :ensure_ref_fetched, only: [:index, :bulk_update]
 
-  before_action :authorize_update_merge_request!, only: [:close, :edit, :update, :remove_wip, :sort]
+  before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
 
   before_action :authenticate_user!, only: [:assign_related_issues]
 
@@ -56,6 +56,9 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     close_merge_request_without_source_project
     check_if_can_be_merged
 
+    # Return if the response has already been rendered
+    return if response_body
+
     respond_to do |format|
       format.html do
         # Build a note object for comment form
@@ -70,12 +73,17 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
         labels
 
         set_pipeline_variables
+
+        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37432
+        Gitlab::GitalyClient.allow_n_plus_1_calls do
+          render
+        end
       end
 
       format.json do
         Gitlab::PollingInterval.set_header(response, interval: 10_000)
 
-        render json: serializer.represent(@merge_request, basic: params[:basic])
+        render json: serializer.represent(@merge_request, serializer: params[:serializer])
       end
 
       format.patch  do
@@ -247,14 +255,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   alias_method :subscribable_resource, :merge_request
   alias_method :issuable, :merge_request
   alias_method :awardable, :merge_request
-
-  def authorize_update_merge_request!
-    return render_404 unless can?(current_user, :update_merge_request, @merge_request)
-  end
-
-  def authorize_admin_merge_request!
-    return render_404 unless can?(current_user, :admin_merge_request, @merge_request)
-  end
 
   def validates_merge_request
     # Show git not found page

@@ -2,21 +2,36 @@ import SidebarStore from '~/sidebar/stores/sidebar_store';
 import Mock from './mock_data';
 import UsersMockHelper from '../helpers/user_mock_data_helper';
 
+const ASSIGNEE = {
+  id: 2,
+  name: 'gitlab user 2',
+  username: 'gitlab2',
+  avatar_url: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+};
+
+const ANOTHER_ASSINEE = {
+  id: 3,
+  name: 'gitlab user 3',
+  username: 'gitlab3',
+  avatar_url: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
+};
+
+const PARTICIPANT = {
+  id: 1,
+  state: 'active',
+  username: 'marcene',
+  name: 'Allie Will',
+  web_url: 'foo.com',
+  avatar_url: 'gravatar.com/avatar/xxx',
+};
+
+const PARTICIPANT_LIST = [
+  PARTICIPANT,
+  { ...PARTICIPANT, id: 2 },
+  { ...PARTICIPANT, id: 3 },
+];
+
 describe('Sidebar store', () => {
-  const assignee = {
-    id: 2,
-    name: 'gitlab user 2',
-    username: 'gitlab2',
-    avatar_url: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
-  };
-
-  const anotherAssignee = {
-    id: 3,
-    name: 'gitlab user 3',
-    username: 'gitlab3',
-    avatar_url: 'http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=80&d=identicon',
-  };
-
   beforeEach(() => {
     this.store = new SidebarStore({
       currentUser: {
@@ -40,29 +55,51 @@ describe('Sidebar store', () => {
   });
 
   it('adds a new assignee', () => {
-    this.store.addAssignee(assignee);
+    this.store.addAssignee(ASSIGNEE);
     expect(this.store.assignees.length).toEqual(1);
   });
 
   it('removes an assignee', () => {
-    this.store.removeAssignee(assignee);
+    this.store.removeAssignee(ASSIGNEE);
     expect(this.store.assignees.length).toEqual(0);
   });
 
   it('finds an existent assignee', () => {
     let foundAssignee;
 
-    this.store.addAssignee(assignee);
-    foundAssignee = this.store.findAssignee(assignee);
+    this.store.addAssignee(ASSIGNEE);
+    foundAssignee = this.store.findAssignee(ASSIGNEE);
     expect(foundAssignee).toBeDefined();
-    expect(foundAssignee).toEqual(assignee);
-    foundAssignee = this.store.findAssignee(anotherAssignee);
+    expect(foundAssignee).toEqual(ASSIGNEE);
+    foundAssignee = this.store.findAssignee(ANOTHER_ASSINEE);
     expect(foundAssignee).toBeUndefined();
   });
 
   it('removes all assignees', () => {
     this.store.removeAllAssignees();
     expect(this.store.assignees.length).toEqual(0);
+  });
+
+  it('sets participants data', () => {
+    expect(this.store.participants.length).toEqual(0);
+
+    this.store.setParticipantsData({
+      participants: PARTICIPANT_LIST,
+    });
+
+    expect(this.store.isFetching.participants).toEqual(false);
+    expect(this.store.participants.length).toEqual(PARTICIPANT_LIST.length);
+  });
+
+  it('sets subcriptions data', () => {
+    expect(this.store.subscribed).toEqual(null);
+
+    this.store.setSubscriptionsData({
+      subscribed: true,
+    });
+
+    expect(this.store.isFetching.subscriptions).toEqual(false);
+    expect(this.store.subscribed).toEqual(true);
   });
 
   it('set assigned data', () => {
@@ -73,6 +110,14 @@ describe('Sidebar store', () => {
     this.store.setAssigneeData(users);
     expect(this.store.isFetching.assignees).toBe(false);
     expect(this.store.assignees.length).toEqual(3);
+  });
+
+  it('sets fetching state', () => {
+    expect(this.store.isFetching.participants).toEqual(true);
+
+    this.store.setFetchingState('participants', false);
+
+    expect(this.store.isFetching.participants).toEqual(false);
   });
 
   it('set time tracking data', () => {
@@ -88,6 +133,14 @@ describe('Sidebar store', () => {
     this.store.setAutocompleteProjects(projects);
 
     expect(this.store.autocompleteProjects).toEqual(projects);
+  });
+
+  it('sets subscribed state', () => {
+    expect(this.store.subscribed).toEqual(null);
+
+    this.store.setSubscribedState(true);
+
+    expect(this.store.subscribed).toEqual(true);
   });
 
   it('set move to project ID', () => {

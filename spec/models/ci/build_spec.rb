@@ -1,22 +1,24 @@
 require 'spec_helper'
 
 describe Ci::Build do
-  let(:user) { create(:user) }
-  let(:project) { create(:project, :repository) }
-  let(:build) { create(:ci_build, pipeline: pipeline) }
-  let(:test_trace) { 'This is a test' }
+  set(:user) { create(:user) }
+  set(:group) { create(:group, :access_requestable) }
+  set(:project) { create(:project, :repository, group: group) }
 
-  let(:pipeline) do
+  set(:pipeline) do
     create(:ci_pipeline, project: project,
                          sha: project.commit.id,
                          ref: project.default_branch,
                          status: 'success')
   end
 
+  let(:build) { create(:ci_build, pipeline: pipeline) }
+
   it { is_expected.to belong_to(:runner) }
   it { is_expected.to belong_to(:trigger_request) }
   it { is_expected.to belong_to(:erased_by) }
   it { is_expected.to have_many(:deployments) }
+  it { is_expected.to have_many(:trace_sections)}
   it { is_expected.to validate_presence_of(:ref) }
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
@@ -282,7 +284,7 @@ describe Ci::Build do
       let(:project_regex) { '\(\d+\.\d+\) covered' }
 
       before do
-        project.build_coverage_regex = project_regex
+        project.update_column(:build_coverage_regex, project_regex)
       end
 
       context 'and coverage_regex attribute is not set' do
@@ -316,6 +318,17 @@ describe Ci::Build do
         expect(build.update_coverage).to be(true)
         expect(build.coverage).to eq(98.29)
       end
+    end
+  end
+
+  describe '#parse_trace_sections!' do
+    it 'calls ExtractSectionsFromBuildTraceService' do
+      expect(Ci::ExtractSectionsFromBuildTraceService)
+          .to receive(:new).with(project, build.user).once.and_call_original
+      expect_any_instance_of(Ci::ExtractSectionsFromBuildTraceService)
+        .to receive(:execute).with(build).once
+
+      build.parse_trace_sections!
     end
   end
 
@@ -1096,9 +1109,6 @@ describe Ci::Build do
   end
 
   describe '#repo_url' do
-    let(:build) { create(:ci_build) }
-    let(:project) { build.project }
-
     subject { build.repo_url }
 
     it { is_expected.to be_a(String) }
@@ -1199,6 +1209,8 @@ describe Ci::Build do
       end
 
       context 'use from gitlab-ci.yml' do
+        let(:pipeline) { create(:ci_pipeline) }
+
         before do
           stub_ci_pipeline_yaml_file(config)
         end
@@ -1259,6 +1271,7 @@ describe Ci::Build do
         { key: 'CI_PROJECT_PATH_SLUG', value: project.full_path_slug, public: true },
         { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
         { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
+        { key: 'CI_PROJECT_VISIBILITY', value: 'private', public: true },
         { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
         { key: 'CI_PIPELINE_IID', value: pipeline.iid.to_s, public: true },
         { key: 'CI_CONFIG_PATH', value: pipeline.ci_yaml_file_path, public: true },
@@ -1443,11 +1456,7 @@ describe Ci::Build do
         { key: 'SECRET_KEY', value: 'secret_value', public: false }
       end
 
-      let(:group) { create(:group, :access_requestable) }
-
       before do
-        build.project.update(group: group)
-
         create(:ci_group_variable,
                secret_variable.slice(:key, :value).merge(group: group))
       end
@@ -1460,11 +1469,7 @@ describe Ci::Build do
         { key: 'PROTECTED_KEY', value: 'protected_value', public: false }
       end
 
-      let(:group) { create(:group, :access_requestable) }
-
       before do
-        build.project.update(group: group)
-
         create(:ci_group_variable,
                :protected,
                protected_variable.slice(:key, :value).merge(group: group))
@@ -1487,6 +1492,10 @@ describe Ci::Build do
       end
 
       context 'when the ref is not protected' do
+        before do
+          build.update_column(:ref, 'some/feature')
+        end
+
         it { is_expected.not_to include(protected_variable) }
       end
     end
@@ -1553,6 +1562,8 @@ describe Ci::Build do
     end
 
     context 'when yaml_variables are undefined' do
+      let(:pipeline) { create(:ci_pipeline, project: project) }
+
       before do
         build.yaml_variables = nil
       end
@@ -1646,7 +1657,10 @@ describe Ci::Build do
 
       before do
         build.environment = 'production'
-        allow(project).to receive(:deployment_variables).and_return([deployment_variable])
+
+        allow_any_instance_of(Project)
+          .to receive(:deployment_variables)
+          .and_return([deployment_variable])
       end
 
       it { is_expected.to include(deployment_variable) }
@@ -1670,14 +1684,19 @@ describe Ci::Build do
 
       before do
         allow(build).to receive(:predefined_variables) { [build_pre_var] }
-        allow(project).to receive(:predefined_variables) { [project_pre_var] }
-        allow(pipeline).to receive(:predefined_variables) { [pipeline_pre_var] }
         allow(build).to receive(:yaml_variables) { [build_yaml_var] }
 
-        allow(project).to receive(:secret_variables_for)
+        allow_any_instance_of(Project)
+          .to receive(:predefined_variables) { [project_pre_var] }
+
+        allow_any_instance_of(Project)
+          .to receive(:secret_variables_for)
           .with(ref: 'master', environment: nil) do
             [create(:ci_variable, key: 'secret', value: 'value')]
           end
+
+        allow_any_instance_of(Ci::Pipeline)
+          .to receive(:predefined_variables) { [pipeline_pre_var] }
       end
 
       it do
@@ -1687,6 +1706,30 @@ describe Ci::Build do
            pipeline_pre_var,
            build_yaml_var,
            { key: 'secret', value: 'value', public: false }])
+      end
+    end
+
+    context 'when using auto devops' do
+      context 'and is enabled' do
+        before do
+          project.create_auto_devops!(enabled: true, domain: 'example.com')
+        end
+
+        it "includes AUTO_DEVOPS_DOMAIN" do
+          is_expected.to include(
+            { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true })
+        end
+      end
+
+      context 'and is disabled' do
+        before do
+          project.create_auto_devops!(enabled: false, domain: 'example.com')
+        end
+
+        it "includes AUTO_DEVOPS_DOMAIN" do
+          is_expected.not_to include(
+            { key: 'AUTO_DEVOPS_DOMAIN', value: 'example.com', public: true })
+        end
       end
     end
   end
@@ -1702,19 +1745,34 @@ describe Ci::Build do
   end
 
   describe 'state transition when build fails' do
-    context 'when build is configured to be retried' do
-      subject { create(:ci_build, :running, options: { retry: 3 }) }
+    let(:service) { MergeRequests::AddTodoWhenBuildFailsService.new(project, user) }
 
-      it 'retries builds and assigns a same user to it' do
+    before do
+      allow(MergeRequests::AddTodoWhenBuildFailsService).to receive(:new).and_return(service)
+      allow(service).to receive(:close)
+    end
+
+    context 'when build is configured to be retried' do
+      subject { create(:ci_build, :running, options: { retry: 3 }, project: project, user: user) }
+
+      it 'retries build and assigns the same user to it' do
         expect(described_class).to receive(:retry)
-          .with(subject, subject.user)
+          .with(subject, user)
+
+        subject.drop!
+      end
+
+      it 'does not try to create a todo' do
+        project.add_developer(user)
+
+        expect(service).not_to receive(:commit_status_merge_requests)
 
         subject.drop!
       end
     end
 
     context 'when build is not configured to be retried' do
-      subject { create(:ci_build, :running) }
+      subject { create(:ci_build, :running, project: project, user: user) }
 
       it 'does not retry build' do
         expect(described_class).not_to receive(:retry)
@@ -1726,6 +1784,14 @@ describe Ci::Build do
         expect(described_class).not_to receive(:retry)
         expect_any_instance_of(described_class)
           .not_to receive(:retries_count)
+
+        subject.drop!
+      end
+
+      it 'creates a todo' do
+        project.add_developer(user)
+
+        expect(service).to receive(:commit_status_merge_requests)
 
         subject.drop!
       end

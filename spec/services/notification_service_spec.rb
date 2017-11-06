@@ -84,7 +84,6 @@ describe NotificationService, :mailer do
       let!(:key) { create(:personal_key, key_options) }
 
       it { expect(notification.new_key(key)).to be_truthy }
-      it { should_email(key.user) }
 
       describe 'never emails the ghost user' do
         let(:key_options) { { user: User.ghost } }
@@ -102,18 +101,6 @@ describe NotificationService, :mailer do
 
       it 'sends email to key owner' do
         expect { notification.new_gpg_key(key) }.to change { ActionMailer::Base.deliveries.size }.by(1)
-      end
-    end
-  end
-
-  describe 'Email' do
-    describe '#new_email' do
-      let!(:email) { create(:email) }
-
-      it { expect(notification.new_email(email)).to be_truthy }
-
-      it 'sends email to email owner' do
-        expect { notification.new_email(email) }.to change { ActionMailer::Base.deliveries.size }.by(1)
       end
     end
   end
@@ -744,6 +731,18 @@ describe NotificationService, :mailer do
         should_not_email(@u_participating)
       end
 
+      it "doesn't send multiple email when a user is subscribed to multiple given labels" do
+        subscriber_to_both = create(:user) do |user|
+          [label_1, label_2].each { |label| label.toggle_subscription(user, project) }
+        end
+
+        notification.relabeled_issue(issue, [label_1, label_2], @u_disabled)
+
+        should_email(subscriber_to_label_1)
+        should_email(subscriber_to_label_2)
+        should_email(subscriber_to_both)
+      end
+
       context 'confidential issues' do
         let(:author) { create(:user) }
         let(:assignee) { create(:user) }
@@ -1237,7 +1236,7 @@ describe NotificationService, :mailer do
       end
 
       it do
-        group_member = group.members.first
+        group_member = group.members.last
 
         expect do
           notification.decline_group_invite(group_member)
@@ -1285,7 +1284,7 @@ describe NotificationService, :mailer do
       end
 
       it do
-        project_member = project.members.first
+        project_member = project.members.last
 
         expect do
           notification.decline_project_invite(project_member)

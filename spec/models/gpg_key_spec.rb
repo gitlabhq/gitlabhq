@@ -3,6 +3,7 @@ require 'rails_helper'
 describe GpgKey do
   describe "associations" do
     it { is_expected.to belong_to(:user) }
+    it { is_expected.to have_many(:subkeys) }
   end
 
   describe "validation" do
@@ -36,6 +37,14 @@ describe GpgKey do
         gpg_key = described_class.new(key: GpgHelpers::User1.public_key)
         gpg_key.valid?
         expect(gpg_key.primary_keyid).to eq GpgHelpers::User1.primary_keyid
+      end
+    end
+
+    describe 'generate_subkeys' do
+      it 'extracts the subkeys from the gpg key' do
+        gpg_key = create(:gpg_key, key: GpgHelpers::User1.public_key_with_extra_signing_key)
+
+        expect(gpg_key.subkeys.count).to eq(2)
       end
     end
   end
@@ -90,10 +99,19 @@ describe GpgKey do
     it 'email is verified if the user has the matching email' do
       user = create :user, email: 'bette.cartwright@example.com'
       gpg_key = create :gpg_key, key: GpgHelpers::User2.public_key, user: user
+      create :email, user: user
+      user.reload
 
       expect(gpg_key.emails_with_verified_status).to eq(
         'bette.cartwright@example.com' => true,
         'bette.cartwright@example.net' => false
+      )
+
+      create :email, :confirmed, user: user, email: 'bette.cartwright@example.net'
+      user.reload
+      expect(gpg_key.emails_with_verified_status).to eq(
+        'bette.cartwright@example.com' => true,
+        'bette.cartwright@example.net' => true
       )
     end
   end
@@ -138,17 +156,13 @@ describe GpgKey do
       expect(gpg_key.verified?).to be_truthy
       expect(gpg_key.verified_and_belongs_to_email?('bette.cartwright@example.com')).to be_truthy
     end
-  end
 
-  describe 'notification', :mailer do
-    let(:user) { create(:user) }
+    it 'returns true if one of the email addresses in the key belongs to the user and case-insensitively matches the provided email' do
+      user = create :user, email: 'bette.cartwright@example.com'
+      gpg_key = create :gpg_key, key: GpgHelpers::User2.public_key, user: user
 
-    it 'sends a notification' do
-      perform_enqueued_jobs do
-        create(:gpg_key, user: user)
-      end
-
-      should_email(user)
+      expect(gpg_key.verified?).to be_truthy
+      expect(gpg_key.verified_and_belongs_to_email?('Bette.Cartwright@example.com')).to be_truthy
     end
   end
 
@@ -176,6 +190,30 @@ describe GpgKey do
       )
 
       expect(unrelated_gpg_key.destroyed?).to be false
+    end
+
+    it 'deletes all the associated subkeys' do
+      gpg_key = create :gpg_key, key: GpgHelpers::User3.public_key
+
+      expect(gpg_key.subkeys).to be_present
+
+      gpg_key.revoke
+
+      expect(gpg_key.subkeys(true)).to be_blank
+    end
+
+    it 'invalidates all signatures associated to the subkeys' do
+      gpg_key = create :gpg_key, key: GpgHelpers::User3.public_key
+      gpg_key_subkey = gpg_key.subkeys.last
+      gpg_signature = create :gpg_signature, verification_status: :verified, gpg_key: gpg_key_subkey
+
+      gpg_key.revoke
+
+      expect(gpg_signature.reload).to have_attributes(
+        verification_status: 'unknown_key',
+        gpg_key: nil,
+        gpg_key_subkey: nil
+      )
     end
   end
 end

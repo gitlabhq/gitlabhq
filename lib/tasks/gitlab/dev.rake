@@ -4,7 +4,11 @@ namespace :gitlab do
     task :ee_compat_check, [:branch] => :environment do |_, args|
       opts =
         if ENV['CI']
-          { branch: ENV['CI_COMMIT_REF_NAME'] }
+          {
+            ce_project_url: ENV['CI_PROJECT_URL'],
+            branch: ENV['CI_COMMIT_REF_NAME'],
+            job_id: ENV['CI_JOB_ID']
+          }
         else
           unless args[:branch]
             puts "Must specify a branch as an argument".color(:red)
@@ -13,7 +17,10 @@ namespace :gitlab do
           args
         end
 
-      if Gitlab::EeCompatCheck.new(opts || {}).check
+      if File.basename(Rails.root) == 'gitlab-ee'
+        puts "Skipping EE projects"
+        exit 0
+      elsif Gitlab::EeCompatCheck.new(opts || {}).check
         exit 0
       else
         exit 1
