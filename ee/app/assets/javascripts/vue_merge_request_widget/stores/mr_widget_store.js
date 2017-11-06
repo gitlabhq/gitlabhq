@@ -56,12 +56,39 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     };
   }
 
-  compareCodeclimateMetrics(headIssues, baseIssues) {
-    this.codeclimateMetrics.newIssues = this.filterByFingerprint(headIssues, baseIssues);
-    this.codeclimateMetrics.resolvedIssues = this.filterByFingerprint(baseIssues, headIssues);
+  compareCodeclimateMetrics(headIssues, baseIssues, headBlobPath, baseBlobPath) {
+    const parsedHeadIssues = MergeRequestStore.addPathToIssues(headIssues, headBlobPath);
+    const parsedBaseIssues = MergeRequestStore.addPathToIssues(baseIssues, baseBlobPath);
+
+    this.codeclimateMetrics.newIssues = MergeRequestStore.filterByFingerprint(
+      parsedHeadIssues,
+      parsedBaseIssues,
+    );
+    this.codeclimateMetrics.resolvedIssues = MergeRequestStore.filterByFingerprint(
+      parsedBaseIssues,
+      parsedHeadIssues,
+    );
   }
 
-  filterByFingerprint(firstArray, secondArray) { // eslint-disable-line
+  static filterByFingerprint(firstArray, secondArray) {
     return firstArray.filter(item => !secondArray.find(el => el.fingerprint === item.fingerprint));
   }
+
+  static addPathToIssues(issues, path) {
+    return issues.map((issue) => {
+      if (issue.location) {
+        let parsedUrl = `${path}/${issue.location.path}`;
+
+        if (issue.location.lines && issue.location.lines.begin) {
+          parsedUrl += `#L${issue.location.lines.begin}`;
+        }
+
+        return Object.assign({}, issue, {
+          location: Object.assign({}, issue.location, { urlPath: parsedUrl }),
+        });
+      }
+      return issue;
+    });
+  }
 }
+
