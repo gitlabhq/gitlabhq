@@ -11,7 +11,7 @@
       },
       lineStyle: {
         type: String,
-        required: true,
+        required: false,
       },
       lineColor: {
         type: String,
