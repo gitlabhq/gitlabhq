@@ -12,6 +12,11 @@
         default: 6,
       },
     },
+    computed: {
+      lineClasses() {
+        return new Array(this.lines).fill().map((_, i) => `skeleton-line-${i}`);
+      },
+    },
   };
 </script>
 
@@ -23,9 +28,9 @@
     }"
   >
     <div
-      v-for="line in lines"
-      :key="line"
-      :class="'skeleton-line-' + line"
+      v-for="(css, index) in lineClasses"
+      :key="index"
+      :class="css"
     >
     </div>
   </div>

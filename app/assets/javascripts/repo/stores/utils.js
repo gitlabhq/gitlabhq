@@ -1,5 +1,6 @@
 export const dataStructure = () => ({
   id: '',
+  key: '',
   type: '',
   name: '',
   url: '',
@@ -55,6 +56,7 @@ export const decorateData = (entity) => {
   return {
     ...dataStructure(),
     id,
+    key: `${name}-${type}-${id}`,
     type,
     name,
     url,

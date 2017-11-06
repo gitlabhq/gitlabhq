@@ -39,7 +39,7 @@
         return this.file.id.substr(0, 8);
       },
       submoduleColSpan() {
-        return !this.isCollapsed && this.isSubmodule ? 3 : undefined;
+        return !this.isCollapsed && this.isSubmodule ? 3 : 1;
       },
     },
     methods: {
