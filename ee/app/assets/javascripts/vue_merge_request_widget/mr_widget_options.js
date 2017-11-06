@@ -69,8 +69,7 @@ export default {
     securityText() {
       const { securityReport } = this.mr;
       if (securityReport.length) {
-        const vulnerabilitiesText = gl.text.pluralize('vulnerabilities', securityReport.length);
-        return `${securityReport.length} security ${vulnerabilitiesText} detected`;
+        return `${securityReport.length} security ${this.pluralizeVulnerability(securityReport.length)} detected`;
       }
 
       return 'No security vulnerabilities detected';
@@ -93,6 +92,9 @@ export default {
     },
   },
   methods: {
+    pluralizeVulnerability(length) {
+      return length === 1 ? 'vulnerability' : 'vulnerabilities';
+    },
     fetchCodeQuality() {
       const { head_path, base_path } = this.mr.codeclimate;
 
