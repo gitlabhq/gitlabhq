@@ -270,6 +270,23 @@ describe Ci::Build do
     end
   end
 
+  describe '#owned_by?' do
+    subject { build.owned_by?(user) }
+
+    context 'when user is owner' do
+      let(:build) { create(:ci_build, pipeline: pipeline, user: user) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when user is not owner' do
+      let(:another_user) { create(:user) }
+      let(:build) { create(:ci_build, pipeline: pipeline, user: another_user) }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
   describe '#detailed_status' do
     it 'returns a detailed status' do
       expect(build.detailed_status(user))
