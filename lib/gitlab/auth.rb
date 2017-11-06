@@ -35,7 +35,7 @@ module Gitlab
         rate_limit!(ip, success: result.success?, login: login)
         Gitlab::Auth::UniqueIpsLimiter.limit_user!(result.actor)
 
-        return result if result.success? || current_application_settings.password_authentication_enabled? || Gitlab::LDAP::Config.enabled?
+        return result if result.success? || authenticate_using_internal_or_ldap_password?
 
         # If sign-in is disabled and LDAP is not configured, recommend a
         # personal access token on failed auth attempts
@@ -46,6 +46,10 @@ module Gitlab
         # Avoid resource intensive login checks if password is not provided
         return unless password.present?
 
+        # Nothing to do here if internal auth is disabled and LDAP is
+        # not configured
+        return unless authenticate_using_internal_or_ldap_password?
+
         Gitlab::Auth::UniqueIpsLimiter.limit_user! do
           user = User.by_login(login)
 
@@ -53,10 +57,8 @@ module Gitlab
           #   LDAP users are only authenticated via LDAP
           if user.nil? || user.ldap_user?
             # Second chance - try LDAP authentication
-            return unless Gitlab::LDAP::Config.enabled?
-
             Gitlab::LDAP::Authentication.login(login, password)
-          else
+          elsif current_application_settings.password_authentication_enabled_for_git?
             user if user.active? && user.valid_password?(password)
           end
         end
@@ -84,6 +86,10 @@ module Gitlab
       end
 
       private
+
+      def authenticate_using_internal_or_ldap_password?
+        current_application_settings.password_authentication_enabled_for_git? || Gitlab::LDAP::Config.enabled?
+      end
 
       def service_request_check(login, password, project)
         matched_login = /(?<service>^[a-zA-Z]*-ci)-token$/.match(login)

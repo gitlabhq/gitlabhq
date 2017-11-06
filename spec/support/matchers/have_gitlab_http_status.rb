@@ -9,6 +9,6 @@ RSpec::Matchers.define :have_gitlab_http_status do |expected|
 
   failure_message do |actual|
     "expected the response to have status code #{expected.inspect}" \
-    " but it was #{actual.response_code}. The response was: #{actual.body}"
+    " but it was #{actual.status_code}. The response was: #{actual.body}"
   end
 end

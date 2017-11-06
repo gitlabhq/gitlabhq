@@ -2,7 +2,7 @@
   <%= link_to "Sign in", new_session_path(resource_name), class: "btn" %><br />
 <% end -%>
 
-<%- if devise_mapping.registerable? && controller_name != 'registrations' && gitlab_config.signup_enabled %>
+<%- if devise_mapping.registerable? && controller_name != 'registrations' && allow_signup? %>
   <%= link_to "Sign up", new_registration_path(resource_name) %><br />
 <% end -%>
 

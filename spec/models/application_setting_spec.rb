@@ -649,4 +649,22 @@ describe ApplicationSetting do
       expect(setting.key_restriction_for(:foo)).to eq(described_class::FORBIDDEN_KEY_VALUE)
     end
   end
+
+  describe '#allow_signup?' do
+    it 'returns true' do
+      expect(setting.allow_signup?).to be_truthy
+    end
+
+    it 'returns false if signup is disabled' do
+      allow(setting).to receive(:signup_enabled?).and_return(false)
+
+      expect(setting.allow_signup?).to be_falsey
+    end
+
+    it 'returns false if password authentication is disabled for the web interface' do
+      allow(setting).to receive(:password_authentication_enabled_for_web?).and_return(false)
+
+      expect(setting.allow_signup?).to be_falsey
+    end
+  end
 end

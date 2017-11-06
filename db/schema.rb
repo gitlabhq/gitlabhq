@@ -151,7 +151,6 @@ ActiveRecord::Schema.define(version: 20171120145444) do
     t.string "slack_app_id"
     t.string "slack_app_secret"
     t.string "slack_app_verification_token"
-    t.boolean "password_authentication_enabled"
     t.integer "performance_bar_allowed_group_id"
     t.boolean "allow_group_owners_to_manage_ldap", default: true, null: false
     t.boolean "hashed_storage_enabled", default: false, null: false
@@ -173,6 +172,8 @@ ActiveRecord::Schema.define(version: 20171120145444) do
     t.boolean "throttle_authenticated_web_enabled", default: false, null: false
     t.integer "throttle_authenticated_web_requests_per_period", default: 7200, null: false
     t.integer "throttle_authenticated_web_period_in_seconds", default: 3600, null: false
+    t.boolean "password_authentication_enabled_for_web"
+    t.boolean "password_authentication_enabled_for_git", default: true
   end
 
   create_table "approvals", force: :cascade do |t|
