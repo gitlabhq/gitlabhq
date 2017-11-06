@@ -244,7 +244,7 @@ module API
       expose :merged do |repo_branch, options|
         # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37442
         Gitlab::GitalyClient.allow_n_plus_1_calls do
-          options[:project].repository.merged_to_root_ref?(repo_branch.name)
+          options[:project].repository.merged_to_root_ref?(repo_branch.name, options[:merged_branch_names])
         end
       end
 
