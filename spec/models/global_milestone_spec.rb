@@ -190,37 +190,4 @@ describe GlobalMilestone do
       end
     end
   end
-
-  describe '#total_time_spent' do
-    let(:milestone1_project1) { create(:milestone, title: "Milestone v1.2", project: project1) }
-    let(:milestone1_project2) { create(:milestone, title: "Milestone v1.2", project: project2) }
-    let(:issue1) { create(:issue, milestone: milestone1_project1) }
-    let(:issue2) { create(:issue, milestone: milestone1_project2) }
-    let(:merge_request1) { create(:merge_request, milestone: milestone1_project1) }
-    let(:merge_request2) { create(:merge_request, milestone: milestone1_project2) }
-
-    before do
-      milestones =
-        [
-          milestone1_project1,
-          milestone1_project2
-        ]
-      milestones_relation = Milestone.where(id: milestones.map(&:id))
-
-      @global_milestone = described_class.new(milestone1_project1.title, milestones_relation)
-    end
-
-    it 'calculates total time spent' do
-      issue1.spend_time(duration: 300, user: user)
-      issue1.save!
-      issue2.spend_time(duration: 600, user: user2)
-      issue2.save!
-      merge_request1.spend_time(duration: 200, user: user)
-      merge_request1.save!
-      merge_request2.spend_time(duration: 100, user: user2)
-      merge_request2.save!
-
-      expect(@global_milestone.total_time_spent).to eq(1200)
-    end
-  end
 end

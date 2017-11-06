@@ -284,27 +284,4 @@ describe Milestone do
       expect(milestone.participants).to eq [user]
     end
   end
-
-  describe '#total_time_spent' do
-    let(:user) { build(:user) }
-    let(:project) { build(:project, name: 'sample-project') }
-    let(:milestone) { build(:milestone, iid: 1, project: project) }
-    let(:issue1) { build(:issue, milestone: milestone) }
-    let(:issue2) { build(:issue, milestone: milestone) }
-    let(:merge_request1) { build(:merge_request, milestone: milestone) }
-    let(:merge_request2) { build(:merge_request, milestone: milestone) }
-
-    it 'calculates total time spent' do
-      issue1.spend_time(duration: 300, user: user)
-      issue1.save!
-      issue2.spend_time(duration: 600, user: user)
-      issue2.save!
-      merge_request1.spend_time(duration: 200, user: user)
-      merge_request1.save!
-      merge_request2.spend_time(duration: 100, user: user)
-      merge_request2.save!
-
-      expect(milestone.total_time_spent).to eq(1200)
-    end
-  end
 end
