@@ -23,16 +23,6 @@
     @include webkit-prefix(animation-duration, 2s);
   }
 
-  &.spin-cw {
-    transform-origin: center;
-    animation: spin 4s linear infinite;
-  }
-
-  &.spin-ccw {
-    transform-origin: center;
-    animation: spin 4s linear infinite reverse;
-  }
-
   &.flipOutX,
   &.flipOutY,
   &.bounceIn,
@@ -279,11 +269,5 @@ a {
 
   100% {
     transform: translateX(468px);
-  }
-}
-
-@keyframes spin {
-  100% {
-    transform: rotate(360deg);
   }
 }
