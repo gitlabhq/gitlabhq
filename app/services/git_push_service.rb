@@ -130,7 +130,7 @@ class GitPushService < BaseService
     end
 
     if push_remove_branch? || force_push?
-      LfsProjectCleanupWorker.perform_async(@project.id)
+      LfsProjectCleanupWorker.perform_async_with_lease(@project.id)
     end
   end
 
