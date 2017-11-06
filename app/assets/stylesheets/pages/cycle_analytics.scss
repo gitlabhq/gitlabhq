@@ -22,6 +22,11 @@
         }
       }
     }
+
+    svg {
+      width: 136px;
+      height: 136px;
+    }
   }
 
   .col-headers {
@@ -153,11 +158,6 @@
         top: 3px;
       }
     }
-  }
-
-  .landing svg {
-    width: 136px;
-    height: 136px;
   }
 
   .fa-spinner {

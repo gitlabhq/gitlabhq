@@ -1,5 +1,0 @@
----
-title: Fix deletion of container registry or images returning an error
-merge_request:
-author:
-type: fixed

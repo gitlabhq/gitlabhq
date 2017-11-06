@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'Multi-file editor upload file', :js do
-  include WaitForRequests
-
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
   let(:txt_file) { File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt') }
@@ -12,7 +10,7 @@ feature 'Multi-file editor upload file', :js do
     project.add_master(user)
     sign_in(user)
 
-    page.driver.set_cookie('new_repo', 'true')
+    set_cookie('new_repo', 'true')
 
     visit project_tree_path(project, :master)
 
@@ -29,7 +27,7 @@ feature 'Multi-file editor upload file', :js do
     find('.add-to-tree').click
 
     expect(page).to have_selector('.repo-tab', text: 'doc_sample.txt')
-    expect(page).to have_content(File.open(txt_file, &:readline))
+    expect(find('.blob-editor-container .lines-content')['innerText']).to have_content(File.open(txt_file, &:readline))
   end
 
   it 'uploads image file' do

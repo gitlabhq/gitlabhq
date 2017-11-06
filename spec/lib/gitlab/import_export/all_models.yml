@@ -147,9 +147,12 @@ deploy_keys:
 - user
 - deploy_keys_projects
 - projects
-clusters:
+cluster:
+- cluster_projects
 - projects
 - user
+- provider_gcp
+- platform_kubernetes
 cluster_projects:
 - projects
 - clusters
@@ -188,6 +191,7 @@ project:
 - tags
 - chat_services
 - cluster
+- cluster_project
 - creator
 - group
 - namespace

@@ -340,11 +340,64 @@
   }
 }
 
-.project-item-select-holder.btn-group {
-  display: flex;
-  max-width: 350px;
-  overflow: hidden;
-  float: right;
+.page-with-layout-nav {
+  .right-sidebar {
+    top: ($header-height + 1) * 2;
+  }
+
+  &.page-with-sub-nav {
+    .right-sidebar {
+      top: ($header-height + 1) * 3;
+
+      &.affix {
+        top: $header-height;
+      }
+    }
+  }
+}
+
+.with-performance-bar .page-with-layout-nav {
+  .right-sidebar {
+    top: ($header-height + 1) * 2 + $performance-bar-height;
+  }
+
+  &.page-with-sub-nav {
+    .right-sidebar {
+      top: ($header-height + 1) * 3 + $performance-bar-height;
+
+      &.affix {
+        top: $header-height + $performance-bar-height;
+      }
+    }
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  .top-area {
+    flex-flow: row wrap;
+
+    .nav-controls {
+      $controls-margin: $btn-xs-side-margin - 2px;
+      flex: 0 0 100%;
+
+      &.controls-flex {
+        display: flex;
+        flex-flow: row wrap;
+        align-items: center;
+        justify-content: center;
+        padding: 0 0 $gl-padding-top;
+      }
+
+      .controls-item,
+      .controls-item-full,
+      .controls-item:last-child {
+        flex: 1 1 35%;
+        display: block;
+        width: 100%;
+        margin: $controls-margin;
+      }
+    }
+  }
 
   .new-project-item-link {
     white-space: nowrap;
