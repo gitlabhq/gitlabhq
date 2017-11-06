@@ -28,8 +28,6 @@ export default class Clusters {
     const {
       statusPath,
       installHelmPath,
-      installIngressPath,
-      installRunnerPath,
       clusterStatus,
       clusterStatusReason,
       helpPath,
@@ -42,8 +40,6 @@ export default class Clusters {
     this.service = new ClustersService({
       endpoint: statusPath,
       installHelmEndpoint: installHelmPath,
-      installIngresEndpoint: installIngressPath,
-      installRunnerEndpoint: installRunnerPath,
     });
 
     this.toggle = this.toggle.bind(this);
