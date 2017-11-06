@@ -1,13 +1,10 @@
-import * as actions from '~/repo/stores/actions/branch';
-import state from '~/repo/stores/state';
+import store from '~/repo/stores';
 import service from '~/repo/services';
-import testAction from '../../../helpers/vuex_action_helper';
+import { resetStore } from '../../helpers';
 
 describe('Multi-file store branch actions', () => {
-  let localState;
-
-  beforeEach(() => {
-    localState = state();
+  afterEach(() => {
+    resetStore(store);
   });
 
   describe('createNewBranch', () => {
@@ -19,27 +16,23 @@ describe('Multi-file store branch actions', () => {
       }));
       spyOn(history, 'pushState');
 
-      localState.project.id = 2;
-      localState.currentBranch = 'testing';
+      store.state.project.id = 2;
+      store.state.currentBranch = 'testing';
     });
 
     it('creates new branch', (done) => {
-      testAction(
-        actions.createNewBranch,
-        'master',
-        localState,
-        [
-          { type: 'SET_CURRENT_BRANCH', payload: 'testing' },
-        ],
-      ).then(() => {
-        expect(service.createBranch).toHaveBeenCalledWith(2, {
-          branch: 'master',
-          ref: 'testing',
-        });
-        expect(history.pushState).toHaveBeenCalled();
+      store.dispatch('createNewBranch', 'master')
+        .then(() => {
+          expect(store.state.currentBranch).toBe('testing');
+          expect(service.createBranch).toHaveBeenCalledWith(2, {
+            branch: 'master',
+            ref: 'testing',
+          });
+          expect(history.pushState).toHaveBeenCalled();
 
-        done();
-      }).catch(done.fail);
+          done();
+        })
+        .catch(done.fail);
     });
   });
 });

@@ -3,7 +3,7 @@ import flash from '../../flash';
 import service from '../services';
 import * as types from './mutation_types';
 
-export const redirectToUrl = url => gl.utils.visitUrl(url);
+export const redirectToUrl = (_, url) => gl.utils.visitUrl(url);
 
 export const setInitialData = ({ commit }, data) => commit(types.SET_INITIAL_DATA, data);
 

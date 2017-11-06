@@ -1,77 +1,70 @@
-import * as actions from '~/repo/stores/actions';
-import state from '~/repo/stores/state';
+import store from '~/repo/stores';
 import service from '~/repo/services';
-import testAction, { testWithDispatch } from '../../helpers/vuex_action_helper';
-import { file } from '../helpers';
+import { resetStore, file } from '../helpers';
 
 describe('Multi-file store actions', () => {
-  let localState;
-
-  beforeEach(() => {
-    localState = state();
+  afterEach(() => {
+    resetStore(store);
   });
 
   describe('redirectToUrl', () => {
-    it('calls visitUrl', () => {
+    it('calls visitUrl', (done) => {
       spyOn(gl.utils, 'visitUrl');
 
-      actions.redirectToUrl('test');
+      store.dispatch('redirectToUrl', 'test')
+        .then(() => {
+          expect(gl.utils.visitUrl).toHaveBeenCalledWith('test');
 
-      expect(gl.utils.visitUrl).toHaveBeenCalledWith('test');
+          done();
+        })
+        .catch(done.fail);
     });
   });
 
   describe('setInitialData', () => {
     it('commits initial data', (done) => {
-      testAction(
-        actions.setInitialData,
-        { canCommit: true },
-        localState,
-        [
-          { type: 'SET_INITIAL_DATA', payload: { canCommit: true } },
-        ],
-        done,
-      );
+      store.dispatch('setInitialData', { canCommit: true })
+        .then(() => {
+          expect(store.state.canCommit).toBeTruthy();
+          done();
+        })
+        .catch(done.fail);
     });
   });
 
   describe('closeDiscardPopup', () => {
     it('closes the discard popup', (done) => {
-      testAction(
-        actions.closeDiscardPopup,
-        false,
-        localState,
-        [
-          { type: 'TOGGLE_DISCARD_POPUP', payload: false },
-        ],
-        done,
-      );
+      store.dispatch('closeDiscardPopup', false)
+        .then(() => {
+          expect(store.state.discardPopupOpen).toBeFalsy();
+
+          done();
+        })
+        .catch(done.fail);
     });
   });
 
   describe('discardAllChanges', () => {
     beforeEach(() => {
-      localState.openFiles.push(file());
-      localState.openFiles[0].changed = true;
+      store.state.openFiles.push(file());
+      store.state.openFiles[0].changed = true;
     });
   });
 
   describe('closeAllFiles', () => {
     beforeEach(() => {
-      localState.openFiles.push(file());
-      localState.openFiles[0].changed = true;
+      store.state.openFiles.push(file());
+      store.state.openFiles[0].opened = true;
     });
 
     it('closes all open files', (done) => {
-      testWithDispatch(
-        actions.closeAllFiles,
-        localState.openFiles[0],
-        localState,
-        [
-          { type: 'closeFile', payload: { file: localState.openFiles[0] } },
-        ],
-        done,
-      );
+      store.dispatch('closeAllFiles')
+        .then(() => {
+          expect(store.state.openFiles.length).toBe(0);
+
+          done();
+        })
+        .catch(done.fail);
     });
   });
 
@@ -81,47 +74,47 @@ describe('Multi-file store actions', () => {
 
   describe('toggleBlobView', () => {
     it('sets edit mode view if in edit mode', (done) => {
-      localState.editMode = true;
+      store.state.editMode = true;
 
-      testAction(
-        actions.toggleBlobView,
-        null,
-        localState,
-        [
-          { type: 'SET_EDIT_MODE' },
-        ],
-        done,
-      );
+      store.dispatch('toggleBlobView')
+        .then(() => {
+          expect(store.state.currentBlobView).toBe('repo-editor');
+
+          done();
+        })
+        .catch(done.fail);
     });
 
     it('sets preview mode view if not in edit mode', (done) => {
-      testAction(
-        actions.toggleBlobView,
-        null,
-        localState,
-        [
-          { type: 'SET_PREVIEW_MODE' },
-        ],
-        done,
-      );
+      store.dispatch('toggleBlobView')
+      .then(() => {
+        expect(store.state.currentBlobView).toBe('repo-preview');
+
+        done();
+      })
+      .catch(done.fail);
     });
   });
 
   describe('checkCommitStatus', () => {
     beforeEach(() => {
-      localState.project.id = 2;
-      localState.currentBranch = 'master';
-      localState.currentRef = '1';
+      store.state.project.id = 2;
+      store.state.currentBranch = 'master';
+      store.state.currentRef = '1';
     });
 
-    it('calls service', () => {
+    it('calls service', (done) => {
       spyOn(service, 'getBranchData').and.returnValue(Promise.resolve({
         commit: { id: '123' },
       }));
 
-      actions.checkCommitStatus({ state: localState });
+      store.dispatch('checkCommitStatus')
+        .then(() => {
+          expect(service.getBranchData).toHaveBeenCalledWith(2, 'master');
 
-      expect(service.getBranchData).toHaveBeenCalledWith(2, 'master');
+          done();
+        })
+        .catch(done.fail);
     });
 
     it('returns true if current ref does not equal returned ID', (done) => {
@@ -129,7 +122,7 @@ describe('Multi-file store actions', () => {
         commit: { id: '123' },
       }));
 
-      actions.checkCommitStatus({ state: localState })
+      store.dispatch('checkCommitStatus')
         .then((val) => {
           expect(val).toBeTruthy();
 
@@ -143,7 +136,7 @@ describe('Multi-file store actions', () => {
         commit: { id: '1' },
       }));
 
-      actions.checkCommitStatus({ state: localState })
+      store.dispatch('checkCommitStatus')
         .then((val) => {
           expect(val).toBeFalsy();
 
@@ -159,35 +152,33 @@ describe('Multi-file store actions', () => {
 
   describe('createTempEntry', () => {
     it('creates a temp tree', (done) => {
-      testWithDispatch(
-        actions.createTempEntry,
-        { name: 'test', type: 'tree' },
-        localState,
-        [
-          { type: 'createTempTree', payload: 'test' },
-        ],
-        done,
-      );
+      store.dispatch('createTempEntry', {
+        name: 'test',
+        type: 'tree',
+      })
+      .then(() => {
+        expect(store.state.tree.length).toBe(1);
+        expect(store.state.tree[0].tempFile).toBeTruthy();
+        expect(store.state.tree[0].type).toBe('tree');
+
+        done();
+      })
+      .catch(done.fail);
     });
 
     it('creates temp file', (done) => {
-      testWithDispatch(
-        actions.createTempEntry,
-        { name: 'test', type: 'blob' },
-        localState,
-        [
-          {
-            type: 'createTempFile',
-            payload: {
-              tree: localState,
-              name: 'test',
-              base64: false,
-              content: '',
-            },
-          },
-        ],
-        done,
-      );
+      store.dispatch('createTempEntry', {
+        name: 'test',
+        type: 'blob',
+      })
+      .then(() => {
+        expect(store.state.tree.length).toBe(1);
+        expect(store.state.tree[0].tempFile).toBeTruthy();
+        expect(store.state.tree[0].type).toBe('blob');
+
+        done();
+      })
+      .catch(done.fail);
     });
   });
 
@@ -201,15 +192,17 @@ describe('Multi-file store actions', () => {
       const el = document.querySelector('.repo-tab');
       spyOn(el, 'focus');
 
-      actions.scrollToTab();
+      store.dispatch('scrollToTab')
+        .then(() => {
+          setTimeout(() => {
+            expect(el.focus).toHaveBeenCalled();
 
-      setTimeout(() => {
-        expect(el.focus).toHaveBeenCalled();
+            document.getElementById('tabs').remove();
 
-        document.getElementById('tabs').remove();
-
-        done();
-      });
+            done();
+          });
+        })
+        .catch(done.fail);
     });
   });
 });
