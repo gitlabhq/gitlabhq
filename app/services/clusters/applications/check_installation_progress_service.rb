@@ -27,13 +27,13 @@ module Clusters
       end
 
       def on_failed
-        app.make_errored!(log || 'Installation silently failed')
+        app.make_errored!(installation_errors || 'Installation silently failed')
         finalize_installation
       end
 
       def check_timeout
         if Time.now.utc - app.updated_at.to_time.utc > ClusterWaitForAppInstallationWorker::TIMEOUT
-          app.make_errored!('App installation timeouted')
+          app.make_errored!('Installation timeouted')
         else
           ClusterWaitForAppInstallationWorker.perform_in(
             ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
