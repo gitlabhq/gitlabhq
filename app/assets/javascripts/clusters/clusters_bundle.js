@@ -43,7 +43,6 @@ export default class Clusters {
       endpoint: statusPath,
       installHelmEndpoint: installHelmPath,
       installIngressEndpoint: installIngressPath,
-      installIngresEndpoint: installIngressPath,
       installRunnerEndpoint: installRunnerPath,
     });
 
