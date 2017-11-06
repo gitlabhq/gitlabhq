@@ -294,6 +294,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :milestones, constraints: { id: /\d+/ } do
         member do
+          post :promote
           put :sort_issues
           put :sort_merge_requests
           get :merge_requests
@@ -394,7 +395,7 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
       namespace :settings do
-        get :members, to: redirect('/%{namespace_id}/%{project_id}/project_members')
+        get :members, to: redirect("%{namespace_id}/%{project_id}/project_members")
         resource :ci_cd, only: [:show], controller: 'ci_cd'
         resource :integrations, only: [:show]
         resource :repository, only: [:show], controller: :repository

@@ -123,7 +123,9 @@ def instrument_classes(instrumentation)
 end
 # rubocop:enable Metrics/AbcSize
 
-Gitlab::Metrics::UnicornSampler.initialize_instance(Settings.monitoring.unicorn_sampler_interval).start
+unless Sidekiq.server?
+  Gitlab::Metrics::UnicornSampler.initialize_instance(Settings.monitoring.unicorn_sampler_interval).start
+end
 
 Gitlab::Application.configure do |config|
   # 0 should be Sentry to catch errors in this middleware

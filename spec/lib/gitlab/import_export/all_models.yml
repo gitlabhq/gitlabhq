@@ -148,9 +148,18 @@ deploy_keys:
 - deploy_keys_projects
 - projects
 cluster:
-- project
+- cluster_projects
+- projects
 - user
-- service
+- provider_gcp
+- platform_kubernetes
+cluster_projects:
+- projects
+- clusters
+provider_gcp:
+- cluster
+platform_kubernetes:
+- cluster
 services:
 - project
 - service_hook
@@ -182,6 +191,7 @@ project:
 - tags
 - chat_services
 - cluster
+- cluster_project
 - creator
 - group
 - namespace
@@ -195,6 +205,7 @@ project:
 - mattermost_slash_commands_service
 - slack_slash_commands_service
 - irker_service
+- packagist_service
 - pivotaltracker_service
 - prometheus_service
 - hipchat_service
@@ -286,3 +297,6 @@ timelogs:
 - user
 push_event_payload:
 - event
+issue_assignees:
+- issue
+- assignee

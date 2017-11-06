@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
 
-  before_action :authenticate_user_from_private_token!
+  before_action :authenticate_user_from_personal_access_token!
   before_action :authenticate_user_from_rss_token!
   before_action :authenticate_user!
   before_action :validate_user_service_ticket!
@@ -100,13 +100,12 @@ class ApplicationController < ActionController::Base
     return try(:authenticated_user)
   end
 
-  # This filter handles both private tokens and personal access tokens
-  def authenticate_user_from_private_token!
+  def authenticate_user_from_personal_access_token!
     token = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence
 
     return unless token.present?
 
-    user = User.find_by_authentication_token(token) || User.find_by_personal_access_token(token)
+    user = User.find_by_personal_access_token(token)
 
     sessionless_sign_in(user)
   end

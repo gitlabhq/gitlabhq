@@ -248,6 +248,45 @@ describe Projects::IssuesController do
     end
   end
 
+  describe 'PUT #update' do
+    subject do
+      put :update,
+        namespace_id: project.namespace,
+        project_id: project,
+        id: issue.to_param,
+        issue: { title: 'New title' }, format: :json
+    end
+
+    before do
+      sign_in(user)
+    end
+
+    context 'when user has access to update issue' do
+      before do
+        project.add_developer(user)
+      end
+
+      it 'updates the issue' do
+        subject
+
+        expect(response).to have_http_status(:ok)
+        expect(issue.reload.title).to eq('New title')
+      end
+    end
+
+    context 'when user does not have access to update issue' do
+      before do
+        project.add_guest(user)
+      end
+
+      it 'responds with 404' do
+        subject
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+  end
+
   describe 'Confidential Issues' do
     let(:project) { create(:project_empty_repo, :public) }
     let(:assignee) { create(:assignee) }
@@ -555,6 +594,29 @@ describe Projects::IssuesController do
 
           expect(response).to have_gitlab_http_status(200)
         end
+      end
+    end
+
+    describe 'GET #edit' do
+      it_behaves_like 'restricted action', success: 200
+
+      def go(id:)
+        get :edit,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: id
+      end
+    end
+
+    describe 'PUT #update' do
+      it_behaves_like 'restricted action', success: 302
+
+      def go(id:)
+        put :update,
+          namespace_id: project.namespace.to_param,
+          project_id: project,
+          id: id,
+          issue: { title: 'New title' }
       end
     end
   end

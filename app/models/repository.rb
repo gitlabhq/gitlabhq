@@ -15,9 +15,8 @@ class Repository
   ].freeze
 
   include Gitlab::ShellAdapter
-  include RepositoryMirroring
 
-  attr_accessor :full_path, :disk_path, :project
+  attr_accessor :full_path, :disk_path, :project, :is_wiki
 
   delegate :ref_name_for_sha, to: :raw_repository
 
@@ -72,10 +71,12 @@ class Repository
     end
   end
 
-  def initialize(full_path, project, disk_path: nil)
+  def initialize(full_path, project, disk_path: nil, is_wiki: false)
     @full_path = full_path
     @disk_path = disk_path || full_path
     @project = project
+    @commit_cache = {}
+    @is_wiki = is_wiki
   end
 
   def ==(other)
@@ -103,18 +104,17 @@ class Repository
 
   def commit(ref = 'HEAD')
     return nil unless exists?
+    return ref if ref.is_a?(::Commit)
 
-    commit =
-      if ref.is_a?(Gitlab::Git::Commit)
-        ref
-      else
-        Gitlab::Git::Commit.find(raw_repository, ref)
-      end
+    find_commit(ref)
+  end
 
-    commit = ::Commit.new(commit, @project) if commit
-    commit
-  rescue Rugged::OdbError, Rugged::TreeError
-    nil
+  # Finding a commit by the passed SHA
+  # Also takes care of caching, based on the SHA
+  def commit_by(oid:)
+    return @commit_cache[oid] if @commit_cache.key?(oid)
+
+    @commit_cache[oid] = find_commit(oid)
   end
 
   def commits(ref, path: nil, limit: nil, offset: nil, skip_merges: false, after: nil, before: nil)
@@ -231,7 +231,7 @@ class Repository
   # branches or tags, but we want to keep some of these commits around, for
   # example if they have comments or CI builds.
   def keep_around(sha)
-    return unless sha && commit(sha)
+    return unless sha && commit_by(oid: sha)
 
     return if kept_around?(sha)
 
@@ -902,17 +902,26 @@ class Repository
     end
   end
 
-  def merged_to_root_ref?(branch_name)
-    branch_commit = commit(branch_name)
-    root_ref_commit = commit(root_ref)
+  def merged_to_root_ref?(branch_or_name, pre_loaded_merged_branches = nil)
+    branch = Gitlab::Git::Branch.find(self, branch_or_name)
 
-    if branch_commit
-      same_head = branch_commit.id == root_ref_commit.id
-      !same_head && ancestor?(branch_commit.id, root_ref_commit.id)
+    if branch
+      root_ref_sha = commit(root_ref).sha
+      same_head = branch.target == root_ref_sha
+      merged =
+        if pre_loaded_merged_branches
+          pre_loaded_merged_branches.include?(branch.name)
+        else
+          ancestor?(branch.target, root_ref_sha)
+        end
+
+      !same_head && merged
     else
       nil
     end
   end
+
+  delegate :merged_branch_names, to: :raw_repository
 
   def merge_base(first_commit_id, second_commit_id)
     first_commit_id = commit(first_commit_id).try(:id) || first_commit_id
@@ -956,21 +965,8 @@ class Repository
     run_git(args).first.lines.map(&:strip)
   end
 
-  def add_remote(name, url)
-    raw_repository.remote_add(name, url)
-  rescue Rugged::ConfigError
-    raw_repository.remote_update(name, url: url)
-  end
-
-  def remove_remote(name)
-    raw_repository.remote_delete(name)
-    true
-  rescue Rugged::ConfigError
-    false
-  end
-
-  def fetch_remote(remote, forced: false, no_tags: false)
-    gitlab_shell.fetch_remote(raw_repository, remote, forced: forced, no_tags: no_tags)
+  def fetch_remote(remote, forced: false, ssh_auth: nil, no_tags: false)
+    gitlab_shell.fetch_remote(raw_repository, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
   end
 
   def fetch_source_branch(source_repository, source_branch, local_ref)
@@ -1064,6 +1060,18 @@ class Repository
 
   private
 
+  # TODO Generice finder, later split this on finders by Ref or Oid
+  # gitlab-org/gitlab-ce#39239
+  def find_commit(oid_or_ref)
+    commit = if oid_or_ref.is_a?(Gitlab::Git::Commit)
+               oid_or_ref
+             else
+               Gitlab::Git::Commit.find(raw_repository, oid_or_ref)
+             end
+
+    ::Commit.new(commit, @project) if commit
+  end
+
   def blob_data_at(sha, path)
     blob = blob_at(sha, path)
     return unless blob
@@ -1102,12 +1110,12 @@ class Repository
 
   def last_commit_for_path_by_gitaly(sha, path)
     c = raw_repository.gitaly_commit_client.last_commit_for_path(sha, path)
-    commit(c)
+    commit_by(oid: c)
   end
 
   def last_commit_for_path_by_rugged(sha, path)
     sha = last_commit_id_for_path_by_shelling_out(sha, path)
-    commit(sha)
+    commit_by(oid: sha)
   end
 
   def last_commit_id_for_path_by_shelling_out(sha, path)
@@ -1120,7 +1128,7 @@ class Repository
   end
 
   def initialize_raw_repository
-    Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', Gitlab::GlRepository.gl_repository(project, false))
+    Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', Gitlab::GlRepository.gl_repository(project, is_wiki))
   end
 
   def find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)

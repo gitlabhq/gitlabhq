@@ -313,30 +313,47 @@ Ci::PipelineSchedule:
 - deleted_at
 - created_at
 - updated_at
-Gcp::Cluster:
+Clusters::Cluster:
+- id
+- user_id
+- enabled
+- name
+- provider_type
+- platform_type
+- created_at
+- updated_at
+Clusters::Project:
 - id
 - project_id
-- user_id
-- service_id
-- enabled
+- cluster_id
+- created_at
+- updated_at
+Clusters::Providers::Gcp:
+- id
+- cluster_id
 - status
 - status_reason
-- project_namespace
+- gcp_project_id
+- zone
+- num_nodes
+- machine_type
+- operation_id
 - endpoint
+- encrypted_access_token
+- encrypted_access_token_iv
+- created_at
+- updated_at
+Clusters::Platforms::Kubernetes:
+- id
+- cluster_id
+- api_url
 - ca_cert
-- encrypted_kubernetes_token
-- encrypted_kubernetes_token_iv
+- namespace
 - username
 - encrypted_password
 - encrypted_password_iv
-- gcp_project_id
-- gcp_cluster_zone
-- gcp_cluster_name
-- gcp_cluster_size
-- gcp_machine_type
-- gcp_operation_id
-- encrypted_gcp_token
-- encrypted_gcp_token_iv
+- encrypted_token
+- encrypted_token_iv
 - created_at
 - updated_at
 DeployKey:
@@ -506,3 +523,6 @@ ProjectAutoDevops:
 - project_id
 - created_at
 - updated_at
+IssueAssignee:
+- user_id
+- issue_id

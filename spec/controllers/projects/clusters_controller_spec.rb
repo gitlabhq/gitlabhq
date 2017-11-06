@@ -1,67 +1,107 @@
 require 'spec_helper'
 
 describe Projects::ClustersController do
-  set(:user) { create(:user) }
-  set(:project) { create(:project) }
-  let(:role) { :master }
-
-  before do
-    project.team << [user, role]
-
-    sign_in(user)
-  end
+  include AccessMatchersForController
+  include GoogleApi::CloudPlatformHelpers
 
   describe 'GET index' do
-    subject do
-      get :index, namespace_id: project.namespace,
-                  project_id: project
-    end
+    describe 'functionality' do
+      let(:user) { create(:user) }
 
-    context 'when cluster is already created' do
-      let!(:cluster) { create(:gcp_cluster, :created_on_gke, project: project) }
+      before do
+        project.add_master(user)
+        sign_in(user)
+      end
 
-      it 'redirects to show a cluster' do
-        subject
+      context 'when project has a cluster' do
+        let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+        let(:project) { cluster.project }
 
-        expect(response).to redirect_to(project_cluster_path(project, cluster))
+        it { expect(go).to redirect_to(project_cluster_path(project, project.cluster)) }
+      end
+
+      context 'when project does not have a cluster' do
+        let(:project) { create(:project) }
+
+        it { expect(go).to redirect_to(new_project_cluster_path(project)) }
       end
     end
 
-    context 'when we do not have cluster' do
-      it 'redirects to create a cluster' do
-        subject
+    describe 'security' do
+      let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+      let(:project) { cluster.project }
 
-        expect(response).to redirect_to(new_project_cluster_path(project))
-      end
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
+
+    def go
+      get :index, namespace_id: project.namespace.to_param, project_id: project
     end
   end
 
   describe 'GET login' do
-    render_views
+    let(:project) { create(:project) }
 
-    subject do
-      get :login, namespace_id: project.namespace,
-                  project_id: project
-    end
+    describe 'functionality' do
+      let(:user) { create(:user) }
 
-    context 'when we do have omniauth configured' do
-      it 'shows login button' do
-        subject
-
-        expect(response.body).to include('auth_buttons/signin_with_google')
-      end
-    end
-
-    context 'when we do not have omniauth configured' do
       before do
-        stub_omniauth_setting(providers: [])
+        project.add_master(user)
+        sign_in(user)
       end
 
-      it 'shows notice message' do
-        subject
+      context 'when omniauth has been configured' do
+        let(:key) { 'secere-key' }
 
-        expect(response.body).to include('Ask your GitLab administrator if you want to use this service.')
+        let(:session_key_for_redirect_uri) do
+          GoogleApi::CloudPlatform::Client.session_key_for_redirect_uri(key)
+        end
+
+        before do
+          allow(SecureRandom).to receive(:hex).and_return(key)
+        end
+
+        it 'has authorize_url' do
+          go
+
+          expect(assigns(:authorize_url)).to include(key)
+          expect(session[session_key_for_redirect_uri]).to eq(providers_gcp_new_project_clusters_url(project))
+        end
       end
+
+      context 'when omniauth has not configured' do
+        before do
+          stub_omniauth_setting(providers: [])
+        end
+
+        it 'does not have authorize_url' do
+          go
+
+          expect(assigns(:authorize_url)).to be_nil
+        end
+      end
+    end
+
+    describe 'security' do
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
+
+    def go
+      get :login, namespace_id: project.namespace, project_id: project
     end
   end
 
@@ -74,235 +114,416 @@ describe Projects::ClustersController do
   end
 
   describe 'GET new_gcp' do
-    render_views
+    let(:project) { create(:project) }
 
-    subject do
-      get :new_gcp, namespace_id: project.namespace,
-                    project_id: project
-    end
+    describe 'functionality' do
+      let(:user) { create(:user) }
 
-    context 'when logged' do
       before do
-        make_logged_in
+        project.add_master(user)
+        sign_in(user)
       end
 
-      it 'shows a creation form' do
-        subject
+      context 'when access token is valid' do
+        before do
+          stub_google_api_validate_token
+        end
 
-        expect(response.body).to include('Create cluster')
+        it 'has new object' do
+          go
+
+          expect(assigns(:cluster)).to be_an_instance_of(Clusters::Cluster)
+        end
+      end
+
+      context 'when access token is expired' do
+        before do
+          stub_google_api_expired_token
+        end
+
+        it { expect(go).to redirect_to(login_project_clusters_path(project)) }
+      end
+
+      context 'when access token is not stored in session' do
+        it { expect(go).to redirect_to(login_project_clusters_path(project)) }
       end
     end
 
-    context 'when not logged' do
-      it_behaves_like 'requires to login'
+    describe 'security' do
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
+
+    def go
+      get :new_gcp, namespace_id: project.namespace, project_id: project
     end
   end
 
   describe 'POST create' do
-    subject do
-      post :create, params.merge(namespace_id: project.namespace,
-                                 project_id: project)
+    let(:project) { create(:project) }
+
+    let(:params) do
+      {
+        cluster: {
+          name: 'new-cluster',
+          provider_type: :gcp,
+          provider_gcp_attributes: {
+            gcp_project_id: '111'
+          }
+        }
+      }
     end
 
-    context 'when not logged' do
-      let(:params) { {} }
+    describe 'functionality' do
+      let(:user) { create(:user) }
 
-      it_behaves_like 'requires to login'
-    end
-
-    context 'when logged in' do
       before do
-        make_logged_in
+        project.add_master(user)
+        sign_in(user)
       end
 
-      context 'when all required parameters are set' do
-        let(:params) do
-          {
-            cluster: {
-              gcp_cluster_name: 'new-cluster',
-              gcp_project_id: '111'
-            }
-          }
-        end
-
+      context 'when access token is valid' do
         before do
-          expect(ClusterProvisionWorker).to receive(:perform_async) { }
+          stub_google_api_validate_token
         end
 
-        it 'creates a new cluster' do
-          expect { subject }.to change { Gcp::Cluster.count }
+        context 'when creates a cluster on gke' do
+          it 'creates a new cluster' do
+            expect(ClusterProvisionWorker).to receive(:perform_async)
+            expect { go }.to change { Clusters::Cluster.count }
+            expect(response).to redirect_to(project_cluster_path(project, project.cluster))
+          end
+        end
 
-          expect(response).to redirect_to(project_cluster_path(project, project.cluster))
+        # TODO: Activate in 10.3
+        # context 'when adds a cluster manually' do
+        #   let(:params) do
+        #     {
+        #       cluster: {
+        #         name: 'new-cluster',
+        #         platform_type: :kubernetes,
+        #         provider_type: :user,
+        #         platform_kubernetes_attributes: {
+        #           namespace: 'custom-namespace',
+        #           api_url: 'https://111.111.111.111',
+        #           token: 'token'
+        #         }
+        #       }
+        #     }
+        #   end
+
+        #   it 'creates a new cluster' do
+        #     expect(ClusterProvisionWorker).to receive(:perform_async)
+        #     expect { go }.to change { Clusters::Cluster.count }
+        #     expect(response).to redirect_to(project_cluster_path(project, project.cluster))
+        #   end
+        # end
+
+        # TODO: We should fix this in 10.2
+        # Maybe
+        # - validates :provider_gcp, presence: true, if: :gcp?
+        # - validates :provider_type, presence: true
+        # are required in Clusters::Cluster
+        # context 'when not all required parameters are set' do
+        #   let(:params) do
+        #     {
+        #       cluster: {
+        #         name: 'new-cluster'
+        #       }
+        #     }
+        #   end
+
+        #   it 'shows an error message' do
+        #     expect { go }.not_to change { Clusters::Cluster.count }
+        #     expect(assigns(:cluster).errors).not_to be_empty
+        #     expect(response).to render_template(:new)
+        #   end
+        # end
+      end
+
+      context 'when access token is expired' do
+        before do
+          stub_google_api_expired_token
+        end
+
+        it 'redirects to login page' do
+          expect(go).to redirect_to(login_project_clusters_path(project))
         end
       end
 
-      context 'when not all required parameters are set' do
-        render_views
-
-        let(:params) do
-          {
-            cluster: {
-              project_namespace: 'some namespace'
-            }
-          }
-        end
-
-        it 'shows an error message' do
-          expect { subject }.not_to change { Gcp::Cluster.count }
-
-          expect(response).to render_template(:new_gcp)
+      context 'when access token is not stored in session' do
+        it 'redirects to login page' do
+          expect(go).to redirect_to(login_project_clusters_path(project))
         end
       end
+    end
+
+    describe 'security' do
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
+
+    def go
+      post :create, params.merge(namespace_id: project.namespace, project_id: project)
     end
   end
 
   describe 'GET status' do
-    let(:cluster) { create(:gcp_cluster, :created_on_gke, project: project) }
+    let(:cluster) { create(:cluster, :project, :providing_by_gcp) }
+    let(:project) { cluster.project }
 
-    subject do
+    describe 'functionality' do
+      let(:user) { create(:user) }
+
+      before do
+        project.add_master(user)
+        sign_in(user)
+      end
+
+      it "responds with matching schema" do
+        go
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(response).to match_response_schema('cluster_status')
+      end
+    end
+
+    describe 'security' do
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
+
+    def go
       get :status, namespace_id: project.namespace,
                    project_id: project,
                    id: cluster,
                    format: :json
     end
-
-    it "responds with matching schema" do
-      subject
-
-      expect(response).to have_gitlab_http_status(:ok)
-      expect(response).to match_response_schema('cluster_status')
-    end
   end
 
   describe 'GET show' do
-    render_views
+    let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+    let(:project) { cluster.project }
 
-    let(:cluster) { create(:gcp_cluster, :created_on_gke, project: project) }
+    describe 'functionality' do
+      let(:user) { create(:user) }
 
-    subject do
+      before do
+        project.add_master(user)
+        sign_in(user)
+      end
+
+      it "renders view" do
+        go
+
+        expect(response).to have_gitlab_http_status(:ok)
+        expect(assigns(:cluster)).to eq(cluster)
+      end
+    end
+
+    describe 'security' do
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
+
+    def go
       get :show, namespace_id: project.namespace,
                  project_id: project,
                  id: cluster
     end
-
-    context 'when logged as master' do
-      it "allows to update cluster" do
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.body).to include("Save")
-      end
-
-      it "allows remove integration" do
-        subject
-
-        expect(response).to have_gitlab_http_status(:ok)
-        expect(response.body).to include("Remove integration")
-      end
-    end
-
-    context 'when logged as developer' do
-      let(:role) { :developer }
-
-      it "does not allow to access page" do
-        subject
-
-        expect(response).to have_gitlab_http_status(:not_found)
-      end
-    end
   end
 
   describe 'PUT update' do
-    render_views
+    let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+    let(:project) { cluster.project }
 
-    let(:service) { project.build_kubernetes_service }
-    let(:cluster) { create(:gcp_cluster, :created_on_gke, project: project, service: service) }
-    let(:params) { {} }
+    describe 'functionality' do
+      let(:user) { create(:user) }
 
-    subject do
-      put :update, params.merge(namespace_id: project.namespace,
-                                project_id: project,
-                                id: cluster)
-    end
+      before do
+        project.add_master(user)
+        sign_in(user)
+      end
 
-    context 'when logged as master' do
-      context 'when valid params are used' do
+      context 'when update enabled' do
         let(:params) do
           {
             cluster: { enabled: false }
           }
         end
 
-        it "redirects back to show page" do
-          subject
+        it "updates and redirects back to show page" do
+          go
 
+          cluster.reload
           expect(response).to redirect_to(project_cluster_path(project, project.cluster))
           expect(flash[:notice]).to eq('Cluster was successfully updated.')
+          expect(cluster.enabled).to be_falsey
+        end
+
+        context 'when cluster is being created' do
+          let(:cluster) { create(:cluster, :project, :providing_by_gcp) }
+
+          it "rejects changes" do
+            go
+
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to render_template(:show)
+            expect(cluster.enabled).to be_truthy
+          end
         end
       end
 
-      context 'when invalid params are used' do
-        let(:params) do
-          {
-            cluster: { project_namespace: 'my Namespace 321321321 #' }
-          }
-        end
+      # TODO: Activate in 10.3
+      # context 'when update namespace' do
+      #   let(:namespace) { 'namespace-123' }
 
-        it "rejects changes" do
-          subject
+      #   let(:params) do
+      #     {
+      #       cluster: {
+      #         platform_kubernetes_attributes: {
+      #           namespace: namespace
+      #         }
+      #       }
+      #     }
+      #   end
 
-          expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template(:show)
-        end
-      end
+      #   it "updates and redirects back to show page" do
+      #     go
+
+      #     cluster.reload
+      #     expect(response).to redirect_to(project_cluster_path(project, project.cluster))
+      #     expect(flash[:notice]).to eq('Cluster was successfully updated.')
+      #     expect(cluster.platform.namespace).to eq(namespace)
+      #   end
+
+      #   context 'when namespace is invalid' do
+      #     let(:namespace) { 'my Namespace 321321321 #' }
+
+      #     it "rejects changes" do
+      #       go
+
+      #       expect(response).to have_gitlab_http_status(:ok)
+      #       expect(response).to render_template(:show)
+      #       expect(cluster.platform.namespace).not_to eq(namespace)
+      #     end
+      #   end
+      # end
     end
 
-    context 'when logged as developer' do
-      let(:role) { :developer }
-
-      it "does not allow to update cluster" do
-        subject
-
-        expect(response).to have_gitlab_http_status(:not_found)
+    describe 'security' do
+      let(:params) do
+        {
+          cluster: { enabled: false }
+        }
       end
+
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
+
+    def go
+      put :update, params.merge(namespace_id: project.namespace,
+                                project_id: project,
+                                id: cluster)
     end
   end
 
   describe 'delete update' do
-    let(:cluster) { create(:gcp_cluster, :created_on_gke, project: project) }
+    let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+    let(:project) { cluster.project }
 
-    subject do
-      delete :destroy, namespace_id: project.namespace,
-                       project_id: project,
-                       id: cluster
-    end
+    describe 'functionality' do
+      let(:user) { create(:user) }
 
-    context 'when logged as master' do
-      it "redirects back to clusters list" do
-        subject
+      before do
+        project.add_master(user)
+        sign_in(user)
+      end
+
+      it "destroys and redirects back to clusters list" do
+        expect { go }
+          .to change { Clusters::Cluster.count }.by(-1)
+          .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
+          .and change { Clusters::Providers::Gcp.count }.by(-1)
 
         expect(response).to redirect_to(project_clusters_path(project))
         expect(flash[:notice]).to eq('Cluster integration was successfully removed.')
       end
-    end
 
-    context 'when logged as developer' do
-      let(:role) { :developer }
+      context 'when cluster is being created' do
+        let(:cluster) { create(:cluster, :project, :providing_by_gcp) }
 
-      it "does not allow to destroy cluster" do
-        subject
+        it "destroys and redirects back to clusters list" do
+          expect { go }
+            .to change { Clusters::Cluster.count }.by(-1)
+            .and change { Clusters::Providers::Gcp.count }.by(-1)
 
-        expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).to redirect_to(project_clusters_path(project))
+          expect(flash[:notice]).to eq('Cluster integration was successfully removed.')
+        end
+      end
+
+      context 'when provider is user' do
+        let(:cluster) { create(:cluster, :project, :provided_by_user) }
+
+        it "destroys and redirects back to clusters list" do
+          expect { go }
+            .to change { Clusters::Cluster.count }.by(-1)
+            .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
+            .and change { Clusters::Providers::Gcp.count }.by(0)
+
+          expect(response).to redirect_to(project_clusters_path(project))
+          expect(flash[:notice]).to eq('Cluster integration was successfully removed.')
+        end
       end
     end
-  end
 
-  def make_logged_in
-    session[GoogleApi::CloudPlatform::Client.session_key_for_token] = '1234'
-    session[GoogleApi::CloudPlatform::Client.session_key_for_expires_at] = in_hour.to_i.to_s
-  end
+    describe 'security' do
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
 
-  def in_hour
-    Time.now + 1.hour
+    def go
+      delete :destroy, namespace_id: project.namespace,
+                       project_id: project,
+                       id: cluster
+    end
   end
 end

@@ -269,7 +269,7 @@ ul.notes {
           display: none;
         }
 
-        &.system-note-commit-list {
+        &.system-note-commit-list:not(.hide-shade) {
           max-height: 70px;
           overflow: hidden;
           display: block;
@@ -290,16 +290,6 @@ ul.notes {
             left: 0;
             bottom: 0;
             background: linear-gradient(rgba($white-light, 0.1) -100px, $white-light 100%);
-          }
-
-          &.hide-shade {
-            max-height: 100%;
-            overflow: auto;
-
-            &::after {
-              display: none;
-              background: transparent;
-            }
           }
         }
       }
@@ -322,57 +312,72 @@ ul.notes {
   }
 }
 
-.diff-file .notes_holder {
-  font-family: $regular_font;
-
-  td {
-    border: 1px solid $white-normal;
-    border-left: none;
-
-    &.notes_line {
-      vertical-align: middle;
-      text-align: center;
-      padding: 10px 0;
-      background: $gray-light;
-      color: $text-color;
+.diff-file {
+  .is-over {
+    .add-diff-note {
+      display: inline-block;
     }
+  }
 
-    &.notes_line2 {
-      text-align: center;
-      padding: 10px 0;
-      border-left: 1px solid $note-line2-border !important;
-    }
+  // Merge request notes in diffs
+  // Diff is inline
+  .notes_content .note-header .note-headline-light {
+    display: inline-block;
+    position: relative;
+  }
 
-    &.notes_content {
-      background-color: $gray-light;
-      border-width: 1px 0;
-      padding: 0;
-      vertical-align: top;
-      white-space: normal;
+  .notes_holder {
+    font-family: $regular_font;
 
-      &.parallel {
-        border-width: 1px;
+    td {
+      border: 1px solid $white-normal;
+      border-left: none;
+
+      &.notes_line {
+        vertical-align: middle;
+        text-align: center;
+        padding: 10px 0;
+        background: $gray-light;
+        color: $text-color;
       }
 
-      .discussion-notes {
-        &:not(:first-child) {
-          border-top: 1px solid $white-normal;
-          margin-top: 20px;
+      &.notes_line2 {
+        text-align: center;
+        padding: 10px 0;
+        border-left: 1px solid $note-line2-border !important;
+      }
+
+      &.notes_content {
+        background-color: $gray-light;
+        border-width: 1px 0;
+        padding: 0;
+        vertical-align: top;
+        white-space: normal;
+
+        &.parallel {
+          border-width: 1px;
         }
 
-        &:not(:last-child) {
-          border-bottom: 1px solid $white-normal;
-          margin-bottom: 20px;
+        .discussion-notes {
+          &:not(:first-child) {
+            border-top: 1px solid $white-normal;
+            margin-top: 20px;
+          }
+
+          &:not(:last-child) {
+            border-bottom: 1px solid $white-normal;
+            margin-bottom: 20px;
+          }
         }
-      }
 
-      .notes {
-        background-color: $white-light;
-      }
+        .notes {
+          background-color: $white-light;
+        }
 
-      a code {
-        top: 0;
-        margin-right: 0;
+        a code {
+          top: 0;
+          margin-right: 0;
+        }
       }
     }
   }
@@ -467,8 +472,9 @@ ul.notes {
   margin-left: 10px;
   color: $gray-darkest;
 
-  .btn-group > .discussion-next-btn {
-    margin-left: -1px;
+  @include notes-media('max', $screen-md-max) {
+    float: none;
+    margin-left: 0;
   }
 }
 
@@ -479,8 +485,6 @@ ul.notes {
   flex-shrink: 0;
   display: inline-flex;
   align-items: center;
-  // For PhantomJS that does not support flex
-  float: right;
   margin-left: 10px;
   color: $gray-darkest;
 
@@ -491,7 +495,6 @@ ul.notes {
 }
 
 .more-actions {
-  float: right; // phantomjs fallback
   display: flex;
   align-items: flex-end;
 
@@ -510,13 +513,6 @@ ul.notes {
 .more-actions-dropdown {
   width: 180px;
   min-width: 180px;
-}
-
-.discussion-actions {
-  @include notes-media('max', $screen-md-max) {
-    float: none;
-    margin-left: 0;
-  }
 }
 
 .note-actions-item {
@@ -675,14 +671,6 @@ ul.notes {
   }
 }
 
-.diff-file {
-  .is-over {
-    .add-diff-note {
-      display: inline-block;
-    }
-  }
-}
-
 .disabled-comment {
   background-color: $gray-light;
   border-radius: $border-radius-base;
@@ -724,20 +712,20 @@ ul.notes {
     svg path {
       fill: $gray-darkest;
     }
-  }
 
-  .btn.discussion-create-issue-btn {
-    margin-left: -4px;
-    border-radius: 0;
-    border-right: 0;
+    &.discussion-create-issue-btn {
+      margin-left: -4px;
+      border-radius: 0;
+      border-right: 0;
 
-    a {
-      padding: 0;
-      line-height: 0;
+      a {
+        padding: 0;
+        line-height: 0;
 
-      &:hover {
-        text-decoration: none;
-        border: 0;
+        &:hover {
+          text-decoration: none;
+          border: 0;
+        }
       }
     }
   }
@@ -810,13 +798,4 @@ ul.notes {
 
 .line-resolve-text {
   vertical-align: middle;
-}
-
-// Merge request notes in diffs
-.diff-file {
-  // Diff is inline
-  .notes_content .note-header .note-headline-light {
-    display: inline-block;
-    position: relative;
-  }
 }

@@ -66,6 +66,15 @@
       height: 6px;
       margin: 0;
     }
+
+    .sidebar-collapsed-icon {
+      clear: both;
+      padding: 15px 5px 5px;
+
+      .progress {
+        margin: 5px 0;
+      }
+    }
   }
 
   .collapsed-milestone-date {
@@ -91,17 +100,6 @@
 
   .milestone-stat:last-child {
     margin-right: 0;
-  }
-
-  .milestone-progress {
-    .sidebar-collapsed-icon {
-      clear: both;
-      padding: 15px 5px 5px;
-
-      .progress {
-        margin: 5px 0;
-      }
-    }
   }
 
   .right-sidebar-collapsed & {
@@ -156,27 +154,21 @@
 
   .status-box {
     margin-top: 0;
-  }
-
-  .milestone-buttons {
-    margin-left: auto;
-  }
-
-  .status-box {
     order: 1;
   }
 
   .milestone-buttons {
+    margin-left: auto;
     order: 2;
+
+    .verbose {
+      display: none;
+    }
   }
 
   .header-text-content {
     order: 3;
     width: 100%;
-  }
-
-  .milestone-buttons .verbose {
-    display: none;
   }
 
   @media (min-width: $screen-xs-min) {

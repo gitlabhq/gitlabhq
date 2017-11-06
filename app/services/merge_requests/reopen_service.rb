@@ -11,6 +11,7 @@ module MergeRequests
         merge_request.reload_diff(current_user)
         merge_request.mark_as_unchecked
         invalidate_cache_counts(merge_request, users: merge_request.assignees)
+        merge_request.update_project_counter_caches
       end
 
       merge_request

@@ -1,26 +1,22 @@
 <script>
-  import eventHub from '../event_hub';
-  import repoMixin from '../mixins/repo_mixin';
+  import { mapGetters, mapState, mapActions } from 'vuex';
 
   export default {
-    mixins: [
-      repoMixin,
-    ],
-    props: {
-      prevUrl: {
-        type: String,
-        required: true,
-      },
-    },
     computed: {
+      ...mapState([
+        'parentTreeUrl',
+      ]),
+      ...mapGetters([
+        'isCollapsed',
+      ]),
       colSpanCondition() {
-        return this.isMini ? undefined : 3;
+        return this.isCollapsed ? undefined : 3;
       },
     },
     methods: {
-      linkClicked(file) {
-        eventHub.$emit('goToPreviousDirectoryClicked', file);
-      },
+      ...mapActions([
+        'getTreeData',
+      ]),
     },
   };
 </script>
@@ -30,9 +26,9 @@
     <td
       :colspan="colSpanCondition"
       class="table-cell"
-      @click.prevent="linkClicked(prevUrl)"
+      @click.prevent="getTreeData({ endpoint: parentTreeUrl })"
     >
-      <a :href="prevUrl">...</a>
+      <a :href="parentTreeUrl">...</a>
     </td>
   </tr>
 </template>

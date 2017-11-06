@@ -9,11 +9,11 @@ describe MergeRequestSerializer do
   end
 
   describe '#represent' do
-    let(:opts) { { basic: basic } }
-    subject { serializer.represent(merge_request, basic: basic) }
+    let(:opts) { { serializer: serializer_entity } }
+    subject { serializer.represent(merge_request, serializer: serializer_entity) }
 
-    context 'when basic param is truthy' do
-      let(:basic) { true }
+    context 'when passing basic serializer param' do
+      let(:serializer_entity) { 'basic' }
 
       it 'calls super class #represent with correct params' do
         expect_any_instance_of(BaseSerializer).to receive(:represent)
@@ -23,8 +23,8 @@ describe MergeRequestSerializer do
       end
     end
 
-    context 'when basic param is falsy' do
-      let(:basic) { false }
+    context 'when serializer param is falsy' do
+      let(:serializer_entity) { nil }
 
       it 'calls super class #represent with correct params' do
         expect_any_instance_of(BaseSerializer).to receive(:represent)

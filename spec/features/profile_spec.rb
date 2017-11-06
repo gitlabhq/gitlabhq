@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Profile account page' do
+describe 'Profile account page', :js do
   let(:user) { create(:user) }
 
   before do
@@ -56,47 +56,38 @@ describe 'Profile account page' do
     end
   end
 
-  describe 'when I reset private token' do
-    before do
-      visit profile_account_path
-    end
-
-    it 'resets private token' do
-      previous_token = find("#private-token").value
-
-      click_link('Reset private token')
-
-      expect(find('#private-token').value).not_to eq(previous_token)
-    end
-  end
-
   describe 'when I reset RSS token' do
     before do
-      visit profile_account_path
+      visit profile_personal_access_tokens_path
     end
 
     it 'resets RSS token' do
-      previous_token = find("#rss-token").value
+      within('.rss-token-reset') do
+        previous_token = find("#rss_token").value
 
-      click_link('Reset RSS token')
+        accept_confirm { click_link('reset it') }
+
+        expect(find('#rss_token').value).not_to eq(previous_token)
+      end
 
       expect(page).to have_content 'RSS token was successfully reset'
-      expect(find('#rss-token').value).not_to eq(previous_token)
     end
   end
 
   describe 'when I reset incoming email token' do
     before do
       allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
-      visit profile_account_path
+      visit profile_personal_access_tokens_path
     end
 
     it 'resets incoming email token' do
-      previous_token = find('#incoming-email-token').value
+      within('.incoming-email-token-reset') do
+        previous_token = find('#incoming_email_token').value
 
-      click_link('Reset incoming email token')
+        accept_confirm { click_link('reset it') }
 
-      expect(find('#incoming-email-token').value).not_to eq(previous_token)
+        expect(find('#incoming_email_token').value).not_to eq(previous_token)
+      end
     end
   end
 

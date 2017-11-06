@@ -28,7 +28,7 @@ The MemoryKiller is controlled using environment variables.
   delayed shutdown is triggered. The default value for Omnibus packages is set
   [in the omnibus-gitlab
   repository](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/files/gitlab-cookbooks/gitlab/attributes/default.rb).
-- `SIDEKIQ_MEMORY_KILLER_GRACE_TIME`: defaults 900 seconds (15 minutes). When
+- `SIDEKIQ_MEMORY_KILLER_GRACE_TIME`: defaults to 900 seconds (15 minutes). When
   a shutdown is triggered, the Sidekiq process will keep working normally for
   another 15 minutes.
 - `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_WAIT`: defaults to 30 seconds. When the grace
@@ -36,5 +36,3 @@ The MemoryKiller is controlled using environment variables.
   Existing jobs get 30 seconds to finish. After that, the MemoryKiller tells
   Sidekiq to shut down, and an external supervision mechanism (e.g. Runit) must
   restart Sidekiq.
-- `SIDEKIQ_MEMORY_KILLER_SHUTDOWN_SIGNAL`: defaults to `SIGKILL`. The name of
-  the final signal sent to the Sidekiq process when we want it to shut down.

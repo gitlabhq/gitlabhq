@@ -1,7 +1,7 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-phantomjs-2.1-node-8.x-yarn-1.0-postgresql-9.6"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.5-golang-1.8-git-2.13-chrome-62.0-node-8.x-yarn-1.2-postgresql-9.6"
 
 .default-cache: &default-cache
-  key: "ruby-233-with-yarn"
+  key: "ruby-235-with-yarn"
   paths:
     - vendor/ruby
     - .yarn-cache/
@@ -23,7 +23,6 @@ variables:
   SIMPLECOV: "true"
   GIT_DEPTH: "20"
   GIT_SUBMODULE_STRATEGY: "none"
-  PHANTOMJS_VERSION: "2.1.1"
   GET_SOURCES_ATTEMPTS: "3"
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master.json
   KNAPSACK_SPINACH_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/spinach_report-master.json
@@ -455,7 +454,7 @@ db:migrate:reset-mysql:
   variables:
     SETUP_DB: "false"
   script:
-    - git fetch origin v8.14.10
+    - git fetch https://gitlab.com/gitlab-org/gitlab-ce.git v9.3.0
     - git checkout -f FETCH_HEAD
     - bundle install $BUNDLE_INSTALL_FLAGS
     - cp config/gitlab.yml.example config/gitlab.yml
@@ -551,7 +550,6 @@ karma:
   <<: *dedicated-runner
   <<: *except-docs
   <<: *pull-cache
-  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-chrome-61.0-node-8.x-yarn-1.0-postgresql-9.6"
   stage: test
   variables:
     BABEL_ENV: "coverage"

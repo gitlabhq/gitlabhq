@@ -63,11 +63,54 @@ describe SystemHooksService do
         :group_id, :user_id, :user_username, :user_name, :user_email, :group_access
       )
     end
+
+    it 'includes the correct project visibility level' do
+      data = event_data(project, :create)
+
+      expect(data[:project_visibility]).to eq('private')
+    end
+
+    context 'group_rename' do
+      it 'contains old and new path' do
+        allow(group).to receive(:path_was).and_return('old-path')
+
+        data = event_data(group, :rename)
+
+        expect(data).to include(:event_name, :name, :created_at, :updated_at, :full_path, :path, :group_id, :old_path, :old_full_path)
+        expect(data[:path]).to eq(group.path)
+        expect(data[:full_path]).to eq(group.path)
+        expect(data[:old_path]).to eq(group.path_was)
+        expect(data[:old_full_path]).to eq(group.path_was)
+      end
+
+      it 'contains old and new full_path for subgroup' do
+        subgroup = create(:group, parent: group)
+        allow(subgroup).to receive(:path_was).and_return('old-path')
+
+        data = event_data(subgroup, :rename)
+
+        expect(data[:full_path]).to eq(subgroup.full_path)
+        expect(data[:old_path]).to eq('old-path')
+      end
+    end
+
+    context 'user_rename' do
+      it 'contains old and new username' do
+        allow(user).to receive(:username_was).and_return('old-username')
+
+        data = event_data(user, :rename)
+
+        expect(data).to include(:event_name, :name, :created_at, :updated_at, :email, :user_id, :username, :old_username)
+        expect(data[:username]).to eq(user.username)
+        expect(data[:old_username]).to eq(user.username_was)
+      end
+    end
   end
 
   context 'event names' do
     it { expect(event_name(user, :create)).to eq "user_create" }
     it { expect(event_name(user, :destroy)).to eq "user_destroy" }
+    it { expect(event_name(user, :rename)).to eq 'user_rename' }
     it { expect(event_name(project, :create)).to eq "project_create" }
     it { expect(event_name(project, :destroy)).to eq "project_destroy" }
     it { expect(event_name(project, :rename)).to eq "project_rename" }
@@ -79,6 +122,7 @@ describe SystemHooksService do
     it { expect(event_name(key, :destroy)).to eq 'key_destroy' }
     it { expect(event_name(group, :create)).to eq 'group_create' }
     it { expect(event_name(group, :destroy)).to eq 'group_destroy' }
+    it { expect(event_name(group, :rename)).to eq 'group_rename' }
     it { expect(event_name(group_member, :create)).to eq 'user_add_to_group' }
     it { expect(event_name(group_member, :destroy)).to eq 'user_remove_from_group' }
   end

@@ -559,30 +559,14 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe "#remote_delete" do
+  describe "#remove_remote" do
     before(:all) do
       @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-      @repo.remote_delete("expendable")
+      @repo.remove_remote("expendable")
     end
 
     it "should remove the remote" do
       expect(@repo.rugged.remotes).not_to include("expendable")
-    end
-
-    after(:all) do
-      FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
-      ensure_seeds
-    end
-  end
-
-  describe "#remote_add" do
-    before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-      @repo.remote_add("new_remote", SeedHelper::GITLAB_GIT_TEST_REPO_URL)
-    end
-
-    it "should add the remote" do
-      expect(@repo.rugged.remotes.each_name.to_a).to include("new_remote")
     end
 
     after(:all) do
@@ -606,6 +590,61 @@ describe Gitlab::Git::Repository, seed_helper: true do
     after(:all) do
       FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
       ensure_seeds
+    end
+  end
+
+  describe '#fetch_mirror' do
+    let(:new_repository) do
+      Gitlab::Git::Repository.new('default', 'my_project.git', '')
+    end
+
+    subject { new_repository.fetch_mirror(repository.path) }
+
+    before do
+      Gitlab::Shell.new.add_repository('default', 'my_project')
+    end
+
+    after do
+      Gitlab::Shell.new.remove_repository(TestEnv.repos_path, 'my_project')
+    end
+
+    it 'fetches a url as a mirror remote' do
+      subject
+
+      expect(refs(new_repository.path)).to eq(refs(repository.path))
+    end
+
+    context 'with keep-around refs' do
+      let(:sha) { SeedRepo::Commit::ID }
+      let(:keep_around_ref) { "refs/keep-around/#{sha}" }
+      let(:tmp_ref) { "refs/tmp/#{SecureRandom.hex}" }
+
+      before do
+        repository.rugged.references.create(keep_around_ref, sha, force: true)
+        repository.rugged.references.create(tmp_ref, sha, force: true)
+      end
+
+      it 'includes the temporary and keep-around refs' do
+        subject
+
+        expect(refs(new_repository.path)).to include(keep_around_ref)
+        expect(refs(new_repository.path)).to include(tmp_ref)
+      end
+    end
+  end
+
+  describe '#remote_tags' do
+    let(:target_commit_id) { SeedRepo::Commit::ID }
+
+    subject { repository.remote_tags('upstream') }
+
+    it 'gets the remote tags' do
+      expect(repository).to receive(:list_remote_tags).with('upstream')
+        .and_return(["#{target_commit_id}\trefs/tags/v0.0.1\n"])
+
+      expect(subject.first).to be_an_instance_of(Gitlab::Git::Tag)
+      expect(subject.first.name).to eq('v0.0.1')
+      expect(subject.first.dereferenced_target.id).to eq(target_commit_id)
     end
   end
 
@@ -1135,8 +1174,35 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#merged_branch_names' do
+    context 'when branch names are passed' do
+      it 'only returns the names we are asking' do
+        names = repository.merged_branch_names(%w[merge-test])
+
+        expect(names).to contain_exactly('merge-test')
+      end
+
+      it 'does not return unmerged branch names' do
+        names = repository.merged_branch_names(%w[feature])
+
+        expect(names).to be_empty
+      end
+    end
+
+    context 'when no branch names are specified' do
+      it 'returns all merged branch names' do
+        names = repository.merged_branch_names
+
+        expect(names).to include('merge-test')
+        expect(names).to include('fix-mode')
+        expect(names).not_to include('feature')
+      end
+    end
+  end
+
   describe "#ls_files" do
     let(:master_file_paths) { repository.ls_files("master") }
+    let(:utf8_file_paths) { repository.ls_files("ls-files-utf8") }
     let(:not_existed_branch) { repository.ls_files("not_existed_branch") }
 
     it "read every file paths of master branch" do
@@ -1157,6 +1223,10 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     it "returns empty array when not existed branch" do
       expect(not_existed_branch.length).to equal(0)
+    end
+
+    it "returns valid utf-8 data" do
+      expect(utf8_file_paths.map { |file| file.force_encoding('utf-8') }).to all(be_valid_encoding)
     end
   end
 
@@ -1307,6 +1377,24 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'when Gitaly ref_exists_branches feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'checks the existence of branches'
+    end
+  end
+
+  describe '#batch_existence' do
+    let(:refs) { ['deadbeef', SeedRepo::RubyBlob::ID, '909e6157199'] }
+
+    it 'returns existing refs back' do
+      result = repository.batch_existence(refs)
+
+      expect(result).to eq([SeedRepo::RubyBlob::ID])
+    end
+
+    context 'existing: true' do
+      it 'inverts meaning and returns non-existing refs' do
+        result = repository.batch_existence(refs, existing: false)
+
+        expect(result).to eq(%w(deadbeef 909e6157199))
+      end
     end
   end
 
@@ -1583,38 +1671,71 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     subject { repository.ff_merge(user, source_sha, target_branch) }
 
-    it 'performs a ff_merge' do
-      expect(subject.newrev).to eq(source_sha)
-      expect(subject.repo_created).to be(false)
-      expect(subject.branch_created).to be(false)
+    shared_examples '#ff_merge' do
+      it 'performs a ff_merge' do
+        expect(subject.newrev).to eq(source_sha)
+        expect(subject.repo_created).to be(false)
+        expect(subject.branch_created).to be(false)
 
-      expect(repository.commit(target_branch).id).to eq(source_sha)
-    end
+        expect(repository.commit(target_branch).id).to eq(source_sha)
+      end
 
-    context 'with a non-existing target branch' do
-      subject { repository.ff_merge(user, source_sha, 'this-isnt-real') }
+      context 'with a non-existing target branch' do
+        subject { repository.ff_merge(user, source_sha, 'this-isnt-real') }
 
-      it 'throws an ArgumentError' do
-        expect { subject }.to raise_error(ArgumentError)
+        it 'throws an ArgumentError' do
+          expect { subject }.to raise_error(ArgumentError)
+        end
+      end
+
+      context 'with a non-existing source commit' do
+        let(:source_sha) { 'f001' }
+
+        it 'throws an ArgumentError' do
+          expect { subject }.to raise_error(ArgumentError)
+        end
+      end
+
+      context 'when the source sha is not a descendant of the branch head' do
+        let(:source_sha) { '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863' }
+
+        it "doesn't perform the ff_merge" do
+          expect { subject }.to raise_error(Gitlab::Git::CommitError)
+
+          expect(repository.commit(target_branch).id).to eq(branch_head)
+        end
       end
     end
 
-    context 'with a non-existing source commit' do
-      let(:source_sha) { 'f001' }
+    context 'with gitaly' do
+      it "calls Gitaly's OperationService" do
+        expect_any_instance_of(Gitlab::GitalyClient::OperationService)
+          .to receive(:user_ff_branch).with(user, source_sha, target_branch)
+          .and_return(nil)
 
-      it 'throws an ArgumentError' do
-        expect { subject }.to raise_error(ArgumentError)
+        subject
       end
+
+      it_behaves_like '#ff_merge'
     end
 
-    context 'when the source sha is not a descendant of the branch head' do
-      let(:source_sha) { '1a0b36b3cdad1d2ee32457c102a8c0b7056fa863' }
+    context 'without gitaly', :skip_gitaly_mock do
+      it_behaves_like '#ff_merge'
+    end
+  end
 
-      it "doesn't perform the ff_merge" do
-        expect { subject }.to raise_error(Gitlab::Git::CommitError)
+  describe '#fetch' do
+    let(:git_path) { Gitlab.config.git.bin_path }
+    let(:remote_name) { 'my_remote' }
 
-        expect(repository.commit(target_branch).id).to eq(branch_head)
-      end
+    subject { repository.fetch(remote_name) }
+
+    it 'fetches the remote and returns true if the command was successful' do
+      expect(repository).to receive(:popen)
+        .with(%W(#{git_path} fetch #{remote_name}), repository.path)
+        .and_return(['', 0])
+
+      expect(subject).to be(true)
     end
   end
 
@@ -1692,5 +1813,11 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     sha = Rugged::Commit.create(repo, options)
     repo.lookup(sha)
+  end
+
+  def refs(dir)
+    IO.popen(%W[git -C #{dir} for-each-ref], &:read).split("\n").map do |line|
+      line.split("\t").last
+    end
   end
 end

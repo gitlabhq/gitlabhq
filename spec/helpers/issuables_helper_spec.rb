@@ -159,4 +159,36 @@ describe IssuablesHelper do
       end
     end
   end
+
+  describe '#issuable_initial_data' do
+    let(:user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:can?).and_return(true)
+    end
+
+    it 'returns the correct json for an issue' do
+      issue = create(:issue, author: user, description: 'issue text')
+      @project = issue.project
+
+      expected_data = {
+        'endpoint' => "/#{@project.full_path}/issues/#{issue.iid}",
+        'canUpdate' => true,
+        'canDestroy' => true,
+        'issuableRef' => "##{issue.iid}",
+        'markdownPreviewPath' => "/#{@project.full_path}/preview_markdown",
+        'markdownDocsPath' => '/help/user/markdown',
+        'issuableTemplates' => [],
+        'projectPath' => @project.path,
+        'projectNamespace' => @project.namespace.path,
+        'initialTitleHtml' => issue.title,
+        'initialTitleText' => issue.title,
+        'initialDescriptionHtml' => '<p dir="auto">issue text</p>',
+        'initialDescriptionText' => 'issue text',
+        'initialTaskStatus' => '0 of 0 tasks completed'
+      }
+      expect(JSON.parse(helper.issuable_initial_data(issue))).to eq(expected_data)
+    end
+  end
 end
