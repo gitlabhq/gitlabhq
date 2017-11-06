@@ -3,8 +3,10 @@ class ClusterProvisionWorker
   include ClusterQueue
 
   def perform(cluster_id)
-    Gcp::Cluster.find_by_id(cluster_id).try do |cluster|
-      Ci::ProvisionClusterService.new.execute(cluster)
+    Clusters::Cluster.find_by_id(cluster_id).try do |cluster|
+      cluster.provider.try do |provider|
+        Clusters::Gcp::ProvisionService.new.execute(provider) if cluster.gcp?
+      end
     end
   end
 end

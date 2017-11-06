@@ -186,7 +186,9 @@ class Project < ActiveRecord::Base
   has_one :import_data, class_name: 'ProjectImportData', inverse_of: :project, autosave: true
   has_one :project_feature, inverse_of: :project
   has_one :statistics, class_name: 'ProjectStatistics'
-  has_one :cluster, class_name: 'Gcp::Cluster', inverse_of: :project
+
+  has_one :cluster_project, class_name: 'Clusters::Project'
+  has_one :cluster, through: :cluster_project, class_name: 'Clusters::Cluster'
 
   # Container repositories need to remove data from the container registry,
   # which is not managed by the DB. Hence we're still using dependent: :destroy
