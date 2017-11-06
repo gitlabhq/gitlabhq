@@ -95,7 +95,7 @@ export default {
           title: this.title,
         },
       );
-    }
+    },
   },
   methods: {
     installClicked() {
