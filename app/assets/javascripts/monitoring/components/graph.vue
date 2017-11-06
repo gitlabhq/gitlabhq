@@ -247,6 +247,7 @@
               :key="index"
               :generated-line-path="path.linePath"
               :generated-area-path="path.areaPath"
+              :line-style="path.lineStyle"
               :line-color="path.lineColor"
               :area-color="path.areaColor"
             />

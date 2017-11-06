@@ -9,6 +9,10 @@
         type: String,
         required: true,
       },
+      lineStyle: {
+        type: String,
+        required: true,
+      },
       lineColor: {
         type: String,
         required: true,
@@ -16,6 +20,13 @@
       areaColor: {
         type: String,
         required: true,
+      },
+    },
+    computed: {
+      strokeDashArray() {
+        if (this.lineStyle === 'dashed') return '3, 1';
+        if (this.lineStyle === 'dotted') return '1, 1';
+        return null;
       },
     },
   };
@@ -34,6 +45,7 @@
       :stroke="lineColor"
       fill="none"
       stroke-width="1"
+      :stroke-dasharray="strokeDashArray"
       transform="translate(-5, 20)">
     </path>
   </g>
