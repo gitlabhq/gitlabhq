@@ -169,7 +169,7 @@ module API
           authorize_update_builds!
 
           build = get_build!(params[:build_id])
-          authorize!(:update_build, build)
+          authorize!(:erase_build, build)
           return forbidden!('Build is not erasable!') unless build.erasable?
 
           build.erase(erased_by: current_user)

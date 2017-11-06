@@ -6,7 +6,7 @@ class BuildDetailsEntity < JobEntity
   expose :pipeline, using: PipelineEntity
 
   expose :erased_by, if: -> (*) { build.erased? }, using: UserEntity
-  expose :erase_path, if: -> (*) { build.erasable? && can?(current_user, :update_build, project) } do |build|
+  expose :erase_path, if: -> (*) { build.erasable? && can?(current_user, :erase_build, build) } do |build|
     erase_project_job_path(project, build)
   end
 

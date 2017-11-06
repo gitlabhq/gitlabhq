@@ -5,6 +5,7 @@ class Projects::JobsController < Projects::ApplicationController
     only: [:index, :show, :status, :raw, :trace]
   before_action :authorize_update_build!,
     except: [:index, :show, :status, :raw, :trace, :cancel_all]
+  before_action :authorize_erase_build!, only: [:erase]
 
   layout 'project'
 
@@ -129,6 +130,10 @@ class Projects::JobsController < Projects::ApplicationController
 
   def authorize_update_build!
     return access_denied! unless can?(current_user, :update_build, build)
+  end
+
+  def authorize_erase_build!
+    return access_denied! unless can?(current_user, :erase_build, build)
   end
 
   def build

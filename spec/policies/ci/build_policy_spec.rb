@@ -150,5 +150,47 @@ describe Ci::BuildPolicy do
         end
       end
     end
+
+    # TODO: Finish spec
+    describe 'rules for erase build' do
+      let(:project) { create(:project, :repository) }
+      let(:another_user) { create(:user) }
+
+      context 'when developer created a build' do
+        before do
+          project.add_developer(user)
+        end
+
+        context 'when the build was created by the user' do
+          let(:build) { create(:ci_build, user: user) }
+
+          it { expect(policy).to be_allowed :erase_build }
+        end
+
+        context 'when the build was created by others' do
+          let(:build) { create(:ci_build, user: another_user) }
+
+          it { expect(policy).to be_disallowed :erase_build }
+        end
+      end
+
+      context 'when master erases a build' do
+        before do
+          project.add_master(user)
+        end
+
+        context 'when the build was created by the user' do
+          let(:build) { create(:ci_build, user: user) }
+
+          it { expect(policy).to be_allowed :erase_build }
+        end
+
+        context 'when the build was created by others' do
+          let(:build) { create(:ci_build, user: another_user) }
+
+          it { expect(policy).to be_allowed :erase_build }
+        end
+      end
+    end
   end
 end
