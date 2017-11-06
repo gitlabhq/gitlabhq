@@ -202,9 +202,7 @@ class MergeRequestEntity < IssuableEntity
     end
   end
 
-  expose :sast_path, if: -> (mr, _) { mr.project.feature_available?(:sast) &&
-                                      mr.has_sast_data? &&
-                                      can?(current_user, :read_build, mr.sast_artifact) } do |merge_request|
+  expose :sast_path, if: expose_sast_data(mr, current_user) do |merge_request|
     raw_project_build_artifacts_url(merge_request.source_project,
                                     merge_request.sast_artifact,
                                     path: 'gl-sast-report.json')
@@ -217,5 +215,11 @@ class MergeRequestEntity < IssuableEntity
   def presenter(merge_request)
     @presenters ||= {}
     @presenters[merge_request] ||= MergeRequestPresenter.new(merge_request, current_user: current_user)
+  end
+
+  def expose_sast_data?(mr, current_user)
+    mr.project.feature_available?(:sast) &&
+      mr.has_sast_data? &&
+      can?(current_user, :read_build, mr.sast_artifact)
   end
 end
