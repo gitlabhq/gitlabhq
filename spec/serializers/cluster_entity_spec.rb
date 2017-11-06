@@ -8,7 +8,7 @@ describe ClusterEntity do
       let(:cluster) { create(:cluster, provider_type: :gcp, provider_gcp: provider) }
 
       context 'when status is creating' do
-        let(:provider) { create(:provider_gcp, :creating) }
+        let(:provider) { create(:cluster_provider_gcp, :creating) }
 
         it 'has corresponded data' do
           expect(subject[:status]).to eq(:creating)
@@ -17,7 +17,7 @@ describe ClusterEntity do
       end
 
       context 'when status is errored' do
-        let(:provider) { create(:provider_gcp, :errored) }
+        let(:provider) { create(:cluster_provider_gcp, :errored) }
 
         it 'has corresponded data' do
           expect(subject[:status]).to eq(:errored)

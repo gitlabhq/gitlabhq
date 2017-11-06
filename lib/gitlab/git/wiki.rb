@@ -10,6 +10,8 @@ module Gitlab
       end
       PageBlob = Struct.new(:name)
 
+      attr_reader :repository
+
       def self.default_ref
         'master'
       end

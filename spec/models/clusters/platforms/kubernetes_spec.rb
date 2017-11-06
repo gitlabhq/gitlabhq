@@ -9,7 +9,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
   describe 'before_validation' do
     context 'when namespace includes upper case' do
-      let(:kubernetes) { create(:platform_kubernetes, :configured, namespace: namespace) }
+      let(:kubernetes) { create(:cluster_platform_kubernetes, :configured, namespace: namespace) }
       let(:namespace) { 'ABC' }
 
       it 'converts to lower case' do
@@ -22,7 +22,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     subject { kubernetes.valid? }
 
     context 'when validates namespace' do
-      let(:kubernetes) { build(:platform_kubernetes, :configured, namespace: namespace) }
+      let(:kubernetes) { build(:cluster_platform_kubernetes, :configured, namespace: namespace) }
 
       context 'when namespace is blank' do
         let(:namespace) { '' }
@@ -50,7 +50,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     end
 
     context 'when validates api_url' do
-      let(:kubernetes) { build(:platform_kubernetes, :configured) }
+      let(:kubernetes) { build(:cluster_platform_kubernetes, :configured) }
 
       before do
         kubernetes.api_url = api_url
@@ -76,7 +76,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     end
 
     context 'when validates token' do
-      let(:kubernetes) { build(:platform_kubernetes, :configured) }
+      let(:kubernetes) { build(:cluster_platform_kubernetes, :configured) }
 
       before do
         kubernetes.token = token
@@ -95,8 +95,8 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
       let(:enabled) { true }
       let(:project) { create(:project) }
       let(:cluster) { build(:cluster, provider_type: :gcp, platform_type: :kubernetes, platform_kubernetes: platform, provider_gcp: provider, enabled: enabled, projects: [project]) }
-      let(:platform) { build(:platform_kubernetes, :configured) }
-      let(:provider) { build(:provider_gcp) }
+      let(:platform) { build(:cluster_platform_kubernetes, :configured) }
+      let(:provider) { build(:cluster_provider_gcp) }
       let(:kubernetes_service) { project.kubernetes_service }
 
       it 'updates KubernetesService' do
@@ -126,8 +126,8 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     context 'when kubernetes_service has been configured without cluster integration' do
       let!(:project) { create(:project) }
       let(:cluster) { build(:cluster, provider_type: :gcp, platform_type: :kubernetes, platform_kubernetes: platform, provider_gcp: provider, projects: [project]) }
-      let(:platform) { build(:platform_kubernetes, :configured, api_url: 'https://111.111.111.111') }
-      let(:provider) { build(:provider_gcp) }
+      let(:platform) { build(:cluster_platform_kubernetes, :configured, api_url: 'https://111.111.111.111') }
+      let(:provider) { build(:cluster_provider_gcp) }
 
       before do
         create(:kubernetes_service, project: project)
@@ -144,7 +144,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
     let!(:cluster) { create(:cluster, :project, platform_kubernetes: kubernetes) }
     let(:project) { cluster.project }
-    let(:kubernetes) { create(:platform_kubernetes, :configured, namespace: namespace) }
+    let(:kubernetes) { create(:cluster_platform_kubernetes, :configured, namespace: namespace) }
 
     context 'when namespace is present' do
       let(:namespace) { 'namespace-123' }
@@ -170,7 +170,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
   describe '#default_namespace' do
     subject { kubernetes.default_namespace }
 
-    let(:kubernetes) { create(:platform_kubernetes, :configured) }
+    let(:kubernetes) { create(:cluster_platform_kubernetes, :configured) }
 
     context 'when cluster belongs to a project' do
       let!(:cluster) { create(:cluster, :project, platform_kubernetes: kubernetes) }

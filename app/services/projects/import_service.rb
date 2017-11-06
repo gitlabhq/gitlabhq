@@ -44,7 +44,7 @@ module Projects
         else
           clone_repository
         end
-      rescue Gitlab::Shell::Error => e
+      rescue Gitlab::Shell::Error, Gitlab::Git::RepositoryMirroring::RemoteError => e
         # Expire cache to prevent scenarios such as:
         # 1. First import failed, but the repo was imported successfully, so +exists?+ returns true
         # 2. Retried import, repo is broken or not imported but +exists?+ still returns true

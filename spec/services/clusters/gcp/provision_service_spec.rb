@@ -4,7 +4,7 @@ describe Clusters::Gcp::ProvisionService do
   include GoogleApi::CloudPlatformHelpers
 
   describe '#execute' do
-    let(:provider) { create(:provider_gcp, :scheduled) }
+    let(:provider) { create(:cluster_provider_gcp, :scheduled) }
     let(:gcp_project_id) { provider.gcp_project_id }
     let(:zone) { provider.zone }
 
