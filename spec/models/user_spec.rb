@@ -346,7 +346,6 @@ describe User do
   describe "Respond to" do
     it { is_expected.to respond_to(:admin?) }
     it { is_expected.to respond_to(:name) }
-    it { is_expected.to respond_to(:private_token) }
     it { is_expected.to respond_to(:external?) }
   end
 
@@ -523,14 +522,6 @@ describe User do
       user = create(:user, password: 'abcdefghe')
 
       expect(user.password).to eq('abcdefghe')
-    end
-  end
-
-  describe 'authentication token' do
-    it "has authentication token" do
-      user = create(:user)
-
-      expect(user.authentication_token).not_to be_blank
     end
   end
 
@@ -2221,6 +2212,42 @@ describe User do
               user.update_attributes!(email: 'asdf@asdf.com')
             end.not_to change { user.namespace.updated_at }
           end
+        end
+      end
+    end
+  end
+
+  describe '#username_changed_hook' do
+    context 'for a new user' do
+      let(:user) { build(:user) }
+
+      it 'does not trigger system hook' do
+        expect(user).not_to receive(:system_hook_service)
+
+        user.save!
+      end
+    end
+
+    context 'for an existing user' do
+      let(:user) { create(:user, username: 'old-username') }
+
+      context 'when the username is changed' do
+        let(:new_username) { 'very-new-name' }
+
+        it 'triggers the rename system hook' do
+          system_hook_service = SystemHooksService.new
+          expect(system_hook_service).to receive(:execute_hooks_for).with(user, :rename)
+          expect(user).to receive(:system_hook_service).and_return(system_hook_service)
+
+          user.update_attributes!(username: new_username)
+        end
+      end
+
+      context 'when the username is not changed' do
+        it 'does not trigger system hook' do
+          expect(user).not_to receive(:system_hook_service)
+
+          user.update_attributes!(email: 'asdf@asdf.com')
         end
       end
     end

@@ -1,6 +1,6 @@
 import PipelineStage from '../../pipelines/components/stage.vue';
 import ciIcon from '../../vue_shared/components/ci_icon.vue';
-import { statusIconEntityMap } from '../../vue_shared/ci_status_icons';
+import icon from '../../vue_shared/components/icon.vue';
 
 export default {
   name: 'MRWidgetPipeline',
@@ -10,6 +10,7 @@ export default {
   components: {
     'pipeline-stage': PipelineStage,
     ciIcon,
+    icon,
   },
   computed: {
     hasPipeline() {
@@ -19,9 +20,6 @@ export default {
       const { hasCI, ciStatus } = this.mr;
 
       return hasCI && !ciStatus;
-    },
-    svg() {
-      return statusIconEntityMap.icon_status_failed;
     },
     stageText() {
       return this.mr.pipeline.details.stages.length > 1 ? 'stages' : 'stage';
@@ -38,8 +36,10 @@ export default {
         <template v-if="hasCIError">
           <div class="ci-status-icon ci-status-icon-failed ci-error js-ci-error append-right-10">
             <span
-              v-html="svg"
-              aria-hidden="true"></span>
+              aria-hidden="true">
+              <icon
+                name="status_failed"/>
+            </span>
           </div>
           <div class="media-body">
             Could not connect to the CI server. Please check your settings and try again

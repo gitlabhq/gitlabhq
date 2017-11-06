@@ -6,6 +6,7 @@ class MergeRequest < ActiveRecord::Base
   include Sortable
   include IgnorableColumn
   include CreatedAtFilterable
+  include TimeTrackable
 
   ignore_column :locked_at
 
@@ -118,6 +119,8 @@ class MergeRequest < ActiveRecord::Base
   participant :assignee
 
   after_save :keep_around_commit
+
+  acts_as_paranoid
 
   def self.reference_prefix
     '!'

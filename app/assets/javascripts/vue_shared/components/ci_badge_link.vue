@@ -43,7 +43,6 @@
     computed: {
       cssClass() {
         const className = this.status.group;
-
         return className ? `ci-status ci-${className}` : 'ci-status';
       },
     },

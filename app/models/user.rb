@@ -21,8 +21,8 @@ class User < ActiveRecord::Base
 
   ignore_column :external_email
   ignore_column :email_provider
+  ignore_column :authentication_token
 
-  add_authentication_token_field :authentication_token
   add_authentication_token_field :incoming_email_token
   add_authentication_token_field :rss_token
 
@@ -163,11 +163,12 @@ class User < ActiveRecord::Base
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: :email_changed?
   before_validation :set_public_email, if: :public_email_changed?
-  before_save :ensure_authentication_token, :ensure_incoming_email_token
+  before_save :ensure_incoming_email_token
   before_save :ensure_user_rights_and_limits, if: :external_changed?
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
   after_save :ensure_namespace_correct
+  after_update :username_changed_hook, if: :username_changed?
   after_destroy :post_destroy_hook
   after_commit :update_emails_with_primary_email, on: :update, if: -> { previous_changes.key?('email') }
   after_commit :update_invalid_gpg_signatures, on: :update, if: -> { previous_changes.key?('email') }
@@ -184,8 +185,6 @@ class User < ActiveRecord::Base
   # User's Project preference
   # Note: When adding an option, it MUST go on the end of the array.
   enum project_view: [:readme, :activity, :files]
-
-  alias_attribute :private_token, :authentication_token
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
 
@@ -871,6 +870,10 @@ class User < ActiveRecord::Base
         raise ActiveRecord::RecordInvalid.new(namespace)
       end
     end
+  end
+
+  def username_changed_hook
+    system_hook_service.execute_hooks_for(self, :rename)
   end
 
   def post_destroy_hook
