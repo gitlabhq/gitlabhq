@@ -256,6 +256,7 @@ Skeleton loading can replace any existing UI elements for the period in which th
 ---
 
 ## Dialog modals
+
 Dialog modals are only used for having a conversation and confirmation with the user. The user is not able to access the features on the main page until closing the modal.
 
 ### Usage
@@ -268,7 +269,7 @@ Dialog modals are only used for having a conversation and confirmation with the 
 * Dialog modals contain the header, body, and actions.
   * **Header(1):** The header title is a question instead of a descriptive phrase.
   * **Body(2):** The content in body should never be ambiguous and unclear. It provides specific information.
-  * **Actions(3):** Contains a affirmative action, a dismissive action, and an extra action. The order of actions from right to left: Affirmative action → Extra action → Dismissive action
+  * **Actions(3):** Contains a affirmative action, a dismissive action, and an extra action. The order of actions from left to right: Dismissive action → Extra action → Affirmative action
 * Confirmations regarding labels should keep labeling styling.
 * References to commits, branches, and tags should be **monospaced**.
 
