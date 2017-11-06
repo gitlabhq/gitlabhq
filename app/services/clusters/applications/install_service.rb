@@ -5,14 +5,11 @@ module Clusters
         return unless app.scheduled?
 
         begin
+          app.make_installing!
           helm_api.install(app)
 
-          if app.make_installing
-            ClusterWaitForAppInstallationWorker.perform_in(
-              ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
-          else
-            app.make_errored!("Failed to update app record; #{app.errors}")
-          end
+          ClusterWaitForAppInstallationWorker.perform_in(
+            ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
         rescue KubeException => ke
           app.make_errored!("Kubernetes error: #{ke.message}")
         rescue StandardError

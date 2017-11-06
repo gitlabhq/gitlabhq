@@ -3,20 +3,27 @@ require 'spec_helper'
 describe Clusters::Applications::CheckInstallationProgressService do
   RESCHEDULE_PHASES = Gitlab::Kubernetes::Pod::PHASES - [Gitlab::Kubernetes::Pod::SUCCEEDED, Gitlab::Kubernetes::Pod::FAILED].freeze
 
-  def mock_helm_api(phase, errors: nil)
-    expect(service).to receive(:installation_phase).once.and_return(phase)
-    expect(service).to receive(:installation_errors).once.and_return(errors) if errors.present?
+  let(:application) { create(:applications_helm, :installing) }
+  let(:service) { described_class.new(application) }
+  let(:phase) { Gitlab::Kubernetes::Pod::UNKNOWN }
+  let(:errors) { nil }
+
+  shared_examples 'a terminated installation' do
+    it 'finalize the installation' do
+      expect(service).to receive(:finalize_installation).once
+
+      service.execute
+    end
   end
 
-  shared_examples 'not yet completed phase' do |phase|
-    context "when the installation POD phase is #{phase}" do
-      before do
-        mock_helm_api(phase)
-      end
+  shared_examples 'a not yet terminated installation' do |a_phase|
+    let(:phase) { a_phase }
 
+    context "when phase is #{a_phase}" do
       context 'when not timeouted' do
         it 'reschedule a new check' do
           expect(ClusterWaitForAppInstallationWorker).to receive(:perform_in).once
+          expect(service).not_to receive(:finalize_installation)
 
           service.execute
 
@@ -27,6 +34,8 @@ describe Clusters::Applications::CheckInstallationProgressService do
 
       context 'when timeouted' do
         let(:application) { create(:applications_helm, :timeouted) }
+
+        it_behaves_like 'a terminated installation'
 
         it 'make the application errored' do
           expect(ClusterWaitForAppInstallationWorker).not_to receive(:perform_in)
@@ -40,36 +49,34 @@ describe Clusters::Applications::CheckInstallationProgressService do
     end
   end
 
+  before do
+    expect(service).to receive(:installation_phase).once.and_return(phase)
+
+    allow(service).to receive(:installation_errors).and_return(errors)
+    allow(service).to receive(:finalize_installation).and_return(nil)
+  end
+
   describe '#execute' do
-    let(:application) { create(:applications_helm, :installing) }
-    let(:service) { described_class.new(application) }
-
     context 'when installation POD succeeded' do
-      it 'make the application installed' do
-        mock_helm_api(Gitlab::Kubernetes::Pod::SUCCEEDED)
-        expect(service).to receive(:finalize_installation).once
+      let(:phase) { Gitlab::Kubernetes::Pod::SUCCEEDED }
 
-        service.execute
-
-        expect(application).to be_installed
-        expect(application.status_reason).to be_nil
-      end
+      it_behaves_like 'a terminated installation'
     end
 
     context 'when installation POD failed' do
-      let(:error_message) { 'test installation failed' }
+      let(:phase) { Gitlab::Kubernetes::Pod::FAILED }
+      let(:errors) { 'test installation failed' }
+
+      it_behaves_like 'a terminated installation'
 
       it 'make the application errored' do
-        mock_helm_api(Gitlab::Kubernetes::Pod::FAILED, errors: error_message)
-        expect(service).to receive(:finalize_installation).once
-
         service.execute
 
         expect(application).to be_errored
-        expect(application.status_reason).to eq(error_message)
+        expect(application.status_reason).to eq(errors)
       end
     end
 
-    RESCHEDULE_PHASES.each { |phase| it_behaves_like 'not yet completed phase', phase }
+    RESCHEDULE_PHASES.each { |phase| it_behaves_like 'a not yet terminated installation', phase }
   end
 end

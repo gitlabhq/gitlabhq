@@ -24,7 +24,7 @@ module Clusters
           end
 
           event :make_scheduled do
-            transition any - [:scheduled] => :scheduled
+            transition %i(installable errored) => :scheduled
           end
 
           before_transition any => [:scheduled] do |app_status, _|
