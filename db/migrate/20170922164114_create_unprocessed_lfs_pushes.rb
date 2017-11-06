@@ -29,7 +29,6 @@ class CreateUnprocessedLfsPushes < ActiveRecord::Migration
     create_table :unprocessed_lfs_pushes do |t|
       t.references :project, null: false, index: true, foreign_key: { on_delete: :cascade }
       t.string :ref, null: false
-      t.string :newrev, null: false #TODO: We can probably remove this and use the ref instead. Maybe only use this for deletions and force pushes?
     end
   end
 end

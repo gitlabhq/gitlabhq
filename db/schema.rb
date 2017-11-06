@@ -1626,7 +1626,6 @@ ActiveRecord::Schema.define(version: 20171026082505) do
   create_table "unprocessed_lfs_pushes", force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "ref", null: false
-    t.string "newrev", null: false
   end
 
   add_index "unprocessed_lfs_pushes", ["project_id"], name: "index_unprocessed_lfs_pushes_on_project_id", using: :btree

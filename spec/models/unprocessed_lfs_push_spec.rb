@@ -3,7 +3,6 @@ require 'spec_helper'
 describe UnprocessedLfsPush do
   it { is_expected.to belong_to(:project) }
 
-  it { is_expected.to have_db_column(:newrev).of_type(:string).with_options(null: false) }
   it { is_expected.to have_db_column(:ref).of_type(:string).with_options(null: false) }
 
   describe "#processed!" do
@@ -20,12 +19,10 @@ describe UnprocessedLfsPush do
       expect { subject.processed! }.to change(ProcessedLfsRef, :count).by(1)
     end
 
-    it 'updates an existing ProcessedLfsRef' do
+    it 'avoids duplicating existing ProcessedLfsRef' do
       create(:processed_lfs_ref, project: project, ref: subject.ref)
 
-      expect { subject.processed! }.to change { processed_lfs_push.reload.newrev }
+      expect { subject.processed! }.not_to change(ProcessedLfsRef, :count)
     end
-
-    #TODO: Could create ProcessedLfsRef with sha on force-push or deletion
   end
 end

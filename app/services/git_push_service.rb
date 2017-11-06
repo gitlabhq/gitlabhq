@@ -124,8 +124,7 @@ class GitPushService < BaseService
     return unless @project.lfs_objects.exists?
 
     unless push_remove_branch?
-      unprocessed_lfs_push = @project.unprocessed_lfs_pushes.create!(ref: params[:ref],
-                                                                     newrev: params[:newrev])
+      unprocessed_lfs_push = @project.unprocessed_lfs_pushes.create!(ref: params[:ref])
 
       UpdateLfsPointersWorker.perform_async(unprocessed_lfs_push.id)
     end
