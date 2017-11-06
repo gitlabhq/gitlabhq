@@ -16,7 +16,7 @@
       - if @commit
         = render 'projects/branches/commit', commit: @commit, project: @project
       - else
-        = s_('TagsPage|Cannot find HEAD commit for this tag')
+        = s_("TagsPage|Can't find HEAD commit for this tag")
 
     .nav-controls.controls-flex
       - if can?(current_user, :push_code, @project)

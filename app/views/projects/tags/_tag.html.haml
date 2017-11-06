@@ -18,7 +18,7 @@
         = render 'projects/branches/commit', commit: commit, project: @project
     - else
       %p
-        = s_('TagsPage|Cannot find HEAD commit for this tag')
+        = s_("TagsPage|Can't find HEAD commit for this tag")
     - if release && release.description.present?
       .description.prepend-top-default
         .wiki
