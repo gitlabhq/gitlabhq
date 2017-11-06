@@ -357,7 +357,8 @@
                   @click="handleSave(true)"
                   v-if="canUpdateIssue"
                   :class="actionButtonClassNames"
-                  class="btn btn-comment btn-comment-and-close">
+                  :disabled="isSubmitting"
+                  class="btn btn-comment btn-comment-and-close js-action-button">
                   {{issueActionButtonTitle}}
                 </button>
                 <button
