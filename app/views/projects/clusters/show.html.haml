@@ -4,11 +4,16 @@
 
 - expanded = Rails.env.test?
 
-- status_path = status_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster.id, format: :json) if can?(current_user, :admin_cluster, @cluster) && @cluster.on_creation?
+- status_path = status_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster.id, format: :json) if can?(current_user, :admin_cluster, @cluster)
 .edit-cluster-form.js-edit-cluster-form{ data: { status_path: status_path,
+  install_helm_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :helm),
   toggle_status: @cluster.enabled? ? 'true': 'false',
   cluster_status: @cluster.status_name,
-  cluster_status_reason: @cluster.status_reason } }
+  cluster_status_reason: @cluster.status_reason,
+  help_path: help_page_path('user/project/clusters/index.md', anchor: 'installing-applications') } }
+
+
+  .hidden.js-cluster-application-notice.alert.alert-info.alert-block.append-bottom-10{ role: 'alert' }
 
   %section.settings.no-animate.expanded
     %h4= s_('ClusterIntegration|Enable cluster integration')
@@ -49,7 +54,9 @@
           .form-group
             = field.submit _('Save'), class: 'btn btn-success'
 
-  %section.settings.no-animate#js-cluster-details{ class: ('expanded' if expanded) }
+  .cluster-applications-table#js-cluster-applications
+
+  %section.settings#js-cluster-details
     .settings-header
       %h4= s_('ClusterIntegration|Cluster details')
       %button.btn.js-settings-toggle
@@ -59,7 +66,7 @@
     .settings-content
 
       .form_group.append-bottom-20
-        %label.append-bottom-10{ for: 'cluter-name' }
+        %label.append-bottom-10{ for: 'cluster-name' }
           = s_('ClusterIntegration|Cluster name')
         .input-group
           %input.form-control.cluster-name{ value: @cluster.name, disabled: true }
