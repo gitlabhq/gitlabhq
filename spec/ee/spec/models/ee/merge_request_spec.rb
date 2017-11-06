@@ -166,4 +166,8 @@ describe MergeRequest do
       it { is_expected.to eq(expected) }
     end
   end
+
+  describe '#sast_artifact' do
+    it { is_expected.to delegate_method(:sast_artifact).to(:head_pipeline) }
+  end
 end

@@ -202,7 +202,7 @@ class MergeRequestEntity < IssuableEntity
     end
   end
 
-  expose :sast_path, if: expose_sast_data(mr, current_user) do |merge_request|
+  expose :sast_path, if: -> (mr, _) { expose_sast_data?(mr, current_user) } do |merge_request|
     raw_project_build_artifacts_url(merge_request.source_project,
                                     merge_request.sast_artifact,
                                     path: 'gl-sast-report.json')
