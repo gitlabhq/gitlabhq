@@ -5,7 +5,8 @@ module Clusters
     self.table_name = 'clusters'
 
     APPLICATIONS = {
-      Applications::Helm.application_name => Applications::Helm
+      Applications::Helm.application_name => Applications::Helm,
+      Applications::Ingress.application_name => Applications::Ingress
     }.freeze
 
     belongs_to :user
@@ -20,6 +21,7 @@ module Clusters
     has_one :platform_kubernetes, class_name: 'Clusters::Platforms::Kubernetes', autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
 
     has_one :application_helm, class_name: 'Clusters::Applications::Helm'
+    has_one :application_ingress, class_name: 'Clusters::Applications::Ingress'
 
     accepts_nested_attributes_for :provider_gcp, update_only: true
     accepts_nested_attributes_for :platform_kubernetes, update_only: true
@@ -59,7 +61,8 @@ module Clusters
 
     def applications
       [
-        application_helm || build_application_helm
+        application_helm || build_application_helm,
+        application_ingress || build_application_ingress
       ]
     end
 

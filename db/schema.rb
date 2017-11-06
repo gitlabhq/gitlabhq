@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171031100710) do
+ActiveRecord::Schema.define(version: 20171106101200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -464,9 +464,7 @@ ActiveRecord::Schema.define(version: 20171031100710) do
 
   create_table "cluster_platforms_kubernetes", force: :cascade do |t|
     t.integer "cluster_id", null: false
-    t.datetime_with_timezone "created_at", null: false
-    t.datetime_with_timezone "updated_at", null: false
-    t.text "api_url"
+    t.string "api_url"
     t.text "ca_cert"
     t.string "namespace"
     t.string "username"
@@ -493,9 +491,6 @@ ActiveRecord::Schema.define(version: 20171031100710) do
   create_table "cluster_providers_gcp", force: :cascade do |t|
     t.integer "cluster_id", null: false
     t.integer "status"
-    t.integer "num_nodes", null: false
-    t.datetime_with_timezone "created_at", null: false
-    t.datetime_with_timezone "updated_at", null: false
     t.text "status_reason"
     t.string "gcp_project_id", null: false
     t.string "zone", null: false
@@ -513,10 +508,6 @@ ActiveRecord::Schema.define(version: 20171031100710) do
 
   create_table "clusters", force: :cascade do |t|
     t.integer "user_id"
-    t.integer "provider_type"
-    t.integer "platform_type"
-    t.datetime_with_timezone "created_at", null: false
-    t.datetime_with_timezone "updated_at", null: false
     t.boolean "enabled", default: true
     t.string "name", null: false
     t.integer "provider_type"
@@ -531,6 +522,17 @@ ActiveRecord::Schema.define(version: 20171031100710) do
     t.datetime_with_timezone "updated_at", null: false
     t.integer "status", null: false
     t.string "version", null: false
+    t.text "status_reason"
+  end
+
+  create_table "clusters_applications_ingress", force: :cascade do |t|
+    t.integer "cluster_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "status", null: false
+    t.integer "ingress_type", null: false
+    t.string "version", null: false
+    t.string "cluster_ip"
     t.text "status_reason"
   end
 
@@ -1888,6 +1890,7 @@ ActiveRecord::Schema.define(version: 20171031100710) do
   add_foreign_key "cluster_providers_gcp", "clusters", on_delete: :cascade
   add_foreign_key "clusters", "users", on_delete: :nullify
   add_foreign_key "clusters_applications_helm", "clusters", on_delete: :cascade
+  add_foreign_key "clusters_applications_ingress", "clusters", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade
