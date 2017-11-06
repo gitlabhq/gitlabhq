@@ -32,7 +32,7 @@ describe Geo::PruneEventLogWorker, :geo do
       it 'logs error when it cannot obtain lease' do
         allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { nil }
 
-        expect(worker).to receive(:log_error).with('Cannot obtain an exclusive lease. There must be another worker already in execution.')
+        expect(worker).to receive(:log_error).with('Cannot obtain an exclusive lease. There must be another instance already in execution.')
 
         worker.perform
       end
