@@ -6,9 +6,8 @@
 
 - status_path = status_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster.id, format: :json) if can?(current_user, :admin_cluster, @cluster)
 .edit-cluster-form.js-edit-cluster-form{ data: { status_path: status_path,
-  install_helm_path: 'TODO',
-  install_ingress_path: 'TODO',
-  install_runner_path: 'TODO',
+  install_helm_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :helm),
+  install_ingress_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :ingress),
   toggle_status: @cluster.enabled? ? 'true': 'false',
   cluster_status: @cluster.status_name,
   cluster_status_reason: @cluster.status_reason,
