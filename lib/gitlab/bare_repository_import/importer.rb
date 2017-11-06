@@ -10,7 +10,7 @@ module Gitlab
         repos_to_import = Dir.glob(import_path + '**/*.git')
 
         repos_to_import.each do |repo_path|
-          bare_repo = Gitlab::BareRepositoryImport::BareRepository.new(import_path, repo_path)
+          bare_repo = Gitlab::BareRepositoryImport::Repository.new(import_path, repo_path)
 
           if bare_repo.wiki?
             log " * Skipping wiki repo"

@@ -1,6 +1,6 @@
 module Gitlab
   module BareRepositoryImport
-    class BareRepository
+    class Repository
       attr_reader :group_path, :project_name, :repo_path
 
       def initialize(root_path, repo_path)
@@ -8,7 +8,7 @@ module Gitlab
         @repo_path = repo_path
 
         # Split path into 'all/the/namespaces' and 'project_name'
-        @group_path, _sep, @project_name = repo_relative_path.rpartition('/')
+        @group_path, _, @project_name = repo_relative_path.rpartition('/')
       end
 
       def wiki?

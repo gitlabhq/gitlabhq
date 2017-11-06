@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe Gitlab::BareRepositoryImport::Importer, repository: true do
   let!(:admin) { create(:admin) }
-  let(:project_repo_path) { Gitlab::BareRepositoryImport::BareRepository.new(TestEnv.repos_path, File.join(TestEnv.repos_path, "#{project_path}.git")) }
+  let(:bare_repository) { Gitlab::BareRepositoryImport::Repository.new(TestEnv.repos_path, File.join(TestEnv.repos_path, "#{project_path}.git")) }
 
-  subject(:importer) { described_class.new(project_repo_path) }
+  subject(:importer) { described_class.new(bare_repository) }
 
   before do
     allow(described_class).to receive(:log)
