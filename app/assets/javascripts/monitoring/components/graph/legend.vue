@@ -173,10 +173,10 @@
         :stroke="series.lineColor"
         :stroke-width="measurements.legends.height"
         :stroke-dasharray="strokeDashArray(series.lineStyle)"
-        x1="20"
-        :x2="20 + measurements.legends.width"
-        :y1="graphHeight - measurements.legendOffset"
-        :y2="graphHeight - measurements.legendOffset">
+        :x1="measurements.legends.offsetX"
+        :x2="measurements.legends.offsetX + measurements.legends.width"
+        :y1="graphHeight - measurements.legends.offsetY"
+        :y2="graphHeight - measurements.legends.offsetY">
       </line>
       <text
         v-if="timeSeries.length > 1"

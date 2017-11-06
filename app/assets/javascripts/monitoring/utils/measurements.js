@@ -9,13 +9,14 @@ export default {
     legends: {
       width: 15,
       height: 3,
+      offsetX: 20,
+      offsetY: 32,
     },
     backgroundLegend: {
       width: 30,
       height: 50,
     },
     axisLabelLineOffset: -20,
-    legendOffset: 32,
   },
   large: { // This covers both md and lg screen sizes
     margin: {
@@ -27,13 +28,14 @@ export default {
     legends: {
       width: 15,
       height: 3,
+      offsetX: 20,
+      offsetY: 34,
     },
     backgroundLegend: {
       width: 30,
       height: 150,
     },
     axisLabelLineOffset: 20,
-    legendOffset: 34,
   },
   xTicks: 8,
   yTicks: 3,
