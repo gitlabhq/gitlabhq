@@ -218,7 +218,7 @@ module MarkupHelper
       data: data,
       title: options[:title],
       aria: { label: options[:title] } do
-      icon(options[:icon])
+      sprite_icon(options[:icon])
     end
   end
 

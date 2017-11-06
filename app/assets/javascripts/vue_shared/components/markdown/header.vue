@@ -1,6 +1,7 @@
 <script>
   import tooltip from '../../directives/tooltip';
   import toolbarButton from './toolbar_button.vue';
+  import icon from '../icon.vue';
 
   export default {
     props: {
@@ -14,6 +15,7 @@
     },
     components: {
       toolbarButton,
+      icon,
     },
     methods: {
       toggleMarkdownPreview(e, form) {
@@ -70,7 +72,7 @@
             tag="> "
             :prepend="true"
             button-title="Insert a quote"
-            icon="quote-right" />
+            icon="quote" />
           <toolbar-button
             tag="`"
             tag-block="```"
@@ -80,17 +82,17 @@
             tag="* "
             :prepend="true"
             button-title="Add a bullet list"
-            icon="list-ul" />
+            icon="list-bulleted" />
           <toolbar-button
             tag="1. "
             :prepend="true"
             button-title="Add a numbered list"
-            icon="list-ol" />
+            icon="list-numbered" />
           <toolbar-button
             tag="* [ ] "
             :prepend="true"
             button-title="Add a task list"
-            icon="check-square-o" />
+            icon="task-done" />
         </div>
         <div class="toolbar-group">
           <button
@@ -101,10 +103,9 @@
             tabindex="-1"
             title="Go full screen"
             type="button">
-            <i
-              aria-hidden="true"
-              class="fa fa-arrows-alt fa-fw">
-            </i>
+            <icon
+              name="screen-full">
+            </icon>
           </button>
         </div>
       </li>

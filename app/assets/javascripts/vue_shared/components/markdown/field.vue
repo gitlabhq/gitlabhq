@@ -3,6 +3,7 @@
   import GLForm from '../../../gl_form';
   import markdownHeader from './header.vue';
   import markdownToolbar from './toolbar.vue';
+  import icon from '../icon.vue';
 
   export default {
     props: {
@@ -37,6 +38,7 @@
     components: {
       markdownHeader,
       markdownToolbar,
+      icon,
     },
     computed: {
       shouldShowReferencedUsers() {
@@ -114,10 +116,10 @@
           class="zen-control zen-control-leave js-zen-leave"
           href="#"
           aria-label="Enter zen mode">
-          <i
-            class="fa fa-compress"
-            aria-hidden="true">
-          </i>
+          <icon
+            name="screen-normal"
+            :size="32">
+          </icon>
         </a>
         <markdown-toolbar
           :markdown-docs-path="markdownDocsPath"

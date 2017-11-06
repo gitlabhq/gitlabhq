@@ -57,7 +57,15 @@
   padding: 5px;
   font-size: 36px;
 
+  svg {
+    fill: $gl-text-color;
+  }
+
   &:hover {
     color: $black;
+
+    svg {
+      fill: $black;
+    }
   }
 }
