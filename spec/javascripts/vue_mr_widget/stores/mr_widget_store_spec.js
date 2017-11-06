@@ -5,6 +5,7 @@ import mockData, {
   securityIssues,
   parsedBaseIssues,
   parsedHeadIssues,
+  parsedSecurityIssuesStore,
 } from '../mock_data';
 
 describe('MergeRequestStore', () => {
@@ -71,6 +72,14 @@ describe('MergeRequestStore', () => {
 
     it('should return the resolved issues', () => {
       expect(store.codeclimateMetrics.resolvedIssues[0]).toEqual(parsedBaseIssues[0]);
+    });
+  });
+
+  describe('setSecurityReport', () => {
+    it('should set security issues', () => {
+      store.setSecurityReport(securityIssues, 'path');
+
+      expect(store.securityReport).toEqual(parsedSecurityIssuesStore);
     });
   });
 

@@ -32,8 +32,8 @@ describe('merge request report issues', () => {
       it('should render "Fixed" keyword', () => {
         expect(vm.$el.querySelector('.mr-widget-code-quality-list li').textContent).toContain('Fixed');
         expect(
-          vm.$el.querySelector('.mr-widget-code-quality-list li').textContent.trim().replace(/\s+/g, ''),
-        ).toEqual('Fixed:InsecureDependencyinGemfile.lock:12');
+          vm.$el.querySelector('.mr-widget-code-quality-list li').textContent.replace(/\s+/g, ' ').trim(),
+        ).toEqual('Fixed: Insecure Dependency in Gemfile.lock:12');
       });
     });
 

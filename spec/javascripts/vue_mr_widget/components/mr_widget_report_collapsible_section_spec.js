@@ -28,7 +28,7 @@ describe('Merge Request collapsible section', () => {
     });
   });
 
-  describe('with successful request', () => {
+  describe('with success status', () => {
     it('should render provided data', () => {
       vm = mountComponent(MRWidgetCodeQuality, {
         type: 'codequality',
@@ -49,7 +49,7 @@ describe('Merge Request collapsible section', () => {
     });
 
     describe('toggleCollapsed', () => {
-      it('toggles issues', () => {
+      it('toggles issues', (done) => {
         vm = mountComponent(MRWidgetCodeQuality, {
           type: 'codequality',
           status: 'success',
@@ -63,8 +63,8 @@ describe('Merge Request collapsible section', () => {
 
         Vue.nextTick(() => {
           expect(
-            vm.$el.querySelector('.code-quality-container').geAttribute('style'),
-          ).toEqual(null);
+            vm.$el.querySelector('.code-quality-container').getAttribute('style'),
+          ).toEqual('');
           expect(
             vm.$el.querySelector('button').textContent.trim(),
           ).toEqual('Collapse');
@@ -73,11 +73,13 @@ describe('Merge Request collapsible section', () => {
 
           Vue.nextTick(() => {
             expect(
-              vm.$el.querySelector('.code-quality-container').geAttribute('style'),
+              vm.$el.querySelector('.code-quality-container').getAttribute('style'),
             ).toEqual('display: none;');
             expect(
               vm.$el.querySelector('button').textContent.trim(),
             ).toEqual('Expand');
+
+            done();
           });
         });
       });

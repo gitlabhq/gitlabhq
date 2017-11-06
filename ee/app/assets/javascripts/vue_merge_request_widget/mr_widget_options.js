@@ -1,3 +1,4 @@
+import { n__ } from '~/locale';
 import CEWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import WidgetApprovals from './components/approvals/mr_widget_approvals';
 import GeoSecondaryNode from './components/states/mr_widget_secondary_geo_node';
@@ -33,47 +34,49 @@ export default {
     },
     codequalityText() {
       const { newIssues, resolvedIssues } = this.mr.codeclimateMetrics;
-      let newIssuesText;
-      let resolvedIssuesText;
-      let text = [];
+      const text = [];
 
       if (!newIssues.length && !resolvedIssues.length) {
         text.push('No changes to code quality');
       } else if (newIssues.length || resolvedIssues.length) {
-        if (newIssues.length) {
-          newIssuesText = ` degraded on ${newIssues.length} ${this.pointsText(newIssues)}`;
-        }
+        text.push('Code quality');
 
         if (resolvedIssues.length) {
-          resolvedIssuesText = ` improved on ${resolvedIssues.length} ${this.pointsText(resolvedIssues)}`;
+          text.push(n__(
+            ' improved on %d point',
+            ' improved on %d points',
+            resolvedIssues.length,
+          ));
         }
 
-        const connector = (newIssues.length > 0 && resolvedIssues.length > 0) ? ' and' : null;
-
-        text = ['Code quality'];
-        if (resolvedIssuesText) {
-          text.push(resolvedIssuesText);
+        if (newIssues.length > 0 && resolvedIssues.length > 0) {
+          text.push(' and');
         }
 
-        if (connector) {
-          text.push(connector);
-        }
-
-        if (newIssuesText) {
-          text.push(newIssuesText);
+        if (newIssues.length) {
+          text.push(n__(
+            ' degraded on %d point',
+            ' degraded on %d points',
+            newIssues.length,
+          ));
         }
       }
 
       return text.join('');
     },
+
     securityText() {
-      const { securityReport } = this.mr;
-      if (securityReport.length) {
-        return `${securityReport.length} security ${this.pluralizeVulnerability(securityReport.length)} detected`;
+      if (this.mr.securityReport.length) {
+        return n__(
+          '%d security vulnerability detected',
+          '%d security vulnerabilities detected',
+          this.mr.securityReport.length,
+        );
       }
 
       return 'No security vulnerabilities detected';
     },
+
     codequalityStatus() {
       if (this.isLoadingCodequality) {
         return 'loading';
@@ -82,6 +85,7 @@ export default {
       }
       return 'success';
     },
+
     securityStatus() {
       if (this.isLoadingSecurity) {
         return 'loading';
@@ -92,9 +96,6 @@ export default {
     },
   },
   methods: {
-    pluralizeVulnerability(length) {
-      return length === 1 ? 'vulnerability' : 'vulnerabilities';
-    },
     fetchCodeQuality() {
       const { head_path, head_blob_path, base_path, base_blob_path } = this.mr.codeclimate;
 
@@ -115,21 +116,18 @@ export default {
     },
 
     fetchSecurity() {
+      const { path, blob_path } = this.mr.security.sast;
       this.isLoadingSecurity = true;
 
-      this.service.fetchReport(this.mr.security.sast)
+      this.service.fetchReport(path)
         .then((data) => {
-          this.mr.setSecurityReport(data);
+          this.mr.setSecurityReport(data, blob_path);
           this.isLoadingSecurity = false;
         })
         .catch(() => {
           this.isLoadingSecurity = false;
           this.loadingSecurityFailed = true;
         });
-    },
-
-    pointsText(issues) {
-      return gl.text.pluralize('point', issues.length);
     },
   },
   created() {
@@ -160,9 +158,9 @@ export default {
         v-if="shouldRenderCodeQuality"
         type="codequality"
         :status="codequalityStatus"
-        loadingText="Loading codeclimate report"
-        errorText="Failed to load codeclimate report"
-        :successText="codequalityText"
+        loading-text="Loading codeclimate report"
+        error-text="Failed to load codeclimate report"
+        :success-text="codequalityText"
         :unresolvedIssues="mr.codeclimateMetrics.newIssues"
         :resolvedIssues="mr.codeclimateMetrics.resolvedIssues"
         />
@@ -170,9 +168,9 @@ export default {
         v-if="shouldRenderSecurityReport"
         type="security"
         :status="securityStatus"
-        loadingText="Loading security report"
-        errorText="Failed to load security report"
-        :successText="securityText"
+        loading-text="Loading security report"
+        error-text="Failed to load security report"
+        :success-text="securityText"
         :unresolvedIssues="mr.securityReport"
         />
       <div class="mr-widget-section">

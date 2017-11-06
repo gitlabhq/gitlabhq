@@ -62,10 +62,10 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.securityReport = [];
   }
 
-  setSecurityReport(issues) {
-    this.securityReport = MergeRequestStore.parseIssues(issues);
+  setSecurityReport(issues, path) {
+    this.securityReport = MergeRequestStore.parseIssues(issues, path);
   }
-  // TODO: get changes from codequality MR
+
   compareCodeclimateMetrics(headIssues, baseIssues, headBlobPath, baseBlobPath) {
     const parsedHeadIssues = MergeRequestStore.parseIssues(headIssues, headBlobPath);
     const parsedBaseIssues = MergeRequestStore.parseIssues(baseIssues, baseBlobPath);
@@ -113,19 +113,20 @@ export default class MergeRequestStore extends CEMergeRequestStore {
 
         if (issue.location.lines && issue.location.lines.begin) {
           parsedIssue.line = issue.location.lines.begin;
-          parsedIssue.urlPath = parseCodeQualityUrl += `#L${issue.location.lines.begin}`;
-        }
-      } else {
-        // security
-        let parsedSecurityUrl;
-        if (issue.file) {
-          parsedSecurityUrl = `${path}/${issue.file}`;
-          parsedIssue.path = issue.file;
+          parseCodeQualityUrl += `#L${issue.location.lines.begin}`;
         }
 
+        parsedIssue.urlPath = parseCodeQualityUrl;
+
+      // security
+      } else if (issue.file) {
+        let parsedSecurityUrl = `${path}/${issue.file}`;
+        parsedIssue.path = issue.file;
+
         if (issue.line) {
-          parsedIssue.urlPath = parsedSecurityUrl += `#L${issue.line}`;
+          parsedSecurityUrl += `#L${issue.line}`;
         }
+        parsedIssue.urlPath = parsedSecurityUrl;
       }
 
       return parsedIssue;
