@@ -3,6 +3,8 @@ import { s__ } from '../../locale';
 import eventHub from '../event_hub';
 import loadingButton from '../../vue_shared/components/loading_button.vue';
 import {
+  APPLICATION_NOT_INSTALLABLE,
+  APPLICATION_SCHEDULED,
   APPLICATION_INSTALLABLE,
   APPLICATION_INSTALLING,
   APPLICATION_INSTALLED,
@@ -59,6 +61,7 @@ export default {
     },
     installButtonLoading() {
       return !this.status ||
+        this.status === APPLICATION_SCHEDULED ||
         this.status === APPLICATION_INSTALLING ||
         this.requestStatus === REQUEST_LOADING;
     },
@@ -72,9 +75,9 @@ export default {
     },
     installButtonLabel() {
       let label;
-      if (this.status === APPLICATION_INSTALLABLE || this.status === APPLICATION_ERROR) {
+      if (this.status === APPLICATION_INSTALLABLE || this.status === APPLICATION_ERROR || this.status === APPLICATION_NOT_INSTALLABLE) {
         label = s__('ClusterIntegration|Install');
-      } else if (this.status === APPLICATION_INSTALLING) {
+      } else if (this.status === APPLICATION_SCHEDULED || this.status === APPLICATION_INSTALLING) {
         label = s__('ClusterIntegration|Installing');
       } else if (this.status === APPLICATION_INSTALLED) {
         label = s__('ClusterIntegration|Installed');
