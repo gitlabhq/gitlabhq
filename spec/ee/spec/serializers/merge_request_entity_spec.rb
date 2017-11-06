@@ -15,6 +15,6 @@ describe MergeRequestEntity do
     allow(subject).to receive(:expose_sast_data?).and_return(true)
     allow(merge_request).to receive(:sast_artifact).and_return(build)
 
-    expect(subject.as_json).to include(:sast_path)
+    expect(subject.as_json).to include(:sast)
   end
 end
