@@ -10,7 +10,7 @@
     z-index: 1000;
     margin-bottom: 0;
     min-height: $header-height;
-    border: none;
+    border: 0;
     border-bottom: 1px solid $border-color;
     position: fixed;
     top: 0;
@@ -169,7 +169,7 @@
 
   .navbar-collapse {
     flex: 0 0 auto;
-    border-top: none;
+    border-top: 0;
     padding: 0;
 
     @media (max-width: $screen-xs-max) {

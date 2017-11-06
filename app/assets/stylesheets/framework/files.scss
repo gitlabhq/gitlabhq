@@ -142,7 +142,7 @@
      */
     &.blame {
       table {
-        border: none;
+        border: 0;
         margin: 0;
       }
 
@@ -150,20 +150,20 @@
         border-bottom: 1px solid $blame-border;
 
         &:last-child {
-          border-bottom: none;
+          border-bottom: 0;
         }
       }
 
       td {
-        border-top: none;
-        border-bottom: none;
+        border-top: 0;
+        border-bottom: 0;
 
         &:first-child {
-          border-left: none;
+          border-left: 0;
         }
 
         &:last-child {
-          border-right: none;
+          border-right: 0;
         }
       }
 

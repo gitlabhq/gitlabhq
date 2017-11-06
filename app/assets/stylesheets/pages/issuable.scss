@@ -79,7 +79,7 @@
   .title {
     padding: 0;
     margin-bottom: 16px;
-    border-bottom: none;
+    border-bottom: 0;
   }
 
   .btn-edit {
@@ -155,7 +155,7 @@
     }
 
     &:last-child {
-      border: none;
+      border: 0;
     }
 
     span {
@@ -340,7 +340,7 @@
     .block {
       width: $gutter_collapsed_width - 2px;
       padding: 15px 0 0;
-      border-bottom: none;
+      border-bottom: 0;
       overflow: hidden;
     }
 
@@ -401,7 +401,7 @@
       }
 
       .btn-clipboard {
-        border: none;
+        border: 0;
         color: $issuable-sidebar-color;
 
         &:hover {

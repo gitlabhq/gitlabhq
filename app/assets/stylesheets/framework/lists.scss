@@ -42,7 +42,7 @@
     }
 
     &:last-child {
-      border-bottom: none;
+      border-bottom: 0;
 
       &.bottom {
         background: $gray-light;
@@ -92,7 +92,7 @@ ul.unstyled-list {
 }
 
 ul.unstyled-list > li {
-  border-bottom: none;
+  border-bottom: 0;
 }
 
 // Generic content list
@@ -184,7 +184,7 @@ ul.content-list {
 
     // When dragging a list item
     &.ui-sortable-helper {
-      border-bottom: none;
+      border-bottom: 0;
     }
 
     &.list-placeholder {
@@ -301,7 +301,7 @@ ul.indent-list {
   }
 
   > .group-list-tree > .group-row.has-children:first-child {
-    border-top: none;
+    border-top: 0;
   }
 }
 
@@ -419,7 +419,7 @@ ul.indent-list {
     padding: 0;
 
     &.has-children {
-      border-top: none;
+      border-top: 0;
     }
 
     &:first-child {

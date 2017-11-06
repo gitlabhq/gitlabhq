@@ -47,7 +47,7 @@
     table {
       width: 100%;
       font-family: $monospace_font;
-      border: none;
+      border: 0;
       border-collapse: separate;
       margin: 0;
       padding: 0;
@@ -105,7 +105,7 @@
     .new_line {
       @include user-select(none);
       margin: 0;
-      border: none;
+      border: 0;
       padding: 0 5px;
       border-right: 1px solid;
       text-align: right;
@@ -133,7 +133,7 @@
       display: block;
       margin: 0;
       padding: 0 1.5em;
-      border: none;
+      border: 0;
       position: relative;
 
       &.parallel {
@@ -359,7 +359,7 @@
       cursor: pointer;
 
       &:first-child {
-        border-left: none;
+        border-left: 0;
       }
 
       &:hover {
@@ -384,7 +384,7 @@
 
 .file-content .diff-file {
   margin: 0;
-  border: none;
+  border: 0;
 }
 
 .diff-file .line_content {
@@ -400,7 +400,7 @@
 }
 
 .files-changed {
-  border-bottom: none;
+  border-bottom: 0;
 }
 
 .diff-stats-summary-toggler {

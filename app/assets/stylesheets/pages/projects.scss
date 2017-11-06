@@ -88,7 +88,7 @@
 
 .project-feature-settings {
   background: $gray-lighter;
-  border-top: none;
+  border-top: 0;
   margin-bottom: 16px;
 }
 
@@ -135,7 +135,7 @@
 
 .project-feature-toggle {
   position: relative;
-  border: none;
+  border: 0;
   outline: 0;
   display: block;
   width: 100px;
@@ -490,7 +490,7 @@ a.deploy-project-label {
   flex: 1;
   padding: 0;
   background: transparent;
-  border: none;
+  border: 0;
   line-height: 34px;
   margin: 0;
 
@@ -1030,7 +1030,7 @@ a.allowed-to-push {
     margin: 0;
     border-radius: 0 0 1px 1px;
     padding: 20px 0;
-    border: none;
+    border: 0;
   }
 
   .table-bordered {
@@ -1213,7 +1213,7 @@ a.allowed-to-push {
   table-layout: fixed;
 
   &.table-responsive {
-    border: none;
+    border: 0;
   }
 
   .variable-key {

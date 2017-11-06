@@ -21,7 +21,7 @@
   }
 
   &.text-file .diff-file {
-    border-bottom: none;
+    border-bottom: 0;
   }
 }
 
@@ -66,5 +66,5 @@
 
 .discussion .timeline-entry {
   margin: 0;
-  border-right: none;
+  border-right: 0;
 }
