@@ -11,7 +11,8 @@ const defaultColorPalette = {
 
 const defaultColorOrder = ['blue', 'orange', 'red', 'green', 'purple'];
 
-export default function createTimeSeries(queryData, graphWidth, graphHeight, graphHeightOffset) {
+export default function createTimeSeries(queries, graphWidth, graphHeight, graphHeightOffset) {
+  const queryData = queries[0];
   let usedColors = [];
 
   function pickColor(name) {

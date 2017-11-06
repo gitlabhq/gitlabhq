@@ -138,7 +138,7 @@
 
       renderAxesPaths() {
         this.timeSeries = createTimeSeries(
-          this.graphData.queries[0],
+          this.graphData.queries,
           this.graphWidth,
           this.graphHeight,
           this.graphHeightOffset,
