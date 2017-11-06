@@ -76,7 +76,7 @@ function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, maxV
     }
 
     if (query.track) {
-      metricTag += ` - track: ${query.track}`;
+      metricTag += ` - ${query.track}`;
     }
 
     return {
