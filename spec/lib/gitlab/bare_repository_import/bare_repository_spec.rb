@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ::Gitlab::ProjectRepoPath do
+describe ::Gitlab::BareRepositoryImport::BareRepository do
   let(:project_repo_path) { described_class.new('/full/path/', '/full/path/to/repo.git') }
 
   it 'stores the repo path' do

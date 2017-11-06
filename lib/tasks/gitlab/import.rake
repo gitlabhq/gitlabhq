@@ -16,7 +16,7 @@ namespace :gitlab do
         exit 1
       end
 
-      Gitlab::BareRepositoryImporter.execute(args.import_path)
+      Gitlab::BareRepositoryImport::Importer.execute(args.import_path)
     end
   end
 end

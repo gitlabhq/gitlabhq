@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-describe Gitlab::BareRepositoryImporter, repository: true do
+describe Gitlab::BareRepositoryImport::Importer, repository: true do
   let!(:admin) { create(:admin) }
-  let(:project_repo_path) { Gitlab::ProjectRepoPath.new(TestEnv.repos_path, File.join(TestEnv.repos_path, "#{project_path}.git")) }
+  let(:project_repo_path) { Gitlab::BareRepositoryImport::BareRepository.new(TestEnv.repos_path, File.join(TestEnv.repos_path, "#{project_path}.git")) }
 
   subject(:importer) { described_class.new(project_repo_path) }
 
@@ -38,7 +38,7 @@ describe Gitlab::BareRepositoryImporter, repository: true do
         let(:admin) { nil }
 
         it 'raises an error' do
-          expect { importer }.to raise_error(Gitlab::BareRepositoryImporter::NoAdminError)
+          expect { importer }.to raise_error(Gitlab::BareRepositoryImport::Importer::NoAdminError)
         end
       end
     end
