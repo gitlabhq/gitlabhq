@@ -115,6 +115,7 @@ export default {
           <button
             type="button"
             class="btn pull-right"
+            :disabled="submitDisabled"
             :class="btnKindClass"
             @click="emitSubmit(true)">
             {{ primaryButtonLabel }}
