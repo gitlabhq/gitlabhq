@@ -5,7 +5,11 @@ describe IgnorableColumn do
     Class.new do
       def self.columns
         # This method does not have access to "double"
-        [Struct.new(:name).new('id'), Struct.new(:name).new('title')]
+        [
+          Struct.new(:name).new('id'),
+          Struct.new(:name).new('title'),
+          Struct.new(:name).new('date')
+        ]
       end
     end
   end
@@ -18,7 +22,7 @@ describe IgnorableColumn do
 
   describe '.columns' do
     it 'returns the columns, excluding the ignored ones' do
-      model.ignore_column(:title)
+      model.ignore_column(:title, :date)
 
       expect(model.columns.map(&:name)).to eq(%w(id))
     end
@@ -30,9 +34,9 @@ describe IgnorableColumn do
     end
 
     it 'returns the names of the ignored columns' do
-      model.ignore_column(:title)
+      model.ignore_column(:title, :date)
 
-      expect(model.ignored_columns).to eq(Set.new(%w(title)))
+      expect(model.ignored_columns).to eq(Set.new(%w(title date)))
     end
   end
 end

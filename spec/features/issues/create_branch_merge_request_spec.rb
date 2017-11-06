@@ -64,6 +64,19 @@ feature 'Create Branch/Merge Request Dropdown on issue page', :feature, :js do
       end
     end
 
+    context 'when merge requests are disabled' do
+      before do
+        project.project_feature.update(merge_requests_access_level: 0)
+
+        visit project_issue_path(project, issue)
+      end
+
+      it 'shows only create branch button' do
+        expect(page).not_to have_button('Create a merge request')
+        expect(page).to have_button('Create a branch')
+      end
+    end
+
     context 'when issue is confidential' do
       it 'disables the create branch button' do
         issue = create(:issue, :confidential, project: project)

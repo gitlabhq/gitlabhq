@@ -4,7 +4,7 @@ describe WaitForClusterCreationWorker do
   describe '#perform' do
     context 'when provider type is gcp' do
       let(:cluster) { create(:cluster, provider_type: :gcp, provider_gcp: provider) }
-      let(:provider) { create(:provider_gcp, :creating) }
+      let(:provider) { create(:cluster_provider_gcp, :creating) }
 
       it 'provision a cluster' do
         expect_any_instance_of(Clusters::Gcp::VerifyProvisionStatusService).to receive(:execute)

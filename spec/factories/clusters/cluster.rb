@@ -14,7 +14,7 @@ FactoryGirl.define do
       platform_type :kubernetes
 
       platform_kubernetes do
-        create(:platform_kubernetes, :configured)
+        create(:cluster_platform_kubernetes, :configured)
       end
     end
 
@@ -23,8 +23,8 @@ FactoryGirl.define do
       platform_type :kubernetes
 
       before(:create) do |cluster, evaluator|
-        cluster.platform_kubernetes = build(:platform_kubernetes, :configured)
-        cluster.provider_gcp = build(:provider_gcp, :created)
+        cluster.platform_kubernetes = build(:cluster_platform_kubernetes, :configured)
+        cluster.provider_gcp = build(:cluster_provider_gcp, :created)
       end
     end
 
@@ -32,7 +32,7 @@ FactoryGirl.define do
       provider_type :gcp
 
       provider_gcp do
-        create(:provider_gcp, :creating)
+        create(:cluster_provider_gcp, :creating)
       end
     end
   end

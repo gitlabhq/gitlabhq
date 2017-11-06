@@ -39,7 +39,7 @@
   }
 
   &.top-block {
-    border-top: none;
+    border-top: 0;
 
     .container-fluid {
       background-color: inherit;
@@ -63,7 +63,7 @@
 
   &.footer-block {
     margin-top: 0;
-    border-bottom: none;
+    border-bottom: 0;
     margin-bottom: -$gl-padding;
   }
 
@@ -100,7 +100,7 @@
 
   &.build-content {
     background-color: $white-light;
-    border-top: none;
+    border-top: 0;
   }
 }
 
@@ -287,12 +287,12 @@
     cursor: pointer;
     color: $blue-300;
     z-index: 1;
-    border: none;
+    border: 0;
     background-color: transparent;
 
     &:hover,
     &:focus {
-      border: none;
+      border: 0;
       color: $blue-400;
     }
   }
