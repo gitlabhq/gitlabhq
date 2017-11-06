@@ -1,5 +1,0 @@
----
-title: Forbid the usage of `Redis#keys`
-merge_request: 14889
-author:
-type: fixed

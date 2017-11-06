@@ -94,6 +94,6 @@ feature 'Import/Export - project import integration test', :js do
   end
 
   def click_import_project_tab
-    find('#import-project-tab').trigger('click')
+    find('#import-project-tab').click
   end
 end

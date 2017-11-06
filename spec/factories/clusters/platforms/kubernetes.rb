@@ -2,6 +2,8 @@ FactoryGirl.define do
   factory :platform_kubernetes, class: Clusters::Platforms::Kubernetes do
     cluster
     namespace nil
+    api_url 'https://kubernetes.example.com'
+    token 'a' * 40
 
     trait :configured do
       api_url 'https://kubernetes.example.com'

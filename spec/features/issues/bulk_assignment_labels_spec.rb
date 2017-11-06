@@ -405,7 +405,7 @@ feature 'Issues > Labels bulk assignment' do
   end
 
   def update_issues
-    find('.update-selected-issues').trigger('click')
+    find('.update-selected-issues').click
     wait_for_requests
   end
 
