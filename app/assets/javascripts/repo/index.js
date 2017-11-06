@@ -43,6 +43,7 @@ function initRepo(el) {
         currentBranch: data.currentBranch,
         isRoot: convertPermissionToBoolean(data.root),
         isInitialRoot: convertPermissionToBoolean(data.root),
+        downloads: JSON.parse(document.querySelector('.js-repo-download-data').innerHTML),
       });
     },
     render(createElement) {

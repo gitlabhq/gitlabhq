@@ -4,6 +4,7 @@ export default () => ({
   currentBlobView: 'repo-preview',
   currentRef: '',
   discardPopupOpen: false,
+  downloads: {},
   editMode: false,
   endpoints: {},
   isRoot: false,

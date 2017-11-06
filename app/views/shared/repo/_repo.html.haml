@@ -1,3 +1,4 @@
+%script.js-repo-download-data{ type: "application/json" }= download_data(@project, @ref).to_json.html_safe
 #repo{ data: { root: @path.empty?.to_s,
                root_url: project_tree_path(project),
                url: content_url,

@@ -606,4 +606,16 @@ module ProjectsHelper
 
     project_find_file_path(@project, ref)
   end
+
+  def download_data(project, ref)
+    source_code = []
+    source_code.push({ text: _('Download zip'), link: archive_project_repository_path(project, ref: ref, format: 'zip') })
+    source_code.push({ text: _('Download tar.gz'), link: archive_project_repository_path(project, ref: ref, format: 'tar.gz') })
+    source_code.push({ text: _('Download tar.bz2'), link: archive_project_repository_path(project, ref: ref, format: 'tar.bz2') })
+    source_code.push({ text: _('Download tar'), link: archive_project_repository_path(project, ref: ref, format: 'tar') })
+
+    {
+      _("Source Code") => source_code
+    }
+  end
 end
