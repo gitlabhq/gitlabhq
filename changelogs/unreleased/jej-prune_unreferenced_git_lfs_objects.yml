@@ -1,0 +1,5 @@
+---
+title: LFS files are removed when no longer referenced
+merge_request: 14479
+author:
+type: added
