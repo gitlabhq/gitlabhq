@@ -65,14 +65,18 @@ function queryTimeSeries(query, graphWidth, graphHeight, graphHeightOffset, maxV
 
     const timeSeriesMetricLabel = timeSeries.metric[Object.keys(timeSeries.metric)[0]];
     const seriesCustomizationData = query.series != null &&
-                                    _.findWhere(query.series[0].when,
-                                    { value: timeSeriesMetricLabel });
-    if (seriesCustomizationData != null) {
+      _.findWhere(query.series[0].when, { value: timeSeriesMetricLabel });
+
+    if (seriesCustomizationData) {
       metricTag = seriesCustomizationData.value || timeSeriesMetricLabel;
       [lineColor, areaColor] = pickColor(seriesCustomizationData.color);
     } else {
       metricTag = timeSeriesMetricLabel || `series ${timeSeriesNumber + 1}`;
       [lineColor, areaColor] = pickColor();
+    }
+
+    if (query.track) {
+      metricTag += ` - track: ${query.track}`;
     }
 
     return {
