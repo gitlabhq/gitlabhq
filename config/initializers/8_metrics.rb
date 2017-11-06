@@ -118,10 +118,6 @@ def instrument_classes(instrumentation)
 end
 # rubocop:enable Metrics/AbcSize
 
-unless Sidekiq.server?
-  Gitlab::Metrics::UnicornSampler.initialize_instance(Settings.monitoring.unicorn_sampler_interval).start
-end
-
 Gitlab::Application.configure do |config|
   # 0 should be Sentry to catch errors in this middleware
   config.middleware.insert(1, Gitlab::Metrics::RequestsRackMiddleware)
@@ -187,7 +183,7 @@ if Gitlab::Metrics.enabled?
 
   GC::Profiler.enable
 
-  Gitlab::Metrics::InfluxSampler.initialize_instance.start
+  Gitlab::Metrics::Samplers::InfluxSampler.initialize_instance.start
 
   module TrackNewRedisConnections
     def connect(*args)
