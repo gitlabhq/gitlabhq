@@ -77,7 +77,6 @@ def instrument_classes(instrumentation)
 
   instrumentation.instrument_instance_methods(Banzai::ObjectRenderer)
   instrumentation.instrument_instance_methods(Banzai::Redactor)
-  instrumentation.instrument_methods(Banzai::NoteRenderer)
 
   [Issuable, Mentionable, Participable].each do |klass|
     instrumentation.instrument_instance_methods(klass)

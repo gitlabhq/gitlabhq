@@ -172,16 +172,6 @@ module EventsHelper
     end
   end
 
-  def event_note(text, options = {})
-    text = first_line_in_markdown(text, 150, options)
-
-    sanitize(
-      text,
-      tags: %w(a img gl-emoji b pre code p span),
-      attributes: Rails::Html::WhiteListSanitizer.allowed_attributes + ['style', 'data-src', 'data-name', 'data-unicode-version']
-    )
-  end
-
   def event_commit_title(message)
     message ||= ''
     (message.split("\n").first || "").truncate(70)
