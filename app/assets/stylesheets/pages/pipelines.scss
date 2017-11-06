@@ -823,6 +823,11 @@ button.mini-pipeline-graph-dropdown-toggle {
         margin-left: 2px;
         display: inline-block;
 
+        &::after {
+          content: '';
+          display: block;
+        }
+
         @media (max-width: $screen-xs-max) {
           max-width: 60%;
         }
