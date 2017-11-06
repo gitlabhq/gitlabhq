@@ -104,7 +104,21 @@ describe('Clusters', () => {
   describe('updateContainer', () => {
     describe('when creating cluster', () => {
       it('should show the creating container', () => {
-        cluster.updateContainer('creating');
+        cluster.updateContainer(null, 'creating');
+
+        expect(
+          cluster.creatingContainer.classList.contains('hidden'),
+        ).toBeFalsy();
+        expect(
+          cluster.successContainer.classList.contains('hidden'),
+        ).toBeTruthy();
+        expect(
+          cluster.errorContainer.classList.contains('hidden'),
+        ).toBeTruthy();
+      });
+
+      it('should continue to show `creating` banner with subsequent updates of the same status', () => {
+        cluster.updateContainer('creating', 'creating');
 
         expect(
           cluster.creatingContainer.classList.contains('hidden'),
@@ -120,7 +134,7 @@ describe('Clusters', () => {
 
     describe('when cluster is created', () => {
       it('should show the success container', () => {
-        cluster.updateContainer('created');
+        cluster.updateContainer(null, 'created');
 
         expect(
           cluster.creatingContainer.classList.contains('hidden'),
@@ -132,11 +146,25 @@ describe('Clusters', () => {
           cluster.errorContainer.classList.contains('hidden'),
         ).toBeTruthy();
       });
+
+      it('should not show a banner when status is already `created`', () => {
+        cluster.updateContainer('created', 'created');
+
+        expect(
+          cluster.creatingContainer.classList.contains('hidden'),
+        ).toBeTruthy();
+        expect(
+          cluster.successContainer.classList.contains('hidden'),
+        ).toBeTruthy();
+        expect(
+          cluster.errorContainer.classList.contains('hidden'),
+        ).toBeTruthy();
+      });
     });
 
     describe('when cluster has error', () => {
       it('should show the error container', () => {
-        cluster.updateContainer('errored', 'this is an error');
+        cluster.updateContainer(null, 'errored', 'this is an error');
 
         expect(
           cluster.creatingContainer.classList.contains('hidden'),
@@ -151,6 +179,20 @@ describe('Clusters', () => {
         expect(
           cluster.errorReasonContainer.textContent,
         ).toContain('this is an error');
+      });
+
+      it('should show `error` banner when previously `creating`', () => {
+        cluster.updateContainer('creating', 'errored');
+
+        expect(
+          cluster.creatingContainer.classList.contains('hidden'),
+        ).toBeTruthy();
+        expect(
+          cluster.successContainer.classList.contains('hidden'),
+        ).toBeTruthy();
+        expect(
+          cluster.errorContainer.classList.contains('hidden'),
+        ).toBeFalsy();
       });
     });
   });

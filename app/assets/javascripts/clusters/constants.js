@@ -4,7 +4,7 @@ export const APPLICATION_INSTALLABLE = 'installable';
 export const APPLICATION_SCHEDULED = 'scheduled';
 export const APPLICATION_INSTALLING = 'installing';
 export const APPLICATION_INSTALLED = 'installed';
-export const APPLICATION_ERROR = 'error';
+export const APPLICATION_ERROR = 'errored';
 
 // These are only used client-side
 export const REQUEST_LOADING = 'request-loading';
