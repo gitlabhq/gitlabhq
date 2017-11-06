@@ -727,11 +727,11 @@
 
 .pika-single.animate-picker.is-bound {
   @include set-visible;
-}
 
-.pika-single.animate-picker.is-bound.is-hidden {
-  @include set-invisible;
-  overflow: hidden;
+  &.is-hidden {
+    @include set-invisible;
+    overflow: hidden;
+  }
 }
 
 @mixin dropdown-item-hover {
@@ -938,9 +938,7 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
       border-right: 0;
     }
   }
-}
 
-.projects-dropdown-container {
   .projects-list-frequent-container,
   .projects-list-search-container, {
     padding: 8px 0;
@@ -951,11 +949,6 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
   .projects-list-frequent-container li.section-empty,
   .projects-list-search-container li.section-empty {
     padding: 0 15px;
-  }
-
-  .section-header,
-  .projects-list-frequent-container li.section-empty,
-  .projects-list-search-container li.section-empty {
     color: $gl-text-color-secondary;
     font-size: $gl-font-size;
   }

@@ -6,7 +6,7 @@ feature 'Ref switcher', :js do
 
   before do
     project.team << [user, :master]
-    page.driver.set_cookie('new_repo', 'true')
+    set_cookie('new_repo', 'true')
     sign_in(user)
     visit project_tree_path(project, 'master')
   end

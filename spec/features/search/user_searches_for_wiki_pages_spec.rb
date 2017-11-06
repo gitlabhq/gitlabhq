@@ -15,14 +15,14 @@ describe 'User searches for wiki pages', :js do
   include_examples 'top right search form'
 
   it 'finds a page' do
-    find('.js-search-project-dropdown').trigger('click')
+    find('.js-search-project-dropdown').click
 
     page.within('.project-filter') do
       click_link(project.name_with_namespace)
     end
 
     fill_in('dashboard_search', with: 'content')
-    find('.btn-search').trigger('click')
+    find('.btn-search').click
 
     page.within('.search-filter') do
       click_link('Wiki')

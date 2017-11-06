@@ -5,7 +5,7 @@ module AccessMatchersForController
   extend RSpec::Matchers::DSL
   include Warden::Test::Helpers
 
-  EXPECTED_STATUS_CODE_ALLOWED = [200, 201, 302].freeze
+  EXPECTED_STATUS_CODE_ALLOWED = [200, 201, 204, 302].freeze
   EXPECTED_STATUS_CODE_DENIED = [401, 404].freeze
 
   def emulate_user(role, membership = nil)

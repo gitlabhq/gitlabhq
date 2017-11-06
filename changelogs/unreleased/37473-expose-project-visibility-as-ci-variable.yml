@@ -1,0 +1,5 @@
+---
+title: Expose project visibility as CI variable - CI_PROJECT_VISIBILITY
+merge_request: 15193
+author:
+type: added
