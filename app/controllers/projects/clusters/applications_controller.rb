@@ -5,14 +5,12 @@ class Projects::Clusters::ApplicationsController < Projects::ApplicationControll
   before_action :authorize_create_cluster!, only: [:create]
 
   def create
-    scheduled = Clusters::Applications::ScheduleInstallationService.new(project, current_user,
-                                                                        application_class: @application_class,
-                                                                        cluster: @cluster).execute
-    if scheduled
-      head :no_content
-    else
-      head :bad_request
-    end
+    Clusters::Applications::ScheduleInstallationService.new(project, current_user,
+                                                            application_class: @application_class,
+                                                            cluster: @cluster).execute
+    head :no_content
+  rescue StandardError
+    head :bad_request
   end
 
   private

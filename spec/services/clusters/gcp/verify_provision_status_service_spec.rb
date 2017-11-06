@@ -4,7 +4,7 @@ describe Clusters::Gcp::VerifyProvisionStatusService do
   include GoogleApi::CloudPlatformHelpers
 
   describe '#execute' do
-    let(:provider) { create(:provider_gcp, :creating) }
+    let(:provider) { create(:cluster_provider_gcp, :creating) }
     let(:gcp_project_id) { provider.gcp_project_id }
     let(:zone) { provider.zone }
     let(:operation_id) { provider.operation_id }

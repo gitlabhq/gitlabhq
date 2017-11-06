@@ -18,7 +18,7 @@ module Clusters
       end
 
       def set_initial_status
-        self.status = 0 unless cluster.platform_kubernetes_active?
+        self.status = 0 unless cluster&.platform_kubernetes_active?
       end
 
       def name
