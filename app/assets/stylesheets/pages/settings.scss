@@ -266,11 +266,11 @@
         margin-left: 5px;
         background: $badge-bg;
       }
-    }
 
-    /* Ensure we don't add border if there's only single li */
-    li + li {
-      border-top: 1px solid $border-color;
+      /* Ensure we don't add border if there's only single li */
+      + li {
+        border-top: 1px solid $border-color;
+      }
     }
   }
 }

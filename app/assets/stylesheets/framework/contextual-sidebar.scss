@@ -141,15 +141,15 @@
     svg {
       fill: $gl-text-color-secondary;
     }
-  }
 
-  .nav-item-name {
-    flex: 1;
-  }
+    .nav-item-name {
+      flex: 1;
+    }
 
-  li.active {
-    > a {
-      font-weight: $gl-font-weight-bold;
+    &.active {
+      > a {
+        font-weight: $gl-font-weight-bold;
+      }
     }
   }
 

@@ -53,6 +53,14 @@ hr {
 
 .str-truncated {
   @include str-truncated;
+
+  &-60 {
+    @include str-truncated(60%);
+  }
+
+  &-100 {
+    @include str-truncated(100%);
+  }
 }
 
 .block-truncated {
@@ -82,10 +90,17 @@ hr {
   font-size: 14px;
 }
 
-table a code {
-  position: relative;
-  top: -2px;
-  margin-right: 3px;
+table {
+  a code {
+    position: relative;
+    top: -2px;
+    margin-right: 3px;
+  }
+
+  td.permission-x {
+    background: $table-permission-x-bg !important;
+    text-align: center;
+  }
 }
 
 .loading {
@@ -270,6 +285,7 @@ img.emoji {
   margin-bottom: 10px;
 }
 
+<<<<<<< HEAD
 .available-groups form {
   margin: 5px 0;
 }
@@ -281,6 +297,8 @@ table {
   }
 }
 
+=======
+>>>>>>> ce-com/master
 .btn-sign-in {
   text-shadow: none;
 
@@ -346,10 +364,11 @@ table {
 
 .dropzone .dz-preview .dz-progress {
   border-color: $border-color !important;
-}
 
-.dropzone .dz-preview .dz-progress .dz-upload {
-  background: $gl-success !important;
+  .dz-upload {
+    background: $gl-success !important;
+  }
+
 }
 
 .dz-message {
@@ -408,16 +427,6 @@ table {
 .bordered-box {
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
-}
-
-.str-truncated {
-  &-60 {
-    @include str-truncated(60%);
-  }
-
-  &-100 {
-    @include str-truncated(100%);
-  }
 }
 
 .tooltip {

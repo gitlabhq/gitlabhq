@@ -57,10 +57,13 @@ class Group < Namespace
   after_destroy :post_destroy_hook
   after_save :update_two_factor_requirement
   after_update :path_changed_hook, if: :path_changed?
+<<<<<<< HEAD
 
   scope :where_group_links_with_provider, ->(provider) do
     joins(:ldap_group_links).where(ldap_group_links: { provider: provider })
   end
+=======
+>>>>>>> ce-com/master
 
   class << self
     def supports_nested_groups?
