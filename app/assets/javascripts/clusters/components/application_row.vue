@@ -75,7 +75,11 @@ export default {
     },
     installButtonLabel() {
       let label;
-      if (this.status === APPLICATION_INSTALLABLE || this.status === APPLICATION_ERROR || this.status === APPLICATION_NOT_INSTALLABLE) {
+      if (
+        this.status === APPLICATION_NOT_INSTALLABLE ||
+        this.status === APPLICATION_INSTALLABLE ||
+        this.status === APPLICATION_ERROR
+      ) {
         label = s__('ClusterIntegration|Install');
       } else if (this.status === APPLICATION_SCHEDULED || this.status === APPLICATION_INSTALLING) {
         label = s__('ClusterIntegration|Installing');

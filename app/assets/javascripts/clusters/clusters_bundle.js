@@ -28,6 +28,8 @@ export default class Clusters {
     const {
       statusPath,
       installHelmPath,
+      installIngressPath,
+      installRunnerPath,
       clusterStatus,
       clusterStatusReason,
       helpPath,
@@ -40,6 +42,8 @@ export default class Clusters {
     this.service = new ClustersService({
       endpoint: statusPath,
       installHelmEndpoint: installHelmPath,
+      installIngresEndpoint: installIngressPath,
+      installRunnerEndpoint: installRunnerPath,
     });
 
     this.toggle = this.toggle.bind(this);
@@ -57,7 +61,7 @@ export default class Clusters {
     this.initApplications();
 
     if (this.store.state.status !== 'created') {
-      this.updateContainer(this.store.state.status, this.store.state.statusReason);
+      this.updateContainer(null, this.store.state.status, this.store.state.statusReason);
     }
 
     this.addListeners();
@@ -131,13 +135,13 @@ export default class Clusters {
   }
 
   handleSuccess(data) {
-    const prevApplicationMap = Object.assign({}, this.store.state.applications);
     const prevStatus = this.store.state.status;
+    const prevApplicationMap = Object.assign({}, this.store.state.applications);
+
     this.store.updateStateFromServer(data.data);
+
     this.checkForNewInstalls(prevApplicationMap, this.store.state.applications);
-    if (prevStatus.length == 0 || prevStatus !== this.store.state.status) {
-      this.updateContainer(this.store.state.status, this.store.state.statusReason);
-    }
+    this.updateContainer(prevStatus, this.store.state.status, this.store.state.statusReason);
   }
 
   toggle() {
@@ -168,22 +172,26 @@ export default class Clusters {
     }
   }
 
-  updateContainer(status, error) {
+  updateContainer(prevStatus, status, error) {
     this.hideAll();
-    switch (status) {
-      case 'created':
-        this.successContainer.classList.remove('hidden');
-        break;
-      case 'errored':
-        this.errorContainer.classList.remove('hidden');
-        this.errorReasonContainer.textContent = error;
-        break;
-      case 'scheduled':
-      case 'creating':
-        this.creatingContainer.classList.remove('hidden');
-        break;
-      default:
-        this.hideAll();
+
+    // We poll all the time but only want the `created` banner to show when newly created
+    if (this.store.state.status !== 'created' || prevStatus !== this.store.state.status) {
+      switch (status) {
+        case 'created':
+          this.successContainer.classList.remove('hidden');
+          break;
+        case 'errored':
+          this.errorContainer.classList.remove('hidden');
+          this.errorReasonContainer.textContent = error;
+          break;
+        case 'scheduled':
+        case 'creating':
+          this.creatingContainer.classList.remove('hidden');
+          break;
+        default:
+          this.hideAll();
+      }
     }
   }
 

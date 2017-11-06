@@ -62,18 +62,21 @@ describe('Clusters Store', () => {
         statusReason: mockResponseData.status_reason,
         applications: {
           helm: {
+            title: 'Helm Tiller',
             status: mockResponseData.applications[0].status,
             statusReason: mockResponseData.applications[0].status_reason,
             requestStatus: null,
             requestReason: null,
           },
           ingress: {
+            title: 'Ingress',
             status: mockResponseData.applications[1].status,
             statusReason: mockResponseData.applications[1].status_reason,
             requestStatus: null,
             requestReason: null,
           },
           runner: {
+            title: 'GitLab Runner',
             status: mockResponseData.applications[2].status,
             statusReason: mockResponseData.applications[2].status_reason,
             requestStatus: null,

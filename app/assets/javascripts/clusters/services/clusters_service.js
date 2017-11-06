@@ -8,6 +8,8 @@ export default class ClusterService {
     this.options = options;
     this.appInstallEndpointMap = {
       helm: this.options.installHelmEndpoint,
+      ingress: this.options.installIngressEndpoint,
+      runner: this.options.installRunnerEndpoint,
     };
   }
 
