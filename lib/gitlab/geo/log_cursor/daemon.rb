@@ -29,7 +29,7 @@ module Gitlab
         end
 
         def run_once!
-          Events.fetch_in_batches { |batch| handle_events(batch) }
+          LogCursor::Events.fetch_in_batches { |batch| handle_events(batch) }
         end
 
         # Execute routines to verify the required initial data is available
