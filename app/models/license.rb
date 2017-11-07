@@ -49,8 +49,10 @@ class License < ActiveRecord::Base
     variable_environment_scope
     reject_unsigned_commits
     commit_committer_check
+    sast
   ].freeze
 
+  # TODO: REMOVE SAST FROM EEP FEATURES BEFORE MERGING THIS
   EEU_FEATURES = EEP_FEATURES + %i[
     sast
   ].freeze
