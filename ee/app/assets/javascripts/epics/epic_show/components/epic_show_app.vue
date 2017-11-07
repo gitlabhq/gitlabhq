@@ -1,6 +1,8 @@
 <script>
   import issuableApp from '~/issue_show/components/app.vue';
   import epicHeader from './epic_header.vue';
+  import relatedIssuesRoot from '~/issuable/related_issues/components/related_issues_root.vue';
+
 
   export default {
     name: 'epicShowApp',
@@ -59,6 +61,13 @@
     components: {
       epicHeader,
       issuableApp,
+      relatedIssuesRoot,
+    },
+    computed: {
+      // TODO: this should be a prop here, from a data-attribute on epic-show-app element
+      issuesEndpoint() {
+        return `${this.endpoint}/links`;
+      },
     },
     created() {
       // Epics specific configuration
@@ -90,6 +99,12 @@
         :project-path="projectPath"
         :project-namespace="projectNamespace"
         :show-inline-edit-button="true"
+      />
+      <related-issues-root
+        :endpoint="issuesEndpoint"
+        :can-add-related-issues="true"
+        title="Issues"
+        help-path="/"
       />
     </div>
   </div>

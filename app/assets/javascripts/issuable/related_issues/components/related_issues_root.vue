@@ -50,6 +50,11 @@ export default {
       required: false,
       default: '',
     },
+    title: {
+      type: String,
+      required: false,
+      default: 'Related issues',
+    },
   },
 
   data() {
@@ -137,7 +142,11 @@ export default {
           this.store.setRelatedIssues(issues);
           this.isFetching = false;
         })
-        .catch(() => new Flash('An error occurred while fetching related issues.'));
+        .catch(() => {
+          this.store.setRelatedIssues([]);
+          this.isFetching = false;
+          Flash('An error occurred while fetching issues.')
+        });
     },
 
     onInput(newValue, caretPos) {
@@ -215,5 +224,7 @@ export default {
     :pending-references="state.pendingReferences"
     :is-form-visible="isFormVisible"
     :input-value="inputValue"
-    :auto-complete-sources="autoCompleteSources" />
+    :auto-complete-sources="autoCompleteSources"
+    :title="title"
+  />
 </template>

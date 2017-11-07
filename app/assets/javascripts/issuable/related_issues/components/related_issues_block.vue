@@ -54,6 +54,10 @@ export default {
       required: false,
       default: () => ({}),
     },
+    title: {
+      type: String,
+      required: true,
+    },
   },
 
   directives: {
@@ -100,7 +104,7 @@ export default {
         class="panel-heading"
         :class="{ 'panel-empty-heading': !this.hasBody }">
         <h3 class="panel-title">
-          Related issues
+          {{ title }}
           <a
             v-if="hasHelpPath"
             :href="helpPath">
