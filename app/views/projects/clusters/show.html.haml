@@ -14,7 +14,8 @@
   help_path: help_page_path('user/project/clusters/index.md', anchor: 'installing-applications') } }
 
 
-  .hidden.js-cluster-application-notice.alert.alert-info.alert-block.append-bottom-10{ role: 'alert' }
+  .js-cluster-application-notice
+    .flash-container
 
   %section.settings.no-animate.expanded
     %h4= s_('ClusterIntegration|Enable cluster integration')

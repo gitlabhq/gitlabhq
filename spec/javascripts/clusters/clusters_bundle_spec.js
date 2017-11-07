@@ -49,7 +49,7 @@ describe('Clusters', () => {
         helm: { status: APPLICATION_INSTALLABLE, title: 'Helm Tiller' },
       });
 
-      expect(document.querySelector('.js-cluster-application-notice.hidden')).toBeDefined();
+      expect(document.querySelector('.js-cluster-application-notice .flash-text')).toBeNull();
     });
 
     it('shows an alert when something gets newly installed', () => {
@@ -61,8 +61,8 @@ describe('Clusters', () => {
         helm: { status: APPLICATION_INSTALLED, title: 'Helm Tiller' },
       });
 
-      expect(document.querySelector('.js-cluster-application-notice:not(.hidden)')).toBeDefined();
-      expect(document.querySelector('.js-cluster-application-notice').textContent.trim()).toEqual('Helm Tiller was successfully installed on your cluster');
+      expect(document.querySelector('.js-cluster-application-notice .flash-text')).toBeDefined();
+      expect(document.querySelector('.js-cluster-application-notice .flash-text').textContent.trim()).toEqual('Helm Tiller was successfully installed on your cluster');
     });
 
     it('shows an alert when multiple things gets newly installed', () => {
@@ -76,28 +76,8 @@ describe('Clusters', () => {
         ingress: { status: APPLICATION_INSTALLED, title: 'Ingress' },
       });
 
-      expect(document.querySelector('.js-cluster-application-notice:not(.hidden)')).toBeDefined();
-      expect(document.querySelector('.js-cluster-application-notice').textContent.trim()).toEqual('Helm Tiller, Ingress was successfully installed on your cluster');
-    });
-
-    it('hides existing alert when we call again and nothing is newly installed', () => {
-      const installedState = {
-        ...INITIAL_APP_MAP,
-        helm: { status: APPLICATION_INSTALLED, title: 'Helm Tiller' },
-      };
-
-      // Show the banner
-      cluster.checkForNewInstalls({
-        ...INITIAL_APP_MAP,
-        helm: { status: APPLICATION_INSTALLING, title: 'Helm Tiller' },
-      }, installedState);
-
-      expect(document.querySelector('.js-cluster-application-notice:not(.hidden)')).toBeDefined();
-
-      // Banner should go back hidden
-      cluster.checkForNewInstalls(installedState, installedState);
-
-      expect(document.querySelector('.js-cluster-application-notice.hidden')).toBeDefined();
+      expect(document.querySelector('.js-cluster-application-notice .flash-text')).toBeDefined();
+      expect(document.querySelector('.js-cluster-application-notice .flash-text').textContent.trim()).toEqual('Helm Tiller, Ingress was successfully installed on your cluster');
     });
   });
 

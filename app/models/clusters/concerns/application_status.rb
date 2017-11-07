@@ -4,7 +4,7 @@ module Clusters
       extend ActiveSupport::Concern
 
       included do
-        state_machine :status, initial: :installable do
+        state_machine :status, initial: ->(application) { application.initial_status } do
           state :not_installable, value: -2
           state :errored, value: -1
           state :installable, value: 0
@@ -12,20 +12,20 @@ module Clusters
           state :installing, value: 2
           state :installed, value: 3
 
+          event :make_scheduled do
+            transition %i(installable errored) => :scheduled
+          end
+
           event :make_installing do
-            transition any - [:installing] => :installing
+            transition %i(scheduled) => :installing
           end
 
           event :make_installed do
-            transition any - [:installed] => :installed
+            transition %i(installing) => :installed
           end
 
           event :make_errored do
-            transition any - [:errored] => :errored
-          end
-
-          event :make_scheduled do
-            transition %i(installable errored) => :scheduled
+            transition any => :errored
           end
 
           before_transition any => [:scheduled] do |app_status, _|

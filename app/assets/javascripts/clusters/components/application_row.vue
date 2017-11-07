@@ -66,7 +66,7 @@ export default {
       // Avoid the potential for the real-time data to say APPLICATION_INSTALLABLE but
       // we already made a request to install and are just waiting for the real-time
       // to sync up.
-      return this.status !== APPLICATION_INSTALLABLE ||
+      return (this.status !== APPLICATION_INSTALLABLE && this.status !== APPLICATION_ERROR) ||
         this.requestStatus === REQUEST_LOADING ||
         this.requestStatus === REQUEST_SUCCESS;
     },
