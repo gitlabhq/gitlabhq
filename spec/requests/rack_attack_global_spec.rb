@@ -91,7 +91,7 @@ describe 'Rack Attack global throttles' do
 
         expect_rejection { get(*get_args) }
 
-        Timecop.travel((NEXT_TIME_PERIOD_BUFFER + period).from_now) do
+        Timecop.travel(period.from_now) do
           requests_per_period.times do
             get(*get_args)
             expect(response).to have_http_status 200
@@ -171,7 +171,7 @@ describe 'Rack Attack global throttles' do
 
         expect_rejection { get url_that_does_not_require_authentication }
 
-        Timecop.travel((NEXT_TIME_PERIOD_BUFFER + period).from_now) do
+        Timecop.travel(period.from_now) do
           requests_per_period.times do
             get url_that_does_not_require_authentication
             expect(response).to have_http_status 200
@@ -334,7 +334,7 @@ describe 'Rack Attack global throttles' do
 
         expect_rejection { get url_that_requires_authentication }
 
-        Timecop.travel((NEXT_TIME_PERIOD_BUFFER + period).from_now) do
+        Timecop.travel(period.from_now) do
           requests_per_period.times do
             get url_that_requires_authentication
             expect(response).to have_http_status 200
@@ -405,11 +405,11 @@ describe 'Rack Attack global throttles' do
   end
 
   def expect_rejection(&block)
-    NUM_TRIES_FOR_REJECTION.times do |i|
+    # NUM_TRIES_FOR_REJECTION.times do |i|
       yield
-      break if response.status == 429 # success
-      Rails.logger.warn "Flaky test expected HTTP status 429 but got #{response.status}. Will attempt again (#{i + 1}/#{NUM_TRIES_FOR_REJECTION})" if i + 1 < NUM_TRIES_FOR_REJECTION
-    end
+      # break if response.status == 429 # success
+      # Rails.logger.warn "Flaky test expected HTTP status 429 but got #{response.status}. Will attempt again (#{i + 1}/#{NUM_TRIES_FOR_REJECTION})" if i + 1 < NUM_TRIES_FOR_REJECTION
+    # end
 
     expect(response).to have_http_status(429)
   end
