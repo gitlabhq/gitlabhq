@@ -67,7 +67,7 @@
   - if @commit.last_pipeline
     - last_pipeline = @commit.last_pipeline
     .well-segment.pipeline-info
-      .status-icon-container{ class: "ci-status-icon-#{@commit.status}" }
+      .status-icon-container{ class: "ci-status-icon-#{last_pipeline.status}" }
         = link_to project_pipeline_path(@project, last_pipeline.id) do
           = ci_icon_for_status(last_pipeline.status)
       #{ _('Pipeline') }

@@ -14,7 +14,6 @@ class CommitStatus < ActiveRecord::Base
   delegate :sha, :short_sha, to: :pipeline
 
   validates :pipeline, presence: true, unless: :importing?
-
   validates :name, presence: true, unless: :importing?
 
   alias_attribute :author, :user
@@ -45,6 +44,17 @@ class CommitStatus < ActiveRecord::Base
     stuck_or_timeout_failure: 3,
     runner_system_failure: 4
   }
+
+  ##
+  # We still create some CommitStatuses outside of CreatePipelineService.
+  #
+  # These are pages deployments and external statuses.
+  #
+  before_create unless: :importing? do
+    Ci::EnsureStageService.new(project, user).execute(self) do |stage|
+      self.run_after_commit { StageUpdateWorker.perform_async(stage.id) }
+    end
+  end
 
   state_machine :status do
     event :process do

@@ -94,6 +94,7 @@ module CycleAnalyticsHelpers
       ref: 'master',
       tag: false,
       name: 'dummy',
+      stage: 'dummy',
       pipeline: dummy_pipeline,
       protected: false)
   end

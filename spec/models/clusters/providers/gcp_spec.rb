@@ -10,7 +10,7 @@ describe Clusters::Providers::Gcp do
     it "has default value" do
       expect(gcp.zone).to eq('us-central1-a')
       expect(gcp.num_nodes).to eq(3)
-      expect(gcp.machine_type).to eq('n1-standard-4')
+      expect(gcp.machine_type).to eq('n1-standard-2')
     end
   end
 
