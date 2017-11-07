@@ -12,12 +12,10 @@ class Groups::EpicsController < Groups::ApplicationController
     @epics = @issuables
 
     respond_to do |format|
-      format.html do
-        render 'groups/ee/epics/index'
-      end
+      format.html
       format.json do
         render json: {
-          html: view_to_html_string("groups/ee/epics/_epics")
+          html: view_to_html_string("groups/epics/_epics")
         }
       end
     end
@@ -53,10 +51,6 @@ class Groups::EpicsController < Groups::ApplicationController
 
   def update_service
     Epics::UpdateService.new(nil, current_user, epic_params)
-  end
-
-  def show_view
-    'groups/ee/epics/show'
   end
 
   def finder_type

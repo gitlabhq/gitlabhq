@@ -56,7 +56,7 @@ describe Groups::EpicsController do
         show_epic
 
         expect(response.content_type).to eq 'text/html'
-        expect(response).to render_template 'groups/ee/epics/show'
+        expect(response).to render_template 'groups/epics/show'
       end
 
       context 'with unauthorized user' do
