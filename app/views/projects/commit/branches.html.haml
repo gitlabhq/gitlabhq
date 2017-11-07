@@ -1,6 +1,6 @@
 - if @branches_limit_exceeded
-  = render 'limit_exceeded_message', objects: :branches, label_for_message: _('branches')
-- else
+  = render 'limit_exceeded_message', objects: :branch, label_for_message: "branches"
+- elsif @branches.any?
   - branch = commit_default_branch(@project, @branches)
   = commit_branch_link(project_ref_path(@project, branch), branch)
 
@@ -10,6 +10,6 @@
     %span.js-details-content.hide
       = commit_branches_links(@project, @branches)
       - if @tags_limit_exceeded
-        = render 'limit_exceeded_message', objects: :tags, label_for_message: _('tags')
+        = render 'limit_exceeded_message', objects: :tag, label_for_message: "tags"
       - else
         = commit_tags_links(@project, @tags)
