@@ -13,7 +13,7 @@ FactoryGirl.define do
     end
 
     trait :renamed_event do
-      repository_renamed_event factory: :geo_repository_rename_event
+      repository_renamed_event factory: :geo_repository_renamed_event
     end
   end
 
@@ -44,24 +44,11 @@ FactoryGirl.define do
     deleted_project_name { project.name }
   end
 
-  factory :geo_repository_renamed_event, class: Geo::RepositoryRenamedEvent do
-    project
-
-    repository_storage_name { project.repository_storage }
-    repository_storage_path { project.repository_storage_path }
-    old_path_with_namespace { project.full_path }
-    new_path_with_namespace { project.full_path }
-    old_wiki_path_with_namespace { project.wiki.path_with_namespace }
-    new_wiki_path_with_namespace { project.wiki.path_with_namespace }
-    old_path { project.path }
-    new_path { project.path }
-  end
-
   factory :geo_repositories_changed_event, class: Geo::RepositoriesChangedEvent do
     geo_node
   end
 
-  factory :geo_repository_rename_event, class: Geo::RepositoryRenamedEvent do
+  factory :geo_repository_renamed_event, class: Geo::RepositoryRenamedEvent do
     project { create(:project, :repository) }
 
     repository_storage_name { project.repository_storage }
