@@ -74,6 +74,16 @@ describe "Groups", "routing" do
           expect(request).to redirect_to("/groups/#{group_path}/-/milestones/#{milestone.id}/merge_requests")
         end
       end
+
+      context 'with a query string' do
+        it_behaves_like 'redirecting a legacy path', "/groups/complex.group-namegit/milestones?hello=world", "/groups/complex.group-namegit/-/milestones/?hello=world" do
+          let(:resource) { create(:group, parent: group, path: 'milestones') }
+        end
+
+        it_behaves_like 'redirecting a legacy path', "/groups/complex.group-namegit/milestones?milestones=/milestones", "/groups/complex.group-namegit/-/milestones/?milestones=/milestones" do
+          let(:resource) { create(:group, parent: group, path: 'milestones') }
+        end
+      end
     end
 
     describe 'edit' do
