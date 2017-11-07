@@ -66,30 +66,30 @@
   }
 
   .limit-box {
+    display: inline-flex;
+    align-items: center;
+    padding: 1px;
     background: $blue-100;
     border-radius: $border-radius-default;
-    display: inline-block;
-    padding: 1px 2px 0.5px;
     text-align: center;
-    vertical-align: bottom;
 
     &:hover {
       background: $blue-200;
     }
 
     .limit-icon {
-      float: left;
       width: 15%;
     }
 
     .limit-message {
+      flex: 1;
+      height: 16px;
+      margin-right: 2px;
       background: $white-light;
-      border-radius: 0 3px 3px 0;
+      border-top-right-radius: $border-radius-default;
+      border-bottom-right-radius: $border-radius-default;
       font-family: $regular_font;
       font-size: 12px;
-      float: right;
-      margin-top: 1px;
-      width: 85%;
     }
   }
 }
