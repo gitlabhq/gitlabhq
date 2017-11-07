@@ -45,11 +45,6 @@ class Oauth::GeoAuthController < ActionController::Base
   private
 
   def after_sign_in_with_gitlab(token, return_to)
-    if Gitlab::Geo.primary_node
-      primary_node = view_context.link_to('primary node', Gitlab::Geo.primary_node.url)
-      flash[:notice] = "You are on a secondary (read-only) Geo node. If you want to make any changes, you must visit the #{primary_node}.".html_safe
-    end
-
     session[:access_token] = token
     redirect_to(return_to || root_path)
   end
