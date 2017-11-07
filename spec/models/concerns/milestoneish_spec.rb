@@ -197,4 +197,10 @@ describe Milestone, 'Milestoneish' do
       expect(milestone.total_issue_time_spent).to eq(900)
     end
   end
+
+  describe '#human_total_issue_time_spent' do
+    it 'returns nil if no time has been spent' do
+      expect(milestone.human_total_issue_time_spent).to be_nil
+    end
+  end
 end
