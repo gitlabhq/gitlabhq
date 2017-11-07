@@ -11,11 +11,7 @@
             %h3.blank-state-title
               Create a project
             %p.blank-state-text
-              You don't have access to any projects right now.
-              You can create up to
-              %strong= number_with_delimiter(current_user.projects_limit)
-              = succeed "." do
-                = "project".pluralize(current_user.projects_limit)
+              Projects are where you store your code, access issues, wiki and other features of GitLab.
     - else
       .blank-state
         .blank-state-icon
@@ -34,7 +30,7 @@
             = custom_icon("add_new_group", size: 50)
           .blank-state-body
             %h3.blank-state-title
-              Create a group for several dependent projects.
+              Create a group
             %p.blank-state-text
               Groups are the best way to manage projects and members.
 
@@ -55,3 +51,14 @@
               public projects on this server.
               Public projects are an easy way to allow
               everyone to have read-only access.
+
+  .col-md-6
+    = link_to "https://docs.gitlab.com/", class: "blank-state-link" do
+      .blank-state
+        .blank-state-icon
+          = custom_icon("globe", size: 50)
+        .blank-state-body
+          %h3.blank-state-title
+            Learn more about GitLab
+          %p.blank-state-text
+            Take a look at the documentation to discover all of GitLab's capabilities.

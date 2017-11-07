@@ -1,14 +1,14 @@
 .row
   .col-md-6
-    = link_to new_admin_user_path, class: "blank-state-link" do
+    = link_to new_project_path, class: "blank-state-link" do
       .blank-state
         .blank-state-icon
-          = custom_icon("add_new_user", size: 50)
+          = custom_icon("add_new_project", size: 50)
         .blank-state-body
           %h3.blank-state-title
-            Add user
+            Create a project
           %p.blank-state-text
-            Add your team members and others to GitLab.
+            Projects are where you store your code, access issues, wiki and other features of GitLab.
 
   - if current_user.can_create_group?
     .col-md-6
@@ -21,6 +21,17 @@
               Create a group
             %p.blank-state-text
               Groups are a great way to organize projects and people.
+
+  .col-md-6
+    = link_to "new_admin_user_path", class: "blank-state-link" do
+      .blank-state
+        .blank-state-icon
+          = custom_icon("add_new_user", size: 50)
+        .blank-state-body
+          %h3.blank-state-title
+            Add user
+          %p.blank-state-text
+            Add your team members and others to GitLab.
 
   .col-md-6
     = link_to admin_root_path, class: "blank-state-link" do
