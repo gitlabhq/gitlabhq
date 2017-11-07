@@ -18,6 +18,8 @@ module Clusters
       end
 
       def set_initial_status
+        return unless not_installable?
+
         self.status = 'installable' if cluster&.platform_kubernetes_active?
       end
 
