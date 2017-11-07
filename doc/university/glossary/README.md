@@ -673,11 +673,11 @@ Anyone interacting with the software.
 
 ### Version Control Software (VCS)
 
-Version control is a system that records changes to a file or set of files over time so that you can recall specific versions later. VCS [has evolved](https://docs.google.com/presentation/d/16sX7hUrCZyOFbpvnrAFrg6tVO5_yT98IgdAqOmXwBho/edit#slide=id.gd69537a19_0_32) from local version control systems, to centralized version control systems, to the present distributed version control systems like Git, Mercurial, Bazaar, and Darcs.
+Version control is a system that records changes to a file or set of files over time so that you can recall specific versions later. VCS [has evolved](https://docs.google.com/presentation/d/16sX7hUrCZyOFbpvnrAFrg6tVO5_yT98IgdAqOmXwBho/edit#slide=id.gd69537a19_0_32) from local version control systems, to centralized version control systems, to the present [distributed version control systems](https://en.wikipedia.org/wiki/Distributed_version_control) like Git, Mercurial, Bazaar, and Darcs. If any server dies, and these systems were collaborating via it, any of the client repositories can be copied back up to the server to restore it.
 
 ### Virtual Private Cloud (VPC)
 
-An on demand configurable pool of shared computing resources allocated within a public cloud environment, providing some isolation between the different users using the resources. GitLab users need to create a new Amazon VPC in order to [setup High Availability](https://docs.gitlab.com/ce/university/high-availability/aws/).
+A [VPC](https://docs.gitlab.com/ce/university/glossary/README.html#virtual-private-cloud-vpc) is an on demand configurable pool of shared computing resources allocated within a public cloud environment, providing some isolation between the different users using the resources. GitLab users need to create a new Amazon VPC in order to [setup High Availability](https://docs.gitlab.com/ce/university/high-availability/aws/).
 
 ### Virtual private server (VPS)
 
@@ -685,7 +685,7 @@ A [virtual machine](https://en.wikipedia.org/wiki/Virtual_private_server) sold a
 
 ### VM Instance
 
-In object-oriented programming, an [instance](http://stackoverflow.com/questions/20461907/what-is-meaning-of-instance-in-programming) is a specific realization of any object. An object may be varied in a number of ways. Each realized variation of that object is an instance. Therefore, a VM instance is an instance of a virtual machine, which is an emulation of a computer system.
+In object-oriented programming, an [instance](http://stackoverflow.com/questions/20461907/what-is-meaning-of-instance-in-programming) is a specific realization of any [object](https://cloud.google.com/compute/docs/instances/). An object may be varied in a number of ways. Each realized variation of that object is an instance. Therefore, a VM instance is an instance of a virtual machine, which is an emulation of a computer system.
 
 ### Waterfall
 
