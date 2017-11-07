@@ -41,14 +41,14 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
 
   def repository_sync_needed?(timestamp)
     return false unless resync_repository?
-    return false if timestamp < repository_retry_at
+    return false if repository_retry_at && timestamp < repository_retry_at
 
     last_repository_synced_at.nil? || timestamp > last_repository_synced_at
   end
 
   def wiki_sync_needed?(timestamp)
     return false unless resync_wiki?
-    return false if timestamp < wiki_retry_at
+    return false if wiki_retry_at && timestamp < wiki_retry_at
 
     last_wiki_synced_at.nil? || timestamp > last_wiki_synced_at
   end
