@@ -43,7 +43,7 @@ describe 'Scoped issue boards', :js do
           create_board_milestone(milestone.title)
 
           expect(page).to have_css('.js-visual-token')
-          expect(find('.tokens-container')).to have_content(milestone.title)
+          expect(find('.tokens-container')).to have_content(:all, milestone.title)
           expect(page).to have_selector('.card', count: 1)
         end
 
@@ -66,7 +66,7 @@ describe 'Scoped issue boards', :js do
           create_board_label(label_1.title)
 
           expect(page).to have_css('.js-visual-token')
-          expect(find('.tokens-container')).to have_content(label_1.title)
+          expect(find('.tokens-container')).to have_content(:all, label_1.title)
           expect(page).to have_selector('.card', count: 2)
         end
 
@@ -74,8 +74,8 @@ describe 'Scoped issue boards', :js do
           create_board_label([label_1.title, label_2.title])
 
           expect(page).to have_css('.js-visual-token')
-          expect(find('.tokens-container')).to have_content(label_1.title)
-          expect(find('.tokens-container')).to have_content(label_2.title)
+          expect(find('.tokens-container')).to have_content(:all, label_1.title)
+          expect(find('.tokens-container')).to have_content(:all, label_2.title)
           expect(page).to have_selector('.card', count: 1)
         end
 
@@ -108,7 +108,7 @@ describe 'Scoped issue boards', :js do
           create_board_assignee(user.name)
 
           expect(page).to have_css('.js-visual-token')
-          expect(find('.tokens-container')).to have_content(user.name)
+          expect(find('.tokens-container')).to have_content(:all, user.name)
           expect(page).to have_selector('.card', count: 1)
 
           # Does not display assignee in search hint
@@ -184,7 +184,7 @@ describe 'Scoped issue boards', :js do
         it 'sets board milestone' do
           update_board_milestone(milestone.title)
 
-          expect(find('.tokens-container')).to have_content(milestone.title)
+          expect(find('.tokens-container')).to have_content(:all, milestone.title)
           expect(page).to have_selector('.card', count: 1)
         end
 
@@ -235,7 +235,7 @@ describe 'Scoped issue boards', :js do
           update_board_label(label_title)
 
           expect(page).to have_css('.js-visual-token')
-          expect(find('.tokens-container')).to have_content(label_title)
+          expect(find('.tokens-container')).to have_content(:all, label_title)
 
           expect(page).to have_selector('.card', count: 2)
         end
@@ -250,8 +250,8 @@ describe 'Scoped issue boards', :js do
           update_board_label(label_2_title)
 
           expect(page).to have_css('.js-visual-token')
-          expect(find('.tokens-container')).to have_content(label_title)
-          expect(find('.tokens-container')).to have_content(label_2_title)
+          expect(find('.tokens-container')).to have_content(:all, label_title)
+          expect(find('.tokens-container')).to have_content(:all, label_2_title)
 
           expect(page).to have_selector('.card', count: 1)
         end
@@ -292,7 +292,7 @@ describe 'Scoped issue boards', :js do
           update_board_assignee(user.name)
 
           expect(page).to have_css('.js-visual-token')
-          expect(find('.tokens-container')).to have_content(user.name)
+          expect(find('.tokens-container')).to have_content(:all, user.name)
 
           expect(page).to have_selector('.card', count: 1)
         end
