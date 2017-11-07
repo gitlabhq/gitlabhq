@@ -279,11 +279,11 @@ describe Admin::GeoNodesController, :postgresql do
     end
 
     context 'with add-on license' do
-      let(:geo_node_status) { build(:geo_node_status, :healthy) }
+      let(:geo_node_status) { build(:geo_node_status, :healthy, geo_node: geo_node) }
 
       before do
         allow(Gitlab::Geo).to receive(:license_allows?).and_return(true)
-        allow_any_instance_of(Geo::NodeStatusService).to receive(:call).and_return(geo_node_status)
+        allow_any_instance_of(Geo::NodeStatusFetchService).to receive(:call).and_return(geo_node_status)
       end
 
       it 'returns the status' do

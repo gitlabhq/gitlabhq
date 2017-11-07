@@ -1,7 +1,7 @@
 class GeoNodeStatusEntity < Grape::Entity
   include ActionView::Helpers::NumberHelper
 
-  expose :id
+  expose :geo_node_id
 
   expose :healthy?, as: :healthy
   expose :health do |node|
@@ -35,4 +35,6 @@ class GeoNodeStatusEntity < Grape::Entity
   expose :last_event_timestamp
   expose :cursor_last_event_id
   expose :cursor_last_event_timestamp
+
+  expose :last_successful_status_check_timestamp
 end

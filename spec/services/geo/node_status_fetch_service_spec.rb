@@ -1,30 +1,12 @@
 require 'spec_helper'
 
-describe Geo::NodeStatusService do
+describe Geo::NodeStatusFetchService, :geo do
+  include ::EE::GeoHelpers
+
   set(:primary)   { create(:geo_node, :primary) }
   set(:secondary) { create(:geo_node) }
 
   subject { described_class.new }
-
-  describe '#status_keys' do
-    it 'matches the serializer keys' do
-      exceptions = %w[
-        id
-        healthy
-        repositories_synced_in_percentage
-        lfs_objects_synced_in_percentage
-        attachments_synced_in_percentage
-      ]
-
-      expected = GeoNodeStatusEntity
-        .new(GeoNodeStatus.new)
-        .as_json
-        .keys
-        .map(&:to_s) - exceptions
-
-      expect(subject.status_keys).to match_array(expected)
-    end
-  end
 
   describe '#call' do
     it 'parses a 401 response' do
@@ -36,10 +18,40 @@ describe Geo::NodeStatusService do
 
       status = subject.call(secondary)
 
-      expect(status.health).to eq("Could not connect to Geo node - HTTP Status Code: 401 Unauthorized\nTest")
+      expect(status.status_message).to eq("Could not connect to Geo node - HTTP Status Code: 401 Unauthorized\nTest")
     end
 
-    it 'parses a 200 response' do
+    it 'always reload GeoNodeStatus if current node' do
+      stub_current_geo_node(secondary)
+      expect(GeoNodeStatus).to receive(:current_node_status).and_call_original
+
+      status = subject.call(secondary)
+
+      expect(status).to be_a(GeoNodeStatus)
+    end
+
+    it 'ignores certain parameters' do
+      yesterday = Date.yesterday
+      request = double(success?: true,
+                       code: 200,
+                       message: 'Unauthorized',
+                       parsed_response: {
+                         'id' => 5000,
+                         'last_successful_status_check_at' => yesterday,
+                         'created_at' => yesterday,
+                         'updated_at' => yesterday
+                       })
+      allow(described_class).to receive(:get).and_return(request)
+
+      status = subject.call(secondary)
+
+      expect(status.id).not_to be(5000)
+      expect(status.last_successful_status_check_at).not_to be(yesterday)
+      expect(status.created_at).not_to be(yesterday)
+      expect(status.updated_at).not_to be(yesterday)
+    end
+
+    it 'parses a 200 legacy response' do
       data = { health: 'OK',
                db_replication_lag_seconds: 0,
                repositories_count: 10,
@@ -73,7 +85,7 @@ describe Geo::NodeStatusService do
 
       status = subject.call(secondary)
 
-      expect(status.health).to eq("Could not connect to Geo node - HTTP Status Code: 401 Unauthorized\n")
+      expect(status.status_message).to eq("Could not connect to Geo node - HTTP Status Code: 401 Unauthorized\n")
       expect(status.success).to be false
     end
 
@@ -83,7 +95,7 @@ describe Geo::NodeStatusService do
 
       status = subject.call(secondary)
 
-      expect(status.health).to eq(message)
+      expect(status.status_message).to eq(message)
     end
 
     it 'handles connection refused' do
@@ -91,7 +103,7 @@ describe Geo::NodeStatusService do
 
       status = subject.call(secondary)
 
-      expect(status.health).to eq('Connection refused - bad connection')
+      expect(status.status_message).to eq('Connection refused - bad connection')
     end
 
     it 'returns meaningful error message when primary uses incorrect db key' do
@@ -99,7 +111,7 @@ describe Geo::NodeStatusService do
 
       status = subject.call(secondary)
 
-      expect(status.health).to eq('Error decrypting the Geo secret from the database. Check that the primary uses the correct db_key_base.')
+      expect(status.status_message).to eq('Error decrypting the Geo secret from the database. Check that the primary uses the correct db_key_base.')
     end
 
     it 'gracefully handles case when primary is deleted' do
@@ -107,7 +119,7 @@ describe Geo::NodeStatusService do
 
       status = subject.call(secondary)
 
-      expect(status.health).to eq('This GitLab instance does not appear to be configured properly as a Geo node. Make sure the URLs are using the correct fully-qualified domain names.')
+      expect(status.status_message).to eq('This GitLab instance does not appear to be configured properly as a Geo node. Make sure the URLs are using the correct fully-qualified domain names.')
     end
   end
 end

@@ -126,6 +126,7 @@ module API
     mount ::API::Files
     mount ::API::Groups
     mount ::API::Geo
+    mount ::API::GeoNodes
     mount ::API::Internal
     mount ::API::Issues
     mount ::API::IssueLinks

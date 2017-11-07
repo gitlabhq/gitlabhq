@@ -36,7 +36,8 @@ module API
         authenticate_by_gitlab_geo_node_token!
         require_node_to_be_secondary!
 
-        present GeoNodeStatus.new(id: Gitlab::Geo.current_node.id), with: Entities::GeoNodeStatus
+        status = ::GeoNodeStatus.current_node_status
+        present status, with: GeoNodeStatusEntity
       end
     end
 
