@@ -248,13 +248,26 @@ data before running `pg_basebackup`.
     gitlab-ctl replicate-geo-database --host=1.2.3.4 --slot-name=geo_secondary_my_domain_com
     ```
 
-    Change the `--host=` to the primary node IP or FQDN. You can check other possible
-    parameters with `--help`. When prompted, enter the password you set up for
-    the `gitlab_replicator` user in the first step.
+    Change the `--host=` to the primary node IP or FQDN. If PostgreSQL is
+    listening on a non-standard port, add `--port=` as well.
+
+    When prompted, enter the password you set up for the `gitlab_replicator`
+    user in the first step.
 
     New for 9.4: Change the `--slot-name` to the name of the replication slot
     to be used on the primary database. The script will attempt to create the
     replication slot automatically if it does not exist.
+
+    This command also takes a number of additional options. You can use `--help`
+    to list them all, but here are a couple of tips:
+
+    If you're setting up replication on a brand-new secondary that has no data,
+    you may want to pass `--no-wait --skip-backup` to speed up the process - but
+    be **certain** that you're running it against the right GitLab installation
+    first! It **will** cause data loss otherwise.
+
+    If you're repurposing an old server into a Geo secondary, you'll need to
+    add `--force` to the command line.
 
 The replication process is now over.
 
