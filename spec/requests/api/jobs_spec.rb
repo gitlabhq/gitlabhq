@@ -500,47 +500,42 @@ describe API::Jobs do
   end
 
   describe 'POST /projects/:id/jobs/:job_id/erase' do
-    context 'when a master erases a build' do
-      before do
-        project.add_master(user)
+    let(:role) { :master }
 
-        post api("/projects/#{project.id}/jobs/#{job.id}/erase", user)
+    before do
+      project.team << [user, role]
+
+      post api("/projects/#{project.id}/jobs/#{job.id}/erase", user)
+    end
+
+    context 'job is erasable' do
+      let(:job) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline) }
+
+      it 'erases job content' do
+        expect(response).to have_gitlab_http_status(201)
+        expect(job).not_to have_trace
+        expect(job.artifacts_file.exists?).to be_falsy
+        expect(job.artifacts_metadata.exists?).to be_falsy
       end
 
-      context 'job is erasable' do
-        let(:job) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline) }
+      it 'updates job' do
+        job.reload
 
-        it 'erases job content' do
-          expect(response).to have_gitlab_http_status(201)
-          expect(job).not_to have_trace
-          expect(job.artifacts_file.exists?).to be_falsy
-          expect(job.artifacts_metadata.exists?).to be_falsy
-        end
-
-        it 'updates job' do
-          job.reload
-
-          expect(job.erased_at).to be_truthy
-          expect(job.erased_by).to eq(user)
-        end
+        expect(job.erased_at).to be_truthy
+        expect(job.erased_by).to eq(user)
       end
+    end
 
-      context 'job is not erasable' do
-        let(:job) { create(:ci_build, :trace, project: project, pipeline: pipeline) }
+    context 'job is not erasable' do
+      let(:job) { create(:ci_build, :trace, project: project, pipeline: pipeline) }
 
-        it 'responds with forbidden' do
-          expect(response).to have_gitlab_http_status(403)
-        end
+      it 'responds with forbidden' do
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
     context 'when a developer erases a build' do
-      before do
-        project.add_developer(user)
-
-        post api("/projects/#{project.id}/jobs/#{job.id}/erase", user)
-      end
-
+      let(:role) { :developer }
       let(:job) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline, user: owner) }
 
       context 'when the build was created by the developer' do

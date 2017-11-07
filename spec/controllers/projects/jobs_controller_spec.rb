@@ -371,14 +371,14 @@ describe Projects::JobsController do
   end
 
   describe 'POST erase' do
+    let(:role) { :master }
+
     before do
       project.team << [user, role]
       sign_in(user)
 
       post_erase
     end
-
-    let(:role) { :master }
 
     context 'when job is erasable' do
       let(:job) { create(:ci_build, :erasable, :trace, pipeline: pipeline) }
