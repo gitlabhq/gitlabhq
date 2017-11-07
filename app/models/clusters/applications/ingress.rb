@@ -12,6 +12,8 @@ module Clusters
       default_value_for :ingress_type, :nginx
       default_value_for :version, :nginx
 
+      after_initialize :set_initial_status
+
       enum ingress_type: {
         nginx: 1
       }
@@ -20,12 +22,8 @@ module Clusters
         self.to_s.demodulize.underscore
       end
 
-      def initial_status
-        if cluster&.application_helm_installed?
-          :installable
-        else
-          :not_installable
-        end
+      def set_initial_status
+        self.status = 'installable' if cluster&.application_helm_installed?
       end
 
       def name
