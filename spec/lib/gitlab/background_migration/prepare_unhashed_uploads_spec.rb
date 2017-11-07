@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::PrepareUnhashedUploads, :migration, schema: 20171103140253 do
+describe Gitlab::BackgroundMigration::PrepareUnhashedUploads, :migration, :sidekiq, schema: 20171103140253 do
   let!(:unhashed_upload_files) { table(:unhashed_upload_files) }
 
   let(:user1) { create(:user) }
@@ -8,6 +8,18 @@ describe Gitlab::BackgroundMigration::PrepareUnhashedUploads, :migration, schema
   let(:project1) { create(:project) }
   let(:project2) { create(:project) }
   let(:appearance) { create(:appearance) }
+
+  matcher :be_scheduled_migration do |*expected|
+    match do |migration|
+      BackgroundMigrationWorker.jobs.any? do |job|
+        job['args'] == [migration, expected]
+      end
+    end
+
+    failure_message do |migration|
+      "Migration `#{migration}` with args `#{expected.inspect}` not scheduled!"
+    end
+  end
 
   context 'when files were uploaded before and after hashed storage was enabled' do
     before do
@@ -28,16 +40,29 @@ describe Gitlab::BackgroundMigration::PrepareUnhashedUploads, :migration, schema
     end
 
     it 'adds unhashed files to the unhashed_upload_files table' do
-      expect do
-        described_class.new.perform
-      end.to change { unhashed_upload_files.count }.from(0).to(5)
+      Sidekiq::Testing.fake! do
+        expect do
+          described_class.new.perform
+        end.to change { unhashed_upload_files.count }.from(0).to(5)
+      end
     end
 
     it 'does not add hashed files to the unhashed_upload_files table' do
-      described_class.new.perform
+      Sidekiq::Testing.fake! do
+        described_class.new.perform
 
-      hashed_file_path = project2.uploads.where(uploader: 'FileUploader').first.path
-      expect(unhashed_upload_files.where("path like '%#{hashed_file_path}%'").exists?).to be_falsey
+        hashed_file_path = project2.uploads.where(uploader: 'FileUploader').first.path
+        expect(unhashed_upload_files.where("path like '%#{hashed_file_path}%'").exists?).to be_falsey
+      end
+    end
+
+    it 'correctly schedules the follow-up background migration jobs' do
+      Sidekiq::Testing.fake! do
+        described_class.new.perform
+
+        expect(described_class::FOLLOW_UP_MIGRATION).to be_scheduled_migration(1, 5)
+        expect(BackgroundMigrationWorker.jobs.size).to eq(1)
+      end
     end
 
     # E.g. from a previous failed run of this background migration
@@ -47,9 +72,11 @@ describe Gitlab::BackgroundMigration::PrepareUnhashedUploads, :migration, schema
       end
 
       it 'clears existing data before adding new data' do
-        expect do
-          described_class.new.perform
-        end.to change { unhashed_upload_files.count }.from(1).to(5)
+        Sidekiq::Testing.fake! do
+          expect do
+            described_class.new.perform
+          end.to change { unhashed_upload_files.count }.from(1).to(5)
+        end
       end
     end
 
@@ -61,9 +88,11 @@ describe Gitlab::BackgroundMigration::PrepareUnhashedUploads, :migration, schema
       end
 
       it 'does not add files from /uploads/tmp' do
-        expect do
-          described_class.new.perform
-        end.to change { unhashed_upload_files.count }.from(0).to(5)
+        Sidekiq::Testing.fake! do
+          expect do
+            described_class.new.perform
+          end.to change { unhashed_upload_files.count }.from(0).to(5)
+        end
       end
     end
   end
@@ -72,9 +101,11 @@ describe Gitlab::BackgroundMigration::PrepareUnhashedUploads, :migration, schema
   # may not have an upload directory because they have no uploads.
   context 'when no files were ever uploaded' do
     it 'does not add to the unhashed_upload_files table (and does not raise error)' do
-      expect do
-        described_class.new.perform
-      end.not_to change { unhashed_upload_files.count }.from(0)
+      Sidekiq::Testing.fake! do
+        expect do
+          described_class.new.perform
+        end.not_to change { unhashed_upload_files.count }.from(0)
+      end
     end
   end
 end

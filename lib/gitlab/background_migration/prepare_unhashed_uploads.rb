@@ -1,10 +1,16 @@
 module Gitlab
   module BackgroundMigration
     class PrepareUnhashedUploads
+      # For bulk_queue_background_migration_jobs_by_range
+      include Database::MigrationHelpers
+
       FILE_PATH_BATCH_SIZE = 500
       UPLOAD_DIR = "#{CarrierWave.root}/uploads"
+      FOLLOW_UP_MIGRATION = 'PopulateUntrackedUploads'
 
       class UnhashedUploadFile < ActiveRecord::Base
+        include EachBatch
+
         self.table_name = 'unhashed_upload_files'
       end
 
@@ -74,7 +80,7 @@ module Gitlab
       end
 
       def schedule_populate_untracked_uploads_jobs
-        # TODO
+        bulk_queue_background_migration_jobs_by_range(UnhashedUploadFile, FOLLOW_UP_MIGRATION)
       end
     end
   end
