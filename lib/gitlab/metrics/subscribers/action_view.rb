@@ -15,9 +15,23 @@ module Gitlab
 
         private
 
+        def metric_view_rendering_duration_seconds
+          @metric_view_rendering_duration_seconds ||= Gitlab::Metrics.histogram(
+            :gitlab_view_rendering_duration_seconds,
+            'View rendering time',
+            Transaction::BASE_LABELS.merge({ path: nil }),
+            [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.500, 2.0, 10.0]
+          )
+        end
+
         def track(event)
           values = values_for(event)
           tags   = tags_for(event)
+
+          metric_view_rendering_duration_seconds.observe(
+            current_transaction.labels.merge(tags),
+            event.duration
+          )
 
           current_transaction.increment(:view_duration, event.duration)
           current_transaction.add_metric(SERIES, values, tags)

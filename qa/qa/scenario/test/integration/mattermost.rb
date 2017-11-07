@@ -7,7 +7,7 @@ module QA
         # including staging and on-premises installation.
         #
         class Mattermost < Scenario::Entrypoint
-          tags :core, :mattermost
+          tags :mattermost
 
           def perform(address, mattermost, *files)
             Runtime::Scenario.mattermost = mattermost

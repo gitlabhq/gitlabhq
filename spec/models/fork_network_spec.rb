@@ -24,6 +24,16 @@ describe ForkNetwork do
     end
   end
 
+  describe '#merge_requests' do
+    it 'finds merge requests within the fork network' do
+      project = create(:project)
+      forked_project = fork_project(project)
+      merge_request = create(:merge_request, source_project: forked_project, target_project: project)
+
+      expect(project.fork_network.merge_requests).to include(merge_request)
+    end
+  end
+
   context 'for a deleted project' do
     it 'keeps the fork network' do
       project = create(:project, :public)

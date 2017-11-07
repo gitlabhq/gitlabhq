@@ -1,5 +1,0 @@
----
-title: Only cache last push event for existing projects when pushing to a fork
-merge_request: 14989
-author:
-type: fixed

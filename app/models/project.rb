@@ -243,10 +243,8 @@ class Project < ActiveRecord::Base
               message: Gitlab::Regex.project_name_regex_message }
   validates :path,
     presence: true,
-    dynamic_path: true,
+    project_path: true,
     length: { maximum: 255 },
-    format: { with: Gitlab::PathRegex.project_path_format_regex,
-              message: Gitlab::PathRegex.project_path_format_message },
     uniqueness: { scope: :namespace_id }
 
   validates :namespace, presence: true
@@ -1043,6 +1041,10 @@ class Project < ActiveRecord::Base
     !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
   end
 
+  def fork_source
+    forked_from_project || fork_network&.root_project
+  end
+
   def personal?
     !group
   end
@@ -1491,7 +1493,8 @@ class Project < ActiveRecord::Base
       { key: 'CI_PROJECT_PATH', value: full_path, public: true },
       { key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug, public: true },
       { key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true },
-      { key: 'CI_PROJECT_URL', value: web_url, public: true }
+      { key: 'CI_PROJECT_URL', value: web_url, public: true },
+      { key: 'CI_PROJECT_VISIBILITY', value: Gitlab::VisibilityLevel.string_level(visibility_level), public: true }
     ]
   end
 
@@ -1682,6 +1685,10 @@ class Project < ActiveRecord::Base
     Gitlab::GlRepository.gl_repository(self, is_wiki)
   end
 
+  def reference_counter(wiki: false)
+    Gitlab::ReferenceCounter.new(gl_repository(is_wiki: wiki))
+  end
+
   private
 
   def storage
@@ -1700,11 +1707,11 @@ class Project < ActiveRecord::Base
   end
 
   def repo_reference_count
-    Gitlab::ReferenceCounter.new(gl_repository(is_wiki: false)).value
+    reference_counter.value
   end
 
   def wiki_reference_count
-    Gitlab::ReferenceCounter.new(gl_repository(is_wiki: true)).value
+    reference_counter(wiki: true).value
   end
 
   def check_repository_absence!

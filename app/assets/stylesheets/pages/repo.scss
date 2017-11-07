@@ -64,7 +64,7 @@
 
     .monaco-editor.vs {
       .current-line {
-        border: none;
+        border: 0;
         background: $well-light-border;
       }
 
@@ -139,7 +139,7 @@
 
         &.active {
           background: $white-light;
-          border-bottom: none;
+          border-bottom: 0;
         }
 
         a {
@@ -181,7 +181,7 @@
         &.tabs-divider {
           width: 100%;
           background-color: $white-light;
-          border-right: none;
+          border-right: 0;
           border-top-right-radius: 2px;
         }
       }

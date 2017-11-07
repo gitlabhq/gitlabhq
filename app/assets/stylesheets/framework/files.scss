@@ -142,7 +142,7 @@
      */
     &.blame {
       table {
-        border: none;
+        border: 0;
         margin: 0;
       }
 
@@ -150,37 +150,51 @@
         border-bottom: 1px solid $blame-border;
 
         &:last-child {
-          border-bottom: none;
+          border-bottom: 0;
         }
       }
 
       td {
-        border-top: none;
-        border-bottom: none;
+        border-top: 0;
+        border-bottom: 0;
 
         &:first-child {
-          border-left: none;
+          border-left: 0;
         }
 
         &:last-child {
-          border-right: none;
-        }
-      }
-
-      td.blame-commit {
-        padding: 5px 10px;
-        min-width: 400px;
-        max-width: 400px;
-        background: $gray-light;
-        border-left: 3px solid;
-
-        .commit-row-title {
-          display: flex;
+          border-right: 0;
         }
 
-        .item-title {
-          flex: 1;
-          margin-right: 0.5em;
+        &.blame-commit {
+          padding: 5px 10px;
+          min-width: 400px;
+          max-width: 400px;
+          background: $gray-light;
+          border-left: 3px solid;
+
+          .commit-row-title {
+            display: flex;
+          }
+
+          .item-title {
+            flex: 1;
+            margin-right: 0.5em;
+          }
+        }
+
+        &.line-numbers {
+          float: none;
+          border-left: 1px solid $blame-line-numbers-border;
+
+          i {
+            float: none;
+            margin-right: 0;
+          }
+        }
+
+        &.lines {
+          padding: 0;
         }
       }
 
@@ -194,20 +208,6 @@
         td.blame-commit-age-#{$i + 5} {
           border-left-color: mix($blame-gray, $blame-cyan, $i / 4.0 * 100%);
         }
-      }
-
-      td.line-numbers {
-        float: none;
-        border-left: 1px solid $blame-line-numbers-border;
-
-        i {
-          float: none;
-          margin-right: 0;
-        }
-      }
-
-      td.lines {
-        padding: 0;
       }
     }
 

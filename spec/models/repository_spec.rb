@@ -2298,4 +2298,24 @@ describe Repository do
       project.commit_by(oid: '1' * 40)
     end
   end
+
+  describe '#raw_repository' do
+    subject { repository.raw_repository }
+
+    it 'returns a Gitlab::Git::Repository representation of the repository' do
+      expect(subject).to be_a(Gitlab::Git::Repository)
+      expect(subject.relative_path).to eq(project.disk_path + '.git')
+      expect(subject.gl_repository).to eq("project-#{project.id}")
+    end
+
+    context 'with a wiki repository' do
+      let(:repository) { project.wiki.repository }
+
+      it 'creates a Gitlab::Git::Repository with the proper attributes' do
+        expect(subject).to be_a(Gitlab::Git::Repository)
+        expect(subject.relative_path).to eq(project.disk_path + '.wiki.git')
+        expect(subject.gl_repository).to eq("wiki-#{project.id}")
+      end
+    end
+  end
 end

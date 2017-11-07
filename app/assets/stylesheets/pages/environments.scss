@@ -117,7 +117,7 @@
     }
 
     .no-btn {
-      border: none;
+      border: 0;
       background: none;
       outline: none;
       width: 100%;
@@ -133,11 +133,11 @@
 }
 
 .folder-row {
-  border-left: none;
-  border-right: none;
+  border-left: 0;
+  border-right: 0;
 
   @media (min-width: $screen-sm-max) {
-    border-top: none;
+    border-top: 0;
   }
 }
 
@@ -255,29 +255,6 @@
   width: 100%;
   padding: 0;
   padding-bottom: 100%;
-}
-
-.prometheus-svg-container > svg {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  left: 0;
-  top: 0;
-
-  text {
-    fill: $gl-text-color;
-    stroke-width: 0;
-  }
-
-  .text-metric-bold {
-    font-weight: $gl-font-weight-bold;
-  }
-
-  .label-axis-text {
-    fill: $black;
-    font-weight: $gl-font-weight-normal;
-    font-size: 10px;
-  }
 
   .text-metric-usage,
   .legend-metric-title {
@@ -286,42 +263,65 @@
     font-size: 12px;
   }
 
-  .legend-axis-text {
-    fill: $black;
-  }
+  > svg {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    left: 0;
+    top: 0;
 
-  .tick {
-    > line {
+    text {
+      fill: $gl-text-color;
+      stroke-width: 0;
+    }
+
+    .text-metric-bold {
+      font-weight: $gl-font-weight-bold;
+    }
+
+    .label-axis-text {
+      fill: $black;
+      font-weight: $gl-font-weight-normal;
+      font-size: 10px;
+    }
+
+    .legend-axis-text {
+      fill: $black;
+    }
+
+    .tick {
+      > line {
+        stroke: $gray-darker;
+      }
+
+      > text {
+        font-size: 12px;
+      }
+    }
+
+    .text-metric-title {
+      font-size: 12px;
+    }
+
+    .y-label-text,
+    .x-label-text {
+      fill: $gray-darkest;
+    }
+
+    .axis-tick {
       stroke: $gray-darker;
     }
 
-    > text {
-      font-size: 12px;
-    }
-  }
+    @media (max-width: $screen-sm-max) {
+      .label-axis-text,
+      .text-metric-usage,
+      .legend-axis-text {
+        font-size: 8px;
+      }
 
-  .text-metric-title {
-    font-size: 12px;
-  }
-
-  .y-label-text,
-  .x-label-text {
-    fill: $gray-darkest;
-  }
-
-  .axis-tick {
-    stroke: $gray-darker;
-  }
-
-  @media (max-width: $screen-sm-max) {
-    .label-axis-text,
-    .text-metric-usage,
-    .legend-axis-text {
-      font-size: 8px;
-    }
-
-    .tick > text {
-      font-size: 8px;
+      .tick > text {
+        font-size: 8px;
+      }
     }
   }
 }

@@ -33,7 +33,7 @@ RSpec.describe 'Dashboard Issues' do
     end
 
     it 'shows issues when current user is author', :js do
-      find('#assignee_id', visible: false).set('')
+      execute_script("document.querySelector('#assignee_id').value=''")
       find('.js-author-search', match: :first).click
 
       expect(find('li[data-user-id="null"] a.is-active')).to be_visible
@@ -71,7 +71,7 @@ RSpec.describe 'Dashboard Issues' do
 
   describe 'new issue dropdown' do
     it 'shows projects only with issues feature enabled', :js do
-      find('.new-project-item-select-button').trigger('click')
+      find('.new-project-item-select-button').click
 
       page.within('.select2-results') do
         expect(page).to have_content(project.name_with_namespace)
@@ -80,7 +80,7 @@ RSpec.describe 'Dashboard Issues' do
     end
 
     it 'shows the new issue page', :js do
-      find('.new-project-item-select-button').trigger('click')
+      find('.new-project-item-select-button').click
 
       wait_for_requests
 
@@ -93,7 +93,7 @@ RSpec.describe 'Dashboard Issues' do
       find('#select2-drop-mask', visible: false)
       execute_script("$('#select2-drop-mask').remove();")
 
-      find('.new-project-item-link').trigger('click')
+      find('.new-project-item-link').click
 
       expect(page).to have_current_path("#{project_path}/issues/new")
 

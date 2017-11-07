@@ -150,14 +150,6 @@
     display: block;
   }
 
-  .mr-widget-body {
-    @include clearfix;
-
-    &.media > *:first-child {
-      margin-right: 10px;
-    }
-  }
-
   .mr-widget-pipeline-graph {
     padding: 0 4px;
 
@@ -165,9 +157,8 @@
       z-index: 300;
     }
 
-    .ci-action-icon-wrapper svg {
-      width: 16px;
-      height: 16px;
+    .ci-action-icon-wrapper {
+      line-height: 16px;
     }
   }
 
@@ -210,12 +201,17 @@
     }
   }
 
-  .mr-widget-help {
-    padding: 10px 16px 10px 48px;
-    font-style: italic;
-  }
-
   .mr-widget-body {
+    @include clearfix;
+
+    &.media > *:first-child {
+      margin-right: 10px;
+    }
+
+    .approve-btn {
+      margin-right: 5px;
+    }
+
     h4 {
       float: left;
       font-weight: $gl-font-weight-bold;
@@ -337,6 +333,11 @@
     }
   }
 
+  .mr-widget-help {
+    padding: 10px 16px 10px 48px;
+    font-style: italic;
+  }
+
   .ci-coverage {
     float: right;
   }
@@ -348,12 +349,6 @@
     a {
       color: $gl-text-color;
     }
-  }
-}
-
-.mr-state-widget .mr-widget-body {
-  .approve-btn {
-    margin-right: 5px;
   }
 }
 
@@ -470,16 +465,16 @@
       padding-bottom: 0;
     }
   }
-}
 
-.mr-info-list.mr-memory-usage {
-  p {
-    float: left;
-  }
+  &.mr-memory-usage {
+    p {
+      float: left;
+    }
 
-  .memory-graph-container {
-    float: left;
-    margin-left: 5px;
+    .memory-graph-container {
+      float: left;
+      margin-left: 5px;
+    }
   }
 }
 

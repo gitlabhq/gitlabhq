@@ -788,14 +788,16 @@ describe User do
       end
 
       it "creates external user by default" do
-        user = build(:user)
+        user = create(:user)
 
         expect(user.external).to be_truthy
+        expect(user.can_create_group).to be_falsey
+        expect(user.projects_limit).to be 0
       end
 
       describe 'with default overrides' do
         it "creates a non-external user" do
-          user = build(:user, external: false)
+          user = create(:user, external: false)
 
           expect(user.external).to be_falsey
         end
@@ -2212,6 +2214,42 @@ describe User do
               user.update_attributes!(email: 'asdf@asdf.com')
             end.not_to change { user.namespace.updated_at }
           end
+        end
+      end
+    end
+  end
+
+  describe '#username_changed_hook' do
+    context 'for a new user' do
+      let(:user) { build(:user) }
+
+      it 'does not trigger system hook' do
+        expect(user).not_to receive(:system_hook_service)
+
+        user.save!
+      end
+    end
+
+    context 'for an existing user' do
+      let(:user) { create(:user, username: 'old-username') }
+
+      context 'when the username is changed' do
+        let(:new_username) { 'very-new-name' }
+
+        it 'triggers the rename system hook' do
+          system_hook_service = SystemHooksService.new
+          expect(system_hook_service).to receive(:execute_hooks_for).with(user, :rename)
+          expect(user).to receive(:system_hook_service).and_return(system_hook_service)
+
+          user.update_attributes!(username: new_username)
+        end
+      end
+
+      context 'when the username is not changed' do
+        it 'does not trigger system hook' do
+          expect(user).not_to receive(:system_hook_service)
+
+          user.update_attributes!(email: 'asdf@asdf.com')
         end
       end
     end

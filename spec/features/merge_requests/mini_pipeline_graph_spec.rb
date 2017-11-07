@@ -83,7 +83,7 @@ feature 'Mini Pipeline Graph', :js do
     end
 
     before do
-      toggle.trigger('click')
+      toggle.click
       wait_for_requests
     end
 
@@ -92,7 +92,7 @@ feature 'Mini Pipeline Graph', :js do
     end
 
     it 'should close when toggle is clicked again' do
-      toggle.trigger('click')
+      toggle.click
 
       expect(toggle.find(:xpath, '..')).not_to have_selector('.mini-pipeline-graph-dropdown-menu')
     end

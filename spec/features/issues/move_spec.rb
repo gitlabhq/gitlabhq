@@ -38,7 +38,7 @@ feature 'issue move to another project' do
     end
 
     scenario 'moving issue to another project', :js do
-      find('.js-move-issue').trigger('click')
+      find('.js-move-issue').click
       wait_for_requests
       all('.js-move-issue-dropdown-item')[0].click
       find('.js-move-issue-confirmation-button').click
@@ -52,7 +52,7 @@ feature 'issue move to another project' do
     scenario 'searching project dropdown', :js do
       new_project_search.team << [user, :reporter]
 
-      find('.js-move-issue').trigger('click')
+      find('.js-move-issue').click
       wait_for_requests
 
       page.within '.js-sidebar-move-issue-block' do
@@ -69,7 +69,7 @@ feature 'issue move to another project' do
       background { another_project.team << [user, :guest] }
 
       scenario 'browsing projects in projects select' do
-        find('.js-move-issue').trigger('click')
+        find('.js-move-issue').click
         wait_for_requests
 
         page.within '.js-sidebar-move-issue-block' do
