@@ -152,16 +152,7 @@ describe Gitlab::PathRegex do
   let(:paths_after_group_id) do
     group_routes.map do |route|
       route.gsub(STARTING_WITH_GROUP, '').split('/').first
-    end.uniq + ee_paths_after_group_id
-  end
-
-  let(:ee_paths_after_group_id) do
-    %w(analytics
-       ldap
-       ldap_group_links
-       notification_setting
-       audit_events
-       pipeline_quota hooks)
+    end.uniq
   end
 
   describe 'TOP_LEVEL_ROUTES' do
@@ -292,7 +283,7 @@ describe Gitlab::PathRegex do
         end
 
         it 'rejects group routes' do
-          expect(subject).not_to match('root/analytics/')
+          expect(subject).not_to match('root/-/')
         end
       end
 
@@ -312,7 +303,7 @@ describe Gitlab::PathRegex do
         end
 
         it 'rejects group routes' do
-          expect(subject).not_to match('root/analytics/more/')
+          expect(subject).not_to match('root/-/')
         end
       end
     end
