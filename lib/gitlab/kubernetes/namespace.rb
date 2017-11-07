@@ -4,7 +4,7 @@ module Gitlab
       attr_accessor :name
 
       def initialize(name, client)
-        self.name = name
+        @name = name
         @client = client
       end
 
