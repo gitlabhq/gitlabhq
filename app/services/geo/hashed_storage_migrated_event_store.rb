@@ -27,7 +27,7 @@ module Geo
     end
 
     def old_wiki_disk_path
-      "#{old_disk_path}.wiki"
+      params.fetch(:old_wiki_disk_path)
     end
   end
 end
