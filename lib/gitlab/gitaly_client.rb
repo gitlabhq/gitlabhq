@@ -34,11 +34,26 @@ module Gitlab
     private_constant :MUTEX
 
     class << self
-      attr_accessor :query_time, :migrate_histogram
+      attr_accessor :query_time
+
+      # Will expose an ivar called `@name`
+      def prom_histogram(name, docstring, *base_labels)
+        base_labels = Hash[base_labels.map {|key| [key, nil]}]
+        value = Gitlab::Metrics.histogram(name, docstring, base_labels)
+
+        instance_variable_set(:"@#{name}", value)
+      end
     end
 
+    prom_histogram :gitaly_migrate_call_duration_seconds,
+      "Gitaly migration call execution timings",
+      :gitaly_enabled, :feature
+
+    prom_histogram :gitaly_controller_action_duration_seconds,
+      "Gitaly endpoint histogram by controller and action combination",
+      :gitaly_service, :rpc, :controller, :action
+
     self.query_time = 0
-    self.migrate_histogram = Gitlab::Metrics.histogram(:gitaly_migrate_call_duration, "Gitaly migration call execution timings")
 
     def self.stub(name, storage)
       MUTEX.synchronize do
@@ -90,14 +105,23 @@ module Gitlab
     # end
     #
     def self.call(storage, service, rpc, request)
-      start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      start = Gitlab::Metrics::System.monotonic_time
       enforce_gitaly_request_limits(:call)
 
       kwargs = request_kwargs(storage)
       kwargs = yield(kwargs) if block_given?
       stub(service, storage).__send__(rpc, request, kwargs) # rubocop:disable GitlabSecurity/PublicSend
     ensure
-      self.query_time += Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
+      duration = Gitlab::Metrics::System.monotonic_time - start
+      labels = { gitaly_service: service.to_s, rpc: rpc.to_s }
+
+      if transaction = Gitlab::Metrics::Transaction.current
+        labels.merge!(transaction.labels)
+      end
+
+      # Keep track, seperately, for the performance bar
+      self.query_time += duration
+      @gitaly_controller_action_duration_seconds.observe(labels, duration)
     end
 
     def self.request_kwargs(storage)
@@ -172,11 +196,11 @@ module Gitlab
           feature_stack = Thread.current[:gitaly_feature_stack] ||= []
           feature_stack.unshift(feature)
           begin
-            start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+            start = Gitlab::Metrics::System.monotonic_time
             yield is_enabled
           ensure
-            total_time = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
-            migrate_histogram.observe({ gitaly_enabled: is_enabled, feature: feature }, total_time)
+            total_time = Gitlab::Metrics::System.monotonic_time - start
+            @gitaly_migrate_call_duration_seconds.observe({ gitaly_enabled: is_enabled, feature: feature }, total_time)
             feature_stack.shift
             Thread.current[:gitaly_feature_stack] = nil if feature_stack.empty?
           end
