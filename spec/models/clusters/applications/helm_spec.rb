@@ -28,7 +28,7 @@ RSpec.describe Clusters::Applications::Helm, type: :model do
 
   describe 'status state machine' do
     describe '#make_installing' do
-      subject { create(:applications_helm, :scheduled) }
+      subject { create(:cluster_applications_helm, :scheduled) }
 
       it 'is installing' do
         subject.make_installing!
@@ -38,7 +38,7 @@ RSpec.describe Clusters::Applications::Helm, type: :model do
     end
 
     describe '#make_installed' do
-      subject { create(:applications_helm, :installing) }
+      subject { create(:cluster_applications_helm, :installing) }
 
       it 'is installed' do
         subject.make_installed
@@ -48,7 +48,7 @@ RSpec.describe Clusters::Applications::Helm, type: :model do
     end
 
     describe '#make_errored' do
-      subject { create(:applications_helm, :installing) }
+      subject { create(:cluster_applications_helm, :installing) }
       let(:reason) { 'some errors' }
 
       it 'is errored' do
@@ -60,7 +60,7 @@ RSpec.describe Clusters::Applications::Helm, type: :model do
     end
 
     describe '#make_scheduled' do
-      subject { create(:applications_helm, :installable) }
+      subject { create(:cluster_applications_helm, :installable) }
 
       it 'is scheduled' do
         subject.make_scheduled
@@ -69,7 +69,7 @@ RSpec.describe Clusters::Applications::Helm, type: :model do
       end
 
       describe 'when was errored' do
-        subject { create(:applications_helm, :errored) }
+        subject { create(:cluster_applications_helm, :errored) }
 
         it 'clears #status_reason' do
           expect(subject.status_reason).not_to be_nil
