@@ -116,7 +116,7 @@ export default class SmartInterval {
       })
       .catch((err) => {
         this.isLoading = false;
-        throw new Error(err);
+        throw err;
       });
   }
 
