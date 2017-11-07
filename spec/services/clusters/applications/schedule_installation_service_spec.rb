@@ -32,7 +32,7 @@ describe Clusters::Applications::ScheduleInstallationService do
     end
 
     context 'when installation is already in progress' do
-      let(:application) { create(:applications_helm, :installing) }
+      let(:application) { create(:cluster_applications_helm, :installing) }
       let(:cluster) { application.cluster }
 
       it_behaves_like 'a failing service'

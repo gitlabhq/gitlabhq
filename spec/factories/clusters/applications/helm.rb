@@ -1,10 +1,6 @@
 FactoryGirl.define do
-  factory :applications_helm, class: Clusters::Applications::Helm do
-    trait :cluster do
-      before(:create) do |app, _|
-        app.cluster = create(:cluster)
-      end
-    end
+  factory :cluster_applications_helm, class: Clusters::Applications::Helm do
+    cluster factory: :cluster
 
     trait :installable do
       cluster

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Clusters::Applications::InstallService do
   describe '#execute' do
-    let(:application) { create(:applications_helm, :scheduled) }
+    let(:application) { create(:cluster_applications_helm, :scheduled) }
     let(:service) { described_class.new(application) }
 
     context 'when there are no errors' do
@@ -39,7 +39,7 @@ describe Clusters::Applications::InstallService do
     end
 
     context 'when application cannot be persisted' do
-      let(:application) { build(:applications_helm, :scheduled) }
+      let(:application) { build(:cluster_applications_helm, :scheduled) }
 
       it 'make the application errored' do
         expect(application).to receive(:make_installing!).once.and_raise(ActiveRecord::RecordInvalid)
