@@ -72,33 +72,16 @@ module API
         end
       end
 
-      def raise_unauthorized_error!
-        raise UnauthorizedError
+      private
+
+      def handle_return_value!(value, &block)
+        raise UnauthorizedError unless value
+
+        block_given? ? yield(value) : value
       end
 
-      # If token is presented and valid, then it sets @current_user.
-      #
-      # If the token does not have sufficient scopes to cover the requred scopes,
-      # then it raises InsufficientScopeError.
-      #
-      # If the token is expired, then it raises ExpiredError.
-      #
-      # If the token is revoked, then it raises RevokedError.
-      #
-      # If the token is not found (nil), then it returns nil
-      #
-      # Arguments:
-      #
-      #   scopes: (optional) scopes required for this guard.
-      #           Defaults to empty array.
-      def find_user_by_access_token(access_token)
-        scopes = scopes_registered_for_endpoint
-
-        # Expiration, revocation and scopes are verified in `find_user_by_access_token`
-        access_token = PersonalAccessToken.find_by(token: token)
-        raise UnauthorizedError unless access_token
-
-        access_token
+      def private_token
+        params[PRIVATE_TOKEN_PARAM].presence || env[PRIVATE_TOKEN_HEADER].presence
       end
 
       # An array of scopes that were registered (using `allow_access_with_scope`)

@@ -99,36 +99,12 @@ class ApplicationController < ActionController::Base
     return try(:authenticated_user)
   end
 
-<<<<<<< HEAD
-  def authenticate_user_from_personal_access_token!
-    token = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence
-
-    return unless token.present?
-
-    user = User.find_by_personal_access_token(token)
-
-    sessionless_sign_in(user)
-  end
-
-  # This filter handles authentication for atom request with an rss_token
-  def authenticate_user_from_rss_token!
-    return unless request.format.atom?
-
-    token = params[:rss_token].presence
-
-    return unless token.present?
-
-    user = User.find_by_rss_token(token)
-
-    sessionless_sign_in(user)
-=======
   # This filter handles private tokens, personal access tokens, and atom
   # requests with rss tokens
   def authenticate_sessionless_user!
     user = Gitlab::Auth::RequestAuthenticator.new(request).find_sessionless_user
 
     sessionless_sign_in(user) if user
->>>>>>> Add request throttles
   end
 
   def log_exception(exception)
