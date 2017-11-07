@@ -23,6 +23,8 @@ export default function deviseState(data) {
     return this.mergeError ? 'autoMergeFailed' : 'mergeWhenPipelineSucceeds';
   } else if (!this.canMerge) {
     return 'notAllowedToMerge';
+  } else if (this.shouldBeRebased) {
+    return 'rebase';
   } else if (this.canBeMerged) {
     return 'readyToMerge';
   }

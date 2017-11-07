@@ -1,4 +1,5 @@
 import Flash from '../flash';
+import  RebaseState from './components/states/mr_widget_rebase.vue';
 import {
   WidgetHeader,
   WidgetMergeHelp,
@@ -229,6 +230,7 @@ export default {
     'mr-widget-pipeline-failed': PipelineFailedState,
     'mr-widget-merge-when-pipeline-succeeds': MergeWhenPipelineSucceedsState,
     'mr-widget-auto-merge-failed': AutoMergeFailed,
+    'mr-widget-rebase': RebaseState,
   },
   template: `
     <div class="mr-state-widget prepend-top-default">
