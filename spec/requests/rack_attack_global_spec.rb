@@ -1,27 +1,6 @@
 require 'spec_helper'
 
 describe 'Rack Attack global throttles' do
-  # If the tests are being flaky as described below, then this constant
-  # can be set to greater than 1 to make multiple attempts to get a 429.
-  #
-  # In tests exceeding the rate limit within a time period (which we know we
-  # have accomplished because we've made exactly 1 more request than allowed
-  # while time is stopped) we expect a 429. But sometimes we get a 200,
-  # sometimes for more than one request, but eventually we get a 429. This
-  # constant and its usages should be removed if we figure out why this happens.
-  # More on this:
-  # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14708#note_45151688
-  NUM_TRIES_FOR_REJECTION = 1
-
-  # Extra time travel past what should be strictly necessary to ensure the
-  # throttle we are testing is using a cache key where the request count is 0.
-  #
-  # Why add this? Sometimes we get a 429 when we expect a 200. This constant and
-  # its usages should be removed if we figure out why this happens.
-  # More on this:
-  # https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14708#note_45151688
-  NEXT_TIME_PERIOD_BUFFER = 0.seconds
-
   let(:settings) { Gitlab::CurrentSettings.current_application_settings }
 
   # Start with really high limits and override them with low limits to ensure
@@ -405,11 +384,7 @@ describe 'Rack Attack global throttles' do
   end
 
   def expect_rejection(&block)
-    # NUM_TRIES_FOR_REJECTION.times do |i|
-      yield
-      # break if response.status == 429 # success
-      # Rails.logger.warn "Flaky test expected HTTP status 429 but got #{response.status}. Will attempt again (#{i + 1}/#{NUM_TRIES_FOR_REJECTION})" if i + 1 < NUM_TRIES_FOR_REJECTION
-    # end
+    yield
 
     expect(response).to have_http_status(429)
   end

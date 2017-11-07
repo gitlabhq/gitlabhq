@@ -19,22 +19,6 @@ module Gitlab
         user
       end
 
-      def private_token
-        request.params[:private_token].presence ||
-          request.headers['PRIVATE-TOKEN'].presence
-      end
-
-      def find_user_by_authentication_token(token_string)
-        User.find_by_authentication_token(token_string)
-      end
-
-      def find_user_by_personal_access_token(token_string)
-        access_token = PersonalAccessToken.find_by_token(token_string)
-        return unless access_token
-
-        find_user_by_access_token(access_token)
-      end
-
       def find_user_by_rss_token
         return unless request.path.ends_with?('atom') || request.format.atom?
 
@@ -50,6 +34,24 @@ module Gitlab
       def find_user_by_oauth_token
         access_token = find_oauth_access_token
 
+        return unless access_token
+
+        find_user_by_access_token(access_token)
+      end
+
+      private
+
+      def private_token
+        request.params[:private_token].presence ||
+          request.headers['PRIVATE-TOKEN'].presence
+      end
+
+      def find_user_by_authentication_token(token_string)
+        User.find_by_authentication_token(token_string)
+      end
+
+      def find_user_by_personal_access_token(token_string)
+        access_token = PersonalAccessToken.find_by_token(token_string)
         return unless access_token
 
         find_user_by_access_token(access_token)

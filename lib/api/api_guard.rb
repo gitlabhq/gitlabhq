@@ -72,8 +72,6 @@ module API
         end
       end
 
-      private
-
       def raise_unauthorized_error!
         raise UnauthorizedError
       end
