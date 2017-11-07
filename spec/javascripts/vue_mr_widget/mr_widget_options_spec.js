@@ -316,28 +316,6 @@ describe('mrWidgetOptions', () => {
         expect(vm.pollingInterval.stopTimer).toHaveBeenCalled();
       });
     });
-
-    describe('createService', () => {
-      it('should instantiate a Service', () => {
-        const endpoints = {
-          mergePath: '/nice/path',
-          mergeCheckPath: '/nice/path',
-          cancelAutoMergePath: '/nice/path',
-          removeWIPPath: '/nice/path',
-          sourceBranchPath: '/nice/path',
-          ciEnvironmentsStatusPath: '/nice/path',
-          statusPath: '/nice/path',
-          mergeActionsContentPath: '/nice/path',
-        };
-
-        const serviceInstance = vm.createService(endpoints);
-        const isInstanceOfMRService = serviceInstance instanceof MRWidgetService;
-        expect(isInstanceOfMRService).toBe(true);
-        Object.keys(serviceInstance).forEach((key) => {
-          expect(serviceInstance[key]).toBeDefined();
-        });
-      });
-    });
   });
 
   describe('components', () => {
