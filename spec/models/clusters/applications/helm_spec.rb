@@ -38,6 +38,12 @@ describe Clusters::Applications::Helm do
     end
   end
 
+  describe '#install_command' do
+    it 'has all the needed information' do
+      expect(subject.install_command).to have_attributes(name: subject.name, install_helm: true, chart: nil)
+    end
+  end
+
   describe 'status state machine' do
     describe '#make_installing' do
       subject { create(:cluster_applications_helm, :scheduled) }

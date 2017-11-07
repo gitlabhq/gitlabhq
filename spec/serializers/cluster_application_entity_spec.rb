@@ -10,7 +10,7 @@ describe ClusterApplicationEntity do
     end
 
     it 'has status' do
-      expect(subject[:status]).to eq(:installable)
+      expect(subject[:status]).to eq(:not_installable)
     end
 
     it 'has no status_reason' do

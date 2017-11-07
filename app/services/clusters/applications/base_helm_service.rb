@@ -20,6 +20,10 @@ module Clusters
       def helm_api
         @helm_api ||= Gitlab::Kubernetes::Helm.new(kubeclient)
       end
+
+      def install_command
+        @install_command ||= app.install_command
+      end
     end
   end
 end
