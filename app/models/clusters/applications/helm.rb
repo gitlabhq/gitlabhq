@@ -11,14 +11,16 @@ module Clusters
 
       validates :cluster, presence: true
 
-      after_initialize :set_initial_status
-
       def self.application_name
         self.to_s.demodulize.underscore
       end
 
-      def set_initial_status
-        self.status = 0 unless cluster&.platform_kubernetes_active?
+      def initial_status
+        if cluster&.platform_kubernetes_active?
+          :installable
+        else
+          :not_installable
+        end
       end
 
       def name
