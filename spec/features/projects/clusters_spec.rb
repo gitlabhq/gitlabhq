@@ -100,8 +100,7 @@ feature 'Clusters', :js do
 
         it 'user sees creation form with the succeccful message' do
           expect(page).to have_content('Cluster integration was successfully removed.')
-          # TODO: Subject to change, as today we don't clear Kubernetes Integration
-          expect(page).to have_link('Manage Kubernetes integration')
+          expect(page).to have_link('Create on GKE')
         end
       end
     end
