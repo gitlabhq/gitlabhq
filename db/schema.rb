@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171101134435) do
+ActiveRecord::Schema.define(version: 20171106101200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1914,7 +1914,6 @@ ActiveRecord::Schema.define(version: 20171101134435) do
   add_foreign_key "cluster_providers_gcp", "clusters", on_delete: :cascade
   add_foreign_key "clusters", "users", on_delete: :nullify
   add_foreign_key "clusters_applications_helm", "clusters", on_delete: :cascade
-  add_foreign_key "clusters_applications_ingress", "clusters", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade
