@@ -48,17 +48,17 @@ module Clusters
       end
 
       def remove_installation_pod
-        helm_api.delete_installation_pod!(app)
+        helm_api.delete_installation_pod!(install_command.pod_name)
       rescue
         # no-op
       end
 
       def installation_phase
-        helm_api.installation_status(app)
+        helm_api.installation_status(install_command.pod_name)
       end
 
       def installation_errors
-        helm_api.installation_log(app)
+        helm_api.installation_log(install_command.pod_name)
       end
     end
   end

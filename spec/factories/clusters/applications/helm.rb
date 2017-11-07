@@ -3,7 +3,7 @@ FactoryGirl.define do
     cluster factory: %i(cluster provided_by_gcp)
 
     trait :not_installable do
-      status -2
+      status(-2)
     end
 
     trait :installable do

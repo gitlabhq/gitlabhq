@@ -26,6 +26,10 @@ module Clusters
       def name
         self.class.application_name
       end
+
+      def install_command
+        Gitlab::Kubernetes::Helm::InstallCommand.new(name, true)
+      end
     end
   end
 end
