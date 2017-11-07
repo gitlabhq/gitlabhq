@@ -1,0 +1,5 @@
+---
+title: Improve DashboardController#activity.json performance
+merge_request: 14985
+author:
+type: performance

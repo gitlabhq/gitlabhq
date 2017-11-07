@@ -1,15 +1,20 @@
 require 'spec_helper'
 
 describe ClusterSerializer do
-  let(:serializer) do
-    described_class.new
-  end
-
   describe '#represent_status' do
-    subject { serializer.represent_status(resource) }
+    subject { described_class.new.represent_status(cluster) }
 
-    context 'when represents only status' do
-      let(:resource) { create(:gcp_cluster, :errored) }
+    context 'when provider type is gcp' do
+      let(:cluster) { create(:cluster, provider_type: :gcp, provider_gcp: provider) }
+      let(:provider) { create(:cluster_provider_gcp, :errored) }
+
+      it 'serializes only status' do
+        expect(subject.keys).to contain_exactly(:status, :status_reason)
+      end
+    end
+
+    context 'when provider type is user' do
+      let(:cluster) { create(:cluster, provider_type: :user) }
 
       it 'serializes only status' do
         expect(subject.keys).to contain_exactly(:status, :status_reason)

@@ -27,11 +27,13 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def new
-    @cluster = project.build_cluster
+    @cluster = Clusters::Cluster.new.tap do |cluster|
+      cluster.build_provider_gcp
+    end
   end
 
   def create
-    @cluster = Ci::CreateClusterService
+    @cluster = Clusters::CreateService
       .new(project, current_user, create_params)
       .execute(token_in_session)
 
@@ -58,7 +60,7 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def update
-    Ci::UpdateClusterService
+    Clusters::UpdateService
       .new(project, current_user, update_params)
       .execute(cluster)
 
@@ -88,19 +90,19 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def create_params
     params.require(:cluster).permit(
-      :gcp_project_id,
-      :gcp_cluster_zone,
-      :gcp_cluster_name,
-      :gcp_cluster_size,
-      :gcp_machine_type,
-      :project_namespace,
-      :enabled)
+      :enabled,
+      :name,
+      :provider_type,
+      provider_gcp_attributes: [
+        :gcp_project_id,
+        :zone,
+        :num_nodes,
+        :machine_type
+      ])
   end
 
   def update_params
-    params.require(:cluster).permit(
-      :project_namespace,
-      :enabled)
+    params.require(:cluster).permit(:enabled)
   end
 
   def authorize_google_api

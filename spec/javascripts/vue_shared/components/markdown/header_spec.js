@@ -43,11 +43,13 @@ describe('Markdown field header component', () => {
   it('emits toggle markdown event when clicking preview', () => {
     spyOn(vm, '$emit');
 
-    vm.$el.querySelector('li:nth-child(2) a').click();
+    vm.$el.querySelector('.js-preview-link').click();
 
-    expect(
-      vm.$emit,
-    ).toHaveBeenCalledWith('toggle-markdown');
+    expect(vm.$emit).toHaveBeenCalledWith('preview-markdown');
+
+    vm.$el.querySelector('.js-write-link').click();
+
+    expect(vm.$emit).toHaveBeenCalledWith('write-markdown');
   });
 
   it('blurs preview link after click', (done) => {
