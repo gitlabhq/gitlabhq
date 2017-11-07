@@ -5,7 +5,6 @@
     computed: {
       ...mapState([
         'canCommit',
-        'downloads',
       ]),
     },
     methods: {
@@ -18,51 +17,31 @@
 
 <template>
   <header class="clearfix multi-file-list-header">
-    <div class="project-action-button dropdown inline">
-      <button
-        type="button"
-        class="btn btn default"
-        data-toggle="dropdown"
-        :aria-label="__('Select Archive Format')"
+    <button
+      type="button"
+      class="btn btn-default btn-sm js-download-btn"
+      data-toggle="dropdown"
+      data-target=".js-download-dropdown"
+      :aria-label="__('Select Archive Format')"
+    >
+      <i
+        class="fa fa-download"
+        aria-hidden="true"
       >
-        <i
-          class="fa fa-download"
-          aria-hidden="true"
-        >
-        </i>
-        <i
-          class="fa fa-caret-down"
-          aria-hidden="true"
-        >
-        </i>
-      </button>
-      <ul
-        class="dropdown-menu"
-        role="menu"
+      </i>
+      <i
+        class="fa fa-caret-down"
+        aria-hidden="true"
       >
-        <template v-for="(data, key) in downloads">
-          <li class="dropdown-header">
-            {{ key }}
-          </li>
-          <li v-for="download in data">
-            <a
-              :href="download.link"
-              rel="nofollow"
-              download
-            >
-              {{ download.text }}
-            </a>
-          </li>
-        </template>
-      </ul>
-    </div>
+      </i>
+    </button>
     <aside
       v-if="canCommit"
       class="pull-right"
     >
       <button
         type="button"
-        class="btn btn-transparent cdark"
+        class="btn btn-transparent btn-sm cdark"
         :aria-label="__('Create new file')"
         @click="openNewEntryModal('blob')"
       >
@@ -74,7 +53,7 @@
       </button>
       <button
         type="button"
-        class="btn btn-transparent cdark"
+        class="btn btn-transparent btn-sm cdark"
         :aria-label="__('Create new directory')"
         @click="openNewEntryModal('tree')"
       >

@@ -6,6 +6,7 @@ import RepoTabs from './repo_tabs.vue';
 import RepoFileButtons from './repo_file_buttons.vue';
 import RepoPreview from './repo_preview.vue';
 import repoEditor from './repo_editor.vue';
+import downloadsDropdown from './downloads/dropdown.vue';
 
 export default {
   computed: {
@@ -24,6 +25,7 @@ export default {
     repoEditor,
     RepoCommitSection,
     RepoPreview,
+    downloadsDropdown,
   },
   mounted() {
     const returnValue = 'Are you sure you want to lose unsaved changes?';
@@ -43,6 +45,7 @@ export default {
   <div class="repository-view">
     <div class="tree-content-holder" :class="{'tree-content-holder-mini' : isCollapsed}">
       <repo-sidebar/>
+      <downloads-dropdown v-if="isCollapsed" />
       <div
         v-if="isCollapsed"
         class="panel-right"
