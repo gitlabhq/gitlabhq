@@ -520,6 +520,10 @@ module API
       expose :subscribed do |merge_request, options|
         merge_request.subscribed?(options[:current_user], options[:project])
       end
+
+      expose :changes_count do |merge_request, _options|
+        merge_request.merge_request_diff.real_size
+      end
     end
 
     class MergeRequestChanges < MergeRequest

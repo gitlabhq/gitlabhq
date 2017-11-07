@@ -436,17 +436,7 @@ describe API::MergeRequests do
       expect(json_response['merge_status']).to eq('can_be_merged')
       expect(json_response['should_close_merge_request']).to be_falsy
       expect(json_response['force_close_merge_request']).to be_falsy
-    end
-
-    it "returns merge_request" do
-      get api("/projects/#{project.id}/merge_requests/#{merge_request.iid}", user)
-      expect(response).to have_gitlab_http_status(200)
-      expect(json_response['title']).to eq(merge_request.title)
-      expect(json_response['iid']).to eq(merge_request.iid)
-      expect(json_response['work_in_progress']).to eq(false)
-      expect(json_response['merge_status']).to eq('can_be_merged')
-      expect(json_response['should_close_merge_request']).to be_falsy
-      expect(json_response['force_close_merge_request']).to be_falsy
+      expect(json_response['changes_count']).to eq(merge_request.merge_request_diff.real_size)
     end
 
     it "returns a 404 error if merge_request_iid not found" do
@@ -463,10 +453,30 @@ describe API::MergeRequests do
     context 'Work in Progress' do
       let!(:merge_request_wip) { create(:merge_request, author: user, assignee: user, source_project: project, target_project: project, title: "WIP: Test", created_at: base_time + 1.second) }
 
-      it "returns merge_request" do
+      it "returns merge request" do
         get api("/projects/#{project.id}/merge_requests/#{merge_request_wip.iid}", user)
+
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['work_in_progress']).to eq(true)
+      end
+    end
+
+    context 'when a merge request has more than the changes limit' do
+      it "returns a string indicating that more changes were made" do
+        stub_const('Commit::DIFF_HARD_LIMIT_FILES', 5)
+
+        merge_request_overflow = create(:merge_request, :simple,
+                                        author: user,
+                                        assignee: user,
+                                        source_project: project,
+                                        source_branch: 'expand-collapse-files',
+                                        target_project: project,
+                                        target_branch: 'master')
+
+        get api("/projects/#{project.id}/merge_requests/#{merge_request_overflow.iid}", user)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response['changes_count']).to eq('5+')
       end
     end
   end
