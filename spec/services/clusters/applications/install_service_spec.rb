@@ -4,14 +4,20 @@ describe Clusters::Applications::InstallService do
   describe '#execute' do
     let(:application) { create(:cluster_applications_helm, :scheduled) }
     let(:service) { described_class.new(application) }
+    let(:helm_client) { instance_double(Gitlab::Kubernetes::Helm) }
+
+    before do
+      allow(service).to receive(:helm_api).and_return(helm_client)
+    end
 
     context 'when there are no errors' do
       before do
-        expect_any_instance_of(Gitlab::Kubernetes::Helm).to receive(:install).with(application)
+        expect(helm_client).to receive(:install).with(application)
         allow(ClusterWaitForAppInstallationWorker).to receive(:perform_in).and_return(nil)
       end
 
       it 'make the application installing' do
+        expect(application.cluster).not_to be_nil
         service.execute
 
         expect(application).to be_installing
@@ -27,7 +33,7 @@ describe Clusters::Applications::InstallService do
     context 'when k8s cluster communication fails' do
       before do
         error = KubeException.new(500, 'system failure', nil)
-        expect_any_instance_of(Gitlab::Kubernetes::Helm).to receive(:install).with(application).and_raise(error)
+        expect(helm_client).to receive(:install).with(application).and_raise(error)
       end
 
       it 'make the application errored' do
@@ -43,7 +49,7 @@ describe Clusters::Applications::InstallService do
 
       it 'make the application errored' do
         expect(application).to receive(:make_installing!).once.and_raise(ActiveRecord::RecordInvalid)
-        expect_any_instance_of(Gitlab::Kubernetes::Helm).not_to receive(:install)
+        expect(helm_client).not_to receive(:install)
 
         service.execute
 
