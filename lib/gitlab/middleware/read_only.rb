@@ -66,11 +66,7 @@ module Gitlab
       end
 
       def whitelisted_routes
-        logout_route || grack_route || @whitelisted.any? { |path| request.path.include?(path) } || lfs_route || sidekiq_route
-      end
-
-      def logout_route
-        route_hash[:controller] == 'sessions' && route_hash[:action] == 'destroy'
+        grack_route || @whitelisted.any? { |path| request.path.include?(path) } || lfs_route || sidekiq_route
       end
 
       def sidekiq_route
