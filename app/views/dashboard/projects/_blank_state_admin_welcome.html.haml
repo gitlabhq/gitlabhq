@@ -1,19 +1,14 @@
 .row
   .col-md-6
-    - if current_user.can_create_project?
-      = link_to new_project_path, class: "blank-state-link" do
-        .blank-state
-          .blank-state-icon
-            = custom_icon("add_new_project", size: 50)
-          .blank-state-body
-            %h3.blank-state-title
-              Create a project
-            %p.blank-state-text
-              You don't have access to any projects right now.
-              You can create up to
-              %strong= number_with_delimiter(current_user.projects_limit)
-              = succeed "." do
-                = "project".pluralize(current_user.projects_limit)
+    = link_to new_project_path, class: "blank-state-link" do
+      .blank-state
+        .blank-state-icon
+          = custom_icon("add_new_project", size: 50)
+        .blank-state-body
+          %h3.blank-state-title
+            Create a project
+          %p.blank-state-text
+            Projects are where you store your code, access issues, wiki and other features of GitLab.
 
   - if current_user.can_create_group?
     .col-md-6
