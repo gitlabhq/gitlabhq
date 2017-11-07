@@ -53,9 +53,11 @@ describe RemoveUnreferencedLfsObjectsWorker do
     end
 
     it 'removes LFS files from disk storage' do
+      lfs_object = create(:lfs_object, :with_file)
+
       expect_any_instance_of(ActiveRecord::Relation).to receive(:destroy_all).and_call_original
 
-      worker.perform
+      expect { worker.perform }.to change { File.exists?(lfs_object.file.path) }.to(false)
     end
   end
 end
