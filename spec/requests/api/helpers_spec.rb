@@ -23,6 +23,7 @@ describe API::Helpers do
     }
   end
   let(:header) { }
+  let(:request) { Grape::Request.new(env)}
 
   before do
     allow_any_instance_of(self.class).to receive(:options).and_return({})
