@@ -7,7 +7,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
   let(:project) { build_stubbed(:kubernetes_project) }
   let(:service) { project.kubernetes_service }
 
-  describe "Associations" do
+  describe 'Associations' do
     it { is_expected.to belong_to :project }
   end
 

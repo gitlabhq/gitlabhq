@@ -519,6 +519,15 @@ ActiveRecord::Schema.define(version: 20171101134435) do
   add_index "clusters", ["enabled"], name: "index_clusters_on_enabled", using: :btree
   add_index "clusters", ["user_id"], name: "index_clusters_on_user_id", using: :btree
 
+  create_table "clusters_applications_helm", force: :cascade do |t|
+    t.integer "cluster_id", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.integer "status", null: false
+    t.string "version", null: false
+    t.text "status_reason"
+  end
+
   create_table "container_repositories", force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "name", null: false
@@ -1893,6 +1902,7 @@ ActiveRecord::Schema.define(version: 20171101134435) do
   add_foreign_key "cluster_projects", "projects", on_delete: :cascade
   add_foreign_key "cluster_providers_gcp", "clusters", on_delete: :cascade
   add_foreign_key "clusters", "users", on_delete: :nullify
+  add_foreign_key "clusters_applications_helm", "clusters", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade

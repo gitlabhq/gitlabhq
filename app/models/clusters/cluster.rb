@@ -4,6 +4,10 @@ module Clusters
 
     self.table_name = 'clusters'
 
+    APPLICATIONS = {
+      Applications::Helm.application_name => Applications::Helm
+    }.freeze
+
     belongs_to :user
 
     has_many :cluster_projects, class_name: 'Clusters::Project'
@@ -14,6 +18,8 @@ module Clusters
 
     # We have to ":destroy" it today to ensure that we clean also the Kubernetes Integration
     has_one :platform_kubernetes, class_name: 'Clusters::Platforms::Kubernetes', autosave: true, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+
+    has_one :application_helm, class_name: 'Clusters::Applications::Helm'
 
     accepts_nested_attributes_for :provider_gcp, update_only: true
     accepts_nested_attributes_for :platform_kubernetes, update_only: true
@@ -28,9 +34,11 @@ module Clusters
 
     delegate :status, to: :provider, allow_nil: true
     delegate :status_reason, to: :provider, allow_nil: true
-    delegate :status_name, to: :provider, allow_nil: true
     delegate :on_creation?, to: :provider, allow_nil: true
     delegate :update_kubernetes_integration!, to: :platform, allow_nil: true
+
+    delegate :active?, to: :platform_kubernetes, prefix: true, allow_nil: true
+    delegate :installed?, to: :application_helm, prefix: true, allow_nil: true
 
     enum platform_type: {
       kubernetes: 1
@@ -43,6 +51,20 @@ module Clusters
 
     scope :enabled, -> { where(enabled: true) }
     scope :disabled, -> { where(enabled: false) }
+
+    def status_name
+      if provider
+        provider.status_name
+      else
+        :created
+      end
+    end
+
+    def applications
+      [
+        application_helm || build_application_helm
+      ]
+    end
 
     def provider
       return provider_gcp if gcp?
@@ -58,6 +80,10 @@ module Clusters
       @first_project = projects.first
     end
     alias_method :project, :first_project
+
+    def kubeclient
+      platform_kubernetes.kubeclient if kubernetes?
+    end
 
     private
 

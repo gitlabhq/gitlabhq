@@ -29,9 +29,22 @@ describe ClusterEntity do
     context 'when provider type is user' do
       let(:cluster) { create(:cluster, provider_type: :user) }
 
-      it 'has nil' do
-        expect(subject[:status]).to be_nil
+      it 'has corresponded data' do
+        expect(subject[:status]).to eq(:created)
         expect(subject[:status_reason]).to be_nil
+      end
+    end
+
+    context 'when no application has been installed' do
+      let(:cluster) { create(:cluster) }
+      subject { described_class.new(cluster).as_json[:applications]}
+
+      it 'contains helm as not_installable' do
+        expect(subject).not_to be_empty
+
+        helm = subject[0]
+        expect(helm[:name]).to eq('helm')
+        expect(helm[:status]).to eq(:not_installable)
       end
     end
   end

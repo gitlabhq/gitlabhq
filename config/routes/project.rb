@@ -191,6 +191,10 @@ constraints(ProjectUrlConstrainer.new) do
 
         member do
           get :status, format: :json
+
+          scope :applications do
+            post '/:application', to: 'clusters/applications#create', as: :install_applications
+          end
         end
       end
 

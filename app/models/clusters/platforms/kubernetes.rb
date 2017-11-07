@@ -55,6 +55,10 @@ module Clusters
         self.class.namespace_for_project(project) if project
       end
 
+      def kubeclient
+        @kubeclient ||= kubernetes_service.kubeclient if manages_kubernetes_service?
+      end
+
       def update_kubernetes_integration!
         raise 'Kubernetes service already configured' unless manages_kubernetes_service?
 
@@ -68,6 +72,10 @@ module Clusters
           token: token,
           ca_pem: ca_cert
         )
+      end
+
+      def active?
+        manages_kubernetes_service?
       end
 
       private
