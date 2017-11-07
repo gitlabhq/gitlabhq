@@ -73,26 +73,26 @@
     display: inline-flex;
     align-items: center;
     padding: 1px;
-    background: $blue-100;
+    background-color: $blue-100;
     border-radius: $border-radius-default;
     text-align: center;
 
     &:hover {
-      background: $blue-200;
+      background-color: $blue-200;
     }
 
     .limit-icon {
-      width: 15%;
+      width: 20px;
     }
 
     .limit-message {
+      @include str-truncated(100%);
       flex: 1;
-      height: 16px;
+      line-height: 16px;
       margin-right: 2px;
-      background: $white-light;
+      background-color: $white-light;
       border-top-right-radius: $border-radius-default;
       border-bottom-right-radius: $border-radius-default;
-      font-family: $regular_font;
       font-size: 12px;
     }
   }
