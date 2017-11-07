@@ -78,7 +78,6 @@
     }
 
     .limit-message {
-      @include str-truncated(100%);
       line-height: 16px;
       margin-right: 8px;
       font-size: 12px;
