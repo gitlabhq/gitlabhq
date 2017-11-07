@@ -113,9 +113,6 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     @commits = prepare_commits_for_rendering(@merge_request.commits)
     @commit = @merge_request.diff_head_commit
 
-    @note_counts = Note.where(commit_id: @commits.map(&:id))
-      .group(:commit_id).count
-
     @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
 
     set_pipeline_variables
