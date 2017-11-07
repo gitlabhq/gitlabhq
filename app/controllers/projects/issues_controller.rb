@@ -10,7 +10,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action :check_issues_available!
   before_action :issue, except: [:index, :new, :create, :bulk_update]
-  before_action :set_issues_index, only: [:index]
+  before_action :set_issuables_index, only: [:index]
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
@@ -24,15 +24,7 @@ class Projects::IssuesController < Projects::ApplicationController
   respond_to :html
 
   def index
-    if params[:assignee_id].present?
-      assignee = User.find_by_id(params[:assignee_id])
-      @users.push(assignee) if assignee
-    end
-
-    if params[:author_id].present?
-      author = User.find_by_id(params[:author_id])
-      @users.push(author) if author
-    end
+    @issues = @issuables
 
     respond_to do |format|
       format.html
@@ -251,5 +243,10 @@ class Projects::IssuesController < Projects::ApplicationController
   def update_service
     update_params = issue_params.merge(spammable_params)
     Issues::UpdateService.new(project, current_user, update_params)
+  end
+
+  def set_issuables_index
+    @finder_type = IssuesFinder
+    super
   end
 end

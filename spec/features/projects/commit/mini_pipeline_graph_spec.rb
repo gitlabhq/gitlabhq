@@ -12,6 +12,13 @@ feature 'Mini Pipeline Graph in Commit View', :js do
     end
     let(:build) { create(:ci_build, pipeline: pipeline) }
 
+    it 'display icon with status' do
+      build.run
+      visit project_commit_path(project, project.commit.id)
+
+      expect(page).to have_selector('.ci-status-icon-running')
+    end
+
     it 'displays a mini pipeline graph' do
       build.run
       visit project_commit_path(project, project.commit.id)

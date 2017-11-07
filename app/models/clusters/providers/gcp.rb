@@ -7,7 +7,7 @@ module Clusters
 
       default_value_for :zone, 'us-central1-a'
       default_value_for :num_nodes, 3
-      default_value_for :machine_type, 'n1-standard-4'
+      default_value_for :machine_type, 'n1-standard-2'
 
       attr_encrypted :access_token,
         mode: :per_attribute_iv,

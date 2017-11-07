@@ -69,7 +69,7 @@ describe GoogleApi::CloudPlatform::Client do
 
     let(:cluster_name) { 'test-cluster' }
     let(:cluster_size) { 1 }
-    let(:machine_type) { 'n1-standard-4' }
+    let(:machine_type) { 'n1-standard-2' }
     let(:operation) { double }
 
     before do
