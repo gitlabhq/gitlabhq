@@ -9,8 +9,8 @@ describe Clusters::Applications::CheckInstallationProgressService do
   let(:errors) { nil }
 
   shared_examples 'a terminated installation' do
-    it 'finalize the installation' do
-      expect(service).to receive(:finalize_installation).once
+    it 'removes the installation POD' do
+      expect(service).to receive(:remove_installation_pod).once
 
       service.execute
     end
@@ -23,7 +23,7 @@ describe Clusters::Applications::CheckInstallationProgressService do
       context 'when not timeouted' do
         it 'reschedule a new check' do
           expect(ClusterWaitForAppInstallationWorker).to receive(:perform_in).once
-          expect(service).not_to receive(:finalize_installation)
+          expect(service).not_to receive(:remove_installation_pod)
 
           service.execute
 
@@ -53,7 +53,7 @@ describe Clusters::Applications::CheckInstallationProgressService do
     expect(service).to receive(:installation_phase).once.and_return(phase)
 
     allow(service).to receive(:installation_errors).and_return(errors)
-    allow(service).to receive(:finalize_installation).and_return(nil)
+    allow(service).to receive(:remove_installation_pod).and_return(nil)
   end
 
   describe '#execute' do
@@ -61,6 +61,15 @@ describe Clusters::Applications::CheckInstallationProgressService do
       let(:phase) { Gitlab::Kubernetes::Pod::SUCCEEDED }
 
       it_behaves_like 'a terminated installation'
+
+      it 'make the application installed' do
+        expect(ClusterWaitForAppInstallationWorker).not_to receive(:perform_in)
+
+        service.execute
+
+        expect(application).to be_installed
+        expect(application.status_reason).to be_nil
+      end
     end
 
     context 'when installation POD failed' do

@@ -6,7 +6,7 @@ module Clusters
 
         case installation_phase
         when Gitlab::Kubernetes::Pod::SUCCEEDED
-          finalize_installation
+          on_success
         when Gitlab::Kubernetes::Pod::FAILED
           on_failed
         else
@@ -18,23 +18,39 @@ module Clusters
 
       private
 
+      def on_success
+        app.make_installed!
+      ensure
+        remove_installation_pod
+      end
+
       def on_failed
         app.make_errored!(installation_errors || 'Installation silently failed')
-        finalize_installation
+      ensure
+        remove_installation_pod
       end
 
       def check_timeout
-        if Time.now.utc - app.updated_at.to_time.utc > ClusterWaitForAppInstallationWorker::TIMEOUT
-          app.make_errored!('Installation timeouted')
-          finalize_installation
+        if timeouted?
+          begin
+            app.make_errored!('Installation timeouted')
+          ensure
+            remove_installation_pod
+          end
         else
           ClusterWaitForAppInstallationWorker.perform_in(
             ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
         end
       end
 
-      def finalize_installation
-        FinalizeInstallationService.new(app).execute
+      def timeouted?
+        Time.now.utc - app.updated_at.to_time.utc > ClusterWaitForAppInstallationWorker::TIMEOUT
+      end
+
+      def remove_installation_pod
+        helm_api.delete_installation_pod!(app)
+      rescue
+        # no-op
       end
 
       def installation_phase
