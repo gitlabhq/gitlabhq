@@ -36,12 +36,16 @@
 }
 
 .blank-state {
-  display: flex;
-  align-items: center;
-  padding: 50px 30px;
+  padding: 20px;
   margin-bottom: 30px;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
+
+  @media (min-width: $screen-sm-min) {
+    display: flex;
+    align-items: center;
+    padding: 50px 30px;
+  }
 
   .blank-state-icon {
     svg {
@@ -56,6 +60,13 @@
   }
 
   .blank-state-body {
-    padding-left: 20px;
+    @media (max-width: $screen-xs-max) {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    @media (min-width: $screen-sm-min) {
+      padding-left: 20px;
+    }
   }
 }
