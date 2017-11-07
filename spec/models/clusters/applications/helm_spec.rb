@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Clusters::Applications::Helm, type: :model do
+describe Clusters::Applications::Helm do
   it { is_expected.to belong_to(:cluster) }
   it { is_expected.to validate_presence_of(:cluster) }
 
