@@ -23,14 +23,30 @@ describe Clusters::Applications::Ingress do
       expect(subject.status_name).to be(:not_installable)
     end
 
-    context 'when application helm is defined' do
+    context 'when application helm is scheduled' do
       before do
-        create(:cluster_applications_ingress, cluster: cluster)
+        create(:cluster_applications_helm, :scheduled, cluster: cluster)
+      end
+
+      it 'defaults to :not_installable' do
+        expect(subject.status_name).to be(:not_installable)
+      end
+    end
+
+    context 'when application helm is installed' do
+      before do
+        create(:cluster_applications_helm, :installed, cluster: cluster)
       end
 
       it 'defaults to :installable' do
         expect(subject.status_name).to be(:installable)
       end
+    end
+  end
+
+  describe '#install_command' do
+    it 'has all the needed information' do
+      expect(subject.install_command).to have_attributes(name: subject.name, install_helm: false, chart: subject.chart)
     end
   end
 

@@ -35,6 +35,10 @@ module Clusters
       def chart
         'stable/nginx-ingress'
       end
+
+      def install_command
+        Gitlab::Kubernetes::Helm::InstallCommand.new(name, false, chart)
+      end
     end
   end
 end
