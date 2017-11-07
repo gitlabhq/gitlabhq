@@ -117,7 +117,7 @@ describe('Application Row', () => {
       expect(vm.installButtonDisabled).toEqual(true);
     });
 
-    it('has disabled "Install" when APPLICATION_ERROR', () => {
+    it('has enabled "Install" when APPLICATION_ERROR', () => {
       vm = mountComponent(ApplicationRow, {
         ...DEFAULT_APPLICATION_STATE,
         status: APPLICATION_ERROR,
@@ -125,7 +125,7 @@ describe('Application Row', () => {
 
       expect(vm.installButtonLabel).toEqual('Install');
       expect(vm.installButtonLoading).toEqual(false);
-      expect(vm.installButtonDisabled).toEqual(true);
+      expect(vm.installButtonDisabled).toEqual(false);
     });
 
     it('has loading "Install" when REQUEST_LOADING', () => {
