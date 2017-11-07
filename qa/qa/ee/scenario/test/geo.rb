@@ -5,7 +5,12 @@ module QA
         class Geo < QA::Scenario::Entrypoint
           # TODO, https://gitlab.com/gitlab-org/gitlab-qa/issues/85
           #
-          def perform(primary_address, primary_name, secondary_address, secondary_name)
+          def perform(*args)
+            QA::Runtime::Scenario.define(args) do
+              attributes :geo_primary_address, :geo_primary_name
+              attributes :geo_secondary_address, :geo_secondary_name
+            end
+
             Geo::Primary.act do
               add_license
               enable_hashed_storage
@@ -29,8 +34,8 @@ module QA
             include QA::Scenario::Actable
 
             def initialize
-              @address = QA::Runtime::Scenario.primary_address
-              @name = QA::Runtime::Scenario.primary_name
+              @address = QA::Runtime::Scenario.geo_primary_address
+              @name = QA::Runtime::Scenario.geo_primary_name
 
               Specs::Config.perform do |specs|
                 specs.address = @address
@@ -74,8 +79,8 @@ module QA
             include QA::Scenario::Actable
 
             def initialize
-              @address = QA::Runtime::Scenario.secondary_address
-              @name = QA::Runtime::Scenario.secondary_name
+              @address = QA::Runtime::Scenario.geo_secondary_address
+              @name = QA::Runtime::Scenario.geo_secondary_name
               @slot = @address.gsub(/\.|-/, '_')
 
               Specs::Config.perform do |specs|

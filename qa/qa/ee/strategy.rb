@@ -7,6 +7,8 @@ module QA
         require 'qa/ee'
       end
 
+      # TODO generic solution for screenshot in factories
+      #
       def perform_before_hooks
         return unless ENV['EE_LICENSE']
 
