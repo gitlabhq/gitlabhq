@@ -49,6 +49,19 @@ describe Projects::Clusters::ApplicationsController do
           expect(response).to have_http_status(:not_found)
         end
       end
+
+      context 'when application is already installing' do
+        before do
+          other = current_application.new(cluster: cluster)
+          other.make_installing!
+        end
+
+        it 'returns 400' do
+          go
+
+          expect(response).to have_http_status(:bad_request)
+        end
+      end
     end
 
     describe 'security' do

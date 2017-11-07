@@ -5,6 +5,7 @@ module Clusters
 
       included do
         state_machine :status, initial: :installable do
+          state :not_installable, value: -2
           state :errored, value: -1
           state :installable, value: 0
           state :scheduled, value: 1
@@ -24,7 +25,7 @@ module Clusters
           end
 
           event :make_scheduled do
-            transition any - [:scheduled] => :scheduled
+            transition %i(installable errored) => :scheduled
           end
 
           before_transition any => [:scheduled] do |app_status, _|

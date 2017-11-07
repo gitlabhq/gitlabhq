@@ -31,5 +31,10 @@ FactoryGirl.define do
       status(-1)
       status_reason 'something went wrong'
     end
+
+    trait :timeouted do
+      installing
+      updated_at ClusterWaitForAppInstallationWorker::TIMEOUT.ago
+    end
   end
 end

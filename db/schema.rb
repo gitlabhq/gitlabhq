@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171101134435) do
+ActiveRecord::Schema.define(version: 20171106101200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -474,8 +474,6 @@ ActiveRecord::Schema.define(version: 20171101134435) do
     t.string "encrypted_password_iv"
     t.text "encrypted_token"
     t.string "encrypted_token_iv"
-    t.datetime_with_timezone "created_at", null: false
-    t.datetime_with_timezone "updated_at", null: false
   end
 
   add_index "cluster_platforms_kubernetes", ["cluster_id"], name: "index_cluster_platforms_kubernetes_on_cluster_id", unique: true, using: :btree
@@ -499,14 +497,11 @@ ActiveRecord::Schema.define(version: 20171101134435) do
     t.text "status_reason"
     t.string "gcp_project_id", null: false
     t.string "zone", null: false
-    t.integer "num_nodes", null: false
     t.string "machine_type"
     t.string "operation_id"
     t.string "endpoint"
     t.text "encrypted_access_token"
     t.string "encrypted_access_token_iv"
-    t.datetime_with_timezone "created_at", null: false
-    t.datetime_with_timezone "updated_at", null: false
   end
 
   add_index "cluster_providers_gcp", ["cluster_id"], name: "index_cluster_providers_gcp_on_cluster_id", unique: true, using: :btree
@@ -519,11 +514,10 @@ ActiveRecord::Schema.define(version: 20171101134435) do
     t.datetime_with_timezone "updated_at", null: false
     t.boolean "enabled", default: true
     t.string "name", null: false
-    t.integer "provider_type"
-    t.integer "platform_type"
-    t.datetime_with_timezone "created_at", null: false
-    t.datetime_with_timezone "updated_at", null: false
   end
+
+  add_index "clusters", ["enabled"], name: "index_clusters_on_enabled", using: :btree
+  add_index "clusters", ["user_id"], name: "index_clusters_on_user_id", using: :btree
 
   create_table "clusters_applications_helm", force: :cascade do |t|
     t.integer "cluster_id", null: false
