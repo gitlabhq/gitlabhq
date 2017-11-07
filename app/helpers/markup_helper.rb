@@ -69,10 +69,16 @@ module MarkupHelper
   # as Markdown.  HTML tags in the parsed output are not counted toward the
   # +max_chars+ limit.  If the length limit falls within a tag's contents, then
   # the tag contents are truncated without removing the closing tag.
-  def first_line_in_markdown(text, max_chars = nil, options = {})
-    md = markdown(text, options).strip
+  def first_line_in_markdown(object, attribute, max_chars = nil, options = {})
+    md = markdown_field(object, attribute, options)
 
-    truncate_visible(md, max_chars || md.length) if md.present?
+    text = truncate_visible(md, max_chars || md.length) if md.present?
+
+    sanitize(
+      text,
+      tags: %w(a img gl-emoji b pre code p span),
+      attributes: Rails::Html::WhiteListSanitizer.allowed_attributes + ['style', 'data-src', 'data-name', 'data-unicode-version']
+    )
   end
 
   def markdown(text, context = {})
@@ -83,15 +89,17 @@ module MarkupHelper
     prepare_for_rendering(html, context)
   end
 
-  def markdown_field(object, field)
+  def markdown_field(object, field, context = {})
     object = object.for_display if object.respond_to?(:for_display)
     redacted_field_html = object.try(:"redacted_#{field}_html")
 
     return '' unless object.present?
     return redacted_field_html if redacted_field_html
 
-    html = Banzai.render_field(object, field)
-    prepare_for_rendering(html, object.banzai_render_context(field))
+    html = Banzai.render_field(object, field, context)
+    context.reverse_merge!(object.banzai_render_context(field)) if object.respond_to?(:banzai_render_context)
+
+    prepare_for_rendering(html, context)
   end
 
   def markup(file_name, text, context = {})
@@ -218,7 +226,7 @@ module MarkupHelper
       data: data,
       title: options[:title],
       aria: { label: options[:title] } do
-      icon(options[:icon])
+      sprite_icon(options[:icon])
     end
   end
 

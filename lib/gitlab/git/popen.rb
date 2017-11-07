@@ -7,7 +7,7 @@ module Gitlab
     module Popen
       FAST_GIT_PROCESS_TIMEOUT = 15.seconds
 
-      def popen(cmd, path, vars = {})
+      def popen(cmd, path, vars = {}, lazy_block: nil)
         unless cmd.is_a?(Array)
           raise "System commands must be given as an array of strings"
         end
@@ -22,7 +22,12 @@ module Gitlab
           yield(stdin) if block_given?
           stdin.close
 
-          @cmd_output << stdout.read
+          if lazy_block
+            return lazy_block.call(stdout.lazy)
+          else
+            @cmd_output << stdout.read
+          end
+
           @cmd_output << stderr.read
           @cmd_status = wait_thr.value.exitstatus
         end

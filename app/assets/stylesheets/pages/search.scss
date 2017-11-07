@@ -5,7 +5,7 @@
     margin-bottom: $gl-padding;
 
     &:last-child {
-      border-bottom: none;
+      border-bottom: 0;
     }
   }
 
@@ -57,7 +57,7 @@ input[type="checkbox"]:hover {
   }
 
   .search-input {
-    border: none;
+    border: 0;
     font-size: 14px;
     padding: 0 20px 0 0;
     margin-left: 5px;
@@ -78,10 +78,6 @@ input[type="checkbox"]:hover {
   }
 
   .search-input-wrap {
-    // Fallback if flexbox is not supported
-    display: inline-block;
-    width: 100%;
-
     .search-icon,
     .clear-icon {
       position: absolute;

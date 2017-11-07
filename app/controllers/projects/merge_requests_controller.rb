@@ -7,7 +7,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include IssuableCollections
 
   skip_before_action :merge_request, only: [:index, :bulk_update]
-  skip_before_action :ensure_ref_fetched, only: [:index, :bulk_update]
 
   before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
 
@@ -52,7 +51,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   def show
     validates_merge_request
-    ensure_ref_fetched
     close_merge_request_without_source_project
     check_if_can_be_merged
 

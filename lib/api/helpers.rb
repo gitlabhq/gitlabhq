@@ -328,6 +328,7 @@ module API
       finder_params[:archived] = params[:archived]
       finder_params[:search] = params[:search] if params[:search]
       finder_params[:user] = params.delete(:user) if params[:user]
+      finder_params[:custom_attributes] = params[:custom_attributes] if params[:custom_attributes]
       finder_params
     end
 

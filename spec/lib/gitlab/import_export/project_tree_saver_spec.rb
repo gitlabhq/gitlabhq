@@ -168,6 +168,10 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
         expect(project_feature["builds_access_level"]).to eq(ProjectFeature::PRIVATE)
       end
 
+      it 'has custom attributes' do
+        expect(saved_project_json['custom_attributes'].count).to eq(2)
+      end
+
       it 'does not complain about non UTF-8 characters in MR diffs' do
         ActiveRecord::Base.connection.execute("UPDATE merge_request_diffs SET st_diffs = '---\n- :diff: !binary |-\n    LS0tIC9kZXYvbnVsbAorKysgYi9pbWFnZXMvbnVjb3IucGRmCkBAIC0wLDAg\n    KzEsMTY3OSBAQAorJVBERi0xLjUNJeLjz9MNCisxIDAgb2JqDTw8L01ldGFk\n    YXR'")
 
@@ -278,6 +282,9 @@ describe Gitlab::ImportExport::ProjectTreeSaver do
 
     create(:event, :created, target: milestone, project: project, author: user)
     create(:service, project: project, type: 'CustomIssueTrackerService', category: 'issue_tracker')
+
+    create(:project_custom_attribute, project: project)
+    create(:project_custom_attribute, project: project)
 
     project
   end

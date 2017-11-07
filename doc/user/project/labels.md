@@ -77,15 +77,32 @@ having their priority set to null.
 
 ![Prioritize labels](img/labels_prioritize.png)
 
-Now that you have labels prioritized, you can use the 'Priority' and 'Label
-priority' filters in the issues or merge requests tracker.
+Now that you have labels prioritized, you can use the 'Label priority' and 'Priority' 
+sort orders in the issues or merge requests tracker.
 
-The 'Label priority' filter puts issues with the highest priority label on top.
+In the following, everything applies to both issues and merge requests, but we'll
+refer to just issues for brevity.
 
-The 'Priority' filter sorts issues by their soonest milestone due date, then by
-label priority.
+The 'Label priority' sort order positions issues with higher priority labels
+toward the top, and issues with lower priority labels toward the bottom. A non-prioritized
+label is considered to have the lowest priority. For a given issue, we _only_ consider the
+highest priority label assigned to it in the comparison. ([We are discussing](https://gitlab.com/gitlab-org/gitlab-ce/issues/18554) 
+including all the labels in a given issue for this comparison.) Given two issues
+are equal according to this sort comparison, their relative order is equal, and 
+therefore it's not guaranteed that one will be always above the other.
 
-![Filter labels by priority](img/labels_filter_by_priority.png)
+![Label priority sort order](img/label_priority_sort_order.png)
+
+The 'Priority' sort order comparison first considers an issue's milestone's due date,
+(if the issue is assigned a milestone and the milestone's due date exists), and then 
+secondarily considers the label priority comparison above. Sooner due dates results
+a higher sort order. If an issue doesn't have a milestone due date, it is equivalent to
+being assigned to a milestone that has a due date in the infinite future. Given two issues
+are equal according to this two-stage sort comparison, their relative order is equal, and 
+therefore it's not guaranteed that one will be always above the other.
+
+![Priority sort order](img/priority_sort_order.png)
+
 
 ## Subscribe to labels
 

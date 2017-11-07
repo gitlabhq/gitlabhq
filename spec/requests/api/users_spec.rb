@@ -1880,7 +1880,8 @@ describe API::Users do
     end
   end
 
-  include_examples 'custom attributes endpoints', 'users' do
+  it_behaves_like 'custom attributes endpoints', 'users' do
     let(:attributable) { user }
+    let(:other_attributable) { admin }
   end
 end

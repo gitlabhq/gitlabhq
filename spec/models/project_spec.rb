@@ -79,6 +79,7 @@ describe Project do
     it { is_expected.to have_many(:pipeline_schedules) }
     it { is_expected.to have_many(:members_and_requesters) }
     it { is_expected.to have_one(:cluster) }
+    it { is_expected.to have_many(:custom_attributes).class_name('ProjectCustomAttribute') }
 
     context 'after initialized' do
       it "has a project_feature" do
@@ -273,6 +274,12 @@ describe Project do
       it 'allows a reserved group name' do
         parent = create(:group)
         project = build(:project, path: 'avatar', namespace: parent)
+
+        expect(project).to be_valid
+      end
+
+      it 'allows a path ending in a period' do
+        project = build(:project, path: 'foo.')
 
         expect(project).to be_valid
       end

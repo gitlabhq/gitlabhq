@@ -3,7 +3,9 @@ shared_examples 'custom attributes endpoints' do |attributable_name|
   let!(:custom_attribute2) { attributable.custom_attributes.create key: 'bar', value: 'bar' }
 
   describe "GET /#{attributable_name} with custom attributes filter" do
-    let!(:other_attributable) { create attributable.class.name.underscore }
+    before do
+      other_attributable
+    end
 
     context 'with an unauthorized user' do
       it 'does not filter by custom attributes' do
@@ -11,6 +13,7 @@ shared_examples 'custom attributes endpoints' do |attributable_name|
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response.size).to be 2
+        expect(json_response.map { |r| r['id'] }).to contain_exactly attributable.id, other_attributable.id
       end
     end
 
