@@ -73,4 +73,16 @@ FactoryGirl.define do
     old_path { project.path }
     new_path { project.path + '_new' }
   end
+
+  factory :geo_hashed_storage_migrated_event, class: Geo::HashedStorageMigratedEvent do
+    project { create(:project, :repository) }
+
+    repository_storage_name { project.repository_storage }
+    repository_storage_path { project.repository_storage_path }
+    old_disk_path { project.path_with_namespace }
+    new_disk_path { project.path_with_namespace + '_new' }
+    old_wiki_disk_path { project.wiki.path_with_namespace }
+    new_wiki_disk_path { project.wiki.path_with_namespace + '_new' }
+    new_storage_version { Project::LATEST_STORAGE_VERSION }
+  end
 end
