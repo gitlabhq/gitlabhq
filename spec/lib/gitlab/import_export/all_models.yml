@@ -286,6 +286,7 @@ project:
 - root_of_fork_network
 - fork_network_member
 - fork_network
+- custom_attributes
 award_emoji:
 - awardable
 - user

@@ -526,3 +526,10 @@ ProjectAutoDevops:
 IssueAssignee:
 - user_id
 - issue_id
+ProjectCustomAttribute:
+- id
+- created_at
+- updated_at
+- project_id
+- key
+- value
