@@ -29,8 +29,8 @@ describe ClusterEntity do
     context 'when provider type is user' do
       let(:cluster) { create(:cluster, provider_type: :user) }
 
-      it 'has nil' do
-        expect(subject[:status]).to be_nil
+      it 'has corresponded data' do
+        expect(subject[:status]).to eq(:created)
         expect(subject[:status_reason]).to be_nil
       end
     end
