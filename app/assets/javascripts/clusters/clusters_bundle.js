@@ -163,12 +163,10 @@ export default class Clusters {
       .map(appId => newApplicationMap[appId].title);
 
     if (appTitles.length > 0) {
-      this.successApplicationContainer.textContent = sprintf(s__('ClusterIntegration|%{appList} was successfully installed on your cluster'), {
+      const text = sprintf(s__('ClusterIntegration|%{appList} was successfully installed on your cluster'), {
         appList: appTitles.join(', '),
       });
-      this.successApplicationContainer.classList.remove('hidden');
-    } else {
-      this.successApplicationContainer.classList.add('hidden');
+      Flash(text, 'notice', this.successApplicationContainer);
     }
   }
 
