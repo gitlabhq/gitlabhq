@@ -22,10 +22,12 @@ module Gitlab
           return true if blocked_user_or_hostname?(uri.user)
           return true if blocked_user_or_hostname?(uri.hostname)
 
-          server_ips = Resolv.getaddresses(uri.hostname)
+          server_ips = Addrinfo.getaddrinfo(uri.hostname, 80, nil, :STREAM).map(&:ip_address)
           return true if (blocked_ips & server_ips).any?
         rescue Addressable::URI::InvalidURIError
           return true
+        rescue SocketError
+          return false
         end
 
         false
