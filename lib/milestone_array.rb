@@ -13,7 +13,7 @@ module MilestoneArray
       when 'name_asc'
         sort_asc(array, 'title')
       when 'name_desc'
-        sort_desc(array, 'title')
+        sort_asc(array, 'title').reverse
       else
         array
       end
@@ -22,19 +22,19 @@ module MilestoneArray
     private
 
     def sort_asc_nulls_last(array, attribute)
-      array.select(&attribute.to_sym).sort_by(&attribute.to_sym) + array.reject(&attribute.to_sym)
+      attribute = attribute.to_sym
+
+      array.select(&attribute).sort_by(&attribute) + array.reject(&attribute)
     end
 
     def sort_desc_nulls_last(array, attribute)
-      array.select(&attribute.to_sym).sort_by(&attribute.to_sym).reverse + array.reject(&attribute.to_sym)
+      attribute = attribute.to_sym
+
+      array.select(&attribute).sort_by(&attribute).reverse + array.reject(&attribute)
     end
 
     def sort_asc(array, attribute)
       array.sort_by(&attribute.to_sym)
-    end
-
-    def sort_desc(array, attribute)
-      array.sort_by(&attribute.to_sym).reverse
     end
   end
 end
