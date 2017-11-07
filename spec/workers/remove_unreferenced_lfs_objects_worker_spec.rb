@@ -57,7 +57,7 @@ describe RemoveUnreferencedLfsObjectsWorker do
 
       expect_any_instance_of(ActiveRecord::Relation).to receive(:destroy_all).and_call_original
 
-      expect { worker.perform }.to change { File.exists?(lfs_object.file.path) }.to(false)
+      expect { worker.perform }.to change { File.exist?(lfs_object.file.path) }.to(false)
     end
   end
 end
