@@ -48,6 +48,8 @@ class RepositoryUpdateMirrorWorker
   def start_mirror(project)
     if start(project)
       Rails.logger.info("Mirror update for #{project.full_path} started. Waiting duration: #{project.mirror_waiting_duration}")
+      metric_mirror_waiting_duration_seconds.observe({}, project.mirror_waiting_duration)
+
       Gitlab::Metrics.add_event_with_values(
         :mirrors_running,
         { duration: project.mirror_waiting_duration },
@@ -76,5 +78,25 @@ class RepositoryUpdateMirrorWorker
       :mirrors_finished,
       { duration: project.mirror_update_duration },
       { path: project.full_path })
+
+    metric_mirror_update_duration_seconds.observe({}, project.mirror_update_duration)
+  end
+
+  def metric_mirror_update_duration_seconds
+    @metric_mirror_update_duration_seconds ||= Gitlab::Metrics.histogram(
+      :gitlab_repository_mirror_update_duration_seconds,
+      'Mirror update duration',
+      {},
+      [0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 50.0, 100.0]
+    )
+  end
+
+  def metric_mirror_waiting_duration_seconds
+    @metric_mirror_waiting_duration_seconds ||= Gitlab::Metrics.histogram(
+      :gitlab_repository_mirror_waiting_duration_seconds,
+      'Waiting length for repository mirror',
+      {},
+      [0.001, 0.002, 0.005, 0.01, 0.02, 0.05, 0.1, 0.500, 2.0, 10.0]
+    )
   end
 end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Metrics::InfluxSampler do
+describe Gitlab::Metrics::Samplers::InfluxSampler do
   let(:sampler) { described_class.new(5) }
 
   after do
