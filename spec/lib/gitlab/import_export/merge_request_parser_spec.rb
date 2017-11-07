@@ -31,9 +31,9 @@ describe Gitlab::ImportExport::MergeRequestParser do
   end
 
   it 'parses a MR that has no source branch' do
-    allow_any_instance_of(Gitlab::ImportExport::MergeRequestParser).to receive(:branch_exists?).and_call_original
-    allow_any_instance_of(Gitlab::ImportExport::MergeRequestParser).to receive(:branch_exists?).with(merge_request.source_branch).and_return(false)
-    allow_any_instance_of(Gitlab::ImportExport::MergeRequestParser).to receive(:fork_merge_request?).and_return(true)
+    allow_any_instance_of(described_class).to receive(:branch_exists?).and_call_original
+    allow_any_instance_of(described_class).to receive(:branch_exists?).with(merge_request.source_branch).and_return(false)
+    allow_any_instance_of(described_class).to receive(:fork_merge_request?).and_return(true)
     allow(Gitlab::GitalyClient).to receive(:migrate).and_call_original
     allow(Gitlab::GitalyClient).to receive(:migrate).with(:fetch_ref).and_return([nil, 0])
 
