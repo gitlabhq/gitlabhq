@@ -42,7 +42,7 @@ export default class Clusters {
     this.service = new ClustersService({
       endpoint: statusPath,
       installHelmEndpoint: installHelmPath,
-      installIngresEndpoint: installIngressPath,
+      installIngressEndpoint: installIngressPath,
       installRunnerEndpoint: installRunnerPath,
     });
 
