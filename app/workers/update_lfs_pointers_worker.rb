@@ -18,7 +18,9 @@ class UpdateLfsPointersWorker
 
   def create_lfs_pointer_records
     new_lfs_pointers.each do |blob|
-      project.lfs_pointers.create!(blob_oid: blob.id, lfs_oid: blob.lfs_oid)
+      project.lfs_pointers
+             .where(blob_oid: blob.id, lfs_oid: blob.lfs_oid)
+             .first_or_create!
     end
   end
 

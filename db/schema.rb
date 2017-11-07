@@ -849,6 +849,7 @@ ActiveRecord::Schema.define(version: 20171026082505) do
   end
 
   add_index "lfs_pointers", ["blob_oid"], name: "index_lfs_pointers_on_blob_oid", using: :btree
+  add_index "lfs_pointers", ["project_id", "blob_oid"], name: "index_lfs_pointers_on_project_id_and_blob_oid", unique: true, using: :btree
   add_index "lfs_pointers", ["project_id"], name: "index_lfs_pointers_on_project_id", using: :btree
 
   create_table "lists", force: :cascade do |t|

@@ -9,7 +9,7 @@ describe UpdateLfsPointersWorker do
     let(:blob_object) { project.repository.blob_at_branch('lfs', 'files/lfs/lfs_object.iso') }
 
     before do
-      allow_any_instance_of(Gitlab::Git::RevList).to receive(:new_objects).and_return([blob_object.id])
+      allow_any_instance_of(Gitlab::Git::RevList).to receive(:new_objects).and_yield([blob_object.id])
     end
 
     def perform
@@ -49,6 +49,14 @@ describe UpdateLfsPointersWorker do
 
       it 'creates a LfsPointer record for each new blob' do
         expect { perform }.to change(LfsPointer, :count).by(1)
+      end
+
+      it "doesn't duplicate existing pointers" do
+        create(:lfs_pointer, project: project,
+                             blob_oid: blob_object.id,
+                             lfs_oid: blob_object.lfs_oid)
+
+        expect { perform }.not_to change(LfsPointer, :count)
       end
 
       it 'looks up LFS pointers for the new ref' do

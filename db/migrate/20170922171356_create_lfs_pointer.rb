@@ -11,5 +11,7 @@ class CreateLfsPointer < ActiveRecord::Migration
       t.string :lfs_oid, null: false
       t.index :blob_oid # Used to filter on removed blobs
     end
+
+    add_index "lfs_pointers", %w[project_id blob_oid], name: "index_lfs_pointers_on_project_id_and_blob_oid", unique: true, using: :btree
   end
 end
