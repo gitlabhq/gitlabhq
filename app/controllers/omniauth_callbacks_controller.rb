@@ -156,7 +156,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       message << " Create a GitLab account first, and then connect it to your #{label} account."
     end
 
-    flash[:notice] = message
+    flash[:alert] = message
 
     redirect_to new_user_session_path
   end

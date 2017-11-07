@@ -13,9 +13,15 @@ gl.issueBoards.BoardsStore = {
   filter: {
     path: '',
   },
-  state: {},
+  state: {
+    currentBoard: {
+      labels: [],
+    },
+    currentPage: '',
+    reload: false,
+  },
   detail: {
-    issue: {}
+    issue: {},
   },
   moving: {
     issue: {},
@@ -24,12 +30,20 @@ gl.issueBoards.BoardsStore = {
   create () {
     this.state.lists = [];
     this.filter.path = getUrlParamsArray().join('&');
-    this.detail = { issue: {} };
+    this.detail = {
+      issue: {},
+    };
   },
   createNewListDropdownData() {
-    this.state.currentBoard = {};
+    this.state.currentBoard = {
+      labels: [],
+    };
     this.state.currentPage = '';
     this.state.reload = false;
+  },
+  showPage(page) {
+    this.state.reload = false;
+    this.state.currentPage = page;
   },
   addList (listObj, defaultAvatar) {
     const list = new List(listObj, defaultAvatar);

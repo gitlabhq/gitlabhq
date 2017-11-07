@@ -307,7 +307,7 @@
       &::after {
         content: '';
         width: 0;
-        border: none;
+        border: 0;
       }
     }
   }
@@ -323,7 +323,7 @@
 .pipeline-actions {
   @include new-style-dropdown;
 
-  border-bottom: none;
+  border-bottom: 0;
 }
 
 .tab-pane {
@@ -353,7 +353,7 @@
   }
 
   .build-log {
-    border: none;
+    border: 0;
     line-height: initial;
   }
 }
@@ -414,13 +414,13 @@
         // Remove right connecting horizontal line from first build in last stage
         &:first-child {
           &::after {
-            border: none;
+            border: 0;
           }
         }
         // Remove right curved connectors from all builds in last stage
         &:not(:first-child) {
           &::after {
-            border: none;
+            border: 0;
           }
         }
         // Remove opposite curve
@@ -438,7 +438,7 @@
         // Remove left curved connectors from all builds in first stage
         &:not(:first-child) {
           &::before {
-            border: none;
+            border: 0;
           }
         }
         // Remove opposite curve
@@ -544,7 +544,7 @@
 
     .dropdown-menu-toggle {
       background-color: transparent;
-      border: none;
+      border: 0;
       padding: 0;
 
       &:focus {
@@ -978,7 +978,7 @@ a.linked-pipeline-mini-item {
 
 .terminal-container {
   .content-block {
-    border-bottom: none;
+    border-bottom: 0;
   }
 
   #terminal {

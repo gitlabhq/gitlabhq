@@ -89,7 +89,14 @@ constraints(GroupUrlConstrainer.new) do
     end
 
     ## EE-specific
-    get :boards, to: redirect('/groups/%{group_id}/-/boards')
+    legacy_ee_group_boards_redirect = redirect do |params, request|
+      path = "/groups/#{params[:group_id]}/-/boards"
+      path << "/#{params[:extra_params]}" if params[:extra_params].present?
+      path << "?#{request.query_string}" if request.query_string.present?
+      path
+    end
+
+    get 'boards(/*extra_params)', as: :legacy_ee_group_boards_redirect, to: legacy_ee_group_boards_redirect
   end
 
   scope(path: '*id',

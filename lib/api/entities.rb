@@ -520,6 +520,10 @@ module API
       expose :subscribed do |merge_request, options|
         merge_request.subscribed?(options[:current_user], options[:project])
       end
+
+      expose :changes_count do |merge_request, _options|
+        merge_request.merge_request_diff.real_size
+      end
     end
 
     class MergeRequestChanges < MergeRequest
@@ -794,10 +798,20 @@ module API
       expose :id
       expose :name
       expose :project, using: Entities::BasicProjectDetails
-      expose :milestone,
-             if: -> (board, _) { board.project.feature_available?(:issue_board_milestone) }
+
+      # EE-specific
+      # Default filtering configuration
+      expose :milestone, using: Entities::Milestone, if: -> (board, _) { scoped_issue_available?(board) }
+      expose :assignee, using: Entities::UserBasic, if: -> (board, _) { scoped_issue_available?(board) }
+      expose :labels, using: Entities::LabelBasic, if: -> (board, _) { scoped_issue_available?(board) }
+      expose :weight, if: -> (board, _) { scoped_issue_available?(board) }
+
       expose :lists, using: Entities::List do |board|
         board.lists.destroyable
+      end
+
+      def scoped_issue_available?(board)
+        board.parent.feature_available?(:scoped_issue_board)
       end
     end
 

@@ -750,7 +750,7 @@
   }
 
   .unapprove-btn {
-    border: none;
+    border: 0;
     background: transparent;
     cursor: pointer;
 
@@ -795,7 +795,9 @@
 }
 
 .mr-widget-code-quality {
-  padding-top: $gl-padding-top;
+  .ci-status-icon-warning svg {
+    fill: $theme-gray-600;
+  }
 
   .code-quality-container {
     border-top: 1px solid $gray-darker;
@@ -806,15 +808,25 @@
 
     .mr-widget-code-quality-list {
       list-style: none;
-      padding: 4px 36px;
+      padding: 0 12px;
       margin: 0;
       line-height: $code_line_height;
 
-      li.success {
+      .mr-widget-code-quality-icon {
+        margin-right: 12px;
+        fill: currentColor;
+
+        svg {
+          width: 10px;
+          height: 10px;
+        }
+      }
+
+      .success {
         color: $green-500;
       }
 
-      li.failed {
+      .failed {
         color: $red-500;
       }
     }

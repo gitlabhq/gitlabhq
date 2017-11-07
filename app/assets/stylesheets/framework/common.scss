@@ -4,6 +4,9 @@
 .cred { color: $common-red; }
 .cgreen { color: $common-green; }
 .cdark { color: $common-gray-dark; }
+.text-secondary {
+  color: $gl-text-color-secondary;
+}
 
 .underlined-link { text-decoration: underline; }
 .hint { font-style: italic; color: $hint-color; }
@@ -28,7 +31,7 @@
 pre {
   &.clean {
     background: none;
-    border: none;
+    border: 0;
     margin: 0;
     padding: 0;
   }
@@ -146,7 +149,7 @@ li.note {
   img { max-width: 100%; }
   .note-title {
     li {
-      border-bottom: none !important;
+      border-bottom: 0 !important;
     }
   }
 }
@@ -191,7 +194,7 @@ li.note {
 
   pre {
     background: $white-light;
-    border: none;
+    border: 0;
     font-size: 12px;
   }
 }
@@ -394,7 +397,7 @@ img.emoji {
 }
 
 .hide-bottom-border {
-  border-bottom: none !important;
+  border-bottom: 0 !important;
 }
 
 .gl-accessibility {

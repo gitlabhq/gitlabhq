@@ -131,9 +131,8 @@ describe 'Service Desk Issue Tracker', :js do
             visit service_desk_project_issues_path(project)
           end
 
-          it 'displays the support bot author token' do
-            author_token = find('.filtered-search-token .value')
-            expect(author_token).to have_content('Support Bot')
+          it 'adds hidden support bot author token' do
+            expect(page).to have_selector('.filtered-search-token .value', text: 'Support Bot', visible: false)
           end
 
           it 'support bot author token cannot be deleted' do

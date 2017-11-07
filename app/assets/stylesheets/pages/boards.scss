@@ -473,6 +473,10 @@
   white-space: normal;
 }
 
+.form-section-title {
+  font-size: 16px;
+}
+
 .board-delete-btns {
   padding-top: 12px;
   border-top: 1px solid $border-color;
@@ -730,4 +734,17 @@
   padding-left: 12px;
   padding-right: 12px;
   color: $gl-gray-dark;
+}
+
+.board-config-modal {
+  width: 440px;
+
+  .block {
+    padding: $gl-padding 0;
+
+    // add a border between all items, but not at the start or end
+    + .block {
+      border-top: solid 1px $border-color;
+    }
+  }
 }

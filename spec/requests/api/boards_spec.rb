@@ -29,9 +29,14 @@ describe API::Boards do
 
   # EE only
   set(:milestone) { create(:milestone, project: project) }
+  set(:board_label) { create(:label, project: project) }
 
   set(:board) do
-    create(:board, project: project, milestone: milestone, lists: [dev_list, test_list])
+    create(:board, project: project,
+                   milestone: milestone,
+                   assignee: user,
+                   label_ids: [board_label.id],
+                   lists: [dev_list, test_list])
   end
 
   before do
@@ -60,17 +65,17 @@ describe API::Boards do
       end
     end
 
-    context 'with the issue_board_milestone-feature available' do
-      it 'returns the milestone when the `issue_board_milestone`-feature is enabled' do
-        stub_licensed_features(issue_board_milestone: true)
+    context 'with the scoped_issue_board-feature available' do
+      it 'returns the milestone when the `scoped_issue_board`-feature is enabled' do
+        stub_licensed_features(scoped_issue_board: true)
 
         get api(base_url, user)
 
         expect(json_response.first["milestone"]).not_to be_nil
       end
 
-      it 'hides the milestone when the `issue_board_milestone`-feature is disabled' do
-        stub_licensed_features(issue_board_milestone: false)
+      it 'hides the milestone when the `scoped_issue_board`-feature is disabled' do
+        stub_licensed_features(scoped_issue_board: false)
 
         get api(base_url, user)
 

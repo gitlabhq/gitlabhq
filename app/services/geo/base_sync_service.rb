@@ -4,6 +4,7 @@ module Geo
   EmptyCloneUrlPrefixError = Class.new(StandardError)
 
   class BaseSyncService
+    include ExclusiveLeaseGuard
     include ::Gitlab::Geo::ProjectLogHelpers
 
     class << self
@@ -29,6 +30,10 @@ module Geo
 
     def lease_key
       @lease_key ||= "#{LEASE_KEY_PREFIX}:#{type}:#{project.id}"
+    end
+
+    def lease_timeout
+      LEASE_TIMEOUT
     end
 
     def primary_ssh_path_prefix
@@ -87,24 +92,6 @@ module Geo
 
     def registry
       @registry ||= Geo::ProjectRegistry.find_or_initialize_by(project_id: project.id)
-    end
-
-    def try_obtain_lease
-      log_info("Trying to obtain lease to sync #{type}")
-      repository_lease = Gitlab::ExclusiveLease.new(lease_key, timeout: LEASE_TIMEOUT).try_obtain
-
-      unless repository_lease
-        log_info("Could not obtain lease to sync #{type}")
-        return
-      end
-
-      yield
-
-      # We should release the lease for a repository, only if we have obtained
-      # it. If something went wrong when syncing the repository, we should wait
-      # for the lease timeout to try again.
-      log_info("Releasing leases to sync #{type}")
-      Gitlab::ExclusiveLease.cancel(lease_key, repository_lease)
     end
 
     def update_registry(started_at: nil, finished_at: nil)

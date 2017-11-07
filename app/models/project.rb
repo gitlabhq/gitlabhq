@@ -1600,10 +1600,6 @@ class Project < ActiveRecord::Base
     feature_available?(:multiple_issue_boards, user)
   end
 
-  def issue_board_milestone_available?(user = nil)
-    feature_available?(:issue_board_milestone, user)
-  end
-
   def full_path_was
     File.join(namespace.full_path, previous_changes['path'].first)
   end
@@ -1684,6 +1680,10 @@ class Project < ActiveRecord::Base
     Gitlab::GlRepository.gl_repository(self, is_wiki)
   end
 
+  def reference_counter(wiki: false)
+    Gitlab::ReferenceCounter.new(gl_repository(is_wiki: wiki))
+  end
+
   private
 
   def storage
@@ -1702,11 +1702,11 @@ class Project < ActiveRecord::Base
   end
 
   def repo_reference_count
-    Gitlab::ReferenceCounter.new(gl_repository(is_wiki: false)).value
+    reference_counter.value
   end
 
   def wiki_reference_count
-    Gitlab::ReferenceCounter.new(gl_repository(is_wiki: true)).value
+    reference_counter(wiki: true).value
   end
 
   def check_repository_absence!

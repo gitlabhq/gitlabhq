@@ -51,38 +51,18 @@ describe 'Multiple Issue Boards', :js do
         end
       end
 
-      it 'creates new board' do
+      it 'creates new board without detailed configuration' do
         click_button board.name
 
         page.within('.dropdown-menu') do
           click_link 'Create new board'
-
-          fill_in 'board-new-name', with: 'This is a new board'
-
-          click_button 'Create'
         end
 
+        fill_in 'board-new-name', with: 'This is a new board'
+        click_button 'Create board'
         wait_for_requests
 
         expect(page).to have_button('This is a new board')
-      end
-
-      it 'edits board name' do
-        click_button board.name
-
-        page.within('.dropdown-menu') do
-          click_link 'Edit board name'
-
-          fill_in 'board-new-name', with: 'Testing'
-
-          click_button 'Save'
-        end
-
-        wait_for_requests
-
-        page.within('.dropdown-menu') do
-          expect(page).to have_content('Testing')
-        end
       end
 
       it 'deletes board' do
@@ -92,16 +72,12 @@ describe 'Multiple Issue Boards', :js do
 
         page.within('.dropdown-menu') do
           click_link 'Delete board'
-
-          page.within('.dropdown-title') do
-            expect(page).to have_content('Delete board')
-          end
-
-          click_link 'Delete'
         end
 
-        click_button board2.name
+        expect(page).to have_content('Are you sure you want to delete this board?')
+        click_button 'Delete'
 
+        click_button board2.name
         page.within('.dropdown-menu') do
           expect(page).not_to have_content(board.name)
           expect(page).to have_content(board2.name)
@@ -166,7 +142,6 @@ describe 'Multiple Issue Boards', :js do
 
         page.within('.dropdown-menu') do
           expect(page).not_to have_content('Create new board')
-          expect(page).not_to have_content('Edit board name')
           expect(page).not_to have_content('Delete board')
         end
       end
@@ -188,10 +163,11 @@ describe 'Multiple Issue Boards', :js do
       click_button board.name
 
       page.within('.dropdown-menu') do
-        expect(page).to have_content('Edit board name')
         expect(page).not_to have_content('Create new board')
         expect(page).not_to have_content('Delete board')
       end
+
+      expect(page).to have_content('Edit board')
     end
 
     it 'shows a mention that boards are hidden when multiple boards are created' do

@@ -45,7 +45,16 @@ RSpec.describe Geo::RepositorySyncService do
       subject.execute
     end
 
-    it 'releases lease' do
+    it 'returns the lease when succeed' do
+      expect(Gitlab::ExclusiveLease).to receive(:cancel).once.with(
+        subject.__send__(:lease_key), anything).and_call_original
+
+      subject.execute
+    end
+
+    it 'returns the lease when sync fail' do
+      allow(repository).to receive(:fetch_geo_mirror).with(url_to_repo) { raise Gitlab::Shell::Error }
+
       expect(Gitlab::ExclusiveLease).to receive(:cancel).once.with(
         subject.__send__(:lease_key), anything).and_call_original
 
@@ -62,6 +71,13 @@ RSpec.describe Geo::RepositorySyncService do
 
     it 'rescues when Gitlab::Shell::Error is raised' do
       allow(repository).to receive(:fetch_geo_mirror).with(url_to_repo) { raise Gitlab::Shell::Error }
+
+      expect { subject.execute }.not_to raise_error
+    end
+
+    it 'rescues when Gitlab::Git::RepositoryMirroring::RemoteError is raised' do
+      allow(repository).to receive(:fetch_geo_mirror).with(url_to_repo)
+        .and_raise(Gitlab::Git::RepositoryMirroring::RemoteError)
 
       expect { subject.execute }.not_to raise_error
     end

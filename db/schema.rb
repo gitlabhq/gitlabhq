@@ -221,6 +221,20 @@ ActiveRecord::Schema.define(version: 20171026082505) do
   add_index "award_emoji", ["awardable_type", "awardable_id"], name: "index_award_emoji_on_awardable_type_and_awardable_id", using: :btree
   add_index "award_emoji", ["user_id", "name"], name: "index_award_emoji_on_user_id_and_name", using: :btree
 
+  create_table "board_assignees", force: :cascade do |t|
+    t.integer "board_id", null: false
+    t.integer "assignee_id", null: false
+  end
+
+  add_index "board_assignees", ["board_id", "assignee_id"], name: "index_board_assignees_on_board_id_and_assignee_id", unique: true, using: :btree
+
+  create_table "board_labels", force: :cascade do |t|
+    t.integer "board_id", null: false
+    t.integer "label_id", null: false
+  end
+
+  add_index "board_labels", ["board_id", "label_id"], name: "index_board_labels_on_board_id_and_label_id", unique: true, using: :btree
+
   create_table "boards", force: :cascade do |t|
     t.integer "project_id"
     t.datetime "created_at", null: false
@@ -228,6 +242,7 @@ ActiveRecord::Schema.define(version: 20171026082505) do
     t.string "name", default: "Development", null: false
     t.integer "milestone_id"
     t.integer "group_id"
+    t.integer "weight"
   end
 
   add_index "boards", ["group_id"], name: "index_boards_on_group_id", using: :btree
@@ -2196,6 +2211,10 @@ ActiveRecord::Schema.define(version: 20171026082505) do
 
   add_foreign_key "approvals", "merge_requests", name: "fk_310d714958", on_delete: :cascade
   add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "board_assignees", "boards", on_delete: :cascade
+  add_foreign_key "board_assignees", "users", column: "assignee_id", on_delete: :cascade
+  add_foreign_key "board_labels", "boards", on_delete: :cascade
+  add_foreign_key "board_labels", "labels", on_delete: :cascade
   add_foreign_key "boards", "namespaces", column: "group_id", name: "fk_1e9a074a35", on_delete: :cascade
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade

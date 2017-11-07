@@ -209,9 +209,9 @@ describe Gitlab::Geo, :geo do
     it 'activates cron jobs for primary' do
       described_class.configure_cron_jobs!
 
-      expect(described_class.repository_sync_job).not_to be_enabled
-      expect(described_class.file_download_job).not_to be_enabled
-      expect(described_class.metrics_update_job).to be_enabled
+      expect(Sidekiq::Cron::Job.find('geo_repository_sync_worker')).not_to be_enabled
+      expect(Sidekiq::Cron::Job.find('geo_file_download_dispatch_worker')).not_to be_enabled
+      expect(Sidekiq::Cron::Job.find('geo_metrics_update_worker')).to be_enabled
       expect(Sidekiq::Cron::Job.find('ldap_test')).to be_enabled
     end
 
@@ -221,9 +221,9 @@ describe Gitlab::Geo, :geo do
       described_class.configure_cron_jobs!
 
       expect(Sidekiq::Cron::Job.find('ldap_test')).not_to be_enabled
-      expect(described_class.repository_sync_job).to be_enabled
-      expect(described_class.file_download_job).to be_enabled
-      expect(described_class.metrics_update_job).to be_enabled
+      expect(Sidekiq::Cron::Job.find('geo_metrics_update_worker')).to be_enabled
+      expect(Sidekiq::Cron::Job.find('geo_repository_sync_worker')).to be_enabled
+      expect(Sidekiq::Cron::Job.find('geo_file_download_dispatch_worker')).to be_enabled
     end
 
     it 'deactivates all jobs when Geo is not active' do
@@ -231,9 +231,9 @@ describe Gitlab::Geo, :geo do
 
       described_class.configure_cron_jobs!
 
-      expect(described_class.repository_sync_job).not_to be_enabled
-      expect(described_class.file_download_job).not_to be_enabled
-      expect(described_class.metrics_update_job).not_to be_enabled
+      expect(Sidekiq::Cron::Job.find('geo_repository_sync_worker')).not_to be_enabled
+      expect(Sidekiq::Cron::Job.find('geo_file_download_dispatch_worker')).not_to be_enabled
+      expect(Sidekiq::Cron::Job.find('geo_metrics_update_worker')).not_to be_enabled
       expect(Sidekiq::Cron::Job.find('ldap_test')).to be_enabled
     end
 

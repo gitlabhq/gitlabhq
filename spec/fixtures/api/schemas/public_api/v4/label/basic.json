@@ -1,0 +1,9 @@
+{
+  "type": "object",
+  "required": ["id", "name", "description"],
+  "properties": {
+    "id": { "type": "integer" },
+    "name": { "type": "string" },
+    "description": { "type": ["string", "null"] }
+  }
+}
