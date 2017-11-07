@@ -1,30 +1,25 @@
 FactoryGirl.define do
   factory :cluster_applications_helm, class: Clusters::Applications::Helm do
-    cluster factory: :cluster
+    cluster factory: :cluster, strategy: :provided_by_gcp
 
     trait :installable do
-      cluster
-      status 0
+      status :installable
     end
 
     trait :scheduled do
-      cluster
-      status 1
+      status :scheduled
     end
 
     trait :installing do
-      cluster
-      status 2
+      status :installing
     end
 
     trait :installed do
-      cluster
-      status 3
+      status :installed
     end
 
     trait :errored do
-      cluster
-      status(-1)
+      status :errored
       status_reason 'something went wrong'
     end
 
