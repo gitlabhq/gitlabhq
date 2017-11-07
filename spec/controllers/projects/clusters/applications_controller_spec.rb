@@ -8,7 +8,7 @@ describe Projects::Clusters::ApplicationsController do
   end
 
   describe 'POST create' do
-    let(:cluster) { create(:cluster, :project, :providing_by_gcp) }
+    let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
     let(:project) { cluster.project }
     let(:application) { 'helm' }
     let(:params) { { application: application, id: cluster.id } }
@@ -52,8 +52,7 @@ describe Projects::Clusters::ApplicationsController do
 
       context 'when application is already installing' do
         before do
-          other = current_application.new(cluster: cluster)
-          other.make_installing!
+          create(:cluster_applications_helm, :installing, cluster: cluster)
         end
 
         it 'returns 400' do
