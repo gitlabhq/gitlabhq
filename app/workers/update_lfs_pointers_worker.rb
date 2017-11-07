@@ -28,7 +28,7 @@ class UpdateLfsPointersWorker
                                   .limit(100)
                                   .pluck(:ref)
 
-    lfs_changes = Gitlab::Git::LfsChanges.new(project.repository, unprocessed_lfs_push.newrev)
+    lfs_changes = Gitlab::Git::LfsChanges.new(project.repository, unprocessed_lfs_push.ref)
 
     if processed_references.present?
       lfs_changes.new_pointers(not_in: processed_references)

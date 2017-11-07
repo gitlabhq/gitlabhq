@@ -7,7 +7,6 @@ describe UnprocessedLfsPush do
 
   describe "#processed!" do
     subject(:unprocessed_lfs_push) { create(:unprocessed_lfs_push) }
-    let(:project) { subject.project }
 
     it 'deletes the record' do
       subject.processed!
@@ -20,7 +19,7 @@ describe UnprocessedLfsPush do
     end
 
     it 'avoids duplicating existing ProcessedLfsRef' do
-      create(:processed_lfs_ref, project: project, ref: subject.ref)
+      create(:processed_lfs_ref, project: subject.project, ref: subject.ref)
 
       expect { subject.processed! }.not_to change(ProcessedLfsRef, :count)
     end

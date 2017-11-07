@@ -52,7 +52,7 @@ describe UpdateLfsPointersWorker do
       end
 
       it 'looks up LFS pointers for the new ref' do
-        expect(Gitlab::Git::RevList).to receive(:new).with(hash_including(newrev: unprocessed_lfs_push.newrev)).and_call_original
+        expect(Gitlab::Git::RevList).to receive(:new).with(hash_including(newrev: unprocessed_lfs_push.ref)).and_call_original
 
         perform
       end
