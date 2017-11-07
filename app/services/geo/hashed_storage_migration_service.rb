@@ -9,7 +9,7 @@ module Geo
     end
 
     def async_execute
-      GeoHashedStorageMigrationWorker.perform_async(project_id, old_disk_path, new_disk_path)
+      Geo::HashedStorageMigrationWorker.perform_async(project_id, old_disk_path, new_disk_path)
     end
 
     def execute

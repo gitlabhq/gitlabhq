@@ -27,13 +27,13 @@ describe Geo::HashedStorageMigrationService do
     subject(:service) { described_class.new(project.id, project.full_path, new_path) }
 
     it 'starts the worker' do
-      expect(GeoHashedStorageMigrationWorker).to receive(:perform_async)
+      expect(Geo::HashedStorageMigrationWorker).to receive(:perform_async)
 
       service.async_execute
     end
 
     it 'returns job id' do
-      allow(GeoHashedStorageMigrationWorker).to receive(:perform_async).and_return('foo')
+      allow(Geo::HashedStorageMigrationWorker).to receive(:perform_async).and_return('foo')
 
       expect(service.async_execute).to eq('foo')
     end

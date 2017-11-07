@@ -225,13 +225,15 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
         expect { daemon.run_once! }.not_to change(Geo::ProjectRegistry, :count)
       end
 
-      it 'schedules a GeoHashedStorageMigrationWorker' do
-        project_id    = hashed_storage_migrated_event.project_id
+      it 'schedules a Geo::HashedStorageMigrationWorker' do
+        project = hashed_storage_migrated_event.project
         old_disk_path = hashed_storage_migrated_event.old_disk_path
         new_disk_path = hashed_storage_migrated_event.new_disk_path
+        old_storage_version = project.storage_version
+        new_storage_version = hashed_storage_migrated_event.new_storage_version
 
-        expect(::GeoHashedStorageMigrationWorker).to receive(:perform_async)
-          .with(project_id, old_disk_path, new_disk_path)
+        expect(::Geo::HashedStorageMigrationWorker).to receive(:perform_async)
+          .with(project.id, old_disk_path, new_disk_path, old_storage_version, new_storage_version)
 
         daemon.run_once!
       end
