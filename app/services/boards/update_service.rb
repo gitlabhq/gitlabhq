@@ -1,7 +1,14 @@
 module Boards
   class UpdateService < Boards::BaseService
     def execute(board)
-      params.delete(:milestone_id) unless parent.feature_available?(:issue_board_milestone)
+      unless parent.feature_available?(:scoped_issue_board)
+        params.delete(:milestone_id)
+        params.delete(:assignee_id)
+        params.delete(:label_ids)
+        params.delete(:weight)
+      end
+
+      set_assignee
 
       board.update(params)
     end

@@ -25,24 +25,33 @@ describe Boards::UpdateService do
       expect(service.execute(board)).to eq false
     end
 
-    it 'udpates the milestone with issue board milestones enabled' do
-      stub_licensed_features(issue_board_milestone: true)
+    it 'updates the configuration params when scoped issue board is enabled' do
+      stub_licensed_features(scoped_issue_board: true)
+      assignee = create(:user)
       milestone = create(:milestone, project: project)
+      label = create(:label, project: project)
 
-      service = described_class.new(project, double, milestone_id: milestone.id)
+      service = described_class.new(project, double,
+                                    milestone_id: milestone.id,
+                                    assignee_id: assignee.id,
+                                    label_ids: [label.id])
       service.execute(board)
 
-      expect(board.reload.milestone).to eq(milestone)
+      expect(board.reload).to have_attributes(milestone: milestone,
+                                              assignee: assignee,
+                                              labels: [label])
     end
 
-    it 'udpates the milestone with the issue board milestones feature enabled' do
-      stub_licensed_features(issue_board_milestone: false)
-      milestone = create(:milestone, project: project)
+    it 'filters unpermitted params when scoped issue board is not enabled' do
+      stub_licensed_features(scoped_issue_board: false)
+      params = { milestone_id: double, assignee_id: double, label_ids: double, weight: double }
 
-      service = described_class.new(project, double, milestone_id: milestone.id)
+      service = described_class.new(project, double, params)
       service.execute(board)
 
-      expect(board.reload.milestone).to be_nil
+      expect(board.reload).to have_attributes(milestone: nil,
+                                              assignee: nil,
+                                              labels: [])
     end
   end
 end

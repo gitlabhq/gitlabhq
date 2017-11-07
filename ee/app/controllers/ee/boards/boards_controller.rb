@@ -15,7 +15,8 @@ module EE
         respond_to do |format|
           format.json do
             if board.valid?
-              render json: serialize_as_json(board)
+              extra_json = { board_path: board_path(board) }
+              render json: serialize_as_json(board).merge(extra_json)
             else
               render json: board.errors, status: :unprocessable_entity
             end
@@ -31,7 +32,8 @@ module EE
         respond_to do |format|
           format.json do
             if @board.valid?
-              render json: serialize_as_json(@board)
+              extra_json = { board_path: board_path(@board) }
+              render json: serialize_as_json(@board).merge(extra_json)
             else
               render json: @board.errors, status: :unprocessable_entity
             end
@@ -44,6 +46,7 @@ module EE
         service.execute(@board)
 
         respond_to do |format|
+          format.json { head :ok }
           format.html { redirect_to boards_path, status: 302 }
         end
       end
@@ -55,7 +58,7 @@ module EE
       end
 
       def board_params
-        params.require(:board).permit(:name, :milestone_id)
+        params.require(:board).permit(:name, :weight, :milestone_id, :assignee_id, label_ids: [])
       end
 
       def find_board
@@ -71,6 +74,14 @@ module EE
           group_boards_path(parent)
         else
           project_boards_path(parent)
+        end
+      end
+
+      def board_path(board)
+        if @group
+          group_board_path(parent, board)
+        else
+          project_board_path(parent, board)
         end
       end
 

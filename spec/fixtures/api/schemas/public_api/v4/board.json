@@ -3,13 +3,17 @@
   "required" : [
     "id",
     "name",
+    "weight",
     "project",
     "milestone",
+    "assignee",
+    "labels",
     "lists"
   ],
   "properties" : {
     "id": { "type": "integer" },
     "name": { "type": "string" },
+    "weight": { "type": ["string", "null"] },
     "project": {
       "type": "object",
       "required": [
@@ -49,6 +53,13 @@
         "last_activity_at": { "type": "date" }
       },
       "additionalProperties": false
+    },
+    "assignee": {
+      "$ref": "user/basic.json"
+    },
+    "labels": {
+      "type": "array",
+      "items": { "$ref": "label/basic.json" }
     },
     "milestone": {
       "type": ["object", "null"],

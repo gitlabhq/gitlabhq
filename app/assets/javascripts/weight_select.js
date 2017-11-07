@@ -2,8 +2,10 @@
 
 (function() {
   this.WeightSelect = (function() {
-    function WeightSelect() {
-      $('.js-weight-select').each(function(i, dropdown) {
+    function WeightSelect(els, options = {}) {
+      const $els = $(els || '.js-weight-select');
+
+      $els.each(function(i, dropdown) {
         var $block, $dropdown, $loading, $selectbox, $sidebarCollapsedValue, $value, abilityName, updateUrl, updateWeight;
         $dropdown = $(dropdown);
         updateUrl = $dropdown.data('issueUpdate');
@@ -13,6 +15,13 @@
         $value = $block.find('.value');
         abilityName = $dropdown.data('ability-name');
         $loading = $block.find('.block-loading').fadeOut();
+        const fieldName = options.fieldName || $dropdown.data("field-name");
+        const inputField = $dropdown.closest('.selectbox').find(`input[name='${fieldName}']`);
+
+        if (Object.keys(options).includes('selected')) {
+          inputField.val(options.selected);
+        }
+
         updateWeight = function(selected) {
           var data;
           data = {};
@@ -39,7 +48,7 @@
         };
         return $dropdown.glDropdown({
           selectable: true,
-          fieldName: $dropdown.data("field-name"),
+          fieldName,
           toggleLabel: function (selected, el) {
             return $(el).data("id");
           },
@@ -54,16 +63,21 @@
               return '';
             }
           },
-          clicked: function(options) {
-            const e = options.e;
-            let selected = options.selectedObj;
+          clicked: function(glDropdownEvt) {
+            const e = glDropdownEvt.e;
+            let selected = glDropdownEvt.selectedObj;
+            const inputField = $dropdown.closest('.selectbox').find(`input[name='${fieldName}']`);
 
-            if ($(dropdown).is(".js-filter-submit")) {
+            if (options.handleClick) {
+              e.preventDefault();
+              selected = inputField.val();
+              options.handleClick(selected);
+            } else if ($(dropdown).is(".js-filter-submit")) {
               return $(dropdown).parents('form').submit();
             } else if ($dropdown.is('.js-issuable-form-weight')) {
               e.preventDefault();
             } else {
-              selected = $dropdown.closest('.selectbox').find("input[name='" + ($dropdown.data('field-name')) + "']").val();
+              selected = inputField.val();
               return updateWeight(selected);
             }
           }

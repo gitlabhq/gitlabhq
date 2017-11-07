@@ -5,63 +5,42 @@
 %boards-selector{ "inline-template" => true,
   ":current-board" => current_board_json,
   "milestone-path" => milestones_filter_path(milestone_filter_opts) }
-  .dropdown
-    %button.dropdown-menu-toggle{ "v-on:click" => "loadBoards",
-      data: { toggle: "dropdown" } }
-      {{ board.name }}
-      = icon("chevron-down")
-    .dropdown-menu{ ":class" => "{ 'is-loading': loading }" }
-      .dropdown-title
-        %button.dropdown-title-button.dropdown-menu-back{ type: "button",
-          aria: { label: "Go back" },
-          "v-on:click.stop.prevent" => "showPage('')",
-          "v-if" => "currentPage !== ''" }
-          = icon("arrow-left")
-        {{ title }}
-        %button.dropdown-title-button.dropdown-menu-close{ type: "button",
-          aria: { label: "Close" } }
-          = icon("times", class: "dropdown-menu-close-icon")
-      .dropdown-content{ "v-if" => "currentPage === ''" }
-        %ul{ "v-if" => "!loading" }
-          %li{ "v-for" => "board in boards" }
-            %a{ ":href" => "'#{board_base_url}/' + board.id" }
-              {{ board.name }}
-          - if !multiple_boards_available? && current_board_parent.boards.size > 1
-            %li.small
-              Some of your boards are hidden, activate a license to see them again.
-      .dropdown-loading{ "v-if" => "loading" }
-        = icon("spin spinner")
-      - if can?(current_user, :admin_board, parent)
-        %board-selector-form{ "inline-template" => true,
-          ":milestone-path" => "milestonePath",
-          "v-if" => "currentPage === 'new' || currentPage === 'edit' || currentPage === 'milestone'" }
-          = render "shared/boards/components/form"
-        .dropdown-content.board-selector-page-two{ "v-if" => "currentPage === 'delete'" }
-          %p
-            Are you sure you want to delete this board?
-          .board-delete-btns.clearfix
-            = link_to current_board_path(board),
-              class: "btn btn-danger pull-left",
-              method: :delete do
-              Delete
-            %button.btn.btn-default.pull-right{ type: "button",
-              "v-on:click.stop.prevent" => "showPage('')" }
-              Cancel
-      - if can?(current_user, :admin_board, parent)
-        .dropdown-footer{ "v-if" => "currentPage === ''" }
-          %ul.dropdown-footer-list
-            - if parent.feature_available?(:multiple_issue_boards)
+  %span.boards-selector-wrapper
+    .dropdown
+      %button.dropdown-menu-toggle{ "v-on:click" => "loadBoards",
+        data: { toggle: "dropdown" } }
+        {{ board.name }}
+        = icon("chevron-down")
+      .dropdown-menu{ ":class" => "{ 'is-loading': loading }" }
+        .dropdown-content
+          %ul{ "v-if" => "!loading" }
+            %li{ "v-for" => "board in boards" }
+              %a{ ":href" => "'#{board_base_url}/' + board.id" }
+                {{ board.name }}
+            - if !multiple_boards_available? && current_board_parent.boards.size > 1
               %li
-                %a{ "href" => "#", "v-on:click.stop.prevent" => "showPage('new')" }
-                  Create new board
-            %li
-              %a{ "href" => "#", "v-on:click.stop.prevent" => "showPage('edit')" }
-                Edit board name
-            - if parent.issue_board_milestone_available?(current_user)
-              %li
-                %a{ "href" => "#", "v-on:click.stop.prevent" => "showPage('milestone')" }
-                  Edit board milestone
-            %li{ "v-if" => "showDelete" }
-              %a{ "href" => "#", "v-on:click.stop.prevent" => "showPage('delete')" }
-                %span.text-danger
-                  Delete board
+                .small.unclickable
+                  Some of your boards are hidden, activate a license to see them again.
+        .dropdown-loading{ "v-if" => "loading" }
+          = icon("spin spinner")
+
+        - if can?(current_user, :admin_board, parent)
+          .dropdown-footer
+            %ul.dropdown-footer-list
+              - if parent.feature_available?(:multiple_issue_boards)
+                %li
+                  %a{ "href" => "#", "v-on:click.prevent" => "showPage('new')" }
+                    Create new board
+              %li{ "v-if" => "showDelete" }
+                %a{ "href" => "#", "v-on:click.prevent" => "showPage('delete')" }
+                  %span.text-danger
+                    Delete board
+
+    %board-form{ ":milestone-path" => "milestonePath",
+      "labels-path" => labels_filter_path(true),
+      ":project-id" => "Number(#{@project&.id})",
+      ":group-id" => "Number(#{@group&.id})",
+      ":can-admin-board" => can?(current_user, :admin_board, parent),
+      ":scoped-issue-board-feature-enabled" => parent.feature_available?(:scoped_issue_board),
+      "weights" => [Issue::WEIGHT_ANY] + Issue.weight_options,
+      "v-if" => "currentPage" }

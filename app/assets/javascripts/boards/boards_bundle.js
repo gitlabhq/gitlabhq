@@ -68,7 +68,6 @@ $(() => {
       rootPath: $boardApp.dataset.rootPath,
       bulkUpdatePath: $boardApp.dataset.bulkUpdatePath,
       detailIssue: Store.detail,
-      milestoneTitle: $boardApp.dataset.boardMilestoneTitle,
       defaultAvatar: $boardApp.dataset.defaultAvatar,
     },
     computed: {
@@ -77,16 +76,6 @@ $(() => {
       },
     },
     created () {
-      if (this.milestoneTitle) {
-        const milestoneTitleParam = `milestone_title=${this.milestoneTitle}`;
-
-        Store.filter.path = [milestoneTitleParam].concat(
-          Store.filter.path.split('&').filter(param => param.match(/^milestone_title=(.*)$/g) === null)
-        ).join('&');
-
-        Store.updateFiltersUrl(true);
-      }
-
       gl.boardService = new BoardService({
         boardsEndpoint: this.boardsEndpoint,
         listsEndpoint: this.listsEndpoint,
@@ -102,7 +91,7 @@ $(() => {
       eventHub.$off('updateTokens', this.updateTokens);
     },
     mounted () {
-      this.filterManager = new FilteredSearchBoards(Store.filter, true, [(this.milestoneTitle ? 'milestone' : null)]);
+      this.filterManager = new FilteredSearchBoards(Store.filter, true, Store.cantEdit);
       this.filterManager.setup();
 
       Store.disabled = this.disabled;
@@ -145,6 +134,40 @@ $(() => {
       gl.issueBoards.newListDropdownInit();
     },
   });
+
+  const configEl = document.querySelector('.js-board-config');
+
+  if (configEl) {
+    gl.boardConfigToggle = new Vue({
+      el: configEl,
+      data() {
+        return {
+          canAdminList: convertPermissionToBoolean(
+            this.$options.el.dataset.canAdminList,
+          ),
+        };
+      },
+      methods: {
+        showPage: page => gl.issueBoards.BoardsStore.showPage(page),
+      },
+      computed: {
+        buttonText() {
+          return this.canAdminList ? 'Edit board' : 'View scope';
+        },
+      },
+      template: `
+        <div class="prepend-left-10">
+          <button
+            class="btn btn-inverted"
+            type="button"
+            @click.prevent="showPage('edit')"
+          >
+            {{ buttonText }}
+          </button>
+        </div>
+      `,
+    });
+  }
 
   gl.IssueBoardsModalAddBtn = new Vue({
     mixins: [gl.issueBoards.ModalMixins],
