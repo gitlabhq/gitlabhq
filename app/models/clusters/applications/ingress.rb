@@ -9,8 +9,6 @@ module Clusters
 
       validates :cluster, presence: true
 
-      after_initialize :set_initial_status
-
       default_value_for :ingress_type, :nginx
       default_value_for :version, :nginx
 
@@ -22,8 +20,12 @@ module Clusters
         self.to_s.demodulize.underscore
       end
 
-      def set_initial_status
-        self.status = 0 unless cluster.application_helm_installed?
+      def initial_status
+        if cluster&.application_helm_installed?
+          :installable
+        else
+          :not_installable
+        end
       end
 
       def name
