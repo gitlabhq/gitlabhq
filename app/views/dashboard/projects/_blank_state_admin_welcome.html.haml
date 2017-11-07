@@ -1,14 +1,19 @@
 .row
   .col-md-6
-    = link_to new_admin_user_path, class: "blank-state-link" do
-      .blank-state
-        .blank-state-icon
-          = custom_icon("add_new_user", size: 50)
-        .blank-state-body
-          %h3.blank-state-title
-            Add user
-          %p.blank-state-text
-            Add your team members and others to GitLab.
+    - if current_user.can_create_project?
+      = link_to new_project_path, class: "blank-state-link" do
+        .blank-state
+          .blank-state-icon
+            = custom_icon("add_new_project", size: 50)
+          .blank-state-body
+            %h3.blank-state-title
+              Create a project
+            %p.blank-state-text
+              You don't have access to any projects right now.
+              You can create up to
+              %strong= number_with_delimiter(current_user.projects_limit)
+              = succeed "." do
+                = "project".pluralize(current_user.projects_limit)
 
   - if current_user.can_create_group?
     .col-md-6
@@ -23,12 +28,23 @@
               Groups are a great way to organize projects and people.
 
   .col-md-6
+    = link_to new_admin_user_path, class: "blank-state-link" do
+      .blank-state
+        .blank-state-icon
+          = custom_icon("add_new_user", size: 50)
+        .blank-state-body
+          %h3.blank-state-title
+            Add users
+          %p.blank-state-text
+            Add your team members and others to GitLab.
+
+  .col-md-6
     = link_to admin_root_path, class: "blank-state-link" do
       .blank-state
         .blank-state-icon
           = custom_icon("configure_server", size: 50)
         .blank-state-body
           %h3.blank-state-title
-            Configure GitLab
+            Configure your server
           %p.blank-state-text
             Make adjustments to how your GitLab instance is set up.
