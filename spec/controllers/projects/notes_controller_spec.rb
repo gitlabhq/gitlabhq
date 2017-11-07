@@ -59,6 +59,7 @@ describe Projects::NotesController do
         expect(note_json[:id]).to eq(note.id)
         expect(note_json[:discussion_html]).not_to be_nil
         expect(note_json[:diff_discussion_html]).to be_nil
+        expect(note_json[:discussion_line_code]).to be_nil
       end
     end
 
@@ -74,6 +75,7 @@ describe Projects::NotesController do
         expect(note_json[:id]).to eq(note.id)
         expect(note_json[:discussion_html]).not_to be_nil
         expect(note_json[:diff_discussion_html]).not_to be_nil
+        expect(note_json[:discussion_line_code]).not_to be_nil
       end
     end
 
@@ -92,6 +94,7 @@ describe Projects::NotesController do
           expect(note_json[:id]).to eq(note.id)
           expect(note_json[:discussion_html]).not_to be_nil
           expect(note_json[:diff_discussion_html]).to be_nil
+          expect(note_json[:discussion_line_code]).to be_nil
         end
       end
 
@@ -104,6 +107,7 @@ describe Projects::NotesController do
           expect(note_json[:id]).to eq(note.id)
           expect(note_json[:discussion_html]).to be_nil
           expect(note_json[:diff_discussion_html]).to be_nil
+          expect(note_json[:discussion_line_code]).to be_nil
         end
 
         context 'when user cannot read commit' do
@@ -133,6 +137,7 @@ describe Projects::NotesController do
         expect(note_json[:html]).not_to be_nil
         expect(note_json[:discussion_html]).to be_nil
         expect(note_json[:diff_discussion_html]).to be_nil
+        expect(note_json[:discussion_line_code]).to be_nil
       end
     end
 

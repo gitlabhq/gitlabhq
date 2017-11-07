@@ -15,9 +15,8 @@ class Repository
   ].freeze
 
   include Gitlab::ShellAdapter
-  include RepositoryMirroring
 
-  attr_accessor :full_path, :disk_path, :project
+  attr_accessor :full_path, :disk_path, :project, :is_wiki
 
   delegate :ref_name_for_sha, to: :raw_repository
 
@@ -72,11 +71,12 @@ class Repository
     end
   end
 
-  def initialize(full_path, project, disk_path: nil)
+  def initialize(full_path, project, disk_path: nil, is_wiki: false)
     @full_path = full_path
     @disk_path = disk_path || full_path
     @project = project
     @commit_cache = {}
+    @is_wiki = is_wiki
   end
 
   def ==(other)
@@ -965,25 +965,12 @@ class Repository
     run_git(args).first.lines.map(&:strip)
   end
 
-  def add_remote(name, url)
-    raw_repository.remote_add(name, url)
-  rescue Rugged::ConfigError
-    raw_repository.remote_update(name, url: url)
+  def fetch_remote(remote, forced: false, ssh_auth: nil, no_tags: false)
+    gitlab_shell.fetch_remote(raw_repository, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
   end
 
-  def remove_remote(name)
-    raw_repository.remote_delete(name)
-    true
-  rescue Rugged::ConfigError
-    false
-  end
-
-  def fetch_remote(remote, forced: false, no_tags: false)
-    gitlab_shell.fetch_remote(raw_repository, remote, forced: forced, no_tags: no_tags)
-  end
-
-  def fetch_source_branch(source_repository, source_branch, local_ref)
-    raw_repository.fetch_source_branch(source_repository.raw_repository, source_branch, local_ref)
+  def fetch_source_branch!(source_repository, source_branch, local_ref)
+    raw_repository.fetch_source_branch!(source_repository.raw_repository, source_branch, local_ref)
   end
 
   def compare_source_branch(target_branch_name, source_repository, source_branch_name, straight:)
@@ -1141,7 +1128,7 @@ class Repository
   end
 
   def initialize_raw_repository
-    Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', Gitlab::GlRepository.gl_repository(project, false))
+    Gitlab::Git::Repository.new(project.repository_storage, disk_path + '.git', Gitlab::GlRepository.gl_repository(project, is_wiki))
   end
 
   def find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)

@@ -2722,7 +2722,7 @@ getpass@^0.1.1:
 
 "gitlab-svgs@https://gitlab.com/gitlab-org/gitlab-svgs.git":
   version "1.0.4"
-  resolved "https://gitlab.com/gitlab-org/gitlab-svgs.git#46c0a49cd43639948dfcc77a0f94d59deaad1e85"
+  resolved "https://gitlab.com/gitlab-org/gitlab-svgs.git#0442503549e6d74a4e22e1641e1d2ab0ae09884b"
 
 glob-base@^0.3.0:
   version "0.3.0"

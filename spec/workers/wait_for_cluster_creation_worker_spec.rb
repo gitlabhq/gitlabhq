@@ -2,65 +2,32 @@ require 'spec_helper'
 
 describe WaitForClusterCreationWorker do
   describe '#perform' do
-    context 'when cluster exists' do
-      let(:cluster) { create(:gcp_cluster) }
-      let(:operation) { double }
+    context 'when provider type is gcp' do
+      let(:cluster) { create(:cluster, provider_type: :gcp, provider_gcp: provider) }
+      let(:provider) { create(:cluster_provider_gcp, :creating) }
 
-      before do
-        allow(operation).to receive(:status).and_return(status)
-        allow(operation).to receive(:start_time).and_return(1.minute.ago)
-        allow(operation).to receive(:status_message).and_return('error')
-        allow_any_instance_of(Ci::FetchGcpOperationService).to receive(:execute).and_yield(operation)
+      it 'provision a cluster' do
+        expect_any_instance_of(Clusters::Gcp::VerifyProvisionStatusService).to receive(:execute)
+
+        described_class.new.perform(cluster.id)
       end
+    end
 
-      context 'when operation status is RUNNING' do
-        let(:status) { 'RUNNING' }
+    context 'when provider type is user' do
+      let(:cluster) { create(:cluster, provider_type: :user) }
 
-        it 'reschedules worker' do
-          expect(described_class).to receive(:perform_in)
+      it 'does not provision a cluster' do
+        expect_any_instance_of(Clusters::Gcp::VerifyProvisionStatusService).not_to receive(:execute)
 
-          described_class.new.perform(cluster.id)
-        end
-
-        context 'when operation timeout' do
-          before do
-            allow(operation).to receive(:start_time).and_return(30.minutes.ago.utc)
-          end
-
-          it 'sets an error message on cluster' do
-            described_class.new.perform(cluster.id)
-
-            expect(cluster.reload).to be_errored
-          end
-        end
-      end
-
-      context 'when operation status is DONE' do
-        let(:status) { 'DONE' }
-
-        it 'finalizes cluster creation' do
-          expect_any_instance_of(Ci::FinalizeClusterCreationService).to receive(:execute)
-
-          described_class.new.perform(cluster.id)
-        end
-      end
-
-      context 'when operation status is others' do
-        let(:status) { 'others' }
-
-        it 'sets an error message on cluster' do
-          described_class.new.perform(cluster.id)
-
-          expect(cluster.reload).to be_errored
-        end
+        described_class.new.perform(cluster.id)
       end
     end
 
     context 'when cluster does not exist' do
       it 'does not provision a cluster' do
-        expect_any_instance_of(Ci::FetchGcpOperationService).not_to receive(:execute)
+        expect_any_instance_of(Clusters::Gcp::VerifyProvisionStatusService).not_to receive(:execute)
 
-        described_class.new.perform(1234)
+        described_class.new.perform(123)
       end
     end
   end

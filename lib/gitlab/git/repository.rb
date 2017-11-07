@@ -6,6 +6,7 @@ require "rubygems/package"
 module Gitlab
   module Git
     class Repository
+      include Gitlab::Git::RepositoryMirroring
       include Gitlab::Git::Popen
 
       ALLOWED_OBJECT_DIRECTORIES_VARIABLES = %w[
@@ -898,16 +899,25 @@ module Gitlab
         end
       end
 
-      # Delete the specified remote from this repository.
-      def remote_delete(remote_name)
-        rugged.remotes.delete(remote_name)
-        nil
+      def add_remote(remote_name, url)
+        rugged.remotes.create(remote_name, url)
+      rescue Rugged::ConfigError
+        remote_update(remote_name, url: url)
       end
 
-      # Add a new remote to this repository.
-      def remote_add(remote_name, url)
-        rugged.remotes.create(remote_name, url)
-        nil
+      def remove_remote(remote_name)
+        # When a remote is deleted all its remote refs are deleted too, but in
+        # the case of mirrors we map its refs (that would usualy go under
+        # [remote_name]/) to the top level namespace. We clean the mapping so
+        # those don't get deleted.
+        if rugged.config["remote.#{remote_name}.mirror"]
+          rugged.config.delete("remote.#{remote_name}.fetch")
+        end
+
+        rugged.remotes.delete(remote_name)
+        true
+      rescue Rugged::ConfigError
+        false
       end
 
       # Update the specified remote using the values in the +options+ hash
@@ -1034,7 +1044,7 @@ module Gitlab
         delete_refs(tmp_ref) if tmp_ref
       end
 
-      def fetch_source_branch(source_repository, source_branch, local_ref)
+      def fetch_source_branch!(source_repository, source_branch, local_ref)
         with_repo_branch_commit(source_repository, source_branch) do |commit|
           if commit
             write_ref(local_ref, commit.sha)

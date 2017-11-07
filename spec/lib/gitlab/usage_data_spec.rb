@@ -60,9 +60,9 @@ describe Gitlab::UsageData do
         deploy_keys
         deployments
         environments
-        gcp_clusters
-        gcp_clusters_enabled
-        gcp_clusters_disabled
+        clusters
+        clusters_enabled
+        clusters_disabled
         in_review_folder
         groups
         issues

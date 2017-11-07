@@ -186,7 +186,9 @@ class Project < ActiveRecord::Base
   has_one :import_data, class_name: 'ProjectImportData', inverse_of: :project, autosave: true
   has_one :project_feature, inverse_of: :project
   has_one :statistics, class_name: 'ProjectStatistics'
-  has_one :cluster, class_name: 'Gcp::Cluster', inverse_of: :project
+
+  has_one :cluster_project, class_name: 'Clusters::Project'
+  has_one :cluster, through: :cluster_project, class_name: 'Clusters::Cluster'
 
   # Container repositories need to remove data from the container registry,
   # which is not managed by the DB. Hence we're still using dependent: :destroy
@@ -240,10 +242,8 @@ class Project < ActiveRecord::Base
               message: Gitlab::Regex.project_name_regex_message }
   validates :path,
     presence: true,
-    dynamic_path: true,
+    project_path: true,
     length: { maximum: 255 },
-    format: { with: Gitlab::PathRegex.project_path_format_regex,
-              message: Gitlab::PathRegex.project_path_format_message },
     uniqueness: { scope: :namespace_id }
 
   validates :namespace, presence: true
@@ -1684,6 +1684,10 @@ class Project < ActiveRecord::Base
     Gitlab::GlRepository.gl_repository(self, is_wiki)
   end
 
+  def reference_counter(wiki: false)
+    Gitlab::ReferenceCounter.new(gl_repository(is_wiki: wiki))
+  end
+
   private
 
   def storage
@@ -1702,11 +1706,11 @@ class Project < ActiveRecord::Base
   end
 
   def repo_reference_count
-    Gitlab::ReferenceCounter.new(gl_repository(is_wiki: false)).value
+    reference_counter.value
   end
 
   def wiki_reference_count
-    Gitlab::ReferenceCounter.new(gl_repository(is_wiki: true)).value
+    reference_counter(wiki: true).value
   end
 
   def check_repository_absence!
