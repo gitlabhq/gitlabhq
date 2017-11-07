@@ -6,8 +6,6 @@ module Gitlab
         @worker_class = worker_class
       end
 
-      protected
-
       def labels
         { controller: @worker_class.name, action: 'perform' }
       end
