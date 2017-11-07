@@ -6,7 +6,7 @@ module Clusters
 
         begin
           app.make_installing!
-          helm_api.install(app)
+          helm_api.install(install_command)
 
           ClusterWaitForAppInstallationWorker.perform_in(
             ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)

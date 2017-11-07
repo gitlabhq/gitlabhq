@@ -12,7 +12,7 @@ describe Clusters::Applications::InstallService do
 
     context 'when there are no errors' do
       before do
-        expect(helm_client).to receive(:install).with(application)
+        expect(helm_client).to receive(:install).with(application.install_command)
         allow(ClusterWaitForAppInstallationWorker).to receive(:perform_in).and_return(nil)
       end
 
@@ -33,7 +33,7 @@ describe Clusters::Applications::InstallService do
     context 'when k8s cluster communication fails' do
       before do
         error = KubeException.new(500, 'system failure', nil)
-        expect(helm_client).to receive(:install).with(application).and_raise(error)
+        expect(helm_client).to receive(:install).with(application.install_command).and_raise(error)
       end
 
       it 'make the application errored' do
