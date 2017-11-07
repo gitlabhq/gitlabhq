@@ -10,33 +10,12 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
   before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
 
+  before_action :set_issuables_index, only: [:index]
+
   before_action :authenticate_user!, only: [:assign_related_issues]
 
   def index
-    @collection_type    = "MergeRequest"
-    @merge_requests     = merge_requests_collection
-    @merge_requests     = @merge_requests.page(params[:page])
-    @merge_requests     = @merge_requests.preload(merge_request_diff: :merge_request)
-    @issuable_meta_data = issuable_meta_data(@merge_requests, @collection_type)
-    @total_pages        = merge_requests_page_count(@merge_requests)
-
-    return if redirect_out_of_range(@merge_requests, @total_pages)
-
-    if params[:label_name].present?
-      labels_params = { project_id: @project.id, title: params[:label_name] }
-      @labels = LabelsFinder.new(current_user, labels_params).execute
-    end
-
-    @users = []
-    if params[:assignee_id].present?
-      assignee = User.find_by_id(params[:assignee_id])
-      @users.push(assignee) if assignee
-    end
-
-    if params[:author_id].present?
-      author = User.find_by_id(params[:author_id])
-      @users.push(author) if author
-    end
+    @merge_requests = @issuables
 
     respond_to do |format|
       format.html
@@ -337,5 +316,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @source_project = @merge_request.source_project
     @target_project = @merge_request.target_project
     @target_branches = @merge_request.target_project.repository.branch_names
+  end
+
+  def set_issuables_index
+    @finder_type = MergeRequestsFinder
+    super
   end
 end
