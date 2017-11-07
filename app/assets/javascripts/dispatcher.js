@@ -22,7 +22,7 @@ import NamespaceSelect from './namespace_select';
 /* global NewBranchForm */
 /* global Project */
 /* global ProjectAvatar */
-/* global MergeRequest */
+import MergeRequest from './merge_request';
 /* global Compare */
 /* global CompareAutocomplete */
 /* global ProjectFindFile */
@@ -324,7 +324,7 @@ import Diff from './diff';
           initNotes();
 
           const mrShowNode = document.querySelector('.merge-request');
-          window.mergeRequest = new MergeRequest({
+          new MergeRequest({
             action: mrShowNode.dataset.mrAction,
           });
           break;

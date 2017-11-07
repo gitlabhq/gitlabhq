@@ -4,6 +4,7 @@ import simplePoll from '~/lib/utils/simple_poll';
 import Flash from '../../../flash';
 import statusIcon from '../mr_widget_status_icon';
 import eventHub from '../../event_hub';
+import MergeRequest from '../../../merge_request';
 
 export default {
   name: 'MRWidgetReadyToMerge',
@@ -165,11 +166,11 @@ export default {
             // If state is merged we should update the widget and stop the polling
             eventHub.$emit('MRWidgetUpdateRequested');
             eventHub.$emit('FetchActionsContent');
-            if (window.mergeRequest) {
-              window.mergeRequest.updateStatusText('status-box-open', 'status-box-merged', 'Merged');
-              window.mergeRequest.hideCloseButton();
-              window.mergeRequest.decreaseCounter();
-            }
+
+            MergeRequest.updateStatusText('status-box-open', 'status-box-merged', 'Merged');
+            MergeRequest.hideCloseButton();
+            MergeRequest.decreaseCounter();
+
             stopPolling();
 
             // If user checked remove source branch and we didn't remove the branch yet
