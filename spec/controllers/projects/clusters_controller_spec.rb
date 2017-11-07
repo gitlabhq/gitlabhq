@@ -72,7 +72,7 @@ describe Projects::ClustersController do
           go
 
           expect(assigns(:authorize_url)).to include(key)
-          expect(session[session_key_for_redirect_uri]).to eq(project_clusters_url(project))
+          expect(session[session_key_for_redirect_uri]).to eq(providers_gcp_new_project_clusters_url(project))
         end
       end
 
@@ -113,7 +113,7 @@ describe Projects::ClustersController do
     end
   end
 
-  describe 'GET new' do
+  describe 'GET new_gcp' do
     let(:project) { create(:project) }
 
     describe 'functionality' do
@@ -161,7 +161,7 @@ describe Projects::ClustersController do
     end
 
     def go
-      get :new, namespace_id: project.namespace, project_id: project
+      get :new_gcp, namespace_id: project.namespace, project_id: project
     end
   end
 

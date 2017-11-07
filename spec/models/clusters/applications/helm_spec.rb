@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe Clusters::Applications::Helm, type: :model do
+describe Clusters::Applications::Helm do
   it { is_expected.to belong_to(:cluster) }
   it { is_expected.to validate_presence_of(:cluster) }
 
@@ -21,8 +21,20 @@ RSpec.describe Clusters::Applications::Helm, type: :model do
   end
 
   describe '#status' do
-    it 'defaults to :installable' do
-      expect(subject.status_name).to be(:installable)
+    let(:cluster) { create(:cluster) }
+
+    subject { described_class.new(cluster: cluster) }
+
+    it 'defaults to :not_installable' do
+      expect(subject.status_name).to be(:not_installable)
+    end
+
+    context 'when platform kubernetes is defined' do
+      let(:cluster) { create(:cluster, :provided_by_gcp) }
+
+      it 'defaults to :installable' do
+        expect(subject.status_name).to be(:installable)
+      end
     end
   end
 

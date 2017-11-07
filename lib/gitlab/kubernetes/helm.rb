@@ -14,6 +14,7 @@ module Gitlab
 
       def initialize(kubeclient)
         @kubeclient = kubeclient
+        @namespace = Namespace.new(NAMESPACE, kubeclient)
       end
 
       def init!
@@ -21,7 +22,7 @@ module Gitlab
       end
 
       def install(app)
-        create_namespace! unless has_namespace?
+        @namespace.ensure_exists!
         @kubeclient.create_pod(pod_resource(app))
       end
 
@@ -33,15 +34,15 @@ module Gitlab
       # values: "Pending", "Running", "Succeeded", "Failed", "Unknown"
       #
       def installation_status(app)
-        @kubeclient.get_pod(pod_name(app), NAMESPACE).status.phase
+        @kubeclient.get_pod(pod_name(app), @namespace.name).status.phase
       end
 
       def installation_log(app)
-        @kubeclient.get_pod_log(pod_name(app), NAMESPACE).body
+        @kubeclient.get_pod_log(pod_name(app), @namespace.name).body
       end
 
       def delete_installation_pod!(app)
-        @kubeclient.delete_pod(pod_name(app), NAMESPACE)
+        @kubeclient.delete_pod(pod_name(app), @namespace.name)
       end
 
       private
@@ -52,7 +53,7 @@ module Gitlab
 
       def pod_resource(app)
         labels = { 'gitlab.org/action': 'install', 'gitlab.org/application': app.name }
-        metadata = { name: pod_name(app), namespace: NAMESPACE, labels: labels }
+        metadata = { name: pod_name(app), namespace: @namespace.name, labels: labels }
         container = {
           name: 'helm',
           image: 'alpine:3.6',
@@ -82,26 +83,6 @@ module Gitlab
 
       def helm_install_comand(app)
         "install #{app.chart} --name #{app.name} --namespace #{NAMESPACE}"
-      end
-
-      def has_namespace?
-        return @has_namespace if defined?(@has_namespace)
-
-        begin
-          @kubeclient.get_namespace(NAMESPACE)
-          @has_namespace = true
-        rescue KubeException => ke
-          raise ke unless ke.error_code == 404
-          false
-        end
-      end
-
-      def create_namespace!
-        namespace_resource = ::Kubeclient::Resource.new
-        namespace_resource.metadata = {}
-        namespace_resource.metadata.name = NAMESPACE
-
-        @kubeclient.create_namespace(namespace_resource)
       end
     end
   end

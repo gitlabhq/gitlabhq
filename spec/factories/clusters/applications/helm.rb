@@ -2,6 +2,10 @@ FactoryGirl.define do
   factory :cluster_applications_helm, class: Clusters::Applications::Helm do
     cluster factory: %i(cluster provided_by_gcp)
 
+    trait :not_installable do
+      status -2
+    end
+
     trait :installable do
       status 0
     end

@@ -186,13 +186,14 @@ constraints(ProjectUrlConstrainer.new) do
       resources :clusters, except: [:edit] do
         collection do
           get :login
+          get '/providers/gcp/new', action: :new_gcp
         end
 
         member do
           get :status, format: :json
 
           scope :applications do
-            post '/*application', to: 'clusters/applications#create', as: :install_applications
+            post '/:application', to: 'clusters/applications#create', as: :install_applications
           end
         end
       end
