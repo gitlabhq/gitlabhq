@@ -5,11 +5,9 @@ class Issue < ActiveRecord::Base
   include Issuable
   include Noteable
   include Referable
-  include Sortable
   include Spammable
   include FasterCacheKeys
   include RelativePositioning
-  include CreatedAtFilterable
   include TimeTrackable
 
   DueDateStruct = Struct.new(:title, :name).freeze
