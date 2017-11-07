@@ -248,7 +248,8 @@ class Projects::IssuesController < Projects::ApplicationController
     Issues::UpdateService.new(project, current_user, update_params)
   end
 
-  def finder_type
-    IssuesFinder
+  def set_issuables_index
+    @finder_type = IssuesFinder
+    super
   end
 end

@@ -53,7 +53,16 @@ class Groups::EpicsController < Groups::ApplicationController
     Epics::UpdateService.new(nil, current_user, epic_params)
   end
 
-  def finder_type
-    EpicsFinder
+  def set_issuables_index
+    @finder_type = EpicsFinder
+    super
+  end
+
+  def collection_type
+    @collection_type ||= 'Epic'
+  end
+
+  def preload_for_collection
+    @preload_for_collection ||= [:group, :author]
   end
 end

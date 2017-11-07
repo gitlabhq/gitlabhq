@@ -329,7 +329,8 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     @target_branches = @merge_request.target_project.repository.branch_names
   end
 
-  def finder_type
-    MergeRequestsFinder
+  def set_issuables_index
+    @finder_type = MergeRequestsFinder
+    super
   end
 end
