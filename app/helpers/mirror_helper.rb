@@ -1,4 +1,19 @@
 module MirrorHelper
+  def render_mirror_failed_message(raw_message:)
+    mirror_last_update_at = @project.mirror_last_update_at
+    message = "The repository failed to update #{time_ago_with_tooltip(mirror_last_update_at)}.".html_safe
+
+    return message if raw_message
+
+    message.insert(0, "#{icon('warning triangle')} ")
+
+    if can?(current_user, :admin_project, @project)
+      link_to message, project_mirror_path(@project)
+    else
+      message
+    end
+  end
+
   def branch_diverged_tooltip_message
     message = s_('Branches|The branch could not be updated automatically because it has diverged from its upstream counterpart.')
 

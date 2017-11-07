@@ -19,6 +19,62 @@ describe Project do
     it { is_expected.to have_many(:audit_events) }
   end
 
+  describe '.mirrors_to_sync' do
+    let(:timestamp) { Time.now }
+
+    context 'when mirror is scheduled' do
+      it 'returns empty' do
+        create(:project, :mirror, :import_scheduled)
+
+        expect(described_class.mirrors_to_sync(timestamp)).to be_empty
+      end
+    end
+
+    context 'when mirror is started' do
+      it 'returns empty' do
+        create(:project, :mirror, :import_scheduled)
+
+        expect(described_class.mirrors_to_sync(timestamp)).to be_empty
+      end
+    end
+
+    context 'when mirror is finished' do
+      let!(:project) { create(:project, :mirror, :import_finished) }
+
+      it 'returns project if next_execution_timestamp is not in the future' do
+        expect(described_class.mirrors_to_sync(timestamp)).to match_array(project)
+      end
+
+      it 'returns empty if next_execution_timestamp is in the future' do
+        project.mirror_data.update_attributes(next_execution_timestamp: timestamp + 2.minutes)
+
+        expect(described_class.mirrors_to_sync(timestamp)).to be_empty
+      end
+    end
+
+    context 'when project is failed' do
+      let!(:project) { create(:project, :mirror, :import_failed) }
+
+      it 'returns project if next_execution_timestamp is not in the future' do
+        expect(described_class.mirrors_to_sync(timestamp)).to match_array(project)
+      end
+
+      it 'returns empty if next_execution_timestamp is in the future' do
+        project.mirror_data.update_attributes(next_execution_timestamp: timestamp + 2.minutes)
+
+        expect(described_class.mirrors_to_sync(timestamp)).to be_empty
+      end
+
+      context 'with retry limit exceeded' do
+        let!(:project) { create(:project, :mirror, :import_hard_failed) }
+
+        it 'returns empty' do
+          expect(described_class.mirrors_to_sync(timestamp)).to be_empty
+        end
+      end
+    end
+  end
+
   describe '#push_rule' do
     let(:project) { create(:project, push_rule: create(:push_rule)) }
 
@@ -200,6 +256,33 @@ describe Project do
     end
   end
 
+  describe '#force_import_job!' do
+    it 'sets next execution timestamp to now and schedules UpdateAllMirrorsWorker' do
+      timestamp = Time.now
+      project = create(:project, :mirror)
+
+      expect(UpdateAllMirrorsWorker).to receive(:perform_async)
+
+      Timecop.freeze(timestamp) do
+        expect { project.force_import_job! }.to change(project.mirror_data, :next_execution_timestamp).to(timestamp)
+      end
+    end
+
+    context 'when mirror is hard failed' do
+      it 'resets retry count and schedules a mirroring worker' do
+        timestamp = Time.now
+        project = create(:project, :mirror, :import_hard_failed)
+
+        expect(UpdateAllMirrorsWorker).to receive(:perform_async)
+
+        Timecop.freeze(timestamp) do
+          expect { project.force_import_job! }.to change(project.mirror_data, :retry_count).to(0)
+          expect(project.mirror_data.next_execution_timestamp).to eq(timestamp)
+        end
+      end
+    end
+  end
+
   describe '#fetch_mirror' do
     where(:import_url, :auth_method, :expected) do
       'http://foo:bar@example.com' | 'password'       | 'http://foo:bar@example.com'
@@ -236,6 +319,95 @@ describe Project do
       project.update_attributes(mirror_last_update_at: project.mirror_data.last_update_started_at + 5.minutes)
 
       expect(project.mirror_update_duration).to eq(300)
+    end
+  end
+
+  describe '#scheduled_mirror?' do
+    context 'when mirror is expected to run soon' do
+      it 'returns true' do
+        timestamp = Time.now
+        project = create(:project, :mirror, :import_finished, :repository)
+        project.mirror_last_update_at = timestamp - 3.minutes
+        project.mirror_data.next_execution_timestamp = timestamp - 2.minutes
+
+        expect(project.scheduled_mirror?).to be true
+      end
+    end
+
+    context 'when mirror was scheduled' do
+      it 'returns true' do
+        project = create(:project, :mirror, :import_scheduled, :repository)
+
+        expect(project.scheduled_mirror?).to be true
+      end
+    end
+
+    context 'when mirror is hard_failed' do
+      it 'returns false' do
+        project = create(:project, :mirror, :import_hard_failed)
+
+        expect(project.scheduled_mirror?).to be false
+      end
+    end
+  end
+
+  describe  '#updating_mirror?' do
+    context 'when repository is empty' do
+      it 'returns false' do
+        project = create(:project, :mirror, :import_started)
+
+        expect(project.updating_mirror?).to be false
+      end
+    end
+
+    context 'when project is not a mirror' do
+      it 'returns false' do
+        project = create(:project, :import_started)
+
+        expect(project.updating_mirror?).to be false
+      end
+    end
+
+    context 'when mirror is in progress' do
+      it 'returns true' do
+        project = create(:project, :mirror, :import_started, :repository)
+
+        expect(project.updating_mirror?).to be true
+      end
+    end
+  end
+
+  describe '#mirror_last_update_status' do
+    let(:project) { create(:project, :mirror) }
+
+    context 'when mirror has not updated' do
+      it 'returns nil' do
+        expect(project.mirror_last_update_status).to be_nil
+      end
+    end
+
+    context 'when mirror has updated' do
+      let(:timestamp) { Time.now }
+
+      before do
+        project.mirror_last_update_at = timestamp
+      end
+
+      context 'when last update time equals the time of the last successful update' do
+        it 'returns success' do
+          project.mirror_last_successful_update_at = timestamp
+
+          expect(project.mirror_last_update_status).to eq(:success)
+        end
+      end
+
+      context 'when last update time does not equal the time of the last successful update' do
+        it 'returns failed' do
+          project.mirror_last_successful_update_at = Time.now - 1.minute
+
+          expect(project.mirror_last_update_status).to eq(:failed)
+        end
+      end
     end
   end
 

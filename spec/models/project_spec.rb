@@ -1938,68 +1938,6 @@ describe Project do
     end
   end
 
-  describe '#scheduled_mirror?' do
-    context 'when mirror is expected to run soon' do
-      it 'returns true' do
-        timestamp = Time.now
-        project = create(:project, :mirror, :import_finished, :repository)
-
-        project.mirror_last_update_at = timestamp - 3.minutes
-        project.mirror_data.next_execution_timestamp = timestamp - 2.minutes
-
-        expect(project.scheduled_mirror?).to be true
-      end
-    end
-
-    context 'when mirror was scheduled' do
-      it 'returns true' do
-        project = create(:project, :mirror, :import_scheduled, :repository)
-
-        expect(project.scheduled_mirror?).to be true
-      end
-    end
-  end
-
-  describe  '#updating_mirror?' do
-    context 'when repository is empty' do
-      it 'returns false' do
-        project = create(:project, :mirror, :import_started)
-
-        expect(project.updating_mirror?).to be false
-      end
-    end
-
-    context 'when project is not a mirror' do
-      it 'returns false' do
-        project = create(:project, :import_started)
-
-        expect(project.updating_mirror?).to be false
-      end
-    end
-
-    context 'when mirror is in progress' do
-      it 'returns true' do
-        project = create(:project, :mirror, :import_started, :repository)
-
-        expect(project.updating_mirror?).to be true
-      end
-    end
-  end
-
-  describe '#force_import_job!' do
-    it 'sets next execution timestamp to now and schedules UpdateAllMirrorsWorker' do
-      timestamp = Time.now
-      project = create(:project, :mirror)
-
-      project.mirror_data.update_attributes(next_execution_timestamp: timestamp - 3.minutes)
-
-      expect(UpdateAllMirrorsWorker).to receive(:perform_async)
-      Timecop.freeze(timestamp) do
-        expect { project.force_import_job! }.to change { project.mirror_data.reload.next_execution_timestamp }.to be_within(1.second).of(timestamp)
-      end
-    end
-  end
-
   describe '#add_import_job' do
     let(:import_jid) { '123' }
 

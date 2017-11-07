@@ -15,9 +15,8 @@ module EE
 
           before_transition scheduled: :failed do |project, _|
             if project.mirror?
-              timestamp = Time.now
-              project.mirror_last_update_at = timestamp
-              project.mirror_data.next_execution_timestamp = timestamp
+              project.mirror_last_update_at = Time.now
+              project.mirror_data.set_next_execution_to_now
             end
           end
 
@@ -30,8 +29,8 @@ module EE
               project.mirror_last_update_at = Time.now
 
               mirror_data = project.mirror_data
-              mirror_data.increment_retry_count!
-              mirror_data.set_next_execution_timestamp!
+              mirror_data.increment_retry_count
+              mirror_data.set_next_execution_timestamp
             end
           end
 
@@ -42,8 +41,8 @@ module EE
               project.mirror_last_successful_update_at = timestamp
 
               mirror_data = project.mirror_data
-              mirror_data.reset_retry_count!
-              mirror_data.set_next_execution_timestamp!
+              mirror_data.reset_retry_count
+              mirror_data.set_next_execution_timestamp
             end
 
             if ::Gitlab::CurrentSettings.current_application_settings.elasticsearch_indexing?

@@ -148,10 +148,10 @@ describe Projects::MirrorsController do
 
   describe 'forcing an update on a pull mirror' do
     it 'forces update' do
-      expect_any_instance_of(EE::Project).to receive(:force_import_job!)
-
       project = create(:project, :mirror)
       sign_in(project.owner)
+
+      expect_any_instance_of(EE::Project).to receive(:force_import_job!)
 
       put :update_now, { namespace_id: project.namespace.to_param, project_id: project.to_param }
     end

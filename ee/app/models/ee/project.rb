@@ -40,7 +40,13 @@ module EE
       scope :with_shared_runners_limit_enabled, -> { with_shared_runners.non_public_only }
 
       scope :mirror, -> { where(mirror: true) }
-      scope :mirrors_to_sync, ->(freeze_at) { mirror.joins(:mirror_data).without_import_status(:scheduled, :started).where("next_execution_timestamp <= ?", freeze_at) }
+
+      scope :mirrors_to_sync, ->(freeze_at) do
+        mirror.joins(:mirror_data).without_import_status(:scheduled, :started)
+          .where("next_execution_timestamp <= ?", freeze_at)
+          .where("project_mirror_data.retry_count <= ?", ::Gitlab::Mirror::MAX_RETRY)
+      end
+
       scope :with_remote_mirrors, -> { joins(:remote_mirrors).where(remote_mirrors: { enabled: true }).distinct }
       scope :with_wiki_enabled, -> { with_feature_enabled(:wiki) }
 
@@ -100,6 +106,7 @@ module EE
 
     def scheduled_mirror?
       return false unless mirror_with_content?
+      return false if mirror_hard_failed?
       return true if import_scheduled?
 
       self.mirror_data.next_execution_timestamp <= Time.now
@@ -119,7 +126,7 @@ module EE
       end
     end
 
-    def mirror_last_update_success?
+    def mirror_last_update_succeeded?
       mirror_last_update_status == :success
     end
 
@@ -129,6 +136,10 @@ module EE
 
     def mirror_ever_updated_successfully?
       mirror_updated? && self.mirror_last_successful_update_at
+    end
+
+    def mirror_hard_failed?
+      self.mirror_data.retry_limit_exceeded?
     end
 
     def has_remote_mirror?
@@ -204,7 +215,13 @@ module EE
     end
 
     def force_import_job!
-      self.mirror_data.set_next_execution_to_now!
+      mirror_data = self.mirror_data
+
+      mirror_data.set_next_execution_to_now
+      mirror_data.reset_retry_count if mirror_data.retry_limit_exceeded?
+
+      mirror_data.save!
+
       UpdateAllMirrorsWorker.perform_async
     end
 
