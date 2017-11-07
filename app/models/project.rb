@@ -216,6 +216,7 @@ class Project < ActiveRecord::Base
   has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
 
   has_one :auto_devops, class_name: 'ProjectAutoDevops'
+  has_many :custom_attributes, class_name: 'ProjectCustomAttribute'
 
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true

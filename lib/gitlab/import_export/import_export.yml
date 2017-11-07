@@ -64,6 +64,7 @@ project_tree:
   - protected_tags:
     - :create_access_levels
   - :project_feature
+  - :custom_attributes
 
 # Only include the following attributes for the models specified.
 included_attributes:

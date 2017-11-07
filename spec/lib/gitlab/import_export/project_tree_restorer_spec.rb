@@ -133,6 +133,10 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(@project.project_feature).not_to be_nil
       end
 
+      it 'has custom attributes' do
+        expect(@project.custom_attributes.count).to eq(2)
+      end
+
       it 'restores the correct service' do
         expect(CustomIssueTrackerService.first).not_to be_nil
       end

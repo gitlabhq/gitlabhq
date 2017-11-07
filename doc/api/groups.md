@@ -74,6 +74,12 @@ GET /groups?statistics=true
 
 You can search for groups by name or path, see below.
 
+You can filter by [custom attributes](custom_attributes.md) with:
+
+```
+GET /groups?custom_attributes[key]=value&custom_attributes[other_key]=other_value
+```
+
 ## List a group's projects
 
 Get a list of projects in this group. When accessed without authentication, only

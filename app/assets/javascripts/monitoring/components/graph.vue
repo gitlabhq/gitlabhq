@@ -138,7 +138,7 @@
 
       renderAxesPaths() {
         this.timeSeries = createTimeSeries(
-          this.graphData.queries[0],
+          this.graphData.queries,
           this.graphWidth,
           this.graphHeight,
           this.graphHeightOffset,
@@ -153,8 +153,9 @@
         const axisYScale = d3.scale.linear()
           .range([this.graphHeight - this.graphHeightOffset, 0]);
 
-        axisXScale.domain(d3.extent(this.timeSeries[0].values, d => d.time));
-        axisYScale.domain([0, d3.max(this.timeSeries[0].values.map(d => d.value))]);
+        const allValues = this.timeSeries.reduce((all, { values }) => all.concat(values), []);
+        axisXScale.domain(d3.extent(allValues, d => d.time));
+        axisYScale.domain([0, d3.max(allValues.map(d => d.value))]);
 
         const xAxis = d3.svg.axis()
           .scale(axisXScale)
@@ -246,6 +247,7 @@
               :key="index"
               :generated-line-path="path.linePath"
               :generated-area-path="path.areaPath"
+              :line-style="path.lineStyle"
               :line-color="path.lineColor"
               :area-color="path.areaColor"
             />
