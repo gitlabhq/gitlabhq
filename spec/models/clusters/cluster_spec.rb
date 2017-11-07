@@ -178,4 +178,25 @@ describe Clusters::Cluster do
       it { is_expected.to be_nil }
     end
   end
+
+  describe '#applications' do
+    set(:cluster) { create(:cluster) }
+
+    subject { cluster.applications }
+
+    context 'when none of applications are created' do
+      it 'returns a list of a new objects' do
+        is_expected.not_to be_empty
+      end
+    end
+
+    context 'when applications are created' do
+      let!(:helm) { create(:cluster_applications_helm, cluster: cluster) }
+      let!(:ingress) { create(:cluster_applications_ingress, cluster: cluster) }
+
+      it 'returns a list of created applications' do
+        is_expected.to contain_exactly(helm, ingress)
+      end
+    end
+  end
 end
