@@ -15,6 +15,10 @@ FactoryGirl.define do
     trait :renamed_event do
       repository_renamed_event factory: :geo_repository_renamed_event
     end
+
+    trait :hashed_storage_migration_event do
+      hashed_storage_migrated_event factory: :geo_hashed_storage_migrated_event
+    end
   end
 
   factory :geo_repository_created_event, class: Geo::RepositoryCreatedEvent do
