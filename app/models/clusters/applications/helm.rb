@@ -12,7 +12,7 @@ module Clusters
       validates :cluster, presence: true
 
       after_initialize :set_initial_status
-      
+
       def self.application_name
         self.to_s.demodulize.underscore
       end
