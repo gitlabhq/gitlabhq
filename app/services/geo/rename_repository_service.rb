@@ -9,7 +9,7 @@ module Geo
     end
 
     def async_execute
-      GeoRenameRepositoryWorker.perform_async(project_id, old_disk_path, new_disk_path)
+      Geo::RenameRepositoryWorker.perform_async(project_id, old_disk_path, new_disk_path)
     end
 
     def execute

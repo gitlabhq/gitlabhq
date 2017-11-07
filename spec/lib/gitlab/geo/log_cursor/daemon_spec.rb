@@ -204,12 +204,12 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
         expect { daemon.run_once! }.not_to change(Geo::ProjectRegistry, :count)
       end
 
-      it 'schedules a GeoRenameRepositoryWorker' do
+      it 'schedules a Geo::RenameRepositoryWorker' do
         project_id = repository_renamed_event.project_id
         old_path_with_namespace = repository_renamed_event.old_path_with_namespace
         new_path_with_namespace = repository_renamed_event.new_path_with_namespace
 
-        expect(::GeoRenameRepositoryWorker).to receive(:perform_async)
+        expect(::Geo::RenameRepositoryWorker).to receive(:perform_async)
           .with(project_id, old_path_with_namespace, new_path_with_namespace)
 
         daemon.run_once!

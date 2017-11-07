@@ -27,13 +27,13 @@ describe Geo::RenameRepositoryService do
     subject(:service) { described_class.new(project.id, project.full_path, new_path) }
 
     it 'starts the worker' do
-      expect(GeoRenameRepositoryWorker).to receive(:perform_async)
+      expect(Geo::RenameRepositoryWorker).to receive(:perform_async)
 
       service.async_execute
     end
 
     it 'returns job id' do
-      allow(GeoRenameRepositoryWorker).to receive(:perform_async).and_return('foo')
+      allow(Geo::RenameRepositoryWorker).to receive(:perform_async).and_return('foo')
 
       expect(service.async_execute).to eq('foo')
     end
