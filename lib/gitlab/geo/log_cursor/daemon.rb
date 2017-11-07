@@ -202,12 +202,12 @@ module Gitlab
           return unless event.project_id
 
           job_id = ::Geo::HashedStorageMigrationService.new(
-                       event.project_id,
-                       event.old_disk_path,
-                       event.new_disk_path,
-                       event.old_storage_version,
-                       event.new_storage_version
-                     ).async_execute
+            event.project_id,
+            event.old_disk_path,
+            event.new_disk_path,
+            event.old_storage_version,
+            event.new_storage_version
+          ).async_execute
 
           log_event_info(
             event_log.created_at,
