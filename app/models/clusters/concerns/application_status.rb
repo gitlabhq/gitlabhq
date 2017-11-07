@@ -4,7 +4,7 @@ module Clusters
       extend ActiveSupport::Concern
 
       included do
-        state_machine :status, initial: :installable do
+        state_machine :status, initial: ->(application) { application.initial_status } do
           state :not_installable, value: -2
           state :errored, value: -1
           state :installable, value: 0
