@@ -19,7 +19,7 @@
     class="loading-file"
     aria-label="Loading files"
   >
-    <td>
+    <td class="multi-file-table-col-name">
       <skeleton-loading-container
         :small="true"
       />
