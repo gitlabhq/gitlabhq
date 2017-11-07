@@ -23,6 +23,8 @@ module Geo
     end
 
     def fetch_geo_node_metrics(node)
+      return unless node.enabled?
+
       status = node_status(node)
 
       unless status.success
@@ -30,30 +32,29 @@ module Geo
         return
       end
 
-      NodeStatusService::STATUS_DATA.each do |key, docstring|
-        value = status[key]
+      update_db_metrics(node, status) if Gitlab::Geo.primary?
+      update_prometheus_metrics(node, status)
+    end
+
+    def update_db_metrics(node, status)
+      db_status = node.find_or_build_status
+
+      db_status.update_attributes(status.attributes.compact.merge(last_successful_status_check_at: Time.now.utc))
+    end
+
+    def update_prometheus_metrics(node, status)
+      GeoNodeStatus::PROMETHEUS_METRICS.each do |column, docstring|
+        value = status[column]
 
         next unless value.is_a?(Integer)
 
-        gauge = Gitlab::Metrics.gauge(gauge_metric_name(key), docstring, {}, :max)
+        gauge = Gitlab::Metrics.gauge(gauge_metric_name(column), docstring, {}, :max)
         gauge.set(metric_labels(node), value)
       end
-
-      set_last_updated_at(node)
     end
 
     def node_status(node)
-      NodeStatusService.new.call(node)
-    end
-
-    def set_last_updated_at(node)
-      gauge = Gitlab::Metrics.gauge(
-        :geo_status_last_updated_timestamp,
-        'UNIX timestamp of last time Geo node status was updated internally',
-        {},
-        :max)
-
-      gauge.set(metric_labels(node), Time.now.to_i)
+      NodeStatusFetchService.new.call(node)
     end
 
     def increment_failed_status_counter(node)

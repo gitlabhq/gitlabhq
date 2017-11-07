@@ -68,7 +68,7 @@ class Admin::GeoNodesController < Admin::ApplicationController
   end
 
   def status
-    status = Geo::NodeStatusService.new.call(@node)
+    status = Geo::NodeStatusFetchService.new.call(@node)
 
     respond_to do |format|
       format.json do

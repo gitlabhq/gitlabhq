@@ -1,40 +1,52 @@
 require 'spec_helper'
 
-describe GeoNodeStatus do
-  set(:geo_node)  { create(:geo_node, :primary) }
+describe GeoNodeStatus, :geo do
+  include ::EE::GeoHelpers
+
+  set(:primary)  { create(:geo_node, :primary) }
+  set(:secondary) { create(:geo_node) }
+
   set(:group)     { create(:group) }
   set(:project_1) { create(:project, group: group) }
   set(:project_2) { create(:project, group: group) }
   set(:project_3) { create(:project) }
   set(:project_4) { create(:project) }
 
-  subject { described_class.new }
+  subject { described_class.current_node_status }
+
+  before do
+    stub_current_geo_node(secondary)
+  end
 
   describe '#healthy?' do
     context 'when health is blank' do
       it 'returns true' do
-        subject.health = ''
+        subject.status_message = ''
 
-        expect(subject.healthy?).to eq true
+        expect(subject.healthy?).to be true
       end
     end
 
     context 'when health is present' do
-      it 'returns false' do
-        subject.health = 'something went wrong'
+      it 'returns true' do
+        subject.status_message = 'Healthy'
 
-        expect(subject.healthy?).to eq false
+        expect(subject.healthy?).to be true
+      end
+
+      it 'returns false' do
+        subject.status_message = 'something went wrong'
+
+        expect(subject.healthy?).to be false
       end
     end
   end
 
-  describe '#health' do
+  describe '#status_message' do
     it 'delegates to the HealthCheck' do
-      subject.health = nil
-
       expect(HealthCheck::Utils).to receive(:process_checks).with(['geo']).once
 
-      subject.health
+      subject
     end
   end
 
@@ -53,27 +65,29 @@ describe GeoNodeStatus do
     it 'does not count synced files that were replaced' do
       user = create(:user, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png'))
 
-      subject = described_class.new
       expect(subject.attachments_count).to eq(1)
       expect(subject.attachments_synced_count).to eq(0)
 
       upload = Upload.find_by(model: user, uploader: 'AvatarUploader')
       create(:geo_file_registry, :avatar, file_id: upload.id)
 
-      subject = described_class.new
+      subject = described_class.current_node_status
+
       expect(subject.attachments_count).to eq(1)
       expect(subject.attachments_synced_count).to eq(1)
 
       user.update(avatar: fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg'))
 
-      subject = described_class.new
+      subject = described_class.current_node_status
+
       expect(subject.attachments_count).to eq(1)
       expect(subject.attachments_synced_count).to eq(0)
 
       upload = Upload.find_by(model: user, uploader: 'AvatarUploader')
       create(:geo_file_registry, :avatar, file_id: upload.id)
 
-      subject = described_class.new
+      subject = described_class.current_node_status
+
       expect(subject.attachments_count).to eq(1)
       expect(subject.attachments_synced_count).to eq(1)
     end
@@ -116,7 +130,7 @@ describe GeoNodeStatus do
     end
 
     it 'returns the right percentage with group restrictions' do
-      geo_node.update_attribute(:namespaces, [group])
+      secondary.update_attribute(:namespaces, [group])
       create(:geo_file_registry, :avatar, file_id: upload_1.id)
       create(:geo_file_registry, :avatar, file_id: upload_2.id)
 
@@ -133,6 +147,7 @@ describe GeoNodeStatus do
     end
 
     it "doesn't attempt to set replication lag if primary" do
+      stub_current_geo_node(primary)
       expect(Gitlab::Geo::HealthCheck).not_to receive(:db_replication_lag_seconds)
 
       expect(subject.db_replication_lag_seconds).to eq(nil)
@@ -168,14 +183,14 @@ describe GeoNodeStatus do
     end
 
     it 'returns the right percentage with no group restrictions' do
-      create(:geo_file_registry, :lfs, file_id: lfs_object_project.lfs_object_id)
+      create(:geo_file_registry, :lfs, file_id: lfs_object_project.lfs_object_id, success: true)
 
       expect(subject.lfs_objects_synced_in_percentage).to be_within(0.0001).of(25)
     end
 
     it 'returns the right percentage with group restrictions' do
-      geo_node.update_attribute(:namespaces, [group])
-      create(:geo_file_registry, :lfs, file_id: lfs_object_project.lfs_object_id)
+      secondary.update_attribute(:namespaces, [group])
+      create(:geo_file_registry, :lfs, file_id: lfs_object_project.lfs_object_id, success: true)
 
       expect(subject.lfs_objects_synced_in_percentage).to be_within(0.0001).of(50)
     end
@@ -192,7 +207,7 @@ describe GeoNodeStatus do
     end
 
     it 'returns the right number of failed repos with group restrictions' do
-      geo_node.update_attribute(:namespaces, [group])
+      secondary.update_attribute(:namespaces, [group])
 
       expect(subject.repositories_failed_count).to eq(1)
     end
@@ -210,17 +225,17 @@ describe GeoNodeStatus do
     end
 
     it 'returns the right percentage with group restrictions' do
-      geo_node.update_attribute(:namespaces, [group])
+      secondary.update_attribute(:namespaces, [group])
       create(:geo_project_registry, :synced, project: project_1)
 
       expect(subject.repositories_synced_in_percentage).to be_within(0.0001).of(50)
     end
   end
 
-  describe '#last_event_id and #last_event_timestamp' do
+  describe '#last_event_id and #last_event_date' do
     it 'returns nil when no events are available' do
       expect(subject.last_event_id).to be_nil
-      expect(subject.last_event_timestamp).to be_nil
+      expect(subject.last_event_date).to be_nil
     end
 
     it 'returns the latest event' do
@@ -228,14 +243,14 @@ describe GeoNodeStatus do
       event = create(:geo_event_log, created_at: created_at)
 
       expect(subject.last_event_id).to eq(event.id)
-      expect(subject.last_event_timestamp).to eq(created_at.to_i)
+      expect(subject.last_event_date).to eq(created_at)
     end
   end
 
-  describe '#cursor_last_event_id and #cursor_last_event_timestamp' do
+  describe '#cursor_last_event_id and #cursor_last_event_date' do
     it 'returns nil when no events are available' do
       expect(subject.cursor_last_event_id).to be_nil
-      expect(subject.cursor_last_event_timestamp).to be_nil
+      expect(subject.cursor_last_event_date).to be_nil
     end
 
     it 'returns the latest event ID if secondary' do
@@ -246,9 +261,10 @@ describe GeoNodeStatus do
     end
 
     it "doesn't attempt to retrieve cursor if primary" do
+      stub_current_geo_node(primary)
       create(:geo_event_log_state)
 
-      expect(subject.cursor_last_event_timestamp).to eq(nil)
+      expect(subject.cursor_last_event_date).to eq(nil)
       expect(subject.cursor_last_event_id).to eq(nil)
     end
   end
@@ -264,40 +280,40 @@ describe GeoNodeStatus do
     end
   end
 
-  context 'when no values are available' do
-    it 'returns 0 for each attribute' do
-      allow(Gitlab::Geo::HealthCheck).to receive(:db_replication_lag_seconds).and_return(nil)
-      subject.attachments_count = nil
-      subject.attachments_synced_count = nil
-      subject.attachments_failed_count = nil
-      subject.lfs_objects_count = nil
-      subject.lfs_objects_synced_count = nil
-      subject.lfs_objects_failed_count = nil
-      subject.repositories_count = nil
-      subject.repositories_synced_count = nil
-      subject.repositories_failed_count = nil
-      subject.last_event_id = nil
-      subject.last_event_timestamp = nil
-      subject.cursor_last_event_id = nil
-      subject.cursor_last_event_timestamp = nil
+  shared_examples 'timestamp parameters' do |timestamp_column, date_column|
+    it 'returns the value it was assigned via UNIX timestamp' do
+      now = Time.now.beginning_of_day.utc
+      subject.update_attribute(timestamp_column, now.to_i)
 
-      expect(subject.db_replication_lag_seconds).to be_nil
-      expect(subject.repositories_count).to be_zero
-      expect(subject.repositories_synced_count).to be_zero
-      expect(subject.repositories_synced_in_percentage).to be_zero
-      expect(subject.repositories_failed_count).to be_zero
-      expect(subject.lfs_objects_count).to be_zero
-      expect(subject.lfs_objects_synced_count).to be_zero
-      expect(subject.lfs_objects_failed_count).to be_zero
-      expect(subject.lfs_objects_synced_in_percentage).to be_zero
-      expect(subject.attachments_count).to be_zero
-      expect(subject.attachments_synced_count).to be_zero
-      expect(subject.attachments_failed_count).to be_zero
-      expect(subject.attachments_synced_in_percentage).to be_zero
-      expect(subject.last_event_id).to be_nil
-      expect(subject.last_event_timestamp).to be_nil
-      expect(subject.cursor_last_event_id).to be_nil
-      expect(subject.cursor_last_event_timestamp).to be_nil
+      expect(subject.public_send(date_column)).to eq(now)
+      expect(subject.public_send(timestamp_column)).to eq(now.to_i)
+    end
+  end
+
+  describe '#last_successful_status_check_timestamp' do
+    it_behaves_like 'timestamp parameters', :last_successful_status_check_timestamp, :last_successful_status_check_at
+  end
+
+  describe '#last_event_timestamp' do
+    it_behaves_like 'timestamp parameters', :last_event_timestamp, :last_event_date
+  end
+
+  describe '#cursor_last_event_timestamp' do
+    it_behaves_like 'timestamp parameters', :cursor_last_event_timestamp, :cursor_last_event_date
+  end
+
+  describe '#from_json' do
+    it 'returns a new GeoNodeStatus excluding parameters' do
+      status = create(:geo_node_status)
+
+      data = status.as_json
+      data[:id] = 10000
+
+      result = GeoNodeStatus.from_json(data)
+
+      expect(result.id).to be_nil
+      expect(result.attachments_count).to eq(status.attachments_count)
+      expect(result.cursor_last_event_date).to eq(status.cursor_last_event_date)
     end
   end
 end

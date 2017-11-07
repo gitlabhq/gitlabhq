@@ -1018,24 +1018,14 @@ module API
       expose :active?, as: :active
     end
 
-    class GeoNodeStatus < Grape::Entity
+    class GeoNode < Grape::Entity
       expose :id
-      expose :db_replication_lag_seconds
-      expose :health
-      expose :healthy?, as: :healthy
-      expose :repositories_count
-      expose :repositories_synced_count
-      expose :repositories_failed_count
-      expose :lfs_objects_count
-      expose :lfs_objects_synced_count
-      expose :lfs_objects_failed_count
-      expose :attachments_count
-      expose :attachments_synced_count
-      expose :attachments_failed_count
-      expose :last_event_id
-      expose :last_event_timestamp
-      expose :cursor_last_event_id
-      expose :cursor_last_event_timestamp
+      expose :url
+      expose :primary?, as: :primary
+      expose :enabled
+      expose :files_max_capacity
+      expose :repos_max_capacity
+      expose :clone_protocol
     end
 
     class PersonalAccessToken < Grape::Entity

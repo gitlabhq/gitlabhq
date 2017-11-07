@@ -802,6 +802,30 @@ ActiveRecord::Schema.define(version: 20171107090120) do
   add_index "geo_node_namespace_links", ["geo_node_id", "namespace_id"], name: "index_geo_node_namespace_links_on_geo_node_id_and_namespace_id", unique: true, using: :btree
   add_index "geo_node_namespace_links", ["geo_node_id"], name: "index_geo_node_namespace_links_on_geo_node_id", using: :btree
 
+  create_table "geo_node_statuses", force: :cascade do |t|
+    t.integer "geo_node_id", null: false
+    t.integer "db_replication_lag_seconds"
+    t.integer "repositories_count"
+    t.integer "repositories_synced_count"
+    t.integer "repositories_failed_count"
+    t.integer "lfs_objects_count"
+    t.integer "lfs_objects_synced_count"
+    t.integer "lfs_objects_failed_count"
+    t.integer "attachments_count"
+    t.integer "attachments_synced_count"
+    t.integer "attachments_failed_count"
+    t.integer "last_event_id"
+    t.datetime_with_timezone "last_event_date"
+    t.integer "cursor_last_event_id"
+    t.datetime_with_timezone "cursor_last_event_date"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.datetime_with_timezone "last_successful_status_check_at"
+    t.string "status_message"
+  end
+
+  add_index "geo_node_statuses", ["geo_node_id"], name: "index_geo_node_statuses_on_geo_node_id", unique: true, using: :btree
+
   create_table "geo_nodes", force: :cascade do |t|
     t.string "schema"
     t.string "host"
@@ -2272,6 +2296,7 @@ ActiveRecord::Schema.define(version: 20171107090120) do
   add_foreign_key "geo_event_log", "geo_repository_updated_events", column: "repository_updated_event_id", on_delete: :cascade
   add_foreign_key "geo_node_namespace_links", "geo_nodes", on_delete: :cascade
   add_foreign_key "geo_node_namespace_links", "namespaces", on_delete: :cascade
+  add_foreign_key "geo_node_statuses", "geo_nodes", on_delete: :cascade
   add_foreign_key "geo_repositories_changed_events", "geo_nodes", on_delete: :cascade
   add_foreign_key "geo_repository_created_events", "projects", on_delete: :cascade
   add_foreign_key "geo_repository_renamed_events", "projects", on_delete: :cascade
