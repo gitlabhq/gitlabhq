@@ -29,11 +29,11 @@ describe('Applications', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-helm')).toBeDefined();
     });
 
-    /* * /
     it('renders a row for Ingress', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-ingress')).toBeDefined();
     });
 
+    /* * /
     it('renders a row for GitLab Runner', () => {
       expect(vm.$el.querySelector('.js-cluster-application-row-runner')).toBeDefined();
     });

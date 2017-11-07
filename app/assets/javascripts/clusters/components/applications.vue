@@ -96,8 +96,17 @@ export default {
           :request-status="applications.helm.requestStatus"
           :request-reason="applications.helm.requestReason"
         />
+        <application-row
+         id="ingress"
+         :title="applications.ingress.title"
+         title-link="https://kubernetes.io/docs/concepts/services-networking/ingress/"
+         :description="ingressDescription"
+         :status="applications.ingress.status"
+         :status-reason="applications.ingress.statusReason"
+         :request-status="applications.ingress.requestStatus"
+         :request-reason="applications.ingress.requestReason"
+       />
         <!-- NOTE: Don't forget to update `clusters.scss` min-height for this block and uncomment `application_spec` tests -->
-        <!-- Add Ingress row, all other plumbing is complete -->
         <!-- Add GitLab Runner row, all other plumbing is complete -->
       </div>
     </div>
