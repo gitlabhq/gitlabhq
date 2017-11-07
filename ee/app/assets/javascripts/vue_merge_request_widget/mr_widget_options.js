@@ -165,6 +165,7 @@ export default {
         :resolvedIssues="mr.codeclimateMetrics.resolvedIssues"
         />
       <collapsible-section
+        class="js-sast-widget"
         v-if="shouldRenderSecurityReport"
         type="security"
         :status="securityStatus"
