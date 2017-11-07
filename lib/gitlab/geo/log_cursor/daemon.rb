@@ -201,9 +201,13 @@ module Gitlab
           event = event_log.hashed_storage_migrated_event
           return unless event.project_id
 
-          job_id = ::Geo::HashedStorageMigrationService
-                     .new(event.project_id, event.old_disk_path, event.new_disk_path)
-                     .async_execute
+          job_id = ::Geo::HashedStorageMigrationService.new(
+                       event.project_id,
+                       event.old_disk_path,
+                       event.new_disk_path,
+                       event.old_storage_version,
+                       event.new_storage_version
+                     ).async_execute
 
           log_event_info(
             event_log.created_at,
