@@ -32,6 +32,8 @@ class DashboardController < Dashboard::ApplicationController
     @events = EventCollection
       .new(projects, offset: params[:offset].to_i, filter: @event_filter)
       .to_a
+
+    Events::RenderService.new(current_user).execute(@events)
   end
 
   def set_show_full_reference
