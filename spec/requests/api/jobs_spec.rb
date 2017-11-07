@@ -500,35 +500,59 @@ describe API::Jobs do
   end
 
   describe 'POST /projects/:id/jobs/:job_id/erase' do
-    before do
-      project.add_master(user)
+    context 'when a master erases a build' do
+      before do
+        project.add_master(user)
 
-      post api("/projects/#{project.id}/jobs/#{job.id}/erase", user)
-    end
-
-    context 'job is erasable' do
-      let(:job) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline) }
-
-      it 'erases job content' do
-        expect(response).to have_gitlab_http_status(201)
-        expect(job).not_to have_trace
-        expect(job.artifacts_file.exists?).to be_falsy
-        expect(job.artifacts_metadata.exists?).to be_falsy
+        post api("/projects/#{project.id}/jobs/#{job.id}/erase", user)
       end
 
-      it 'updates job' do
-        job.reload
+      context 'job is erasable' do
+        let(:job) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline) }
 
-        expect(job.erased_at).to be_truthy
-        expect(job.erased_by).to eq(user)
+        it 'erases job content' do
+          expect(response).to have_gitlab_http_status(201)
+          expect(job).not_to have_trace
+          expect(job.artifacts_file.exists?).to be_falsy
+          expect(job.artifacts_metadata.exists?).to be_falsy
+        end
+
+        it 'updates job' do
+          job.reload
+
+          expect(job.erased_at).to be_truthy
+          expect(job.erased_by).to eq(user)
+        end
+      end
+
+      context 'job is not erasable' do
+        let(:job) { create(:ci_build, :trace, project: project, pipeline: pipeline) }
+
+        it 'responds with forbidden' do
+          expect(response).to have_gitlab_http_status(403)
+        end
       end
     end
 
-    context 'job is not erasable' do
-      let(:job) { create(:ci_build, :trace, project: project, pipeline: pipeline) }
+    context 'when a developer erases a build' do
+      before do
+        project.add_developer(user)
 
-      it 'responds with forbidden' do
-        expect(response).to have_gitlab_http_status(403)
+        post api("/projects/#{project.id}/jobs/#{job.id}/erase", user)
+      end
+
+      let(:job) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline, user: owner) }
+
+      context 'when the build was created by the developer' do
+        let(:owner) { user }
+
+        it { expect(response).to have_gitlab_http_status(201) }
+      end
+
+      context 'when the build was created by the other' do
+        let(:owner) { create(:user) }
+
+        it { expect(response).to have_gitlab_http_status(403) }
       end
     end
   end

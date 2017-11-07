@@ -152,7 +152,7 @@ describe Ci::BuildPolicy do
     end
 
     describe 'rules for erase build' do
-      let(:project) { create(:project) }
+      let(:project) { create(:project, :repository) }
       let(:build) { create(:ci_build, pipeline: pipeline, ref: 'some-ref', user: owner) }
 
       context 'when a developer erases a build' do
@@ -162,7 +162,7 @@ describe Ci::BuildPolicy do
 
         context 'when developers can push to the branch' do
           before do
-            create(:protected_branch, :developers_can_merge,
+            create(:protected_branch, :developers_can_push,
                    name: build.ref, project: project)
           end
 
@@ -183,7 +183,7 @@ describe Ci::BuildPolicy do
           let(:owner) { user }
 
           before do
-            create(:protected_branch, :no_one_can_push,
+            create(:protected_branch, :no_one_can_push, :no_one_can_merge,
                    name: build.ref, project: project)
           end
 
@@ -196,16 +196,34 @@ describe Ci::BuildPolicy do
           project.add_master(user)
         end
 
-        context 'when the build was created by the master' do
-          let(:owner) { user }
+        context 'when masters can push to the branch' do
+          before do
+            create(:protected_branch, :masters_can_push,
+                   name: build.ref, project: project)
+          end
 
-          it { expect(policy).to be_allowed :erase_build }
+          context 'when the build was created by the master' do
+            let(:owner) { user }
+
+            it { expect(policy).to be_allowed :erase_build }
+          end
+
+          context 'when the build was created by the other' do
+            let(:owner) { create(:user) }
+
+            it { expect(policy).to be_allowed :erase_build }
+          end
         end
 
-        context 'when the build was created by the other' do
-          let(:owner) { create(:user) }
+        context 'when no one can push or merge to the branch' do
+          let(:owner) { user }
 
-          it { expect(policy).to be_allowed :erase_build }
+          before do
+            create(:protected_branch, :no_one_can_push, :no_one_can_merge,
+                   name: build.ref, project: project)
+          end
+
+          it { expect(policy).to be_disallowed :erase_build }
         end
       end
     end

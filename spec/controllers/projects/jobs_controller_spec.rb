@@ -422,7 +422,7 @@ describe Projects::JobsController do
         let(:triggered_by) { create(:user) }
 
         it 'does not have successful status' do
-          expect(response).to have_gitlab_http_status(:not_found)
+          expect(response).not_to have_gitlab_http_status(:found)
         end
       end
     end
