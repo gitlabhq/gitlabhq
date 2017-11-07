@@ -58,7 +58,7 @@ export default class MergeRequestStore extends CEMergeRequestStore {
   }
 
   initSecurityReport(data) {
-    this.security = data.security;
+    this.sast = data.sast;
     this.securityReport = [];
   }
 

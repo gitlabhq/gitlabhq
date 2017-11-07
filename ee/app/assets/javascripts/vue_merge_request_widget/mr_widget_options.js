@@ -30,7 +30,7 @@ export default {
       return codeclimate && codeclimate.head_path && codeclimate.base_path;
     },
     shouldRenderSecurityReport() {
-      return this.mr.security && this.mr.security.sast;
+      return this.mr.sast;
     },
     codequalityText() {
       const { newIssues, resolvedIssues } = this.mr.codeclimateMetrics;
@@ -116,7 +116,7 @@ export default {
     },
 
     fetchSecurity() {
-      const { path, blob_path } = this.mr.security.sast;
+      const { path, blob_path } = this.mr.sast;
       this.isLoadingSecurity = true;
 
       this.service.fetchReport(path)
