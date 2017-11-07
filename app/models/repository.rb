@@ -906,13 +906,13 @@ class Repository
     branch = Gitlab::Git::Branch.find(self, branch_or_name)
 
     if branch
-      root_ref_sha = commit(root_ref).sha
-      same_head = branch.target == root_ref_sha
+      @root_ref_sha ||= commit(root_ref).sha
+      same_head = branch.target == @root_ref_sha
       merged =
         if pre_loaded_merged_branches
           pre_loaded_merged_branches.include?(branch.name)
         else
-          ancestor?(branch.target, root_ref_sha)
+          ancestor?(branch.target, @root_ref_sha)
         end
 
       !same_head && merged

@@ -29,12 +29,11 @@ module API
         use :pagination
       end
       get ':id/repository/branches' do
-        branches = ::Kaminari.paginate_array(user_project.repository.branches.sort_by(&:name))
+        repository = user_project.repository
+        branches = ::Kaminari.paginate_array(repository.branches.sort_by(&:name))
+        merged_branch_names = repository.merged_branch_names(branches.map(&:name))
 
-        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37442
-        Gitlab::GitalyClient.allow_n_plus_1_calls do
-          present paginate(branches), with: Entities::Branch, project: user_project
-        end
+        present paginate(branches), with: Entities::Branch, project: user_project, merged_branch_names: merged_branch_names
       end
 
       resource ':id/repository/branches/:branch', requirements: BRANCH_ENDPOINT_REQUIREMENTS do
