@@ -39,12 +39,12 @@ describe ClusterEntity do
       let(:cluster) { create(:cluster) }
       subject { described_class.new(cluster).as_json[:applications]}
 
-      it 'contains helm as installable' do
+      it 'contains helm as not_installable' do
         expect(subject).not_to be_empty
 
         helm = subject[0]
         expect(helm[:name]).to eq('helm')
-        expect(helm[:status]).to eq(:installable)
+        expect(helm[:status]).to eq(:not_installable)
       end
     end
   end
