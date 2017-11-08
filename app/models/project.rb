@@ -232,6 +232,14 @@ class Project < ActiveRecord::Base
 
   has_many :project_badges, class_name: 'ProjectBadge'
 
+  has_one :settings, -> (project) {
+    query = where(project_id: project)
+    query.presence || begin
+      ProjectSettings.create(project_id: project.id)
+      query
+    end
+  }, class_name: 'ProjectSettings'
+
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
   accepts_nested_attributes_for :import_data

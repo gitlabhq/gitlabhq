@@ -115,6 +115,26 @@ describe Project do
         expect(subject.boards.size).to eq 1
       end
     end
+
+    describe '#settings' do
+      it 'creates lazily a settings record when the project does not have one associated' do
+        project = create :project
+        expect(ProjectSettings.count).to eq 0
+
+        expect(project.settings).to be_a ProjectSettings
+
+        expect(ProjectSettings.count).to eq 1
+      end
+
+      it 'returns the associated record when the project has one associated' do
+        project = create :project, settings: create(:project_settings)
+        expect(ProjectSettings.count).to eq 1
+
+        expect(project.settings).to be_a ProjectSettings
+
+        expect(ProjectSettings.count).to eq 1
+      end
+    end
   end
 
   describe 'modules' do
