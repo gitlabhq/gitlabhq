@@ -121,24 +121,28 @@ describe('mrWidgetOptions', () => {
 
     describe('initPolling', () => {
       it('should call SmartInterval', () => {
-        spyOn(gl, 'SmartInterval').and.returnValue({
-          resume() {},
-          stopTimer() {},
-        });
+        spyOn(vm, 'checkStatus').and.returnValue(Promise.resolve());
+        jasmine.clock().install();
         vm.initPolling();
 
+        expect(vm.checkStatus).not.toHaveBeenCalled();
+
+        jasmine.clock().tick(10000);
+
         expect(vm.pollingInterval).toBeDefined();
-        expect(gl.SmartInterval).toHaveBeenCalled();
+        expect(vm.checkStatus).toHaveBeenCalled();
+
+        jasmine.clock().uninstall();
       });
     });
 
     describe('initDeploymentsPolling', () => {
       it('should call SmartInterval', () => {
-        spyOn(gl, 'SmartInterval');
+        spyOn(vm, 'fetchDeployments').and.returnValue(Promise.resolve());
         vm.initDeploymentsPolling();
 
         expect(vm.deploymentsInterval).toBeDefined();
-        expect(gl.SmartInterval).toHaveBeenCalled();
+        expect(vm.fetchDeployments).toHaveBeenCalled();
       });
     });
 

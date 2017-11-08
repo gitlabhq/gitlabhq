@@ -82,16 +82,9 @@ module MergeRequests
         @merge_request.can_remove_source_branch?(branch_deletion_user)
     end
 
-    # Logs merge error message and cleans `MergeRequest#merge_jid`.
-    #
     def handle_merge_error(log_message:, save_message_on_model: false)
       Rails.logger.error("MergeService ERROR: #{merge_request_info} - #{log_message}")
-
-      if save_message_on_model
-        @merge_request.update(merge_error: log_message, merge_jid: nil)
-      else
-        clean_merge_jid
-      end
+      @merge_request.update(merge_error: log_message) if save_message_on_model
     end
 
     def merge_request_info

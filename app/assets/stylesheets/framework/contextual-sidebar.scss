@@ -141,15 +141,15 @@
     svg {
       fill: $gl-text-color-secondary;
     }
-  }
 
-  .nav-item-name {
-    flex: 1;
-  }
+    .nav-item-name {
+      flex: 1;
+    }
 
-  li.active {
-    > a {
-      font-weight: $gl-font-weight-bold;
+    &.active {
+      > a {
+        font-weight: $gl-font-weight-bold;
+      }
     }
   }
 
@@ -484,10 +484,7 @@
   height: calc(100vh - #{$header-height});
 
   @media (min-width: $screen-sm-min) {
-    height: 475px; // Needed for PhantomJS
-    // scss-lint:disable DuplicateProperty
     height: calc(100vh - 180px);
-    // scss-lint:enable DuplicateProperty
   }
 }
 

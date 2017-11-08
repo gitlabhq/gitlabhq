@@ -1,5 +1,6 @@
 ---
 toc: false
+comments: false
 ---
 
 # GitLab Documentation

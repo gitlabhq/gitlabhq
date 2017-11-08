@@ -7,7 +7,7 @@ feature 'Admin disables 2FA for a user' do
 
     edit_user(user)
     page.within('.two-factor-status') do
-      click_link 'Disable'
+      accept_confirm { click_link 'Disable' }
     end
 
     page.within('.two-factor-status') do

@@ -1,72 +1,49 @@
 import Vue from 'vue';
+import store from '~/repo/stores';
 import repoFileButtons from '~/repo/components/repo_file_buttons.vue';
-import RepoStore from '~/repo/stores/repo_store';
+import { file, resetStore } from '../helpers';
 
 describe('RepoFileButtons', () => {
-  const activeFile = {
-    extension: 'md',
-    url: 'url',
-    raw_path: 'raw_path',
-    blame_path: 'blame_path',
-    commits_path: 'commits_path',
-    permalink: 'permalink',
-  };
+  const activeFile = file();
+  let vm;
 
   function createComponent() {
     const RepoFileButtons = Vue.extend(repoFileButtons);
 
-    return new RepoFileButtons().$mount();
+    activeFile.rawPath = 'test';
+    activeFile.blamePath = 'test';
+    activeFile.commitsPath = 'test';
+    activeFile.active = true;
+    store.state.openFiles.push(activeFile);
+
+    return new RepoFileButtons({
+      store,
+    }).$mount();
   }
 
   afterEach(() => {
-    RepoStore.openedFiles = [];
+    vm.$destroy();
+
+    resetStore(vm.$store);
   });
 
-  it('renders Raw, Blame, History, Permalink and Preview toggle', () => {
-    const activeFileLabel = 'activeFileLabel';
-    RepoStore.openedFiles = new Array(1);
-    RepoStore.activeFile = activeFile;
-    RepoStore.activeFileLabel = activeFileLabel;
-    RepoStore.editMode = true;
-    RepoStore.binary = false;
+  it('renders Raw, Blame, History, Permalink and Preview toggle', (done) => {
+    vm = createComponent();
 
-    const vm = createComponent();
-    const raw = vm.$el.querySelector('.raw');
-    const blame = vm.$el.querySelector('.blame');
-    const history = vm.$el.querySelector('.history');
+    vm.$nextTick(() => {
+      const raw = vm.$el.querySelector('.raw');
+      const blame = vm.$el.querySelector('.blame');
+      const history = vm.$el.querySelector('.history');
 
-    expect(raw.href).toMatch(`/${activeFile.raw_path}`);
-    expect(raw.textContent.trim()).toEqual('Raw');
-    expect(blame.href).toMatch(`/${activeFile.blame_path}`);
-    expect(blame.textContent.trim()).toEqual('Blame');
-    expect(history.href).toMatch(`/${activeFile.commits_path}`);
-    expect(history.textContent.trim()).toEqual('History');
-    expect(vm.$el.querySelector('.permalink').textContent.trim()).toEqual('Permalink');
-    expect(vm.$el.querySelector('.preview').textContent.trim()).toEqual(activeFileLabel);
-  });
+      expect(raw.href).toMatch(`/${activeFile.rawPath}`);
+      expect(raw.textContent.trim()).toEqual('Raw');
+      expect(blame.href).toMatch(`/${activeFile.blamePath}`);
+      expect(blame.textContent.trim()).toEqual('Blame');
+      expect(history.href).toMatch(`/${activeFile.commitsPath}`);
+      expect(history.textContent.trim()).toEqual('History');
+      expect(vm.$el.querySelector('.permalink').textContent.trim()).toEqual('Permalink');
 
-  it('triggers rawPreviewToggle on preview click', () => {
-    RepoStore.openedFiles = new Array(1);
-    RepoStore.activeFile = activeFile;
-    RepoStore.editMode = true;
-
-    const vm = createComponent();
-    const preview = vm.$el.querySelector('.preview');
-
-    spyOn(vm, 'rawPreviewToggle');
-
-    preview.click();
-
-    expect(vm.rawPreviewToggle).toHaveBeenCalled();
-  });
-
-  it('does not render preview toggle if not canPreview', () => {
-    activeFile.extension = 'js';
-    RepoStore.openedFiles = new Array(1);
-    RepoStore.activeFile = activeFile;
-
-    const vm = createComponent();
-
-    expect(vm.$el.querySelector('.preview')).toBeFalsy();
+      done();
+    });
   });
 });

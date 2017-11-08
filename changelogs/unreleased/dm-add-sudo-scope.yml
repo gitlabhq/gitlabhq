@@ -1,0 +1,6 @@
+---
+title: Add sudo scope for OAuth and Personal Access Tokens to be used by admins to
+  impersonate other users on the API
+merge_request:
+author:
+type: added

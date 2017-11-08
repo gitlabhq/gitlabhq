@@ -106,6 +106,10 @@ Frontend security practices.
 ## [Accessibility](accessibility.md)
 Our accessibility standards and resources.
 
+## [Internationalization (i18n) and Translations](../i18n/externalization.md)
+Frontend internationalization support is described in [this document](../i18n/).
+The [externalization part of the guide](../i18n/externalization.md) explains the helpers/methods available.
+
 
 [rails]: http://rubyonrails.org/
 [haml]: http://haml.info/

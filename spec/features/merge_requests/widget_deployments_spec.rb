@@ -42,7 +42,7 @@ feature 'Widget Deployments Header', :js do
       end
 
       scenario 'does start build when stop button clicked' do
-        click_button('Stop environment')
+        accept_confirm { click_button('Stop environment') }
 
         expect(page).to have_content('close_app')
       end

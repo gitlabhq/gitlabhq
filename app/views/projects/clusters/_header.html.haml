@@ -11,4 +11,4 @@
       = s_('ClusterIntegration|Make sure your account %{link_to_requirements} to create clusters').html_safe % { link_to_requirements: link_to_requirements }
     %li
       - link_to_container_project = link_to(s_('ClusterIntegration|Google Container Engine project'), target: '_blank', rel: 'noopener noreferrer')
-      = s_('ClusterIntegration|A %{link_to_container_project} must have been created under this account').html_safe % { link_to_container_project: link_to_container_project }
+      = s_('ClusterIntegration|This account must have permissions to create a cluster in the %{link_to_container_project} specified below').html_safe % { link_to_container_project: link_to_container_project }

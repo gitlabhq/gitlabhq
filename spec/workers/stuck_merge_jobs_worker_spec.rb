@@ -12,8 +12,13 @@ describe StuckMergeJobsWorker do
 
         worker.perform
 
-        expect(mr_with_sha.reload).to be_merged
-        expect(mr_without_sha.reload).to be_opened
+        mr_with_sha.reload
+        mr_without_sha.reload
+
+        expect(mr_with_sha).to be_merged
+        expect(mr_without_sha).to be_opened
+        expect(mr_with_sha.merge_jid).to be_present
+        expect(mr_without_sha.merge_jid).to be_nil
       end
 
       it 'updates merge request to opened when locked but has not been merged' do

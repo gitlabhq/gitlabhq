@@ -3,6 +3,21 @@ require_relative 'devise_helpers'
 module LoginHelpers
   include DeviseHelpers
 
+  # Overriding Devise::Test::IntegrationHelpers#sign_in to store @current_user
+  # since we may need it in LiveDebugger#live_debug.
+  def sign_in(resource, scope: nil)
+    super
+
+    @current_user = resource
+  end
+
+  # Overriding Devise::Test::IntegrationHelpers#sign_out to clear @current_user.
+  def sign_out(resource_or_scope)
+    super
+
+    @current_user = nil
+  end
+
   # Internal: Log in as a specific user or a new user of a specific role
   #
   # user_or_role - User object, or a role to create (e.g., :admin, :user)
@@ -28,7 +43,7 @@ module LoginHelpers
 
     gitlab_sign_in_with(user, **kwargs)
 
-    user
+    @current_user = user
   end
 
   def gitlab_sign_in_via(provider, user, uid)
@@ -41,6 +56,7 @@ module LoginHelpers
   def gitlab_sign_out
     find(".header-user-dropdown-toggle").click
     click_link "Sign out"
+    @current_user = nil
 
     expect(page).to have_button('Sign in')
   end

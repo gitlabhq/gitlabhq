@@ -43,7 +43,7 @@
   "issues": [
     {
       "id": 40,
-      "title": "Voluptatem amet doloribus deleniti eos maxime repudiandae molestias.",
+      "title": "Voluptatem",
       "assignee_id": 1,
       "author_id": 22,
       "project_id": 5,
@@ -60,6 +60,12 @@
       "due_date": null,
       "moved_to_id": null,
       "test_ee_field": "test",
+      "issue_assignees": [
+        {
+          "user_id": 1,
+          "issue_id": 1
+        }
+      ],
       "milestone": {
         "id": 1,
         "title": "test milestone",
@@ -7402,5 +7408,23 @@
     "snippets_access_level": 20,
     "updated_at": "2016-09-23T11:58:28.000Z",
     "wiki_access_level": 20
-  }
+  },
+  "custom_attributes": [
+    {
+      "id": 1,
+      "created_at": "2017-10-19T15:36:23.466Z",
+      "updated_at": "2017-10-19T15:36:23.466Z",
+      "project_id": 5,
+      "key": "foo",
+      "value": "foo"
+    },
+    {
+      "id": 2,
+      "created_at": "2017-10-19T15:37:21.904Z",
+      "updated_at": "2017-10-19T15:37:21.904Z",
+      "project_id": 5,
+      "key": "bar",
+      "value": "bar"
+    }
+  ]
 }

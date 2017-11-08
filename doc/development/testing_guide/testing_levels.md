@@ -126,7 +126,7 @@ always in-sync with the codebase.
 [GitLab Workhorse]: https://gitlab.com/gitlab-org/gitlab-workhorse
 [Gitaly]: https://gitlab.com/gitlab-org/gitaly
 [GitLab Pages]: https://gitlab.com/gitlab-org/gitlab-pages
-[GitLab Runner]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner
+[GitLab Runner]: https://gitlab.com/gitlab-org/gitlab-runner
 [GitLab Omnibus]: https://gitlab.com/gitlab-org/omnibus-gitlab
 [GitLab QA]: https://gitlab.com/gitlab-org/gitlab-qa
 [part of GitLab Rails]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa

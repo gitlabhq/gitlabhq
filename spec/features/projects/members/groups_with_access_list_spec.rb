@@ -31,6 +31,7 @@ feature 'Projects > Members > Groups with access list', :js do
     tomorrow = Date.today + 3
 
     fill_in "member_expires_at_#{group.id}", with: tomorrow.strftime("%F")
+    find('body').click
     wait_for_requests
 
     page.within(find('li.group_member')) do
@@ -40,7 +41,7 @@ feature 'Projects > Members > Groups with access list', :js do
 
   scenario 'deletes group link' do
     page.within(first('.group_member')) do
-      find('.btn-remove').click
+      accept_confirm { find('.btn-remove').click }
     end
     wait_for_requests
 

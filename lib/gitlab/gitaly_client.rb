@@ -34,10 +34,11 @@ module Gitlab
     private_constant :MUTEX
 
     class << self
-      attr_accessor :query_time
+      attr_accessor :query_time, :migrate_histogram
     end
 
     self.query_time = 0
+    self.migrate_histogram = Gitlab::Metrics.histogram(:gitaly_migrate_call_duration, "Gitaly migration call execution timings")
 
     def self.stub(name, storage)
       MUTEX.synchronize do
@@ -171,8 +172,11 @@ module Gitlab
           feature_stack = Thread.current[:gitaly_feature_stack] ||= []
           feature_stack.unshift(feature)
           begin
+            start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
             yield is_enabled
           ensure
+            total_time = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
+            migrate_histogram.observe({ gitaly_enabled: is_enabled, feature: feature }, total_time)
             feature_stack.shift
             Thread.current[:gitaly_feature_stack] = nil if feature_stack.empty?
           end

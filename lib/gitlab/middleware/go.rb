@@ -4,6 +4,7 @@ module Gitlab
   module Middleware
     class Go
       include ActionView::Helpers::TagHelper
+      include Gitlab::CurrentSettings
 
       PROJECT_PATH_REGEX = %r{\A(#{Gitlab::PathRegex.full_namespace_route_regex}/#{Gitlab::PathRegex.project_route_regex})/}.freeze
 
@@ -37,10 +38,20 @@ module Gitlab
       end
 
       def go_body(path)
-        project_url = URI.join(Gitlab.config.gitlab.url, path)
+        config = Gitlab.config
+        project_url = URI.join(config.gitlab.url, path)
         import_prefix = strip_url(project_url.to_s)
 
-        meta_tag = tag :meta, name: 'go-import', content: "#{import_prefix} git #{project_url}.git"
+        repository_url = case current_application_settings.enabled_git_access_protocol
+                         when 'ssh'
+                           shell = config.gitlab_shell
+                           port = ":#{shell.ssh_port}" unless shell.ssh_port == 22
+                           "ssh://#{shell.ssh_user}@#{shell.ssh_host}#{port}/#{path}.git"
+                         when 'http', nil
+                           "#{project_url}.git"
+                         end
+
+        meta_tag = tag :meta, name: 'go-import', content: "#{import_prefix} git #{repository_url}"
         head_tag = content_tag :head, meta_tag
         content_tag :html, head_tag
       end

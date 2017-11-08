@@ -1,7 +1,7 @@
 /* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, max-len */
 /* global Notes */
 
-import 'vendor/autosize';
+import 'autosize';
 import '~/gl_form';
 import '~/lib/utils/text_utility';
 import '~/render_gfm';
@@ -343,6 +343,7 @@ import '~/notes';
           diff_discussion_html: false,
         };
         $form = jasmine.createSpyObj('$form', ['closest', 'find']);
+        $form.length = 1;
         row = jasmine.createSpyObj('row', ['prevAll', 'first', 'find']);
 
         notes = jasmine.createSpyObj('notes', [
@@ -371,12 +372,28 @@ import '~/notes';
           $form.closest.and.returnValues(row, $form);
           $form.find.and.returnValues(discussionContainer);
           body.attr.and.returnValue('');
-
-          Notes.prototype.renderDiscussionNote.call(notes, note, $form);
         });
 
         it('should call Notes.animateAppendNote', () => {
+          Notes.prototype.renderDiscussionNote.call(notes, note, $form);
+
           expect(Notes.animateAppendNote).toHaveBeenCalledWith(note.discussion_html, $('.main-notes-list'));
+        });
+
+        it('should append to row selected with line_code', () => {
+          $form.length = 0;
+          note.discussion_line_code = 'line_code';
+          note.diff_discussion_html = '<tr></tr>';
+
+          const line = document.createElement('div');
+          line.id = note.discussion_line_code;
+          document.body.appendChild(line);
+
+          $form.closest.and.returnValues($form);
+
+          Notes.prototype.renderDiscussionNote.call(notes, note, $form);
+
+          expect(line.nextSibling.outerHTML).toEqual(note.diff_discussion_html);
         });
       });
 

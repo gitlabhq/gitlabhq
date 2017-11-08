@@ -1,141 +1,100 @@
 <script>
-import Flash from '../../flash';
-import Store from '../stores/repo_store';
-import RepoMixin from '../mixins/repo_mixin';
-import Service from '../services/repo_service';
+import { mapGetters, mapState, mapActions } from 'vuex';
 import PopupDialog from '../../vue_shared/components/popup_dialog.vue';
-import { visitUrl } from '../../lib/utils/url_utility';
+import { n__ } from '../../locale';
 
 export default {
-  mixins: [RepoMixin],
-
-  data() {
-    return Store;
-  },
-
   components: {
     PopupDialog,
   },
-
+  data() {
+    return {
+      showNewBranchDialog: false,
+      submitCommitsLoading: false,
+      startNewMR: false,
+      commitMessage: '',
+    };
+  },
   computed: {
-    showCommitable() {
-      return this.isCommitable && this.changedFiles.length;
-    },
-
-    branchPaths() {
-      return this.changedFiles.map(f => f.path);
-    },
-
-    cantCommitYet() {
+    ...mapState([
+      'currentBranch',
+    ]),
+    ...mapGetters([
+      'changedFiles',
+    ]),
+    commitButtonDisabled() {
       return !this.commitMessage || this.submitCommitsLoading;
     },
-
-    filePluralize() {
-      return this.changedFiles.length > 1 ? 'files' : 'file';
+    commitButtonText() {
+      return n__('Commit %d file', 'Commit %d files', this.changedFiles.length);
     },
   },
-
   methods: {
-    commitToNewBranch(status) {
-      if (status) {
-        this.showNewBranchDialog = false;
-        this.tryCommit(null, true, true);
-      } else {
-        // reset the state
-      }
-    },
+    ...mapActions([
+      'checkCommitStatus',
+      'commitChanges',
+      'getTreeData',
+    ]),
+    makeCommit(newBranch = false) {
+      const createNewBranch = newBranch || this.startNewMR;
 
-    makeCommit(newBranch) {
-      // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
-      const commitMessage = this.commitMessage;
-      const actions = this.changedFiles.map(f => ({
-        action: f.tempFile ? 'create' : 'update',
-        file_path: f.path,
-        content: f.newContent,
-      }));
-      const branch = newBranch ? `${this.currentBranch}-${this.currentShortHash}` : this.currentBranch;
       const payload = {
-        branch,
-        commit_message: commitMessage,
-        actions,
+        branch: createNewBranch ? `${this.currentBranch}-${new Date().getTime().toString()}` : this.currentBranch,
+        commit_message: this.commitMessage,
+        actions: this.changedFiles.map(f => ({
+          action: f.tempFile ? 'create' : 'update',
+          file_path: f.path,
+          content: f.content,
+          encoding: f.base64 ? 'base64' : 'text',
+        })),
+        start_branch: createNewBranch ? this.currentBranch : undefined,
       };
-      if (newBranch) {
-        payload.start_branch = this.currentBranch;
-      }
-      Service.commitFiles(payload)
+
+      this.showNewBranchDialog = false;
+      this.submitCommitsLoading = true;
+
+      this.commitChanges({ payload, newMr: this.startNewMR })
         .then(() => {
-          this.resetCommitState();
-          if (this.startNewMR) {
-            this.redirectToNewMr(branch);
+          this.submitCommitsLoading = false;
+          this.getTreeData();
+        })
+        .catch(() => {
+          this.submitCommitsLoading = false;
+        });
+    },
+    tryCommit() {
+      this.submitCommitsLoading = true;
+
+      this.checkCommitStatus()
+        .then((branchChanged) => {
+          if (branchChanged) {
+            this.showNewBranchDialog = true;
           } else {
-            this.redirectToBranch(branch);
+            this.makeCommit();
           }
         })
         .catch(() => {
-          Flash('An error occurred while committing your changes');
+          this.submitCommitsLoading = false;
         });
-    },
-
-    tryCommit(e, skipBranchCheck = false, newBranch = false) {
-      this.submitCommitsLoading = true;
-
-      if (skipBranchCheck) {
-        this.makeCommit(newBranch);
-      } else {
-        Store.setBranchHash()
-          .then(() => {
-            if (Store.branchChanged) {
-              Store.showNewBranchDialog = true;
-              return;
-            }
-            this.makeCommit(newBranch);
-          })
-          .catch(() => {
-            this.submitCommitsLoading = false;
-            Flash('An error occurred while committing your changes');
-          });
-      }
-    },
-
-    redirectToNewMr(branch) {
-      visitUrl(this.newMrTemplateUrl.replace('{{source_branch}}', branch));
-    },
-
-    redirectToBranch(branch) {
-      visitUrl(this.customBranchURL.replace('{{branch}}', branch));
-    },
-
-    resetCommitState() {
-      this.submitCommitsLoading = false;
-      this.openedFiles = this.openedFiles.map((file) => {
-        const f = file;
-        f.changed = false;
-        return f;
-      });
-      this.changedFiles = [];
-      this.commitMessage = '';
-      this.editMode = false;
-      window.scrollTo(0, 0);
     },
   },
 };
 </script>
 
 <template>
-<div
-  v-if="showCommitable"
-  id="commit-area">
+<div id="commit-area">
   <popup-dialog
     v-if="showNewBranchDialog"
     :primary-button-label="__('Create new branch')"
     kind="primary"
     :title="__('Branch has changed')"
     :text="__('This branch has changed since you started editing. Would you like to create a new branch?')"
-    @submit="commitToNewBranch"
+    @toggle="showNewBranchDialog = false"
+    @submit="makeCommit(true)"
   />
   <form
     class="form-horizontal"
-    @submit.prevent="tryCommit">
+    @submit.prevent="tryCommit()">
     <fieldset>
       <div class="form-group">
         <label class="col-md-4 control-label staged-files">
@@ -144,10 +103,10 @@ export default {
         <div class="col-md-6">
           <ul class="list-unstyled changed-files">
             <li
-              v-for="branchPath in branchPaths"
-              :key="branchPath">
+              v-for="(file, index) in changedFiles"
+              :key="index">
               <span class="help-block">
-                {{branchPath}}
+                {{ file.path }}
               </span>
             </li>
           </ul>
@@ -182,9 +141,8 @@ export default {
       </div>
       <div class="col-md-offset-4 col-md-6">
         <button
-          ref="submitCommit"
           type="submit"
-          :disabled="cantCommitYet"
+          :disabled="commitButtonDisabled"
           class="btn btn-success">
           <i
             v-if="submitCommitsLoading"
@@ -193,7 +151,7 @@ export default {
             aria-label="loading">
           </i>
           <span class="commit-summary">
-            Commit {{changedFiles.length}} {{filePluralize}}
+            {{ commitButtonText }}
           </span>
         </button>
       </div>

@@ -299,6 +299,24 @@ describe Repository do
 
       it { is_expected.to be_falsey }
     end
+
+    context 'when pre-loaded merged branches are provided' do
+      using RSpec::Parameterized::TableSyntax
+
+      where(:branch, :pre_loaded, :expected) do
+        'not-merged-branch' | ['branch-merged']     | false
+        'branch-merged'     | ['not-merged-branch'] | false
+        'branch-merged'     | ['branch-merged']     | true
+        'not-merged-branch' | ['not-merged-branch'] | false
+        'master'            | ['master']            | false
+      end
+
+      with_them do
+        subject { repository.merged_to_root_ref?(branch, pre_loaded) }
+
+        it { is_expected.to eq(expected) }
+      end
+    end
   end
 
   describe '#can_be_merged?' do
@@ -2257,6 +2275,46 @@ describe Repository do
         expect(repository.ancestor?(nil, commit.id)).to eq(false)
         expect(repository.ancestor?(ancestor.id, nil)).to eq(false)
         expect(repository.ancestor?(nil, nil)).to eq(false)
+      end
+    end
+  end
+
+  describe 'commit cache' do
+    set(:project) { create(:project, :repository) }
+
+    it 'caches based on SHA' do
+      # Gets the commit oid, and warms the cache
+      oid = project.commit.id
+
+      expect(Gitlab::Git::Commit).not_to receive(:find).once
+
+      project.commit_by(oid: oid)
+    end
+
+    it 'caches nil values' do
+      expect(Gitlab::Git::Commit).to receive(:find).once
+
+      project.commit_by(oid: '1' * 40)
+      project.commit_by(oid: '1' * 40)
+    end
+  end
+
+  describe '#raw_repository' do
+    subject { repository.raw_repository }
+
+    it 'returns a Gitlab::Git::Repository representation of the repository' do
+      expect(subject).to be_a(Gitlab::Git::Repository)
+      expect(subject.relative_path).to eq(project.disk_path + '.git')
+      expect(subject.gl_repository).to eq("project-#{project.id}")
+    end
+
+    context 'with a wiki repository' do
+      let(:repository) { project.wiki.repository }
+
+      it 'creates a Gitlab::Git::Repository with the proper attributes' do
+        expect(subject).to be_a(Gitlab::Git::Repository)
+        expect(subject.relative_path).to eq(project.disk_path + '.wiki.git')
+        expect(subject.gl_repository).to eq("wiki-#{project.id}")
       end
     end
   end

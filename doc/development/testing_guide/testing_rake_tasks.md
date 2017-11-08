@@ -1,4 +1,4 @@
-## Testing Rake tasks
+# Testing Rake tasks
 
 To make testing Rake tasks a little easier, there is a helper that can be included
 in lieu of the standard Spec helper. Instead of `require 'spec_helper'`, use

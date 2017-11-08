@@ -53,6 +53,23 @@ describe 'Gitlab::Git::Popen' do
       it { expect(status).to be_zero }
       it { expect(output).to eq('hello') }
     end
+
+    context 'with lazy block' do
+      it 'yields a lazy io' do
+        expect_lazy_io = lambda do |io|
+          expect(io).to be_a Enumerator::Lazy
+          expect(io.inspect).to include('#<IO:fd')
+        end
+
+        klass.new.popen(%w[ls], path, lazy_block: expect_lazy_io)
+      end
+
+      it "doesn't wait for process exit" do
+        Timeout.timeout(2) do
+          klass.new.popen(%w[yes], path, lazy_block: ->(io) {})
+        end
+      end
+    end
   end
 
   context 'popen_with_timeout' do

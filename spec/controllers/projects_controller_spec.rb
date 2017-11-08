@@ -503,13 +503,14 @@ describe ProjectsController do
   describe "GET refs" do
     let(:public_project) { create(:project, :public, :repository) }
 
-    it "gets a list of branches and tags" do
-      get :refs, namespace_id: public_project.namespace, id: public_project
+    it 'gets a list of branches and tags' do
+      get :refs, namespace_id: public_project.namespace, id: public_project, sort: 'updated_desc'
 
       parsed_body = JSON.parse(response.body)
-      expect(parsed_body["Branches"]).to include("master")
-      expect(parsed_body["Tags"]).to include("v1.0.0")
-      expect(parsed_body["Commits"]).to be_nil
+      expect(parsed_body['Branches']).to include('master')
+      expect(parsed_body['Tags'].first).to eq('v1.1.0')
+      expect(parsed_body['Tags'].last).to eq('v1.0.0')
+      expect(parsed_body['Commits']).to be_nil
     end
 
     it "gets a list of branches, tags and commits" do

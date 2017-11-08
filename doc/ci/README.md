@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # GitLab Continuous Integration (GitLab CI)
 
 ![Pipeline graph](img/cicd_pipeline_infograph.png)

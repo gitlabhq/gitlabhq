@@ -11,7 +11,7 @@ class Spinach::Features::ProfileNotifications < Spinach::FeatureSteps
   end
 
   step 'I select Mention setting from dropdown' do
-    first(:link, "On mention").trigger('click')
+    first(:link, "On mention").click
   end
 
   step 'I should see Notification saved message' do

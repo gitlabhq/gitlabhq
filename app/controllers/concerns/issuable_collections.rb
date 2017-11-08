@@ -4,58 +4,44 @@ module IssuableCollections
   include Gitlab::IssuableMetadata
 
   included do
-    helper_method :issues_finder
-    helper_method :merge_requests_finder
+    helper_method :finder
   end
 
   private
 
-  def set_issues_index
-    @collection_type    = "Issue"
-    @issues             = issues_collection
-    @issues             = @issues.page(params[:page])
-    @issuable_meta_data = issuable_meta_data(@issues, @collection_type)
-    @total_pages        = issues_page_count(@issues)
+  def set_issuables_index
+    @issuables          = issuables_collection
+    @issuables          = @issuables.page(params[:page])
+    @issuable_meta_data = issuable_meta_data(@issuables, collection_type)
+    @total_pages        = issuable_page_count
 
-    return if redirect_out_of_range(@issues, @total_pages)
+    return if redirect_out_of_range(@total_pages)
 
     if params[:label_name].present?
-      @labels = LabelsFinder.new(current_user, project_id: @project.id, title: params[:label_name]).execute
+      labels_params = { project_id: @project.id, title: params[:label_name] }
+      @labels = LabelsFinder.new(current_user, labels_params).execute
     end
 
     @users = []
+    if params[:assignee_id].present?
+      assignee = User.find_by_id(params[:assignee_id])
+      @users.push(assignee) if assignee
+    end
+
+    if params[:author_id].present?
+      author = User.find_by_id(params[:author_id])
+      @users.push(author) if author
+    end
   end
 
-  def issues_collection
-    issues_finder.execute.preload(:project, :author, :assignees, :labels, :milestone, project: :namespace)
+  def issuables_collection
+    finder.execute.preload(preload_for_collection)
   end
 
-  def merge_requests_collection
-    merge_requests_finder.execute.preload(
-      :source_project,
-      :target_project,
-      :author,
-      :assignee,
-      :labels,
-      :milestone,
-      head_pipeline: :project,
-      target_project: :namespace,
-      merge_request_diff: :merge_request_diff_commits
-    )
-  end
-
-  def issues_finder
-    @issues_finder ||= issuable_finder_for(IssuesFinder)
-  end
-
-  def merge_requests_finder
-    @merge_requests_finder ||= issuable_finder_for(MergeRequestsFinder)
-  end
-
-  def redirect_out_of_range(relation, total_pages)
+  def redirect_out_of_range(total_pages)
     return false if total_pages.zero?
 
-    out_of_range = relation.current_page > total_pages
+    out_of_range = @issuables.current_page > total_pages
 
     if out_of_range
       redirect_to(url_for(params.merge(page: total_pages, only_path: true)))
@@ -64,12 +50,8 @@ module IssuableCollections
     out_of_range
   end
 
-  def issues_page_count(relation)
-    page_count_for_relation(relation, issues_finder.row_count)
-  end
-
-  def merge_requests_page_count(relation)
-    page_count_for_relation(relation, merge_requests_finder.row_count)
+  def issuable_page_count
+    page_count_for_relation(@issuables, finder.row_count)
   end
 
   def page_count_for_relation(relation, row_count)
@@ -144,5 +126,32 @@ module IssuableCollections
     when 'downvotes_desc'     then sort_value_popularity
     else value
     end
+  end
+
+  def finder
+    return @finder if defined?(@finder)
+
+    @finder = issuable_finder_for(@finder_type)
+  end
+
+  def collection_type
+    @collection_type ||= case finder
+                         when IssuesFinder
+                           'Issue'
+                         when MergeRequestsFinder
+                           'MergeRequest'
+                         end
+  end
+
+  def preload_for_collection
+    @preload_for_collection ||= case collection_type
+                                when 'Issue'
+                                  [:project, :author, :assignees, :labels, :milestone, project: :namespace]
+                                when 'MergeRequest'
+                                  [
+                                    :source_project, :target_project, :author, :assignee, :labels, :milestone,
+                                    head_pipeline: :project, target_project: :namespace, merge_request_diff: :merge_request_diff_commits
+                                  ]
+                                end
   end
 end

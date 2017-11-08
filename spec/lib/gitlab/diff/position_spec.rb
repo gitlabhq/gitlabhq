@@ -364,6 +364,43 @@ describe Gitlab::Diff::Position do
     end
   end
 
+  describe "position for a missing ref" do
+    let(:diff_refs) do
+      Gitlab::Diff::DiffRefs.new(
+        base_sha: "not_existing_sha",
+        head_sha: "existing_sha"
+      )
+    end
+
+    subject do
+      described_class.new(
+        old_path: "files/ruby/feature.rb",
+        new_path: "files/ruby/feature.rb",
+        old_line: 3,
+        new_line: nil,
+        diff_refs: diff_refs
+      )
+    end
+
+    describe "#diff_file" do
+      it "does not raise exception" do
+        expect { subject.diff_file(project.repository) }.not_to raise_error
+      end
+    end
+
+    describe "#diff_line" do
+      it "does not raise exception" do
+        expect { subject.diff_line(project.repository) }.not_to raise_error
+      end
+    end
+
+    describe "#line_code" do
+      it "does not raise exception" do
+        expect { subject.line_code(project.repository) }.not_to raise_error
+      end
+    end
+  end
+
   describe "position for a file in the initial commit" do
     let(:commit) { project.commit("1a0b36b3cdad1d2ee32457c102a8c0b7056fa863") }
 

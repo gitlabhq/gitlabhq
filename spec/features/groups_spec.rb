@@ -65,7 +65,7 @@ feature 'Group' do
         end
 
         it 'updates the team URL on graph path update', :js do
-          out_span = find('span[data-bind-out="create_chat_team"]')
+          out_span = find('span[data-bind-out="create_chat_team"]', visible: false)
 
           expect(out_span.text).to be_empty
 

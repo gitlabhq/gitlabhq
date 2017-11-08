@@ -3,8 +3,8 @@ module Banzai
     Renderer.render(text, context)
   end
 
-  def self.render_field(object, field)
-    Renderer.render_field(object, field)
+  def self.render_field(object, field, context = {})
+    Renderer.render_field(object, field, context)
   end
 
   def self.cache_collection_render(texts_and_contexts)

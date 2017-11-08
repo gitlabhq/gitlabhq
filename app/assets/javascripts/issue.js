@@ -6,7 +6,7 @@ import TaskList from './task_list';
 import CreateMergeRequestDropdown from './create_merge_request_dropdown';
 import IssuablesHelper from './helpers/issuables_helper';
 
-class Issue {
+export default class Issue {
   constructor() {
     if ($('a.btn-close').length) {
       this.taskList = new TaskList({
@@ -147,5 +147,3 @@ class Issue {
     });
   }
 }
-
-export default Issue;

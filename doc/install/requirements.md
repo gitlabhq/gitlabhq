@@ -121,7 +121,7 @@ Existing users using GitLab with MySQL/MariaDB are advised to
 
 ### PostgreSQL Requirements
 
-As of GitLab 10.0, PostgreSQL 9.6 or newer is required, and earlier versions are
+As of GitLab 10.0, PostgreSQL 9.6 or newer (but less than 10) is required, and earlier versions are
 not supported. We highly recommend users to use PostgreSQL 9.6 as this
 is the PostgreSQL version used for development and testing.
 
@@ -184,7 +184,7 @@ Runner.
 We recommend using a separate machine for each GitLab Runner, if you plan to
 use the CI features.
 
-[security reasons]: https://gitlab.com/gitlab-org/gitlab-ci-multi-runner/blob/master/docs/security/index.md
+[security reasons]: https://gitlab.com/gitlab-org/gitlab-runner/blob/master/docs/security/index.md
 
 ## Supported web browsers
 

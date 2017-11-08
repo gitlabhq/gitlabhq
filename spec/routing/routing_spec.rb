@@ -135,7 +135,6 @@ end
 #             profile_history GET    /profile/history(.:format)             profile#history
 #            profile_password PUT    /profile/password(.:format)            profile#password_update
 #               profile_token GET    /profile/token(.:format)               profile#token
-# profile_reset_private_token PUT    /profile/reset_private_token(.:format) profile#reset_private_token
 #                     profile GET    /profile(.:format)                     profile#show
 #              profile_update PUT    /profile/update(.:format)              profile#update
 describe ProfilesController, "routing" do
@@ -145,10 +144,6 @@ describe ProfilesController, "routing" do
 
   it "to #audit_log" do
     expect(get("/profile/audit_log")).to route_to('profiles#audit_log')
-  end
-
-  it "to #reset_private_token" do
-    expect(put("/profile/reset_private_token")).to route_to('profiles#reset_private_token')
   end
 
   it "to #reset_rss_token" do

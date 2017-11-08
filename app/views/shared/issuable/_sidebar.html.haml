@@ -123,17 +123,10 @@
         %script#js-lock-issue-data{ type: "application/json" }= { is_locked: issuable.discussion_locked?, is_editable: can_edit_issuable }.to_json.html_safe
         #js-lock-entry-point
 
-      = render "shared/issuable/participants", participants: issuable.participants(current_user)
+      .js-sidebar-participants-entry-point
+
       - if current_user
-        - subscribed = issuable.subscribed?(current_user, @project)
-        .block.light.subscription{ data: { url: toggle_subscription_path(issuable) } }
-          .sidebar-collapsed-icon
-            = icon('rss', 'aria-hidden': 'true')
-          %span.issuable-header-text.hide-collapsed.pull-left
-            Notifications
-          - subscribtion_status = subscribed ? 'subscribed' : 'unsubscribed'
-          %button.btn.btn-default.pull-right.js-subscribe-button.issuable-subscribe-button.hide-collapsed{ type: "button" }
-            %span= subscribed ? 'Unsubscribe' : 'Subscribe'
+        .js-sidebar-subscriptions-entry-point
 
       - project_ref = cross_project_reference(@project, issuable)
       .block.project-reference

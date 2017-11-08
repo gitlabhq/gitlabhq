@@ -1,0 +1,5 @@
+---
+title: Fix cancel button not working while uploading on the new issue page
+merge_request: 15137
+author:
+type: fixed

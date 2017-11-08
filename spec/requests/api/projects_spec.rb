@@ -1856,4 +1856,9 @@ describe API::Projects do
       end
     end
   end
+
+  it_behaves_like 'custom attributes endpoints', 'projects' do
+    let(:attributable) { project }
+    let(:other_attributable) { project2 }
+  end
 end

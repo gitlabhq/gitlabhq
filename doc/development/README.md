@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # GitLab development guides
 
 ## Get started!

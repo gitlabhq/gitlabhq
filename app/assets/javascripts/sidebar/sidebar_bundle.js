@@ -4,6 +4,8 @@ import SidebarAssignees from './components/assignees/sidebar_assignees';
 import ConfidentialIssueSidebar from './components/confidential/confidential_issue_sidebar.vue';
 import SidebarMoveIssue from './lib/sidebar_move_issue';
 import LockIssueSidebar from './components/lock/lock_issue_sidebar.vue';
+import sidebarParticipants from './components/participants/sidebar_participants.vue';
+import sidebarSubscriptions from './components/subscriptions/sidebar_subscriptions.vue';
 import Translate from '../vue_shared/translate';
 
 import Mediator from './sidebar_mediator';
@@ -49,6 +51,36 @@ function mountLockComponent(mediator) {
   }).$mount(el);
 }
 
+function mountParticipantsComponent() {
+  const el = document.querySelector('.js-sidebar-participants-entry-point');
+
+  if (!el) return;
+
+  // eslint-disable-next-line no-new
+  new Vue({
+    el,
+    components: {
+      sidebarParticipants,
+    },
+    render: createElement => createElement('sidebar-participants', {}),
+  });
+}
+
+function mountSubscriptionsComponent() {
+  const el = document.querySelector('.js-sidebar-subscriptions-entry-point');
+
+  if (!el) return;
+
+  // eslint-disable-next-line no-new
+  new Vue({
+    el,
+    components: {
+      sidebarSubscriptions,
+    },
+    render: createElement => createElement('sidebar-subscriptions', {}),
+  });
+}
+
 function domContentLoaded() {
   const sidebarOptions = JSON.parse(document.querySelector('.js-sidebar-options').innerHTML);
   const mediator = new Mediator(sidebarOptions);
@@ -63,6 +95,8 @@ function domContentLoaded() {
 
   mountConfidentialComponent(mediator);
   mountLockComponent(mediator);
+  mountParticipantsComponent();
+  mountSubscriptionsComponent();
 
   new SidebarMoveIssue(
     mediator,
