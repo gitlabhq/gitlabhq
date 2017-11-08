@@ -10,12 +10,12 @@
   = form_errors(@cluster)
   = field.fields_for :platform_kubernetes, @cluster.platform_kubernetes do |platform_kubernetes_field|
     .form-group
-    = platform_kubernetes_field.label :api_url, s_('ClusterIntegration|API URL')
-    = platform_kubernetes_field.text_field :api_url, class: 'form-control', disabled: @cluster.managed?
+      = platform_kubernetes_field.label :api_url, s_('ClusterIntegration|API URL')
+      = platform_kubernetes_field.text_field :api_url, class: 'form-control', disabled: @cluster.managed?
 
     .form-group
-    = platform_kubernetes_field.label :namespace, s_('ClusterIntegration|Project namespace (optional, unique)')
-    = platform_kubernetes_field.text_field :namespace, class: 'form-control', placeholder: Clusters::Platforms::Kubernetes.namespace_for_project(@project), disabled: @cluster.managed?
+      = platform_kubernetes_field.label :namespace, s_('ClusterIntegration|Project namespace (optional, unique)')
+      = platform_kubernetes_field.text_field :namespace, class: 'form-control', placeholder: Clusters::Platforms::Kubernetes.namespace_for_project(@project), disabled: @cluster.managed?
 
-  .form-group
-    = field.submit s_('ClusterIntegration|Save cluster'), class: 'btn btn-save'
+    .form-group
+      = field.submit s_('ClusterIntegration|Save cluster'), class: 'btn btn-save'
