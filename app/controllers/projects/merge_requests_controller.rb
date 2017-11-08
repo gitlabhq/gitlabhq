@@ -106,8 +106,6 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
     # Get commits from repository
     # or from cache if already merged
     @commits = prepare_commits_for_rendering(@merge_request.commits)
-    @note_counts = Note.where(commit_id: @commits.map(&:id))
-      .group(:commit_id).count
 
     render json: { html: view_to_html_string('projects/merge_requests/_commits') }
   end

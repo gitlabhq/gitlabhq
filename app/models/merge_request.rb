@@ -602,7 +602,7 @@ class MergeRequest < ActiveRecord::Base
     commit_notes = Note
       .except(:order)
       .where(project_id: [source_project_id, target_project_id])
-      .where(noteable_type: 'Commit', commit_id: commit_ids)
+      .for_commit_id(commit_ids)
 
     # We're using a UNION ALL here since this results in better performance
     # compared to using OR statements. We're using UNION ALL since the queries
