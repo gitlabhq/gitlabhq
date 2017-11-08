@@ -108,6 +108,10 @@ var config = {
         loader: 'vue-loader',
       },
       {
+        test: /\.ts$/,
+        loader: 'ts-loader',
+      },
+      {
         test: /\.svg$/,
         loader: 'raw-loader',
       },
@@ -252,7 +256,7 @@ var config = {
   ],
 
   resolve: {
-    extensions: ['.js'],
+    extensions: ['.js', '.ts'],
     alias: {
       '~':              path.join(ROOT_PATH, 'app/assets/javascripts'),
       'emojis':         path.join(ROOT_PATH, 'fixtures/emojis'),
