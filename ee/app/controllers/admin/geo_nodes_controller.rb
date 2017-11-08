@@ -14,12 +14,12 @@ class Admin::GeoNodesController < Admin::ApplicationController
   end
 
   def create
-    if Geo::NodeCreateService.new(geo_node_params).execute
+    @node = Geo::NodeCreateService.new(geo_node_params).execute
+
+    if @node.persisted?
       redirect_to admin_geo_nodes_path, notice: 'Node was successfully created.'
     else
       @nodes = GeoNode.all
-      @node = GeoNode.new(geo_node_params)
-      flash.now[:alert] = 'Failed to create new node'
 
       render :index
     end

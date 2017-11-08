@@ -26,7 +26,6 @@ RSpec.describe 'admin Geo Nodes', type: :feature do
     it 'creates a new Geo Node' do
       check 'This is a primary node'
       fill_in 'geo_node_url', with: 'https://test.gitlab.com'
-      fill_in 'geo_node_geo_node_key_attributes_key', with: new_ssh_key
       click_button 'Add Node'
 
       expect(current_path).to eq admin_geo_nodes_path
@@ -34,6 +33,20 @@ RSpec.describe 'admin Geo Nodes', type: :feature do
       page.within(find('.geo-nodes', match: :first)) do
         expect(page).to have_content(geo_node.url)
       end
+    end
+
+    it 'returns an error message when a duplicate primary is added' do
+      check 'This is a primary node'
+      fill_in 'geo_node_url', with: 'https://test.example.com'
+      click_button 'Add Node'
+
+      check 'This is a primary node'
+      fill_in 'geo_node_url', with: 'https://secondary.example.com'
+      click_button 'Add Node'
+
+      expect(current_path).to eq admin_geo_nodes_path
+
+      expect(page).to have_content('Primary node already exists')
     end
   end
 
