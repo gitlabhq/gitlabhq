@@ -1521,7 +1521,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe '#fetch_source_branch' do
+  describe '#fetch_source_branch!' do
     let(:local_ref) { 'refs/merge-requests/1/head' }
 
     context 'when the branch exists' do
@@ -1530,11 +1530,11 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it 'writes the ref' do
         expect(repository).to receive(:write_ref).with(local_ref, /\h{40}/)
 
-        repository.fetch_source_branch(repository, source_branch, local_ref)
+        repository.fetch_source_branch!(repository, source_branch, local_ref)
       end
 
       it 'returns true' do
-        expect(repository.fetch_source_branch(repository, source_branch, local_ref)).to eq(true)
+        expect(repository.fetch_source_branch!(repository, source_branch, local_ref)).to eq(true)
       end
     end
 
@@ -1544,11 +1544,11 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it 'does not write the ref' do
         expect(repository).not_to receive(:write_ref)
 
-        repository.fetch_source_branch(repository, source_branch, local_ref)
+        repository.fetch_source_branch!(repository, source_branch, local_ref)
       end
 
       it 'returns false' do
-        expect(repository.fetch_source_branch(repository, source_branch, local_ref)).to eq(false)
+        expect(repository.fetch_source_branch!(repository, source_branch, local_ref)).to eq(false)
       end
     end
   end

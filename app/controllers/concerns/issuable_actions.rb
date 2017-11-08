@@ -9,9 +9,7 @@ module IssuableActions
 
   def show
     respond_to do |format|
-      format.html do
-        render show_view
-      end
+      format.html
       format.json do
         render json: serializer.represent(issuable, serializer: params[:serializer])
       end
@@ -57,12 +55,11 @@ module IssuableActions
 
   def destroy
     issuable.destroy
-    destroy_method = "destroy_#{issuable.class.name.underscore}".to_sym
-    TodoService.new.public_send(destroy_method, issuable, current_user) # rubocop:disable GitlabSecurity/PublicSend
+    TodoService.new.destroy_issuable(issuable, current_user)
 
     name = issuable.human_class_name
     flash[:notice] = "The #{name} was successfully deleted."
-    index_path = polymorphic_path([@project.namespace.becomes(Namespace), @project, issuable.class])
+    index_path = polymorphic_path([parent, issuable.class])
 
     respond_to do |format|
       format.html { redirect_to index_path }
@@ -154,15 +151,15 @@ module IssuableActions
     end
   end
 
-  def show_view
-    'show'
-  end
-
   def serializer
     raise NotImplementedError
   end
 
   def update_service
     raise NotImplementedError
+  end
+
+  def parent
+    @project || @group
   end
 end

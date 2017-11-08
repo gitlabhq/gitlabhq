@@ -9,6 +9,7 @@ module KubernetesHelpers
     kube_response(kube_pods_body)
   end
 
+<<<<<<< HEAD
   def kube_deployments_response
     kube_response(kube_deployments_body)
   end
@@ -16,20 +17,53 @@ module KubernetesHelpers
   def stub_kubeclient_discover
     WebMock.stub_request(:get, service.api_url + '/api/v1').to_return(kube_response(kube_v1_discovery_body))
     WebMock.stub_request(:get, service.api_url + '/apis/extensions/v1beta1').to_return(kube_response(kube_v1beta1_discovery_body))
+=======
+  def stub_kubeclient_discover(api_url)
+    WebMock.stub_request(:get, api_url + '/api/v1').to_return(kube_response(kube_v1_discovery_body))
+>>>>>>> upstream/master
   end
 
   def stub_kubeclient_pods(response = nil)
-    stub_kubeclient_discover
+    stub_kubeclient_discover(service.api_url)
     pods_url = service.api_url + "/api/v1/namespaces/#{service.actual_namespace}/pods"
 
     WebMock.stub_request(:get, pods_url).to_return(response || kube_pods_response)
   end
 
+<<<<<<< HEAD
   def stub_kubeclient_deployments(response = nil)
     stub_kubeclient_discover
     deployments_url = service.api_url + "/apis/extensions/v1beta1/namespaces/#{service.actual_namespace}/deployments"
 
     WebMock.stub_request(:get, deployments_url).to_return(response || kube_deployments_response)
+=======
+  def stub_kubeclient_get_secrets(api_url, **options)
+    WebMock.stub_request(:get, api_url + '/api/v1/secrets')
+      .to_return(kube_response(kube_v1_secrets_body(options)))
+  end
+
+  def stub_kubeclient_get_secrets_error(api_url)
+    WebMock.stub_request(:get, api_url + '/api/v1/secrets')
+      .to_return(status: [404, "Internal Server Error"])
+  end
+
+  def kube_v1_secrets_body(**options)
+    {
+      "kind" => "SecretList",
+      "apiVersion": "v1",
+      "items" => [
+        {
+          "metadata": {
+            "name": options[:metadata_name] || "default-token-1",
+            "namespace": "kube-system"
+          },
+          "data": {
+            "token": options[:token] || Base64.encode64('token-sample-123')
+          }
+        }
+      ]
+    }
+>>>>>>> upstream/master
   end
 
   def kube_v1_discovery_body
@@ -37,6 +71,7 @@ module KubernetesHelpers
       "kind" => "APIResourceList",
       "resources" => [
         { "name" => "pods", "namespaced" => true, "kind" => "Pod" },
+<<<<<<< HEAD
         { "name" => "deployments", "namespaced" => true, "kind" => "Deployment" }
       ]
     }
@@ -48,6 +83,9 @@ module KubernetesHelpers
       "resources" => [
         { "name" => "pods", "namespaced" => true, "kind" => "Pod" },
         { "name" => "deployments", "namespaced" => true, "kind" => "Deployment" }
+=======
+        { "name" => "secrets", "namespaced" => true, "kind" => "Secret" }
+>>>>>>> upstream/master
       ]
     }
   end

@@ -111,9 +111,33 @@
   margin: auto;
   align-items: center;
 
+<<<<<<< HEAD
   .md-area {
+=======
+  .icon {
+    margin-right: $issuable-warning-icon-margin;
+  }
+
+  + .md-area {
+>>>>>>> upstream/master
     border-top-left-radius: 0;
     border-top-right-radius: 0;
+  }
+
+  .disabled-comment {
+    border: 0;
+    border-radius: $label-border-radius;
+    padding-top: $gl-vert-padding;
+    padding-bottom: $gl-vert-padding;
+
+    .icon svg {
+      position: relative;
+      top: 2px;
+      margin-right: $btn-xs-side-margin;
+      width: $gl-font-size;
+      height: $gl-font-size;
+      fill: $orange-600;
+    }
   }
 }
 

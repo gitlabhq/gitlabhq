@@ -143,10 +143,6 @@ def instrument_classes(instrumentation)
 
   # Needed for https://gitlab.com/gitlab-org/gitlab-ce/issues/30224#note_32306159
   instrumentation.instrument_instance_method(MergeRequestDiff, :load_commits)
-
-  # Needed for https://gitlab.com/gitlab-org/gitlab-ce/issues/36061
-  instrumentation.instrument_instance_method(MergeRequest, :ensure_ref_fetched)
-  instrumentation.instrument_instance_method(MergeRequest, :fetch_ref)
 end
 # rubocop:enable Metrics/AbcSize
 
@@ -216,10 +212,13 @@ if Gitlab::Metrics.enabled?
   GC::Profiler.enable
 
   Gitlab::Metrics::Samplers::InfluxSampler.initialize_instance.start
+<<<<<<< HEAD
 
   Gitlab::Metrics::Instrumentation.configure do |config|
     config.instrument_instance_methods(Gitlab::InsecureKeyFingerprint)
   end
+=======
+>>>>>>> upstream/master
 
   module TrackNewRedisConnections
     def connect(*args)

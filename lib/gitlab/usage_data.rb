@@ -63,10 +63,16 @@ module Gitlab
             deploy_keys: DeployKey.count,
             deployments: Deployment.count,
             environments: ::Environment.count,
+<<<<<<< HEAD
             gcp_clusters: ::Gcp::Cluster.count,
             gcp_clusters_enabled: ::Gcp::Cluster.enabled.count,
             gcp_clusters_disabled: ::Gcp::Cluster.disabled.count,
             geo_nodes: GeoNode.count,
+=======
+            clusters: ::Clusters::Cluster.count,
+            clusters_enabled: ::Clusters::Cluster.enabled.count,
+            clusters_disabled: ::Clusters::Cluster.disabled.count,
+>>>>>>> upstream/master
             in_review_folder: ::Environment.in_review_folder.count,
             groups: Group.count,
             issues: Issue.count,

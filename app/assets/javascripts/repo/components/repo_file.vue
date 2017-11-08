@@ -54,7 +54,14 @@
   <tr
     class="file"
     @click.prevent="clickedTreeRow(file)">
+<<<<<<< HEAD
     <td :colspan="submoduleColSpan">
+=======
+    <td
+      class="multi-file-table-col-name"
+      :colspan="submoduleColSpan"
+    >
+>>>>>>> upstream/master
       <i
         class="fa fa-fw file-icon"
         :class="fileIcon"

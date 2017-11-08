@@ -60,13 +60,19 @@ class Projects::RefsController < Projects::ApplicationController
         file = @path ? File.join(@path, content.name) : content.name
         last_commit = @repo.last_commit_for_path(@commit.id, file)
         commit_path = project_commit_path(@project, last_commit) if last_commit
+<<<<<<< HEAD
         path_lock = show_path_locks && @project.find_path_lock(file)
 
+=======
+>>>>>>> upstream/master
         {
           file_name: content.name,
           commit: last_commit,
           type: content.type,
+<<<<<<< HEAD
           lock_label: path_lock && text_label_for_lock(path_lock, file),
+=======
+>>>>>>> upstream/master
           commit_path: commit_path
         }
       end

@@ -8,19 +8,31 @@ constraints(GroupUrlConstrainer.new) do
   scope(path: 'groups/*id',
         controller: :groups,
         constraints: { id: Gitlab::PathRegex.full_namespace_route_regex, format: /(html|json|atom)/ }) do
+<<<<<<< HEAD
     get :edit, as: :edit_group
     get :issues, as: :issues_group
     get :merge_requests, as: :merge_requests_group
     get :projects, as: :projects_group
     get :activity, as: :activity_group
     get :subgroups, as: :subgroups_group
+=======
+    scope(path: '-') do
+      get :edit, as: :edit_group
+      get :issues, as: :issues_group
+      get :merge_requests, as: :merge_requests_group
+      get :projects, as: :projects_group
+      get :activity, as: :activity_group
+    end
+
+>>>>>>> upstream/master
     get '/', action: :show, as: :group_canonical
   end
 
-  scope(path: 'groups/*group_id',
+  scope(path: 'groups/*group_id/-',
         module: :groups,
         as: :group,
         constraints: { group_id: Gitlab::PathRegex.full_namespace_route_regex }) do
+<<<<<<< HEAD
 
     ## EE-specific
     resource :analytics, only: [:show]
@@ -40,9 +52,20 @@ constraints(GroupUrlConstrainer.new) do
       ## EE-specific
       patch :override, on: :member
       ## EE-specific
+=======
+    namespace :settings do
+      resource :ci_cd, only: [:show], controller: 'ci_cd'
     end
 
-    resource :avatar, only: [:destroy]
+    resources :variables, only: [:index, :show, :update, :create, :destroy]
+
+    resources :children, only: [:index]
+
+    resources :labels, except: [:show] do
+      post :toggle_subscription, on: :member
+>>>>>>> upstream/master
+    end
+
     resources :milestones, constraints: { id: /[^\/]+/ }, only: [:index, :show, :edit, :update, :new, :create] do
       member do
         get :merge_requests
@@ -51,6 +74,7 @@ constraints(GroupUrlConstrainer.new) do
       end
     end
 
+<<<<<<< HEAD
     ## EE-specific
     resource :notification_setting, only: [:update]
     resources :audit_events, only: [:index]
@@ -94,6 +118,13 @@ constraints(GroupUrlConstrainer.new) do
       path << "/#{params[:extra_params]}" if params[:extra_params].present?
       path << "?#{request.query_string}" if request.query_string.present?
       path
+=======
+    resource :avatar, only: [:destroy]
+
+    resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
+      post :resend_invite, on: :member
+      delete :leave, on: :collection
+>>>>>>> upstream/master
     end
 
     get 'boards(/*extra_params)', as: :legacy_ee_group_boards_redirect, to: legacy_ee_group_boards_redirect
@@ -107,5 +138,13 @@ constraints(GroupUrlConstrainer.new) do
     patch '/', action: :update
     put '/', action: :update
     delete '/', action: :destroy
+  end
+
+  # Legacy paths should be defined last, so they would be ignored if routes with
+  # one of the previously reserved words exist.
+  scope(path: 'groups/*group_id') do
+    Gitlab::Routing.redirect_legacy_paths(self, :labels, :milestones, :group_members,
+                                          :edit, :issues, :merge_requests, :projects,
+                                          :activity)
   end
 end

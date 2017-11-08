@@ -210,7 +210,10 @@ Parameters:
     "merge_commit_sha": null,
     "user_notes_count": 1,
     "changes_count": "1",
+<<<<<<< HEAD
     "approvals_before_merge": null
+=======
+>>>>>>> upstream/master
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
     "squash": false,
@@ -289,7 +292,10 @@ Parameters:
   "merge_commit_sha": "9999999999999999999999999999999999999999",
   "user_notes_count": 1,
   "changes_count": "1",
+<<<<<<< HEAD
   "approvals_before_merge": null
+=======
+>>>>>>> upstream/master
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
@@ -404,7 +410,10 @@ Parameters:
   "merge_commit_sha": null,
   "user_notes_count": 1,
   "changes_count": "1",
+<<<<<<< HEAD
   "approvals_before_merge": null,
+=======
+>>>>>>> upstream/master
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
@@ -512,7 +521,10 @@ order for it to take effect:
   "merge_commit_sha": null,
   "user_notes_count": 0,
   "changes_count": "1",
+<<<<<<< HEAD
   "approvals_before_merge": null
+=======
+>>>>>>> upstream/master
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
@@ -601,7 +613,10 @@ Must include at least one non-required attribute from above.
   "merge_commit_sha": null,
   "user_notes_count": 1,
   "changes_count": "1",
+<<<<<<< HEAD
   "approvals_before_merge": null
+=======
+>>>>>>> upstream/master
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
@@ -709,7 +724,10 @@ Parameters:
   "merge_commit_sha": "9999999999999999999999999999999999999999",
   "user_notes_count": 1,
   "changes_count": "1",
+<<<<<<< HEAD
   "approvals_before_merge": null
+=======
+>>>>>>> upstream/master
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
@@ -915,7 +933,10 @@ Parameters:
   "merge_commit_sha": null,
   "user_notes_count": 1,
   "changes_count": "1",
+<<<<<<< HEAD
   "approvals_before_merge": null
+=======
+>>>>>>> upstream/master
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
@@ -993,8 +1014,12 @@ Example response when the GitLab issue tracker is used:
       "iid" : 6,
       "labels" : [],
       "user_notes_count": 1,
+<<<<<<< HEAD
       "changes_count": "1",
       "approvals_before_merge": null
+=======
+      "changes_count": "1"
+>>>>>>> upstream/master
    },
 ]
 ```

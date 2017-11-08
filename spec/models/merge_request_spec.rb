@@ -2198,6 +2198,7 @@ describe MergeRequest do
     end
   end
 
+<<<<<<< HEAD
   describe '#base_pipeline' do
     let!(:pipeline) { create(:ci_empty_pipeline, project: subject.project, sha: subject.diff_base_sha) }
 
@@ -2245,36 +2246,14 @@ describe MergeRequest do
   describe '#fetch_ref' do
     it 'sets "ref_fetched" flag to true' do
       subject.update!(ref_fetched: nil)
+=======
+  describe '#fetch_ref!' do
+    it 'fetches the ref correctly' do
+      expect { subject.target_project.repository.delete_refs(subject.ref_path) }.not_to raise_error
+>>>>>>> upstream/master
 
-      subject.fetch_ref
-
-      expect(subject.reload.ref_fetched).to be_truthy
-    end
-  end
-
-  describe '#ref_fetched?' do
-    it 'does not perform git operation when value is cached' do
-      subject.ref_fetched = true
-
-      expect_any_instance_of(Repository).not_to receive(:ref_exists?)
-      expect(subject.ref_fetched?).to be_truthy
-    end
-
-    it 'caches the value when ref exists but value is not cached' do
-      subject.update!(ref_fetched: nil)
-      allow_any_instance_of(Repository).to receive(:ref_exists?)
-        .and_return(true)
-
-      expect(subject.ref_fetched?).to be_truthy
-      expect(subject.reload.ref_fetched).to be_truthy
-    end
-
-    it 'returns false when ref does not exist' do
-      subject.update!(ref_fetched: nil)
-      allow_any_instance_of(Repository).to receive(:ref_exists?)
-        .and_return(false)
-
-      expect(subject.ref_fetched?).to be_falsey
+      subject.fetch_ref!
+      expect(subject.target_project.repository.ref_exists?(subject.ref_path)).to be_truthy
     end
   end
 
