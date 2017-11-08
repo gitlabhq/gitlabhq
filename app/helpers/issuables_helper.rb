@@ -228,6 +228,7 @@ module IssuablesHelper
 
     if parent.is_a?(Group)
       data[:groupPath] = parent.path
+      data[:issueLinksEndpoint] = group_epic_issues_path(parent, issuable)
     else
       data.merge!(projectPath: ref_project.path, projectNamespace: ref_project.namespace.full_path)
     end

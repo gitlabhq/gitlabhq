@@ -38,6 +38,9 @@ class Issue < ActiveRecord::Base
   has_many :issue_assignees
   has_many :assignees, class_name: "User", through: :issue_assignees
 
+  has_one :epic_issue
+  has_one :epic, through: :epic_issue
+
   validates :project, presence: true
 
   scope :in_projects, ->(project_ids) { where(project_id: project_ids) }

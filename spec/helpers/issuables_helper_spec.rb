@@ -197,6 +197,7 @@ describe IssuablesHelper do
 
       expected_data = {
         'endpoint' => "/groups/#{@group.full_path}/-/epics/#{epic.iid}",
+        'issueLinksEndpoint' => "/groups/#{@group.full_path}/-/epics/#{epic.iid}/links",
         'canUpdate' => true,
         'canDestroy' => true,
         'issuableRef' => nil,
