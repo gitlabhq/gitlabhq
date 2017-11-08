@@ -699,7 +699,16 @@ describe API::Groups do
     end
   end
 
-<<<<<<< HEAD
+  it_behaves_like 'custom attributes endpoints', 'groups' do
+    let(:attributable) { group1 }
+    let(:other_attributable) { group2 }
+    let(:user) { user1 }
+
+    before do
+      group2.add_owner(user1)
+    end
+  end
+
   describe 'POST /groups/:id/ldap_sync' do
     before do
       allow(Gitlab::LDAP::Config).to receive(:enabled?).and_return(true)
@@ -793,15 +802,6 @@ describe API::Groups do
   def ldap_sync(group_id, user, sidekiq_testing_method)
     Sidekiq::Testing.send(sidekiq_testing_method) do
       post api("/groups/#{group_id}/ldap_sync", user)
-=======
-  it_behaves_like 'custom attributes endpoints', 'groups' do
-    let(:attributable) { group1 }
-    let(:other_attributable) { group2 }
-    let(:user) { user1 }
-
-    before do
-      group2.add_owner(user1)
->>>>>>> upstream/master
     end
   end
 end
