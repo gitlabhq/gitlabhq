@@ -212,13 +212,10 @@ if Gitlab::Metrics.enabled?
   GC::Profiler.enable
 
   Gitlab::Metrics::Samplers::InfluxSampler.initialize_instance.start
-<<<<<<< HEAD
 
   Gitlab::Metrics::Instrumentation.configure do |config|
     config.instrument_instance_methods(Gitlab::InsecureKeyFingerprint)
   end
-=======
->>>>>>> upstream/master
 
   module TrackNewRedisConnections
     def connect(*args)
