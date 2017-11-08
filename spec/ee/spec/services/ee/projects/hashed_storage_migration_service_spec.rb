@@ -10,19 +10,19 @@ describe Projects::HashedStorageMigrationService do
     set(:primary) { create(:geo_node, :primary) }
     set(:secondary) { create(:geo_node) }
 
-    it 'creates a Geo::RepositoryRenamedEvent on success' do
-      expect { service.execute }.to change { Geo::EventLog.count }.by(1)
+    it 'creates a Geo::HashedStorageMigratedEvent on success' do
+      expect { service.execute }.to change(Geo::EventLog, :count).by(1)
 
       event = Geo::EventLog.first.event
 
-      expect(event).to be_a(Geo::RepositoryRenamedEvent)
+      expect(event).to be_a(Geo::HashedStorageMigratedEvent)
       expect(event).to have_attributes(
-        old_path: project.path,
-        new_path: project.path,
-        old_path_with_namespace: legacy_storage.disk_path,
-        new_path_with_namespace: hashed_storage.disk_path,
-        old_wiki_path_with_namespace: legacy_storage.disk_path + '.wiki',
-        new_wiki_path_with_namespace: hashed_storage.disk_path + '.wiki'
+        old_storage_version: nil,
+        new_storage_version: Storage::HashedProject::STORAGE_VERSION,
+        old_disk_path: legacy_storage.disk_path,
+        new_disk_path: hashed_storage.disk_path,
+        old_wiki_disk_path: legacy_storage.disk_path + '.wiki',
+        new_wiki_disk_path: hashed_storage.disk_path + '.wiki'
       )
     end
 

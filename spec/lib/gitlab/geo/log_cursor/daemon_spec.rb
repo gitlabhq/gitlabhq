@@ -197,21 +197,42 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
 
     context 'when processing a repository renamed event' do
       let(:event_log) { create(:geo_event_log, :renamed_event) }
-      let(:project) { event_log.repository_rename_event.project }
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
-      let(:repository_rename_event) { event_log.repository_renamed_event }
+      let(:repository_renamed_event) { event_log.repository_renamed_event }
 
       it 'does not create a new project registry' do
         expect { daemon.run_once! }.not_to change(Geo::ProjectRegistry, :count)
       end
 
-      it 'schedules a GeoRepositoryDestroyWorker' do
-        project_id = repository_rename_event.project_id
-        old_path_with_namespace = repository_rename_event.old_path_with_namespace
-        new_path_with_namespace = repository_rename_event.new_path_with_namespace
+      it 'schedules a Geo::RenameRepositoryWorker' do
+        project_id = repository_renamed_event.project_id
+        old_path_with_namespace = repository_renamed_event.old_path_with_namespace
+        new_path_with_namespace = repository_renamed_event.new_path_with_namespace
 
-        expect(::GeoRepositoryMoveWorker).to receive(:perform_async)
-          .with(project_id, '', old_path_with_namespace, new_path_with_namespace)
+        expect(::Geo::RenameRepositoryWorker).to receive(:perform_async)
+          .with(project_id, old_path_with_namespace, new_path_with_namespace)
+
+        daemon.run_once!
+      end
+    end
+
+    context 'when processing a hashed storage migration event' do
+      let(:event_log) { create(:geo_event_log, :hashed_storage_migration_event) }
+      let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
+      let(:hashed_storage_migrated_event) { event_log.hashed_storage_migrated_event }
+
+      it 'does not create a new project registry' do
+        expect { daemon.run_once! }.not_to change(Geo::ProjectRegistry, :count)
+      end
+
+      it 'schedules a Geo::HashedStorageMigrationWorker' do
+        project = hashed_storage_migrated_event.project
+        old_disk_path = hashed_storage_migrated_event.old_disk_path
+        new_disk_path = hashed_storage_migrated_event.new_disk_path
+        old_storage_version = project.storage_version
+
+        expect(::Geo::HashedStorageMigrationWorker).to receive(:perform_async)
+          .with(project.id, old_disk_path, new_disk_path, old_storage_version)
 
         daemon.run_once!
       end
