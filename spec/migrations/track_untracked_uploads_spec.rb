@@ -2,6 +2,10 @@ require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20171103140253_track_untracked_uploads')
 
 describe TrackUntrackedUploads, :migration, :sidekiq do
+  class UnhashedUploadFile < ActiveRecord::Base
+    self.table_name = 'unhashed_upload_files'
+  end
+
   matcher :be_scheduled_migration do
     match do |migration|
       BackgroundMigrationWorker.jobs.any? do |job|
@@ -30,10 +34,6 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
   end
 
   it 'has a path field long enough for really long paths' do
-    class UnhashedUploadFile < ActiveRecord::Base
-      self.table_name = 'unhashed_upload_files'
-    end
-
     migrate!
 
     max_length_namespace_path = max_length_project_path = max_length_filename = 'a' * 255
@@ -57,7 +57,8 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
       uploaded_file = fixture_file_upload(fixture)
       user1.update(avatar: uploaded_file)
       project1.update(avatar: uploaded_file)
-      UploadService.new(project1, uploaded_file, FileUploader).execute # Markdown upload
+      upload_result = UploadService.new(project1, uploaded_file, FileUploader).execute # Markdown upload
+      @project1_markdown_upload_path = upload_result[:url].sub(/\A\/uploads\//, '')
       appearance.update(logo: uploaded_file)
 
       # Untracked, by doing normal file upload then deleting records from DB
@@ -65,48 +66,62 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
       user2.update(avatar: uploaded_file)
       user2.uploads.delete_all
       project2.update(avatar: uploaded_file)
-      UploadService.new(project2, uploaded_file, FileUploader).execute # Markdown upload
+      upload_result = UploadService.new(project2, uploaded_file, FileUploader).execute # Markdown upload
+      @project2_markdown_upload_path = upload_result[:url].sub(/\A\/uploads\//, '')
       project2.uploads.delete_all
       appearance.update(header_logo: uploaded_file)
       appearance.uploads.last.destroy
     end
 
-    it 'schedules background migrations' do
+    it 'tracks untracked migrations' do
       Sidekiq::Testing.inline! do
         migrate!
 
         # Tracked uploads still exist
-        expect(user1.uploads.first.attributes).to include({
-          "path" => "uploads/-/system/user/avatar/1/rails_sample.jpg",
+        expect(user1.reload.uploads.first.attributes).to include({
+          "path" => "uploads/-/system/user/avatar/#{user1.id}/rails_sample.jpg",
           "uploader" => "AvatarUploader"
         })
-        expect(project1.uploads.first.attributes).to include({
-          "path" => "uploads/-/system/project/avatar/1/rails_sample.jpg",
+        expect(project1.reload.uploads.first.attributes).to include({
+          "path" => "uploads/-/system/project/avatar/#{project1.id}/rails_sample.jpg",
           "uploader" => "AvatarUploader"
         })
-        expect(appearance.uploads.first.attributes).to include({
-          "path" => "uploads/-/system/appearance/logo/1/rails_sample.jpg",
+        expect(appearance.reload.uploads.first.attributes).to include({
+          "path" => "uploads/-/system/appearance/logo/#{appearance.id}/rails_sample.jpg",
           "uploader" => "AttachmentUploader"
         })
-        expect(project1.uploads.last.path).to match(/\w+\/rails_sample\.jpg/)
-        expect(project1.uploads.last.uploader).to eq('FileUploader')
+        expect(project1.uploads.last.attributes).to include({
+          "path" => @project1_markdown_upload_path,
+          "uploader" => "FileUploader"
+        })
 
         # Untracked uploads are now tracked
-        expect(user2.uploads.first.attributes).to include({
-          "path" => "uploads/-/system/user/avatar/2/rails_sample.jpg",
+        expect(user2.reload.uploads.first.attributes).to include({
+          "path" => "uploads/-/system/user/avatar/#{user2.id}/rails_sample.jpg",
           "uploader" => "AvatarUploader"
         })
-        expect(project2.uploads.first.attributes).to include({
-          "path" => "uploads/-/system/project/avatar/2/rails_sample.jpg",
+        expect(project2.reload.uploads.first.attributes).to include({
+          "path" => "uploads/-/system/project/avatar/#{project2.id}/rails_sample.jpg",
           "uploader" => "AvatarUploader"
         })
-        expect(appearance.uploads.count).to eq(2)
+        expect(appearance.reload.uploads.count).to eq(2)
         expect(appearance.uploads.last.attributes).to include({
-          "path" => "uploads/-/system/appearance/header_logo/1/rails_sample.jpg",
+          "path" => "uploads/-/system/appearance/header_logo/#{appearance.id}/rails_sample.jpg",
           "uploader" => "AttachmentUploader"
         })
-        expect(project2.uploads.last.path).to match(/\w+\/rails_sample\.jpg/)
-        expect(project2.uploads.last.uploader).to eq('FileUploader')
+        expect(project2.uploads.last.attributes).to include({
+          "path" => @project2_markdown_upload_path,
+          "uploader" => "FileUploader"
+        })
+      end
+    end
+
+    it 'all UnhashedUploadFile records are marked as tracked' do
+      Sidekiq::Testing.inline! do
+        migrate!
+
+        expect(UnhashedUploadFile.count).to eq(8)
+        expect(UnhashedUploadFile.count).to eq(UnhashedUploadFile.where(tracked: true).count)
       end
     end
   end
