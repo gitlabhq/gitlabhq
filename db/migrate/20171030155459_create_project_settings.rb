@@ -7,6 +7,8 @@ class CreateProjectSettings < ActiveRecord::Migration
   def change
     create_table :project_settings do |t|
       t.references :project, index: true, foreign_key: { on_delete: :cascade }
+
+      t.boolean :group_runners_enabled, default: true, index: true
     end
   end
 end

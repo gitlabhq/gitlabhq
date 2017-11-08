@@ -47,13 +47,13 @@ class Projects::RunnersController < Projects::ApplicationController
   end
 
   def toggle_shared_runners
-    project.toggle!(:shared_runners_enabled)
+    project.toggle_settings!(:shared_runners_enabled)
 
     redirect_to project_settings_ci_cd_path(@project)
   end
 
   def toggle_group_runners
-    project.toggle!(:group_runners_enabled)
+    project.toggle_settings!(:group_runners_enabled)
 
     redirect_to project_settings_ci_cd_path(@project)
   end

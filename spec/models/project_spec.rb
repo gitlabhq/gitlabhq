@@ -3383,4 +3383,16 @@ describe Project do
       end.not_to raise_error # Sidekiq::Worker::EnqueueFromTransactionError
     end
   end
+
+  describe '#toggle_settings!' do
+    it 'toggles the value on #settings' do
+      project = create :project, group_runners_enabled: false
+
+      expect(project.group_runners_enabled).to be false
+
+      project.toggle_settings!(:group_runners_enabled)
+
+      expect(project.group_runners_enabled).to be true
+    end
+  end
 end
