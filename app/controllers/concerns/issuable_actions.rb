@@ -9,7 +9,10 @@ module IssuableActions
 
   def show
     respond_to do |format|
-      format.html
+      format.html do
+        render show_view
+      end
+
       format.json do
         render json: serializer.represent(issuable, serializer: params[:serializer])
       end
