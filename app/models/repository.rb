@@ -17,11 +17,9 @@ class Repository
   ].freeze
 
   include Gitlab::ShellAdapter
-<<<<<<< HEAD
-  include Elastic::RepositoriesSearch
+
   prepend EE::Repository
-=======
->>>>>>> upstream/master
+  include Elastic::RepositoriesSearch
 
   attr_accessor :full_path, :disk_path, :project, :is_wiki
 
@@ -1027,13 +1025,8 @@ class Repository
     gitlab_shell.fetch_remote(raw_repository, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
   end
 
-<<<<<<< HEAD
-  def fetch_source_branch(source_repository, source_branch, local_ref)
-    raw_repository.fetch_source_branch(source_repository.raw_repository, source_branch, local_ref)
-=======
   def fetch_source_branch!(source_repository, source_branch, local_ref)
     raw_repository.fetch_source_branch!(source_repository.raw_repository, source_branch, local_ref)
->>>>>>> upstream/master
   end
 
   def compare_source_branch(target_branch_name, source_repository, source_branch_name, straight:)
