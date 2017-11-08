@@ -11,6 +11,12 @@
   }
 }
 
+.blank-state-row {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
 .blank-state-welcome {
   text-align: center;
   padding: 20px 0 40px;
@@ -27,6 +33,19 @@
 .blank-state-link {
   display: block;
   color: $gl-text-color;
+  flex: 0 0 100%;
+
+  @media (min-width: $screen-sm-min) {
+    flex: 0 0 48%;
+
+    &:nth-child(odd) {
+      margin-right: 10px;
+    }
+
+    &:nth-child(even) {
+      margin-left: 10px;
+    }
+  }
 
   &:hover {
     background-color: $gray-light;
