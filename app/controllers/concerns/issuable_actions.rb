@@ -154,6 +154,10 @@ module IssuableActions
     end
   end
 
+  def show_view
+    'show'
+  end
+
   def serializer
     raise NotImplementedError
   end
