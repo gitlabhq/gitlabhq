@@ -203,10 +203,9 @@ module Gitlab
 
           job_id = ::Geo::HashedStorageMigrationService.new(
             event.project_id,
-            event.old_disk_path,
-            event.new_disk_path,
-            event.old_storage_version,
-            event.new_storage_version
+            old_disk_path: event.old_disk_path,
+            new_disk_path: event.new_disk_path,
+            old_storage_version: event.old_storage_version
           ).async_execute
 
           log_event_info(

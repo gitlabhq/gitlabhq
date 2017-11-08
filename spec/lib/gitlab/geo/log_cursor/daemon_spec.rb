@@ -230,10 +230,9 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
         old_disk_path = hashed_storage_migrated_event.old_disk_path
         new_disk_path = hashed_storage_migrated_event.new_disk_path
         old_storage_version = project.storage_version
-        new_storage_version = hashed_storage_migrated_event.new_storage_version
 
         expect(::Geo::HashedStorageMigrationWorker).to receive(:perform_async)
-          .with(project.id, old_disk_path, new_disk_path, old_storage_version, new_storage_version)
+          .with(project.id, old_disk_path, new_disk_path, old_storage_version)
 
         daemon.run_once!
       end
