@@ -59,7 +59,7 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
       user1.update(avatar: uploaded_file)
       project1.update(avatar: uploaded_file)
       upload_result = UploadService.new(project1, uploaded_file, FileUploader).execute # Markdown upload
-      @project1_markdown_upload_path = upload_result[:url].sub(/\A\/uploads\//, '')
+      @project1_markdown_upload_path = upload_result[:url].sub(%r{\A/uploads/}, '')
       appearance.update(logo: uploaded_file)
 
       # Untracked, by doing normal file upload then deleting records from DB
@@ -68,7 +68,7 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
       user2.uploads.delete_all
       project2.update(avatar: uploaded_file)
       upload_result = UploadService.new(project2, uploaded_file, FileUploader).execute # Markdown upload
-      @project2_markdown_upload_path = upload_result[:url].sub(/\A\/uploads\//, '')
+      @project2_markdown_upload_path = upload_result[:url].sub(%r{\A/uploads/}, '')
       project2.uploads.delete_all
       appearance.update(header_logo: uploaded_file)
       appearance.uploads.last.destroy

@@ -5,7 +5,8 @@ module Gitlab
         self.table_name = 'unhashed_upload_files'
 
         # Ends with /:random_hex/:filename
-        FILE_UPLOADER_PATH_PATTERN = /\/\h+\/[^\/]+\z/
+        FILE_UPLOADER_PATH_PATTERN = %r{/\h+/[^/]+\z}
+        FILE_UPLOADER_CAPTURE_FULL_PATH_PATTERN = %r{\A(.+)#{FILE_UPLOADER_PATH_PATTERN}}
 
         # These regex patterns are tested against a relative path, relative to
         # the upload directory.
@@ -13,32 +14,32 @@ module Gitlab
         # it indicates the model_id.
         PATH_PATTERNS = [
           {
-            pattern: /\A-\/system\/appearance\/logo\/(\d+)/,
+            pattern: %r{\A-/system/appearance/logo/(\d+)/},
             uploader: 'AttachmentUploader',
             model_type: 'Appearance'
           },
           {
-            pattern: /\A-\/system\/appearance\/header_logo\/(\d+)/,
+            pattern: %r{\A-/system/appearance/header_logo/(\d+)/},
             uploader: 'AttachmentUploader',
             model_type: 'Appearance'
           },
           {
-            pattern: /\A-\/system\/note\/attachment\/(\d+)/,
+            pattern: %r{\A-/system/note/attachment/(\d+)/},
             uploader: 'AttachmentUploader',
             model_type: 'Note'
           },
           {
-            pattern: /\A-\/system\/user\/avatar\/(\d+)/,
+            pattern: %r{\A-/system/user/avatar/(\d+)/},
             uploader: 'AvatarUploader',
             model_type: 'User'
           },
           {
-            pattern: /\A-\/system\/group\/avatar\/(\d+)/,
+            pattern: %r{\A-/system/group/avatar/(\d+)/},
             uploader: 'AvatarUploader',
             model_type: 'Namespace'
           },
           {
-            pattern: /\A-\/system\/project\/avatar\/(\d+)/,
+            pattern: %r{\A-/system/project/avatar/(\d+)/},
             uploader: 'AvatarUploader',
             model_type: 'Project'
           },
@@ -90,7 +91,7 @@ module Gitlab
           if uploader == 'FileUploader'
             # Path relative to project directory in uploads
             matchd = path_relative_to_upload_dir.match(FILE_UPLOADER_PATH_PATTERN)
-            matchd[0].sub(/\A\//, '') # remove leading slash
+            matchd[0].sub(%r{\A/}, '') # remove leading slash
           else
             path_relative_to_carrierwave_root
           end
@@ -120,7 +121,7 @@ module Gitlab
 
         # Not including a leading slash
         def path_relative_to_upload_dir
-          @path_relative_to_upload_dir ||= path.sub(/\A#{Gitlab::BackgroundMigration::PrepareUnhashedUploads::UPLOAD_DIR}\//, '')
+          @path_relative_to_upload_dir ||= path.sub(%r{\A#{Gitlab::BackgroundMigration::PrepareUnhashedUploads::UPLOAD_DIR}/}, '')
         end
 
         # Not including a leading slash
@@ -141,8 +142,7 @@ module Gitlab
         end
 
         def file_uploader_model_id
-          pattern_to_capture_full_path = /\A(.+)#{FILE_UPLOADER_PATH_PATTERN}/
-          matchd = path_relative_to_upload_dir.match(pattern_to_capture_full_path)
+          matchd = path_relative_to_upload_dir.match(FILE_UPLOADER_CAPTURE_FULL_PATH_PATTERN)
           raise "Could not capture project full_path from a FileUploader path: \"#{path_relative_to_upload_dir}\"" unless matchd
           full_path = matchd[1]
           project = Project.find_by_full_path(full_path)
