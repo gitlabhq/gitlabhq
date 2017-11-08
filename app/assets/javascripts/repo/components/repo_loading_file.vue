@@ -19,11 +19,7 @@
     class="loading-file"
     aria-label="Loading files"
   >
-<<<<<<< HEAD
-    <td>
-=======
     <td class="multi-file-table-col-name">
->>>>>>> upstream/master
       <skeleton-loading-container
         :small="true"
       />
