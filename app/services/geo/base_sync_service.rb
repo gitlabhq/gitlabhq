@@ -66,13 +66,18 @@ module Geo
     end
 
     def should_be_retried?
+      return false if registry.public_send("force_to_redownload_#{type}")
+
       retry_count <= RETRY_BEFORE_REDOWNLOAD
     end
 
     def should_be_redownloaded?
+      return true if registry.public_send("force_to_redownload_#{type}")
+
       (RETRY_BEFORE_REDOWNLOAD..RETRY_LIMIT) === retry_count
     end
 
+    # Progressive backoff
     def delay(retry_count = 0)
       (retry_count ** 4) + 15 + (rand(30) * (retry_count + 1))
     end

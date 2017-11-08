@@ -44,9 +44,11 @@ ActiveRecord::Schema.define(version: 20171101105200) do
     t.datetime "last_wiki_synced_at"
     t.datetime "last_wiki_successful_sync_at"
     t.integer "repository_retry_count"
-    t.integer "wiki_retry_count"
     t.datetime "repository_retry_at"
+    t.boolean "force_to_redownload_repository"
+    t.integer "wiki_retry_count"
     t.datetime "wiki_retry_at"
+    t.boolean "force_to_redownload_wiki"
   end
 
   add_index "project_registry", ["last_repository_successful_sync_at"], name: "index_project_registry_on_last_repository_successful_sync_at", using: :btree

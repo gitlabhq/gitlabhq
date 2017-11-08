@@ -34,12 +34,14 @@ module Geo
       log_info('Finished wiki sync',
                update_delay_s: update_delay_in_seconds,
                download_time_s: download_time_in_seconds)
-    rescue Gitlab::Git::Repository::NoRepository,
-           Gitlab::Git::RepositoryMirroring::RemoteError,
+    rescue Gitlab::Git::RepositoryMirroring::RemoteError,
            Gitlab::Shell::Error,
            ProjectWiki::CouldNotCreateWikiError,
            Geo::EmptyCloneUrlPrefixError => e
       log_error('Error syncing wiki repository', e)
+    rescue Gitlab::Git::Repository::NoRepository => e
+      log_error('Invalid wiki', e)
+      registry.update(force_to_redownload_wiki: true)
     ensure
       # Backup can only exist if redownload was unsuccessful
       if with_backup && File.exist?(backup_path)
