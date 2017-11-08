@@ -75,8 +75,22 @@ module Gitlab
 
       def insert_file_paths(file_paths)
         file_paths.each do |file_path|
-          UnhashedUploadFile.create!(path: file_path)
+          insert_file_path(file_path)
         end
+      end
+
+      def insert_file_path(file_path)
+        table_columns_and_values = 'unhashed_upload_files (path, created_at, updated_at) VALUES (?, ?, ?)'
+
+        sql = if Gitlab::Database.postgresql?
+          "INSERT INTO #{table_columns_and_values} ON CONFLICT DO NOTHING;"
+        else
+          "INSERT IGNORE INTO #{table_columns_and_values};"
+        end
+
+        timestamp = Time.now.utc.iso8601
+        sql = ActiveRecord::Base.send(:sanitize_sql_array, [sql, file_path, timestamp, timestamp])
+        ActiveRecord::Base.connection.execute(sql)
       end
 
       def schedule_populate_untracked_uploads_jobs
