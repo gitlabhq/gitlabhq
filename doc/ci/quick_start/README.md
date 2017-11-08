@@ -126,6 +126,9 @@ git push origin master
 Now if you go to the **Pipelines** page you will see that the pipeline is
 pending.
 
+>**Note:**
+  If you have a mirrored repository you may need to [enable](https://docs.gitlab.com/ee/workflow/repository_mirroring.html#pulling-from-a-remote-repository) pipeline triggers.
+
 You can also go to the **Commits** page and notice the little pause icon next
 to the commit SHA.
 
