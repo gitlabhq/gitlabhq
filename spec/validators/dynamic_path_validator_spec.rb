@@ -36,16 +36,6 @@ describe DynamicPathValidator do
       end
     end
 
-    context 'for group' do
-      it 'calls valid_group_path?' do
-        group = build(:group, :nested, path: 'activity')
-
-        expect(described_class).to receive(:valid_group_path?).with(group.full_path).and_call_original
-
-        expect(validator.path_valid_for_record?(group, 'activity')).to be_falsey
-      end
-    end
-
     context 'for user' do
       it 'calls valid_user_path?' do
         user = build(:user, username: 'activity')
