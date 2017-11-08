@@ -221,6 +221,14 @@ class Project < ActiveRecord::Base
   has_one :auto_devops, class_name: 'ProjectAutoDevops'
   has_many :custom_attributes, class_name: 'ProjectCustomAttribute'
 
+  has_one :settings, -> (project) {
+    query = where(project_id: project)
+    query.presence || begin
+      ProjectSettings.create(project_id: project.id)
+      query
+    end
+  }, class_name: 'ProjectSettings'
+
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
   accepts_nested_attributes_for :import_data
