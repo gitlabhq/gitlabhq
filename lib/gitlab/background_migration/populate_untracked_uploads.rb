@@ -15,39 +15,39 @@ module Gitlab
           {
             pattern: /\A-\/system\/appearance\/logo\/(\d+)/,
             uploader: 'AttachmentUploader',
-            model_type: 'Appearance',
+            model_type: 'Appearance'
           },
           {
             pattern: /\A-\/system\/appearance\/header_logo\/(\d+)/,
             uploader: 'AttachmentUploader',
-            model_type: 'Appearance',
+            model_type: 'Appearance'
           },
           {
             pattern: /\A-\/system\/note\/attachment\/(\d+)/,
             uploader: 'AttachmentUploader',
-            model_type: 'Note',
+            model_type: 'Note'
           },
           {
             pattern: /\A-\/system\/user\/avatar\/(\d+)/,
             uploader: 'AvatarUploader',
-            model_type: 'User',
+            model_type: 'User'
           },
           {
             pattern: /\A-\/system\/group\/avatar\/(\d+)/,
             uploader: 'AvatarUploader',
-            model_type: 'Namespace',
+            model_type: 'Namespace'
           },
           {
             pattern: /\A-\/system\/project\/avatar\/(\d+)/,
             uploader: 'AvatarUploader',
-            model_type: 'Project',
+            model_type: 'Project'
           },
           {
             pattern: FILE_UPLOADER_PATH_PATTERN,
             uploader: 'FileUploader',
             model_type: 'Project'
-          },
-        ]
+          }
+        ].freeze
 
         scope :untracked, -> { where(tracked: false) }
 
