@@ -44,14 +44,6 @@ constraints(GroupUrlConstrainer.new) do
       end
     end
 
-    ## EE-specific
-    legacy_ee_group_boards_redirect = redirect do |params, request|
-      path = "/groups/#{params[:group_id]}/-/boards"
-      path << "/#{params[:extra_params]}" if params[:extra_params].present?
-      path << "?#{request.query_string}" if request.query_string.present?
-      path
-    end
-
     resource :avatar, only: [:destroy]
 
     resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
@@ -88,6 +80,12 @@ constraints(GroupUrlConstrainer.new) do
       end
     end
 
+    legacy_ee_group_boards_redirect = redirect do |params, request|
+      path = "/groups/#{params[:group_id]}/-/boards"
+      path << "/#{params[:extra_params]}" if params[:extra_params].present?
+      path << "?#{request.query_string}" if request.query_string.present?
+      path
+    end
     get 'boards(/*extra_params)', as: :legacy_ee_group_boards_redirect, to: legacy_ee_group_boards_redirect
     ## EE-specific
   end
