@@ -57,7 +57,7 @@
           = nav_link(path: 'groups#epics', html_options: { class: "fly-out-top-item" } ) do
             = link_to group_epics_path(@group) do
               %strong.fly-out-top-item-name
-                #{ _('Epic') }
+                #{ _('Epics') }
               %span.badge.count.epic_counter.fly-out-badge= number_with_delimiter(epics.count)
 
       = nav_link(path: issues_sub_menu_items) do
