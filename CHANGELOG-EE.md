@@ -124,6 +124,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Add group issue boards.
 - Ports style changes fixed in a conflict in ce to ee upstream to master for new projects page.
 
+## 9.5.10 (2017-11-08)
+
+- No changes.
+
 ## 9.5.9 (2017-10-16)
 
 - [SECURITY] Prevent Related Issues from leaking confidential issues.
