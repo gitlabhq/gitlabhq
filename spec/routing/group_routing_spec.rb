@@ -1,19 +1,5 @@
 require 'spec_helper'
 
-<<<<<<< HEAD
-describe 'Group routing' do
-  describe 'subgroup "boards"' do
-    it 'shows group show page' do
-      allow(Group).to receive(:find_by_full_path).with('gitlabhq/boards', any_args).and_return(true)
-
-      expect(get('/groups/gitlabhq/boards')).to route_to('groups#show', id: 'gitlabhq/boards')
-    end
-
-    it 'shows boards index page' do
-      allow(Group).to receive(:find_by_full_path).with('gitlabhq', any_args).and_return(true)
-
-      expect(get('/groups/gitlabhq/-/boards')).to route_to('groups/boards#index', group_id: 'gitlabhq')
-=======
 describe "Groups", "routing" do
   let(:group_path) { 'complex.group-namegit' }
   let!(:group) { create(:group, path: group_path) }
@@ -136,7 +122,20 @@ describe "Groups", "routing" do
         let!(:parent) { create(:group, path: 'activity') }
         let(:resource) { create(:group, parent: parent, path: 'activity') }
       end
->>>>>>> upstream/master
+    end
+
+    describe 'subgroup "boards"' do
+      it 'shows group show page' do
+        allow(Group).to receive(:find_by_full_path).with('gitlabhq/boards', any_args).and_return(true)
+
+        expect(get('/groups/gitlabhq/boards')).to route_to('groups#show', id: 'gitlabhq/boards')
+      end
+
+      it 'shows boards index page' do
+        allow(Group).to receive(:find_by_full_path).with('gitlabhq', any_args).and_return(true)
+
+        expect(get('/groups/gitlabhq/-/boards')).to route_to('groups/boards#index', group_id: 'gitlabhq')
+      end
     end
   end
 end
