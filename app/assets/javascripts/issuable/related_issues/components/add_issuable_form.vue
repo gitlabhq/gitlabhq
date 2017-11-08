@@ -43,11 +43,14 @@ export default {
 
   computed: {
     inputPlaceholder() {
-      return 'Paste issue link or <#issue id>';
+      return `Paste issue link${this.allowAutoComplete ? ' or <#issue id>' : ''}`;
     },
     isSubmitButtonDisabled() {
       return (this.inputValue.length === 0 && this.pendingReferences.length === 0)
         || this.isSubmitting;
+    },
+    allowAutoComplete() {
+      return Object.keys(this.autoCompleteSources).length > 0;
     },
   },
 
@@ -86,12 +89,14 @@ export default {
   mounted() {
     const $input = $(this.$refs.input);
 
-    this.gfmAutoComplete = new GfmAutoComplete(this.autoCompleteSources);
-    this.gfmAutoComplete.setup($input, {
-      issues: true,
-    });
-    $input.on('shown-issues.atwho', this.onAutoCompleteToggled.bind(this, true));
-    $input.on('hidden-issues.atwho', this.onAutoCompleteToggled.bind(this, false));
+    if (this.allowAutoComplete) {
+      this.gfmAutoComplete = new GfmAutoComplete(this.autoCompleteSources);
+      this.gfmAutoComplete.setup($input, {
+        issues: true,
+      });
+      $input.on('shown-issues.atwho', this.onAutoCompleteToggled.bind(this, true));
+      $input.on('hidden-issues.atwho', this.onAutoCompleteToggled.bind(this, false));
+    }
 
     this.$refs.input.focus();
   },

@@ -103,8 +103,8 @@
       <related-issues-root
         :endpoint="issuesEndpoint"
         :can-add-related-issues="true"
+        :allow-auto-complete="false"
         title="Issues"
-        help-path="/"
       />
     </div>
   </div>

@@ -55,6 +55,11 @@ export default {
       required: false,
       default: 'Related issues',
     },
+    allowAutoComplete: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
 
   data() {
@@ -75,6 +80,7 @@ export default {
 
   computed: {
     autoCompleteSources() {
+      if (!this.allowAutoComplete) return {};
       return gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources;
     },
   },
