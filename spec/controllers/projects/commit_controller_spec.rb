@@ -132,6 +132,21 @@ describe Projects::CommitController do
         expect(response).to be_success
       end
     end
+
+    context 'in the context of a merge_request' do
+      let(:merge_request) { create(:merge_request, source_project: project) }
+      let(:commit) { merge_request.commits.first }
+
+      it 'prepare diff notes in the context of the merge request' do
+        go(id: commit.id, merge_request_iid: merge_request.iid)
+
+        expect(assigns(:new_diff_note_attrs)).to eq({ noteable_type: 'MergeRequest',
+                                                      noteable_id: merge_request.id,
+                                                      commit_id: commit.id
+                                                    })
+        expect(response).to be_ok
+      end
+    end
   end
 
   describe 'GET branches' do

@@ -101,6 +101,30 @@ module MergeRequestsHelper
     }.merge(merge_params_ee(merge_request))
   end
 
+  def tab_link_for(tab, options={}, &block)
+    data_attrs = {
+      action: tab.to_s,
+      target: "##{tab.to_s}",
+      toggle: options.fetch(:force_link, false) ? '' : 'tab'
+    }
+
+    url = case tab
+    when :show
+      data_attrs.merge!(target: '#notes')
+      project_merge_request_path(@project, @merge_request)
+    when :commits
+      commits_project_merge_request_path(@project, @merge_request)
+    when :pipelines
+      pipelines_project_merge_request_path(@project, @merge_request)
+    when :diffs
+      diffs_project_merge_request_path(@project, @merge_request)
+    else
+      raise "Cannot create tab #{tab}."
+    end
+
+    link_to(url, data: data_attrs, &block)
+  end
+
   def merge_params_ee(merge_request)
     {}
   end
