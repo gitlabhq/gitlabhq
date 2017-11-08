@@ -71,16 +71,10 @@ describe Gitlab::UsageData do
         deploy_keys
         deployments
         environments
-<<<<<<< HEAD
-        gcp_clusters
-        gcp_clusters_enabled
-        gcp_clusters_disabled
         geo_nodes
-=======
         clusters
         clusters_enabled
         clusters_disabled
->>>>>>> upstream/master
         in_review_folder
         groups
         issues
