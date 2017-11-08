@@ -14,6 +14,7 @@ constraints(GroupUrlConstrainer.new) do
       get :merge_requests, as: :merge_requests_group
       get :projects, as: :projects_group
       get :activity, as: :activity_group
+      get :subgroups, as: :subgroups_group ## EE-specific
     end
 
     get '/', action: :show, as: :group_canonical
@@ -48,8 +49,50 @@ constraints(GroupUrlConstrainer.new) do
     resources :group_members, only: [:index, :create, :update, :destroy], concerns: :access_requestable do
       post :resend_invite, on: :member
       delete :leave, on: :collection
+      patch :override, on: :member ## EE-specific
+    end
+
+    ## EE-specific
+    resource :analytics, only: [:show]
+    resource :ldap, only: [] do
+      member do
+        put :sync
+      end
+    end
+
+    resources :ldap_group_links, only: [:index, :create, :destroy]
+
+    resource :notification_setting, only: [:update]
+    resources :audit_events, only: [:index]
+    resources :pipeline_quota, only: [:index]
+
+    resources :hooks, only: [:index, :create, :destroy], constraints: { id: /\d+/ } do
+      member do
+        get :test
+      end
+    end
+
+    resources :billings, only: [:index]
+    resources :boards, only: [:index, :show, :create, :update, :destroy]
+    resources :epics do
+      member do
+        get :realtime_changes
+      end
+    end
+
+    get 'boards(/*extra_params)', as: :legacy_ee_group_boards_redirect, to: legacy_ee_group_boards_redirect
+    ## EE-specific
+  end
+
+  ## EE-specific
+  legacy_ee_group_boards_redirect = redirect do |params, request|
+    path = "/groups/#{params[:group_id]}/-/boards"
+    path << "/#{params[:extra_params]}" if params[:extra_params].present?
+    path << "?#{request.query_string}" if request.query_string.present?
+    path
     end
   end
+  ## EE-specific
 
   scope(path: '*id',
         as: :group,
