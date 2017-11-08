@@ -46,6 +46,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - [OTHER] Add partial index on push_rules.is_sample.
 - Add new push rule to reject unsigned commits. !2913
 
+## 10.0.6 (2017-11-08)
+
+- No changes.
+
 ## 10.0.5 (2017-11-03)
 
 - [FIXED] Find stuck scheduled import jobs and also mark them as failed. !3055
