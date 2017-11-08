@@ -23,11 +23,11 @@ module Gitlab
     end
 
     def emoji_filename(name)
-      emojis[name]["unicode"]
+      emojis[name]['unicode']
     end
 
     def emoji_unicode_filename(moji)
-      emojis_by_moji[moji]["unicode"]
+      emojis_by_moji[moji]['unicode']
     end
 
     def emoji_unicode_version(name)
@@ -40,7 +40,7 @@ module Gitlab
     end
 
     def emoji_image_tag(name, src)
-      "<img class='emoji' title=':#{name}:' alt=':#{name}:' src='#{src}' height='20' width='20' align='absmiddle' />"
+      "<img class='emoji' title=':#{name}:' alt=':#{name}:' src='#{src}' />"
     end
 
     # CSS sprite fallback takes precedence over image fallback
@@ -55,6 +55,16 @@ module Gitlab
       }
 
       ActionController::Base.helpers.content_tag('gl-emoji', emoji_info['moji'], title: emoji_info['description'], data: data)
+    end
+
+    def gl_custom_emoji_tag(name, image_source)
+      data = {
+        name: name
+      }
+
+      ActionController::Base.helpers.content_tag('gl-emoji', title: name, data: data) do
+        emoji_image_tag(name, image_source).html_safe
+      end
     end
   end
 end

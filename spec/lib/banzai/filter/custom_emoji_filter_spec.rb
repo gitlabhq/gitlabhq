@@ -9,7 +9,8 @@ describe Banzai::Filter::CustomEmojiFilter do
   it 'replaces supported name custom emoji' do
     doc = filter('<p>:awesome_banana:</p>', project: project)
 
-    expect(doc.css('img').first.attributes['alt'].value).to eq 'awesome_banana'
+    expect(doc.css('gl-emoji').first.attributes['title'].value).to eq 'awesome_banana'
+    expect(doc.css('gl-emoji img').size).to eq 1
   end
 
   it 'ignores unsupported custom emoji' do

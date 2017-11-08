@@ -35,7 +35,7 @@ module Banzai
       def custom_emoji_name_element_filter(text)
         text.gsub(custom_emoji_pattern) do |match|
           name = $1
-          image_tag(project.namespace.custom_emoji_url_by_name[name], alt: name, class: 'custom-emoji')
+          Gitlab::Emoji.gl_custom_emoji_tag(name, project.namespace.custom_emoji_url_by_name[name])
         end
       end
 

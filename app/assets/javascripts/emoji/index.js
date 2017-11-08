@@ -63,12 +63,22 @@ export function emojiFallbackImageSrc(inputName) {
 }
 
 export function emojiImageTag(name, src) {
-  return `<img class="emoji" title=":${name}:" alt=":${name}:" src="${src}" width="20" height="20" align="absmiddle" />`;
+  return `<img class="emoji" title=":${name}:" alt=":${name}:" src="${src}" />`;
 }
 
 export function glEmojiTag(inputName, options) {
-  const opts = { sprite: false, forceFallback: false, fallbackImageSrc: null, ...options };
-  const { name, ...emojiInfo } = getEmojiInfo(inputName);
+  const opts = {
+    sprite: false,
+    custom: false,
+    forceFallback: false,
+    fallbackImageSrc: null,
+    ...options,
+  };
+  let name = inputName;
+  let emojiInfo = {};
+  if (!opts.custom) {
+    ({ name, ...emojiInfo } = getEmojiInfo(inputName));
+  }
 
   const fallbackImageSrc = opts.fallbackImageSrc || emojiFallbackImageSrc(name);
   const fallbackSpriteClass = `emoji-${name}`;
@@ -79,9 +89,11 @@ export function glEmojiTag(inputName, options) {
     classList.push(fallbackSpriteClass);
   }
   const classAttribute = classList.length > 0 ? `class="${classList.join(' ')}"` : '';
+  const fallbackSourceAttribute = !opts.custom ? `data-fallback-src="${fallbackImageSrc}"` : '';
   const fallbackSpriteAttribute = opts.sprite ? `data-fallback-sprite-class="${fallbackSpriteClass}"` : '';
+  const unicodeVersionAttribute = !opts.custom ? `data-unicode-version="${emojiInfo.unicodeVersion}"` : '';
   let contents = emojiInfo.moji;
-  if (opts.forceFallback && !opts.sprite) {
+  if (opts.custom || (opts.forceFallback && !opts.sprite)) {
     contents = emojiImageTag(name, fallbackImageSrc);
   }
 
@@ -89,10 +101,10 @@ export function glEmojiTag(inputName, options) {
     <gl-emoji
       ${classAttribute}
       data-name="${name}"
-      data-fallback-src="${fallbackImageSrc}"
+      ${fallbackSourceAttribute}
       ${fallbackSpriteAttribute}
-      data-unicode-version="${emojiInfo.unicodeVersion}"
-      title="${emojiInfo.description}"
+      ${unicodeVersionAttribute}
+      title="${opts.custom ? name : emojiInfo.description}"
     >
       ${contents}
     </gl-emoji>
