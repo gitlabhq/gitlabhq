@@ -16,20 +16,22 @@ describe MigrateOldArtifacts do
   end
 
   context 'with migratable data' do
-    let(:project1) { create(:project, ci_id: 2) }
-    let(:project2) { create(:project, ci_id: 3) }
-    let(:project3) { create(:project) }
+    set(:project1) { create(:project, ci_id: 2) }
+    set(:project2) { create(:project, ci_id: 3) }
+    set(:project3) { create(:project) }
 
-    let(:pipeline1) { create(:ci_empty_pipeline, project: project1) }
-    let(:pipeline2) { create(:ci_empty_pipeline, project: project2) }
-    let(:pipeline3) { create(:ci_empty_pipeline, project: project3) }
+    set(:pipeline1) { create(:ci_empty_pipeline, project: project1) }
+    set(:pipeline2) { create(:ci_empty_pipeline, project: project2) }
+    set(:pipeline3) { create(:ci_empty_pipeline, project: project3) }
 
     let!(:build_with_legacy_artifacts) { create(:ci_build, pipeline: pipeline1) }
     let!(:build_without_artifacts) { create(:ci_build, pipeline: pipeline1) }
-    let!(:build2) { create(:ci_build, :artifacts, pipeline: pipeline2) }
-    let!(:build3) { create(:ci_build, :artifacts, pipeline: pipeline3) }
+    let!(:build2) { create(:ci_build, pipeline: pipeline2) }
+    let!(:build3) { create(:ci_build, pipeline: pipeline3) }
 
     before do
+      setup_builds(build2, build3)
+
       store_artifacts_in_legacy_path(build_with_legacy_artifacts)
     end
 
@@ -112,6 +114,25 @@ describe MigrateOldArtifacts do
         build.created_at.utc.strftime('%Y_%m'),
         build.project.ci_id.to_s,
         build.id.to_s)
+    end
+
+    def new_legacy_path(build)
+      File.join(directory,
+                build.created_at.utc.strftime('%Y_%m'),
+                build.project_id.to_s,
+                build.id.to_s)
+    end
+
+    def setup_builds(*builds)
+      builds.each do |build|
+        FileUtils.mkdir_p(new_legacy_path(build))
+
+        build.update_columns(
+          artifacts_file: 'ci_build_artifacts.zip',
+          artifacts_metadata: 'ci_build_artifacts_metadata.gz')
+
+        build.reload
+      end
     end
   end
 end

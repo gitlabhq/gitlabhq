@@ -26,7 +26,7 @@ describe ArtifactUploader do
     subject { uploader.store_dir }
 
     it { is_expected.to start_with(path) }
-    it { is_expected.to end_with("#{job.project_id}/#{job.created_at.utc.strftime('%Y_%m')}/#{job.id}") }
+    it { is_expected.to end_with("#{job.project_id}/#{job.id}") }
   end
 
   describe '#cache_dir' do

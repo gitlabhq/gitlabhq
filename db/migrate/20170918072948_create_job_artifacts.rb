@@ -14,8 +14,8 @@ class CreateJobArtifacts < ActiveRecord::Migration
       t.datetime_with_timezone :updated_at, null: false
 
       t.string :file
-    end
 
-    add_foreign_key :ci_job_artifacts, :ci_builds, column: :job_id, on_delete: :cascade
+      t.foreign_key :ci_builds, column: :job_id, on_delete: :cascade
+    end
   end
 end

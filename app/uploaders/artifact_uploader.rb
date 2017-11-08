@@ -34,8 +34,6 @@ class ArtifactUploader < GitlabUploader
   end
 
   def default_path
-    File.join(job.project_id.to_s,
-              job.created_at.utc.strftime('%Y_%m'),
-              job.id.to_s)
+    File.join(job.created_at.utc.strftime('%Y_%m'), job.project_id.to_s, job.id.to_s)
   end
 end
