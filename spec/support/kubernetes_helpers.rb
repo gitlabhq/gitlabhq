@@ -26,7 +26,7 @@ module KubernetesHelpers
   end
 
   def stub_kubeclient_deployments(response = nil)
-    stub_kubeclient_discover
+    stub_kubeclient_discover(service.api_url)
     deployments_url = service.api_url + "/apis/extensions/v1beta1/namespaces/#{service.actual_namespace}/deployments"
 
     WebMock.stub_request(:get, deployments_url).to_return(response || kube_deployments_response)
