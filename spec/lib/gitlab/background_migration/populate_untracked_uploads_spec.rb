@@ -53,12 +53,54 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
       expect(appearance.uploads.count).to eq(2)
     end
 
+    it 'sets all added or confirmed tracked files to tracked' do
+      expect do
+        described_class.new.perform(1, 1000)
+      end.to change { unhashed_upload_files.where(tracked: true).count }.from(0).to(8)
+    end
+
     it 'does not create duplicate uploads of already tracked files' do
       described_class.new.perform(1, 1000)
 
       expect(user1.uploads.count).to eq(1)
       expect(project1.uploads.count).to eq(2)
       expect(appearance.uploads.count).to eq(2)
+    end
+
+    it 'uses the start and end batch ids [only 1st half]' do
+      start_id = unhashed_upload_files.all.to_a[0].id
+      end_id = unhashed_upload_files.all.to_a[3].id
+
+      expect do
+        described_class.new.perform(start_id, end_id)
+      end.to change { uploads.count }.from(4).to(6)
+
+      expect(user1.uploads.count).to eq(1)
+      expect(user2.uploads.count).to eq(1)
+      expect(appearance.uploads.count).to eq(2)
+      expect(project1.uploads.count).to eq(2)
+      expect(project2.uploads.count).to eq(0)
+
+      # Only 4 have been either confirmed or added to uploads
+      expect(unhashed_upload_files.where(tracked: true).count).to eq(4)
+    end
+
+    it 'uses the start and end batch ids [only 2nd half]' do
+      start_id = unhashed_upload_files.all.to_a[4].id
+      end_id = unhashed_upload_files.all.to_a[7].id
+
+      expect do
+        described_class.new.perform(start_id, end_id)
+      end.to change { uploads.count }.from(4).to(6)
+
+      expect(user1.uploads.count).to eq(1)
+      expect(user2.uploads.count).to eq(0)
+      expect(appearance.uploads.count).to eq(1)
+      expect(project1.uploads.count).to eq(2)
+      expect(project2.uploads.count).to eq(2)
+
+      # Only 4 have been either confirmed or added to uploads
+      expect(unhashed_upload_files.where(tracked: true).count).to eq(4)
     end
   end
 
