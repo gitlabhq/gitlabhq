@@ -41,7 +41,7 @@ describe "Git HTTP requests (Geo)" do
       it { travel_to(2.minutes.ago) { is_expected.to have_gitlab_http_status(:unauthorized) } }
     end
 
-    xcontext 'expired Geo JWT token' do
+    context 'expired Geo JWT token' do
       let(:env) { valid_geo_env }
 
       it { travel_to(Time.now + 2.minutes) { is_expected.to have_gitlab_http_status(:unauthorized) } }
