@@ -6,16 +6,8 @@ class LfsObject < ActiveRecord::Base
 
   mount_uploader :file, LfsObjectUploader
 
-  def storage_project(project)
-    if project && project.forked?
-      storage_project(project.forked_from_project)
-    else
-      project
-    end
-  end
-
   def project_allowed_access?(project)
-    projects.exists?(storage_project(project).id)
+    projects.exists?(project.lfs_storage_project.id)
   end
 
   def self.destroy_unreferenced

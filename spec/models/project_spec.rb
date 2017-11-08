@@ -1943,6 +1943,24 @@ describe Project do
         expect(second_fork.fork_source).to eq(project)
       end
     end
+
+    describe '#lfs_storage_project' do
+      it 'returns self for non-forks' do
+        expect(project.lfs_storage_project).to eq project
+      end
+
+      it 'returns the fork network root for forks' do
+        second_fork = fork_project(forked_project)
+
+        expect(second_fork.lfs_storage_project).to eq project
+      end
+
+      it 'returns self when fork_source is nil' do
+        expect(forked_project).to receive(:fork_source).and_return(nil)
+
+        expect(forked_project.lfs_storage_project).to eq forked_project
+      end
+    end
   end
 
   describe '#pushes_since_gc' do

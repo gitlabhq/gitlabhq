@@ -1042,6 +1042,18 @@ class Project < ActiveRecord::Base
     forked_from_project || fork_network&.root_project
   end
 
+  def lfs_storage_project
+    @lfs_storage_project ||= begin
+      result = self
+
+      # TODO: Make this go to the fork_network root immeadiatly
+      # dependant on the discussion in: https://gitlab.com/gitlab-org/gitlab-ce/issues/39769
+      result = result.fork_source while result&.forked?
+
+      result || self
+    end
+  end
+
   def personal?
     !group
   end
