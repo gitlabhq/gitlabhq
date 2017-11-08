@@ -61,7 +61,7 @@
                       = link_to "Help", help_path
                   %li.divider
                   %li
-                    = link_to "Sign out", destroy_user_session_path, method: :delete, class: "sign-out-link"
+                    = link_to "Sign out", destroy_user_session_path, class: "sign-out-link"
             - if session[:impersonator_id]
               %li.impersonation
                 = link_to admin_impersonation_path, class: 'impersonation-btn', method: :delete, title: "Stop impersonation", aria: { label: 'Stop impersonation' }, data: { toggle: 'tooltip', placement: 'bottom', container: 'body' } do
