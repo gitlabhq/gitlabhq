@@ -55,9 +55,7 @@ module Gitlab
         def ensure_tracked!
           return if persisted? && tracked?
 
-          unless in_uploads?
-            add_to_uploads
-          end
+          add_to_uploads unless in_uploads?
 
           mark_as_tracked
         end
@@ -82,8 +80,7 @@ module Gitlab
         end
 
         def mark_as_tracked
-          self.tracked = true
-          self.save!
+          update!(tracked: true)
         end
 
         def upload_path
@@ -121,7 +118,8 @@ module Gitlab
 
         # Not including a leading slash
         def path_relative_to_upload_dir
-          @path_relative_to_upload_dir ||= path.sub(%r{\A#{Gitlab::BackgroundMigration::PrepareUnhashedUploads::UPLOAD_DIR}/}, '')
+          base = %r{\A#{Regexp.escape(Gitlab::BackgroundMigration::PrepareUnhashedUploads::UPLOAD_DIR)}/}
+          @path_relative_to_upload_dir ||= path.sub(base, '')
         end
 
         # Not including a leading slash

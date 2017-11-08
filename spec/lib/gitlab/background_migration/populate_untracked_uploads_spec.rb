@@ -114,6 +114,8 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
 end
 
 describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UnhashedUploadFile do
+  include TrackUntrackedUploadsHelpers
+
   let(:upload_class) { Gitlab::BackgroundMigration::PopulateUntrackedUploads::Upload }
 
   describe '#ensure_tracked!' do
@@ -595,12 +597,5 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UnhashedUploadFi
         expect(unhashed_upload_file.file_size).to eq(project.uploads.first.size)
       end
     end
-  end
-
-  def rails_sample_jpg_attrs
-    {
-      "size"       => 35255,
-      "checksum"   => 'f2d1fd9d8d8a3368d468fa067888605d74a66f41c16f55979ceaf2af77375844'
-    }
   end
 end
