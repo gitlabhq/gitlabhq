@@ -10,4 +10,10 @@ describe Gitlab::Metrics::BackgroundTransaction do
       expect(subject.action).to eq('TestWorker#perform')
     end
   end
+
+  describe '#labels' do
+    it 'returns controller name' do
+      expect(subject.labels).to eq({ controller: 'TestWorker', action: 'perform' })
+    end
+  end
 end
