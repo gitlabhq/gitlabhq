@@ -1,5 +1,0 @@
----
-title: Stop merge requests with thousands of commits from timing out
-merge_request: 15063
-author:
-type: performance

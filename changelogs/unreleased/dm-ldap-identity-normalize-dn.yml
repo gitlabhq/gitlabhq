@@ -1,5 +1,0 @@
----
-title: Normalize LDAP DN when looking up identity
-merge_request:
-author:
-type: fixed

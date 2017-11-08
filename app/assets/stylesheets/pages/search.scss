@@ -78,6 +78,10 @@ input[type="checkbox"]:hover {
   }
 
   .search-input-wrap {
+    // Fallback if flexbox is not supported
+    display: inline-block;
+    width: 100%;
+
     .search-icon,
     .clear-icon {
       position: absolute;
