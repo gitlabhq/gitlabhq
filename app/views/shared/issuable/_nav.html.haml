@@ -1,11 +1,12 @@
 - type = local_assigns.fetch(:type, :issues)
 - page_context_word = type.to_s.humanize(capitalize: false)
-- issuables = @issues || @merge_requests
+- issuables = @issues || @merge_requests || @epics
 
 %ul.nav-links.issues-state-filters
-  %li{ class: active_when(params[:state] == 'opened') }>
-    = link_to page_filter_path(state: 'opened', label: true), id: 'state-opened', title: "Filter by #{page_context_word} that are currently opened.", data: { state: 'opened' } do
-      #{issuables_state_counter_text(type, :opened)}
+  - if type != :epics
+    %li{ class: active_when(params[:state] == 'opened') }>
+      = link_to page_filter_path(state: 'opened', label: true), id: 'state-opened', title: "Filter by #{page_context_word} that are currently opened.", data: { state: 'opened' } do
+        #{issuables_state_counter_text(type, :opened)}
 
   - if type == :merge_requests
     %li{ class: active_when(params[:state] == 'merged') }>
@@ -15,7 +16,7 @@
     %li{ class: active_when(params[:state] == 'closed') }>
       = link_to page_filter_path(state: 'closed', label: true), id: 'state-closed', title: 'Filter by merge requests that are currently closed and unmerged.', data: { state: 'closed' } do
         #{issuables_state_counter_text(type, :closed)}
-  - else
+  - elsif type != :epics
     %li{ class: active_when(params[:state] == 'closed') }>
       = link_to page_filter_path(state: 'closed', label: true), id: 'state-closed', title: 'Filter by issues that are currently closed.', data: { state: 'closed' } do
         #{issuables_state_counter_text(type, :closed)}
