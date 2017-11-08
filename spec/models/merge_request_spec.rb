@@ -2198,7 +2198,6 @@ describe MergeRequest do
     end
   end
 
-<<<<<<< HEAD
   describe '#base_pipeline' do
     let!(:pipeline) { create(:ci_empty_pipeline, project: subject.project, sha: subject.diff_base_sha) }
 
@@ -2243,14 +2242,9 @@ describe MergeRequest do
     end
   end
 
-  describe '#fetch_ref' do
-    it 'sets "ref_fetched" flag to true' do
-      subject.update!(ref_fetched: nil)
-=======
   describe '#fetch_ref!' do
     it 'fetches the ref correctly' do
       expect { subject.target_project.repository.delete_refs(subject.ref_path) }.not_to raise_error
->>>>>>> upstream/master
 
       subject.fetch_ref!
       expect(subject.target_project.repository.ref_exists?(subject.ref_path)).to be_truthy

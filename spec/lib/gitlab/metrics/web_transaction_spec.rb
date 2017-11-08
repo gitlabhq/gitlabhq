@@ -155,7 +155,6 @@ describe Gitlab::Metrics::WebTransaction do
     end
   end
 
-<<<<<<< HEAD:spec/lib/gitlab/metrics/web_transaction_spec.rb
   describe '#add_event_with_values' do
     it 'adds a metric' do
       transaction.add_event_with_values(:meow, {})
@@ -180,8 +179,6 @@ describe Gitlab::Metrics::WebTransaction do
     end
   end
 
-=======
->>>>>>> upstream/master:spec/lib/gitlab/metrics/web_transaction_spec.rb
   describe '#labels' do
     context 'when request goes to Grape endpoint' do
       before do

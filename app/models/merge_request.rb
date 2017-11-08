@@ -3,11 +3,6 @@ class MergeRequest < ActiveRecord::Base
   include Issuable
   include Noteable
   include Referable
-<<<<<<< HEAD
-  include Sortable
-  include Elastic::MergeRequestsSearch
-=======
->>>>>>> upstream/master
   include IgnorableColumn
   include TimeTrackable
 
@@ -15,6 +10,7 @@ class MergeRequest < ActiveRecord::Base
                 :ref_fetched
 
   include ::EE::MergeRequest
+  include Elastic::MergeRequestsSearch
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"

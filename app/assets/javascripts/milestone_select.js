@@ -148,7 +148,6 @@ import _ from 'underscore';
             $(`[data-milestone-id="${selectedMilestone}"] > a`, $el).addClass('is-active');
           },
           vue: $dropdown.hasClass('js-issue-board-sidebar'),
-<<<<<<< HEAD
           hideRow: function(milestone) {
             if ($('html').hasClass('issue-boards-page') && !$dropdown.hasClass('js-issue-board-sidebar') &&
               !$dropdown.closest('.add-issues-modal').length && gl.issueBoards.BoardsStore.state.currentBoard.milestone &&
@@ -167,8 +166,6 @@ import _ from 'underscore';
 
             return true;
           },
-=======
->>>>>>> upstream/master
           clicked: function(clickEvent) {
             const { $el, e } = clickEvent;
             let selected = clickEvent.selectedObj;

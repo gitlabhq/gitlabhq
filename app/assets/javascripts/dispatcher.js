@@ -33,13 +33,10 @@ import NamespaceSelect from './namespace_select';
 import Labels from './labels';
 import LabelManager from './label_manager';
 /* global Sidebar */
-<<<<<<< HEAD
 /* global WeightSelect */
 /* global AdminEmailSelect */
-=======
 
 import Flash from './flash';
->>>>>>> upstream/master
 import CommitsList from './commits';
 import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';

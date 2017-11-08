@@ -33,7 +33,6 @@ gl.issueBoards.BoardsStore = {
     this.detail = {
       issue: {},
     };
-<<<<<<< HEAD
   },
   createNewListDropdownData() {
     this.state.currentBoard = {
@@ -45,8 +44,6 @@ gl.issueBoards.BoardsStore = {
   showPage(page) {
     this.state.reload = false;
     this.state.currentPage = page;
-=======
->>>>>>> upstream/master
   },
   addList (listObj, defaultAvatar) {
     const list = new List(listObj, defaultAvatar);

@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20171107090120) do
-=======
-ActiveRecord::Schema.define(version: 20171106101200) do
->>>>>>> upstream/master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1026,15 +1022,6 @@ ActiveRecord::Schema.define(version: 20171106101200) do
   add_index "gpg_signatures", ["gpg_key_subkey_id"], name: "index_gpg_signatures_on_gpg_key_subkey_id", using: :btree
   add_index "gpg_signatures", ["project_id"], name: "index_gpg_signatures_on_project_id", using: :btree
 
-<<<<<<< HEAD
-  create_table "historical_data", force: :cascade do |t|
-    t.date "date", null: false
-    t.integer "active_user_count"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-=======
   create_table "group_custom_attributes", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -1046,7 +1033,13 @@ ActiveRecord::Schema.define(version: 20171106101200) do
   add_index "group_custom_attributes", ["group_id", "key"], name: "index_group_custom_attributes_on_group_id_and_key", unique: true, using: :btree
   add_index "group_custom_attributes", ["key", "value"], name: "index_group_custom_attributes_on_key_and_value", using: :btree
 
->>>>>>> upstream/master
+  create_table "historical_data", force: :cascade do |t|
+    t.date "date", null: false
+    t.integer "active_user_count"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "identities", force: :cascade do |t|
     t.string "extern_uid"
     t.string "provider"
@@ -2417,11 +2410,8 @@ ActiveRecord::Schema.define(version: 20171106101200) do
   add_foreign_key "gpg_signatures", "gpg_key_subkeys", on_delete: :nullify
   add_foreign_key "gpg_signatures", "gpg_keys", on_delete: :nullify
   add_foreign_key "gpg_signatures", "projects", on_delete: :cascade
-<<<<<<< HEAD
-  add_foreign_key "index_statuses", "projects", name: "fk_74b2492545", on_delete: :cascade
-=======
   add_foreign_key "group_custom_attributes", "namespaces", column: "group_id", on_delete: :cascade
->>>>>>> upstream/master
+  add_foreign_key "index_statuses", "projects", name: "fk_74b2492545", on_delete: :cascade
   add_foreign_key "issue_assignees", "issues", name: "fk_b7d881734a", on_delete: :cascade
   add_foreign_key "issue_assignees", "users", name: "fk_5e0c8d9154", on_delete: :cascade
   add_foreign_key "issue_links", "issues", column: "source_id", name: "fk_c900194ff2", on_delete: :cascade
