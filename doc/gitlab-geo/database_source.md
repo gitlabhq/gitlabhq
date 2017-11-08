@@ -47,9 +47,7 @@ recover. See below for more details.
 
 The following guide assumes that:
 
-- You are using PostgreSQL 9.6 or later which includes the
-  [`pg_basebackup` tool][pgback]. If you are using Omnibus it includes the required
-  PostgreSQL version for Geo.
+- You are using PostgreSQL 9.6 or later which includes the [`pg_basebackup` tool][pgback].
 - You have a primary server already set up (the GitLab server you are
   replicating from), and you have a new secondary server set up on the same OS
   and PostgreSQL version. Also make sure the GitLab version is the same on all nodes.
@@ -72,10 +70,72 @@ The following guide assumes that:
     sudo -u postgres psql -c "CREATE USER gitlab_replicator REPLICATION ENCRYPTED PASSWORD 'thepassword';"
     ```
 
+1. Set up TLS support for the PostgreSQL primary server
+    > **Warning**: Only skip this step if you **know** that PostgreSQL traffic
+    > between the primary and secondary will be secured through some other
+    > means, e.g., a known-safe physical network path or a site-to-site VPN that
+    > you have configured.
+
+    If you are replicating your database across the open Internet, it is
+    **essential** that the connection is TLS-secured. Correctly configured, this
+    provides protection against both passive eavesdroppers and active
+    "man-in-the-middle" attackers.
+
+    To do this, PostgreSQL needs to be provided with a key and certificate to
+    use. You can re-use the same files you're using for your main GitLab
+    instance, or generate a self-signed certificate just for PostgreSQL's use.
+
+    Prefer the first option if you already have a long-lived certificate. Prefer
+    the second if your certificates expire regularly (e.g. LetsEncrypt), or if
+    PostgreSQL is running on a different server to the main GitLab services
+    (this may be the case in a HA configuration, for instance).
+
+    To generate a self-signed certificate and key, run this command:
+
+    ```bash
+    openssl req -nodes -batch -x509 -newkey rsa:4096 -keyout server.key -out server.crt -days 3650
+    ```
+
+    This will create two files - `server.key` and `server.crt` - that you can
+    use for authentication.
+
+    PostgreSQL's permission requirements are very strict, so whether you're
+    re-using your certificates or just generated new ones, **copy** the files
+    to the correct location. Do check that the destination path below is
+    correct!
+
+    If you're re-using certificates already in GitLab, they are likely to be in
+    the `/etc/ssl` directory. If your domain is `primary.geo.example.com`, the
+    commands would be:
+
+    ```bash
+    # Copying a certificate and key currently used by GitLab
+    install -o postgres -g postgres -m 0400 -T /etc/ssl/certs/primary.geo.example.com.crt ~postgres/9.x/main/data/server.crt
+    install -o postgres -g postgres -m 0400 -T /etc/ssl/private/primary.geo.example.com.key ~postgres/9.x/main/data/server.key
+    ```
+
+    If you just generated a self-signed certificate and key, the files will be
+    in your current working directory, so run:
+
+    ```bash
+    # Copying a self-signed certificate and key
+    install -o postgres -g postgres -m 0400 -T server.crt ~postgres/9.x/main/data/server.crt
+    install -o postgres -g postgres -m 0400 -T server.key ~postgres/9.x/main/data/server.key
+    ```
+
+    Add this configuration to `postgresql.conf`, removing any existing
+    configuration for `ssl_cert_file` or `ssl_key_file`:
+
+    ```
+    ssl = on
+    ssl_cert_file='server.crt'
+    ssl_key_file='server.key'
+    ```
+
 1. Edit `postgresql.conf` to configure the primary server for streaming replication
    (for Debian/Ubuntu that would be `/etc/postgresql/9.x/main/postgresql.conf`):
 
-    ```bash
+    ```
     listen_address = '1.2.3.4'
     wal_level = hot_standby
     max_wal_senders = 5
@@ -89,7 +149,16 @@ The following guide assumes that:
     Be sure to set `max_replication_slots` to the number of Geo secondary
     nodes that you may potentially have (at least 1).
 
-    See the Omnibus notes above for more details of `listen_address`.
+    For security reasons, PostgreSQL by default only listens on the local
+    interface (e.g. 127.0.0.1). However, GitLab Geo needs to communicate
+    between the primary and secondary nodes over a common network, such as a
+    corporate LAN or the public Internet. For this reason, we need to
+    configure PostgreSQL to listen on more interfaces.
+
+    The `listen_address` option opens PostgreSQL up to external connections
+    with the interface corresponding to the given IP. See [the PostgreSQL
+    documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-connection.html)
+    for more details.
 
     You may also want to edit the `wal_keep_segments` and `max_wal_senders` to
     match your database replication requirements. Consult the [PostgreSQL - Replication documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-replication.html)
@@ -264,7 +333,35 @@ data before running `pg_basebackup`.
     sudo -i
     ```
 
-1. Save the snippet below in a file, let's say `/tmp/replica.sh`:
+1. Set up PostgreSQL TLS verification on the secondary
+    If you configured the PostgreSQL to accept TLS connections in
+    [Step 1][#step-1-configure-the-primary-server], then you need to provide a
+    list of "known-good" certificates to the secondary. It uses this list to
+    keep the connection secure against an active "man-in-the-middle" attack.
+
+    If you reused your existing certificates on the primary, you can use the
+    list of valid root certificates provided with your distribution. For
+    Debian/Ubuntu, they can be found in `/etc/ssl/certs/ca-certificates.crt`:
+
+    ```bash
+    mkdir -p ~postgres/.postgresql
+    ln -s /etc/ssl/certs/ca-certificates.crt ~postgres/.postgresql/root.crt
+    ```
+
+    If you generated a self-signed certificate, that won't work. Copy the
+    generated `server.crt` file onto the secondary server from the primary, then
+    install it in the right place:
+
+    ```bash
+    install -o postgres -g postgres -m 0400 -T server.crt ~postgres/.postgresql/root.crt
+    ```
+
+    PostgreSQL will now only recognize that exact certificate when verifying TLS
+    connections.
+
+
+1. Save the snippet below in a file, let's say `/tmp/replica.sh`. Modify the
+   embedded paths if necessary:
 
     ```bash
     #!/bin/bash
@@ -272,38 +369,40 @@ data before running `pg_basebackup`.
     PORT="5432"
     USER="gitlab_replicator"
     echo ---------------------------------------------------------------
-    echo WARNING: Make sure this scirpt is run from the secondary server
+    echo WARNING: Make sure this script is run from the secondary server
     echo ---------------------------------------------------------------
     echo
-    echo Enter the IP of the primary PostgreSQL server
+    echo Enter the IP or FQDN of the primary PostgreSQL server
     read HOST
     echo Enter the password for $USER@$HOST
     read -s PASSWORD
+    echo Enter the required sslmode
+    read SSLMODE
 
     echo Stopping PostgreSQL and all GitLab services
     gitlab-ctl stop
 
     echo Backing up postgresql.conf
-    sudo -u gitlab-psql mv /var/opt/gitlab/postgresql/data/postgresql.conf /var/opt/gitlab/postgresql/
+    sudo -u postgres mv /var/opt/gitlab/postgresql/data/postgresql.conf /var/opt/gitlab/postgresql/
 
     echo Cleaning up old cluster directory
-    sudo -u gitlab-psql rm -rf /var/opt/gitlab/postgresql/data
+    sudo -u postgres rm -rf /var/opt/gitlab/postgresql/data
     rm -f /tmp/postgresql.trigger
 
     echo Starting base backup as the replicator user
     echo Enter the password for $USER@$HOST
-    sudo -u gitlab-psql /opt/gitlab/embedded/bin/pg_basebackup -h $HOST -D /var/opt/gitlab/postgresql/data -U gitlab_replicator -v -x -P
+    sudo -u postgres /opt/gitlab/embedded/bin/pg_basebackup -h $HOST -D /var/opt/gitlab/postgresql/data -U gitlab_replicator -v -x -P
 
     echo Writing recovery.conf file
-    sudo -u gitlab-psql bash -c "cat > /var/opt/gitlab/postgresql/data/recovery.conf <<- _EOF1_
+    sudo -u postgres bash -c "cat > /var/opt/gitlab/postgresql/data/recovery.conf <<- _EOF1_
       standby_mode = 'on'
-      primary_conninfo = 'host=$HOST port=$PORT user=$USER password=$PASSWORD'
+      primary_conninfo = 'host=$HOST port=$PORT user=$USER password=$PASSWORD sslmode=$SSLMODE'
       trigger_file = '/tmp/postgresql.trigger'
     _EOF1_
     "
 
     echo Restoring postgresql.conf
-    sudo -u gitlab-psql mv /var/opt/gitlab/postgresql/postgresql.conf /var/opt/gitlab/postgresql/data/
+    sudo -u postgres mv /var/opt/gitlab/postgresql/postgresql.conf /var/opt/gitlab/postgresql/data/
 
     echo Starting PostgreSQL and all GitLab services
     gitlab-ctl start
@@ -315,8 +414,25 @@ data before running `pg_basebackup`.
     bash /tmp/replica.sh
     ```
 
-    When prompted, enter the password you set up for the `gitlab_replicator`
-    user in the first step.
+    When prompted, enter the IP/FQDN of the primary, and the password you set up
+    for the `gitlab_replicator` user in the first step. If you are re-using
+    existing certificates and connecting to an FQDN, use `verify-full` for the
+    `sslmode`.
+
+    If you have to connect to a specific IP address, rather than the FQDN of the
+    primary, to reach your PostgreSQL server, then you should use `verify-ca`
+    for the `sslmode` instead. This should **only** be the case if you have
+    also used a self-signed certificate. `verify-ca` is **not** safe if you are
+    connecting to an IP address and re-using an existing TLS certificate!
+
+    Use `prefer` if you are happy to skip PostgreSQL TLS
+    authentication altogether (e.g., you know the network path is secure, or you
+    are using a site-to-site VPN).
+
+    You can read more details about each `sslmode` in the
+    [PostgreSQL documentation](https://www.postgresql.org/docs/9.6/static/libpq-ssl.html#LIBPQ-SSL-PROTECTION);
+    the instructions above are carefully written to ensure protection against
+    both passive eavesdroppers and active "man-in-the-middle" attackers.
 
 The replication process is now over.
 
