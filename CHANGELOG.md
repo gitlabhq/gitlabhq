@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.0.6 (2017-11-08)
+
+- No changes.
+
 ## 10.0.5 (2017-11-03)
 
 - [FIXED] Fix incorrect X-axis labels in Prometheus graphs. !14258
