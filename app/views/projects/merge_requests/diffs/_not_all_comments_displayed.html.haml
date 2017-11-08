@@ -13,7 +13,7 @@
         - else
           viewing an old version of the diff
 
-      .pull-right
+      .text-right
         = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'btn btn-sm' do
           Show latest version
           = "of the diff" if @commit

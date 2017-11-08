@@ -22,13 +22,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   def define_diff_vars
     @merge_request_diffs = @merge_request.merge_request_diffs.viewable.select_without_diff.order_id_desc
 
-    if commit_id = params[:commit_id].presence
-      @commit = @merge_request.target_project.commit(commit_id)
-      @compare = @commit
-    else
-      @compare = find_merge_request_diff_compare
-    end
-
+    @compare = commit || find_merge_request_diff_compare
     return render_404 unless @compare
 
     @diffs = @compare.diffs(diff_options)

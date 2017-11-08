@@ -3,12 +3,18 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
 
   before_action :check_merge_requests_available!
   before_action :merge_request
+  before_action :commit
   before_action :authorize_read_merge_request!
 
   private
 
   def merge_request
     @issuable = @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
+  end
+
+  def commit
+    return nil unless commit_id = params[:commit_id].presence
+    @commit ||= merge_request.target_project.commit(commit_id)
   end
 
   def merge_request_params
@@ -30,7 +36,6 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
       :task_num,
       :title,
       :discussion_locked,
-
       label_ids: []
     ]
   end
