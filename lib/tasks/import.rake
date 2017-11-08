@@ -7,7 +7,7 @@ class GithubImport
   end
 
   def initialize(token, gitlab_username, project_path, extras)
-    @options = { token: token, verbose: true }
+    @options = { token: token }
     @project_path = project_path
     @current_user = User.find_by_username(gitlab_username)
     @github_repo = extras.empty? ? nil : extras.first
@@ -42,7 +42,9 @@ class GithubImport
     import_success = false
 
     timings = Benchmark.measure do
-      import_success = Github::Import.new(@project, @options).execute
+      import_success = Gitlab::GithubImport::SequentialImporter
+        .new(@project, token: @options[:token])
+        .execute
     end
 
     if import_success

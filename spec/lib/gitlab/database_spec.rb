@@ -202,6 +202,26 @@ describe Gitlab::Database do
     it 'handles non-UTF-8 data' do
       expect { described_class.bulk_insert('test', [{ a: "\255" }]) }.not_to raise_error
     end
+
+    context 'when using PostgreSQL' do
+      before do
+        allow(described_class).to receive(:mysql?).and_return(false)
+      end
+
+      it 'allows the returning of the IDs of the inserted rows' do
+        result = double(:result, values: [['10']])
+
+        expect(connection)
+          .to receive(:execute)
+          .with(/RETURNING id/)
+          .and_return(result)
+
+        ids = described_class
+          .bulk_insert('test', [{ number: 10 }], return_ids: true)
+
+        expect(ids).to eq([10])
+      end
+    end
   end
 
   describe '.create_connection_pool' do
