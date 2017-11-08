@@ -14,7 +14,9 @@ class GithubImport
   end
 
   def run!
-    @repo = GithubRepos.new(@options, @current_user, @github_repo).choose_one!
+    @repo = GithubRepos
+      .new(@options[:token], @current_user, @github_repo)
+      .choose_one!
 
     raise 'No repo found!' unless @repo
 
@@ -28,7 +30,7 @@ class GithubImport
   private
 
   def show_warning!
-    puts "This will import GitHub #{@repo['full_name'].bright} into GitLab #{@project_path.bright} as #{@current_user.name}"
+    puts "This will import GitHub #{@repo.full_name.bright} into GitLab #{@project_path.bright} as #{@current_user.name}"
     puts "Permission checks are ignored. Press any key to continue.".color(:red)
 
     STDIN.getch
@@ -65,16 +67,16 @@ class GithubImport
         @current_user,
         name: name,
         path: name,
-        description: @repo['description'],
+        description: @repo.description,
         namespace_id: namespace.id,
         visibility_level: visibility_level,
-        skip_wiki: @repo['has_wiki']
+        skip_wiki: @repo.has_wiki
       ).execute
 
       project.update!(
         import_type: 'github',
-        import_source: @repo['full_name'],
-        import_url: @repo['clone_url'].sub('://', "://#{@options[:token]}@")
+        import_source: @repo.full_name,
+        import_url: @repo.clone_url.sub('://', "://#{@options[:token]}@")
       )
 
       project
@@ -93,13 +95,15 @@ class GithubImport
   end
 
   def visibility_level
-    @repo['private'] ? Gitlab::VisibilityLevel::PRIVATE : Gitlab::CurrentSettings.current_application_settings.default_project_visibility
+    @repo.private ? Gitlab::VisibilityLevel::PRIVATE : Gitlab::CurrentSettings.current_application_settings.default_project_visibility
   end
 end
 
 class GithubRepos
-  def initialize(options, current_user, github_repo)
-    @options = options
+  def initialize(token, current_user, github_repo)
+    @client = Octokit::Client
+      .new(access_token: token, auto_paginate: true, per_page: 100)
+
     @current_user = current_user
     @github_repo = github_repo
   end
@@ -108,17 +112,17 @@ class GithubRepos
     return found_github_repo if @github_repo
 
     repos.each do |repo|
-      print "ID: #{repo['id'].to_s.bright}".color(:green)
-      print "\tName: #{repo['full_name']}\n".color(:green)
+      print "ID: #{repo.id.to_s.bright}".color(:green)
+      print "\tName: #{repo.full_name}\n".color(:green)
     end
 
     print 'ID? '.bright
 
-    repos.find { |repo| repo['id'] == repo_id }
+    repos.find { |repo| repo.id == repo_id }
   end
 
   def found_github_repo
-    repos.find { |repo| repo['full_name'] == @github_repo }
+    repos.find { |repo| repo.full_name == @github_repo }
   end
 
   def repo_id
@@ -126,7 +130,7 @@ class GithubRepos
   end
 
   def repos
-    Github::Repositories.new(@options).fetch
+    @client.list_repositories
   end
 end
 
