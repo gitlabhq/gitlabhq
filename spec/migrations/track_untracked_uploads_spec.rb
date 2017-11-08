@@ -2,6 +2,8 @@ require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20171103140253_track_untracked_uploads')
 
 describe TrackUntrackedUploads, :migration, :sidekiq do
+  include TrackUntrackedUploadsHelpers
+
   class UnhashedUploadFile < ActiveRecord::Base
     self.table_name = 'unhashed_upload_files'
   end
@@ -36,11 +38,18 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
   it 'has a path field long enough for really long paths' do
     migrate!
 
-    max_length_namespace_path = max_length_project_path = max_length_filename = 'a' * 255
-    long_path = "./uploads#{"/#{max_length_namespace_path}" * Namespace::NUMBER_OF_ANCESTORS_ALLOWED}/#{max_length_project_path}/#{max_length_filename}"
-    unhashed_upload_file = UnhashedUploadFile.new(path: long_path)
-    unhashed_upload_file.save!
-    expect(UnhashedUploadFile.first.path.size).to eq(5641)
+    component = 'a'*255
+
+    long_path = [
+      CarrierWave.root,
+      'uploads',
+      [component] * Namespace::NUMBER_OF_ANCESTORS_ALLOWED, # namespaces
+      component, # project
+      component  # filename
+    ].flatten.join('/')
+
+    record = UnhashedUploadFile.create!(path: long_path)
+    expect(record.reload.path.size).to eq(5711)
   end
 
   context 'with tracked and untracked uploads' do
@@ -131,12 +140,5 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
         expect(UnhashedUploadFile.count).to eq(UnhashedUploadFile.where(tracked: true).count)
       end
     end
-  end
-
-  def rails_sample_jpg_attrs
-    {
-      "size"       => 35255,
-      "checksum"   => 'f2d1fd9d8d8a3368d468fa067888605d74a66f41c16f55979ceaf2af77375844'
-    }
   end
 end

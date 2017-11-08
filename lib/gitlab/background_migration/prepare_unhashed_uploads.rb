@@ -35,27 +35,34 @@ module Gitlab
       def store_unhashed_upload_file_paths
         return unless Dir.exist?(UPLOAD_DIR)
 
-        file_paths = []
-        each_file_path(UPLOAD_DIR) do |file_path|
-          file_paths << file_path
-
-          if file_paths.size >= FILE_PATH_BATCH_SIZE
-            insert_file_paths(file_paths)
-            file_paths = []
-          end
+        each_file_batch(UPLOAD_DIR, FILE_PATH_BATCH_SIZE) do |file_paths|
+          insert_file_paths(file_paths)
         end
-
-        insert_file_paths(file_paths) if file_paths.any?
       end
 
-      def each_file_path(search_dir, &block)
+      def each_file_batch(search_dir, batch_size, &block)
         cmd = build_find_command(search_dir)
+
         Open3.popen2(*cmd) do |stdin, stdout, status_thread|
-          stdout.each_line("\0") do |line|
-            yield(line.chomp("\0"))
-          end
+          yield_paths_in_batches(stdout, batch_size, &block)
+
           raise "Find command failed" unless status_thread.value.success?
         end
+      end
+
+      def yield_paths_in_batches(stdout, batch_size, &block)
+        paths = []
+
+        stdout.each_line("\0") do |line|
+          paths << line.chomp("\0")
+
+          if paths.size >= batch_size
+            yield(paths)
+            paths = []
+          end
+        end
+
+        yield(paths)
       end
 
       def build_find_command(search_dir)
