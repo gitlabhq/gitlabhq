@@ -189,26 +189,6 @@ describe 'Rack Attack global throttles' do
     end
   end
 
-  describe 'API requests authenticated with private token', :api do
-    let(:user) { create(:user) }
-    let(:other_user) { create(:user) }
-    let(:throttle_setting_prefix) { 'throttle_authenticated_api' }
-
-    context 'with the token in the query string' do
-      let(:get_args) { [api(api_partial_url, user)] }
-      let(:other_user_get_args) { [api(api_partial_url, other_user)] }
-
-      it_behaves_like 'rate-limited token-authenticated requests'
-    end
-
-    context 'with the token in the headers' do
-      let(:get_args) { api_get_args_with_token_headers(api_partial_url, private_token_headers(user)) }
-      let(:other_user_get_args) { api_get_args_with_token_headers(api_partial_url, private_token_headers(other_user)) }
-
-      it_behaves_like 'rate-limited token-authenticated requests'
-    end
-  end
-
   describe 'API requests authenticated with personal access token', :api do
     let(:user) { create(:user) }
     let(:token) { create(:personal_access_token, user: user) }
@@ -261,13 +241,6 @@ describe 'Rack Attack global throttles' do
     let(:throttle_setting_prefix) { 'throttle_authenticated_web' }
 
     context 'with the token in the query string' do
-      context 'with the atom extension' do
-        let(:get_args) { [rss_url(user)] }
-        let(:other_user_get_args) { [rss_url(other_user)] }
-
-        it_behaves_like 'rate-limited token-authenticated requests'
-      end
-
       context 'with the atom format in the Accept header' do
         let(:get_args) { [rss_url(user), nil, { 'HTTP_ACCEPT' => 'application/atom+xml' }] }
         let(:other_user_get_args) { [rss_url(other_user), nil, { 'HTTP_ACCEPT' => 'application/atom+xml' }] }

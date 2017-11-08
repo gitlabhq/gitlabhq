@@ -29,7 +29,9 @@ module Gitlab
       private
 
       def handle_return_value!(value, &block)
-        return unless value
+        unless value
+          raise_unauthorized_error? ? raise_unauthorized_error! : return
+        end
 
         block_given? ? yield(value) : value
       end
@@ -74,6 +76,18 @@ module Gitlab
         return request if request.is_a?(ActionDispatch::Request)
 
         ActionDispatch::Request.new(request.env)
+      end
+
+      def raise_unauthorized_error?
+        defined?(@raise_unauthorized_error) ? @raise_unauthorized_error : false
+      end
+
+      def set_raise_unauthorized_error
+        @raise_unauthorized_error = true
+      end
+
+      def raise_unauthorized_error!
+        raise API::APIGuard::UnauthorizedError
       end
     end
   end

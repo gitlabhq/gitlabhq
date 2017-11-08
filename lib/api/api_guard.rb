@@ -45,6 +45,7 @@ module API
       include Gitlab::Utils::StrongMemoize
 
       def find_current_user!
+        set_raise_unauthorized_error
         user = find_user_from_access_token || find_user_from_warden
         return unless user
 
@@ -73,12 +74,6 @@ module API
       end
 
       private
-
-      def handle_return_value!(value, &block)
-        raise UnauthorizedError unless value
-
-        block_given? ? yield(value) : value
-      end
 
       def private_token
         params[PRIVATE_TOKEN_PARAM].presence || env[PRIVATE_TOKEN_HEADER].presence
