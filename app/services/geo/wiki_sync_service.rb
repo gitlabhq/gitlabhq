@@ -49,11 +49,6 @@ module Geo
       end
     end
 
-    def fetch_wiki_repository_with_backup
-      # TODO: replace with actual implementation
-      fetch_wiki_repository
-    end
-
     def ssh_url_to_wiki
       "#{primary_ssh_path_prefix}#{project.full_path}.wiki.git"
     end

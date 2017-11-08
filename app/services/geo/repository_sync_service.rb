@@ -29,7 +29,7 @@ module Geo
 
       if with_backup
         log_info('Removing backup copy as the repository was redownloaded successfully')
-        FileUtils.rm_r(backup_path)
+        FileUtils.rm_rf(backup_path)
       end
 
       update_registry(finished_at: DateTime.now)
@@ -43,11 +43,11 @@ module Geo
     rescue Gitlab::Git::Repository::NoRepository => e
       log_error('Invalid repository', e)
       registry.update(force_to_redownload_repository: true)
-      log_info('Expiring caches')
-      project.repository.after_create
+      expire_repository_caches
     ensure
       # Backup can only exist if redownload was unsuccessful
       if with_backup && File.exist?(backup_path)
+        FileUtils.rm_rf(actual_path)
         FileUtils.mv(backup_path, actual_path)
       end
     end

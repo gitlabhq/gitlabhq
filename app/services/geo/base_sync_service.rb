@@ -6,6 +6,7 @@ module Geo
   class BaseSyncService
     include ExclusiveLeaseGuard
     include ::Gitlab::Geo::ProjectLogHelpers
+    include Delay
 
     class << self
       attr_accessor :type
@@ -77,11 +78,6 @@ module Geo
       (RETRY_BEFORE_REDOWNLOAD..RETRY_LIMIT) === retry_count
     end
 
-    # Progressive backoff
-    def delay(retry_count = 0)
-      (retry_count ** 4) + 15 + (rand(30) * (retry_count + 1))
-    end
-
     def sync_repository
       raise NotImplementedError, 'This class should implement sync_repository method'
     end
@@ -138,7 +134,7 @@ module Geo
       if started_at
         attrs["last_#{type}_synced_at"] = started_at
         attrs["#{type}_retry_count"] = retry_count + 1
-        attrs["#{type}_retry_at"] = Time.now + delay(retry_count).seconds
+        attrs["#{type}_retry_at"] = Time.now + delay(attrs["#{type}_retry_count"]).seconds
       end
 
       if finished_at
