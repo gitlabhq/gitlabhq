@@ -99,8 +99,7 @@ class ApplicationController < ActionController::Base
     return try(:authenticated_user)
   end
 
-  # This filter handles private tokens, personal access tokens, and atom
-  # requests with rss tokens
+  # This filter handles personal access tokens, and atom requests with rss tokens
   def authenticate_sessionless_user!
     user = Gitlab::Auth::RequestAuthenticator.new(request).find_sessionless_user
 

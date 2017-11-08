@@ -45,7 +45,6 @@ module API
       include Gitlab::Utils::StrongMemoize
 
       def find_current_user!
-        set_raise_unauthorized_error
         user = find_user_from_access_token || find_user_from_warden
         return unless user
 
@@ -74,10 +73,6 @@ module API
       end
 
       private
-
-      def private_token
-        params[PRIVATE_TOKEN_PARAM].presence || env[PRIVATE_TOKEN_HEADER].presence
-      end
 
       # An array of scopes that were registered (using `allow_access_with_scope`)
       # for the current endpoint class. It also returns scopes registered on

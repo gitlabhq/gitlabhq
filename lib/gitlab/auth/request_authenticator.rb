@@ -7,8 +7,10 @@ module Gitlab
 
       attr_reader :request
 
+      delegate :params, :env, to: :request
+
       def initialize(request)
-        @request = ensure_action_dispatch_request(request)
+        @request = request
       end
 
       def user
@@ -16,7 +18,9 @@ module Gitlab
       end
 
       def find_sessionless_user
-        find_user_from_access_token || find_user_by_rss_token
+        find_user_from_access_token || find_user_from_rss_token
+      rescue StandardError
+        nil
       end
     end
   end

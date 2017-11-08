@@ -1,16 +1,19 @@
 module Gitlab
   module Auth
     module UserAuthFinders
+      PRIVATE_TOKEN_HEADER = 'HTTP_PRIVATE_TOKEN'.freeze
+      PRIVATE_TOKEN_PARAM = :private_token
+
       # Check the Rails session for valid authentication details
       def find_user_from_warden
-        request.env['warden']&.authenticate if verified_request?
+        env['warden']&.authenticate if verified_request?
       end
 
-      def find_user_by_rss_token
+      def find_user_from_rss_token
         return unless request.format.atom?
 
-        token = request.params[:rss_token].presence
-        return unless token.present?
+        token = params[:rss_token].presence
+        return unless token
 
         handle_return_value!(User.find_by_rss_token(token))
       end
@@ -24,14 +27,22 @@ module Gitlab
       end
 
       def validate_access_token!(scopes: [])
+        return unless access_token
+
+        case AccessTokenValidationService.new(access_token, request: request).validate(scopes: scopes)
+        when AccessTokenValidationService::INSUFFICIENT_SCOPE
+          raise API::APIGuard::InsufficientScopeError.new(scopes)
+        when AccessTokenValidationService::EXPIRED
+          raise API::APIGuard::ExpiredError
+        when AccessTokenValidationService::REVOKED
+          raise API::APIGuard::RevokedError
+        end
       end
 
       private
 
       def handle_return_value!(value, &block)
-        unless value
-          raise_unauthorized_error? ? raise_unauthorized_error! : return
-        end
+        raise API::APIGuard::UnauthorizedError unless value
 
         block_given? ? yield(value) : value
       end
@@ -43,13 +54,13 @@ module Gitlab
       end
 
       def private_token
-        request.params[:private_token].presence ||
-          request.headers['PRIVATE-TOKEN'].presence
+        params[PRIVATE_TOKEN_PARAM].presence ||
+          env[PRIVATE_TOKEN_HEADER].presence
       end
 
       def find_personal_access_token
-        token = private_token.to_s
-        return unless token.present?
+        token = private_token
+        return unless token
 
         # Expiration, revocation and scopes are verified in `validate_access_token!`
         handle_return_value!(PersonalAccessToken.find_by(token: token))
@@ -76,18 +87,6 @@ module Gitlab
         return request if request.is_a?(ActionDispatch::Request)
 
         ActionDispatch::Request.new(request.env)
-      end
-
-      def raise_unauthorized_error?
-        defined?(@raise_unauthorized_error) ? @raise_unauthorized_error : false
-      end
-
-      def set_raise_unauthorized_error
-        @raise_unauthorized_error = true
-      end
-
-      def raise_unauthorized_error!
-        raise API::APIGuard::UnauthorizedError
       end
     end
   end
