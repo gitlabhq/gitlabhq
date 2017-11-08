@@ -249,6 +249,7 @@ class Project < ActiveRecord::Base
   delegate :members, to: :team, prefix: true
   delegate :add_user, :add_users, to: :team
   delegate :add_guest, :add_reporter, :add_developer, :add_master, :add_role, to: :team
+  delegate :group_runners_enabled, :group_runners_enabled=, :group_runners_enabled?, to: :settings
 
   # Validations
   validates :creator, presence: true, on: :create
@@ -1891,6 +1892,10 @@ class Project < ActiveRecord::Base
 
   def licensed_features
     []
+  end
+
+  def toggle_settings!(settings_attribute)
+    settings.toggle!(settings_attribute)
   end
 
   private

@@ -15,14 +15,18 @@ FactoryBot.define do
     namespace
     creator { group ? create(:user) : namespace&.owner }
 
-    # Nest Project Feature attributes
     transient do
+      # Nest Project Feature attributes
       wiki_access_level ProjectFeature::ENABLED
       builds_access_level ProjectFeature::ENABLED
       snippets_access_level ProjectFeature::ENABLED
       issues_access_level ProjectFeature::ENABLED
       merge_requests_access_level ProjectFeature::ENABLED
       repository_access_level ProjectFeature::ENABLED
+
+      # we can't assign the delegated `#settings` attributes directly, as the
+      # `#settings` relation needs to be created first
+      group_runners_enabled nil
     end
 
     after(:create) do |project, evaluator|
@@ -47,6 +51,9 @@ FactoryBot.define do
       end
 
       project.group&.refresh_members_authorized_projects
+
+      # assign the delegated `#settings` attributes after create
+      project.reload.group_runners_enabled = evaluator.group_runners_enabled unless evaluator.group_runners_enabled.nil?
     end
 
     trait :public do

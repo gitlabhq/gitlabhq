@@ -3640,4 +3640,16 @@ describe Project do
       it { is_expected.not_to be_valid }
     end
   end
+
+  describe '#toggle_settings!' do
+    it 'toggles the value on #settings' do
+      project = create :project, group_runners_enabled: false
+
+      expect(project.group_runners_enabled).to be false
+
+      project.toggle_settings!(:group_runners_enabled)
+
+      expect(project.group_runners_enabled).to be true
+    end
+  end
 end
