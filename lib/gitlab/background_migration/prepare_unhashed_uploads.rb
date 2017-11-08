@@ -59,9 +59,11 @@ module Gitlab
       end
 
       def build_find_command(search_dir)
-        cmd = ['find', search_dir, '-type', 'f', '!', '-path', "#{UPLOAD_DIR}/@hashed/*", '!', '-path', "#{UPLOAD_DIR}/tmp/*", '-print0']
+        hashed_path = "#{UPLOAD_DIR}/@hashed/*"
+        tmp_path = "#{UPLOAD_DIR}/tmp/*"
+        cmd = %W[find #{search_dir} -type f ! ( -path #{hashed_path} -prune ) ! ( -path #{tmp_path} -prune ) -print0]
 
-        ['ionice', '-c', 'Idle'] + cmd if ionice_is_available?
+        %w[ionice -c Idle] + cmd if ionice_is_available?
 
         cmd
       end
