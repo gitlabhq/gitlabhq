@@ -8,6 +8,7 @@ const unknownClass = 'geo-node-unknown';
 const healthyIcon = 'fa-check';
 const unhealthyIcon = 'fa-times';
 const unknownIcon = 'fa-times';
+const notAvailable = 'Not Available';
 
 class GeoNodeStatus {
   constructor(el) {
@@ -49,7 +50,19 @@ class GeoNodeStatus {
   }
 
   static formatCountAndPercentage(count, total, percentage) {
-    return `${gl.text.addDelimiter(count)}/${gl.text.addDelimiter(total)} (${percentage})`;
+    if (count !== null || total != null) {
+      return `${gl.text.addDelimiter(count)}/${gl.text.addDelimiter(total)} (${percentage})`;
+    }
+
+    return notAvailable;
+  }
+
+  static formatCount(count) {
+    if (count !== null) {
+      gl.text.addDelimiter(count);
+    }
+
+    return notAvailable;
   }
 
   getStatus() {
@@ -73,21 +86,21 @@ class GeoNodeStatus {
         status.repositories_count,
         status.repositories_synced_in_percentage);
 
-      const repoFailedText = gl.text.addDelimiter(status.repositories_failed_count);
+      const repoFailedText = GeoNodeStatus.formatCount(status.repositories_failed_count);
 
       const lfsText = GeoNodeStatus.formatCountAndPercentage(
         status.lfs_objects_synced_count,
         status.lfs_objects_count,
         status.lfs_objects_synced_in_percentage);
 
-      const lfsFailedText = gl.text.addDelimiter(status.lfs_objects_failed_count);
+      const lfsFailedText = GeoNodeStatus.formatCount(status.lfs_objects_failed_count);
 
       const attachmentText = GeoNodeStatus.formatCountAndPercentage(
         status.attachments_synced_count,
         status.attachments_count,
         status.attachments_synced_in_percentage);
 
-      const attachmentFailedText = gl.text.addDelimiter(status.attachments_failed_count);
+      const attachmentFailedText = GeoNodeStatus.formatCount(status.attachments_failed_count);
 
       this.$repositoriesSynced.text(repoText);
       this.$repositoriesFailed.text(repoFailedText);
@@ -96,14 +109,14 @@ class GeoNodeStatus {
       this.$attachmentsSynced.text(attachmentText);
       this.$attachmentsFailed.text(attachmentFailedText);
 
-      let eventDate = 'N/A';
-      let cursorDate = 'N/A';
+      let eventDate = notAvailable;
+      let cursorDate = notAvailable;
 
-      if (status.last_event_timestamp !== null) {
+      if (status.last_event_timestamp !== null && status.last_event_timestamp > 0) {
         eventDate = gl.utils.formatDate(new Date(status.last_event_timestamp * 1000));
       }
 
-      if (status.cursor_last_event_timestamp !== null) {
+      if (status.cursor_last_event_timestamp !== null && status.cursor_last_event_timestamp > 0) {
         cursorDate = gl.utils.formatDate(new Date(status.cursor_last_event_timestamp * 1000));
       }
 

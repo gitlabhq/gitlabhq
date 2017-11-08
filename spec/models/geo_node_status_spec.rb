@@ -218,6 +218,12 @@ describe GeoNodeStatus, :geo do
       expect(subject.repositories_synced_in_percentage).to eq(0)
     end
 
+    it 'returns 0 when project count is unknown' do
+      allow(subject).to receive(:repositories_count).and_return(nil)
+
+      expect(subject.repositories_synced_in_percentage).to eq(0)
+    end
+
     it 'returns the right percentage with no group restrictions' do
       create(:geo_project_registry, :synced, project: project_1)
 
