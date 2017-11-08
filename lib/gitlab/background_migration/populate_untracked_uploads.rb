@@ -97,28 +97,18 @@ module Gitlab
         end
 
         def uploader
-          PATH_PATTERNS.each do |path_pattern_map|
-            if path_relative_to_upload_dir.match(path_pattern_map[:pattern])
-              return path_pattern_map[:uploader]
-            end
-          end
+          matching_pattern_map[:uploader]
         end
 
         def model_type
-          PATH_PATTERNS.each do |path_pattern_map|
-            if path_relative_to_upload_dir.match(path_pattern_map[:pattern])
-              return path_pattern_map[:model_type]
-            end
-          end
+          matching_pattern_map[:model_type]
         end
 
         def model_id
-          PATH_PATTERNS.each do |path_pattern_map|
-            matchd = path_relative_to_upload_dir.match(path_pattern_map[:pattern])
+          matchd = path_relative_to_upload_dir.match(matching_pattern_map[:pattern])
 
-            # If something is captured (matchd[1] is not nil), it is a model_id
-            return matchd[1] if matchd && matchd[1]
-          end
+          # If something is captured (matchd[1] is not nil), it is a model_id
+          return matchd[1] if matchd[1]
 
           # Only the FileUploader pattern will not match an ID
           file_uploader_model_id
@@ -139,6 +129,16 @@ module Gitlab
         end
 
         private
+
+        def matching_pattern_map
+          @matching_pattern_map ||= PATH_PATTERNS.find do |path_pattern_map|
+            path_relative_to_upload_dir.match(path_pattern_map[:pattern])
+          end
+
+          raise "Unknown upload path pattern \"#{path}\"" unless @matching_pattern_map
+
+          @matching_pattern_map
+        end
 
         def file_uploader_model_id
           pattern_to_capture_full_path = /\A(.+)#{FILE_UPLOADER_PATH_PATTERN}/
@@ -222,7 +222,15 @@ module Gitlab
 
         files = UnhashedUploadFile.untracked.where(id: start_id..end_id)
         files.each do |unhashed_upload_file|
-          unhashed_upload_file.ensure_tracked!
+          begin
+            unhashed_upload_file.ensure_tracked!
+          rescue StandardError => e
+            Rails.logger.warn "Failed to add untracked file to uploads: #{e.message}"
+
+            # The untracked rows will remain in the DB. We will be able to see
+            # which ones failed to become tracked, and then we can decide what
+            # to do.
+          end
         end
       end
 
