@@ -134,7 +134,6 @@ def instrument_classes(instrumentation)
 
   instrumentation.instrument_instance_methods(Gitlab::BitbucketImport::Importer)
   instrumentation.instrument_instance_methods(Bitbucket::Connection)
-  instrumentation.instrument_instance_methods(Github::Client)
 
   instrumentation.instrument_instance_methods(Geo::RepositorySyncWorker)
 

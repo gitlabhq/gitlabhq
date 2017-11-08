@@ -3,7 +3,7 @@ require 'spec_helper'
 describe GeoNodeStatusEntity, :postgresql do
   let(:geo_node_status) do
     GeoNodeStatus.new(
-      id: 1,
+      geo_node_id: 1,
       health: '',
       attachments_count: 329,
       attachments_failed_count: 25,
@@ -13,7 +13,8 @@ describe GeoNodeStatusEntity, :postgresql do
       lfs_objects_synced_count: 123,
       repositories_count: 10,
       repositories_synced_count: 5,
-      repositories_failed_count: 0
+      repositories_failed_count: 0,
+      last_successful_status_check_timestamp: Time.now.beginning_of_day
     )
   end
 
@@ -27,7 +28,7 @@ describe GeoNodeStatusEntity, :postgresql do
 
   subject { entity.as_json }
 
-  it { is_expected.to have_key(:id) }
+  it { is_expected.to have_key(:geo_node_id) }
   it { is_expected.to have_key(:healthy) }
   it { is_expected.to have_key(:health) }
   it { is_expected.to have_key(:attachments_count) }
@@ -42,6 +43,7 @@ describe GeoNodeStatusEntity, :postgresql do
   it { is_expected.to have_key(:repositories_failed_count) }
   it { is_expected.to have_key(:repositories_synced_count)}
   it { is_expected.to have_key(:repositories_synced_in_percentage) }
+  it { is_expected.to have_key(:last_successful_status_check_timestamp) }
 
   describe '#healthy' do
     context 'when node is healthy' do

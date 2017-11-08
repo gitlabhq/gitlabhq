@@ -6,6 +6,7 @@ class GeoNode < ActiveRecord::Base
 
   has_many :geo_node_namespace_links
   has_many :namespaces, through: :geo_node_namespace_links
+  has_one :status, class_name: 'GeoNodeStatus'
 
   default_values schema: lambda { Gitlab.config.gitlab.protocol },
                  host: lambda { Gitlab.config.gitlab.host },
@@ -41,7 +42,9 @@ class GeoNode < ActiveRecord::Base
                  encode: true
 
   def current?
-    Gitlab::Geo.current_node == self
+    host == Gitlab.config.gitlab.host &&
+      port == Gitlab.config.gitlab.port &&
+      relative_url_root == Gitlab.config.gitlab.relative_url_root
   end
 
   def secondary?
@@ -179,6 +182,43 @@ class GeoNode < ActiveRecord::Base
     else
       Upload.all
     end
+  end
+
+  def lfs_objects_synced_count
+    return unless secondary?
+
+    relation = Geo::FileRegistry.lfs_objects.synced
+
+    if restricted_project_ids
+      relation = relation.where(file_id: lfs_objects.pluck(:id))
+    end
+
+    relation.count
+  end
+
+  def lfs_objects_failed_count
+    return unless secondary?
+
+    Geo::FileRegistry.lfs_objects.failed.count
+  end
+
+  def attachments_synced_count
+    return unless secondary?
+
+    upload_ids = uploads.pluck(:id)
+    synced_ids = Geo::FileRegistry.attachments.synced.pluck(:file_id)
+
+    (synced_ids & upload_ids).length
+  end
+
+  def attachments_failed_count
+    return unless secondary?
+
+    Geo::FileRegistry.attachments.failed.count
+  end
+
+  def find_or_build_status
+    status || build_status
   end
 
   private

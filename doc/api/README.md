@@ -20,6 +20,7 @@ following locations:
 - [Environments](environments.md)
 - [Events](events.md)
 - [Feature flags](features.md)
+- [Geo Nodes](geo_nodes.md)
 - [Gitignores templates](templates/gitignores.md)
 - [GitLab CI Config templates](templates/gitlab_ci_ymls.md)
 - [Groups](groups.md)

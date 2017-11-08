@@ -7,7 +7,7 @@ describe 'Deprecated boards paths' do
     it 'redirects to boards page' do
       get('/groups/gitlabhq/boards')
 
-      expect(response).to redirect_to(group_boards_path(group))
+      expect(response).to redirect_to('/groups/gitlabhq/-/boards/')
     end
 
     it 'redirects to the boards page with additional params' do
@@ -29,7 +29,7 @@ describe 'Deprecated boards paths' do
     end
 
     it 'does not redirect to the boards page with additional params' do
-      get('/groups/gitlabhq/boards/issues')
+      get('/groups/gitlabhq/boards/-/issues')
 
       expect(response).to have_gitlab_http_status(200)
     end

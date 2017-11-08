@@ -203,6 +203,7 @@ have access to GitLab administration tools and settings.
 - [GitLab performance monitoring with InfluxDB](administration/monitoring/performance/introduction.md): Configure GitLab and InfluxDB for measuring performance metrics.
 - [GitLab performance monitoring with Prometheus](administration/monitoring/prometheus/index.md): Configure GitLab and Prometheus for measuring performance metrics.
 - [Monitoring uptime](user/admin_area/monitoring/health_check.md): Check the server status using the health check endpoint.
+- [Monitoring GitHub imports](administration/monitoring/github_imports.md)
 
 ### Performance
 

@@ -22,6 +22,10 @@ module Geo
       class_name: 'Geo::RepositoriesChangedEvent',
       foreign_key: :repositories_changed_event_id
 
+    belongs_to :hashed_storage_migrated_event,
+      class_name: 'Geo::HashedStorageMigratedEvent',
+      foreign_key: :hashed_storage_migrated_event_id
+
     def self.latest_event
       order(id: :desc).first
     end
@@ -31,7 +35,8 @@ module Geo
         repository_updated_event ||
         repository_deleted_event ||
         repository_renamed_event ||
-        repositories_changed_event
+        repositories_changed_event ||
+        hashed_storage_migrated_event
     end
 
     def project_id

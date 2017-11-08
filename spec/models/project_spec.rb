@@ -2256,6 +2256,20 @@ describe Project do
         expect(forked_project.in_fork_network_of?(other_project)).to be_falsy
       end
     end
+
+    describe '#fork_source' do
+      let!(:second_fork) { fork_project(forked_project) }
+
+      it 'returns the direct source if it exists' do
+        expect(second_fork.fork_source).to eq(forked_project)
+      end
+
+      it 'returns the root of the fork network when the directs source was deleted' do
+        forked_project.destroy
+
+        expect(second_fork.fork_source).to eq(project)
+      end
+    end
   end
 
   describe '#pushes_since_gc' do
@@ -3365,6 +3379,79 @@ describe Project do
         expect(project.latest_successful_pipeline_for_default_branch)
           .to eq(pipeline)
       end
+    end
+  end
+
+  describe '#after_import' do
+    let(:project) { build(:project) }
+
+    it 'runs the correct hooks' do
+      expect(project.repository).to receive(:after_import)
+      expect(project).to receive(:import_finish)
+      expect(project).to receive(:update_project_counter_caches)
+      expect(project).to receive(:remove_import_jid)
+
+      project.after_import
+    end
+  end
+
+  describe '#update_project_counter_caches' do
+    let(:project) { create(:project) }
+
+    it 'updates all project counter caches' do
+      expect_any_instance_of(Projects::OpenIssuesCountService)
+        .to receive(:refresh_cache)
+        .and_call_original
+
+      expect_any_instance_of(Projects::OpenMergeRequestsCountService)
+        .to receive(:refresh_cache)
+        .and_call_original
+
+      project.update_project_counter_caches
+    end
+  end
+
+  describe '#remove_import_jid', :clean_gitlab_redis_cache do
+    let(:project) {  }
+
+    context 'without an import JID' do
+      it 'does nothing' do
+        project = create(:project)
+
+        expect(Gitlab::SidekiqStatus)
+          .not_to receive(:unset)
+
+        project.remove_import_jid
+      end
+    end
+
+    context 'with an import JID' do
+      it 'unsets the import JID' do
+        project = create(:project, import_jid: '123')
+
+        expect(Gitlab::SidekiqStatus)
+          .to receive(:unset)
+          .with('123')
+          .and_call_original
+
+        project.remove_import_jid
+
+        expect(project.import_jid).to be_nil
+      end
+    end
+  end
+
+  describe '#wiki_repository_exists?' do
+    it 'returns true when the wiki repository exists' do
+      project = create(:project, :wiki_repo)
+
+      expect(project.wiki_repository_exists?).to eq(true)
+    end
+
+    it 'returns false when the wiki repository does not exist' do
+      project = create(:project)
+
+      expect(project.wiki_repository_exists?).to eq(false)
     end
   end
 end
