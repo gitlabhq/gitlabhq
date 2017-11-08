@@ -2,7 +2,7 @@
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import eventHub from '../event_hub';
-import issueToken from './issue_token.vue';
+import relatedIssue from './related_issue.vue';
 import addIssuableForm from './add_issuable_form.vue';
 
 export default {
@@ -67,7 +67,7 @@ export default {
   components: {
     loadingIcon,
     addIssuableForm,
-    issueToken,
+    relatedIssue,
   },
 
   computed: {
@@ -160,12 +160,12 @@ export default {
             label="Fetching related issues" />
         </div>
         <ul
-          class="related-issues-token-list">
+          class="flex-list content-list">
           <li
             :key="issue.id"
             v-for="issue in relatedIssues"
-            class="js-related-issues-token-list-item related-issues-token-list-item">
-            <issue-token
+            class="js-related-issues-token-list-item">
+            <related-issue
               event-namespace="relatedIssue"
               :id-key="issue.id"
               :display-reference="issue.reference"

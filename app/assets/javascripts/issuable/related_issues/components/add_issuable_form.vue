@@ -144,11 +144,10 @@ export default {
         class="js-add-issuable-form-add-button btn btn-new pull-left"
         :disabled="isSubmitButtonDisabled">
         Add
-        <loadingIcon
+        <loading-icon
           ref="loadingIcon"
           v-if="isSubmitting"
-          :inline="true"
-          label="Submitting related issues" />
+          :inline="true" />
       </button>
       <button
         type="button"
