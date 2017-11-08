@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 9.5.10 (2017-11-08)
+
+- No changes.
+
 ## 9.5.9 (2017-10-16)
 
 - [SECURITY] Move project repositories between namespaces when renaming users.
