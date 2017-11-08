@@ -70,7 +70,6 @@ module Gitlab
       def add_event(event_name, tags = {})
         self.class.metric_event_counter(event_name, tags).increment(tags.merge(labels))
         @metrics << Metric.new(EVENT_SERIES, { count: 1 }, tags.merge(event: event_name), :event)
-<<<<<<< HEAD
       end
 
       #
@@ -80,8 +79,6 @@ module Gitlab
                                { count: 1 }.merge(values),
                                { event: event_name }.merge(tags),
                                :event)
-=======
->>>>>>> upstream/master
       end
 
       # Returns a MethodCall object for the given name.
