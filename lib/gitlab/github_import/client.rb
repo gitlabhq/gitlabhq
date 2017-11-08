@@ -38,7 +38,14 @@ module Gitlab
       #            otherwise hitting the rate limit will result in a thread
       #            being blocked in a `sleep()` call for up to an hour.
       def initialize(token, per_page: 100, parallel: true)
-        @octokit = Octokit::Client.new(access_token: token, per_page: per_page)
+        @octokit = Octokit::Client.new(
+          access_token: token,
+          per_page: per_page,
+          api_endpoint: api_endpoint
+        )
+
+        @octokit.connection_options[:ssl] = { verify: verify_ssl }
+
         @parallel = parallel
       end
 
@@ -163,8 +170,27 @@ module Gitlab
         octokit.rate_limit.resets_in + 5
       end
 
-      def respond_to_missing?(method, include_private = false)
-        octokit.respond_to?(method, include_private)
+      def api_endpoint
+        custom_api_endpoint || default_api_endpoint
+      end
+
+      def custom_api_endpoint
+        github_omniauth_provider.dig('args', 'client_options', 'site')
+      end
+
+      def default_api_endpoint
+        OmniAuth::Strategies::GitHub.default_options[:client_options][:site]
+      end
+
+      def verify_ssl
+        github_omniauth_provider.fetch('verify_ssl', true)
+      end
+
+      def github_omniauth_provider
+        @github_omniauth_provider ||=
+          Gitlab.config.omniauth.providers
+                .find { |provider| provider.name == 'github' }
+                .to_h
       end
 
       def rate_limit_counter

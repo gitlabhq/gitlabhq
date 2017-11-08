@@ -260,27 +260,106 @@ describe Gitlab::GithubImport::Client do
     end
   end
 
-  describe '#method_missing' do
-    it 'delegates missing methods to the request method' do
-      client = described_class.new('foo')
+  describe '#api_endpoint' do
+    let(:client) { described_class.new('foo') }
 
-      expect(client).to receive(:milestones).with(state: 'all')
+    context 'without a custom endpoint configured in Omniauth' do
+      it 'returns the default API endpoint' do
+        expect(client)
+          .to receive(:custom_api_endpoint)
+          .and_return(nil)
 
-      client.milestones(state: 'all')
+        expect(client.api_endpoint).to eq('https://api.github.com')
+      end
+    end
+
+    context 'with a custom endpoint configured in Omniauth' do
+      it 'returns the custom endpoint' do
+        endpoint = 'https://github.kittens.com'
+
+        expect(client)
+          .to receive(:custom_api_endpoint)
+          .and_return(endpoint)
+
+        expect(client.api_endpoint).to eq(endpoint)
+      end
     end
   end
 
-  describe '#respond_to_missing?' do
-    it 'returns true for methods supported by Octokit' do
-      client = described_class.new('foo')
+  describe '#custom_api_endpoint' do
+    let(:client) { described_class.new('foo') }
 
-      expect(client.respond_to?(:milestones)).to eq(true)
+    context 'without a custom endpoint' do
+      it 'returns nil' do
+        expect(client)
+          .to receive(:github_omniauth_provider)
+          .and_return({})
+
+        expect(client.custom_api_endpoint).to be_nil
+      end
     end
 
-    it 'returns false for methods not supported by Octokit' do
+    context 'with a custom endpoint' do
+      it 'returns the API endpoint' do
+        endpoint = 'https://github.kittens.com'
+
+        expect(client)
+          .to receive(:github_omniauth_provider)
+          .and_return({ 'args' => { 'client_options' => { 'site' => endpoint } } })
+
+        expect(client.custom_api_endpoint).to eq(endpoint)
+      end
+    end
+  end
+
+  describe '#default_api_endpoint' do
+    it 'returns the default API endpoint' do
       client = described_class.new('foo')
 
-      expect(client.respond_to?(:kittens)).to eq(false)
+      expect(client.default_api_endpoint).to eq('https://api.github.com')
+    end
+  end
+
+  describe '#verify_ssl' do
+    let(:client) { described_class.new('foo') }
+
+    context 'without a custom configuration' do
+      it 'returns true' do
+        expect(client)
+          .to receive(:github_omniauth_provider)
+          .and_return({})
+
+        expect(client.verify_ssl).to eq(true)
+      end
+    end
+
+    context 'with a custom configuration' do
+      it 'returns the configured value' do
+        expect(client.verify_ssl).to eq(false)
+      end
+    end
+  end
+
+  describe '#github_omniauth_provider' do
+    let(:client) { described_class.new('foo') }
+
+    context 'without a configured provider' do
+      it 'returns an empty Hash' do
+        expect(Gitlab.config.omniauth)
+          .to receive(:providers)
+          .and_return([])
+
+        expect(client.github_omniauth_provider).to eq({})
+      end
+    end
+
+    context 'with a configured provider' do
+      it 'returns the provider details as a Hash' do
+        hash = client.github_omniauth_provider
+
+        expect(hash['name']).to eq('github')
+        expect(hash['url']).to eq('https://github.com/')
+      end
     end
   end
 end
