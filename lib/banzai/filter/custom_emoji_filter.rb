@@ -35,7 +35,7 @@ module Banzai
       def custom_emoji_name_element_filter(text)
         text.gsub(custom_emoji_pattern) do |match|
           name = $1
-          Gitlab::Emoji.gl_custom_emoji_tag(name, project.namespace.custom_emoji_url_by_name[name])
+          Gitlab::Emoji.gl_custom_emoji_tag(name, all_custom_emoji[name])
         end
       end
 
@@ -45,9 +45,16 @@ module Banzai
         context[:project]
       end
 
+      def custom_emoji_candidates
+        doc.to_html.scan(/:\w+:/).map { |p_emoji| p_emoji.gsub(':', '') }
+      end
+
+      def all_custom_emoji
+        @all_custom_emoji ||= project.namespace.custom_emoji_url_by_name(custom_emoji_candidates)
+      end
+
       def custom_emoji_to_regex
-        project.namespace.custom_emoji_url_by_name
-          .keys.map { |name| Regexp.escape(name) }.join('|')
+        all_custom_emoji.keys.map { |name| Regexp.escape(name) }.join('|')
       end
     end
   end

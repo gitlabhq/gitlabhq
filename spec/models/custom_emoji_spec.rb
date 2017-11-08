@@ -4,7 +4,6 @@ describe CustomEmoji, type: :model do
   subject { create(:custom_emoji) }
 
   it { is_expected.to belong_to(:namespace) }
-  it { is_expected.to validate_uniqueness_of(:name).case_insensitive }
   it { is_expected.to have_db_column(:file) }
   it { is_expected.to validate_length_of(:name).is_at_most(36) }
   it { is_expected.to validate_presence_of(:name) }
@@ -23,14 +22,6 @@ describe CustomEmoji, type: :model do
       new_emoji = build(:custom_emoji, name: subject.name, namespace: subject.namespace)
 
       expect(new_emoji).not_to be_valid
-    end
-  end
-
-  describe '#expire_cache' do
-    it 'expires cache after save' do
-      expect_any_instance_of(Namespace).to receive(:expire_custom_emoji_cache).once
-
-      create(:custom_emoji)
     end
   end
 

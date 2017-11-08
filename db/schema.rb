@@ -587,11 +587,11 @@ ActiveRecord::Schema.define(version: 20171106101200) do
   end
 
   create_table "custom_emoji", force: :cascade do |t|
-    t.integer "namespace_id"
-    t.string "name", null: false
-    t.string "file", null: false
+    t.integer "namespace_id", null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
+    t.string "name", null: false
+    t.string "file", null: false
   end
 
   add_index "custom_emoji", ["namespace_id"], name: "index_custom_emoji_on_namespace_id", using: :btree
