@@ -97,61 +97,53 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UnhashedUploadFi
     let(:uploaded_file) { fixture_file_upload(fixture) }
 
     context 'for an appearance logo file path' do
-      let(:appearance) { create(:appearance) }
-      let(:unhashed_upload_file) { described_class.create!(path: appearance.logo.file.file) }
+      let(:model) { create(:appearance) }
+      let(:unhashed_upload_file) { described_class.create!(path: model.logo.file.file) }
 
       before do
-        appearance.update!(logo: uploaded_file)
-        appearance.uploads.delete_all
+        model.update!(logo: uploaded_file)
+        model.uploads.delete_all
       end
 
       it 'creates an Upload record' do
         expect do
           unhashed_upload_file.add_to_uploads
-        end.to change { upload_class.count }.from(0).to(1)
+        end.to change { model.reload.uploads.count }.from(0).to(1)
 
-        expect(upload_class.first.attributes).to include({
-          "size"       => 35255,
-          "path"       => "uploads/-/system/appearance/logo/#{appearance.id}/rails_sample.jpg",
-          "checksum"   => nil,
-          "model_id"   => appearance.id,
-          "model_type" => "Appearance",
+        expect(model.uploads.first.attributes).to include({
+          "path"       => "uploads/-/system/appearance/logo/#{model.id}/rails_sample.jpg",
           "uploader"   => "AttachmentUploader"
-        })
+        }.merge(rails_sample_jpg_attrs))
       end
     end
 
     context 'for an appearance header_logo file path' do
-      let(:appearance) { create(:appearance) }
-      let(:unhashed_upload_file) { described_class.create!(path: appearance.header_logo.file.file) }
+      let(:model) { create(:appearance) }
+      let(:unhashed_upload_file) { described_class.create!(path: model.header_logo.file.file) }
 
       before do
-        appearance.update!(header_logo: uploaded_file)
-        appearance.uploads.delete_all
+        model.update!(header_logo: uploaded_file)
+        model.uploads.delete_all
       end
 
       it 'creates an Upload record' do
         expect do
           unhashed_upload_file.add_to_uploads
-        end.to change { upload_class.count }.from(0).to(1)
+        end.to change { model.reload.uploads.count }.from(0).to(1)
 
-        expect(upload_class.first.attributes).to include({
-          "size"       => 35255,
-          "path"       => "uploads/-/system/appearance/header_logo/#{appearance.id}/rails_sample.jpg",
-          "checksum"   => nil,
-          "model_id"   => appearance.id,
-          "model_type" => "Appearance",
+        expect(model.uploads.first.attributes).to include({
+          "path"       => "uploads/-/system/appearance/header_logo/#{model.id}/rails_sample.jpg",
           "uploader"   => "AttachmentUploader"
-        })
+        }.merge(rails_sample_jpg_attrs))
       end
     end
 
     context 'for a pre-Markdown Note attachment file path' do
-      let(:note) { create(:note) }
-      let(:unhashed_upload_file) { described_class.create!(path: note.attachment.file.file) }
+      let(:model) { create(:note) }
+      let(:unhashed_upload_file) { described_class.create!(path: model.attachment.file.file) }
 
       before do
-        note.update!(attachment: uploaded_file)
+        model.update!(attachment: uploaded_file)
         upload_class.delete_all
       end
 
@@ -161,115 +153,99 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UnhashedUploadFi
         end.to change { upload_class.count }.from(0).to(1)
 
         expect(upload_class.first.attributes).to include({
-          "size"       => 35255,
-          "path"       => "uploads/-/system/note/attachment/#{note.id}/rails_sample.jpg",
-          "checksum"   => nil,
-          "model_id"   => note.id,
+          "path"       => "uploads/-/system/note/attachment/#{model.id}/rails_sample.jpg",
+          "model_id"   => model.id,
           "model_type" => "Note",
           "uploader"   => "AttachmentUploader"
-        })
+        }.merge(rails_sample_jpg_attrs))
       end
     end
 
     context 'for a user avatar file path' do
-      let(:user) { create(:user) }
-      let(:unhashed_upload_file) { described_class.create!(path: user.avatar.file.file) }
+      let(:model) { create(:user) }
+      let(:unhashed_upload_file) { described_class.create!(path: model.avatar.file.file) }
 
       before do
-        user.update!(avatar: uploaded_file)
-        upload_class.delete_all
+        model.update!(avatar: uploaded_file)
+        model.uploads.delete_all
       end
 
       it 'creates an Upload record' do
         expect do
           unhashed_upload_file.add_to_uploads
-        end.to change { upload_class.count }.from(0).to(1)
+        end.to change { model.reload.uploads.count }.from(0).to(1)
 
-        expect(upload_class.first.attributes).to include({
-          "size"       => 35255,
-          "path"       => "uploads/-/system/user/avatar/#{user.id}/rails_sample.jpg",
-          "checksum"   => nil,
-          "model_id"   => user.id,
-          "model_type" => "User",
+        expect(model.uploads.first.attributes).to include({
+          "path"       => "uploads/-/system/user/avatar/#{model.id}/rails_sample.jpg",
           "uploader"   => "AvatarUploader"
-        })
+        }.merge(rails_sample_jpg_attrs))
       end
     end
 
     context 'for a group avatar file path' do
-      let(:group) { create(:group) }
-      let(:unhashed_upload_file) { described_class.create!(path: group.avatar.file.file) }
+      let(:model) { create(:group) }
+      let(:unhashed_upload_file) { described_class.create!(path: model.avatar.file.file) }
 
       before do
-        group.update!(avatar: uploaded_file)
-        upload_class.delete_all
+        model.update!(avatar: uploaded_file)
+        model.uploads.delete_all
       end
 
       it 'creates an Upload record' do
         expect do
           unhashed_upload_file.add_to_uploads
-        end.to change { upload_class.count }.from(0).to(1)
+        end.to change { model.reload.uploads.count }.from(0).to(1)
 
-        expect(upload_class.first.attributes).to include({
-          "size"       => 35255,
-          "path"       => "uploads/-/system/group/avatar/#{group.id}/rails_sample.jpg",
-          "checksum"   => nil,
-          "model_id"   => group.id,
-          "model_type" => "Group",
+        expect(model.uploads.first.attributes).to include({
+          "path"       => "uploads/-/system/group/avatar/#{model.id}/rails_sample.jpg",
+          "model_id"   => model.id,
+          "model_type" => "Namespace", # Explicitly calling this out because it was unexpected to me (I assumed it should be "Group")
           "uploader"   => "AvatarUploader"
-        })
+        }.merge(rails_sample_jpg_attrs))
       end
     end
 
     context 'for a project avatar file path' do
-      let(:project) { create(:project) }
-      let(:unhashed_upload_file) { described_class.create!(path: project.avatar.file.file) }
+      let(:model) { create(:project) }
+      let(:unhashed_upload_file) { described_class.create!(path: model.avatar.file.file) }
 
       before do
-        project.update!(avatar: uploaded_file)
-        upload_class.delete_all
+        model.update!(avatar: uploaded_file)
+        model.uploads.delete_all
       end
 
       it 'creates an Upload record' do
         expect do
           unhashed_upload_file.add_to_uploads
-        end.to change { upload_class.count }.from(0).to(1)
+        end.to change { model.reload.uploads.count }.from(0).to(1)
 
-        expect(upload_class.first.attributes).to include({
-          "size"       => 35255,
-          "path"       => "uploads/-/system/project/avatar/#{project.id}/rails_sample.jpg",
-          "checksum"   => nil,
-          "model_id"   => project.id,
-          "model_type" => "Project",
+        expect(model.uploads.first.attributes).to include({
+          "path"       => "uploads/-/system/project/avatar/#{model.id}/rails_sample.jpg",
           "uploader"   => "AvatarUploader"
-        })
+        }.merge(rails_sample_jpg_attrs))
       end
     end
 
     context 'for a project Markdown attachment (notes, issues, MR descriptions) file path' do
-      let(:project) { create(:project) }
-      let(:unhashed_upload_file) { described_class.new(path: "#{Gitlab::BackgroundMigration::PrepareUnhashedUploads::UPLOAD_DIR}/#{project.full_path}/#{project.uploads.first.path}") }
+      let(:model) { create(:project) }
+      let(:unhashed_upload_file) { described_class.new(path: "#{Gitlab::BackgroundMigration::PrepareUnhashedUploads::UPLOAD_DIR}/#{model.full_path}/#{model.uploads.first.path}") }
 
       before do
-        UploadService.new(project, uploaded_file, FileUploader).execute # Markdown upload
+        UploadService.new(model, uploaded_file, FileUploader).execute # Markdown upload
         unhashed_upload_file.save!
-        upload_class.delete_all
+        model.reload.uploads.delete_all
       end
 
       it 'creates an Upload record' do
         expect do
           unhashed_upload_file.add_to_uploads
-        end.to change { upload_class.count }.from(0).to(1)
+        end.to change { model.reload.uploads.count }.from(0).to(1)
 
-        random_hex = unhashed_upload_file.path.match(/\/(\h+)\/rails_sample.jpg/)[1]
-        expect(upload_class.first.attributes).to include({
-          "size"       => 35255,
-          "path"       => "#{random_hex}/rails_sample.jpg",
-          "checksum"   => nil,
-          "model_id"   => project.id,
-          "model_type" => "Project",
+        hex_secret = unhashed_upload_file.path.match(/\/(\h+)\/rails_sample.jpg/)[1]
+        expect(model.uploads.first.attributes).to include({
+          "path"       => "#{hex_secret}/rails_sample.jpg",
           "uploader"   => "FileUploader"
-        })
+        }.merge(rails_sample_jpg_attrs))
       end
     end
   end
@@ -441,8 +417,8 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UnhashedUploadFi
     context 'for a group avatar file path' do
       let(:unhashed_upload_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUnhashedUploads::UPLOAD_DIR}/-/system/group/avatar/1234/avatar.jpg") }
 
-      it 'returns Group as a string' do
-        expect(unhashed_upload_file.model_type).to eq('Group')
+      it 'returns Namespace as a string' do
+        expect(unhashed_upload_file.model_type).to eq('Namespace')
       end
     end
 
@@ -577,5 +553,12 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UnhashedUploadFi
         expect(unhashed_upload_file.file_size).to eq(project.uploads.first.size)
       end
     end
+  end
+
+  def rails_sample_jpg_attrs
+    {
+      "size"       => 35255,
+      "checksum"   => 'f2d1fd9d8d8a3368d468fa067888605d74a66f41c16f55979ceaf2af77375844'
+    }
   end
 end

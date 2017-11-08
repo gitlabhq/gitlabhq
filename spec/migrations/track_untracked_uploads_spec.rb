@@ -49,6 +49,7 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
     let(:project1) { create(:project) }
     let(:project2) { create(:project) }
     let(:appearance) { create(:appearance) }
+    let(:uploads) { table(:uploads) }
 
     before do
       fixture = Rails.root.join('spec', 'fixtures', 'rails_sample.jpg')
@@ -73,46 +74,52 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
       appearance.uploads.last.destroy
     end
 
-    it 'tracks untracked migrations' do
+    it 'tracks untracked uploads' do
       Sidekiq::Testing.inline! do
-        migrate!
+        expect do
+          migrate!
+        end.to change { uploads.count }.from(4).to(8)
 
-        # Tracked uploads still exist
-        expect(user1.reload.uploads.first.attributes).to include({
-          "path" => "uploads/-/system/user/avatar/#{user1.id}/rails_sample.jpg",
-          "uploader" => "AvatarUploader"
-        })
-        expect(project1.reload.uploads.first.attributes).to include({
-          "path" => "uploads/-/system/project/avatar/#{project1.id}/rails_sample.jpg",
-          "uploader" => "AvatarUploader"
-        })
-        expect(appearance.reload.uploads.first.attributes).to include({
-          "path" => "uploads/-/system/appearance/logo/#{appearance.id}/rails_sample.jpg",
-          "uploader" => "AttachmentUploader"
-        })
-        expect(project1.uploads.last.attributes).to include({
-          "path" => @project1_markdown_upload_path,
-          "uploader" => "FileUploader"
-        })
-
-        # Untracked uploads are now tracked
         expect(user2.reload.uploads.first.attributes).to include({
           "path" => "uploads/-/system/user/avatar/#{user2.id}/rails_sample.jpg",
           "uploader" => "AvatarUploader"
-        })
+        }.merge(rails_sample_jpg_attrs))
         expect(project2.reload.uploads.first.attributes).to include({
           "path" => "uploads/-/system/project/avatar/#{project2.id}/rails_sample.jpg",
           "uploader" => "AvatarUploader"
-        })
+        }.merge(rails_sample_jpg_attrs))
         expect(appearance.reload.uploads.count).to eq(2)
         expect(appearance.uploads.last.attributes).to include({
           "path" => "uploads/-/system/appearance/header_logo/#{appearance.id}/rails_sample.jpg",
           "uploader" => "AttachmentUploader"
-        })
+        }.merge(rails_sample_jpg_attrs))
         expect(project2.uploads.last.attributes).to include({
           "path" => @project2_markdown_upload_path,
           "uploader" => "FileUploader"
-        })
+        }.merge(rails_sample_jpg_attrs))
+      end
+    end
+
+    it 'ignores already-tracked uploads' do
+      Sidekiq::Testing.inline! do
+        migrate!
+
+        expect(user1.reload.uploads.first.attributes).to include({
+          "path" => "uploads/-/system/user/avatar/#{user1.id}/rails_sample.jpg",
+          "uploader" => "AvatarUploader",
+        }.merge(rails_sample_jpg_attrs))
+        expect(project1.reload.uploads.first.attributes).to include({
+          "path" => "uploads/-/system/project/avatar/#{project1.id}/rails_sample.jpg",
+          "uploader" => "AvatarUploader"
+        }.merge(rails_sample_jpg_attrs))
+        expect(appearance.reload.uploads.first.attributes).to include({
+          "path" => "uploads/-/system/appearance/logo/#{appearance.id}/rails_sample.jpg",
+          "uploader" => "AttachmentUploader"
+        }.merge(rails_sample_jpg_attrs))
+        expect(project1.uploads.last.attributes).to include({
+          "path" => @project1_markdown_upload_path,
+          "uploader" => "FileUploader"
+        }.merge(rails_sample_jpg_attrs))
       end
     end
 
@@ -124,5 +131,12 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
         expect(UnhashedUploadFile.count).to eq(UnhashedUploadFile.where(tracked: true).count)
       end
     end
+  end
+
+  def rails_sample_jpg_attrs
+    {
+      "size"       => 35255,
+      "checksum"   => 'f2d1fd9d8d8a3368d468fa067888605d74a66f41c16f55979ceaf2af77375844'
+    }
   end
 end
