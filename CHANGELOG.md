@@ -2,6 +2,10 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.1.2 (2017-11-08)
+
+- [FIXED] Fix TRIGGER checks for MySQL.
+
 ## 10.1.1 (2017-10-31)
 
 - [FIXED] Auto Devops kubernetes default namespace is now correctly built out of gitlab project group-name. !14642 (Mircea Danila Dumitrescu)
