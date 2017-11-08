@@ -222,6 +222,10 @@ entry.
 - creation of keys moved to services. !13331 (haseebeqx)
 - Add username as GL_USERNAME in hooks.
 
+## 10.0.6 (2017-11-08)
+
+- No changes.
+
 ## 10.0.5 (2017-11-03)
 
 - [FIXED] Fix incorrect X-axis labels in Prometheus graphs. !14258
