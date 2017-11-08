@@ -63,17 +63,17 @@ module Geo
     private
 
     def retry_count
-      registry.public_send("#{type}_retry_count") || 0
+      registry.public_send("#{type}_retry_count") || 0 # rubocop:disable GitlabSecurity/PublicSend
     end
 
     def should_be_retried?
-      return false if registry.public_send("force_to_redownload_#{type}")
+      return false if registry.public_send("force_to_redownload_#{type}")  # rubocop:disable GitlabSecurity/PublicSend
 
       retry_count <= RETRY_BEFORE_REDOWNLOAD
     end
 
     def should_be_redownloaded?
-      return true if registry.public_send("force_to_redownload_#{type}")
+      return true if registry.public_send("force_to_redownload_#{type}") # rubocop:disable GitlabSecurity/PublicSend
 
       (RETRY_BEFORE_REDOWNLOAD..RETRY_LIMIT) === retry_count
     end

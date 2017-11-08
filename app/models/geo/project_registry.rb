@@ -4,7 +4,6 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
   validates :project, presence: true, uniqueness: true
 
   scope :dirty, -> { where(arel_table[:resync_repository].eq(true).or(arel_table[:resync_wiki].eq(true))) }
-  scope :to_be_retried, -> { where(arel_table[:repository_retry_at].lt(Time.now).or(arel_table[:wiki_retry_at].lt(Time.now))) }
 
   def self.failed
     repository_sync_failed = arel_table[:last_repository_synced_at].not_eq(nil)
@@ -14,6 +13,15 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
       .and(arel_table[:last_wiki_successful_sync_at].eq(nil))
 
     where(repository_sync_failed.or(wiki_sync_failed))
+  end
+
+  def self.to_be_retried
+    where(
+      arel_table[:repository_retry_at].lt(Time.now)
+        .or(arel_table[:wiki_retry_at].lt(Time.now))
+        .or(arel_table[:wiki_retry_at].eq(nil))
+        .or(arel_table[:wiki_retry_at].eq(nil))
+    )
   end
 
   def self.synced
