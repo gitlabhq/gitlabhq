@@ -160,7 +160,7 @@ export default {
             label="Fetching related issues" />
         </div>
         <ul
-          class="flex-list content-list">
+          class="flex-list content-list issuable-list">
           <li
             :key="issue.id"
             v-for="issue in relatedIssues"

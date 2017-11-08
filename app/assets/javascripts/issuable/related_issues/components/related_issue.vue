@@ -81,18 +81,26 @@ export default {
 </script>
 
 <template>
-  <div class="flex-row">
+  <div class="flex-row issue-info-container">
     <component
-      v-tooltip
       :is="this.computedLinkElementType"
       ref="link"
-      class="issue-token-link"
       :href="computedPath"
       :title="title"
-      data-placement="top">
-      <span
+      data-placement="top"
+      class="issue-main-info"
+    >
+      <div
+        v-if="hasTitle"
+        ref="title"
+        class="issue-title block-truncated"
+        :class="{ 'issue-token-title-standalone': !canRemove }"
+      >
+        {{ title }}
+      </div>
+      <div
         ref="reference"
-        class="issue-token-reference">
+        class="issuable-info">
         <i
           ref="stateIcon"
           v-if="hasState"
@@ -104,16 +112,7 @@ export default {
           :aria-label="state">
         </i>
         {{ displayReference }}
-      </span>
-      <span
-        v-if="hasTitle"
-        ref="title"
-        class="js-issue-token-title issue-token-title"
-        :class="{ 'issue-token-title-standalone': !canRemove }">
-        <span class="issue-token-title-text">
-          {{ title }}
-        </span>
-      </span>
+      </div>
     </component>
     <button
       v-if="canRemove"

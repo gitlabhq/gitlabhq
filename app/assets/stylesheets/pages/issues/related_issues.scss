@@ -18,7 +18,7 @@ $token_spacing_bottom: 0.5em;
 }
 
 .related-issues-token-body {
-  padding-bottom: calc(#{$gl-padding} - #{$token_spacing_bottom});
+  padding: 0 0 0 $gl-padding;
   transition-property: max-height, padding, opacity;
   transition-duration: $general-hover-transition-duration;
   transition-timing-function: $general-hover-transition-curve;
