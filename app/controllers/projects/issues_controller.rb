@@ -9,13 +9,8 @@ class Projects::IssuesController < Projects::ApplicationController
   prepend_before_action :authenticate_user!, only: [:new, :export_csv]
 
   before_action :check_issues_available!
-<<<<<<< HEAD
   before_action :issue, except: [:index, :new, :create, :bulk_update, :export_csv]
-  before_action :set_issues_index, only: [:index]
-=======
-  before_action :issue, except: [:index, :new, :create, :bulk_update]
   before_action :set_issuables_index, only: [:index]
->>>>>>> upstream/master
 
   # Allow write(create) issue
   before_action :authorize_create_issue!, only: [:new, :create]
