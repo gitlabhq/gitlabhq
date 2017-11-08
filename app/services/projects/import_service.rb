@@ -4,6 +4,18 @@ module Projects
 
     Error = Class.new(StandardError)
 
+    # Returns true if this importer is supposed to perform its work in the
+    # background.
+    #
+    # This method will only return `true` if async importing is explicitly
+    # supported by an importer class (`Gitlab::GithubImport::ParallelImporter`
+    # for example).
+    def async?
+      return false unless has_importer?
+
+      !!importer_class.try(:async?)
+    end
+
     def execute
       add_repository_to_project unless project.gitlab_project_import?
 
@@ -75,12 +87,16 @@ module Projects
       end
     end
 
+    def importer_class
+      Gitlab::ImportSources.importer(project.import_type)
+    end
+
     def has_importer?
       Gitlab::ImportSources.importer_names.include?(project.import_type)
     end
 
     def importer
-      Gitlab::ImportSources.importer(project.import_type).new(project)
+      importer_class.new(project)
     end
 
     def unknown_url?

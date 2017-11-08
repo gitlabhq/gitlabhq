@@ -68,14 +68,16 @@ The following guide assumes that:
     ```
 
 1. Omnibus GitLab has already a replication user called `gitlab_replicator`.
-   You must set its password manually. Replace `thepassword` with a strong
+   You must set its password manually. You will be prompted to enter a
    password:
 
     ```bash
-    sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h /var/opt/gitlab/postgresql \
-         -d template1 \
-         -c "ALTER USER gitlab_replicator WITH ENCRYPTED PASSWORD 'thepassword'"
+      gitlab-ctl set-replication-password
     ```
+
+   This command will also read `postgresql['sql_replication_user']` Omnibus
+   setting in case you have changed `gitlab_replicator` username to something
+   else.
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following. Note that GitLab 9.1 added
    the `geo_primary_role` configuration variable:

@@ -76,6 +76,8 @@ module Gitlab
               handle_repositories_changed(event_log.repositories_changed_event)
             elsif event_log.repository_renamed_event
               handle_repository_renamed(event_log)
+            elsif event_log.hashed_storage_migrated_event
+              handle_hashed_storage_migrated(event_log)
             end
           end
         end
@@ -182,8 +184,8 @@ module Gitlab
           old_path = event.old_path_with_namespace
           new_path = event.new_path_with_namespace
 
-          job_id = ::Geo::MoveRepositoryService
-                     .new(event.project_id, '', old_path, new_path)
+          job_id = ::Geo::RenameRepositoryService
+                     .new(event.project_id, old_path, new_path)
                      .async_execute
 
           log_event_info(
@@ -192,6 +194,28 @@ module Gitlab
             project_id: event.project_id,
             old_path: old_path,
             new_path: new_path,
+            job_id: job_id)
+        end
+
+        def handle_hashed_storage_migrated(event_log)
+          event = event_log.hashed_storage_migrated_event
+          return unless event.project_id
+
+          job_id = ::Geo::HashedStorageMigrationService.new(
+            event.project_id,
+            old_disk_path: event.old_disk_path,
+            new_disk_path: event.new_disk_path,
+            old_storage_version: event.old_storage_version
+          ).async_execute
+
+          log_event_info(
+            event_log.created_at,
+            message: 'Migrating project to hashed storage',
+            project_id: event.project_id,
+            old_storage_version: event.old_storage_version,
+            new_storage_version: event.new_storage_version,
+            old_disk_path: event.old_disk_path,
+            new_disk_path: event.new_disk_path,
             job_id: job_id)
         end
 

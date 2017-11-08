@@ -132,7 +132,7 @@ class GeoNodeStatus < ActiveRecord::Base
   private
 
   def sync_percentage(total, synced)
-    return 0 if total.zero?
+    return 0 if !total.present? || total.zero?
 
     (synced.to_f / total.to_f) * 100.0
   end

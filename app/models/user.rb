@@ -277,18 +277,23 @@ class User < ActiveRecord::Base
       end
     end
 
+    def for_github_id(id)
+      joins(:identities)
+        .where(identities: { provider: :github, extern_uid: id.to_s })
+    end
+
     # Find a User by their primary email or any associated secondary email
     def find_by_any_email(email)
-      sql = 'SELECT *
-      FROM users
-      WHERE id IN (
-        SELECT id FROM users WHERE email = :email
-        UNION
-        SELECT emails.user_id FROM emails WHERE email = :email
-      )
-      LIMIT 1;'
+      by_any_email(email).take
+    end
 
-      User.find_by_sql([sql, { email: email }]).first
+    # Returns a relation containing all the users for the given Email address
+    def by_any_email(email)
+      users = where(email: email)
+      emails = joins(:emails).where(emails: { email: email })
+      union = Gitlab::SQL::Union.new([users, emails])
+
+      from("(#{union.to_sql}) #{table_name}")
     end
 
     def existing_member?(email)

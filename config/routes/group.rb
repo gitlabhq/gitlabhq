@@ -106,5 +106,11 @@ constraints(GroupUrlConstrainer.new) do
     Gitlab::Routing.redirect_legacy_paths(self, :labels, :milestones, :group_members,
                                           :edit, :issues, :merge_requests, :projects,
                                           :activity)
+
+    ## EE-specific
+    Gitlab::Routing.redirect_legacy_paths(self, :analytics, :ldap, :ldap_group_links,
+                                          :notification_setting, :audit_events,
+                                          :pipeline_quota, :hooks, :boards)
+    ## EE-specific
   end
 end
