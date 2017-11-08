@@ -15,13 +15,10 @@ module Gitlab
         update_protected_tag: 'Protected tags cannot be updated.',
         delete_protected_tag: 'Protected tags cannot be deleted.',
         create_protected_tag: 'You are not allowed to create this tag as it is protected.',
-<<<<<<< HEAD
+        lfs_objects_missing: 'LFS objects are missing. Ensure LFS is properly set up or try a manual "git lfs push --all".',
         push_rule_branch_name: "Branch name does not follow the pattern '%{branch_name_regex}'",
         push_rule_committer_not_verified: "Comitter email '%{commiter_email}' is not verified.",
         push_rule_committer_not_allowed: "You cannot push commits for '%{committer_email}'. You can only push commits that were committed with one of your own verified emails."
-=======
-        lfs_objects_missing: 'LFS objects are missing. Ensure LFS is properly set up or try a manual "git lfs push --all".'
->>>>>>> upstream/master
       }.freeze
 
       # protocol is currently used only in EE
@@ -46,11 +43,8 @@ module Gitlab
         push_checks
         branch_checks
         tag_checks
-<<<<<<< HEAD
-        push_rule_check
-=======
         lfs_objects_exist_check
->>>>>>> upstream/master
+        push_rule_check
 
         true
       end
@@ -156,7 +150,14 @@ module Gitlab
         Checks::MatchingMergeRequest.new(@newrev, @branch_name, @project).match?
       end
 
-<<<<<<< HEAD
+      def lfs_objects_exist_check
+        lfs_check = Checks::LfsIntegrity.new(project, @newrev)
+
+        if lfs_check.objects_missing?
+          raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:lfs_objects_missing]
+        end
+      end
+
       def push_rule_check
         return unless @newrev && @oldrev && project.feature_available?(:push_rules)
 
@@ -334,14 +335,6 @@ module Gitlab
 
       def commits
         project.repository.new_commits(@newrev)
-=======
-      def lfs_objects_exist_check
-        lfs_check = Checks::LfsIntegrity.new(project, @newrev)
-
-        if lfs_check.objects_missing?
-          raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:lfs_objects_missing]
-        end
->>>>>>> upstream/master
       end
     end
   end
