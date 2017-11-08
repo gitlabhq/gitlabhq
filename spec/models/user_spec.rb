@@ -867,6 +867,19 @@ describe User do
     end
   end
 
+  describe '.by_any_email' do
+    it 'returns an ActiveRecord::Relation' do
+      expect(described_class.by_any_email('foo@example.com'))
+        .to be_a_kind_of(ActiveRecord::Relation)
+    end
+
+    it 'returns a relation of users' do
+      user = create(:user)
+
+      expect(described_class.by_any_email(user.email)).to eq([user])
+    end
+  end
+
   describe '.search' do
     let!(:user) { create(:user, name: 'user', username: 'usern', email: 'email@gmail.com') }
     let!(:user2) { create(:user, name: 'user name', username: 'username', email: 'someemail@gmail.com') }

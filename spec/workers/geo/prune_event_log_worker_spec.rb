@@ -32,7 +32,7 @@ describe Geo::PruneEventLogWorker, :geo do
       it 'logs error when it cannot obtain lease' do
         allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { nil }
 
-        expect(worker).to receive(:log_error).with('Cannot obtain an exclusive lease. There must be another worker already in execution.')
+        expect(worker).to receive(:log_error).with('Cannot obtain an exclusive lease. There must be another instance already in execution.')
 
         worker.perform
       end
@@ -56,23 +56,23 @@ describe Geo::PruneEventLogWorker, :geo do
         let(:healthy_status) { build(:geo_node_status, :healthy) }
         let(:unhealthy_status) { build(:geo_node_status, :unhealthy) }
 
-        let(:node_status_service) do
-          service = double
-          allow(Geo::NodeStatusService).to receive(:new).and_return(service)
-          service
-        end
-
         it 'contacts all secondary nodes for their status' do
-          expect(node_status_service).to receive(:call).twice { healthy_status }
+          events = create_list(:geo_event_log, 5)
+
+          create(:geo_node_status, :healthy, cursor_last_event_id: events.last.id, geo_node_id: secondary.id)
+          create(:geo_node_status, :healthy, cursor_last_event_id: events[3].id, geo_node_id: secondary2.id)
+
           expect(worker).to receive(:log_info).with('Delete Geo Event Log entries up to id', anything)
 
           worker.perform
         end
 
         it 'aborts when there are unhealthy nodes' do
-          create_list(:geo_event_log, 2)
+          events = create_list(:geo_event_log, 2)
 
-          expect(node_status_service).to receive(:call).twice.and_return(healthy_status, unhealthy_status)
+          create(:geo_node_status, :healthy, cursor_last_event_id: events.last.id, geo_node_id: secondary.id)
+          create(:geo_node_status, :unhealthy, geo_node_id: secondary2.id)
+
           expect(worker).to receive(:log_info).with('Could not get status of all nodes, not deleting any entries from Geo Event Log', unhealthy_node_count: 1)
 
           expect { worker.perform }.not_to change { Geo::EventLog.count }
@@ -81,11 +81,9 @@ describe Geo::PruneEventLogWorker, :geo do
         it 'takes the integer-minimum value of all cursor_last_event_ids' do
           events = create_list(:geo_event_log, 12)
 
-          allow(node_status_service).to receive(:call).twice.and_return(
-            build(:geo_node_status, :healthy, cursor_last_event_id: events[3]),
-            build(:geo_node_status, :healthy, cursor_last_event_id: events.last)
-          )
-          expect(worker).to receive(:log_info).with('Delete Geo Event Log entries up to id', geo_event_log_id: events[3])
+          create(:geo_node_status, :healthy, cursor_last_event_id: events[3].id, geo_node_id: secondary.id)
+          create(:geo_node_status, :healthy, cursor_last_event_id: events.last.id, geo_node_id: secondary2.id)
+          expect(worker).to receive(:log_info).with('Delete Geo Event Log entries up to id', geo_event_log_id: events[3].id)
 
           expect { worker.perform }.to change { Geo::EventLog.count }.by(-3)
         end

@@ -217,13 +217,31 @@ $white-gc-bg: #eaf2f5;
   .cp { color: $white-cp; font-weight: $gl-font-weight-bold; }
   .c1 { color: $white-c1; font-style: italic; }
   .cs { color: $white-cs; font-weight: $gl-font-weight-bold; font-style: italic; }
-  .gd { color: $white-gd; background-color: $white-gd-bg; }
-  .gd .x { color: $white-gd-x; background-color: $white-gd-x-bg; }
+
+  .gd {
+    color: $white-gd;
+    background-color: $white-gd-bg;
+
+    .x {
+      color: $white-gd-x;
+      background-color: $white-gd-x-bg;
+    }
+  }
+
   .ge { font-style: italic; }
   .gr { color: $white-gr; }
   .gh { color: $white-gh; }
-  .gi { color: $white-gi; background-color: $white-gi-bg; }
-  .gi .x { color: $white-gi-x; background-color: $white-gi-x-bg; }
+
+  .gi {
+    color: $white-gi;
+    background-color: $white-gi-bg;
+
+    .x {
+      color: $white-gi-x;
+      background-color: $white-gi-x-bg;
+    }
+  }
+
   .go { color: $white-go; }
   .gp { color: $white-gp; }
   .gs { font-weight: $gl-font-weight-bold; }

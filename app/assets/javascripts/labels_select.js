@@ -7,7 +7,7 @@ import DropdownUtils from './filtered_search/dropdown_utils';
 import CreateLabelDropdown from './create_label';
 
 export default class LabelsSelect {
-  constructor(els) {
+  constructor(els, options = {}) {
     var _this, $els;
     _this = this;
 
@@ -57,6 +57,7 @@ export default class LabelsSelect {
         labelHTMLTemplate = _.template('<% _.each(labels, function(label){ %> <a href="<%- ["",issueURLSplit[1], issueURLSplit[2],""].join("/") %>issues?label_name[]=<%- encodeURIComponent(label.title) %>"> <span class="label has-tooltip color-label" title="<%- label.description %>" style="background-color: <%- label.color %>; color: <%- label.text_color %>;"> <%- label.title %> </span> </a> <% }); %>');
         labelNoneHTMLTemplate = '<span class="no-value">None</span>';
       }
+      const handleClick = options.handleClick;
 
       $sidebarLabelTooltip.tooltip();
 
@@ -315,9 +316,9 @@ export default class LabelsSelect {
         },
         multiSelect: $dropdown.hasClass('js-multiselect'),
         vue: $dropdown.hasClass('js-issue-board-sidebar'),
-        clicked: function(options) {
-          const { $el, e, isMarking } = options;
-          const label = options.selectedObj;
+        clicked: function(clickEvent) {
+          const { $el, e, isMarking } = clickEvent;
+          const label = clickEvent.selectedObj;
 
           var isIssueIndex, isMRIndex, page, boardsModel;
           var fadeOutLoader = () => {
@@ -389,6 +390,10 @@ export default class LabelsSelect {
             gl.issueBoards.BoardsStore.detail.issue.update($dropdown.attr('data-issue-update'))
               .then(fadeOutLoader)
               .catch(fadeOutLoader);
+          }
+          else if (handleClick) {
+            e.preventDefault();
+            handleClick(label);
           }
           else {
             if ($dropdown.hasClass('js-multiselect')) {

@@ -520,6 +520,10 @@ module API
       expose :subscribed do |merge_request, options|
         merge_request.subscribed?(options[:current_user], options[:project])
       end
+
+      expose :changes_count do |merge_request, _options|
+        merge_request.merge_request_diff.real_size
+      end
     end
 
     class MergeRequestChanges < MergeRequest
@@ -794,10 +798,20 @@ module API
       expose :id
       expose :name
       expose :project, using: Entities::BasicProjectDetails
-      expose :milestone,
-             if: -> (board, _) { board.project.feature_available?(:issue_board_milestone) }
+
+      # EE-specific
+      # Default filtering configuration
+      expose :milestone, using: Entities::Milestone, if: -> (board, _) { scoped_issue_available?(board) }
+      expose :assignee, using: Entities::UserBasic, if: -> (board, _) { scoped_issue_available?(board) }
+      expose :labels, using: Entities::LabelBasic, if: -> (board, _) { scoped_issue_available?(board) }
+      expose :weight, if: -> (board, _) { scoped_issue_available?(board) }
+
       expose :lists, using: Entities::List do |board|
         board.lists.destroyable
+      end
+
+      def scoped_issue_available?(board)
+        board.parent.feature_available?(:scoped_issue_board)
       end
     end
 
@@ -1004,24 +1018,14 @@ module API
       expose :active?, as: :active
     end
 
-    class GeoNodeStatus < Grape::Entity
+    class GeoNode < Grape::Entity
       expose :id
-      expose :db_replication_lag_seconds
-      expose :health
-      expose :healthy?, as: :healthy
-      expose :repositories_count
-      expose :repositories_synced_count
-      expose :repositories_failed_count
-      expose :lfs_objects_count
-      expose :lfs_objects_synced_count
-      expose :lfs_objects_failed_count
-      expose :attachments_count
-      expose :attachments_synced_count
-      expose :attachments_failed_count
-      expose :last_event_id
-      expose :last_event_timestamp
-      expose :cursor_last_event_id
-      expose :cursor_last_event_timestamp
+      expose :url
+      expose :primary?, as: :primary
+      expose :enabled
+      expose :files_max_capacity
+      expose :repos_max_capacity
+      expose :clone_protocol
     end
 
     class PersonalAccessToken < Grape::Entity

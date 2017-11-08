@@ -54,7 +54,7 @@
     }
 
     .bordered-box.content-block {
-      border: none;
+      border: 0;
       padding: 20px 0;
       justify-content: left;
 
@@ -76,7 +76,7 @@
   }
 
   .modal-header {
-    border-bottom: none;
+    border-bottom: 0;
   }
 
   .modal-body {
@@ -85,7 +85,7 @@
   }
 
   .modal-footer {
-    border-top: none;
+    border-top: 0;
   }
 
 }
@@ -139,7 +139,7 @@
     margin: 0 -25px;
     padding: 0;
     overflow: initial;
-    border-bottom: none;
+    border-bottom: 0;
   }
 
   .btn {

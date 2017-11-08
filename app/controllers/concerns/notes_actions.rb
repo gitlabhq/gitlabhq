@@ -4,6 +4,7 @@ module NotesActions
 
   included do
     before_action :set_polling_interval_header, only: [:index]
+    before_action :noteable, only: :index
     before_action :authorize_admin_note!, only: [:update, :destroy]
     before_action :note_project, only: [:create]
   end
@@ -38,7 +39,7 @@ module NotesActions
     @note = Notes::CreateService.new(note_project, current_user, create_params).execute
 
     if @note.is_a?(Note)
-      Banzai::NoteRenderer.render([@note], @project, current_user)
+      Notes::RenderService.new(current_user).execute([@note], @project)
     end
 
     respond_to do |format|
@@ -51,7 +52,7 @@ module NotesActions
     @note = Notes::UpdateService.new(project, current_user, note_params).execute(note)
 
     if @note.is_a?(Note)
-      Banzai::NoteRenderer.render([@note], @project, current_user)
+      Notes::RenderService.new(current_user).execute([@note], @project)
     end
 
     respond_to do |format|
@@ -188,7 +189,7 @@ module NotesActions
   end
 
   def noteable
-    @noteable ||= notes_finder.target
+    @noteable ||= notes_finder.target || render_404
   end
 
   def last_fetched_at

@@ -69,8 +69,8 @@ the `monitoring.sidekiq_exporter` configuration option in `gitlab.yml`.
 |geo_last_event_timestamp           | Gauge     | 10.2  | UNIX timestamp of the latest event log entry on the primary | url
 |geo_cursor_last_event_id           | Gauge     | 10.2  | Last database ID of the event log processed by the secondary | url
 |geo_cursor_last_event_timestamp    | Gauge     | 10.2  | Last UNIX timestamp of the event log processed by the secondary | url
-|geo_status_last_updated_timestamp  | Gauge     | 10.2  | Last timestamp when the status was successfully updated | url
 |geo_status_failed_total            | Counter   | 10.2  | Number of times retrieving the status from the Geo Node failed | url
+|geo_last_successful_status_check_timestamp | Gauge | Last timestamp when the status was successfully updated | url
 
 ## Metrics shared directory
 

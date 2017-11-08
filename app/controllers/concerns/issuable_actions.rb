@@ -125,6 +125,7 @@ module IssuableActions
       :milestone_id,
       :state_event,
       :subscription_event,
+      :weight,
       label_ids: [],
       add_label_ids: [],
       remove_label_ids: []

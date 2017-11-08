@@ -8,6 +8,7 @@ export default () => ({
   endpoints: {},
   isRoot: false,
   isInitialRoot: false,
+  lastCommitPath: '',
   loading: false,
   onTopOfBranch: false,
   openFiles: [],

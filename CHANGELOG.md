@@ -4,7 +4,6 @@ entry.
 
 ## 10.1.1 (2017-10-31)
 
-- No changes.
 - [FIXED] Auto Devops kubernetes default namespace is now correctly built out of gitlab project group-name. !14642 (Mircea Danila Dumitrescu)
 - [FIXED] Forbid the usage of `Redis#keys`. !14889
 - [FIXED] Make the circuitbreaker more robust by adding higher thresholds, and multiple access attempts. !14933

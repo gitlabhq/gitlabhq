@@ -5,11 +5,18 @@ This is the documentation for the Omnibus GitLab packages. For installations
 from source, follow the
 [**database replication for installations from source**](database_source.md) guide.
 
+>**Note:**
+Stages of the setup process must be completed in the documented order.
+Before attempting the steps in this stage, complete all prior stages.
+
 1. [Install GitLab Enterprise Edition][install-ee] on the server that will serve
-   as the secondary Geo node. Do not login or set up anything else in the
+   as the **secondary** Geo node. Do not login or set up anything else in the
    secondary node for the moment.
-1. **Setup the database replication topology:** `primary (read-write) <-> secondary (read-only)`
+1. [Upload the GitLab License](../user/admin_area/license.md) to the **primary** Geo Node to unlock GitLab Geo.
+1. **Setup the database replication** (`primary (read-write) <-> secondary (read-only)` topology).
+1. [Configure SSH authorizations to use the database](ssh.md)
 1. [Configure GitLab](configuration.md) to set the primary and secondary nodes.
+1. Optional: [Configure a secondary LDAP server](../administration/auth/ldap.md) for the secondary. See [notes on LDAP](#ldap).
 1. [Follow the after setup steps](after_setup.md).
 
 [install-ee]: https://about.gitlab.com/downloads-ee/ "GitLab Enterprise Edition Omnibus packages downloads page"
@@ -61,14 +68,16 @@ The following guide assumes that:
     ```
 
 1. Omnibus GitLab has already a replication user called `gitlab_replicator`.
-   You must set its password manually. Replace `thepassword` with a strong
+   You must set its password manually. You will be prompted to enter a
    password:
 
     ```bash
-    sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h /var/opt/gitlab/postgresql \
-         -d template1 \
-         -c "ALTER USER gitlab_replicator WITH ENCRYPTED PASSWORD 'thepassword'"
+      gitlab-ctl set-replication-password
     ```
+
+   This command will also read `postgresql['sql_replication_user']` Omnibus
+   setting in case you have changed `gitlab_replicator` username to something
+   else.
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following. Note that GitLab 9.1 added
    the `geo_primary_role` configuration variable:
@@ -154,9 +163,23 @@ The following guide assumes that:
 1. Now that the PostgreSQL server is set up to accept remote connections, run
    `netstat -plnt` to make sure that PostgreSQL is listening to the server's
    public IP.
-1. Continue to [set up the secondary server](#step-2-configure-the-secondary-server).
 
-### Step 2. Configure the secondary server
+### Step 2. Add the secondary GitLab node
+
+To prevent the secondary geo node trying to act as the primary once the
+database is replicated, the secondary geo node must be configured on the
+primary before the database is replicated.
+
+1. Visit the **primary** node's **Admin Area ➔ Geo Nodes**
+   (`/admin/geo_nodes`) in your browser.
+1. Add the secondary node by providing its full URL. **Do NOT** check the box
+   'This is a primary node'.
+1. Added in GitLab 9.5: Choose which namespaces should be replicated by the
+   secondary node. Leave blank to replicate all. Read more in
+   [selective replication](#selective-replication).
+1. Click the **Add node** button.
+
+### Step 3. Configure the secondary server
 
 1. SSH into your GitLab **secondary** server and login as root:
 
@@ -197,7 +220,7 @@ The following guide assumes that:
     same time zone, but when the respective times are converted to UTC time,
     the clocks must be synchronized to within 60 seconds of each other.
 
-### Step 3. Initiate the replication process
+### Step 4. Initiate the replication process
 
 Below we provide a script that connects to the primary server, replicates the
 database and creates the needed files for replication.
@@ -227,13 +250,26 @@ data before running `pg_basebackup`.
     gitlab-ctl replicate-geo-database --host=1.2.3.4 --slot-name=geo_secondary_my_domain_com
     ```
 
-    Change the `--host=` to the primary node IP or FQDN. You can check other possible
-    parameters with `--help`. When prompted, enter the password you set up for
-    the `gitlab_replicator` user in the first step.
+    Change the `--host=` to the primary node IP or FQDN. If PostgreSQL is
+    listening on a non-standard port, add `--port=` as well.
+
+    When prompted, enter the password you set up for the `gitlab_replicator`
+    user in the first step.
 
     New for 9.4: Change the `--slot-name` to the name of the replication slot
     to be used on the primary database. The script will attempt to create the
     replication slot automatically if it does not exist.
+
+    This command also takes a number of additional options. You can use `--help`
+    to list them all, but here are a couple of tips:
+
+    If you're setting up replication on a brand-new secondary that has no data,
+    you may want to pass `--no-wait --skip-backup` to speed up the process - but
+    be **certain** that you're running it against the right GitLab installation
+    first! It **will** cause data loss otherwise.
+
+    If you're repurposing an old server into a Geo secondary, you'll need to
+    add `--force` to the command line.
 
 The replication process is now over.
 

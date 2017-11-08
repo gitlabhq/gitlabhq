@@ -56,15 +56,31 @@ describe('MergeRequestStore', () => {
 
   describe('compareCodeclimateMetrics', () => {
     beforeEach(() => {
-      store.compareCodeclimateMetrics(headIssues, baseIssues);
+      store.compareCodeclimateMetrics(headIssues, baseIssues, 'headPath', 'basePath');
     });
 
     it('should return the new issues', () => {
-      expect(store.codeclimateMetrics.newIssues[0]).toEqual(headIssues[0]);
+      const parsed = MergeRequestStore.addPathToIssues(headIssues, 'headPath');
+      expect(store.codeclimateMetrics.newIssues[0]).toEqual(parsed[0]);
     });
 
     it('should return the resolved issues', () => {
-      expect(store.codeclimateMetrics.resolvedIssues[0]).toEqual(baseIssues[1]);
+      const parsed = MergeRequestStore.addPathToIssues(baseIssues, 'basePath');
+      expect(store.codeclimateMetrics.resolvedIssues[0]).toEqual(parsed[1]);
+    });
+  });
+
+  describe('addPathToIssues', () => {
+    it('should add urlPath key to each entry', () => {
+      expect(
+        MergeRequestStore.addPathToIssues(headIssues, 'path')[0].location.urlPath,
+      ).toEqual(`path/${headIssues[0].location.path}#L${headIssues[0].location.lines.begin}`);
+    });
+
+    it('should return the same object whe there is no locaiton', () => {
+      expect(
+        MergeRequestStore.addPathToIssues([{ check_name: 'foo' }], 'path'),
+      ).toEqual([{ check_name: 'foo' }]);
     });
   });
 });

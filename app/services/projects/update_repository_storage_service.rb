@@ -7,11 +7,10 @@ module Projects
     end
 
     def execute(new_repository_storage_key)
-      new_storage_path = Gitlab.config.repositories.storages[new_repository_storage_key]['path']
-      result = move_storage(project.disk_path, new_storage_path)
+      result = mirror_repository(new_repository_storage_key)
 
       if project.wiki.repository_exists?
-        result &&= move_storage(project.wiki.disk_path, new_storage_path)
+        result &&= mirror_repository(new_repository_storage_key, wiki: true)
       end
 
       if result
@@ -25,8 +24,18 @@ module Projects
 
     private
 
-    def move_storage(project_path, new_storage_path)
-      gitlab_shell.mv_storage(project.repository_storage_path, project_path, new_storage_path)
+    def mirror_repository(new_storage_key, wiki: false)
+      return false unless wait_for_pushes(wiki)
+
+      repository = (wiki ? project.wiki.repository : project.repository).raw
+
+      # Initialize a git repository on the target path
+      gitlab_shell.add_repository(new_storage_key, repository.relative_path)
+      new_repository = Gitlab::Git::Repository.new(new_storage_key,
+                                                   repository.relative_path,
+                                                   repository.gl_repository)
+
+      new_repository.fetch_mirror(repository.path)
     end
 
     def mark_old_paths_for_archive
@@ -52,6 +61,18 @@ module Projects
 
     def moved_path(path)
       "#{path}+#{project.id}+moved+#{Time.now.to_i}"
+    end
+
+    def wait_for_pushes(wiki)
+      reference_counter = project.reference_counter(wiki: wiki)
+
+      # Try for 30 seconds, polling every 10
+      3.times do
+        return true if reference_counter.value == 0
+        sleep 10
+      end
+
+      false
     end
   end
 end

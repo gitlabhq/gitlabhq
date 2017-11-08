@@ -144,6 +144,12 @@ has a `.gitlab-ci.yml` or not:
   All you need to do is remove your existing `.gitlab-ci.yml`, and you can even
   do that in a branch to test Auto DevOps before committing to `master`.
 
+NOTE: **Note:**
+If you are a GitLab Administrator, you can enable Auto DevOps instance wide
+in **Admin Area > Settings > Continuous Integration and Deployment**. Doing that,
+all the projects that haven't explicitly set an option will have Auto DevOps
+enabled by default.
+
 ## Stages of Auto DevOps
 
 The following sections describe the stages of Auto DevOps. Read them carefully

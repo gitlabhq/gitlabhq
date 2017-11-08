@@ -30,6 +30,7 @@ class License < ActiveRecord::Base
     related_issues
     repository_mirrors
     repository_size_limit
+    scoped_issue_board
   ].freeze
 
   EEP_FEATURES = EES_FEATURES + %i[
@@ -70,7 +71,6 @@ class License < ActiveRecord::Base
     group_webhooks
     issuable_default_templates
     issue_board_focus_mode
-    issue_board_milestone
     issue_weights
     jenkins_integration
     merge_request_approvers

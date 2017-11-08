@@ -74,7 +74,8 @@ describe Namespace do
       it 'logs the Geo::RepositoryRenamedEvent for each project inside namespace' do
         parent = create(:namespace)
         child = create(:group, name: 'child', path: 'child', parent: parent)
-        project_1 = create(:project_empty_repo, namespace: parent)
+        project_legacy_storage = create(:project_empty_repo, namespace: parent)
+        create(:project, :hashed, namespace: child)
         create(:project_empty_repo, namespace: child)
         full_path_was = "#{parent.full_path}_old"
         new_path = parent.full_path
@@ -85,10 +86,10 @@ describe Namespace do
         allow(parent).to receive(:full_path).and_return(new_path)
 
         allow(gitlab_shell).to receive(:mv_namespace)
-          .with(project_1.repository_storage_path, full_path_was, new_path)
+          .with(project_legacy_storage.repository_storage_path, full_path_was, new_path)
           .and_return(true)
 
-        expect { parent.move_dir }.to change(Geo::RepositoryRenamedEvent, :count).by(2)
+        expect { parent.move_dir }.to change(Geo::RepositoryRenamedEvent, :count).by(3)
       end
     end
   end

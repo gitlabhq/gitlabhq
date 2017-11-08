@@ -198,8 +198,8 @@ class FilteredSearchManager {
     if (e.keyCode === 8 || e.keyCode === 46) {
       const { lastVisualToken } = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
-      const sanitizedTokenName = lastVisualToken && lastVisualToken.querySelector('.name').textContent.trim();
-      const canEdit = sanitizedTokenName && this.canEdit && this.canEdit(sanitizedTokenName);
+      const { tokenName, tokenValue } = gl.DropdownUtils.getVisualTokenValues(lastVisualToken);
+      const canEdit = tokenName && this.canEdit && this.canEdit(tokenName, tokenValue);
       if (this.filteredSearchInput.value === '' && lastVisualToken && canEdit) {
         this.filteredSearchInput.value = gl.FilteredSearchVisualTokens.getLastTokenPartial();
         gl.FilteredSearchVisualTokens.removeLastTokenPartial();
@@ -349,8 +349,8 @@ class FilteredSearchManager {
       let canClearToken = t.classList.contains('js-visual-token');
 
       if (canClearToken) {
-        const tokenKey = t.querySelector('.name').textContent.trim();
-        canClearToken = this.canEdit && this.canEdit(tokenKey);
+        const { tokenName, tokenValue } = gl.DropdownUtils.getVisualTokenValues(t);
+        canClearToken = this.canEdit && this.canEdit(tokenName, tokenValue);
       }
 
       if (canClearToken) {
@@ -482,7 +482,7 @@ class FilteredSearchManager {
           }
 
           hasFilteredSearch = true;
-          const canEdit = this.canEdit && this.canEdit(sanitizedKey);
+          const canEdit = this.canEdit && this.canEdit(sanitizedKey, sanitizedValue);
           gl.FilteredSearchVisualTokens.addFilterVisualToken(
             sanitizedKey,
             `${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}`,

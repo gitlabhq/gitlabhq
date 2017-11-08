@@ -1,6 +1,10 @@
 require 'spec_helper'
 
 describe Board do
+  let(:board) { create(:board) }
+
+  it { is_expected.to include_module(EE::Board) }
+
   context 'validations' do
     context 'when group is present' do
       subject { described_class.new(group: create(:group)) }
@@ -18,17 +22,21 @@ describe Board do
   end
 
   describe 'milestone' do
-    subject(:board) { build(:board) }
-
     context 'when the feature is available' do
       before do
-        stub_licensed_features(issue_board_milestone: true)
+        stub_licensed_features(scoped_issue_board: true)
       end
 
       it 'returns Milestone::Upcoming for upcoming milestone id' do
         board.milestone_id = Milestone::Upcoming.id
 
         expect(board.milestone).to eq Milestone::Upcoming
+      end
+
+      it 'returns Milestone::Started for started milestone id' do
+        board.milestone_id = Milestone::Started.id
+
+        expect(board.milestone).to eq Milestone::Started
       end
 
       it 'returns milestone for valid milestone id' do
@@ -46,7 +54,7 @@ describe Board do
     end
 
     it 'returns nil when the feature is not available' do
-      stub_licensed_features(issue_board_milestone: false)
+      stub_licensed_features(scoped_issue_board: false)
       milestone = create(:milestone)
       board.milestone_id = milestone.id
 

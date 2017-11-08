@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171026082505) do
+ActiveRecord::Schema.define(version: 20171107144726) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -221,6 +221,20 @@ ActiveRecord::Schema.define(version: 20171026082505) do
   add_index "award_emoji", ["awardable_type", "awardable_id"], name: "index_award_emoji_on_awardable_type_and_awardable_id", using: :btree
   add_index "award_emoji", ["user_id", "name"], name: "index_award_emoji_on_user_id_and_name", using: :btree
 
+  create_table "board_assignees", force: :cascade do |t|
+    t.integer "board_id", null: false
+    t.integer "assignee_id", null: false
+  end
+
+  add_index "board_assignees", ["board_id", "assignee_id"], name: "index_board_assignees_on_board_id_and_assignee_id", unique: true, using: :btree
+
+  create_table "board_labels", force: :cascade do |t|
+    t.integer "board_id", null: false
+    t.integer "label_id", null: false
+  end
+
+  add_index "board_labels", ["board_id", "label_id"], name: "index_board_labels_on_board_id_and_label_id", unique: true, using: :btree
+
   create_table "boards", force: :cascade do |t|
     t.integer "project_id"
     t.datetime "created_at", null: false
@@ -228,6 +242,7 @@ ActiveRecord::Schema.define(version: 20171026082505) do
     t.string "name", default: "Development", null: false
     t.integer "milestone_id"
     t.integer "group_id"
+    t.integer "weight"
   end
 
   add_index "boards", ["group_id"], name: "index_boards_on_group_id", using: :btree
@@ -769,6 +784,7 @@ ActiveRecord::Schema.define(version: 20171026082505) do
     t.integer "repository_renamed_event_id", limit: 8
     t.integer "repositories_changed_event_id", limit: 8
     t.integer "repository_created_event_id", limit: 8
+    t.integer "hashed_storage_migrated_event_id", limit: 8
   end
 
   add_index "geo_event_log", ["repositories_changed_event_id"], name: "index_geo_event_log_on_repositories_changed_event_id", using: :btree
@@ -776,6 +792,20 @@ ActiveRecord::Schema.define(version: 20171026082505) do
   add_index "geo_event_log", ["repository_deleted_event_id"], name: "index_geo_event_log_on_repository_deleted_event_id", using: :btree
   add_index "geo_event_log", ["repository_renamed_event_id"], name: "index_geo_event_log_on_repository_renamed_event_id", using: :btree
   add_index "geo_event_log", ["repository_updated_event_id"], name: "index_geo_event_log_on_repository_updated_event_id", using: :btree
+
+  create_table "geo_hashed_storage_migrated_events", id: :bigserial, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.text "repository_storage_name", null: false
+    t.text "repository_storage_path", null: false
+    t.text "old_disk_path", null: false
+    t.text "new_disk_path", null: false
+    t.text "old_wiki_disk_path", null: false
+    t.text "new_wiki_disk_path", null: false
+    t.integer "old_storage_version", limit: 2
+    t.integer "new_storage_version", limit: 2, null: false
+  end
+
+  add_index "geo_hashed_storage_migrated_events", ["project_id"], name: "index_geo_hashed_storage_migrated_events_on_project_id", using: :btree
 
   create_table "geo_node_namespace_links", force: :cascade do |t|
     t.integer "geo_node_id", null: false
@@ -786,6 +816,30 @@ ActiveRecord::Schema.define(version: 20171026082505) do
 
   add_index "geo_node_namespace_links", ["geo_node_id", "namespace_id"], name: "index_geo_node_namespace_links_on_geo_node_id_and_namespace_id", unique: true, using: :btree
   add_index "geo_node_namespace_links", ["geo_node_id"], name: "index_geo_node_namespace_links_on_geo_node_id", using: :btree
+
+  create_table "geo_node_statuses", force: :cascade do |t|
+    t.integer "geo_node_id", null: false
+    t.integer "db_replication_lag_seconds"
+    t.integer "repositories_count"
+    t.integer "repositories_synced_count"
+    t.integer "repositories_failed_count"
+    t.integer "lfs_objects_count"
+    t.integer "lfs_objects_synced_count"
+    t.integer "lfs_objects_failed_count"
+    t.integer "attachments_count"
+    t.integer "attachments_synced_count"
+    t.integer "attachments_failed_count"
+    t.integer "last_event_id"
+    t.datetime_with_timezone "last_event_date"
+    t.integer "cursor_last_event_id"
+    t.datetime_with_timezone "cursor_last_event_date"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.datetime_with_timezone "last_successful_status_check_at"
+    t.string "status_message"
+  end
+
+  add_index "geo_node_statuses", ["geo_node_id"], name: "index_geo_node_statuses_on_geo_node_id", unique: true, using: :btree
 
   create_table "geo_nodes", force: :cascade do |t|
     t.string "schema"
@@ -1570,6 +1624,7 @@ ActiveRecord::Schema.define(version: 20171026082505) do
     t.datetime_with_timezone "updated_at"
   end
 
+  add_index "project_mirror_data", ["next_execution_timestamp", "retry_count"], name: "index_mirror_data_on_next_execution_and_retry_count", using: :btree
   add_index "project_mirror_data", ["project_id"], name: "index_project_mirror_data_on_project_id", unique: true, using: :btree
 
   create_table "project_statistics", force: :cascade do |t|
@@ -2196,6 +2251,10 @@ ActiveRecord::Schema.define(version: 20171026082505) do
 
   add_foreign_key "approvals", "merge_requests", name: "fk_310d714958", on_delete: :cascade
   add_foreign_key "approver_groups", "namespaces", column: "group_id", on_delete: :cascade
+  add_foreign_key "board_assignees", "boards", on_delete: :cascade
+  add_foreign_key "board_assignees", "users", column: "assignee_id", on_delete: :cascade
+  add_foreign_key "board_labels", "boards", on_delete: :cascade
+  add_foreign_key "board_labels", "labels", on_delete: :cascade
   add_foreign_key "boards", "namespaces", column: "group_id", name: "fk_1e9a074a35", on_delete: :cascade
   add_foreign_key "boards", "projects", name: "fk_f15266b5f9", on_delete: :cascade
   add_foreign_key "chat_teams", "namespaces", on_delete: :cascade
@@ -2245,13 +2304,16 @@ ActiveRecord::Schema.define(version: 20171026082505) do
   add_foreign_key "gcp_clusters", "projects", on_delete: :cascade
   add_foreign_key "gcp_clusters", "services", on_delete: :nullify
   add_foreign_key "gcp_clusters", "users", on_delete: :nullify
+  add_foreign_key "geo_event_log", "geo_hashed_storage_migrated_events", column: "hashed_storage_migrated_event_id", name: "fk_27548c6db3", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repositories_changed_events", column: "repositories_changed_event_id", name: "fk_4a99ebfd60", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_created_events", column: "repository_created_event_id", name: "fk_9b9afb1916", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_deleted_events", column: "repository_deleted_event_id", name: "fk_c4b1c1f66e", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_renamed_events", column: "repository_renamed_event_id", name: "fk_86c84214ec", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_updated_events", column: "repository_updated_event_id", on_delete: :cascade
+  add_foreign_key "geo_hashed_storage_migrated_events", "projects", on_delete: :cascade
   add_foreign_key "geo_node_namespace_links", "geo_nodes", on_delete: :cascade
   add_foreign_key "geo_node_namespace_links", "namespaces", on_delete: :cascade
+  add_foreign_key "geo_node_statuses", "geo_nodes", on_delete: :cascade
   add_foreign_key "geo_repositories_changed_events", "geo_nodes", on_delete: :cascade
   add_foreign_key "geo_repository_created_events", "projects", on_delete: :cascade
   add_foreign_key "geo_repository_renamed_events", "projects", on_delete: :cascade

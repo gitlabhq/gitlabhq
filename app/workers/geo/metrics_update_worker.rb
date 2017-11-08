@@ -15,5 +15,10 @@ module Geo
     def lease_timeout
       LEASE_TIMEOUT
     end
+
+    def log_error(message, extra_args = {})
+      args = { class: self.class.name, message: message }.merge(extra_args)
+      Gitlab::Geo::Logger.error(args)
+    end
   end
 end

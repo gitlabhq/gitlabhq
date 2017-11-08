@@ -13,6 +13,7 @@ module Boards
     end
 
     def create_board!
+      set_assignee
       board = parent.boards.create(params)
 
       if board.persisted?

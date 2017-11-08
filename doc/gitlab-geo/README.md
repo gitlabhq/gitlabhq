@@ -15,6 +15,14 @@ and there is significant chance of data loss. For the latest updates, check the
 - GitLab Geo requires PostgreSQL 9.6 and Git 2.9 in addition to GitLab's usual
   [minimum requirements](../install/requirements.md)
 
+>**Note:**
+GitLab Geo changes significantly from release to release. Upgrades **are**
+supported and [documented](#updating-the-geo-nodes), but you should ensure that
+you're following the right version of the documentation for your installation!
+The best way to do this is to follow the documentation from the `/help` endpoint
+on your **primary** node, but you can also navigate to [this page on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ee/blob/master/doc/gitlab-geo/README.md)
+and choose the appropriate release from the `tags` dropdown, e.g., `v10.0.0-ee`.
+
 GitLab Geo allows you to replicate your GitLab instance to other geographical
 locations as a read-only fully operational version.
 
@@ -137,7 +145,7 @@ If you installed GitLab using the Omnibus packages (highly recommended):
    as the **secondary** Geo node. Do not login or set up anything else in the
    secondary node for the moment.
 1. [Upload the GitLab License](../user/admin_area/license.md) to the **primary** Geo Node to unlock GitLab Geo.
-1. [Setup the database replication](database.md)  (`primary (read-write) <-> secondary (read-only)` topology).
+1. [Setup the database replication](database.md) (`primary (read-write) <-> secondary (read-only)` topology).
 1. [Configure SSH authorizations to use the database](ssh.md)
 1. [Configure GitLab](configuration.md) to set the primary and secondary nodes.
 1. Optional: [Configure a secondary LDAP server](../administration/auth/ldap.md) for the secondary. See [notes on LDAP](#ldap).
@@ -153,7 +161,7 @@ If you installed GitLab from source:
    will serve as the **secondary** Geo node. Do not login or set up anything
    else in the secondary node for the moment.
 1. [Upload the GitLab License](../user/admin_area/license.md) you purchased for GitLab Enterprise Edition to unlock GitLab Geo.
-1. [Setup the database replication](database_source.md)  (`primary (read-write) <-> secondary (read-only)` topology).
+1. [Setup the database replication](database_source.md) (`primary (read-write) <-> secondary (read-only)` topology).
 1. [Configure SSH authorizations to use the database](ssh.md)
 1. [Configure GitLab](configuration_source.md) to set the primary and secondary
    nodes.

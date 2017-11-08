@@ -7,6 +7,7 @@
   "properties" : {
     "id": { "type": "integer" },
     "name": { "type": "string" },
+    "board_path": { "type": ["string", "null"] },
     "milestone": {
       "type": ["object", "null"],
       "required": [

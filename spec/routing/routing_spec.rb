@@ -278,36 +278,6 @@ describe "Authentication", "routing" do
   end
 end
 
-describe "Groups", "routing" do
-  let(:name) { 'complex.group-namegit' }
-  let!(:group) { create(:group, name: name) }
-
-  it "to #show" do
-    expect(get("/groups/#{name}")).to route_to('groups#show', id: name)
-  end
-
-  it "also supports nested groups" do
-    nested_group = create(:group, parent: group)
-    expect(get("/#{name}/#{nested_group.name}")).to route_to('groups#show', id: "#{name}/#{nested_group.name}")
-  end
-
-  it "also display group#show on the short path" do
-    expect(get("/#{name}")).to route_to('groups#show', id: name)
-  end
-
-  it "to #activity" do
-    expect(get("/groups/#{name}/activity")).to route_to('groups#activity', id: name)
-  end
-
-  it "to #issues" do
-    expect(get("/groups/#{name}/issues")).to route_to('groups#issues', id: name)
-  end
-
-  it "to #members" do
-    expect(get("/groups/#{name}/group_members")).to route_to('groups/group_members#index', group_id: name)
-  end
-end
-
 describe HealthCheckController, 'routing' do
   it 'to #index' do
     expect(get('/health_check')).to route_to('health_check#index')

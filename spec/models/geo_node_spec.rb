@@ -138,7 +138,7 @@ describe GeoNode, type: :model do
     end
 
     it 'returns false when node is not the current node' do
-      stub_current_geo_node(double)
+      subject.port = Gitlab.config.gitlab.port + 1
 
       expect(subject.current?).to eq false
     end
@@ -238,6 +238,18 @@ describe GeoNode, type: :model do
     end
   end
 
+  describe '#find_or_build_status' do
+    it 'returns a new status' do
+      status = new_node.find_or_build_status
+
+      expect(status).to be_a(GeoNodeStatus)
+
+      status.save
+
+      expect(new_node.find_or_build_status).to eq(status)
+    end
+  end
+
   describe '#oauth_callback_url' do
     let(:oauth_callback_url) { 'https://localhost:3000/gitlab/oauth/geo/callback' }
 
@@ -328,6 +340,78 @@ describe GeoNode, type: :model do
         node.update_attribute(:namespaces, [group_1, group_2, nested_group_1])
 
         expect(node.restricted_project_ids).to match_array([project_1.id, project_2.id, project_3.id])
+      end
+    end
+  end
+
+  describe '#lfs_objects_synced_count' do
+    context 'primary node' do
+      subject { primary_node }
+
+      it 'returns nil' do
+        expect(subject.lfs_objects_synced_count).to be_nil
+      end
+    end
+
+    context 'secondary node' do
+      subject { node }
+
+      it 'returns a value' do
+        expect(subject.lfs_objects_synced_count).to eq(0)
+      end
+    end
+  end
+
+  describe '#lfs_objects_failed_count' do
+    context 'primary node' do
+      subject { primary_node }
+
+      it 'returns nil' do
+        expect(subject.lfs_objects_failed_count).to be_nil
+      end
+    end
+
+    context 'secondary node' do
+      subject { node }
+
+      it 'returns a value' do
+        expect(subject.lfs_objects_failed_count).to eq(0)
+      end
+    end
+  end
+
+  describe '#attachments_synced_count' do
+    context 'primary node' do
+      subject { primary_node }
+
+      it 'returns nil' do
+        expect(subject.attachments_synced_count).to be_nil
+      end
+    end
+
+    context 'secondary node' do
+      subject { node }
+
+      it 'returns a value' do
+        expect(subject.attachments_synced_count).to eq(0)
+      end
+    end
+  end
+
+  describe '#attachments_failed_count' do
+    context 'primary node' do
+      subject { primary_node }
+
+      it 'returns nil' do
+        expect(subject.attachments_failed_count).to be_nil
+      end
+    end
+
+    context 'secondary node' do
+      subject { node }
+
+      it 'returns a value' do
+        expect(subject.attachments_failed_count).to eq(0)
       end
     end
   end

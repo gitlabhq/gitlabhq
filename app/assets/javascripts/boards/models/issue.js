@@ -20,6 +20,7 @@ class ListIssue {
     this.position = obj.relative_position || Infinity;
     this.milestone_id = obj.milestone_id;
     this.project_id = obj.project_id;
+    this.weight = obj.weight;
 
     if (obj.project) {
       this.project = new IssueProject(obj.project);

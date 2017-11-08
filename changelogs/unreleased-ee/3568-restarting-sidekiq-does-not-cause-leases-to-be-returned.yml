@@ -1,0 +1,5 @@
+---
+title: Geo - Ensures that leases were returned.
+merge_request: 3241
+author:
+type: fixed

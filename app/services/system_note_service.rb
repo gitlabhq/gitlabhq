@@ -481,17 +481,7 @@ module SystemNoteService
   #
   # Returns Boolean
   def cross_reference_exists?(noteable, mentioner)
-    # Initial scope should be system notes of this noteable type
-    notes = Note.system.where(noteable_type: noteable.class)
-
-    notes =
-      if noteable.is_a?(Commit)
-        # Commits have non-integer IDs, so they're stored in `commit_id`
-        notes.where(commit_id: noteable.id)
-      else
-        notes.where(noteable_id: noteable.id)
-      end
-
+    notes = noteable.notes.system
     notes_for_mentioner(mentioner, noteable, notes).exists?
   end
 

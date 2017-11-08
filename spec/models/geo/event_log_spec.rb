@@ -7,6 +7,7 @@ RSpec.describe Geo::EventLog, type: :model do
     it { is_expected.to belong_to(:repository_deleted_event).class_name('Geo::RepositoryDeletedEvent').with_foreign_key('repository_deleted_event_id') }
     it { is_expected.to belong_to(:repository_renamed_event).class_name('Geo::RepositoryRenamedEvent').with_foreign_key('repository_renamed_event_id') }
     it { is_expected.to belong_to(:repository_updated_event).class_name('Geo::RepositoryUpdatedEvent').with_foreign_key('repository_updated_event_id') }
+    it { is_expected.to belong_to(:hashed_storage_migrated_event).class_name('Geo::HashedStorageMigratedEvent').with_foreign_key('hashed_storage_migrated_event_id') }
   end
 
   describe '#event' do
@@ -47,6 +48,13 @@ RSpec.describe Geo::EventLog, type: :model do
       subject.repositories_changed_event = repositories_changed_event
 
       expect(subject.event).to eq repositories_changed_event
+    end
+
+    it 'returns hashed_storage_migrated_event when set' do
+      hashed_storage_migrated_event = build(:geo_hashed_storage_migrated_event)
+      subject.hashed_storage_migrated_event = hashed_storage_migrated_event
+
+      expect(subject.event).to eq hashed_storage_migrated_event
     end
   end
 

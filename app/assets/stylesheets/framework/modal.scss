@@ -9,6 +9,7 @@
 .modal-body {
   position: relative;
   padding: #{3 * $grid-size} #{2 * $grid-size};
+  background-color: $modal-body-bg;
 
   .form-actions {
     margin: #{2 * $grid-size} #{-2 * $grid-size} #{-2 * $grid-size};
@@ -41,4 +42,8 @@ body.modal-open {
   .modal-full {
     width: 98%;
   }
+}
+
+.modal.popup-dialog {
+  display: block;
 }

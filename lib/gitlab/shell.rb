@@ -108,34 +108,6 @@ module Gitlab
       gitlab_shell_fast_execute_raise_error(cmd)
     end
 
-    def list_remote_tags(storage, name, remote)
-      output, status = Popen.popen([gitlab_shell_projects_path, 'list-remote-tags', storage, "#{name}.git", remote])
-      tags_with_targets = []
-
-      raise Error, output unless status.zero?
-
-      # Each line has this format: "dc872e9fa6963f8f03da6c8f6f264d0845d6b092\trefs/tags/v1.10.0\n"
-      # We want to convert it to: [{ 'v1.10.0' => 'dc872e9fa6963f8f03da6c8f6f264d0845d6b092' }, ...]
-      output.lines.each do |line|
-        target, path = line.strip!.split("\t")
-
-        # When the remote repo does not have tags.
-        if target.nil? || path.nil?
-          Rails.logger.info "Empty or invalid list of tags for remote: #{remote}. Output: #{output}"
-          break
-        end
-
-        name = path.split('/', 3).last
-        # We're only interested in tag references
-        # See: http://stackoverflow.com/questions/15472107/when-listing-git-ls-remote-why-theres-after-the-tag-name
-        next if name =~ /\^\{\}\Z/
-
-        tags_with_targets.concat([name, target])
-      end
-
-      Hash[*tags_with_targets]
-    end
-
     # Fetch remote for repository
     #
     # repository - an instance of Git::Repository

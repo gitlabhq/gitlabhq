@@ -1,14 +1,16 @@
+- last_successful_update_at = @project.mirror_last_successful_update_at
+- raw_message = local_assigns.fetch(:raw_message, false)
+
 - case @project.mirror_last_update_status
 - when :success
-  Updated #{time_ago_with_tooltip(@project.mirror_last_successful_update_at)}.
+  Updated #{time_ago_with_tooltip(last_successful_update_at)}.
 - when :failed
-  - if can?(current_user, :admin_project, @project)
-    = link_to project_mirror_path(@project) do
-      = icon("exclamation-triangle")
-      Failed to update #{time_ago_with_tooltip(@project.mirror_last_update_at)}.
-  - else
-    = icon("exclamation-triangle")
-    Failed to update #{time_ago_with_tooltip(@project.mirror_last_update_at)}.
+  = render_mirror_failed_message(raw_message: raw_message)
+
+  - if @project.mirror_hard_failed?
+    %br
+    Repository mirroring has been paused due to too many failed attempts, and can be resumed by a project admin.
 
   - if @project.mirror_ever_updated_successfully?
-    Last successful update #{time_ago_with_tooltip(@project.mirror_last_successful_update_at)}.
+    %br
+    Last successful update #{time_ago_with_tooltip(last_successful_update_at)}.

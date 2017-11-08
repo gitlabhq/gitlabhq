@@ -30,4 +30,11 @@ export default {
   commit(projectId, payload) {
     return Api.commitMultiple(projectId, payload);
   },
+  getTreeLastCommit(endpoint) {
+    return Vue.http.get(endpoint, {
+      params: {
+        format: 'json',
+      },
+    });
+  },
 };

@@ -5,6 +5,10 @@ class Feature
   class FlipperFeature < Flipper::Adapters::ActiveRecord::Feature
     # Using `self.table_name` won't work. ActiveRecord bug?
     superclass.table_name = 'features'
+
+    def self.feature_names
+      pluck(:key)
+    end
   end
 
   class FlipperGate < Flipper::Adapters::ActiveRecord::Gate
@@ -22,11 +26,19 @@ class Feature
       flipper.feature(key)
     end
 
+    def persisted_names
+      if RequestStore.active?
+        RequestStore[:flipper_persisted_names] ||= FlipperFeature.feature_names
+      else
+        FlipperFeature.feature_names
+      end
+    end
+
     def persisted?(feature)
       # Flipper creates on-memory features when asked for a not-yet-created one.
       # If we want to check if a feature has been actually set, we look for it
       # on the persisted features list.
-      all.map(&:name).include?(feature.name)
+      persisted_names.include?(feature.name)
     end
 
     def enabled?(key, thing = nil)

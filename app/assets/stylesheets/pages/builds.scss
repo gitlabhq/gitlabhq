@@ -48,7 +48,7 @@
     overflow-x: auto;
     font-size: 12px;
     border-radius: 0;
-    border: none;
+    border: 0;
 
     .bash {
       display: block;
@@ -68,18 +68,18 @@
 
     &.affix {
       top: $header-height;
-    }
 
-    // with sidebar
-    &.affix.sidebar-expanded {
-      right: 306px;
-      left: 16px;
-    }
+      // with sidebar
+      &.sidebar-expanded {
+        right: 306px;
+        left: 16px;
+      }
 
-    // without sidebar
-    &.affix.sidebar-collapsed {
-      right: 16px;
-      left: 16px;
+      // without sidebar
+      &.sidebar-collapsed {
+        right: 16px;
+        left: 16px;
+      }
     }
 
     &.affix-top {
