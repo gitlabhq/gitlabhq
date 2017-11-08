@@ -5,8 +5,8 @@ module Gitlab
       include Database::MigrationHelpers
 
       FILE_PATH_BATCH_SIZE = 500
-      UPLOAD_DIR = "#{CarrierWave.root}/uploads"
-      FOLLOW_UP_MIGRATION = 'PopulateUntrackedUploads'
+      UPLOAD_DIR = "#{CarrierWave.root}/uploads".freeze
+      FOLLOW_UP_MIGRATION = 'PopulateUntrackedUploads'.freeze
 
       class UnhashedUploadFile < ActiveRecord::Base
         include EachBatch
@@ -33,7 +33,7 @@ module Gitlab
       end
 
       def store_unhashed_upload_file_paths
-        return unless Dir.exists?(UPLOAD_DIR)
+        return unless Dir.exist?(UPLOAD_DIR)
 
         file_paths = []
         each_file_path(UPLOAD_DIR) do |file_path|

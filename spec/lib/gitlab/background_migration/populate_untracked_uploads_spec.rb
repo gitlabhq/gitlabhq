@@ -129,7 +129,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UnhashedUploadFi
       it 'does not add an upload' do
         expect do
           unhashed_upload_file.ensure_tracked!
-        end.to_not change { upload_class.count }.from(1)
+        end.not_to change { upload_class.count }.from(1)
       end
     end
   end

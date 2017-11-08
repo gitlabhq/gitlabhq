@@ -37,7 +37,7 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
     migrate!
 
     max_length_namespace_path = max_length_project_path = max_length_filename = 'a' * 255
-    long_path = "./uploads#{("/#{max_length_namespace_path}") * Namespace::NUMBER_OF_ANCESTORS_ALLOWED}/#{max_length_project_path}/#{max_length_filename}"
+    long_path = "./uploads#{"/#{max_length_namespace_path}" * Namespace::NUMBER_OF_ANCESTORS_ALLOWED}/#{max_length_project_path}/#{max_length_filename}"
     unhashed_upload_file = UnhashedUploadFile.new(path: long_path)
     unhashed_upload_file.save!
     expect(UnhashedUploadFile.first.path.size).to eq(5641)
@@ -106,7 +106,7 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
 
         expect(user1.reload.uploads.first.attributes).to include({
           "path" => "uploads/-/system/user/avatar/#{user1.id}/rails_sample.jpg",
-          "uploader" => "AvatarUploader",
+          "uploader" => "AvatarUploader"
         }.merge(rails_sample_jpg_attrs))
         expect(project1.reload.uploads.first.attributes).to include({
           "path" => "uploads/-/system/project/avatar/#{project1.id}/rails_sample.jpg",
