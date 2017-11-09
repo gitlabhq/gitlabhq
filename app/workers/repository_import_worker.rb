@@ -27,13 +27,10 @@ class RepositoryImportWorker
     raise ImportError, result[:message] if result[:status] == :error
 
     project.after_import
-<<<<<<< HEAD
 
     # Explicitly enqueue mirror for update so
     # that upstream remote is created and fetched
     project.force_import_job! if project.mirror?
-=======
->>>>>>> ce/master
   rescue ImportError => ex
     fail_import(project, ex.message)
     raise
