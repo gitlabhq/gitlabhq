@@ -101,13 +101,13 @@
 
     @for $i from 0 through 5 {
       .legend-box-#{$i} {
-        background-color: mix($blame-cyan, $blame-blue, $i / 5.0 * 100%);
+        background-color: mix($blame-cyan, $blame-blue, $i / 5 * 100%);
       }
     }
 
     @for $i from 1 through 4 {
       .legend-box-#{$i + 5} {
-        background-color: mix($blame-gray, $blame-cyan, $i / 4.0 * 100%);
+        background-color: mix($blame-gray, $blame-cyan, $i / 4 * 100%);
       }
     }
   }
@@ -200,13 +200,13 @@
 
       @for $i from 0 through 5 {
         td.blame-commit-age-#{$i} {
-          border-left-color: mix($blame-cyan, $blame-blue, $i / 5.0 * 100%);
+          border-left-color: mix($blame-cyan, $blame-blue, $i / 5 * 100%);
         }
       }
 
       @for $i from 1 through 4 {
         td.blame-commit-age-#{$i + 5} {
-          border-left-color: mix($blame-gray, $blame-cyan, $i / 4.0 * 100%);
+          border-left-color: mix($blame-gray, $blame-cyan, $i / 4 * 100%);
         }
       }
     }
