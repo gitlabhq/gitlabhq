@@ -41,4 +41,48 @@ describe Gitlab::GitalyClient::WikiService do
       expect(wiki_page_version.format).to eq('markdown')
     end
   end
+
+  describe '#get_all_pages' do
+    let(:page_2_info) { { title: 'My Page 2', raw_data: 'c', version: page_version } }
+    let(:response) do
+      [
+        Gitaly::WikiGetAllPagesResponse.new(page: Gitaly::WikiPage.new(page_info)),
+        Gitaly::WikiGetAllPagesResponse.new(page: Gitaly::WikiPage.new(raw_data: 'b')),
+        Gitaly::WikiGetAllPagesResponse.new(end_of_page: true),
+        Gitaly::WikiGetAllPagesResponse.new(page: Gitaly::WikiPage.new(page_2_info)),
+        Gitaly::WikiGetAllPagesResponse.new(page: Gitaly::WikiPage.new(raw_data: 'd')),
+        Gitaly::WikiGetAllPagesResponse.new(end_of_page: true)
+      ]
+    end
+    let(:wiki_page_1) { subject[0].first }
+    let(:wiki_page_1_version) { subject[0].last }
+    let(:wiki_page_2) { subject[1].first }
+    let(:wiki_page_2_version) { subject[1].last }
+
+    subject { client.get_all_pages }
+
+    it 'sends a wiki_get_all_pages message' do
+      expect_any_instance_of(Gitaly::WikiService::Stub)
+        .to receive(:wiki_get_all_pages)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return([].each)
+
+      subject
+    end
+
+    it 'concatenates the raw data and returns a pair of WikiPage and WikiPageVersion for each page' do
+      expect_any_instance_of(Gitaly::WikiService::Stub)
+        .to receive(:wiki_get_all_pages)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(response.each)
+
+      expect(subject.size).to be(2)
+      expect(wiki_page_1.title).to eq('My Page')
+      expect(wiki_page_1.raw_data).to eq('ab')
+      expect(wiki_page_1_version.format).to eq('markdown')
+      expect(wiki_page_2.title).to eq('My Page 2')
+      expect(wiki_page_2.raw_data).to eq('cd')
+      expect(wiki_page_2_version.format).to eq('markdown')
+    end
+  end
 end
