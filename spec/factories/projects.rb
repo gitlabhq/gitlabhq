@@ -53,7 +53,7 @@ FactoryBot.define do
       project.group&.refresh_members_authorized_projects
 
       # assign the delegated `#settings` attributes after create
-      project.reload.group_runners_enabled = evaluator.group_runners_enabled if evaluator.group_runners_enabled
+      project.reload.group_runners_enabled = evaluator.group_runners_enabled unless evaluator.group_runners_enabled.nil?
     end
 
     trait :public do
