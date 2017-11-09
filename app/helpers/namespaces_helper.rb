@@ -4,7 +4,7 @@ module NamespacesHelper
   end
 
   def namespaces_options(selected = :current_user, display_path: false, extra_group: nil)
-    groups  = current_user.owned_groups + current_user.masters_groups
+    groups  = current_user.manageable_groups.includes(:route)
     users   = [current_user.namespace]
 
     unless extra_group.nil? || extra_group.is_a?(Group)
