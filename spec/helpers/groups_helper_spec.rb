@@ -3,8 +3,6 @@ require 'spec_helper'
 describe GroupsHelper do
   include ApplicationHelper
 
-  let(:asset_host) { 'http://assets' }
-
   describe 'group_icon' do
     avatar_file_path = File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
 
@@ -13,16 +11,8 @@ describe GroupsHelper do
       group.avatar = fixture_file_upload(avatar_file_path)
       group.save!
 
-      avatar_url = "/uploads/-/system/group/avatar/#{group.id}/banana_sample.gif"
-
       expect(helper.group_icon(group).to_s)
-        .to eq "<img data-src=\"#{avatar_url}\" class=\" lazy\" src=\"#{LazyImageTagHelper.placeholder_image}\" />"
-
-      allow(ActionController::Base).to receive(:asset_host).and_return(asset_host)
-      avatar_url = "#{asset_host}/uploads/-/system/group/avatar/#{group.id}/banana_sample.gif"
-
-      expect(helper.group_icon(group).to_s)
-        .to eq "<img data-src=\"#{avatar_url}\" class=\" lazy\" src=\"#{LazyImageTagHelper.placeholder_image}\" />"
+        .to eq "<img data-src=\"#{group.avatar.url}\" class=\" lazy\" src=\"#{LazyImageTagHelper.placeholder_image}\" />"
     end
   end
 
@@ -34,25 +24,7 @@ describe GroupsHelper do
       group.avatar = fixture_file_upload(avatar_file_path)
       group.save!
       expect(group_icon_url(group.path).to_s)
-        .to match("/uploads/-/system/group/avatar/#{group.id}/banana_sample.gif")
-    end
-
-    it 'returns an CDN url for the avatar' do
-      allow(ActionController::Base).to receive(:asset_host).and_return(asset_host)
-      group = create(:group)
-      group.avatar = fixture_file_upload(avatar_file_path)
-      group.save!
-      expect(group_icon_url(group.path).to_s)
-        .to match("#{asset_host}/uploads/-/system/group/avatar/#{group.id}/banana_sample.gif")
-    end
-
-    it 'returns an based url for the avatar if private' do
-      allow(ActionController::Base).to receive(:asset_host).and_return(asset_host)
-      group = create(:group, :private)
-      group.avatar = fixture_file_upload(avatar_file_path)
-      group.save!
-      expect(group_icon_url(group.path).to_s)
-        .to match("/uploads/-/system/group/avatar/#{group.id}/banana_sample.gif")
+        .to match(group.avatar.url)
     end
 
     it 'gives default avatar_icon when no avatar is present' do

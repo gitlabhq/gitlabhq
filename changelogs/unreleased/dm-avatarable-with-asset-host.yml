@@ -1,0 +1,6 @@
+---
+title: Always return full avatar URL for private/internal groups/projects when asset
+  host is set
+merge_request:
+author:
+type: fixed
