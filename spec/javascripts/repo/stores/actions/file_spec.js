@@ -29,7 +29,7 @@ describe('Multi-file store file actions', () => {
     });
 
     afterEach(() => {
-      store._actions.getLastCommitData = [oldGetLastCommitData]; // eslint-disable-line
+      store._actions.getLastCommitData = oldGetLastCommitData; // eslint-disable-line
     });
 
     it('closes open files', (done) => {

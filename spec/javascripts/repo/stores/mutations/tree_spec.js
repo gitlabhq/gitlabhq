@@ -24,17 +24,15 @@ describe('Multi-file store tree mutations', () => {
   });
 
   describe('SET_DIRECTORY_DATA', () => {
-    const data = {
-      trees: [{
-        name: 'tree',
-      }],
-      submodules: [{
-        name: 'submodule',
-      }],
-      blobs: [{
-        name: 'blob',
-      }],
-    };
+    const data = [{
+      name: 'tree',
+    },
+    {
+      name: 'submodule',
+    },
+    {
+      name: 'blob',
+    }];
 
     it('adds directory data', () => {
       mutations.SET_DIRECTORY_DATA(localState, {
@@ -43,33 +41,9 @@ describe('Multi-file store tree mutations', () => {
       });
 
       expect(localState.tree.length).toBe(3);
-      expect(localState.tree[0].type).toBe('tree');
-      expect(localState.tree[1].type).toBe('submodule');
-      expect(localState.tree[2].type).toBe('blob');
-    });
-
-    it('defaults to rootUrl when no parent_tree_url is in data', () => {
-      localState.endpoints.rootUrl = 'test';
-
-      mutations.SET_DIRECTORY_DATA(localState, {
-        data,
-        tree: localState,
-      });
-
-      expect(localState.tree[0].parentTreeUrl).toBe('test');
-    });
-
-    it('uses parent_tree_url from data', () => {
-      mutations.SET_DIRECTORY_DATA(localState, {
-        data: {
-          ...data,
-          parent_tree_url: 'parent/',
-          path: 'test',
-        },
-        tree: localState,
-      });
-
-      expect(localState.tree[0].parentTreeUrl).toBe('parent/test');
+      expect(localState.tree[0].name).toBe('tree');
+      expect(localState.tree[1].name).toBe('submodule');
+      expect(localState.tree[2].name).toBe('blob');
     });
   });
 
