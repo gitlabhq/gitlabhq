@@ -45,11 +45,10 @@
                   Contribution Analytics
 
       -# TODO: Add the flag check to only show epics if available
-      -# TODO: Add epic icon
       = nav_link(path: 'groups#epics') do
         = link_to group_epics_path(@group) do
           .nav-icon-container
-            = sprite_icon('git-merge')
+            = sprite_icon('epic')
           %span.nav-item-name
             Epics
           %span.badge.count= number_with_delimiter(epics.count)
