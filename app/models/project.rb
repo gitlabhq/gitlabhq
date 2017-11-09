@@ -1324,9 +1324,9 @@ class Project < ActiveRecord::Base
   end
 
   def any_runners?(&block)
-    active_runners.any?(&block) ||
-      active_shared_runners.any?(&block) ||
-      active_group_runners.any?(&block)
+    union = Gitlab::SQL::Union.new([active_runners, active_shared_runners, active_group_runners])
+    runners = Ci::Runner.from("(#{union.to_sql}) ci_runners")
+    runners.any?(&block)
   end
 
   def valid_runners_token?(token)
