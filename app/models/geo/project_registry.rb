@@ -19,7 +19,7 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     where(
       arel_table[:repository_retry_at].lt(Time.now)
         .or(arel_table[:wiki_retry_at].lt(Time.now))
-        .or(arel_table[:wiki_retry_at].eq(nil))
+        .or(arel_table[:repository_retry_at].eq(nil))
         .or(arel_table[:wiki_retry_at].eq(nil))
     )
   end

@@ -170,5 +170,24 @@ module Geo
     def last_synced_at
       registry.public_send("last_#{type}_synced_at") # rubocop:disable GitlabSecurity/PublicSend
     end
+
+    def disk_path_temp
+      "#{repository.disk_path}_temp"
+    end
+
+    def build_temporary_repository
+      gitlab_shell.add_repository(project.repository_storage, disk_path_temp)
+      repository.clone.tap{|repo| repo.disk_path = disk_path_temp}
+    end
+
+    def clean_up_temporary_repository
+      gitlab_shell.remove_repository(project.repository_storage_path, disk_path_temp)
+    end
+
+    def set_temp_repository_as_main
+      log_info("Setting newly downloaded #{type} as a main one")
+      gitlab_shell.remove_repository(project.repository_storage_path, repository.disk_path)
+      gitlab_shell.mv_repository(project.repository_storage_path, disk_path_temp, repository.disk_path)
+    end
   end
 end

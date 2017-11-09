@@ -1,35 +1,28 @@
-require 'tmpdir'
-
 module Geo
   class RepositorySyncService < BaseSyncService
+    include Gitlab::ShellAdapter
+
     self.type = :repository
 
     private
 
-    def sync_repository(with_backup = false)
-      fetch_project_repository(with_backup)
+    def sync_repository(redownload = false)
+      fetch_project_repository(redownload)
       expire_repository_caches
     end
 
-    def fetch_project_repository(with_backup)
+    def fetch_project_repository(redownload)
       log_info('Trying to fetch project repository')
       update_registry(started_at: DateTime.now)
 
-      if with_backup
-        log_info('Backup enabled')
-        actual_path = project.repository.path_to_repo
-        backup_path = File.join(Dir.mktmpdir, project.path)
-
-        # Creating a backup copy and removing the main repo
-        FileUtils.mv(actual_path, backup_path)
-      end
-
-      project.ensure_repository
-      fetch_geo_mirror(project.repository)
-
-      if with_backup
-        log_info('Removing backup copy as the repository was redownloaded successfully')
-        FileUtils.rm_rf(backup_path)
+      if redownload
+        log_info('Redownloading repository')
+        clean_up_temporary_repository
+        fetch_geo_mirror(build_temporary_repository)
+        set_temp_repository_as_main
+      else
+        project.ensure_repository
+        fetch_geo_mirror(project.repository)
       end
 
       update_registry(finished_at: DateTime.now)
@@ -44,12 +37,6 @@ module Geo
       log_error('Invalid repository', e)
       registry.update(force_to_redownload_repository: true)
       expire_repository_caches
-    ensure
-      # Backup can only exist if redownload was unsuccessful
-      if with_backup && File.exist?(backup_path)
-        FileUtils.rm_rf(actual_path)
-        FileUtils.mv(backup_path, actual_path)
-      end
     end
 
     def expire_repository_caches
@@ -59,6 +46,10 @@ module Geo
 
     def ssh_url_to_repo
       "#{primary_ssh_path_prefix}#{project.full_path}.git"
+    end
+
+    def repository
+      project.repository
     end
   end
 end

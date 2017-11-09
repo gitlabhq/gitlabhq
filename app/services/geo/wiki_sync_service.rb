@@ -1,32 +1,27 @@
 module Geo
   class WikiSyncService < BaseSyncService
+    include Gitlab::ShellAdapter
+
     self.type = :wiki
 
     private
 
-    def sync_repository(with_backup = false)
-      fetch_wiki_repository(with_backup)
+    def sync_repository(redownload = false)
+      fetch_wiki_repository(redownload)
     end
 
-    def fetch_wiki_repository(with_backup)
+    def fetch_wiki_repository(redownload)
       log_info('Fetching wiki repository')
       update_registry(started_at: DateTime.now)
 
-      if with_backup
-        log_info('Backup enabled')
-        actual_path = project.wiki.path_to_repo
-        backup_path = File.join(Dir.mktmpdir, 'wiki')
-
-        # Creating a backup copy and removing the main wiki
-        FileUtils.mv(actual_path, backup_path)
-      end
-
-      project.wiki.ensure_repository
-      fetch_geo_mirror(project.wiki.repository)
-
-      if with_backup
-        log_info('Removing backup copy as the repository was redownloaded successfully')
-        FileUtils.rm_r(backup_path)
+      if redownload
+        log_info('Redownloading wiki')
+        clean_up_temporary_repository
+        fetch_geo_mirror(build_temporary_repository)
+        set_temp_repository_as_main
+      else
+        project.wiki.ensure_repository
+        fetch_geo_mirror(project.wiki.repository)
       end
 
       update_registry(finished_at: DateTime.now)
@@ -42,15 +37,14 @@ module Geo
     rescue Gitlab::Git::Repository::NoRepository => e
       log_error('Invalid wiki', e)
       registry.update(force_to_redownload_wiki: true)
-    ensure
-      # Backup can only exist if redownload was unsuccessful
-      if with_backup && File.exist?(backup_path)
-        FileUtils.mv(backup_path, actual_path)
-      end
     end
 
     def ssh_url_to_wiki
       "#{primary_ssh_path_prefix}#{project.full_path}.wiki.git"
+    end
+
+    def repository
+      project.wiki.repository
     end
   end
 end
