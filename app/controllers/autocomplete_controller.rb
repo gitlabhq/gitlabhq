@@ -38,7 +38,7 @@ class AutocompleteController < ApplicationController
   end
 
   def custom_emoji
-    render json: @project.namespace.custom_emoji_url_by_name.map { |k, v| { name: k, url: v } }
+    render json: @project.custom_emoji.map { |c| { name: c.name, url: c.url } }
   end
 
   private

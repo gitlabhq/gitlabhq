@@ -784,6 +784,10 @@ class Project < ActiveRecord::Base
       "#{full_path}+#{author.incoming_email_token}")
   end
 
+  def custom_emoji
+    CustomEmoji.for_namespace(namespace_id)
+  end
+
   def build_commit_note(commit)
     notes.new(commit_id: commit.id, noteable_type: 'Commit')
   end
