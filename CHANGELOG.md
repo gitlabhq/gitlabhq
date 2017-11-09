@@ -2,6 +2,12 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.1.2 (2017-11-08)
+
+- [SECURITY] Add X-Content-Type-Options header in API responses to make it more difficult to find other vulnerabilities.
+- [SECURITY] Properly translate IP addresses written in decimal, octal, or other formats in SSRF protections in project imports.
+- [FIXED] Fix TRIGGER checks for MySQL.
+
 ## 10.1.1 (2017-10-31)
 
 - [FIXED] Auto Devops kubernetes default namespace is now correctly built out of gitlab project group-name. !14642 (Mircea Danila Dumitrescu)
