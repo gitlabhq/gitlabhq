@@ -2,10 +2,7 @@
   import pipelineStage from '../../pipelines/components/stage.vue';
   import ciIcon from '../../vue_shared/components/ci_icon.vue';
   import icon from '../../vue_shared/components/icon.vue';
-<<<<<<< HEAD
   import linkedPipelinesMiniList from '../../vue_shared/components/linked_pipelines_mini_list.vue';
-=======
->>>>>>> ce/master
 
   export default {
     name: 'MRWidgetPipeline',
@@ -29,10 +26,7 @@
       pipelineStage,
       ciIcon,
       icon,
-<<<<<<< HEAD
       linkedPipelinesMiniList,
-=======
->>>>>>> ce/master
     },
     computed: {
       hasPipeline() {
@@ -50,7 +44,6 @@
           this.pipeline.details.stages &&
           this.pipeline.details.stages.length;
       },
-<<<<<<< HEAD
 
       /* We typically set defaults ([]) in the store or prop declarations, but because triggered
       * and triggeredBy are appended to `pipeline`, we can't set defaults in the store, and we
@@ -66,12 +59,6 @@
     },
   };
 </script>
-=======
-    },
-  };
-</script>
-
->>>>>>> ce/master
 <template>
   <div
     v-if="hasPipeline || hasCIError"
@@ -79,12 +66,7 @@
     <div class="ci-widget media">
       <template v-if="hasCIError">
         <div class="ci-status-icon ci-status-icon-failed ci-error js-ci-error append-right-10">
-<<<<<<< HEAD
-          <icon
-            name="status_failed"/>
-=======
           <icon name="status_failed" />
->>>>>>> ce/master
         </div>
         <div class="media-body">
           Could not connect to the CI server. Please check your settings and try again
@@ -96,10 +78,6 @@
           :href="this.status.details_path">
           <ci-icon :status="status" />
         </a>
-<<<<<<< HEAD
-=======
-
->>>>>>> ce/master
         <div class="media-body">
           Pipeline
           <a
@@ -107,13 +85,9 @@
             class="pipeline-id">
             #{{pipeline.id}}
           </a>
-<<<<<<< HEAD
-          {{pipeline.details.status.label}} for
-=======
 
           {{pipeline.details.status.label}} for
 
->>>>>>> ce/master
           <a
             :href="pipeline.commit.commit_path"
             class="commit-sha js-commit-link">
@@ -121,19 +95,15 @@
 
           <span class="mr-widget-pipeline-graph">
             <span class="stage-cell">
-<<<<<<< HEAD
               <linked-pipelines-mini-list
                 v-if="triggeredBy.length"
                 :triggered-by="triggeredBy"
                 />
 
-=======
->>>>>>> ce/master
               <div
                 v-if="hasStages"
                 v-for="(stage, i) in pipeline.details.stages"
                 :key="i"
-<<<<<<< HEAD
                 class="stage-container dropdown js-mini-pipeline-graph"
                 :class="{
                   'has-downstream': i === pipeline.details.stages.length - 1 && triggered.length
@@ -145,11 +115,6 @@
                 v-if="triggered.length"
                 :triggered="triggered"
                 />
-=======
-                class="stage-container dropdown js-mini-pipeline-graph">
-                <pipeline-stage :stage="stage" />
-              </div>
->>>>>>> ce/master
             </span>
           </span>
 
