@@ -14,3 +14,9 @@
         The import will time out after 15 minutes. For repositories that take longer, use a clone/push combination.
       %li
         To migrate an SVN repository, check out #{link_to "this document", help_page_path('user/project/import/svn')}.
+
+  .form-group
+    = f.label :only_import_protected_branches, class: 'label-light' do
+      = f.check_box :only_import_protected_branches
+      %strong
+        Only import default branch

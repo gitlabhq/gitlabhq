@@ -100,11 +100,13 @@ module Gitlab
     #   import_repository("/path/to/storage", "gitlab/gitlab-ci", "https://github.com/randx/six.git")
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
-    def import_repository(storage, name, url)
+    def import_repository(storage, name, url, single_branch: false)
       # Timeout should be less than 900 ideally, to prevent the memory killer
       # to silently kill the process without knowing we are timing out here.
       cmd = [gitlab_shell_projects_path, 'import-project',
              storage, "#{name}.git", url, "#{Gitlab.config.gitlab_shell.git_timeout}"]
+      cmd << '--single-branch' if single_branch
+
       gitlab_shell_fast_execute_raise_error(cmd)
     end
 

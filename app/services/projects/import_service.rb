@@ -67,7 +67,9 @@ module Projects
     end
 
     def clone_repository
-      gitlab_shell.import_repository(project.repository_storage_path, project.disk_path, project.import_url)
+      gitlab_shell.import_repository(project.repository_storage_path,
+                                     project.disk_path, project.import_url,
+                                     single_branch: project.only_import_protected_branches)
     end
 
     def fetch_repository
