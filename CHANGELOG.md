@@ -4,7 +4,8 @@ entry.
 
 ## 10.0.6 (2017-11-08)
 
-- No changes.
+- [SECURITY] Add X-Content-Type-Options header in API responses to make it more difficult to find other vulnerabilities.
+- [SECURITY] Properly translate IP addresses written in decimal, octal, or other formats in SSRF protections in project imports.
 
 ## 10.0.5 (2017-11-03)
 
