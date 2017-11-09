@@ -350,12 +350,12 @@ export default class CreateMergeRequestDropdown {
       this.unavailableButtonArrow.classList.add('fa-spin');
       this.unavailableButtonArrow.classList.add('fa-spinner');
       this.unavailableButtonArrow.classList.remove('fa-exclamation-triangle');
-      this.unavailableButtonText.textContent = 'Checking branch availability…';
+      this.unavailableButtonText.textContent = __('Checking branch availability...');
     } else {
       this.unavailableButtonArrow.classList.remove('fa-spin');
       this.unavailableButtonArrow.classList.remove('fa-spinner');
       this.unavailableButtonArrow.classList.add('fa-exclamation-triangle');
-      this.unavailableButtonText.textContent = 'New branch unavailable';
+      this.unavailableButtonText.textContent = __('New branch unavailable');
     }
   }
 
@@ -372,7 +372,7 @@ export default class CreateMergeRequestDropdown {
 
   showCheckingMessage(target) {
     const { message } = this.getTargetData(target);
-    const text = target === 'branch' ? 'branch name' : 'source';
+    const text = target === 'branch' ? __('branch name') : __('source');
 
     this.removeMessage(target);
     message.classList.add('gl-field-hint');
