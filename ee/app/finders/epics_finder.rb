@@ -19,6 +19,11 @@ class EpicsFinder < IssuableFinder
     execute.count
   end
 
+  # we don't have states for epics for now but need this method
+  def count_by_state
+    { all: row_count }
+  end
+
   def group
     return nil unless params[:group_id]
     return @group if defined?(@group)
