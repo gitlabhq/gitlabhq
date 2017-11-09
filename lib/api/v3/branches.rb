@@ -14,9 +14,11 @@ module API
           success ::API::Entities::Branch
         end
         get ":id/repository/branches" do
-          branches = user_project.repository.branches.sort_by(&:name)
+          repository = user_project.repository
+          branches = repository.branches.sort_by(&:name)
+          merged_branch_names = repository.merged_branch_names(branches.map(&:name))
 
-          present branches, with: ::API::Entities::Branch, project: user_project
+          present branches, with: ::API::Entities::Branch, project: user_project, merged_branch_names: merged_branch_names
         end
 
         desc 'Delete a branch'

@@ -21,8 +21,8 @@ module IgnorableColumn
       @ignored_columns ||= Set.new
     end
 
-    def ignore_column(name)
-      ignored_columns << name.to_s
+    def ignore_column(*names)
+      ignored_columns.merge(names.map(&:to_s))
     end
   end
 end

@@ -25,7 +25,7 @@ gl.issueBoards.BoardsStore = {
   },
   moving: {
     issue: {},
-    list: {}
+    list: {},
   },
   create () {
     this.state.lists = [];

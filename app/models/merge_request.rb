@@ -3,15 +3,14 @@ class MergeRequest < ActiveRecord::Base
   include Issuable
   include Noteable
   include Referable
-  include Sortable
-  include Elastic::MergeRequestsSearch
   include IgnorableColumn
-  include CreatedAtFilterable
   include TimeTrackable
 
-  ignore_column :locked_at
+  ignore_column :locked_at,
+                :ref_fetched
 
   include ::EE::MergeRequest
+  include Elastic::MergeRequestsSearch
 
   belongs_to :target_project, class_name: "Project"
   belongs_to :source_project, class_name: "Project"
@@ -450,7 +449,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def create_merge_request_diff
-    fetch_ref
+    fetch_ref!
 
     # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37435
     Gitlab::GitalyClient.allow_n_plus_1_calls do
@@ -836,27 +835,12 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  def fetch_ref
-    write_ref
-    update_column(:ref_fetched, true)
+  def fetch_ref!
+    target_project.repository.fetch_source_branch!(source_project.repository, source_branch, ref_path)
   end
 
   def ref_path
     "refs/#{Repository::REF_MERGE_REQUEST}/#{iid}/head"
-  end
-
-  def ref_fetched?
-    super ||
-      begin
-        computed_value = project.repository.ref_exists?(ref_path)
-        update_column(:ref_fetched, true) if computed_value
-
-        computed_value
-      end
-  end
-
-  def ensure_ref_fetched
-    fetch_ref unless ref_fetched?
   end
 
   def in_locked_state
@@ -1003,11 +987,5 @@ class MergeRequest < ActiveRecord::Base
     return false if project.team.max_member_access(author_id) > Gitlab::Access::GUEST
 
     project.merge_requests.merged.where(author_id: author_id).empty?
-  end
-
-  private
-
-  def write_ref
-    target_project.repository.fetch_source_branch(source_project.repository, source_branch, ref_path)
   end
 end
