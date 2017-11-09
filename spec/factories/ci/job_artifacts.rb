@@ -4,6 +4,11 @@ FactoryGirl.define do
   factory :ci_job_artifact, class: Ci::JobArtifact do
     job factory: :ci_build
     file_type :archive
+    file_store JobArtifactUploader::LOCAL_STORE
+
+    trait :remote_store do
+      file_store JobArtifactUploader::REMOTE_STORE
+    end
 
     after :build do |artifact|
       artifact.project ||= artifact.job.project

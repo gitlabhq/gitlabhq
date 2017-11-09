@@ -404,8 +404,10 @@ ActiveRecord::Schema.define(version: 20171124165823) do
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
     t.string "file"
+    t.integer "file_store"
   end
 
+  add_index "ci_job_artifacts", ["file_store"], name: "index_ci_job_artifacts_on_file_store", using: :btree
   add_index "ci_job_artifacts", ["file_type"], name: "index_ci_job_artifacts_on_file_type", using: :btree
   add_index "ci_job_artifacts", ["job_id"], name: "index_ci_job_artifacts_on_job_id", using: :btree
   add_index "ci_job_artifacts", ["project_id"], name: "index_ci_job_artifacts_on_project_id", using: :btree

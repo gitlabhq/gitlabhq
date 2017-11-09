@@ -1,7 +1,7 @@
-class JobArtifactUploader < GitlabUploader
-  storage :file
+class JobArtifactUploader < ObjectStoreUploader
+  storage_options Gitlab.config.artifacts
 
-  def self.local_artifacts_store
+  def self.local_store_path
     Gitlab.config.artifacts.path
   end
 
@@ -9,30 +9,22 @@ class JobArtifactUploader < GitlabUploader
     File.join(self.local_artifacts_store, 'tmp/uploads/')
   end
 
-  def initialize(artifact, _field)
-    @artifact = artifact
-  end
-
   def size
-    return super if @artifact.size.nil?
+    return super if subject.size.nil?
 
-    @artifact.size
-  end
-
-  def store_dir
-    File.join(self.class.local_artifacts_store, default_path)
+    subject.size
   end
 
   private
 
   def default_path
-    creation_date = @artifact.created_at.utc.strftime('%Y_%m_%d')
+    creation_date = subject.created_at.utc.strftime('%Y_%m_%d')
 
     File.join(disk_hash[0..1], disk_hash[2..3], disk_hash,
-              creation_date, @artifact.job_id.to_s, @artifact.id.to_s)
+              creation_date, subject.job_id.to_s, subject.id.to_s)
   end
 
   def disk_hash
-    @disk_hash ||= Digest::SHA2.hexdigest(@artifact.project_id.to_s)
+    @disk_hash ||= Digest::SHA2.hexdigest(subject.project_id.to_s)
   end
 end
