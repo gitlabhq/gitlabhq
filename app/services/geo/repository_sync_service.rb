@@ -17,7 +17,6 @@ module Geo
 
       if redownload
         log_info('Redownloading repository')
-        clean_up_temporary_repository
         fetch_geo_mirror(build_temporary_repository)
         set_temp_repository_as_main
       else
@@ -37,6 +36,8 @@ module Geo
       log_error('Invalid repository', e)
       registry.update(force_to_redownload_repository: true)
       expire_repository_caches
+    ensure
+      clean_up_temporary_repository if redownload
     end
 
     def expire_repository_caches

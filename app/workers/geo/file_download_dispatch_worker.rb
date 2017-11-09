@@ -33,7 +33,7 @@ module Geo
     def find_failed_objects(batch_size:)
       Geo::FileRegistry
         .failed
-        .to_be_retried
+        .retry_due
         .limit(batch_size)
         .pluck(:file_id, :file_type)
     end

@@ -9,10 +9,10 @@ describe Geo::BaseSyncService do
 
   describe '#lease_key' do
     it 'returns a key in the correct pattern' do
-      described_class.type = :test
+      allow(described_class).to receive(:type) { :wiki }
       allow(project).to receive(:id) { 999 }
 
-      expect(subject.lease_key).to eq('geo_sync_service:test:999')
+      expect(subject.lease_key).to eq('geo_sync_service:wiki:999')
     end
   end
 

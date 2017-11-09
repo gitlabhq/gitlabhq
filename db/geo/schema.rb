@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 20171101105200) do
 
   add_index "file_registry", ["file_type", "file_id"], name: "index_file_registry_on_file_type_and_file_id", unique: true, using: :btree
   add_index "file_registry", ["file_type"], name: "index_file_registry_on_file_type", using: :btree
+  add_index "file_registry", ["retry_at"], name: "index_file_registry_on_retry_at", using: :btree
   add_index "file_registry", ["success"], name: "index_file_registry_on_success", using: :btree
 
   create_table "project_registry", force: :cascade do |t|
@@ -54,7 +55,9 @@ ActiveRecord::Schema.define(version: 20171101105200) do
   add_index "project_registry", ["last_repository_successful_sync_at"], name: "index_project_registry_on_last_repository_successful_sync_at", using: :btree
   add_index "project_registry", ["last_repository_synced_at"], name: "index_project_registry_on_last_repository_synced_at", using: :btree
   add_index "project_registry", ["project_id"], name: "index_project_registry_on_project_id", unique: true, using: :btree
+  add_index "project_registry", ["repository_retry_at"], name: "index_project_registry_on_repository_retry_at", using: :btree
   add_index "project_registry", ["resync_repository"], name: "index_project_registry_on_resync_repository", using: :btree
   add_index "project_registry", ["resync_wiki"], name: "index_project_registry_on_resync_wiki", using: :btree
+  add_index "project_registry", ["wiki_retry_at"], name: "index_project_registry_on_wiki_retry_at", using: :btree
 
 end

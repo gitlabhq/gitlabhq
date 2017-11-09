@@ -15,7 +15,7 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     where(repository_sync_failed.or(wiki_sync_failed))
   end
 
-  def self.to_be_retried
+  def self.retry_due
     where(
       arel_table[:repository_retry_at].lt(Time.now)
         .or(arel_table[:wiki_retry_at].lt(Time.now))

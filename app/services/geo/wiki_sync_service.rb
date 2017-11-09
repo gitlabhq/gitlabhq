@@ -16,7 +16,6 @@ module Geo
 
       if redownload
         log_info('Redownloading wiki')
-        clean_up_temporary_repository
         fetch_geo_mirror(build_temporary_repository)
         set_temp_repository_as_main
       else
@@ -37,6 +36,8 @@ module Geo
     rescue Gitlab::Git::Repository::NoRepository => e
       log_error('Invalid wiki', e)
       registry.update(force_to_redownload_wiki: true)
+    ensure
+      clean_up_temporary_repository if redownload
     end
 
     def ssh_url_to_wiki

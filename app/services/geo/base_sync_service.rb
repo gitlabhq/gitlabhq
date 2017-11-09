@@ -172,7 +172,12 @@ module Geo
     end
 
     def disk_path_temp
-      "#{repository.disk_path}_temp"
+      unless @disk_path_temp
+        random_string = (0...6).map { ('a'..'z').to_a.sample }.join
+        @disk_path_temp = "#{repository.disk_path}_#{random_string}"
+      end
+
+      @disk_path_temp
     end
 
     def build_temporary_repository
