@@ -101,8 +101,8 @@ end
 
 class GithubRepos
   def initialize(token, current_user, github_repo)
-    @client = Octokit::Client
-      .new(access_token: token, auto_paginate: true, per_page: 100)
+    @client = Gitlab::GithubImport::Client.new(token)
+    @client.octokit.auto_paginate = true
 
     @current_user = current_user
     @github_repo = github_repo
@@ -130,7 +130,7 @@ class GithubRepos
   end
 
   def repos
-    @client.list_repositories
+    @client.octokit.list_repositories
   end
 end
 
