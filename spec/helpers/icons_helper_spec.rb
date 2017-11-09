@@ -17,6 +17,27 @@ describe IconsHelper do
   end
 
   describe 'sprite_icon' do
+    it 'returns relative path' do
+      expect(sprite_icon_path())
+        .to eq "/image/icons.svg"
+    end
+
+    context 'when an asset_host is set in the config it will return an absolute local URL' do
+      let(:asset_host) { 'http://assets' }
+
+      before do
+        allow(ActionController::Base).to receive(:asset_host).and_return(asset_host)
+      end
+
+      it 'returns an absolute URL on that asset host' do
+        gitlab_url = Gitlab.config.gitlab.url
+        expect(sprite_icon_path())
+          .to eq "#{gitlab_url}/image/icons.svg"
+      end
+    end
+  end
+
+  describe 'sprite_icon' do
     icon_name = 'clock'
 
     it 'returns svg icon html' do
