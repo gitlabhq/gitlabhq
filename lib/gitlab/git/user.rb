@@ -7,9 +7,8 @@ module Gitlab
         new(gitlab_user.username, gitlab_user.name, gitlab_user.email, Gitlab::GlId.gl_id(gitlab_user))
       end
 
-      # TODO support the username field in Gitaly https://gitlab.com/gitlab-org/gitaly/issues/628
       def self.from_gitaly(gitaly_user)
-        new('', gitaly_user.name, gitaly_user.email, gitaly_user.gl_id)
+        new(gitaly_user.gl_username, gitaly_user.name, gitaly_user.email, gitaly_user.gl_id)
       end
 
       def initialize(username, name, email, gl_id)
@@ -21,6 +20,10 @@ module Gitlab
 
       def ==(other)
         [username, name, email, gl_id] == [other.username, other.name, other.email, other.gl_id]
+      end
+
+      def to_gitaly
+        Gitaly::User.new(gl_username: username, gl_id: gl_id, name: name, email: email)
       end
     end
   end

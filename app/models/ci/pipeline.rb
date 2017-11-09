@@ -249,9 +249,7 @@ module Ci
     end
 
     def commit
-      @commit ||= project.commit(sha)
-    rescue
-      nil
+      @commit ||= project.commit_by(oid: sha)
     end
 
     def branch?
@@ -411,7 +409,7 @@ module Ci
     end
 
     def notes
-      Note.for_commit_id(sha)
+      project.notes.for_commit_id(sha)
     end
 
     def process!

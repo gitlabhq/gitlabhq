@@ -48,7 +48,11 @@ RSpec.configure do |config|
   config.include Warden::Test::Helpers, type: :request
   config.include LoginHelpers, type: :feature
   config.include SearchHelpers, type: :feature
+  config.include CookieHelper, :js
+  config.include InputHelper, :js
+  config.include InspectRequests, :js
   config.include WaitForRequests, :js
+  config.include LiveDebugger, :js
   config.include StubConfiguration
   config.include EmailHelpers, :mailer, type: :mailer
   config.include TestEnv

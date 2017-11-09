@@ -18,16 +18,6 @@ module Gitlab
           )
         end
 
-        def gitaly_user(gitlab_user)
-          return unless gitlab_user
-
-          Gitaly::User.new(
-            gl_id: Gitlab::GlId.gl_id(gitlab_user),
-            name: GitalyClient.encode(gitlab_user.name),
-            email: GitalyClient.encode(gitlab_user.email)
-          )
-        end
-
         def gitlab_tag_from_gitaly_tag(repository, gitaly_tag)
           if gitaly_tag.target_commit.present?
             commit = Gitlab::Git::Commit.decorate(repository, gitaly_tag.target_commit)

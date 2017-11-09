@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # GitLab development guides
 
 ## Get started!
@@ -33,6 +37,7 @@
 - [Gotchas](gotchas.md) to avoid
 - [Issue and merge requests state models](object_state_models.md)
 - [How to dump production data to staging](db_dump.md)
+- [Working with the GitHub importer](github_importer.md)
 
 ## Performance guides
 

@@ -5,11 +5,10 @@ class Issue < ActiveRecord::Base
   include Issuable
   include Noteable
   include Referable
-  include Sortable
   include Spammable
   include FasterCacheKeys
   include RelativePositioning
-  include CreatedAtFilterable
+  include TimeTrackable
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
@@ -73,6 +72,8 @@ class Issue < ActiveRecord::Base
       issue.closed_at = Time.zone.now
     end
   end
+
+  acts_as_paranoid
 
   def self.reference_prefix
     '#'

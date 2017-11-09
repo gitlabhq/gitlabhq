@@ -38,21 +38,14 @@ class FilteredSearchVisualTokens {
   }
 
   static createVisualTokenElementHTML(canEdit = true) {
-    let removeTokenMarkup = '';
-    if (canEdit) {
-      removeTokenMarkup = `
-        <div class="remove-token" role="button">
-          <i class="fa fa-close"></i>
-        </div>
-      `;
-    }
-
     return `
-      <div class="selectable" role="button">
+      <div class="${canEdit ? 'selectable' : 'hidden'}" role="button">
         <div class="name"></div>
         <div class="value-container">
           <div class="value"></div>
-          ${removeTokenMarkup}
+          <div class="remove-token" role="button">
+            <i class="fa fa-close"></i>
+          </div>
         </div>
       </div>
     `;

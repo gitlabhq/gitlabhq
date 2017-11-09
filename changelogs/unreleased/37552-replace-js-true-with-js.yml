@@ -1,5 +1,0 @@
----
-title: 'Replace `tag: true` into `:tag` in the specs'
-merge_request: 14653
-author: Jacopo Beschi @jacopo-beschi
-type: added

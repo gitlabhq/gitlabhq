@@ -35,7 +35,7 @@ describe API::V3::Notes do
       it "returns an array of issue notes" do
         get v3_api("/projects/#{project.id}/issues/#{issue.id}/notes", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['body']).to eq(issue_note.note)
@@ -46,14 +46,14 @@ describe API::V3::Notes do
       it "returns a 404 error when issue id not found" do
         get v3_api("/projects/#{project.id}/issues/12345/notes", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       context "and current user cannot view the notes" do
         it "returns an empty array" do
           get v3_api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes", user)
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(response).to include_pagination_headers
           expect(json_response).to be_an Array
           expect(json_response).to be_empty
@@ -65,7 +65,7 @@ describe API::V3::Notes do
           it "returns 404" do
             get v3_api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes", user)
 
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
 
@@ -73,7 +73,7 @@ describe API::V3::Notes do
           it "returns an empty array" do
             get v3_api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes", private_user)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
             expect(response).to include_pagination_headers
             expect(json_response).to be_an Array
             expect(json_response.first['body']).to eq(cross_reference_note.note)
@@ -86,7 +86,7 @@ describe API::V3::Notes do
       it "returns an array of snippet notes" do
         get v3_api("/projects/#{project.id}/snippets/#{snippet.id}/notes", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['body']).to eq(snippet_note.note)
@@ -95,13 +95,13 @@ describe API::V3::Notes do
       it "returns a 404 error when snippet id not found" do
         get v3_api("/projects/#{project.id}/snippets/42/notes", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it "returns 404 when not authorized" do
         get v3_api("/projects/#{project.id}/snippets/#{snippet.id}/notes", private_user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -109,7 +109,7 @@ describe API::V3::Notes do
       it "returns an array of merge_requests notes" do
         get v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/notes", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.first['body']).to eq(merge_request_note.note)
@@ -118,13 +118,13 @@ describe API::V3::Notes do
       it "returns a 404 error if merge request id not found" do
         get v3_api("/projects/#{project.id}/merge_requests/4444/notes", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it "returns 404 when not authorized" do
         get v3_api("/projects/#{project.id}/merge_requests/4444/notes", private_user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -134,21 +134,21 @@ describe API::V3::Notes do
       it "returns an issue note by id" do
         get v3_api("/projects/#{project.id}/issues/#{issue.id}/notes/#{issue_note.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['body']).to eq(issue_note.note)
       end
 
       it "returns a 404 error if issue note not found" do
         get v3_api("/projects/#{project.id}/issues/#{issue.id}/notes/12345", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       context "and current user cannot view the note" do
         it "returns a 404 error" do
           get v3_api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes/#{cross_reference_note.id}", user)
 
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
 
         context "when issue is confidential" do
@@ -157,7 +157,7 @@ describe API::V3::Notes do
           it "returns 404" do
             get v3_api("/projects/#{project.id}/issues/#{issue.id}/notes/#{issue_note.id}", private_user)
 
-            expect(response).to have_http_status(404)
+            expect(response).to have_gitlab_http_status(404)
           end
         end
 
@@ -165,7 +165,7 @@ describe API::V3::Notes do
           it "returns an issue note by id" do
             get v3_api("/projects/#{ext_proj.id}/issues/#{ext_issue.id}/notes/#{cross_reference_note.id}", private_user)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
             expect(json_response['body']).to eq(cross_reference_note.note)
           end
         end
@@ -176,14 +176,14 @@ describe API::V3::Notes do
       it "returns a snippet note by id" do
         get v3_api("/projects/#{project.id}/snippets/#{snippet.id}/notes/#{snippet_note.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['body']).to eq(snippet_note.note)
       end
 
       it "returns a 404 error if snippet note not found" do
         get v3_api("/projects/#{project.id}/snippets/#{snippet.id}/notes/12345", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -193,7 +193,7 @@ describe API::V3::Notes do
       it "creates a new issue note" do
         post v3_api("/projects/#{project.id}/issues/#{issue.id}/notes", user), body: 'hi!'
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['body']).to eq('hi!')
         expect(json_response['author']['username']).to eq(user.username)
       end
@@ -201,13 +201,13 @@ describe API::V3::Notes do
       it "returns a 400 bad request error if body not given" do
         post v3_api("/projects/#{project.id}/issues/#{issue.id}/notes", user)
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
 
       it "returns a 401 unauthorized error if user not authenticated" do
         post v3_api("/projects/#{project.id}/issues/#{issue.id}/notes"), body: 'hi!'
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
 
       context 'when an admin or owner makes the request' do
@@ -216,7 +216,7 @@ describe API::V3::Notes do
           post v3_api("/projects/#{project.id}/issues/#{issue.id}/notes", user),
             body: 'hi!', created_at: creation_time
 
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response['body']).to eq('hi!')
           expect(json_response['author']['username']).to eq(user.username)
           expect(Time.parse(json_response['created_at'])).to be_like_time(creation_time)
@@ -229,7 +229,7 @@ describe API::V3::Notes do
         it 'creates a new issue note' do
           post v3_api("/projects/#{project.id}/issues/#{issue2.id}/notes", user), body: ':+1:'
 
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response['body']).to eq(':+1:')
         end
       end
@@ -238,7 +238,7 @@ describe API::V3::Notes do
         it 'creates a new issue note' do
           post v3_api("/projects/#{project.id}/issues/#{issue.id}/notes", user), body: ':+1:'
 
-          expect(response).to have_http_status(201)
+          expect(response).to have_gitlab_http_status(201)
           expect(json_response['body']).to eq(':+1:')
         end
       end
@@ -248,7 +248,7 @@ describe API::V3::Notes do
       it "creates a new snippet note" do
         post v3_api("/projects/#{project.id}/snippets/#{snippet.id}/notes", user), body: 'hi!'
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['body']).to eq('hi!')
         expect(json_response['author']['username']).to eq(user.username)
       end
@@ -256,13 +256,13 @@ describe API::V3::Notes do
       it "returns a 400 bad request error if body not given" do
         post v3_api("/projects/#{project.id}/snippets/#{snippet.id}/notes", user)
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
 
       it "returns a 401 unauthorized error if user not authenticated" do
         post v3_api("/projects/#{project.id}/snippets/#{snippet.id}/notes"), body: 'hi!'
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -274,7 +274,7 @@ describe API::V3::Notes do
         post v3_api("/projects/#{project.id}/issues/#{issue.id}/notes", user),
           body: 'Foo'
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -314,7 +314,7 @@ describe API::V3::Notes do
         put v3_api("/projects/#{project.id}/issues/#{issue.id}/"\
                   "notes/#{issue_note.id}", user), body: 'Hello!'
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['body']).to eq('Hello!')
       end
 
@@ -322,14 +322,14 @@ describe API::V3::Notes do
         put v3_api("/projects/#{project.id}/issues/#{issue.id}/notes/12345", user),
                 body: 'Hello!'
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it 'returns a 400 bad request error if body not given' do
         put v3_api("/projects/#{project.id}/issues/#{issue.id}/"\
                   "notes/#{issue_note.id}", user)
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
       end
     end
 
@@ -338,7 +338,7 @@ describe API::V3::Notes do
         put v3_api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                   "notes/#{snippet_note.id}", user), body: 'Hello!'
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['body']).to eq('Hello!')
       end
 
@@ -346,7 +346,7 @@ describe API::V3::Notes do
         put v3_api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                   "notes/12345", user), body: "Hello!"
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -355,7 +355,7 @@ describe API::V3::Notes do
         put v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/"\
                   "notes/#{merge_request_note.id}", user), body: 'Hello!'
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['body']).to eq('Hello!')
       end
 
@@ -363,7 +363,7 @@ describe API::V3::Notes do
         put v3_api("/projects/#{project.id}/merge_requests/#{merge_request.id}/"\
                   "notes/12345", user), body: "Hello!"
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -374,17 +374,17 @@ describe API::V3::Notes do
         delete v3_api("/projects/#{project.id}/issues/#{issue.id}/"\
                       "notes/#{issue_note.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         # Check if note is really deleted
         delete v3_api("/projects/#{project.id}/issues/#{issue.id}/"\
                       "notes/#{issue_note.id}", user)
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it 'returns a 404 error when note id not found' do
         delete v3_api("/projects/#{project.id}/issues/#{issue.id}/notes/12345", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -393,18 +393,18 @@ describe API::V3::Notes do
         delete v3_api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                       "notes/#{snippet_note.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         # Check if note is really deleted
         delete v3_api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                       "notes/#{snippet_note.id}", user)
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it 'returns a 404 error when note id not found' do
         delete v3_api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                       "notes/12345", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -413,18 +413,18 @@ describe API::V3::Notes do
         delete v3_api("/projects/#{project.id}/merge_requests/"\
                       "#{merge_request.id}/notes/#{merge_request_note.id}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         # Check if note is really deleted
         delete v3_api("/projects/#{project.id}/merge_requests/"\
                       "#{merge_request.id}/notes/#{merge_request_note.id}", user)
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it 'returns a 404 error when note id not found' do
         delete v3_api("/projects/#{project.id}/merge_requests/"\
                       "#{merge_request.id}/notes/12345", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end

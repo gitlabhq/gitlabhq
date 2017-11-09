@@ -1,5 +1,0 @@
----
-title: "Add \"implements\" to the default issue closing message regex"
-merge_request: 14612
-author: Guilherme Vieira
-type: added

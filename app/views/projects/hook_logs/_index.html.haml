@@ -24,7 +24,7 @@
             %td
               = truncate(hook_log.url, length: 50)
             %td.light
-              #{number_with_precision(hook_log.execution_duration, precision: 2)} ms
+              #{number_with_precision(hook_log.execution_duration, precision: 2)} sec
             %td.light
               = time_ago_with_tooltip(hook_log.created_at)
             %td

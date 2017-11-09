@@ -26,18 +26,4 @@ describe Gitlab::GitalyClient::Util do
       expect(subject.git_alternate_object_directories).to eq(git_alternate_object_directory)
     end
   end
-
-  describe '.gitaly_user' do
-    let(:user) { create(:user) }
-    let(:gl_id) { Gitlab::GlId.gl_id(user) }
-
-    subject { described_class.gitaly_user(user) }
-
-    it 'creates a Gitaly::User from a GitLab user' do
-      expect(subject).to be_a(Gitaly::User)
-      expect(subject.name).to eq(user.name)
-      expect(subject.email).to eq(user.email)
-      expect(subject.gl_id).to eq(gl_id)
-    end
-  end
 end

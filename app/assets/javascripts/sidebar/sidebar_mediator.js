@@ -8,6 +8,7 @@ export default class SidebarMediator {
       this.store = new Store(options);
       this.service = new Service({
         endpoint: options.endpoint,
+        toggleSubscriptionEndpoint: options.toggleSubscriptionEndpoint,
         moveIssueEndpoint: options.moveIssueEndpoint,
         projectsAutocompleteEndpoint: options.projectsAutocompleteEndpoint,
       });
@@ -39,8 +40,23 @@ export default class SidebarMediator {
       .then((data) => {
         this.store.setAssigneeData(data);
         this.store.setTimeTrackingData(data);
+        this.store.setParticipantsData(data);
+        this.store.setSubscriptionsData(data);
       })
       .catch(() => new Flash('Error occurred when fetching sidebar data'));
+  }
+
+  toggleSubscription() {
+    this.store.setFetchingState('subscriptions', true);
+    return this.service.toggleSubscription()
+      .then(() => {
+        this.store.setSubscribedState(!this.store.subscribed);
+        this.store.setFetchingState('subscriptions', false);
+      })
+      .catch((err) => {
+        this.store.setFetchingState('subscriptions', false);
+        throw err;
+      });
   }
 
   fetchAutocompleteProjects(searchTerm) {

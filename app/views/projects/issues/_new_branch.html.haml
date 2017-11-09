@@ -1,3 +1,7 @@
+- can_create_merge_request = can?(current_user, :create_merge_request, @project)
+- data_action = can_create_merge_request ? 'create-mr' : 'create-branch'
+- value = can_create_merge_request ? 'Create a merge request' : 'Create a branch'
+
 - if can?(current_user, :push_code, @project)
   - can_create_path = can_create_branch_project_issue_path(@project, @issue)
   - create_mr_path = create_merge_request_project_issue_path(@project, @issue, branch_name: @issue.to_branch_name, ref: @project.default_branch)
@@ -11,20 +15,21 @@
         %span.text
           Checking branch availability…
     .btn-group.available.hide
-      %button.btn.js-create-merge-request.btn-default{ type: 'button', data: { action: 'create-mr' } }
-        Create a merge request
+      %button.btn.js-create-merge-request.btn-default{ type: 'button', data: { action: data_action } }
+        = value
 
       %button.btn.create-merge-request-dropdown-toggle.dropdown-toggle.btn-default.js-dropdown-toggle{ type: 'button', data: { dropdown: { trigger: '#create-merge-request-dropdown' } } }
         = icon('caret-down')
 
       %ul#create-merge-request-dropdown.create-merge-request-dropdown-menu.dropdown-menu.dropdown-menu-align-right.gl-show-field-errors{ data: { dropdown: true } }
-        %li.create-item.droplab-item-selected{ role: 'button', data: { value: 'create-mr', text: 'Create a merge request' } }
-          .menu-item
-            .icon-container
-              = icon('check')
-            .description.droplab-item-ignore-hiding Create a merge request
+        - if can_create_merge_request
+          %li.create-item.droplab-item-selected{ role: 'button', data: { value: 'create-mr', text: 'Create a merge request' } }
+            .menu-item
+              .icon-container
+                = icon('check')
+              .description.droplab-item-ignore-hiding Create a merge request
 
-        %li.create-item{ role: 'button', data: {  value: 'create-branch', text: 'Create a branch' } }
+        %li.create-item{ class: [!can_create_merge_request && 'droplab-item-selected'], role: 'button', data: {  value: 'create-branch', text: 'Create a branch' } }
           .menu-item
             .icon-container
               = icon('check')

@@ -56,15 +56,14 @@ describe Ci::ArtifactBlob do
     end
 
     context 'txt extensions' do
-      let(:entry) { build.artifacts_metadata_entry('other_artifacts_0.1.2/doc_sample.txt') }
+      let(:path) { 'other_artifacts_0.1.2/doc_sample.txt' }
+      let(:entry) { build.artifacts_metadata_entry(path) }
 
       it 'returns a URL' do
         url = subject.external_url(build.project, build)
 
         expect(url).not_to be_nil
-        expect(url).to start_with("http")
-        expect(url).to match Gitlab.config.pages.host
-        expect(url).to end_with(entry.path)
+        expect(url).to eq("http://#{project.namespace.path}.#{Gitlab.config.pages.host}/-/#{project.path}/-/jobs/#{build.id}/artifacts/#{path}")
       end
     end
   end

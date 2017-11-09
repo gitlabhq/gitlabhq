@@ -41,7 +41,7 @@ feature 'Import/Export - project export integration test', :js do
 
       expect(page).to have_content('Export project')
 
-      click_link 'Export project'
+      find(:link, 'Export project').send_keys(:return)
 
       visit edit_project_path(project)
 

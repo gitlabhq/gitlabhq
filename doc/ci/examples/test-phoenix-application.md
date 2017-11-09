@@ -1,9 +1,9 @@
-## Test a Phoenix application
+# Test a Phoenix application with GitLab CI/CD
 
 This example demonstrates the integration of Gitlab CI with Phoenix, Elixir and
 Postgres.
 
-### Add `.gitlab-ci.yml` file to project
+## Add `.gitlab-ci.yml` to project
 
 The following `.gitlab-ci.yml` should be added in the root of your
 repository to trigger CI:
@@ -36,7 +36,7 @@ run your migrations.
 
 Finally, the test `script` will run your tests.
 
-### Update the Config Settings
+## Update the Config Settings
 
 In `config/test.exs`, update the database hostname:
 
@@ -45,12 +45,12 @@ config :my_app, MyApp.Repo,
   hostname: if(System.get_env("CI"), do: "postgres", else: "localhost"),
 ```
 
-### Add the Migrations Folder
+## Add the Migrations Folder
 
 If you do not have any migrations yet, you will need to create an empty
 `.gitkeep` file in `priv/repo/migrations`.
 
-### Sources
+## Sources
 
 - https://medium.com/@nahtnam/using-phoenix-on-gitlab-ci-5a51eec81142
 - https://davejlong.com/ci-with-phoenix-and-gitlab/

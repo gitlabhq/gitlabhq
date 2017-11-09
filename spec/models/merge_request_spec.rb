@@ -86,7 +86,7 @@ describe MergeRequest do
 
     context 'when the target branch does not exist' do
       before do
-        project.repository.raw_repository.delete_branch(subject.target_branch)
+        project.repository.rm_branch(subject.author, subject.target_branch)
       end
 
       it 'returns nil' do
@@ -1388,7 +1388,7 @@ describe MergeRequest do
 
     context 'when the target branch does not exist' do
       before do
-        subject.project.repository.raw_repository.delete_branch(subject.target_branch)
+        subject.project.repository.rm_branch(subject.author, subject.target_branch)
       end
 
       it 'returns nil' do
@@ -1460,6 +1460,12 @@ describe MergeRequest do
   end
 
   describe '#merge_ongoing?' do
+    it 'returns true when the merge request is locked' do
+      merge_request = build_stubbed(:merge_request, state: :locked)
+
+      expect(merge_request.merge_ongoing?).to be(true)
+    end
+
     it 'returns true when merge_id, MR is not merged and it has no running job' do
       merge_request = build_stubbed(:merge_request, state: :open, merge_jid: 'foo')
       allow(Gitlab::SidekiqStatus).to receive(:running?).with('foo') { true }
@@ -1749,39 +1755,12 @@ describe MergeRequest do
     end
   end
 
-  describe '#fetch_ref' do
-    it 'sets "ref_fetched" flag to true' do
-      subject.update!(ref_fetched: nil)
+  describe '#fetch_ref!' do
+    it 'fetches the ref correctly' do
+      expect { subject.target_project.repository.delete_refs(subject.ref_path) }.not_to raise_error
 
-      subject.fetch_ref
-
-      expect(subject.reload.ref_fetched).to be_truthy
-    end
-  end
-
-  describe '#ref_fetched?' do
-    it 'does not perform git operation when value is cached' do
-      subject.ref_fetched = true
-
-      expect_any_instance_of(Repository).not_to receive(:ref_exists?)
-      expect(subject.ref_fetched?).to be_truthy
-    end
-
-    it 'caches the value when ref exists but value is not cached' do
-      subject.update!(ref_fetched: nil)
-      allow_any_instance_of(Repository).to receive(:ref_exists?)
-        .and_return(true)
-
-      expect(subject.ref_fetched?).to be_truthy
-      expect(subject.reload.ref_fetched).to be_truthy
-    end
-
-    it 'returns false when ref does not exist' do
-      subject.update!(ref_fetched: nil)
-      allow_any_instance_of(Repository).to receive(:ref_exists?)
-        .and_return(false)
-
-      expect(subject.ref_fetched?).to be_falsey
+      subject.fetch_ref!
+      expect(subject.target_project.repository.ref_exists?(subject.ref_path)).to be_truthy
     end
   end
 

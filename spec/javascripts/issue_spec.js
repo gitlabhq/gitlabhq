@@ -1,6 +1,5 @@
 /* eslint-disable space-before-function-paren, one-var, one-var-declaration-per-line, no-use-before-define, comma-dangle, max-len */
 import Issue from '~/issue';
-import CloseReopenReportToggle from '~/close_reopen_report_toggle';
 import '~/lib/utils/text_utility';
 
 describe('Issue', function() {
@@ -186,39 +185,6 @@ describe('Issue', function() {
 
         this.$triggeredButton.trigger('click');
         this.issueStateDeferred.reject();
-      });
-    });
-  });
-
-  describe('units', () => {
-    describe('class constructor', () => {
-      it('calls .initCloseReopenReport', () => {
-        spyOn(Issue.prototype, 'initCloseReopenReport');
-
-        new Issue(); // eslint-disable-line no-new
-
-        expect(Issue.prototype.initCloseReopenReport).toHaveBeenCalled();
-      });
-    });
-
-    describe('initCloseReopenReport', () => {
-      it('calls .initDroplab', () => {
-        const container = jasmine.createSpyObj('container', ['querySelector']);
-        const dropdownTrigger = {};
-        const dropdownList = {};
-        const button = {};
-
-        spyOn(document, 'querySelector').and.returnValue(container);
-        spyOn(CloseReopenReportToggle.prototype, 'initDroplab');
-        container.querySelector.and.returnValues(dropdownTrigger, dropdownList, button);
-
-        Issue.prototype.initCloseReopenReport();
-
-        expect(document.querySelector).toHaveBeenCalledWith('.js-issuable-close-dropdown');
-        expect(container.querySelector).toHaveBeenCalledWith('.js-issuable-close-toggle');
-        expect(container.querySelector).toHaveBeenCalledWith('.js-issuable-close-menu');
-        expect(container.querySelector).toHaveBeenCalledWith('.js-issuable-close-button');
-        expect(CloseReopenReportToggle.prototype.initDroplab).toHaveBeenCalled();
       });
     });
   });

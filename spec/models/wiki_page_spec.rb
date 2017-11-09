@@ -402,7 +402,7 @@ describe WikiPage do
 
   def destroy_page(title)
     page = wiki.wiki.page(title: title)
-    wiki.delete_page(page, commit_details)
+    wiki.delete_page(page, "test commit")
   end
 
   def get_slugs(page_or_dir)

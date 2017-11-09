@@ -1,5 +1,3 @@
-/* eslint-disable class-methods-use-this */
-
 import './lib/utils/url_utility';
 import FilesCommentButton from './files_comment_button';
 import SingleFileDiff from './single_file_diff';
@@ -8,7 +6,7 @@ import imageDiffHelper from './image_diff/helpers/index';
 const UNFOLD_COUNT = 20;
 let isBound = false;
 
-class Diff {
+export default class Diff {
   constructor() {
     const $diffFile = $('.files .diff-file');
 
@@ -104,7 +102,7 @@ class Diff {
     }
     this.highlightSelectedLine();
   }
-
+  // eslint-disable-next-line class-methods-use-this
   handleParallelLineDown(e) {
     const line = $(e.currentTarget);
     const table = line.closest('table');
@@ -116,11 +114,11 @@ class Diff {
       table.addClass(`${lineClass}-selected`);
     }
   }
-
+  // eslint-disable-next-line class-methods-use-this
   diffViewType() {
     return $('.inline-parallel-buttons a.active').data('view-type');
   }
-
+  // eslint-disable-next-line class-methods-use-this
   lineNumbers(line) {
     const children = line.find('.diff-line-num').toArray();
     if (children.length !== 2) {
@@ -128,7 +126,7 @@ class Diff {
     }
     return children.map(elm => parseInt($(elm).data('linenumber'), 10) || 0);
   }
-
+  // eslint-disable-next-line class-methods-use-this
   highlightSelectedLine() {
     const hash = gl.utils.getLocationHash();
     const $diffFiles = $('.diff-file');
@@ -141,6 +139,3 @@ class Diff {
     }
   }
 }
-
-window.gl = window.gl || {};
-window.gl.Diff = Diff;

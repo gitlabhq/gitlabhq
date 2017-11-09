@@ -18,19 +18,19 @@ describe Dashboard::TodosController do
 
         get :index, project_id: unauthorized_project.id
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it 'renders 404 when given project does not exists' do
         get :index, project_id: 999
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it 'renders 200 when filtering for "any project" todos' do
         get :index, project_id: ''
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
 
       it 'renders 200 when user has access on given project' do
@@ -38,7 +38,7 @@ describe Dashboard::TodosController do
 
         get :index, project_id: authorized_project.id
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
     end
 
@@ -61,7 +61,7 @@ describe Dashboard::TodosController do
         get :index, page: last_page
 
         expect(assigns(:todos).current_page).to eq(last_page)
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
 
       it 'does not redirect to external sites when provided a host field' do
@@ -104,7 +104,7 @@ describe Dashboard::TodosController do
       patch :restore, id: todo.id
 
       expect(todo.reload).to be_pending
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to eq({ "count" => "1", "done_count" => "0" })
     end
   end
@@ -118,7 +118,7 @@ describe Dashboard::TodosController do
       todos.each do |todo|
         expect(todo.reload).to be_pending
       end
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to eq({ 'count' => '2', 'done_count' => '0' })
     end
   end

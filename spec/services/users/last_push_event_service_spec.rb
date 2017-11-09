@@ -22,7 +22,6 @@ describe Users::LastPushEventService do
     it 'caches the event for the origin project when pushing to a fork' do
       source = build(:project, id: 5)
 
-      allow(project).to receive(:forked?).and_return(true)
       allow(project).to receive(:forked_from_project).and_return(source)
 
       expect(service).to receive(:set_key)

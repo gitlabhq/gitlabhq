@@ -43,15 +43,16 @@ describe 'Dropdown assignee', :js do
     end
 
     it 'should show loading indicator when opened' do
-      filtered_search.set('assignee:')
+      slow_requests do
+        filtered_search.set('assignee:')
 
-      expect(page).to have_css('#js-dropdown-assignee .filter-dropdown-loading', visible: true)
+        expect(page).to have_css('#js-dropdown-assignee .filter-dropdown-loading', visible: true)
+      end
     end
 
     it 'should hide loading indicator when loaded' do
       filtered_search.set('assignee:')
 
-      expect(find(js_dropdown_assignee)).to have_css('.filter-dropdown-loading')
       expect(find(js_dropdown_assignee)).not_to have_css('.filter-dropdown-loading')
     end
 

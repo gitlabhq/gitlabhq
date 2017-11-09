@@ -47,7 +47,7 @@ describe "Container Registry", :js do
     scenario 'user removes a specific tag from container repository' do
       visit_container_registry
 
-      find('.js-toggle-repo').trigger('click')
+      find('.js-toggle-repo').click
       wait_for_requests
 
       expect_any_instance_of(ContainerRegistry::Tag)

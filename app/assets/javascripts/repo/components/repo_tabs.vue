@@ -1,15 +1,15 @@
 <script>
-  import Store from '../stores/repo_store';
+  import { mapState } from 'vuex';
   import RepoTab from './repo_tab.vue';
-  import RepoMixin from '../mixins/repo_mixin';
 
   export default {
-    mixins: [RepoMixin],
     components: {
       'repo-tab': RepoTab,
     },
-    data() {
-      return Store;
+    computed: {
+      ...mapState([
+        'openFiles',
+      ]),
     },
   };
 </script>
@@ -20,7 +20,7 @@
     class="list-unstyled"
   >
     <repo-tab
-      v-for="tab in openedFiles"
+      v-for="tab in openFiles"
       :key="tab.id"
       :tab="tab"
     />

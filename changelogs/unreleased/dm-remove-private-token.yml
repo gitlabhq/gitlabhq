@@ -1,0 +1,5 @@
+---
+title: Remove Session API now that private tokens are removed from user API endpoints
+merge_request:
+author:
+type: removed

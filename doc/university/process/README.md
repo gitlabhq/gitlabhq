@@ -1,8 +1,12 @@
 ---
+comments: false
+---
+
+---
 title: University | Process
 ---
 
-## Suggesting improvements
+# Suggesting improvements
 
 If you would like to teach a class or participate or help in any way please
 submit a merge request and assign it to [Job](https://gitlab.com/u/JobV).

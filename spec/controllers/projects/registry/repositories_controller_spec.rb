@@ -35,7 +35,7 @@ describe Projects::Registry::RepositoriesController do
           it 'successfully renders container repositories' do
             go_to_index
 
-            expect(response).to have_http_status(:ok)
+            expect(response).to have_gitlab_http_status(:ok)
           end
 
           it 'creates a root container repository' do
@@ -46,7 +46,7 @@ describe Projects::Registry::RepositoriesController do
           it 'json has a list of projects' do
             go_to_index(format: :json)
 
-            expect(response).to have_http_status(:ok)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(response).to match_response_schema('registry/repositories')
           end
         end
@@ -59,7 +59,7 @@ describe Projects::Registry::RepositoriesController do
           it 'successfully renders container repositories' do
             go_to_index
 
-            expect(response).to have_http_status(:ok)
+            expect(response).to have_gitlab_http_status(:ok)
           end
 
           it 'does not ensure root container repository' do
@@ -69,7 +69,7 @@ describe Projects::Registry::RepositoriesController do
           it 'responds with json if asked' do
             go_to_index(format: :json)
 
-            expect(response).to have_http_status(:ok)
+            expect(response).to have_gitlab_http_status(:ok)
             expect(json_response).to be_kind_of(Array)
           end
         end
@@ -89,7 +89,7 @@ describe Projects::Registry::RepositoriesController do
         it 'deletes a repository' do
           expect { delete_repository(repository) }.to change { ContainerRepository.all.count }.by(-1)
 
-          expect(response).to have_http_status(:no_content)
+          expect(response).to have_gitlab_http_status(:no_content)
         end
       end
     end
@@ -100,7 +100,7 @@ describe Projects::Registry::RepositoriesController do
       it 'responds with 404' do
         go_to_index
 
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
 
       it 'does not ensure root container repository' do

@@ -1,3 +1,4 @@
+- merged = local_assigns.fetch(:merged, false)
 - commit = @repository.commit(branch.dereferenced_target)
 - bar_graph_width_factor = @max_commits > 0 ? 100.0/@max_commits : 0
 - diverging_commit_counts = @repository.diverging_commit_counts(branch)
@@ -12,7 +13,7 @@
     &nbsp;
     - if branch.name == @repository.root_ref
       %span.label.label-primary default
-    - elsif @repository.merged_to_root_ref? branch.name
+    - elsif merged
       %span.label.label-info.has-tooltip{ title: s_('Branches|Merged into %{default_branch}') % { default_branch: @repository.root_ref } }
         = s_('Branches|merged')
 
@@ -47,7 +48,7 @@
                 target: "#modal-delete-branch",
                 delete_path: project_branch_path(@project, branch.name),
                 branch_name: branch.name,
-                is_merged: ("true" if @repository.merged_to_root_ref?(branch.name)) } }
+                is_merged: ("true" if merged) } }
               = icon("trash-o")
           - else
             %button{ class: "btn btn-remove remove-row js-ajax-loading-spinner has-tooltip disabled",

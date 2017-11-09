@@ -2,7 +2,7 @@ module Ci
   class ArtifactBlob
     include BlobLike
 
-    EXTENTIONS_SERVED_BY_PAGES = %w[.html .htm .txt .json].freeze
+    EXTENSIONS_SERVED_BY_PAGES = %w[.html .htm .txt .json].freeze
 
     attr_reader :entry
 
@@ -36,17 +36,22 @@ module Ci
     def external_url(project, job)
       return unless external_link?(job)
 
-      components = project.full_path_components
-      components << "-/jobs/#{job.id}/artifacts/file/#{path}"
-      artifact_path = components[1..-1].join('/')
+      full_path_parts = project.full_path_components
+      top_level_group = full_path_parts.shift
 
-      "#{pages_config.protocol}://#{components[0]}.#{pages_config.host}/#{artifact_path}"
+      artifact_path = [
+        '-', *full_path_parts, '-',
+        'jobs', job.id,
+        'artifacts', path
+      ].join('/')
+
+      "#{pages_config.protocol}://#{top_level_group}.#{pages_config.host}/#{artifact_path}"
     end
 
     def external_link?(job)
       pages_config.enabled &&
         pages_config.artifacts_server &&
-        EXTENTIONS_SERVED_BY_PAGES.include?(File.extname(name)) &&
+        EXTENSIONS_SERVED_BY_PAGES.include?(File.extname(name)) &&
         job.project.public?
     end
 

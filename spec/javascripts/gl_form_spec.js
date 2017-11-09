@@ -1,9 +1,9 @@
-import autosize from 'vendor/autosize';
+import Autosize from 'autosize';
 import GLForm from '~/gl_form';
 import '~/lib/utils/text_utility';
 import '~/lib/utils/common_utils';
 
-window.autosize = autosize;
+window.autosize = Autosize;
 
 describe('GLForm', () => {
   describe('when instantiated', function () {

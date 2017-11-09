@@ -30,7 +30,7 @@ describe Projects::Registry::TagsController do
       it 'receive a list of tags' do
         get_tags
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('registry/tags')
         expect(response).to include_pagination_headers
       end
@@ -44,7 +44,7 @@ describe Projects::Registry::TagsController do
       it 'receive a list of tags' do
         get_tags
 
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to match_response_schema('registry/tags')
         expect(response).to include_pagination_headers
       end
@@ -58,7 +58,7 @@ describe Projects::Registry::TagsController do
       it 'does not receive a list of tags' do
         get_tags
 
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 

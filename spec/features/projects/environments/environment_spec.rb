@@ -193,12 +193,14 @@ feature 'Environment' do
         create(:environment, project: project,
                              name: 'staging-1.0/review',
                              state: :available)
-
-        visit folder_project_environments_path(project, id: 'staging-1.0')
       end
 
       it 'renders a correct environment folder' do
-        expect(page).to have_http_status(:ok)
+        reqs = inspect_requests do
+          visit folder_project_environments_path(project, id: 'staging-1.0')
+        end
+
+        expect(reqs.first.status_code).to eq(200)
         expect(page).to have_content('Environments / staging-1.0')
       end
     end

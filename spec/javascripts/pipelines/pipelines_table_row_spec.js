@@ -10,6 +10,7 @@ describe('Pipelines Table Row', () => {
       propsData: {
         pipeline,
         autoDevopsHelpPath: 'foo',
+        viewType: 'root',
       },
     }).$mount();
   };

@@ -1,5 +1,0 @@
----
-title: "Add missing space in Sidekiq memory killer log message"
-merge_request: 14553
-author: Benjamin Drung
-type: fixed

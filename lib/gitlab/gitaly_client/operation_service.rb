@@ -10,7 +10,7 @@ module Gitlab
         request = Gitaly::UserDeleteTagRequest.new(
           repository: @gitaly_repo,
           tag_name: GitalyClient.encode(tag_name),
-          user: Util.gitaly_user(user)
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly
         )
 
         response = GitalyClient.call(@repository.storage, :operation_service, :user_delete_tag, request)
@@ -23,7 +23,7 @@ module Gitlab
       def add_tag(tag_name, user, target, message)
         request = Gitaly::UserCreateTagRequest.new(
           repository: @gitaly_repo,
-          user: Util.gitaly_user(user),
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
           tag_name: GitalyClient.encode(tag_name),
           target_revision: GitalyClient.encode(target),
           message: GitalyClient.encode(message.to_s)
@@ -45,7 +45,7 @@ module Gitlab
         request = Gitaly::UserCreateBranchRequest.new(
           repository: @gitaly_repo,
           branch_name: GitalyClient.encode(branch_name),
-          user: Util.gitaly_user(user),
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
           start_point: GitalyClient.encode(start_point)
         )
         response = GitalyClient.call(@repository.storage, :operation_service,
@@ -65,7 +65,7 @@ module Gitlab
         request = Gitaly::UserDeleteBranchRequest.new(
           repository: @gitaly_repo,
           branch_name: GitalyClient.encode(branch_name),
-          user: Util.gitaly_user(user)
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly
         )
 
         response = GitalyClient.call(@repository.storage, :operation_service, :user_delete_branch, request)
@@ -87,7 +87,7 @@ module Gitlab
         request_enum.push(
           Gitaly::UserMergeBranchRequest.new(
             repository: @gitaly_repo,
-            user: Util.gitaly_user(user),
+            user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
             commit_id: source_sha,
             branch: GitalyClient.encode(target_branch),
             message: GitalyClient.encode(message)
@@ -104,6 +104,23 @@ module Gitlab
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(branch_update)
       ensure
         request_enum.close
+      end
+
+      def user_ff_branch(user, source_sha, target_branch)
+        request = Gitaly::UserFFBranchRequest.new(
+          repository: @gitaly_repo,
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          commit_id: source_sha,
+          branch: GitalyClient.encode(target_branch)
+        )
+
+        branch_update = GitalyClient.call(
+          @repository.storage,
+          :operation_service,
+          :user_ff_branch,
+          request
+        ).branch_update
+        Gitlab::Git::OperationService::BranchUpdate.from_gitaly(branch_update)
       end
     end
   end

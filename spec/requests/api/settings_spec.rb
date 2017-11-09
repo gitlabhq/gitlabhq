@@ -7,7 +7,7 @@ describe API::Settings, 'Settings' do
   describe "GET /application/settings" do
     it "returns application settings" do
       get api("/application/settings", admin)
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Hash
       expect(json_response['default_projects_limit']).to eq(42)
       expect(json_response['password_authentication_enabled']).to be_truthy
@@ -56,7 +56,7 @@ describe API::Settings, 'Settings' do
           ed25519_key_restriction: 256,
           circuitbreaker_failure_wait_time: 2
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['default_projects_limit']).to eq(3)
         expect(json_response['password_authentication_enabled']).to be_falsey
         expect(json_response['repository_storages']).to eq(['custom'])
@@ -83,7 +83,7 @@ describe API::Settings, 'Settings' do
       it "returns a blank parameter error message" do
         put api("/application/settings", admin), koding_enabled: true
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
         expect(json_response['error']).to eq('koding_url is missing')
       end
     end
@@ -92,7 +92,7 @@ describe API::Settings, 'Settings' do
       it "returns a blank parameter error message" do
         put api("/application/settings", admin), plantuml_enabled: true
 
-        expect(response).to have_http_status(400)
+        expect(response).to have_gitlab_http_status(400)
         expect(json_response['error']).to eq('plantuml_url is missing')
       end
     end

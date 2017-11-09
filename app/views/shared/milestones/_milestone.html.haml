@@ -49,6 +49,13 @@
           = link_to edit_project_milestone_path(milestone.project, milestone), class: "btn btn-xs btn-grouped" do
             Edit
           \
+
+          - if @project.group
+            = link_to promote_project_milestone_path(milestone.project, milestone), title: "Promote to Group Milestone", class: 'btn btn-xs btn-grouped', data: { confirm: "Promoting this milestone will make it available for all projects inside the group. Existing project milestones with the same name will be merged. Are you sure?", toggle: "tooltip" }, method: :post do
+              Promote
+
           = link_to 'Close Milestone', project_milestone_path(@project, milestone, milestone: {state_event: :close }), method: :put, remote: true, class: "btn btn-xs btn-close btn-grouped"
+
           = link_to project_milestone_path(milestone.project, milestone), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-xs btn-remove btn-grouped" do
             Delete
+

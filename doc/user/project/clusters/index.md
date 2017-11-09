@@ -88,3 +88,12 @@ To remove the Cluster integration from your project, simply click on the
 and [add a cluster](#adding-a-cluster) again.
 
 [permissions]: ../../permissions.md
+
+## Installing applications
+
+GitLab provides a one-click install for
+[Helm Tiller](https://docs.helm.sh/) and
+[Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)
+which will be added directly to your configured cluster.
+
+![Cluster application settings](img/cluster-applications.png)

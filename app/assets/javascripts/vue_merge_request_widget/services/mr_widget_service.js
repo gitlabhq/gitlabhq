@@ -11,7 +11,7 @@ export default class MRWidgetService {
     this.removeWIPResource = Vue.resource(endpoints.removeWIPPath);
     this.removeSourceBranchResource = Vue.resource(endpoints.sourceBranchPath);
     this.deploymentsResource = Vue.resource(endpoints.ciEnvironmentsStatusPath);
-    this.pollResource = Vue.resource(`${endpoints.statusPath}?basic=true`);
+    this.pollResource = Vue.resource(`${endpoints.statusPath}?serializer=basic`);
     this.mergeActionsContentResource = Vue.resource(endpoints.mergeActionsContentPath);
   }
 

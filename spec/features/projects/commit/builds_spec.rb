@@ -20,7 +20,6 @@ feature 'project commit pipelines', :js do
       visit pipelines_project_commit_path(project, project.commit.sha)
 
       page.within('.table-holder') do
-        expect(page).to have_content project.pipelines[0].status # pipeline status
         expect(page).to have_content project.pipelines[0].id     # pipeline ids
       end
     end

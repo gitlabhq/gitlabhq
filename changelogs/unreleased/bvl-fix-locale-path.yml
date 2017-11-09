@@ -1,5 +1,0 @@
----
-title: Correctly render asset path for locales with a region
-merge_request: 14924
-author:
-type: fixed

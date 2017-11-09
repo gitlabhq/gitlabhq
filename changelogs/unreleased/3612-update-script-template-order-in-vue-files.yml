@@ -1,5 +1,0 @@
----
-title: Re-arrange <script> tags before <template> tags in .vue files
-merge_request: 14671
-author:
-type: changed

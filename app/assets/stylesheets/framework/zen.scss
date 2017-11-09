@@ -9,7 +9,7 @@
     z-index: 1031;
 
     textarea {
-      border: none;
+      border: 0;
       box-shadow: none;
       border-radius: 0;
       color: $black;
@@ -57,7 +57,15 @@
   padding: 5px;
   font-size: 36px;
 
+  svg {
+    fill: $gl-text-color;
+  }
+
   &:hover {
     color: $black;
+
+    svg {
+      fill: $black;
+    }
   }
 }

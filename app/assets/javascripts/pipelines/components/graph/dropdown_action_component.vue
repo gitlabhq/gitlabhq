@@ -1,5 +1,5 @@
 <script>
-  import getActionIcon from '../../../vue_shared/ci_action_icons';
+  import icon from '../../../vue_shared/components/icon.vue';
   import tooltip from '../../../vue_shared/directives/tooltip';
 
   /**
@@ -29,14 +29,12 @@
       },
     },
 
-    directives: {
-      tooltip,
+    components: {
+      icon,
     },
 
-    computed: {
-      actionIconSvg() {
-        return getActionIcon(this.actionIcon);
-      },
+    directives: {
+      tooltip,
     },
   };
 </script>
@@ -49,7 +47,7 @@
     rel="nofollow"
     class="ci-action-icon-wrapper js-ci-status-icon"
     data-container="body"
-    v-html="actionIconSvg"
     aria-label="Job's action">
+    <icon :name="actionIcon"/>
   </a>
 </template>

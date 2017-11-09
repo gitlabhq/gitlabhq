@@ -18,6 +18,14 @@ module Gitlab
           application_settings.circuitbreaker_storage_timeout
         end
 
+        def access_retries
+          application_settings.circuitbreaker_access_retries
+        end
+
+        def backoff_threshold
+          application_settings.circuitbreaker_backoff_threshold
+        end
+
         private
 
         def application_settings

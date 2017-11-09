@@ -10,7 +10,7 @@ module Projects
     end
 
     def execute
-      return if project.hashed_storage?
+      return if project.hashed_storage?(:repository)
 
       @old_disk_path = project.disk_path
       has_wiki = project.wiki.repository_exists?

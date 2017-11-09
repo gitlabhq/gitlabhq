@@ -36,7 +36,7 @@ describe API::V3::Files do
       it "returns file info" do
         get v3_api(route, current_user), params
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['file_path']).to eq(file_path)
         expect(json_response['file_name']).to eq('popen.rb')
         expect(json_response['last_commit_id']).to eq('570e7b2abdd848b95f2f578043fc23bd6f6fd24d')
@@ -112,7 +112,7 @@ describe API::V3::Files do
     it "creates a new file in project repo" do
       post v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
-      expect(response).to have_http_status(201)
+      expect(response).to have_gitlab_http_status(201)
       expect(json_response['file_path']).to eq('newfile.rb')
       last_commit = project.repository.commit.raw
       expect(last_commit.author_email).to eq(user.email)
@@ -122,7 +122,7 @@ describe API::V3::Files do
     it "returns a 400 bad request if no params given" do
       post v3_api("/projects/#{project.id}/repository/files", user)
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
     end
 
     it "returns a 400 if editor fails to create file" do
@@ -131,7 +131,7 @@ describe API::V3::Files do
 
       post v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
     end
 
     context "when specifying an author" do
@@ -140,7 +140,7 @@ describe API::V3::Files do
 
         post v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         last_commit = project.repository.commit.raw
         expect(last_commit.author_email).to eq(author_email)
         expect(last_commit.author_name).to eq(author_name)
@@ -153,7 +153,7 @@ describe API::V3::Files do
       it "creates a new file in project repo" do
         post v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
-        expect(response).to have_http_status(201)
+        expect(response).to have_gitlab_http_status(201)
         expect(json_response['file_path']).to eq('newfile.rb')
         last_commit = project.repository.commit.raw
         expect(last_commit.author_email).to eq(user.email)
@@ -175,7 +175,7 @@ describe API::V3::Files do
     it "updates existing file in project repo" do
       put v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['file_path']).to eq(file_path)
       last_commit = project.repository.commit.raw
       expect(last_commit.author_email).to eq(user.email)
@@ -185,7 +185,7 @@ describe API::V3::Files do
     it "returns a 400 bad request if no params given" do
       put v3_api("/projects/#{project.id}/repository/files", user)
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
     end
 
     context "when specifying an author" do
@@ -194,7 +194,7 @@ describe API::V3::Files do
 
         put v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         last_commit = project.repository.commit.raw
         expect(last_commit.author_email).to eq(author_email)
         expect(last_commit.author_name).to eq(author_name)
@@ -214,7 +214,7 @@ describe API::V3::Files do
     it "deletes existing file in project repo" do
       delete v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['file_path']).to eq(file_path)
       last_commit = project.repository.commit.raw
       expect(last_commit.author_email).to eq(user.email)
@@ -224,7 +224,7 @@ describe API::V3::Files do
     it "returns a 400 bad request if no params given" do
       delete v3_api("/projects/#{project.id}/repository/files", user)
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
     end
 
     it "returns a 400 if fails to delete file" do
@@ -232,7 +232,7 @@ describe API::V3::Files do
 
       delete v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
-      expect(response).to have_http_status(400)
+      expect(response).to have_gitlab_http_status(400)
     end
 
     context "when specifying an author" do
@@ -241,7 +241,7 @@ describe API::V3::Files do
 
         delete v3_api("/projects/#{project.id}/repository/files", user), valid_params
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         last_commit = project.repository.commit.raw
         expect(last_commit.author_email).to eq(author_email)
         expect(last_commit.author_name).to eq(author_name)
@@ -274,7 +274,7 @@ describe API::V3::Files do
     it "remains unchanged" do
       get v3_api("/projects/#{project.id}/repository/files", user), get_params
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response['file_path']).to eq(file_path)
       expect(json_response['file_name']).to eq(file_path)
       expect(json_response['content']).to eq(put_params[:content])

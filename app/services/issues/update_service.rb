@@ -27,10 +27,6 @@ module Issues
         todo_service.update_issue(issue, current_user, old_mentioned_users)
       end
 
-      if issue.previous_changes.include?('milestone_id')
-        create_milestone_note(issue)
-      end
-
       if issue.assignees != old_assignees
         create_assignee_note(issue, old_assignees)
         notification_service.reassigned_issue(issue, current_user, old_assignees)

@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # Merge conflicts
 
 ----------

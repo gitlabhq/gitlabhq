@@ -23,7 +23,7 @@ describe Projects::HashedStorageMigrationService do
       it 'updates project to be hashed and not read-only' do
         service.execute
 
-        expect(project.hashed_storage?).to be_truthy
+        expect(project.hashed_storage?(:repository)).to be_truthy
         expect(project.repository_read_only).to be_falsey
       end
 

@@ -268,7 +268,8 @@ describe Gitlab::Workhorse do
         GL_ID: "user-#{user.id}",
         GL_USERNAME: user.username,
         GL_REPOSITORY: "project-#{project.id}",
-        RepoPath: repo_path
+        RepoPath: repo_path,
+        ShowAllRefs: false
       }
     end
 
@@ -282,7 +283,8 @@ describe Gitlab::Workhorse do
           GL_ID: "user-#{user.id}",
           GL_USERNAME: user.username,
           GL_REPOSITORY: "wiki-#{project.id}",
-          RepoPath: repo_path
+          RepoPath: repo_path,
+          ShowAllRefs: false
         }
       end
 
@@ -324,6 +326,12 @@ describe Gitlab::Workhorse do
 
           expect(subject).to include(gitaly_params)
         end
+
+        context 'show_all_refs enabled' do
+          subject { described_class.git_http_ok(repository, false, user, action, show_all_refs: true) }
+
+          it { is_expected.to include(ShowAllRefs: true) }
+        end
       end
 
       context "when git_receive_pack action is passed" do
@@ -336,6 +344,12 @@ describe Gitlab::Workhorse do
         let(:action) { 'info_refs' }
 
         it { expect(subject).to include(gitaly_params) }
+
+        context 'show_all_refs enabled' do
+          subject { described_class.git_http_ok(repository, false, user, action, show_all_refs: true) }
+
+          it { is_expected.to include(ShowAllRefs: true) }
+        end
       end
 
       context 'when action passed is not supported by Gitaly' do

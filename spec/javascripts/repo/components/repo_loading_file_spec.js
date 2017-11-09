@@ -1,13 +1,16 @@
 import Vue from 'vue';
-import RepoStore from '~/repo/stores/repo_store';
+import store from '~/repo/stores';
 import repoLoadingFile from '~/repo/components/repo_loading_file.vue';
+import { resetStore } from '../helpers';
 
 describe('RepoLoadingFile', () => {
-  function createComponent(propsData) {
+  let vm;
+
+  function createComponent() {
     const RepoLoadingFile = Vue.extend(repoLoadingFile);
 
     return new RepoLoadingFile({
-      propsData,
+      store,
     }).$mount();
   }
 
@@ -30,33 +33,30 @@ describe('RepoLoadingFile', () => {
   }
 
   afterEach(() => {
-    RepoStore.openedFiles = [];
+    vm.$destroy();
+
+    resetStore(vm.$store);
   });
 
   it('renders 3 columns of animated LoC', () => {
-    const vm = createComponent({
-      loading: {
-        tree: true,
-      },
-      hasFiles: false,
-    });
+    vm = createComponent();
     const columns = [...vm.$el.querySelectorAll('td')];
 
     expect(columns.length).toEqual(3);
     assertColumns(columns);
   });
 
-  it('renders 1 column of animated LoC if isMini', () => {
-    RepoStore.openedFiles = new Array(1);
-    const vm = createComponent({
-      loading: {
-        tree: true,
-      },
-      hasFiles: false,
-    });
-    const columns = [...vm.$el.querySelectorAll('td')];
+  it('renders 1 column of animated LoC if isMini', (done) => {
+    vm = createComponent();
+    vm.$store.state.openFiles.push('test');
 
-    expect(columns.length).toEqual(1);
-    assertColumns(columns);
+    vm.$nextTick(() => {
+      const columns = [...vm.$el.querySelectorAll('td')];
+
+      expect(columns.length).toEqual(1);
+      assertColumns(columns);
+
+      done();
+    });
   });
 });

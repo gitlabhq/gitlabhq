@@ -1,10 +1,10 @@
-## Test a Clojure application
+# Test a Clojure application with GitLab CI/CD
 
 This example will guide you how to run tests in your Clojure application.
 
 You can checkout the example [source](https://gitlab.com/dzaporozhets/clojure-web-application) and check [CI status](https://gitlab.com/dzaporozhets/clojure-web-application/builds?scope=all).
 
-### Configure project
+## Configure the project
 
 This is what the `.gitlab-ci.yml` file looks like for this project:
 
@@ -23,13 +23,13 @@ before_script:
   - lein deps
   - lein migratus migrate
 
-test: 
-  script: 
+test:
+  script:
     - lein test
 ```
 
-In before script we install JRE and [Leiningen](http://leiningen.org/). 
-Sample project uses [migratus](https://github.com/yogthos/migratus) library to manage database migrations. 
+In before script we install JRE and [Leiningen](http://leiningen.org/).
+Sample project uses [migratus](https://github.com/yogthos/migratus) library to manage database migrations.
 So we added database migration as last step of `before_script` section
 
 You can use public runners available on `gitlab.com` for testing your application with such configuration.

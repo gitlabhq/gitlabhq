@@ -33,7 +33,7 @@ describe Projects::PipelinesController do
     it 'returns JSON with serialized pipelines' do
       subject
 
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(response).to match_response_schema('pipeline')
 
       expect(json_response).to include('pipelines')
@@ -46,7 +46,7 @@ describe Projects::PipelinesController do
 
     context 'when performing gitaly calls', :request_store do
       it 'limits the Gitaly requests' do
-        expect { subject }.to change { Gitlab::GitalyClient.get_request_count }.by(10)
+        expect { subject }.to change { Gitlab::GitalyClient.get_request_count }.by(8)
       end
     end
   end
@@ -57,7 +57,7 @@ describe Projects::PipelinesController do
     it 'returns the pipeline' do
       get_pipeline_json
 
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response).not_to be_an(Array)
       expect(json_response['id']).to be(pipeline.id)
       expect(json_response['details']).to have_key 'stages'
@@ -111,7 +111,7 @@ describe Projects::PipelinesController do
       end
 
       it 'returns html source for stage dropdown' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(response).to render_template('projects/pipelines/_stage')
         expect(json_response).to include('html')
       end
@@ -123,7 +123,7 @@ describe Projects::PipelinesController do
       end
 
       it 'responds with not found' do
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -148,7 +148,7 @@ describe Projects::PipelinesController do
     end
 
     it 'return a detailed pipeline status in json' do
-      expect(response).to have_http_status(:ok)
+      expect(response).to have_gitlab_http_status(:ok)
       expect(json_response['text']).to eq status.text
       expect(json_response['label']).to eq status.label
       expect(json_response['icon']).to eq status.icon
@@ -171,14 +171,14 @@ describe Projects::PipelinesController do
       let(:feature) { ProjectFeature::ENABLED }
 
       it 'retries a pipeline without returning any content' do
-        expect(response).to have_http_status(:no_content)
+        expect(response).to have_gitlab_http_status(:no_content)
         expect(build.reload).to be_retried
       end
     end
 
     context 'when builds are disabled' do
       it 'fails to retry pipeline' do
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end
@@ -198,14 +198,14 @@ describe Projects::PipelinesController do
       let(:feature) { ProjectFeature::ENABLED }
 
       it 'cancels a pipeline without returning any content' do
-        expect(response).to have_http_status(:no_content)
+        expect(response).to have_gitlab_http_status(:no_content)
         expect(pipeline.reload).to be_canceled
       end
     end
 
     context 'when builds are disabled' do
       it 'fails to retry pipeline' do
-        expect(response).to have_http_status(:not_found)
+        expect(response).to have_gitlab_http_status(:not_found)
       end
     end
   end

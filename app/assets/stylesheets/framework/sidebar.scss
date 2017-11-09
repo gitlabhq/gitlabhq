@@ -9,7 +9,7 @@
     &.container-blank {
       background: none;
       padding: 0;
-      border: none;
+      border: 0;
     }
   }
 }
@@ -111,7 +111,7 @@
     }
 
     .block:last-of-type {
-      border: none;
+      border: 0;
     }
   }
 

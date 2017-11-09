@@ -43,7 +43,7 @@ module Gitlab
 
         if thread
           thread.wakeup if thread.alive?
-          thread.join
+          thread.join unless Thread.current == thread
           @thread = nil
         end
       end

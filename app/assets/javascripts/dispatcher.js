@@ -1,21 +1,23 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
+import { s__ } from './locale';
 /* global ProjectSelect */
-/* global IssuableIndex */
+import IssuableIndex from './issuable_index';
 /* global Milestone */
-/* global IssuableForm */
-/* global LabelsSelect */
+import IssuableForm from './issuable_form';
+import LabelsSelect from './labels_select';
 /* global MilestoneSelect */
 /* global NewBranchForm */
 /* global NotificationsForm */
 /* global NotificationsDropdown */
-/* global GroupAvatar */
+import groupAvatar from './group_avatar';
+import GroupLabelSubscription from './group_label_subscription';
 /* global LineHighlighter */
 import BuildArtifacts from './build_artifacts';
 import CILintEditor from './ci_lint_editor';
-/* global GroupsSelect */
+import groupsSelect from './groups_select';
 /* global Search */
 /* global Admin */
-/* global NamespaceSelects */
+import NamespaceSelect from './namespace_select';
 /* global NewCommitForm */
 /* global NewBranchForm */
 /* global Project */
@@ -31,6 +33,7 @@ import Labels from './labels';
 import LabelManager from './label_manager';
 /* global Sidebar */
 
+import Flash from './flash';
 import CommitsList from './commits';
 import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
@@ -87,6 +90,7 @@ import U2FAuthenticate from './u2f/authenticate';
 import Members from './members';
 import memberExpirationDate from './member_expiration_date';
 import DueDateSelectors from './due_date_select';
+import Diff from './diff';
 
 (function() {
   var Dispatcher;
@@ -171,7 +175,7 @@ import DueDateSelectors from './due_date_select';
             filteredSearchManager.setup();
           }
           const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
-          IssuableIndex.init(pagePrefix);
+          new IssuableIndex(pagePrefix);
 
           shortcut_handler = new ShortcutsNavigation();
           new UsersSelect();
@@ -229,16 +233,21 @@ import DueDateSelectors from './due_date_select';
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
         case 'projects:milestones:update':
+          new ZenMode();
+          new DueDateSelectors();
+          new GLForm($('.milestone-form'), true);
+          break;
         case 'groups:milestones:new':
         case 'groups:milestones:edit':
         case 'groups:milestones:update':
           new ZenMode();
           new DueDateSelectors();
-          new GLForm($('.milestone-form'), true);
+          new GLForm($('.milestone-form'), false);
           break;
         case 'projects:compare:show':
-          new gl.Diff();
-          initChangesDropdown();
+          new Diff();
+          const paddingTop = 16;
+          initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - paddingTop);
           break;
         case 'projects:branches:new':
         case 'projects:branches:create':
@@ -273,7 +282,7 @@ import DueDateSelectors from './due_date_select';
           }
         case 'projects:merge_requests:creations:diffs':
         case 'projects:merge_requests:edit':
-          new gl.Diff();
+          new Diff();
           shortcut_handler = new ShortcutsNavigation();
           new GLForm($('.merge-request-form'), true);
           new IssuableForm($('.merge-request-form'));
@@ -307,7 +316,7 @@ import DueDateSelectors from './due_date_select';
           new GLForm($('.release-form'), true);
           break;
         case 'projects:merge_requests:show':
-          new gl.Diff();
+          new Diff();
           shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
 
@@ -323,7 +332,7 @@ import DueDateSelectors from './due_date_select';
           new gl.Activities();
           break;
         case 'projects:commit:show':
-          new gl.Diff();
+          new Diff();
           new ZenMode();
           shortcut_handler = new ShortcutsNavigation();
           new MiniPipelineGraph({
@@ -411,7 +420,7 @@ import DueDateSelectors from './due_date_select';
           break;
         case 'projects:project_members:index':
           memberExpirationDate('.js-access-expiration-date-groups');
-          new GroupsSelect();
+          groupsSelect();
           memberExpirationDate();
           new Members();
           new UsersSelect();
@@ -422,11 +431,11 @@ import DueDateSelectors from './due_date_select';
         case 'admin:groups:create':
           BindInOut.initAll();
           new Group();
-          new GroupAvatar();
+          groupAvatar();
           break;
         case 'groups:edit':
         case 'admin:groups:edit':
-          new GroupAvatar();
+          groupAvatar();
           break;
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
@@ -473,7 +482,7 @@ import DueDateSelectors from './due_date_select';
             const $el = $(el);
 
             if ($el.find('.dropdown-group-label').length) {
-              new gl.GroupLabelSubscription($el);
+              new GroupLabelSubscription($el);
             } else {
               new gl.ProjectLabelSubscription($el);
             }
@@ -536,9 +545,12 @@ import DueDateSelectors from './due_date_select';
           new DueDateSelectors();
           break;
         case 'projects:clusters:show':
-          import(/* webpackChunkName: "clusters" */ './clusters')
+          import(/* webpackChunkName: "clusters" */ './clusters/clusters_bundle')
             .then(cluster => new cluster.default()) // eslint-disable-line new-cap
-            .catch(() => {});
+            .catch((err) => {
+              Flash(s__('ClusterIntegration|Problem setting up the cluster JavaScript'));
+              throw err;
+            });
           break;
       }
       switch (path[0]) {
@@ -568,7 +580,8 @@ import DueDateSelectors from './due_date_select';
               new UsersSelect();
               break;
             case 'projects':
-              new NamespaceSelects();
+              document.querySelectorAll('.js-namespace-select')
+                .forEach(dropdown => new NamespaceSelect({ dropdown }));
               break;
             case 'labels':
               switch (path[2]) {

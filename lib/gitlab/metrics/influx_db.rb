@@ -11,6 +11,8 @@ module Gitlab
         settings[:enabled] || false
       end
 
+      # Prometheus histogram buckets used for arbitrary code measurements
+      EXECUTION_MEASUREMENT_BUCKETS = [0.001, 0.002, 0.005, 0.01, 0.025, 0.05, 0.1, 0.25, 0.5, 1].freeze
       RAILS_ROOT = Rails.root.to_s
       METRICS_ROOT = Rails.root.join('lib', 'gitlab', 'metrics').to_s
       PATH_REGEX = /^#{RAILS_ROOT}\/?/
@@ -99,24 +101,27 @@ module Gitlab
         cpu_stop = System.cpu_time
         real_stop = Time.now.to_f
 
-        real_time = (real_stop - real_start) * 1000.0
+        real_time = (real_stop - real_start)
         cpu_time = cpu_stop - cpu_start
 
-        trans.increment("#{name}_real_time", real_time)
-        trans.increment("#{name}_cpu_time", cpu_time)
-        trans.increment("#{name}_call_count", 1)
+        Gitlab::Metrics.histogram("gitlab_#{name}_real_duration_seconds".to_sym,
+                                  "Measure #{name}",
+                                  Transaction::BASE_LABELS,
+                                  EXECUTION_MEASUREMENT_BUCKETS)
+          .observe(trans.labels, real_time)
+
+        Gitlab::Metrics.histogram("gitlab_#{name}_cpu_duration_seconds".to_sym,
+                                  "Measure #{name}",
+                                  Transaction::BASE_LABELS,
+                                  EXECUTION_MEASUREMENT_BUCKETS)
+          .observe(trans.labels, cpu_time / 1000.0)
+
+        # InfluxDB stores the _real_time time values as milliseconds
+        trans.increment("#{name}_real_time", real_time * 1000, false)
+        trans.increment("#{name}_cpu_time", cpu_time, false)
+        trans.increment("#{name}_call_count", 1, false)
 
         retval
-      end
-
-      # Adds a tag to the current transaction (if any)
-      #
-      # name - The name of the tag to add.
-      # value - The value of the tag.
-      def tag_transaction(name, value)
-        trans = current_transaction
-
-        trans&.add_tag(name, value)
       end
 
       # Sets the action of the current transaction (if any)

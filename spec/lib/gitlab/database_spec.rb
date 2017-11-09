@@ -202,6 +202,26 @@ describe Gitlab::Database do
     it 'handles non-UTF-8 data' do
       expect { described_class.bulk_insert('test', [{ a: "\255" }]) }.not_to raise_error
     end
+
+    context 'when using PostgreSQL' do
+      before do
+        allow(described_class).to receive(:mysql?).and_return(false)
+      end
+
+      it 'allows the returning of the IDs of the inserted rows' do
+        result = double(:result, values: [['10']])
+
+        expect(connection)
+          .to receive(:execute)
+          .with(/RETURNING id/)
+          .and_return(result)
+
+        ids = described_class
+          .bulk_insert('test', [{ number: 10 }], return_ids: true)
+
+        expect(ids).to eq([10])
+      end
+    end
   end
 
   describe '.create_connection_pool' do
@@ -254,6 +274,28 @@ describe Gitlab::Database do
       expect(described_class).to receive(:postgresql?).and_return(false)
 
       expect(described_class.false_value).to eq 0
+    end
+  end
+
+  describe '#sanitize_timestamp' do
+    let(:max_timestamp) { Time.at((1 << 31) - 1) }
+
+    subject { described_class.sanitize_timestamp(timestamp) }
+
+    context 'with a timestamp smaller than MAX_TIMESTAMP_VALUE' do
+      let(:timestamp) { max_timestamp - 10.years }
+
+      it 'returns the given timestamp' do
+        expect(subject).to eq(timestamp)
+      end
+    end
+
+    context 'with a timestamp larger than MAX_TIMESTAMP_VALUE' do
+      let(:timestamp) { max_timestamp + 1.second }
+
+      it 'returns MAX_TIMESTAMP_VALUE' do
+        expect(subject).to eq(max_timestamp)
+      end
     end
   end
 end

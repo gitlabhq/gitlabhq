@@ -43,6 +43,10 @@ describe('MRWidgetReadyToMerge', () => {
     vm = createComponent();
   });
 
+  afterEach(() => {
+    vm.$destroy();
+  });
+
   describe('props', () => {
     it('should have props', () => {
       const { mr, service } = readyToMergeComponent.props;
@@ -491,6 +495,48 @@ describe('MRWidgetReadyToMerge', () => {
       it('should be enabled in rendered output', () => {
         const checkboxElement = this.customVm.$el.querySelector('#remove-source-branch-input');
         expect(checkboxElement.getAttribute('disabled')).toBeNull();
+      });
+    });
+  });
+
+  describe('Merge controls', () => {
+    describe('when allowed to merge', () => {
+      beforeEach(() => {
+        vm = createComponent({
+          mr: { isMergeAllowed: true },
+        });
+      });
+
+      it('shows remove source branch checkbox', () => {
+        expect(vm.$el.querySelector('.js-remove-source-branch-checkbox')).toBeDefined();
+      });
+
+      it('shows modify commit message button', () => {
+        expect(vm.$el.querySelector('.js-modify-commit-message-button')).toBeDefined();
+      });
+
+      it('does not show message about needing to resolve items', () => {
+        expect(vm.$el.querySelector('.js-resolve-mr-widget-items-message')).toBeNull();
+      });
+    });
+
+    describe('when not allowed to merge', () => {
+      beforeEach(() => {
+        vm = createComponent({
+          mr: { isMergeAllowed: false },
+        });
+      });
+
+      it('does not show remove source branch checkbox', () => {
+        expect(vm.$el.querySelector('.js-remove-source-branch-checkbox')).toBeNull();
+      });
+
+      it('does not show  modify commit message button', () => {
+        expect(vm.$el.querySelector('.js-modify-commit-message-button')).toBeNull();
+      });
+
+      it('shows message to resolve all items before being allowed to merge', () => {
+        expect(vm.$el.querySelector('.js-resolve-mr-widget-items-message')).toBeDefined();
       });
     });
   });

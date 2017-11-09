@@ -54,7 +54,7 @@ module Gitlab
         end
 
         def perform
-          return yield unless Feature.enabled?('git_storage_circuit_breaker')
+          return yield unless enabled?
 
           check_storage_accessible!
 
@@ -64,10 +64,27 @@ module Gitlab
         def circuit_broken?
           return false if no_failures?
 
-          recent_failure = last_failure > failure_wait_time.seconds.ago
-          too_many_failures = failure_count > failure_count_threshold
+          failure_count > failure_count_threshold
+        end
 
-          recent_failure || too_many_failures
+        def backing_off?
+          return false if no_failures?
+
+          recent_failure = last_failure > failure_wait_time.seconds.ago
+          too_many_failures = failure_count > backoff_threshold
+
+          recent_failure && too_many_failures
+        end
+
+        private
+
+        # The circuitbreaker can be enabled for the entire fleet using a Feature
+        # flag.
+        #
+        # Enabling it for a single host can be done setting the
+        # `GIT_STORAGE_CIRCUIT_BREAKER` environment variable.
+        def enabled?
+          ENV['GIT_STORAGE_CIRCUIT_BREAKER'].present? || Feature.enabled?('git_storage_circuit_breaker')
         end
 
         def failure_info
@@ -83,7 +100,7 @@ module Gitlab
           return @storage_available if @storage_available
 
           if @storage_available = Gitlab::Git::Storage::ForkedStorageCheck
-                                    .storage_available?(storage_path, storage_timeout)
+                                    .storage_available?(storage_path, storage_timeout, access_retries)
             track_storage_accessible
           else
             track_storage_inaccessible
@@ -94,7 +111,11 @@ module Gitlab
 
         def check_storage_accessible!
           if circuit_broken?
-            raise Gitlab::Git::Storage::CircuitOpen.new("Circuit for #{storage} is broken", failure_wait_time)
+            raise Gitlab::Git::Storage::CircuitOpen.new("Circuit for #{storage} is broken", failure_reset_time)
+          end
+
+          if backing_off?
+            raise Gitlab::Git::Storage::Failing.new("Backing off access to #{storage}", failure_wait_time)
           end
 
           unless storage_available?
@@ -131,12 +152,6 @@ module Gitlab
           end
         end
 
-        def cache_key
-          @cache_key ||= "#{Gitlab::Git::Storage::REDIS_KEY_PREFIX}#{storage}:#{hostname}"
-        end
-
-        private
-
         def get_failure_info
           last_failure, failure_count = Gitlab::Git::Storage.redis.with do |redis|
             redis.hmget(cache_key, :last_failure, :failure_count)
@@ -145,6 +160,10 @@ module Gitlab
           last_failure = Time.at(last_failure.to_i) if last_failure.present?
 
           FailureInfo.new(last_failure, failure_count.to_i)
+        end
+
+        def cache_key
+          @cache_key ||= "#{Gitlab::Git::Storage::REDIS_KEY_PREFIX}#{storage}:#{hostname}"
         end
       end
     end

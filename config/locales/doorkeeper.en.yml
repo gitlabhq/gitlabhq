@@ -58,9 +58,10 @@ en:
           expired: "The access token expired"
           unknown: "The access token is invalid"
     scopes:
-      api: Access your API
-      read_user: Read user information
+      api: Access the authenticated user's API
+      read_user: Read the authenticated user's personal information
       openid: Authenticate using OpenID Connect
+      sudo: Perform API actions as any user in the system (if the authenticated user is an admin)
 
     flash:
       applications:

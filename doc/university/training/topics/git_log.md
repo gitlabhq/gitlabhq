@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # Git Log
 
 ----------
@@ -49,8 +53,8 @@ git log --since=1.month.ago --until=3.weeks.ago
 
 ```
 cd ~/workspace
-git clone git@gitlab.com:gitlab-org/gitlab-ci-multi-runner.git
-cd gitlab-ci-multi-runner
+git clone git@gitlab.com:gitlab-org/gitlab-runner.git
+cd gitlab-runner
 git log --author="Travis"
 git log --since=1.month.ago --until=3.weeks.ago
 git log --since=1.month.ago --until=1.day.ago --author="Travis"

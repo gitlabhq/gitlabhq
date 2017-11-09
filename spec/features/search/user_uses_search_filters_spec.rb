@@ -16,7 +16,7 @@ describe 'User uses search filters', :js do
 
   context' when filtering by group' do
     it 'shows group projects' do
-      find('.js-search-group-dropdown').trigger('click')
+      find('.js-search-group-dropdown').click
 
       wait_for_requests
 
@@ -27,7 +27,7 @@ describe 'User uses search filters', :js do
       expect(find('.js-search-group-dropdown')).to have_content(group.name)
 
       page.within('.project-filter') do
-        find('.js-search-project-dropdown').trigger('click')
+        find('.js-search-project-dropdown').click
 
         wait_for_requests
 
@@ -39,7 +39,7 @@ describe 'User uses search filters', :js do
   context' when filtering by project' do
     it 'shows a project' do
       page.within('.project-filter') do
-        find('.js-search-project-dropdown').trigger('click')
+        find('.js-search-project-dropdown').click
 
         wait_for_requests
 

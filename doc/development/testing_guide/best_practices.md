@@ -60,6 +60,35 @@ writing one](testing_levels.md#consider-not-writing-a-system-test)!
 - It's ok to look for DOM elements but don't abuse it since it makes the tests
   more brittle
 
+#### Debugging Capybara
+
+Sometimes you may need to debug Capybara tests by observing browser behavior.
+
+You can pause Capybara and view the website on the browser by using the
+`live_debug` method in your spec. The current page will be automatically opened
+in your default browser.
+You may need to sign in first (the current user's credentials are displayed in
+the terminal).
+
+To resume the test run, press any key.
+
+For example:
+
+```
+$ bin/rspec spec/features/auto_deploy_spec.rb:34
+Running via Spring preloader in process 8999
+Run options: include {:locations=>{"./spec/features/auto_deploy_spec.rb"=>[34]}}
+
+Current example is paused for live debugging
+The current user credentials are: user2 / 12345678
+Press any key to resume the execution of the example!
+Back to the example!
+.
+
+Finished in 34.51 seconds (files took 0.76702 seconds to load)
+1 example, 0 failures
+```
+
 ### `let` variables
 
 GitLab's RSpec suite has made extensive use of `let` variables to reduce

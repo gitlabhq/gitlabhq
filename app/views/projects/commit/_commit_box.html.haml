@@ -61,13 +61,13 @@
     %span.cgray= n_('parent', 'parents', @commit.parents.count)
     - @commit.parents.each do |parent|
       = link_to parent.short_id, project_commit_path(@project, parent), class: "commit-sha"
-    %span.commit-info.branches
+    .commit-info.branches
       %i.fa.fa-spinner.fa-spin
 
   - if @commit.last_pipeline
     - last_pipeline = @commit.last_pipeline
     .well-segment.pipeline-info
-      .status-icon-container{ class: "ci-status-icon-#{@commit.status}" }
+      .status-icon-container{ class: "ci-status-icon-#{last_pipeline.status}" }
         = link_to project_pipeline_path(@project, last_pipeline.id) do
           = ci_icon_for_status(last_pipeline.status)
       #{ _('Pipeline') }
@@ -77,5 +77,6 @@
         #{ n_(s_('Pipeline|with stage'), s_('Pipeline|with stages'), last_pipeline.stages_count) }
         .mr-widget-pipeline-graph
           = render 'shared/mini_pipeline_graph', pipeline: last_pipeline, klass: 'js-commit-pipeline-graph'
-      in
-      = time_interval_in_words last_pipeline.duration
+      - if last_pipeline.duration
+        in
+        = time_interval_in_words last_pipeline.duration

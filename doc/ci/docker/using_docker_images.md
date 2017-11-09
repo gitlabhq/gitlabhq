@@ -327,10 +327,6 @@ means, that when starting the container without additional options, it will run
 the database's process, while Runner expects that the image will have no
 entrypoint or at least will start with a shell as its entrypoint.
 
-Previously we would need to create our own image based on the
-`super/sql:experimental` image, set the entrypoint to a shell, and then use
-it in job's configuration, e.g.:
-
 Before the new extended Docker configuration options, you would need to create
 your own image based on the `super/sql:experimental` image, set the entrypoint
 to a shell and then use it in job's configuration, like:
@@ -505,8 +501,8 @@ First start with creating a file named `build_script`:
 
 ```bash
 cat <<EOF > build_script
-git clone https://gitlab.com/gitlab-org/gitlab-ci-multi-runner.git /builds/gitlab-org/gitlab-ci-multi-runner
-cd /builds/gitlab-org/gitlab-ci-multi-runner
+git clone https://gitlab.com/gitlab-org/gitlab-runner.git /builds/gitlab-org/gitlab-runner
+cd /builds/gitlab-org/gitlab-runner
 make
 EOF
 ```

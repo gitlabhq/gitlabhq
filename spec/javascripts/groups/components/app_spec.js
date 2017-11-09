@@ -431,9 +431,9 @@ describe('AppComponent', () => {
     });
 
     it('should render groups tree', (done) => {
-      vm.groups = [mockParentGroupItem];
+      vm.store.state.groups = [mockParentGroupItem];
       vm.isLoading = false;
-      vm.pageInfo = mockPageInfo;
+      vm.store.state.pageInfo = mockPageInfo;
       Vue.nextTick(() => {
         expect(vm.$el.querySelector('.groups-list-tree-container')).toBeDefined();
         done();

@@ -1,13 +1,15 @@
 <script>
+  import { mapActions, mapGetters } from 'vuex';
   import timeAgoMixin from '../../vue_shared/mixins/timeago';
-  import eventHub from '../event_hub';
-  import repoMixin from '../mixins/repo_mixin';
+  import skeletonLoadingContainer from '../../vue_shared/components/skeleton_loading_container.vue';
 
   export default {
     mixins: [
-      repoMixin,
       timeAgoMixin,
     ],
+    components: {
+      skeletonLoadingContainer,
+    },
     props: {
       file: {
         type: Object,
@@ -15,13 +17,18 @@
       },
     },
     computed: {
+      ...mapGetters([
+        'isCollapsed',
+      ]),
+      isSubmodule() {
+        return this.file.type === 'submodule';
+      },
       fileIcon() {
-        const classObj = {
+        return {
           'fa-spinner fa-spin': this.file.loading,
           [this.file.icon]: !this.file.loading,
           'fa-folder-open': !this.file.loading && this.file.opened,
         };
-        return classObj;
       },
       levelIndentation() {
         return {
@@ -31,11 +38,14 @@
       shortId() {
         return this.file.id.substr(0, 8);
       },
+      submoduleColSpan() {
+        return !this.isCollapsed && this.isSubmodule ? 3 : 1;
+      },
     },
     methods: {
-      linkClicked(file) {
-        eventHub.$emit('fileNameClicked', file);
-      },
+      ...mapActions([
+        'clickedTreeRow',
+      ]),
     },
   };
 </script>
@@ -43,8 +53,11 @@
 <template>
   <tr
     class="file"
-    @click.prevent="linkClicked(file)">
-    <td>
+    @click.prevent="clickedTreeRow(file)">
+    <td
+      class="multi-file-table-col-name"
+      :colspan="submoduleColSpan"
+    >
       <i
         class="fa fa-fw file-icon"
         :class="fileIcon"
@@ -58,7 +71,7 @@
       >
         {{ file.name }}
       </a>
-      <template v-if="file.type === 'submodule' && file.id">
+      <template v-if="isSubmodule && file.id">
         @
         <span class="commit-sha">
           <a
@@ -71,15 +84,20 @@
       </template>
     </td>
 
-    <template v-if="!isMini">
+    <template v-if="!isCollapsed && !isSubmodule">
       <td class="hidden-sm hidden-xs">
         <a
+          v-if="file.lastCommit.message"
           @click.stop
           :href="file.lastCommit.url"
           class="commit-message"
         >
           {{ file.lastCommit.message }}
         </a>
+        <skeleton-loading-container
+          v-else
+          :small="true"
+        />
       </td>
 
       <td class="commit-update hidden-xs text-right">
@@ -89,6 +107,11 @@
         >
           {{ timeFormated(file.lastCommit.updatedAt) }}
         </span>
+        <skeleton-loading-container
+          v-else
+          class="animation-container-right"
+          :small="true"
+        />
       </td>
     </template>
   </tr>

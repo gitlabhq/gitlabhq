@@ -1,5 +1,0 @@
----
-title: Fix error when updating a forked project with deleted `ForkedProjectLink`
-merge_request: 14916
-author:
-type: fixed
