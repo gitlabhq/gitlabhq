@@ -1,6 +1,5 @@
 module IconsHelper
   extend self
-  include Gitlab::CurrentSettings
   include FontAwesome::Rails::IconHelper
 
   # Creates an icon tag given icon name(s) and possible icon modifiers.
@@ -27,14 +26,14 @@ module IconsHelper
   def sprite_icon_path
     # SVG Sprites currently don't work across domains, so in the case of a CDN
     # we have to set the current path deliberately to prevent addition of asset_host
-    sprite_base_url = ActionController::Base.asset_host.present? ? Gitlab.config.gitlab.url : nil
+    sprite_base_url = Gitlab.config.gitlab.url if ActionController::Base.asset_host
     ActionController::Base.helpers.image_path('icons.svg', host: sprite_base_url)
   end
 
   def sprite_icon(icon_name, size: nil, css_class: nil)
     css_classes = size ? "s#{size}" : ""
     css_classes << " #{css_class}" unless css_class.blank?
-    content_tag(:svg, content_tag(:use, "", { "xlink:href" => "#{sprite_icon_path()}##{icon_name}" } ), class: css_classes.empty? ? nil : css_classes)
+    content_tag(:svg, content_tag(:use, "", { "xlink:href" => "#{sprite_icon_path}##{icon_name}" } ), class: css_classes.empty? ? nil : css_classes)
   end
 
   def audit_icon(names, options = {})

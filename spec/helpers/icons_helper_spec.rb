@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe IconsHelper do
+  let(:icons_path) { ActionController::Base.helpers.image_path("icons.svg") }
+
   describe 'icon' do
     it 'returns aria-hidden by default' do
       star = icon('star')
@@ -18,8 +20,8 @@ describe IconsHelper do
 
   describe 'sprite_icon_path' do
     it 'returns relative path' do
-      expect(sprite_icon_path())
-        .to eq icons_path()
+      expect(sprite_icon_path)
+        .to eq icons_path
     end
 
     context 'when an asset_host is set in the config it will return an absolute local URL' do
@@ -41,17 +43,17 @@ describe IconsHelper do
 
     it 'returns svg icon html' do
       expect(sprite_icon(icon_name).to_s)
-        .to eq "<svg><use xlink:href=\"#{icons_path()}##{icon_name}\"></use></svg>"
+        .to eq "<svg><use xlink:href=\"#{icons_path}##{icon_name}\"></use></svg>"
     end
 
     it 'returns svg icon html + size classes' do
       expect(sprite_icon(icon_name, size: 72).to_s)
-        .to eq "<svg class=\"s72\"><use xlink:href=\"#{icons_path()}##{icon_name}\"></use></svg>"
+        .to eq "<svg class=\"s72\"><use xlink:href=\"#{icons_path}##{icon_name}\"></use></svg>"
     end
 
     it 'returns svg icon html + size classes + additional class' do
       expect(sprite_icon(icon_name, size: 72, css_class: 'icon-danger').to_s)
-        .to eq "<svg class=\"s72 icon-danger\"><use xlink:href=\"#{icons_path()}#{icon_name}\"></use></svg>"
+        .to eq "<svg class=\"s72 icon-danger\"><use xlink:href=\"#{icons_path}##{icon_name}\"></use></svg>"
     end
   end
 
@@ -159,9 +161,5 @@ describe IconsHelper do
     it 'returns file-text-o class with no extension' do
       expect(file_type_icon_class('file', 0, 'CHANGELOG')).to eq 'file-text-o'
     end
-  end
-
-  def icons_path
-    ActionController::Base.helpers.image_path("icons.svg")
   end
 end
