@@ -225,8 +225,6 @@ class Project < ActiveRecord::Base
   has_many :project_deploy_tokens
   has_many :deploy_tokens, through: :project_deploy_tokens
 
-  has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
-
   has_one :auto_devops, class_name: 'ProjectAutoDevops'
   has_many :custom_attributes, class_name: 'ProjectCustomAttribute'
 
@@ -1311,21 +1309,13 @@ class Project < ActiveRecord::Base
     @shared_runners ||= shared_runners_enabled? ? Ci::Runner.shared : Ci::Runner.none
   end
 
-  def active_shared_runners
-    @active_shared_runners ||= shared_runners.active
-  end
-
   def group_runners
     @group_runners ||= group_runners_enabled? ? Ci::Runner.belonging_to_group(self.id) : Ci::Runner.none
   end
 
-  def active_group_runners
-    @active_group_runners ||= group_runners.active
-  end
-
   def any_runners?(&block)
-    union = Gitlab::SQL::Union.new([active_runners, active_shared_runners, active_group_runners])
-    runners = Ci::Runner.from("(#{union.to_sql}) ci_runners")
+    union = Gitlab::SQL::Union.new([runners, shared_runners, group_runners])
+    runners = Ci::Runner.from("(#{union.to_sql}) ci_runners").active
     runners.any?(&block)
   end
 
