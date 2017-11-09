@@ -32,7 +32,7 @@ describe IconsHelper do
       end
 
       it 'returns an absolute URL on that asset host' do
-        expect(sprite_icon_path())
+        expect(sprite_icon_path)
           .to eq ActionController::Base.helpers.image_path("icons.svg", host: Gitlab.config.gitlab.url)
       end
     end
