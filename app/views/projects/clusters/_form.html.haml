@@ -1,4 +1,4 @@
-.form_group.append-bottom-20
+.form-group
   %label.append-bottom-10{ for: 'cluster-name' }
     = s_('ClusterIntegration|Cluster name')
   .input-group
@@ -11,11 +11,23 @@
   = field.fields_for :platform_kubernetes, @cluster.platform_kubernetes do |platform_kubernetes_field|
     .form-group
       = platform_kubernetes_field.label :api_url, s_('ClusterIntegration|API URL')
-      = platform_kubernetes_field.text_field :api_url, class: 'form-control', disabled: @cluster.managed?
+      = platform_kubernetes_field.text_field :api_url, class: 'form-control', placeholder: s_('ClusterIntegration|API URL'), disabled: @cluster.managed?
+
+    .form-group
+      = platform_kubernetes_field.label :ca_cert, s_('ClusterIntegration|CA Certificate')
+      = platform_kubernetes_field.text_area :ca_cert, class: 'form-control', placeholder: s_('ClusterIntegration|Certificate Authority bundle (PEM format)'), disabled: @cluster.managed?
 
     .form-group
       = platform_kubernetes_field.label :namespace, s_('ClusterIntegration|Project namespace (optional, unique)')
-      = platform_kubernetes_field.text_field :namespace, class: 'form-control', placeholder: Clusters::Platforms::Kubernetes.namespace_for_project(@project), disabled: @cluster.managed?
+      = platform_kubernetes_field.text_field :namespace, class: 'form-control', placeholder: s_('ClusterIntegration|Project namespace'), disabled: @cluster.managed?
 
     .form-group
-      = field.submit s_('ClusterIntegration|Save cluster'), class: 'btn btn-save'
+      = platform_kubernetes_field.label :token, s_('ClusterIntegration|Token')
+      .input-group
+        = platform_kubernetes_field.text_field :token, class: 'form-control js-cluster-token', type: 'password', placeholder: s_('ClusterIntegration|Token'), disabled: @cluster.managed?
+        %span.input-group-addon.clipboard-addon
+          %button.js-show-cluster-token.btn-blank{ type: 'button' }
+            = s_('ClusterIntegration|Show')
+
+    .form-group
+      = field.submit s_('ClusterIntegration|Save changes'), class: 'btn btn-save'

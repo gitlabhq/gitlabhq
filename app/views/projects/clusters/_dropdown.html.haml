@@ -1,13 +1,14 @@
 %h4.prepend-top-0= s_('ClusterIntegration|Choose how to set up cluster integration')
 
 .dropdown
-  %button.dropdown-toggle.form-control{ type: 'button', data: { toggle: 'dropdown' }, "aria-haspopup": true, "aria-expanded": false }
-    = dropdown_text
-    %span.caret
-  %ul.dropdown-menu
+  %button.dropdown-menu-toggle.dropdown-menu-full-width{ type: 'button', data: { toggle: 'dropdown' }, "aria-haspopup": true, "aria-expanded": false }
+    %span.dropdown-toggle-text
+      = dropdown_text
+    = icon('chevron-down')
+  %ul.dropdown-menu.clusters-dropdown-menu.dropdown-menu-full-width
     %li
       %a{ href: providers_gcp_new_namespace_project_clusters_path(@project.namespace, @project) }
         = s_('ClusterIntegration| Create cluster on Google Engine')
     %li
-      %a{ href: platforms_kubernetes_new_namespace_project_clusters_path(@project.namespace, @project)}
+      %a{ href: platforms_kubernetes_new_namespace_project_clusters_path(@project.namespace, @project) }
         = s_('ClusterIntegration| Add existing cluster')
