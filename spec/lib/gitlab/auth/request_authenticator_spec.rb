@@ -11,7 +11,7 @@ describe Gitlab::Auth::RequestAuthenticator do
 
   subject { described_class.new(request) }
 
-  describe '.user' do
+  describe '#user' do
     let!(:sessionless_user) { build(:user) }
     let!(:session_user) { build(:user) }
 
@@ -37,7 +37,7 @@ describe Gitlab::Auth::RequestAuthenticator do
     end
   end
 
-  describe '.find_sessionless_user' do
+  describe '#find_sessionless_user' do
     let!(:access_token_user) { build(:user) }
     let!(:rss_token_user) { build(:user) }
 
