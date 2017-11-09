@@ -15,6 +15,7 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+  height: 100%;
 }
 
 .blank-state-welcome {
@@ -34,16 +35,17 @@
   display: block;
   color: $gl-text-color;
   flex: 0 0 100%;
+  margin-bottom: 15px;
 
   @media (min-width: $screen-sm-min) {
-    flex: 0 0 48%;
+    flex: 0 0 49%;
 
     &:nth-child(odd) {
-      margin-right: 10px;
+      margin-right: 5px;
     }
 
     &:nth-child(even) {
-      margin-left: 10px;
+      margin-left: 5px;
     }
   }
 
@@ -56,12 +58,12 @@
 
 .blank-state {
   padding: 20px;
-  margin-bottom: 30px;
   border: 1px solid $border-color;
   border-radius: $border-radius-default;
 
   @media (min-width: $screen-sm-min) {
     display: flex;
+    height: 100%;
     align-items: center;
     padding: 50px 30px;
   }
@@ -91,21 +93,30 @@
 }
 
 /* EE-specific Styles */
-@media (min-width: $screen-md-min) {
-  .blank-state-parent-container.has-start-trial-container {
-    display: flex;
+
+@media (min-width: $screen-lg-min) {
+  .column-large {
+    flex: 2;
+  }
+
+  .column-small {
+    flex: 1;
+    margin-bottom: 15px;
+
+    .blank-state {
+      max-width: 400px;
+      flex-wrap: wrap;
+      margin-left: 15px;
+    }
+
+    .blank-state-icon {
+      margin-bottom: 30px;
+    }
   }
 }
 
-.section-ee-trial {
-  .section-body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    .blank-state {
-      padding: 20px;
-      text-align: center;
-    }
+@media (max-width: $screen-xs-max) {
+  .blank-state-icon svg {
+    width: 315px;
   }
 }
