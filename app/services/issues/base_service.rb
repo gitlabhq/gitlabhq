@@ -45,5 +45,9 @@ module Issues
         params.delete(:assignee_ids)
       end
     end
+
+    def update_project_counter_caches?(issue)
+      super || issue.confidential_changed?
+    end
   end
 end
