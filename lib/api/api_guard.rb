@@ -6,9 +6,6 @@ module API
   module APIGuard
     extend ActiveSupport::Concern
 
-    PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN".freeze
-    PRIVATE_TOKEN_PARAM = :private_token
-
     included do |base|
       # OAuth2 Resource Server Authentication
       use Rack::OAuth2::Server::Resource::Bearer, 'The API' do |request|

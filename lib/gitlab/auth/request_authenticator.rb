@@ -7,8 +7,6 @@ module Gitlab
 
       attr_reader :request
 
-      delegate :params, :env, to: :request
-
       def initialize(request)
         @request = request
       end

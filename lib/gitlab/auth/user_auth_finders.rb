@@ -6,13 +6,13 @@ module Gitlab
 
       # Check the Rails session for valid authentication details
       def find_user_from_warden
-        env['warden']&.authenticate if verified_request?
+        current_request.env['warden']&.authenticate if verified_request?
       end
 
       def find_user_from_rss_token
-        return unless request.format.atom?
+        return unless current_request.format.atom?
 
-        token = params[:rss_token].presence
+        token = current_request.params[:rss_token].presence
         return unless token
 
         handle_return_value!(User.find_by_rss_token(token))
@@ -23,7 +23,7 @@ module Gitlab
 
         validate_access_token!
 
-        handle_return_value!(access_token&.user)
+        handle_return_value!(access_token.user)
       end
 
       def validate_access_token!(scopes: [])
@@ -54,8 +54,8 @@ module Gitlab
       end
 
       def private_token
-        params[PRIVATE_TOKEN_PARAM].presence ||
-          env[PRIVATE_TOKEN_HEADER].presence
+        current_request.params[PRIVATE_TOKEN_PARAM].presence ||
+          current_request.env[PRIVATE_TOKEN_HEADER].presence
       end
 
       def find_personal_access_token
@@ -67,7 +67,6 @@ module Gitlab
       end
 
       def find_oauth_access_token
-        current_request = ensure_action_dispatch_request(request)
         token = Doorkeeper::OAuth::Token.from_request(current_request, *Doorkeeper.configuration.access_token_methods)
         return unless token
 
@@ -80,13 +79,17 @@ module Gitlab
 
       # Check if the request is GET/HEAD, or if CSRF token is valid.
       def verified_request?
-        Gitlab::RequestForgeryProtection.verified?(request.env)
+        Gitlab::RequestForgeryProtection.verified?(current_request.env)
       end
 
       def ensure_action_dispatch_request(request)
         return request if request.is_a?(ActionDispatch::Request)
 
         ActionDispatch::Request.new(request.env)
+      end
+
+      def current_request
+        @current_request ||= ensure_action_dispatch_request(request)
       end
     end
   end
