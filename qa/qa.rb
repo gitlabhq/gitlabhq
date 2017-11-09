@@ -18,6 +18,7 @@ module QA
     ##
     # Support files
     #
+    autoload :Bootable, 'qa/scenario/bootable'
     autoload :Actable, 'qa/scenario/actable'
     autoload :Entrypoint, 'qa/scenario/entrypoint'
     autoload :Template, 'qa/scenario/template'

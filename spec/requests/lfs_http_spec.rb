@@ -683,6 +683,7 @@ describe 'Git LFS API and storage' do
           expect(json_response['objects'].first['actions']['upload']['href']).to eq("#{Gitlab.config.gitlab.url}/#{project.full_path}.git/gitlab-lfs/objects/#{sample_oid}/#{sample_size}")
           expect(json_response['objects'].first['actions']['upload']['header']).to eq('Authorization' => authorization)
         end
+<<<<<<< HEAD
 
         ## EE-specific context
         context 'and project is above the limit' do
@@ -711,6 +712,8 @@ describe 'Git LFS API and storage' do
             expect(json_response['message']).to eql('Your push has been rejected, because this repository has exceeded its size limit of 300 MB by 50 MB. Please contact your GitLab administrator for more information.')
           end
         end
+=======
+>>>>>>> ce/master
       end
 
       describe 'when request is authenticated' do

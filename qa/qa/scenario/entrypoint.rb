@@ -5,6 +5,8 @@ module QA
     # including staging and on-premises installation.
     #
     class Entrypoint < Template
+      include Bootable
+
       def self.tags(*tags)
         @tags = tags
       end

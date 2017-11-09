@@ -1,6 +1,14 @@
 module Gitlab
   module IssuableMetadata
     def issuable_meta_data(issuable_collection, collection_type)
+      # ActiveRecord uses Object#extend for null relations.
+      if !(issuable_collection.singleton_class < ActiveRecord::NullRelation) &&
+          issuable_collection.respond_to?(:limit_value) &&
+          issuable_collection.limit_value.nil?
+
+        raise 'Collection must have a limit applied for preloading meta-data'
+      end
+
       # map has to be used here since using pluck or select will
       # throw an error when ordering issuables by priority which inserts
       # a new order into the collection.

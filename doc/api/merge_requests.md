@@ -58,6 +58,8 @@ Parameters:
     "project_id": 3,
     "title": "test1",
     "state": "opened",
+    "created_at": "2017-04-29T08:46:00Z",
+    "updated_at": "2017-04-29T08:46:00Z",
     "upvotes": 0,
     "downvotes": 0,
     "author": {
@@ -170,6 +172,8 @@ Parameters:
     "project_id": 3,
     "title": "test1",
     "state": "opened",
+    "created_at": "2017-04-29T08:46:00Z",
+    "updated_at": "2017-04-29T08:46:00Z",
     "upvotes": 0,
     "downvotes": 0,
     "author": {
@@ -248,6 +252,8 @@ Parameters:
   "project_id": 3,
   "title": "test1",
   "state": "merged",
+  "created_at": "2017-04-29T08:46:00Z",
+  "updated_at": "2017-04-29T08:46:00Z",
   "upvotes": 0,
   "downvotes": 0,
   "author": {

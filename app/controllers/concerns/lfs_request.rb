@@ -75,7 +75,10 @@ module LfsRequest
   def lfs_upload_access?
     return false unless project.lfs_enabled?
     return false unless has_authentication_ability?(:push_code)
+<<<<<<< HEAD
     return false if project.above_size_limit? || objects_exceed_repo_limit?
+=======
+>>>>>>> ce/master
 
     lfs_deploy_token? || can?(user, :push_code, project)
   end
