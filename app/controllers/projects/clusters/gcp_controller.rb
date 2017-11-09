@@ -48,7 +48,7 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
         :num_nodes,
         :machine_type
       ]).merge(
-        provider_type: :user,
+        provider_type: :gcp,
         platform_type: :kubernetes,
       )
   end
