@@ -376,7 +376,7 @@ export default class CreateMergeRequestDropdown {
 
     this.removeMessage(target);
     message.classList.add('gl-field-hint');
-    message.textContent = sprintf(__('Checking %{text} availability...'), { text });
+    message.textContent = sprintf(__('Checking %{text} availability…'), { text });
     message.classList.remove('hide');
   }
 

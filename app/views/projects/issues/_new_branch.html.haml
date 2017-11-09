@@ -25,14 +25,12 @@
         - if can_create_merge_request
           %li.create-item.droplab-item-selected{ role: 'button', data: { value: 'create-mr', text: 'Create a merge request' } }
             .menu-item
-              .icon-container
-                = icon('check')
+              .icon-container= icon('check')
               .description.droplab-item-ignore-hiding Create a merge request
 
         %li.create-item{ class: [!can_create_merge_request && 'droplab-item-selected'], role: 'button', data: {  value: 'create-branch', text: 'Create a branch' } }
           .menu-item
-            .icon-container
-              = icon('check')
+            .icon-container= icon('check')
             .description.droplab-item-ignore-hiding Create a branch
         %li.divider
 
