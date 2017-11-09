@@ -30,7 +30,6 @@ class Environment < ActiveRecord::Base
                       message: Gitlab::Regex.environment_slug_regex_message }
 
   validates :external_url,
-            uniqueness: { scope: :project_id },
             length: { maximum: 255 },
             allow_nil: true,
             addressable_url: true

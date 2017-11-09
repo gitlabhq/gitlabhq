@@ -6,7 +6,6 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   prepend ::EE::Projects::MergeRequests::CreationsController
 
   skip_before_action :merge_request
-  skip_before_action :ensure_ref_fetched
   before_action :authorize_create_merge_request!
   before_action :apply_diff_view_cookie!, only: [:diffs, :diff_for_path]
   before_action :build_merge_request, except: [:create]

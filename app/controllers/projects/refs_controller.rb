@@ -66,8 +66,8 @@ class Projects::RefsController < Projects::ApplicationController
           file_name: content.name,
           commit: last_commit,
           type: content.type,
-          lock_label: path_lock && text_label_for_lock(path_lock, file),
-          commit_path: commit_path
+          commit_path: commit_path,
+          lock_label: path_lock && text_label_for_lock(path_lock, file)
         }
       end
     end

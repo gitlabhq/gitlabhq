@@ -66,6 +66,19 @@ describe ChatMessage::IssueMessage do
         expect(subject.attachments).to be_empty
       end
     end
+
+    context 'reopen' do
+      before do
+        args[:object_attributes][:action] = 'reopen'
+        args[:object_attributes][:state] = 'opened'
+      end
+
+      it 'returns a message regarding reopening of issues' do
+        expect(subject.pretext)
+          .to eq('[<http://somewhere.com|project_name>] Issue <http://url.com|#100 Issue title> opened by Test User (test.user)')
+        expect(subject.attachments).to be_empty
+      end
+    end
   end
 
   context 'with markdown' do
