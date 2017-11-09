@@ -784,7 +784,7 @@
     border-bottom: 1px solid $gray-darker;
     padding: $gl-padding-top;
     background-color: $gray-light;
-    margin: 4px -16px 0;
+    margin: $gl-padding -16px 0;
 
     .mr-widget-code-quality-list {
       list-style: none;
