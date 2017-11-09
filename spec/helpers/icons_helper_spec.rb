@@ -16,10 +16,10 @@ describe IconsHelper do
     end
   end
 
-  describe 'sprite_icon' do
+  describe 'sprite_icon_path' do
     it 'returns relative path' do
       expect(sprite_icon_path())
-        .to eq "/image/icons.svg"
+        .to eq image_path("icons.svg")
     end
 
     context 'when an asset_host is set in the config it will return an absolute local URL' do
@@ -32,7 +32,7 @@ describe IconsHelper do
       it 'returns an absolute URL on that asset host' do
         gitlab_url = Gitlab.config.gitlab.url
         expect(sprite_icon_path())
-          .to eq "#{gitlab_url}/image/icons.svg"
+          .to eq image_path("icons.svg", host: Gitlab.config.gitlab.url)
       end
     end
   end
@@ -42,17 +42,17 @@ describe IconsHelper do
 
     it 'returns svg icon html' do
       expect(sprite_icon(icon_name).to_s)
-        .to eq "<svg><use xlink:href=\"/images/icons.svg##{icon_name}\"></use></svg>"
+        .to eq "<svg><use xlink:href=\"#{image_path("icons.svg")}##{icon_name}\"></use></svg>"
     end
 
     it 'returns svg icon html + size classes' do
       expect(sprite_icon(icon_name, size: 72).to_s)
-        .to eq "<svg class=\"s72\"><use xlink:href=\"/images/icons.svg##{icon_name}\"></use></svg>"
+        .to eq "<svg class=\"s72\"><use xlink:href=\"#{image_path("icons.svg")}##{icon_name}\"></use></svg>"
     end
 
     it 'returns svg icon html + size classes + additional class' do
       expect(sprite_icon(icon_name, size: 72, css_class: 'icon-danger').to_s)
-        .to eq "<svg class=\"s72 icon-danger\"><use xlink:href=\"/images/icons.svg##{icon_name}\"></use></svg>"
+        .to eq "<svg class=\"s72 icon-danger\"><use xlink:href=\"#{image_path("icons.svg")}#{icon_name}\"></use></svg>"
     end
   end
 
