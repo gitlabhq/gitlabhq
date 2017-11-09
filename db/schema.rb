@@ -1840,6 +1840,7 @@ ActiveRecord::Schema.define(version: 20171124165823) do
     t.integer "storage_version", limit: 2
     t.boolean "resolve_outdated_diff_discussions"
     t.boolean "remote_mirror_available_overridden"
+    t.boolean "only_mirror_protected_branches"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
