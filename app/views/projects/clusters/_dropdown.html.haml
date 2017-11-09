@@ -7,8 +7,6 @@
     = icon('chevron-down')
   %ul.dropdown-menu.clusters-dropdown-menu.dropdown-menu-full-width
     %li
-      %a{ href: providers_gcp_new_namespace_project_clusters_path(@project.namespace, @project) }
-        = s_('ClusterIntegration| Create cluster on Google Engine')
+      = link_to(s_('ClusterIntegration| Create cluster on Google Engine'), providers_gcp_new_namespace_project_clusters_path(@project.namespace, @project))
     %li
-      %a{ href: platforms_kubernetes_new_namespace_project_clusters_path(@project.namespace, @project) }
-        = s_('ClusterIntegration| Add existing cluster')
+      = = link_to(s_('ClusterIntegration| Add existing cluster'), platforms_kubernetes_new_namespace_project_clusters_path(@project.namespace, @project))

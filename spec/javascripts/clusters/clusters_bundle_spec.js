@@ -36,6 +36,20 @@ describe('Clusters', () => {
     });
   });
 
+  describe('showToken', () => {
+    it('should update tye field type', () => {
+      cluster.showTokenButton.click();
+      expect(
+        cluster.tokenField.getAttribute('type'),
+      ).toEqual('text');
+
+      cluster.showTokenButton.click();
+      expect(
+        cluster.tokenField.getAttribute('type'),
+      ).toEqual('password');
+    });
+  });
+
   describe('checkForNewInstalls', () => {
     const INITIAL_APP_MAP = {
       helm: { status: null, title: 'Helm Tiller' },
