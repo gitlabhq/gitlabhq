@@ -11,10 +11,7 @@ module EE
       end
 
       def service_desk
-        if params[:assignee_id].present?
-          assignee = ::User.find_by_id(params[:assignee_id])
-          @users.push(assignee) if assignee
-        end
+        @issues = @issuables
 
         @users.push(::User.support_bot)
       end
