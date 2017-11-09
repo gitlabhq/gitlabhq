@@ -75,34 +75,42 @@ If you want to use Kerberos for user authentication, then install libkrb5-dev:
 
 **Note:** If you don't know what Kerberos is, you can assume you don't need it.
 
-Make sure you have the right version of Git installed
+Make sure you have the right version of Git installed:
 
-    # Install Git
-    sudo apt-get install -y git-core
+```
+# Install Git
+sudo apt-get install -y git-core
 
-    # Make sure Git is version 2.13.6 or higher
-    git --version
+# Make sure Git is version 2.13.6 or higher
+git --version
+```
 
 Is the system packaged Git too old? Remove it and compile from source.
 
-    # Remove packaged Git
-    sudo apt-get remove git-core
+NOTE: **Note:**
+For Ubuntu, you can use the [git-core PPA](https://launchpad.net/~git-core/+archive/ubuntu/ppa)
+to get the latest Git version instead of compiling from source.
 
-    # Install dependencies
-    sudo apt-get install -y libcurl4-openssl-dev libexpat1-dev gettext libz-dev libssl-dev build-essential
+```
+# Remove packaged Git
+sudo apt-get remove git-core
 
-    # Download and compile from source
-    cd /tmp
-    curl --remote-name --progress https://www.kernel.org/pub/software/scm/git/git-2.8.4.tar.gz
-    echo '626e319f8a24fc0866167ea5f6bf3e2f38f69d6cb2e59e150f13709ca3ebf301  git-2.8.4.tar.gz' | shasum -a256 -c - && tar -xzf git-2.8.4.tar.gz
-    cd git-2.8.4/
-    ./configure
-    make prefix=/usr/local all
+# Install dependencies
+sudo apt-get install -y libcurl4-openssl-dev libexpat1-dev gettext libz-dev libssl-dev build-essential
 
-    # Install into /usr/local/bin
-    sudo make prefix=/usr/local install
+# Download and compile from source
+cd /tmp
+curl --remote-name --progress https://www.kernel.org/pub/software/scm/git/git-2.13.6.tar.gz
+echo 'cb53e6b388d8d19189933366c1fe5c1ca500e8b227b9e707af39c3d879e41015  git-2.13.6.tar.gz' | shasum -a256 -c - && tar -xzf git-2.13.6.tar.gz
+cd git-2.13.6/
+./configure
+make prefix=/usr/local all
 
-    # When editing config/gitlab.yml (Step 5), change the git -> bin_path to /usr/local/bin/git
+# Install into /usr/local/bin
+sudo make prefix=/usr/local install
+
+# When editing config/gitlab.yml (Step 5), change the git -> bin_path to /usr/local/bin/git
+```
 
 **Note:** In order to receive mail notifications, make sure to install a mail server. By default, Debian is shipped with exim4 but this [has problems](https://github.com/gitlabhq/gitlabhq/issues/4866#issuecomment-32726573) while Ubuntu does not ship with one. The recommended mail server is postfix and you can install it with:
 
