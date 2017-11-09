@@ -35,7 +35,8 @@ module Geo
     rescue Gitlab::Git::Repository::NoRepository => e
       log_error('Invalid repository', e)
       registry.update(force_to_redownload_repository: true)
-      expire_repository_caches
+      log_info('Expiring caches')
+      project.repository.after_create
     ensure
       clean_up_temporary_repository if redownload
     end

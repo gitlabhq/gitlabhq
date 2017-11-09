@@ -182,7 +182,7 @@ module Geo
 
     def build_temporary_repository
       gitlab_shell.add_repository(project.repository_storage, disk_path_temp)
-      repository.clone.tap{|repo| repo.disk_path = disk_path_temp}
+      repository.clone.tap { |repo| repo.disk_path = disk_path_temp }
     end
 
     def clean_up_temporary_repository
