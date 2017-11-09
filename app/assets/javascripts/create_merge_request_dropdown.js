@@ -32,12 +32,12 @@ export default class CreateMergeRequestDropdown {
     this.createBranchPath = this.wrapperEl.dataset.createBranchPath;
     this.createMrPath = this.wrapperEl.dataset.createMrPath;
     this.droplabInitialized = false;
-    this.getRefDelay = 0;
     this.isCreatingBranch = false;
     this.isCreatingMergeRequest = false;
     this.isGettingRef = false;
     this.inputsAreValid = true;
     this.mergeRequestCreated = false;
+    this.refDebounce = _.debounce((value, target) => this.getRef(value, target), 500);
     this.refsPath = this.wrapperEl.dataset.refsPath;
     this.refs = {};
 
@@ -295,11 +295,7 @@ export default class CreateMergeRequestDropdown {
     }
 
     this.showCheckingMessage(target);
-    clearTimeout(this.getRefDelay);
-
-    this.getRefDelay = setTimeout(() => {
-      this.getRef(value, target);
-    }, 500);
+    this.refDebounce(value, target);
 
     return true;
   }
