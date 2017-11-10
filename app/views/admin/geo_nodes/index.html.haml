@@ -27,7 +27,7 @@
       Geo nodes (#{@nodes.count})
     %ul.well-list.geo-nodes
       - @nodes.each do |node|
-        %li{ id: dom_id(node), class: node_class(node), data: { status_url: status_admin_geo_node_path(node) } }
+        %li{ id: dom_id(node), class: node_class(node), data: { status_url: status_admin_geo_node_path(node, format: :json) } }
           .node-block
             = node_status_icon(node)
             %strong= node.url
