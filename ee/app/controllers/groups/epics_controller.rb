@@ -9,6 +9,7 @@ class Groups::EpicsController < Groups::ApplicationController
   skip_before_action :labels
 
   def index
+    set_default_state
     @epics = @issuables
 
     respond_to do |format|
@@ -64,5 +65,11 @@ class Groups::EpicsController < Groups::ApplicationController
 
   def preload_for_collection
     @preload_for_collection ||= [:group, :author]
+  end
+
+  # we need to override the default state which is opened for now because we don't have
+  # states for epics and need all as default for navigation to work correctly
+  def set_default_state
+    params[:state] = 'all'
   end
 end
