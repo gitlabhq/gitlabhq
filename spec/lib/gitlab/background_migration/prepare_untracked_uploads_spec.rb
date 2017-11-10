@@ -71,7 +71,7 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :side
         untracked_files_for_uploads.create(path: '/foo/bar.jpg')
       end
 
-      it 'clears existing data before adding new data' do
+      it 'does not error or produce duplicates of existing data' do
         Sidekiq::Testing.fake! do
           expect do
             described_class.new.perform
