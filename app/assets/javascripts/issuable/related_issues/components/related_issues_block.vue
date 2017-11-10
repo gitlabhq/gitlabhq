@@ -2,7 +2,7 @@
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import eventHub from '../event_hub';
-import relatedIssue from './related_issue.vue';
+import issueToken from './issue_token.vue';
 import addIssuableForm from './add_issuable_form.vue';
 
 export default {
@@ -24,7 +24,7 @@ export default {
       required: false,
       default: () => [],
     },
-    canAddRelatedIssues: {
+    canAdmin: {
       type: Boolean,
       required: false,
       default: false,
@@ -67,7 +67,7 @@ export default {
   components: {
     loadingIcon,
     addIssuableForm,
-    relatedIssue,
+    issueToken,
   },
 
   computed: {
@@ -116,11 +116,11 @@ export default {
           <div class="js-related-issues-header-issue-count related-issues-header-issue-count issue-count-badge">
             <span
               class="issue-count-badge-count"
-              :class="{ 'has-btn': this.canAddRelatedIssues }">
+              :class="{ 'has-btn': this.canAdmin }">
               {{ badgeLabel }}
             </span>
             <button
-              v-if="canAddRelatedIssues"
+              v-if="canAdmin"
               ref="issueCountBadgeAddButton"
               type="button"
               class="js-issue-count-badge-add-button issue-count-badge-add-button btn btn-sm btn-default"
@@ -165,14 +165,15 @@ export default {
             :key="issue.id"
             v-for="issue in relatedIssues"
             class="js-related-issues-token-list-item">
-            <related-issue
+            <issue-token
               event-namespace="relatedIssue"
               :id-key="issue.id"
               :display-reference="issue.reference"
               :title="issue.title"
               :path="issue.path"
               :state="issue.state"
-              :can-remove="true" />
+              :can-remove="canAdmin"
+            />
           </li>
         </ul>
         </div>

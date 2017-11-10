@@ -40,7 +40,7 @@ export default {
       type: String,
       required: true,
     },
-    canAddRelatedIssues: {
+    canAdmin: {
       type: Boolean,
       required: false,
       default: false,
@@ -97,13 +97,11 @@ export default {
           })
           .catch((res) => {
             if (res && res.status !== 404) {
-              // eslint-disable-next-line no-new
-              new Flash('An error occurred while removing related issues.');
+              Flash('An error occurred while removing issues.');
             }
           });
       } else {
-        // eslint-disable-next-line no-new
-        new Flash('We could not determine the path to remove the related issue');
+        Flash('We could not determine the path to remove the issue');
       }
     },
     onToggleAddRelatedIssuesForm() {
@@ -130,8 +128,7 @@ export default {
           })
           .catch((res) => {
             this.isSubmitting = false;
-            // eslint-disable-next-line no-new
-            new Flash(res.data.message || 'We can\'t find an issue that matches what you are looking for.');
+            Flash(res.data.message || 'We can\'t find an issue that matches what you are looking for.');
           });
       }
     },
@@ -151,7 +148,7 @@ export default {
         .catch(() => {
           this.store.setRelatedIssues([]);
           this.isFetching = false;
-          Flash('An error occurred while fetching issues.')
+          Flash('An error occurred while fetching issues.');
         });
     },
 
@@ -226,7 +223,7 @@ export default {
     :is-fetching="isFetching"
     :is-submitting="isSubmitting"
     :related-issues="state.relatedIssues"
-    :can-add-related-issues="canAddRelatedIssues"
+    :can-admin="canAdmin"
     :pending-references="state.pendingReferences"
     :is-form-visible="isFormVisible"
     :input-value="inputValue"

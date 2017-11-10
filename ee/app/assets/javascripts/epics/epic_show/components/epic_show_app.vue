@@ -1,8 +1,7 @@
 <script>
   import issuableApp from '~/issue_show/components/app.vue';
-  import epicHeader from './epic_header.vue';
   import relatedIssuesRoot from '~/issuable/related_issues/components/related_issues_root.vue';
-
+  import epicHeader from './epic_header.vue';
 
   export default {
     name: 'epicShowApp',
@@ -16,6 +15,10 @@
         type: Boolean,
       },
       canDestroy: {
+        required: true,
+        type: Boolean,
+      },
+      canAdmin: {
         required: true,
         type: Boolean,
       },
@@ -57,17 +60,15 @@
         type: Object,
         required: true,
       },
+      issueLinksEndpoint: {
+        type: String,
+        required: true,
+      },
     },
     components: {
       epicHeader,
       issuableApp,
       relatedIssuesRoot,
-    },
-    computed: {
-      // TODO: this should be a prop here, from a data-attribute on epic-show-app element
-      issuesEndpoint() {
-        return `${this.endpoint}/links`;
-      },
     },
     created() {
       // Epics specific configuration
@@ -101,8 +102,8 @@
         :show-inline-edit-button="true"
       />
       <related-issues-root
-        :endpoint="issuesEndpoint"
-        :can-add-related-issues="true"
+        :endpoint="issueLinksEndpoint"
+        :can-admin="canAdmin"
         :allow-auto-complete="false"
         title="Issues"
       />

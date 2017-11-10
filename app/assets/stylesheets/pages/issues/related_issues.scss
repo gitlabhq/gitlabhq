@@ -18,7 +18,7 @@ $token_spacing_bottom: 0.5em;
 }
 
 .related-issues-token-body {
-  padding: 0 0 0 $gl-padding;
+  padding: 0;
   transition-property: max-height, padding, opacity;
   transition-duration: $general-hover-transition-duration;
   transition-timing-function: $general-hover-transition-curve;
@@ -29,6 +29,10 @@ $token_spacing_bottom: 0.5em;
     padding-top: 0;
     padding-bottom: 0;
     opacity: 0;
+  }
+
+  li .issue-info-container {
+    padding-left: $gl-padding;
   }
 }
 
@@ -49,4 +53,8 @@ $token_spacing_bottom: 0.5em;
   max-width: 100%;
   margin-bottom: $token_spacing_bottom;
   margin-right: 5px;
+}
+
+.issue-token-end {
+  order: 1;
 }

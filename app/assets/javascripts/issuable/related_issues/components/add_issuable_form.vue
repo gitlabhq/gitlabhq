@@ -127,7 +127,9 @@ export default {
             event-namespace="pendingIssuable"
             :id-key="index"
             :display-reference="reference"
-            :can-remove="true" />
+            :can-remove="true"
+            :is-condensed="true"
+          />
         </li>
         <li class="add-issuable-form-input-list-item">
           <input
