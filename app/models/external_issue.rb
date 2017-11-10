@@ -47,4 +47,8 @@ class ExternalIssue
 
     id
   end
+
+  def notes
+    Note.none
+  end
 end

@@ -841,6 +841,19 @@ describe User do
     end
   end
 
+  describe '.by_any_email' do
+    it 'returns an ActiveRecord::Relation' do
+      expect(described_class.by_any_email('foo@example.com'))
+        .to be_a_kind_of(ActiveRecord::Relation)
+    end
+
+    it 'returns a relation of users' do
+      user = create(:user)
+
+      expect(described_class.by_any_email(user.email)).to eq([user])
+    end
+  end
+
   describe '.search' do
     let!(:user) { create(:user, name: 'user', username: 'usern', email: 'email@gmail.com') }
     let!(:user2) { create(:user, name: 'user name', username: 'username', email: 'someemail@gmail.com') }
@@ -1136,16 +1149,9 @@ describe User do
     let(:user) { create(:user, :with_avatar) }
 
     context 'when avatar file is uploaded' do
-      let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
-      let(:avatar_path) { "/uploads/-/system/user/avatar/#{user.id}/dk.png" }
-
       it 'shows correct avatar url' do
-        expect(user.avatar_url).to eq(avatar_path)
-        expect(user.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
-
-        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-
-        expect(user.avatar_url).to eq([gitlab_host, avatar_path].join)
+        expect(user.avatar_url).to eq(user.avatar.url)
+        expect(user.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, user.avatar.url].join)
       end
     end
   end
