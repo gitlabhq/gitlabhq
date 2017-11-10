@@ -1,8 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.1.2 (2017-11-08)
+
+- [SECURITY] Fix vulnerability that could allow any user of a Geo instance to clone any repository on the secondary instance.
+- [SECURITY] Geo JSON web tokens now expire after two minutes to reduce risk of compromise.
+
 ## 10.1.1 (2017-10-31)
 
-- No changes.
 - [FIXED] Fix LDAP group sync for nested groups e.g. when base has uppercase or extraneous spaces. !3217
 - [FIXED] Geo: read-only safeguards was not working on Secondary node. !3227
 - [FIXED] fix height of rebase and approve buttons.
