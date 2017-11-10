@@ -47,13 +47,11 @@ module Gitlab
         @access_token = find_oauth_access_token || find_personal_access_token
       end
 
-      def private_token
-        current_request.params[PRIVATE_TOKEN_PARAM].presence ||
-          current_request.env[PRIVATE_TOKEN_HEADER].presence
-      end
-
       def find_personal_access_token
-        token = private_token
+        token =
+          current_request.params[PRIVATE_TOKEN_PARAM].presence ||
+          current_request.env[PRIVATE_TOKEN_HEADER].presence
+
         return unless token
 
         # Expiration, revocation and scopes are verified in `validate_access_token!`
@@ -66,7 +64,7 @@ module Gitlab
 
         # Expiration, revocation and scopes are verified in `validate_access_token!`
         oauth_token = OauthAccessToken.by_token(token)
-        raise(API::APIGuard::UnauthorizedError) unless oauth_token
+        raise API::APIGuard::UnauthorizedError  unless oauth_token
 
         oauth_token.revoke_previous_refresh_token!
         oauth_token

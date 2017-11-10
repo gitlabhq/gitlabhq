@@ -139,13 +139,14 @@ module API
     # Exceptions
     #
 
-    MissingTokenError = Class.new(StandardError)
-    TokenNotFoundError = Class.new(StandardError)
-    ExpiredError = Class.new(StandardError)
-    RevokedError = Class.new(StandardError)
-    UnauthorizedError = Class.new(StandardError)
+    AuthenticationException = Class.new(StandardError)
+    MissingTokenError = Class.new(AuthenticationException)
+    TokenNotFoundError = Class.new(AuthenticationException)
+    ExpiredError = Class.new(AuthenticationException)
+    RevokedError = Class.new(AuthenticationException)
+    UnauthorizedError = Class.new(AuthenticationException)
 
-    class InsufficientScopeError < StandardError
+    class InsufficientScopeError < AuthenticationException
       attr_reader :scopes
       def initialize(scopes)
         @scopes = scopes.map { |s| s.try(:name) || s }
