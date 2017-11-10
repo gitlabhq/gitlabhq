@@ -1,4 +1,4 @@
-import { highCountTrim } from '~/lib/utils/text_utility';
+import * as textUtility from '~/lib/utils/text_utility';
 
 describe('text_utility', () => {
   describe('gl.text.getTextWidth', () => {
@@ -37,12 +37,18 @@ describe('text_utility', () => {
 
   describe('highCountTrim', () => {
     it('returns 99+ for count >= 100', () => {
-      expect(highCountTrim(105)).toBe('99+');
-      expect(highCountTrim(100)).toBe('99+');
+      expect(textUtility.highCountTrim(105)).toBe('99+');
+      expect(textUtility.highCountTrim(100)).toBe('99+');
     });
 
     it('returns exact number for count < 100', () => {
-      expect(highCountTrim(45)).toBe(45);
+      expect(textUtility.highCountTrim(45)).toBe(45);
+    });
+  });
+
+  describe('capitalizeFirstCharacter', () => {
+    it('returns string with first letter capitalized', () => {
+      expect(textUtility.capitalizeFirstCharacter('gitlab')).toEqual('Gitlab');
     });
   });
 
