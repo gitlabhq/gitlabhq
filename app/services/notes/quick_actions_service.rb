@@ -27,7 +27,7 @@ module Notes
     end
 
     def execute(command_params, note)
-      return if command_params.empty?
+      return if command_params.blank?
       return unless supported?(note)
 
       self.class.noteable_update_service(note).new(project, current_user, command_params).execute(note.noteable)

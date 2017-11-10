@@ -58,7 +58,7 @@ describe Notes::CreateService do
     end
 
     describe 'note with commands' do
-      describe '/close, /label, /assign & /milestone' do
+      describe '/close, /label & /assign' do
         let(:note_text) { %(HELLO\n/close\n/assign @#{user.username}\nWORLD) }
 
         it 'saves the note and does not alter the note text' do

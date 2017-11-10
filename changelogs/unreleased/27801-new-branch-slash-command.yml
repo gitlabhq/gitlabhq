@@ -1,4 +1,4 @@
 ---
-title: Add a new /branch slash command to create a branch from an issue.
+title: Add a new /create_branch slash command to create a branch from an issue.
 merge_request: 10384
 author: Nur Muhammad Bin Sirat

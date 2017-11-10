@@ -293,6 +293,7 @@ feature 'Issues > User uses quick actions', :js do
 
         before do
           project.add_guest(guest)
+          sign_out(user)
           sign_in(guest)
           visit project_issue_path(project, issue)
         end

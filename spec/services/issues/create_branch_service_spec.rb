@@ -9,7 +9,7 @@ describe Issues::CreateBranchService, services: true do
       let(:project) { create(:project, :repository) }
       let(:issue) { create(:issue, project: project) }
 
-      it 'creates a branch if the branch name is valid' do
+      it 'creates a branch if the branch name is valid and adds a system note' do
         result = service.execute(issue, 'my-issue-branch', 'master')
 
         expect(result[:status]).to eq(:success)

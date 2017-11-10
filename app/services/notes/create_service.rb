@@ -19,9 +19,9 @@ module Notes
 
       if quick_actions_service.supported?(note)
         options = { merge_request_diff_head_sha: merge_request_diff_head_sha }
-        content, command_params = quick_actions_service.extract_commands(note, options)
+        content, commands, results = quick_actions_service.extract_commands(note, options)
 
-        only_commands = content.empty?
+        only_quick_actions = content.empty? && (commands.any? || results.any?)
 
         note.note = content
       end
@@ -31,30 +31,24 @@ module Notes
         NewNoteWorker.perform_async(note.id)
       end
 
-      if !only_commands && note.save
+      if !only_quick_actions && note.save
         todo_service.new_note(note, current_user)
       end
 
-      if command_params.present?
+      quick_actions_service.execute(commands, note)
 
-        # Special handling for branch command, because it is not supposed to call
-        # any updates on the issue.
-        branch_command_result = command_params.try(:delete, :branch)
-
-        quick_actions_service.execute(command_params, note)
-
-        # We must add the error after we call #save because errors are reset
-        # when #save is called
-        if only_commands
-          note.errors.add(:commands_only, 'Commands applied')
-        end
-
-        if branch_command_result && branch_command_result[:status] == :error
-          note.errors.add(:commands_only, "Error creating branch: #{branch_command_result[:message]}")
-        end
-
-        note.commands_changes = command_params
+      # We must add the error after we call #save because errors are reset
+      # when #save is called
+      if only_quick_actions
+        note.errors.add(:commands_only, 'Commands applied')
       end
+
+      create_branch_result = results&.delete(:create_branch)
+      if create_branch_result&.fetch(:status) == :error
+        note.errors.add(:commands_only, "Error creating branch: #{create_branch_result.fetch(:message)}")
+      end
+
+      note.commands_changes = commands
 
       note
     end

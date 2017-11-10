@@ -325,26 +325,29 @@ describe QuickActions::InterpretService do
     shared_examples 'create branch command' do
       context 'without params' do
         it 'creates a new branch with issue title as branch name' do
-          _content, updates = service.execute('/create_branch', issuable)
+          _content, updates, results = service.execute('/create_branch', issuable)
 
           expect(project.repository.branch_names).to include(issuable.to_branch_name)
-          expect(updates[:branch]).to include({ status: :success })
+          expect(updates).to be_empty
+          expect(results[:create_branch]).to include({ status: :success })
         end
       end
 
       context 'with params' do
         it 'creates a new branch if the params is a valid branch name' do
-          _content, updates = service.execute("/create_branch #{valid_branch_name}", issuable)
+          _content, updates, results = service.execute("/create_branch #{valid_branch_name}", issuable)
 
           expect(project.repository.branch_names).to include(valid_branch_name)
-          expect(updates[:branch]).to include({ status: :success })
+          expect(updates).to be_empty
+          expect(results[:create_branch]).to include({ status: :success })
         end
 
         it 'does not create a new branch if the params is an invalid branch name' do
-          _content, updates = service.execute("/create_branch #{invalid_branch_name}", issuable)
+          _content, updates, results = service.execute("/create_branch #{invalid_branch_name}", issuable)
 
           expect(project.repository.branch_names).not_to include(invalid_branch_name)
-          expect(updates[:branch]).to include({ status: :error })
+          expect(updates).to be_empty
+          expect(results[:create_branch]).to include({ status: :error })
         end
       end
     end
@@ -1235,12 +1238,36 @@ describe QuickActions::InterpretService do
     end
 
     describe 'target branch command' do
-      let(:content) { '/target_branch my-feature ' }
+      let(:content) { '/target_branch my-feature' }
 
       it 'includes the branch name' do
         _, explanations = service.explain(content, merge_request)
 
-        expect(explanations).to eq(['Sets target branch to my-feature.'])
+        expect(explanations).to eq(['Sets target branch to `my-feature`.'])
+      end
+    end
+
+    describe 'create branch command' do
+      let(:project) { create(:project, :repository, :public) }
+
+      context 'without a branch name' do
+        let(:content) { '/create_branch' }
+
+        it 'includes the branch name' do
+          _, explanations = service.explain(content, issue)
+
+          expect(explanations).to eq(["Creates a `#{issue.to_branch_name}` branch."])
+        end
+      end
+
+      context 'with a branch name' do
+        let(:content) { '/create_branch my-branch' }
+
+        it 'includes the branch name' do
+          _, explanations = service.explain(content, issue)
+
+          expect(explanations).to eq(["Creates a `my-branch` branch."])
+        end
       end
     end
 
