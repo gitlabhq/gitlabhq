@@ -34,6 +34,7 @@ module Geo
       log_error('Error syncing repository', e)
     rescue Gitlab::Git::Repository::NoRepository => e
       log_error('Invalid repository', e)
+      log_info('Setting force_to_redownload flag')
       registry.update(force_to_redownload_repository: true)
       log_info('Expiring caches')
       project.repository.after_create

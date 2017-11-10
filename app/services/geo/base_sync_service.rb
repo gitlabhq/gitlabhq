@@ -1,3 +1,5 @@
+require 'securerandom'
+
 module Geo
   # The clone_url_prefix is used to build URLs for the Geo synchronization
   # If this is missing from the primary node we raise this exception
@@ -173,7 +175,7 @@ module Geo
 
     def disk_path_temp
       unless @disk_path_temp
-        random_string = (0...6).map { ('a'..'z').to_a.sample }.join
+        random_string = SecureRandom.hex(7)
         @disk_path_temp = "#{repository.disk_path}_#{random_string}"
       end
 
