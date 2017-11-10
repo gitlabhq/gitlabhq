@@ -84,7 +84,7 @@ export const commitChanges = ({ commit, state, dispatch, getters }, { payload, n
     flash(`Your changes have been committed. Commit ${data.short_id} with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`, 'notice');
 
     if (newMr) {
-      redirectToUrl(`${state.endpoints.newMergeRequestUrl}${branch}`);
+      dispatch('redirectToUrl', `${state.endpoints.newMergeRequestUrl}${branch}`);
     } else {
       commit(types.SET_COMMIT_REF, data.id);
 
