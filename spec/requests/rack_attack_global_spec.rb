@@ -241,12 +241,10 @@ describe 'Rack Attack global throttles' do
     let(:throttle_setting_prefix) { 'throttle_authenticated_web' }
 
     context 'with the token in the query string' do
-      context 'with the atom format in the Accept header' do
-        let(:get_args) { [rss_url(user), nil, { 'HTTP_ACCEPT' => 'application/atom+xml' }] }
-        let(:other_user_get_args) { [rss_url(other_user), nil, { 'HTTP_ACCEPT' => 'application/atom+xml' }] }
+      let(:get_args) { [rss_url(user), nil] }
+      let(:other_user_get_args) { [rss_url(other_user), nil] }
 
-        it_behaves_like 'rate-limited token-authenticated requests'
-      end
+      it_behaves_like 'rate-limited token-authenticated requests'
     end
   end
 

@@ -10,7 +10,7 @@ module Gitlab
       end
 
       def find_user_from_rss_token
-        return unless current_request.format.atom?
+        return unless current_request.path.ends_with?('.atom')
 
         token = current_request.params[:rss_token].presence
         return unless token
