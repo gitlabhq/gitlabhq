@@ -9,7 +9,6 @@ module QA
 
       def perform(address, *files)
         Runtime::Scenario.define(:gitlab_address, address)
-        Specs::Config.perform
 
         ##
         # Perform before hooks, which are different for CE and EE
