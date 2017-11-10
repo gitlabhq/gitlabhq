@@ -1,10 +1,7 @@
-
 .top-area
-  -# TODO: Auto highlight All state on page load
   = render 'shared/issuable/nav', type: :epics
 
 %ul.content-list.issuable-list
   = render partial: 'groups/epics/epic', collection: @epics
 
--# TODO: Test pagination
 = paginate @epics, theme: "gitlab"
