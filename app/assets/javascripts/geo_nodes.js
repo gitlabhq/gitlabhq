@@ -111,6 +111,8 @@ class GeoNodeStatus {
 
       let eventDate = notAvailable;
       let cursorDate = notAvailable;
+      let lastEventSeen = notAvailable;
+      let lastCursorEvent = notAvailable;
 
       if (status.last_event_timestamp !== null && status.last_event_timestamp > 0) {
         eventDate = gl.utils.formatDate(new Date(status.last_event_timestamp * 1000));
@@ -120,8 +122,17 @@ class GeoNodeStatus {
         cursorDate = gl.utils.formatDate(new Date(status.cursor_last_event_timestamp * 1000));
       }
 
-      this.$lastEventSeen.text(`${status.last_event_id} (${eventDate})`);
-      this.$lastCursorEvent.text(`${status.cursor_last_event_id} (${cursorDate})`);
+      if (status.last_event_id !== null) {
+        lastEventSeen = `${status.last_event_id} (${eventDate})`;
+      }
+
+      if (status.cursor_last_event_id !== null) {
+        lastCursorEvent = `${status.cursor_last_event_id} (${cursorDate})`;
+      }
+
+      this.$lastEventSeen.text(lastEventSeen);
+      this.$lastCursorEvent.text(lastCursorEvent);
+
       if (status.health === 'Healthy') {
         this.$health.text('');
       } else {
