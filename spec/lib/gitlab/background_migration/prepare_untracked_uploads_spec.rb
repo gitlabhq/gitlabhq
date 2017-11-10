@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::PrepareUnhashedUploads, :migration, :sidekiq, schema: 20171103140253 do
-  let!(:unhashed_upload_files) { table(:unhashed_upload_files) }
+describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :sidekiq, schema: 20171103140253 do
+  let!(:untracked_files_for_uploads) { table(:untracked_files_for_uploads) }
 
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }
@@ -39,20 +39,20 @@ describe Gitlab::BackgroundMigration::PrepareUnhashedUploads, :migration, :sidek
       UploadService.new(project2, uploaded_file, FileUploader).execute
     end
 
-    it 'adds unhashed files to the unhashed_upload_files table' do
+    it 'adds unhashed files to the untracked_files_for_uploads table' do
       Sidekiq::Testing.fake! do
         expect do
           described_class.new.perform
-        end.to change { unhashed_upload_files.count }.from(0).to(5)
+        end.to change { untracked_files_for_uploads.count }.from(0).to(5)
       end
     end
 
-    it 'does not add hashed files to the unhashed_upload_files table' do
+    it 'does not add hashed files to the untracked_files_for_uploads table' do
       Sidekiq::Testing.fake! do
         described_class.new.perform
 
         hashed_file_path = project2.uploads.where(uploader: 'FileUploader').first.path
-        expect(unhashed_upload_files.where("path like '%#{hashed_file_path}%'").exists?).to be_falsey
+        expect(untracked_files_for_uploads.where("path like '%#{hashed_file_path}%'").exists?).to be_falsey
       end
     end
 
@@ -66,16 +66,16 @@ describe Gitlab::BackgroundMigration::PrepareUnhashedUploads, :migration, :sidek
     end
 
     # E.g. from a previous failed run of this background migration
-    context 'when there is existing data in unhashed_upload_files' do
+    context 'when there is existing data in untracked_files_for_uploads' do
       before do
-        unhashed_upload_files.create(path: '/foo/bar.jpg')
+        untracked_files_for_uploads.create(path: '/foo/bar.jpg')
       end
 
       it 'clears existing data before adding new data' do
         Sidekiq::Testing.fake! do
           expect do
             described_class.new.perform
-          end.to change { unhashed_upload_files.count }.from(1).to(5)
+          end.to change { untracked_files_for_uploads.count }.from(1).to(5)
         end
       end
     end
@@ -91,7 +91,7 @@ describe Gitlab::BackgroundMigration::PrepareUnhashedUploads, :migration, :sidek
         Sidekiq::Testing.fake! do
           expect do
             described_class.new.perform
-          end.to change { unhashed_upload_files.count }.from(0).to(5)
+          end.to change { untracked_files_for_uploads.count }.from(0).to(5)
         end
       end
     end
@@ -100,11 +100,11 @@ describe Gitlab::BackgroundMigration::PrepareUnhashedUploads, :migration, :sidek
   # Very new or lightly-used installations that are running this migration
   # may not have an upload directory because they have no uploads.
   context 'when no files were ever uploaded' do
-    it 'does not add to the unhashed_upload_files table (and does not raise error)' do
+    it 'does not add to the untracked_files_for_uploads table (and does not raise error)' do
       Sidekiq::Testing.fake! do
         expect do
           described_class.new.perform
-        end.not_to change { unhashed_upload_files.count }.from(0)
+        end.not_to change { untracked_files_for_uploads.count }.from(0)
       end
     end
   end
