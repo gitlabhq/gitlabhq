@@ -92,14 +92,14 @@
         - if milestone.human_total_issue_time_spent
           = milestone.human_total_issue_time_spent
         - else
-          None
+          = _("None")
       .title.hide-collapsed
-        Total issue time spent
+        = _("Total issue time spent")
       .value.hide-collapsed
         - if milestone.human_total_issue_time_spent
           %span.bold= milestone.human_total_issue_time_spent
         - else
-          %span.no-value No time spent
+          %span.no-value= _("No time spent")
 
     .block.merge-requests
       .sidebar-collapsed-icon
