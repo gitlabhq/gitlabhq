@@ -4,8 +4,8 @@ require Rails.root.join('db', 'post_migrate', '20171103140253_track_untracked_up
 describe TrackUntrackedUploads, :migration, :sidekiq do
   include TrackUntrackedUploadsHelpers
 
-  class UnhashedUploadFile < ActiveRecord::Base
-    self.table_name = 'unhashed_upload_files'
+  class UntrackedFile < ActiveRecord::Base
+    self.table_name = 'untracked_files_for_uploads'
   end
 
   matcher :be_scheduled_migration do
@@ -29,10 +29,10 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
     end
   end
 
-  it 'ensures the unhashed_upload_files table exists' do
+  it 'ensures the untracked_files_for_uploads table exists' do
     expect do
       migrate!
-    end.to change { table_exists?(:unhashed_upload_files) }.from(false).to(true)
+    end.to change { table_exists?(:untracked_files_for_uploads) }.from(false).to(true)
   end
 
   it 'has a path field long enough for really long paths' do
@@ -48,7 +48,7 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
       component  # filename
     ].flatten.join('/')
 
-    record = UnhashedUploadFile.create!(path: long_path)
+    record = UntrackedFile.create!(path: long_path)
     expect(record.reload.path.size).to eq(5711)
   end
 
@@ -132,12 +132,12 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
       end
     end
 
-    it 'all UnhashedUploadFile records are marked as tracked' do
+    it 'all UntrackedFile records are marked as tracked' do
       Sidekiq::Testing.inline! do
         migrate!
 
-        expect(UnhashedUploadFile.count).to eq(8)
-        expect(UnhashedUploadFile.count).to eq(UnhashedUploadFile.where(tracked: true).count)
+        expect(UntrackedFile.count).to eq(8)
+        expect(UntrackedFile.count).to eq(UntrackedFile.where(tracked: true).count)
       end
     end
   end

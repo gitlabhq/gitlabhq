@@ -1,8 +1,8 @@
 module Gitlab
   module BackgroundMigration
     class PopulateUntrackedUploads
-      class UnhashedUploadFile < ActiveRecord::Base
-        self.table_name = 'unhashed_upload_files'
+      class UntrackedFile < ActiveRecord::Base
+        self.table_name = 'untracked_files_for_uploads'
 
         # Ends with /:random_hex/:filename
         FILE_UPLOADER_PATH_PATTERN = %r{/\h+/[^/]+\z}
@@ -84,7 +84,7 @@ module Gitlab
         end
 
         def upload_path
-          # UnhashedUploadFile#path is absolute, but Upload#path depends on uploader
+          # UntrackedFile#path is absolute, but Upload#path depends on uploader
           if uploader == 'FileUploader'
             # Path relative to project directory in uploads
             matchd = path_relative_to_upload_dir.match(FILE_UPLOADER_PATH_PATTERN)
@@ -118,7 +118,7 @@ module Gitlab
 
         # Not including a leading slash
         def path_relative_to_upload_dir
-          base = %r{\A#{Regexp.escape(Gitlab::BackgroundMigration::PrepareUnhashedUploads::UPLOAD_DIR)}/}
+          base = %r{\A#{Regexp.escape(Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR)}/}
           @path_relative_to_upload_dir ||= path.sub(base, '')
         end
 
@@ -218,10 +218,10 @@ module Gitlab
       def perform(start_id, end_id)
         return unless migrate?
 
-        files = UnhashedUploadFile.untracked.where(id: start_id..end_id)
-        files.each do |unhashed_upload_file|
+        files = UntrackedFile.untracked.where(id: start_id..end_id)
+        files.each do |untracked_file|
           begin
-            unhashed_upload_file.ensure_tracked!
+            untracked_file.ensure_tracked!
           rescue StandardError => e
             Rails.logger.warn "Failed to add untracked file to uploads: #{e.message}"
 
@@ -235,7 +235,7 @@ module Gitlab
       private
 
       def migrate?
-        UnhashedUploadFile.table_exists? && Upload.table_exists?
+        UntrackedFile.table_exists? && Upload.table_exists?
       end
     end
   end

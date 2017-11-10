@@ -1,6 +1,6 @@
 module Gitlab
   module BackgroundMigration
-    class PrepareUnhashedUploads
+    class PrepareUntrackedUploads
       # For bulk_queue_background_migration_jobs_by_range
       include Database::MigrationHelpers
 
@@ -8,31 +8,31 @@ module Gitlab
       UPLOAD_DIR = "#{CarrierWave.root}/uploads".freeze
       FOLLOW_UP_MIGRATION = 'PopulateUntrackedUploads'.freeze
 
-      class UnhashedUploadFile < ActiveRecord::Base
+      class UntrackedFile < ActiveRecord::Base
         include EachBatch
 
-        self.table_name = 'unhashed_upload_files'
+        self.table_name = 'untracked_files_for_uploads'
       end
 
       def perform
         return unless migrate?
 
-        clear_unhashed_upload_file_paths
-        store_unhashed_upload_file_paths
+        clear_untracked_file_paths
+        store_untracked_file_paths
         schedule_populate_untracked_uploads_jobs
       end
 
       private
 
       def migrate?
-        UnhashedUploadFile.table_exists?
+        UntrackedFile.table_exists?
       end
 
-      def clear_unhashed_upload_file_paths
-        UnhashedUploadFile.delete_all
+      def clear_untracked_file_paths
+        UntrackedFile.delete_all
       end
 
-      def store_unhashed_upload_file_paths
+      def store_untracked_file_paths
         return unless Dir.exist?(UPLOAD_DIR)
 
         each_file_batch(UPLOAD_DIR, FILE_PATH_BATCH_SIZE) do |file_paths|
@@ -89,7 +89,7 @@ module Gitlab
       end
 
       def insert_file_path(file_path)
-        table_columns_and_values = 'unhashed_upload_files (path, created_at, updated_at) VALUES (?, ?, ?)'
+        table_columns_and_values = 'untracked_files_for_uploads (path, created_at, updated_at) VALUES (?, ?, ?)'
 
         sql = if Gitlab::Database.postgresql?
           "INSERT INTO #{table_columns_and_values} ON CONFLICT DO NOTHING;"
@@ -103,7 +103,7 @@ module Gitlab
       end
 
       def schedule_populate_untracked_uploads_jobs
-        bulk_queue_background_migration_jobs_by_range(UnhashedUploadFile, FOLLOW_UP_MIGRATION)
+        bulk_queue_background_migration_jobs_by_range(UntrackedFile, FOLLOW_UP_MIGRATION)
       end
     end
   end

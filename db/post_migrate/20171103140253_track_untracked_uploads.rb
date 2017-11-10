@@ -7,31 +7,31 @@ class TrackUntrackedUploads < ActiveRecord::Migration
   disable_ddl_transaction!
 
   DOWNTIME = false
-  MIGRATION = 'PrepareUnhashedUploads'
+  MIGRATION = 'PrepareUntrackedUploads'
 
   def up
-    unless table_exists?(:unhashed_upload_files)
-      create_table :unhashed_upload_files do |t|
+    unless table_exists?(:untracked_files_for_uploads)
+      create_table :untracked_files_for_uploads do |t|
         t.string :path, null: false
         t.boolean :tracked, default: false, null: false
         t.timestamps_with_timezone null: false
       end
     end
 
-    unless index_exists?(:unhashed_upload_files, :path)
-      add_index :unhashed_upload_files, :path, unique: true
+    unless index_exists?(:untracked_files_for_uploads, :path)
+      add_index :untracked_files_for_uploads, :path, unique: true
     end
 
-    unless index_exists?(:unhashed_upload_files, :tracked)
-      add_index :unhashed_upload_files, :tracked
+    unless index_exists?(:untracked_files_for_uploads, :tracked)
+      add_index :untracked_files_for_uploads, :tracked
     end
 
     BackgroundMigrationWorker.perform_async(MIGRATION)
   end
 
   def down
-    if table_exists?(:unhashed_upload_files)
-      drop_table :unhashed_upload_files
+    if table_exists?(:untracked_files_for_uploads)
+      drop_table :untracked_files_for_uploads
     end
   end
 end
