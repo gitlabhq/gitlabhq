@@ -453,6 +453,7 @@ db:migrate:reset-mysql:
   stage: test
   variables:
     SETUP_DB: "false"
+    CREATE_DB_USER: "true"
   script:
     - git fetch https://gitlab.com/gitlab-org/gitlab-ce.git v9.3.0
     - git checkout -f FETCH_HEAD
@@ -497,6 +498,7 @@ db:rollback-mysql:
   variables:
     SIZE: "1"
     SETUP_DB: "false"
+    CREATE_DB_USER: "true"
   script:
     - git clone https://gitlab.com/gitlab-org/gitlab-test.git
        /home/git/repositories/gitlab-org/gitlab-test.git
@@ -532,7 +534,6 @@ gitlab:assets:compile:
     NODE_ENV: "production"
     RAILS_ENV: "production"
     SETUP_DB: "false"
-    USE_DB: "false"
     SKIP_STORAGE_VALIDATION: "true"
     WEBPACK_REPORT: "true"
     NO_COMPRESSION: "true"
