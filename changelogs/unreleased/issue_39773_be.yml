@@ -1,5 +1,0 @@
----
-title: Show error message when fast-forward merge is not possible
-merge_request:
-author:
-type: fixed
