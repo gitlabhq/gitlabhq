@@ -171,7 +171,7 @@ describe('Api', () => {
     it('creates a new group label', (done) => {
       const namespace = 'some namespace';
       const labelData = { some: 'data' };
-      const expectedUrl = `${dummyUrlRoot}/groups/${namespace}/labels`;
+      const expectedUrl = Api.buildUrl(Api.groupLabelsPath).replace(':namespace_path', namespace);
       const expectedData = {
         label: labelData,
       };

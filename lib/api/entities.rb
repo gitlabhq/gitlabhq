@@ -271,10 +271,7 @@ module API
       end
 
       expose :merged do |repo_branch, options|
-        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37442
-        Gitlab::GitalyClient.allow_n_plus_1_calls do
-          options[:project].repository.merged_to_root_ref?(repo_branch.name)
-        end
+        options[:project].repository.merged_to_root_ref?(repo_branch, options[:merged_branch_names])
       end
 
       expose :protected do |repo_branch, options|
@@ -931,6 +928,7 @@ module API
     class Job < Grape::Entity
       expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
+      expose :duration
       expose :user, with: User
       expose :artifacts_file, using: JobArtifactFile, if: -> (job, opts) { job.artifacts? }
       expose :commit, with: Commit

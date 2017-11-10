@@ -26,10 +26,10 @@ module Gitlab
         geo_node = requesting_node
         raise GeoNodeNotFoundError unless geo_node
 
-        payload = { data: message.to_json, iat: Time.now.to_i }
-        token = JWT.encode(payload, geo_node.secret_access_key, 'HS256')
+        token = JSONWebToken::HMACToken.new(geo_node.secret_access_key)
+        token[:data] = message.to_json
 
-        "#{GITLAB_GEO_AUTH_TOKEN_TYPE} #{geo_node.access_key}:#{token}"
+        "#{GITLAB_GEO_AUTH_TOKEN_TYPE} #{geo_node.access_key}:#{token.encoded}"
       end
 
       def requesting_node

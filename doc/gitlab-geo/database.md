@@ -79,8 +79,69 @@ The following guide assumes that:
    setting in case you have changed `gitlab_replicator` username to something
    else.
 
-1. Edit `/etc/gitlab/gitlab.rb` and add the following. Note that GitLab 9.1 added
-   the `geo_primary_role` configuration variable:
+1. Set up TLS support for the PostgreSQL primary server
+    > **Warning**: Only skip this step if you **know** that PostgreSQL traffic
+    > between the primary and secondary will be secured through some other
+    > means, e.g., a known-safe physical network path or a site-to-site VPN that
+    > you have configured.
+
+    If you are replicating your database across the open Internet, it is
+    **essential** that the connection is TLS-secured. Correctly configured, this
+    provides protection against both passive eavesdroppers and active
+    "man-in-the-middle" attackers.
+
+    To do this, PostgreSQL needs to be provided with a key and certificate to
+    use. You can re-use the same files you're using for your main GitLab
+    instance, or generate a self-signed certificate just for PostgreSQL's use.
+
+    Prefer the first option if you already have a long-lived certificate. Prefer
+    the second if your certificates expire regularly (e.g. LetsEncrypt), or if
+    PostgreSQL is running on a different server to the main GitLab services
+    (this may be the case in a HA configuration, for instance).
+
+    To generate a self-signed certificate and key, run this command:
+
+    ```bash
+    openssl req -nodes -batch -x509 -newkey rsa:4096 -keyout server.key -out server.crt -days 3650
+    ```
+
+    This will create two files - `server.key` and `server.crt` - that you can
+    use for authentication.
+
+    PostgreSQL's permission requirements are very strict, so whether you're
+    re-using your certificates or just generated new ones, **copy** the files
+    to the correct location.
+
+    If you're re-using certificates already in GitLab, they are likely to be in
+    the `/etc/gitlab/ssl` directory. If your domain is `primary.geo.example.com`,
+    the commands would be:
+
+    ```bash
+    # Copying a certificate and key currently used by GitLab
+    install -o gitlab-psql -g gitlab-psql -m 0400 -T /etc/gitlab/ssl/primary.geo.example.com.crt ~gitlab-psql/data/server.crt
+    install -o gitlab-psql -g gitlab-psql -m 0400 -T /etc/gitlab/ssl/primary.geo.example.com.key ~gitlab-psql/data/server.key
+    ```
+
+    If you just generated a self-signed certificate and key, the files will be
+    in your current working directory, so run:
+
+    ```bash
+    # Copying a self-signed certificate and key
+    install -o gitlab-psql -g gitlab-psql -m 0400 -T server.crt ~gitlab-psql/data/server.crt
+    install -o gitlab-psql -g gitlab-psql -m 0400 -T server.key ~gitlab-psql/data/server.key
+    ```
+
+    Add this configuration to `/etc/gitlab/gitlab.rb`. Additional options are
+    documented [here](http://docs.gitlab.com/omnibus/settings/database.html#enabling-ssl).
+
+    ```ruby
+    postgresql['ssl'] = 'on'
+    ```
+
+1. Configure PostgreSQL to listen on an external network interface
+
+    Edit `/etc/gitlab/gitlab.rb` and add the following. Note that GitLab 9.1 added
+    the `geo_primary_role` configuration variable:
 
     ```ruby
     geo_primary_role['enable'] = true
@@ -244,14 +305,53 @@ data before running `pg_basebackup`.
    `geo-secondary.mydomain.com`, you may use `geo_secondary_my_domain_com` as
    the slot name.
 
+1. Set up PostgreSQL TLS verification on the secondary
+    If you configured the PostgreSQL to accept TLS connections in
+    [Step 1][#step-1-configure-the-primary-server], then you need to provide a
+    list of "known-good" certificates to the secondary. It uses this list to
+    keep the connection secure against an active "man-in-the-middle" attack.
+
+    If you reused your existing certificates on the primary, you can use the
+    list of valid root certificates provided with omnibus:
+
+    ```bash
+    mkdir -p ~gitlab-psql/.postgresql
+    ln -s /opt/gitlab/embedded/ssl/certs/cacert.pem ~gitlab-psql/.postgresql/root.crt
+    ```
+
+    If you generated a self-signed certificate, that won't work. Copy the
+    generated `server.crt` file onto the secondary server from the primary, then
+    install it in the right place:
+
+    ```bash
+    install -o gitlab-psql -g gitlab-psql -m 0400 -T server.crt ~gitlab-psql/.postgresql/root.crt
+    ```
+
+    PostgreSQL will now only recognize that exact certificate when verifying TLS
+    connections.
+
 1. Execute the command below to start a backup/restore and begin the replication:
 
     ```
-    gitlab-ctl replicate-geo-database --host=1.2.3.4 --slot-name=geo_secondary_my_domain_com
+    gitlab-ctl replicate-geo-database --host=geo.primary.my.domain.com --slot-name=geo_secondary_my_domain_com
     ```
 
-    Change the `--host=` to the primary node IP or FQDN. If PostgreSQL is
-    listening on a non-standard port, add `--port=` as well.
+    If PostgreSQL is listening on a non-standard port, add `--port=` as well.
+
+    If you have to connect to a specific IP address, rather than the FQDN of the
+    primary, to reach your PostgreSQL server, then you should pass
+    `--sslmode=verify-ca` as well. This should **only** be the case if you have
+    also used a self-signed certificate. `verify-ca` is **not** safe if you are
+    connecting to an IP address and re-using an existing TLS certificate!
+
+    Pass `--sslmode=prefer` if you are happy to skip PostgreSQL TLS
+    authentication altogether (e.g., you know the network path is secure, or you
+    are using a site-to-site VPN).
+
+    You can read more details about each `sslmode` in the
+    [PostgreSQL documentation](https://www.postgresql.org/docs/9.6/static/libpq-ssl.html#LIBPQ-SSL-PROTECTION);
+    the instructions above are carefully written to ensure protection against
+    both passive eavesdroppers and active "man-in-the-middle" attackers.
 
     When prompted, enter the password you set up for the `gitlab_replicator`
     user in the first step.

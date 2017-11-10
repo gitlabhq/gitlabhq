@@ -22,7 +22,9 @@ RSpec.describe Geo::MetricsUpdateWorker, :geo do
 
     it 'executes when Prometheus metrics are enabled' do
       allow(Gitlab::Metrics).to receive(:prometheus_metrics_enabled?).and_return(true)
-      expect(Geo::MetricsUpdateService).to receive(:new).and_call_original
+
+      service = double(:service, execute: true)
+      expect(Geo::MetricsUpdateService).to receive(:new).and_return(service)
 
       subject.perform
     end

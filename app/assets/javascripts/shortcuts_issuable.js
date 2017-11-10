@@ -4,6 +4,7 @@
 import _ from 'underscore';
 import 'mousetrap';
 import ShortcutsNavigation from './shortcuts_navigation';
+import { CopyAsGFM } from './behaviors/copy_as_gfm';
 
 export default class ShortcutsIssuable extends ShortcutsNavigation {
   constructor(isMergeRequest) {
@@ -33,8 +34,8 @@ export default class ShortcutsIssuable extends ShortcutsNavigation {
       return false;
     }
 
-    const el = window.gl.CopyAsGFM.transformGFMSelection(documentFragment.cloneNode(true));
-    const selected = window.gl.CopyAsGFM.nodeToGFM(el);
+    const el = CopyAsGFM.transformGFMSelection(documentFragment.cloneNode(true));
+    const selected = CopyAsGFM.nodeToGFM(el);
 
     if (selected.trim() === '') {
       return false;

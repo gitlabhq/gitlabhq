@@ -210,7 +210,6 @@ Parameters:
     "merge_commit_sha": null,
     "user_notes_count": 1,
     "changes_count": "1",
-    "approvals_before_merge": null
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
     "squash": false,
@@ -221,7 +220,8 @@ Parameters:
       "total_time_spent": 0,
       "human_time_estimate": null,
       "human_total_time_spent": null
-    }
+    },
+    "approvals_before_merge": null
   }
 ]
 ```
@@ -289,7 +289,6 @@ Parameters:
   "merge_commit_sha": "9999999999999999999999999999999999999999",
   "user_notes_count": 1,
   "changes_count": "1",
-  "approvals_before_merge": null
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
@@ -300,7 +299,8 @@ Parameters:
     "total_time_spent": 0,
     "human_time_estimate": null,
     "human_total_time_spent": null
-  }
+  },
+  "approvals_before_merge": null
 }
 ```
 
@@ -404,7 +404,6 @@ Parameters:
   "merge_commit_sha": null,
   "user_notes_count": 1,
   "changes_count": "1",
-  "approvals_before_merge": null,
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
@@ -427,7 +426,8 @@ Parameters:
     "renamed_file": false,
     "deleted_file": false
     }
-  ]
+  ],
+  "approvals_before_merge": null
 }
 ```
 
@@ -512,7 +512,6 @@ order for it to take effect:
   "merge_commit_sha": null,
   "user_notes_count": 0,
   "changes_count": "1",
-  "approvals_before_merge": null
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
@@ -523,7 +522,8 @@ order for it to take effect:
     "total_time_spent": 0,
     "human_time_estimate": null,
     "human_total_time_spent": null
-  }
+  },
+  "approvals_before_merge": null
 }
 ```
 
@@ -601,7 +601,6 @@ Must include at least one non-required attribute from above.
   "merge_commit_sha": null,
   "user_notes_count": 1,
   "changes_count": "1",
-  "approvals_before_merge": null
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
@@ -612,7 +611,8 @@ Must include at least one non-required attribute from above.
     "total_time_spent": 0,
     "human_time_estimate": null,
     "human_total_time_spent": null
-  }
+  },
+  "approvals_before_merge": null
 }
 ```
 
@@ -709,7 +709,6 @@ Parameters:
   "merge_commit_sha": "9999999999999999999999999999999999999999",
   "user_notes_count": 1,
   "changes_count": "1",
-  "approvals_before_merge": null
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
@@ -720,7 +719,8 @@ Parameters:
     "total_time_spent": 0,
     "human_time_estimate": null,
     "human_total_time_spent": null
-  }
+  },
+  "approvals_before_merge": null
 }
 ```
 
@@ -915,7 +915,6 @@ Parameters:
   "merge_commit_sha": null,
   "user_notes_count": 1,
   "changes_count": "1",
-  "approvals_before_merge": null
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
@@ -926,7 +925,8 @@ Parameters:
     "total_time_spent": 0,
     "human_time_estimate": null,
     "human_total_time_spent": null
-  }
+  },
+  "approvals_before_merge": null
 }
 ```
 
@@ -995,7 +995,7 @@ Example response when the GitLab issue tracker is used:
       "user_notes_count": 1,
       "changes_count": "1",
       "approvals_before_merge": null
-   },
+   }
 ]
 ```
 
