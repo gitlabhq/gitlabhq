@@ -16,6 +16,20 @@ all you need to do is update GitLab itself:
 
 ## Upgrading to GitLab 10.2
 
+### Secure PostgreSQL replication 
+
+Support for TLS-secured PostgreSQL replication has been added. If you are
+currently using PostgreSQL replication across the open internet without an
+external means of securing the connection (e.g., a site-to-site VPN), then you
+should immediately reconfigure your primary and secondary PostgreSQL instances
+according to the [updated instructions](#database.md).
+
+If you *are* securing the connections externally and wish to continue doing so,
+ensure you include the new option `--sslmode=prefer` in future invocations of
+`gitlab-ctl replicate-geo-database`.
+
+### HTTPS repository sync
+
 Support for replicating repositories and wikis over HTTP/HTTPS has been added.
 Replicating over SSH has been deprecated, and support for this option will be
 removed in a future release.
