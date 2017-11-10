@@ -1,5 +1,6 @@
 /* eslint-disable no-new*/
-import './smart_interval';
+import axios from 'axios';
+import SmartInterval from '~/smart_interval';
 import { parseSeconds, stringifyTime } from './lib/utils/pretty_time';
 
 const healthyClass = 'geo-node-healthy';
@@ -31,7 +32,7 @@ class GeoNodeStatus {
     this.$advancedStatus = $('.js-advanced-geo-node-status-toggler', this.$status);
     this.$advancedStatus.on('click', GeoNodeStatus.toggleShowAdvancedStatus);
 
-    this.statusInterval = new gl.SmartInterval({
+    this.statusInterval = new SmartInterval({
       callback: this.getStatus.bind(this),
       startingInterval: 30000,
       maxInterval: 120000,
@@ -59,16 +60,26 @@ class GeoNodeStatus {
 
   static formatCount(count) {
     if (count !== null) {
-      gl.text.addDelimiter(count);
+      return gl.text.addDelimiter(count);
     }
 
     return notAvailable;
   }
 
   getStatus() {
-    $.getJSON(this.endpoint, (status) => {
-      this.setStatusIcon(status.healthy);
-      this.setHealthStatus(status.healthy);
+    return axios.get(this.endpoint)
+      .then((response) => {
+        this.handleStatus(response.data);
+        return response;
+      })
+      .catch((err) => {
+        this.handleError(err);
+      });
+  }
+
+  handleStatus(status) {
+    this.setStatusIcon(status.healthy);
+    this.setHealthStatus(status.healthy);
 
       // Replication lag can be nil if the secondary isn't actually streaming
       if (status.db_replication_lag_seconds !== null && status.db_replication_lag_seconds >= 0) {
@@ -141,7 +152,13 @@ class GeoNodeStatus {
       }
 
       this.$status.show();
-    });
+  }
+
+  handleError(err) {
+    this.setStatusIcon(false);
+    this.setHealthStatus(false);
+    this.$health.html(`<code class="geo-health">${err}</code>`);
+    this.$status.show();
   }
 
   setStatusIcon(healthy) {
