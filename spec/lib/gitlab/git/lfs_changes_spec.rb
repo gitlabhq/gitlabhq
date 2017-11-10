@@ -9,7 +9,7 @@ describe Gitlab::Git::LfsChanges do
 
   describe 'new_pointers' do
     before do
-      allow_any_instance_of(Gitlab::Git::RevList).to receive(:new_objects).and_return([blob_object_id])
+      allow_any_instance_of(Gitlab::Git::RevList).to receive(:new_objects).and_yield([blob_object_id])
     end
 
     it 'uses rev-list to find new objects' do
@@ -38,7 +38,7 @@ describe Gitlab::Git::LfsChanges do
     it 'uses rev-list to find all objects' do
       rev_list = double
       allow(Gitlab::Git::RevList).to receive(:new).and_return(rev_list)
-      allow(rev_list).to receive(:all_objects).and_return([blob_object_id])
+      allow(rev_list).to receive(:all_objects).and_yield([blob_object_id])
 
       expect(Gitlab::Git::Blob).to receive(:batch_lfs_pointers).with(project.repository, [blob_object_id])
 

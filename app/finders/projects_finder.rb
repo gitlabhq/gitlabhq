@@ -18,6 +18,8 @@
 #     non_archived: boolean
 #
 class ProjectsFinder < UnionFinder
+  include CustomAttributesFilter
+
   attr_accessor :params
   attr_reader :current_user, :project_ids_relation
 
@@ -44,6 +46,7 @@ class ProjectsFinder < UnionFinder
     collection = by_tags(collection)
     collection = by_search(collection)
     collection = by_archived(collection)
+    collection = by_custom_attributes(collection)
 
     sort(collection)
   end

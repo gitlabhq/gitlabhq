@@ -1,4 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
+import { s__ } from './locale';
 /* global ProjectSelect */
 import IssuableIndex from './issuable_index';
 /* global Milestone */
@@ -34,6 +35,8 @@ import LabelManager from './label_manager';
 /* global Sidebar */
 /* global WeightSelect */
 /* global AdminEmailSelect */
+
+import Flash from './flash';
 import CommitsList from './commits';
 import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
@@ -601,9 +604,12 @@ import initGroupAnalytics from './init_group_analytics';
           new DueDateSelectors();
           break;
         case 'projects:clusters:show':
-          import(/* webpackChunkName: "clusters" */ './clusters')
+          import(/* webpackChunkName: "clusters" */ './clusters/clusters_bundle')
             .then(cluster => new cluster.default()) // eslint-disable-line new-cap
-            .catch(() => {});
+            .catch((err) => {
+              Flash(s__('ClusterIntegration|Problem setting up the cluster JavaScript'));
+              throw err;
+            });
           break;
         case 'admin:licenses:new':
           const $licenseFile = $('.license-file');

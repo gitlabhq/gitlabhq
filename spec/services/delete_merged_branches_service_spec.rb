@@ -42,6 +42,14 @@ describe DeleteMergedBranchesService do
       expect(project.repository.branch_names).to include('improve/awesome')
     end
 
+    it 'ignores protected tags' do
+      create(:protected_tag, project: project, name: 'improve/*')
+
+      service.execute
+
+      expect(project.repository.branch_names).not_to include('improve/awesome')
+    end
+
     context 'user without rights' do
       let(:user) { create(:user) }
 

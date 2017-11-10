@@ -118,6 +118,10 @@ var config = {
         loader: 'vue-loader',
       },
       {
+        test: /\.ts$/,
+        loader: 'ts-loader',
+      },
+      {
         test: /\.svg$/,
         loader: 'raw-loader',
       },
@@ -265,7 +269,7 @@ var config = {
   ],
 
   resolve: {
-    extensions: ['.js'],
+    extensions: ['.js', '.ts'],
     alias: {
       'ee':             path.join(ROOT_PATH, 'ee/app/assets/javascripts'),
       '~':              path.join(ROOT_PATH, 'app/assets/javascripts'),

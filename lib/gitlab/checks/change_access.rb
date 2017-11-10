@@ -15,6 +15,7 @@ module Gitlab
         update_protected_tag: 'Protected tags cannot be updated.',
         delete_protected_tag: 'Protected tags cannot be deleted.',
         create_protected_tag: 'You are not allowed to create this tag as it is protected.',
+        lfs_objects_missing: 'LFS objects are missing. Ensure LFS is properly set up or try a manual "git lfs push --all".',
         push_rule_branch_name: "Branch name does not follow the pattern '%{branch_name_regex}'",
         push_rule_committer_not_verified: "Comitter email '%{commiter_email}' is not verified.",
         push_rule_committer_not_allowed: "You cannot push commits for '%{committer_email}'. You can only push commits that were committed with one of your own verified emails."
@@ -42,6 +43,7 @@ module Gitlab
         push_checks
         branch_checks
         tag_checks
+        lfs_objects_exist_check
         push_rule_check
 
         true
@@ -146,6 +148,14 @@ module Gitlab
 
       def matching_merge_request?
         Checks::MatchingMergeRequest.new(@newrev, @branch_name, @project).match?
+      end
+
+      def lfs_objects_exist_check
+        lfs_check = Checks::LfsIntegrity.new(project, @newrev)
+
+        if lfs_check.objects_missing?
+          raise GitAccess::UnauthorizedError, ERROR_MESSAGES[:lfs_objects_missing]
+        end
       end
 
       def push_rule_check

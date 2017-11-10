@@ -1,8 +1,8 @@
 class Projects::ClustersController < Projects::ApplicationController
-  before_action :cluster, except: [:login, :index, :new, :create]
+  before_action :cluster, except: [:login, :index, :new, :new_gcp, :create]
   before_action :authorize_read_cluster!
-  before_action :authorize_create_cluster!, only: [:new, :create]
-  before_action :authorize_google_api, only: [:new, :create]
+  before_action :authorize_create_cluster!, only: [:new, :new_gcp, :create]
+  before_action :authorize_google_api, only: [:new_gcp, :create]
   before_action :authorize_update_cluster!, only: [:update]
   before_action :authorize_admin_cluster!, only: [:destroy]
 
@@ -16,7 +16,7 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def login
     begin
-      state = generate_session_key_redirect(namespace_project_clusters_url.to_s)
+      state = generate_session_key_redirect(providers_gcp_new_namespace_project_clusters_url.to_s)
 
       @authorize_url = GoogleApi::CloudPlatform::Client.new(
         nil, callback_google_api_auth_url,
@@ -27,18 +27,23 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def new
-    @cluster = project.build_cluster
+  end
+
+  def new_gcp
+    @cluster = Clusters::Cluster.new.tap do |cluster|
+      cluster.build_provider_gcp
+    end
   end
 
   def create
-    @cluster = Ci::CreateClusterService
+    @cluster = Clusters::CreateService
       .new(project, current_user, create_params)
       .execute(token_in_session)
 
     if @cluster.persisted?
       redirect_to project_cluster_path(project, @cluster)
     else
-      render :new
+      render :new_gcp
     end
   end
 
@@ -58,7 +63,7 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def update
-    Ci::UpdateClusterService
+    Clusters::UpdateService
       .new(project, current_user, update_params)
       .execute(cluster)
 
@@ -88,19 +93,19 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def create_params
     params.require(:cluster).permit(
-      :gcp_project_id,
-      :gcp_cluster_zone,
-      :gcp_cluster_name,
-      :gcp_cluster_size,
-      :gcp_machine_type,
-      :project_namespace,
-      :enabled)
+      :enabled,
+      :name,
+      :provider_type,
+      provider_gcp_attributes: [
+        :gcp_project_id,
+        :zone,
+        :num_nodes,
+        :machine_type
+      ])
   end
 
   def update_params
-    params.require(:cluster).permit(
-      :project_namespace,
-      :enabled)
+    params.require(:cluster).permit(:enabled)
   end
 
   def authorize_google_api
