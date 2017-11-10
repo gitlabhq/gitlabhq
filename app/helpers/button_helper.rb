@@ -57,41 +57,35 @@ module ButtonHelper
   end
 
   def http_clone_button(project, placement = 'right', append_link: true)
-    klass = 'http-selector'
-    klass << ' has-tooltip' if current_user.try(:require_password_creation?) || current_user.try(:require_personal_access_token_creation_for_git_auth?)
-
     protocol = gitlab_config.protocol.upcase
 
-    tooltip_title =
+    protocol_description =
       if current_user.try(:require_password_creation?)
         _("Set a password on your account to pull or push via %{protocol}.") % { protocol: protocol }
       else
         _("Create a personal access token on your account to pull or push via %{protocol}.") % { protocol: protocol }
       end
 
-    content_tag (append_link ? :a : :span), protocol,
-      class: klass,
-      href: (project.http_url_to_repo if append_link),
-      data: {
-        html: true,
-        placement: placement,
-        container: 'body',
-        title: tooltip_title
-      }
+    protocol_element_output = content_tag(:strong, protocol, class: 'dropdown-menu-inner-title')
+
+    if current_user.try(:require_password_creation?) || current_user.try(:require_personal_access_token_creation_for_git_auth?)
+      protocol_element_output << content_tag(:span, protocol_description, class: 'dropdown-menu-inner-content')
+    end
+
+    content_tag (append_link ? :a : :span),
+      protocol_element_output,
+      class: 'http-selector',
+      href: (project.http_url_to_repo if append_link)
   end
 
-  def ssh_clone_button(project, placement = 'right', append_link: true)
-    klass = 'ssh-selector'
-    klass << ' has-tooltip' if current_user.try(:require_ssh_key?)
+  def ssh_clone_button(project, append_link: true)
+    ssh_description = _('Add an SSH key to your profile to pull or push via SSH.')
+    ssh_element_output = content_tag(:strong, 'SSH', class: 'dropdown-menu-inner-title')
+    ssh_element_output << content_tag(:span, ssh_description, class: 'dropdown-menu-inner-content') if current_user.try(:require_ssh_key?)
 
-    content_tag (append_link ? :a : :span), 'SSH',
-      class: klass,
-      href: (project.ssh_url_to_repo if append_link),
-      data: {
-        html: true,
-        placement: placement,
-        container: 'body',
-        title: _('Add an SSH key to your profile to pull or push via SSH.')
-      }
+    content_tag (append_link ? :a : :span),
+      ssh_element_output,
+      class: 'ssh-selector',
+      href: (project.ssh_url_to_repo if append_link)
   end
 end
