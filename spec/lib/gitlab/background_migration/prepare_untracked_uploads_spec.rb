@@ -83,8 +83,14 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :side
     # E.g. The installation is in use at the time of migration, and someone has
     # just uploaded a file
     context 'when there are files in /uploads/tmp' do
+      let(:tmp_file) { Rails.root.join(described_class::UPLOAD_DIR, 'tmp', 'some_file.jpg') }
+
       before do
-        FileUtils.touch(Rails.root.join(described_class::UPLOAD_DIR, 'tmp', 'some_file.jpg'))
+        FileUtils.touch(tmp_file)
+      end
+
+      after do
+        FileUtils.rm(tmp_file)
       end
 
       it 'does not add files from /uploads/tmp' do
