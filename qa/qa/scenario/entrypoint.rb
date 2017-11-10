@@ -7,18 +7,9 @@ module QA
     class Entrypoint < Template
       include Bootable
 
-      def self.tags(*tags)
-        @tags = tags
-      end
-
-      def self.get_tags
-        @tags
-      end
-
       def perform(address, *files)
-        Specs::Config.perform do |specs|
-          specs.address = address
-        end
+        Runtime::Scenario.define(:gitlab_address, address)
+        Specs::Config.perform
 
         ##
         # Perform before hooks, which are different for CE and EE
@@ -32,6 +23,16 @@ module QA
             files: files.any? ? files : 'qa/specs/features'
           )
         end
+      end
+
+      private
+
+      def self.tags(*tags)
+        @tags = tags
+      end
+
+      def self.get_tags
+        @tags
       end
     end
   end
