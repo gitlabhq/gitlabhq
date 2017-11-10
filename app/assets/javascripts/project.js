@@ -17,6 +17,37 @@ export default class Project {
     $('a', $cloneOptions).on('click', (e) => {
       const $this = $(e.currentTarget);
       const url = $this.attr('href');
+      const activeText = $this.find('.dropdown-menu-inner-title').text();
+
+      e.preventDefault();
+
+      $('.is-active', $cloneOptions).not($this).removeClass('is-active');
+      $this.toggleClass('is-active');
+      $projectCloneField.val(url);
+      $cloneBtnText.text(activeText);
+
+      return $('.clone').text(url);
+    });
+    // Ref switcher
+    this.initRefSwitcher();
+    $('.project-refs-select').on('change', function() {
+      return $(this).parents('form').submit();
+    });
+    $('.hide-no-ssh-message').on('click', function(e) {
+      Cookies.set('hide_no_ssh_message', 'false');
+      $(this).parents('.no-ssh-key-message').remove();
+      return e.preventDefault();
+    });
+    $('.hide-no-password-message').on('click', function(e) {
+      Cookies.set('hide_no_password_message', 'false');
+      $(this).parents('.no-password-message').remove();
+      return e.preventDefault();
+    });
+    this.projectSelectDropdown();
+
+    $('a', $cloneOptions).on('click', (e) => {
+      const $this = $(e.currentTarget);
+      const url = $this.attr('href');
 
       e.preventDefault();
 
