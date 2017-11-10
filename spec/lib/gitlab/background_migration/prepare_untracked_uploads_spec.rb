@@ -68,14 +68,14 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :side
     # E.g. from a previous failed run of this background migration
     context 'when there is existing data in untracked_files_for_uploads' do
       before do
-        untracked_files_for_uploads.create(path: '/foo/bar.jpg')
+        described_class.new.perform
       end
 
       it 'does not error or produce duplicates of existing data' do
         Sidekiq::Testing.fake! do
           expect do
             described_class.new.perform
-          end.to change { untracked_files_for_uploads.count }.from(1).to(5)
+          end.not_to change { untracked_files_for_uploads.count }.from(5)
         end
       end
     end

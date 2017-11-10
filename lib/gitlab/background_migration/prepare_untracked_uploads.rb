@@ -17,7 +17,6 @@ module Gitlab
       def perform
         return unless migrate?
 
-        clear_untracked_file_paths
         store_untracked_file_paths
         schedule_populate_untracked_uploads_jobs
       end
@@ -26,10 +25,6 @@ module Gitlab
 
       def migrate?
         UntrackedFile.table_exists?
-      end
-
-      def clear_untracked_file_paths
-        UntrackedFile.delete_all
       end
 
       def store_untracked_file_paths
