@@ -9,15 +9,7 @@ require 'selenium-webdriver'
 module QA
   module Specs
     class Config < Scenario::Template
-      attr_writer :address
-
-      def initialize
-        @address = ENV['GITLAB_URL']
-      end
-
       def perform
-        raise 'Please configure GitLab address!' unless @address
-
         configure_rspec!
         configure_capybara!
       end
@@ -56,7 +48,6 @@ module QA
         end
 
         Capybara.configure do |config|
-          config.app_host = @address
           config.default_driver = :chrome
           config.javascript_driver = :chrome
           config.default_max_wait_time = 4
