@@ -18,15 +18,7 @@ module MergeRequests
 
       @merge_request = merge_request
 
-      unless @merge_request.mergeable?
-        return handle_merge_error(log_message: 'Merge request is not mergeable', save_message_on_model: true)
-      end
-
-      @source = find_merge_source
-
-      unless @source
-        return handle_merge_error(log_message: 'No source for merge', save_message_on_model: true)
-      end
+      error_check!
 
       merge_request.in_locked_state do
         if commit
@@ -40,6 +32,19 @@ module MergeRequests
     end
 
     private
+
+    def error_check!
+      error =
+        if @merge_request.should_be_rebased?
+          'Only fast-forward merge is allowed for your project. Please update your source branch'
+        elsif !@merge_request.mergeable?
+          'Merge request is not mergeable'
+        elsif !source
+          'No source for merge'
+        end
+
+      raise MergeError, error if error
+    end
 
     def commit
       message = params[:commit_message] || merge_request.merge_commit_message
@@ -95,8 +100,8 @@ module MergeRequests
       merge_request.to_reference(full: true)
     end
 
-    def find_merge_source
-      merge_request.diff_head_sha
+    def source
+      @source ||= @merge_request.diff_head_sha
     end
   end
 end

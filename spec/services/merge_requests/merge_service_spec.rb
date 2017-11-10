@@ -239,6 +239,28 @@ describe MergeRequests::MergeService do
         expect(merge_request.merge_error).to include(error_message)
         expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
       end
+
+      context "when fast-forward merge is not allowed" do
+        before do
+          allow_any_instance_of(Repository).to receive(:ancestor?).and_return(nil)
+        end
+
+        %w(semi-linear ff).each do |merge_method|
+          it "logs and saves error if merge is #{merge_method} only" do
+            merge_method = 'rebase_merge' if merge_method == 'semi-linear'
+            merge_request.project.update(merge_method: merge_method)
+            error_message = 'Only fast-forward merge is allowed for your project. Please update your source branch'
+            allow(service).to receive(:execute_hooks)
+
+            service.execute(merge_request)
+
+            expect(merge_request).to be_open
+            expect(merge_request.merge_commit_sha).to be_nil
+            expect(merge_request.merge_error).to include(error_message)
+            expect(Rails.logger).to have_received(:error).with(a_string_matching(error_message))
+          end
+        end
+      end
     end
   end
 end
