@@ -1,6 +1,7 @@
 /* globals Flash */
 import Visibility from 'visibilityjs';
 import axios from 'axios';
+import setAxiosCsrfToken from './lib/utils/axios_utils';
 import Poll from './lib/utils/poll';
 import { s__ } from './locale';
 import './flash';
@@ -16,6 +17,7 @@ import './flash';
 class ClusterService {
   constructor(options = {}) {
     this.options = options;
+    setAxiosCsrfToken();
   }
   fetchData() {
     return axios.get(this.options.endpoint);

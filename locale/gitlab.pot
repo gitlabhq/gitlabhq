@@ -375,7 +375,7 @@ msgstr ""
 msgid "Clone repository"
 msgstr ""
 
-msgid "ClusterIntegration|A %{link_to_container_project} must have been created under this account"
+msgid "ClusterIntegration|This account must have permissions to create a cluster in the %{link_to_container_project} specified below"
 msgstr ""
 
 msgid "ClusterIntegration|Cluster integration"
@@ -447,7 +447,7 @@ msgstr ""
 msgid "ClusterIntegration|Remove integration"
 msgstr ""
 
-msgid "ClusterIntegration|Removing cluster integration will remove the cluster configuration you have added to this project. It will not delete your project."
+msgid "ClusterIntegration|Removing cluster integration will remove the cluster configuration you have added to this project. It will not delete your cluster on Google Container Engine."
 msgstr ""
 
 msgid "ClusterIntegration|Save changes"

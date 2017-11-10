@@ -164,7 +164,7 @@ class User < ActiveRecord::Base
   before_validation :set_notification_email, if: :email_changed?
   before_validation :set_public_email, if: :public_email_changed?
   before_save :ensure_authentication_token, :ensure_incoming_email_token
-  before_save :ensure_user_rights_and_limits, if: :external_changed?
+  before_save :ensure_user_rights_and_limits, if: ->(user) { user.new_record? || user.external_changed? }
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
   after_save :ensure_namespace_correct
@@ -1141,8 +1141,9 @@ class User < ActiveRecord::Base
       self.can_create_group = false
       self.projects_limit   = 0
     else
-      self.can_create_group = gitlab_config.default_can_create_group
-      self.projects_limit = current_application_settings.default_projects_limit
+      # Only revert these back to the default if they weren't specifically changed in this update.
+      self.can_create_group = gitlab_config.default_can_create_group unless can_create_group_changed?
+      self.projects_limit = current_application_settings.default_projects_limit unless projects_limit_changed?
     end
   end
 
