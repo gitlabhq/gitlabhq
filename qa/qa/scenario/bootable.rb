@@ -11,6 +11,8 @@ module QA
 
       module ClassMethods
         def launch!(argv)
+          return self.perform(*argv) unless has_attributes?
+
           arguments = OptionParser.new do |parser|
             options.to_a.each do |opt|
               parser.on(opt.arg, opt.desc) do |value|
@@ -21,11 +23,7 @@ module QA
 
           arguments.parse!(argv)
 
-          if has_attributes?
-            self.perform(**Runtime::Scenario.attributes)
-          else
-            self.perform(*argv)
-          end
+          self.perform(**Runtime::Scenario.attributes)
         end
 
         private
