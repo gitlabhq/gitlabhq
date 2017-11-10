@@ -22,8 +22,6 @@ module QA
         end
       end
 
-      private
-
       def self.tags(*tags)
         @tags = tags
       end
