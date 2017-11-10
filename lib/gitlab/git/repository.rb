@@ -58,7 +58,7 @@ module Gitlab
       # Rugged repo object
       attr_reader :rugged
 
-      attr_reader :storage, :gl_repository, :relative_path, :gitaly_resolver
+      attr_reader :storage, :gl_repository, :relative_path
 
       # This initializer method is only used on the client side (gitlab-ce).
       # Gitaly-ruby uses a different initializer.
@@ -66,7 +66,6 @@ module Gitlab
         @storage = storage
         @relative_path = relative_path
         @gl_repository = gl_repository
-        @gitaly_resolver = Gitlab::GitalyClient
 
         storage_path = Gitlab.config.repositories.storages[@storage]['path']
         @path = File.join(storage_path, @relative_path)
@@ -1014,23 +1013,22 @@ module Gitlab
 
       def with_repo_branch_commit(start_repository, start_branch_name)
         Gitlab::Git.check_namespace!(start_repository)
+        start_repository = RemoteRepository.new(start_repository) unless start_repository.is_a?(RemoteRepository)
 
         return yield nil if start_repository.empty_repo?
 
-        if start_repository == self
+        if start_repository.same_repository?(self)
           yield commit(start_branch_name)
         else
-          start_commit = start_repository.commit(start_branch_name)
+          start_commit_id = start_repository.commit_id(start_branch_name)
 
-          return yield nil unless start_commit
+          return yield nil unless start_commit_id
 
-          sha = start_commit.sha
-
-          if branch_commit = commit(sha)
+          if branch_commit = commit(start_commit_id)
             yield branch_commit
           else
             with_repo_tmp_commit(
-              start_repository, start_branch_name, sha) do |tmp_commit|
+              start_repository, start_branch_name, start_commit_id) do |tmp_commit|
               yield tmp_commit
             end
           end
@@ -1087,6 +1085,9 @@ module Gitlab
       end
 
       def fetch_ref(source_repository, source_ref:, target_ref:)
+        Gitlab::Git.check_namespace!(source_repository)
+        source_repository = RemoteRepository.new(source_repository) unless source_repository.is_a?(RemoteRepository)
+
         message, status = GitalyClient.migrate(:fetch_ref) do |is_enabled|
           if is_enabled
             gitaly_fetch_ref(source_repository, source_ref: source_ref, target_ref: target_ref)
@@ -1620,22 +1621,9 @@ module Gitlab
       end
 
       def gitaly_fetch_ref(source_repository, source_ref:, target_ref:)
-        gitaly_ssh = File.absolute_path(File.join(Gitlab.config.gitaly.client_path, 'gitaly-ssh'))
-        gitaly_address = gitaly_resolver.address(source_repository.storage)
-        gitaly_token = gitaly_resolver.token(source_repository.storage)
-
-        request = Gitaly::SSHUploadPackRequest.new(repository: source_repository.gitaly_repository)
-        env = {
-          'GITALY_ADDRESS' => gitaly_address,
-          'GITALY_PAYLOAD' => request.to_json,
-          'GITALY_WD' => Dir.pwd,
-          'GIT_SSH_COMMAND' => "#{gitaly_ssh} upload-pack"
-        }
-        env['GITALY_TOKEN'] = gitaly_token if gitaly_token.present?
-
         args = %W(fetch --no-tags -f ssh://gitaly/internal.git #{source_ref}:#{target_ref})
 
-        run_git(args, env: env)
+        run_git(args, env: source_repository.fetch_env)
       end
 
       def gitaly_ff_merge(user, source_sha, target_branch)
