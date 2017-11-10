@@ -87,7 +87,7 @@ module Milestoneish
   end
 
   def total_issue_time_spent
-    issues.joins(:timelogs).sum(:time_spent)
+    @total_issue_time_spent ||= issues.joins(:timelogs).sum(:time_spent)
   end
 
   def human_total_issue_time_spent
