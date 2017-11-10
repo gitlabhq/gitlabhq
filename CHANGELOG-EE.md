@@ -4,9 +4,6 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 - [SECURITY] Fix vulnerability that could allow any user of a Geo instance to clone any repository on the secondary instance.
 - [SECURITY] Geo JSON web tokens now expire after two minutes to reduce risk of compromise.
-- [SECURITY] Add X-Content-Type-Options header in API responses to make it more difficult to find other vulnerabilities.
-- [SECURITY] Properly translate IP addresses written in decimal, octal, or other formats in SSRF protections in project imports.
-- [FIXED] Fix TRIGGER checks for MySQL.
 
 ## 10.1.1 (2017-10-31)
 
