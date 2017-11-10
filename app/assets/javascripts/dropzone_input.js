@@ -117,8 +117,74 @@ window.DropzoneInput = (function() {
         $('.dz-preview').remove();
         $('.markdown-area').trigger('input');
 
+<<<<<<< HEAD
         $uploadingProgressContainer.addClass('hide');
         $cancelButton.addClass('hide');
+=======
+      $uploadingErrorContainer.removeClass('hide');
+      $uploadingErrorMessage.html(message);
+      $attachButton.addClass('hide');
+      $cancelButton.addClass('hide');
+    },
+    totaluploadprogress(totalUploadProgress) {
+      updateAttachingMessage(this.files, $attachingFileMessage);
+      $uploadProgress.text(`${Math.round(totalUploadProgress)}%`);
+    },
+    sending: () => {
+      // DOM elements already exist.
+      // Instead of dynamically generating them,
+      // we just either hide or show them.
+      $attachButton.addClass('hide');
+      $uploadingErrorContainer.addClass('hide');
+      $uploadingProgressContainer.removeClass('hide');
+      $cancelButton.removeClass('hide');
+    },
+    removedfile: () => {
+      $attachButton.removeClass('hide');
+      $cancelButton.addClass('hide');
+      $uploadingProgressContainer.addClass('hide');
+      $uploadingErrorContainer.addClass('hide');
+    },
+    queuecomplete: () => {
+      $('.dz-preview').remove();
+      $('.markdown-area').trigger('input');
+
+      $uploadingProgressContainer.addClass('hide');
+      $cancelButton.addClass('hide');
+    },
+  });
+
+  const child = $(dropzone[0]).children('textarea');
+
+  // removeAllFiles(true) stops uploading files (if any)
+  // and remove them from dropzone files queue.
+  $cancelButton.on('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    Dropzone.forElement($formDropzone.get(0)).removeAllFiles(true);
+  });
+
+  // If 'error' event is fired, we store a failed files,
+  // clear dropzone files queue, change status of failed files to undefined,
+  // and add that files to the dropzone files queue again.
+  // addFile() adds file to dropzone files queue and upload it.
+  $retryLink.on('click', (e) => {
+    const dropzoneInstance = Dropzone.forElement(e.target.closest('.js-main-target-form').querySelector('.div-dropzone'));
+    const failedFiles = dropzoneInstance.files;
+
+    e.preventDefault();
+
+    // 'true' parameter of removeAllFiles() cancels
+    // uploading of files that are being uploaded at the moment.
+    dropzoneInstance.removeAllFiles(true);
+
+    failedFiles.map((failedFile) => {
+      const file = failedFile;
+
+      if (file.status === Dropzone.ERROR) {
+        file.status = undefined;
+        file.accepted = undefined;
+>>>>>>> 95f9f05378... Merge branch 'jivl-fix-cancel-button-file-upload-new-issue' into 'master'
       }
     });
 
