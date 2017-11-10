@@ -1062,6 +1062,10 @@ class Repository
     blob_data_at(sha, path)
   end
 
+  def fetch_ref(source_repository, source_ref:, target_ref:)
+    raw_repository.fetch_ref(source_repository.raw_repository, source_ref: source_ref, target_ref: target_ref)
+  end
+
   private
 
   # TODO Generice finder, later split this on finders by Ref or Oid

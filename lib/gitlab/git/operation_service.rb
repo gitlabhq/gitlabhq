@@ -72,7 +72,7 @@ module Gitlab
 
       # Whenever `start_branch_name` is passed, if `branch_name` doesn't exist,
       # it would be created from `start_branch_name`.
-      # If `start_project` is passed, and the branch doesn't exist,
+      # If `start_repository` is passed, and the branch doesn't exist,
       # it would try to find the commits from it instead of current repository.
       def with_branch(
         branch_name,
@@ -80,15 +80,13 @@ module Gitlab
         start_repository: repository,
         &block)
 
-        # Refactoring aid
-        unless start_repository.is_a?(Gitlab::Git::Repository)
-          raise "expected a Gitlab::Git::Repository, got #{start_repository}"
-        end
+        Gitlab::Git.check_namespace!(start_repository)
+        start_repository = RemoteRepository.new(start_repository) unless start_repository.is_a?(RemoteRepository)
 
         start_branch_name = nil if start_repository.empty_repo?
 
         if start_branch_name && !start_repository.branch_exists?(start_branch_name)
-          raise ArgumentError, "Cannot find branch #{start_branch_name} in #{start_repository.full_path}"
+          raise ArgumentError, "Cannot find branch #{start_branch_name} in #{start_repository.relative_path}"
         end
 
         update_branch_with_hooks(branch_name) do
