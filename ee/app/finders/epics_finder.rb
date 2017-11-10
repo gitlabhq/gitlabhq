@@ -19,7 +19,7 @@ class EpicsFinder < IssuableFinder
     execute.count
   end
 
-  # we don't have states for epics for now but need counts for all and opened
+  # we don't have states for epics for now this method
   def count_by_state
     {
       all: row_count

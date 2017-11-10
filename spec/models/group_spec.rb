@@ -17,6 +17,7 @@ describe Group do
     it { is_expected.to have_many(:variables).class_name('Ci::GroupVariable') }
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
     it { is_expected.to have_one(:chat_team) }
+    it { is_expected.to have_many(:custom_attributes).class_name('GroupCustomAttribute') }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }

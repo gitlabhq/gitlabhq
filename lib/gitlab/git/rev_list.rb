@@ -25,17 +25,18 @@ module Gitlab
       # This skips commit objects and root trees, which might not be needed when
       # looking for blobs
       #
-      # Can return a lazy enumerator to limit work done on megabytes of data
-      def new_objects(require_path: nil, lazy: false, not_in: nil)
-        object_output = execute([*base_args, newrev, *not_in_refs(not_in), '--objects'])
+      # When given a block it will yield objects as a lazy enumerator so
+      # the caller can limit work done instead of processing megabytes of data
+      def new_objects(require_path: nil, not_in: nil, &lazy_block)
+        args = [*base_args, newrev, *not_in_refs(not_in), '--objects']
 
-        objects_from_output(object_output, require_path: require_path, lazy: lazy)
+        get_objects(args, require_path: require_path, &lazy_block)
       end
 
-      def all_objects(require_path: nil)
-        object_output = execute([*base_args, '--all', '--objects'])
+      def all_objects(require_path: nil, &lazy_block)
+        args = [*base_args, '--all', '--objects']
 
-        objects_from_output(object_output, require_path: require_path, lazy: true)
+        get_objects(args, require_path: require_path, &lazy_block)
       end
 
       # This methods returns an array of missed references
@@ -64,6 +65,10 @@ module Gitlab
         output.split("\n")
       end
 
+      def lazy_execute(args, &lazy_block)
+        popen(args, nil, Gitlab::Git::Env.to_env_hash, lazy_block: lazy_block)
+      end
+
       def base_args
         [
           Gitlab.config.git.bin_path,
@@ -72,20 +77,28 @@ module Gitlab
         ]
       end
 
-      def objects_from_output(object_output, require_path: nil, lazy: nil)
-        objects = object_output.lazy.map do |output_line|
+      def get_objects(args, require_path: nil)
+        if block_given?
+          lazy_execute(args) do |lazy_output|
+            objects = objects_from_output(lazy_output, require_path: require_path)
+
+            yield(objects)
+          end
+        else
+          object_output = execute(args)
+
+          objects_from_output(object_output, require_path: require_path)
+        end
+      end
+
+      def objects_from_output(object_output, require_path: nil)
+        object_output.map do |output_line|
           sha, path = output_line.split(' ', 2)
 
           next if require_path && path.blank?
 
           sha
         end.reject(&:nil?)
-
-        if lazy
-          objects
-        else
-          objects.force
-        end
       end
     end
   end
