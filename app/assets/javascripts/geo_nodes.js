@@ -82,76 +82,76 @@ class GeoNodeStatus {
     this.setHealthStatus(status.healthy);
 
       // Replication lag can be nil if the secondary isn't actually streaming
-      if (status.db_replication_lag_seconds !== null && status.db_replication_lag_seconds >= 0) {
-        const parsedTime = parseSeconds(status.db_replication_lag_seconds, {
-          hoursPerDay: 24,
-          daysPerWeek: 7,
-        });
-        this.$dbReplicationLag.text(stringifyTime(parsedTime));
-      } else {
-        this.$dbReplicationLag.text('UNKNOWN');
-      }
+    if (status.db_replication_lag_seconds !== null && status.db_replication_lag_seconds >= 0) {
+      const parsedTime = parseSeconds(status.db_replication_lag_seconds, {
+        hoursPerDay: 24,
+        daysPerWeek: 7,
+      });
+      this.$dbReplicationLag.text(stringifyTime(parsedTime));
+    } else {
+      this.$dbReplicationLag.text('UNKNOWN');
+    }
 
-      const repoText = GeoNodeStatus.formatCountAndPercentage(
-        status.repositories_synced_count,
-        status.repositories_count,
-        status.repositories_synced_in_percentage);
+    const repoText = GeoNodeStatus.formatCountAndPercentage(
+      status.repositories_synced_count,
+      status.repositories_count,
+      status.repositories_synced_in_percentage);
 
-      const repoFailedText = GeoNodeStatus.formatCount(status.repositories_failed_count);
+    const repoFailedText = GeoNodeStatus.formatCount(status.repositories_failed_count);
 
-      const lfsText = GeoNodeStatus.formatCountAndPercentage(
-        status.lfs_objects_synced_count,
-        status.lfs_objects_count,
-        status.lfs_objects_synced_in_percentage);
+    const lfsText = GeoNodeStatus.formatCountAndPercentage(
+      status.lfs_objects_synced_count,
+      status.lfs_objects_count,
+      status.lfs_objects_synced_in_percentage);
 
-      const lfsFailedText = GeoNodeStatus.formatCount(status.lfs_objects_failed_count);
+    const lfsFailedText = GeoNodeStatus.formatCount(status.lfs_objects_failed_count);
 
-      const attachmentText = GeoNodeStatus.formatCountAndPercentage(
-        status.attachments_synced_count,
-        status.attachments_count,
-        status.attachments_synced_in_percentage);
+    const attachmentText = GeoNodeStatus.formatCountAndPercentage(
+      status.attachments_synced_count,
+      status.attachments_count,
+      status.attachments_synced_in_percentage);
 
-      const attachmentFailedText = GeoNodeStatus.formatCount(status.attachments_failed_count);
+    const attachmentFailedText = GeoNodeStatus.formatCount(status.attachments_failed_count);
 
-      this.$repositoriesSynced.text(repoText);
-      this.$repositoriesFailed.text(repoFailedText);
-      this.$lfsObjectsSynced.text(lfsText);
-      this.$lfsObjectsFailed.text(lfsFailedText);
-      this.$attachmentsSynced.text(attachmentText);
-      this.$attachmentsFailed.text(attachmentFailedText);
+    this.$repositoriesSynced.text(repoText);
+    this.$repositoriesFailed.text(repoFailedText);
+    this.$lfsObjectsSynced.text(lfsText);
+    this.$lfsObjectsFailed.text(lfsFailedText);
+    this.$attachmentsSynced.text(attachmentText);
+    this.$attachmentsFailed.text(attachmentFailedText);
 
-      let eventDate = notAvailable;
-      let cursorDate = notAvailable;
-      let lastEventSeen = notAvailable;
-      let lastCursorEvent = notAvailable;
+    let eventDate = notAvailable;
+    let cursorDate = notAvailable;
+    let lastEventSeen = notAvailable;
+    let lastCursorEvent = notAvailable;
 
-      if (status.last_event_timestamp !== null && status.last_event_timestamp > 0) {
-        eventDate = gl.utils.formatDate(new Date(status.last_event_timestamp * 1000));
-      }
+    if (status.last_event_timestamp !== null && status.last_event_timestamp > 0) {
+      eventDate = gl.utils.formatDate(new Date(status.last_event_timestamp * 1000));
+    }
 
-      if (status.cursor_last_event_timestamp !== null && status.cursor_last_event_timestamp > 0) {
-        cursorDate = gl.utils.formatDate(new Date(status.cursor_last_event_timestamp * 1000));
-      }
+    if (status.cursor_last_event_timestamp !== null && status.cursor_last_event_timestamp > 0) {
+      cursorDate = gl.utils.formatDate(new Date(status.cursor_last_event_timestamp * 1000));
+    }
 
-      if (status.last_event_id !== null) {
-        lastEventSeen = `${status.last_event_id} (${eventDate})`;
-      }
+    if (status.last_event_id !== null) {
+      lastEventSeen = `${status.last_event_id} (${eventDate})`;
+    }
 
-      if (status.cursor_last_event_id !== null) {
-        lastCursorEvent = `${status.cursor_last_event_id} (${cursorDate})`;
-      }
+    if (status.cursor_last_event_id !== null) {
+      lastCursorEvent = `${status.cursor_last_event_id} (${cursorDate})`;
+    }
 
-      this.$lastEventSeen.text(lastEventSeen);
-      this.$lastCursorEvent.text(lastCursorEvent);
+    this.$lastEventSeen.text(lastEventSeen);
+    this.$lastCursorEvent.text(lastCursorEvent);
 
-      if (status.health === 'Healthy') {
-        this.$health.text('');
-      } else {
-        const strippedData = $('<div>').html(`${status.health}`).text();
-        this.$health.html(`<code class="geo-health">${strippedData}</code>`);
-      }
+    if (status.health === 'Healthy') {
+      this.$health.text('');
+    } else {
+      const strippedData = $('<div>').html(`${status.health}`).text();
+      this.$health.html(`<code class="geo-health">${strippedData}</code>`);
+    }
 
-      this.$status.show();
+    this.$status.show();
   }
 
   handleError(err) {
