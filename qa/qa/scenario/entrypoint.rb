@@ -16,11 +16,9 @@ module QA
         Runtime::Release.perform_before_hooks
 
         Specs::Runner.perform do |specs|
-          specs.rspec(
-            tty: true,
-            tags: self.class.get_tags,
-            files: files.any? ? files : 'qa/specs/features'
-          )
+          specs.tty = true
+          specs.tags = self.class.get_tags
+          specs.files = files.any? ? files : 'qa/specs/features'
         end
       end
 

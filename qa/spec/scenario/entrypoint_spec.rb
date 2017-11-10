@@ -29,8 +29,7 @@ describe QA::Scenario::Entrypoint do
       it 'should call runner with default arguments' do
         subject.perform("test")
 
-        expect(runner).to have_received(:rspec)
-          .with(hash_including(files: 'qa/specs/features'))
+        expect(runner).to have_received(:files=).with('qa/specs/features')
       end
     end
 
@@ -38,8 +37,7 @@ describe QA::Scenario::Entrypoint do
       it 'should call runner with paths' do
         subject.perform('test', 'path1', 'path2')
 
-        expect(runner).to have_received(:rspec)
-          .with(hash_including(files: %w(path1 path2)))
+        expect(runner).to have_received(:files=).with(%w[path1 path2])
       end
     end
   end
