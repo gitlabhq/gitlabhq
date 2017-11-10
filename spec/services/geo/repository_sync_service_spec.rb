@@ -162,29 +162,30 @@ describe Geo::RepositorySyncService do
 
     context 'retries' do
       it 'tries to fetch repo' do
-        registry = create(:geo_project_registry, project: project, repository_retry_count: Geo::BaseSyncService::RETRY_BEFORE_REDOWNLOAD - 1)
+        create(:geo_project_registry, project: project, repository_retry_count: Geo::BaseSyncService::RETRY_BEFORE_REDOWNLOAD - 1)
 
-        expect_any_instance_of(Geo::RepositorySyncService).to receive(:fetch_project_repository).with(false)
+        expect_any_instance_of(described_class).to receive(:fetch_project_repository).with(false)
 
         subject.execute
       end
 
       it 'tries to redownload repo' do
-        registry = create(:geo_project_registry, project: project, repository_retry_count: Geo::BaseSyncService::RETRY_BEFORE_REDOWNLOAD + 1)
+        create(:geo_project_registry, project: project, repository_retry_count: Geo::BaseSyncService::RETRY_BEFORE_REDOWNLOAD + 1)
 
-        expect_any_instance_of(Geo::RepositorySyncService).to receive(:fetch_project_repository).with(true)
+        expect_any_instance_of(described_class).to receive(:fetch_project_repository).with(true)
 
         subject.execute
       end
 
       it 'tries to redownload repo when force_redownload flag is set' do
-        registry = create(:geo_project_registry,
+        create(
+          :geo_project_registry,
           project: project,
           repository_retry_count: Geo::BaseSyncService::RETRY_BEFORE_REDOWNLOAD - 1,
           force_to_redownload_repository: true
         )
 
-        expect_any_instance_of(Geo::RepositorySyncService).to receive(:fetch_project_repository).with(true)
+        expect_any_instance_of(described_class).to receive(:fetch_project_repository).with(true)
 
         subject.execute
       end

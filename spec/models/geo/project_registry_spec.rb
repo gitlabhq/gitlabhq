@@ -42,7 +42,7 @@ describe Geo::ProjectRegistry do
     it 'returns projects that should be synced' do
       create(:geo_project_registry, repository_retry_at: Date.yesterday, wiki_retry_at: Date.yesterday)
       tomorrow = create(:geo_project_registry, repository_retry_at: Date.tomorrow, wiki_retry_at: Date.tomorrow)
-      not_set_retry_at = create(:geo_project_registry)
+      create(:geo_project_registry)
 
       expect(described_class.retry_due).not_to include(tomorrow)
     end
