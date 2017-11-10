@@ -15,7 +15,7 @@ module Gitlab
         token = current_request.params[:rss_token].presence
         return unless token
 
-        handle_return_value!(User.find_by_rss_token(token))
+        User.find_by_rss_token(token) || raise(API::APIGuard::UnauthorizedError)
       end
 
       def find_user_from_access_token
@@ -23,7 +23,7 @@ module Gitlab
 
         validate_access_token!
 
-        handle_return_value!(access_token.user)
+        access_token.user || raise(API::APIGuard::UnauthorizedError)
       end
 
       def validate_access_token!(scopes: [])
@@ -41,12 +41,6 @@ module Gitlab
 
       private
 
-      def handle_return_value!(value, &block)
-        raise API::APIGuard::UnauthorizedError unless value
-
-        block_given? ? yield(value) : value
-      end
-
       def access_token
         return @access_token if defined?(@access_token)
 
@@ -63,7 +57,7 @@ module Gitlab
         return unless token
 
         # Expiration, revocation and scopes are verified in `validate_access_token!`
-        handle_return_value!(PersonalAccessToken.find_by(token: token))
+        PersonalAccessToken.find_by(token: token) || raise(API::APIGuard::UnauthorizedError)
       end
 
       def find_oauth_access_token
@@ -71,10 +65,11 @@ module Gitlab
         return unless token
 
         # Expiration, revocation and scopes are verified in `validate_access_token!`
-        handle_return_value!(OauthAccessToken.by_token(token)) do |oauth_token|
-          oauth_token.revoke_previous_refresh_token!
-          oauth_token
-        end
+        oauth_token = OauthAccessToken.by_token(token)
+        raise(API::APIGuard::UnauthorizedError) unless oauth_token
+
+        oauth_token.revoke_previous_refresh_token!
+        oauth_token
       end
 
       # Check if the request is GET/HEAD, or if CSRF token is valid.
