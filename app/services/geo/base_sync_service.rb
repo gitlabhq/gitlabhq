@@ -183,7 +183,10 @@ module Geo
     end
 
     def build_temporary_repository
-      gitlab_shell.add_repository(project.repository_storage, disk_path_temp)
+      unless gitlab_shell.add_repository(project.repository_storage, disk_path_temp)
+        raise Gitlab::Shell::Error, 'Can not create a temporary repository'
+      end
+
       repository.clone.tap { |repo| repo.disk_path = disk_path_temp }
     end
 
@@ -192,9 +195,20 @@ module Geo
     end
 
     def set_temp_repository_as_main
-      log_info("Setting newly downloaded #{type} as a main one")
-      gitlab_shell.remove_repository(project.repository_storage_path, repository.disk_path)
-      gitlab_shell.mv_repository(project.repository_storage_path, disk_path_temp, repository.disk_path)
+      log_info(
+        "Setting newly downloaded repository as main",
+        storage_path: project.repository_storage_path,
+        temp_path: disk_path_temp,
+        disk_path: repository.disk_path
+      )
+
+      unless gitlab_shell.remove_repository(project.repository_storage_path, repository.disk_path)
+        raise Gitlab::Shell::Error, 'Can not remove outdated main repository to replace it'
+      end
+
+      unless gitlab_shell.mv_repository(project.repository_storage_path, disk_path_temp, repository.disk_path)
+        raise Gitlab::Shell::Error, 'Can not move temporary repository'
+      end
     end
   end
 end
