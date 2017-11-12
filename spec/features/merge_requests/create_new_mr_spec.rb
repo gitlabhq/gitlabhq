@@ -67,6 +67,28 @@ feature 'Create New Merge Request', :js do
     expect(page).to have_content 'git checkout -b orphaned-branch origin/orphaned-branch'
   end
 
+  it 'allows filtering multiple dropdowns' do
+    visit project_new_merge_request_path(project)
+
+    first('.js-source-branch').click
+
+    input = find('.dropdown-source-branch .dropdown-input-field')
+    input.click
+    input.send_keys('orphaned-branch')
+
+    find('.dropdown-source-branch .dropdown-content li', match: :first)
+    source_items = all('.dropdown-source-branch .dropdown-content li')
+
+    expect(source_items.count).to eq(1)
+
+    first('.js-target-branch').click
+
+    find('.dropdown-target-branch .dropdown-content li', match: :first)
+    target_items = all('.dropdown-target-branch .dropdown-content li')
+
+    expect(target_items.count).to be > 1
+  end
+
   context 'when approvals are disabled for the target project' do
     it 'does not show approval settings' do
       visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature_conflict' })
