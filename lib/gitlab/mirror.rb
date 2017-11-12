@@ -18,7 +18,7 @@ module Gitlab
     class << self
       def configure_cron_job!
         destroy_cron_job!
-        return if Gitlab::Geo.secondary?
+        return if Gitlab::Geo.connected? && Gitlab::Geo.secondary?
 
         Sidekiq::Cron::Job.create(
           name: 'update_all_mirrors_worker',
