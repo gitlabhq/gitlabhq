@@ -5,7 +5,7 @@ if File.exist?(Rails.root.join('config/database_geo.yml'))
 end
 
 begin
-  if Gitlab::Geo.primary?
+  if Gitlab::Geo.connected? && Gitlab::Geo.primary?
     Gitlab::Geo.current_node&.update_clone_url!
   end
 rescue => e
