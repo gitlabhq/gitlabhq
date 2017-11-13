@@ -3,7 +3,7 @@ module QA
     module Main
       class Entry < Page::Base
         def initialize
-          visit('/')
+          visit(Runtime::Scenario.gitlab_address)
 
           # This resolves cold boot / background tasks problems
           #
