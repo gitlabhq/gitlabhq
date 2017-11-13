@@ -119,8 +119,13 @@ export default {
       role="button"
       @click="onInputWrapperClick">
       <ul class="add-issuable-form-input-token-list">
+        <!--
+          We need to ensure this key changes any time the pendingReferences array is updated
+          else two consecutive pending ref strings in an array with the same name will collide
+          and cause odd behavior when one is removed.
+        -->
         <li
-          :key="reference"
+          :key="`${pendingReferences.length}-${reference}`"
           v-for="(reference, index) in pendingReferences"
           class="js-add-issuable-form-token-list-item add-issuable-form-token-list-item">
           <issue-token
