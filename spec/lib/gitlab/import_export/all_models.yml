@@ -18,6 +18,8 @@ issues:
 - metrics
 - timelogs
 - issue_assignees
+- epic_issue
+- epic
 events:
 - author
 - project
@@ -316,3 +318,6 @@ push_event_payload:
 issue_assignees:
 - issue
 - assignee
+epic_issues:
+- issue
+- epic
