@@ -128,7 +128,11 @@ export default {
           })
           .catch((res) => {
             this.isSubmitting = false;
-            Flash(res.data.message || 'We can\'t find an issue that matches what you are looking for.');
+            let errorMessage = 'We can\'t find an issue that matches what you are looking for.';
+            if (res.data && res.data.message) {
+              errorMessage = res.data.message;
+            }
+            Flash(errorMessage);
           });
       }
     },
