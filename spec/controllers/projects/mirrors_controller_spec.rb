@@ -178,6 +178,7 @@ describe Projects::MirrorsController do
 
   describe '#update' do
     let(:project) { create(:project, :repository, :mirror, :remote_mirror) }
+    let(:attributes) { { project: { mirror_user_id: project.owner.id, mirror_trigger_builds: 0 }, namespace_id: project.namespace.to_param, project_id: project.to_param } }
 
     before do
       sign_in(project.owner)
@@ -246,19 +247,55 @@ describe Projects::MirrorsController do
       end
     end
 
-    context 'HTML' do
+    context 'with a valid URL for a pull' do
       it 'processes a successful update' do
-        do_put(project, import_url: 'https://updated.example.com')
+        do_put(project, username_only_import_url: "https://updated.example.com")
+
+        expect(response).to redirect_to(project_settings_repository_path(project))
+        expect(flash[:notice]).to match(/successfully updated/)
+      end
+    end
+
+    context 'with a invalid URL for a pull' do
+      it 'processes an unsuccessful update' do
+        do_put(project, username_only_import_url: "ftp://invalid.invalid'")
+
+        expect(response).to redirect_to(project_settings_repository_path(project))
+        expect(flash[:alert]).to match(/must be a valid URL/)
+      end
+    end
+
+    context 'With valid URL for a push' do
+      before do
+        @remote_mirror_attributes = { "0" => { "enabled" => "0", url: 'https://updated.example.com' } }
+      end
+
+      it 'processes a successful update' do
+        do_put(project, remote_mirrors_attributes: @remote_mirror_attributes)
 
         expect(response).to redirect_to(project_settings_repository_path(project))
         expect(flash[:notice]).to match(/successfully updated/)
       end
 
+      it 'should create a RemoteMirror object' do
+        expect { do_put(project, remote_mirrors_attributes: @remote_mirror_attributes) }.to change(RemoteMirror, :count).by(1)
+      end
+    end
+
+    context 'With invalid URL for a push' do
+      before do
+        @remote_mirror_attributes = { "0" => { "enabled" => "0", url: 'ftp://invalid.invalid' } }
+      end
+
       it 'processes an unsuccessful update' do
-        do_put(project, import_url: 'ftp://invalid.invalid')
+        do_put(project, remote_mirrors_attributes: @remote_mirror_attributes)
 
         expect(response).to redirect_to(project_settings_repository_path(project))
-        expect(flash[:alert]).to match(/valid URL/)
+        expect(flash[:alert]).to match(/must be a valid URL/)
+      end
+
+      it 'should not create a RemoteMirror object' do
+        expect { do_put(project, remote_mirrors_attributes: @remote_mirror_attributes) }.not_to change(RemoteMirror, :count)
       end
     end
   end
