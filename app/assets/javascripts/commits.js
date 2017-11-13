@@ -3,6 +3,8 @@
   prefer-template, object-shorthand, prefer-arrow-callback */
 /* global Pager */
 
+import { pluralize } from './lib/utils/text_utility';
+
 export default (function () {
   const CommitsList = {};
 
@@ -86,7 +88,7 @@ export default (function () {
 
       // Update commits count in the previous commits header.
       commitsCount += Number($(processedData).nextUntil('li.js-commit-header').first().find('li.commit').length);
-      $commitsHeadersLast.find('span.commits-count').text(`${commitsCount} ${gl.text.pluralize('commit', commitsCount)}`);
+      $commitsHeadersLast.find('span.commits-count').text(`${commitsCount} ${pluralize('commit', commitsCount)}`);
     }
 
     gl.utils.localTimeAgo($processedData.find('.js-timeago'));
