@@ -75,7 +75,10 @@ module ButtonHelper
     content_tag (append_link ? :a : :span),
       protocol_element_output,
       class: 'http-selector',
-      href: (project.http_url_to_repo if append_link)
+      href: (project.http_url_to_repo if append_link),
+      data: {
+        primary_url: (geo_primary_http_url_to_repo(project) if Gitlab::Geo.secondary?)
+      }
   end
 
   def ssh_clone_button(project, append_link: true)
@@ -86,7 +89,10 @@ module ButtonHelper
     content_tag (append_link ? :a : :span),
       ssh_element_output,
       class: 'ssh-selector',
-      href: (project.ssh_url_to_repo if append_link)
+      href: (project.ssh_url_to_repo if append_link),
+      data: {
+        primary_url: (geo_primary_ssh_url_to_repo(project) if Gitlab::Geo.secondary?)
+      }
   end
 
   def kerberos_clone_button(project)
