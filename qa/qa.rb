@@ -61,6 +61,7 @@ module QA
 
     module Main
       autoload :Entry, 'qa/page/main/entry'
+      autoload :Login, 'qa/page/main/login'
       autoload :Menu, 'qa/page/main/menu'
     end
 

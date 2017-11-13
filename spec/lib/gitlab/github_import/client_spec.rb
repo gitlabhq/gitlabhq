@@ -185,6 +185,17 @@ describe Gitlab::GithubImport::Client do
 
       client.with_rate_limit { }
     end
+
+    it 'ignores rate limiting when disabled' do
+      expect(client)
+        .to receive(:rate_limiting_enabled?)
+        .and_return(false)
+
+      expect(client)
+        .not_to receive(:requests_remaining?)
+
+      expect(client.with_rate_limit { 10 }).to eq(10)
+    end
   end
 
   describe '#requests_remaining?' do
@@ -360,6 +371,22 @@ describe Gitlab::GithubImport::Client do
         expect(hash['name']).to eq('github')
         expect(hash['url']).to eq('https://github.com/')
       end
+    end
+  end
+
+  describe '#rate_limiting_enabled?' do
+    let(:client) { described_class.new('foo') }
+
+    it 'returns true when using GitHub.com' do
+      expect(client.rate_limiting_enabled?).to eq(true)
+    end
+
+    it 'returns false for GitHub enterprise installations' do
+      expect(client)
+        .to receive(:api_endpoint)
+        .and_return('https://github.kittens.com/')
+
+      expect(client.rate_limiting_enabled?).to eq(false)
     end
   end
 end
