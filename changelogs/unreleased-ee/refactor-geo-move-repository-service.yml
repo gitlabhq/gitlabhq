@@ -1,0 +1,5 @@
+---
+title: Geo - Allow Sidekiq to retry failed jobs to rename project repositories
+merge_request:
+author:
+type: fixed

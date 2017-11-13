@@ -2,20 +2,39 @@ require 'spec_helper'
 
 describe Geo::HashedStorageMigrationService do
   let(:project) { create(:project, :repository, :hashed) }
-  let(:new_path) { "#{project.full_path}+renamed" }
+  let(:old_path) { project.full_path }
+  let(:new_path) { "#{old_path}+renamed" }
+
+  subject(:service) { described_class.new(project.id, old_disk_path: old_path, new_disk_path: new_path, old_storage_version: nil) }
 
   describe '#execute' do
-    it 'moves project backed by legacy storage' do
-      service = described_class.new(
-        project.id,
-        old_disk_path: project.full_path,
-        new_disk_path: new_path,
-        old_storage_version: nil
-      )
+    context 'project backed by legacy storage' do
+      it 'moves the project repositories' do
+        expect_any_instance_of(Geo::MoveRepositoryService).to receive(:execute)
+          .once.and_return(true)
 
-      expect_any_instance_of(Geo::MoveRepositoryService).to receive(:execute).once
+        service.execute
+      end
 
-      service.execute
+      it 'raises an error when project repository can not be moved' do
+        allow_any_instance_of(Gitlab::Shell).to receive(:mv_repository)
+          .with(project.repository_storage_path, old_path, new_path)
+          .and_return(false)
+
+        expect { service.execute }.to raise_error(Geo::RepositoryCannotBeRenamed, "Repository #{old_path} could not be renamed to #{new_path}")
+      end
+
+      it 'raises an error when wiki repository can not be moved' do
+        allow_any_instance_of(Gitlab::Shell).to receive(:mv_repository)
+          .with(project.repository_storage_path, old_path, new_path)
+          .and_return(true)
+
+        allow_any_instance_of(Gitlab::Shell).to receive(:mv_repository)
+          .with(project.repository_storage_path, "#{old_path}.wiki", "#{new_path}.wiki")
+          .and_return(false)
+
+        expect { service.execute }.to raise_error(Geo::RepositoryCannotBeRenamed, "Repository #{old_path} could not be renamed to #{new_path}")
+      end
     end
 
     it 'does not move project backed by hashed storage' do
@@ -33,8 +52,6 @@ describe Geo::HashedStorageMigrationService do
   end
 
   describe '#async_execute' do
-    subject(:service) { described_class.new(project.id, old_disk_path: project.full_path, new_disk_path: new_path, old_storage_version: nil) }
-
     it 'starts the worker' do
       expect(Geo::HashedStorageMigrationWorker).to receive(:perform_async)
 

@@ -1,6 +1,9 @@
 module Geo
+  RepositoryCannotBeRenamed = Class.new(StandardError)
+
   class MoveRepositoryService
     include Gitlab::ShellAdapter
+    include Gitlab::Geo::ProjectLogHelpers
 
     attr_reader :project, :old_disk_path, :new_disk_path
 
@@ -11,29 +14,21 @@ module Geo
     end
 
     def execute
-      # Make sure target directory exists (used when transfering repositories)
       project.ensure_storage_path_exists
+      move_project_repository && move_wiki_repository
+    rescue
+      log_error('Repository cannot be renamed')
+      false
+    end
 
-      if gitlab_shell.mv_repository(project.repository_storage_path,
-                                    old_disk_path, new_disk_path)
-        # If repository moved successfully we need to send update instructions to users.
-        # However we cannot allow rollback since we moved repository
-        # So we basically we mute exceptions in next actions
-        begin
-          gitlab_shell.mv_repository(project.repository_storage_path,
-                                     "#{old_disk_path}.wiki", "#{new_disk_path}.wiki")
-        rescue
-          # Returning false does not rollback after_* transaction but gives
-          # us information about failing some of tasks
-          false
-        end
-      else
-        # if we cannot move namespace directory we should rollback
-        # db changes in order to prevent out of sync between db and fs
-        raise StandardError.new('Repository cannot be renamed')
-      end
+    private
 
-      true
+    def move_project_repository
+      gitlab_shell.mv_repository(project.repository_storage_path, old_disk_path, new_disk_path)
+    end
+
+    def move_wiki_repository
+      gitlab_shell.mv_repository(project.repository_storage_path, "#{old_disk_path}.wiki", "#{new_disk_path}.wiki")
     end
   end
 end
