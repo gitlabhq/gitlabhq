@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::HashedStorageMigrationService do
+describe Projects::HashedStorage::MigrateRepositoryService do
   let(:gitlab_shell) { Gitlab::Shell.new }
   let(:project) { create(:project, :empty_repo, :wiki_repo) }
   let(:service) { described_class.new(project) }
