@@ -5,10 +5,11 @@ module EE
         raise NotImplementedError.new unless defined?(super)
 
         super do
-          ::Geo::RepositoryRenamedEventStore.new(
+          ::Geo::HashedStorageMigratedEventStore.new(
             project,
-            old_path: File.basename(old_disk_path),
-            old_path_with_namespace: old_disk_path
+            old_storage_version: old_storage_version,
+            old_disk_path: old_disk_path,
+            old_wiki_disk_path: old_wiki_disk_path
           ).create
         end
       end

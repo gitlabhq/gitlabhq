@@ -16,6 +16,8 @@ class Projects::CommitController < Projects::ApplicationController
   before_action :define_note_vars, only: [:show, :diff_for_path]
   before_action :authorize_edit_tree!, only: [:revert, :cherry_pick]
 
+  BRANCH_SEARCH_LIMIT = 1000
+
   def show
     apply_diff_view_cookie!
 
@@ -56,8 +58,14 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def branches
-    @branches = @project.repository.branch_names_contains(commit.id)
-    @tags = @project.repository.tag_names_contains(commit.id)
+    # branch_names_contains/tag_names_contains can take a long time when there are thousands of
+    # branches/tags - each `git branch --contains xxx` request can consume a cpu core.
+    # so only do the query when there are a manageable number of branches/tags
+    @branches_limit_exceeded = @project.repository.branch_count > BRANCH_SEARCH_LIMIT
+    @branches = @branches_limit_exceeded ? [] : @project.repository.branch_names_contains(commit.id)
+
+    @tags_limit_exceeded = @project.repository.tag_count > BRANCH_SEARCH_LIMIT
+    @tags = @tags_limit_exceeded ? [] : @project.repository.tag_names_contains(commit.id)
     render layout: false
   end
 

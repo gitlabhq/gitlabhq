@@ -1,8 +1,7 @@
 FactoryGirl.define do
   factory :geo_node_status do
-    skip_create
-
     sequence(:id)
+    geo_node
 
     trait :healthy do
       health nil

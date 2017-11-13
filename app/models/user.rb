@@ -149,7 +149,7 @@ class User < ActiveRecord::Base
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
   validates :username,
-    dynamic_path: true,
+    user_path: true,
     presence: true,
     uniqueness: { case_sensitive: false }
 
@@ -167,7 +167,7 @@ class User < ActiveRecord::Base
   before_validation :set_notification_email, if: :email_changed?
   before_validation :set_public_email, if: :public_email_changed?
   before_save :ensure_incoming_email_token
-  before_save :ensure_user_rights_and_limits, if: :external_changed?
+  before_save :ensure_user_rights_and_limits, if: ->(user) { user.new_record? || user.external_changed? }
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
   after_save :ensure_namespace_correct
@@ -277,18 +277,23 @@ class User < ActiveRecord::Base
       end
     end
 
+    def for_github_id(id)
+      joins(:identities)
+        .where(identities: { provider: :github, extern_uid: id.to_s })
+    end
+
     # Find a User by their primary email or any associated secondary email
     def find_by_any_email(email)
-      sql = 'SELECT *
-      FROM users
-      WHERE id IN (
-        SELECT id FROM users WHERE email = :email
-        UNION
-        SELECT emails.user_id FROM emails WHERE email = :email
-      )
-      LIMIT 1;'
+      by_any_email(email).take
+    end
 
-      User.find_by_sql([sql, { email: email }]).first
+    # Returns a relation containing all the users for the given Email address
+    def by_any_email(email)
+      users = where(email: email)
+      emails = joins(:emails).where(emails: { email: email })
+      union = Gitlab::SQL::Union.new([users, emails])
+
+      from("(#{union.to_sql}) #{table_name}")
     end
 
     def existing_member?(email)
@@ -1162,8 +1167,9 @@ class User < ActiveRecord::Base
       self.can_create_group = false
       self.projects_limit   = 0
     else
-      self.can_create_group = gitlab_config.default_can_create_group
-      self.projects_limit = current_application_settings.default_projects_limit
+      # Only revert these back to the default if they weren't specifically changed in this update.
+      self.can_create_group = gitlab_config.default_can_create_group unless can_create_group_changed?
+      self.projects_limit = current_application_settings.default_projects_limit unless projects_limit_changed?
     end
   end
 

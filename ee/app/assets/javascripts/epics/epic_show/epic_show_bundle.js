@@ -12,6 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
     canDestroy: false,
   });
 
+  // Convert backend casing to match frontend style guide
+  props.startDate = props.start_date;
+  props.endDate = props.end_date;
+
   return new Vue({
     el,
     components: {

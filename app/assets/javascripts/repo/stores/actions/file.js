@@ -27,6 +27,8 @@ export const closeFile = ({ commit, state, dispatch }, { file, force = false }) 
   } else if (!state.openFiles.length) {
     pushState(file.parentTreeUrl);
   }
+
+  dispatch('getLastCommitData');
 };
 
 export const setFileActive = ({ commit, state, getters, dispatch }, file) => {

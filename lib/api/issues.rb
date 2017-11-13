@@ -73,7 +73,7 @@ module API
                          desc: 'Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`'
       end
       get do
-        issues = find_issues
+        issues = paginate(find_issues)
 
         options = {
           with: Entities::IssueBasic,
@@ -81,7 +81,7 @@ module API
           issuable_metadata: issuable_meta_data(issues, 'Issue')
         }
 
-        present paginate(issues), options
+        present issues, options
       end
     end
 
@@ -100,7 +100,7 @@ module API
       get ":id/issues" do
         group = find_group!(params[:id])
 
-        issues = find_issues(group_id: group.id)
+        issues = paginate(find_issues(group_id: group.id))
 
         options = {
           with: Entities::IssueBasic,
@@ -108,7 +108,7 @@ module API
           issuable_metadata: issuable_meta_data(issues, 'Issue')
         }
 
-        present paginate(issues), options
+        present issues, options
       end
     end
 
@@ -129,7 +129,7 @@ module API
       get ":id/issues" do
         project = find_project!(params[:id])
 
-        issues = find_issues(project_id: project.id)
+        issues = paginate(find_issues(project_id: project.id))
 
         options = {
           with: Entities::IssueBasic,
@@ -138,7 +138,7 @@ module API
           issuable_metadata: issuable_meta_data(issues, 'Issue')
         }
 
-        present paginate(issues), options
+        present issues, options
       end
 
       desc 'Get a single project issue' do

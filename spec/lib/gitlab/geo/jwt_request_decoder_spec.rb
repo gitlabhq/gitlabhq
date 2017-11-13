@@ -33,7 +33,13 @@ describe Gitlab::Geo::JwtRequestDecoder do
       Timecop.travel(30.seconds.ago) { expect(subject.decode).to eq(data) }
     end
 
-    it 'returns nil when clocks are not in sync' do
+    it 'fails to decode after expiring' do
+      subject
+
+      Timecop.travel(2.minutes) { expect(subject.decode).to be_nil }
+    end
+
+    it 'fails to decode when clocks are not in sync' do
       subject
 
       Timecop.travel(2.minutes.ago) { expect(subject.decode).to be_nil }

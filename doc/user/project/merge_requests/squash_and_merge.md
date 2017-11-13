@@ -18,7 +18,8 @@ Into a single commit on merge:
 
 ![A squashed commit followed by a merge commit][squashed-commit]
 
-Note that the squashed commit is still followed by a merge commit, as the merge
+The squashed commit's commit message is the merge request title. And note that 
+the squashed commit is still followed by a merge commit, as the merge
 method for this example repository uses a merge commit. Squashing also works
 with the fast-forward merge strategy, see
 [squashing and fast-forward merge](#squashing-and-fast-forward-merge) for more

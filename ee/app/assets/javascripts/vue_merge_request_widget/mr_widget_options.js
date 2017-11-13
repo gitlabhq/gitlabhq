@@ -26,7 +26,10 @@ export default {
       <mr-widget-header :mr="mr" />
       <mr-widget-pipeline
         v-if="shouldRenderPipelines"
-        :mr="mr" />
+        :pipeline="mr.pipeline"
+        :ci-status="mr.ciStatus"
+        :has-ci="mr.hasCI"
+        />
       <mr-widget-deployment
         v-if="shouldRenderDeployments"
         :mr="mr"

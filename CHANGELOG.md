@@ -2,9 +2,30 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.1.3 (2017-11-10)
+
+- [SECURITY] Prevent OAuth phishing attack by presenting detailed wording about app to user during authorization.
+- [FIXED] Fix cancel button not working while uploading on the new issue page. !15137
+- [FIXED] Fix webhooks recent deliveries. !15146 (Alexander Randa (@randaalex))
+- [FIXED] Fix issues with forked projects of which the source was deleted. !15150
+- [FIXED] Fix GPG signature popup info in Safari and Firefox. !15228
+- [FIXED] Make sure group and project creation is blocked for new users that are external by default.
+- [FIXED] Fix arguments Import/Export error importing project merge requests.
+- [FIXED] Fix diff parser so it tolerates to diff special markers in the content.
+- [FIXED] Fix a migration that adds merge_requests_ff_only_enabled column to MR table.
+- [FIXED] Render 404 when polling commit notes without having permissions.
+- [FIXED] Show error message when fast-forward merge is not possible.
+- [FIXED] Avoid regenerating the ref path for the environment.
+- [PERFORMANCE] Remove Filesystem check metrics that use too much CPU to handle requests.
+
+## 10.1.2 (2017-11-08)
+
+- [SECURITY] Add X-Content-Type-Options header in API responses to make it more difficult to find other vulnerabilities.
+- [SECURITY] Properly translate IP addresses written in decimal, octal, or other formats in SSRF protections in project imports.
+- [FIXED] Fix TRIGGER checks for MySQL.
+
 ## 10.1.1 (2017-10-31)
 
-- No changes.
 - [FIXED] Auto Devops kubernetes default namespace is now correctly built out of gitlab project group-name. !14642 (Mircea Danila Dumitrescu)
 - [FIXED] Forbid the usage of `Redis#keys`. !14889
 - [FIXED] Make the circuitbreaker more robust by adding higher thresholds, and multiple access attempts. !14933

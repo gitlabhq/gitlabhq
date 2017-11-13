@@ -72,5 +72,28 @@ describe RepositoryImportWorker do
         expect(project.reload.import_status).to eq('failed')
       end
     end
+
+    context 'when using an asynchronous importer' do
+      it 'does not mark the import process as finished' do
+        service = double(:service)
+
+        allow(Projects::ImportService)
+          .to receive(:new)
+          .and_return(service)
+
+        allow(service)
+          .to receive(:execute)
+          .and_return(true)
+
+        allow(service)
+          .to receive(:async?)
+          .and_return(true)
+
+        expect_any_instance_of(Project)
+          .not_to receive(:import_finish)
+
+        subject.perform(project.id)
+      end
+    end
   end
 end

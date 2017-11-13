@@ -20,7 +20,7 @@ describe('RepoFile', () => {
     resetStore(vm.$store);
   });
 
-  it('renders link, icon, name and last commit details', () => {
+  it('renders link, icon and name', () => {
     const RepoFile = Vue.extend(repoFile);
     vm = new RepoFile({
       store,
@@ -37,10 +37,9 @@ describe('RepoFile', () => {
     expect(vm.$el.querySelector(`.${vm.file.icon}`).style.marginLeft).toEqual('0px');
     expect(name.href).toMatch(`/${vm.file.url}`);
     expect(name.textContent.trim()).toEqual(vm.file.name);
-    expect(vm.$el.querySelector('.commit-message').textContent.trim()).toBe(vm.file.lastCommit.message);
-    expect(vm.$el.querySelector('.commit-update').textContent.trim()).toBe(updated);
     expect(fileIcon.classList.contains(vm.file.icon)).toBeTruthy();
     expect(fileIcon.style.marginLeft).toEqual(`${vm.file.level * 10}px`);
+    expect(vm.$el.querySelectorAll('.animation-container').length).toBe(2);
   });
 
   it('does render if hasFiles is true and is loading tree', () => {

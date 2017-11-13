@@ -22,7 +22,7 @@ module Geo
         end
 
         cursor_last_event_ids = Gitlab::Geo.secondary_nodes.map do |node|
-          Geo::NodeStatusService.new.call(node).cursor_last_event_id
+          node.status&.cursor_last_event_id
         end
 
         if cursor_last_event_ids.include?(nil)

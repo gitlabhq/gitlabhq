@@ -17,6 +17,7 @@ describe Group do
     it { is_expected.to have_many(:variables).class_name('Ci::GroupVariable') }
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
     it { is_expected.to have_one(:chat_team) }
+    it { is_expected.to have_many(:custom_attributes).class_name('GroupCustomAttribute') }
 
     describe '#members & #requesters' do
       let(:requester) { create(:user) }
@@ -61,12 +62,6 @@ describe Group do
 
       it 'rejects any wildcard paths when not a top level group' do
         group = build(:group, path: 'tree', parent: create(:group))
-
-        expect(group).not_to be_valid
-      end
-
-      it 'rejects reserved group paths' do
-        group = build(:group, path: 'activity', parent: create(:group))
 
         expect(group).not_to be_valid
       end

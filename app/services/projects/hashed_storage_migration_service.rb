@@ -4,7 +4,7 @@ module Projects
 
     prepend ::EE::Projects::HashedStorageMigrationService
 
-    attr_reader :old_disk_path, :new_disk_path
+    attr_reader :old_disk_path, :new_disk_path, :old_wiki_disk_path, :old_storage_version
 
     def initialize(project, logger = nil)
       @project = project
@@ -17,6 +17,7 @@ module Projects
       @old_disk_path = project.disk_path
       has_wiki = project.wiki.repository_exists?
 
+      @old_storage_version = project.storage_version
       project.storage_version = Storage::HashedProject::STORAGE_VERSION
       project.ensure_storage_path_exists
 
@@ -25,7 +26,8 @@ module Projects
       result = move_repository(@old_disk_path, @new_disk_path)
 
       if has_wiki
-        result &&= move_repository("#{@old_disk_path}.wiki", "#{@new_disk_path}.wiki")
+        @old_wiki_disk_path = "#{@old_disk_path}.wiki"
+        result &&= move_repository(@old_wiki_disk_path, "#{@new_disk_path}.wiki")
       end
 
       unless result

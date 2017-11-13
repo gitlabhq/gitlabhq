@@ -112,20 +112,41 @@ module Gitlab
       end
     end
 
-    def self.bulk_insert(table, rows)
+    # Bulk inserts a number of rows into a table, optionally returning their
+    # IDs.
+    #
+    # table - The name of the table to insert the rows into.
+    # rows - An Array of Hash instances, each mapping the columns to their
+    #        values.
+    # return_ids - When set to true the return value will be an Array of IDs of
+    #              the inserted rows, this only works on PostgreSQL.
+    def self.bulk_insert(table, rows, return_ids: false)
       return if rows.empty?
 
       keys = rows.first.keys
       columns = keys.map { |key| connection.quote_column_name(key) }
+      return_ids = false if mysql?
 
       tuples = rows.map do |row|
         row.values_at(*keys).map { |value| connection.quote(value) }
       end
 
-      connection.execute <<-EOF
+      sql = <<-EOF
         INSERT INTO #{table} (#{columns.join(', ')})
         VALUES #{tuples.map { |tuple| "(#{tuple.join(', ')})" }.join(', ')}
       EOF
+
+      if return_ids
+        sql << 'RETURNING id'
+      end
+
+      result = connection.execute(sql)
+
+      if return_ids
+        result.values.map { |tuple| tuple[0].to_i }
+      else
+        []
+      end
     end
 
     def self.sanitize_timestamp(timestamp)

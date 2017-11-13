@@ -816,14 +816,16 @@ describe User do
       end
 
       it "creates external user by default" do
-        user = build(:user)
+        user = create(:user)
 
         expect(user.external).to be_truthy
+        expect(user.can_create_group).to be_falsey
+        expect(user.projects_limit).to be 0
       end
 
       describe 'with default overrides' do
         it "creates a non-external user" do
-          user = build(:user, external: false)
+          user = create(:user, external: false)
 
           expect(user.external).to be_falsey
         end
@@ -864,6 +866,19 @@ describe User do
 
     it 'returns nil when nothing found' do
       expect(described_class.find_by_any_email('')).to be_nil
+    end
+  end
+
+  describe '.by_any_email' do
+    it 'returns an ActiveRecord::Relation' do
+      expect(described_class.by_any_email('foo@example.com'))
+        .to be_a_kind_of(ActiveRecord::Relation)
+    end
+
+    it 'returns a relation of users' do
+      user = create(:user)
+
+      expect(described_class.by_any_email(user.email)).to eq([user])
     end
   end
 

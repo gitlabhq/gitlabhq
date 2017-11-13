@@ -6,7 +6,6 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   prepend ::EE::Projects::MergeRequests::CreationsController
 
   skip_before_action :merge_request
-  skip_before_action :ensure_ref_fetched
   before_action :authorize_create_merge_request!
   before_action :apply_diff_view_cookie!, only: [:diffs, :diff_for_path]
   before_action :build_merge_request, except: [:create]
@@ -112,9 +111,6 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
     @source_project = @merge_request.source_project
     @commits = prepare_commits_for_rendering(@merge_request.commits)
     @commit = @merge_request.diff_head_commit
-
-    @note_counts = Note.where(commit_id: @commits.map(&:id))
-      .group(:commit_id).count
 
     @labels = LabelsFinder.new(current_user, project_id: @project.id).execute
 

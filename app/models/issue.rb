@@ -8,12 +8,10 @@ class Issue < ActiveRecord::Base
   include Issuable
   include Noteable
   include Referable
-  include Sortable
   include Spammable
   include Elastic::IssuesSearch
   include FasterCacheKeys
   include RelativePositioning
-  include CreatedAtFilterable
   include TimeTrackable
 
   WEIGHT_RANGE = 1..9

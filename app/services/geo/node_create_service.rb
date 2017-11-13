@@ -8,7 +8,7 @@ module Geo
     end
 
     def execute
-      GeoNode.create(params).persisted?
+      GeoNode.create(params)
     end
   end
 end

@@ -298,6 +298,7 @@
 
 .btn-align-content {
   display: flex;
+  justify-content: center;
   align-items: center;
 }
 
@@ -411,6 +412,7 @@
   padding: 0;
   background: transparent;
   border: 0;
+  border-radius: 0;
 
   &:hover,
   &:active,
@@ -418,5 +420,27 @@
     outline: 0;
     background: transparent;
     box-shadow: none;
+  }
+}
+
+.btn-link.btn-secondary-hover-link {
+  color: $gl-text-color-secondary;
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: $gl-link-color;
+    text-decoration: none;
+  }
+}
+
+.btn-link.btn-primary-hover-link {
+  color: inherit;
+
+  &:hover,
+  &:active,
+  &:focus {
+    color: $gl-link-color;
+    text-decoration: none;
   }
 }

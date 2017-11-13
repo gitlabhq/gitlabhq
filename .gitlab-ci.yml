@@ -478,8 +478,9 @@ db:migrate:reset-mysql:
   stage: test
   variables:
     SETUP_DB: "false"
+    CREATE_DB_USER: "true"
   script:
-    - git fetch origin v9.3.0-ee
+    - git fetch https://gitlab.com/gitlab-org/gitlab-ee.git v9.3.0-ee
     - git checkout -f FETCH_HEAD
     - bundle install $BUNDLE_INSTALL_FLAGS
     - cp config/gitlab.yml.example config/gitlab.yml
@@ -522,6 +523,7 @@ db:rollback-mysql:
   variables:
     SIZE: "1"
     SETUP_DB: "false"
+    CREATE_DB_USER: "true"
   script:
     - git clone https://gitlab.com/gitlab-org/gitlab-test.git
        /home/git/repositories/gitlab-org/gitlab-test.git
@@ -557,7 +559,6 @@ gitlab:assets:compile:
     NODE_ENV: "production"
     RAILS_ENV: "production"
     SETUP_DB: "false"
-    USE_DB: "false"
     SKIP_STORAGE_VALIDATION: "true"
     WEBPACK_REPORT: "true"
     NO_COMPRESSION: "true"
@@ -611,6 +612,16 @@ codequality:
     - mv .rubocop.yml.bak .rubocop.yml
   artifacts:
     paths: [codeclimate.json]
+
+qa:internal:
+  stage: test
+  variables:
+    SETUP_DB: "false"
+  services: []
+  script:
+    - cd qa/
+    - bundle install
+    - bundle exec rspec
 
 coverage:
   <<: *dedicated-runner

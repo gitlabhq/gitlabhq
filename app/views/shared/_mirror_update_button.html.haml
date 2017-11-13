@@ -17,6 +17,6 @@
       = link_to update_now_project_mirror_path(@project), method: :post, class: 'btn' do
         = icon("refresh")
         Update Now
-    - if @project.mirror_last_update_success?
+    - if @project.mirror_last_update_succeeded?
       %p.inline.prepend-left-10
         Successfully updated #{time_ago_with_tooltip(@project.mirror_last_successful_update_at)}.
