@@ -128,8 +128,23 @@ Using hashed storage significantly improves Geo replication - project and group
 renames no longer require synchronization between nodes - so we recommend it is
 used for all GitLab Geo installations.
 
+### Step 4. (Optional) Configuring the secondary to trust the primary
 
-### Step 4. Managing the secondary GitLab node
+You can safely skip this step if your primary uses a CA-issued HTTPS certificate.
+
+If your primary is using a self-signed certificate for *HTTPS* support, you will
+need to add that certificate to the secondary's trust store. Retrieve the
+certificate from the primary and follow your distribution's instructions for
+adding it to the secondary's trust store. In Debian/Ubuntu, for example, with a
+certificate file of `primary.geo.example.com.crt`, you would follow these steps:
+
+```
+sudo -i
+cp primary.geo.example.com.crt /usr/local/share/ca-certificates
+update-ca-certificates
+```
+
+### Step 5. Managing the secondary GitLab node
 
 You can monitor the status of the syncing process on a secondary node
 by visiting the primary node's **Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`)

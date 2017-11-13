@@ -57,59 +57,6 @@ Here's what you'll need to have installed:
     sudo gitlab-rake db:create db:migrate
     ```
 
-1. Stop Unicorn in case it's interfering the next step:
-
-    ``` bash
-    sudo gitlab-ctl stop unicorn
-    ```
-
-After these steps, you'll have a fresh PostgreSQL database with up-to-date schema.
-
-## Migrate data from MySQL to PostgreSQL
-
-Now, you can use pgloader to migrate the data from MySQL to PostgreSQL:
-
-1. Save the following snippet in a `commands.load` file, and edit with your
-   database `username`, `password` and `host`:
-
-    ```
-    LOAD DATABASE
-         FROM mysql://username:password@host/gitlabhq_production
-         INTO postgresql://gitlab-psql@unix://var/opt/gitlab/postgresql:/gitlabhq_production
-
-    WITH include no drop, truncate, disable triggers, create no tables,
-         create no indexes, preserve index names, no foreign keys,
-         data only
-
-    ALTER SCHEMA 'gitlabhq_production' RENAME TO 'public'
-
-    ;
-    ```
-
-1. Start the migration:
-
-    ``` bash
-    sudo -u gitlab-psql pgloader commands.load
-    ```
-
-1. Once the migration finishes, start GitLab:
-
-    ``` bash
-    sudo gitlab-ctl start
-    ```
-
-Now, you can verify that everything worked by visiting GitLab.
-
-## Troubleshooting
-
-### Experiencing 500 errors after the migration
-
-If you experience 500 errors after the migration, try to clear the cache:
-
-``` bash
-sudo gitlab-rake cache:clear
-```
-=======
 1. Stop Unicorn to prevent other database access from interfering with the loading of data:
 
     ``` bash

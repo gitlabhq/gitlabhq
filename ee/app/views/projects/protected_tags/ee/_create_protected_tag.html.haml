@@ -2,7 +2,7 @@
   .create_access_levels-container
     = dropdown_tag('Select',
                    options: { toggle_class: 'js-allowed-to-create js-multiselect wide',
-                   dropdown_class: 'dropdown-menu-user dropdown-menu-selectable', filter: true,
+                   dropdown_class: 'dropdown-menu-user dropdown-menu-selectable capitalize-header', filter: true,
                    data: { input_id: 'create_access_levels_attributes', default_label: 'Select' } })
   .help-block
     Only groups that

@@ -66,8 +66,7 @@
     <div class="ci-widget media">
       <template v-if="hasCIError">
         <div class="ci-status-icon ci-status-icon-failed ci-error js-ci-error append-right-10">
-          <icon
-            name="status_failed"/>
+          <icon name="status_failed" />
         </div>
         <div class="media-body">
           Could not connect to the CI server. Please check your settings and try again
@@ -86,7 +85,9 @@
             class="pipeline-id">
             #{{pipeline.id}}
           </a>
+
           {{pipeline.details.status.label}} for
+
           <a
             :href="pipeline.commit.commit_path"
             class="commit-sha js-commit-link">
