@@ -1,6 +1,26 @@
 # System hooks
 
-Your GitLab instance can perform HTTP POST requests on the following events: `project_create`, `project_destroy`, `project_rename`, `project_transfer`, `project_update`, `user_add_to_team`, `user_remove_from_team`, `user_create`, `user_destroy`, `key_create`, `key_destroy`, `group_create`, `group_destroy`, `user_add_to_group` and `user_remove_from_group`.
+Your GitLab instance can perform HTTP POST requests on the following events:
+
+- `project_create`
+- `project_destroy`
+- `project_rename`
+- `project_transfer`
+- `project_update`
+- `user_add_to_team`
+- `user_remove_from_team`
+- `user_create`
+- `user_destroy`
+- `user_rename`
+- `key_create`
+- `key_destroy`
+- `group_create`
+- `group_destroy`
+- `group_rename`
+- `user_add_to_group`
+- `user_remove_from_group`
+
+The triggers for most of these are self-explanatory, but `project_update` and `project_rename` deserve some clarification: `project_update` is fired any time an attribute of a project is changed (name, description, tags, etc.) *unless* the `path` attribute is also changed. In that case, a `project_rename` is triggered instead (so that, for instance, if all you care about is the repo URL, you can just listen for `project_rename`).
 
 System hooks can be used, e.g. for logging or changing information in a LDAP server.
 
@@ -69,6 +89,9 @@ X-Gitlab-Event: System Hook
   "old_path_with_namespace": "jsmith/overscore"
 }
 ```
+
+Note that `project_rename` is not triggered if the namespace changes.
+Please refer to `group_rename` and `user_rename` for that case.
 
 **Project transferred:**
 
@@ -173,6 +196,21 @@ X-Gitlab-Event: System Hook
 }
 ```
 
+**User renamed:**
+
+```json
+{
+    "event_name": "user_rename",
+    "created_at": "2017-11-01T11:21:04Z",
+    "updated_at": "2017-11-01T14:04:47Z",
+          "name": "new-name",
+         "email": "best-email@example.tld",
+       "user_id": 58,
+      "username": "new-exciting-name",
+  "old_username": "old-boring-name"
+}
+```
+
 **Key added**
 
 ```json
@@ -207,12 +245,14 @@ X-Gitlab-Event: System Hook
    "updated_at": "2012-07-21T07:38:22Z",
    "event_name": "group_create",
          "name": "StoreCloud",
-  "owner_email": "johnsmith@gmail.com",
-   "owner_name": "John Smith",
+  "owner_email": null,
+   "owner_name": null,
          "path": "storecloud",
      "group_id": 78
 }
 ```
+
+`owner_name` and `owner_email` are always `null`. Please see https://gitlab.com/gitlab-org/gitlab-ce/issues/39675.
 
 **Group removed:**
 
@@ -222,12 +262,34 @@ X-Gitlab-Event: System Hook
    "updated_at": "2012-07-21T07:38:22Z",
    "event_name": "group_destroy",
          "name": "StoreCloud",
-  "owner_email": "johnsmith@gmail.com",
-   "owner_name": "John Smith",
+  "owner_email": null,
+   "owner_name": null,
          "path": "storecloud",
      "group_id": 78
 }
 ```
+
+`owner_name` and `owner_email` are always `null`. Please see https://gitlab.com/gitlab-org/gitlab-ce/issues/39675.
+
+**Group renamed:**
+
+```json
+{
+     "event_name": "group_rename",
+     "created_at": "2017-10-30T15:09:00Z",
+     "updated_at": "2017-11-01T10:23:52Z",
+           "name": "Better Name",
+           "path": "better-name",
+      "full_path": "parent-group/better-name",
+       "group_id": 64,
+     "owner_name": null,
+    "owner_email": null,
+       "old_path": "old-name",
+  "old_full_path": "parent-group/old-name"
+}
+```
+
+`owner_name` and `owner_email` are always `null`. Please see https://gitlab.com/gitlab-org/gitlab-ce/issues/39675.
 
 **New Group Member:**
 

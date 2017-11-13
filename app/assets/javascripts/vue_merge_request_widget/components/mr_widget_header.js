@@ -1,5 +1,5 @@
 import tooltip from '../../vue_shared/directives/tooltip';
-import '../../lib/utils/text_utility';
+import { pluralize } from '../../lib/utils/text_utility';
 
 export default {
   name: 'MRWidgetHeader',
@@ -14,7 +14,7 @@ export default {
       return this.mr.divergedCommitsCount > 0;
     },
     commitsText() {
-      return gl.text.pluralize('commit', this.mr.divergedCommitsCount);
+      return pluralize('commit', this.mr.divergedCommitsCount);
     },
     branchNameClipboardData() {
       // This supports code in app/assets/javascripts/copy_to_clipboard.js that
@@ -72,12 +72,12 @@ export default {
         <a
           href="#modal_merge_info"
           data-toggle="modal"
-          class="btn btn-small inline">
+          class="btn btn-sm inline">
           Check out branch
         </a>
         <span class="dropdown prepend-left-10">
           <a
-            class="btn btn-small inline dropdown-toggle"
+            class="btn btn-sm inline dropdown-toggle"
             data-toggle="dropdown"
             aria-label="Download as"
             role="button">

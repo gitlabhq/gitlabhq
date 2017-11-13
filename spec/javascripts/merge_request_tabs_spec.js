@@ -5,8 +5,7 @@ import '~/merge_request_tabs';
 import '~/commit/pipelines/pipelines_bundle';
 import '~/breakpoints';
 import '~/lib/utils/common_utils';
-import '~/diff';
-import '~/files_comment_button';
+import Diff from '~/diff';
 import '~/notes';
 import 'vendor/jquery.scrollTo';
 
@@ -78,8 +77,9 @@ import 'vendor/jquery.scrollTo';
       });
 
       describe('meta click', () => {
+        let metakeyEvent;
         beforeEach(function () {
-          spyOn(gl.utils, 'isMetaClick').and.returnValue(true);
+          metakeyEvent = $.Event('click', { keyCode: 91, ctrlKey: true });
         });
 
         it('opens page when commits link is clicked', function () {
@@ -89,7 +89,7 @@ import 'vendor/jquery.scrollTo';
           });
 
           this.class.bindEvents();
-          document.querySelector('.merge-request-tabs .commits-tab a').click();
+          $('.merge-request-tabs .commits-tab a').trigger(metakeyEvent);
         });
 
         it('opens page when commits badge is clicked', function () {
@@ -99,7 +99,7 @@ import 'vendor/jquery.scrollTo';
           });
 
           this.class.bindEvents();
-          document.querySelector('.merge-request-tabs .commits-tab a .badge').click();
+          $('.merge-request-tabs .commits-tab a .badge').trigger(metakeyEvent);
         });
       });
 
@@ -224,7 +224,7 @@ import 'vendor/jquery.scrollTo';
       describe('with "Side-by-side"/parallel diff view', () => {
         beforeEach(function () {
           this.class.diffViewType = () => 'parallel';
-          gl.Diff.prototype.diffViewType = () => 'parallel';
+          Diff.prototype.diffViewType = () => 'parallel';
         });
 
         it('maintains `container-limited` for pipelines tab', function (done) {
@@ -276,7 +276,7 @@ import 'vendor/jquery.scrollTo';
     describe('loadDiff', function () {
       beforeEach(() => {
         loadFixtures('merge_requests/diff_comment.html.raw');
-        spyOn(window.gl.utils, 'getPagePath').and.returnValue('merge_requests');
+        $('body').attr('data-page', 'projects:merge_requests:show');
         window.gl.ImageFile = () => {};
         window.notes = new Notes('', []);
         spyOn(window.notes, 'toggleDiffNote').and.callThrough();
@@ -285,6 +285,9 @@ import 'vendor/jquery.scrollTo';
       afterEach(() => {
         delete window.gl.ImageFile;
         delete window.notes;
+
+        // Undo what we did to the shared <body>
+        $('body').removeAttr('data-page');
       });
 
       it('requires an absolute pathname', function () {
@@ -413,6 +416,29 @@ import 'vendor/jquery.scrollTo';
             expect(window.notes.toggleDiffNote).not.toHaveBeenCalled();
           });
         });
+      });
+    });
+
+    describe('expandViewContainer', function () {
+      beforeEach(() => {
+        $('body').append('<div class="content-wrapper"><div class="container-fluid container-limited"></div></div>');
+      });
+
+      afterEach(() => {
+        $('.content-wrapper').remove();
+      });
+
+      it('removes container-limited from containers', function () {
+        this.class.expandViewContainer();
+
+        expect($('.content-wrapper')).not.toContainElement('.container-limited');
+      });
+
+      it('does remove container-limited from breadcrumbs', function () {
+        $('.container-limited').addClass('breadcrumbs');
+        this.class.expandViewContainer();
+
+        expect($('.content-wrapper')).toContainElement('.container-limited');
       });
     });
   });

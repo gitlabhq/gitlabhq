@@ -5,12 +5,13 @@ module Gitlab
 
       attr_accessor :oldrev, :newrev, :ref
 
-      def execute(committer, repository, oldrev, newrev, ref)
-        @repository = repository
-        @gl_id      = committer.gl_id
-        @oldrev     = oldrev
-        @newrev     = newrev
-        @ref        = ref
+      def execute(pusher, repository, oldrev, newrev, ref)
+        @repository  = repository
+        @gl_id       = pusher.gl_id
+        @gl_username = pusher.username
+        @oldrev      = oldrev
+        @newrev      = newrev
+        @ref         = ref
 
         %w(pre-receive update).each do |hook_name|
           status, message = run_hook(hook_name)
@@ -29,7 +30,7 @@ module Gitlab
 
       def run_hook(name)
         hook = Gitlab::Git::Hook.new(name, @repository)
-        hook.trigger(@gl_id, oldrev, newrev, ref)
+        hook.trigger(@gl_id, @gl_username, oldrev, newrev, ref)
       end
     end
   end

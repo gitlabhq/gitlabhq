@@ -146,7 +146,7 @@ class ProjectTeam
   def member?(user, min_access_level = Gitlab::Access::GUEST)
     return false unless user
 
-    user.authorized_project?(project, min_access_level)
+    max_member_access(user.id) >= min_access_level
   end
 
   def human_max_access(user_id)

@@ -9,7 +9,7 @@ module PageLayoutHelper
     end
 
     # Segments are seperated by middot
-    @page_title.join(" \u00b7 ")
+    @page_title.join(" · ")
   end
 
   # Define or get a description for the current page

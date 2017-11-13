@@ -1,0 +1,5 @@
+---
+title: Fixed 'Removed source branch' checkbox in merge widget being ignored.
+merge_request: 14832
+author:
+type: fixed

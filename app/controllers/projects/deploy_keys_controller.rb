@@ -22,7 +22,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def create
-    @key = DeployKey.new(create_params.merge(user: current_user))
+    @key = DeployKeys::CreateService.new(current_user, create_params).execute
 
     unless @key.valid? && @project.deploy_keys << @key
       flash[:alert] = @key.errors.full_messages.join(', ').html_safe

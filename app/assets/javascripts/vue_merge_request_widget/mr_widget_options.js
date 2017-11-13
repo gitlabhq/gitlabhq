@@ -1,5 +1,5 @@
-/* global Flash */
-
+import SmartInterval from '~/smart_interval';
+import Flash from '../flash';
 import {
   WidgetHeader,
   WidgetMergeHelp,
@@ -31,6 +31,7 @@ import {
   SquashBeforeMerge,
   notify,
 } from './dependencies';
+import { setFavicon } from '../lib/utils/common_utils';
 
 export default {
   el: '#js-vue-mr-widget',
@@ -57,7 +58,7 @@ export default {
       return stateMaps.statesToShowHelpWidget.indexOf(this.mr.state) > -1;
     },
     shouldRenderPipelines() {
-      return Object.keys(this.mr.pipeline).length || this.mr.hasCI;
+      return this.mr.hasCI;
     },
     shouldRenderRelatedLinks() {
       return this.mr.relatedLinks;
@@ -81,12 +82,12 @@ export default {
       return new MRWidgetService(endpoints);
     },
     checkStatus(cb) {
-      this.service.checkStatus()
+      return this.service.checkStatus()
         .then(res => res.json())
         .then((res) => {
           this.handleNotification(res);
           this.mr.setData(res);
-          this.setFavicon();
+          this.setFaviconHelper();
 
           if (cb) {
             cb.call(null, res);
@@ -97,7 +98,7 @@ export default {
         });
     },
     initPolling() {
-      this.pollingInterval = new gl.SmartInterval({
+      this.pollingInterval = new SmartInterval({
         callback: this.checkStatus,
         startingInterval: 10000,
         maxInterval: 30000,
@@ -106,7 +107,7 @@ export default {
       });
     },
     initDeploymentsPolling() {
-      this.deploymentsInterval = new gl.SmartInterval({
+      this.deploymentsInterval = new SmartInterval({
         callback: this.fetchDeployments,
         startingInterval: 30000,
         maxInterval: 120000,
@@ -115,13 +116,13 @@ export default {
         immediateExecution: true,
       });
     },
-    setFavicon() {
+    setFaviconHelper() {
       if (this.mr.ciStatusFaviconPath) {
-        gl.utils.setFavicon(this.mr.ciStatusFaviconPath);
+        setFavicon(this.mr.ciStatusFaviconPath);
       }
     },
     fetchDeployments() {
-      this.service.fetchDeployments()
+      return this.service.fetchDeployments()
         .then(res => res.json())
         .then((res) => {
           if (res.length) {
@@ -193,7 +194,7 @@ export default {
       });
     },
     handleMounted() {
-      this.setFavicon();
+      this.setFaviconHelper();
       this.initDeploymentsPolling();
     },
   },
@@ -235,7 +236,10 @@ export default {
       <mr-widget-header :mr="mr" />
       <mr-widget-pipeline
         v-if="shouldRenderPipelines"
-        :mr="mr" />
+        :pipeline="mr.pipeline"
+        :ci-status="mr.ciStatus"
+        :has-ci="mr.hasCI"
+        />
       <mr-widget-deployment
         v-if="shouldRenderDeployments"
         :mr="mr"

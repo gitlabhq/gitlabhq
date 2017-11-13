@@ -87,10 +87,14 @@ module SubmoduleHelper
       namespace = @project.namespace.full_path
     end
 
-    [
-      namespace_project_path(namespace, base),
-      namespace_project_tree_path(namespace, base, commit)
-    ]
+    begin
+      [
+        namespace_project_path(namespace, base),
+        namespace_project_tree_path(namespace, base, commit)
+      ]
+    rescue ActionController::UrlGenerationError
+      [nil, nil]
+    end
   end
 
   def sanitize_submodule_url(url)

@@ -17,6 +17,14 @@ class LegacyDiffDiscussion < Discussion
     true
   end
 
+  def on_image?
+    false
+  end
+
+  def on_text?
+    true
+  end
+
   def active?(*args)
     return @active if @active.present?
 

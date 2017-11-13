@@ -39,11 +39,11 @@ module StubGitlabCalls
       .and_return({ 'tags' => tags })
 
     allow_any_instance_of(ContainerRegistry::Client)
-      .to receive(:repository_manifest).with(repository)
+      .to receive(:repository_manifest).with(repository, anything)
       .and_return(stub_container_registry_tag_manifest)
 
     allow_any_instance_of(ContainerRegistry::Client)
-      .to receive(:blob).with(repository)
+      .to receive(:blob).with(repository, anything, 'application/octet-stream')
       .and_return(stub_container_registry_blob)
   end
 

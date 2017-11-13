@@ -1,0 +1,5 @@
+---
+title: 'Support uml:: and captions in reStructuredText'
+merge_request: 15120
+author: Markus Koller
+type: changed

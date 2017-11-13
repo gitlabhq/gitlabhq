@@ -136,9 +136,9 @@ describe DiffHelper do
       marked_old_line, marked_new_line = mark_inline_diffs(old_line, new_line)
 
       expect(marked_old_line).to eq(%q{abc <span class="idiff left right deletion">'def'</span>})
-      expect(marked_old_line).not_to be_html_safe
+      expect(marked_old_line).to be_html_safe
       expect(marked_new_line).to eq(%q{abc <span class="idiff left right addition">"def"</span>})
-      expect(marked_new_line).not_to be_html_safe
+      expect(marked_new_line).to be_html_safe
     end
   end
 

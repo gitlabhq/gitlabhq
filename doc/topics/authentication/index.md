@@ -11,6 +11,7 @@ This page gathers all the resources for the topic **Authentication** within GitL
   - [Security Webcast with Yubico](https://about.gitlab.com/2016/08/31/gitlab-and-yubico-security-webcast/)
 - **Integrations:**
   - [GitLab as OAuth2 authentication service provider](../../integration/oauth_provider.md#introduction-to-oauth)
+  - [GitLab as OpenID Connect identity provider](../../integration/openid_connect_provider.md)
 
 ## GitLab administrators
 

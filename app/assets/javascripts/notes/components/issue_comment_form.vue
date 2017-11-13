@@ -1,15 +1,18 @@
 <script>
-  /* global Flash, Autosave */
   import { mapActions, mapGetters } from 'vuex';
   import _ from 'underscore';
-  import '../../autosave';
+  import Autosize from 'autosize';
+  import Flash from '../../flash';
+  import Autosave from '../../autosave';
   import TaskList from '../../task_list';
   import * as constants from '../constants';
   import eventHub from '../event_hub';
-  import confidentialIssue from '../../vue_shared/components/issue/confidential_issue_warning.vue';
+  import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
   import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
+  import issueDiscussionLockedWidget from './issue_discussion_locked_widget.vue';
   import markdownField from '../../vue_shared/components/markdown/field.vue';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+  import issuableStateMixin from '../mixins/issuable_state';
 
   export default {
     name: 'issueCommentForm',
@@ -25,8 +28,9 @@
       };
     },
     components: {
-      confidentialIssue,
+      issueWarning,
       issueNoteSignedOutWidget,
+      issueDiscussionLockedWidget,
       markdownField,
       userAvatarLink,
     },
@@ -53,6 +57,9 @@
       },
       isIssueOpen() {
         return this.issueState === constants.OPENED || this.issueState === constants.REOPENED;
+      },
+      canCreateNote() {
+        return this.getIssueData.current_user.can_create_note;
       },
       issueActionButtonTitle() {
         if (this.note.length) {
@@ -89,13 +96,12 @@
       endpoint() {
         return this.getIssueData.create_note_path;
       },
-      isConfidentialIssue() {
-        return this.getIssueData.confidential;
-      },
     },
     methods: {
       ...mapActions([
         'saveNote',
+        'stopPolling',
+        'restartPolling',
         'removePlaceholderNotes',
       ]),
       setIsSubmitButtonDisabled(note, isSubmitting) {
@@ -124,10 +130,14 @@
           }
           this.isSubmitting = true;
           this.note = ''; // Empty textarea while being requested. Repopulate in catch
+          this.resizeTextarea();
+          this.stopPolling();
 
           this.saveNote(noteData)
             .then((res) => {
               this.isSubmitting = false;
+              this.restartPolling();
+
               if (res.errors) {
                 if (res.errors.commands_only) {
                   this.discard();
@@ -135,7 +145,7 @@
                   Flash(
                     'Something went wrong while adding your comment. Please try again.',
                     'alert',
-                    $(this.$refs.commentForm),
+                    this.$refs.commentForm,
                   );
                 }
               } else {
@@ -150,7 +160,7 @@
               this.isSubmitting = false;
               this.discard(false);
               const msg = 'Your comment could not be submitted! Please check your network connection and try again.';
-              Flash(msg, 'alert', $(this.$el));
+              Flash(msg, 'alert', this.$el);
               this.note = noteData.data.note.note; // Restore textarea content.
               this.removePlaceholderNotes();
             });
@@ -174,6 +184,8 @@
 
         if (shouldClear) {
           this.note = '';
+          this.resizeTextarea();
+          this.$refs.markdownField.previewMarkdown = false;
         }
 
         // reset autostave
@@ -205,7 +217,15 @@
           selector: '.notes',
         });
       },
+      resizeTextarea() {
+        this.$nextTick(() => {
+          Autosize.update(this.$refs.textarea);
+        });
+      },
     },
+    mixins: [
+      issuableStateMixin,
+    ],
     mounted() {
       // jQuery is needed here because it is a custom event being dispatched with jQuery.
       $(document).on('issuable:change', (e, isClosed) => {
@@ -221,6 +241,7 @@
 <template>
   <div>
     <issue-note-signed-out-widget v-if="!isLoggedIn" />
+    <issue-discussion-locked-widget v-else-if="!canCreateNote" />
     <ul
       v-else
       class="notes notes-form timeline">
@@ -239,15 +260,23 @@
           <div class="timeline-content timeline-content-form">
             <form
               ref="commentForm"
-              class="new-note js-quick-submit common-note-form gfm-form js-main-target-form">
-              <confidentialIssue v-if="isConfidentialIssue" />
+              class="new-note js-quick-submit common-note-form gfm-form js-main-target-form"
+            >
+
               <div class="error-alert"></div>
+
+              <issue-warning
+                v-if="hasWarning(getIssueData)"
+                :is-locked="isLocked(getIssueData)"
+                :is-confidential="isConfidential(getIssueData)"
+              />
+
               <markdown-field
                 :markdown-preview-path="markdownPreviewPath"
                 :markdown-docs-path="markdownDocsPath"
                 :quick-actions-docs-path="quickActionsDocsPath"
                 :add-spacing-classes="false"
-                :is-confidential-issue="isConfidentialIssue">
+                ref="markdownField">
                 <textarea
                   id="note-body"
                   name="note[note]"
@@ -257,6 +286,7 @@
                   v-model="note"
                   ref="textarea"
                   slot="textarea"
+                  :disabled="isSubmitting"
                   placeholder="Write a comment or drag your files here..."
                   @keydown.up="editCurrentUserLastNote()"
                   @keydown.meta.enter="handleSave()">
@@ -327,7 +357,8 @@
                   @click="handleSave(true)"
                   v-if="canUpdateIssue"
                   :class="actionButtonClassNames"
-                  class="btn btn-comment btn-comment-and-close">
+                  :disabled="isSubmitting"
+                  class="btn btn-comment btn-comment-and-close js-action-button">
                   {{issueActionButtonTitle}}
                 </button>
                 <button

@@ -21,7 +21,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
 
   let(:metric_class) { Gitlab::HealthChecks::Metric }
   let(:result_class) { Gitlab::HealthChecks::Result }
-  let(:repository_storages) { [:default] }
+  let(:repository_storages) { ['default'] }
   let(:tmp_dir) { Dir.mktmpdir }
 
   let(:storages_paths) do
@@ -44,7 +44,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
     describe '#readiness' do
       subject { described_class.readiness }
 
-      context 'storage has a tripped circuitbreaker', broken_storage: true do
+      context 'storage has a tripped circuitbreaker', :broken_storage do
         let(:repository_storages) { ['broken'] }
         let(:storages_paths) do
           Gitlab.config.repositories.storages
@@ -64,7 +64,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
           allow(described_class).to receive(:storage_circuitbreaker_test) { true }
         end
 
-        it { is_expected.to include(result_class.new(false, 'cannot stat storage', shard: :default)) }
+        it { is_expected.to include(result_class.new(false, 'cannot stat storage', shard: 'default')) }
       end
 
       context 'storage points to directory that has both read and write rights' do
@@ -72,7 +72,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
           FileUtils.chmod_R(0755, tmp_dir)
         end
 
-        it { is_expected.to include(result_class.new(true, nil, shard: :default)) }
+        it { is_expected.to include(result_class.new(true, nil, shard: 'default')) }
 
         it 'cleans up files used for testing' do
           expect(described_class).to receive(:storage_write_test).with(any_args).and_call_original
@@ -85,7 +85,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
             allow(described_class).to receive(:storage_read_test).with(any_args).and_return(false)
           end
 
-          it { is_expected.to include(result_class.new(false, 'cannot read from storage', shard: :default)) }
+          it { is_expected.to include(result_class.new(false, 'cannot read from storage', shard: 'default')) }
         end
 
         context 'write test fails' do
@@ -93,7 +93,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
             allow(described_class).to receive(:storage_write_test).with(any_args).and_return(false)
           end
 
-          it { is_expected.to include(result_class.new(false, 'cannot write to storage', shard: :default)) }
+          it { is_expected.to include(result_class.new(false, 'cannot write to storage', shard: 'default')) }
         end
       end
     end
@@ -109,7 +109,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
         it 'provides metrics' do
           metrics = described_class.metrics
 
-          expect(metrics).to all(have_attributes(labels: { shard: :default }))
+          expect(metrics).to all(have_attributes(labels: { shard: 'default' }))
           expect(metrics).to include(an_object_having_attributes(name: :filesystem_accessible, value: 0))
           expect(metrics).to include(an_object_having_attributes(name: :filesystem_readable, value: 0))
           expect(metrics).to include(an_object_having_attributes(name: :filesystem_writable, value: 0))
@@ -128,7 +128,7 @@ describe Gitlab::HealthChecks::FsShardsCheck do
         it 'provides metrics' do
           metrics = described_class.metrics
 
-          expect(metrics).to all(have_attributes(labels: { shard: :default }))
+          expect(metrics).to all(have_attributes(labels: { shard: 'default' }))
           expect(metrics).to include(an_object_having_attributes(name: :filesystem_accessible, value: 1))
           expect(metrics).to include(an_object_having_attributes(name: :filesystem_readable, value: 1))
           expect(metrics).to include(an_object_having_attributes(name: :filesystem_writable, value: 1))
@@ -156,14 +156,14 @@ describe Gitlab::HealthChecks::FsShardsCheck do
     describe '#readiness' do
       subject { described_class.readiness }
 
-      it { is_expected.to include(result_class.new(false, 'cannot stat storage', shard: :default)) }
+      it { is_expected.to include(result_class.new(false, 'cannot stat storage', shard: 'default')) }
     end
 
     describe '#metrics' do
       it 'provides metrics' do
         metrics = described_class.metrics
 
-        expect(metrics).to all(have_attributes(labels: { shard: :default }))
+        expect(metrics).to all(have_attributes(labels: { shard: 'default' }))
         expect(metrics).to include(an_object_having_attributes(name: :filesystem_accessible, value: 0))
         expect(metrics).to include(an_object_having_attributes(name: :filesystem_readable, value: 0))
         expect(metrics).to include(an_object_having_attributes(name: :filesystem_writable, value: 0))

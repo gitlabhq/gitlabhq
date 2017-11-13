@@ -6,7 +6,8 @@ describe PipelinesEmailService, :mailer do
   end
 
   let(:project) { create(:project, :repository) }
-  let(:recipient) { 'test@gitlab.com' }
+  let(:recipients) { 'test@gitlab.com' }
+  let(:receivers) { [recipients] }
 
   let(:data) do
     Gitlab::DataBuilder::Pipeline.build(pipeline)
@@ -48,18 +49,24 @@ describe PipelinesEmailService, :mailer do
 
   shared_examples 'sending email' do
     before do
+      subject.recipients = recipients
+
       perform_enqueued_jobs do
         run
       end
     end
 
     it 'sends email' do
-      should_only_email(double(notification_email: recipient), kind: :bcc)
+      emails = receivers.map { |r| double(notification_email: r) }
+
+      should_only_email(*emails, kind: :bcc)
     end
   end
 
   shared_examples 'not sending email' do
     before do
+      subject.recipients = recipients
+
       perform_enqueued_jobs do
         run
       end
@@ -73,10 +80,6 @@ describe PipelinesEmailService, :mailer do
   describe '#test' do
     def run
       subject.test(data)
-    end
-
-    before do
-      subject.recipients = recipient
     end
 
     context 'when pipeline is failed' do
@@ -104,10 +107,6 @@ describe PipelinesEmailService, :mailer do
     end
 
     context 'with recipients' do
-      before do
-        subject.recipients = recipient
-      end
-
       context 'with failed pipeline' do
         before do
           data[:object_attributes][:status] = 'failed'
@@ -152,9 +151,7 @@ describe PipelinesEmailService, :mailer do
     end
 
     context 'with empty recipients list' do
-      before do
-        subject.recipients = ' ,, '
-      end
+      let(:recipients) { ' ,, ' }
 
       context 'with failed pipeline' do
         before do
@@ -163,6 +160,20 @@ describe PipelinesEmailService, :mailer do
         end
 
         it_behaves_like 'not sending email'
+      end
+    end
+
+    context 'with recipients list separating with newlines' do
+      let(:recipients) { "\ntest@gitlab.com,  \r\nexample@gitlab.com" }
+      let(:receivers) { %w[test@gitlab.com example@gitlab.com] }
+
+      context 'with failed pipeline' do
+        before do
+          data[:object_attributes][:status] = 'failed'
+          pipeline.update(status: 'failed')
+        end
+
+        it_behaves_like 'sending email'
       end
     end
   end

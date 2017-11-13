@@ -12,6 +12,16 @@ describe Group, 'Routable' do
     it { is_expected.to have_many(:redirect_routes).dependent(:destroy) }
   end
 
+  describe 'GitLab read-only instance' do
+    it 'does not save route if route is not present' do
+      group.route.path = ''
+      allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+      expect(group).to receive(:update_route).and_call_original
+
+      expect { group.full_path }.to change { Route.count }.by(0)
+    end
+  end
+
   describe 'Callbacks' do
     it 'creates route record on create' do
       expect(group.route.path).to eq(group.path)
@@ -124,6 +134,7 @@ describe Group, 'Routable' do
 
     context 'with RequestStore active', :request_store do
       it 'does not load the route table more than once' do
+        group.expires_full_path_cache
         expect(group).to receive(:uncached_full_path).once.and_call_original
 
         3.times { group.full_path }

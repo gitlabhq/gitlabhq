@@ -2,7 +2,7 @@ module API
   class MergeRequests < Grape::API
     include PaginationParams
 
-    before { authenticate! }
+    before { authenticate_non_get! }
 
     helpers ::Gitlab::IssuableMetadata
 
@@ -55,6 +55,7 @@ module API
                          desc: 'Return merge requests for the given scope: `created-by-me`, `assigned-to-me` or `all`'
       end
       get do
+        authenticate! unless params[:scope] == 'all'
         merge_requests = find_merge_requests
 
         options = { with: Entities::MergeRequestBasic,
@@ -182,13 +183,13 @@ module API
       end
 
       desc 'Get the commits of a merge request' do
-        success Entities::RepoCommit
+        success Entities::Commit
       end
       get ':id/merge_requests/:merge_request_iid/commits' do
         merge_request = find_merge_request_with_access(params[:merge_request_iid])
         commits = ::Kaminari.paginate_array(merge_request.commits)
 
-        present paginate(commits), with: Entities::RepoCommit
+        present paginate(commits), with: Entities::Commit
       end
 
       desc 'Show the merge request changes' do
@@ -213,12 +214,14 @@ module API
           :remove_source_branch,
           :state_event,
           :target_branch,
-          :title
+          :title,
+          :discussion_locked
         ]
         optional :title, type: String, allow_blank: false, desc: 'The title of the merge request'
         optional :target_branch, type: String, allow_blank: false, desc: 'The target branch'
         optional :state_event, type: String, values: %w[close reopen],
                                desc: 'Status of the merge request'
+        optional :discussion_locked, type: Boolean, desc: 'Whether the MR discussion is locked'
 
         use :optional_params
         at_least_one_of(*at_least_one_of_ce)
@@ -292,7 +295,7 @@ module API
 
         unauthorized! unless merge_request.can_cancel_merge_when_pipeline_succeeds?(current_user)
 
-        ::MergeRequest::MergeWhenPipelineSucceedsService
+        ::MergeRequests::MergeWhenPipelineSucceedsService
           .new(merge_request.target_project, current_user)
           .cancel(merge_request)
       end

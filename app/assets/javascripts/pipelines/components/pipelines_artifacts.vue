@@ -39,11 +39,7 @@
           rel="nofollow"
           download
           :href="artifact.path">
-          <i
-            class="fa fa-download"
-            aria-hidden="true">
-          </i>
-          <span>Download {{artifact.name}} artifacts</span>
+          Download {{artifact.name}} artifacts
         </a>
       </li>
     </ul>

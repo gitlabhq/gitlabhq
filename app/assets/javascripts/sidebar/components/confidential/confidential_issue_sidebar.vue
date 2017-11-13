@@ -1,5 +1,5 @@
 <script>
-/* global Flash */
+import Flash from '../../../flash';
 import editForm from './edit_form.vue';
 
 export default {
@@ -47,9 +47,9 @@ export default {
 </script>
 
 <template>
-  <div class="block confidentiality">
+  <div class="block issuable-sidebar-item confidentiality">
     <div class="sidebar-collapsed-icon">
-      <i class="fa" :class="faEye" aria-hidden="true" data-hidden="true"></i>
+      <i class="fa" :class="faEye" aria-hidden="true"></i>
     </div>
     <div class="title hide-collapsed">
       Confidentiality
@@ -62,19 +62,19 @@ export default {
         Edit
       </a>
     </div>
-    <div class="value confidential-value hide-collapsed">
+    <div class="value sidebar-item-value hide-collapsed">
       <editForm
         v-if="edit"
         :toggle-form="toggleForm"
         :is-confidential="isConfidential"
         :update-confidential-attribute="updateConfidentialAttribute"
       />
-      <div v-if="!isConfidential" class="no-value confidential-value">
-        <i class="fa fa-eye is-not-confidential"></i>
+      <div v-if="!isConfidential" class="no-value sidebar-item-value">
+        <i class="fa fa-eye sidebar-item-icon"></i>
         Not confidential
       </div>
-      <div v-else class="value confidential-value hide-collapsed">
-        <i aria-hidden="true" data-hidden="true" class="fa fa-eye-slash is-confidential"></i>
+      <div v-else class="value sidebar-item-value hide-collapsed">
+        <i aria-hidden="true" class="fa fa-eye-slash sidebar-item-icon is-active"></i>
         This issue is confidential
       </div>
     </div>

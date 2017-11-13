@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Merge request conflict resolution', js: true do
+feature 'Merge request conflict resolution', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 
@@ -23,11 +23,11 @@ feature 'Merge request conflict resolution', js: true do
 
       within find('.files-wrapper .diff-file', text: 'files/ruby/regex.rb') do
         all('button', text: 'Use ours').each do |button|
-          button.trigger('click')
+          button.send_keys(:return)
         end
       end
 
-      click_button 'Commit conflict resolution'
+      find_button('Commit conflict resolution').send_keys(:return)
 
       expect(page).to have_content('All merge conflicts were resolved')
       merge_request.reload_diff
@@ -60,16 +60,18 @@ feature 'Merge request conflict resolution', js: true do
       within find('.files-wrapper .diff-file', text: 'files/ruby/popen.rb') do
         click_button 'Edit inline'
         wait_for_requests
+        find('.files-wrapper .diff-file pre')
         execute_script('ace.edit($(".files-wrapper .diff-file pre")[0]).setValue("One morning");')
       end
 
       within find('.files-wrapper .diff-file', text: 'files/ruby/regex.rb') do
         click_button 'Edit inline'
         wait_for_requests
+        find('.files-wrapper .diff-file pre')
         execute_script('ace.edit($(".files-wrapper .diff-file pre")[1]).setValue("Gregor Samsa woke from troubled dreams");')
       end
 
-      click_button 'Commit conflict resolution'
+      find_button('Commit conflict resolution').send_keys(:return)
 
       expect(page).to have_content('All merge conflicts were resolved')
       merge_request.reload_diff
@@ -139,6 +141,7 @@ feature 'Merge request conflict resolution', js: true do
       it 'conflicts are resolved in Edit inline mode' do
         within find('.files-wrapper .diff-file', text: 'files/markdown/ruby-style-guide.md') do
           wait_for_requests
+          find('.files-wrapper .diff-file pre')
           execute_script('ace.edit($(".files-wrapper .diff-file pre")[0]).setValue("Gregor Samsa woke from troubled dreams");')
         end
 

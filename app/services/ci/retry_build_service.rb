@@ -28,6 +28,8 @@ module Ci
 
       attributes.push([:user, current_user])
 
+      build.retried = true
+
       Ci::Build.transaction do
         # mark all other builds of that name as retried
         build.pipeline.builds.latest

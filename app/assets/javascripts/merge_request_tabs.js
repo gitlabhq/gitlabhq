@@ -1,12 +1,18 @@
 /* eslint-disable no-new, class-methods-use-this */
-/* global Flash */
 /* global notes */
 
 import Cookies from 'js-cookie';
-import './flash';
+import Flash from './flash';
 import BlobForkSuggestion from './blob/blob_fork_suggestion';
 import initChangesDropdown from './init_changes_dropdown';
 import bp from './breakpoints';
+import {
+  parseUrlPathname,
+  handleLocationHash,
+  isMetaClick,
+} from './lib/utils/common_utils';
+import initDiscussionTab from './image_diff/init_discussion_tab';
+import Diff from './diff';
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -61,6 +67,10 @@ import bp from './breakpoints';
   class MergeRequestTabs {
 
     constructor({ action, setUrl, stubLocation } = {}) {
+      const mergeRequestTabs = document.querySelector('.js-tabs-affix');
+      const navbar = document.querySelector('.navbar-gitlab');
+      const paddingTop = 16;
+
       this.diffsLoaded = false;
       this.pipelinesLoaded = false;
       this.commitsLoaded = false;
@@ -70,6 +80,11 @@ import bp from './breakpoints';
       this.setCurrentAction = this.setCurrentAction.bind(this);
       this.tabShown = this.tabShown.bind(this);
       this.showTab = this.showTab.bind(this);
+      this.stickyTop = navbar ? navbar.offsetHeight - paddingTop : 0;
+
+      if (mergeRequestTabs) {
+        this.stickyTop += mergeRequestTabs.offsetHeight;
+      }
 
       if (stubLocation) {
         location = stubLocation;
@@ -114,7 +129,7 @@ import bp from './breakpoints';
     }
 
     clickTab(e) {
-      if (e.currentTarget && gl.utils.isMetaClick(e)) {
+      if (e.currentTarget && isMetaClick(e)) {
         const targetLink = e.currentTarget.getAttribute('href');
         e.stopImmediatePropagation();
         e.preventDefault();
@@ -149,6 +164,8 @@ import bp from './breakpoints';
         }
         this.resetViewContainer();
         this.destroyPipelinesView();
+
+        initDiscussionTab();
       }
       if (this.setUrl) {
         this.setCurrentAction(action);
@@ -243,6 +260,8 @@ import bp from './breakpoints';
         propsData: {
           endpoint: pipelineTableViewEl.dataset.endpoint,
           helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
+          emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,
+          errorStateSvgPath: pipelineTableViewEl.dataset.errorStateSvgPath,
           autoDevopsHelpPath: pipelineTableViewEl.dataset.helpAutoDevopsPath,
         },
       }).$mount();
@@ -260,7 +279,7 @@ import bp from './breakpoints';
 
       // We extract pathname for the current Changes tab anchor href
       // some pages like MergeRequestsController#new has query parameters on that anchor
-      const urlPathname = gl.utils.parseUrlPathname(source);
+      const urlPathname = parseUrlPathname(source);
 
       this.ajaxGet({
         url: `${urlPathname}.json${location.search}`,
@@ -268,7 +287,7 @@ import bp from './breakpoints';
           const $container = $('#diffs');
           $container.html(data.html);
 
-          initChangesDropdown();
+          initChangesDropdown(this.stickyTop);
 
           if (typeof gl.diffNotesCompileComponents !== 'undefined') {
             gl.diffNotesCompileComponents();
@@ -282,7 +301,7 @@ import bp from './breakpoints';
           }
           this.diffsLoaded = true;
 
-          new gl.Diff();
+          new Diff();
           this.scrollToElement('#diffs');
 
           $('.diff-file').each((i, el) => {
@@ -309,7 +328,7 @@ import bp from './breakpoints';
               forceShow: true,
             });
             anchor[0].scrollIntoView();
-            window.gl.utils.handleLocationHash();
+            handleLocationHash();
             // We have multiple elements on the page with `#note_xxx`
             // (discussion and diff tabs) and `:target` only applies to the first
             anchor.addClass('target');
@@ -345,7 +364,7 @@ import bp from './breakpoints';
     }
 
     expandViewContainer() {
-      const $wrapper = $('.content-wrapper .container-fluid');
+      const $wrapper = $('.content-wrapper .container-fluid').not('.breadcrumbs');
       if (this.fixedLayoutPref === null) {
         this.fixedLayoutPref = $wrapper.hasClass('container-limited');
       }

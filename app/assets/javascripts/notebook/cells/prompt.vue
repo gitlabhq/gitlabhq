@@ -1,11 +1,3 @@
-<template>
-  <div class="prompt">
-    <span v-if="type && count">
-      {{ type }} [{{ count }}]:
-    </span>
-  </div>
-</template>
-
 <script>
   export default {
     props: {
@@ -20,6 +12,14 @@
     },
   };
 </script>
+
+<template>
+  <div class="prompt">
+    <span v-if="type && count">
+      {{ type }} [{{ count }}]:
+    </span>
+  </div>
+</template>
 
 <style scoped>
 .prompt {

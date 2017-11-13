@@ -70,8 +70,11 @@ module API
         optional :import_url, type: String, desc: 'URL from which the project is imported'
       end
 
-      def present_projects(options = {})
-        projects = ProjectsFinder.new(current_user: current_user, params: project_finder_params).execute
+      def load_projects
+        ProjectsFinder.new(current_user: current_user, params: project_finder_params).execute
+      end
+
+      def present_projects(projects, options = {})
         projects = reorder_projects(projects)
         projects = projects.with_statistics if params[:statistics]
         projects = projects.with_issues_enabled if params[:with_issues_enabled]
@@ -111,11 +114,13 @@ module API
 
         params[:user] = user
 
-        present_projects
+        present_projects load_projects
       end
     end
 
     resource :projects do
+      include CustomAttributesEndpoints
+
       desc 'Get a list of visible projects for authenticated user' do
         success Entities::BasicProjectDetails
       end
@@ -124,7 +129,7 @@ module API
         use :statistics_params
       end
       get do
-        present_projects
+        present_projects load_projects
       end
 
       desc 'Create new project' do
@@ -227,6 +232,18 @@ module API
           present forked_project, with: Entities::Project,
                                   user_can_admin_project: can?(current_user, :admin_project, forked_project)
         end
+      end
+
+      desc 'List forks of this project' do
+        success Entities::Project
+      end
+      params do
+        use :collection_params
+      end
+      get ':id/forks' do
+        forks = ForkProjectsFinder.new(user_project, params: project_finder_params, current_user: current_user).execute
+
+        present_projects forks
       end
 
       desc 'Update an existing project' do

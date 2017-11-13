@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Merge Requests > User uses quick actions', js: true do
+feature 'Merge Requests > User uses quick actions', :js do
   include QuickActionsHelpers
 
   it_behaves_like 'issuable record that supports quick actions in its description and notes', :merge_request do

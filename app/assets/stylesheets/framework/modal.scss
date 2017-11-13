@@ -1,10 +1,18 @@
+.modal-header {
+  padding: #{3 * $grid-size} #{2 * $grid-size};
+
+  .page-title {
+    margin-top: 0;
+  }
+}
+
 .modal-body {
+  background-color: $modal-body-bg;
   position: relative;
-  padding: 15px;
+  padding: #{3 * $grid-size} #{2 * $grid-size};
 
   .form-actions {
-    margin: -$gl-padding + 1;
-    margin-top: 15px;
+    margin: #{2 * $grid-size} #{-2 * $grid-size} #{-2 * $grid-size};
   }
 
   .text-danger {
@@ -35,3 +43,8 @@ body.modal-open {
     width: 98%;
   }
 }
+
+.modal.popup-dialog {
+  display: block;
+}
+

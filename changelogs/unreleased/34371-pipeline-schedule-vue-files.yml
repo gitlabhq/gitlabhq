@@ -1,6 +1,0 @@
----
-title: Improves performance of vue code by using vue files and moving svg out of data
-  function in pipeline schedule callout
-merge_request:
-author:
-type: other

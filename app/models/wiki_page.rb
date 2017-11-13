@@ -50,7 +50,7 @@ class WikiPage
   # The Gitlab ProjectWiki instance.
   attr_reader :wiki
 
-  # The raw Gollum::Page instance.
+  # The raw Gitlab::Git::WikiPage instance.
   attr_reader :page
 
   # The attributes Hash used for storing and validating
@@ -75,7 +75,7 @@ class WikiPage
     if @attributes[:slug].present?
       @attributes[:slug]
     else
-      wiki.wiki.preview_page(title, '', format).url_path
+      wiki.wiki.preview_slug(title, format)
     end
   end
 
@@ -131,7 +131,7 @@ class WikiPage
   def versions
     return [] unless persisted?
 
-    @page.versions
+    wiki.wiki.page_versions(@page.path)
   end
 
   def commit
@@ -264,8 +264,8 @@ class WikiPage
     end
 
     page_title, page_dir = wiki.page_title_and_dir(page_details)
-    gollum_wiki = wiki.wiki
-    @page = gollum_wiki.paged(page_title, page_dir)
+    gitlab_git_wiki = wiki.wiki
+    @page = gitlab_git_wiki.page(title: page_title, dir: page_dir)
 
     set_attributes
     @persisted = errors.blank?

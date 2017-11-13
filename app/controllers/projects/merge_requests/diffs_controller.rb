@@ -10,7 +10,10 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   def show
     @environment = @merge_request.environments_for(current_user).last
 
-    render json: { html: view_to_html_string("projects/merge_requests/diffs/_diffs") }
+    # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37431
+    Gitlab::GitalyClient.allow_n_plus_1_calls do
+      render json: { html: view_to_html_string("projects/merge_requests/diffs/_diffs") }
+    end
   end
 
   def diff_for_path

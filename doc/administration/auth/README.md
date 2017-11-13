@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # Authentication and Authorization
 
 GitLab integrates with the following external authentication and authorization

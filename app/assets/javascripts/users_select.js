@@ -6,7 +6,7 @@ import _ from 'underscore';
 // TODO: remove eventHub hack after code splitting refactor
 window.emitSidebarEvent = window.emitSidebarEvent || $.noop;
 
-function UsersSelect(currentUser, els) {
+function UsersSelect(currentUser, els, options = {}) {
   var $els;
   this.users = this.users.bind(this);
   this.user = this.user.bind(this);
@@ -19,6 +19,8 @@ function UsersSelect(currentUser, els) {
       this.currentUser = JSON.parse(currentUser);
     }
   }
+
+  const { handleClick } = options;
 
   $els = $(els);
 
@@ -75,7 +77,7 @@ function UsersSelect(currentUser, els) {
 
         if (currentUserInfo) {
           input.value = currentUserInfo.id;
-          input.dataset.meta = currentUserInfo.name;
+          input.dataset.meta = _.escape(currentUserInfo.name);
         } else if (_this.currentUser) {
           input.value = _this.currentUser.id;
         }
@@ -198,7 +200,7 @@ function UsersSelect(currentUser, els) {
             };
           }
           $value.html(assigneeTemplate(user));
-          $collapsedSidebar.attr('title', user.name).tooltip('fixTitle');
+          $collapsedSidebar.attr('title', _.escape(user.name)).tooltip('fixTitle');
           return $collapsedSidebar.html(collapsedAssigneeTemplate(user));
         });
       };
@@ -424,7 +426,7 @@ function UsersSelect(currentUser, els) {
           }
 
           var isIssueIndex, isMRIndex, page, selected;
-          page = $('body').data('page');
+          page = $('body').attr('data-page');
           isIssueIndex = page === 'projects:issues:index';
           isMRIndex = (page === page && page === 'projects:merge_requests:index');
           if ($dropdown.hasClass('js-filter-bulk-update') || $dropdown.hasClass('js-issuable-form-dropdown')) {
@@ -442,6 +444,9 @@ function UsersSelect(currentUser, els) {
           }
           if ($el.closest('.add-issues-modal').length) {
             gl.issueBoards.ModalStore.store.filter[$dropdown.data('field-name')] = user.id;
+          } else if (handleClick) {
+            e.preventDefault();
+            handleClick(user, isMarking);
           } else if ($dropdown.hasClass('js-filter-submit') && (isIssueIndex || isMRIndex)) {
             return Issuable.filterResults($dropdown.closest('form'));
           } else if ($dropdown.hasClass('js-filter-submit')) {
@@ -506,7 +511,7 @@ function UsersSelect(currentUser, els) {
 
           img = "";
           if (user.beforeDivider != null) {
-            `<li><a href='#' class='${selected === true ? 'is-active' : ''}'>${user.name}</a></li>`;
+            `<li><a href='#' class='${selected === true ? 'is-active' : ''}'>${_.escape(user.name)}</a></li>`;
           } else {
             if (avatar) {
               img = "<img src='" + avatar + "' class='avatar avatar-inline' width='32' />";
@@ -518,7 +523,7 @@ function UsersSelect(currentUser, els) {
               <a href='#' class='dropdown-menu-user-link ${selected === true ? 'is-active' : ''}'>
                 ${img}
                 <strong class='dropdown-menu-user-full-name'>
-                  ${user.name}
+                  ${_.escape(user.name)}
                 </strong>
                 ${username ? `<span class='dropdown-menu-user-username'>${username}</span>` : ''}
               </a>
@@ -643,11 +648,11 @@ UsersSelect.prototype.formatResult = function(user) {
   } else {
     avatar = gon.default_avatar_url;
   }
-  return "<div class='user-result " + (!user.username ? 'no-username' : void 0) + "'> <div class='user-image'><img class='avatar avatar-inline s32' src='" + avatar + "'></div> <div class='user-name dropdown-menu-user-full-name'>" + user.name + "</div> <div class='user-username dropdown-menu-user-username'>" + (!user.invite ? "@" + _.escape(user.username) : "") + "</div> </div>";
+  return "<div class='user-result " + (!user.username ? 'no-username' : void 0) + "'> <div class='user-image'><img class='avatar avatar-inline s32' src='" + avatar + "'></div> <div class='user-name dropdown-menu-user-full-name'>" + _.escape(user.name) + "</div> <div class='user-username dropdown-menu-user-username'>" + (!user.invite ? "@" + _.escape(user.username) : "") + "</div> </div>";
 };
 
 UsersSelect.prototype.formatSelection = function(user) {
-  return user.name;
+  return _.escape(user.name);
 };
 
 UsersSelect.prototype.user = function(user_id, callback) {

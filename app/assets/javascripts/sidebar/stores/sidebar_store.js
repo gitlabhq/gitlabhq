@@ -12,9 +12,14 @@ export default class SidebarStore {
       this.assignees = [];
       this.isFetching = {
         assignees: true,
+        participants: true,
+        subscriptions: true,
       };
       this.autocompleteProjects = [];
       this.moveToProjectId = 0;
+      this.isLockDialogOpen = false;
+      this.participants = [];
+      this.subscribed = null;
 
       SidebarStore.singleton = this;
     }
@@ -34,6 +39,20 @@ export default class SidebarStore {
     this.totalTimeSpent = data.total_time_spent;
     this.humanTimeEstimate = data.human_time_estimate;
     this.humanTotalTimeSpent = data.human_total_time_spent;
+  }
+
+  setParticipantsData(data) {
+    this.isFetching.participants = false;
+    this.participants = data.participants || [];
+  }
+
+  setSubscriptionsData(data) {
+    this.isFetching.subscriptions = false;
+    this.subscribed = data.subscribed || false;
+  }
+
+  setFetchingState(key, value) {
+    this.isFetching[key] = value;
   }
 
   addAssignee(assignee) {
@@ -58,6 +77,10 @@ export default class SidebarStore {
 
   setAutocompleteProjects(projects) {
     this.autocompleteProjects = projects;
+  }
+
+  setSubscribedState(subscribed) {
+    this.subscribed = subscribed;
   }
 
   setMoveToProjectId(moveToProjectId) {

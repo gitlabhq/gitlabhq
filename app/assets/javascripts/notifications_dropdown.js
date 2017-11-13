@@ -1,5 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, one-var, no-var, one-var-declaration-per-line, no-unused-vars, consistent-return, prefer-arrow-callback, no-else-return, max-len */
-/* global Flash */
+import Flash from './flash';
 
 (function() {
   this.NotificationsDropdown = (function() {

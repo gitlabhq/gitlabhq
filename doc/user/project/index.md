@@ -20,6 +20,8 @@ When you create a project in GitLab, you'll have access to a large number of
   - [Multiple Issue Boards](https://docs.gitlab.com/ee/user/project/issue_board.html#multiple-issue-boards) (**EES/EEP**): Allow your teams to create their own workflows (Issue Boards) for the same project
 - [Repositories](repository/index.md): Host your code in a fully
 integrated platform
+  - [Branches](repository/branches/index.md): use Git branching strategies to
+  collaborate on code
   - [Protected branches](protected_branches.md): Prevent collaborators
   from messing with history or pushing code without review
   - [Protected tags](protected_tags.md): Control over who has
@@ -61,6 +63,8 @@ common actions on issues or merge requests
      browse, and download job artifacts
      - [Pipeline settings](pipelines/settings.md): Set up Git strategy (choose the default way your repository is fetched from GitLab in a job),
      timeout (defines the maximum amount of time in minutes that a job is able run), custom path for `.gitlab-ci.yml`, test coverage parsing, pipeline's visibility, and much more
+  - [GKE cluster integration](clusters/index.md): Connecting your GitLab project
+    with Google Container Engine
 - [GitLab Pages](pages/index.md): Build, test, and deploy your static
 website with GitLab Pages
 
@@ -86,6 +90,10 @@ You can [fork a project](../../gitlab-basics/fork-project.md) in order to:
 - Collaborate on code by forking a project and creating a merge request
 from your fork to the upstream project
 - Fork a sample project to work on the top of that
+
+## Project settings
+
+Read through the documentation on [project settings](settings/index.md).
 
 ## Import or export a project
 

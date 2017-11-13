@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Git::Env do
-  describe "#set" do
+  describe ".set" do
     context 'with RequestStore.store disabled' do
       before do
         allow(RequestStore).to receive(:active?).and_return(false)
@@ -34,25 +34,57 @@ describe Gitlab::Git::Env do
     end
   end
 
-  describe "#all" do
+  describe ".all" do
     context 'with RequestStore.store enabled' do
       before do
         allow(RequestStore).to receive(:active?).and_return(true)
         described_class.set(
           GIT_OBJECT_DIRECTORY: 'foo',
-          GIT_ALTERNATE_OBJECT_DIRECTORIES: 'bar')
+          GIT_ALTERNATE_OBJECT_DIRECTORIES: ['bar'])
       end
 
       it 'returns an env hash' do
         expect(described_class.all).to eq({
           'GIT_OBJECT_DIRECTORY' => 'foo',
-          'GIT_ALTERNATE_OBJECT_DIRECTORIES' => 'bar'
+          'GIT_ALTERNATE_OBJECT_DIRECTORIES' => ['bar']
         })
       end
     end
   end
 
-  describe "#[]" do
+  describe ".to_env_hash" do
+    context 'with RequestStore.store enabled' do
+      using RSpec::Parameterized::TableSyntax
+
+      let(:key) { 'GIT_OBJECT_DIRECTORY' }
+      subject { described_class.to_env_hash }
+
+      where(:input, :output) do
+        nil         | nil
+        'foo'       | 'foo'
+        []          | ''
+        ['foo']     | 'foo'
+        %w[foo bar] | 'foo:bar'
+      end
+
+      with_them do
+        before do
+          allow(RequestStore).to receive(:active?).and_return(true)
+          described_class.set(key.to_sym => input)
+        end
+
+        it 'puts the right value in the hash' do
+          if output
+            expect(subject.fetch(key)).to eq(output)
+          else
+            expect(subject.has_key?(key)).to eq(false)
+          end
+        end
+      end
+    end
+  end
+
+  describe ".[]" do
     context 'with RequestStore.store enabled' do
       before do
         allow(RequestStore).to receive(:active?).and_return(true)

@@ -15,7 +15,7 @@ export default {
     },
   },
   computed: {
-    onOrOff() {
+    toggleButtonText() {
       return this.isConfidential ? 'Turn Off' : 'Turn On';
     },
     updateConfidentialBool() {
@@ -26,7 +26,7 @@ export default {
 </script>
 
 <template>
-  <div class="confidential-warning-message-actions">
+  <div class="sidebar-item-warning-message-actions">
     <button
       type="button"
       class="btn btn-default append-right-10"
@@ -39,7 +39,7 @@ export default {
       class="btn btn-close"
       @click.prevent="updateConfidentialAttribute(updateConfidentialBool)"
     >
-      {{ onOrOff }}
+      {{ toggleButtonText }}
     </button>
   </div>
 </template>

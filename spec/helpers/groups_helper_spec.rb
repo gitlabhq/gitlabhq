@@ -10,14 +10,27 @@ describe GroupsHelper do
       group = create(:group)
       group.avatar = fixture_file_upload(avatar_file_path)
       group.save!
-      expect(group_icon(group.path).to_s)
-        .to match("/uploads/-/system/group/avatar/#{group.id}/banana_sample.gif")
+
+      expect(helper.group_icon(group).to_s)
+        .to eq "<img data-src=\"#{group.avatar.url}\" class=\" lazy\" src=\"#{LazyImageTagHelper.placeholder_image}\" />"
+    end
+  end
+
+  describe 'group_icon_url' do
+    avatar_file_path = File.join(Rails.root, 'spec', 'fixtures', 'banana_sample.gif')
+
+    it 'returns an url for the avatar' do
+      group = create(:group)
+      group.avatar = fixture_file_upload(avatar_file_path)
+      group.save!
+      expect(group_icon_url(group.path).to_s)
+        .to match(group.avatar.url)
     end
 
     it 'gives default avatar_icon when no avatar is present' do
       group = create(:group)
       group.save!
-      expect(group_icon(group.path)).to match('group_avatar.png')
+      expect(group_icon_url(group.path)).to match_asset_path('group_avatar.png')
     end
   end
 

@@ -2,18 +2,11 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   before_action :check_merge_requests_available!
   before_action :merge_request
   before_action :authorize_read_merge_request!
-  before_action :ensure_ref_fetched
 
   private
 
   def merge_request
     @issuable = @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
-  end
-
-  # Make sure merge requests created before 8.0
-  # have head file in refs/merge-requests/
-  def ensure_ref_fetched
-    @merge_request.ensure_ref_fetched
   end
 
   def merge_request_params
@@ -34,6 +27,7 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
       :target_project_id,
       :task_num,
       :title,
+      :discussion_locked,
 
       label_ids: []
     ]

@@ -1,8 +1,10 @@
 require 'rails_helper'
 
 describe 'New/edit merge request', :js do
+  include ProjectForksHelper
+
   let!(:project)     { create(:project, :public, :repository) }
-  let(:fork_project) { create(:project, :repository, forked_from_project: project) }
+  let(:forked_project) { fork_project(project, nil, repository: true) }
   let!(:user)        { create(:user) }
   let!(:user2)       { create(:user) }
   let!(:milestone)   { create(:milestone, project: project) }
@@ -41,7 +43,7 @@ describe 'New/edit merge request', :js do
           expect(page).to have_content user2.name
         end
 
-        find('a', text: 'Assign to me').trigger('click')
+        find('a', text: 'Assign to me').click
         expect(find('input[name="merge_request[assignee_id]"]', visible: false).value).to match(user.id.to_s)
         page.within '.js-assignee-search' do
           expect(page).to have_content user.name
@@ -170,16 +172,16 @@ describe 'New/edit merge request', :js do
 
   context 'forked project' do
     before do
-      fork_project.team << [user, :master]
+      forked_project.team << [user, :master]
       sign_in(user)
     end
 
     context 'new merge request' do
       before do
         visit project_new_merge_request_path(
-          fork_project,
+          forked_project,
           merge_request: {
-            source_project_id: fork_project.id,
+            source_project_id: forked_project.id,
             target_project_id: project.id,
             source_branch: 'fix',
             target_branch: 'master'
@@ -238,7 +240,7 @@ describe 'New/edit merge request', :js do
     context 'edit merge request' do
       before do
         merge_request = create(:merge_request,
-                                 source_project: fork_project,
+                                 source_project: forked_project,
                                  target_project: project,
                                  source_branch: 'fix',
                                  target_branch: 'master'

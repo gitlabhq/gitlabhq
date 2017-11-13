@@ -1,0 +1,35 @@
+.gitlab-tabs {
+  background: $gray-light;
+  border: 1px solid $border-color;
+
+  li {
+    width: 50%;
+
+    &:not(:last-child) {
+      border-right: 1px solid $border-color;
+    }
+
+    &.active {
+      background: $white-light;
+    }
+
+    a {
+      width: 100%;
+      text-align: center;
+    }
+  }
+}
+
+.gitlab-tab-content {
+  border: 1px solid $border-color;
+  border-top: 0;
+  margin-bottom: $gl-padding;
+
+  .tab-pane {
+    padding: $gl-padding;
+
+    &.no-padding {
+      padding: 0;
+    }
+  }
+}

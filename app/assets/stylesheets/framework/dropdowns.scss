@@ -37,6 +37,7 @@
   .dropdown-menu-nav {
     @include set-visible;
     display: block;
+    min-height: 40px;
 
     @media (max-width: $screen-xs-max) {
       width: 100%;
@@ -727,11 +728,11 @@
 
 .pika-single.animate-picker.is-bound {
   @include set-visible;
-}
 
-.pika-single.animate-picker.is-bound.is-hidden {
-  @include set-invisible;
-  overflow: hidden;
+  &.is-hidden {
+    @include set-invisible;
+    overflow: hidden;
+  }
 }
 
 @mixin dropdown-item-hover {
@@ -744,6 +745,10 @@
   #{$selector}.dropdown-menu,
   #{$selector}.dropdown-menu-nav {
     margin-bottom: 24px;
+
+    &.dropdown-open-top {
+      margin-bottom: $dropdown-vertical-offset;
+    }
 
     li {
       display: block;
@@ -772,12 +777,23 @@
       a,
       button,
       .menu-item {
+        margin-bottom: 0;
         border-radius: 0;
         box-shadow: none;
         padding: 8px 16px;
         text-align: left;
         white-space: normal;
         width: 100%;
+        font-weight: $gl-font-weight-normal;
+        line-height: normal;
+
+        &.dropdown-menu-user-link {
+          white-space: nowrap;
+
+          .dropdown-menu-user-username {
+            display: block;
+          }
+        }
 
         // make sure the text color is not overriden
         &.text-danger {
@@ -826,6 +842,7 @@
         a {
           padding: 8px 40px;
 
+          &.is-indeterminate::before,
           &.is-active::before {
             left: 16px;
           }
@@ -865,12 +882,19 @@
       min-width: 100%;
     }
   }
+
+  header.navbar-gitlab-new .header-content .dropdown {
+    .dropdown-menu {
+      left: 0;
+      min-width: 100%;
+    }
+  }
 }
 
 @include new-style-dropdown('.breadcrumbs-list .dropdown ');
 @include new-style-dropdown('.js-namespace-select + ');
 
-header.navbar-gitlab-new .header-content .dropdown-menu.projects-dropdown-menu {
+header.header-content .dropdown-menu.projects-dropdown-menu {
   padding: 0;
 }
 
@@ -915,9 +939,7 @@ header.navbar-gitlab-new .header-content .dropdown-menu.projects-dropdown-menu {
       border-right: 0;
     }
   }
-}
 
-.projects-dropdown-container {
   .projects-list-frequent-container,
   .projects-list-search-container, {
     padding: 8px 0;
@@ -928,11 +950,6 @@ header.navbar-gitlab-new .header-content .dropdown-menu.projects-dropdown-menu {
   .projects-list-frequent-container li.section-empty,
   .projects-list-search-container li.section-empty {
     padding: 0 15px;
-  }
-
-  .section-header,
-  .projects-list-frequent-container li.section-empty,
-  .projects-list-search-container li.section-empty {
     color: $gl-text-color-secondary;
     font-size: $gl-font-size;
   }

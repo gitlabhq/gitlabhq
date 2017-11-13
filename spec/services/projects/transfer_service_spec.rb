@@ -121,11 +121,14 @@ describe Projects::TransferService do
   end
 
   context 'namespace which contains orphan repository with same projects path name' do
-    let(:repository_storage_path) { Gitlab.config.repositories.storages['default']['path'] }
+    let(:repository_storage) { 'default' }
+    let(:repository_storage_path) { Gitlab.config.repositories.storages[repository_storage]['path'] }
 
     before do
       group.add_owner(user)
-      gitlab_shell.add_repository(repository_storage_path, "#{group.full_path}/#{project.path}")
+      unless gitlab_shell.add_repository(repository_storage, "#{group.full_path}/#{project.path}")
+        raise 'failed to add repository'
+      end
 
       @result = transfer_project(project, user, group)
     end

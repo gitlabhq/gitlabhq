@@ -11,8 +11,6 @@ import Dropzone from 'dropzone';
 import 'mousetrap';
 import 'mousetrap/plugins/pause/mousetrap-pause';
 
-window.Dropzone = Dropzone;
-
 //
 // ### Events
 //

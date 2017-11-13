@@ -115,8 +115,7 @@
   @return $unfoldedTransition;
 }
 
-.btn,
-.global-dropdown-toggle {
+.btn {
   @include transition(background-color, border-color, color, box-shadow);
 }
 
@@ -197,6 +196,13 @@ a {
 
   &.animation-container-small {
     height: 12px;
+  }
+
+  &.animation-container-right {
+    .skeleton-line-2 {
+      left: 0;
+      right: 150px;
+    }
   }
 
   &::before {

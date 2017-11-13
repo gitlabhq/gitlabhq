@@ -48,7 +48,7 @@ describe Groups::VariablesController do
         post :update, group_id: group,
                       id: variable.id, variable: { key: '?', value: variable.value }
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to render_template :show
       end
     end

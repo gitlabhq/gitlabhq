@@ -38,15 +38,15 @@ module StubConfiguration
     allow(Gitlab.config.backup).to receive_messages(to_settings(messages))
   end
 
+  def stub_lfs_setting(messages)
+    allow(Gitlab.config.lfs).to receive_messages(to_settings(messages))
+  end
+
   def stub_storage_settings(messages)
     # Default storage is always required
     messages['default'] ||= Gitlab.config.repositories.storages.default
     messages.each do |storage_name, storage_settings|
-      storage_settings['path'] ||= TestEnv.repos_path
-      storage_settings['failure_count_threshold'] ||= 10
-      storage_settings['failure_wait_time'] ||= 30
-      storage_settings['failure_reset_time'] ||= 1800
-      storage_settings['storage_timeout'] ||= 5
+      storage_settings['path'] = TestEnv.repos_path unless storage_settings.key?('path')
     end
 
     allow(Gitlab.config.repositories).to receive(:storages).and_return(Settingslogic.new(messages))

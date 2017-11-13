@@ -31,7 +31,7 @@ class MergeRequestPresenter < Gitlab::View::Presenter::Delegated
   end
 
   def remove_wip_path
-    if can?(current_user, :update_merge_request, merge_request.project)
+    if work_in_progress? && can?(current_user, :update_merge_request, merge_request.project)
       remove_wip_project_merge_request_path(project, merge_request)
     end
   end

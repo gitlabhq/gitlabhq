@@ -20,17 +20,6 @@ module BoardsHelper
     project_issues_path(@project)
   end
 
-  def current_board_json
-    board = @board || @boards.first
-
-    board.to_json(
-      only: [:id, :name, :milestone_id],
-      include: {
-        milestone: { only: [:title] }
-      }
-    )
-  end
-
   def board_base_url
     project_boards_path(@project)
   end
@@ -76,5 +65,9 @@ module BoardsHelper
       'dropdown-header': dropdown_options[:data][:'dropdown-header'],
       'max-select': dropdown_options[:data][:'max-select']
     }
+  end
+
+  def boards_link_text
+    s_("IssueBoards|Board")
   end
 end

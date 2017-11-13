@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::SearchResults do
+  include ProjectForksHelper
+
   let(:user) { create(:user) }
   let!(:project) { create(:project, name: 'foo') }
   let!(:issue) { create(:issue, project: project, title: 'foo') }
@@ -42,7 +44,7 @@ describe Gitlab::SearchResults do
     end
 
     it 'includes merge requests from source and target projects' do
-      forked_project = create(:project, forked_from_project: project)
+      forked_project = fork_project(project, user)
       merge_request_2 = create(:merge_request, target_project: project, source_project: forked_project, title: 'foo')
 
       results = described_class.new(user, Project.where(id: forked_project.id), 'foo')

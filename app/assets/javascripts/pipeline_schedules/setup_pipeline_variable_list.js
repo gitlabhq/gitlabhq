@@ -1,3 +1,5 @@
+import { convertPermissionToBoolean } from '../lib/utils/common_utils';
+
 function insertRow($row) {
   const $rowClone = $row.clone();
   $rowClone.removeAttr('data-is-persisted');
@@ -6,7 +8,7 @@ function insertRow($row) {
 }
 
 function removeRow($row) {
-  const isPersisted = gl.utils.convertPermissionToBoolean($row.attr('data-is-persisted'));
+  const isPersisted = convertPermissionToBoolean($row.attr('data-is-persisted'));
 
   if (isPersisted) {
     $row.hide();

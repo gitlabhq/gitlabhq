@@ -10,27 +10,37 @@ export default {
   },
   template: `
     <div class="mr-widget-body media">
-      <status-icon status="failed" showDisabledButton />
+      <status-icon
+        status="failed"
+        :show-disabled-button="true" />
       <div class="media-body space-children">
-        <span class="bold">
-          There are merge conflicts<span v-if="!mr.canMerge">.</span>
-          <span v-if="!mr.canMerge">
-            Resolve these conflicts or ask someone with write access to this repository to merge it locally
-          </span>
+        <span
+          v-if="mr.shouldBeRebased"
+          class="bold">
+          Fast-forward merge is not possible.
+          To merge this request, first rebase locally.
         </span>
-        <a
-          v-if="mr.canMerge && mr.conflictResolutionPath"
-          :href="mr.conflictResolutionPath"
-          class="btn btn-default btn-xs js-resolve-conflicts-button">
-          Resolve conflicts
-        </a>
-        <a
-          v-if="mr.canMerge"
-          class="btn btn-default btn-xs js-merge-locally-button"
-          data-toggle="modal"
-          href="#modal_merge_info">
-          Merge locally
-        </a>
+        <template v-else>
+          <span class="bold">
+            There are merge conflicts<span v-if="!mr.canMerge">.</span>
+            <span v-if="!mr.canMerge">
+              Resolve these conflicts or ask someone with write access to this repository to merge it locally
+            </span>
+          </span>
+          <a
+            v-if="mr.canMerge && mr.conflictResolutionPath"
+            :href="mr.conflictResolutionPath"
+            class="js-resolve-conflicts-button btn btn-default btn-xs">
+            Resolve conflicts
+          </a>
+          <a
+            v-if="mr.canMerge"
+            class="js-merge-locally-button btn btn-default btn-xs"
+            data-toggle="modal"
+            href="#modal_merge_info">
+            Merge locally
+          </a>
+        </template>
       </div>
     </div>
   `,

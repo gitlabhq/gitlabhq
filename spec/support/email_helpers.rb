@@ -1,6 +1,6 @@
 module EmailHelpers
-  def sent_to_user?(user, recipients = email_recipients)
-    recipients.include?(user.notification_email)
+  def sent_to_user(user, recipients: email_recipients)
+    recipients.count { |to| to == user.notification_email }
   end
 
   def reset_delivered_emails!
@@ -10,17 +10,17 @@ module EmailHelpers
   def should_only_email(*users, kind: :to)
     recipients = email_recipients(kind: kind)
 
-    users.each { |user| should_email(user, recipients) }
+    users.each { |user| should_email(user, recipients: recipients) }
 
     expect(recipients.count).to eq(users.count)
   end
 
-  def should_email(user, recipients = email_recipients)
-    expect(sent_to_user?(user, recipients)).to be_truthy
+  def should_email(user, times: 1, recipients: email_recipients)
+    expect(sent_to_user(user, recipients: recipients)).to eq(times)
   end
 
-  def should_not_email(user, recipients = email_recipients)
-    expect(sent_to_user?(user, recipients)).to be_falsey
+  def should_not_email(user, recipients: email_recipients)
+    should_email(user, times: 0, recipients: recipients)
   end
 
   def should_not_email_anyone

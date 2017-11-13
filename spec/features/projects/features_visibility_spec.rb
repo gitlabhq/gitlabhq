@@ -6,7 +6,7 @@ describe 'Edit Project Settings' do
   let!(:issue) { create(:issue, project: project) }
   let(:non_member) { create(:user) }
 
-  describe 'project features visibility selectors', js: true do
+  describe 'project features visibility selectors', :js do
     before do
       project.team << [member, :master]
       sign_in(member)
@@ -22,7 +22,7 @@ describe 'Edit Project Settings' do
           # disable by clicking toggle
           toggle_feature_off("project[project_feature_attributes][#{tool_name}_access_level]")
           page.within('.sharing-permissions') do
-            click_button 'Save changes'
+            find('input[value="Save changes"]').click
           end
           wait_for_requests
           expect(page).not_to have_selector(".shortcuts-#{shortcut_name}")
@@ -30,7 +30,7 @@ describe 'Edit Project Settings' do
           # re-enable by clicking toggle again
           toggle_feature_on("project[project_feature_attributes][#{tool_name}_access_level]")
           page.within('.sharing-permissions') do
-            click_button 'Save changes'
+            find('input[value="Save changes"]').click
           end
           wait_for_requests
           expect(page).to have_selector(".shortcuts-#{shortcut_name}")
@@ -163,7 +163,7 @@ describe 'Edit Project Settings' do
     end
   end
 
-  describe 'repository visibility', js: true do
+  describe 'repository visibility', :js do
     before do
       project.team << [member, :master]
       sign_in(member)

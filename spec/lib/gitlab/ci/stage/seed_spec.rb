@@ -11,6 +11,12 @@ describe Gitlab::Ci::Stage::Seed do
     described_class.new(pipeline, 'test', builds)
   end
 
+  describe '#size' do
+    it 'returns a number of jobs in the stage' do
+      expect(subject.size).to eq 2
+    end
+  end
+
   describe '#stage' do
     it 'returns hash attributes of a stage' do
       expect(subject.stage).to be_a Hash

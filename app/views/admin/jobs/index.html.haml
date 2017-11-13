@@ -1,10 +1,9 @@
 - breadcrumb_title "Jobs"
 - @no_container = true
-= render "admin/dashboard/head"
 
 %div{ class: container_class }
 
-  .top-area
+  .top-area.scrolling-tabs-container.inner-page-scroll-tabs
     - build_path_proc = ->(scope) { admin_jobs_path(scope: scope) }
     = render "shared/builds/tabs", build_path_proc: build_path_proc, all_builds: @all_builds, scope: @scope
 

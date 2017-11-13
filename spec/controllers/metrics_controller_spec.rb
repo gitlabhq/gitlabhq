@@ -59,17 +59,6 @@ describe MetricsController do
         expect(response.body).to match(/^redis_shared_state_ping_latency_seconds [0-9\.]+$/)
       end
 
-      it 'returns file system check metrics' do
-        get :index
-
-        expect(response.body).to match(/^filesystem_access_latency_seconds{shard="default"} [0-9\.]+$/)
-        expect(response.body).to match(/^filesystem_accessible{shard="default"} 1$/)
-        expect(response.body).to match(/^filesystem_write_latency_seconds{shard="default"} [0-9\.]+$/)
-        expect(response.body).to match(/^filesystem_writable{shard="default"} 1$/)
-        expect(response.body).to match(/^filesystem_read_latency_seconds{shard="default"} [0-9\.]+$/)
-        expect(response.body).to match(/^filesystem_readable{shard="default"} 1$/)
-      end
-
       context 'prometheus metrics are disabled' do
         before do
           allow(Gitlab::Metrics).to receive(:prometheus_metrics_enabled?).and_return(false)
@@ -78,7 +67,8 @@ describe MetricsController do
         it 'returns proper response' do
           get :index
 
-          expect(response.status).to eq(404)
+          expect(response.status).to eq(200)
+          expect(response.body).to eq("# Metrics are disabled, see: http://test.host/help/administration/monitoring/prometheus/gitlab_metrics#gitlab-prometheus-metrics\n")
         end
       end
     end

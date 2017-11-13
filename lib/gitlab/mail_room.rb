@@ -4,6 +4,15 @@ require_relative 'redis/queues' unless defined?(Gitlab::Redis::Queues)
 
 module Gitlab
   module MailRoom
+    DEFAULT_CONFIG = {
+      enabled: false,
+      port: 143,
+      ssl: false,
+      start_tls: false,
+      mailbox: 'inbox',
+      idle_timeout: 60
+    }.freeze
+
     class << self
       def enabled?
         config[:enabled] && config[:address]
@@ -22,16 +31,10 @@ module Gitlab
       def fetch_config
         return {} unless File.exist?(config_file)
 
-        rails_env = ENV['RAILS_ENV'] || ENV['RACK_ENV'] || 'development'
-        all_config = YAML.load_file(config_file)[rails_env].deep_symbolize_keys
-
-        config = all_config[:incoming_email] || {}
-        config[:enabled] = false if config[:enabled].nil?
-        config[:port] = 143 if config[:port].nil?
-        config[:ssl] = false if config[:ssl].nil?
-        config[:start_tls] = false if config[:start_tls].nil?
-        config[:mailbox] = 'inbox' if config[:mailbox].nil?
-        config[:idle_timeout] = 60 if config[:idle_timeout].nil?
+        config = YAML.load_file(config_file)[rails_env].deep_symbolize_keys[:incoming_email] || {}
+        config = DEFAULT_CONFIG.merge(config) do |_key, oldval, newval|
+          newval.nil? ? oldval : newval
+        end
 
         if config[:enabled] && config[:address]
           gitlab_redis_queues = Gitlab::Redis::Queues.new(rails_env)
@@ -43,6 +46,10 @@ module Gitlab
         end
 
         config
+      end
+
+      def rails_env
+        @rails_env ||= ENV['RAILS_ENV'] || ENV['RACK_ENV'] || 'development'
       end
 
       def config_file

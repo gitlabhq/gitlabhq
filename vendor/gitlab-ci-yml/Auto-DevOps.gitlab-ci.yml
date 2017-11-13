@@ -271,10 +271,6 @@ production:
       --version="$CI_PIPELINE_ID-$CI_JOB_ID" \
       "$name" \
       chart/
-
-    if [[ "$track" == "stable" ]]; then
-      kubectl rollout status -n "$KUBE_NAMESPACE" -w "deployment/${CI_ENVIRONMENT_SLUG}-auto-deploy"
-    fi
   }
 
   function install_dependencies() {
@@ -339,7 +335,9 @@ production:
 
   function check_kube_domain() {
     if [ -z ${AUTO_DEVOPS_DOMAIN+x} ]; then
-      echo "In order to deploy, AUTO_DEVOPS_DOMAIN must be set as a variable at the group or project level, or manually added in .gitlab-cy.yml"
+      echo "In order to deploy or use Review Apps, AUTO_DEVOPS_DOMAIN variable must be set"
+      echo "You can do it in Auto DevOps project settings or defining a secret variable at group or project level"
+      echo "You can also manually add it in .gitlab-ci.yml"
       false
     else
       true

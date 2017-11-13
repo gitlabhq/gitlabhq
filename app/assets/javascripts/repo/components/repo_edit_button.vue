@@ -1,58 +1,57 @@
 <script>
-import Store from '../stores/repo_store';
-import RepoMixin from '../mixins/repo_mixin';
+import { mapGetters, mapActions, mapState } from 'vuex';
+import popupDialog from '../../vue_shared/components/popup_dialog.vue';
 
 export default {
-  data: () => Store,
-  mixins: [RepoMixin],
+  components: {
+    popupDialog,
+  },
   computed: {
+    ...mapState([
+      'editMode',
+      'discardPopupOpen',
+    ]),
+    ...mapGetters([
+      'canEditFile',
+    ]),
     buttonLabel() {
       return this.editMode ? this.__('Cancel edit') : this.__('Edit');
     },
-
-    showButton() {
-      return this.isCommitable &&
-        !this.activeFile.render_error &&
-        !this.binary &&
-        this.openedFiles.length;
-    },
   },
   methods: {
-    editCancelClicked() {
-      if (this.changedFiles.length) {
-        this.dialog.open = true;
-        return;
-      }
-      this.editMode = !this.editMode;
-      Store.toggleBlobView();
-    },
-    toggleProjectRefsForm() {
-      $('.project-refs-form').toggleClass('disabled', this.editMode);
-      $('.js-tree-ref-target-holder').toggle(this.editMode);
-    },
-  },
-
-  watch: {
-    editMode() {
-      this.toggleProjectRefsForm();
-    },
+    ...mapActions([
+      'toggleEditMode',
+      'closeDiscardPopup',
+    ]),
   },
 };
 </script>
 
 <template>
-<button
-  v-if="showButton"
-  class="btn btn-default"
-  type="button"
-  @click.prevent="editCancelClicked">
-  <i
-    v-if="!editMode"
-    class="fa fa-pencil"
-    aria-hidden="true">
-  </i>
-  <span>
-    {{buttonLabel}}
-  </span>
-</button>
+  <div class="editable-mode">
+    <button
+      v-if="canEditFile"
+      class="btn btn-default"
+      type="button"
+      @click.prevent="toggleEditMode()">
+      <i
+        v-if="!editMode"
+        class="fa fa-pencil"
+        aria-hidden="true">
+      </i>
+      <span>
+        {{buttonLabel}}
+      </span>
+    </button>
+    <popup-dialog
+      v-if="discardPopupOpen"
+      class="text-left"
+      :primary-button-label="__('Discard changes')"
+      kind="warning"
+      :title="__('Are you sure?')"
+      :text="__('Are you sure you want to discard your changes?')"
+      @toggle="closeDiscardPopup"
+      @submit="toggleEditMode(true)"
+    />
+  </div>
 </template>

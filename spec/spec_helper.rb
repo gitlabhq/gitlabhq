@@ -1,7 +1,7 @@
 require './spec/simplecov_env'
 SimpleCovEnv.start!
 
-ENV["RAILS_ENV"] ||= 'test'
+ENV["RAILS_ENV"] = 'test'
 ENV["IN_MEMORY_APPLICATION_SETTINGS"] = 'true'
 
 require File.expand_path("../../config/environment", __FILE__)
@@ -48,7 +48,11 @@ RSpec.configure do |config|
   config.include Warden::Test::Helpers, type: :request
   config.include LoginHelpers, type: :feature
   config.include SearchHelpers, type: :feature
+  config.include CookieHelper, :js
+  config.include InputHelper, :js
+  config.include InspectRequests, :js
   config.include WaitForRequests, :js
+  config.include LiveDebugger, :js
   config.include StubConfiguration
   config.include EmailHelpers, :mailer, type: :mailer
   config.include TestEnv
@@ -64,8 +68,16 @@ RSpec.configure do |config|
 
   config.infer_spec_type_from_file_location!
 
-  config.define_derived_metadata(file_path: %r{/spec/requests/(ci/)?api/}) do |metadata|
-    metadata[:api] = true
+  config.define_derived_metadata(file_path: %r{/spec/}) do |metadata|
+    location = metadata[:location]
+
+    metadata[:api] = true if location =~ %r{/spec/requests/api/}
+
+    # do not overwrite type if it's already set
+    next if metadata.key?(:type)
+
+    match = location.match(%r{/spec/([^/]+)/})
+    metadata[:type] = match[1].singularize.to_sym if match
   end
 
   config.raise_errors_for_deprecations!
@@ -73,7 +85,10 @@ RSpec.configure do |config|
   if ENV['CI']
     # This includes the first try, i.e. tests will be run 4 times before failing.
     config.default_retry_count = 4
-    config.reporter.register_listener(RspecFlaky::Listener.new, :example_passed, :dump_summary)
+    config.reporter.register_listener(
+      RspecFlaky::Listener.new,
+      :example_passed,
+      :dump_summary)
   end
 
   config.before(:suite) do
@@ -158,6 +173,24 @@ RSpec.configure do |config|
 
   config.around(:each, :postgresql) do |example|
     example.run if Gitlab::Database.postgresql?
+  end
+end
+
+# add simpler way to match asset paths containing digest strings
+RSpec::Matchers.define :match_asset_path do |expected|
+  match do |actual|
+    path = Regexp.escape(expected)
+    extname = Regexp.escape(File.extname(expected))
+    digest_regex = Regexp.new(path.sub(extname, "(?:-\\h+)?#{extname}") << '$')
+    digest_regex =~ actual
+  end
+
+  failure_message do |actual|
+    "expected that #{actual} would include an asset path for #{expected}"
+  end
+
+  failure_message_when_negated do |actual|
+    "expected that #{actual} would not include an asset path for  #{expected}"
   end
 end
 

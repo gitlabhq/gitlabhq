@@ -5,7 +5,7 @@ module Gitlab
 
       delegate :new_file?, :deleted_file?, :renamed_file?,
         :old_path, :new_path, :a_mode, :b_mode, :mode_changed?,
-        :submodule?, :expanded?, :too_large?, :collapsed?, :line_count, to: :diff, prefix: false
+        :submodule?, :expanded?, :too_large?, :collapsed?, :line_count, :has_binary_notice?, to: :diff, prefix: false
 
       # Finding a viewer for a diff file happens based only on extension and whether the
       # diff file blobs are binary or text, which means 1 diff file should only be matched by 1 viewer,
@@ -27,22 +27,29 @@ module Gitlab
         @fallback_diff_refs = fallback_diff_refs
       end
 
-      def position(line)
+      def position(position_marker, position_type: :text)
         return unless diff_refs
 
-        Position.new(
+        data = {
+          diff_refs: diff_refs,
+          position_type: position_type.to_s,
           old_path: old_path,
-          new_path: new_path,
-          old_line: line.old_line,
-          new_line: line.new_line,
-          diff_refs: diff_refs
-        )
+          new_path: new_path
+        }
+
+        if position_type == :text
+          data.merge!(text_position_properties(position_marker))
+        else
+          data.merge!(image_position_properties(position_marker))
+        end
+
+        Position.new(data)
       end
 
       def line_code(line)
         return if line.meta?
 
-        Gitlab::Diff::LineCode.generate(file_path, line.new_pos, line.old_pos)
+        Gitlab::Git.diff_line_code(file_path, line.new_pos, line.old_pos)
       end
 
       def line_for_line_code(code)
@@ -166,7 +173,7 @@ module Gitlab
       end
 
       def binary?
-        old_blob&.binary? || new_blob&.binary?
+        has_binary_notice? || old_blob&.binary? || new_blob&.binary?
       end
 
       def text?
@@ -227,6 +234,14 @@ module Gitlab
       end
 
       private
+
+      def text_position_properties(line)
+        { old_line: line.old_line, new_line: line.new_line }
+      end
+
+      def image_position_properties(image_point)
+        image_point.to_h
+      end
 
       def blobs_changed?
         old_blob && new_blob && old_blob.id != new_blob.id

@@ -1,51 +1,83 @@
 import Vue from 'vue';
+import store from '~/repo/stores';
 import repoEditButton from '~/repo/components/repo_edit_button.vue';
-import RepoStore from '~/repo/stores/repo_store';
+import { file, resetStore } from '../helpers';
 
 describe('RepoEditButton', () => {
-  function createComponent() {
+  let vm;
+
+  beforeEach(() => {
+    const f = file();
     const RepoEditButton = Vue.extend(repoEditButton);
 
-    return new RepoEditButton().$mount();
-  }
+    vm = new RepoEditButton({
+      store,
+    });
 
-  it('renders an edit button that toggles the view state', (done) => {
-    RepoStore.isCommitable = true;
-    RepoStore.changedFiles = [];
-    RepoStore.binary = false;
-    RepoStore.openedFiles = [{}, {}];
+    f.active = true;
+    vm.$store.dispatch('setInitialData', {
+      canCommit: true,
+      onTopOfBranch: true,
+    });
+    vm.$store.state.openFiles.push(f);
+  });
 
-    const vm = createComponent();
+  afterEach(() => {
+    vm.$destroy();
 
-    expect(vm.$el.tagName).toEqual('BUTTON');
-    expect(vm.$el.textContent).toMatch('Edit');
+    resetStore(vm.$store);
+  });
 
-    spyOn(vm, 'editCancelClicked').and.callThrough();
-    spyOn(vm, 'toggleProjectRefsForm');
+  it('renders an edit button', () => {
+    vm.$mount();
 
-    vm.$el.click();
+    expect(vm.$el.querySelector('.btn')).not.toBeNull();
+    expect(vm.$el.querySelector('.btn').textContent.trim()).toBe('Edit');
+  });
 
-    Vue.nextTick(() => {
-      expect(vm.editCancelClicked).toHaveBeenCalled();
-      expect(vm.toggleProjectRefsForm).toHaveBeenCalled();
-      expect(vm.$el.textContent).toMatch('Cancel edit');
+  it('renders edit button with cancel text', () => {
+    vm.$store.state.editMode = true;
+
+    vm.$mount();
+
+    expect(vm.$el.querySelector('.btn')).not.toBeNull();
+    expect(vm.$el.querySelector('.btn').textContent.trim()).toBe('Cancel edit');
+  });
+
+  it('toggles edit mode on click', (done) => {
+    vm.$mount();
+
+    vm.$el.querySelector('.btn').click();
+
+    vm.$nextTick(() => {
+      expect(vm.$el.querySelector('.btn').textContent.trim()).toBe('Cancel edit');
+
       done();
     });
   });
 
-  it('does not render if not isCommitable', () => {
-    RepoStore.isCommitable = false;
+  describe('discardPopupOpen', () => {
+    beforeEach(() => {
+      vm.$store.state.discardPopupOpen = true;
+      vm.$store.state.editMode = true;
+      vm.$store.state.openFiles[0].changed = true;
 
-    const vm = createComponent();
+      vm.$mount();
+    });
 
-    expect(vm.$el.innerHTML).toBeUndefined();
-  });
+    it('renders popup', () => {
+      expect(vm.$el.querySelector('.modal')).not.toBeNull();
+    });
 
-  describe('methods', () => {
-    describe('editCancelClicked', () => {
-      it('sets dialog to open when there are changedFiles');
+    it('removes all changed files', (done) => {
+      vm.$el.querySelector('.btn-warning').click();
 
-      it('toggles editMode and calls toggleBlobView');
+      vm.$nextTick(() => {
+        expect(vm.$store.getters.changedFiles.length).toBe(0);
+        expect(vm.$el.querySelector('.modal')).toBeNull();
+
+        done();
+      });
     });
   });
 });

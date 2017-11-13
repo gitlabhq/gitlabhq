@@ -79,7 +79,25 @@
       },
 
       formatMetricUsage(series) {
-        return `${formatRelevantDigits(series.values[this.currentDataIndex].value)} ${this.unitOfDisplay}`;
+        const value = series.values[this.currentDataIndex] &&
+          series.values[this.currentDataIndex].value;
+        if (isNaN(value)) {
+          return '-';
+        }
+        return `${formatRelevantDigits(value)} ${this.unitOfDisplay}`;
+      },
+
+      createSeriesString(index, series) {
+        if (series.metricTag) {
+          return `${series.metricTag} ${this.formatMetricUsage(series)}`;
+        }
+        return `${this.legendTitle} series ${index + 1} ${this.formatMetricUsage(series)}`;
+      },
+
+      strokeDashArray(type) {
+        if (type === 'dashed') return '6, 3';
+        if (type === 'dotted') return '3, 3';
+        return null;
       },
     },
     mounted() {
@@ -151,20 +169,22 @@
       v-for="(series, index) in timeSeries"
       :key="index"
       :transform="translateLegendGroup(index)">
-      <rect
-        :fill="series.areaColor"
-        :width="measurements.legends.width"
-        :height="measurements.legends.height"
-        x="20"
-        :y="graphHeight - measurements.legendOffset">
-      </rect>
+      <line
+        :stroke="series.lineColor"
+        :stroke-width="measurements.legends.height"
+        :stroke-dasharray="strokeDashArray(series.lineStyle)"
+        :x1="measurements.legends.offsetX"
+        :x2="measurements.legends.offsetX + measurements.legends.width"
+        :y1="graphHeight - measurements.legends.offsetY"
+        :y2="graphHeight - measurements.legends.offsetY">
+      </line>
       <text
         v-if="timeSeries.length > 1"
         class="legend-metric-title"
         ref="legendTitleSvg"
         x="38"
         :y="graphHeight - 30">
-        {{legendTitle}} Series {{index + 1}} {{formatMetricUsage(series)}}
+        {{createSeriesString(index, series)}}
       </text>
       <text
         v-else

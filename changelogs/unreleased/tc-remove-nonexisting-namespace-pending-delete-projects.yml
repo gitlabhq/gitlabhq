@@ -1,5 +1,0 @@
----
-title: Migration to remove pending delete projects with non-existing namespace
-merge_request: 13598
-author:
-type: other

@@ -103,7 +103,7 @@ describe 'Pipelines', :js do
 
         context 'when canceling' do
           before do
-            find('.js-pipelines-cancel-button').click
+            accept_confirm { find('.js-pipelines-cancel-button').click }
             wait_for_requests
           end
 
@@ -161,6 +161,16 @@ describe 'Pipelines', :js do
           expect(pipeline).to have_yaml_errors
           expect(page).to have_selector(
             %Q{span[data-original-title="#{pipeline.yaml_errors}"]})
+        end
+
+        it 'contains badge that indicates failure reason' do
+          expect(page).to have_content 'error'
+        end
+
+        it 'contains badge with tooltip which contains failure reason' do
+          expect(pipeline.failure_reason?).to eq true
+          expect(page).to have_selector(
+            %Q{span[data-original-title="#{pipeline.present.failure_reason}"]})
         end
       end
 
@@ -222,7 +232,7 @@ describe 'Pipelines', :js do
 
           context 'when canceling' do
             before do
-              find('.js-pipelines-cancel-button').trigger('click')
+              accept_alert { find('.js-pipelines-cancel-button').click }
             end
 
             it 'indicates that pipeline was canceled' do
@@ -335,14 +345,14 @@ describe 'Pipelines', :js do
 
         context 'when clicking a stage badge' do
           it 'should open a dropdown' do
-            find('.js-builds-dropdown-button').trigger('click')
+            find('.js-builds-dropdown-button').click
 
             expect(page).to have_link build.name
           end
 
           it 'should be possible to cancel pending build' do
-            find('.js-builds-dropdown-button').trigger('click')
-            find('a.js-ci-action-icon').trigger('click')
+            find('.js-builds-dropdown-button').click
+            find('a.js-ci-action-icon').click
 
             expect(page).to have_content('canceled')
             expect(build.reload).to be_canceled
@@ -351,11 +361,16 @@ describe 'Pipelines', :js do
 
         context 'dropdown jobs list' do
           it 'should keep the dropdown open when the user ctr/cmd + clicks in the job name' do
-            find('.js-builds-dropdown-button').trigger('click')
+            find('.js-builds-dropdown-button').click
+            dropdown_item = find('.mini-pipeline-graph-dropdown-item').native
 
-            execute_script('var e = $.Event("keydown", { keyCode: 64 }); $("body").trigger(e);')
-
-            find('.mini-pipeline-graph-dropdown-item').trigger('click')
+            %i(alt control).each do |meta_key|
+              page.driver.browser.action
+                .key_down(meta_key)
+                .click(dropdown_item)
+                .key_up(meta_key)
+                .perform
+            end
 
             expect(page).to have_selector('.js-ci-action-icon')
           end
@@ -443,7 +458,7 @@ describe 'Pipelines', :js do
         visit new_project_pipeline_path(project)
       end
 
-      context 'for valid commit', js: true do
+      context 'for valid commit', :js do
         before do
           click_button project.default_branch
 
@@ -491,7 +506,7 @@ describe 'Pipelines', :js do
       end
 
       describe 'find pipelines' do
-        it 'shows filtered pipelines', js: true do
+        it 'shows filtered pipelines', :js do
           click_button project.default_branch
 
           page.within '.dropdown-menu' do
@@ -515,7 +530,6 @@ describe 'Pipelines', :js do
       let(:project) { create(:project, :public, :repository) }
 
       it { expect(page).to have_content 'Build with confidence' }
-      it { expect(page).to have_http_status(:success) }
     end
 
     context 'when project is private' do

@@ -48,7 +48,8 @@
       border: 1px solid $border-color;
     }
 
-    + .select2 a {
+    + .select2 a,
+    + .btn-default {
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
     }
@@ -79,7 +80,7 @@
 
 .project-feature-settings {
   background: $gray-lighter;
-  border-top: none;
+  border-top: 0;
   margin-bottom: 16px;
 }
 
@@ -87,7 +88,8 @@
   transition: background 2s ease-out;
 
   &:disabled {
-    opacity: 0.75;
+    opacity: 0.5;
+    pointer-events: none;
   }
 
   .highlight-changes & {
@@ -126,7 +128,7 @@
 
 .project-feature-toggle {
   position: relative;
-  border: none;
+  border: 0;
   outline: 0;
   display: block;
   width: 100px;
@@ -481,7 +483,7 @@ a.deploy-project-label {
   flex: 1;
   padding: 0;
   background: transparent;
-  border: none;
+  border: 0;
   line-height: 34px;
   margin: 0;
 
@@ -499,68 +501,146 @@ a.deploy-project-label {
   }
 }
 
-.fork-namespaces {
-  .row {
-    -webkit-flex-wrap: wrap;
-    display: -webkit-flex;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-start;
+.fork-thumbnail {
+  height: 200px;
+  width: calc((100% / 2) - #{$gl-padding * 2});
 
-    .fork-thumbnail {
-      border-radius: $border-radius-base;
+  @media (min-width: $screen-md-min) {
+    width: calc((100% / 4) - #{$gl-padding * 2});
+  }
+
+  @media (min-width: $screen-lg-min) {
+    width: calc((100% / 5) - #{$gl-padding * 2});
+  }
+
+  &:hover:not(.disabled),
+  &.forked {
+    background-color: $row-hover;
+    border-color: $row-hover-border;
+  }
+
+  .avatar-container,
+  .identicon {
+    float: none;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  a {
+    display: block;
+    width: 100%;
+    height: 100%;
+    padding-top: $gl-padding;
+    text-decoration: none;
+
+    &.disabled {
+      opacity: .3;
+      cursor: not-allowed;
+    }
+  }
+}
+
+.fork-thumbnail-container {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: -$gl-padding;
+  margin-right: -$gl-padding;
+
+  > h5 {
+    width: 100%;
+  }
+}
+
+.project-template {
+  > .form-group {
+    margin-bottom: 0;
+  }
+
+  .template-option {
+    padding: $gl-padding $gl-padding $gl-padding ($gl-padding * 4);
+    position: relative;
+
+    &:not(:first-child) {
+      border-top: 1px solid $border-color;
+    }
+  }
+
+  .template-title {
+    font-size: 16px;
+  }
+
+  .template-description {
+    margin: 6px 0 12px;
+  }
+
+  .template-button {
+    input {
+      position: absolute;
+      clip: rect(0, 0, 0, 0);
+    }
+  }
+
+  svg {
+    position: absolute;
+    left: $gl-padding;
+    top: $gl-padding;
+  }
+
+  .project-fields-form {
+    display: none;
+
+    &.selected {
+      display: block;
+      padding: $gl-padding;
+    }
+  }
+
+  .template-input-group {
+    position: relative;
+
+    @media (min-width: $screen-sm-min) {
+      display: flex;
+    }
+
+    .input-group-addon {
+      flex: 1;
+      text-align: left;
+      padding-left: ($gl-padding * 3);
       background-color: $white-light;
-      border: 1px solid $border-white-light;
-      height: 202px;
-      margin: $gl-padding;
-      text-align: center;
-      width: 169px;
+    }
 
-      &:hover,
-      &.forked {
-        background-color: $row-hover;
-        border-color: $row-hover-border;
-      }
+    .selected-template {
+      line-height: 20px;
+    }
 
-      .no-avatar {
-        width: 100px;
-        height: 100px;
-        background-color: $gray-light;
-        border: 1px solid $white-normal;
-        margin: 0 auto;
-        border-radius: 50%;
+    .selected-icon {
+      svg {
+        display: none;
+        top: 7px;
+        height: 20px;
+        width: 20px;
 
-        i {
-          font-size: 100px;
-          color: $white-normal;
+        &.active {
+          display: block;
         }
-      }
-
-      a {
-        display: block;
-        width: 100%;
-        height: 100%;
-        padding-top: $gl-padding;
-        color: $gl-text-color;
-
-        .caption {
-          min-height: 30px;
-          padding: $gl-padding 0;
-        }
-      }
-
-      img {
-        border-radius: 50%;
-        max-width: 100px;
       }
     }
   }
 }
 
-.project-template,
+.gitlab-tab-content {
+  .import-project-pane {
+    padding-bottom: 6px;
+  }
+}
+
 .project-import {
-  .form-group {
-    margin-bottom: 5px;
+  .import-btn-container {
+    margin-bottom: 0;
+  }
+
+  .toggle-import-form {
+    padding-bottom: 10px;
   }
 
   .import-buttons {
@@ -573,10 +653,6 @@ a.deploy-project-label {
     .btn {
       padding: 8px;
       margin-right: 10px;
-    }
-
-    .blank-option {
-      min-width: 70px;
     }
 
     .btn-template-icon {
@@ -600,27 +676,11 @@ a.deploy-project-label {
       }
     }
 
-    .icon-rails path {
-      fill: $rails;
-    }
-
-    .icon-node-express path {
-      fill: $node;
-    }
-
-    .icon-java-spring path {
-      fill: $java;
-    }
-
     > div {
       margin-bottom: 10px;
       padding-left: 0;
     }
   }
-}
-
-.project-templates-buttons .btn:last-child {
-  margin-right: 0;
 }
 
 .create-project-options {
@@ -719,40 +779,40 @@ a.deploy-project-label {
   .nav {
     padding-top: 12px;
     padding-bottom: 12px;
-  }
 
-  .nav > li {
-    display: inline-block;
+    > li {
+      display: inline-block;
 
-    &:not(:last-child) {
-      margin-right: $gl-padding;
-    }
+      &:not(:last-child) {
+        margin-right: $gl-padding;
+      }
 
-    &.right {
-      vertical-align: top;
-      margin-top: 0;
+      &.right {
+        vertical-align: top;
+        margin-top: 0;
 
-      @media (min-width: $screen-lg-min) {
-        float: right;
+        @media (min-width: $screen-lg-min) {
+          float: right;
+        }
+      }
+
+      > a {
+        padding: 0;
+        background-color: transparent;
+        font-size: 14px;
+        line-height: 29px;
+        color: $notes-light-color;
+
+        &:hover,
+        &:focus {
+          color: $gl-text-color;
+        }
       }
     }
   }
 
-  .nav > li > a {
-    padding: 0;
-    background-color: transparent;
-    font-size: 14px;
-    line-height: 29px;
-    color: $notes-light-color;
-
-    &:hover,
-    &:focus {
-      color: $gl-text-color;
-    }
-  }
-
   li.missing {
-    border: 1px dashed $border-gray-normal;
+    border: 1px dashed $border-gray-normal-dashed;
     border-radius: $border-radius-default;
 
     a {
@@ -952,7 +1012,7 @@ pre.light-well {
     margin: 0;
     border-radius: 0 0 1px 1px;
     padding: 20px 0;
-    border: none;
+    border: 0;
   }
 
   .table-bordered {
@@ -1061,6 +1121,12 @@ pre.light-well {
     min-width: 100px;
   }
 
+  &.form-group {
+    @media (min-width: $screen-sm-min) {
+      margin-bottom: 0;
+    }
+  }
+
   .select2-choice {
     border-top-right-radius: 0;
     border-bottom-right-radius: 0;
@@ -1095,18 +1161,11 @@ pre.light-well {
   }
 }
 
-.project-repo-select {
-  &.disabled {
-    opacity: 0.5;
-    pointer-events: none;
-  }
-}
-
 .variables-table {
   table-layout: fixed;
 
   &.table-responsive {
-    border: none;
+    border: 0;
   }
 
   .variable-key {

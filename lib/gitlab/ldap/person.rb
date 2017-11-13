@@ -17,6 +17,12 @@ module Gitlab
         adapter.user('dn', dn)
       end
 
+      def self.find_by_email(email, adapter)
+        email_fields = adapter.config.attributes['email']
+
+        adapter.user(email_fields, email)
+      end
+
       def self.disabled_via_active_directory?(dn, adapter)
         adapter.dn_matches_filter?(dn, AD_USER_DISABLED)
       end
@@ -28,6 +34,26 @@ module Gitlab
           *config.attributes['name'], # Used in `name`
           *config.attributes['email'] # Used in `email`
         ]
+      end
+
+      def self.normalize_dn(dn)
+        ::Gitlab::LDAP::DN.new(dn).to_normalized_s
+      rescue ::Gitlab::LDAP::DN::FormatError => e
+        Rails.logger.info("Returning original DN \"#{dn}\" due to error during normalization attempt: #{e.message}")
+
+        dn
+      end
+
+      # Returns the UID in a normalized form.
+      #
+      # 1. Excess spaces are stripped
+      # 2. The string is downcased (for case-insensitivity)
+      def self.normalize_uid(uid)
+        ::Gitlab::LDAP::DN.normalize_value(uid)
+      rescue ::Gitlab::LDAP::DN::FormatError => e
+        Rails.logger.info("Returning original UID \"#{uid}\" due to error during normalization attempt: #{e.message}")
+
+        uid
       end
 
       def initialize(entry, provider)
@@ -52,7 +78,9 @@ module Gitlab
         attribute_value(:email)
       end
 
-      delegate :dn, to: :entry
+      def dn
+        self.class.normalize_dn(entry.dn)
+      end
 
       private
 

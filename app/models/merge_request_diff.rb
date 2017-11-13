@@ -48,6 +48,10 @@ class MergeRequestDiff < ActiveRecord::Base
   # Collect information about commits and diff from repository
   # and save it to the database as serialized data
   def save_git_content
+    MergeRequest
+      .where('id = ? AND COALESCE(latest_merge_request_diff_id, 0) < ?', self.merge_request_id, self.id)
+      .update_all(latest_merge_request_diff_id: self.id)
+
     ensure_commit_shas
     save_commits
     save_diffs
@@ -55,7 +59,6 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def ensure_commit_shas
-    merge_request.fetch_ref
     self.start_commit_sha ||= merge_request.target_branch_sha
     self.head_commit_sha  ||= merge_request.source_branch_sha
     self.base_commit_sha  ||= find_base_sha

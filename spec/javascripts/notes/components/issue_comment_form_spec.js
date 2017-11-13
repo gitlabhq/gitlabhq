@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import Autosize from 'autosize';
 import store from '~/notes/stores';
 import issueCommentForm from '~/notes/components/issue_comment_form.vue';
 import { loggedOutIssueData, notesDataMock, userDataMock, issueDataMock } from '../mock_data';
@@ -32,11 +33,70 @@ describe('issue_comment_form component', () => {
       expect(vm.$el.querySelector('.timeline-icon .user-avatar-link').getAttribute('href')).toEqual(userDataMock.path);
     });
 
+    describe('handleSave', () => {
+      it('should request to save note when note is entered', () => {
+        vm.note = 'hello world';
+        spyOn(vm, 'saveNote').and.returnValue(new Promise(() => {}));
+        spyOn(vm, 'resizeTextarea');
+        spyOn(vm, 'stopPolling');
+
+        vm.handleSave();
+        expect(vm.isSubmitting).toEqual(true);
+        expect(vm.note).toEqual('');
+        expect(vm.saveNote).toHaveBeenCalled();
+        expect(vm.stopPolling).toHaveBeenCalled();
+        expect(vm.resizeTextarea).toHaveBeenCalled();
+      });
+
+      it('should toggle issue state when no note', () => {
+        spyOn(vm, 'toggleIssueState');
+
+        vm.handleSave();
+
+        expect(vm.toggleIssueState).toHaveBeenCalled();
+      });
+
+      it('should disable action button whilst submitting', (done) => {
+        const saveNotePromise = Promise.resolve();
+        vm.note = 'hello world';
+        spyOn(vm, 'saveNote').and.returnValue(saveNotePromise);
+        spyOn(vm, 'stopPolling');
+
+        const actionButton = vm.$el.querySelector('.js-action-button');
+
+        vm.handleSave();
+
+        Vue.nextTick()
+          .then(() => expect(actionButton.disabled).toBeTruthy())
+          .then(saveNotePromise)
+          .then(Vue.nextTick)
+          .then(() => expect(actionButton.disabled).toBeFalsy())
+          .then(done)
+          .catch(done.fail);
+      });
+    });
+
     describe('textarea', () => {
       it('should render textarea with placeholder', () => {
         expect(
           vm.$el.querySelector('.js-main-target-form textarea').getAttribute('placeholder'),
         ).toEqual('Write a comment or drag your files here...');
+      });
+
+      it('should make textarea disabled while requesting', (done) => {
+        const $submitButton = $(vm.$el.querySelector('.js-comment-submit-button'));
+        vm.note = 'hello world';
+        spyOn(vm, 'stopPolling');
+        spyOn(vm, 'saveNote').and.returnValue(new Promise(() => {}));
+
+        vm.$nextTick(() => { // Wait for vm.note change triggered. It should enable $submitButton.
+          $submitButton.trigger('click');
+
+          vm.$nextTick(() => { // Wait for vm.isSubmitting triggered. It should disable textarea.
+            expect(vm.$el.querySelector('.js-main-target-form textarea').disabled).toBeTruthy();
+            done();
+          });
+        });
       });
 
       it('should support quick actions', () => {
@@ -53,6 +113,19 @@ describe('issue_comment_form component', () => {
       it('should link to quick actions docs', () => {
         const { quickActionsDocsPath } = notesDataMock;
         expect(vm.$el.querySelector(`a[href="${quickActionsDocsPath}"]`).textContent.trim()).toEqual('quick actions');
+      });
+
+      it('should resize textarea after note discarded', (done) => {
+        spyOn(Autosize, 'update');
+        spyOn(vm, 'discard').and.callThrough();
+
+        vm.note = 'foo';
+        vm.discard();
+
+        Vue.nextTick(() => {
+          expect(Autosize.update).toHaveBeenCalled();
+          done();
+        });
       });
 
       describe('edit mode', () => {

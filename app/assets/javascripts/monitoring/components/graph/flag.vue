@@ -23,6 +23,10 @@
         type: Number,
         required: true,
       },
+      showFlagContent: {
+        type: Boolean,
+        required: true,
+      },
     },
 
     data() {
@@ -57,6 +61,7 @@
       transform="translate(-5, 20)">
     </line>
     <svg 
+      v-if="showFlagContent"
       class="rect-text-metric"
       :x="currentFlagPosition"
       y="0">

@@ -59,7 +59,8 @@ describe 'User creates files' do
         expect(page).to have_selector('.file-editor')
       end
 
-      it 'creates and commit a new file', js: true do
+      it 'creates and commit a new file', :js do
+        find('#editor')
         execute_script("ace.edit('editor').setValue('*.rbca')")
         fill_in(:file_name, with: 'not_a_file.md')
         fill_in(:commit_message, with: 'New commit message', visible: true)
@@ -74,7 +75,8 @@ describe 'User creates files' do
         expect(page).to have_content('*.rbca')
       end
 
-      it 'creates and commit a new file with new lines at the end of file', js: true do
+      it 'creates and commit a new file with new lines at the end of file', :js do
+        find('#editor')
         execute_script('ace.edit("editor").setValue("Sample\n\n\n")')
         fill_in(:file_name, with: 'not_a_file.md')
         fill_in(:commit_message, with: 'New commit message', visible: true)
@@ -86,14 +88,16 @@ describe 'User creates files' do
 
         find('.js-edit-blob').click
 
+        find('#editor')
         expect(evaluate_script('ace.edit("editor").getValue()')).to eq("Sample\n\n\n")
       end
 
-      it 'creates and commit a new file with a directory name', js: true do
+      it 'creates and commit a new file with a directory name', :js do
         fill_in(:file_name, with: 'foo/bar/baz.txt')
 
         expect(page).to have_selector('.file-editor')
 
+        find('#editor')
         execute_script("ace.edit('editor').setValue('*.rbca')")
         fill_in(:commit_message, with: 'New commit message', visible: true)
         click_button('Commit changes')
@@ -105,9 +109,10 @@ describe 'User creates files' do
         expect(page).to have_content('*.rbca')
       end
 
-      it 'creates and commit a new file specifying a new branch', js: true do
+      it 'creates and commit a new file specifying a new branch', :js do
         expect(page).to have_selector('.file-editor')
 
+        find('#editor')
         execute_script("ace.edit('editor').setValue('*.rbca')")
         fill_in(:file_name, with: 'not_a_file.md')
         fill_in(:commit_message, with: 'New commit message', visible: true)
@@ -130,19 +135,20 @@ describe 'User creates files' do
         visit(project2_tree_path_root_ref)
       end
 
-      it 'creates and commit new file in forked project', js: true do
+      it 'creates and commit new file in forked project', :js do
         find('.add-to-tree').click
         click_link('New file')
 
         expect(page).to have_selector('.file-editor')
 
+        find('#editor')
         execute_script("ace.edit('editor').setValue('*.rbca')")
 
         fill_in(:file_name, with: 'not_a_file.md')
         fill_in(:commit_message, with: 'New commit message', visible: true)
         click_button('Commit changes')
 
-        fork = user.fork_of(project2)
+        fork = user.fork_of(project2.reload)
 
         expect(current_path).to eq(project_new_merge_request_path(fork))
         expect(page).to have_content('New commit message')

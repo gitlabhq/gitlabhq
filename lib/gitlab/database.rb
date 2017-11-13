@@ -4,6 +4,10 @@ module Gitlab
     # https://www.postgresql.org/docs/9.2/static/datatype-numeric.html
     # http://dev.mysql.com/doc/refman/5.7/en/integer-types.html
     MAX_INT_VALUE = 2147483647
+    # The max value between MySQL's TIMESTAMP and PostgreSQL's timestampz:
+    # https://www.postgresql.org/docs/9.1/static/datatype-datetime.html
+    # https://dev.mysql.com/doc/refman/5.7/en/datetime.html
+    MAX_TIMESTAMP_VALUE = Time.at((1 << 31) - 1).freeze
 
     def self.config
       ActiveRecord::Base.configurations[Rails.env]
@@ -27,6 +31,15 @@ module Gitlab
 
     def self.postgresql?
       adapter_name.casecmp('postgresql').zero?
+    end
+
+    # Overridden in EE
+    def self.read_only?
+      false
+    end
+
+    def self.read_write?
+      !self.read_only?
     end
 
     def self.version
@@ -95,20 +108,45 @@ module Gitlab
       end
     end
 
-    def self.bulk_insert(table, rows)
+    # Bulk inserts a number of rows into a table, optionally returning their
+    # IDs.
+    #
+    # table - The name of the table to insert the rows into.
+    # rows - An Array of Hash instances, each mapping the columns to their
+    #        values.
+    # return_ids - When set to true the return value will be an Array of IDs of
+    #              the inserted rows, this only works on PostgreSQL.
+    def self.bulk_insert(table, rows, return_ids: false)
       return if rows.empty?
 
       keys = rows.first.keys
       columns = keys.map { |key| connection.quote_column_name(key) }
+      return_ids = false if mysql?
 
       tuples = rows.map do |row|
         row.values_at(*keys).map { |value| connection.quote(value) }
       end
 
-      connection.execute <<-EOF
+      sql = <<-EOF
         INSERT INTO #{table} (#{columns.join(', ')})
         VALUES #{tuples.map { |tuple| "(#{tuple.join(', ')})" }.join(', ')}
       EOF
+
+      if return_ids
+        sql << 'RETURNING id'
+      end
+
+      result = connection.execute(sql)
+
+      if return_ids
+        result.values.map { |tuple| tuple[0].to_i }
+      else
+        []
+      end
+    end
+
+    def self.sanitize_timestamp(timestamp)
+      MAX_TIMESTAMP_VALUE > timestamp ? timestamp : MAX_TIMESTAMP_VALUE.dup
     end
 
     # pool_size - The size of the DB pool.

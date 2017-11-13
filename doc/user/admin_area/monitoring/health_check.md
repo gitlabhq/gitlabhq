@@ -18,7 +18,7 @@ traffic until the system is ready or restart the container as needed.
 
 To access monitoring resources, the client IP needs to be included in a whitelist.
 
-[Read how to add IPs to a whitelist for the monitoring endpoints.][admin].
+[Read how to add IPs to a whitelist for the monitoring endpoints][admin].
 
 ## Using the endpoint
 

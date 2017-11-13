@@ -3,10 +3,8 @@
 - @content_class = "limit-container-width" unless fluid_layout
 - expanded = Rails.env.test?
 
-= render "projects/settings/head"
-
 .project-edit-container
-  %section.settings.general-settings
+  %section.settings.general-settings.no-animate{ class: ('expanded' if expanded) }
     .settings-header
       %h4
         General project settings
@@ -14,7 +12,7 @@
         = expanded ? 'Collapse' : 'Expand'
       %p
         Update your project name, description, avatar, and other general settings.
-    .settings-content.no-animate{ class: ('expanded' if expanded) }
+    .settings-content
       .project-edit-errors
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "edit-project" }, authenticity_token: true do |f|
         %fieldset
@@ -63,7 +61,7 @@
               = link_to 'Remove avatar', project_avatar_path(@project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-sm remove-avatar"
         = f.submit 'Save changes', class: "btn btn-save"
 
-  %section.settings.sharing-permissions
+  %section.settings.sharing-permissions.no-animate{ class: ('expanded' if expanded) }
     .settings-header
       %h4
         Permissions
@@ -71,13 +69,13 @@
         = expanded ? 'Collapse' : 'Expand'
       %p
         Enable or disable certain project features and choose access levels.
-    .settings-content.no-animate{ class: ('expanded' if expanded) }
+    .settings-content
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "sharing-permissions-form" }, authenticity_token: true do |f|
         %script.js-project-permissions-form-data{ type: "application/json" }= project_permissions_panel_data(@project)
         .js-project-permissions-form
         = f.submit 'Save changes', class: "btn btn-save"
 
-  %section.settings.merge-requests-feature{ class: ("hidden" if @project.project_feature.send(:merge_requests_access_level) == 0) }
+  %section.settings.merge-requests-feature.no-animate{ class: [('expanded' if expanded), ('hidden' if @project.project_feature.send(:merge_requests_access_level) == 0)] }
     .settings-header
       %h4
         Merge request settings
@@ -85,22 +83,22 @@
         = expanded ? 'Collapse' : 'Expand'
       %p
         Customize your merge request restrictions.
-    .settings-content.no-animate{ class: ('expanded' if expanded) }
+    .settings-content
       = form_for [@project.namespace.becomes(Namespace), @project], remote: true, html: { multipart: true, class: "merge-request-settings-form" }, authenticity_token: true do |f|
         = render 'merge_request_settings', form: f
         = f.submit 'Save changes', class: "btn btn-save"
 
   = render 'export', project: @project
 
-  %section.settings.advanced-settings
+  %section.settings.advanced-settings.no-animate{ class: ('expanded' if expanded) }
     .settings-header
       %h4
         Advanced settings
       %button.btn.js-settings-toggle
         = expanded ? 'Collapse' : 'Expand'
       %p
-        Perform advanced options such as housekeeping, exporting, archiving, renaming, transferring, or removing your project.
-    .settings-content.no-animate{ class: ('expanded' if expanded) }
+        Perform advanced options such as housekeeping, archiving, renaming, transferring, or removing your project.
+    .settings-content
       .sub-section
         %h4 Housekeeping
         %p
@@ -175,7 +173,10 @@
           %p
             This will remove the fork relationship to source project
             = succeed "." do
-              = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)
+              - if @project.fork_source
+                = link_to(fork_source_name(@project), project_path(@project.fork_source))
+              - else
+                = fork_source_name(@project)
           = form_for([@project.namespace.becomes(Namespace), @project], url: remove_fork_project_path(@project), method: :delete, remote: true, html: { class: 'transfer-project' }) do |f|
             %p
               %strong Once removed, the fork relationship cannot be restored and you will no longer be able to send merge requests to the source.

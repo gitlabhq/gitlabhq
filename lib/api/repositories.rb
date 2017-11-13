@@ -35,7 +35,7 @@ module API
       end
 
       desc 'Get a project repository tree' do
-        success Entities::RepoTreeObject
+        success Entities::TreeObject
       end
       params do
         optional :ref, type: String, desc: 'The name of a repository branch or tag, if not given the default branch is used'
@@ -52,12 +52,12 @@ module API
 
         tree = user_project.repository.tree(commit.id, path, recursive: params[:recursive])
         entries = ::Kaminari.paginate_array(tree.sorted_entries)
-        present paginate(entries), with: Entities::RepoTreeObject
+        present paginate(entries), with: Entities::TreeObject
       end
 
       desc 'Get raw blob contents from the repository'
       params do
-        requires :sha, type: String, desc: 'The commit, branch name, or tag name'
+        requires :sha, type: String, desc: 'The commit hash'
       end
       get ':id/repository/blobs/:sha/raw' do
         assign_blob_vars!
@@ -67,7 +67,7 @@ module API
 
       desc 'Get a blob from the repository'
       params do
-        requires :sha, type: String, desc: 'The commit, branch name, or tag name'
+        requires :sha, type: String, desc: 'The commit hash'
       end
       get ':id/repository/blobs/:sha' do
         assign_blob_vars!

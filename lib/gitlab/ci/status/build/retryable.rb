@@ -8,7 +8,7 @@ module Gitlab
           end
 
           def action_icon
-            'icon_action_retry'
+            'retry'
           end
 
           def action_title

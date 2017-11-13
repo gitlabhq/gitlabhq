@@ -18,7 +18,6 @@ describe Environment do
   it { is_expected.to validate_length_of(:slug).is_at_most(24) }
 
   it { is_expected.to validate_length_of(:external_url).is_at_most(255) }
-  it { is_expected.to validate_uniqueness_of(:external_url).scoped_to(:project_id) }
 
   describe '.order_by_last_deployed_at' do
     let(:project) { create(:project, :repository) }
@@ -51,6 +50,28 @@ describe Environment do
       environment.stop
 
       expect(store.get(environment.etag_cache_key)).not_to eq(old_value)
+    end
+  end
+
+  describe '#folder_name' do
+    context 'when it is inside a folder' do
+      subject(:environment) do
+        create(:environment, name: 'staging/review-1')
+      end
+
+      it 'returns a top-level folder name' do
+        expect(environment.folder_name).to eq 'staging'
+      end
+    end
+
+    context 'when the environment if a top-level item itself' do
+      subject(:environment) do
+        create(:environment, name: 'production')
+      end
+
+      it 'returns an environment name' do
+        expect(environment.folder_name).to eq 'production'
+      end
     end
   end
 
@@ -525,6 +546,15 @@ describe Environment do
 
       expect(environment.slug).to eq(original_slug)
     end
+
+    it "regenerates the slug if nil" do
+      environment = build(:environment, slug: nil)
+
+      new_slug = environment.slug
+
+      expect(new_slug).not_to be_nil
+      expect(environment.slug).to eq(new_slug)
+    end
   end
 
   describe '#generate_slug' do
@@ -550,6 +580,22 @@ describe Environment do
 
         expect(slug).to match(/\A#{matcher}\z/)
       end
+    end
+  end
+
+  describe '#ref_path' do
+    subject(:environment) do
+      create(:environment, name: 'staging / review-1')
+    end
+
+    it 'returns a path that uses the slug and does not have spaces' do
+      expect(environment.ref_path).to start_with('refs/environments/staging-review-1-')
+    end
+
+    it "doesn't change when the slug is nil initially" do
+      environment.slug = nil
+
+      expect(environment.ref_path).to eq(environment.ref_path)
     end
   end
 

@@ -11,10 +11,11 @@ describe GroupPolicy do
 
   let(:reporter_permissions) { [:admin_label] }
 
+  let(:developer_permissions) { [:admin_milestones] }
+
   let(:master_permissions) do
     [
-      :create_projects,
-      :admin_milestones
+      :create_projects
     ]
   end
 
@@ -52,6 +53,7 @@ describe GroupPolicy do
     it do
       expect_allowed(:read_group)
       expect_disallowed(*reporter_permissions)
+      expect_disallowed(*developer_permissions)
       expect_disallowed(*master_permissions)
       expect_disallowed(*owner_permissions)
     end
@@ -63,6 +65,7 @@ describe GroupPolicy do
     it do
       expect_allowed(:read_group)
       expect_disallowed(*reporter_permissions)
+      expect_disallowed(*developer_permissions)
       expect_disallowed(*master_permissions)
       expect_disallowed(*owner_permissions)
     end
@@ -74,6 +77,7 @@ describe GroupPolicy do
     it do
       expect_allowed(:read_group)
       expect_allowed(*reporter_permissions)
+      expect_disallowed(*developer_permissions)
       expect_disallowed(*master_permissions)
       expect_disallowed(*owner_permissions)
     end
@@ -85,6 +89,7 @@ describe GroupPolicy do
     it do
       expect_allowed(:read_group)
       expect_allowed(*reporter_permissions)
+      expect_allowed(*developer_permissions)
       expect_disallowed(*master_permissions)
       expect_disallowed(*owner_permissions)
     end
@@ -96,6 +101,7 @@ describe GroupPolicy do
     it do
       expect_allowed(:read_group)
       expect_allowed(*reporter_permissions)
+      expect_allowed(*developer_permissions)
       expect_allowed(*master_permissions)
       expect_disallowed(*owner_permissions)
     end
@@ -109,6 +115,7 @@ describe GroupPolicy do
 
       expect_allowed(:read_group)
       expect_allowed(*reporter_permissions)
+      expect_allowed(*developer_permissions)
       expect_allowed(*master_permissions)
       expect_allowed(*owner_permissions)
     end
@@ -122,6 +129,7 @@ describe GroupPolicy do
 
       expect_allowed(:read_group)
       expect_allowed(*reporter_permissions)
+      expect_allowed(*developer_permissions)
       expect_allowed(*master_permissions)
       expect_allowed(*owner_permissions)
     end
@@ -180,6 +188,7 @@ describe GroupPolicy do
       it do
         expect_disallowed(:read_group)
         expect_disallowed(*reporter_permissions)
+        expect_disallowed(*developer_permissions)
         expect_disallowed(*master_permissions)
         expect_disallowed(*owner_permissions)
       end
@@ -191,6 +200,7 @@ describe GroupPolicy do
       it do
         expect_allowed(:read_group)
         expect_disallowed(*reporter_permissions)
+        expect_disallowed(*developer_permissions)
         expect_disallowed(*master_permissions)
         expect_disallowed(*owner_permissions)
       end
@@ -202,6 +212,7 @@ describe GroupPolicy do
       it do
         expect_allowed(:read_group)
         expect_allowed(*reporter_permissions)
+        expect_disallowed(*developer_permissions)
         expect_disallowed(*master_permissions)
         expect_disallowed(*owner_permissions)
       end
@@ -213,6 +224,7 @@ describe GroupPolicy do
       it do
         expect_allowed(:read_group)
         expect_allowed(*reporter_permissions)
+        expect_allowed(*developer_permissions)
         expect_disallowed(*master_permissions)
         expect_disallowed(*owner_permissions)
       end
@@ -224,6 +236,7 @@ describe GroupPolicy do
       it do
         expect_allowed(:read_group)
         expect_allowed(*reporter_permissions)
+        expect_allowed(*developer_permissions)
         expect_allowed(*master_permissions)
         expect_disallowed(*owner_permissions)
       end
@@ -237,6 +250,7 @@ describe GroupPolicy do
 
         expect_allowed(:read_group)
         expect_allowed(*reporter_permissions)
+        expect_allowed(*developer_permissions)
         expect_allowed(*master_permissions)
         expect_allowed(*owner_permissions)
       end

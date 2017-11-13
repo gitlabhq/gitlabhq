@@ -66,8 +66,8 @@ describe Projects::CountService do
 
   describe '#cache_key' do
     it 'returns the cache key as an Array' do
-      allow(service).to receive(:cache_key_name).and_return('count_service')
-      expect(service.cache_key).to eq(['projects', 1, 'count_service'])
+      allow(service).to receive(:cache_key_name).and_return('foo')
+      expect(service.cache_key).to eq(['projects', 'count_service', described_class::VERSION, 1, 'foo'])
     end
   end
 end

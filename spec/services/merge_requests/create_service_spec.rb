@@ -37,7 +37,7 @@ describe MergeRequests::CreateService do
         expect(service).to have_received(:execute_hooks).with(merge_request)
       end
 
-      it 'refreshes the number of open merge requests' do
+      it 'refreshes the number of open merge requests', :use_clean_rails_memory_store_caching do
         expect { service.execute }
           .to change { project.open_merge_requests_count }.from(0).to(1)
       end

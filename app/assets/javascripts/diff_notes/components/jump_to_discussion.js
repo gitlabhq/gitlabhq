@@ -4,6 +4,8 @@
 
 import Vue from 'vue';
 
+import '../mixins/discussion';
+
 const JumpToDiscussion = Vue.extend({
   mixins: [DiscussionMixins],
   props: {
@@ -169,7 +171,14 @@ const JumpToDiscussion = Vue.extend({
         // When jumping between unresolved discussions on the diffs tab, we show them.
         $target.closest(".content").show();
 
-        $target = $target.closest("tr.notes_holder");
+        const $notesHolder = $target.closest("tr.notes_holder");
+
+        // Image diff discussions does not use notes_holder
+        // so we should keep original $target value in those cases
+        if ($notesHolder.length > 0) {
+          $target = $notesHolder;
+        }
+
         $target.show();
 
         // If we are on the diffs tab, we don't scroll to the discussion itself, but to

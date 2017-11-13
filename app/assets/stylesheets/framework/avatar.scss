@@ -23,6 +23,7 @@
   &.s60 { @include avatar-size(60px, 12px); }
   &.s70 { @include avatar-size(70px, 14px); }
   &.s90 { @include avatar-size(90px, 15px); }
+  &.s100 { @include avatar-size(100px, 15px); }
   &.s110 { @include avatar-size(110px, 15px); }
   &.s140 { @include avatar-size(140px, 15px); }
   &.s160 { @include avatar-size(160px, 20px); }
@@ -41,8 +42,7 @@
   &.avatar-inline {
     float: none;
     display: inline-block;
-    margin-left: 4px;
-    margin-bottom: 2px;
+    margin-left: 2px;
     flex-shrink: 0;
     -webkit-flex-shrink: 0;
 
@@ -58,7 +58,7 @@
 
   &.avatar-tile {
     border-radius: 0;
-    border: none;
+    border: 0;
   }
 
   &:not([href]):hover {
@@ -78,6 +78,7 @@
   &.s60 { font-size: 32px; line-height: 58px; }
   &.s70 { font-size: 34px; line-height: 70px; }
   &.s90 { font-size: 36px; line-height: 88px; }
+  &.s100 { font-size: 36px; line-height: 98px; }
   &.s110 { font-size: 40px; line-height: 108px; font-weight: $gl-font-weight-normal; }
   &.s140 { font-size: 72px; line-height: 138px; }
   &.s160 { font-size: 96px; line-height: 158px; }
@@ -94,7 +95,7 @@
 
   .avatar {
     border-radius: 0;
-    border: none;
+    border: 0;
     height: auto;
     width: 100%;
     margin: 0;

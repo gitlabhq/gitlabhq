@@ -73,4 +73,15 @@ describe Gitlab::GitalyClient::RepositoryService do
       client.apply_gitattributes(revision)
     end
   end
+
+  describe '#has_local_branches?' do
+    it 'sends a has_local_branches message' do
+      expect_any_instance_of(Gitaly::RepositoryService::Stub)
+        .to receive(:has_local_branches)
+        .with(gitaly_request_with_path(storage_name, relative_path), kind_of(Hash))
+        .and_return(double(value: true))
+
+      expect(client.has_local_branches?).to be(true)
+    end
+  end
 end

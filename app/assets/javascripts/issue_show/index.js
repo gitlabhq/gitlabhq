@@ -35,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
           initialDescriptionHtml: this.initialDescriptionHtml,
           initialDescriptionText: this.initialDescriptionText,
           issuableTemplates: this.issuableTemplates,
-          isConfidential: this.isConfidential,
           markdownPreviewPath: this.markdownPreviewPath,
           markdownDocsPath: this.markdownDocsPath,
           projectPath: this.projectPath,

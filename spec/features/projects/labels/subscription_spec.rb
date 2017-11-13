@@ -13,7 +13,7 @@ feature 'Labels subscription' do
       sign_in user
     end
 
-    scenario 'users can subscribe/unsubscribe to labels', js: true do
+    scenario 'users can subscribe/unsubscribe to labels', :js do
       visit project_labels_path(project)
 
       expect(page).to have_content('bug')

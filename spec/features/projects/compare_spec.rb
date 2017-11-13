@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe "Compare", js: true do
+describe "Compare", :js do
   let(:user)    { create(:user) }
   let(:project) { create(:project, :repository) }
 

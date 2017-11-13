@@ -7,6 +7,7 @@ class Environment < ActiveRecord::Base
   belongs_to :project, required: true, validate: true
 
   has_many :deployments, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+
   has_one :last_deployment, -> { order('deployments.id DESC') }, class_name: 'Deployment'
 
   before_validation :nullify_external_url
@@ -29,7 +30,6 @@ class Environment < ActiveRecord::Base
                       message: Gitlab::Regex.environment_slug_regex_message }
 
   validates :external_url,
-            uniqueness: { scope: :project_id },
             length: { maximum: 255 },
             allow_nil: true,
             addressable_url: true
@@ -82,12 +82,7 @@ class Environment < ActiveRecord::Base
   def set_environment_type
     names = name.split('/')
 
-    self.environment_type =
-      if names.many?
-        names.first
-      else
-        nil
-      end
+    self.environment_type = names.many? ? names.first : nil
   end
 
   def includes_commit?(commit)
@@ -101,7 +96,7 @@ class Environment < ActiveRecord::Base
   end
 
   def update_merge_request_metrics?
-    (environment_type || name) == "production"
+    folder_name == "production"
   end
 
   def first_deployment_for(commit)
@@ -114,7 +109,7 @@ class Environment < ActiveRecord::Base
   end
 
   def ref_path
-    "refs/#{Repository::REF_ENVIRONMENTS}/#{Shellwords.shellescape(name)}"
+    "refs/#{Repository::REF_ENVIRONMENTS}/#{slug}"
   end
 
   def formatted_external_url
@@ -166,6 +161,10 @@ class Environment < ActiveRecord::Base
     if has_additional_metrics?
       project.prometheus_service.additional_environment_metrics(self)
     end
+  end
+
+  def slug
+    super.presence || generate_slug
   end
 
   # An environment name is not necessarily suitable for use in URLs, DNS
@@ -221,6 +220,10 @@ class Environment < ActiveRecord::Base
     Gitlab::Routing.url_helpers.project_environments_path(
       project,
       format: :json)
+  end
+
+  def folder_name
+    self.environment_type || self.name
   end
 
   private

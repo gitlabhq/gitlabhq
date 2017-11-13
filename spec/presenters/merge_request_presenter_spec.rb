@@ -300,6 +300,10 @@ describe MergeRequestPresenter do
       described_class.new(resource, current_user: user).remove_wip_path
     end
 
+    before do
+      allow(resource).to receive(:work_in_progress?).and_return(true)
+    end
+
     context 'when merge request enabled and has permission' do
       it 'has remove_wip_path' do
         allow(project).to receive(:merge_requests_enabled?) { true }

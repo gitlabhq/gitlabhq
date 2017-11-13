@@ -15,6 +15,8 @@
 # Anonymous users will never return any `owned` groups. They will return all
 # public groups instead, even if `all_available` is set to false.
 class GroupsFinder < UnionFinder
+  include CustomAttributesFilter
+
   def initialize(current_user = nil, params = {})
     @current_user = current_user
     @params = params
@@ -22,8 +24,12 @@ class GroupsFinder < UnionFinder
 
   def execute
     items = all_groups.map do |item|
-      by_parent(item)
+      item = by_parent(item)
+      item = by_custom_attributes(item)
+
+      item
     end
+
     find_union(items, Group).with_route.order_id_desc
   end
 
@@ -57,7 +63,7 @@ class GroupsFinder < UnionFinder
   end
 
   def owned_groups
-    current_user&.groups || Group.none
+    current_user&.owned_groups || Group.none
   end
 
   def include_public_groups?

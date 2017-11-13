@@ -30,11 +30,11 @@ class JwtController < ApplicationController
         render_unauthorized
       end
     end
-  rescue Gitlab::Auth::MissingPersonalTokenError
-    render_missing_personal_token
+  rescue Gitlab::Auth::MissingPersonalAccessTokenError
+    render_missing_personal_access_token
   end
 
-  def render_missing_personal_token
+  def render_missing_personal_access_token
     render json: {
       errors: [
         { code: 'UNAUTHORIZED',

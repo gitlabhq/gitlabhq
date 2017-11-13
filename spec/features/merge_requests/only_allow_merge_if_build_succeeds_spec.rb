@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Only allow merge requests to be merged if the pipeline succeeds', js: true do
+feature 'Only allow merge requests to be merged if the pipeline succeeds', :js do
   let(:merge_request) { create(:merge_request_with_diffs) }
   let(:project)       { merge_request.target_project }
 
@@ -10,7 +10,7 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', js: t
     project.team << [merge_request.author, :master]
   end
 
-  context 'project does not have CI enabled', js: true do
+  context 'project does not have CI enabled', :js do
     it 'allows MR to be merged' do
       visit_merge_request(merge_request)
 
@@ -20,7 +20,7 @@ feature 'Only allow merge requests to be merged if the pipeline succeeds', js: t
     end
   end
 
-  context 'when project has CI enabled', js: true do
+  context 'when project has CI enabled', :js do
     given!(:pipeline) do
       create(:ci_empty_pipeline,
       project: project,

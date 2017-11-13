@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Projects::MergeRequestsController do
+  include ProjectForksHelper
+
   let(:project) { create(:project, :repository) }
   let(:user)    { project.owner }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project) }
@@ -81,31 +83,19 @@ describe Projects::MergeRequestsController do
     end
 
     describe 'as json' do
-      context 'with basic param' do
+      context 'with basic serializer param' do
         it 'renders basic MR entity as json' do
-          go(basic: true, format: :json)
+          go(serializer: 'basic', format: :json)
 
           expect(response).to match_response_schema('entities/merge_request_basic')
         end
       end
 
-      context 'without basic param' do
+      context 'without basic serializer param' do
         it 'renders the merge request in the json format' do
           go(format: :json)
 
           expect(response).to match_response_schema('entities/merge_request')
-        end
-      end
-
-      context 'number of queries', :request_store do
-        it 'verifies number of queries' do
-          # pre-create objects
-          merge_request
-
-          recorded = ActiveRecord::QueryRecorder.new { go(format: :json) }
-
-          expect(recorded.count).to be_within(5).of(30)
-          expect(recorded.cached_count).to eq(0)
         end
       end
     end
@@ -153,7 +143,7 @@ describe Projects::MergeRequestsController do
         get_merge_requests(last_page)
 
         expect(assigns(:merge_requests).current_page).to eq(last_page)
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
 
       it 'does not redirect to external sites when provided a host field' do
@@ -196,17 +186,23 @@ describe Projects::MergeRequestsController do
   end
 
   describe 'PUT update' do
+    def update_merge_request(mr_params, additional_params = {})
+      params = {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: merge_request.iid,
+        merge_request: mr_params
+      }.merge(additional_params)
+
+      put :update, params
+    end
+
     context 'changing the assignee' do
       it 'limits the attributes exposed on the assignee' do
         assignee = create(:user)
         project.add_developer(assignee)
 
-        put :update,
-          namespace_id: project.namespace.to_param,
-          project_id: project,
-          id: merge_request.iid,
-          merge_request: { assignee_id: assignee.id },
-          format: :json
+        update_merge_request({ assignee_id: assignee.id }, format: :json)
         body = JSON.parse(response.body)
 
         expect(body['assignee'].keys)
@@ -214,26 +210,31 @@ describe Projects::MergeRequestsController do
       end
     end
 
+    context 'when user does not have access to update issue' do
+      before do
+        reporter = create(:user)
+        project.add_reporter(reporter)
+        sign_in(reporter)
+      end
+
+      it 'responds with 404' do
+        update_merge_request(title: 'New title')
+
+        expect(response).to have_http_status(:not_found)
+      end
+    end
+
     context 'there is no source project' do
       let(:project)       { create(:project, :repository) }
-      let(:fork_project)  { create(:forked_project_with_submodules) }
-      let(:merge_request) { create(:merge_request, source_project: fork_project, source_branch: 'add-submodule-version-bump', target_branch: 'master', target_project: project) }
+      let(:forked_project)  { fork_project_with_submodules(project) }
+      let!(:merge_request) { create(:merge_request, source_project: forked_project, source_branch: 'add-submodule-version-bump', target_branch: 'master', target_project: project) }
 
       before do
-        fork_project.build_forked_project_link(forked_to_project_id: fork_project.id, forked_from_project_id: project.id)
-        fork_project.save
-        merge_request.reload
-        fork_project.destroy
+        forked_project.destroy
       end
 
       it 'closes MR without errors' do
-        post :update,
-            namespace_id: project.namespace,
-            project_id: project,
-            id: merge_request.iid,
-            merge_request: {
-              state_event: 'close'
-            }
+        update_merge_request(state_event: 'close')
 
         expect(response).to redirect_to([merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request])
         expect(merge_request.reload.closed?).to be_truthy
@@ -242,13 +243,7 @@ describe Projects::MergeRequestsController do
       it 'allows editing of a closed merge request' do
         merge_request.close!
 
-        put :update,
-            namespace_id: project.namespace,
-            project_id: project,
-            id: merge_request.iid,
-            merge_request: {
-              title: 'New title'
-            }
+        update_merge_request(title: 'New title')
 
         expect(response).to redirect_to([merge_request.target_project.namespace.becomes(Namespace), merge_request.target_project, merge_request])
         expect(merge_request.reload.title).to eq 'New title'
@@ -257,13 +252,7 @@ describe Projects::MergeRequestsController do
       it 'does not allow to update target branch closed merge request' do
         merge_request.close!
 
-        put :update,
-            namespace_id: project.namespace,
-            project_id: project,
-            id: merge_request.iid,
-            merge_request: {
-              target_branch: 'new_branch'
-            }
+        update_merge_request(target_branch: 'new_branch')
 
         expect { merge_request.reload.target_branch }.not_to change { merge_request.target_branch }
       end
@@ -291,7 +280,7 @@ describe Projects::MergeRequestsController do
       end
 
       it 'returns 404' do
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -447,7 +436,7 @@ describe Projects::MergeRequestsController do
     it "denies access to users unless they're admin or project owner" do
       delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     context "when the user is owner" do
@@ -462,12 +451,12 @@ describe Projects::MergeRequestsController do
       it "deletes the merge request" do
         delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
 
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
         expect(controller).to set_flash[:notice].to(/The merge request was successfully deleted\./)
       end
 
       it 'delegates the update of the todos count cache to TodoService' do
-        expect_any_instance_of(TodoService).to receive(:destroy_merge_request).with(merge_request, owner).once
+        expect_any_instance_of(TodoService).to receive(:destroy_issuable).with(merge_request, owner).once
 
         delete :destroy, namespace_id: project.namespace, project_id: project, id: merge_request.iid
       end
@@ -552,7 +541,7 @@ describe Projects::MergeRequestsController do
       subject
     end
 
-    it { is_expected.to have_http_status(:success) }
+    it { is_expected.to have_gitlab_http_status(:success) }
 
     it 'renders MergeRequest as JSON' do
       subject
@@ -611,21 +600,16 @@ describe Projects::MergeRequestsController do
 
   describe 'GET ci_environments_status' do
     context 'the environment is from a forked project' do
-      let!(:forked)       { create(:project, :repository) }
+      let!(:forked)       { fork_project(project, user, repository: true) }
       let!(:environment)  { create(:environment, project: forked) }
       let!(:deployment)   { create(:deployment, environment: environment, sha: forked.commit.id, ref: 'master') }
       let(:admin)         { create(:admin) }
 
       let(:merge_request) do
-        create(:forked_project_link, forked_to_project: forked,
-                                     forked_from_project: project)
-
         create(:merge_request, source_project: forked, target_project: project)
       end
 
       before do
-        forked.team << [user, :master]
-
         get :ci_environments_status,
           namespace_id: merge_request.project.namespace.to_param,
           project_id: merge_request.project,
@@ -654,11 +638,11 @@ describe Projects::MergeRequestsController do
       end
 
       it 'return a detailed head_pipeline status in json' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response['text']).to eq status.text
         expect(json_response['label']).to eq status.label
         expect(json_response['icon']).to eq status.icon
-        expect(json_response['favicon']).to eq "/assets/ci_favicons/#{status.favicon}.ico"
+        expect(json_response['favicon']).to match_asset_path "/assets/ci_favicons/#{status.favicon}.ico"
       end
     end
 
@@ -668,7 +652,7 @@ describe Projects::MergeRequestsController do
       end
 
       it 'return empty' do
-        expect(response).to have_http_status(:ok)
+        expect(response).to have_gitlab_http_status(:ok)
         expect(json_response).to be_empty
       end
     end

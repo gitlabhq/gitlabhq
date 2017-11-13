@@ -33,7 +33,7 @@ feature 'Profile > Chat' do
       scenario 'second use of link is denied' do
         visit authorize_path
 
-        expect(page).to have_http_status(:not_found)
+        expect(page).to have_gitlab_http_status(:not_found)
       end
     end
 
@@ -51,7 +51,7 @@ feature 'Profile > Chat' do
       scenario 'second use of link is denied' do
         visit authorize_path
 
-        expect(page).to have_http_status(:not_found)
+        expect(page).to have_gitlab_http_status(:not_found)
       end
     end
   end

@@ -11,7 +11,7 @@ describe Gitlab::LDAP::User do
     }
   end
   let(:auth_hash) do
-    OmniAuth::AuthHash.new(uid: 'my-uid', provider: 'ldapmain', info: info)
+    OmniAuth::AuthHash.new(uid: 'uid=John Smith,ou=People,dc=example,dc=com', provider: 'ldapmain', info: info)
   end
   let(:ldap_user_upper_case) { described_class.new(auth_hash_upper_case) }
   let(:info_upper_case) do
@@ -22,12 +22,12 @@ describe Gitlab::LDAP::User do
     }
   end
   let(:auth_hash_upper_case) do
-    OmniAuth::AuthHash.new(uid: 'my-uid', provider: 'ldapmain', info: info_upper_case)
+    OmniAuth::AuthHash.new(uid: 'uid=John Smith,ou=People,dc=example,dc=com', provider: 'ldapmain', info: info_upper_case)
   end
 
   describe '#changed?' do
     it "marks existing ldap user as changed" do
-      create(:omniauth_user, extern_uid: 'my-uid', provider: 'ldapmain')
+      create(:omniauth_user, extern_uid: 'uid=John Smith,ou=People,dc=example,dc=com', provider: 'ldapmain')
       expect(ldap_user.changed?).to be_truthy
     end
 
@@ -37,30 +37,32 @@ describe Gitlab::LDAP::User do
     end
 
     it "does not mark existing ldap user as changed" do
-      create(:omniauth_user, email: 'john@example.com', extern_uid: 'my-uid', provider: 'ldapmain')
+      create(:omniauth_user, email: 'john@example.com', extern_uid: 'uid=john smith,ou=people,dc=example,dc=com', provider: 'ldapmain')
       ldap_user.gl_user.user_synced_attributes_metadata(provider: 'ldapmain', email: true)
       expect(ldap_user.changed?).to be_falsey
     end
   end
 
   describe '.find_by_uid_and_provider' do
+    let(:dn) { 'CN=John Åström, CN=Users, DC=Example, DC=com' }
+
     it 'retrieves the correct user' do
       special_info = {
         name: 'John Åström',
         email: 'john@example.com',
         nickname: 'jastrom'
       }
-      special_hash = OmniAuth::AuthHash.new(uid: 'CN=John Åström,CN=Users,DC=Example,DC=com', provider: 'ldapmain', info: special_info)
+      special_hash = OmniAuth::AuthHash.new(uid: dn, provider: 'ldapmain', info: special_info)
       special_chars_user = described_class.new(special_hash)
       user = special_chars_user.save
 
-      expect(described_class.find_by_uid_and_provider(special_hash.uid, special_hash.provider)).to eq user
+      expect(described_class.find_by_uid_and_provider(dn, 'ldapmain')).to eq user
     end
   end
 
   describe 'find or create' do
     it "finds the user if already existing" do
-      create(:omniauth_user, extern_uid: 'my-uid', provider: 'ldapmain')
+      create(:omniauth_user, extern_uid: 'uid=john smith,ou=people,dc=example,dc=com', provider: 'ldapmain')
 
       expect { ldap_user.save }.not_to change { User.count }
     end
@@ -70,7 +72,7 @@ describe Gitlab::LDAP::User do
       expect { ldap_user.save }.not_to change { User.count }
 
       existing_user.reload
-      expect(existing_user.ldap_identity.extern_uid).to eql 'my-uid'
+      expect(existing_user.ldap_identity.extern_uid).to eql 'uid=john smith,ou=people,dc=example,dc=com'
       expect(existing_user.ldap_identity.provider).to eql 'ldapmain'
     end
 
@@ -79,7 +81,7 @@ describe Gitlab::LDAP::User do
       expect { ldap_user.save }.not_to change { User.count }
 
       existing_user.reload
-      expect(existing_user.ldap_identity.extern_uid).to eql 'my-uid'
+      expect(existing_user.ldap_identity.extern_uid).to eql 'uid=john smith,ou=people,dc=example,dc=com'
       expect(existing_user.ldap_identity.provider).to eql 'ldapmain'
       expect(existing_user.id).to eql ldap_user.gl_user.id
     end
@@ -89,7 +91,7 @@ describe Gitlab::LDAP::User do
       expect { ldap_user_upper_case.save }.not_to change { User.count }
 
       existing_user.reload
-      expect(existing_user.ldap_identity.extern_uid).to eql 'my-uid'
+      expect(existing_user.ldap_identity.extern_uid).to eql 'uid=john smith,ou=people,dc=example,dc=com'
       expect(existing_user.ldap_identity.provider).to eql 'ldapmain'
       expect(existing_user.id).to eql ldap_user.gl_user.id
     end

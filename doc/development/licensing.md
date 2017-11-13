@@ -56,6 +56,7 @@ Libraries with the following licenses are acceptable for use:
 - [ISC License][ISC] (also known as the OpenBSD License): A permissive (non-copyleft) license as defined by the Open Source Initiative.
 - [Creative Commons Zero (CC0)][CC0]: A public domain dedication, recommended as a way to disclaim copyright on your work to the maximum extent possible.
 - [Unlicense][UNLICENSE]: Another public domain dedication.
+- [OWFa 1.0][OWFa1]: An open-source license and patent grant designed for specifications.
 
 ## Unacceptable Licenses
 
@@ -65,6 +66,7 @@ Libraries with the following licenses are unacceptable for use:
 - [GNU AGPLv3][AGPLv3]: AGPL-licensed libraries cannot be linked to from non-GPL projects.
 - [Open Software License (OSL)][OSL]: is a copyleft license. In addition, the FSF [recommend against its use][OSL-GNU].
 - [Facebook BSD + PATENTS][Facebook]: is a 3-clause BSD license with a patent grant that has been deemed [Category X][x-list] by the Apache foundation.
+- [WTFPL][WTFPL]: is a public domain dedication [rejected by the OSI (3.2)][WTFPL-OSI]. Also has a strong language which is not in accordance with our diversity policy.
 
 ## Requesting Approval for Licenses
 
@@ -104,7 +106,10 @@ Gems which are included only in the "development" or "test" groups by Bundler ar
 [OSL-GNU]: https://www.gnu.org/licenses/license-list.en.html#OSL
 [Org-Repo]: https://gitlab.com/gitlab-com/organization
 [UNLICENSE]: https://unlicense.org
+[OWFa1]: http://www.openwebfoundation.org/legal/the-owf-1-0-agreements/owfa-1-0
 [Facebook]: https://code.facebook.com/pages/850928938376556
 [x-list]: https://www.apache.org/legal/resolved.html#category-x
 [Acceptable-Licenses]: #acceptable-licenses
 [Unacceptable-Licenses]: #unacceptable-licenses
+[WTFPL]: https://wtfpl.net
+[WTFPL-OSI]: https://opensource.org/minutes20090304

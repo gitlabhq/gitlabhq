@@ -1,0 +1,85 @@
+- @content_class = "limit-container-width" unless fluid_layout
+- breadcrumb_title "Cluster"
+- page_title _("Cluster")
+
+- expanded = Rails.env.test?
+
+- status_path = status_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster.id, format: :json) if can?(current_user, :admin_cluster, @cluster)
+.edit-cluster-form.js-edit-cluster-form{ data: { status_path: status_path,
+  install_helm_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :helm),
+  install_ingress_path: install_applications_namespace_project_cluster_path(@cluster.project.namespace, @cluster.project, @cluster, :ingress),
+  toggle_status: @cluster.enabled? ? 'true': 'false',
+  cluster_status: @cluster.status_name,
+  cluster_status_reason: @cluster.status_reason,
+  help_path: help_page_path('user/project/clusters/index.md', anchor: 'installing-applications') } }
+
+
+  .js-cluster-application-notice
+    .flash-container
+
+  %section.settings.no-animate.expanded
+    %h4= s_('ClusterIntegration|Enable cluster integration')
+    .settings-content
+
+      .hidden.js-cluster-error.alert.alert-danger.alert-block.append-bottom-10{ role: 'alert' }
+        = s_('ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine')
+        %p.js-error-reason
+
+      .hidden.js-cluster-creating.alert.alert-info.alert-block.append-bottom-10{ role: 'alert' }
+        = s_('ClusterIntegration|Cluster is being created on Google Container Engine...')
+
+      .hidden.js-cluster-success.alert.alert-success.alert-block.append-bottom-10{ role: 'alert' }
+        = s_('ClusterIntegration|Cluster was successfully created on Google Container Engine')
+
+      %p
+        - if @cluster.enabled?
+          - if can?(current_user, :update_cluster, @cluster)
+            = s_('ClusterIntegration|Cluster integration is enabled for this project. Disabling this integration will not affect your cluster, it will only temporarily turn off GitLab\'s connection to it.')
+          - else
+            = s_('ClusterIntegration|Cluster integration is enabled for this project.')
+        - else
+          = s_('ClusterIntegration|Cluster integration is disabled for this project.')
+
+    = form_for @cluster, url: namespace_project_cluster_path(@project.namespace, @project, @cluster), as: :cluster do |field|
+      = form_errors(@cluster)
+      .form-group.append-bottom-20
+        %label.append-bottom-10
+          = field.hidden_field :enabled, { class: 'js-toggle-input'}
+
+          %button{ type: 'button',
+            class: "js-toggle-cluster project-feature-toggle #{'checked' unless !@cluster.enabled?} #{'disabled' unless can?(current_user, :update_cluster, @cluster)}",
+            'aria-label': s_('ClusterIntegration|Toggle Cluster'),
+            disabled: !can?(current_user, :update_cluster, @cluster),
+            data: { 'enabled-text': 'Enabled', 'disabled-text': 'Disabled' } }
+
+        - if can?(current_user, :update_cluster, @cluster)
+          .form-group
+            = field.submit _('Save'), class: 'btn btn-success'
+
+  .cluster-applications-table#js-cluster-applications
+
+  %section.settings#js-cluster-details
+    .settings-header
+      %h4= s_('ClusterIntegration|Cluster details')
+      %button.btn.js-settings-toggle
+        = expanded ? 'Collapse' : 'Expand'
+      %p= s_('ClusterIntegration|See and edit the details for your cluster')
+
+    .settings-content
+
+      .form_group.append-bottom-20
+        %label.append-bottom-10{ for: 'cluster-name' }
+          = s_('ClusterIntegration|Cluster name')
+        .input-group
+          %input.form-control.cluster-name{ value: @cluster.name, disabled: true }
+          %span.input-group-addon.clipboard-addon
+            = clipboard_button(text: @cluster.name, title: s_('ClusterIntegration|Copy cluster name'))
+
+  %section.settings.no-animate#js-cluster-advanced-settings{ class: ('expanded' if expanded) }
+    .settings-header
+      %h4= _('Advanced settings')
+      %button.btn.js-settings-toggle
+        = expanded ? 'Collapse' : 'Expand'
+      %p= s_('ClusterIntegration|Manage Cluster integration on your GitLab project')
+    .settings-content
+      = render 'advanced_settings'

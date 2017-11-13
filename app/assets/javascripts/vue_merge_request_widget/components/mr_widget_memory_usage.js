@@ -1,6 +1,6 @@
 import statusCodes from '../../lib/utils/http_status';
 import { bytesToMiB } from '../../lib/utils/number_utils';
-
+import { backOff } from '../../lib/utils/common_utils';
 import MemoryGraph from '../../vue_shared/components/memory_graph';
 import MRWidgetService from '../services/mr_widget_service';
 
@@ -84,7 +84,7 @@ export default {
       }
     },
     loadMetrics() {
-      gl.utils.backOff((next, stop) => {
+      backOff((next, stop) => {
         MRWidgetService.fetchMetrics(this.metricsUrl)
           .then((res) => {
             if (res.status === statusCodes.NO_CONTENT) {

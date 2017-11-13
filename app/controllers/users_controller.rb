@@ -108,6 +108,8 @@ class UsersController < ApplicationController
       .references(:project)
       .with_associations
       .limit_recent(20, params[:offset])
+
+    Events::RenderService.new(current_user).execute(@events, atom_request: request.format.atom?)
   end
 
   def load_projects

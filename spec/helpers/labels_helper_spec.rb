@@ -24,7 +24,7 @@ describe LabelsHelper do
       let(:group) { build(:group, name: 'bar') }
 
       it 'links to group issues page' do
-        expect(link_to_label(label, subject: group)).to match %r{<a href="/groups/bar/issues\?label_name%5B%5D=#{label.name}">.*</a>}
+        expect(link_to_label(label, subject: group)).to match %r{<a href="/groups/bar/-/issues\?label_name%5B%5D=#{label.name}">.*</a>}
       end
     end
 

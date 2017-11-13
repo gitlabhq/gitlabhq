@@ -1,9 +1,8 @@
-/* global Flash */
-
+import Flash from '../flash';
 import BalsamiqViewer from './balsamiq/balsamiq_viewer';
 
 function onError() {
-  const flash = new window.Flash('Balsamiq file could not be loaded.');
+  const flash = new Flash('Balsamiq file could not be loaded.');
 
   return flash;
 }

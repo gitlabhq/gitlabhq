@@ -1,5 +1,6 @@
 ---
 toc: false
+comments: false
 ---
 
 # GitLab Documentation
@@ -53,6 +54,7 @@ Shortcuts to GitLab's most visited docs:
 ### Projects and groups
 
 - [Projects](user/project/index.md):
+  - [Project settings](user/project/settings/index.md)
   - [Create a project](gitlab-basics/create-project.md)
   - [Fork a project](gitlab-basics/fork-project.md)
   - [Importing and exporting projects between instances](user/project/settings/import_export.md).
@@ -68,22 +70,23 @@ Shortcuts to GitLab's most visited docs:
 
 Manage your [repositories](user/project/repository/index.md) from the UI (user interface):
 
-- Files
+- [Files](user/project/repository/index.md#files)
   - [Create a file](user/project/repository/web_editor.md#create-a-file)
   - [Upload a file](user/project/repository/web_editor.md#upload-a-file)
   - [File templates](user/project/repository/web_editor.md#template-dropdowns)
   - [Create a directory](user/project/repository/web_editor.md#create-a-directory)
   - [Start a merge request](user/project/repository/web_editor.md#tips) (when committing via UI)
-- Branches
+- [Branches](user/project/repository/branches/index.md)
+  - [Default branch](user/project/repository/branches/index.md#default-branch)
   - [Create a branch](user/project/repository/web_editor.md#create-a-new-branch)
   - [Protected branches](user/project/protected_branches.md#protected-branches)
   - [Delete merged branches](user/project/repository/branches/index.md#delete-merged-branches)
-- Commits
+- [Commits](user/project/repository/index.md#commits)
   - [Signing commits](user/project/repository/gpg_signed_commits/index.md): use GPG to sign your commits.
 
 ### Issues and Merge Requests (MRs)
 
-- [Discussions](user/discussions/index.md) Threads, comments, and resolvable discussions in issues, commits, and  merge requests.
+- [Discussions](user/discussions/index.md): Threads, comments, and resolvable discussions in issues, commits, and  merge requests.
 - [Issues](user/project/issues/index.md)
 - [Project issue Board](user/project/issue_board.md)
 - [Issues and merge requests templates](user/project/description_templates.md): Create templates for submitting new issues and merge requests.
@@ -153,7 +156,7 @@ have access to GitLab administration tools and settings.
 - [Git LFS configuration](workflow/lfs/lfs_administration.md): Learn how to use LFS under GitLab.
 - [GitLab Pages configuration](administration/pages/index.md): Configure GitLab Pages.
 - [High Availability](administration/high_availability/README.md): Configure multiple servers for scaling or high availability.
-- [User cohorts](user/admin_area/user_cohorts.md) View user activity over time.
+- [User cohorts](user/admin_area/user_cohorts.md): View user activity over time.
 - [Web terminals](administration/integration/terminal.md): Provide terminal access to environments from within GitLab.
 - GitLab CI
     - [CI admin settings](user/admin_area/settings/continuous_integration.md): Define max artifacts size and expiration time.
@@ -168,6 +171,7 @@ have access to GitLab administration tools and settings.
 - [GitLab performance monitoring with InfluxDB](administration/monitoring/performance/introduction.md): Configure GitLab and InfluxDB for measuring performance metrics.
 - [GitLab performance monitoring with Prometheus](administration/monitoring/prometheus/index.md): Configure GitLab and Prometheus for measuring performance metrics.
 - [Monitoring uptime](user/admin_area/monitoring/health_check.md): Check the server status using the health check endpoint.
+- [Monitoring GitHub imports](administration/monitoring/github_imports.md)
 
 ### Performance
 

@@ -156,7 +156,9 @@ class Blob < SimpleDelegator
   end
 
   def file_type
-    Gitlab::FileDetector.type_of(path)
+    name = File.basename(path)
+
+    Gitlab::FileDetector.type_of(path) || Gitlab::FileDetector.type_of(name)
   end
 
   def video?

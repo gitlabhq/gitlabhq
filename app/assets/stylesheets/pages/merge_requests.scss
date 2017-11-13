@@ -150,14 +150,6 @@
     display: block;
   }
 
-  .mr-widget-body {
-    @include clearfix;
-
-    &.media > *:first-child {
-      margin-right: 10px;
-    }
-  }
-
   .mr-widget-pipeline-graph {
     padding: 0 4px;
 
@@ -209,12 +201,17 @@
     }
   }
 
-  .mr-widget-help {
-    padding: 10px 16px 10px 48px;
-    font-style: italic;
-  }
-
   .mr-widget-body {
+    @include clearfix;
+
+    &.media > *:first-child {
+      margin-right: 10px;
+    }
+
+    .approve-btn {
+      margin-right: 5px;
+    }
+
     h4 {
       float: left;
       font-weight: $gl-font-weight-bold;
@@ -336,6 +333,11 @@
     }
   }
 
+  .mr-widget-help {
+    padding: 10px 16px 10px 48px;
+    font-style: italic;
+  }
+
   .ci-coverage {
     float: right;
   }
@@ -350,10 +352,8 @@
   }
 }
 
-.mr-state-widget .mr-widget-body {
-  .approve-btn {
-    margin-right: 5px;
-  }
+.mr-widget-body-controls {
+  flex-wrap: wrap;
 }
 
 .mr_source_commit,
@@ -465,16 +465,16 @@
       padding-bottom: 0;
     }
   }
-}
 
-.mr-info-list.mr-memory-usage {
-  p {
-    float: left;
-  }
+  &.mr-memory-usage {
+    p {
+      float: left;
+    }
 
-  .memory-graph-container {
-    float: left;
-    margin-left: 5px;
+    .memory-graph-container {
+      float: left;
+      margin-left: 5px;
+    }
   }
 }
 
@@ -645,7 +645,7 @@
 }
 
 .merge-request-tabs-holder {
-  top: $new-navbar-height;
+  top: $header-height;
   z-index: 200;
   background-color: $white-light;
   border-bottom: 1px solid $border-color;
@@ -675,7 +675,7 @@
 }
 
 .with-performance-bar .merge-request-tabs-holder {
-  top: $new-navbar-height + $performance-bar-height;
+  top: $header-height + $performance-bar-height;
 }
 
 .merge-request-tabs {

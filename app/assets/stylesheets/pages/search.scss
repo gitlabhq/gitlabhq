@@ -5,7 +5,7 @@
     margin-bottom: $gl-padding;
 
     &:last-child {
-      border-bottom: none;
+      border-bottom: 0;
     }
   }
 
@@ -28,9 +28,7 @@ input[type="checkbox"]:hover {
 }
 
 .search {
-  margin-right: 10px;
-  margin-left: 10px;
-  margin-top: ($header-height - 35) / 2;
+  margin: 4px 8px 0;
 
   form {
     @extend .form-control;
@@ -38,77 +36,63 @@ input[type="checkbox"]:hover {
     padding: 4px;
     width: $search-input-width;
     line-height: 24px;
+    height: 32px;
+    border: 0;
+    border-radius: $border-radius-default;
+    transition: border-color ease-in-out $default-transition-duration, background-color ease-in-out $default-transition-duration;
 
     &:hover {
-      border-color: lighten($dropdown-input-focus-border, 20%);
-      box-shadow: 0 0 4px lighten($search-input-focus-shadow-color, 20%);
+      box-shadow: none;
     }
   }
 
-  .location-text {
-    font-style: normal;
+  .location-badge {
+    height: 32px;
+    font-size: 12px;
+    margin: -4px 4px -4px -4px;
+    line-height: 25px;
+    padding: 4px 8px;
+    border-radius: $border-radius-default 0 0 $border-radius-default;
+    transition: border-color ease-in-out $default-transition-duration;
   }
 
   .search-input {
-    border: none;
+    border: 0;
     font-size: 14px;
     padding: 0 20px 0 0;
     margin-left: 5px;
     line-height: 25px;
     width: 98%;
+    color: $white-light;
+    background: none;
+    transition: color ease-in-out $default-transition-duration;
   }
 
-  .location-badge {
-    line-height: 25px;
-    padding: 0 5px;
-    border-radius: $border-radius-default;
-    font-size: 14px;
-    font-style: normal;
-    color: $note-disabled-comment-color;
-    display: inline-block;
-    background-color: $gray-normal;
-    vertical-align: top;
-    cursor: default;
+  .search-input::placeholder {
+    transition: color ease-in-out $default-transition-duration;
   }
 
   .search-input-container {
-    display: -webkit-flex;
     display: flex;
     position: relative;
   }
 
   .search-input-wrap {
-    // Fallback if flexbox is not supported
-    display: inline-block;
-  }
-
-  .search-input-wrap {
-    width: 100%;
-
     .search-icon,
     .clear-icon {
       position: absolute;
       right: 5px;
-      top: 0;
-      color: $location-icon-color;
-
-      &::before {
-        font-family: FontAwesome;
-        font-weight: $gl-font-weight-normal;
-        font-style: normal;
-      }
+      top: 4px;
     }
 
     .search-icon {
-      @extend .fa-search;
-      transition: color 0.15s;
+      transition: color $default-transition-duration;
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
     }
 
     .clear-icon {
-      @extend .fa-times;
       display: none;
     }
 
@@ -148,19 +132,30 @@ input[type="checkbox"]:hover {
     form {
       @extend .form-control:focus;
       border-color: $dropdown-input-focus-border;
-      box-shadow: 0 0 4px $search-input-focus-shadow-color;
+      box-shadow: none;
+
+      .search-input-wrap {
+        .search-icon,
+        .clear-icon {
+          color: $gl-text-color-tertiary;
+          transition: color ease-in-out $default-transition-duration;
+        }
+      }
+
+      .search-input {
+        color: $gl-text-color;
+        transition: color ease-in-out $default-transition-duration;
+      }
+
+      .search-input::placeholder {
+        color: $gl-text-color-tertiary;
+      }
     }
 
     .location-badge {
-      transition: all 0.15s;
-      background-color: $location-badge-active-bg;
-      color: $white-light;
-    }
-
-    .search-input-wrap {
-      i {
-        color: $layout-link-gray;
-      }
+      transition: all $default-transition-duration;
+      background-color: $nav-badge-bg;
+      border-color: $border-color;
     }
 
     .dropdown-menu {

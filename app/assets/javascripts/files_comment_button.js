@@ -1,11 +1,10 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, max-len, one-var, one-var-declaration-per-line, quotes, prefer-template, newline-per-chained-call, comma-dangle, new-cap, no-else-return, consistent-return */
-/* global notes */
-
 /* Developer beware! Do not add logic to showButton or hideButton
  * that will force a reflow. Doing so will create a signficant performance
  * bottleneck for pages with large diffs. For a comprehensive list of what
  * causes reflows, visit https://gist.github.com/paulirish/5d52fb081b3570c81e3a
  */
+
+import Cookies from 'js-cookie';
 
 const LINE_NUMBER_CLASS = 'diff-line-num';
 const UNFOLDABLE_LINE_CLASS = 'js-unfold';
@@ -18,8 +17,10 @@ const DIFF_EXPANDED_CLASS = 'diff-expanded';
 
 export default {
   init($diffFile) {
-    /* Caching is used only when the following members are *true*. This is because there are likely to be
-     * differently configured versions of diffs in the same session. However if these values are true, they
+    /* Caching is used only when the following members are *true*.
+     * This is because there are likely to be
+     * differently configured versions of diffs in the same session.
+     * However if these values are true, they
      * will be true in all cases */
 
     if (!this.userCanCreateNote) {
@@ -27,9 +28,7 @@ export default {
       this.userCanCreateNote = $diffFile.closest(DIFF_CONTAINER_SELECTOR).data('can-create-note') === '';
     }
 
-    if (typeof notes !== 'undefined' && !this.isParallelView) {
-      this.isParallelView = notes.isParallelView && notes.isParallelView();
-    }
+    this.isParallelView = Cookies.get('diff_view') === 'parallel';
 
     if (this.userCanCreateNote) {
       $diffFile.on('mouseover', LINE_COLUMN_CLASSES, e => this.showButton(this.isParallelView, e))

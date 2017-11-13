@@ -10,7 +10,7 @@ if ENV['CI']
   Knapsack::Adapters::SpinachAdapter.bind
 end
 
-%w(select2_helper test_env repo_helpers wait_for_requests sidekiq).each do |f|
+%w(select2_helper test_env repo_helpers wait_for_requests sidekiq project_forks_helper).each do |f|
   require Rails.root.join('spec', 'support', f)
 end
 

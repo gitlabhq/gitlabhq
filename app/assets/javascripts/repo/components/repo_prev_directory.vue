@@ -1,38 +1,34 @@
 <script>
-import RepoMixin from '../mixins/repo_mixin';
+  import { mapGetters, mapState, mapActions } from 'vuex';
 
-const RepoPreviousDirectory = {
-  props: {
-    prevUrl: {
-      type: String,
-      required: true,
+  export default {
+    computed: {
+      ...mapState([
+        'parentTreeUrl',
+      ]),
+      ...mapGetters([
+        'isCollapsed',
+      ]),
+      colSpanCondition() {
+        return this.isCollapsed ? undefined : 3;
+      },
     },
-  },
-
-  mixins: [RepoMixin],
-
-  computed: {
-    colSpanCondition() {
-      return this.isMini ? undefined : 3;
+    methods: {
+      ...mapActions([
+        'getTreeData',
+      ]),
     },
-  },
-
-  methods: {
-    linkClicked(file) {
-      this.$emit('linkclicked', file);
-    },
-  },
-};
-
-export default RepoPreviousDirectory;
+  };
 </script>
 
 <template>
-<tr class="prev-directory">
-  <td
-    :colspan="colSpanCondition"
-    @click.prevent="linkClicked(prevUrl)">
-    <a :href="prevUrl">..</a>
-  </td>
-</tr>
+  <tr class="file prev-directory">
+    <td
+      :colspan="colSpanCondition"
+      class="table-cell"
+      @click.prevent="getTreeData({ endpoint: parentTreeUrl })"
+    >
+      <a :href="parentTreeUrl">...</a>
+    </td>
+  </tr>
 </template>

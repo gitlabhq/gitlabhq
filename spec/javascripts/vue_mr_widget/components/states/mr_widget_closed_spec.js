@@ -4,11 +4,15 @@ import closedComponent from '~/vue_merge_request_widget/components/states/mr_wid
 const mr = {
   targetBranch: 'good-branch',
   targetBranchPath: '/good-branch',
-  closedBy: {
-    name: 'Fatih Acet',
-    username: 'fatihacet',
+  closedEvent: {
+    author: {
+      name: 'Fatih Acet',
+      username: 'fatihacet',
+    },
+    updatedAt: 'closedEventUpdatedAt',
+    formattedUpdatedAt: '',
   },
-  updatedAt: '2017-03-23T20:08:08.845Z',
+  updatedAt: 'mrUpdatedAt',
   closedAt: '1 day ago',
 };
 
@@ -18,7 +22,7 @@ const createComponent = () => {
   return new Component({
     el: document.createElement('div'),
     propsData: { mr },
-  }).$el;
+  });
 };
 
 describe('MRWidgetClosed', () => {
@@ -38,14 +42,30 @@ describe('MRWidgetClosed', () => {
   });
 
   describe('template', () => {
-    it('should have correct elements', () => {
-      const el = createComponent();
+    let vm;
+    let el;
 
+    beforeEach(() => {
+      vm = createComponent();
+      el = vm.$el;
+    });
+
+    afterEach(() => {
+      vm.$destroy();
+    });
+
+    it('should have correct elements', () => {
       expect(el.querySelector('h4').textContent).toContain('Closed by');
-      expect(el.querySelector('h4').textContent).toContain(mr.closedBy.name);
+      expect(el.querySelector('h4').textContent).toContain(mr.closedEvent.author.name);
       expect(el.textContent).toContain('The changes were not merged into');
       expect(el.querySelector('.label-branch').getAttribute('href')).toEqual(mr.targetBranchPath);
       expect(el.querySelector('.label-branch').textContent).toContain(mr.targetBranch);
+    });
+
+    it('should use closedEvent updatedAt as tooltip title', () => {
+      expect(
+        el.querySelector('time').getAttribute('title'),
+      ).toBe('closedEventUpdatedAt');
     });
   });
 });

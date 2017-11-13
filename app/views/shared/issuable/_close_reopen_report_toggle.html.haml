@@ -7,7 +7,7 @@
 - button_method = issuable_close_reopen_button_method(issuable)
 
 .pull-left.btn-group.prepend-left-10.issuable-close-dropdown.droplab-dropdown.js-issuable-close-dropdown
-  = link_to "#{display_button_action} #{display_issuable_type}", close_reopen_issuable_url(issuable),
+  = link_to "#{display_button_action} #{display_issuable_type}", close_reopen_issuable_path(issuable),
             method: button_method, class: "#{button_class} btn-#{button_action}", title: "#{display_button_action} #{display_issuable_type}"
 
   = button_tag type: 'button', class: "#{toggle_class} btn-#{button_action}-color",
@@ -16,7 +16,7 @@
 
   %ul#issuable-close-menu.js-issuable-close-menu.dropdown-menu{ class: button_responsive_class, data: { dropdown: true } }
     %li.close-item{ class: "#{issuable_button_visibility(issuable, true) || 'droplab-item-selected'}",
-                    data: { text: "Close #{display_issuable_type}", url: close_issuable_url(issuable),
+                    data: { text: "Close #{display_issuable_type}", url: close_issuable_path(issuable),
                     button_class: "#{button_class} btn-close", toggle_class: "#{toggle_class} btn-close-color", method: button_method } }
       %button.btn.btn-transparent
         = icon('check', class: 'icon')
@@ -26,7 +26,7 @@
             = display_issuable_type
 
     %li.reopen-item{ class: "#{issuable_button_visibility(issuable, false) || 'droplab-item-selected'}",
-                     data: { text: "Reopen #{display_issuable_type}", url: reopen_issuable_url(issuable),
+                     data: { text: "Reopen #{display_issuable_type}", url: reopen_issuable_path(issuable),
                      button_class: "#{button_class} btn-reopen", toggle_class: "#{toggle_class} btn-reopen-color", method: button_method } }
       %button.btn.btn-transparent
         = icon('check', class: 'icon')

@@ -7,12 +7,6 @@ module Emails
       mail(to: @user.notification_email, subject: subject("Account was created for you"))
     end
 
-    def new_email_email(email_id)
-      @email = Email.find(email_id)
-      @current_user = @user = @email.user
-      mail(to: @user.notification_email, subject: subject("Email was added to your account"))
-    end
-
     def new_ssh_key_email(key_id)
       @key = Key.find_by(id: key_id)
 

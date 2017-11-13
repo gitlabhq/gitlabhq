@@ -1,111 +1,75 @@
 import Vue from 'vue';
-import Helper from '~/repo/helpers/repo_helper';
-import RepoService from '~/repo/services/repo_service';
-import RepoStore from '~/repo/stores/repo_store';
+import store from '~/repo/stores';
 import repoSidebar from '~/repo/components/repo_sidebar.vue';
+import { file, resetStore } from '../helpers';
 
 describe('RepoSidebar', () => {
-  function createComponent() {
+  let vm;
+
+  beforeEach(() => {
     const RepoSidebar = Vue.extend(repoSidebar);
 
-    return new RepoSidebar().$mount();
-  }
+    vm = new RepoSidebar({
+      store,
+    });
+
+    vm.$store.state.isRoot = true;
+    vm.$store.state.tree.push(file());
+
+    vm.$mount();
+  });
+
+  afterEach(() => {
+    vm.$destroy();
+
+    resetStore(vm.$store);
+  });
 
   it('renders a sidebar', () => {
-    RepoStore.files = [{
-      id: 0,
-    }];
-    RepoStore.openedFiles = [];
-    const vm = createComponent();
     const thead = vm.$el.querySelector('thead');
     const tbody = vm.$el.querySelector('tbody');
 
     expect(vm.$el.id).toEqual('sidebar');
     expect(vm.$el.classList.contains('sidebar-mini')).toBeFalsy();
-    expect(thead.querySelector('.name').textContent).toEqual('Name');
-    expect(thead.querySelector('.last-commit').textContent).toEqual('Last Commit');
-    expect(thead.querySelector('.last-update').textContent).toEqual('Last Update');
+    expect(thead.querySelector('.name').textContent.trim()).toEqual('Name');
+    expect(thead.querySelector('.last-commit').textContent.trim()).toEqual('Last commit');
+    expect(thead.querySelector('.last-update').textContent.trim()).toEqual('Last update');
     expect(tbody.querySelector('.repo-file-options')).toBeFalsy();
     expect(tbody.querySelector('.prev-directory')).toBeFalsy();
     expect(tbody.querySelector('.loading-file')).toBeFalsy();
     expect(tbody.querySelector('.file')).toBeTruthy();
   });
 
-  it('does not render a thead, renders repo-file-options and sets sidebar-mini class if isMini', () => {
-    RepoStore.openedFiles = [{
-      id: 0,
-    }];
-    const vm = createComponent();
+  it('does not render a thead, renders repo-file-options and sets sidebar-mini class if isMini', (done) => {
+    vm.$store.state.openFiles.push(vm.$store.state.tree[0]);
 
-    expect(vm.$el.classList.contains('sidebar-mini')).toBeTruthy();
-    expect(vm.$el.querySelector('thead')).toBeFalsy();
-    expect(vm.$el.querySelector('tbody .repo-file-options')).toBeTruthy();
-  });
+    Vue.nextTick(() => {
+      expect(vm.$el.classList.contains('sidebar-mini')).toBeTruthy();
+      expect(vm.$el.querySelector('thead')).toBeTruthy();
+      expect(vm.$el.querySelector('thead .repo-file-options')).toBeTruthy();
 
-  it('renders 5 loading files if tree is loading and not hasFiles', () => {
-    RepoStore.loading = {
-      tree: true,
-    };
-    RepoStore.files = [];
-    const vm = createComponent();
-
-    expect(vm.$el.querySelectorAll('tbody .loading-file').length).toEqual(5);
-  });
-
-  it('renders a prev directory if isRoot', () => {
-    RepoStore.files = [{
-      id: 0,
-    }];
-    RepoStore.isRoot = true;
-    const vm = createComponent();
-
-    expect(vm.$el.querySelector('tbody .prev-directory')).toBeTruthy();
-  });
-
-  describe('methods', () => {
-    describe('fileClicked', () => {
-      it('should fetch data for new file', () => {
-        spyOn(Helper, 'getContent').and.callThrough();
-        const file1 = {
-          id: 0,
-          url: '',
-        };
-        RepoStore.files = [file1];
-        RepoStore.isRoot = true;
-        const vm = createComponent();
-
-        vm.fileClicked(file1);
-
-        expect(Helper.getContent).toHaveBeenCalledWith(file1);
-      });
-
-      it('should hide files in directory if already open', () => {
-        spyOn(RepoStore, 'removeChildFilesOfTree').and.callThrough();
-        const file1 = {
-          id: 0,
-          type: 'tree',
-          url: '',
-          opened: true,
-        };
-        RepoStore.files = [file1];
-        RepoStore.isRoot = true;
-        const vm = createComponent();
-
-        vm.fileClicked(file1);
-
-        expect(RepoStore.removeChildFilesOfTree).toHaveBeenCalledWith(file1);
-      });
+      done();
     });
+  });
 
-    describe('goToPreviousDirectoryClicked', () => {
-      it('should hide files in directory if already open', () => {
-        const prevUrl = 'foo/bar';
-        const vm = createComponent();
+  it('renders 5 loading files if tree is loading', (done) => {
+    vm.$store.state.tree = [];
+    vm.$store.state.loading = true;
 
-        vm.goToPreviousDirectoryClicked(prevUrl);
+    Vue.nextTick(() => {
+      expect(vm.$el.querySelectorAll('tbody .loading-file').length).toEqual(5);
 
-        expect(RepoService.url).toEqual(prevUrl);
-      });
+      done();
+    });
+  });
+
+  it('renders a prev directory if is not root', (done) => {
+    vm.$store.state.isRoot = false;
+
+    Vue.nextTick(() => {
+      expect(vm.$el.querySelector('tbody .prev-directory')).toBeTruthy();
+
+      done();
     });
   });
 });

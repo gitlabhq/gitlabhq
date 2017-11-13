@@ -120,29 +120,4 @@ describe Emails::Profile do
       it { expect { Notify.new_gpg_key_email('foo') }.not_to raise_error }
     end
   end
-
-  describe 'user added email' do
-    let(:email) { create(:email) }
-
-    subject { Notify.new_email_email(email.id) }
-
-    it_behaves_like 'it should not have Gmail Actions links'
-    it_behaves_like 'a user cannot unsubscribe through footer link'
-
-    it 'is sent to the new user' do
-      is_expected.to deliver_to email.user.email
-    end
-
-    it 'has the correct subject' do
-      is_expected.to have_subject /^Email was added to your account$/i
-    end
-
-    it 'contains the new email address' do
-      is_expected.to have_body_text /#{email.email}/
-    end
-
-    it 'includes a link to emails page' do
-      is_expected.to have_body_text /#{profile_emails_path}/
-    end
-  end
 end

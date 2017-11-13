@@ -4,6 +4,8 @@
 
 import Vue from 'vue';
 
+import '../mixins/discussion';
+
 window.ResolveCount = Vue.extend({
   mixins: [DiscussionMixins],
   props: {

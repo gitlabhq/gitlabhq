@@ -1,4 +1,4 @@
-# Getting started with GitLab CI
+# Getting started with GitLab CI/CD
 
 >**Note:** Starting from version 8.0, GitLab [Continuous Integration][ci] (CI)
 is fully integrated into GitLab itself and is [enabled] by default on all
@@ -106,7 +106,7 @@ What is important is that each job is run independently from each other.
 
 If you want to check whether your `.gitlab-ci.yml` file is valid, there is a
 Lint tool under the page `/ci/lint` of your GitLab instance. You can also find
-a "CI Lint" button to go to this page under **Pipelines ➔ Pipelines** and
+a "CI Lint" button to go to this page under **CI/CD ➔ Pipelines** and
 **Pipelines ➔ Jobs** in your project.
 
 For more information and a complete `.gitlab-ci.yml` syntax, please read
@@ -155,7 +155,7 @@ Find more information about different Runners in the
 [Runners](../runners/README.md) documentation.
 
 You can find whether any Runners are assigned to your project by going to
-**Settings ➔ Pipelines**. Setting up a Runner is easy and straightforward. The
+**Settings ➔ CI/CD**. Setting up a Runner is easy and straightforward. The
 official Runner supported by GitLab is written in Go and its documentation
 can be found at <https://docs.gitlab.com/runner/>.
 
@@ -168,7 +168,7 @@ Follow the links above to set up your own Runner or use a Shared Runner as
 described in the next section.
 
 Once the Runner has been set up, you should see it on the Runners page of your
-project, following **Settings ➔ Pipelines**.
+project, following **Settings ➔ CI/CD**.
 
 ![Activated runners](img/runners_activated.png)
 
@@ -181,7 +181,7 @@ These are special virtual machines that run on GitLab's infrastructure and can
 build any project.
 
 To enable the **Shared Runners** you have to go to your project's
-**Settings ➔ Pipelines** and click **Enable shared runners**.
+**Settings ➔ CI/CD** and click **Enable shared runners**.
 
 [Read more on Shared Runners](../runners/README.md).
 

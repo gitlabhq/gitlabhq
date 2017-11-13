@@ -1,4 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, no-param-reassign, no-cond-assign, one-var, one-var-declaration-per-line, no-void, guard-for-in, no-restricted-syntax, prefer-template, quotes, max-len */
+
 var base;
 var w = window;
 if (w.gl == null) {
@@ -84,8 +85,23 @@ w.gl.utils.getLocationHash = function(url) {
   return hashIndex === -1 ? null : url.substring(hashIndex + 1);
 };
 
-w.gl.utils.refreshCurrentPage = () => gl.utils.visitUrl(document.location.href);
+w.gl.utils.refreshCurrentPage = () => gl.utils.visitUrl(window.location.href);
 
-w.gl.utils.visitUrl = (url) => {
-  document.location.href = url;
+// eslint-disable-next-line import/prefer-default-export
+export function visitUrl(url, external = false) {
+  if (external) {
+    // Simulate `target="blank" rel="noopener noreferrer"`
+    // See https://mathiasbynens.github.io/rel-noopener/
+    const otherWindow = window.open();
+    otherWindow.opener = null;
+    otherWindow.location = url;
+  } else {
+    window.location.href = url;
+  }
+}
+
+window.gl = window.gl || {};
+window.gl.utils = {
+  ...(window.gl.utils || {}),
+  visitUrl,
 };

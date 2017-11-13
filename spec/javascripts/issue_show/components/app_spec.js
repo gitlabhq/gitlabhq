@@ -42,7 +42,6 @@ describe('Issuable output', () => {
         initialDescriptionText: '',
         markdownPreviewPath: '/',
         markdownDocsPath: '/',
-        isConfidential: false,
         projectNamespace: '/',
         projectPath: '/',
       },
@@ -152,30 +151,6 @@ describe('Issuable output', () => {
         expect(
           vm.service.getData,
         ).toHaveBeenCalled();
-
-        done();
-      });
-    });
-
-    it('reloads the page if the confidential status has changed', (done) => {
-      spyOn(gl.utils, 'visitUrl');
-      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
-        resolve({
-          json() {
-            return {
-              confidential: true,
-              web_url: location.pathname,
-            };
-          },
-        });
-      }));
-
-      vm.updateIssuable();
-
-      setTimeout(() => {
-        expect(
-          gl.utils.visitUrl,
-        ).toHaveBeenCalledWith(location.pathname);
 
         done();
       });
@@ -355,6 +330,17 @@ describe('Issuable output', () => {
         })
         .then(done)
         .catch(done.fail);
+    });
+  });
+
+  describe('show inline edit button', () => {
+    it('should not render by default', () => {
+      expect(vm.$el.querySelector('.title-container .note-action-button')).toBeDefined();
+    });
+
+    it('should render if showInlineEditButton', () => {
+      vm.showInlineEditButton = true;
+      expect(vm.$el.querySelector('.title-container .note-action-button')).toBeDefined();
     });
   });
 });

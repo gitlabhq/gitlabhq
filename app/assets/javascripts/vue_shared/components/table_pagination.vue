@@ -1,11 +1,13 @@
 <script>
+import { s__ } from '../../locale';
+
 const PAGINATION_UI_BUTTON_LIMIT = 4;
 const UI_LIMIT = 6;
 const SPREAD = '...';
-const PREV = 'Prev';
-const NEXT = 'Next';
-const FIRST = '« First';
-const LAST = 'Last »';
+const PREV = s__('Pagination|Prev');
+const NEXT = s__('Pagination|Next');
+const FIRST = s__('Pagination|« First');
+const LAST = s__('Pagination|Last »');
 
 export default {
   props: {

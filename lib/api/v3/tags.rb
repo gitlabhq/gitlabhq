@@ -8,11 +8,11 @@ module API
       end
       resource :projects, requirements: { id: %r{[^/]+} } do
         desc 'Get a project repository tags' do
-          success ::API::Entities::RepoTag
+          success ::API::Entities::Tag
         end
         get ":id/repository/tags" do
           tags = user_project.repository.tags.sort_by(&:name).reverse
-          present tags, with: ::API::Entities::RepoTag, project: user_project
+          present tags, with: ::API::Entities::Tag, project: user_project
         end
 
         desc 'Delete a repository tag'

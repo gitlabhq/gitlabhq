@@ -14,7 +14,7 @@ describe Gitlab::Ci::Status::Canceled do
   end
 
   describe '#icon' do
-    it { expect(subject.icon).to eq 'icon_status_canceled' }
+    it { expect(subject.icon).to eq 'status_canceled' }
   end
 
   describe '#favicon' do

@@ -70,8 +70,10 @@
       "sha": { "type": "string" },
       "merge_commit_sha": { "type": ["string", "null"] },
       "user_notes_count": { "type": "integer" },
+      "changes_count": { "type": "string" },
       "should_remove_source_branch": { "type": ["boolean", "null"] },
       "force_remove_source_branch": { "type": ["boolean", "null"] },
+      "discussion_locked": { "type": ["boolean", "null"] },
       "web_url": { "type": "uri" },
       "time_stats": {
         "time_estimate": { "type": "integer" },

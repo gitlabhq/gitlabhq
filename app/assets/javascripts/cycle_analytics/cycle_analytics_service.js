@@ -1,27 +1,16 @@
-/* eslint-disable no-param-reassign */
+import Vue from 'vue';
+import VueResource from 'vue-resource';
 
-const global = window.gl || (window.gl = {});
-global.cycleAnalytics = global.cycleAnalytics || {};
+Vue.use(VueResource);
 
-class CycleAnalyticsService {
+export default class CycleAnalyticsService {
   constructor(options) {
     this.requestPath = options.requestPath;
+    this.cycleAnalytics = Vue.resource(this.requestPath);
   }
 
-  fetchCycleAnalyticsData(options) {
-    options = options || { startDate: 30 };
-
-    return $.ajax({
-      url: this.requestPath,
-      method: 'GET',
-      dataType: 'json',
-      contentType: 'application/json',
-      data: {
-        cycle_analytics: {
-          start_date: options.startDate,
-        },
-      },
-    });
+  fetchCycleAnalyticsData(options = { startDate: 30 }) {
+    return this.cycleAnalytics.get({ cycle_analytics: { start_date: options.startDate } });
   }
 
   fetchStageData(options) {
@@ -30,12 +19,12 @@ class CycleAnalyticsService {
       startDate,
     } = options;
 
-    return $.get(`${this.requestPath}/events/${stage.name}.json`, {
-      cycle_analytics: {
-        start_date: startDate,
+    return Vue.http.get(`${this.requestPath}/events/${stage.name}.json`, {
+      params: {
+        cycle_analytics: {
+          start_date: startDate,
+        },
       },
     });
   }
 }
-
-global.cycleAnalytics.CycleAnalyticsService = CycleAnalyticsService;

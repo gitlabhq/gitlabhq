@@ -1,6 +1,5 @@
 /* eslint-disable no-new */
-/* global Flash */
-
+import Flash from '../flash';
 import ProtectedTagAccessDropdown from './protected_tag_access_dropdown';
 
 export default class ProtectedTagEdit {
@@ -43,7 +42,7 @@ export default class ProtectedTagEdit {
         },
       },
       error() {
-        new Flash('Failed to update tag!', null, $('.js-protected-tags-list'));
+        new Flash('Failed to update tag!', 'alert', document.querySelector('.js-protected-tags-list'));
       },
     }).always(() => {
       this.$allowedToCreateDropdownButton.enable();

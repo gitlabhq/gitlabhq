@@ -1,31 +1,29 @@
 - @no_container = true
-- page_title "Contributors"
+- page_title _('Contributors')
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag('common_d3')
   = webpack_bundle_tag('graphs')
   = webpack_bundle_tag('graphs_show')
 
-= render 'projects/commits/head'
-
 .js-graphs-show{ class: container_class, 'data-project-graph-path': project_graph_path(@project, current_ref, format: :json) }
   .sub-header-block
-    .tree-ref-holder
+    .tree-ref-holder.inline.vertical-align-middle
       = render 'shared/ref_switcher', destination: 'graphs'
-    %ul.breadcrumb.repo-breadcrumb
-      = commits_breadcrumbs
+    = link_to s_('Commits|History'), project_commits_path(@project, current_ref), class: 'btn'
 
   .loading-graph
     .center
       %h3.page-title
         %i.fa.fa-spinner.fa-spin
-        Building repository graph.
-      %p.slead Please wait a moment, this page will automatically refresh when ready.
+        = s_('ContributorsPage|Building repository graph.')
+      %p.slead
+        = s_('ContributorsPage|Please wait a moment, this page will automatically refresh when ready.')
 
   .stat-graph.hide
     .header.clearfix
       %h3#date_header.page-title
       %p.light
-        Commits to #{@ref}, excluding merge commits. Limited to 6,000 commits.
+        = s_('ContributorsPage|Commits to %{branch_name}, excluding merge commits. Limited to 6,000 commits.') % { branch_name: @ref }
       %input#brush_change{ :type => "hidden" }
     .graphs.row
       #contributors-master

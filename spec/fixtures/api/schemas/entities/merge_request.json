@@ -46,6 +46,7 @@
     "branch_missing": { "type": "boolean" },
     "has_conflicts": { "type": "boolean" },
     "can_be_merged": { "type": "boolean" },
+    "mergeable": { "type": "boolean" },
     "project_archived": { "type": "boolean" },
     "only_allow_merge_if_pipeline_succeeds": { "type": "boolean" },
     "has_ci": { "type": "boolean" },
@@ -93,10 +94,12 @@
     "merge_commit_message_with_description": { "type": "string" },
     "diverged_commits_count": { "type": "integer" },
     "commit_change_content_path": { "type": "string" },
-    "remove_wip_path": { "type": "string" },
+    "remove_wip_path": { "type": ["string", "null"] },
     "commits_count": { "type": "integer" },
     "remove_source_branch": { "type": ["boolean", "null"] },
-    "merge_ongoing": { "type": "boolean" }
+    "merge_ongoing": { "type": "boolean" },
+    "ff_only_enabled": { "type": ["boolean", false] },
+    "should_be_rebased": { "type": "boolean" }
   },
   "additionalProperties": false
 }

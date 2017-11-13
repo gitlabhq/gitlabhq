@@ -4,7 +4,7 @@
 1. [From ClearCase](clearcase.md)
 1. [From CVS](cvs.md)
 1. [From FogBugz](fogbugz.md)
-1. [From GitHub.com of GitHub Enterprise](github.md)
+1. [From GitHub.com or GitHub Enterprise](github.md)
 1. [From GitLab.com](gitlab_com.md)
 1. [From Gitea](gitea.md)
 1. [From Perforce](perforce.md)

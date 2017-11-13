@@ -34,6 +34,21 @@ module Gitlab
       end
     end
 
+    def subkeys_from_key(key)
+      using_tmp_keychain do
+        fingerprints = CurrentKeyChain.fingerprints_from_key(key)
+        raw_keys     = GPGME::Key.find(:public, fingerprints)
+
+        raw_keys.each_with_object({}) do |raw_key, grouped_subkeys|
+          primary_subkey_id = raw_key.primary_subkey.keyid
+
+          grouped_subkeys[primary_subkey_id] = raw_key.subkeys[1..-1].map do |s|
+            { keyid: s.keyid, fingerprint: s.fingerprint }
+          end
+        end
+      end
+    end
+
     def user_infos_from_key(key)
       using_tmp_keychain do
         fingerprints = CurrentKeyChain.fingerprints_from_key(key)
@@ -69,11 +84,17 @@ module Gitlab
 
     def optimistic_using_tmp_keychain
       previous_dir = current_home_dir
-      Dir.mktmpdir do |dir|
-        GPGME::Engine.home_dir = dir
-        yield
-      end
+      tmp_dir = Dir.mktmpdir
+      GPGME::Engine.home_dir = tmp_dir
+      yield
     ensure
+      # Ignore any errors when removing the tmp directory, as we may run into a
+      # race condition:
+      # The `gpg-agent` agent process may clean up some files as well while
+      # `FileUtils.remove_entry` is iterating the directory and removing all
+      # its contained files and directories recursively, which could raise an
+      # error.
+      FileUtils.remove_entry(tmp_dir, true)
       GPGME::Engine.home_dir = previous_dir
     end
   end

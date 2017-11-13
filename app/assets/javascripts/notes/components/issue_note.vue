@@ -1,7 +1,6 @@
 <script>
-  /* global Flash */
-
   import { mapGetters, mapActions } from 'vuex';
+  import Flash from '../../flash';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
   import issueNoteHeader from './issue_note_header.vue';
   import issueNoteActions from './issue_note_actions.vue';
@@ -62,7 +61,7 @@
       },
       deleteHandler() {
         // eslint-disable-next-line no-alert
-        if (confirm('Are you sure you want to delete this list?')) {
+        if (confirm('Are you sure you want to delete this comment?')) {
           this.isDeleting = true;
 
           this.deleteNote(this.note)
@@ -101,7 +100,7 @@
             this.isEditing = true;
             this.$nextTick(() => {
               const msg = 'Something went wrong while editing your comment. Please try again.';
-              Flash(msg, 'alert', $(this.$el));
+              Flash(msg, 'alert', this.$el);
               this.recoverNoteContent(noteText);
               callback();
             });
@@ -123,7 +122,9 @@
         // we need to do this to prevent noteForm inconsistent content warning
         // this is something we intentionally do so we need to recover the content
         this.note.note = noteText;
-        this.$refs.noteBody.$refs.noteForm.note = noteText; // TODO: This could be better
+        if (this.$refs.noteBody) {
+          this.$refs.noteBody.$refs.noteForm.note = noteText; // TODO: This could be better
+        }
       },
     },
     created() {

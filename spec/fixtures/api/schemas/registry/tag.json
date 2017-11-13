@@ -1,0 +1,33 @@
+{
+  "type": "object",
+  "required" : [
+    "name",
+    "location"
+  ],
+  "properties" : {
+    "name": {
+      "type": "string"
+    },
+    "location": {
+      "type": "string"
+    },
+    "revision": {
+      "type": "string"
+    },
+    "short_revision": {
+      "type": "string",
+      "minLength": 9,
+      "maxLength": 9
+    },
+    "total_size": {
+      "type": "integer"
+    },
+    "created_at": {
+      "type": "date"
+    },
+    "destroy_path": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false
+}

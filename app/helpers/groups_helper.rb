@@ -7,7 +7,12 @@ module GroupsHelper
     can?(current_user, :change_share_with_group_lock, group)
   end
 
-  def group_icon(group)
+  def group_icon(group, options = {})
+    img_path = group_icon_url(group, options)
+    image_tag img_path, options
+  end
+
+  def group_icon_url(group, options = {})
     if group.is_a?(String)
       group = Group.find_by_full_path(group)
     end
@@ -21,7 +26,7 @@ module GroupsHelper
 
     group.ancestors.reverse.each_with_index do |parent, index|
       if index > 0
-        add_to_breadcrumb_dropdown(group_title_link(parent, hidable: false, show_avatar: true), location: :before)
+        add_to_breadcrumb_dropdown(group_title_link(parent, hidable: false, show_avatar: true, for_dropdown: true), location: :before)
       else
         full_title += breadcrumb_list_item group_title_link(parent, hidable: false)
       end
@@ -85,11 +90,11 @@ module GroupsHelper
 
   private
 
-  def group_title_link(group, hidable: false, show_avatar: false)
-    link_to(group_path(group), class: "group-path breadcrumb-item-text js-breadcrumb-item-text #{'hidable' if hidable}") do
+  def group_title_link(group, hidable: false, show_avatar: false, for_dropdown: false)
+    link_to(group_path(group), class: "group-path #{'breadcrumb-item-text' unless for_dropdown} js-breadcrumb-item-text #{'hidable' if hidable}") do
       output =
         if (group.try(:avatar_url) || show_avatar) && !Rails.env.test?
-          image_tag(group_icon(group), class: "avatar-tile", width: 15, height: 15)
+          group_icon(group, class: "avatar-tile", width: 15, height: 15)
         else
           ""
         end
@@ -125,7 +130,7 @@ module GroupsHelper
   end
 
   def default_help
-    s_("GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner.")
+    s_("GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner. Groups that already have access to the project will continue to have access unless removed manually.")
   end
 
   def ancestor_locked_but_you_can_override(group)

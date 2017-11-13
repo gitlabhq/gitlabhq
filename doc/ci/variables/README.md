@@ -1,4 +1,4 @@
-# Variables
+# GitLab CI/CD Variables
 
 When receiving a job from GitLab CI, the [Runner] prepares the build environment.
 It starts by setting a list of **predefined variables** (environment variables)
@@ -43,6 +43,7 @@ future GitLab releases.**
 | **CI_COMMIT_TAG**               | 9.0    | 0.5    | The commit tag name. Present only when building tags. |
 | **CI_CONFIG_PATH**              | 9.4    | 0.5    | The path to CI config file. Defaults to `.gitlab-ci.yml` |
 | **CI_DEBUG_TRACE**              | all    | 1.7    | Whether [debug tracing](#debug-tracing) is enabled |
+| **CI_DISPOSABLE_ENVIRONMENT**   | all    | 10.1   | Marks that the job is executed in a disposable environment (something that is created only for this job and disposed of/destroyed after the execution - all executors except `shell` and `ssh`). If the environment is disposable, it is set to true, otherwise it is not defined at all. |
 | **CI_ENVIRONMENT_NAME**         | 8.15   | all    | The name of the environment for this job |
 | **CI_ENVIRONMENT_SLUG**         | 8.15   | all    | A simplified version of the environment name, suitable for inclusion in DNS, URLs, Kubernetes labels, etc. |
 | **CI_ENVIRONMENT_URL**          | 9.3    | all    | The URL of the environment for this job |
@@ -65,6 +66,7 @@ future GitLab releases.**
 | **CI_PROJECT_PATH**             | 8.10   | 0.5    | The namespace with project name |
 | **CI_PROJECT_PATH_SLUG**        | 9.3    | all    | `$CI_PROJECT_PATH` lowercased and with everything except `0-9` and `a-z` replaced with `-`. Use in URLs and domain names. |
 | **CI_PROJECT_URL**              | 8.10   | 0.5    | The HTTP address to access project |
+| **CI_PROJECT_VISIBILITY**       | 10.3   | all    | The project visibility (internal, private, public) |
 | **CI_REGISTRY**                 | 8.10   | 0.5    | If the Container Registry is enabled it returns the address of GitLab's Container Registry |
 | **CI_REGISTRY_IMAGE**           | 8.10   | 0.5    | If the Container Registry is enabled for the project it returns the address of the registry tied to the specific project |
 | **CI_REGISTRY_PASSWORD**        | 9.0    | all    | The password to use to push containers to the GitLab Container Registry |
@@ -73,6 +75,7 @@ future GitLab releases.**
 | **CI_SERVER_NAME**              | all    | all    | The name of CI server that is used to coordinate jobs |
 | **CI_SERVER_REVISION**          | all    | all    | GitLab revision that is used to schedule jobs |
 | **CI_SERVER_VERSION**           | all    | all    | GitLab version that is used to schedule jobs |
+| **CI_SHARED_ENVIRONMENT**       | all    | 10.1   | Marks that the job is executed in a shared environment (something that is persisted across CI invocations like `shell` or `ssh` executor). If the environment is shared, it is set to true, otherwise it is not defined at all. |
 | **ARTIFACT_DOWNLOAD_ATTEMPTS**  | 8.15   | 1.9    | Number of attempts to download artifacts running a job |
 | **GET_SOURCES_ATTEMPTS**        | 8.15   | 1.9    | Number of attempts to fetch sources running a job |
 | **GITLAB_CI**                   | all    | all    | Mark that job is executed in GitLab CI environment |
@@ -149,27 +152,30 @@ script:
 
 ## Secret variables
 
->**Notes:**
-- This feature requires GitLab Runner 0.4.0 or higher.
-- Group-level secret variables added in GitLab 9.4.
-- Be aware that secret variables are not masked, and their values can be shown
-  in the job logs if explicitly asked to do so. If your project is public or
-  internal, you can set the pipelines private from your project's Pipelines
-  settings. Follow the discussion in issue [#13784][ce-13784] for masking the
-  secret variables.
+NOTE: **Note:**
+Group-level secret variables were added in GitLab 9.4.
 
-GitLab CI allows you to define per-project or per-group **secret variables**
-that are set in the build environment. The secret variables are stored out of
-the repository (`.gitlab-ci.yml`) and are securely passed to GitLab Runner
-making them available in the build environment. It's the recommended method to
-use for storing things like passwords, secret keys and credentials.
+CAUTION: **Important:**
+Be aware that secret variables are not masked, and their values can be shown
+in the job logs if explicitly asked to do so. If your project is public or
+internal, you can set the pipelines private from your [project's Pipelines
+settings](../../user/project/pipelines/settings.md#visibility-of-pipelines).
+Follow the discussion in issue [#13784][ce-13784] for masking the secret variables.
+
+GitLab CI allows you to define per-project or per-group secret variables
+that are set in the pipeline environment. The secret variables are stored out of
+the repository (not in `.gitlab-ci.yml`) and are securely passed to GitLab Runner
+making them available during a pipeline run. It's the recommended method to
+use for storing things like passwords, SSH keys and credentials.
 
 Project-level secret variables can be added by going to your project's
-**Settings ➔ Pipelines**, then finding the section called **Secret variables**.
+**Settings > CI/CD**, then finding the section called **Secret variables**.
 
 Likewise, group-level secret variables can be added by going to your group's
-**Settings ➔ Pipelines**, then finding the section called **Secret variables**.
+**Settings > CI/CD**, then finding the section called **Secret variables**.
 Any variables of [subgroups] will be inherited recursively.
+
+![Secret variables](img/secret_variables.png)
 
 Once you set them, they will be available for all subsequent pipelines. You can also
 [protect your variables](#protected-secret-variables).
@@ -185,8 +191,8 @@ protected, it would only be securely passed to pipelines running on the
 protected variables.
 
 Protected variables can be added by going to your project's
-**Settings ➔ Pipelines**, then finding the section called
-**Secret variables**, and check *Protected*.
+**Settings > CI/CD**, then finding the section called
+**Secret variables**, and check "Protected".
 
 Once you set them, they will be available for all subsequent pipelines.
 
@@ -202,7 +208,7 @@ are set in the build environment. These variables are only defined for
 the project services that you are using to learn which variables they define.
 
 An example project service that defines deployment variables is
-[Kubernetes Service](../../user/project/integrations/kubernetes.md).
+[Kubernetes Service](../../user/project/integrations/kubernetes.md#deployment-variables).
 
 ## Debug tracing
 
@@ -439,7 +445,7 @@ export CI_REGISTRY_USER="gitlab-ci-token"
 export CI_REGISTRY_PASSWORD="longalfanumstring"
 ```
 
-[ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784
+[ce-13784]: https://gitlab.com/gitlab-org/gitlab-ce/issues/13784 "Simple protection of CI secret variables"
 [eep]: https://about.gitlab.com/gitlab-ee/ "Available only in GitLab Enterprise Edition Premium"
 [envs]: ../environments.md
 [protected branches]: ../../user/project/protected_branches.md

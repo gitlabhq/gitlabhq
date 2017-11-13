@@ -62,19 +62,19 @@ describe 'Admin::Hooks', :js do
       it 'from hooks list page' do
         visit admin_hooks_path
 
-        expect { click_link 'Remove' }.to change(SystemHook, :count).by(-1)
+        expect { accept_confirm { find(:link, 'Remove').send_keys(:return) } }.to change(SystemHook, :count).by(-1)
       end
 
       it 'from hook edit page' do
         visit admin_hooks_path
         click_link 'Edit'
 
-        expect { click_link 'Remove' }.to change(SystemHook, :count).by(-1)
+        expect { accept_confirm { find(:link, 'Remove').send_keys(:return) } }.to change(SystemHook, :count).by(-1)
       end
     end
   end
 
-  describe 'Test', js: true do
+  describe 'Test', :js do
     before do
       WebMock.stub_request(:post, @system_hook.url)
       visit admin_hooks_path

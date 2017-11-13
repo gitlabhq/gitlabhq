@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Container Registry" do
+describe "Container Registry", :js do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
 
@@ -41,16 +41,19 @@ describe "Container Registry" do
       expect_any_instance_of(ContainerRepository)
         .to receive(:delete_tags!).and_return(true)
 
-      click_on 'Remove repository'
+      click_on(class: 'js-remove-repo')
     end
 
     scenario 'user removes a specific tag from container repository' do
       visit_container_registry
 
+      find('.js-toggle-repo').click
+      wait_for_requests
+
       expect_any_instance_of(ContainerRegistry::Tag)
         .to receive(:delete).and_return(true)
 
-      click_on 'Remove tag'
+      click_on(class: 'js-delete-registry')
     end
   end
 

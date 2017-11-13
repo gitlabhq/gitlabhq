@@ -4,7 +4,6 @@
   import descriptionField from './fields/description.vue';
   import editActions from './edit_actions.vue';
   import descriptionTemplate from './fields/description_template.vue';
-  import confidentialCheckbox from './fields/confidential_checkbox.vue';
 
   export default {
     props: {
@@ -44,7 +43,6 @@
       descriptionField,
       descriptionTemplate,
       editActions,
-      confidentialCheckbox,
     },
     computed: {
       hasIssuableTemplates() {
@@ -81,8 +79,6 @@
       :form-state="formState"
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath" />
-    <confidential-checkbox
-      :form-state="formState" />
     <edit-actions
       :form-state="formState"
       :can-destroy="canDestroy" />

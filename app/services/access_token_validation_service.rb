@@ -39,11 +39,8 @@ class AccessTokenValidationService
       token_scopes = token.scopes.map(&:to_sym)
 
       required_scopes.any? do |scope|
-        if scope.respond_to?(:sufficient?)
-          scope.sufficient?(token_scopes, request)
-        else
-          API::Scope.new(scope).sufficient?(token_scopes, request)
-        end
+        scope = API::Scope.new(scope) unless scope.is_a?(API::Scope)
+        scope.sufficient?(token_scopes, request)
       end
     end
   end

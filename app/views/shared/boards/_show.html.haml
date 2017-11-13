@@ -12,13 +12,11 @@
   %script#js-board-template{ type: "text/x-template" }= render "shared/boards/components/board"
   %script#js-board-modal-filter{ type: "text/x-template" }= render "shared/issuable/search_bar", type: :boards_modal
 
-= render "projects/issues/head"
+#board-app.boards-app{ "v-cloak" => true, data: board_data, ":class" => "{ 'is-compact': detailIssueVisible }" }
+  .hidden-xs.hidden-sm
+    = render 'shared/issuable/search_bar', type: :boards
 
-.hidden-xs.hidden-sm
-  = render 'shared/issuable/search_bar', type: :boards
-
-#board-app.boards-app{ "v-cloak" => true, data: board_data }
-  .boards-list{ ":class" => "{ 'is-compact': detailIssueVisible }" }
+  .boards-list
     .boards-app-loading.text-center{ "v-if" => "loading" }
       = icon("spinner spin")
     %board{ "v-cloak" => true,
@@ -31,10 +29,11 @@
       ":board-id" => "boardId",
       ":key" => "_uid" }
   = render "shared/boards/components/sidebar"
-  %board-add-issues-modal{ "blank-state-image" => render('shared/empty_states/icons/issues.svg'),
-    "new-issue-path" => new_project_issue_path(@project),
-    "milestone-path" => milestones_filter_dropdown_path,
-    "label-path" => labels_filter_path,
-    ":issue-link-base" => "issueLinkBase",
-    ":root-path" => "rootPath",
-    ":project-id" => @project.try(:id) }
+  - if @project
+    %board-add-issues-modal{ "new-issue-path" => new_project_issue_path(@project),
+      "milestone-path" => milestones_filter_dropdown_path,
+      "label-path" => labels_filter_path,
+      "empty-state-svg" => image_path('illustrations/issues.svg'),
+      ":issue-link-base" => "issueLinkBase",
+      ":root-path" => "rootPath",
+      ":project-id" => @project.id }

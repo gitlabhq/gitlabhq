@@ -41,6 +41,8 @@ class ProjectFeature < ActiveRecord::Base
   # http://stackoverflow.com/questions/1540645/how-to-disable-default-scope-for-a-belongs-to
   belongs_to :project, -> { unscope(where: :pending_delete) }
 
+  validates :project, presence: true
+
   validate :repository_children_level
 
   default_value_for :builds_access_level,         value: ENABLED, allows_nil: false

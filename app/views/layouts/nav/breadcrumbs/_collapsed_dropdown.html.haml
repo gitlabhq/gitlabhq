@@ -4,7 +4,7 @@
   %li.dropdown
     %button.text-expander.has-tooltip.js-breadcrumbs-collapsed-expander{ type: "button", data: { toggle: "dropdown", container: "body" }, "aria-label": button_tooltip, title: button_tooltip }
       = icon("ellipsis-h")
-    = icon("angle-right", class: "breadcrumbs-list-angle")
+    = sprite_icon("angle-right", size: 8, css_class: "breadcrumbs-list-angle")
     .dropdown-menu
       %ul
         - @breadcrumb_dropdown_links[dropdown_location].each_with_index do |link, index|

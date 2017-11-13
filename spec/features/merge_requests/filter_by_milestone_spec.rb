@@ -18,7 +18,7 @@ feature 'Merge Request filtering by Milestone' do
     sign_in(user)
   end
 
-  scenario 'filters by no Milestone', js: true do
+  scenario 'filters by no Milestone', :js do
     create(:merge_request, :with_diffs, source_project: project)
     create(:merge_request, :simple, source_project: project, milestone: milestone)
 
@@ -32,7 +32,7 @@ feature 'Merge Request filtering by Milestone' do
     expect(page).to have_css('.merge-request', count: 1)
   end
 
-  context 'filters by upcoming milestone', js: true do
+  context 'filters by upcoming milestone', :js do
     it 'does not show merge requests with no expiry' do
       create(:merge_request, :with_diffs, source_project: project)
       create(:merge_request, :simple, source_project: project, milestone: milestone)
@@ -67,7 +67,7 @@ feature 'Merge Request filtering by Milestone' do
     end
   end
 
-  scenario 'filters by a specific Milestone', js: true do
+  scenario 'filters by a specific Milestone', :js do
     create(:merge_request, :with_diffs, source_project: project, milestone: milestone)
     create(:merge_request, :simple, source_project: project)
 
@@ -83,7 +83,7 @@ feature 'Merge Request filtering by Milestone' do
       milestone.update(name: "rock 'n' roll")
     end
 
-    scenario 'filters by a specific Milestone', js: true do
+    scenario 'filters by a specific Milestone', :js do
       create(:merge_request, :with_diffs, source_project: project, milestone: milestone)
       create(:merge_request, :simple, source_project: project)
 

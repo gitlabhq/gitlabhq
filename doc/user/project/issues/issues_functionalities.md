@@ -167,6 +167,7 @@ Once you wrote your comment, you can either:
 #### 18. New Merge Request
 
 - Create a new merge request (with a new source branch named after the issue) in one action.
-The merge request will automatically close that issue as soon as merged.
+The merge request will automatically inherit the milestone and labels of the issue. The merge
+request will automatically close that issue as soon as merged.
 - Optionally, you can just create a [new branch](../repository/web_editor.md#create-a-new-branch-from-an-issue)
 named after that issue.

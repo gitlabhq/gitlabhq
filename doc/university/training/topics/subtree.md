@@ -1,8 +1,8 @@
-## Subtree
+---
+comments: false
+---
 
-----------
-
-## Subtree
+# Subtree
 
 * Used when there are nested repositories.
 * Not recommended when the amount of dependencies is too large

@@ -63,8 +63,8 @@ feature 'Contributions Calendar', :js do
     Event.create(note_comment_params)
   end
 
-  def selected_day_activities
-    find('.user-calendar-activities').text
+  def selected_day_activities(visible: true)
+    find('.user-calendar-activities', visible: visible).text
   end
 
   before do
@@ -112,7 +112,7 @@ feature 'Contributions Calendar', :js do
         end
 
         it 'hides calendar day activities' do
-          expect(selected_day_activities).to be_empty
+          expect(selected_day_activities(visible: false)).to be_empty
         end
       end
     end

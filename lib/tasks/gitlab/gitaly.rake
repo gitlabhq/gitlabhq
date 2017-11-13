@@ -50,6 +50,8 @@ namespace :gitlab do
     # only generate a configuration for the most common and simplest case: when
     # we have exactly one Gitaly process and we are sure it is running locally
     # because it uses a Unix socket.
+    # For development and testing purposes, an extra storage is added to gitaly,
+    # which is not known to Rails, but must be explicitly stubbed.
     def gitaly_configuration_toml(gitaly_ruby: true)
       storages = []
       address = nil
@@ -67,6 +69,11 @@ namespace :gitlab do
 
         storages << { name: key, path: val['path'] }
       end
+
+      if Rails.env.test?
+        storages << { name: 'test_second_storage', path: Rails.root.join('tmp', 'tests', 'second_storage').to_s }
+      end
+
       config = { socket_path: address.sub(%r{\Aunix:}, ''), storage: storages }
       config[:auth] = { token: 'secret' } if Rails.env.test?
       config[:'gitaly-ruby'] = { dir: File.join(Dir.pwd, 'ruby') } if gitaly_ruby

@@ -1,13 +1,13 @@
 <script>
-  /* global Flash */
   import _ from 'underscore';
-  import statusCodes from '../../lib/utils/http_status';
+  import Flash from '../../flash';
   import MonitoringService from '../services/monitoring_service';
   import GraphGroup from './graph_group.vue';
   import Graph from './graph.vue';
   import EmptyState from './empty_state.vue';
   import MonitoringStore from '../stores/monitoring_store';
   import eventHub from '../event_hub';
+  import { convertPermissionToBoolean } from '../../lib/utils/common_utils';
 
   export default {
 
@@ -18,15 +18,18 @@
       return {
         store,
         state: 'gettingStarted',
-        hasMetrics: gl.utils.convertPermissionToBoolean(metricsData.hasMetrics),
+        hasMetrics: convertPermissionToBoolean(metricsData.hasMetrics),
         documentationPath: metricsData.documentationPath,
         settingsPath: metricsData.settingsPath,
-        endpoint: metricsData.additionalMetrics,
+        metricsEndpoint: metricsData.additionalMetrics,
         deploymentEndpoint: metricsData.deploymentEndpoint,
+        emptyGettingStartedSvgPath: metricsData.emptyGettingStartedSvgPath,
+        emptyLoadingSvgPath: metricsData.emptyLoadingSvgPath,
+        emptyUnableToConnectSvgPath: metricsData.emptyUnableToConnectSvgPath,
         showEmptyState: true,
-        backOffRequestCounter: 0,
         updateAspectRatio: false,
         updatedAspectRatios: 0,
+        hoverData: {},
         resizeThrottled: {},
       };
     },
@@ -39,50 +42,16 @@
 
     methods: {
       getGraphsData() {
-        const maxNumberOfRequests = 3;
         this.state = 'loading';
-        gl.utils.backOff((next, stop) => {
-          this.service.get().then((resp) => {
-            if (resp.status === statusCodes.NO_CONTENT) {
-              this.backOffRequestCounter = this.backOffRequestCounter += 1;
-              if (this.backOffRequestCounter < maxNumberOfRequests) {
-                next();
-              } else {
-                stop(new Error('Failed to connect to the prometheus server'));
-              }
-            } else {
-              stop(resp);
-            }
-          }).catch(stop);
-        })
-        .then((resp) => {
-          if (resp.status === statusCodes.NO_CONTENT) {
-            this.state = 'unableToConnect';
-            return false;
-          }
-          return resp.json();
-        })
-        .then((metricGroupsData) => {
-          if (!metricGroupsData) return false;
-          this.store.storeMetrics(metricGroupsData.data);
-          return this.getDeploymentData();
-        })
-        .then((deploymentData) => {
-          if (deploymentData !== false) {
-            this.store.storeDeploymentData(deploymentData.deployments);
-            this.showEmptyState = false;
-          }
-          return {};
-        })
-        .catch(() => {
-          this.state = 'unableToConnect';
-        });
-      },
-
-      getDeploymentData() {
-        return this.service.getDeploymentData(this.deploymentEndpoint)
-          .then(resp => resp.json())
-          .catch(() => new Flash('Error getting deployment information.'));
+        Promise.all([
+          this.service.getGraphsData()
+            .then(data => this.store.storeMetrics(data)),
+          this.service.getDeploymentData()
+            .then(data => this.store.storeDeploymentData(data))
+            .catch(() => new Flash('Error getting deployment information.')),
+        ])
+          .then(() => { this.showEmptyState = false; })
+          .catch(() => { this.state = 'unableToConnect'; });
       },
 
       resize() {
@@ -96,15 +65,24 @@
           this.updatedAspectRatios = 0;
         }
       },
+
+      hoverChanged(data) {
+        this.hoverData = data;
+      },
     },
 
     created() {
-      this.service = new MonitoringService(this.endpoint);
+      this.service = new MonitoringService({
+        metricsEndpoint: this.metricsEndpoint,
+        deploymentEndpoint: this.deploymentEndpoint,
+      });
       eventHub.$on('toggleAspectRatio', this.toggleAspectRatio);
+      eventHub.$on('hoverChanged', this.hoverChanged);
     },
 
     beforeDestroy() {
       eventHub.$off('toggleAspectRatio', this.toggleAspectRatio);
+      eventHub.$off('hoverChanged', this.hoverChanged);
       window.removeEventListener('resize', this.resizeThrottled, false);
     },
 
@@ -131,6 +109,7 @@
         v-for="(graphData, index) in groupData.metrics"
         :key="index"
         :graph-data="graphData"
+        :hover-data="hoverData"
         :update-aspect-ratio="updateAspectRatio"
         :deployment-data="store.deploymentData"
       />
@@ -141,5 +120,8 @@
     :selected-state="state"
     :documentation-path="documentationPath"
     :settings-path="settingsPath"
+    :empty-getting-started-svg-path="emptyGettingStartedSvgPath"
+    :empty-loading-svg-path="emptyLoadingSvgPath"
+    :empty-unable-to-connect-svg-path="emptyUnableToConnectSvgPath"
   />
 </template>

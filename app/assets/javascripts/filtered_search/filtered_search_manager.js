@@ -1,3 +1,4 @@
+import Flash from '../flash';
 import FilteredSearchContainer from './container';
 import RecentSearchesRoot from './recent_searches_root';
 import RecentSearchesStore from './stores/recent_searches_store';
@@ -36,7 +37,7 @@ class FilteredSearchManager {
       .catch((error) => {
         if (error.name === 'RecentSearchesServiceError') return undefined;
         // eslint-disable-next-line no-new
-        new window.Flash('An error occured while parsing recent searches');
+        new Flash('An error occurred while parsing recent searches');
         // Gracefully fail to empty array
         return [];
       })
@@ -184,8 +185,8 @@ class FilteredSearchManager {
     if (e.keyCode === 8 || e.keyCode === 46) {
       const { lastVisualToken } = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
-      const sanitizedTokenName = lastVisualToken && lastVisualToken.querySelector('.name').textContent.trim();
-      const canEdit = sanitizedTokenName && this.canEdit && this.canEdit(sanitizedTokenName);
+      const { tokenName, tokenValue } = gl.DropdownUtils.getVisualTokenValues(lastVisualToken);
+      const canEdit = tokenName && this.canEdit && this.canEdit(tokenName, tokenValue);
       if (this.filteredSearchInput.value === '' && lastVisualToken && canEdit) {
         this.filteredSearchInput.value = gl.FilteredSearchVisualTokens.getLastTokenPartial();
         gl.FilteredSearchVisualTokens.removeLastTokenPartial();
@@ -332,7 +333,14 @@ class FilteredSearchManager {
     const removeElements = [];
 
     [].forEach.call(this.tokensContainer.children, (t) => {
-      if (t.classList.contains('js-visual-token')) {
+      let canClearToken = t.classList.contains('js-visual-token');
+
+      if (canClearToken) {
+        const { tokenName, tokenValue } = gl.DropdownUtils.getVisualTokenValues(t);
+        canClearToken = this.canEdit && this.canEdit(tokenName, tokenValue);
+      }
+
+      if (canClearToken) {
         removeElements.push(t);
       }
     });
@@ -411,8 +419,14 @@ class FilteredSearchManager {
     });
   }
 
+  // allows for modifying params array when a param can't be included in the URL (e.g. Service Desk)
+  getAllParams(urlParams) {
+    return this.modifyUrlParams ? this.modifyUrlParams(urlParams) : urlParams;
+  }
+
   loadSearchParamsFromURL() {
-    const params = gl.utils.getUrlParamsArray();
+    const urlParams = gl.utils.getUrlParamsArray();
+    const params = this.getAllParams(urlParams);
     const usernameParams = this.getUsernameParams();
     let hasFilteredSearch = false;
 
@@ -455,7 +469,7 @@ class FilteredSearchManager {
           }
 
           hasFilteredSearch = true;
-          const canEdit = this.canEdit && this.canEdit(sanitizedKey);
+          const canEdit = this.canEdit && this.canEdit(sanitizedKey, sanitizedValue);
           gl.FilteredSearchVisualTokens.addFilterVisualToken(
             sanitizedKey,
             `${symbol}${quotationsToUse}${sanitizedValue}${quotationsToUse}`,

@@ -1,0 +1,6 @@
+---
+title: Moves mini graph of pipeline to the end of sentence in MR widget. Cleans HTML
+  and tests
+merge_request:
+author:
+type: fixed

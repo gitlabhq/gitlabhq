@@ -1,5 +1,6 @@
 class NotePolicy < BasePolicy
   delegate { @subject.project }
+  delegate { @subject.noteable if @subject.noteable.lockable? }
 
   condition(:is_author) { @user && @subject.author == @user }
   condition(:for_merge_request, scope: :subject) { @subject.for_merge_request? }
@@ -8,6 +9,7 @@ class NotePolicy < BasePolicy
   condition(:editable, scope: :subject) { @subject.editable? }
 
   rule { ~editable | anonymous }.prevent :edit_note
+
   rule { is_author | admin }.enable :edit_note
   rule { can?(:master_access) }.enable :edit_note
 

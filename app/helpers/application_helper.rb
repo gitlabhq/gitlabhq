@@ -309,4 +309,8 @@ module ApplicationHelper
   def show_new_repo?
     cookies["new_repo"] == "true" && body_data_page != 'projects:show'
   end
+
+  def locale_path
+    asset_path("locale/#{Gitlab::I18n.locale}/app.js")
+  end
 end

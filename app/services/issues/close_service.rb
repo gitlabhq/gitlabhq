@@ -29,6 +29,7 @@ module Issues
         todo_service.close_issue(issue, current_user)
         execute_hooks(issue, 'close')
         invalidate_cache_counts(issue, users: issue.assignees)
+        issue.update_project_counter_caches
       end
 
       issue

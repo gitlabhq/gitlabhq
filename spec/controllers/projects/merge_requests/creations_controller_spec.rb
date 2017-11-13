@@ -112,7 +112,7 @@ describe Projects::MergeRequests::CreationsController do
         end
 
         it 'returns a 404' do
-          expect(response).to have_http_status(404)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
     end

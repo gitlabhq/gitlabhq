@@ -27,7 +27,7 @@ describe Admin::ProjectsController do
 
       get :index
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(response.body).not_to match(pending_delete_project.name)
       expect(response.body).to match(project.name)
     end

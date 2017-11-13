@@ -12,7 +12,7 @@ FactoryGirl.define do
       deployment.project ||= deployment.environment.project
 
       unless deployment.project.repository_exists?
-        allow(deployment.project.repository).to receive(:fetch_ref)
+        allow(deployment.project.repository).to receive(:create_ref)
       end
     end
   end

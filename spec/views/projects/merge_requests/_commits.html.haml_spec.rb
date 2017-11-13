@@ -2,10 +2,11 @@ require 'spec_helper'
 
 describe 'projects/merge_requests/_commits.html.haml' do
   include Devise::Test::ControllerHelpers
+  include ProjectForksHelper
 
   let(:user) { create(:user) }
-  let(:target_project) { create(:project, :repository) }
-  let(:source_project) { create(:project, :repository, forked_from_project: target_project) }
+  let(:target_project) { create(:project, :public, :repository) }
+  let(:source_project) { fork_project(target_project, user, repository: true) }
 
   let(:merge_request) do
     create(:merge_request, :simple,

@@ -1,6 +1,5 @@
 - page_title "Issues"
 - group_issues_exists = group_issues(@group).exists?
-= render "head_issues"
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, params.merge(rss_url_options), title: "#{@group.name} issues")
 
@@ -19,13 +18,6 @@
       = render 'shared/new_project_item_select', path: 'issues/new', label: "New issue", type: :issues
 
   = render 'shared/issuable/search_bar', type: :issues
-
-  .row-content-block.second-block
-    Only issues from the
-    %strong= @group.name
-    group are listed here.
-    - if current_user
-      To see all issues you should visit #{link_to 'dashboard', issues_dashboard_path} page.
 
   = render 'shared/issues'
 - else

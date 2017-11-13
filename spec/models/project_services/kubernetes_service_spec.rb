@@ -7,7 +7,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
   let(:project) { build_stubbed(:kubernetes_project) }
   let(:service) { project.kubernetes_service }
 
-  describe "Associations" do
+  describe 'Associations' do
     it { is_expected.to belong_to :project }
   end
 
@@ -99,8 +99,25 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
   describe '#actual_namespace' do
     subject { service.actual_namespace }
 
-    it "returns the default namespace" do
-      is_expected.to eq(service.send(:default_namespace))
+    shared_examples 'a correctly formatted namespace' do
+      it 'returns a valid Kubernetes namespace name' do
+        expect(subject).to match(Gitlab::Regex.kubernetes_namespace_regex)
+        expect(subject).to eq(expected_namespace)
+      end
+    end
+
+    it_behaves_like 'a correctly formatted namespace' do
+      let(:expected_namespace) { service.send(:default_namespace) }
+    end
+
+    context 'when the project path contains forbidden characters' do
+      before do
+        project.path = '-a_Strange.Path--forSure'
+      end
+
+      it_behaves_like 'a correctly formatted namespace' do
+        let(:expected_namespace) { "a-strange-path--forsure-#{project.id}" }
+      end
     end
 
     context 'when namespace is specified' do
@@ -108,8 +125,8 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
         service.namespace = 'my-namespace'
       end
 
-      it "returns the user-namespace" do
-        is_expected.to eq('my-namespace')
+      it_behaves_like 'a correctly formatted namespace' do
+        let(:expected_namespace) { 'my-namespace' }
       end
     end
 
@@ -118,35 +135,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
         service.project = nil
       end
 
-      it "does not return namespace" do
-        is_expected.to be_nil
-      end
-    end
-  end
-
-  describe '#actual_namespace' do
-    subject { service.actual_namespace }
-
-    it "returns the default namespace" do
-      is_expected.to eq(service.send(:default_namespace))
-    end
-
-    context 'when namespace is specified' do
-      before do
-        service.namespace = 'my-namespace'
-      end
-
-      it "returns the user-namespace" do
-        is_expected.to eq('my-namespace')
-      end
-    end
-
-    context 'when service is not assigned to project' do
-      before do
-        service.project = nil
-      end
-
-      it "does not return namespace" do
+      it 'does not return namespace' do
         is_expected.to be_nil
       end
     end
@@ -156,7 +145,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
     let(:discovery_url) { 'https://kubernetes.example.com/api/v1' }
 
     before do
-      stub_kubeclient_discover
+      stub_kubeclient_discover(service.api_url)
     end
 
     context 'with path prefix in api_url' do
@@ -164,7 +153,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
 
       it 'tests with the prefix' do
         service.api_url = 'https://kubernetes.example.com/prefix'
-        stub_kubeclient_discover
+        stub_kubeclient_discover(service.api_url)
 
         expect(service.test[:success]).to be_truthy
         expect(WebMock).to have_requested(:get, discovery_url).once
@@ -208,7 +197,7 @@ describe KubernetesService, :use_clean_rails_memory_store_caching do
       config.dig('users', 0, 'user')['token'] = 'token'
       config.dig('contexts', 0, 'context')['namespace'] = namespace
       config.dig('clusters', 0, 'cluster')['certificate-authority-data'] =
-        Base64.encode64('CA PEM DATA')
+        Base64.strict_encode64('CA PEM DATA')
 
       YAML.dump(config)
     end

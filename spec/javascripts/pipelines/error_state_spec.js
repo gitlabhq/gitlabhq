@@ -8,7 +8,11 @@ describe('Pipelines Error State', () => {
   beforeEach(() => {
     ErrorStateComponent = Vue.extend(errorStateComp);
 
-    component = new ErrorStateComponent().$mount();
+    component = new ErrorStateComponent({
+      propsData: {
+        errorStateSvgPath: 'foo',
+      },
+    }).$mount();
   });
 
   it('should render error state SVG', () => {

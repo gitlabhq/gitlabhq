@@ -19,14 +19,15 @@ module Sortable
   module ClassMethods
     def order_by(method)
       case method.to_s
-      when 'name_asc' then order_name_asc
-      when 'name_desc' then order_name_desc
-      when 'updated_asc' then order_updated_asc
-      when 'updated_desc' then order_updated_desc
-      when 'created_asc' then order_created_asc
+      when 'created_asc'  then order_created_asc
+      when 'created_date' then order_created_desc
       when 'created_desc' then order_created_desc
-      when 'id_desc' then order_id_desc
-      when 'id_asc' then order_id_asc
+      when 'id_asc'       then order_id_asc
+      when 'id_desc'      then order_id_desc
+      when 'name_asc'     then order_name_asc
+      when 'name_desc'    then order_name_desc
+      when 'updated_asc'  then order_updated_asc
+      when 'updated_desc' then order_updated_desc
       else
         all
       end

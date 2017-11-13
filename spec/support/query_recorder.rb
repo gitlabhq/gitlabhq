@@ -34,15 +34,47 @@ RSpec::Matchers.define :exceed_query_limit do |expected|
   supports_block_expectations
 
   match do |block|
-    query_count(&block) > expected
+    query_count(&block) > expected_count + threshold
   end
 
   failure_message_when_negated do |actual|
-    "Expected a maximum of #{expected} queries, got #{@recorder.count}:\n\n#{@recorder.log_message}"
+    threshold_message = threshold > 0 ? " (+#{@threshold})" : ''
+    counts = "#{expected_count}#{threshold_message}"
+    "Expected a maximum of #{counts} queries, got #{actual_count}:\n\n#{log_message}"
+  end
+
+  def with_threshold(threshold)
+    @threshold = threshold
+    self
+  end
+
+  def threshold
+    @threshold.to_i
+  end
+
+  def expected_count
+    if expected.is_a?(ActiveRecord::QueryRecorder)
+      expected.count
+    else
+      expected
+    end
+  end
+
+  def actual_count
+    @recorder.count
   end
 
   def query_count(&block)
     @recorder = ActiveRecord::QueryRecorder.new(&block)
     @recorder.count
+  end
+
+  def log_message
+    if expected.is_a?(ActiveRecord::QueryRecorder)
+      extra_queries = (expected.log - @recorder.log).join("\n\n")
+      "Extra queries: \n\n #{extra_queries}"
+    else
+      @recorder.log_message
+    end
   end
 end

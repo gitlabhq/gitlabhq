@@ -1,8 +1,10 @@
 class IssueEntity < IssuableEntity
-  include RequestAwareEntity
+  include TimeTrackableEntity
 
-  expose :branch_name
+  expose :state
+  expose :deleted_at
   expose :confidential
+  expose :discussion_locked
   expose :assignees, using: API::Entities::UserBasic
   expose :due_date
   expose :moved_to_id
@@ -14,7 +16,7 @@ class IssueEntity < IssuableEntity
 
   expose :current_user do
     expose :can_create_note do |issue|
-      can?(request.current_user, :create_note, issue.project)
+      can?(request.current_user, :create_note, issue)
     end
 
     expose :can_update do |issue|

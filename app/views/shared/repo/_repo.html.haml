@@ -1,7 +1,12 @@
-#repo{ data: { url: content_url,
+#repo{ data: { root: @path.empty?.to_s,
+               root_url: project_tree_path(project),
+               url: content_url,
+               current_branch: @ref,
+               ref: @commit.id,
                project_name: project.name,
-               refs_url: refs_project_path(project, format: :json),
                project_url: project_path(project),
                project_id: project.id,
+               new_merge_request_url: namespace_project_new_merge_request_path(project.namespace, project, merge_request: { source_branch: '' }),
                can_commit: (!!can_push_branch?(project, @ref)).to_s,
-               on_top_of_branch: (!!on_top_of_branch?(project, @ref)).to_s } }
+               on_top_of_branch: (!!on_top_of_branch?(project, @ref)).to_s,
+               current_path: @path } }

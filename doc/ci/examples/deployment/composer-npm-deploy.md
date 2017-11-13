@@ -1,4 +1,4 @@
-## Running Composer and NPM scripts with deployment via SCP
+# Running Composer and NPM scripts with deployment via SCP in GitLab CI/CD
 
 This guide covers the building dependencies of a PHP project while compiling assets via an NPM script.
 
@@ -39,13 +39,13 @@ In this particular case, the `npm deploy` script is a Gulp script that does the 
 
 All these operations will put all files into a `build` folder, which is ready to be deployed to a live server.
 
-### How to transfer files to a live server?
+## How to transfer files to a live server
 
 You have multiple options: rsync, scp, sftp and so on. For now, we will use scp.
 
 To make this work, you need to add a GitLab Secret Variable (accessible on _gitlab.example/your-project-name/variables_). That variable will be called `STAGING_PRIVATE_KEY` and it's the  **private** ssh key of your server.
 
-#### Security tip
+### Security tip
 
 Create a user that has access **only** to the folder that needs to be updated!
 
@@ -69,7 +69,7 @@ In order, this means that:
 
 And this is basically all you need in the `before_script` section.
 
-## How to deploy things?
+## How to deploy things
 
 As we stated above, we need to deploy the `build` folder from the docker image to our server. To do so, we create a new job:
 
@@ -88,7 +88,7 @@ stage_deploy:
     - ssh -p22 server_user@server_host "rm -rf htdocs/wp-content/themes/_old"
 ```
 
-### What's going on here?
+Here's the breakdown:
 
 1. `only:dev` means that this build will run only when something is pushed to the `dev` branch. You can remove this block completely and have everything be ran on every push (but probably this is something you don't want)
 2. `ssh-add ...` we will add that private key you added on the web UI to the docker container
@@ -99,7 +99,7 @@ stage_deploy:
 
 What's the deal with the artifacts? We just tell GitLab CI to keep the `build` directory (later on, you can download that as needed).
 
-#### Why we do it this way?
+### Why we do it this way
 
 If you're using this only for stage server, you could do this in two steps:
 
@@ -112,7 +112,7 @@ The problem is that there will be a small period of time when you won't have the
 
 So we use so many steps because we want to make sure that at any given time we have a functional app in place.
 
-## Where to go next?
+## Where to go next
 
 Since this was a WordPress project, I gave real life code snippets. Some ideas you can pursuit:
 

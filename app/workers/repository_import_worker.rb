@@ -4,6 +4,7 @@ class RepositoryImportWorker
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
   include ExceptionBacktrace
+  include ProjectStartImport
 
   sidekiq_options status_expiration: StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION
 
@@ -16,11 +17,16 @@ class RepositoryImportWorker
                               import_url: project.import_url,
                               path: project.full_path)
 
-    result = Projects::ImportService.new(project, project.creator).execute
+    service = Projects::ImportService.new(project, project.creator)
+    result = service.execute
+
+    # Some importers may perform their work asynchronously. In this case it's up
+    # to those importers to mark the import process as complete.
+    return if service.async?
+
     raise ImportError, result[:message] if result[:status] == :error
 
-    project.repository.after_import
-    project.import_finish
+    project.after_import
   rescue ImportError => ex
     fail_import(project, ex.message)
     raise
@@ -34,7 +40,7 @@ class RepositoryImportWorker
   private
 
   def start_import(project)
-    return true if project.import_start
+    return true if start(project)
 
     Rails.logger.info("Project #{project.full_path} was in inconsistent state (#{project.import_status}) while importing.")
     false

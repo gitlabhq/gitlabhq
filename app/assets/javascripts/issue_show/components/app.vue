@@ -1,5 +1,4 @@
 <script>
-/* global Flash */
 import Visibility from 'visibilityjs';
 import Poll from '../../lib/utils/poll';
 import eventHub from '../event_hub';
@@ -24,6 +23,11 @@ export default {
     canDestroy: {
       required: true,
       type: Boolean,
+    },
+    showInlineEditButton: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
     issuableRef: {
       type: String,
@@ -71,10 +75,6 @@ export default {
       type: Array,
       required: false,
       default: () => [],
-    },
-    isConfidential: {
-      type: Boolean,
-      required: true,
     },
     markdownPreviewPath: {
       type: String,
@@ -131,7 +131,6 @@ export default {
         this.showForm = true;
         this.store.setFormState({
           title: this.state.titleText,
-          confidential: this.isConfidential,
           description: this.state.descriptionText,
           lockedWarningVisible: false,
           updateLoading: false,
@@ -147,8 +146,6 @@ export default {
         .then((data) => {
           if (location.pathname !== data.web_url) {
             gl.utils.visitUrl(data.web_url);
-          } else if (data.confidential !== this.isConfidential) {
-            gl.utils.visitUrl(location.pathname);
           }
 
           return this.service.getData();
@@ -160,7 +157,7 @@ export default {
         })
         .catch(() => {
           eventHub.$emit('close.form');
-          return new Flash('Error updating issue');
+          window.Flash('Error updating issue');
         });
     },
     deleteIssuable() {
@@ -174,7 +171,7 @@ export default {
         })
         .catch(() => {
           eventHub.$emit('close.form');
-          return new Flash('Error deleting issue');
+          window.Flash('Error deleting issue');
         });
     },
   },
@@ -230,20 +227,25 @@ export default {
     <div v-else>
       <title-component
         :issuable-ref="issuableRef"
+        :can-update="canUpdate"
         :title-html="state.titleHtml"
-        :title-text="state.titleText" />
+        :title-text="state.titleText"
+        :show-inline-edit-button="showInlineEditButton"
+      />
       <description-component
         v-if="state.descriptionHtml"
         :can-update="canUpdate"
         :description-html="state.descriptionHtml"
         :description-text="state.descriptionText"
         :updated-at="state.updatedAt"
-        :task-status="state.taskStatus" />
+        :task-status="state.taskStatus"
+      />
       <edited-component
         v-if="hasUpdated"
         :updated-at="state.updatedAt"
         :updated-by-name="state.updatedByName"
-        :updated-by-path="state.updatedByPath" />
+        :updated-by-path="state.updatedByPath"
+      />
     </div>
   </div>
 </template>

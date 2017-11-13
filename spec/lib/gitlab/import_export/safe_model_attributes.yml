@@ -25,6 +25,7 @@ Issue:
 - relative_position
 - last_edited_at
 - last_edited_by_id
+- discussion_locked
 Event:
 - id
 - target_type
@@ -168,6 +169,7 @@ MergeRequest:
 - last_edited_at
 - last_edited_by_id
 - head_pipeline_id
+- discussion_locked
 MergeRequestDiff:
 - id
 - state
@@ -224,6 +226,7 @@ Ci::Pipeline:
 - auto_canceled_by_id
 - pipeline_schedule_id
 - config_source
+- failure_reason
 - protected
 Ci::Stage:
 - id
@@ -308,6 +311,49 @@ Ci::PipelineSchedule:
 - owner_id
 - active
 - deleted_at
+- created_at
+- updated_at
+Clusters::Cluster:
+- id
+- user_id
+- enabled
+- name
+- provider_type
+- platform_type
+- created_at
+- updated_at
+Clusters::Project:
+- id
+- project_id
+- cluster_id
+- created_at
+- updated_at
+Clusters::Providers::Gcp:
+- id
+- cluster_id
+- status
+- status_reason
+- gcp_project_id
+- zone
+- num_nodes
+- machine_type
+- operation_id
+- endpoint
+- encrypted_access_token
+- encrypted_access_token_iv
+- created_at
+- updated_at
+Clusters::Platforms::Kubernetes:
+- id
+- cluster_id
+- api_url
+- ca_cert
+- namespace
+- username
+- encrypted_password
+- encrypted_password_iv
+- encrypted_token
+- encrypted_token_iv
 - created_at
 - updated_at
 DeployKey:
@@ -412,6 +458,8 @@ Project:
 - last_repository_updated_at
 - ci_config_path
 - delete_error
+- merge_requests_ff_only_enabled
+- merge_requests_rebase_enabled
 Author:
 - name
 ProjectFeature:
@@ -465,6 +513,7 @@ Timelog:
 - merge_request_id
 - issue_id
 - user_id
+- spent_at
 - created_at
 - updated_at
 ProjectAutoDevops:
@@ -474,3 +523,13 @@ ProjectAutoDevops:
 - project_id
 - created_at
 - updated_at
+IssueAssignee:
+- user_id
+- issue_id
+ProjectCustomAttribute:
+- id
+- created_at
+- updated_at
+- project_id
+- key
+- value

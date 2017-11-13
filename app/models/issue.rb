@@ -5,11 +5,10 @@ class Issue < ActiveRecord::Base
   include Issuable
   include Noteable
   include Referable
-  include Sortable
   include Spammable
   include FasterCacheKeys
   include RelativePositioning
-  include CreatedAtFilterable
+  include TimeTrackable
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
@@ -26,9 +25,6 @@ class Issue < ActiveRecord::Base
   has_many :merge_requests_closing_issues,
     class_name: 'MergeRequestsClosingIssues',
     dependent: :delete_all # rubocop:disable Cop/ActiveRecordDependent
-
-  has_many :issue_assignees
-  has_many :assignees, class_name: "User", through: :issue_assignees
 
   has_many :issue_assignees
   has_many :assignees, class_name: "User", through: :issue_assignees
@@ -77,19 +73,7 @@ class Issue < ActiveRecord::Base
     end
   end
 
-  def hook_attrs
-    assignee_ids = self.assignee_ids
-
-    attrs = {
-      total_time_spent: total_time_spent,
-      human_total_time_spent: human_total_time_spent,
-      human_time_estimate: human_time_estimate,
-      assignee_ids: assignee_ids,
-      assignee_id: assignee_ids.first # This key is deprecated
-    }
-
-    attributes.merge!(attrs)
-  end
+  acts_as_paranoid
 
   def self.reference_prefix
     '#'
@@ -119,7 +103,8 @@ class Issue < ActiveRecord::Base
 
   def self.sort(method, excluded_labels: [])
     case method.to_s
-    when 'due_date_asc' then order_due_date_asc
+    when 'due_date'      then order_due_date_asc
+    when 'due_date_asc'  then order_due_date_asc
     when 'due_date_desc' then order_due_date_desc
     else
       super
@@ -131,6 +116,10 @@ class Issue < ActiveRecord::Base
       .reorder(Gitlab::Database.nulls_last_order('relative_position', 'ASC'),
               Gitlab::Database.nulls_last_order('highest_priority', 'ASC'),
               "id DESC")
+  end
+
+  def hook_attrs
+    Gitlab::HookData::IssueBuilder.new(self).build
   end
 
   # Returns a Hash of attributes to be used for Twitter card metadata
@@ -278,8 +267,6 @@ class Issue < ActiveRecord::Base
   end
 
   def update_project_counter_caches
-    return unless update_project_counter_caches?
-
     Projects::OpenIssuesCountService.new(project).refresh_cache
   end
 

@@ -1,5 +1,0 @@
----
-title: Fix incorrect date/time formatting on prometheus graphs
-merge_request: 13865
-author:
-type: fixed

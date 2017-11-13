@@ -14,19 +14,22 @@ function getCoordinate(component, selector, coordinate) {
   return parseInt(coordinateVal, 10);
 }
 
+const defaultValuesComponent = {
+  currentXCoordinate: 200,
+  currentYCoordinate: 100,
+  currentFlagPosition: 100,
+  currentData: {
+    time: new Date('2017-06-04T18:17:33.501Z'),
+    value: '1.49609375',
+  },
+  graphHeight: 300,
+  graphHeightOffset: 120,
+  showFlagContent: true,
+};
+
 describe('GraphFlag', () => {
   it('has a line and a circle located at the currentXCoordinate and currentYCoordinate', () => {
-    const component = createComponent({
-      currentXCoordinate: 200,
-      currentYCoordinate: 100,
-      currentFlagPosition: 100,
-      currentData: {
-        time: new Date('2017-06-04T18:17:33.501Z'),
-        value: '1.49609375',
-      },
-      graphHeight: 300,
-      graphHeightOffset: 120,
-    });
+    const component = createComponent(defaultValuesComponent);
 
     expect(getCoordinate(component, '.selected-metric-line', 'x1'))
       .toEqual(component.currentXCoordinate);
@@ -35,17 +38,7 @@ describe('GraphFlag', () => {
   });
 
   it('has a SVG with the class rect-text-metric at the currentFlagPosition', () => {
-    const component = createComponent({
-      currentXCoordinate: 200,
-      currentYCoordinate: 100,
-      currentFlagPosition: 100,
-      currentData: {
-        time: new Date('2017-06-04T18:17:33.501Z'),
-        value: '1.49609375',
-      },
-      graphHeight: 300,
-      graphHeightOffset: 120,
-    });
+    const component = createComponent(defaultValuesComponent);
 
     const svg = component.$el.querySelector('.rect-text-metric');
     expect(svg.tagName).toEqual('svg');
@@ -54,17 +47,7 @@ describe('GraphFlag', () => {
 
   describe('Computed props', () => {
     it('calculatedHeight', () => {
-      const component = createComponent({
-        currentXCoordinate: 200,
-        currentYCoordinate: 100,
-        currentFlagPosition: 100,
-        currentData: {
-          time: new Date('2017-06-04T18:17:33.501Z'),
-          value: '1.49609375',
-        },
-        graphHeight: 300,
-        graphHeightOffset: 120,
-      });
+      const component = createComponent(defaultValuesComponent);
 
       expect(component.calculatedHeight).toEqual(180);
     });

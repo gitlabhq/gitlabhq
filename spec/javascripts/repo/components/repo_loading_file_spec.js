@@ -1,12 +1,16 @@
 import Vue from 'vue';
+import store from '~/repo/stores';
 import repoLoadingFile from '~/repo/components/repo_loading_file.vue';
+import { resetStore } from '../helpers';
 
 describe('RepoLoadingFile', () => {
-  function createComponent(propsData) {
+  let vm;
+
+  function createComponent() {
     const RepoLoadingFile = Vue.extend(repoLoadingFile);
 
     return new RepoLoadingFile({
-      propsData,
+      store,
     }).$mount();
   }
 
@@ -28,52 +32,31 @@ describe('RepoLoadingFile', () => {
     });
   }
 
+  afterEach(() => {
+    vm.$destroy();
+
+    resetStore(vm.$store);
+  });
+
   it('renders 3 columns of animated LoC', () => {
-    const vm = createComponent({
-      loading: {
-        tree: true,
-      },
-      hasFiles: false,
-    });
+    vm = createComponent();
     const columns = [...vm.$el.querySelectorAll('td')];
 
     expect(columns.length).toEqual(3);
     assertColumns(columns);
   });
 
-  it('renders 1 column of animated LoC if isMini', () => {
-    const vm = createComponent({
-      loading: {
-        tree: true,
-      },
-      hasFiles: false,
-      isMini: true,
+  it('renders 1 column of animated LoC if isMini', (done) => {
+    vm = createComponent();
+    vm.$store.state.openFiles.push('test');
+
+    vm.$nextTick(() => {
+      const columns = [...vm.$el.querySelectorAll('td')];
+
+      expect(columns.length).toEqual(1);
+      assertColumns(columns);
+
+      done();
     });
-    const columns = [...vm.$el.querySelectorAll('td')];
-
-    expect(columns.length).toEqual(1);
-    assertColumns(columns);
-  });
-
-  it('does not render if tree is not loading', () => {
-    const vm = createComponent({
-      loading: {
-        tree: false,
-      },
-      hasFiles: false,
-    });
-
-    expect(vm.$el.innerHTML).toBeFalsy();
-  });
-
-  it('does not render if hasFiles is true', () => {
-    const vm = createComponent({
-      loading: {
-        tree: true,
-      },
-      hasFiles: true,
-    });
-
-    expect(vm.$el.innerHTML).toBeFalsy();
   });
 });

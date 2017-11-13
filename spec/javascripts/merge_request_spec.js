@@ -58,5 +58,44 @@ import IssuablesHelper from '~/helpers/issuables_helper';
         expect(CloseReopenReportToggle.prototype.initDroplab).toHaveBeenCalled();
       });
     });
+
+    describe('hideCloseButton', () => {
+      describe('merge request of another user', () => {
+        beforeEach(() => {
+          loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
+          this.el = document.querySelector('.merge-request .issuable-actions');
+          const merge = new MergeRequest();
+          merge.hideCloseButton();
+        });
+
+        it('hides the dropdown close item and selects the next item', () => {
+          const closeItem = this.el.querySelector('li.close-item');
+          const smallCloseItem = this.el.querySelector('.js-close-item');
+          const reportItem = this.el.querySelector('li.report-item');
+
+          expect(closeItem).toHaveClass('hidden');
+          expect(smallCloseItem).toHaveClass('hidden');
+          expect(reportItem).toHaveClass('droplab-item-selected');
+          expect(reportItem).not.toHaveClass('hidden');
+        });
+      });
+
+      describe('merge request of current_user', () => {
+        beforeEach(() => {
+          loadFixtures('merge_requests/merge_request_of_current_user.html.raw');
+          this.el = document.querySelector('.merge-request .issuable-actions');
+          const merge = new MergeRequest();
+          merge.hideCloseButton();
+        });
+
+        it('hides the close button', () => {
+          const closeButton = this.el.querySelector('.btn-close');
+          const smallCloseItem = this.el.querySelector('.js-close-item');
+
+          expect(closeButton).toHaveClass('hidden');
+          expect(smallCloseItem).toHaveClass('hidden');
+        });
+      });
+    });
   });
 }).call(window);

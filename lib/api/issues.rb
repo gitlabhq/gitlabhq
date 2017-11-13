@@ -48,6 +48,7 @@ module API
         optional :labels, type: String, desc: 'Comma-separated list of label names'
         optional :due_date, type: String, desc: 'Date string in the format YEAR-MONTH-DAY'
         optional :confidential, type: Boolean, desc: 'Boolean parameter if the issue should be confidential'
+        optional :discussion_locked, type: Boolean, desc: " Boolean parameter indicating if the issue's discussion is locked"
       end
 
       params :issue_params do
@@ -67,7 +68,7 @@ module API
                          desc: 'Return issues for the given scope: `created-by-me`, `assigned-to-me` or `all`'
       end
       get do
-        issues = find_issues
+        issues = paginate(find_issues)
 
         options = {
           with: Entities::IssueBasic,
@@ -75,7 +76,7 @@ module API
           issuable_metadata: issuable_meta_data(issues, 'Issue')
         }
 
-        present paginate(issues), options
+        present issues, options
       end
     end
 
@@ -94,7 +95,7 @@ module API
       get ":id/issues" do
         group = find_group!(params[:id])
 
-        issues = find_issues(group_id: group.id)
+        issues = paginate(find_issues(group_id: group.id))
 
         options = {
           with: Entities::IssueBasic,
@@ -102,7 +103,7 @@ module API
           issuable_metadata: issuable_meta_data(issues, 'Issue')
         }
 
-        present paginate(issues), options
+        present issues, options
       end
     end
 
@@ -123,7 +124,7 @@ module API
       get ":id/issues" do
         project = find_project!(params[:id])
 
-        issues = find_issues(project_id: project.id)
+        issues = paginate(find_issues(project_id: project.id))
 
         options = {
           with: Entities::IssueBasic,
@@ -132,7 +133,7 @@ module API
           issuable_metadata: issuable_meta_data(issues, 'Issue')
         }
 
-        present paginate(issues), options
+        present issues, options
       end
 
       desc 'Get a single project issue' do
@@ -193,7 +194,7 @@ module API
                               desc: 'Date time when the issue was updated. Available only for admins and project owners.'
         optional :state_event, type: String, values: %w[reopen close], desc: 'State of the issue'
         use :issue_params
-        at_least_one_of :title, :description, :assignee_ids, :assignee_id, :milestone_id,
+        at_least_one_of :title, :description, :assignee_ids, :assignee_id, :milestone_id, :discussion_locked,
                         :labels, :created_at, :due_date, :confidential, :state_event
       end
       put ':id/issues/:issue_iid' do

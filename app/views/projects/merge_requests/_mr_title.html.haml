@@ -15,6 +15,8 @@
       = icon('angle-double-left')
 
     .issuable-meta
+      - if @merge_request.discussion_locked?
+        = icon('lock', class: 'issuable-warning-icon')
       = issuable_meta(@merge_request, @project, "Merge request")
 
   .issuable-actions.js-issuable-actions
@@ -29,10 +31,10 @@
           - unless current_user == @merge_request.author
             %li= link_to 'Report abuse', new_abuse_report_path(user_id: @merge_request.author.id, ref_url: merge_request_url(@merge_request))
           - if can_update_merge_request
-            %li{ class: merge_request_button_visibility(@merge_request, true) }
+            %li{ class: [merge_request_button_visibility(@merge_request, true), 'js-close-item'] }
               = link_to 'Close', merge_request_path(@merge_request, merge_request: { state_event: :close }), method: :put, title: 'Close merge request'
             %li{ class: merge_request_button_visibility(@merge_request, false) }
-              = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: 'reopen-mr-link', title: 'Reopen merge request'
+              = link_to 'Reopen', merge_request_path(@merge_request, merge_request: { state_event: :reopen }), method: :put, class: 'reopen-mr-link', title: 'Reopen merge request'
 
       - if can_update_merge_request
         = link_to 'Edit', edit_project_merge_request_path(@project, @merge_request), class: "hidden-xs hidden-sm btn btn-grouped issuable-edit"

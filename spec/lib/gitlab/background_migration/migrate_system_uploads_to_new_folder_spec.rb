@@ -8,7 +8,7 @@ describe Gitlab::BackgroundMigration::MigrateSystemUploadsToNewFolder do
   end
 
   describe '#perform' do
-    it 'renames the path of system-uploads', truncate: true do
+    it 'renames the path of system-uploads', :truncate do
       upload = create(:upload, model: create(:project), path: 'uploads/system/project/avatar.jpg')
 
       migration.perform('uploads/system/', 'uploads/-/system/')

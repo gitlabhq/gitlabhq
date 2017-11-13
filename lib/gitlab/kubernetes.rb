@@ -113,7 +113,7 @@ module Gitlab
 
     def kubeconfig_embed_ca_pem(config, ca_pem)
       cluster = config.dig(:clusters, 0, :cluster)
-      cluster[:'certificate-authority-data'] = Base64.encode64(ca_pem)
+      cluster[:'certificate-authority-data'] = Base64.strict_encode64(ca_pem)
     end
   end
 end

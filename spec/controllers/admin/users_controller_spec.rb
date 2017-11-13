@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Admin::UsersController do
   let(:user) { create(:user) }
-  let(:admin) { create(:admin) }
+  set(:admin) { create(:admin) }
 
   before do
     sign_in(admin)
@@ -19,7 +19,7 @@ describe Admin::UsersController do
     it 'deletes user and ghosts their contributions' do
       delete :destroy, id: user.username, format: :json
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(User.exists?(user.id)).to be_falsy
       expect(issue.reload.author).to be_ghost
     end
@@ -27,7 +27,7 @@ describe Admin::UsersController do
     it 'deletes the user and their contributions when hard delete is specified' do
       delete :destroy, id: user.username, hard_delete: true, format: :json
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(User.exists?(user.id)).to be_falsy
       expect(Issue.exists?(issue.id)).to be_falsy
     end

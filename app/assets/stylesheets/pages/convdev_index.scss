@@ -83,7 +83,7 @@ $space-between-cards: 8px;
   border-top-color: $color-low-score;
 
   .card-score-big {
-    background-color: $red-25;
+    background-color: $red-50;
   }
 }
 
@@ -91,7 +91,7 @@ $space-between-cards: 8px;
   border-top-color: $color-average-score;
 
   .card-score-big {
-    background-color: $orange-25;
+    background-color: $orange-50;
   }
 }
 
@@ -99,7 +99,7 @@ $space-between-cards: 8px;
   border-top-color: $color-high-score;
 
   .card-score-big {
-    background-color: $green-25;
+    background-color: $green-50;
   }
 }
 

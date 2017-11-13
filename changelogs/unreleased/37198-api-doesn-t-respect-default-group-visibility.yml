@@ -1,5 +1,0 @@
----
-title: 'API: Respect default group visibility when creating a group'
-merge_request: 13903
-author: Robert Schilling
-type: fixed

@@ -21,9 +21,9 @@
       %ul
         - diff_files.each do |diff_file|
           %li
-            %a{ href: "##{hexdigest(diff_file.file_path)}", title: diff_file.new_path }
+            %a.diff-changed-file{ href: "##{hexdigest(diff_file.file_path)}", title: diff_file.new_path }
               = icon("#{diff_file_changed_icon(diff_file)} fw", class: "#{diff_file_changed_icon_color(diff_file)} append-right-5")
-              %span.diff-file-changes-path= diff_file.new_path
+              %span.diff-file-changes-path.append-right-5= diff_file.new_path
               .pull-right
                 %span.cgreen<
                   +#{diff_file.added_lines}

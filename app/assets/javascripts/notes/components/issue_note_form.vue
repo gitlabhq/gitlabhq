@@ -1,8 +1,9 @@
 <script>
   import { mapGetters } from 'vuex';
   import eventHub from '../event_hub';
-  import confidentialIssue from '../../vue_shared/components/issue/confidential_issue_warning.vue';
+  import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
   import markdownField from '../../vue_shared/components/markdown/field.vue';
+  import issuableStateMixin from '../mixins/issuable_state';
 
   export default {
     name: 'issueNoteForm',
@@ -39,12 +40,13 @@
       };
     },
     components: {
-      confidentialIssue,
+      issueWarning,
       markdownField,
     },
     computed: {
       ...mapGetters([
         'getDiscussionLastNote',
+        'getIssueData',
         'getIssueDataByProp',
         'getNotesDataByProp',
         'getUserDataByProp',
@@ -66,9 +68,6 @@
       },
       isDisabled() {
         return !this.note.length || this.isSubmitting;
-      },
-      isConfidentialIssue() {
-        return this.getIssueDataByProp('confidential');
       },
     },
     methods: {
@@ -95,6 +94,9 @@
         this.$emit('cancelFormEdition', shouldConfirm, this.noteBody !== this.note);
       },
     },
+    mixins: [
+      issuableStateMixin,
+    ],
     mounted() {
       this.$refs.textarea.focus();
     },
@@ -125,7 +127,13 @@
     <div class="flash-container timeline-content"></div>
     <form
       class="edit-note common-note-form js-quick-submit gfm-form">
-      <confidentialIssue v-if="isConfidentialIssue" />
+
+      <issue-warning
+        v-if="hasWarning(getIssueData)"
+        :is-locked="isLocked(getIssueData)"
+        :is-confidential="isConfidential(getIssueData)"
+      />
+
       <markdown-field
         :markdown-preview-path="markdownPreviewPath"
         :markdown-docs-path="markdownDocsPath"

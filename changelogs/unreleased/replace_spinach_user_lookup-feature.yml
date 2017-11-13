@@ -1,5 +1,0 @@
----
-title: Replace 'project/user_lookup.feature' spinach test with an rspec analog
-merge_request: 13863
-author: Vitaliy @blackst0ne Klachkov
-type: other

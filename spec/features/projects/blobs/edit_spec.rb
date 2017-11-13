@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Editing file blob', js: true do
+feature 'Editing file blob', :js do
   include TreeHelper
 
   let(:project) { create(:project, :public, :repository) }
@@ -20,6 +20,7 @@ feature 'Editing file blob', js: true do
     def edit_and_commit
       wait_for_requests
       find('.js-edit-blob').click
+      find('#editor')
       execute_script('ace.edit("editor").setValue("class NextFeature\nend\n")')
       click_button 'Commit changes'
     end

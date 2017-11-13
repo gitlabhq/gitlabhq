@@ -55,7 +55,7 @@ feature 'Master creates tag' do
       end
     end
 
-    scenario 'opens dropdown for ref', js: true do
+    scenario 'opens dropdown for ref', :js do
       click_link 'New tag'
       ref_row = find('.form-group:nth-of-type(2) .col-sm-10')
       page.within ref_row do
@@ -63,7 +63,7 @@ feature 'Master creates tag' do
         expect(ref_input.value).to eq 'master'
         expect(find('.dropdown-toggle-text')).to have_content 'master'
 
-        find('.js-branch-select').trigger('click')
+        find('.js-branch-select').click
 
         expect(find('.dropdown-menu')).to have_content 'empty-branch'
       end

@@ -11,6 +11,8 @@ class GlobalPolicy < BasePolicy
   with_options scope: :user, score: 0
   condition(:access_locked) { @user.access_locked? }
 
+  condition(:can_create_fork, scope: :user) { @user.manageable_namespaces.any? { |namespace| @user.can?(:create_projects, namespace) } }
+
   rule { anonymous }.policy do
     prevent :log_in
     prevent :access_api
@@ -40,11 +42,20 @@ class GlobalPolicy < BasePolicy
     enable :create_group
   end
 
+  rule { can_create_fork }.policy do
+    enable :create_fork
+  end
+
   rule { access_locked }.policy do
     prevent :log_in
   end
 
   rule { ~(anonymous & restricted_public_level) }.policy do
     enable :read_users_list
+  end
+
+  rule { admin }.policy do
+    enable :read_custom_attribute
+    enable :update_custom_attribute
   end
 end

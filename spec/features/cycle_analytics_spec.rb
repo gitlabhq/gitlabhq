@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Cycle Analytics', js: true do
+feature 'Cycle Analytics', :js do
   let(:user) { create(:user) }
   let(:guest) { create(:user) }
   let(:project) { create(:project, :repository) }

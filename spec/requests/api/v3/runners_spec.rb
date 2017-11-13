@@ -37,7 +37,7 @@ describe API::V3::Runners do
           expect do
             delete v3_api("/runners/#{shared_runner.id}", admin)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end.to change { Ci::Runner.shared.count }.by(-1)
         end
       end
@@ -47,7 +47,7 @@ describe API::V3::Runners do
           expect do
             delete v3_api("/runners/#{unused_specific_runner.id}", admin)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end.to change { Ci::Runner.specific.count }.by(-1)
         end
 
@@ -55,7 +55,7 @@ describe API::V3::Runners do
           expect do
             delete v3_api("/runners/#{specific_runner.id}", admin)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end.to change { Ci::Runner.specific.count }.by(-1)
         end
       end
@@ -63,7 +63,7 @@ describe API::V3::Runners do
       it 'returns 404 if runner does not exists' do
         delete v3_api('/runners/9999', admin)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -71,26 +71,26 @@ describe API::V3::Runners do
       context 'when runner is shared' do
         it 'does not delete runner' do
           delete v3_api("/runners/#{shared_runner.id}", user)
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
         end
       end
 
       context 'when runner is not shared' do
         it 'does not delete runner without access to it' do
           delete v3_api("/runners/#{specific_runner.id}", user2)
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
         end
 
         it 'does not delete runner with more than one associated project' do
           delete v3_api("/runners/#{two_projects_runner.id}", user)
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
         end
 
         it 'deletes runner for one owned project' do
           expect do
             delete v3_api("/runners/#{specific_runner.id}", user)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end.to change { Ci::Runner.specific.count }.by(-1)
         end
       end
@@ -100,7 +100,7 @@ describe API::V3::Runners do
       it 'does not delete runner' do
         delete v3_api("/runners/#{specific_runner.id}")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end
@@ -112,7 +112,7 @@ describe API::V3::Runners do
           expect do
             delete v3_api("/projects/#{project.id}/runners/#{two_projects_runner.id}", user)
 
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end.to change { project.runners.count }.by(-1)
         end
       end
@@ -122,14 +122,14 @@ describe API::V3::Runners do
           expect do
             delete v3_api("/projects/#{project.id}/runners/#{specific_runner.id}", user)
           end.to change { project.runners.count }.by(0)
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
         end
       end
 
       it 'returns 404 is runner is not found' do
         delete v3_api("/projects/#{project.id}/runners/9999", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -137,7 +137,7 @@ describe API::V3::Runners do
       it "does not disable project's runner" do
         delete v3_api("/projects/#{project.id}/runners/#{specific_runner.id}", user2)
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -145,7 +145,7 @@ describe API::V3::Runners do
       it "does not disable project's runner" do
         delete v3_api("/projects/#{project.id}/runners/#{specific_runner.id}")
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
   end

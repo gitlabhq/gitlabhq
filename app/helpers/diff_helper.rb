@@ -33,19 +33,21 @@ module DiffHelper
   end
 
   def diff_match_line(old_pos, new_pos, text: '', view: :inline, bottom: false)
-    content = content_tag :td, text, class: "line_content match #{view == :inline ? '' : view}"
-    cls = ['diff-line-num', 'unfold', 'js-unfold']
-    cls << 'js-unfold-bottom' if bottom
+    content_line_class = %w[line_content match]
+    content_line_class << 'parallel' if view == :parallel
+
+    line_num_class = %w[diff-line-num unfold js-unfold]
+    line_num_class << 'js-unfold-bottom' if bottom
 
     html = ''
     if old_pos
-      html << content_tag(:td, '...', class: cls + ['old_line'], data: { linenumber: old_pos })
-      html << content unless view == :inline
+      html << content_tag(:td, '...', class: [*line_num_class, 'old_line'], data: { linenumber: old_pos })
+      html << content_tag(:td, text, class: [*content_line_class, 'left-side']) if view == :parallel
     end
 
     if new_pos
-      html << content_tag(:td, '...', class: cls + ['new_line'], data: { linenumber: new_pos })
-      html << content
+      html << content_tag(:td, '...', class: [*line_num_class, 'new_line'], data: { linenumber: new_pos })
+      html << content_tag(:td, text, class: [*content_line_class, ('right-side' if view == :parallel)])
     end
 
     html.html_safe

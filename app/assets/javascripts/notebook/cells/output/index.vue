@@ -1,12 +1,3 @@
-<template>
-  <component :is="componentName"
-    type="output"
-    :outputType="outputType"
-    :count="count"
-    :raw-code="rawCode"
-    :code-css-class="codeCssClass" />
-</template>
-
 <script>
 import CodeCell from '../code/index.vue';
 import Html from './html.vue';
@@ -81,3 +72,12 @@ export default {
   },
 };
 </script>
+
+<template>
+  <component :is="componentName"
+    type="output"
+    :outputType="outputType"
+    :count="count"
+    :raw-code="rawCode"
+    :code-css-class="codeCssClass" />
+</template>

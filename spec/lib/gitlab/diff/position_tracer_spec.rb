@@ -71,6 +71,10 @@ describe Gitlab::Diff::PositionTracer do
     Gitlab::Diff::DiffRefs.new(base_sha: base_commit.id, head_sha: head_commit.id)
   end
 
+  def text_position_attrs
+    [:old_line, :new_line]
+  end
+
   def position(attrs = {})
     attrs.reverse_merge!(
       diff_refs: old_diff_refs
@@ -91,7 +95,11 @@ describe Gitlab::Diff::PositionTracer do
         expect(new_position.diff_refs).to eq(new_diff_refs)
 
         attrs.each do |attr, value|
-          expect(new_position.send(attr)).to eq(value)
+          if text_position_attrs.include?(attr)
+            expect(new_position.formatter.send(attr)).to eq(value)
+          else
+            expect(new_position.send(attr)).to eq(value)
+          end
         end
       end
     end
@@ -110,7 +118,11 @@ describe Gitlab::Diff::PositionTracer do
         expect(change_position.diff_refs).to eq(change_diff_refs)
 
         attrs.each do |attr, value|
-          expect(change_position.send(attr)).to eq(value)
+          if text_position_attrs.include?(attr)
+            expect(change_position.formatter.send(attr)).to eq(value)
+          else
+            expect(change_position.send(attr)).to eq(value)
+          end
         end
       end
     end
@@ -1761,17 +1773,9 @@ describe Gitlab::Diff::PositionTracer do
       let(:merge_commit) do
         update_file_again_commit
 
-        committer = repository.user_to_committer(current_user)
-
-        options = {
-          message: "Merge branches",
-          author: committer,
-          committer: committer
-        }
-
         merge_request = create(:merge_request, source_branch: second_create_file_commit.sha, target_branch: branch_name, source_project: project)
 
-        repository.merge(current_user, merge_request.diff_head_sha, merge_request, options)
+        repository.merge(current_user, merge_request.diff_head_sha, merge_request, "Merge branches")
 
         project.commit(branch_name)
       end

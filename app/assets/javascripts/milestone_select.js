@@ -5,7 +5,7 @@ import _ from 'underscore';
 
 (function() {
   this.MilestoneSelect = (function() {
-    function MilestoneSelect(currentProject, els) {
+    function MilestoneSelect(currentProject, els, options = {}) {
       var _this, $els;
       if (currentProject != null) {
         _this = this;
@@ -45,7 +45,7 @@ import _ from 'underscore';
         if (issueUpdateURL) {
           milestoneLinkTemplate = _.template('<a href="/<%- full_path %>/milestones/<%- iid %>" class="bold has-tooltip" data-container="body" title="<%- remaining %>"><%- title %></a>');
           milestoneLinkNoneTemplate = '<span class="no-value">None</span>';
-          collapsedSidebarLabelTemplate = _.template('<span class="has-tooltip" data-container="body" title="<%- remaining %>" data-placement="left"> <%- title %> </span>');
+          collapsedSidebarLabelTemplate = _.template('<span class="has-tooltip" data-container="body" title="<%- name %><br /><%- remaining %>" data-placement="left" data-html="true"> <%- title %> </span>');
         }
         return $dropdown.glDropdown({
           showMenuAbove: showMenuAbove,
@@ -136,18 +136,27 @@ import _ from 'underscore';
           },
           opened: function(e) {
             const $el = $(e.currentTarget);
-            if ($dropdown.hasClass('js-issue-board-sidebar')) {
+            if ($dropdown.hasClass('js-issue-board-sidebar') || options.handleClick) {
               selectedMilestone = $dropdown[0].dataset.selected || selectedMilestoneDefault;
             }
             $('a.is-active', $el).removeClass('is-active');
             $(`[data-milestone-id="${selectedMilestone}"] > a`, $el).addClass('is-active');
           },
           vue: $dropdown.hasClass('js-issue-board-sidebar'),
-          clicked: function(options) {
-            const { $el, e } = options;
-            let selected = options.selectedObj;
+          clicked: function(clickEvent) {
+            const { $el, e } = clickEvent;
+            let selected = clickEvent.selectedObj;
+
             var data, isIssueIndex, isMRIndex, isSelecting, page, boardsStore;
-            page = $('body').data('page');
+            if (!selected) return;
+
+            if (options.handleClick) {
+              e.preventDefault();
+              options.handleClick(selected);
+              return;
+            }
+
+            page = $('body').attr('data-page');
             isIssueIndex = page === 'projects:issues:index';
             isMRIndex = (page === page && page === 'projects:merge_requests:index');
             isSelecting = (selected.name !== selectedMilestone);
@@ -208,6 +217,7 @@ import _ from 'underscore';
                 if (data.milestone != null) {
                   data.milestone.full_path = _this.currentProject.full_path;
                   data.milestone.remaining = gl.utils.timeFor(data.milestone.due_date);
+                  data.milestone.name = data.milestone.title;
                   $value.html(milestoneLinkTemplate(data.milestone));
                   return $sidebarCollapsedValue.find('span').html(collapsedSidebarLabelTemplate(data.milestone));
                 } else {

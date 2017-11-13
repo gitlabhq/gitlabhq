@@ -19,6 +19,7 @@ project_tree:
     - milestone:
       - events:
         - :push_event_payload
+    - :issue_assignees
   - snippets:
     - :award_emoji
     - notes:
@@ -61,6 +62,7 @@ project_tree:
   - protected_tags:
     - :create_access_levels
   - :project_feature
+  - :custom_attributes
 
 # Only include the following attributes for the models specified.
 included_attributes:
@@ -112,6 +114,7 @@ excluded_attributes:
     - :milestone_id
     - :ref_fetched
     - :merge_jid
+    - :latest_merge_request_diff_id
   award_emoji:
     - :awardable_id
   statuses:

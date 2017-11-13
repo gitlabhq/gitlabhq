@@ -25,6 +25,7 @@ The following table depicts the various user permission levels in a project.
 | Create confidential issue             | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | View confidential issues              | (✓) [^2] | ✓          | ✓           | ✓        | ✓      |
 | Leave comments                        | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
+| Lock discussions (issues and merge requests) |  |            |             | ✓        | ✓      |
 | See a list of jobs                    | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | See a job   log                       | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | Download and browse job artifacts     | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
@@ -53,7 +54,7 @@ The following table depicts the various user permission levels in a project.
 | Create or update commit status        |         |            | ✓           | ✓        | ✓      |
 | Update a container registry           |         |            | ✓           | ✓        | ✓      |
 | Remove a container registry image     |         |            | ✓           | ✓        | ✓      |
-| Create new milestones                 |         |            |             | ✓        | ✓      |
+| Create/edit/delete project milestones |         |            | ✓           | ✓        | ✓      |
 | Add new team members                  |         |            |             | ✓        | ✓      |
 | Push to protected branches            |         |            |             | ✓        | ✓      |
 | Enable/disable branch protection      |         |            |             | ✓        | ✓      |
@@ -71,9 +72,11 @@ The following table depicts the various user permission levels in a project.
 | Switch visibility level               |         |            |             |          | ✓      |
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |
+| Delete issues                         |         |            |             |          | ✓      |
 | Force push to protected branches [^4] |         |            |             |          |        |
 | Remove protected branches [^4]        |         |            |             |          |        |
 | Remove pages                          |         |            |             |          | ✓      |
+| Manage clusters                       |         |            |             | ✓        | ✓      |
 
 ## Project features permissions
 
@@ -141,6 +144,7 @@ group.
 | Manage group members    |       |          |           |        | ✓     |
 | Remove group            |       |          |           |        | ✓     |
 | Manage group labels     |       | ✓        | ✓         | ✓      | ✓     |
+| Create/edit/delete group milestones | |    | ✓         | ✓      | ✓     |
 
 ### Subgroup permissions
 
@@ -253,7 +257,7 @@ only.
 
 [^1]: On public and internal projects,  all users are able to perform this action.
 [^2]: Guest users can only view the confidential issues they created themselves
-[^3]: If **Public pipelines** is enabled in **Project Settings > Pipelines**
+[^3]: If **Public pipelines** is enabled in **Project Settings > CI/CD**
 [^4]: Not allowed for Guest, Reporter, Developer, Master, or Owner
 [^5]: Only if user is not external one.
 [^6]: Only if user is a member of the project.

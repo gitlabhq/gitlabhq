@@ -8,7 +8,7 @@ describe Groups::GroupMembersController do
     it 'renders index with 200 status code' do
       get :index, group_id: group
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(response).to render_template(:index)
     end
   end
@@ -30,7 +30,7 @@ describe Groups::GroupMembersController do
                       user_ids: group_user.id,
                       access_level: Gitlab::Access::GUEST
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
         expect(group.users).not_to include group_user
       end
     end
@@ -73,7 +73,7 @@ describe Groups::GroupMembersController do
       it 'returns 403' do
         delete :destroy, group_id: group, id: 42
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -86,7 +86,7 @@ describe Groups::GroupMembersController do
         it 'returns 403' do
           delete :destroy, group_id: group, id: member
 
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
           expect(group.members).to include member
         end
       end
@@ -123,7 +123,7 @@ describe Groups::GroupMembersController do
       it 'returns 404' do
         delete :leave, group_id: group
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -144,7 +144,7 @@ describe Groups::GroupMembersController do
         it 'supports json request' do
           delete :leave, group_id: group, format: :json
 
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(json_response['notice']).to eq "You left the \"#{group.name}\" group."
         end
       end
@@ -157,7 +157,7 @@ describe Groups::GroupMembersController do
         it 'cannot removes himself from the group' do
           delete :leave, group_id: group
 
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
         end
       end
 
@@ -204,7 +204,7 @@ describe Groups::GroupMembersController do
       it 'returns 403' do
         post :approve_access_request, group_id: group, id: 42
 
-        expect(response).to have_http_status(403)
+        expect(response).to have_gitlab_http_status(403)
       end
     end
 
@@ -217,7 +217,7 @@ describe Groups::GroupMembersController do
         it 'returns 403' do
           post :approve_access_request, group_id: group, id: member
 
-          expect(response).to have_http_status(403)
+          expect(response).to have_gitlab_http_status(403)
           expect(group.members).not_to include member
         end
       end

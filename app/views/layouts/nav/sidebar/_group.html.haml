@@ -6,14 +6,14 @@
     .context-header
       = link_to group_path(@group), title: @group.name do
         .avatar-container.s40.group-avatar
-          = image_tag group_icon(@group), class: "avatar s40 avatar-tile"
+          = group_icon(@group, class: "avatar s40 avatar-tile")
         .sidebar-context-title
           = @group.name
     %ul.sidebar-top-level-items
       = nav_link(path: ['groups#show', 'groups#activity', 'groups#subgroups'], html_options: { class: 'home' }) do
-        = sidebar_link group_path(@group), title: _('Group overview') do
+        = link_to group_path(@group) do
           .nav-icon-container
-            = custom_icon('project')
+            = sprite_icon('project')
           %span.nav-item-name
             Overview
 
@@ -34,9 +34,9 @@
                 Activity
 
       = nav_link(path: ['groups#issues', 'labels#index', 'milestones#index']) do
-        = sidebar_link issues_group_path(@group), title: _('Issues') do
+        = link_to issues_group_path(@group) do
           .nav-icon-container
-            = custom_icon('issues')
+            = sprite_icon('issues')
           %span.nav-item-name
             Issues
           %span.badge.count= number_with_delimiter(issues.count)
@@ -64,9 +64,9 @@
                 Milestones
 
       = nav_link(path: 'groups#merge_requests') do
-        = sidebar_link merge_requests_group_path(@group), title: _('Merge Requests') do
+        = link_to merge_requests_group_path(@group) do
           .nav-icon-container
-            = custom_icon('mr_bold')
+            = sprite_icon('git-merge')
           %span.nav-item-name
             Merge Requests
           %span.badge.count= number_with_delimiter(merge_requests.count)
@@ -77,21 +77,21 @@
                 #{ _('Merge Requests') }
               %span.badge.count.merge_counter.js-merge-counter.fly-out-badge= number_with_delimiter(merge_requests.count)
       = nav_link(path: 'group_members#index') do
-        = sidebar_link group_group_members_path(@group), title: _('Members') do
+        = link_to group_group_members_path(@group) do
           .nav-icon-container
-            = custom_icon('members')
+            = sprite_icon('users')
           %span.nav-item-name
             Members
         %ul.sidebar-sub-level-items.is-fly-out-only
           = nav_link(path: 'group_members#index', html_options: { class: "fly-out-top-item" } ) do
-            = link_to merge_requests_group_path(@group) do
+            = link_to group_group_members_path(@group) do
               %strong.fly-out-top-item-name
                 #{ _('Members') }
       - if current_user && can?(current_user, :admin_group, @group)
         = nav_link(path: %w[groups#projects groups#edit ci_cd#show]) do
-          = sidebar_link edit_group_path(@group), title: _('Settings') do
+          = link_to edit_group_path(@group) do
             .nav-icon-container
-              = custom_icon('settings')
+              = sprite_icon('settings')
             %span.nav-item-name
               Settings
           %ul.sidebar-sub-level-items

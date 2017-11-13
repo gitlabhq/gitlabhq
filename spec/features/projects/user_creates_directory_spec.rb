@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'User creates a directory', js: true do
+feature 'User creates a directory', :js do
   let(:fork_message) do
     "You're not allowed to make changes to this project directly. "\
     "A fork of this project has been created that you can make changes in, so you can submit a merge request."
@@ -79,7 +79,7 @@ feature 'User creates a directory', js: true do
       fill_in(:commit_message, with: 'New commit message', visible: true)
       click_button('Create directory')
 
-      fork = user.fork_of(project2)
+      fork = user.fork_of(project2.reload)
 
       expect(current_path).to eq(project_new_merge_request_path(fork))
     end

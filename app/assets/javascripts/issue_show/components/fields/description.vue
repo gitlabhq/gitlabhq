@@ -1,5 +1,4 @@
 <script>
-  /* global Flash */
   import updateMixin from '../../mixins/update';
   import markdownField from '../../../vue_shared/components/markdown/field.vue';
 

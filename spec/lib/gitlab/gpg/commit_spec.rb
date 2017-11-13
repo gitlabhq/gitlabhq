@@ -63,6 +63,45 @@ describe Gitlab::Gpg::Commit do
           it_behaves_like 'returns the cached signature on second call'
         end
 
+        context 'commit signed with a subkey' do
+          let!(:commit) { create :commit, project: project, sha: commit_sha, committer_email: GpgHelpers::User3.emails.first }
+
+          let!(:user) { create(:user, email: GpgHelpers::User3.emails.first) }
+
+          let!(:gpg_key) do
+            create :gpg_key, key: GpgHelpers::User3.public_key, user: user
+          end
+
+          let(:gpg_key_subkey) do
+            gpg_key.subkeys.find_by(fingerprint: '0522DD29B98F167CD8421752E38FFCAF75ABD92A')
+          end
+
+          before do
+            allow(Rugged::Commit).to receive(:extract_signature)
+            .with(Rugged::Repository, commit_sha)
+            .and_return(
+              [
+                GpgHelpers::User3.signed_commit_signature,
+                GpgHelpers::User3.signed_commit_base_data
+              ]
+            )
+          end
+
+          it 'returns a valid signature' do
+            expect(described_class.new(commit).signature).to have_attributes(
+              commit_sha: commit_sha,
+              project: project,
+              gpg_key: gpg_key_subkey,
+              gpg_key_primary_keyid: gpg_key_subkey.keyid,
+              gpg_key_user_name: GpgHelpers::User3.names.first,
+              gpg_key_user_email: GpgHelpers::User3.emails.first,
+              verification_status: 'verified'
+            )
+          end
+
+          it_behaves_like 'returns the cached signature on second call'
+        end
+
         context 'user email does not match the committer email, but is the same user' do
           let!(:commit) { create :commit, project: project, sha: commit_sha, committer_email: GpgHelpers::User2.emails.first }
 

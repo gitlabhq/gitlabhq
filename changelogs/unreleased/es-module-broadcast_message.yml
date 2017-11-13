@@ -1,0 +1,5 @@
+---
+title: Fix unnecessary ajax requests in admin broadcast message form
+merge_request: 14853
+author:
+type: fixed

@@ -165,7 +165,7 @@ describe Gitlab::GitAccess do
         stub_application_setting(rsa_key_restriction: 4096)
       end
 
-      it 'does not allow keys which are too small', aggregate_failures: true do
+      it 'does not allow keys which are too small', :aggregate_failures do
         expect(actor).not_to be_valid
         expect { pull_access_check }.to raise_unauthorized('Your SSH key must be at least 4096 bits.')
         expect { push_access_check }.to raise_unauthorized('Your SSH key must be at least 4096 bits.')
@@ -177,7 +177,7 @@ describe Gitlab::GitAccess do
         stub_application_setting(rsa_key_restriction: ApplicationSetting::FORBIDDEN_KEY_VALUE)
       end
 
-      it 'does not allow keys which are too small', aggregate_failures: true do
+      it 'does not allow keys which are too small', :aggregate_failures do
         expect(actor).not_to be_valid
         expect { pull_access_check }.to raise_unauthorized(/Your SSH key type is forbidden/)
         expect { push_access_check }.to raise_unauthorized(/Your SSH key type is forbidden/)
@@ -598,6 +598,19 @@ describe Gitlab::GitAccess do
                                                             admin: { push_protected_branch: false, push_all: false, merge_into_protected_branch: false }))
       end
     end
+
+    context "when in a read-only GitLab instance" do
+      before do
+        create(:protected_branch, name: 'feature', project: project)
+        allow(Gitlab::Database).to receive(:read_only?) { true }
+      end
+
+      # Only check admin; if an admin can't do it, other roles can't either
+      matrix = permissions_matrix[:admin].dup
+      matrix.each { |key, _| matrix[key] = false }
+
+      run_permission_checks(admin: matrix)
+    end
   end
 
   describe 'build authentication abilities' do
@@ -629,6 +642,16 @@ describe Gitlab::GitAccess do
 
         it { expect { push_access_check }.to raise_not_found }
       end
+    end
+  end
+
+  context 'when the repository is read only' do
+    let(:project) { create(:project, :repository, :read_only) }
+
+    it 'denies push access' do
+      project.add_master(user)
+
+      expect { push_access_check }.to raise_unauthorized('The repository is temporarily read-only. Please try again later.')
     end
   end
 

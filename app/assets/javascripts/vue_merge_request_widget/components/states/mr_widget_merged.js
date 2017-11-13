@@ -1,5 +1,4 @@
-/* global Flash */
-
+import Flash from '../../../flash';
 import mrWidgetAuthorTime from '../../components/mr_widget_author_time';
 import tooltip from '../../../vue_shared/directives/tooltip';
 import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
@@ -69,9 +68,9 @@ export default {
         <div class="space-children">
           <mr-widget-author-and-time
             actionText="Merged by"
-            :author="mr.mergedBy"
-            :dateTitle="mr.updatedAt"
-            :dateReadable="mr.mergedAt" />
+            :author="mr.mergedEvent.author"
+            :date-title="mr.mergedEvent.updatedAt"
+            :date-readable="mr.mergedEvent.formattedUpdatedAt" />
           <a
             v-if="mr.canRevertInCurrentMR"
             v-tooltip

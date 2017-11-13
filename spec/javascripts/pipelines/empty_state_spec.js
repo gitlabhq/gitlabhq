@@ -11,6 +11,7 @@ describe('Pipelines Empty State', () => {
     component = new EmptyStateComponent({
       propsData: {
         helpPagePath: 'foo',
+        emptyStateSvgPath: 'foo',
       },
     }).$mount();
   });

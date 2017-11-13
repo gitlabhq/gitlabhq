@@ -18,7 +18,7 @@ describe Banzai::Renderer do
       let(:commit) { create(:project, :repository).commit }
 
       it 'returns cacheless render field' do
-        expect(renderer).to receive(:cacheless_render_field).with(commit, :title)
+        expect(renderer).to receive(:cacheless_render_field).with(commit, :title, {})
 
         renderer.render_field(commit, :title)
       end
@@ -31,7 +31,14 @@ describe Banzai::Renderer do
         let(:object) { fake_object(fresh: false) }
 
         it 'caches and returns the result' do
-          expect(object).to receive(:refresh_markdown_cache!).with(do_update: true)
+          expect(object).to receive(:refresh_markdown_cache!)
+
+          is_expected.to eq('field_html')
+        end
+
+        it "skips database caching on a GitLab read-only instance" do
+          allow(Gitlab::Database).to receive(:read_only?).and_return(true)
+          expect(object).to receive(:refresh_markdown_cache!)
 
           is_expected.to eq('field_html')
         end

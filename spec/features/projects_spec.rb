@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Project' do
+  include ProjectForksHelper
+
   describe 'creating from template' do
     let(:user)    { create(:user) }
     let(:template) { Gitlab::ProjectTemplate.find(:rails) }
@@ -10,8 +12,9 @@ feature 'Project' do
       visit new_project_path
     end
 
-    it "allows creation from templates" do
-      page.choose(template.name)
+    it "allows creation from templates", :js do
+      find('#create-from-template-tab').click
+      find("label[for=#{template.name}]").click
       fill_in("project_path", with: template.name)
 
       page.within '#content-body' do
@@ -55,13 +58,12 @@ feature 'Project' do
     end
   end
 
-  describe 'remove forked relationship', js: true do
+  describe 'remove forked relationship', :js do
     let(:user)    { create(:user) }
-    let(:project) { create(:project, namespace: user.namespace) }
+    let(:project) { fork_project(create(:project, :public), user, namespace_id: user.namespace) }
 
     before do
       sign_in user
-      create(:forked_project_link, forked_to_project: project)
       visit edit_project_path(project)
     end
 
@@ -71,12 +73,61 @@ feature 'Project' do
       remove_with_confirm('Remove fork relationship', project.path)
 
       expect(page).to have_content 'The fork relationship has been removed.'
-      expect(project.forked?).to be_falsey
+      expect(project.reload.forked?).to be_falsey
       expect(page).not_to have_content 'Remove fork relationship'
     end
   end
 
-  describe 'removal', js: true do
+  describe 'showing information about source of a project fork' do
+    let(:user) { create(:user) }
+    let(:base_project)  { create(:project, :public, :repository) }
+    let(:forked_project) { fork_project(base_project, user, repository: true) }
+
+    before do
+      sign_in user
+    end
+
+    it 'shows a link to the source project when it is available' do
+      visit project_path(forked_project)
+
+      expect(page).to have_content('Forked from')
+      expect(page).to have_link(base_project.full_name)
+    end
+
+    it 'does not contain fork network information for the root project' do
+      forked_project
+
+      visit project_path(base_project)
+
+      expect(page).not_to have_content('In fork network of')
+      expect(page).not_to have_content('Forked from')
+    end
+
+    it 'shows the name of the deleted project when the source was deleted' do
+      forked_project
+      Projects::DestroyService.new(base_project, base_project.owner).execute
+
+      visit project_path(forked_project)
+
+      expect(page).to have_content("Forked from #{base_project.full_name} (deleted)")
+    end
+
+    context 'a fork of a fork' do
+      let(:fork_of_fork) { fork_project(forked_project, user, repository: true) }
+
+      it 'links to the base project if the source project is removed' do
+        fork_of_fork
+        Projects::DestroyService.new(forked_project, user).execute
+
+        visit project_path(fork_of_fork)
+
+        expect(page).to have_content("Forked from")
+        expect(page).to have_link(base_project.full_name)
+      end
+    end
+  end
+
+  describe 'removal', :js do
     let(:user)    { create(:user, username: 'test', name: 'test') }
     let(:project) { create(:project, namespace: user.namespace, name: 'project1') }
 
@@ -88,7 +139,7 @@ feature 'Project' do
 
     it 'removes a project' do
       expect { remove_with_confirm('Remove project', project.path) }.to change {Project.count}.by(-1)
-      expect(page).to have_content "Project 'test / project1' will be deleted."
+      expect(page).to have_content "Project 'test / project1' is in the process of being deleted."
       expect(Project.all.count).to be_zero
       expect(project.issues).to be_empty
       expect(project.merge_requests).to be_empty

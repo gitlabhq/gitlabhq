@@ -10,7 +10,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
       current_user.otp_grace_period_started_at = Time.current
     end
 
-    Users::UpdateService.new(current_user).execute!
+    Users::UpdateService.new(current_user, user: current_user).execute!
 
     if two_factor_authentication_required? && !current_user.two_factor_enabled?
       two_factor_authentication_reason(
@@ -41,7 +41,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
 
   def create
     if current_user.validate_and_consume_otp!(params[:pin_code])
-      Users::UpdateService.new(current_user, otp_required_for_login: true).execute! do |user|
+      Users::UpdateService.new(current_user, user: current_user, otp_required_for_login: true).execute! do |user|
         @codes = user.generate_otp_backup_codes!
       end
 
@@ -70,7 +70,7 @@ class Profiles::TwoFactorAuthsController < Profiles::ApplicationController
   end
 
   def codes
-    Users::UpdateService.new(current_user).execute! do |user|
+    Users::UpdateService.new(current_user, user: current_user).execute! do |user|
       @codes = user.generate_otp_backup_codes!
     end
   end

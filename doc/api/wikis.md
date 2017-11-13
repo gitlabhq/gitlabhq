@@ -155,3 +155,5 @@ curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gi
 ```
 
 On success the HTTP status code is `204` and no JSON response is expected. 
+
+[ce-13372]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/13372

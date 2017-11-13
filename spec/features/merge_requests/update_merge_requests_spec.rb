@@ -10,7 +10,7 @@ feature 'Multiple merge requests updating from merge_requests#index' do
     sign_in(user)
   end
 
-  context 'status', js: true do
+  context 'status', :js do
     describe 'close merge request' do
       before do
         visit project_merge_requests_path(project)
@@ -37,7 +37,7 @@ feature 'Multiple merge requests updating from merge_requests#index' do
     end
   end
 
-  context 'assignee', js: true do
+  context 'assignee', :js do
     describe 'set assignee' do
       before do
         visit project_merge_requests_path(project)
@@ -67,7 +67,7 @@ feature 'Multiple merge requests updating from merge_requests#index' do
     end
   end
 
-  context 'milestone', js: true do
+  context 'milestone', :js do
     let(:milestone)  { create(:milestone, project: project) }
 
     describe 'set milestone' do

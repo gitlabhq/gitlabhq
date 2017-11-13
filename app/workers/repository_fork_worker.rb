@@ -4,6 +4,7 @@ class RepositoryForkWorker
   include Sidekiq::Worker
   include Gitlab::ShellAdapter
   include DedicatedSidekiqQueue
+  include ProjectStartImport
 
   sidekiq_options status_expiration: StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION
 
@@ -37,7 +38,7 @@ class RepositoryForkWorker
   private
 
   def start_fork(project)
-    return true if project.import_start
+    return true if start(project)
 
     Rails.logger.info("Project #{project.full_path} was in inconsistent state (#{project.import_status}) while forking.")
     false

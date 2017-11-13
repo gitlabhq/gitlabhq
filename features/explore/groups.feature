@@ -3,6 +3,7 @@ Feature: Explore Groups
   Background:
     Given group "TestGroup" has private project "Enterprise"
 
+  @javascript
   Scenario: I should see group with private and internal projects as user
     Given group "TestGroup" has internal project "Internal"
     When I sign in as a user
@@ -10,6 +11,7 @@ Feature: Explore Groups
     Then I should see project "Internal" items
     And I should not see project "Enterprise" items
 
+  @javascript
   Scenario: I should see group issues for internal project as user
     Given group "TestGroup" has internal project "Internal"
     When I sign in as a user
@@ -17,6 +19,7 @@ Feature: Explore Groups
     Then I should see project "Internal" items
     And I should not see project "Enterprise" items
 
+  @javascript
   Scenario: I should see group merge requests for internal project as user
     Given group "TestGroup" has internal project "Internal"
     When I sign in as a user
@@ -24,6 +27,7 @@ Feature: Explore Groups
     Then I should see project "Internal" items
     And I should not see project "Enterprise" items
 
+  @javascript
   Scenario: I should see group with private, internal and public projects as visitor
     Given group "TestGroup" has internal project "Internal"
     Given group "TestGroup" has public project "Community"
@@ -32,6 +36,7 @@ Feature: Explore Groups
     And I should not see project "Internal" items
     And I should not see project "Enterprise" items
 
+  @javascript
   Scenario: I should see group issues for public project as visitor
     Given group "TestGroup" has internal project "Internal"
     Given group "TestGroup" has public project "Community"
@@ -40,6 +45,7 @@ Feature: Explore Groups
     And I should not see project "Internal" items
     And I should not see project "Enterprise" items
 
+  @javascript
   Scenario: I should see group merge requests for public project as visitor
     Given group "TestGroup" has internal project "Internal"
     Given group "TestGroup" has public project "Community"
@@ -48,6 +54,7 @@ Feature: Explore Groups
     And I should not see project "Internal" items
     And I should not see project "Enterprise" items
 
+  @javascript
   Scenario: I should see group with private, internal and public projects as user
     Given group "TestGroup" has internal project "Internal"
     Given group "TestGroup" has public project "Community"
@@ -57,6 +64,7 @@ Feature: Explore Groups
     And I should see project "Internal" items
     And I should not see project "Enterprise" items
 
+  @javascript
   Scenario: I should see group issues for internal and public projects as user
     Given group "TestGroup" has internal project "Internal"
     Given group "TestGroup" has public project "Community"
@@ -66,6 +74,7 @@ Feature: Explore Groups
     And I should see project "Internal" items
     And I should not see project "Enterprise" items
 
+  @javascript
   Scenario: I should see group merge requests for internal and public projects as user
     Given group "TestGroup" has internal project "Internal"
     Given group "TestGroup" has public project "Community"
@@ -75,17 +84,20 @@ Feature: Explore Groups
     And I should see project "Internal" items
     And I should not see project "Enterprise" items
 
+  @javascript
   Scenario: I should see group with public project in public groups area
     Given group "TestGroup" has public project "Community"
     When I visit the public groups area
     Then I should see group "TestGroup"
 
+  @javascript
   Scenario: I should see group with public project in public groups area as user
     Given group "TestGroup" has public project "Community"
     When I sign in as a user
     And I visit the public groups area
     Then I should see group "TestGroup"
 
+  @javascript
   Scenario: I should see group with internal project in public groups area as user
     Given group "TestGroup" has internal project "Internal"
     When I sign in as a user

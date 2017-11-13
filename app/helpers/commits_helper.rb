@@ -60,23 +60,33 @@ module CommitsHelper
     branches.include?(project.default_branch) ? branches.delete(project.default_branch) : branches.pop
   end
 
+  # Returns a link formatted as a commit branch link
+  def commit_branch_link(url, text)
+    link_to(url, class: 'label label-gray ref-name branch-link') do
+      icon('code-fork') + " #{text}"
+    end
+  end
+
   # Returns the sorted alphabetically links to branches, separated by a comma
   def commit_branches_links(project, branches)
     branches.sort.map do |branch|
-      link_to(project_ref_path(project, branch), class: "label label-gray ref-name") do
-        icon('code-fork') + " #{branch}"
-      end
-    end.join(" ").html_safe
+      commit_branch_link(project_ref_path(project, branch), branch)
+    end.join(' ').html_safe
+  end
+
+  # Returns a link formatted as a commit tag link
+  def commit_tag_link(url, text)
+    link_to(url, class: 'label label-gray ref-name') do
+      icon('tag') + " #{text}"
+    end
   end
 
   # Returns the sorted links to tags, separated by a comma
   def commit_tags_links(project, tags)
     sorted = VersionSorter.rsort(tags)
     sorted.map do |tag|
-      link_to(project_ref_path(project, tag), class: "label label-gray ref-name") do
-        icon('tag') + " #{tag}"
-      end
-    end.join(" ").html_safe
+      commit_tag_link(project_ref_path(project, tag), tag)
+    end.join(' ').html_safe
   end
 
   def link_to_browse_code(project, commit)
@@ -137,7 +147,7 @@ module CommitsHelper
 
     text =
       if options[:avatar]
-        %Q{<span class="commit-#{options[:source]}-name">#{person_name}</span>}
+        content_tag(:span, person_name, class: "commit-#{options[:source]}-name")
       else
         person_name
       end
@@ -148,9 +158,9 @@ module CommitsHelper
     }
 
     if user.nil?
-      mail_to(source_email, text.html_safe, options)
+      mail_to(source_email, text, options)
     else
-      link_to(text.html_safe, user_path(user), options)
+      link_to(text, user_path(user), options)
     end
   end
 
@@ -176,13 +186,15 @@ module CommitsHelper
     end
   end
 
-  def view_file_button(commit_sha, diff_new_path, project)
+  def view_file_button(commit_sha, diff_new_path, project, replaced: false)
+    title = replaced ? _('View replaced file @ ') : _('View file @ ')
+
     link_to(
       project_blob_path(project,
                                   tree_join(commit_sha, diff_new_path)),
       class: 'btn view-file js-view-file'
     ) do
-      raw('View file @ ') + content_tag(:span, Commit.truncate_sha(commit_sha),
+      raw(title) + content_tag(:span, Commit.truncate_sha(commit_sha),
                                        class: 'commit-sha')
     end
   end

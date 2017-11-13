@@ -4,12 +4,15 @@
 - page_description @user.bio
 - header_title     @user.name, user_path(@user)
 - @no_container = true
+- content_for :page_specific_javascripts do
+  = webpack_bundle_tag 'common_d3'
+  = webpack_bundle_tag 'users'
 
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, user_url(@user, format: :atom), title: "#{@user.name} activity")
 
 .user-profile
-  .cover-block.user-cover-block.layout-nav
+  .cover-block.user-cover-block.top-area
     .cover-controls
       - if @user == current_user
         = link_to profile_path, class: 'btn btn-gray has-tooltip', title: 'Edit profile', 'aria-label': 'Edit profile' do
@@ -99,8 +102,6 @@
             Snippets
 
   %div{ class: container_class }
-    - if @user == current_user && show_callout?('user_callout_dismissed')
-      = render 'shared/user_callout'
     .tab-content
       #activity.tab-pane
         .row-content-block.calender-block.white.second-block.hidden-xs

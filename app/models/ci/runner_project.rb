@@ -1,6 +1,6 @@
 module Ci
   class RunnerProject < ActiveRecord::Base
-    extend Ci::Model
+    extend Gitlab::Ci::Model
 
     belongs_to :runner
     belongs_to :project

@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'spec_helper'
 
 describe Gitlab::Git do
@@ -27,6 +28,14 @@ describe Gitlab::Git do
 
         expect(committer_hash).to be_nil
       end
+    end
+  end
+
+  describe '.ref_name' do
+    it 'ensure ref is a valid UTF-8 string' do
+      utf8_invalid_ref = Gitlab::Git::BRANCH_REF_PREFIX + "an_invalid_ref_\xE5"
+
+      expect(described_class.ref_name(utf8_invalid_ref)).to eq("an_invalid_ref_å")
     end
   end
 end

@@ -28,7 +28,7 @@ describe Tags::CreateService do
       it 'returns an error' do
         expect(repository).to receive(:add_tag)
           .with(user, 'v1.1.0', 'master', 'Foo')
-          .and_raise(Rugged::TagError)
+          .and_raise(Gitlab::Git::Repository::TagExistsError)
 
         response = service.execute('v1.1.0', 'master', 'Foo')
 

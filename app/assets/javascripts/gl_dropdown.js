@@ -1,6 +1,7 @@
 /* eslint-disable func-names, no-underscore-dangle, space-before-function-paren, no-var, one-var, one-var-declaration-per-line, prefer-rest-params, max-len, vars-on-top, wrap-iife, no-unused-vars, quotes, no-shadow, no-cond-assign, prefer-arrow-callback, no-return-assign, no-else-return, camelcase, comma-dangle, no-lonely-if, guard-for-in, no-restricted-syntax, consistent-return, prefer-template, no-param-reassign, no-loop-func, no-mixed-operators */
 /* global fuzzaldrinPlus */
 import _ from 'underscore';
+import fuzzaldrinPlus from 'fuzzaldrin-plus';
 import { isObject } from './lib/utils/type_utility';
 
 var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote, GitLabDropdownInput;
@@ -330,7 +331,7 @@ GitLabDropdown = (function() {
             if (_this.dropdown.find('.dropdown-toggle-page').length) {
               selector = ".dropdown-page-one " + selector;
             }
-            return $(selector);
+            return $(selector, this.instance.dropdown);
           };
         })(this),
         data: (function(_this) {
@@ -548,6 +549,7 @@ GitLabDropdown = (function() {
   GitLabDropdown.prototype.positionMenuAbove = function() {
     var $menu = this.dropdown.find('.dropdown-menu');
 
+    $menu.addClass('dropdown-open-top');
     $menu.css('top', 'initial');
     $menu.css('bottom', '100%');
   };
@@ -737,7 +739,7 @@ GitLabDropdown = (function() {
       : selectedObject.id;
     if (isInput) {
       field = $(this.el);
-    } else if (value) {
+    } else if (value != null) {
       field = this.dropdown.parent().find("input[name='" + fieldName + "'][value='" + value.toString().replace(/'/g, '\\\'') + "']");
     }
 
@@ -745,7 +747,7 @@ GitLabDropdown = (function() {
       return;
     }
 
-    if (el.hasClass(ACTIVE_CLASS)) {
+    if (el.hasClass(ACTIVE_CLASS) && value !== 0) {
       isMarking = false;
       el.removeClass(ACTIVE_CLASS);
       if (field && field.length) {
@@ -851,7 +853,7 @@ GitLabDropdown = (function() {
       if (href && href !== '#') {
         gl.utils.visitUrl(href);
       } else {
-        $el.first().trigger('click');
+        $el.trigger('click');
       }
     }
   };

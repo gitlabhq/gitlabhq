@@ -9,7 +9,7 @@ feature 'Issues > Labels bulk assignment' do
   let!(:feature)  { create(:label, project: project, title: 'feature') }
   let!(:wontfix)  { create(:label, project: project, title: 'wontfix') }
 
-  context 'as an allowed user', js: true do
+  context 'as an allowed user', :js do
     before do
       project.team << [user, :master]
 
@@ -405,7 +405,7 @@ feature 'Issues > Labels bulk assignment' do
   end
 
   def update_issues
-    click_button 'Update all'
+    find('.update-selected-issues').click
     wait_for_requests
   end
 

@@ -3,8 +3,6 @@
 
 - page_title "Issues"
 - new_issue_email = @project.new_issue_address(current_user)
-= content_for :sub_nav do
-  = render "projects/issues/head"
 
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag 'common_vue'

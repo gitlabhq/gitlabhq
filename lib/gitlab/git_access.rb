@@ -16,7 +16,9 @@ module Gitlab
       account_blocked: 'Your account has been blocked.',
       command_not_allowed: "The command you're trying to execute is not allowed.",
       upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
-      receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.'
+      receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.',
+      read_only: 'The repository is temporarily read-only. Please try again later.',
+      cannot_push_to_read_only: "You can't push code to a read-only GitLab instance."
     }.freeze
 
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }.freeze
@@ -159,6 +161,14 @@ module Gitlab
     end
 
     def check_push_access!(changes)
+      if project.repository_read_only?
+        raise UnauthorizedError, ERROR_MESSAGES[:read_only]
+      end
+
+      if Gitlab::Database.read_only?
+        raise UnauthorizedError, ERROR_MESSAGES[:cannot_push_to_read_only]
+      end
+
       if deploy_key
         check_deploy_key_push_access!
       elsif user
@@ -203,10 +213,6 @@ module Gitlab
         skip_authorization: deploy_key?,
         protocol: protocol
       ).exec
-    end
-
-    def matching_merge_request?(newrev, branch_name)
-      Checks::MatchingMergeRequest.new(newrev, branch_name, project).match?
     end
 
     def deploy_key

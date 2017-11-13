@@ -35,6 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
         propsData: {
           endpoint: pipelineTableViewEl.dataset.endpoint,
           helpPagePath: pipelineTableViewEl.dataset.helpPagePath,
+          emptyStateSvgPath: pipelineTableViewEl.dataset.emptyStateSvgPath,
+          errorStateSvgPath: pipelineTableViewEl.dataset.errorStateSvgPath,
           autoDevopsHelpPath: pipelineTableViewEl.dataset.helpAutoDevopsPath,
         },
       }).$mount();

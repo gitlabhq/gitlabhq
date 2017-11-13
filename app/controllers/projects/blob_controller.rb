@@ -41,6 +41,8 @@ class Projects::BlobController < Projects::ApplicationController
       end
 
       format.json do
+        page_title @blob.path, @ref, @project.name_with_namespace
+
         show_json
       end
     end
@@ -203,6 +205,7 @@ class Projects::BlobController < Projects::ApplicationController
     tree_path = path_segments.join('/')
 
     render json: json.merge(
+      id: @blob.id,
       path: blob.path,
       name: blob.name,
       extension: blob.extension,

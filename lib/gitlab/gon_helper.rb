@@ -20,6 +20,7 @@ module Gitlab
       gon.gitlab_url             = Gitlab.config.gitlab.url
       gon.revision               = Gitlab::REVISION
       gon.gitlab_logo            = ActionController::Base.helpers.asset_path('gitlab_logo.png')
+      gon.sprite_icons           = IconsHelper.sprite_icon_path
 
       if current_user
         gon.current_user_id = current_user.id

@@ -1,4 +1,0 @@
----
-title: Fix CI_PROJECT_PATH_SLUG slugify
-merge_request: 13350
-author: Ivan Chernov

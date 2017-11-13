@@ -3,11 +3,15 @@
     = form_for @project, url: project_pipelines_settings_path(@project) do |f|
       %fieldset.builds-feature
         .form-group
-          %p Pipelines need to have Auto DevOps enabled or have a .gitlab-ci.yml configured before you can begin using Continuous Integration and Delivery.
           %h5 Auto DevOps (Beta)
           %p
-            Auto DevOps will automatically build, test, and deploy your application based on a predefined Continious Integration and Delivery configuration.
+            Auto DevOps will automatically build, test, and deploy your application based on a predefined Continuous Integration and Delivery configuration.
+            This will happen starting with the next event (e.g.: push) that occurs to the project.
             = link_to 'Learn more about Auto DevOps', help_page_path('topics/autodevops/index.md')
+            - message = auto_devops_warning_message(@project)
+            - if message
+              %p.settings-message.text-center
+                = message.html_safe
           = f.fields_for :auto_devops_attributes, @auto_devops do |form|
             .radio
               = form.label :enabled_true do
@@ -15,26 +19,25 @@
                 %strong Enable Auto DevOps
                 %br
                 %span.descr
-                  The Auto DevOps pipeline configuration will be used when there is no .gitlab-ci.yml
-                  in the project.
+                  The Auto DevOps pipeline configuration will be used when there is no <code>.gitlab-ci.yml</code> in the project.
             .radio
               = form.label :enabled_false do
                 = form.radio_button :enabled, 'false'
                 %strong Disable Auto DevOps
                 %br
                 %span.descr
-                  A specific .gitlab-ci.yml file needs to be specified before you can begin using Continious Integration and Delivery.
+                  An explicit <code>.gitlab-ci.yml</code> needs to be specified before you can begin using Continuous Integration and Delivery.
+
             .radio
-              = form.label :enabled do
-                = form.radio_button :enabled, nil
-                %strong
-                  Instance default (status: #{current_application_settings.auto_devops_enabled?})
+              = form.label :enabled_nil do
+                = form.radio_button :enabled, ''
+                %strong Instance default (#{current_application_settings.auto_devops_enabled? ? 'enabled' : 'disabled'})
                 %br
                 %span.descr
-                  Follow the instance default to either have Auto DevOps enabled or disabled when there is no project specific .gitlab-ci.yml file specified.
+                  Follow the instance default to either have Auto DevOps enabled or disabled when there is no project specific <code>.gitlab-ci.yml</code>.
                 %br
             %p
-              Define a domain used by Auto DevOps to deploy towards, this is required for deploys to succeed.
+              You need to specify a domain if you want to use Auto Review Apps and Auto Deploy stages.
             = form.text_field :domain, class: 'form-control', placeholder: 'domain.com'
 
         %hr

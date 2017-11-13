@@ -1,14 +1,17 @@
 # GitLab-Omnibus Helm Chart
 > **Note:**
-* This Helm chart is in beta, while [additional features](https://gitlab.com/charts/charts.gitlab.io/issues/68) are being worked on.
-* GitLab is working on a [cloud native set of Charts](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) which will eventually replace these.
-* Officially supported cloud providers are Google Container Service and Azure Container Service.
+* This Helm chart is in beta, and will be deprecated by the [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md).
+* These charts have been tested on Google Container Engine and Azure Container Service. Other Kubernetes installations may work as well, if not please [open an issue](https://gitlab.com/charts/charts.gitlab.io/issues).
 
 This work is based partially on: https://github.com/lwolf/kubernetes-gitlab/. GitLab would like to thank Sergey Nuzhdin for his work.
 
+For more information on available GitLab Helm Charts, please see our [overview](index.md#chart-overview).
+
 ## Introduction
 
-This chart provides an easy way to get started with GitLab, provisioning an installation with nearly all functionality enabled. SSL is automatically provisioned as well via [Let's Encrypt](https://letsencrypt.org/).
+This chart provides an easy way to get started with GitLab, provisioning an installation with nearly all functionality enabled. SSL is automatically provisioned via [Let's Encrypt](https://letsencrypt.org/).
+
+This Helm chart is in beta, and will be deprecated by the [cloud native GitLab chart](https://gitlab.com/charts/helm.gitlab.io/blob/master/README.md) once available. Due to the difficulty in supporting upgrades, migrating will require exporting data out of this instance and importing it into the new deployment.
 
 The deployment includes:
 
@@ -19,7 +22,12 @@ The deployment includes:
 - [NGINX Ingress](https://github.com/kubernetes/charts/tree/master/stable/nginx-ingress)
 - Persistent Volume Claims for Data, Registry, Postgres, and Redis
 
-A video demonstration of GitLab utilizing this chart [is available](https://about.gitlab.com/handbook/sales/demo/).
+### Limitations
+
+* This chart is in beta, and suited for small to medium size deployments. [High Availability](https://docs.gitlab.com/ee/administration/high_availability/) and [Geo](https://docs.gitlab.com/ee/gitlab-geo/README.html) are not supported.
+* A new generation [cloud native GitLab chart](index.md#cloud-native-gitlab-chart) is in development, and will deprecate this chart. Due to the difficulty in supporting upgrades to the new architecture, migrating will require exporting data out of this instance and importing it into the new deployment. We plan to release the new chart in beta by the end of 2017.
+
+For more information on available GitLab Helm Charts, please see our [overview](index.md#chart-overview).
 
 ## Prerequisites
 
@@ -46,7 +54,7 @@ Finally, set the `baseIP` setting to this IP address when [deploying GitLab](#co
 
 #### Load Balancer IP
 
-If you do not specify a `baseIP`, an ephemeral IP will be assigned to the Load Balancer or Ingress. You can retrieve this IP by running the following command *after* deploying GitLab:
+If you do not specify a `baseIP`, an IP will be assigned to the Load Balancer or Ingress. You can retrieve this IP by running the following command *after* deploying GitLab:
 
 `kubectl get svc -w --namespace nginx-ingress nginx`
 
@@ -140,32 +148,51 @@ helm install --name gitlab --set baseDomain=gitlab.io,baseIP=1.1.1.1,gitlab=ee,g
 
 ## Updating GitLab using the Helm Chart
 
-Once your GitLab Chart is installed, configuration changes and chart updates
-should we done using `helm upgrade`
-
-```bash
-helm upgrade -f <CONFIG_VALUES_FILE> <RELEASE-NAME> gitlab/gitlab
+>**Note**: If you are upgrading from a previous version to 0.1.35 or above, you will need to change the access mode values for GitLab's storage. To do this, set the following in `values.yaml` or on the CLI:
+```
+gitlabDataAccessMode=ReadWriteMany
+gitlabRegistryAccessMode=ReadWriteMany
+gitlabConfigAccessMode=ReadWriteMany
 ```
 
-where:
+Once your GitLab Chart is installed, configuration changes and chart updates
+should be done using `helm upgrade`:
 
-- `<CONFIG_VALUES_FILE>` is the path to values file containing your custom
-  [configuration] (#configuring-and-installing-gitlab).
-- `<RELEASE-NAME>` is the name you gave the chart when installing it.
-  In the [Install section](#installing-gitlab-using-the-helm-chart) we called it `gitlab`.
+```bash
+helm upgrade -f values.yaml gitlab gitlab/gitlab-omnibus
+```
+
+## Upgrading from CE to EE using the Helm Chart
+
+If you have installed the Community Edition using this chart, upgrading to Enterprise Edition is easy.
+
+If you are using a `values.yaml` file to specify the configuration options, edit the file and set `gitlab=ee`. If you would like to run a specific version of GitLab EE, set `gitlabEEImage` to be the desired GitLab [docker image](https://hub.docker.com/r/gitlab/gitlab-ee/tags/). Then you can use `helm upgrade` to update your GitLab instance to EE:
+
+```bash
+helm upgrade -f values.yaml gitlab gitlab/gitlab-omnibus
+```
+
+You can also upgrade and specify these options via the command line:
+
+```bash
+helm upgrade gitlab --set gitlab=ee,gitlabEEImage=gitlab/gitlab-ee:9.5.5-ee.0 gitlab/gitlab-omnibus
+```
 
 ## Uninstalling GitLab using the Helm Chart
 
 To uninstall the GitLab Chart, run the following:
 
 ```bash
-helm delete <RELEASE-NAME>
+helm delete gitlab
 ```
 
-where:
+## Troubleshooting
 
-- `<RELEASE-NAME>` is the name you gave the chart when installing it.
-  In the [Install section](#installing) we called it `gitlab`.
+### Storage errors when updating `gitlab-omnibus` versions prior to 0.1.35
+
+Users upgrading `gitlab-omnibus` from a version prior to 0.1.35, may see an error like: `Error: UPGRADE FAILED: PersistentVolumeClaim "gitlab-gitlab-config-storage" is invalid: spec: Forbidden: field is immutable after creation`.
+
+This is due to a change in the access mode for GitLab storage in version 0.1.35. To successfully upgrade, the access mode flags must be set to `ReadWriteMany` as detailed in the [update section](#updating-gitlab-using-the-helm-chart).
 
 [kube-srv]: https://kubernetes.io/docs/concepts/services-networking/service/#publishing-services---service-types
 [storageclass]: https://kubernetes.io/docs/concepts/storage/persistent-volumes/#storageclasses

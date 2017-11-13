@@ -1,4 +1,4 @@
-## GitLab Core Team & GitLab Inc. Contribution Process
+## GitLab core team & GitLab Inc. contribution process
 
 ---
 
@@ -141,21 +141,29 @@ the stable branch are:
 * Fixes for security issues
 * New or updated translations (as long as they do not touch application code)
 
-During the feature freeze all merge requests that are meant to go into the upcoming
-release should have the correct milestone assigned _and_ have the label
-~"Pick into Stable" set, so that release managers can find and pick them.
-Merge requests without a milestone and this label will
-not be merged into any stable branches.
+During the feature freeze all merge requests that are meant to go into the
+upcoming release should have the correct milestone assigned _and_ the
+`Pick into X.Y` label where `X.Y` is equal to the milestone, so that release
+managers can find and pick them.
+Merge requests without this label will not be picked into the stable release.
 
-Fixes marked like this will be shipped in the next RC for that release. Once
-the final RC has been prepared ready for release on the 22nd, further fixes
-marked ~"Pick into Stable" will go into a patch for that release.
+For example, if the upcoming release is `10.2.0` you will need to set the
+`Pick into 10.2` label.
 
-If a merge request is to be picked into more than one release it will also need
-the ~"Pick into Backports" label set to remind the release manager to change
-the milestone after cherry-picking. As before, it should still have the
-~"Pick into Stable" label and the milestone of the highest release it will be
-picked into.
+Fixes marked like this will be shipped in the next RC (before the 22nd), or the
+next patch release.
+
+If a merge request is to be picked into more than one release it will need one
+`Pick into X.Y` label per release where the merge request should be back-ported
+to.
+
+For example, if the current patch release is `10.1.1` and a regression fix needs
+to be backported down to the `9.5` release, you will need to assign it the
+`10.1` milestone and the following labels:
+
+- `Pick into 10.1`
+- `Pick into 10.0`
+- `Pick into 9.5`
 
 ### Asking for an exception
 
@@ -196,6 +204,11 @@ reported in a release before its 'official' release date on the 22nd of the
 month. When we say 'the most recent monthly release', this can refer to either
 the version currently running on GitLab.com, or the most recent version
 available in the package repositories.
+
+A regression issue should be labeled with the appropriate [subject label](../CONTRIBUTING.md#subject-labels-wiki-container-registry-ldap-api-etc)
+and [team label](../CONTRIBUTING.md#team-labels-ci-discussion-edge-platform-etc),
+just like any other issue, to help GitLab team members focus on issues that are
+relevant to [their area of responsibility](https://about.gitlab.com/handbook/engineering/workflow/#choosing-something-to-work-on).
 
 ## Release retrospective and kickoff
 

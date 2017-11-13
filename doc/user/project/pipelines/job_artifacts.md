@@ -50,6 +50,11 @@ For more examples on artifacts, follow the [artifacts reference in
 With GitLab 9.2, PDFs, images, videos and other formats can be previewed
 directly in the job artifacts browser without the need to download them.
 
+>**Note:**
+With [GitLab 10.1][ce-14399], HTML files in a public project can be previewed
+directly in a new tab without the need to download them when
+[GitLab Pages](../../../administration/pages/index.md) is enabled
+
 After a job finishes, if you visit the job's specific page, there are three
 buttons. You can download the artifacts archive or browse its contents, whereas
 the **Keep** button appears only if you have set an [expiry date] to the
@@ -64,7 +69,9 @@ archive. If your artifacts contained directories, then you are also able to
 browse inside them.
 
 Below you can see how browsing looks like. In this case we have browsed inside
-the archive and at this point there is one directory and one HTML file.
+the archive and at this point there is one directory, a couple files, and
+one HTML file that you can view directly online when
+[GitLab Pages](../../../administration/pages/index.md) is enabled (opens in a new tab).
 
 ![Job artifacts browser](img/job_artifacts_browser.png)
 
@@ -158,3 +165,4 @@ information in the UI.
 
 
 [expiry date]: ../../../ci/yaml/README.md#artifacts-expire_in
+[ce-14399]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14399

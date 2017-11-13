@@ -1,6 +1,0 @@
----
-title: disabling notifications globally now properly turns off group/project added
-  emails
-merge_request: 13325
-author: @jneen
-type: fixed

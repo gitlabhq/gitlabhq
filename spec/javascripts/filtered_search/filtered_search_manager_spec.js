@@ -396,6 +396,25 @@ describe('Filtered Search Manager', () => {
     });
   });
 
+  describe('Clearing search', () => {
+    beforeEach(() => {
+      initializeManager();
+    });
+
+    it('Clicking the "x" clear button, clears the input', () => {
+      const inputValue = 'label:~bug ';
+      manager.filteredSearchInput.value = inputValue;
+      manager.filteredSearchInput.dispatchEvent(new Event('input'));
+
+      expect(gl.DropdownUtils.getSearchQuery()).toEqual(inputValue);
+
+      manager.clearSearchButton.click();
+
+      expect(manager.filteredSearchInput.value).toEqual('');
+      expect(gl.DropdownUtils.getSearchQuery()).toEqual('');
+    });
+  });
+
   describe('toggleInputContainerFocus', () => {
     beforeEach(() => {
       initializeManager();
@@ -409,6 +428,28 @@ describe('Filtered Search Manager', () => {
     it('toggles on blur', () => {
       input.blur();
       expect(document.querySelector('.filtered-search-box').classList.contains('focus')).toEqual(false);
+    });
+  });
+
+  describe('getAllParams', () => {
+    beforeEach(() => {
+      this.paramsArr = ['key=value', 'otherkey=othervalue'];
+
+      initializeManager();
+    });
+
+    it('correctly modifies params when custom modifier is passed', () => {
+      const modifedParams = manager.getAllParams.call({
+        modifyUrlParams: paramsArr => paramsArr.reverse(),
+      }, [].concat(this.paramsArr));
+
+      expect(modifedParams[0]).toBe(this.paramsArr[1]);
+    });
+
+    it('does not modify params when no custom modifier is passed', () => {
+      const modifedParams = manager.getAllParams.call({}, this.paramsArr);
+
+      expect(modifedParams[1]).toBe(this.paramsArr[1]);
     });
   });
 });

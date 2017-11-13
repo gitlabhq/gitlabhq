@@ -26,6 +26,7 @@ var config = {
   },
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
+    account:              './profile/account/index.js',
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
     blob:                 './blob_edit/blob_bundle.js',
     boards:               './boards/boards_bundle.js',
@@ -45,6 +46,7 @@ var config = {
     group:                './group.js',
     groups:               './groups/index.js',
     groups_list:          './groups_list.js',
+    help:                 './help/help.js',
     how_to_merge:         './how_to_merge.js',
     issue_show:           './issue_show/index.js',
     integrations:         './integrations',
@@ -67,6 +69,7 @@ var config = {
     prometheus_metrics:   './prometheus_metrics',
     protected_branches:   './protected_branches',
     protected_tags:       './protected_tags',
+    registry_list:        './registry/index.js',
     repo:                 './repo/index.js',
     sidebar:              './sidebar/sidebar_bundle.js',
     schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
@@ -81,6 +84,7 @@ var config = {
     vue_merge_request_widget: './vue_merge_request_widget/index.js',
     test:                 './test.js',
     two_factor_auth:      './two_factor_auth.js',
+    users:                './users/index.js',
     performance_bar:      './performance_bar.js',
     webpack_runtime:      './webpack.js',
   },
@@ -119,10 +123,6 @@ var config = {
         options: {
           name: '[name].[hash].[ext]',
         }
-      },
-      {
-        test: /locale\/\w+\/(.*)\.js$/,
-        loader: 'exports-loader?locales',
       },
       {
         test: /monaco-editor\/\w+\/vs\/loader\.js$/,
@@ -199,6 +199,7 @@ var config = {
         'pdf_viewer',
         'pipelines',
         'pipelines_details',
+        'registry_list',
         'repo',
         'schedule_form',
         'schedules_index',
@@ -215,13 +216,15 @@ var config = {
       name: 'common_d3',
       chunks: [
         'graphs',
+        'graphs_show',
         'monitoring',
+        'users',
       ],
     }),
 
     // create cacheable common library bundles
     new webpack.optimize.CommonsChunkPlugin({
-      names: ['main', 'locale', 'common', 'webpack_runtime'],
+      names: ['main', 'common', 'webpack_runtime'],
     }),
 
     // enable scope hoisting
@@ -233,7 +236,7 @@ var config = {
         from: path.join(ROOT_PATH, `node_modules/monaco-editor/${IS_PRODUCTION ? 'min' : 'dev'}/vs`),
         to: 'monaco-editor/vs',
         transform: function(content, path) {
-          if (/\.js$/.test(path) && !/worker/i.test(path)) {
+          if (/\.js$/.test(path) && !/worker/i.test(path) && !/typescript/i.test(path)) {
             return (
               '(function(){\n' +
               'var define = this.define, require = this.require;\n' +

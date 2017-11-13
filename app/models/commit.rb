@@ -25,8 +25,8 @@ class Commit
   DIFF_HARD_LIMIT_FILES = 1000
   DIFF_HARD_LIMIT_LINES = 50000
 
-  # The SHA can be between 7 and 40 hex characters.
-  COMMIT_SHA_PATTERN = '\h{7,40}'.freeze
+  MIN_SHA_LENGTH = 7
+  COMMIT_SHA_PATTERN = /\h{#{MIN_SHA_LENGTH},40}/.freeze
 
   def banzai_render_context(field)
     context = { pipeline: :single_line, project: self.project }
@@ -53,7 +53,7 @@ class Commit
 
     # Truncate sha to 8 characters
     def truncate_sha(sha)
-      sha[0..7]
+      sha[0..MIN_SHA_LENGTH]
     end
 
     def max_diff_options
@@ -100,7 +100,7 @@ class Commit
   def self.reference_pattern
     @reference_pattern ||= %r{
       (?:#{Project.reference_pattern}#{reference_prefix})?
-      (?<commit>\h{7,40})
+      (?<commit>#{COMMIT_SHA_PATTERN})
     }x
   end
 
@@ -216,9 +216,8 @@ class Commit
     @raw.respond_to?(method, include_private) || super
   end
 
-  # Truncate sha to 8 characters
   def short_id
-    @raw.short_id(7)
+    @raw.short_id(MIN_SHA_LENGTH)
   end
 
   def diff_refs

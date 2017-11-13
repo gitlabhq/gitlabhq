@@ -48,7 +48,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     ProjectsFinder
       .new(params: finder_params, current_user: current_user)
       .execute
-      .includes(:route, :creator, namespace: :route)
+      .includes(:route, :creator, namespace: [:route, :owner])
   end
 
   def load_events
@@ -57,5 +57,7 @@ class Dashboard::ProjectsController < Dashboard::ApplicationController
     @events = EventCollection
       .new(projects, offset: params[:offset].to_i, filter: event_filter)
       .to_a
+
+    Events::RenderService.new(current_user).execute(@events, atom_request: request.format.atom?)
   end
 end

@@ -1,6 +1,6 @@
 module Ci
   class Variable < ActiveRecord::Base
-    extend Ci::Model
+    extend Gitlab::Ci::Model
     include HasVariable
     include Presentable
 

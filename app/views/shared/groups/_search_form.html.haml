@@ -1,2 +1,2 @@
-= form_tag request.path, method: :get, class: 'group-filter-form', id: 'group-filter-form' do |f|
-  = search_field_tag :filter_groups, params[:filter_groups], placeholder: 'Filter by name...', class: 'group-filter-form-field form-control input-short js-groups-list-filter', spellcheck: false, id: 'group-filter-form-field', tabindex: "2"
+= form_tag request.path, method: :get, class: 'group-filter-form append-right-10', id: 'group-filter-form' do |f|
+  = search_field_tag :filter, params[:filter], placeholder: s_('GroupsTree|Filter by name...'), class: 'group-filter-form-field form-control input-short js-groups-list-filter', spellcheck: false, id: 'group-filter-form-field', tabindex: "2"
