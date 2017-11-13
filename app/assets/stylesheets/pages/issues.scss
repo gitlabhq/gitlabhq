@@ -267,11 +267,11 @@ ul.related-merge-requests > li {
   }
 
   li.divider {
-    margin: 8px 10px 8px 10px;
+    margin: 8px 10px;
   }
 
   li:not(.divider) {
-    padding: 8px 10px 8px 10px;
+    padding: 8px 10px;
 
     &:last-child {
       padding-bottom: 8px;
