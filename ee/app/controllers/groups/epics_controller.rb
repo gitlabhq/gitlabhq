@@ -68,7 +68,7 @@ class Groups::EpicsController < Groups::ApplicationController
   end
 
   # we need to override the default state which is opened for now because we don't have
-  # states for epics and need all as default for navigation to work correctly
+  # states for epics and need all as default for navigation to work correctly (#4017)
   def set_default_state
     params[:state] = 'all'
   end

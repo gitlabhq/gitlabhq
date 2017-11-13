@@ -31,6 +31,8 @@ module EE
       end
 
       rule { auditor }.enable :read_group
+      rule { admin }.enable :read_epic
+      rule { has_projects }.enable :read_epic
 
       rule { admin | (can_owners_manage_ldap & owner) }.enable :admin_ldap_group_links
 

@@ -4,7 +4,8 @@ class EpicsFinder < IssuableFinder
   end
 
   def execute
-    raise ArgumentError, 'group_id argument is missing' unless group
+    raise ArgumentError, 'group_id argument is missing' unless params[:group_id]
+    return [] unless group
 
     items = init_collection
     items = by_created_at(items)
@@ -19,7 +20,7 @@ class EpicsFinder < IssuableFinder
     execute.count
   end
 
-  # we don't have states for epics for now this method
+  # we don't have states for epics for now this method (#4017)
   def count_by_state
     {
       all: row_count
