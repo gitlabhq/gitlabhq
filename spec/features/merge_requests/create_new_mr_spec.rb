@@ -89,7 +89,6 @@ feature 'Create New Merge Request', :js do
     expect(target_items.count).to be > 1
   end
 
-<<<<<<< HEAD
   context 'when approvals are disabled for the target project' do
     it 'does not show approval settings' do
       visit project_new_merge_request_path(project, merge_request: { target_branch: 'master', source_branch: 'feature_conflict' })
@@ -119,8 +118,6 @@ feature 'Create New Merge Request', :js do
     end
   end
 
-=======
->>>>>>> ce-com/master
   context 'when target project cannot be viewed by the current user' do
     it 'does not leak the private project name & namespace' do
       private_project = create(:project, :private, :repository)
