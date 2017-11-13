@@ -3,13 +3,7 @@ import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import notify from '~/lib/utils/notify';
 import mockData from './mock_data';
-
-const createComponent = () => {
-  delete mrWidgetOptions.el; // Prevent component mounting
-  gl.mrWidgetData = mockData;
-  const Component = Vue.extend(mrWidgetOptions);
-  return new Component();
-};
+import mountComponent from '../helpers/vue_mount_component_helper';
 
 const returnPromise = data => new Promise((resolve) => {
   resolve({
@@ -22,9 +16,16 @@ const returnPromise = data => new Promise((resolve) => {
 
 describe('mrWidgetOptions', () => {
   let vm;
+  let MrWidgetOptions;
 
   beforeEach(() => {
-    vm = createComponent();
+    // Prevent component mounting
+    delete mrWidgetOptions.el;
+
+    MrWidgetOptions = Vue.extend(mrWidgetOptions);
+    vm = mountComponent(MrWidgetOptions, {
+      mrData: { ...mockData },
+    });
   });
 
   describe('data', () => {
@@ -77,7 +78,7 @@ describe('mrWidgetOptions', () => {
       });
 
       it('should return true if there is relatedLinks in MR', () => {
-        vm.mr.relatedLinks = {};
+        Vue.set(vm.mr, 'relatedLinks', {});
         expect(vm.shouldRenderRelatedLinks).toBeTruthy();
       });
     });

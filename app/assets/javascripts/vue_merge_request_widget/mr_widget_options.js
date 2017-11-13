@@ -61,7 +61,7 @@ export default {
       return this.mr.hasCI;
     },
     shouldRenderRelatedLinks() {
-      return this.mr.relatedLinks;
+      return !!this.mr.relatedLinks;
     },
     shouldRenderDeployments() {
       return this.mr.deployments.length;
