@@ -27,12 +27,9 @@ fi
 
 cp config/database.yml.$GITLAB_DATABASE config/database.yml
 
-<<<<<<< HEAD
 # EE-only
 cp config/database_geo.yml.$GITLAB_DATABASE config/database_geo.yml
 
-=======
->>>>>>> ce-com/master
 # Set user to a non-superuser to ensure we test permissions
 sed -i 's/username: root/username: gitlab/g' config/database.yml
 
