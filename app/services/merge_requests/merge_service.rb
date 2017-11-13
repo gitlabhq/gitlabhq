@@ -6,6 +6,8 @@ module MergeRequests
   # Executed when you do merge via GitLab UI
   #
   class MergeService < MergeRequests::BaseService
+    prepend EE::MergeRequests::MergeService
+
     MergeError = Class.new(StandardError)
 
     attr_reader :merge_request, :source
@@ -18,17 +20,7 @@ module MergeRequests
 
       @merge_request = merge_request
 
-      unless @merge_request.mergeable?
-        return handle_merge_error(log_message: 'Merge request is not mergeable', save_message_on_model: true)
-      end
-
-      check_size_limit
-
-      @source = find_merge_source
-
-      unless @source
-        return handle_merge_error(log_message: 'No source for merge', save_message_on_model: true)
-      end
+      error_check!
 
       merge_request.in_locked_state do
         if commit
@@ -64,6 +56,19 @@ module MergeRequests
     end
 
     private
+
+    def error_check!
+      error =
+        if @merge_request.should_be_rebased?
+          'Only fast-forward merge is allowed for your project. Please update your source branch'
+        elsif !@merge_request.mergeable?
+          'Merge request is not mergeable'
+        elsif !source
+          'No source for merge'
+        end
+
+      raise MergeError, error if error
+    end
 
     def commit
       message = params[:commit_message] || merge_request.merge_commit_message
@@ -115,25 +120,8 @@ module MergeRequests
       merge_request.to_reference(full: true)
     end
 
-    def check_size_limit
-      if @merge_request.target_project.above_size_limit?
-        message = Gitlab::RepositorySizeError.new(@merge_request.target_project).merge_error
-
-        raise MergeError, message
-      end
-    end
-
-    def find_merge_source
-      return merge_request.diff_head_sha unless merge_request.squash
-
-      squash_result = SquashService.new(project, current_user, params).execute(merge_request)
-
-      case squash_result[:status]
-      when :success
-        squash_result[:squash_sha]
-      when :error
-        raise MergeError, squash_result[:message]
-      end
+    def source
+      @source ||= @merge_request.diff_head_sha
     end
   end
 end

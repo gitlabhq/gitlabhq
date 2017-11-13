@@ -1,6 +1,7 @@
 . scripts/utils.sh
 
 export SETUP_DB=${SETUP_DB:-true}
+export CREATE_DB_USER=${CREATE_DB_USER:-$SETUP_DB}
 export USE_BUNDLE_INSTALL=${USE_BUNDLE_INSTALL:-true}
 export BUNDLE_INSTALL_FLAGS="--without production --jobs $(nproc) --path vendor --retry 3 --quiet"
 
@@ -29,6 +30,9 @@ cp config/database.yml.$GITLAB_DATABASE config/database.yml
 # EE-only
 cp config/database_geo.yml.$GITLAB_DATABASE config/database_geo.yml
 
+# Set user to a non-superuser to ensure we test permissions
+sed -i 's/username: root/username: gitlab/g' config/database.yml
+
 if [ "$GITLAB_DATABASE" = 'postgresql' ]; then
     sed -i 's/localhost/postgres/g' config/database.yml
 
@@ -52,6 +56,16 @@ sed -i 's/localhost/redis/g' config/redis.queues.yml
 
 cp config/redis.shared_state.yml.example config/redis.shared_state.yml
 sed -i 's/localhost/redis/g' config/redis.shared_state.yml
+
+# Some tasks (e.g. db:seed_fu) need to have a properly-configured database
+# user but not necessarily a full schema loaded
+if [ "$CREATE_DB_USER" != "false" ]; then
+    if [ "$GITLAB_DATABASE" = 'postgresql' ]; then
+        . scripts/create_postgres_user.sh
+    else
+        . scripts/create_mysql_user.sh
+    fi
+fi
 
 if [ "$SETUP_DB" != "false" ]; then
     bundle exec rake db:drop db:create db:schema:load db:migrate

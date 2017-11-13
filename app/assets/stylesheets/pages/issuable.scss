@@ -284,8 +284,13 @@
       font-weight: $gl-font-weight-normal;
     }
 
-    .no-value {
+    .no-value,
+    .btn-secondary-hover-link {
       color: $gl-text-color-secondary;
+    }
+
+    .btn-secondary-hover-link:hover {
+      color: $gl-link-color;
     }
 
     .sidebar-collapsed-icon {
@@ -353,7 +358,8 @@
     .gutter-toggle {
       width: 100%;
       margin-left: 0;
-      padding-left: 25px;
+      padding-left: 0;
+      text-align: center;
     }
 
     .sidebar-collapsed-icon {
@@ -367,7 +373,7 @@
         fill: $issuable-sidebar-color;
       }
 
-      &:hover,
+      &:hover:not(.disabled),
       &:hover .todo-undone {
         color: $gl-text-color;
 
@@ -952,4 +958,22 @@
 
 .add-issuable-form-actions {
   margin-top: $gl-padding;
+}
+
+.right-sidebar-collapsed {
+  .sidebar-grouped-item {
+    .sidebar-collapsed-icon {
+      margin-bottom: 0;
+    }
+
+    .sidebar-collapsed-divider {
+      line-height: 5px;
+      font-size: 12px;
+      color: $theme-gray-700;
+
+      + .sidebar-collapsed-icon {
+        padding-top: 0;
+      }
+    }
+  }
 }
