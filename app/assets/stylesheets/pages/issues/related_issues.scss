@@ -34,6 +34,14 @@ $token_spacing_bottom: 0.5em;
   li .issue-info-container {
     padding-left: $gl-padding;
   }
+
+  a.issue-main-info:hover {
+    text-decoration: none;
+
+    .issue-token-title-text {
+      text-decoration: underline;
+    }
+  }
 }
 
 .related-issues-loading-icon {
