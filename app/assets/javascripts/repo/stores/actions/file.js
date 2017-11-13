@@ -47,7 +47,7 @@ export const setFileActive = ({ commit, state, getters, dispatch }, file) => {
   location.hash = '';
 };
 
-export const getFileData = ({ state, commit, dispatch }, file) => {
+export const getFileData = ({ state, commit, dispatch, getters }, file) => {
   commit(types.TOGGLE_LOADING, file);
 
   service.getFileData(file.url)
@@ -63,6 +63,8 @@ export const getFileData = ({ state, commit, dispatch }, file) => {
       commit(types.TOGGLE_FILE_OPEN, file);
       dispatch('setFileActive', file);
       commit(types.TOGGLE_LOADING, file);
+
+      dispatch('getFileHTML', getters.activeFile);
 
       pushState(file.url);
     })
@@ -107,4 +109,30 @@ export const createTempFile = ({ state, commit, dispatch }, { tree, name, conten
   }
 
   return Promise.resolve(file);
+};
+
+export const getFileHTML = ({ commit, getters }, file) => {
+  const currentViewer = file[file.currentViewer];
+
+  if (currentViewer.html !== '') return;
+
+  commit(types.TOGGLE_FILE_VIEWER_LOADING, getters.activeFileCurrentViewer);
+
+  service.getFileHTML(currentViewer.path)
+    .then(res => res.json())
+    .then((data) => {
+      commit(types.TOGGLE_FILE_VIEWER_LOADING, getters.activeFileCurrentViewer);
+      commit(types.SET_FILE_VIEWER_DATA, { file, data });
+    })
+    .catch(() => {
+      commit(types.TOGGLE_FILE_VIEWER_LOADING, getters.activeFileCurrentViewer);
+      flash('Error fetching file viewer. Please try again.');
+    });
+};
+
+export const changeFileViewer = ({ commit, dispatch }, { file, type }) => {
+  if (file.currentViewer === type) return;
+
+  commit(types.SET_CURRENT_FILE_VIEWER, { file, type });
+  dispatch('getFileHTML', file);
 };

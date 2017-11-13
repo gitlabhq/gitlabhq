@@ -18,6 +18,26 @@ export const changedFiles = state => state.openFiles.filter(file => file.changed
 
 export const activeFile = state => state.openFiles.find(file => file.active);
 
+export const activeFileCurrentViewer = (state) => {
+  const file = activeFile(state);
+
+  return file[file.currentViewer];
+};
+
+export const activeFileHTML = (state) => {
+  const viewier = activeFileCurrentViewer(state);
+
+  return viewier.html;
+};
+
+export const canActiveFileSwitchViewer = (state) => {
+  const file = activeFile(state);
+
+  if (file.binary) return false;
+
+  return file.rich.path !== '' && file.simple.path !== '';
+};
+
 export const activeFileExtension = (state) => {
   const file = activeFile(state);
   return file ? `.${file.path.split('.').pop()}` : '';

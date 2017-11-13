@@ -6,6 +6,8 @@ export default {
   computed: {
     ...mapGetters([
       'activeFile',
+      'activeFileCurrentViewer',
+      'activeFileHTML',
     ]),
     renderErrorTooLarge() {
       return this.activeFile.renderError === 'too_large';
@@ -35,7 +37,23 @@ export default {
 <div class="blob-viewer-container">
   <div
     v-if="!activeFile.renderError"
-    v-html="activeFile.html">
+  >
+    <div
+      v-if="!activeFileCurrentViewer.loading"
+      v-html="activeFileHTML"
+    >
+    </div>
+    <div
+      v-else
+      class="blob-viewer-container text-center prepend-top-default append-bottom-default"
+    >
+      <i
+        aria-hidden="true"
+        aria-label="Loading content..."
+        class="fa fa-spinner fa-spin fa-2x"
+      >
+      </i>
+    </div>
   </div>
   <div
     v-else-if="activeFile.tempFile"

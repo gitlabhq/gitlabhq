@@ -25,8 +25,20 @@ export default {
       permalink: data.permalink,
       rawPath: data.raw_path,
       binary: data.binary,
-      html: data.html,
       renderError: data.render_error,
+      currentViewer: data.rich_viewer ? 'rich' : 'simple',
+    });
+
+    if (data.rich_viewer) {
+      Object.assign(file.rich, {
+        path: data.rich_viewer.path,
+        icon: data.rich_viewer.switcher_icon,
+      });
+    }
+
+    Object.assign(file.simple, {
+      path: data.simple_viewer.path,
+      icon: data.simple_viewer.switcher_icon,
     });
   },
   [types.SET_FILE_RAW_DATA](state, { file, raw }) {
@@ -50,5 +62,20 @@ export default {
   },
   [types.CREATE_TMP_FILE](state, { file, parent }) {
     parent.tree.push(file);
+  },
+  [types.SET_FILE_VIEWER_DATA](state, { file, data }) {
+    Object.assign(file[file.currentViewer], {
+      html: data.html,
+    });
+  },
+  [types.SET_CURRENT_FILE_VIEWER](state, { file, type }) {
+    Object.assign(file, {
+      currentViewer: type,
+    });
+  },
+  [types.TOGGLE_FILE_VIEWER_LOADING](state, viewer) {
+    Object.assign(viewer, {
+      loading: !viewer.loading,
+    });
   },
 };

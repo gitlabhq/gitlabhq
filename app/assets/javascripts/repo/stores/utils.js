@@ -1,3 +1,10 @@
+export const viewerDataStructure = () => ({
+  loading: false,
+  path: '',
+  icon: '',
+  html: '',
+});
+
 export const dataStructure = () => ({
   id: '',
   key: '',
@@ -25,12 +32,14 @@ export const dataStructure = () => ({
   permalink: '',
   rawPath: '',
   binary: false,
-  html: '',
   raw: '',
   content: '',
   parentTreeUrl: '',
   renderError: false,
   base64: false,
+  currentViewer: 'rich',
+  rich: viewerDataStructure(),
+  simple: viewerDataStructure(),
 });
 
 export const decorateData = (entity) => {
