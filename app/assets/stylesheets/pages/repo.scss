@@ -93,15 +93,14 @@
       flex: 1;
       overflow: auto;
 
-      > div,
+      .blob-full-height,
       .file-content:not(.wiki) {
         display: flex;
       }
 
-      > div,
+      .blob-full-height,
       .file-content,
       .blob-viewer,
-      .line-number,
       .blob-content,
       .code {
         min-height: 100%;

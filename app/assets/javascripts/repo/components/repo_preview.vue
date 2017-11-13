@@ -37,10 +37,12 @@ export default {
 <div class="blob-viewer-container">
   <div
     v-if="!activeFile.renderError"
+    class="blob-full-height"
   >
     <div
       v-if="!activeFileCurrentViewer.loading"
       v-html="activeFileHTML"
+      class="blob-full-height"
     >
     </div>
     <div

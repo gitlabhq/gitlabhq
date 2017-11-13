@@ -1,6 +1,6 @@
 <script>
 import { mapGetters } from 'vuex';
-import tooltip from '../../vue_shared/directives/tooltip.js';
+import tooltip from '../../vue_shared/directives/tooltip';
 import viewerSwitch from './blob_viewer_switch.vue';
 
 export default {
