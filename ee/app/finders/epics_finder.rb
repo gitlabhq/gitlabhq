@@ -4,8 +4,7 @@ class EpicsFinder < IssuableFinder
   end
 
   def execute
-    raise ArgumentError, 'group_id argument is missing' unless params[:group_id]
-    return [] unless group
+    raise ArgumentError, 'group_id argument is missing' unless group
 
     items = init_collection
     items = by_created_at(items)
