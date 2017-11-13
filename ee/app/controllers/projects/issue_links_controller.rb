@@ -1,7 +1,9 @@
 module Projects
   class IssueLinksController < Projects::ApplicationController
     include IssuableLinks
+
     before_action :authorize_admin_issue_link!, only: [:create, :destroy]
+    before_action :authorize_issue_link_association!, only: :destroy
 
     private
 
@@ -11,6 +13,10 @@ module Projects
 
     def authorize_admin_issue_link!
       render_403 unless can?(current_user, :admin_issue_link, @project)
+    end
+
+    def authorize_issue_link_association!
+      render_404 if link.target != issue && link.source != issue
     end
 
     def issue
@@ -25,8 +31,11 @@ module Projects
     end
 
     def destroy_service
-      issue_link = IssueLink.find(params[:id])
-      IssueLinks::DestroyService.new(issue_link, current_user)
+      IssueLinks::DestroyService.new(link, current_user)
+    end
+
+    def link
+      @link ||= IssueLink.find(params[:id])
     end
   end
 end

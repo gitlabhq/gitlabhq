@@ -3,6 +3,7 @@ class Groups::EpicIssuesController < Groups::EpicsController
 
   skip_before_action :authorize_destroy_issuable!
   before_action :authorize_admin_epic!, only: [:create, :destroy]
+  before_action :authorize_issue_link_association!, only: :destroy
 
   private
 
@@ -11,8 +12,7 @@ class Groups::EpicIssuesController < Groups::EpicsController
   end
 
   def destroy_service
-    epic_issue = EpicIssue.find(params[:id])
-    EpicIssues::DestroyService.new(epic_issue, current_user)
+    EpicIssues::DestroyService.new(link, current_user)
   end
 
   def issues
@@ -21,5 +21,13 @@ class Groups::EpicIssuesController < Groups::EpicsController
 
   def authorize_admin_epic!
     render_403 unless can?(current_user, :admin_epic, epic)
+  end
+
+  def authorize_issue_link_association!
+    render_404 if link.epic != epic
+  end
+
+  def link
+    @link ||= EpicIssue.find(params[:id])
   end
 end

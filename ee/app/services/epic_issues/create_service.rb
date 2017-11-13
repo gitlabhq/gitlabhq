@@ -5,7 +5,7 @@ module EpicIssues
     def relate_issues(referenced_issue)
       link = EpicIssue.find_or_initialize_by(issue: referenced_issue)
       link.epic = issuable
-      link.save
+      link.save!
     end
 
     def create_notes?
@@ -17,7 +17,9 @@ module EpicIssues
     end
 
     def linkable_issues(issues)
-      issues.select { |issue| can?(current_user, :admin_epic_issue, issue) && issue.project.group == issuable.group }
+      return [] unless  can?(current_user, :admin_epic, issuable.group)
+
+      issues.select { |issue| issue.project.group == issuable.group }
     end
   end
 end

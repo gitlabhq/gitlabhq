@@ -112,6 +112,28 @@ describe Groups::EpicIssuesController do
       end
     end
 
+    context 'when the epic from the association does not equal epic from the path' do
+      subject do
+        delete :destroy, group_id: group, epic_id: another_epic.to_param, id: epic_issue.id
+      end
+
+      let(:another_epic) { create(:epic, group: group) }
+
+      before do
+        group.add_developer(user)
+      end
+
+      it 'returns status 404' do
+        subject
+
+        expect(response.status).to eq(404)
+      end
+
+      it 'does not destroy the link' do
+        expect { subject }.not_to change { EpicIssue.count }.from(1)
+      end
+    end
+
     context 'when the epic_issue record does not exixst' do
       it 'returns status 404' do
         delete :destroy, group_id: group, epic_id: epic.to_param, id: 9999

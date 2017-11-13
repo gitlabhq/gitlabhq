@@ -5,16 +5,10 @@ class CreateEpicIssuesTable < ActiveRecord::Migration
 
   disable_ddl_transaction!
 
-  def up
+  def change
     create_table :epic_issues do |t|
-      t.references :epic, null: false, index: true, foreign_key: true
-      t.references :issue, null: false, index: { unique: true }, foreign_key: true
-
-      t.timestamps_with_timezone
+      t.references :epic, null: false, index: true, foreign_key: { on_delete: :cascade }
+      t.references :issue, null: false, index: { unique: true }, foreign_key: { on_delete: :cascade }
     end
-  end
-
-  def down
-    drop_table :epic_issues
   end
 end
