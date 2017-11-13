@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20171107144726) do
-=======
 ActiveRecord::Schema.define(version: 20171106180641) do
->>>>>>> ce-com/master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -1123,12 +1119,8 @@ ActiveRecord::Schema.define(version: 20171106180641) do
     t.string "state"
     t.integer "iid"
     t.integer "updated_by_id"
-<<<<<<< HEAD
     t.integer "weight"
-    t.boolean "confidential", default: false
-=======
     t.boolean "confidential", default: false, null: false
->>>>>>> ce-com/master
     t.datetime "deleted_at"
     t.date "due_date"
     t.integer "moved_to_id"
@@ -1137,11 +1129,7 @@ ActiveRecord::Schema.define(version: 20171106180641) do
     t.text "description_html"
     t.integer "time_estimate"
     t.integer "relative_position"
-<<<<<<< HEAD
-    t.datetime "closed_at"
     t.string "service_desk_reply_to"
-=======
->>>>>>> ce-com/master
     t.integer "cached_markdown_version"
     t.datetime "last_edited_at"
     t.integer "last_edited_by_id"
