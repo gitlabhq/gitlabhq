@@ -125,8 +125,9 @@ export default {
         :is="innerComponentType"
         v-if="hasTitle"
         ref="title"
+        class="js-issue-token-title"
         :class="{
-          'js-issue-token-title issue-token-title issue-token-end': isCondensed,
+          'issue-token-title issue-token-end': isCondensed,
           'issue-title block-truncated': !isCondensed,
           'issue-token-title-standalone': !canRemove
         }">
