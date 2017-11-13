@@ -715,13 +715,16 @@
 .approvals-footer {
   display: flex;
 
-  .approvers-prefix,
-  .approvers-list {
+  .approvers-prefix {
     display: flex;
     align-items: center;
+    flex-wrap: wrap;
   }
 
   .approvers-list {
+    display: flex;
+    align-items: center;
+
     .link-to-member-avatar:not(:first-child) {
       img {
         margin-left: 0;
