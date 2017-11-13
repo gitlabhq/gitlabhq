@@ -1,0 +1,6 @@
+---
+title: Prevent error when authorizing an admin-created OAauth application without
+  a set owner
+merge_request:
+author:
+type: fixed
