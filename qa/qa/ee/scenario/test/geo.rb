@@ -2,101 +2,80 @@ module QA
   module EE
     module Scenario
       module Test
-        class Geo < QA::Scenario::Entrypoint
-          # TODO, https://gitlab.com/gitlab-org/gitlab-qa/issues/85
-          #
-          def perform(*args)
-            QA::Runtime::Scenario.define(args) do
-              attributes :geo_primary_address, :geo_primary_name
-              attributes :geo_secondary_address, :geo_secondary_name
-            end
+        module Integration
+          class Geo < QA::Scenario::Entrypoint
+            attribute :geo_primary_address, '--primary-address PRIMARY'
+            attribute :geo_primary_name, '--primary-name PRIMARY_NAME'
+            attribute :geo_secondary_address, '--secondary-address SECONDARY'
+            attribute :geo_secondary_name, '--secondary-name SECONDARY_NAME'
 
-            Geo::Primary.act do
-              add_license
-              enable_hashed_storage
-              set_replication_password
-              set_primary_node
-            end
-
-            Geo::Secondary.act { replicate_database }
-
-            Geo::Primary.act do
-              add_secondary_node
-              test_features
-            end
-
-            Geo::Secondary.act { test_backfilling }
-          end
-
-          private
-
-          class Primary
-            include QA::Scenario::Actable
-
-            def initialize
-              @address = QA::Runtime::Scenario.geo_primary_address
-              @name = QA::Runtime::Scenario.geo_primary_name
-
-              Specs::Config.perform do |specs|
-                specs.address = @address
+            def perform(**args)
+              Geo::Primary.act do
+                add_license
+                enable_hashed_storage
+                set_replication_password
+                set_primary_node
               end
-            end
 
-            def add_license
-              # TODO move ENV call to the scenario
+              Geo::Secondary.act { replicate_database }
+              Geo::Primary.act { add_secondary_node }
+
+              # Execute RSpec :geo suite
               #
-              Scenario::License::Add.perform(ENV['EE_LICENSE'])
+              # Specs::Runner.perform do |specs|
+              #   specs.rspec(tty: true, tags: %w[core])
+              # end
             end
 
-            def enable_hashed_storage
-              # TODO implement hashed storage factory
-            end
+            private
 
-            def add_secondary_node
-              # TODO implement secondary node factory
-            end
+            class Primary
+              include QA::Scenario::Actable
 
-            def set_replication_password
-              Shell::Omnibus.act do
-                gitlab_ctl 'set-replication-password', input: 'echo mypass'
+              def initialize
+                @address = QA::Runtime::Scenario.geo_primary_address
+                @name = QA::Runtime::Scenario.geo_primary_name
+              end
+
+              def add_license
+                # TODO move ENV call to the scenario
+                #
+                Scenario::License::Add.perform(ENV['EE_LICENSE'])
+              end
+
+              def enable_hashed_storage
+                # TODO implement hashed storage factory
+              end
+
+              def add_secondary_node
+                # TODO implement secondary node factory
+              end
+
+              def set_replication_password
+                Shell::Omnibus.act do
+                  gitlab_ctl 'set-replication-password', input: 'echo mypass'
+                end
+              end
+
+              def set_primary_node
+                Shell::Omnibus.act do
+                  gitlab_ctl 'set-geo-primary-node'
+                end
               end
             end
 
-            def set_primary_node
-              Shell::Omnibus.act do
-                gitlab_ctl 'set-geo-primary-node'
+            class Secondary
+              include QA::Scenario::Actable
+
+              def initialize
+                @address = QA::Runtime::Scenario.geo_secondary_address
+                @name = QA::Runtime::Scenario.geo_secondary_name
               end
-            end
 
-            def test_features
-              Specs::Runner.perform do |specs|
-                specs.rspec(tty: true, tags: %w[core])
-              end
-            end
-          end
-
-          class Secondary
-            include QA::Scenario::Actable
-
-            def initialize
-              @address = QA::Runtime::Scenario.geo_secondary_address
-              @name = QA::Runtime::Scenario.geo_secondary_name
-              @slot = @address.gsub(/\.|-/, '_')
-
-              Specs::Config.perform do |specs|
-                specs.address = @address
-              end
-            end
-
-            def replicate_database
-              Shell::Omnibus.act do
-                gitlab_ctl "replicate-geo-database --host=#{@address} --slot-name=#{@slot} --no-wait", input: 'echo mypass'
-              end
-            end
-
-            def test_backfilling
-              Specs::Runner.perform do |specs|
-                specs.rspec(tty: true, tags: %w[geo secondary])
+              def replicate_database
+                Shell::Omnibus.act do
+                  gitlab_ctl "replicate-geo-database --host=#{@address} --slot-name=#{@name} --no-wait", input: 'echo mypass'
+                end
               end
             end
           end
@@ -104,4 +83,3 @@ module QA
       end
     end
   end
-end
