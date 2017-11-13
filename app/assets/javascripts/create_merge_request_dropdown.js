@@ -39,7 +39,6 @@ export default class CreateMergeRequestDropdown {
     this.mergeRequestCreated = false;
     this.refDebounce = _.debounce((value, target) => this.getRef(value, target), 500);
     this.refsPath = this.wrapperEl.dataset.refsPath;
-    this.refs = {};
 
     // These regexps are used to replace
     // a backend generated new branch name and its source (ref)
