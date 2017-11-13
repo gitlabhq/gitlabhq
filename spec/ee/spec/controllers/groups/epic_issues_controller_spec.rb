@@ -46,7 +46,7 @@ describe Groups::EpicIssuesController do
       post :create, group_id: group, epic_id: epic.to_param, issue_references: reference
     end
 
-    context 'when user has permissions to create requested associtaion' do
+    context 'when user has permissions to create requested association' do
       before do
         group.add_developer(user)
       end
@@ -64,7 +64,7 @@ describe Groups::EpicIssuesController do
       end
     end
 
-    context 'when user does not have permissions to create requested associtaion' do
+    context 'when user does not have permissions to create requested association' do
       it 'returns correct response for the correct issue reference' do
         subject
 
@@ -134,7 +134,7 @@ describe Groups::EpicIssuesController do
       end
     end
 
-    context 'when the epic_issue record does not exixst' do
+    context 'when the epic_issue record does not exists' do
       it 'returns status 404' do
         delete :destroy, group_id: group, epic_id: epic.to_param, id: 9999
 

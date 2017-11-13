@@ -17,7 +17,7 @@ module EpicIssues
     end
 
     def linkable_issues(issues)
-      return [] unless  can?(current_user, :admin_epic, issuable.group)
+      return [] unless can?(current_user, :admin_epic, issuable.group)
 
       issues.select { |issue| issue.project.group == issuable.group }
     end

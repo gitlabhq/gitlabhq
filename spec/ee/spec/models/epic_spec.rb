@@ -40,22 +40,22 @@ describe Epic do
       ]
     end
 
-    subject { epic.issues(user) }
+    let(:result) { epic.issues(user) }
 
     it 'returns all issues if a user has access to them' do
       group.add_developer(user)
 
-      expect(subject.count).to eq(2)
-      expect(subject.map(&:id)).to match_array([issue.id, other_issue.id])
-      expect(subject.map(&:epic_issue_id)).to match_array(epic_issues.map(&:id))
+      expect(result.count).to eq(2)
+      expect(result.map(&:id)).to match_array([issue.id, other_issue.id])
+      expect(result.map(&:epic_issue_id)).to match_array(epic_issues.map(&:id))
     end
 
     it 'does not return issues user can not see' do
       project.add_developer(user)
 
-      expect(subject.count).to eq(1)
-      expect(subject.map(&:id)).to match_array([issue.id])
-      expect(subject.map(&:epic_issue_id)).to match_array([epic_issues.first.id])
+      expect(result.count).to eq(1)
+      expect(result.map(&:id)).to match_array([issue.id])
+      expect(result.map(&:epic_issue_id)).to match_array([epic_issues.first.id])
     end
   end
 end

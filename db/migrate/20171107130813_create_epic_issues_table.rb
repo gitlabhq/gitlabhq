@@ -1,6 +1,4 @@
 class CreateEpicIssuesTable < ActiveRecord::Migration
-  include Gitlab::Database::MigrationHelpers
-
   DOWNTIME = false
 
   disable_ddl_transaction!

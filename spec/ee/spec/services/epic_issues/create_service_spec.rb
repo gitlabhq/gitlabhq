@@ -59,6 +59,22 @@ describe EpicIssues::CreateService do
           subject { assign_issue([valid_reference]) }
 
           include_examples 'returns success'
+
+          it 'does not perofrm N + 1 queries' do
+            params = { issue_references: [valid_reference] }
+            control_count = ActiveRecord::QueryRecorder.new { described_class.new(epic, user, params).execute }.count
+
+            user = create(:user)
+            group = create(:group)
+            project = create(:project, group: group)
+            issues = create_list(:issue, 5, project: project)
+            epic = create(:epic, group: group)
+            group.add_developer(user)
+
+            params = { issue_references: issues.map { |i| i.to_reference(full: true) } }
+
+            expect { described_class.new(epic, user, params).execute }.not_to exceed_query_limit(control_count)
+          end
         end
 
         context 'when an issue links is given' do
