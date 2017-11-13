@@ -2,13 +2,16 @@ import utils from './utils';
 import { SELECTED_CLASS, IGNORE_CLASS, IGNORE_HIDING_CLASS } from './constants';
 
 class DropDown {
-  constructor(list) {
+  constructor(list, config = {}) {
     this.currentIndex = 0;
     this.hidden = true;
     this.list = typeof list === 'string' ? document.querySelector(list) : list;
     this.items = [];
-
     this.eventWrapper = {};
+
+    if (config.addActiveClassToDropdownButton) {
+      this.dropdownToggle = this.list.parentNode.querySelector('.js-dropdown-toggle');
+    }
 
     this.getItems();
     this.initTemplateString();
@@ -121,6 +124,8 @@ class DropDown {
     this.list.style.display = 'block';
     this.currentIndex = 0;
     this.hidden = false;
+
+    if (this.dropdownToggle) this.dropdownToggle.classList.add('active');
   }
 
   hide() {
@@ -128,6 +133,8 @@ class DropDown {
     this.list.style.display = 'none';
     this.currentIndex = 0;
     this.hidden = true;
+
+    if (this.dropdownToggle) this.dropdownToggle.classList.remove('active');
   }
 
   toggle() {

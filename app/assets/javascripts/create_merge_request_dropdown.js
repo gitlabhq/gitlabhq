@@ -170,6 +170,7 @@ export default class CreateMergeRequestDropdown {
 
   getDroplabConfig() {
     return {
+      addActiveClassToDropdownButton: true,
       InputSetter: [
         {
           input: this.createMergeRequestButton,
