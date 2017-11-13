@@ -205,7 +205,7 @@ ul.related-merge-requests > li {
 .create-mr-dropdown-wrap {
   .branch-message,
   .ref-message {
-    display: inline-block;
+    display: none;
 
     &::first-letter {
       text-transform: capitalize;
@@ -266,8 +266,16 @@ ul.related-merge-requests > li {
     }
   }
 
+  li.divider {
+    margin: 8px 10px 8px 10px;
+  }
+
   li:not(.divider) {
-    padding: 6px;
+    padding: 8px 10px 8px 10px;
+
+    &:last-child {
+      padding-bottom: 8px;
+    }
 
     &.droplab-item-selected {
       .icon-container {
@@ -282,9 +290,12 @@ ul.related-merge-requests > li {
       }
     }
 
+    &.droplab-item-ignore {
+      padding-top: 8px;
+    }
+
     .icon-container {
       float: left;
-      padding-left: 6px;
 
       i {
         visibility: hidden;
@@ -292,7 +303,7 @@ ul.related-merge-requests > li {
     }
 
     .description {
-      padding-left: 30px;
+      padding-left: 22px;
 
       strong {
         display: block;

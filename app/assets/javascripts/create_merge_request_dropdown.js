@@ -343,6 +343,7 @@ export default class CreateMergeRequestDropdown {
 
     inputClasses.forEach(cssClass => input.classList.remove(cssClass));
     messageClasses.forEach(cssClass => message.classList.remove(cssClass));
+    message.style.display = 'none';
   }
 
   setUnavailableButtonState(isLoading = true) {
@@ -367,7 +368,7 @@ export default class CreateMergeRequestDropdown {
     input.classList.add('gl-field-success-outline');
     message.classList.add('gl-field-success-message');
     message.textContent = sprintf(__('%{text} is available'), { text });
-    message.classList.remove('hide');
+    message.style.display = 'inline-block';
   }
 
   showCheckingMessage(target) {
@@ -377,7 +378,7 @@ export default class CreateMergeRequestDropdown {
     this.removeMessage(target);
     message.classList.add('gl-field-hint');
     message.textContent = sprintf(__('Checking %{text} availability…'), { text });
-    message.classList.remove('hide');
+    message.style.display = 'inline-block';
   }
 
   showNotAvailableMessage(target) {
@@ -388,7 +389,7 @@ export default class CreateMergeRequestDropdown {
     input.classList.add('gl-field-error-outline');
     message.classList.add('gl-field-error-message');
     message.textContent = text;
-    message.classList.remove('hide');
+    message.style.display = 'inline-block';
   }
 
   unavailable() {
