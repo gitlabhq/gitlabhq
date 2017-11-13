@@ -75,13 +75,18 @@ module QA
             include QA::Scenario::Actable
 
             def initialize
-              @address = QA::Runtime::Scenario.geo_secondary_address
               @name = QA::Runtime::Scenario.geo_secondary_name
             end
 
             def replicate_database
               Shell::Omnibus.new(@name).act do
-                gitlab_ctl "replicate-geo-database --host=#{@address} --slot-name=#{@name} --no-wait", input: 'echo mypass'
+                require 'uri'
+
+                host = URI(QA::Runtime::Scenario.geo_primary_address).host
+                host = '172.22.0.2' #tmp
+                slot = QA::Runtime::Scenario.geo_primary_name.tr('-', '_')
+
+                gitlab_ctl "replicate-geo-database --host=#{host} --slot-name=#{slot} --no-wait", input: 'echo mypass'
               end
             end
           end

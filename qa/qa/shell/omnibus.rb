@@ -22,6 +22,8 @@ module QA
       # TODO gitlab-qa/library issue
 
       def shell(command)
+        puts "Executing `#{command}`"
+
         Open3.popen2e(command) do |_in, out, wait|
           out.each { |line| puts line }
 
