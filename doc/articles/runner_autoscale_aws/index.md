@@ -4,10 +4,11 @@ last_updated: 2017-11-10
 
 # Autoscaling GitLab Runner on AWS
 
-GitLab Runner has the ability to autoscale which means automatically spawning
-new machines on demand. This proves very useful in situations where you
-don't use your Runners 24/7 and want to have a cost-effective and scalable
-solution.
+One of the biggest advantages of GitLab Runner is its ability to automatically
+spin up and down VMs to make sure your builds get processed immediately. It's a
+great feature, and if used correctly, it can be extremely useful in situations
+where you don't use your Runners 24/7 and want to have a cost-effective and
+scalable solution.
 
 ## Introduction
 
@@ -15,9 +16,35 @@ In this tutorial, we'll explore how to properly configure a GitLab Runner in
 AWS that will serve as the bastion where it will spawn new Docker machines on
 demand.
 
-## Installation and configuration
+In addition, we'll make use of [Amazon's EC2 Spot instances](https://aws.amazon.com/ec2/spot/)
+which will greatly reduce the costs of the Runner instances while still using
+quite powerful autoscaling machines.
 
-The bastion will not run any jobs itself.
+## Prerequisites
+
+The first step is to install GitLab Runner in an EC2 instance that will serve
+as the bastion to spawning new machines. This doesn't have to be a powerful
+machine since it will not run any jobs itself, a `t2.micro` instance will do.
+This machine will be a dedicated host since we need it always up and running,
+thus it will be the only standard cost.
+
+NOTE: **Note:**
+For the bastion instance, choose a distribution that both Docker and GitLab
+Runner support, for example either Ubuntu, Debian, CentOS or RHEL will work fine.
+
+Install the prerequisites:
+
+1. Log in your server
+1. [Install GitLab Runner from the official GitLab repository](https://docs.gitlab.com/runner/install/linux-repository.html)
+1. [Install Docker](https://docs.docker.com/engine/installation/#server)
+1. [Install Docker Machine](https://docs.docker.com/machine/install-machine/)
+
+You can now move on to the most important part, configuring GitLab Runner.
+
+## Configuring GitLab Runner to use the AWS machine driver
+
+Before configuring the GitLab Runner, you need to first register it, so that
+it connects with your GitLab instance.
 
 Edit `/etc/gitlab-runner/config.toml`:
 
@@ -30,15 +57,12 @@ check_interval = 0
   url = "<url to your GitLab CI host>"
   token = "<registration token>"
   executor = "docker+machine"
-  environment = ["GODEBUG=netdns=cgo"]
-  output_limit = 16384
   limit = 4
   [runners.docker]
-    image = "ruby:2.1"
+    image = "alpine"
     privileged = true
     disable_cache = false
     volumes = ["/cache"]
-    extra_hosts = ["gitlab.thehumangeo.com:<our internal GitLab IP>", "nexus.thehumangeo.com:<our internal Nexus IP>"]
   [runners.cache]
     Type = "s3"
     ServerAddress = "s3.amazonaws.com"
@@ -68,13 +92,17 @@ check_interval = 0
       "amazonec2-instance-type=m4.2xlarge",
       "amazonec2-ssh-user=ubuntu",
       "amazonec2-ssh-keypath=/etc/gitlab-runner/certs/gitlab-aws-autoscaler",
-      "amazonec2-ami=ami-996372fd",
       "amazonec2-zone=a",
       "amazonec2-root-size=32",
     ]
 ```
 
-## Cutting costs with AWS spot instances
+Under `MachineOptions` you can add anything that the [AWS Docker Machine driver
+supports](https://docs.docker.com/machine/drivers/aws/#options).
+
+## Cutting down costs with Amazon EC2 Spot instances
+
+As described by Amazon:
 
 >
 Amazon EC2 Spot instances allow you to bid on spare Amazon EC2 computing capacity.
@@ -83,24 +111,29 @@ pricing, you can significantly reduce the cost of running your applications,
 grow your application’s compute capacity and throughput for the same budget,
 and enable new types of cloud computing applications.
 
-- https://aws.amazon.com/ec2/spot/
-- https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-requests.html
-- https://aws.amazon.com/blogs/aws/focusing-on-spot-instances-lets-talk-about-best-practices/
-
-
 In `/etc/gitlab-runner/config.toml` under the `MachineOptions` section:
 
 ```toml
     MachineOptions = [
       "amazonec2-request-spot-instance=true",
       "amazonec2-spot-price=0.03",
-      "amazonec2-block-duration-minutes=180"
+      "amazonec2-block-duration-minutes=60"
     ]
 ```
 
-### Caveats of spot instances
+With this configuration, Docker Machines are created on Spot instances with a
+maximum bid price of $0.03 per hour and the duration of the Spot instance is
+capped at 60 minutes.
 
-If the spot price raises, the auto-scale Runner would fail to create new machines.
+To learn more about Amazon EC2 Spot instances, visit the following links:
+
+- https://aws.amazon.com/ec2/spot/
+- https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/spot-requests.html
+- https://aws.amazon.com/blogs/aws/focusing-on-spot-instances-lets-talk-about-best-practices/
+
+### Caveats of Spot instances
+
+If the Spot price raises, the auto-scale Runner would fail to create new machines.
 
 This eventually eats 60 requests and then AWS won't accept any more. Then once
 the spot price is acceptable, you are locked out for a bit because the call amount
