@@ -50,6 +50,13 @@ eos
           expect(@service.calculate_reactive_cache('2ab7834c', 'master')).to eq(commit_status: 'success')
         end
       end
+
+      context 'with bad response' do
+        it 'has a commit_status of error' do
+          stub_request(:get, "http://jenkins.gitlab.org/job/2/scm/bySHA1/2ab7834c").to_return(status: 200, body: '<h1>404</h1>', headers: {})
+          expect(@service.calculate_reactive_cache('2ab7834c', 'master')).to eq(commit_status: :error)
+        end
+      end
     end
 
     describe '#commit_status' do
