@@ -86,7 +86,8 @@ module QA
                 host = '172.22.0.2' #tmp
                 slot = QA::Runtime::Scenario.geo_primary_name.tr('-', '_')
 
-                gitlab_ctl "replicate-geo-database --host=#{host} --slot-name=#{slot} --no-wait", input: 'echo mypass'
+                gitlab_ctl "replicate-geo-database --host=#{host} --slot-name=#{slot} " \
+                           "--sslmode=disable --no-wait", input: 'echo mypass'
               end
             end
           end
