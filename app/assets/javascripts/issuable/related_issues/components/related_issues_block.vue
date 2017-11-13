@@ -56,7 +56,8 @@ export default {
     },
     title: {
       type: String,
-      required: true,
+      required: false,
+      default: 'Related issues',
     },
   },
 

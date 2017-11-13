@@ -14,9 +14,15 @@ describe('EpicShowApp', () => {
   let sidebarVm;
 
   const interceptor = (request, next) => {
-    next(request.respondWith(JSON.stringify(issueShowData.initialRequest), {
-      status: 200,
-    }));
+    if (request.url === '/realtime_changes') {
+      next(request.respondWith(JSON.stringify(issueShowData.initialRequest), {
+        status: 200,
+      }));
+    } else {
+      next(request.respondWith(null, {
+        status: 404,
+      }));
+    }
   };
 
   beforeEach(() => {
