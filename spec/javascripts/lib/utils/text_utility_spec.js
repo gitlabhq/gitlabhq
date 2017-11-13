@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-import * as textUtility from '~/lib/utils/text_utility';
-=======
 import * as textUtils from '~/lib/utils/text_utility';
->>>>>>> ce-com/master
 
 describe('text_utility', () => {
   describe('addDelimiter', () => {
@@ -18,27 +14,12 @@ describe('text_utility', () => {
 
   describe('highCountTrim', () => {
     it('returns 99+ for count >= 100', () => {
-<<<<<<< HEAD
-      expect(textUtility.highCountTrim(105)).toBe('99+');
-      expect(textUtility.highCountTrim(100)).toBe('99+');
-    });
-
-    it('returns exact number for count < 100', () => {
-      expect(textUtility.highCountTrim(45)).toBe(45);
-    });
-  });
-
-  describe('capitalizeFirstCharacter', () => {
-    it('returns string with first letter capitalized', () => {
-      expect(textUtility.capitalizeFirstCharacter('gitlab')).toEqual('Gitlab');
-=======
       expect(textUtils.highCountTrim(105)).toBe('99+');
       expect(textUtils.highCountTrim(100)).toBe('99+');
     });
 
     it('returns exact number for count < 100', () => {
       expect(textUtils.highCountTrim(45)).toBe(45);
->>>>>>> ce-com/master
     });
   });
 
@@ -71,6 +52,12 @@ describe('text_utility', () => {
   describe('slugify', () => {
     it('should remove accents and convert to lower case', () => {
       expect(textUtils.slugify('João')).toEqual('joão');
+    });
+  });
+
+  describe('capitalizeFirstCharacter', () => {
+    it('returns string with first letter capitalized', () => {
+      expect(textUtils.capitalizeFirstCharacter('gitlab')).toEqual('Gitlab');
     });
   });
 });
