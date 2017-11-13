@@ -28,20 +28,22 @@
 
 <template>
   <div class="detail-page-header">
-    Opened
-    <timeagoTooltip
-      :time="created"
-    />
-     by
-     <strong>
-      <user-avatar-link
-        :link-href="author.url"
-        :img-src="author.src"
-        :img-size="24"
-        :tooltipText="author.username"
-        :username="author.name"
-        imgCssClasses="avatar-inline"
+    <div class="issuable-meta">
+      Opened
+      <timeagoTooltip
+        :time="created"
       />
-    </strong>
+      by
+      <strong>
+        <user-avatar-link
+          :link-href="author.url"
+          :img-src="author.src"
+          :img-size="24"
+          :tooltipText="author.username"
+          :username="author.name"
+          imgCssClasses="avatar-inline"
+        />
+      </strong>
+    </div>
   </div>
 </template>
