@@ -56,7 +56,7 @@ module ButtonHelper
     end
   end
 
-  def http_clone_button(project, placement = 'right', append_link: true)
+  def http_clone_button(project, append_link: true)
     protocol = gitlab_config.protocol.upcase
 
     protocol_description =
@@ -79,7 +79,7 @@ module ButtonHelper
   end
 
   def ssh_clone_button(project, append_link: true)
-    ssh_description = _('Add an SSH key to your profile to pull or push via SSH.')
+    ssh_description = _("You won't be able to pull or push project code via SSH until you add an SSH key to your profile")
     ssh_element_output = content_tag(:strong, 'SSH', class: 'dropdown-menu-inner-title')
     ssh_element_output << content_tag(:span, ssh_description, class: 'dropdown-menu-inner-content') if current_user.try(:require_ssh_key?)
 

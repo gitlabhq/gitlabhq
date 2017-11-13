@@ -26,9 +26,10 @@ describe ButtonHelper do
       context 'when user has password automatically set' do
         let(:user) { create(:user, password_automatically_set: true) }
 
-        it 'shows a password tooltip' do
-          expect(element.attr('class')).to include(has_tooltip_class)
-          expect(element.attr('data-title')).to eq('Set a password on your account to pull or push via HTTP.')
+        it 'shows the password text on the dropdown' do
+          expect(element.children.length).to eq(2)
+          expect(element.children[1].name).to eq('span')
+          expect(element.children[1].children[0].text).to eq('Set a password on your account to pull or push via HTTP.')
         end
       end
     end
@@ -40,8 +41,9 @@ describe ButtonHelper do
 
       context 'when user has no personal access tokens' do
         it 'has a personal access token tooltip ' do
-          expect(element.attr('class')).to include(has_tooltip_class)
-          expect(element.attr('data-title')).to eq('Create a personal access token on your account to pull or push via HTTP.')
+          expect(element.children.length).to eq(2)
+          expect(element.children[1].name).to eq('span')
+          expect(element.children[1].children[0].text).to eq('Create a personal access token on your account to pull or push via HTTP.')
         end
       end
 
