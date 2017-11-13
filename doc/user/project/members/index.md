@@ -21,7 +21,7 @@ want to add.
 
 ---
 
-Select the user and the [permission level](../../user/permissions.md)
+Select the user and the [permission level](../../permissions.md)
 that you'd like to give the user. Note that you can select more than one user.
 
 ![Give user permissions](img/add_user_give_permissions.png)

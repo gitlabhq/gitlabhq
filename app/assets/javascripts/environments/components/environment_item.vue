@@ -2,7 +2,7 @@
 import Timeago from 'timeago.js';
 import _ from 'underscore';
 import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-import '../../lib/utils/text_utility';
+import { humanize } from '../../lib/utils/text_utility';
 import ActionsComponent from './environment_actions.vue';
 import ExternalUrlComponent from './environment_external_url.vue';
 import StopComponent from './environment_stop.vue';
@@ -134,7 +134,7 @@ export default {
       if (this.hasManualActions) {
         return this.model.last_deployment.manual_actions.map((action) => {
           const parsedAction = {
-            name: gl.text.humanize(action.name),
+            name: humanize(action.name),
             play_path: action.play_path,
             playable: action.playable,
           };

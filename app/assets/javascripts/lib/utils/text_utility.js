@@ -1,18 +1,13 @@
-/* eslint-disable import/prefer-default-export, func-names, space-before-function-paren, wrap-iife, no-var, no-param-reassign, no-cond-assign, quotes, one-var, one-var-declaration-per-line, operator-assignment, no-else-return, prefer-template, prefer-arrow-callback, no-empty, max-len, consistent-return, no-unused-vars, no-return-assign, max-len, vars-on-top */
-
-import 'vendor/latinise';
-
-var base;
-var w = window;
-if (w.gl == null) {
-  w.gl = {};
-}
-if ((base = w.gl).text == null) {
-  base.text = {};
-}
-gl.text.addDelimiter = function(text) {
-  return text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") : text;
-};
+/**
+ * Adds a , to a string composed by numbers, at every 3 chars.
+ *
+ * 2333 -> 2,333
+ * 232324 -> 232,324
+ *
+ * @param {String} text
+ * @returns {String}
+ */
+export const addDelimiter = text => (text ? text.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',') : text);
 
 /**
  * Returns '99+' for numbers bigger than 99.
@@ -20,6 +15,7 @@ gl.text.addDelimiter = function(text) {
  * @param {Number} count
  * @return {Number|String}
  */
+<<<<<<< HEAD
 export function highCountTrim(count) {
   return count > 99 ? '99+' : count;
 }
@@ -105,97 +101,45 @@ gl.text.insertText = function(textArea, text, tag, blockTag, selected, wrap) {
   }
 
   startChar = !wrap && !currentLineEmpty && textArea.selectionStart > 0 ? '\n' : '';
+=======
+export const highCountTrim = count => (count > 99 ? '99+' : count);
+>>>>>>> ce-com/master
 
-  if (selectedSplit.length > 1 && (!wrap || (blockTag != null && blockTag !== ''))) {
-    if (blockTag != null && blockTag !== '') {
-      insertText = this.blockTagText(text, textArea, blockTag, selected);
-    } else {
-      insertText = selectedSplit.map(function(val) {
-        if (val.indexOf(tag) === 0) {
-          return "" + (val.replace(tag, ''));
-        } else {
-          return "" + tag + val;
-        }
-      }).join('\n');
-    }
-  } else {
-    insertText = "" + startChar + tag + selected + (wrap ? tag : ' ');
-  }
+/**
+ * Converst first char to uppercase and replaces undercores with spaces
+ * @param {String} string
+ * @requires {String}
+ */
+export const humanize = string => string.charAt(0).toUpperCase() + string.replace(/_/g, ' ').slice(1);
 
-  if (removedFirstNewLine) {
-    insertText = '\n' + insertText;
-  }
+/**
+ * Adds an 's' to the end of the string when count is bigger than 0
+ * @param {String} str
+ * @param {Number} count
+ * @returns {String}
+ */
+export const pluralize = (str, count) => str + (count > 1 || count === 0 ? 's' : '');
 
-  if (removedLastNewLine) {
-    insertText += '\n';
-  }
+/**
+ * Replaces underscores with dashes
+ * @param {*} str
+ * @returns {String}
+ */
+export const dasherize = str => str.replace(/[_\s]+/g, '-');
 
-  if (document.queryCommandSupported('insertText')) {
-    inserted = document.execCommand('insertText', false, insertText);
-  }
-  if (!inserted) {
-    try {
-      document.execCommand("ms-beginUndoUnit");
-    } catch (error) {}
-    textArea.value = this.replaceRange(text, textArea.selectionStart, textArea.selectionEnd, insertText);
-    try {
-      document.execCommand("ms-endUndoUnit");
-    } catch (error) {}
-  }
-  return this.moveCursor(textArea, tag, wrap, removedLastNewLine);
-};
-gl.text.moveCursor = function(textArea, tag, wrapped, removedLastNewLine) {
-  var pos;
-  if (!textArea.setSelectionRange) {
-    return;
-  }
-  if (textArea.selectionStart === textArea.selectionEnd) {
-    if (wrapped) {
-      pos = textArea.selectionStart - tag.length;
-    } else {
-      pos = textArea.selectionStart;
-    }
+/**
+ * Removes accents and converts to lower case
+ * @param {String} str
+ * @returns {String}
+ */
+export const slugify = str => str.trim().toLowerCase();
 
-    if (removedLastNewLine) {
-      pos -= 1;
-    }
+/**
+ * Truncates given text
+ *
+ * @param {String} string
+ * @param {Number} maxLength
+ * @returns {String}
+ */
+export const truncate = (string, maxLength) => `${string.substr(0, (maxLength - 3))}...`;
 
-    return textArea.setSelectionRange(pos, pos);
-  }
-};
-gl.text.updateText = function(textArea, tag, blockTag, wrap) {
-  var $textArea, selected, text;
-  $textArea = $(textArea);
-  textArea = $textArea.get(0);
-  text = $textArea.val();
-  selected = this.selectedText(text, textArea);
-  $textArea.focus();
-  return this.insertText(textArea, text, tag, blockTag, selected, wrap);
-};
-gl.text.init = function(form) {
-  var self;
-  self = this;
-  return $('.js-md', form).off('click').on('click', function() {
-    var $this;
-    $this = $(this);
-    return self.updateText($this.closest('.md-area').find('textarea'), $this.data('md-tag'), $this.data('md-block'), !$this.data('md-prepend'));
-  });
-};
-gl.text.removeListeners = function(form) {
-  return $('.js-md', form).off('click');
-};
-gl.text.humanize = function(string) {
-  return string.charAt(0).toUpperCase() + string.replace(/_/g, ' ').slice(1);
-};
-gl.text.pluralize = function(str, count) {
-  return str + (count > 1 || count === 0 ? 's' : '');
-};
-gl.text.truncate = function(string, maxLength) {
-  return string.substr(0, (maxLength - 3)) + '...';
-};
-gl.text.dasherize = function(str) {
-  return str.replace(/[_\s]+/g, '-');
-};
-gl.text.slugify = function(str) {
-  return str.trim().toLowerCase().latinise();
-};

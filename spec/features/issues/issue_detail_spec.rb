@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 feature 'Issue Detail', :js do
-  let(:user)      { create(:user) }
-  let(:project)   { create(:project, :public) }
-  let(:issue)     { create(:issue, project: project, author: user) }
+  let(:user)     { create(:user) }
+  let(:project)  { create(:project, :public) }
+  let(:issue)    { create(:issue, project: project, author: user) }
 
   context 'when user displays the issue' do
     before do
@@ -27,6 +27,7 @@ feature 'Issue Detail', :js do
       click_link 'Edit'
       fill_in 'issuable-title', with: 'issue title'
       click_button 'Save'
+      wait_for_requests
 
       Users::DestroyService.new(user).execute(user)
 

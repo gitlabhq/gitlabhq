@@ -401,9 +401,12 @@
 .breadcrumbs-list {
   display: -webkit-flex;
   display: flex;
-  flex-wrap: wrap;
   margin-bottom: 0;
   line-height: 16px;
+
+  @media (max-width: $screen-xs-max) {
+    flex-wrap: wrap;
+  }
 
   > li {
     display: flex;
@@ -412,24 +415,35 @@
     padding: 2px 0;
 
     &:not(:last-child) {
-      margin-right: 20px;
+      padding-right: 20px;
+
+      &:not(.dropdown) {
+        overflow: hidden;
+      }
     }
 
     > a {
       font-size: 12px;
       color: currentColor;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 0 1 auto;
     }
   }
 }
 
 .breadcrumb-item-text {
-  @include str-truncated(128px);
   text-decoration: inherit;
+
+  @media (max-width: $screen-xs-max) {
+    @include str-truncated(128px);
+  }
 }
 
 .breadcrumbs-list-angle {
   position: absolute;
-  right: -12px;
+  right: 7px;
   top: 50%;
   color: $gl-text-color-tertiary;
   transform: translateY(-50%);
