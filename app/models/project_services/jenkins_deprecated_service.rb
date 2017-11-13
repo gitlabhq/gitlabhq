@@ -101,7 +101,12 @@ class JenkinsDeprecatedService < CiService
 
     if response.code == 200
       # img.build-caption-status-icon for old jenkins version
-      src = Nokogiri.parse(response).css('img.build-caption-status-icon,.build-caption>img').first.attributes['src'].value
+      begin
+        src = Nokogiri.parse(response).css('img.build-caption-status-icon,.build-caption>img').first.attributes['src'].value
+      rescue NoMethodError => ex
+        return :error
+      end
+
       if src =~ /blue\.png$/ || (src =~ /yellow\.png/ && pass_unstable?)
         'success'
       elsif src =~ /(red|aborted|yellow)\.png$/
