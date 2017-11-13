@@ -4,16 +4,21 @@ import repoFileButtons from '~/repo/components/repo_file_buttons.vue';
 import { file, resetStore } from '../helpers';
 
 describe('RepoFileButtons', () => {
-  const activeFile = file();
+  let activeFile;
   let vm;
 
   function createComponent() {
     const RepoFileButtons = Vue.extend(repoFileButtons);
 
-    activeFile.rawPath = 'test';
-    activeFile.blamePath = 'test';
-    activeFile.commitsPath = 'test';
-    activeFile.active = true;
+    activeFile = file();
+    Object.assign(activeFile, {
+      rawPath: 'test',
+      blamePath: 'test',
+      commitsPath: 'test',
+      active: true,
+      rich: { path: 'test' },
+      simple: { path: 'test' },
+    });
     store.state.openFiles.push(activeFile);
 
     return new RepoFileButtons({
@@ -36,14 +41,33 @@ describe('RepoFileButtons', () => {
       const history = vm.$el.querySelector('.history');
 
       expect(raw.href).toMatch(`/${activeFile.rawPath}`);
-      expect(raw.textContent.trim()).toEqual('Raw');
+      expect(raw.querySelector('.fa').classList.contains('fa-file-code-o')).toBeTruthy();
       expect(blame.href).toMatch(`/${activeFile.blamePath}`);
       expect(blame.textContent.trim()).toEqual('Blame');
       expect(history.href).toMatch(`/${activeFile.commitsPath}`);
       expect(history.textContent.trim()).toEqual('History');
       expect(vm.$el.querySelector('.permalink').textContent.trim()).toEqual('Permalink');
+      expect(vm.$el.querySelector('.fa-clipboard')).not.toBeNull();
 
       done();
+    });
+  });
+
+  describe('binary file', () => {
+    beforeEach((done) => {
+      vm = createComponent();
+
+      activeFile.binary = true;
+
+      Vue.nextTick(done);
+    });
+
+    it('renders download icon when binary', () => {
+      expect(vm.$el.querySelector('.raw .fa').classList.contains('fa-download')).toBeTruthy();
+    });
+
+    it('does not render clipboard button when binary', () => {
+      expect(vm.$el.querySelector('.fa-clipboard')).toBeNull();
     });
   });
 });

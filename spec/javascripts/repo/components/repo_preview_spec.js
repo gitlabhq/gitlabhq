@@ -6,7 +6,7 @@ import { file, resetStore } from '../helpers';
 describe('RepoPreview', () => {
   let vm;
 
-  function createComponent() {
+  function createComponent(currentViewer = 'rich') {
     const f = file();
     const RepoPreview = Vue.extend(repoPreview);
 
@@ -14,8 +14,12 @@ describe('RepoPreview', () => {
       store,
     });
 
-    f.active = true;
-    f.html = 'test';
+    Object.assign(f, {
+      active: true,
+      currentViewer,
+      rich: { html: 'richHTML' },
+      simple: { html: 'simpleHTML' },
+    });
 
     comp.$store.state.openFiles.push(f);
 
@@ -28,10 +32,27 @@ describe('RepoPreview', () => {
     resetStore(vm.$store);
   });
 
-  it('renders a div with the activeFile html', () => {
-    vm = createComponent();
+  describe('rich', () => {
+    beforeEach((done) => {
+      vm = createComponent();
 
-    expect(vm.$el.tagName).toEqual('DIV');
-    expect(vm.$el.innerHTML).toContain('test');
+      Vue.nextTick(done);
+    });
+
+    it('renders activeFile rich html', () => {
+      expect(vm.$el.textContent.trim()).toContain('richHTML');
+    });
+  });
+
+  describe('simple', () => {
+    beforeEach((done) => {
+      vm = createComponent('simple');
+
+      Vue.nextTick(done);
+    });
+
+    it('renders activeFile rich html', () => {
+      expect(vm.$el.textContent.trim()).toContain('simpleHTML');
+    });
   });
 });

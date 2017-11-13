@@ -49,7 +49,6 @@ describe('Multi-file store file mutations', () => {
           permalink: 'permalink',
           raw_path: 'raw',
           binary: true,
-          html: 'html',
           render_error: 'render_error',
         },
         file: localFile,
@@ -60,8 +59,49 @@ describe('Multi-file store file mutations', () => {
       expect(localFile.permalink).toBe('permalink');
       expect(localFile.rawPath).toBe('raw');
       expect(localFile.binary).toBeTruthy();
-      expect(localFile.html).toBe('html');
       expect(localFile.renderError).toBe('render_error');
+    });
+
+    it('sets rich viewer data', () => {
+      mutations.SET_FILE_DATA(localState, {
+        data: {
+          blame_path: 'blame',
+          commits_path: 'commits',
+          permalink: 'permalink',
+          raw_path: 'raw',
+          binary: true,
+          render_error: 'render_error',
+          rich_viewer: {
+            path: 'richPath',
+            switcher_icon: 'richIcon',
+          },
+        },
+        file: localFile,
+      });
+
+      expect(localFile.rich.path).toBe('richPath');
+      expect(localFile.rich.icon).toBe('richIcon');
+    });
+
+    it('sets simple viewer data', () => {
+      mutations.SET_FILE_DATA(localState, {
+        data: {
+          blame_path: 'blame',
+          commits_path: 'commits',
+          permalink: 'permalink',
+          raw_path: 'raw',
+          binary: true,
+          render_error: 'render_error',
+          simple_viewer: {
+            path: 'simplePath',
+            switcher_icon: 'simpleIcon',
+          },
+        },
+        file: localFile,
+      });
+
+      expect(localFile.simple.path).toBe('simplePath');
+      expect(localFile.simple.icon).toBe('simpleIcon');
     });
   });
 
@@ -126,6 +166,62 @@ describe('Multi-file store file mutations', () => {
 
       expect(localFile.tree.length).toBe(1);
       expect(localFile.tree[0].name).toBe(f.name);
+    });
+  });
+
+  describe('SET_FILE_VIEWER_DATA', () => {
+    describe('rich viewer', () => {
+      it('sets current viewers HTML', () => {
+        const f = file();
+
+        mutations.SET_FILE_VIEWER_DATA(localState, {
+          file: f,
+          data: { html: 'fileHTML' },
+        });
+
+        expect(f.rich.html).toBe('fileHTML');
+      });
+    });
+
+    describe('simple viewer', () => {
+      it('sets current viewers HTML', () => {
+        const f = file();
+        f.currentViewer = 'simple';
+
+        mutations.SET_FILE_VIEWER_DATA(localState, {
+          file: f,
+          data: { html: 'fileHTML' },
+        });
+
+        expect(f.simple.html).toBe('fileHTML');
+      });
+    });
+  });
+
+  describe('SET_CURRENT_FILE_VIEWER', () => {
+    it('sets the files current viewer', () => {
+      const f = file();
+
+      mutations.SET_CURRENT_FILE_VIEWER(localState, {
+        file: f,
+        type: 'rich',
+      });
+
+      expect(f.currentViewer).toBe('rich');
+    });
+  });
+
+  describe('TOGGLE_FILE_VIEWER_LOADING', () => {
+    it('toggles viewer loading', () => {
+      const f = file();
+
+      mutations.TOGGLE_FILE_VIEWER_LOADING(localState, f.rich);
+
+      expect(f.rich.loading).toBeTruthy();
+
+      mutations.TOGGLE_FILE_VIEWER_LOADING(localState, f.rich);
+
+      expect(f.rich.loading).toBeFalsy();
     });
   });
 });

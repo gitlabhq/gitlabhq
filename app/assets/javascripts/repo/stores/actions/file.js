@@ -112,20 +112,20 @@ export const createTempFile = ({ state, commit, dispatch }, { tree, name, conten
 };
 
 export const getFileHTML = ({ commit, getters }, file) => {
-  const currentViewer = file[file.currentViewer];
+  const currentViewer = getters.activeFileCurrentViewer;
 
   if (currentViewer.html !== '') return;
 
-  commit(types.TOGGLE_FILE_VIEWER_LOADING, getters.activeFileCurrentViewer);
+  commit(types.TOGGLE_FILE_VIEWER_LOADING, currentViewer);
 
   service.getFileHTML(currentViewer.path)
     .then(res => res.json())
     .then((data) => {
-      commit(types.TOGGLE_FILE_VIEWER_LOADING, getters.activeFileCurrentViewer);
+      commit(types.TOGGLE_FILE_VIEWER_LOADING, currentViewer);
       commit(types.SET_FILE_VIEWER_DATA, { file, data });
     })
     .catch(() => {
-      commit(types.TOGGLE_FILE_VIEWER_LOADING, getters.activeFileCurrentViewer);
+      commit(types.TOGGLE_FILE_VIEWER_LOADING, currentViewer);
       flash('Error fetching file viewer. Please try again.');
     });
 };

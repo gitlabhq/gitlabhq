@@ -36,10 +36,12 @@ export default {
       });
     }
 
-    Object.assign(file.simple, {
-      path: data.simple_viewer.path,
-      icon: data.simple_viewer.switcher_icon,
-    });
+    if (data.simple_viewer) {
+      Object.assign(file.simple, {
+        path: data.simple_viewer.path,
+        icon: data.simple_viewer.switcher_icon,
+      });
+    }
   },
   [types.SET_FILE_RAW_DATA](state, { file, raw }) {
     Object.assign(file, {

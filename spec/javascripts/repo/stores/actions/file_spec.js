@@ -190,6 +190,7 @@ describe('Multi-file store file actions', () => {
     let localFile = file();
 
     beforeEach(() => {
+      spyOn(history, 'pushState');
       spyOn(service, 'getFileData').and.returnValue(Promise.resolve({
         headers: {
           'page-title': 'testing getFileData',
@@ -200,7 +201,6 @@ describe('Multi-file store file actions', () => {
           permalink: 'permalink',
           raw_path: 'raw_path',
           binary: false,
-          html: '123',
           render_error: '',
         }),
       }));
@@ -267,6 +267,22 @@ describe('Multi-file store file actions', () => {
         })
         .then(() => {
           expect(localFile.loading).toBeFalsy();
+
+          done();
+        }).catch(done.fail);
+    });
+
+    it('calls getFileHTML with current active file', (done) => {
+      const oldGetFileHTML = store._actions.getFileHTML; // eslint-disable-line
+      const getFileHTMLSpy = jasmine.createSpy('getFileHTML');
+      store._actions.getFileHTML = [getFileHTMLSpy]; // eslint-disable-line
+
+      store.dispatch('getFileData', localFile)
+        .then(Vue.nextTick)
+        .then(() => {
+          expect(getFileHTMLSpy).toHaveBeenCalledWith(localFile);
+
+          store._actions.getFileHTML = oldGetFileHTML; // eslint-disable-line
 
           done();
         }).catch(done.fail);
@@ -409,6 +425,151 @@ describe('Multi-file store file actions', () => {
         name: 'test',
       }).then((f) => {
         expect(f.level).toBe(2);
+
+        done();
+      }).catch(done.fail);
+    });
+  });
+
+  describe('getFileHTML', () => {
+    let localFile;
+
+    beforeEach(() => {
+      localFile = file();
+      Object.assign(localFile, {
+        active: true,
+        opened: true,
+        rich: Object.assign(localFile.rich, { path: 'richPath' }),
+      });
+
+      store.state.openFiles.push(localFile);
+    });
+
+    describe('success', () => {
+      beforeEach(() => {
+        spyOn(service, 'getFileHTML').and.returnValue(Promise.resolve({
+          json: () => Promise.resolve({
+            html: 'fileHTML',
+          }),
+        }));
+      });
+
+      it('calls service', (done) => {
+        store.dispatch('getFileHTML', localFile)
+          .then(() => {
+            expect(service.getFileHTML).toHaveBeenCalledWith('richPath');
+
+            done();
+          }).catch(done.fail);
+      });
+
+      it('does not call service if already has HTML', (done) => {
+        localFile.rich.html = 'testing';
+
+        store.dispatch('getFileHTML', localFile)
+          .then(() => {
+            expect(service.getFileHTML).not.toHaveBeenCalled();
+
+            done();
+          }).catch(done.fail);
+      });
+
+      it('sets viewer as loading', (done) => {
+        store.dispatch('getFileHTML', localFile)
+          .then(() => {
+            expect(localFile.rich.loading).toBeTruthy();
+
+            return Vue.nextTick();
+          })
+          .then(() => {
+            expect(localFile.rich.loading).toBeFalsy();
+
+            done();
+          }).catch(done.fail);
+      });
+
+      it('updates file data', (done) => {
+        store.dispatch('getFileHTML', localFile)
+          .then(Vue.nextTick)
+          .then(() => {
+            expect(localFile.rich.html).toBe('fileHTML');
+
+            done();
+          }).catch(done.fail);
+      });
+    });
+
+    describe('failed', () => {
+      beforeEach(() => {
+        spyOn(service, 'getFileHTML').and.returnValue(Promise.reject());
+
+        document.body.innerHTML += '<div class="flash-container"></div>';
+      });
+
+      afterEach(() => {
+        document.querySelector('.flash-container').remove();
+      });
+
+      it('shows flash message', (done) => {
+        store.dispatch('getFileHTML', localFile)
+          .then(Vue.nextTick)
+          .then(() => {
+            expect(document.querySelector('.flash-alert')).not.toBeNull();
+            expect(
+              document.querySelector('.flash-alert').textContent.trim(),
+            ).toBe('Error fetching file viewer. Please try again.');
+
+            done();
+          }).catch(done.fail);
+      });
+    });
+  });
+
+  describe('changeFileViewer', () => {
+    let localFile;
+    let oldGetFileHTML;
+    let getFileHTMLSpy;
+
+    beforeEach(() => {
+      oldGetFileHTML = store._actions.getFileHTML; // eslint-disable-line
+      getFileHTMLSpy = jasmine.createSpy('getFileHTML');
+      store._actions.getFileHTML = [getFileHTMLSpy]; // eslint-disable-line
+
+      localFile = file();
+    });
+
+    afterEach(() => {
+      store._actions.getFileHTML = oldGetFileHTML; // eslint-disable-line
+    });
+
+    it('calls getFileHTML', (done) => {
+      store.dispatch('changeFileViewer', {
+        file: localFile,
+        type: 'simple',
+      }).then(() => {
+        expect(getFileHTMLSpy).toHaveBeenCalledWith(localFile);
+
+        done();
+      }).catch(done.fail);
+    });
+
+    it('does not call getFileHTML if current view matches passed in type', (done) => {
+      store.dispatch('changeFileViewer', {
+        file: localFile,
+        type: 'rich',
+      }).then(() => {
+        expect(getFileHTMLSpy).not.toHaveBeenCalled();
+
+        done();
+      }).catch(done.fail);
+    });
+
+    it('sets current viewer type', (done) => {
+      store.dispatch('changeFileViewer', {
+        file: localFile,
+        type: 'simple',
+      }).then(() => {
+        expect(localFile.currentViewer).toBe('simple');
 
         done();
       }).catch(done.fail);

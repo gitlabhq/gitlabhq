@@ -116,4 +116,92 @@ describe('Multi-file store getters', () => {
       expect(getters.canEditFile(localState)).toBeFalsy();
     });
   });
+
+  describe('activeFileCurrentViewer', () => {
+    let f;
+
+    beforeEach(() => {
+      f = file();
+
+      Object.assign(f, {
+        active: true,
+        rich: Object.assign(f.rich, { html: 'richHTML' }),
+        simple: Object.assign(f.simple, { html: 'simpleHTML' }),
+      });
+
+      localState.openFiles.push(f);
+    });
+
+    describe('rich', () => {
+      it('returns rich viewer', () => {
+        const viewer = getters.activeFileCurrentViewer(localState);
+
+        expect(viewer.html).toBe('richHTML');
+      });
+    });
+
+    describe('simple', () => {
+      it('returns simple viewer', () => {
+        f.currentViewer = 'simple';
+
+        const viewer = getters.activeFileCurrentViewer(localState);
+
+        expect(viewer.html).toBe('simpleHTML');
+      });
+    });
+  });
+
+  describe('activeFileHTML', () => {
+    it('returns currents viewer HTML', () => {
+      const f = file();
+
+      Object.assign(f, {
+        active: true,
+        rich: Object.assign(f.rich, { html: 'richHTML' }),
+      });
+
+      localState.openFiles.push(f);
+
+      expect(getters.activeFileHTML(localState)).toBe('richHTML');
+    });
+  });
+
+  describe('canActiveFileSwitchViewer', () => {
+    it('returns false if file is binary', () => {
+      const f = file();
+
+      Object.assign(f, {
+        binary: true,
+        active: true,
+      });
+
+      localState.openFiles.push(f);
+
+      expect(getters.canActiveFileSwitchViewer(localState)).toBeFalsy();
+    });
+
+    it('returns false if rich & simple path are blank', () => {
+      const f = file();
+
+      f.active = true;
+
+      localState.openFiles.push(f);
+
+      expect(getters.canActiveFileSwitchViewer(localState)).toBeFalsy();
+    });
+
+    it('returns true if rich & simple path are not blank', () => {
+      const f = file();
+
+      Object.assign(f, {
+        active: true,
+        rich: { path: 'test' },
+        simple: { path: 'test' },
+      });
+
+      localState.openFiles.push(f);
+
+      expect(getters.canActiveFileSwitchViewer(localState)).toBeTruthy();
+    });
+  });
 });
