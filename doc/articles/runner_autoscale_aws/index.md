@@ -39,14 +39,26 @@ Install the prerequisites:
 1. [Install Docker](https://docs.docker.com/engine/installation/#server)
 1. [Install Docker Machine](https://docs.docker.com/machine/install-machine/)
 
+Before configuring the GitLab Runner, you need to first register it, so that
+it connects with your GitLab instance:
+
+1. [Obtain a Runner token](../../ci/runners/README.md)
+1. [Register the Runner](https://docs.gitlab.com/runner/register/index.html#gnu-linux)
+1. When asked the executor type, enter `docker+machine`
+
+TIP: **Tip:**
+If you want every user in your instance to be able to use the autoscaled Runners,
+register the Runner as a shared one.
+
 You can now move on to the most important part, configuring GitLab Runner.
 
 ## Configuring GitLab Runner to use the AWS machine driver
 
-Before configuring the GitLab Runner, you need to first register it, so that
-it connects with your GitLab instance.
+Now that the Runner is registered, you need to edit its configuration file and
+add the required options for the AWS machine driver.
 
-Edit `/etc/gitlab-runner/config.toml`:
+Here's a full example of `/etc/gitlab-runner/config.toml`. Open it with your
+editor and edit as you see fit:
 
 ```toml
 concurrent = 3
@@ -97,8 +109,80 @@ check_interval = 0
     ]
 ```
 
-Under `MachineOptions` you can add anything that the [AWS Docker Machine driver
-supports](https://docs.docker.com/machine/drivers/aws/#options).
+Let's break it down to pieces.
+
+- Global section
+
+    ```toml
+    concurrent = 3
+    check_interval = 0
+    ```
+
+- `[[runners]]`
+
+    ```toml
+    [[runners]]
+      name = "gitlab-aws-autoscaler"
+      url = "<url to your GitLab CI host>"
+      token = "<registration token>"
+      executor = "docker+machine"
+      limit = 4
+    ```
+
+- `[runners.docker]`
+
+    ```toml
+      [runners.docker]
+        image = "alpine"
+        privileged = true
+        disable_cache = false
+        volumes = ["/cache"]
+    ```
+
+- `[runners.cache]`
+
+    ```toml
+      [runners.cache]
+        Type = "s3"
+        ServerAddress = "s3.amazonaws.com"
+        AccessKey = "<your AWS Access Key ID>"
+        SecretKey = "<your AWS Secret Access Key>"
+        BucketName = "<the bucket where your cache should be kept>"
+        BucketLocation = "us-east-1"
+        Shared = true
+    ```
+
+- `[runners.machine]`
+
+    ```toml
+      [runners.machine]
+        IdleCount = 1
+        IdleTime = 1800
+        MaxBuilds = 100
+        MachineDriver = "amazonec2"
+        MachineName = "gitlab-docker-machine-%s"
+        OffPeakPeriods = ["* * 0-7,19-23 * * mon-fri *", "* * * * * sat,sun *"]
+        OffPeakIdleCount = 0
+        OffPeakIdleTime = 1200
+        MachineOptions = [
+          "amazonec2-access-key=XXXX",
+          "amazonec2-secret-key=XXXX",
+          "amazonec2-region=us-east-1",
+          "amazonec2-vpc-id=vpc-xxxxx",
+          "amazonec2-subnet-id=subnet-xxxxx",
+          "amazonec2-use-private-address=true",
+          "amazonec2-tags=Name,gitlab-runner-autoscale",
+          "amazonec2-security-group=docker-machine-scaler",
+          "amazonec2-instance-type=m4.2xlarge",
+          "amazonec2-ssh-user=ubuntu",
+          "amazonec2-ssh-keypath=/etc/gitlab-runner/certs/gitlab-aws-autoscaler",
+          "amazonec2-zone=a",
+          "amazonec2-root-size=32",
+        ]
+    ```
+
+    Under `MachineOptions` you can add anything that the [AWS Docker Machine driver
+    supports](https://docs.docker.com/machine/drivers/aws/#options).
 
 ## Cutting down costs with Amazon EC2 Spot instances
 
