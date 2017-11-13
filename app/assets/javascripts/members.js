@@ -5,7 +5,6 @@ export default class Members {
   }
 
   addListeners() {
-    $('.project_member, .group_member').off('ajax:success').on('ajax:success', this.removeRow);
     $('.js-member-update-control').off('change').on('change', this.formSubmit.bind(this));
     $('.js-edit-member-form').off('ajax:success').on('ajax:success', this.formSuccess.bind(this));
     gl.utils.disableButtonIfEmptyField('#user_ids', 'input[name=commit]', 'change');
@@ -32,17 +31,6 @@ export default class Members {
         },
       });
     });
-  }
-  // eslint-disable-next-line class-methods-use-this
-  removeRow(e) {
-    const $target = $(e.target);
-
-    if ($target.hasClass('btn-remove')) {
-      $target.closest('.member')
-        .fadeOut(function fadeOutMemberRow() {
-          $(this).remove();
-        });
-    }
   }
 
   formSubmit(e, $el = null) {
