@@ -310,6 +310,10 @@ ul.related-merge-requests > li {
         font-weight: $gl-font-weight-bold;
       }
     }
+
+    input {
+      margin: 3px 0;
+    }
   }
 }
 

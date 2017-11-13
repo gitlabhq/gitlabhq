@@ -65,7 +65,6 @@ export default class CreateMergeRequestDropdown {
   bindEvents() {
     this.createMergeRequestButton.addEventListener('click', this.onClickCreateMergeRequestButton.bind(this));
     this.createTargetButton.addEventListener('click', this.onClickCreateMergeRequestButton.bind(this));
-    this.dropdownToggle.addEventListener('click', this.onClickSetFocusOnBranchNameInput.bind(this));
     this.branchInput.addEventListener('keyup', this.onChangeInput.bind(this));
     this.refInput.addEventListener('keyup', this.onChangeInput.bind(this));
     this.refInput.addEventListener('keydown', CreateMergeRequestDropdown.processTab.bind(this));
@@ -322,10 +321,6 @@ export default class CreateMergeRequestDropdown {
     xhr.always(() => this.enable());
 
     this.disable();
-  }
-
-  onClickSetFocusOnBranchNameInput() {
-    this.branchInput.focus();
   }
 
   // `TAB` autocompletes the source.
