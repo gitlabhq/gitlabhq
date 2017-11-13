@@ -104,6 +104,7 @@ class JenkinsDeprecatedService < CiService
       begin
         src = Nokogiri.parse(response).css('img.build-caption-status-icon,.build-caption>img').first.attributes['src'].value
       rescue NoMethodError => ex
+        Raven.capture_exception(ex, extra: { 'response' => response })
         return :error
       end
 
