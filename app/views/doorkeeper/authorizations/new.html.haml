@@ -1,5 +1,3 @@
-- auth_app_owner = @pre_auth.client.application.owner
-
 %main{ :role => "main" }
   .modal-no-backdrop.modal-doorkeepr-auth
     .modal-content
@@ -20,9 +18,14 @@
         %p
           An application called
           = link_to @pre_auth.client.name, @pre_auth.redirect_uri, target: '_blank', rel: 'noopener noreferrer'
-          is requesting access to your GitLab account. This application was created by
-          = succeed "." do
-            = link_to auth_app_owner.name, user_path(auth_app_owner)
+          is requesting access to your GitLab account.
+
+          - auth_app_owner = @pre_auth.client.application.owner
+          - if auth_app_owner
+            This application was created by
+            = succeed "." do
+              = link_to auth_app_owner.name, user_path(auth_app_owner)
+
           Please note that this application is not provided by GitLab and you should verify its authenticity before
           allowing access.
         - if @pre_auth.scopes
