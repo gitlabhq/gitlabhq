@@ -331,7 +331,7 @@ GitLabDropdown = (function() {
             if (_this.dropdown.find('.dropdown-toggle-page').length) {
               selector = ".dropdown-page-one " + selector;
             }
-            return $(selector);
+            return $(selector, this.instance.dropdown);
           };
         })(this),
         data: (function(_this) {

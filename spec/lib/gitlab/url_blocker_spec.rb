@@ -20,6 +20,22 @@ describe Gitlab::UrlBlocker do
       expect(described_class.blocked_url?('https://gitlab.com:25/foo/foo.git')).to be true
     end
 
+    it 'returns true for alternative version of 127.0.0.1 (0177.1)' do
+      expect(described_class.blocked_url?('https://0177.1:65535/foo/foo.git')).to be true
+    end
+
+    it 'returns true for alternative version of 127.0.0.1 (0x7f.1)' do
+      expect(described_class.blocked_url?('https://0x7f.1:65535/foo/foo.git')).to be true
+    end
+
+    it 'returns true for alternative version of 127.0.0.1 (2130706433)' do
+      expect(described_class.blocked_url?('https://2130706433:65535/foo/foo.git')).to be true
+    end
+
+    it 'returns true for alternative version of 127.0.0.1 (127.000.000.001)' do
+      expect(described_class.blocked_url?('https://127.000.000.001:65535/foo/foo.git')).to be true
+    end
+
     it 'returns true for a non-alphanumeric hostname' do
       stub_resolv
 

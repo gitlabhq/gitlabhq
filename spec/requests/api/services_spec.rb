@@ -175,4 +175,25 @@ describe API::Services do
       end
     end
   end
+
+  describe 'Mattermost service' do
+    let(:service_name) { 'mattermost' }
+    let(:params) do
+      { webhook: 'https://hook.example.com', username: 'username' }
+    end
+
+    before do
+      project.create_mattermost_service(
+        active: true,
+        properties: params
+      )
+    end
+
+    it 'accepts a username for update' do
+      put api("/projects/#{project.id}/services/mattermost", user), params.merge(username: 'new_username')
+
+      expect(response).to have_gitlab_http_status(200)
+      expect(json_response['properties']['username']).to eq('new_username')
+    end
+  end
 end

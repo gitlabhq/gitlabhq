@@ -129,6 +129,8 @@ module Gitlab
       # whether we are running in parallel mode or not. For more information see
       # `#rate_or_wait_for_rate_limit`.
       def with_rate_limit
+        return yield unless rate_limiting_enabled?
+
         request_count_counter.increment
 
         raise_or_wait_for_rate_limit unless requests_remaining?
@@ -168,6 +170,10 @@ module Gitlab
         # resume when the rate limit resets as this may result in us performing
         # a request before GitHub has a chance to reset the limit.
         octokit.rate_limit.resets_in + 5
+      end
+
+      def rate_limiting_enabled?
+        @rate_limiting_enabled ||= api_endpoint.include?('.github.com')
       end
 
       def api_endpoint

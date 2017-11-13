@@ -572,7 +572,7 @@ Parameters:
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
 | `token` | string | yes | The Mattermost token |
-
+| `username` | string | no | The username to use to post the message |
 
 ### Delete Mattermost slash command service
 

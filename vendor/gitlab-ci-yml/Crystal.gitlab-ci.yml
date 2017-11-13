@@ -16,7 +16,7 @@ image: "crystallang/crystal:latest"
 # Cache shards in between builds
 cache:
   paths:
-    - libs
+    - lib
 
 # This is a basic example for a shard or script which doesn't use
 # services such as redis or postgres
