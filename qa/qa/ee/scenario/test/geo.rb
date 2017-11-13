@@ -11,9 +11,12 @@ module QA
           attribute :geo_secondary_name, '--secondary-name SECONDARY_NAME'
 
           def perform(**args)
-            QA::Specs::Config.perform
+            # TODO, abstract this away in the Factory module
+            QA::Specs::Config.act { configure_capybara! }
 
-            puts QA::Runtime::Scenario.attributes.inspect
+            # TODO, devise a way to decouple licence factory from Runtime.gitlab_address
+            QA::Runtime::Scenario.define(:gitlab_address, args[:geo_primary_address])
+
             Geo::Primary.act do
               add_license
               enable_hashed_storage
@@ -56,13 +59,13 @@ module QA
             end
 
             def set_replication_password
-              Shell::Omnibus.act do
+              QA::Shell::Omnibus.new(@name).act do
                 gitlab_ctl 'set-replication-password', input: 'echo mypass'
               end
             end
 
             def set_primary_node
-              Shell::Omnibus.act do
+              Shell::Omnibus.new(@name).act do
                 gitlab_ctl 'set-geo-primary-node'
               end
             end
@@ -77,7 +80,7 @@ module QA
             end
 
             def replicate_database
-              Shell::Omnibus.act do
+              Shell::Omnibus.new(@name).act do
                 gitlab_ctl "replicate-geo-database --host=#{@address} --slot-name=#{@name} --no-wait", input: 'echo mypass'
               end
             end

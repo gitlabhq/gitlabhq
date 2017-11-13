@@ -97,6 +97,13 @@ module QA
   end
 
   ##
+  # Classes describing shell interaction with GitLab
+  #
+  module Shell
+    autoload :Omnibus, 'qa/shell/omnibus'
+  end
+
+  ##
   # Classes that make it possible to execute features tests.
   #
   module Specs

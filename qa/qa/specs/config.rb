@@ -9,6 +9,8 @@ require 'selenium-webdriver'
 module QA
   module Specs
     class Config < Scenario::Template
+      include Scenario::Actable
+
       def perform
         configure_rspec!
         configure_capybara!
