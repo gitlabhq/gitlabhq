@@ -408,6 +408,8 @@ describe API::V3::Builds do
 
   describe 'POST /projects/:id/builds/:build_id/erase' do
     before do
+      project.add_master(user)
+
       post v3_api("/projects/#{project.id}/builds/#{build.id}/erase", user)
     end
 
