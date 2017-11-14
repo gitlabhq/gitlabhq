@@ -143,7 +143,7 @@ describe('AddIssuableForm', () => {
       });
     });
 
-    describe('with autoCompleteSources', () => {
+    describe('with no autoCompleteSources', () => {
       beforeEach(() => {
         vm = new AddIssuableForm({
           propsData: {
