@@ -6,11 +6,11 @@
 - if @merge_request_diff&.empty?
   .nothing-here-block
     = image_tag 'illustrations/merge_request_changes_empty.svg'
-    %p
-      Nothing to merge from
-      %strong= @merge_request.source_branch
-      into
-      %strong= @merge_request.target_branch
+    = succeed '.' do
+      No changes between
+      %span.ref-name= @merge_request.source_branch
+      and
+      %span.ref-name= @merge_request.target_branch
       %p= link_to 'Create commit', project_new_blob_path(@project, @merge_request.source_branch), class: 'btn btn-save'
 - else
   - diff_viewable = @merge_request_diff ? @merge_request_diff.collected? || @merge_request_diff.overflow? : true

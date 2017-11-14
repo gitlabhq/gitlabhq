@@ -724,11 +724,10 @@ module SystemNoteService
   end
 
   def merge_request_commit_url(merge_request, commit)
-    url_helpers.diffs_namespace_project_merge_request_url(
-      merge_request.target_project.namespace,
+    url_helpers.diffs_project_merge_request_url(
       merge_request.target_project,
-      merge_request.iid,
-      commit_id: commit.id
+      merge_request,
+      commit_id: commit
     )
   end
 end

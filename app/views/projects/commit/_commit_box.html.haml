@@ -87,6 +87,6 @@
 
       This commit is part of merge request
       = succeed '.' do
-        = link_to @merge_request.to_reference, namespace_project_merge_request_path(@project.namespace, @project, @merge_request)
+        = link_to @merge_request.to_reference, diffs_project_merge_request_path(@project, @merge_request, commit_id: @commit.id)
 
       Comments created here will be created in the context of that merge request.
