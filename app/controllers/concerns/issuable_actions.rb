@@ -9,10 +9,7 @@ module IssuableActions
 
   def show
     respond_to do |format|
-      format.html do
-        render show_view
-      end
-
+      format.html
       format.json do
         render json: serializer.represent(issuable, serializer: params[:serializer])
       end
@@ -152,10 +149,6 @@ module IssuableActions
     else
       render json: { errors: @issuable.errors.full_messages }, status: :unprocessable_entity
     end
-  end
-
-  def show_view
-    'show'
   end
 
   def serializer

@@ -1,0 +1,15 @@
+%li
+  .issue-box
+    .issue-info-container
+      .issue-main-info
+        .issue-title.title
+          %span.issue-title-text
+            = link_to epic.title, epic_path(epic)
+        .issuable-info
+          %span.issuable-reference
+            -# TODO: Use to_reference
+            = "&#{epic.iid}"
+          %span.issuable-authored.hidden-xs
+            &middot;
+            opened #{time_ago_with_tooltip(epic.created_at, placement: 'bottom')}
+            by #{link_to_member(@group, epic.author, avatar: false)}

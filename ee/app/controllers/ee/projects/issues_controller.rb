@@ -12,7 +12,6 @@ module EE
 
       def service_desk
         @issues = @issuables
-
         @users.push(::User.support_bot)
       end
 
