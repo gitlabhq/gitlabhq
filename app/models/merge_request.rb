@@ -865,7 +865,19 @@ class MergeRequest < ActiveRecord::Base
   #
   def all_commit_shas
     if persisted?
-      column_shas = MergeRequestDiffCommit.where(merge_request_diff: merge_request_diffs).limit(10_000).pluck('sha')
+      # MySQL doesn't support LIMIT in a subquery.
+      diffs_relation =
+        if Gitlab::Database.postgresql?
+          merge_request_diffs.order(id: :desc).limit(100)
+        else
+          merge_request_diffs
+        end
+
+      column_shas = MergeRequestDiffCommit
+                      .where(merge_request_diff: diffs_relation)
+                      .limit(10_000)
+                      .pluck('sha')
+
       serialised_shas = merge_request_diffs.where.not(st_commits: nil).flat_map(&:commit_shas)
 
       (column_shas + serialised_shas).uniq
@@ -944,10 +956,6 @@ class MergeRequest < ActiveRecord::Base
     return false if last_diff_sha != diff_head_sha
 
     true
-  end
-
-  def update_project_counter_caches?
-    state_changed?
   end
 
   def update_project_counter_caches

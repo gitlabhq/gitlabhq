@@ -3,7 +3,7 @@ import flash from '../../flash';
 import service from '../services';
 import * as types from './mutation_types';
 
-export const redirectToUrl = url => gl.utils.visitUrl(url);
+export const redirectToUrl = (_, url) => gl.utils.visitUrl(url);
 
 export const setInitialData = ({ commit }, data) => commit(types.SET_INITIAL_DATA, data);
 
@@ -84,7 +84,7 @@ export const commitChanges = ({ commit, state, dispatch, getters }, { payload, n
     flash(`Your changes have been committed. Commit ${data.short_id} with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`, 'notice');
 
     if (newMr) {
-      redirectToUrl(`${state.endpoints.newMergeRequestUrl}${branch}`);
+      dispatch('redirectToUrl', `${state.endpoints.newMergeRequestUrl}${branch}`);
     } else {
       commit(types.SET_COMMIT_REF, data.id);
 

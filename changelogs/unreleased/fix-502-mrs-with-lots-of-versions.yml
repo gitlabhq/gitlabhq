@@ -1,0 +1,6 @@
+---
+title: Ensure merge requests with lots of version don't time out when searching for
+  pipelines
+merge_request:
+author:
+type: performance

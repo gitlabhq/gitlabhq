@@ -338,7 +338,8 @@ class GfmAutoComplete {
         let resultantValue = value;
         if (value && !this.setting.skipSpecialCharacterTest) {
           const withoutAt = value.substring(1);
-          if (withoutAt && /[^\w\d]/.test(withoutAt)) {
+          const regex = value.charAt() === '~' ? /\W|^\d+$/ : /\W/;
+          if (withoutAt && regex.test(withoutAt)) {
             resultantValue = `${value.charAt()}"${withoutAt}"`;
           }
         }

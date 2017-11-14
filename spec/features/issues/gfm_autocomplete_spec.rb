@@ -218,18 +218,18 @@ feature 'GFM autocomplete', :js do
       user_item = find('.atwho-view li', text: user.username)
       expect(user_item).to have_content(user.username)
     end
+  end
 
-    def expect_to_wrap(should_wrap, item, note, value)
-      expect(item).to have_content(value)
-      expect(item).not_to have_content("\"#{value}\"")
+  def expect_to_wrap(should_wrap, item, note, value)
+    expect(item).to have_content(value)
+    expect(item).not_to have_content("\"#{value}\"")
 
-      item.click
+    item.click
 
-      if should_wrap
-        expect(note.value).to include("\"#{value}\"")
-      else
-        expect(note.value).not_to include("\"#{value}\"")
-      end
+    if should_wrap
+      expect(note.value).to include("\"#{value}\"")
+    else
+      expect(note.value).not_to include("\"#{value}\"")
     end
   end
 end
