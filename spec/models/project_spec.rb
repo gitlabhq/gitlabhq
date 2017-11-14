@@ -1023,6 +1023,7 @@ describe Project do
 
       context 'When in a geo secondary node' do
         let(:geo_url) { 'http://geo.example.com' }
+        let(:avatar_path) { project.avatar_path(only_path: true) }
 
         before do
           allow(Gitlab::Geo).to receive(:secondary?) { true }

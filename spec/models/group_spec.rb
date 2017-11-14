@@ -259,6 +259,7 @@ describe Group do
       end
 
       context 'when in a geo secondary node' do
+        let(:avatar_path) { group.avatar_path(only_path: true) }
         let(:geo_host) { 'http://geo.example.com' }
         let(:geo_avatar_url) { [geo_host, avatar_path].join }
 
