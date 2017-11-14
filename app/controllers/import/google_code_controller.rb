@@ -90,11 +90,9 @@ class Import::GoogleCodeController < Import::BaseController
     @target_namespace = current_user.namespace
     @project_name = repo.name
 
-    namespace = @target_namespace
-
     user_map = session[:google_code_user_map]
 
-    @project = Gitlab::GoogleCodeImport::ProjectCreator.new(repo, namespace, current_user, user_map).execute
+    @project = Gitlab::GoogleCodeImport::ProjectCreator.new(repo, @target_namespace, current_user, user_map).execute
   end
 
   private

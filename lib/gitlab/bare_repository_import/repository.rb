@@ -1,14 +1,14 @@
 module Gitlab
   module BareRepositoryImport
     class Repository
-      attr_reader :group_path, :project_name, :repo_path
+      attr_reader :namespace_path, :project_name, :repo_path
 
       def initialize(root_path, repo_path)
         @root_path = root_path
         @repo_path = repo_path
 
         # Split path into 'all/the/namespaces' and 'project_name'
-        @group_path, _, @project_name = repo_relative_path.rpartition('/')
+        @namespace_path, _, @project_name = repo_relative_path.rpartition('/')
       end
 
       def wiki_exists?
@@ -24,11 +24,11 @@ module Gitlab
       end
 
       def hashed?
-        @hashed ||= group_path.start_with?('@hashed')
+        @hashed ||= namespace_path.start_with?('@hashed')
       end
 
       def project_full_path
-        @project_full_path ||= "#{group_path}/#{project_name}"
+        @project_full_path ||= "#{namespace_path}/#{project_name}"
       end
 
       private

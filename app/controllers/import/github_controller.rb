@@ -24,6 +24,7 @@ class Import::GithubController < Import::BaseController
 
   def status
     @repos = client.repos
+
     @already_added_projects = current_user.created_projects.where(import_type: provider)
     already_added_projects_names = @already_added_projects.pluck(:import_source)
 
@@ -39,8 +40,7 @@ class Import::GithubController < Import::BaseController
     @repo_id = params[:repo_id].to_i
     repo = client.repo(@repo_id)
     @project_name = params[:new_name].presence || repo.name
-    namespace_path = params[:target_namespace].presence || current_user.namespace_path
-    @target_namespace = find_or_create_namespace(namespace_path, current_user.namespace_path)
+    @target_namespace = find_or_create_namespace(repo.owner.login, client.user.login)
 
     if can?(current_user, :create_projects, @target_namespace)
       @project = Gitlab::LegacyGithubImport::ProjectCreator.new(repo, @project_name, @target_namespace, current_user, access_params, type: provider).execute

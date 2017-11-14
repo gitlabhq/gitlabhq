@@ -3,7 +3,7 @@ class Import::GitlabProjectsController < Import::BaseController
 
   def new
     @namespace = Namespace.find(project_params[:namespace_id])
-    return render_404 unless current_user.can?(:create_projects, @namespace)
+    return render_404 unless can?(current_user, :create_projects, @namespace)
     @path = project_params[:path]
   end
 

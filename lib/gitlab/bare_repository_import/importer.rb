@@ -29,7 +29,7 @@ module Gitlab
       attr_reader :user, :project_name, :bare_repo
 
       delegate :log, to: :class
-      delegate :project_name, :project_full_path, :group_path, :repo_path, :wiki_path, to: :bare_repo
+      delegate :project_name, :project_full_path, :namespace_path, :repo_path, :wiki_path, to: :bare_repo
 
       def initialize(user, bare_repo)
         @user = user
@@ -49,13 +49,13 @@ module Gitlab
       private
 
       def create_project
-        group = find_or_create_groups
+        namespace = find_or_create_namespace
 
         project = Projects::CreateService.new(user,
                                               name: project_name,
                                               path: project_name,
                                               skip_disk_validation: true,
-                                              namespace_id: group&.id).execute
+                                              namespace_id: namespace&.id).execute
 
         if project.persisted? && mv_repo(project)
           log " * Created #{project.name} (#{project_full_path})".color(:green)
@@ -83,12 +83,12 @@ module Gitlab
         false
       end
 
-      def find_or_create_groups
-        return nil unless group_path.present?
+      def find_or_create_namespace
+        return nil unless namespace_path.present?
 
-        log " * Using namespace: #{group_path}"
+        log " * Using namespace: #{namespace_path}"
 
-        Groups::NestedCreateService.new(user, group_path: group_path).execute
+        Groups::NestedCreateService.new(user, group_path: namespace_path).execute
       end
 
       # This is called from within a rake task only used by Admins, so allow writing

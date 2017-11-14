@@ -64,11 +64,9 @@ class Import::FogbugzController < Import::BaseController
     @target_namespace = current_user.namespace
     @project_name = repo.name
 
-    namespace = @target_namespace
+    user_map = session[:fogbugz_user_map] || client.user_map
 
-    umap = session[:fogbugz_user_map] || client.user_map
-
-    @project = Gitlab::FogbugzImport::ProjectCreator.new(repo, fb_session, namespace, current_user, umap).execute
+    @project = Gitlab::FogbugzImport::ProjectCreator.new(repo, fb_session, @target_namespace, current_user, user_map).execute
   end
 
   private

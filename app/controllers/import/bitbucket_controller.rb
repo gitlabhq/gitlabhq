@@ -17,7 +17,6 @@ class Import::BitbucketController < Import::BaseController
   end
 
   def status
-    bitbucket_client = Bitbucket::Client.new(credentials)
     repos = bitbucket_client.repos
 
     @repos, @incompatible_repos = repos.partition { |repo| repo.valid? }
@@ -35,20 +34,13 @@ class Import::BitbucketController < Import::BaseController
   end
 
   def create
-    bitbucket_client = Bitbucket::Client.new(credentials)
-
     @repo_id = params[:repo_id].to_s
     name = @repo_id.gsub('___', '/')
     repo = bitbucket_client.repo(name)
     @project_name = params[:new_name].presence || repo.name
+    @target_namespace = find_or_create_namespace(repo.owner, bitbucket_client.user.username)
 
-    repo_owner = repo.owner
-    repo_owner = current_user.username if repo_owner == bitbucket_client.user.username
-    namespace_path = params[:new_namespace].presence || repo_owner
-
-    @target_namespace = find_or_create_namespace(namespace_path, current_user)
-
-    if current_user.can?(:create_projects, @target_namespace)
+    if can?(current_user, :create_projects, @target_namespace)
       # The token in a session can be expired, we need to get most recent one because
       # Bitbucket::Connection class refreshes it.
       session[:bitbucket_token] = bitbucket_client.connection.token
@@ -62,6 +54,10 @@ class Import::BitbucketController < Import::BaseController
 
   def client
     @client ||= OAuth2::Client.new(provider.app_id, provider.app_secret, options)
+  end
+
+  def bitbucket_client
+    @bitbucket_client ||= Bitbucket::Client.new(credentials)
   end
 
   def provider

@@ -11,10 +11,12 @@ module Groups
     def execute
       return nil unless group_path
 
+      # TODO: What if already exists as user namespace?
       if group = Group.find_by_full_path(group_path)
         return group
       end
 
+      # TODO: Should already be handled by validation
       if group_path.include?('/') && !Group.supports_nested_groups?
         raise 'Nested groups are not supported on MySQL'
       end
@@ -38,6 +40,7 @@ module Groups
           name: subgroup_name,
           parent: last_group
         )
+        # TODO: What if existing group has lower visibility?
         new_params[:visibility_level] ||= Gitlab::CurrentSettings.current_application_settings.default_group_visibility
 
         last_group = Group.find_by_full_path(partial_path) || Groups::CreateService.new(current_user, new_params).execute
