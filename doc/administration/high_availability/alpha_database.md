@@ -232,7 +232,6 @@ See `START user configuration` section in the next step for required information
     postgresql['hot_standby'] = 'on'
     postgresql['wal_level'] = 'replica'
     postgresql['shared_preload_libraries'] = 'repmgr_funcs'
-    postgresql['sql_user_password'] = 'POSTGRESQL_PASSWORD_HASH'
 
     # Disable automatic database migrations
     gitlab_rails['auto_migrate'] = false
