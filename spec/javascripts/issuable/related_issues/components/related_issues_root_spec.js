@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import relatedIssuesRoot from '~/issuable/related_issues/components/related_issues_root.vue';
-import relatedIssuesService from '~/issuable/related_issues/services/related_issues_service.js';
+import relatedIssuesService from '~/issuable/related_issues/services/related_issues_service';
 
 const defaultProps = {
   endpoint: '/foo/bar/issues/1/related_issues',
@@ -26,7 +26,7 @@ const issuable2 = {
   destroy_relation_path: '/foo/bar/issues/124/related_issues/1',
 };
 
-fdescribe('RelatedIssuesRoot', () => {
+describe('RelatedIssuesRoot', () => {
   let RelatedIssuesRoot;
   let vm;
 
