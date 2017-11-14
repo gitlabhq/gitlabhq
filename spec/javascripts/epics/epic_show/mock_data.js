@@ -1,7 +1,7 @@
 export const contentProps = {
   endpoint: '',
   canUpdate: true,
-  canDestroy: false,
+  canDestroy: true,
   markdownPreviewPath: '',
   markdownDocsPath: '',
   groupPath: '',

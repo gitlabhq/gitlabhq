@@ -32,6 +32,14 @@ describe EpicPolicy do
     it 'reporter group member can manage epics' do
       group.add_reporter(user)
 
+      expect(permissions(user, group)).to be_disallowed(:destroy_epic)
+      expect(permissions(user, group))
+        .to be_allowed(:read_epic, :update_epic, :admin_epic, :create_epic)
+    end
+
+    it 'only group owner can destroy epics' do
+      group.add_owner(user)
+
       expect(permissions(user, group))
         .to be_allowed(:read_epic, :update_epic, :destroy_epic, :admin_epic, :create_epic)
     end
@@ -60,6 +68,14 @@ describe EpicPolicy do
     it 'reporter group member can manage epics' do
       group.add_reporter(user)
 
+      expect(permissions(user, group)).to be_disallowed(:destroy_epic)
+      expect(permissions(user, group))
+        .to be_allowed(:read_epic, :update_epic, :admin_epic, :create_epic)
+    end
+
+    it 'only group owner can destroy epics' do
+      group.add_owner(user)
+
       expect(permissions(user, group))
         .to be_allowed(:read_epic, :update_epic, :destroy_epic, :admin_epic, :create_epic)
     end
@@ -87,6 +103,14 @@ describe EpicPolicy do
 
     it 'reporter group member can manage epics' do
       group.add_reporter(user)
+
+      expect(permissions(user, group)).to be_disallowed(:destroy_epic)
+      expect(permissions(user, group))
+        .to be_allowed(:read_epic, :update_epic, :admin_epic, :create_epic)
+    end
+
+    it 'only group owner can destroy epics' do
+      group.add_owner(user)
 
       expect(permissions(user, group))
         .to be_allowed(:read_epic, :update_epic, :destroy_epic, :admin_epic, :create_epic)

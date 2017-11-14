@@ -91,7 +91,7 @@ describe Groups::EpicsController do
 
   describe 'PUT #update' do
     before do
-      group.add_user(user, :developer)
+      group.add_developer(user)
       put :update, group_id: group, id: epic.to_param, epic: { title: 'New title' }, format: :json
     end
 
@@ -107,7 +107,7 @@ describe Groups::EpicsController do
   describe 'GET #realtime_changes' do
     subject { get :realtime_changes, group_id: group, id: epic.to_param }
     it 'returns epic' do
-      group.add_user(user, :developer)
+      group.add_developer(user)
       subject
 
       expect(response.content_type).to eq 'application/json'
@@ -120,6 +120,27 @@ describe Groups::EpicsController do
 
         expect(response).to have_http_status(404)
       end
+    end
+  end
+
+  describe "DELETE #destroy" do
+    before do
+      sign_in(user)
+    end
+
+    it "rejects a developer to destroy an epic" do
+      group.add_developer(user)
+      delete :destroy, group_id: group, id: epic.to_param
+
+      expect(response).to have_gitlab_http_status(404)
+    end
+
+    it "deletes the epic" do
+      group.add_owner(user)
+      delete :destroy, group_id: group, id: epic.to_param
+
+      expect(response).to have_gitlab_http_status(302)
+      expect(controller).to set_flash[:notice].to(/The epic was successfully deleted\./)
     end
   end
 end

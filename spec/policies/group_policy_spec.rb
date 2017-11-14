@@ -26,6 +26,7 @@ describe GroupPolicy do
       :admin_namespace,
       :admin_group_member,
       :change_visibility_level,
+      :destroy_epic,
       (Gitlab::Database.postgresql? ? :create_subgroup : nil)
     ].compact
   end
