@@ -19,7 +19,9 @@ module API
         status 200
 
         # Stores some Git-specific env thread-safely
-        Gitlab::Git::Env.set(parse_env)
+        env = parse_env
+        env = fix_git_env_repository_paths(env, repository_path) if project
+        Gitlab::Git::Env.set(env)
 
         actor =
           if params[:key_id]
