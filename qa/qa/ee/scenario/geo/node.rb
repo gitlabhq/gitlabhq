@@ -1,0 +1,26 @@
+module QA
+  module EE
+    module Scenario
+      module Geo
+        class Node < QA::Scenario::Template
+          attr_accessor :address
+
+          def perform
+            QA::Page::Main::Entry.act { sign_in_using_credentials }
+            QA::Page::Main::Menu.act { go_to_admin_area }
+            QA::Page::Admin::Menu.act { go_to_geo_nodes }
+
+            EE::Page::Admin::GeoNodes.act(address) do |address|
+              raise ArgumentError if address.nil?
+
+              set_node_address(address)
+              add_node!
+            end
+
+            QA::Page::Main::Menu.act { sign_out }
+          end
+        end
+      end
+    end
+  end
+end

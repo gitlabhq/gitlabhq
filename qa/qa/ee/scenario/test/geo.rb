@@ -56,7 +56,11 @@ module QA
             end
 
             def add_secondary_node
-              # TODO EE::Factory::GeoNode - gitlab-org/gitlab-qa#86
+              # TODO, Factory::Geo::Node - gitlab-org/gitlab-qa#86
+              #
+              Scenario::Geo::Node.perform do |node|
+                node.address = QA::Runtime::Scenario.geo_secondary_address
+              end
             end
 
             def set_replication_password
