@@ -15,6 +15,15 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     where(repository_sync_failed.or(wiki_sync_failed))
   end
 
+  def self.retry_due
+    where(
+      arel_table[:repository_retry_at].lt(Time.now)
+        .or(arel_table[:wiki_retry_at].lt(Time.now))
+        .or(arel_table[:repository_retry_at].eq(nil))
+        .or(arel_table[:wiki_retry_at].eq(nil))
+    )
+  end
+
   def self.synced
     where.not(last_repository_synced_at: nil, last_repository_successful_sync_at: nil)
       .where(resync_repository: false, resync_wiki: false)
@@ -39,10 +48,16 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
   end
 
   def repository_sync_needed?(timestamp)
-    resync_repository? && (last_repository_synced_at.nil? || timestamp > last_repository_synced_at)
+    return false unless resync_repository?
+    return false if repository_retry_at && timestamp < repository_retry_at
+
+    last_repository_synced_at.nil? || timestamp > last_repository_synced_at
   end
 
   def wiki_sync_needed?(timestamp)
-    resync_wiki? && (last_wiki_synced_at.nil? || timestamp > last_wiki_synced_at)
+    return false unless resync_wiki?
+    return false if wiki_retry_at && timestamp < wiki_retry_at
+
+    last_wiki_synced_at.nil? || timestamp > last_wiki_synced_at
   end
 end

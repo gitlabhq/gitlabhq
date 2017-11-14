@@ -29,6 +29,8 @@ describe Geo::FileDownloadService do
         stub_transfer(Gitlab::Geo::FileTransfer, -1)
 
         expect { execute! }.to change { Geo::FileRegistry.failed.count }.by(1)
+        expect(Geo::FileRegistry.last.retry_count).to eq(1)
+        expect(Geo::FileRegistry.last.retry_at).to be_present
       end
 
       it 'registers when the download fails with some other error' do

@@ -2,6 +2,8 @@ module Geo
   class FileDownloadService < FileService
     LEASE_TIMEOUT = 8.hours.freeze
 
+    include Delay
+
     def execute
       try_obtain_lease do |lease|
         start_time = Time.now
@@ -45,6 +47,13 @@ module Geo
 
       transfer.bytes = bytes_downloaded
       transfer.success = success
+
+      unless success
+        # We don't limit the amount of retries
+        transfer.retry_count = (transfer.retry_count || 0) + 1
+        transfer.retry_at = Time.now + delay(transfer.retry_count).seconds
+      end
+
       transfer.save
     end
 
