@@ -27,5 +27,4 @@ class UpdateMergeRequestsWorker
 
     Rails.logger.info("UpdateMergeRequestsWorker#perform #{args_log}") if time.real > LOG_TIME_THRESHOLD
   end
-
 end
