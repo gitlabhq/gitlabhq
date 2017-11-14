@@ -1,18 +1,10 @@
 <script>
 import { mapGetters } from 'vuex';
 import htmlPreview from './viewers/html.vue';
-import pdfPreview from './viewers/pdf.vue';
-import stlPreview from './viewers/stl.vue';
-import imagePreview from './viewers/image.vue';
-import sketchPreview from './viewers/sketch.vue';
 
 export default {
   components: {
-    pdfPreview,
     htmlPreview,
-    stlPreview,
-    imagePreview,
-    sketchPreview,
   },
   computed: {
     ...mapGetters([

@@ -49,3 +49,5 @@ export const canEditFile = (state) => {
     openedFiles.length &&
     (currentActiveFile && !currentActiveFile.renderError && !currentActiveFile.binary);
 };
+
+export const canRenderLocally = () => false;
