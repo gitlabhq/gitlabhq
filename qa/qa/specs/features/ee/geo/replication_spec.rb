@@ -27,11 +27,18 @@ module QA
       end
 
       Page::Main::Entry.act { visit(Runtime::Scenario.geo_secondary_address) }
+      expect(page).to have_content 'You are on a secondary (read-only) Geo node'
 
-      expect(page).to have_content 'Authorize Geo node'
+      Page::Main::OAuth.act do
+        if needs_authorization?
+          expect(page).to have_content 'Authorize Geo node'
 
-      Page::Main::OAuth.act { authorize }
-      Page::Main::Menu.act { go_to_project }
+          authorize!
+        end
+      end
+
+      Page::Main::Menu.act { go_to_projects }
+      expect(page).to have_content 'geo-project'
     end
   end
 end
