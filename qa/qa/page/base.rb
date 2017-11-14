@@ -9,6 +9,14 @@ module QA
       def refresh
         visit current_path
       end
+
+      def scroll_to(css, &block)
+        page.execute_script <<~JS
+          document.getElementsByClassName("#{css.sub(/^\./, '')}")[0].scrollIntoView();
+        JS
+
+        page.within(css, &block)
+      end
     end
   end
 end

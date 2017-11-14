@@ -49,6 +49,10 @@ module QA
       module Sandbox
         autoload :Prepare, 'qa/scenario/gitlab/sandbox/prepare'
       end
+
+      module Admin
+        autoload :HashedStorage, 'qa/scenario/gitlab/admin/hashed_storage'
+      end
     end
   end
 
@@ -81,6 +85,7 @@ module QA
 
     module Admin
       autoload :Menu, 'qa/page/admin/menu'
+      autoload :Settings, 'qa/page/admin/settings'
     end
 
     module Mattermost

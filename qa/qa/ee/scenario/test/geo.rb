@@ -11,10 +11,9 @@ module QA
           attribute :geo_secondary_name, '--secondary-name SECONDARY_NAME'
 
           def perform(**args)
-            # TODO, abstract this away in the Factory module
+            # TODO, Factory::License -> gitlab-org/gitlab-qa#86
+            #
             QA::Specs::Config.act { configure_capybara! }
-
-            # TODO, devise a way to decouple licence factory from Runtime.gitlab_address
             QA::Runtime::Scenario.define(:gitlab_address, args[:geo_primary_address])
 
             Geo::Primary.act do
@@ -45,17 +44,19 @@ module QA
             end
 
             def add_license
-              # TODO move ENV call to the scenario
+              # TODO EE license to Runtime.license, gitlab-org/gitlab-qa#86
               #
               Scenario::License::Add.perform(ENV['EE_LICENSE'])
             end
 
             def enable_hashed_storage
-              # TODO implement hashed storage factory
+              # TODO, Factory::HashedStorage - gitlab-org/gitlab-qa#86
+              #
+              QA::Scenario::Gitlab::Admin::HashedStorage.perform(:enabled)
             end
 
             def add_secondary_node
-              # TODO implement secondary node factory
+              # TODO EE::Factory::GeoNode - gitlab-org/gitlab-qa#86
             end
 
             def set_replication_password
@@ -83,7 +84,6 @@ module QA
                 require 'uri'
 
                 host = URI(QA::Runtime::Scenario.geo_primary_address).host
-                host = '172.22.0.2' #tmp
                 slot = QA::Runtime::Scenario.geo_primary_name.tr('-', '_')
 
                 gitlab_ctl "replicate-geo-database --host=#{host} --slot-name=#{slot} " \
