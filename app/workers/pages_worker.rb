@@ -7,7 +7,7 @@ class PagesWorker
     send(action, *arg) # rubocop:disable GitlabSecurity/PublicSend
   end
 
-  def deploy(project_id, project_path, build_id)
+  def deploy(project_id, project_path, pipeline_id, build_id, pages_config)
     build = Ci::Build.find_by(id: build_id)
     result = Projects::UpdatePagesService.new(build.project, build).execute
     if result[:status] == :success

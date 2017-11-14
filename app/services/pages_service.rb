@@ -10,8 +10,11 @@ class PagesService
     return unless job.name == 'pages'
     return unless job.success?
 
-    PagesWorker.perform_async(:deploy,
-      job.project.id, job.project.full_path, job.id,
+    PagesWorker.perform_async(
+      :deploy,
+      job.project.id, job.project.full_path, 
+      job.commit_id,
+      job.id,
       job.project.pages_config)
   end
 end
