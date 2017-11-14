@@ -26,7 +26,7 @@ const issuable2 = {
   destroy_relation_path: '/foo/bar/issues/124/related_issues/1',
 };
 
-describe('RelatedIssuesRoot', () => {
+fdescribe('RelatedIssuesRoot', () => {
   let RelatedIssuesRoot;
   let vm;
 
@@ -138,6 +138,7 @@ describe('RelatedIssuesRoot', () => {
 
     describe('onPendingFormSubmit', () => {
       beforeEach(() => {
+        spyOn(relatedIssuesService.prototype, 'fetchRelatedIssues').and.returnValue(Promise.reject());
         vm = new RelatedIssuesRoot({
           propsData: defaultProps,
         }).$mount();
@@ -250,23 +251,21 @@ describe('RelatedIssuesRoot', () => {
     });
 
     describe('fetchRelatedIssues', () => {
-      beforeEach(() => {
+      beforeEach((done) => {
         vm = new RelatedIssuesRoot({
           propsData: defaultProps,
         }).$mount();
+
+        // wait for internal call to fetchRelatedIssues to resolve
+        setTimeout(() => Vue.nextTick(done));
       });
 
       describe('when the network has not responded yet', () => {
         it('should be fetching', (done) => {
           vm.fetchRelatedIssues();
+          expect(vm.isFetching).toEqual(true);
 
-          setTimeout(() => {
-            Vue.nextTick(() => {
-              expect(vm.isFetching).toEqual(true);
-
-              done();
-            });
-          });
+          setTimeout(() => Vue.nextTick(done));
         });
       });
 
