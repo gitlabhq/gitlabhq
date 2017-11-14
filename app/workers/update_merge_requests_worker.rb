@@ -2,6 +2,8 @@ class UpdateMergeRequestsWorker
   include Sidekiq::Worker
   include DedicatedSidekiqQueue
 
+  LOG_TIME_THRESHOLD = 90 # seconds
+
   def perform(project_id, user_id, oldrev, newrev, ref)
     project = Project.find_by(id: project_id)
     return unless project
@@ -14,12 +16,16 @@ class UpdateMergeRequestsWorker
       MergeRequests::RefreshService.new(project, user).execute(oldrev, newrev, ref)
     end
 
-    log_args = ["elapsed=#{time.real}"]
-    method(__method__).parameters.map do |_, p|
-      pname = p.to_s
-      log_args << [pname, binding.local_variable_get(pname)].join('=')
-    end
+    args_log = [
+      "elapsed=#{time.real}",
+      "project_id=#{project_id}",
+      "user_id=#{user_id}",
+      "oldrev=#{oldrev}",
+      "newrev=#{newrev}",
+      "ref=#{ref}"
+    ].join(',')
 
-    Rails.logger.info("UpdateMergeRequestsWorker#perform #{log_args.join(',')}")
+    Rails.logger.info("UpdateMergeRequestsWorker#perform #{args_log}") if time.real > LOG_TIME_THRESHOLD
   end
+
 end

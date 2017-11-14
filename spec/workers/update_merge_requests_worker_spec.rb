@@ -24,10 +24,16 @@ describe UpdateMergeRequestsWorker do
       perform
     end
 
-    it 'logs performance' do
-      expect(Rails.logger).to receive(:info).with(a_string_matching(/\AUpdateMergeRequestsWorker#perform.*project_id=#{project.id},user_id=#{user.id},oldrev=#{oldrev},newrev=#{newrev},ref=#{ref}/))
+    context 'when slow' do
+      before do
+        stub_const("UpdateMergeRequestsWorker::LOG_TIME_THRESHOLD", -1)
+      end
 
-      perform
+      it 'logs debug info' do
+        expect(Rails.logger).to receive(:info).with(a_string_matching(/\AUpdateMergeRequestsWorker#perform.*project_id=#{project.id},user_id=#{user.id},oldrev=#{oldrev},newrev=#{newrev},ref=#{ref}/))
+
+        perform
+      end
     end
   end
 end
