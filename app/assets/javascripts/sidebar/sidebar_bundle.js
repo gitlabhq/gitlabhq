@@ -66,7 +66,7 @@ function mountParticipantsComponent() {
   });
 }
 
-function mountSubscriptionsComponent() {
+function mountSubscriptionsComponent(mediator) {
   const el = document.querySelector('.js-sidebar-subscriptions-entry-point');
 
   if (!el) return;
@@ -77,7 +77,11 @@ function mountSubscriptionsComponent() {
     components: {
       sidebarSubscriptions,
     },
-    render: createElement => createElement('sidebar-subscriptions', {}),
+    render: createElement => createElement('sidebar-subscriptions', {
+      props: {
+        mediator,
+      },
+    }),
   });
 }
 
@@ -96,7 +100,7 @@ function domContentLoaded() {
   mountConfidentialComponent(mediator);
   mountLockComponent(mediator);
   mountParticipantsComponent();
-  mountSubscriptionsComponent();
+  mountSubscriptionsComponent(mediator);
 
   new SidebarMoveIssue(
     mediator,

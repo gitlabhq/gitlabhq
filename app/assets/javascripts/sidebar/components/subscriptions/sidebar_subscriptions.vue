@@ -1,16 +1,17 @@
 <script>
-import Store from '../../stores/sidebar_store';
-import Mediator from '../../sidebar_mediator';
 import eventHub from '../../event_hub';
 import Flash from '../../../flash';
 import subscriptions from './subscriptions.vue';
 
 export default {
-  data() {
-    return {
-      mediator: new Mediator(),
-      store: new Store(),
-    };
+  props: {
+    mediator: {
+      required: true,
+      type: Object,
+      validator(mediatorObject) {
+        return mediatorObject.toggleSubscription && mediatorObject.store;
+      },
+    },
   },
 
   components: {
@@ -39,7 +40,7 @@ export default {
 <template>
   <div class="block subscriptions">
     <subscriptions
-      :loading="store.isFetching.subscriptions"
-      :subscribed="store.subscribed" />
+      :loading="mediator.store.isFetching.subscriptions"
+      :subscribed="mediator.store.subscribed" />
   </div>
 </template>
