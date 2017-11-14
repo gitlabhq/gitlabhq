@@ -1,12 +1,15 @@
 <script>
+  /* global LineHighlighter */
   import { mapGetters } from 'vuex';
+  import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
 
   export default {
+    components: {
+      loadingIcon,
+    },
     computed: {
       ...mapGetters([
-        'activeFile',
         'activeFileCurrentViewer',
-        'activeFileHTML',
       ]),
     },
     methods: {
@@ -31,12 +34,11 @@
 
 <template>
   <div
-    v-if="!activeFile.renderError"
     class="blob-full-height"
   >
     <div
       v-if="!activeFileCurrentViewer.loading"
-      v-html="activeFileHTML"
+      v-html="activeFileCurrentViewer.html"
       class="blob-full-height"
     >
     </div>
@@ -44,12 +46,9 @@
       v-else
       class="blob-viewer-container text-center prepend-top-default append-bottom-default"
     >
-      <i
-        aria-hidden="true"
-        aria-label="Loading content..."
-        class="fa fa-spinner fa-spin fa-2x"
-      >
-      </i>
+      <loading-icon
+        size="2"
+      />
     </div>
   </div>
 </template>

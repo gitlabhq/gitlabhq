@@ -21,18 +21,15 @@ export const activeFile = state => state.openFiles.find(file => file.active);
 export const activeFileCurrentViewer = (state) => {
   const file = activeFile(state);
 
+  if (!file) return null;
+
   return file[file.currentViewer];
-};
-
-export const activeFileHTML = (state) => {
-  const viewier = activeFileCurrentViewer(state);
-
-  return viewier.html;
 };
 
 export const canActiveFileSwitchViewer = (state) => {
   const file = activeFile(state);
 
+  if (!file) return false;
   if (file.binary) return false;
 
   return file.rich.path !== '' && file.simple.path !== '' && file.simple.name === 'text';
@@ -50,4 +47,12 @@ export const canEditFile = (state) => {
     (currentActiveFile && !currentActiveFile.renderError && !currentActiveFile.binary);
 };
 
-export const canRenderLocally = () => false;
+export const canRenderLocally = (state) => {
+  const viewer = activeFileCurrentViewer(state);
+
+  if ((viewer && viewer.renderError) || (viewer && viewer.html !== '')) {
+    return true;
+  }
+
+  return false;
+};

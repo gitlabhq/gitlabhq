@@ -137,21 +137,6 @@ describe('Multi-file store getters', () => {
     });
   });
 
-  describe('activeFileHTML', () => {
-    it('returns currents viewer HTML', () => {
-      const f = file();
-
-      Object.assign(f, {
-        active: true,
-        rich: Object.assign(f.rich, { html: 'richHTML' }),
-      });
-
-      localState.openFiles.push(f);
-
-      expect(getters.activeFileHTML(localState)).toBe('richHTML');
-    });
-  });
-
   describe('canActiveFileSwitchViewer', () => {
     it('returns false if file is binary', () => {
       const f = file();
@@ -188,6 +173,59 @@ describe('Multi-file store getters', () => {
       localState.openFiles.push(f);
 
       expect(getters.canActiveFileSwitchViewer(localState)).toBeTruthy();
+    });
+  });
+
+  describe('canRenderLocally', () => {
+    it('returns false if no error & no html', () => {
+      const f = file();
+
+      Object.assign(f, {
+        active: true,
+      });
+
+      localState.openFiles.push(f);
+
+      expect(getters.canRenderLocally(localState)).toBeFalsy();
+    });
+
+    it('returns true if no error & html', () => {
+      const f = file();
+
+      Object.assign(f, {
+        active: true,
+        rich: { html: 'test' },
+      });
+
+      localState.openFiles.push(f);
+
+      expect(getters.canRenderLocally(localState)).toBeTruthy();
+    });
+
+    it('returns true if error & no html', () => {
+      const f = file();
+
+      Object.assign(f, {
+        active: true,
+        rich: { renderError: 'test' },
+      });
+
+      localState.openFiles.push(f);
+
+      expect(getters.canRenderLocally(localState)).toBeTruthy();
+    });
+
+    it('returns true if error & html', () => {
+      const f = file();
+
+      Object.assign(f, {
+        active: true,
+        rich: { renderError: 'test', html: 'test' },
+      });
+
+      localState.openFiles.push(f);
+
+      expect(getters.canRenderLocally(localState)).toBeTruthy();
     });
   });
 });

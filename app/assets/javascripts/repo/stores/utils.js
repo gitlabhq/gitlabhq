@@ -5,6 +5,7 @@ export const viewerDataStructure = () => ({
   html: '',
   name: '',
   serverRender: true,
+  renderError: '',
 });
 
 export const dataStructure = () => ({
@@ -136,4 +137,18 @@ export const createOrMergeEntry = ({ tree, entry, type, parentTreeUrl, level }) 
     parentTreeUrl,
     level,
   });
+};
+
+export const createViewerStructure = (file, type, data) => {
+  const viewerData = data[`${type}_viewer`];
+
+  if (viewerData) {
+    Object.assign(file[type], {
+      path: viewerData.path,
+      icon: viewerData.switcher_icon,
+      name: viewerData.name,
+      serverRender: viewerData.server_side,
+      renderError: viewerData.render_error_reason,
+    });
+  }
 };

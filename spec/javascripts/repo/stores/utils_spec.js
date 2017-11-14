@@ -99,4 +99,30 @@ describe('Multi-file store utils', () => {
       expect(foundEntry).toBeUndefined();
     });
   });
+
+  describe('createViewerStructure', () => {
+    it('adds to object if has viewer data', () => {
+      const obj = { rich: {} };
+
+      utils.createViewerStructure(obj, 'rich', {
+        rich_viewer: {
+          path: 'richpath',
+        },
+      });
+
+      expect(obj.rich.path).toBe('richpath');
+    });
+
+    it('does not add to object if no viewer data is present', () => {
+      const obj = { rich: {} };
+
+      utils.createViewerStructure(obj, 'rich', {
+        simple_viewer: {
+          path: 'richpath',
+        },
+      });
+
+      expect(obj.rich).toEqual({});
+    });
+  });
 });

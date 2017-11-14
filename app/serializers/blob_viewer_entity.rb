@@ -1,5 +1,7 @@
 class BlobViewerEntity < Grape::Entity
+  include ActionView::Helpers::NumberHelper
   include RequestAwareEntity
+  include BlobHelper
 
   expose :type
   expose :partial_name, as: :name
@@ -8,7 +10,7 @@ class BlobViewerEntity < Grape::Entity
   expose :render_error
 
   expose :render_error_reason do |viewer|
-    BlobHelper.blob_render_error_reason(viewer)
+    blob_render_error_reason(viewer)
   end
 
   expose :path do |viewer|

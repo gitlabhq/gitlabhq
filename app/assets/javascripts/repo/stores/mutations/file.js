@@ -1,5 +1,8 @@
 import * as types from '../mutation_types';
-import { findIndexOfFile } from '../utils';
+import {
+  findIndexOfFile,
+  createViewerStructure,
+} from '../utils';
 
 export default {
   [types.SET_FILE_ACTIVE](state, { file, active }) {
@@ -30,23 +33,8 @@ export default {
       extension: data.extension,
     });
 
-    if (data.rich_viewer) {
-      Object.assign(file.rich, {
-        path: data.rich_viewer.path,
-        icon: data.rich_viewer.switcher_icon,
-        name: data.rich_viewer.name,
-        serverRender: data.rich_viewer.server_side,
-      });
-    }
-
-    if (data.simple_viewer) {
-      Object.assign(file.simple, {
-        path: data.simple_viewer.path,
-        icon: data.simple_viewer.switcher_icon,
-        name: data.simple_viewer.name,
-        serverRender: data.simple_viewer.server_side,
-      });
-    }
+    createViewerStructure(file, 'rich', data);
+    createViewerStructure(file, 'simple', data);
   },
   [types.SET_FILE_RAW_DATA](state, { file, raw }) {
     Object.assign(file, {

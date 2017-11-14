@@ -256,8 +256,6 @@ module BlobHelper
     end
   end
 
-  module_function :blob_render_error_reason
-
   def blob_render_error_options(viewer)
     error = viewer.render_error
     options = []
