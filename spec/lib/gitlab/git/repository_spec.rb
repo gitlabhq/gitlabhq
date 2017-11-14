@@ -648,6 +648,21 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#remote_exists?' do
+    before(:all) do
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
+      @repo.add_remote("new_remote", SeedHelper::GITLAB_GIT_TEST_REPO_URL)
+    end
+
+    it 'returns true for an existing remote' do
+      expect(@repo.remote_exists?('new_remote')).to eq(true)
+    end
+
+    it 'returns false for a non-existing remote' do
+      expect(@repo.remote_exists?('foo')).to eq(false)
+    end
+  end
+
   describe "#log" do
     let(:commit_with_old_name) do
       Gitlab::Git::Commit.decorate(repository, @commit_with_old_name_id)
@@ -1521,7 +1536,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe '#fetch_source_branch' do
+  describe '#fetch_source_branch!' do
     let(:local_ref) { 'refs/merge-requests/1/head' }
 
     context 'when the branch exists' do
@@ -1530,11 +1545,11 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it 'writes the ref' do
         expect(repository).to receive(:write_ref).with(local_ref, /\h{40}/)
 
-        repository.fetch_source_branch(repository, source_branch, local_ref)
+        repository.fetch_source_branch!(repository, source_branch, local_ref)
       end
 
       it 'returns true' do
-        expect(repository.fetch_source_branch(repository, source_branch, local_ref)).to eq(true)
+        expect(repository.fetch_source_branch!(repository, source_branch, local_ref)).to eq(true)
       end
     end
 
@@ -1544,11 +1559,11 @@ describe Gitlab::Git::Repository, seed_helper: true do
       it 'does not write the ref' do
         expect(repository).not_to receive(:write_ref)
 
-        repository.fetch_source_branch(repository, source_branch, local_ref)
+        repository.fetch_source_branch!(repository, source_branch, local_ref)
       end
 
       it 'returns false' do
-        expect(repository.fetch_source_branch(repository, source_branch, local_ref)).to eq(false)
+        expect(repository.fetch_source_branch!(repository, source_branch, local_ref)).to eq(false)
       end
     end
   end

@@ -15,6 +15,11 @@ given state (`opened`, `closed`, or `merged`) or all of them (`all`).
 The pagination parameters `page` and `per_page` can be used to
 restrict the list of merge requests.
 
+**Note**: the `changes_count` value in the response is a string, not an
+integer. This is because when an MR has too many changes to display and store,
+it will be capped at 1,000. In that case, the API will return the string
+`"1000+"` for the changes count.
+
 ```
 GET /merge_requests
 GET /merge_requests?state=opened
@@ -53,6 +58,8 @@ Parameters:
     "project_id": 3,
     "title": "test1",
     "state": "opened",
+    "created_at": "2017-04-29T08:46:00Z",
+    "updated_at": "2017-04-29T08:46:00Z",
     "upvotes": 0,
     "downvotes": 0,
     "author": {
@@ -92,6 +99,7 @@ Parameters:
     "sha": "8888888888888888888888888888888888888888",
     "merge_commit_sha": null,
     "user_notes_count": 1,
+    "changes_count": "1",
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
     "web_url": "http://example.com/example/example/merge_requests/1",
@@ -130,6 +138,11 @@ will be the same. In the case of a merge request from a fork,
 `target_project_id` and `project_id` will be the same and
 `source_project_id` will be the fork project's ID.
 
+**Note**: the `changes_count` value in the response is a string, not an
+integer. This is because when an MR has too many changes to display and store,
+it will be capped at 1,000. In that case, the API will return the string
+`"1000+"` for the changes count.
+
 Parameters:
 
 | Attribute           | Type           | Required | Description                                                                                                                    |
@@ -159,6 +172,8 @@ Parameters:
     "project_id": 3,
     "title": "test1",
     "state": "opened",
+    "created_at": "2017-04-29T08:46:00Z",
+    "updated_at": "2017-04-29T08:46:00Z",
     "upvotes": 0,
     "downvotes": 0,
     "author": {
@@ -198,7 +213,7 @@ Parameters:
     "sha": "8888888888888888888888888888888888888888",
     "merge_commit_sha": null,
     "user_notes_count": 1,
-    "approvals_before_merge": null
+    "changes_count": "1",
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
     "squash": false,
@@ -209,7 +224,8 @@ Parameters:
       "total_time_spent": 0,
       "human_time_estimate": null,
       "human_total_time_spent": null
-    }
+    },
+    "approvals_before_merge": null
   }
 ]
 ```
@@ -236,6 +252,8 @@ Parameters:
   "project_id": 3,
   "title": "test1",
   "state": "merged",
+  "created_at": "2017-04-29T08:46:00Z",
+  "updated_at": "2017-04-29T08:46:00Z",
   "upvotes": 0,
   "downvotes": 0,
   "author": {
@@ -276,7 +294,7 @@ Parameters:
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": "9999999999999999999999999999999999999999",
   "user_notes_count": 1,
-  "approvals_before_merge": null
+  "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
@@ -287,7 +305,8 @@ Parameters:
     "total_time_spent": 0,
     "human_time_estimate": null,
     "human_total_time_spent": null
-  }
+  },
+  "approvals_before_merge": null
 }
 ```
 
@@ -390,7 +409,7 @@ Parameters:
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
   "user_notes_count": 1,
-  "approvals_before_merge": null,
+  "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
@@ -413,7 +432,8 @@ Parameters:
     "renamed_file": false,
     "deleted_file": false
     }
-  ]
+  ],
+  "approvals_before_merge": null
 }
 ```
 
@@ -497,7 +517,7 @@ order for it to take effect:
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
   "user_notes_count": 0,
-  "approvals_before_merge": null
+  "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
@@ -508,7 +528,8 @@ order for it to take effect:
     "total_time_spent": 0,
     "human_time_estimate": null,
     "human_total_time_spent": null
-  }
+  },
+  "approvals_before_merge": null
 }
 ```
 
@@ -585,7 +606,7 @@ Must include at least one non-required attribute from above.
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
   "user_notes_count": 1,
-  "approvals_before_merge": null
+  "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
@@ -596,7 +617,8 @@ Must include at least one non-required attribute from above.
     "total_time_spent": 0,
     "human_time_estimate": null,
     "human_total_time_spent": null
-  }
+  },
+  "approvals_before_merge": null
 }
 ```
 
@@ -692,7 +714,7 @@ Parameters:
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": "9999999999999999999999999999999999999999",
   "user_notes_count": 1,
-  "approvals_before_merge": null
+  "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
@@ -703,7 +725,8 @@ Parameters:
     "total_time_spent": 0,
     "human_time_estimate": null,
     "human_total_time_spent": null
-  }
+  },
+  "approvals_before_merge": null
 }
 ```
 
@@ -897,7 +920,7 @@ Parameters:
   "sha": "8888888888888888888888888888888888888888",
   "merge_commit_sha": null,
   "user_notes_count": 1,
-  "approvals_before_merge": null
+  "changes_count": "1",
   "should_remove_source_branch": true,
   "force_remove_source_branch": false,
   "squash": false,
@@ -908,7 +931,8 @@ Parameters:
     "total_time_spent": 0,
     "human_time_estimate": null,
     "human_total_time_spent": null
-  }
+  },
+  "approvals_before_merge": null
 }
 ```
 
@@ -975,8 +999,9 @@ Example response when the GitLab issue tracker is used:
       "iid" : 6,
       "labels" : [],
       "user_notes_count": 1,
+      "changes_count": "1",
       "approvals_before_merge": null
-   },
+   }
 ]
 ```
 
@@ -1230,6 +1255,7 @@ Example response:
     "sha": "8888888888888888888888888888888888888888",
     "merge_commit_sha": null,
     "user_notes_count": 7,
+    "changes_count": "1",
     "should_remove_source_branch": true,
     "force_remove_source_branch": false,
     "squash": true,

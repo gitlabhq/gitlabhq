@@ -13,7 +13,11 @@ FactoryGirl.define do
     end
 
     trait :renamed_event do
-      repository_renamed_event factory: :geo_repository_rename_event
+      repository_renamed_event factory: :geo_repository_renamed_event
+    end
+
+    trait :hashed_storage_migration_event do
+      hashed_storage_migrated_event factory: :geo_hashed_storage_migrated_event
     end
   end
 
@@ -44,24 +48,11 @@ FactoryGirl.define do
     deleted_project_name { project.name }
   end
 
-  factory :geo_repository_renamed_event, class: Geo::RepositoryRenamedEvent do
-    project
-
-    repository_storage_name { project.repository_storage }
-    repository_storage_path { project.repository_storage_path }
-    old_path_with_namespace { project.full_path }
-    new_path_with_namespace { project.full_path }
-    old_wiki_path_with_namespace { project.wiki.path_with_namespace }
-    new_wiki_path_with_namespace { project.wiki.path_with_namespace }
-    old_path { project.path }
-    new_path { project.path }
-  end
-
   factory :geo_repositories_changed_event, class: Geo::RepositoriesChangedEvent do
     geo_node
   end
 
-  factory :geo_repository_rename_event, class: Geo::RepositoryRenamedEvent do
+  factory :geo_repository_renamed_event, class: Geo::RepositoryRenamedEvent do
     project { create(:project, :repository) }
 
     repository_storage_name { project.repository_storage }
@@ -72,5 +63,17 @@ FactoryGirl.define do
     new_wiki_path_with_namespace { project.wiki.path_with_namespace + '_new' }
     old_path { project.path }
     new_path { project.path + '_new' }
+  end
+
+  factory :geo_hashed_storage_migrated_event, class: Geo::HashedStorageMigratedEvent do
+    project { create(:project, :repository) }
+
+    repository_storage_name { project.repository_storage }
+    repository_storage_path { project.repository_storage_path }
+    old_disk_path { project.path_with_namespace }
+    new_disk_path { project.path_with_namespace + '_new' }
+    old_wiki_disk_path { project.wiki.path_with_namespace }
+    new_wiki_disk_path { project.wiki.path_with_namespace + '_new' }
+    new_storage_version { Project::LATEST_STORAGE_VERSION }
   end
 end

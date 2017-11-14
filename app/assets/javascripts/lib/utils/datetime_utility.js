@@ -135,7 +135,6 @@ window.dateFormat = dateFormat;
  * @param  {Number} seconds
  * @return {String}
  */
-// eslint-disable-next-line import/prefer-default-export
 export function timeIntervalInWords(intervalInSeconds) {
   const secondsInteger = parseInt(intervalInSeconds, 10);
   const minutes = Math.floor(secondsInteger / 60);
@@ -148,4 +147,18 @@ export function timeIntervalInWords(intervalInSeconds) {
     text = `${seconds} ${gl.text.pluralize('second', seconds)}`;
   }
   return text;
+}
+
+export function dateInWords(date, abbreviated = false) {
+  if (!date) return date;
+
+  const month = date.getMonth();
+  const year = date.getFullYear();
+
+  const monthNames = [s__('January'), s__('February'), s__('March'), s__('April'), s__('May'), s__('June'), s__('July'), s__('August'), s__('September'), s__('October'), s__('November'), s__('December')];
+  const monthNamesAbbr = [s__('Jan'), s__('Feb'), s__('Mar'), s__('Apr'), s__('May'), s__('Jun'), s__('Jul'), s__('Aug'), s__('Sep'), s__('Oct'), s__('Nov'), s__('Dec')];
+
+  const monthName = abbreviated ? monthNamesAbbr[month] : monthNames[month];
+
+  return `${monthName} ${date.getDate()}, ${year}`;
 }

@@ -37,7 +37,7 @@ class Namespace < ActiveRecord::Base
   validates :path,
     presence: true,
     length: { maximum: 255 },
-    dynamic_path: true
+    namespace_path: true
 
   validate :nesting_level_allowed
 
@@ -225,10 +225,6 @@ class Namespace < ActiveRecord::Base
 
   def multiple_issue_boards_available?(user = nil)
     feature_available?(:multiple_issue_boards)
-  end
-
-  def issue_board_milestone_available?(user = nil)
-    feature_available?(:issue_board_milestone)
   end
 
   private

@@ -1,0 +1,4 @@
+{
+  "type": "array",
+  "items": { "$ref": "geo_node.json" }
+}

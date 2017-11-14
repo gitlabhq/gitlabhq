@@ -51,10 +51,6 @@ export default {
         project_id: this.selectedProject.id,
       });
 
-      if (Store.state.currentBoard) {
-        issue.milestone_id = Store.state.currentBoard.milestone_id;
-      }
-
       eventHub.$emit(`scroll-board-list-${this.list.id}`);
       this.cancel();
 

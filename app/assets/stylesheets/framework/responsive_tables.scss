@@ -24,7 +24,7 @@
   @media (min-width: $screen-md-min) {
     margin: 0;
     padding: $gl-padding 0;
-    border: none;
+    border: 0;
 
     &:not(:last-child) {
       border-bottom: 1px solid $white-normal;

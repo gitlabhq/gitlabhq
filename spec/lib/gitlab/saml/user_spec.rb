@@ -36,6 +36,10 @@ describe Gitlab::Saml::User do
       allow(Gitlab::Saml::Config).to receive_messages({ options: { name: 'saml', groups_attribute: 'groups', external_groups: groups, args: {} } })
     end
 
+    def stub_saml_required_group_config(groups)
+      allow(Gitlab::Saml::Config).to receive_messages({ options: { name: 'saml', groups_attribute: 'groups', required_groups: groups, args: {} } })
+    end
+
     def stub_saml_admin_group_config(groups)
       allow(Gitlab::Saml::Config).to receive_messages({ options: { name: 'saml', groups_attribute: 'groups', admin_groups: groups, args: {} } })
     end
@@ -181,6 +185,47 @@ describe Gitlab::Saml::User do
             saml_user.save
             expect(gl_user).to be_valid
             expect(gl_user.external).to be_falsey
+          end
+        end
+      end
+
+      context 'required groups' do
+        context 'not defined' do
+          it 'lets anyone in' do
+            saml_user.save
+            expect(gl_user).to be_valid
+          end
+        end
+
+        context 'are defined' do
+          before do
+            stub_omniauth_config(block_auto_created_users: false)
+          end
+
+          it 'lets members in' do
+            stub_saml_required_group_config(%w(Developers))
+            saml_user.save
+            expect(gl_user).to be_valid
+          end
+
+          it 'unblocks already blocked members' do
+            stub_saml_required_group_config(%w(Developers))
+            saml_user.save.ldap_block
+            expect(saml_user.find_user).to be_active
+          end
+
+          it 'does not allow non-members' do
+            stub_saml_required_group_config(%w(ArchitectureAstronauts))
+            expect { saml_user.save }.to raise_error Gitlab::OAuth::SignupDisabledError
+          end
+
+          it 'blocks non-members' do
+            orig_groups = auth_hash.extra.raw_info["groups"]
+            auth_hash.extra.raw_info.add("groups", "ArchitectureAstronauts")
+            stub_saml_required_group_config(%w(ArchitectureAstronauts))
+            saml_user.save
+            auth_hash.extra.raw_info.set("groups", orig_groups)
+            expect(saml_user.find_user).to be_ldap_blocked
           end
         end
       end

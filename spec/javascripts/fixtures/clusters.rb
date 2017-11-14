@@ -6,7 +6,7 @@ describe Projects::ClustersController, '(JavaScript fixtures)', type: :controlle
   let(:admin) { create(:admin) }
   let(:namespace) { create(:namespace, name: 'frontend-fixtures' )}
   let(:project) { create(:project, :repository, namespace: namespace) }
-  let(:cluster) { project.create_cluster!(gcp_cluster_name: "gke-test-creation-1", gcp_project_id: 'gitlab-internal-153318', gcp_cluster_zone: 'us-central1-a', gcp_cluster_size: '1', project_namespace: 'aaa', gcp_machine_type: 'n1-standard-1')}
+  let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
   render_views
 

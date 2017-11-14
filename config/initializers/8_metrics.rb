@@ -77,7 +77,6 @@ def instrument_classes(instrumentation)
 
   instrumentation.instrument_instance_methods(Banzai::ObjectRenderer)
   instrumentation.instrument_instance_methods(Banzai::Redactor)
-  instrumentation.instrument_methods(Banzai::NoteRenderer)
 
   [Issuable, Mentionable, Participable].each do |klass|
     instrumentation.instrument_instance_methods(klass)
@@ -135,7 +134,6 @@ def instrument_classes(instrumentation)
 
   instrumentation.instrument_instance_methods(Gitlab::BitbucketImport::Importer)
   instrumentation.instrument_instance_methods(Bitbucket::Connection)
-  instrumentation.instrument_instance_methods(Github::Client)
 
   instrumentation.instrument_instance_methods(Geo::RepositorySyncWorker)
 
@@ -144,16 +142,8 @@ def instrument_classes(instrumentation)
 
   # Needed for https://gitlab.com/gitlab-org/gitlab-ce/issues/30224#note_32306159
   instrumentation.instrument_instance_method(MergeRequestDiff, :load_commits)
-
-  # Needed for https://gitlab.com/gitlab-org/gitlab-ce/issues/36061
-  instrumentation.instrument_instance_method(MergeRequest, :ensure_ref_fetched)
-  instrumentation.instrument_instance_method(MergeRequest, :fetch_ref)
 end
 # rubocop:enable Metrics/AbcSize
-
-unless Sidekiq.server?
-  Gitlab::Metrics::UnicornSampler.initialize_instance(Settings.monitoring.unicorn_sampler_interval).start
-end
 
 Gitlab::Application.configure do |config|
   # 0 should be Sentry to catch errors in this middleware
@@ -220,7 +210,7 @@ if Gitlab::Metrics.enabled?
 
   GC::Profiler.enable
 
-  Gitlab::Metrics::InfluxSampler.initialize_instance.start
+  Gitlab::Metrics::Samplers::InfluxSampler.initialize_instance.start
 
   Gitlab::Metrics::Instrumentation.configure do |config|
     config.instrument_instance_methods(Gitlab::InsecureKeyFingerprint)

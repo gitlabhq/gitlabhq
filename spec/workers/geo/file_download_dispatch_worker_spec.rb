@@ -96,7 +96,7 @@ describe Geo::FileDownloadDispatchWorker, :geo, :truncate do
     end
 
     context 'with a failed file' do
-      let!(:failed_registry) { create(:geo_file_registry, :lfs, file_id: 999, success: false) }
+      let(:failed_registry) { create(:geo_file_registry, :lfs, file_id: 999, success: false) }
 
       it 'does not stall backfill' do
         unsynced = create(:lfs_object, :with_file)
@@ -110,6 +110,22 @@ describe Geo::FileDownloadDispatchWorker, :geo, :truncate do
       end
 
       it 'retries failed files' do
+        expect(GeoFileDownloadWorker).to receive(:perform_async).with('lfs', failed_registry.file_id)
+
+        subject.perform
+      end
+
+      it 'does not retries failed files when retry_at is tomorrow' do
+        failed_registry = create(:geo_file_registry, :lfs, file_id: 999, success: false, retry_at: Date.tomorrow)
+
+        expect(GeoFileDownloadWorker).not_to receive(:perform_async).with('lfs', failed_registry.file_id)
+
+        subject.perform
+      end
+
+      it 'does not retries failed files when retry_at is in the past' do
+        failed_registry = create(:geo_file_registry, :lfs, file_id: 999, success: false, retry_at: Date.yesterday)
+
         expect(GeoFileDownloadWorker).to receive(:perform_async).with('lfs', failed_registry.file_id)
 
         subject.perform

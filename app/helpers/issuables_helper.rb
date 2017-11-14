@@ -159,7 +159,7 @@ module IssuablesHelper
     label_names.join(', ')
   end
 
-  def issuables_state_counter_text(issuable_type, state)
+  def issuables_state_counter_text(issuable_type, state = :all)
     titles = {
       opened: "Open"
     }
@@ -250,8 +250,6 @@ module IssuablesHelper
   end
 
   def issuables_count_for_state(issuable_type, state)
-    finder = public_send("#{issuable_type}_finder") # rubocop:disable GitlabSecurity/PublicSend
-
     Gitlab::IssuablesCountForState.new(finder)[state]
   end
 

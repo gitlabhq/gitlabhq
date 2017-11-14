@@ -9,7 +9,9 @@ module EpicsHelper
         url: user_path(author),
         username: "@#{author.username}",
         src: avatar_icon(@epic.author)
-      }
+      },
+      start_date: @epic.start_date,
+      end_date: @epic.end_date
     }
 
     data.to_json

@@ -1,5 +1,6 @@
 export const dataStructure = () => ({
   id: '',
+  key: '',
   type: '',
   name: '',
   url: '',
@@ -12,7 +13,12 @@ export const dataStructure = () => ({
   opened: false,
   active: false,
   changed: false,
-  lastCommit: {},
+  lastCommitPath: '',
+  lastCommit: {
+    url: '',
+    message: '',
+    updatedAt: '',
+  },
   tree_url: '',
   blamePath: '',
   commitsPath: '',
@@ -27,14 +33,13 @@ export const dataStructure = () => ({
   base64: false,
 });
 
-export const decorateData = (entity, projectUrl = '') => {
+export const decorateData = (entity) => {
   const {
     id,
     type,
     url,
     name,
     icon,
-    last_commit,
     tree_url,
     path,
     renderError,
@@ -51,6 +56,7 @@ export const decorateData = (entity, projectUrl = '') => {
   return {
     ...dataStructure(),
     id,
+    key: `${name}-${type}-${id}`,
     type,
     name,
     url,
@@ -66,12 +72,6 @@ export const decorateData = (entity, projectUrl = '') => {
     renderError,
     content,
     base64,
-    // eslint-disable-next-line camelcase
-    lastCommit: last_commit ? {
-      url: `${projectUrl}/commit/${last_commit.id}`,
-      message: last_commit.message,
-      updatedAt: last_commit.committed_date,
-    } : {},
   };
 };
 
@@ -104,5 +104,24 @@ export const createTemp = ({ name, path, type, level, changed, content, base64 }
     level,
     base64,
     renderError: base64,
+  });
+};
+
+export const createOrMergeEntry = ({ tree, entry, type, parentTreeUrl, level }) => {
+  const found = findEntry(tree, type, entry.name);
+
+  if (found) {
+    return Object.assign({}, found, {
+      id: entry.id,
+      url: entry.url,
+      tempFile: false,
+    });
+  }
+
+  return decorateData({
+    ...entry,
+    type,
+    parentTreeUrl,
+    level,
   });
 };

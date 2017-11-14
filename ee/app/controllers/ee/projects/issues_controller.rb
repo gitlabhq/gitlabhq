@@ -6,16 +6,12 @@ module EE
       prepended do
         before_action :check_export_issues_available!, only: [:export_csv]
         before_action :check_service_desk_available!, only: [:service_desk]
-        before_action :set_issues_index, only: [:index, :service_desk]
+        before_action :set_issuables_index, only: [:index, :service_desk]
         skip_before_action :issue, only: [:service_desk]
       end
 
       def service_desk
-        if params[:assignee_id].present?
-          assignee = ::User.find_by_id(params[:assignee_id])
-          @users.push(assignee) if assignee
-        end
-
+        @issues = @issuables
         @users.push(::User.support_bot)
       end
 

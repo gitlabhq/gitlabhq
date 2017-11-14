@@ -271,10 +271,7 @@ module API
       end
 
       expose :merged do |repo_branch, options|
-        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37442
-        Gitlab::GitalyClient.allow_n_plus_1_calls do
-          options[:project].repository.merged_to_root_ref?(repo_branch.name)
-        end
+        options[:project].repository.merged_to_root_ref?(repo_branch, options[:merged_branch_names])
       end
 
       expose :protected do |repo_branch, options|
@@ -519,6 +516,10 @@ module API
     class MergeRequest < MergeRequestBasic
       expose :subscribed do |merge_request, options|
         merge_request.subscribed?(options[:current_user], options[:project])
+      end
+
+      expose :changes_count do |merge_request, _options|
+        merge_request.merge_request_diff.real_size
       end
     end
 
@@ -794,10 +795,20 @@ module API
       expose :id
       expose :name
       expose :project, using: Entities::BasicProjectDetails
-      expose :milestone,
-             if: -> (board, _) { board.project.feature_available?(:issue_board_milestone) }
+
+      # EE-specific
+      # Default filtering configuration
+      expose :milestone, using: Entities::Milestone, if: -> (board, _) { scoped_issue_available?(board) }
+      expose :assignee, using: Entities::UserBasic, if: -> (board, _) { scoped_issue_available?(board) }
+      expose :labels, using: Entities::LabelBasic, if: -> (board, _) { scoped_issue_available?(board) }
+      expose :weight, if: -> (board, _) { scoped_issue_available?(board) }
+
       expose :lists, using: Entities::List do |board|
         board.lists.destroyable
+      end
+
+      def scoped_issue_available?(board)
+        board.parent.feature_available?(:scoped_issue_board)
       end
     end
 
@@ -917,6 +928,7 @@ module API
     class Job < Grape::Entity
       expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
+      expose :duration
       expose :user, with: User
       expose :artifacts_file, using: JobArtifactFile, if: -> (job, opts) { job.artifacts? }
       expose :commit, with: Commit
@@ -1004,24 +1016,14 @@ module API
       expose :active?, as: :active
     end
 
-    class GeoNodeStatus < Grape::Entity
+    class GeoNode < Grape::Entity
       expose :id
-      expose :db_replication_lag_seconds
-      expose :health
-      expose :healthy?, as: :healthy
-      expose :repositories_count
-      expose :repositories_synced_count
-      expose :repositories_failed_count
-      expose :lfs_objects_count
-      expose :lfs_objects_synced_count
-      expose :lfs_objects_failed_count
-      expose :attachments_count
-      expose :attachments_synced_count
-      expose :attachments_failed_count
-      expose :last_event_id
-      expose :last_event_timestamp
-      expose :cursor_last_event_id
-      expose :cursor_last_event_timestamp
+      expose :url
+      expose :primary?, as: :primary
+      expose :enabled
+      expose :files_max_capacity
+      expose :repos_max_capacity
+      expose :clone_protocol
     end
 
     class PersonalAccessToken < Grape::Entity

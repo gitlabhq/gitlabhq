@@ -91,13 +91,6 @@ describe Gitlab::Middleware::ReadOnly do
     end
 
     context 'whitelisted requests' do
-      it 'expects DELETE request to logout to be allowed' do
-        response = request.delete('/users/sign_out')
-
-        expect(response).not_to be_a_redirect
-        expect(subject).not_to disallow_request
-      end
-
       it 'expects a POST internal request to be allowed' do
         response = request.post("/api/#{API::API.version}/internal")
 

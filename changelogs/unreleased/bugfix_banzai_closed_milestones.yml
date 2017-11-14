@@ -1,0 +1,5 @@
+---
+title: Fix GFM reference links for closed milestones
+merge_request: 15234
+author: Vitaliy @blackst0ne Klachkov
+type: fixed

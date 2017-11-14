@@ -7,7 +7,7 @@ const Api = {
   groupProjectsPath: '/api/:version/groups/:id/projects.json',
   projectsPath: '/api/:version/projects.json',
   projectLabelsPath: '/:namespace_path/:project_path/labels',
-  groupLabelsPath: '/groups/:namespace_path/labels',
+  groupLabelsPath: '/groups/:namespace_path/-/labels',
   licensePath: '/api/:version/templates/licenses/:key',
   gitignorePath: '/api/:version/templates/gitignores/:key',
   gitlabCiYmlPath: '/api/:version/templates/gitlab_ci_ymls/:key',

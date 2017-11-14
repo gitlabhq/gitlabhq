@@ -1,0 +1,5 @@
+---
+title: 'Geo: Fix handling of nil values on advanced section in admin screen'
+merge_request:
+author:
+type: fixed

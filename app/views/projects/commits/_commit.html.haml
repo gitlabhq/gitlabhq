@@ -1,13 +1,11 @@
 - ref = local_assigns.fetch(:ref)
-- show_project_name = local_assigns.fetch(:show_project_name, false)
-- if @note_counts
-  - note_count = @note_counts.fetch(commit.id, 0)
-- else
-  - notes = commit.notes
-  - note_count = notes.user.count
 
-- cache_key = [project.full_path, commit.id, current_application_settings, note_count, @path.presence, current_controller?(:commits), I18n.locale]
+- cache_key = [project.full_path, commit.id, current_application_settings, @path.presence, current_controller?(:commits), I18n.locale]
 - cache_key.push(commit.status(ref)) if commit.status(ref)
+
+-# EE-only
+- show_project_name = local_assigns.fetch(:show_project_name, false)
+- cache_key << show_project_name
 
 = cache(cache_key, expires_in: 1.day) do
   %li.commit.flex-row.js-toggle-container{ id: "commit-#{commit.short_id}" }

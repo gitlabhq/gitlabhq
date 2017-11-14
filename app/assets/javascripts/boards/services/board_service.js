@@ -30,10 +30,28 @@ class BoardService {
   }
 
   createBoard (board) {
-    if (board.id) {
-      return this.boards.update({ id: board.id }, board);
+    board.label_ids = (board.labels || []).map(b => b.id);
+
+    if (board.label_ids.length === 0) {
+      board.label_ids = [''];
     }
-    return this.boards.save({}, board);
+
+    if (board.assignee) {
+      board.assignee_id = board.assignee.id;
+    }
+
+    if (board.milestone) {
+      board.milestone_id = board.milestone.id;
+    }
+
+    if (board.id) {
+      return this.boards.update({ id: board.id }, { board });
+    }
+    return this.boards.save({}, { board });
+  }
+
+  deleteBoard ({ id }) {
+    return this.boards.delete({ id });
   }
 
   all () {
@@ -98,17 +116,6 @@ class BoardService {
     };
 
     return this.issues.bulkUpdate(data);
-  }
-
-  static loadMilestones(path) {
-    this.loading = true;
-
-    return this.$http.get(this.milestonePath)
-      .then(resp => resp.json())
-      .then((data) => {
-        this.milestones = data;
-        this.loading = false;
-      });
   }
 }
 

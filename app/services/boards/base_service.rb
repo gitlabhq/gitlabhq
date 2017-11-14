@@ -6,5 +6,10 @@ module Boards
     def initialize(parent, user, params = {})
       @parent, @current_user, @params = parent, user, params.dup
     end
+
+    def set_assignee
+      assignee = User.find_by(id: params.delete(:assignee_id))
+      params.merge!(assignee: assignee)
+    end
   end
 end

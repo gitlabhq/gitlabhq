@@ -30,7 +30,12 @@ module EE
         enable :destroy_epic
       end
 
-      rule { auditor }.enable :read_group
+      rule { auditor }.policy do
+        enable  :read_group
+        enable  :read_epic
+      end
+      rule { admin }.enable :read_epic
+      rule { has_projects }.enable :read_epic
 
       rule { admin | (can_owners_manage_ldap & owner) }.enable :admin_ldap_group_links
 

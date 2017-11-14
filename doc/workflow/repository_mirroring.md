@@ -84,6 +84,22 @@ this branch to prevent any changes from being lost.
 
 ![Diverged branch](repository_mirroring/repository_mirroring_diverged_branch.png)
 
+### Hard failure
+
+>[Introduced][ee-3117] in GitLab Enterprise Edition 10.2.
+
+Once a mirror gets retried 14 times in a row, it will get marked as hard failed,
+this will become visible in either the project main dashboard or in the 
+pull mirror settings page.
+
+![Hard failed mirror main notice](repository_mirroring/repository_mirroring_hard_failed_main.png)
+
+![Hard failed mirror settings notice](repository_mirroring/repository_mirroring_hard_failed_settings.png)
+
+When a project is hard failed, it will no longer get picked up for mirroring.
+A user can resume the project mirroring again by either [forcing an update](#forcing-an-update)
+or by changing the import URL in repository settings.
+
 ### SSH authentication
 
 > [Introduced][ee-2551] in GitLab Enterprise Edition Starter 9.5
@@ -248,6 +264,7 @@ to resolve this issue.
 
 [ee-51]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51
 [ee-2551]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2551
+[ee-3117]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3117
 [perms]: ../user/permissions.md
 [hooks]: https://docs.gitlab.com/ee/administration/custom_hooks.html
 [deploy-key]: ../ssh/README.md#deploy-keys

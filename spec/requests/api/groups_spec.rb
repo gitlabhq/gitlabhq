@@ -471,6 +471,142 @@ describe API::Groups do
     end
   end
 
+  describe 'GET /groups/:id/subgroups', :nested_groups do
+    let!(:subgroup1) { create(:group, parent: group1) }
+    let!(:subgroup2) { create(:group, :private, parent: group1) }
+    let!(:subgroup3) { create(:group, :private, parent: group2) }
+
+    context 'when unauthenticated' do
+      it 'returns only public subgroups' do
+        get api("/groups/#{group1.id}/subgroups")
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(response).to include_pagination_headers
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(subgroup1.id)
+        expect(json_response.first['parent_id']).to eq(group1.id)
+      end
+
+      it 'returns 404 for a private group' do
+        get api("/groups/#{group2.id}/subgroups")
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when authenticated as user' do
+      context 'when user is not member of a public group' do
+        it 'returns no subgroups for the public group' do
+          get api("/groups/#{group1.id}/subgroups", user2)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(0)
+        end
+
+        context 'when using all_available in request' do
+          it 'returns public subgroups' do
+            get api("/groups/#{group1.id}/subgroups", user2), all_available: true
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(json_response).to be_an Array
+            expect(json_response.length).to eq(1)
+            expect(json_response[0]['id']).to eq(subgroup1.id)
+            expect(json_response[0]['parent_id']).to eq(group1.id)
+          end
+        end
+      end
+
+      context 'when user is not member of a private group' do
+        it 'returns 404 for the private group' do
+          get api("/groups/#{group2.id}/subgroups", user1)
+
+          expect(response).to have_gitlab_http_status(404)
+        end
+      end
+
+      context 'when user is member of public group' do
+        before do
+          group1.add_guest(user2)
+        end
+
+        it 'returns private subgroups' do
+          get api("/groups/#{group1.id}/subgroups", user2)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(response).to include_pagination_headers
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(2)
+          private_subgroups = json_response.select { |group| group['visibility'] == 'private' }
+          expect(private_subgroups.length).to eq(1)
+          expect(private_subgroups.first['id']).to eq(subgroup2.id)
+          expect(private_subgroups.first['parent_id']).to eq(group1.id)
+        end
+
+        context 'when using statistics in request' do
+          it 'does not include statistics' do
+            get api("/groups/#{group1.id}/subgroups", user2), statistics: true
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(json_response).to be_an Array
+            expect(json_response.first).not_to include 'statistics'
+          end
+        end
+      end
+
+      context 'when user is member of private group' do
+        before do
+          group2.add_guest(user1)
+        end
+
+        it 'returns subgroups' do
+          get api("/groups/#{group2.id}/subgroups", user1)
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(json_response).to be_an Array
+          expect(json_response.length).to eq(1)
+          expect(json_response.first['id']).to eq(subgroup3.id)
+          expect(json_response.first['parent_id']).to eq(group2.id)
+        end
+      end
+    end
+
+    context 'when authenticated as admin' do
+      it 'returns private subgroups of a public group' do
+        get api("/groups/#{group1.id}/subgroups", admin)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(2)
+      end
+
+      it 'returns subgroups of a private group' do
+        get api("/groups/#{group2.id}/subgroups", admin)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+      end
+
+      it 'does not include statistics by default' do
+        get api("/groups/#{group1.id}/subgroups", admin)
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first).not_to include('statistics')
+      end
+
+      it 'includes statistics if requested' do
+        get api("/groups/#{group1.id}/subgroups", admin), statistics: true
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first).to include('statistics')
+      end
+    end
+  end
+
   describe "POST /groups" do
     context "when authenticated as user without group permissions" do
       it "does not create group" do
@@ -696,6 +832,16 @@ describe API::Groups do
           end
         end
       end
+    end
+  end
+
+  it_behaves_like 'custom attributes endpoints', 'groups' do
+    let(:attributable) { group1 }
+    let(:other_attributable) { group2 }
+    let(:user) { user1 }
+
+    before do
+      group2.add_owner(user1)
     end
   end
 

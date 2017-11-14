@@ -15,4 +15,13 @@ describe Geo::FileRegistry do
       expect(described_class.synced).to contain_exactly(synced)
     end
   end
+
+  describe '.retry_due' do
+    set(:retry_yesterday) { create(:geo_file_registry, retry_at: Date.yesterday) }
+    set(:retry_tomorrow) { create(:geo_file_registry, retry_at: Date.tomorrow) }
+
+    it 'returns registries in the synced state' do
+      expect(described_class.retry_due).not_to contain_exactly([retry_tomorrow])
+    end
+  end
 end

@@ -17,13 +17,13 @@ describe Geo::NodeCreateService do
     it 'returns true when creation succeeds' do
       service = described_class.new(url: 'http://example.com')
 
-      expect(service.execute).to eq true
+      expect(service.execute.persisted?).to eq true
     end
 
     it 'returns false when creation fails' do
       service = described_class.new(url: 'ftp://example.com')
 
-      expect(service.execute).to eq false
+      expect(service.execute.persisted?).to eq false
     end
 
     it 'parses the namespace_ids when node have namespace restrictions' do

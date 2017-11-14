@@ -80,6 +80,7 @@ describe Project do
     it { is_expected.to have_many(:pipeline_schedules) }
     it { is_expected.to have_many(:members_and_requesters) }
     it { is_expected.to have_one(:cluster) }
+    it { is_expected.to have_many(:custom_attributes).class_name('ProjectCustomAttribute') }
 
     context 'after initialized' do
       it "has a project_feature" do
@@ -311,6 +312,12 @@ describe Project do
       it 'allows a reserved group name' do
         parent = create(:group)
         project = build(:project, path: 'avatar', namespace: parent)
+
+        expect(project).to be_valid
+      end
+
+      it 'allows a path ending in a period' do
+        project = build(:project, path: 'foo.')
 
         expect(project).to be_valid
       end
@@ -1938,68 +1945,6 @@ describe Project do
     end
   end
 
-  describe '#scheduled_mirror?' do
-    context 'when mirror is expected to run soon' do
-      it 'returns true' do
-        timestamp = Time.now
-        project = create(:project, :mirror, :import_finished, :repository)
-
-        project.mirror_last_update_at = timestamp - 3.minutes
-        project.mirror_data.next_execution_timestamp = timestamp - 2.minutes
-
-        expect(project.scheduled_mirror?).to be true
-      end
-    end
-
-    context 'when mirror was scheduled' do
-      it 'returns true' do
-        project = create(:project, :mirror, :import_scheduled, :repository)
-
-        expect(project.scheduled_mirror?).to be true
-      end
-    end
-  end
-
-  describe  '#updating_mirror?' do
-    context 'when repository is empty' do
-      it 'returns false' do
-        project = create(:project, :mirror, :import_started)
-
-        expect(project.updating_mirror?).to be false
-      end
-    end
-
-    context 'when project is not a mirror' do
-      it 'returns false' do
-        project = create(:project, :import_started)
-
-        expect(project.updating_mirror?).to be false
-      end
-    end
-
-    context 'when mirror is in progress' do
-      it 'returns true' do
-        project = create(:project, :mirror, :import_started, :repository)
-
-        expect(project.updating_mirror?).to be true
-      end
-    end
-  end
-
-  describe '#force_import_job!' do
-    it 'sets next execution timestamp to now and schedules UpdateAllMirrorsWorker' do
-      timestamp = Time.now
-      project = create(:project, :mirror)
-
-      project.mirror_data.update_attributes(next_execution_timestamp: timestamp - 3.minutes)
-
-      expect(UpdateAllMirrorsWorker).to receive(:perform_async)
-      Timecop.freeze(timestamp) do
-        expect { project.force_import_job! }.to change { project.mirror_data.reload.next_execution_timestamp }.to be_within(1.second).of(timestamp)
-      end
-    end
-  end
-
   describe '#add_import_job' do
     let(:import_jid) { '123' }
 
@@ -2316,6 +2261,20 @@ describe Project do
         other_project = build_stubbed(:project)
 
         expect(forked_project.in_fork_network_of?(other_project)).to be_falsy
+      end
+    end
+
+    describe '#fork_source' do
+      let!(:second_fork) { fork_project(forked_project) }
+
+      it 'returns the direct source if it exists' do
+        expect(second_fork.fork_source).to eq(forked_project)
+      end
+
+      it 'returns the root of the fork network when the directs source was deleted' do
+        forked_project.destroy
+
+        expect(second_fork.fork_source).to eq(project)
       end
     end
   end
@@ -3427,6 +3386,79 @@ describe Project do
         expect(project.latest_successful_pipeline_for_default_branch)
           .to eq(pipeline)
       end
+    end
+  end
+
+  describe '#after_import' do
+    let(:project) { build(:project) }
+
+    it 'runs the correct hooks' do
+      expect(project.repository).to receive(:after_import)
+      expect(project).to receive(:import_finish)
+      expect(project).to receive(:update_project_counter_caches)
+      expect(project).to receive(:remove_import_jid)
+
+      project.after_import
+    end
+  end
+
+  describe '#update_project_counter_caches' do
+    let(:project) { create(:project) }
+
+    it 'updates all project counter caches' do
+      expect_any_instance_of(Projects::OpenIssuesCountService)
+        .to receive(:refresh_cache)
+        .and_call_original
+
+      expect_any_instance_of(Projects::OpenMergeRequestsCountService)
+        .to receive(:refresh_cache)
+        .and_call_original
+
+      project.update_project_counter_caches
+    end
+  end
+
+  describe '#remove_import_jid', :clean_gitlab_redis_cache do
+    let(:project) {  }
+
+    context 'without an import JID' do
+      it 'does nothing' do
+        project = create(:project)
+
+        expect(Gitlab::SidekiqStatus)
+          .not_to receive(:unset)
+
+        project.remove_import_jid
+      end
+    end
+
+    context 'with an import JID' do
+      it 'unsets the import JID' do
+        project = create(:project, import_jid: '123')
+
+        expect(Gitlab::SidekiqStatus)
+          .to receive(:unset)
+          .with('123')
+          .and_call_original
+
+        project.remove_import_jid
+
+        expect(project.import_jid).to be_nil
+      end
+    end
+  end
+
+  describe '#wiki_repository_exists?' do
+    it 'returns true when the wiki repository exists' do
+      project = create(:project, :wiki_repo)
+
+      expect(project.wiki_repository_exists?).to eq(true)
+    end
+
+    it 'returns false when the wiki repository does not exist' do
+      project = create(:project)
+
+      expect(project.wiki_repository_exists?).to eq(false)
     end
   end
 end

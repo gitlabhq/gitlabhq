@@ -1,7 +1,7 @@
 {
   "type": "object",
   "required" : [
-    "id",
+    "geo_node_id",
     "healthy",
     "health",
     "attachments_count",
@@ -20,9 +20,9 @@
     "cursor_last_event_timestamp"
   ],
   "properties" : {
-    "id": { "type": "integer" },
+    "geo_node_id": { "type": "integer" },
     "healthy": { "type": "boolean" },
-    "health": { "type": "string" },
+    "health": { "type": ["string", "null"] },
     "attachments_count": { "type": "integer" },
     "attachments_failed_count": { "type": "integer" },
     "attachments_synced_count": { "type": "integer" },
@@ -39,7 +39,8 @@
     "last_event_id": { "type": ["integer", "null"] },
     "last_event_timestamp": { "type": ["integer", "null"] },
     "cursor_last_event_id": { "type": ["integer", "null"] },
-    "cursor_last_event_timestamp": { "type": ["integer", "null"] }
+    "cursor_last_event_timestamp": { "type": ["integer", "null"] },
+    "last_successful_status_check_timestamp": { "type": ["integer", "null"] }
   },
   "additionalProperties": false
 }

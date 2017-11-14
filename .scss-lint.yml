@@ -14,7 +14,7 @@ linters:
 
   # Whether or not to prefer `border: 0` over `border: none`.
   BorderZero:
-    enabled: false
+    enabled: true
 
   # Reports when you define a rule set using a selector with chained classes
   # (a.k.a. adjoining classes).
@@ -112,7 +112,7 @@ linters:
 
   # Reports when you define the same selector twice in a single sheet.
   MergeableSelector:
-    enabled: false
+    enabled: true
 
   # Functions, mixins, variables, and placeholders should be declared
   # with all lowercase letters and hyphens instead of underscores.

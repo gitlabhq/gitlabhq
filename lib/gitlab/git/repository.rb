@@ -920,6 +920,11 @@ module Gitlab
         false
       end
 
+      # Returns true if a remote exists.
+      def remote_exists?(name)
+        rugged.remotes[name].present?
+      end
+
       # Update the specified remote using the values in the +options+ hash
       #
       # Example
@@ -1044,7 +1049,7 @@ module Gitlab
         delete_refs(tmp_ref) if tmp_ref
       end
 
-      def fetch_source_branch(source_repository, source_branch, local_ref)
+      def fetch_source_branch!(source_repository, source_branch, local_ref)
         with_repo_branch_commit(source_repository, source_branch) do |commit|
           if commit
             write_ref(local_ref, commit.sha)

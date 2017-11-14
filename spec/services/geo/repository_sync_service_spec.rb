@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-RSpec.describe Geo::RepositorySyncService do
+describe Geo::RepositorySyncService do
   include ::EE::GeoHelpers
 
   set(:primary) { create(:geo_node, :primary, host: 'primary-geo-node', relative_url_root: '/gitlab') }
@@ -122,6 +122,15 @@ RSpec.describe Geo::RepositorySyncService do
 
           subject.execute
         end
+
+        it 'sets repository_retry_count and repository_retry_at to nil' do
+          registry = create(:geo_project_registry, project: project, repository_retry_count: 2, repository_retry_at: Date.yesterday)
+
+          subject.execute
+
+          expect(registry.reload.repository_retry_count).to be_nil
+          expect(registry.repository_retry_at).to be_nil
+        end
       end
 
       context 'when repository sync fail' do
@@ -140,6 +149,45 @@ RSpec.describe Geo::RepositorySyncService do
         it 'resets last_repository_successful_sync_at' do
           expect(registry.last_repository_successful_sync_at).to be_nil
         end
+
+        it 'resets repository_retry_count' do
+          expect(registry.repository_retry_count).to eq(1)
+        end
+
+        it 'resets repository_retry_at' do
+          expect(registry.repository_retry_at).to be_present
+        end
+      end
+    end
+
+    context 'retries' do
+      it 'tries to fetch repo' do
+        create(:geo_project_registry, project: project, repository_retry_count: Geo::BaseSyncService::RETRY_BEFORE_REDOWNLOAD - 1)
+
+        expect_any_instance_of(described_class).to receive(:fetch_project_repository).with(false)
+
+        subject.execute
+      end
+
+      it 'tries to redownload repo' do
+        create(:geo_project_registry, project: project, repository_retry_count: Geo::BaseSyncService::RETRY_BEFORE_REDOWNLOAD + 1)
+
+        expect_any_instance_of(described_class).to receive(:fetch_project_repository).with(true)
+
+        subject.execute
+      end
+
+      it 'tries to redownload repo when force_redownload flag is set' do
+        create(
+          :geo_project_registry,
+          project: project,
+          repository_retry_count: Geo::BaseSyncService::RETRY_BEFORE_REDOWNLOAD - 1,
+          force_to_redownload_repository: true
+        )
+
+        expect_any_instance_of(described_class).to receive(:fetch_project_repository).with(true)
+
+        subject.execute
       end
     end
 

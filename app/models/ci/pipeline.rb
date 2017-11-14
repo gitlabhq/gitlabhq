@@ -422,7 +422,7 @@ module Ci
     end
 
     def notes
-      Note.for_commit_id(sha)
+      project.notes.for_commit_id(sha)
     end
 
     def process!

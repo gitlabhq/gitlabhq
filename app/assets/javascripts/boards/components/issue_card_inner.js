@@ -158,7 +158,7 @@ gl.issueBoards.IssueCardInner = Vue.extend({
             class="card-number"
             v-if="issueId"
           >
-            <span v-if="groupId && issue.project">{{issue.project.path}}</span>{{ issueId }}
+            <template v-if="groupId && issue.project">{{issue.project.path}}</template>{{ issueId }}
           </span>
         </h4>
         <div class="card-assignee">

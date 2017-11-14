@@ -190,7 +190,10 @@ class Project < ActiveRecord::Base
   has_one :import_data, class_name: 'ProjectImportData', inverse_of: :project, autosave: true
   has_one :project_feature, inverse_of: :project
   has_one :statistics, class_name: 'ProjectStatistics'
-  has_one :cluster, class_name: 'Gcp::Cluster', inverse_of: :project
+
+  has_one :cluster_project, class_name: 'Clusters::Project'
+  has_one :cluster, through: :cluster_project, class_name: 'Clusters::Cluster'
+  has_many :clusters, through: :cluster_project, class_name: 'Clusters::Cluster'
 
   # Container repositories need to remove data from the container registry,
   # which is not managed by the DB. Hence we're still using dependent: :destroy
@@ -217,6 +220,7 @@ class Project < ActiveRecord::Base
   has_many :active_runners, -> { active }, through: :runner_projects, source: :runner, class_name: 'Ci::Runner'
 
   has_one :auto_devops, class_name: 'ProjectAutoDevops'
+  has_many :custom_attributes, class_name: 'ProjectCustomAttribute'
 
   accepts_nested_attributes_for :variables, allow_destroy: true
   accepts_nested_attributes_for :project_feature, update_only: true
@@ -244,10 +248,8 @@ class Project < ActiveRecord::Base
               message: Gitlab::Regex.project_name_regex_message }
   validates :path,
     presence: true,
-    dynamic_path: true,
+    project_path: true,
     length: { maximum: 255 },
-    format: { with: Gitlab::PathRegex.project_path_format_regex,
-              message: Gitlab::PathRegex.project_path_format_message },
     uniqueness: { scope: :namespace_id }
 
   validates :namespace, presence: true
@@ -366,6 +368,7 @@ class Project < ActiveRecord::Base
   scope :abandoned, -> { where('projects.last_activity_at < ?', 6.months.ago) }
 
   scope :excluding_project, ->(project) { where.not(id: project) }
+  scope :import_started, -> { where(import_status: 'started') }
 
   state_machine :import_status, initial: :none do
     event :import_schedule do
@@ -1039,6 +1042,10 @@ class Project < ActiveRecord::Base
     !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
   end
 
+  def fork_source
+    forked_from_project || fork_network&.root_project
+  end
+
   def personal?
     !group
   end
@@ -1182,6 +1189,10 @@ class Project < ActiveRecord::Base
 
   def repository_exists?
     !!repository.exists?
+  end
+
+  def wiki_repository_exists?
+    wiki.repository_exists?
   end
 
   # update visibility_level of forks
@@ -1427,6 +1438,31 @@ class Project < ActiveRecord::Base
     reload_repository!
   end
 
+  def after_import
+    repository.after_import
+    import_finish
+    remove_import_jid
+    update_project_counter_caches
+  end
+
+  def update_project_counter_caches
+    classes = [
+      Projects::OpenIssuesCountService,
+      Projects::OpenMergeRequestsCountService
+    ]
+
+    classes.each do |klass|
+      klass.new(self).refresh_cache
+    end
+  end
+
+  def remove_import_jid
+    return unless import_jid
+
+    Gitlab::SidekiqStatus.unset(import_jid)
+    update_column(:import_jid, nil)
+  end
+
   def running_or_pending_build_count(force: false)
     Rails.cache.fetch(['projects', id, 'running_or_pending_build_count'], force: force) do
       builds.running_or_pending.count(:all)
@@ -1488,7 +1524,8 @@ class Project < ActiveRecord::Base
       { key: 'CI_PROJECT_PATH', value: full_path, public: true },
       { key: 'CI_PROJECT_PATH_SLUG', value: full_path_slug, public: true },
       { key: 'CI_PROJECT_NAMESPACE', value: namespace.full_path, public: true },
-      { key: 'CI_PROJECT_URL', value: web_url, public: true }
+      { key: 'CI_PROJECT_URL', value: web_url, public: true },
+      { key: 'CI_PROJECT_VISIBILITY', value: Gitlab::VisibilityLevel.string_level(visibility_level), public: true }
     ]
   end
 
@@ -1595,10 +1632,6 @@ class Project < ActiveRecord::Base
     feature_available?(:multiple_issue_boards, user)
   end
 
-  def issue_board_milestone_available?(user = nil)
-    feature_available?(:issue_board_milestone, user)
-  end
-
   def full_path_was
     File.join(namespace.full_path, previous_changes['path'].first)
   end
@@ -1681,6 +1714,17 @@ class Project < ActiveRecord::Base
 
   def reference_counter(wiki: false)
     Gitlab::ReferenceCounter.new(gl_repository(is_wiki: wiki))
+  end
+
+  # Refreshes the expiration time of the associated import job ID.
+  #
+  # This method can be used by asynchronous importers to refresh the status,
+  # preventing the StuckImportJobsWorker from marking the import as failed.
+  def refresh_import_jid_expiration
+    return unless import_jid
+
+    Gitlab::SidekiqStatus
+      .set(import_jid, StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION)
   end
 
   private
