@@ -28,6 +28,7 @@ class Projects::WikisController < Projects::ApplicationController
       )
     else
       return render('empty') unless can?(current_user, :create_wiki, @project)
+
       @page = WikiPage.new(@project_wiki)
       @page.title = params[:id]
 

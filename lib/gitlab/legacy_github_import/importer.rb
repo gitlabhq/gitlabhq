@@ -15,6 +15,7 @@ module Gitlab
 
       def client
         return @client if defined?(@client)
+
         unless credentials
           raise Projects::ImportService::Error,
                 "Unable to find project import data credentials for project ID: #{@project.id}"

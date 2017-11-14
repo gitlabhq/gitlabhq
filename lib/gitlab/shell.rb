@@ -368,6 +368,7 @@ module Gitlab
       output, status = gitlab_shell_fast_execute_helper(cmd, vars)
 
       raise Error, output unless status.zero?
+
       true
     end
 

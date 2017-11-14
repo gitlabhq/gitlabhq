@@ -44,6 +44,7 @@ class AutocompleteController < ApplicationController
       if @project.blank? && params[:group_id].present?
         group = Group.find(params[:group_id])
         return render_404 unless can?(current_user, :read_group, group)
+
         group
       end
     end
@@ -54,6 +55,7 @@ class AutocompleteController < ApplicationController
       if params[:project_id].present?
         project = Project.find(params[:project_id])
         return render_404 unless can?(current_user, :read_project, project)
+
         project
       end
     end
