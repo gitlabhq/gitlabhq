@@ -1,0 +1,6 @@
+- page_title "Epics"
+
+- if @epics.to_a.any?
+  = render 'shared/epics'
+- else
+  = render 'shared/empty_states/epics'

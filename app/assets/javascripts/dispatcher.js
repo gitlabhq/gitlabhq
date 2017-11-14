@@ -20,8 +20,8 @@ import groupsSelect from './groups_select';
 import NamespaceSelect from './namespace_select';
 /* global NewCommitForm */
 /* global NewBranchForm */
-/* global Project */
-/* global ProjectAvatar */
+import Project from './project';
+import projectAvatar from './project_avatar';
 /* global MergeRequest */
 /* global Compare */
 /* global CompareAutocomplete */
@@ -29,7 +29,7 @@ import NamespaceSelect from './namespace_select';
 /* global ProjectFindFile */
 /* global ProjectNew */
 /* global ProjectShow */
-/* global ProjectImport */
+import projectImport from './project_import';
 import Labels from './labels';
 import LabelManager from './label_manager';
 /* global Sidebar */
@@ -386,7 +386,7 @@ import initGroupAnalytics from './init_group_analytics';
           GpgBadges.fetch();
           break;
         case 'projects:imports:show':
-          new ProjectImport();
+          projectImport();
           break;
         case 'projects:show':
           shortcut_handler = new ShortcutsNavigation();
@@ -416,7 +416,7 @@ import initGroupAnalytics from './init_group_analytics';
           new UserCallout({ className: 'js-mr-approval-callout' });
           break;
         case 'projects:imports:show':
-          new ProjectImport();
+          projectImport();
           break;
         case 'projects:pipelines:new':
           new NewBranchForm($('.js-new-pipeline-form'));
@@ -686,7 +686,7 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'projects':
           new Project();
-          new ProjectAvatar();
+          projectAvatar();
           switch (path[1]) {
             case 'compare':
               new CompareAutocomplete();

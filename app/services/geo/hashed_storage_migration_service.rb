@@ -19,11 +19,10 @@ module Geo
     end
 
     def execute
-      project = Project.find(project_id)
       project.expire_caches_before_rename(old_disk_path)
 
-      if migrating_from_legacy_storage?(project)
-        Geo::MoveRepositoryService.new(project, old_disk_path, new_disk_path).execute
+      if migrating_from_legacy_storage? && !move_repository
+        raise RepositoryCannotBeRenamed, "Repository #{old_disk_path} could not be renamed to #{new_disk_path}"
       end
 
       true
@@ -31,12 +30,20 @@ module Geo
 
     private
 
-    def migrating_from_legacy_storage?(project)
+    def project
+      @project ||= Project.find(project_id)
+    end
+
+    def migrating_from_legacy_storage?
       from_legacy_storage? && project.hashed_storage?(:repository)
     end
 
     def from_legacy_storage?
       old_storage_version.nil? || old_storage_version.zero?
+    end
+
+    def move_repository
+      Geo::MoveRepositoryService.new(project, old_disk_path, new_disk_path).execute
     end
   end
 end

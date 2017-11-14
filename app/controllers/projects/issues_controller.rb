@@ -10,6 +10,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   before_action :check_issues_available!
   before_action :issue, except: [:index, :new, :create, :bulk_update, :export_csv]
+
   before_action :set_issuables_index, only: [:index]
 
   # Allow write(create) issue

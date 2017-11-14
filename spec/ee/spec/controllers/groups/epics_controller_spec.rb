@@ -9,6 +9,42 @@ describe Groups::EpicsController do
     sign_in(user)
   end
 
+  describe "GET #index" do
+    let!(:epic_list) { create_list(:epic, 2, group: group) }
+
+    before do
+      sign_in(user)
+      group.add_developer(user)
+    end
+
+    it "returns index" do
+      get :index, group_id: group
+
+      expect(response).to have_gitlab_http_status(200)
+    end
+
+    context 'with page param' do
+      let(:last_page) { group.epics.page.total_pages }
+
+      before do
+        allow(Kaminari.config).to receive(:default_per_page).and_return(1)
+      end
+
+      it 'redirects to last_page if page number is larger than number of pages' do
+        get :index, group_id: group, page: (last_page + 1).to_param
+
+        expect(response).to redirect_to(group_epics_path(page: last_page, state: controller.params[:state], scope: controller.params[:scope]))
+      end
+
+      it 'renders the specified page' do
+        get :index, group_id: group, page: last_page.to_param
+
+        expect(assigns(:epics).current_page).to eq(last_page)
+        expect(response).to have_gitlab_http_status(200)
+      end
+    end
+  end
+
   describe 'GET #show' do
     def show_epic(format = :html)
       get :show, group_id: group, id: epic.to_param, format: format
@@ -20,7 +56,7 @@ describe Groups::EpicsController do
         show_epic
 
         expect(response.content_type).to eq 'text/html'
-        expect(response).to render_template 'groups/ee/epics/show'
+        expect(response).to render_template 'groups/epics/show'
       end
 
       context 'with unauthorized user' do

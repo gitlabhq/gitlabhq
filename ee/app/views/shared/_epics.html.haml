@@ -1,0 +1,7 @@
+.top-area
+  = render 'shared/issuable/nav', type: :epics
+
+%ul.content-list.issuable-list
+  = render partial: 'groups/epics/epic', collection: @epics
+
+= paginate @epics, theme: "gitlab"

@@ -1,18 +1,20 @@
 - admin_without_ee_license = !current_license && current_user.admin?
 
-.row.blank-state-parent-container{ class: ('has-start-trial-container' if admin_without_ee_license) }
+.blank-state-parent-container{ class: ('has-start-trial-container' if admin_without_ee_license) }
   .section-container.section-welcome{ class: ('col-md-6' if admin_without_ee_license) }
     .container.section-body
-      .blank-state.blank-state-welcome
-        %h2.blank-state-welcome-title
-          Welcome to GitLab
-        %p.blank-state-text
-          Code, test, and deploy together
-      - if current_user.admin?
-        = render "blank_state_admin_welcome"
-      - else
-        = render "blank_state_welcome"
-  - if admin_without_ee_license
-    .col-md-6.section-container.section-ee-trial
-      .container.section-body
-        = render "blank_state_ee_trial"
+      .row
+        .blank-state-welcome
+          %h2.blank-state-welcome-title
+            Welcome to GitLab
+          %p.blank-state-text
+            Code, test, and deploy together
+        .blank-state-row
+          %div{ class: ('column-large' if admin_without_ee_license) }
+            - if current_user.admin?
+              = render "blank_state_admin_welcome"
+            - else
+              = render "blank_state_welcome"
+          - if admin_without_ee_license
+            .column-small
+              = render "blank_state_ee_trial"

@@ -8,6 +8,7 @@ shared_examples 'geo base sync execution' do
       end
 
       it 'executes the synchronization' do
+        subject.class.type ||= :wiki
         expect(subject).to receive(:sync_repository)
 
         subject.execute
