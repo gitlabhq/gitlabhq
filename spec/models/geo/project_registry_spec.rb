@@ -38,6 +38,16 @@ describe Geo::ProjectRegistry do
     end
   end
 
+  describe '.retry_due' do
+    it 'returns projects that should be synced' do
+      create(:geo_project_registry, repository_retry_at: Date.yesterday, wiki_retry_at: Date.yesterday)
+      tomorrow = create(:geo_project_registry, repository_retry_at: Date.tomorrow, wiki_retry_at: Date.tomorrow)
+      create(:geo_project_registry)
+
+      expect(described_class.retry_due).not_to include(tomorrow)
+    end
+  end
+
   describe '#repository_sync_due?' do
     where(:resync_repository, :last_successful_sync, :last_sync, :expected) do
       now = Time.now

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171009162209) do
+ActiveRecord::Schema.define(version: 20171101105200) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -26,10 +26,13 @@ ActiveRecord::Schema.define(version: 20171009162209) do
     t.string "sha256"
     t.datetime "created_at", null: false
     t.boolean "success", default: false, null: false
+    t.integer "retry_count"
+    t.datetime "retry_at"
   end
 
   add_index "file_registry", ["file_type", "file_id"], name: "index_file_registry_on_file_type_and_file_id", unique: true, using: :btree
   add_index "file_registry", ["file_type"], name: "index_file_registry_on_file_type", using: :btree
+  add_index "file_registry", ["retry_at"], name: "index_file_registry_on_retry_at", using: :btree
   add_index "file_registry", ["success"], name: "index_file_registry_on_success", using: :btree
 
   create_table "project_registry", force: :cascade do |t|
@@ -41,12 +44,20 @@ ActiveRecord::Schema.define(version: 20171009162209) do
     t.boolean "resync_wiki", default: true, null: false
     t.datetime "last_wiki_synced_at"
     t.datetime "last_wiki_successful_sync_at"
+    t.integer "repository_retry_count"
+    t.datetime "repository_retry_at"
+    t.boolean "force_to_redownload_repository"
+    t.integer "wiki_retry_count"
+    t.datetime "wiki_retry_at"
+    t.boolean "force_to_redownload_wiki"
   end
 
   add_index "project_registry", ["last_repository_successful_sync_at"], name: "index_project_registry_on_last_repository_successful_sync_at", using: :btree
   add_index "project_registry", ["last_repository_synced_at"], name: "index_project_registry_on_last_repository_synced_at", using: :btree
   add_index "project_registry", ["project_id"], name: "index_project_registry_on_project_id", unique: true, using: :btree
+  add_index "project_registry", ["repository_retry_at"], name: "index_project_registry_on_repository_retry_at", using: :btree
   add_index "project_registry", ["resync_repository"], name: "index_project_registry_on_resync_repository", using: :btree
   add_index "project_registry", ["resync_wiki"], name: "index_project_registry_on_resync_wiki", using: :btree
+  add_index "project_registry", ["wiki_retry_at"], name: "index_project_registry_on_wiki_retry_at", using: :btree
 
 end

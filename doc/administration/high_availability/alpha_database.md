@@ -114,6 +114,7 @@ We will need the following password information for the application's database u
 
 - `POSTGRESQL_USER_PASSWORD`. The password for the database user
 - `POSTGRESQL_PASSWORD_HASH`. The md5 hash of POSTGRESQL_USER_PASSWORD
+
 #### Pgbouncer
 
 When using default setup, minimum configuration requires:
@@ -231,7 +232,6 @@ See `START user configuration` section in the next step for required information
     postgresql['hot_standby'] = 'on'
     postgresql['wal_level'] = 'replica'
     postgresql['shared_preload_libraries'] = 'repmgr_funcs'
-    postgresql['sql_user_password'] = 'POSTGRESQL_PASSWORD_HASH'
 
     # Disable automatic database migrations
     gitlab_rails['auto_migrate'] = false
@@ -626,9 +626,9 @@ On the consul server nodes, it is important to restart the consul service in a c
 
 If you're running into an issue with a component not outlined here, be sure to check the troubleshooting section of their specific documentation page.
 
-[Consul](consul.md#troubleshooting)
-[PostgreSQL](http://docs.gitlab.com/omnibus/settings/database.html#troubleshooting)
-[GitLab application](gitlab.md#troubleshooting)
+- [Consul](consul.md#troubleshooting)
+- [PostgreSQL](http://docs.gitlab.com/omnibus/settings/database.html#troubleshooting)
+- [GitLab application](gitlab.md#troubleshooting)
 
 ---
 

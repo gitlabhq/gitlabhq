@@ -1,6 +1,10 @@
 <script>
   import issuableApp from '~/issue_show/components/app.vue';
+<<<<<<< HEAD
   import relatedIssuesRoot from '~/issuable/related_issues/components/related_issues_root.vue';
+=======
+  import issuableAppEventHub from '~/issue_show/event_hub';
+>>>>>>> master
   import epicHeader from './epic_header.vue';
   import epicSidebar from '../../sidebar/components/sidebar_app.vue';
 
@@ -74,17 +78,24 @@
         required: false,
       },
     },
+    data() {
+      return {
+        // Epics specific configuration
+        issuableRef: '',
+        projectPath: this.groupPath,
+        projectNamespace: '',
+      };
+    },
     components: {
       epicHeader,
       epicSidebar,
       issuableApp,
       relatedIssuesRoot,
     },
-    created() {
-      // Epics specific configuration
-      this.issuableRef = '';
-      this.projectPath = this.groupPath;
-      this.projectNamespace = '';
+    methods: {
+      deleteEpic() {
+        issuableAppEventHub.$emit('delete.issuable');
+      },
     },
   };
 </script>
@@ -94,6 +105,8 @@
     <epic-header
       :author="author"
       :created="created"
+      :canDelete="canDestroy"
+      @deleteEpic="deleteEpic"
     />
     <div class="issuable-details content-block">
       <div class="detail-page-description">
@@ -115,9 +128,21 @@
       </div>
       <epic-sidebar
         :endpoint="endpoint"
+        :issuable-ref="issuableRef"
+        :initial-title-html="initialTitleHtml"
+        :initial-title-text="initialTitleText"
+        :initial-description-html="initialDescriptionHtml"
+        :initial-description-text="initialDescriptionText"
+        :markdown-preview-path="markdownPreviewPath"
+        :markdown-docs-path="markdownDocsPath"
+        :project-path="projectPath"
+        :project-namespace="projectNamespace"
+        :show-inline-edit-button="true"
+        :show-delete-button="false"
+        issuable-type="epic"
         :editable="canUpdate"
-        :initialStartDate="startDate"
-        :initialEndDate="endDate"
+        :initial-start-date="startDate"
+        :initial-end-date="endDate"
       />
       <related-issues-root
         :endpoint="issueLinksEndpoint"

@@ -6,11 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const metaData = JSON.parse(el.dataset.meta);
   const initialData = JSON.parse(el.dataset.initial);
 
-  const props = Object.assign({}, initialData, metaData, {
-    // Current iteration does not enable users
-    // to delete epics
-    canDestroy: false,
-  });
+  const props = Object.assign({}, initialData, metaData);
 
   // Convert backend casing to match frontend style guide
   props.startDate = props.start_date;

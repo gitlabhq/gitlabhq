@@ -27,13 +27,15 @@ module EE
         enable :create_epic
         enable :admin_epic
         enable :update_epic
-        enable :destroy_epic
       end
+
+      rule { owner }.enable :destroy_epic
 
       rule { auditor }.policy do
         enable  :read_group
         enable  :read_epic
       end
+
       rule { admin }.enable :read_epic
       rule { has_projects }.enable :read_epic
 
