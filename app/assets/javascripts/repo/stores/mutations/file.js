@@ -27,12 +27,15 @@ export default {
       binary: data.binary,
       renderError: data.render_error,
       currentViewer: data.rich_viewer ? 'rich' : 'simple',
+      extension: data.extension,
     });
 
     if (data.rich_viewer) {
       Object.assign(file.rich, {
         path: data.rich_viewer.path,
         icon: data.rich_viewer.switcher_icon,
+        name: data.rich_viewer.name,
+        serverRender: data.rich_viewer.server_side,
       });
     }
 
@@ -40,6 +43,8 @@ export default {
       Object.assign(file.simple, {
         path: data.simple_viewer.path,
         icon: data.simple_viewer.switcher_icon,
+        name: data.simple_viewer.name,
+        serverRender: data.simple_viewer.server_side,
       });
     }
   },

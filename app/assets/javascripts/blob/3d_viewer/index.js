@@ -7,13 +7,13 @@ const STLLoader = STLLoaderClass(THREE);
 const OrbitControls = OrbitControlsClass(THREE);
 
 export default class Renderer {
-  constructor(container) {
+  constructor(container, height = 500) {
     this.renderWrapper = this.render.bind(this);
     this.objects = [];
 
     this.container = container;
     this.width = this.container.offsetWidth;
-    this.height = 500;
+    this.height = height;
 
     this.loader = new STLLoader();
 

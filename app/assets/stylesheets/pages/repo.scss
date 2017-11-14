@@ -107,6 +107,10 @@
         width: 100%;
       }
 
+      .blob-full-width {
+        width: 100%;
+      }
+
       .line-numbers {
         min-width: 44px;
       }
@@ -114,6 +118,12 @@
       .blob-content {
         flex: 1;
         overflow-x: auto;
+      }
+
+      .file-content {
+        img {
+          max-width: 100%;
+        }
       }
     }
 

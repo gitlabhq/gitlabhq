@@ -38,7 +38,7 @@ describe Projects::BlobController do
     end
 
     context 'with file path and JSON format' do
-      context "valid branch, valid file" do
+      context "valid branch, valid file, rich viewer" do
         let(:id) { 'master/README.md' }
 
         before do
@@ -51,7 +51,33 @@ describe Projects::BlobController do
 
         it do
           expect(response).to be_ok
-          expect(json_response).to have_key 'html'
+          expect(json_response).to have_key 'auxiliary_viewer'
+          expect(json_response['auxiliary_viewer']).not_to eq(nil)
+          expect(json_response).to have_key 'rich_viewer'
+          expect(json_response['rich_viewer']).not_to eq(nil)
+          expect(json_response).to have_key 'simple_viewer'
+          expect(json_response).to have_key 'raw_path'
+        end
+      end
+
+      context "valid branch, valid file, simple viewer" do
+        let(:id) { 'master/.gitignore' }
+
+        before do
+          get(:show,
+              namespace_id: project.namespace,
+              project_id: project,
+              id: id,
+              format: :json)
+        end
+
+        it do
+          expect(response).to be_ok
+          expect(json_response).to have_key 'auxiliary_viewer'
+          expect(json_response['auxiliary_viewer']).to eq(nil)
+          expect(json_response).to have_key 'rich_viewer'
+          expect(json_response['rich_viewer']).to eq(nil)
+          expect(json_response).to have_key 'simple_viewer'
           expect(json_response).to have_key 'raw_path'
         end
       end

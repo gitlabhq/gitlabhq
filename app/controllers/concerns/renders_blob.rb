@@ -18,9 +18,7 @@ module RendersBlob
 
     viewer_json = BlobViewerSerializer.new(params: params).represent(viewer)
 
-    viewer_json[:html] = view_to_html_string("projects/blob/_viewer", viewer: viewer, load_async: false)
-
-    viewer_json
+    viewer_json.merge(html: view_to_html_string("projects/blob/_viewer", viewer: viewer, load_async: false))
   end
 
   def render_blob_json(blob)

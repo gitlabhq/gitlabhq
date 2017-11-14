@@ -57,7 +57,7 @@ export default {
       const content = this.activeFile.content !== '' ? this.activeFile.content : this.activeFile.raw;
 
       const foundLang = this.languages.find(lang =>
-        lang.extensions && lang.extensions.indexOf(this.activeFileExtension) === 0,
+        lang.extensions && lang.extensions.indexOf(`.${this.activeFile.extension}`) === 0,
       );
       const newModel = this.monaco.editor.createModel(
         content, foundLang ? foundLang.id : 'plaintext',
@@ -84,7 +84,6 @@ export default {
   computed: {
     ...mapGetters([
       'activeFile',
-      'activeFileExtension',
     ]),
     shouldHideEditor() {
       return this.activeFile.binary && !this.activeFile.raw;

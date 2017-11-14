@@ -114,7 +114,7 @@ export const createTempFile = ({ state, commit, dispatch }, { tree, name, conten
 export const getFileHTML = ({ commit, getters }, file) => {
   const currentViewer = getters.activeFileCurrentViewer;
 
-  if (currentViewer.html !== '') return;
+  if (currentViewer.html !== '' || !currentViewer.serverRender) return;
 
   commit(types.TOGGLE_FILE_VIEWER_LOADING, currentViewer);
 

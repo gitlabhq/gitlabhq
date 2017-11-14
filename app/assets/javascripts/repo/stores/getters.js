@@ -35,12 +35,7 @@ export const canActiveFileSwitchViewer = (state) => {
 
   if (file.binary) return false;
 
-  return file.rich.path !== '' && file.simple.path !== '';
-};
-
-export const activeFileExtension = (state) => {
-  const file = activeFile(state);
-  return file ? `.${file.path.split('.').pop()}` : '';
+  return file.rich.path !== '' && file.simple.path !== '' && file.simple.name === 'text';
 };
 
 export const isCollapsed = state => !!state.openFiles.length;

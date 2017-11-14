@@ -3,6 +3,8 @@ export const viewerDataStructure = () => ({
   path: '',
   icon: '',
   html: '',
+  name: '',
+  serverRender: true,
 });
 
 export const dataStructure = () => ({
@@ -10,6 +12,7 @@ export const dataStructure = () => ({
   key: '',
   type: '',
   name: '',
+  extension: '',
   url: '',
   path: '',
   level: 0,
