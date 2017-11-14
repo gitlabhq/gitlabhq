@@ -61,20 +61,18 @@ Here's a full example of `/etc/gitlab-runner/config.toml`. Open it with your
 editor and edit as you see fit:
 
 ```toml
-concurrent = 3
+concurrent = 10
 check_interval = 0
 
 [[runners]]
   name = "gitlab-aws-autoscaler"
-  url = "<url to your GitLab CI host>"
-  token = "<registration token>"
+  url = "<URL of your GitLab instance>"
+  token = "<Runner's token>"
   executor = "docker+machine"
-  limit = 4
   [runners.docker]
     image = "alpine"
     privileged = true
-    disable_cache = false
-    volumes = ["/cache"]
+    disable_cache = true
   [runners.cache]
     Type = "s3"
     ServerAddress = "s3.amazonaws.com"
@@ -114,20 +112,38 @@ Let's break it down to pieces.
 ### Global section
 
 ```toml
-concurrent = 3
+concurrent = 10
 check_interval = 0
 ```
+
+In the global section, you can define the limit of the jobs that can be run
+concurrently across all Runners (`concurrent`). This heavily depends on your
+needs, like how many users your Runners will accommodate, how much time your
+builds take, etc. You can start with something low, and increase its value going
+forward.
+
+The `check_interval` setting defines in seconds how often the Runner should
+check GitLab for new jobs.
+
+[Read more](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section)
+about all the options you can use.
 
 ### `[[runners]]`
 
 ```toml
 [[runners]]
   name = "gitlab-aws-autoscaler"
-  url = "<url to your GitLab CI host>"
-  token = "<registration token>"
+  url = "<URL of your GitLab instance>"
+  token = "<Runner's token>"
   executor = "docker+machine"
-  limit = 4
 ```
+
+From the `[[runners]]` section, the most important part is the `executor` which
+must be set to `docker+machine`. All those settings are taken care of when you
+register the Runner for the first time.
+
+[Read more](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
+about all the options you can use under `[[runners]]`.
 
 ### `[runners.docker]`
 
@@ -135,15 +151,26 @@ check_interval = 0
   [runners.docker]
     image = "alpine"
     privileged = true
-    disable_cache = false
-    volumes = ["/cache"]
+    disable_cache = true
 ```
+
+In the `[runners.docker]` section you can define the default Docker image to
+be used by the child Runners if it's not defined in [`.gitlab-ci.yml`](../../ci/yaml/README.md).
+Using `privileged = true`, all Runners will be able to run Docker in Docker
+which is useful if you plan to build your own Docker images via GitLab CI/CD.
+
+Next, we use `disable_cache = true` to disable the Docker executor's inner
+cache mechanism since we will use the distributed cache mode as described
+below.
+
+[Read more](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-docker-section)
+about all the options you can use under `[runners.docker]`.
 
 ### `[runners.cache]`
 
 To speed up your jobs, GitLab Runner provides a cache mechanism where selected
 directories and/or files are saved and shared between subsequent jobs.
-While not required for this setup, it is recommended to use the shared cache
+While not required for this setup, it is recommended to use the distributed cache
 mechanism that GitLab Runner provides. Since new instances will be created on
 demand, it is essential to have a common place where cache is stored.
 
@@ -162,7 +189,7 @@ In the following example, we use Amazon S3:
 
 Here's some more info to get you started:
 
-- [The `[runners.cache]` section](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-cache-section)
+- [The `[runners.cache]` section reference](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-cache-section)
 - [Deploying and using a cache server for GitLab Runner](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching)
 - [How cache works](../../ci/yaml/README.md#cache)
 
@@ -201,6 +228,9 @@ tells GitLab Runner how and when to spawn new Docker Machine instances.
 TIP: **Tip:**
 Under `MachineOptions` you can add anything that the [AWS Docker Machine driver
 supports](https://docs.docker.com/machine/drivers/aws/#options).
+
+[Read more](/runner/configuration/advanced-configuration.html#the-runners-machine-section)
+about all the options you can use under `[runners.machine]`.
 
 ## Cutting down costs with Amazon EC2 Spot instances
 
