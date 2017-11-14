@@ -248,8 +248,7 @@ export default class CreateMergeRequestDropdown {
   initDroplab() {
     this.droplab = new DropLab();
 
-    this.droplab.init(this.dropdownToggle, this.dropdownList, [InputSetter],
-      this.getDroplabConfig());
+    this.droplab.init(this.dropdownToggle, this.dropdownList, [InputSetter], this.getDroplabConfig());
   }
 
   isBusy() {
@@ -299,17 +298,17 @@ export default class CreateMergeRequestDropdown {
     return true;
   }
 
-  onClickCreateMergeRequestButton(e) {
+  onClickCreateMergeRequestButton(event) {
     let xhr = null;
-    e.preventDefault();
+    event.preventDefault();
 
     if (this.isBusy()) {
       return;
     }
 
-    if (e.target.dataset.action === CREATE_MERGE_REQUEST) {
+    if (event.target.dataset.action === CREATE_MERGE_REQUEST) {
       xhr = this.createMergeRequest();
-    } else if (e.target.dataset.action === CREATE_BRANCH) {
+    } else if (event.target.dataset.action === CREATE_BRANCH) {
       xhr = this.createBranch();
     }
 
