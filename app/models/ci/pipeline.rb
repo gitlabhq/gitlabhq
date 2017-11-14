@@ -481,14 +481,6 @@ module Ci
         .fabricate!
     end
 
-    def codeclimate_artifact
-      artifacts.codequality.find(&:has_codeclimate_json?)
-    end
-
-    def sast_artifact
-      artifacts.sast.find(&:has_sast_json?)
-    end
-
     def latest_builds_with_artifacts
       @latest_builds_with_artifacts ||= builds.latest.with_artifacts
     end
