@@ -1,10 +1,26 @@
 class Groups::EpicsController < Groups::ApplicationController
   include IssuableActions
+  include IssuableCollections
 
-  before_action :epic
+  before_action :epic, except: :index
+  before_action :set_issuables_index, only: :index
   before_action :authorize_update_issuable!, only: :update
 
   skip_before_action :labels
+
+  def index
+    set_default_state
+    @epics = @issuables
+
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: {
+          html: view_to_html_string("groups/epics/_epics")
+        }
+      end
+    end
+  end
 
   private
 
@@ -38,7 +54,22 @@ class Groups::EpicsController < Groups::ApplicationController
     Epics::UpdateService.new(nil, current_user, epic_params)
   end
 
-  def show_view
-    'groups/ee/epics/show'
+  def set_issuables_index
+    @finder_type = EpicsFinder
+    super
+  end
+
+  def collection_type
+    @collection_type ||= 'Epic'
+  end
+
+  def preload_for_collection
+    @preload_for_collection ||= [:group, :author]
+  end
+
+  # we need to override the default state which is opened for now because we don't have
+  # states for epics and need all as default for navigation to work correctly (#4017)
+  def set_default_state
+    params[:state] = 'all'
   end
 end

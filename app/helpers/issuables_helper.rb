@@ -159,7 +159,7 @@ module IssuablesHelper
     label_names.join(', ')
   end
 
-  def issuables_state_counter_text(issuable_type, state)
+  def issuables_state_counter_text(issuable_type, state = :all)
     titles = {
       opened: "Open"
     }
