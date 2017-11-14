@@ -1,5 +1,28 @@
 namespace :gemojione do
   desc 'Generates Emoji SHA256 digests'
+
+  task aliases: ['yarn:check', 'environment'] do
+    require 'json'
+
+    aliases = {}
+
+    index_file = File.join(Rails.root, 'fixtures', 'emojis', 'index.json')
+    index = JSON.parse(File.read(index_file))
+
+    index.each_pair do |key, data|
+      data['aliases'].each do |a|
+        a.tr!(':', '')
+
+        aliases[a] = key
+      end
+    end
+
+    out = File.join(Rails.root, 'fixtures', 'emojis', 'aliases.json')
+    File.open(out, 'w') do |handle|
+      handle.write(JSON.pretty_generate(aliases, indent: '   ', space: '', space_before: ''))
+    end
+  end
+
   task digests: ['yarn:check', 'environment'] do
     require 'digest/sha2'
     require 'json'
@@ -29,7 +52,6 @@ namespace :gemojione do
     end
 
     out = File.join(Rails.root, 'fixtures', 'emojis', 'digests.json')
-
     File.open(out, 'w') do |handle|
       handle.write(JSON.pretty_generate(resultant_emoji_map))
     end

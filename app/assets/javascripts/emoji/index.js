@@ -33,6 +33,7 @@ export function getEmojiCategoryMap() {
       objects: [],
       symbols: [],
       flags: [],
+      extras: [],
     };
     Object.keys(emojiMap).forEach((name) => {
       const emoji = emojiMap[name];

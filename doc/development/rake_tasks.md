@@ -122,6 +122,15 @@ they can be easily inspected.
 bundle exec rake services:doc
 ```
 
+## Updating Emoji Aliases
+
+To update the Emoji aliases file (used for Emoji autocomplete) you must run the
+following:
+
+```
+bundle exec rake gemojione:aliases
+```
+
 ## Updating Emoji Digests
 
 To update the Emoji digests file (used for Emoji autocomplete) you must run the
@@ -130,6 +139,7 @@ following:
 ```
 bundle exec rake gemojione:digests
 ```
+
 
 This will update the file `fixtures/emojis/digests.json` based on the currently
 available Emoji.
