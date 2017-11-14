@@ -360,10 +360,14 @@ Verify the nodes are all communicating:
 The output should be similar to:
 
 ```
-Node         Address              Status  Type    Build  Protocol  DC
-NODE_ONE    XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_cluster
-NODE_TWO    XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_cluster
-NODE_THREE  XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_cluster
+Node                 Address               Status  Type    Build  Protocol  DC
+CONSUL_NODE_ONE      XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
+CONSUL_NODE_TWO      XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
+CONSUL_NODE_THREE    XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
+DATABASE_NODE_ONE    XXX.XXX.XXX.YYY:8301  alive   client  0.9.2  2         gitlab_consul
+DATABASE_NODE_TWO    XXX.XXX.XXX.YYY:8301  alive   client  0.9.2  2         gitlab_consul
+DATABASE_NODE_THREE  XXX.XXX.XXX.YYY:8301  alive   client  0.9.2  2         gitlab_consul
+PGBOUNCER_NODE       XXX.XXX.XXX.YYY:8301  alive   client  0.9.0  2         gitlab_consul
 ```
 
 ### Database nodes
