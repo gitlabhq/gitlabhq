@@ -10,11 +10,11 @@ module QA
             QA::Page::Main::Menu.act { go_to_admin_area }
             QA::Page::Admin::Menu.act { go_to_geo_nodes }
 
-            EE::Page::Admin::GeoNodes.act(address) do |address|
-              raise ArgumentError if address.nil?
+            EE::Page::Admin::GeoNodes.perform do |page|
+              raise ArgumentError if @address.nil?
 
-              set_node_address(address)
-              add_node!
+              page.set_node_address(@address)
+              page.add_node!
             end
 
             QA::Page::Main::Menu.act { sign_out }

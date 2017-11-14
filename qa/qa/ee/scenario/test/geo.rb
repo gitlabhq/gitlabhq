@@ -26,11 +26,9 @@ module QA
             Geo::Secondary.act { replicate_database }
             Geo::Primary.act { add_secondary_node }
 
-            # Execute RSpec :geo suite
-            #
-            # Specs::Runner.perform do |specs|
-            #   specs.rspec(tty: true, tags: %w[core])
-            # end
+            Specs::Runner.perform do |specs|
+              specs.rspec(tty: true, tags: %w[geo])
+            end
           end
 
           private
