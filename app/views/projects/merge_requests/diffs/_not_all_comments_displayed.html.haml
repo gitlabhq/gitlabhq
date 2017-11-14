@@ -1,19 +1,17 @@
 - if @commit || @start_version || (@merge_request_diff && !@merge_request_diff.latest?)
   .mr-version-controls
-    .content-block.comments-disabled-notif
+    .content-block.comments-disabled-notif.clearfix
       = icon('info-circle')
-      Not all comments are displayed because you're
       = succeed '.' do
         - if @commit
-          viewing only the changes in commit
-
-          = link_to @commit.short_id, diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request, commit_id: @commit.id), class: "commit-sha"
-        - elsif @start_version
-          comparing two versions of the diff
+          Only comments from the following commit are shown below
         - else
-          viewing an old version of the diff
-
-      .text-right
-        = link_to diffs_namespace_project_merge_request_path(@project.namespace, @project, @merge_request), class: 'btn btn-sm' do
-          Show latest version
-          = "of the diff" if @commit
+          Not all comments are displayed because you're
+          - if @start_version
+            comparing two versions of the diff
+          - else
+            viewing an old version of the diff
+        .pull-right
+          = link_to diffs_project_merge_request_path(@project, @merge_request), class: 'btn btn-sm' do
+            Show latest version
+            = "of the diff" if @commit

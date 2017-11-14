@@ -4,6 +4,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   include RendersNotes
 
   before_action :apply_diff_view_cookie!
+  before_action :commit
   before_action :define_diff_vars
   before_action :define_diff_comment_vars
 
@@ -26,6 +27,13 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
     return render_404 unless @compare
 
     @diffs = @compare.diffs(diff_options)
+  end
+
+  def commit
+    return nil unless commit_id = params[:commit_id].presence
+    return nil unless @merge_request.all_commit_shas.include?(commit_id)
+
+    @commit ||= @project.commit(commit_id)
   end
 
   def find_merge_request_diff_compare
