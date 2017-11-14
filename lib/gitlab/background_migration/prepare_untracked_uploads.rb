@@ -65,7 +65,7 @@ module Gitlab
         tmp_path = "#{UPLOAD_DIR}/tmp/*"
         cmd = %W[find #{search_dir} -type f ! ( -path #{hashed_path} -prune ) ! ( -path #{tmp_path} -prune ) -print0]
 
-        %w[ionice -c Idle] + cmd if ionice_is_available?
+        cmd = %w[ionice -c Idle] + cmd if ionice_is_available?
 
         cmd
       end
