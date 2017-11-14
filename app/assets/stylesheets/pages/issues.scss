@@ -258,11 +258,12 @@ ul.related-merge-requests > li {
 
   .create-item {
     cursor: pointer;
+    margin: 0 1px;
 
     &:hover,
     &:focus {
-      background-color: $dropdown-hover-color;
-      color: $white-light;
+      background-color: $dropdown-item-hover-bg;
+      color: $gl-text-color;
     }
   }
 
@@ -271,7 +272,7 @@ ul.related-merge-requests > li {
   }
 
   li:not(.divider) {
-    padding: 8px 10px;
+    padding: 8px 9px;
 
     &:last-child {
       padding-bottom: 8px;
@@ -286,7 +287,6 @@ ul.related-merge-requests > li {
 
       .description {
         display: block;
-        font-weight: $gl-font-weight-bold;
       }
     }
 
@@ -304,15 +304,11 @@ ul.related-merge-requests > li {
 
     .description {
       padding-left: 22px;
-
-      strong {
-        display: block;
-        font-weight: $gl-font-weight-bold;
-      }
     }
 
-    input {
-      margin: 3px 0;
+    input,
+    span {
+      margin: 4px 0 0;
     }
   }
 }
