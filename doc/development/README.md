@@ -22,6 +22,7 @@ comments: false
 
 - [UX guide](ux_guide/index.md) for building GitLab with existing CSS styles and elements
 - [Frontend guidelines](fe_guide/index.md)
+- [Emoji guide](fe_guide/emojis.md)
 
 ## Backend guides
 
