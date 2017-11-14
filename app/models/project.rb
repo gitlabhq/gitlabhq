@@ -500,8 +500,8 @@ class Project < ActiveRecord::Base
       .base_and_ancestors(upto: top)
   end
 
-  def top_level_ancestor
-    @top_level_ancestor ||= ancestors_upto.last
+  def root_namespace
+    @root_namespace ||= Gitlab::GroupHierarchy.new(Namespace.where(id: namespace_id)).roots.take
   end
 
   def lfs_enabled?

@@ -22,10 +22,6 @@ class UpdateBuildMinutesService < BaseService
   end
 
   def namespace
-    if Feature.enabled(:account_on_top_level)
-      project.namespace.top_level_parent
-    else
-      project.namespace
-    end
+    project.shared_runners_limit_namespace
   end
 end

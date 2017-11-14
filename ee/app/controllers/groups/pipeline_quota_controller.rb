@@ -1,5 +1,6 @@
 class Groups::PipelineQuotaController < Groups::ApplicationController
   before_action :authorize_admin_group!
+  before_action :validate_shared_runner_minutes_support!
 
   layout 'group_settings'
 
@@ -10,10 +11,14 @@ class Groups::PipelineQuotaController < Groups::ApplicationController
   private
 
   def all_projects
-    if Feature.enabled?(:account_on_namespace)
-      @group.all_projects
-    else
+    if Feature.enabled?(:shared_runner_minutes_on_subnamespace)
       @group.projects
+    else
+      @group.all_projects
     end
+  end
+
+  def validate_shared_runner_minutes_support!
+    render_404 unless @group.shared_runner_minutes_supported?
   end
 end

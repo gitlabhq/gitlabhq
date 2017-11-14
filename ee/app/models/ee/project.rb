@@ -83,10 +83,10 @@ module EE
     end
 
     def shared_runners_limit_namespace
-      if Feature.enabled?(:account_on_namespace)
-        top_level_ancestor
-      else
+      if Feature.enabled?(:shared_runner_minutes_on_subnamespace)
         namespace
+      else
+        root_namespace
       end
     end
 

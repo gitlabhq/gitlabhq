@@ -26,13 +26,13 @@ module EE
       end
 
       def all_namespaces
-        if Feature.enabled?(:account_on_namespace)
-          ::Gitlab::GroupHierarchy.new(::Namespace.where('namespaces.id = projects.namespace_id'))
-            .roots
-        else
-          ::Namespace.reorder(nil)
-            .where('namespaces.id = projects.namespace_id')
+        namespaces = ::Namespace.reorder(nil).where('namespaces.id = projects.namespace_id')
+
+        unless Feature.enabled?(:shared_runner_minutes_on_subnamespace)
+          namespaces = ::Gitlab::GroupHierarchy.new(namespaces).roots
         end
+
+        namespaces
       end
 
       def application_shared_runners_minutes
