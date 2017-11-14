@@ -143,7 +143,7 @@ export const getLastCommitData = ({ state, commit, dispatch, getters }, tree = s
 
 export const updateDirectoryData = ({ commit, state }, { data, tree }) => {
   const level = tree.level !== undefined ? tree.level + 1 : 0;
-  const parentTreeUrl = data.parent_tree_url ? `${data.parent_tree_url}${data.path}` : state.endpoints.rootUrl;
+  const parentTreeUrl = data.parent_tree_url ? data.parent_tree_url : state.endpoints.rootUrl;
   const createEntry = (entry, type) => createOrMergeEntry({
     tree,
     entry,
