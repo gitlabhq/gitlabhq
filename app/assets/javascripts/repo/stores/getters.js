@@ -44,7 +44,7 @@ export const canEditFile = (state) => {
   return state.canCommit &&
     state.onTopOfBranch &&
     openedFiles.length &&
-    (currentActiveFile && !currentActiveFile.renderError && !currentActiveFile.binary);
+    (currentActiveFile && !currentActiveFile.binary);
 };
 
 export const canRenderLocally = (state) => {
@@ -55,4 +55,19 @@ export const canRenderLocally = (state) => {
   }
 
   return false;
+};
+
+export const viewerTemplateName = (state) => {
+  const viewer = activeFileCurrentViewer(state);
+
+  if (!viewer) return null;
+
+  if (viewer.renderError) {
+    return 'error';
+  }
+
+  switch (viewer.name) {
+    default:
+      return 'html';
+  }
 };

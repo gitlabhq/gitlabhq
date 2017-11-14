@@ -39,7 +39,6 @@ export const dataStructure = () => ({
   raw: '',
   content: '',
   parentTreeUrl: '',
-  renderError: false,
   base64: false,
   currentViewer: 'rich',
   rich: viewerDataStructure(),
@@ -55,7 +54,6 @@ export const decorateData = (entity) => {
     icon,
     tree_url,
     path,
-    renderError,
     content = '',
     tempFile = false,
     active = false,
@@ -82,7 +80,6 @@ export const decorateData = (entity) => {
     active,
     parentTreeUrl,
     changed,
-    renderError,
     content,
     base64,
   };
@@ -116,7 +113,6 @@ export const createTemp = ({ name, path, type, level, changed, content, base64 }
     parentTreeUrl: '',
     level,
     base64,
-    renderError: base64,
   });
 };
 

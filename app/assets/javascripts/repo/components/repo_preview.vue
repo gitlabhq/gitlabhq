@@ -1,29 +1,40 @@
 <script>
 import { mapGetters } from 'vuex';
-import errorPreview from './viewers/error.vue';
-import htmlPreview from './viewers/html.vue';
+import flash from '../../flash';
+import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
 export default {
   components: {
-    errorPreview,
-    htmlPreview,
+    loadingIcon,
+  },
+  data() {
+    return {
+      previewComponent: null,
+    };
   },
   computed: {
     ...mapGetters([
-      'activeFileCurrentViewer',
+      'viewerTemplateName',
     ]),
-    previewComponent() {
-      if (this.activeFileCurrentViewer.renderError) return 'error-preview';
-      if (this.activeFileCurrentViewer.serverRender) return 'html-preview';
-
-      const componentName = this.$options.components[`${this.activeFileCurrentViewer.name}Preview`];
-
-      if (componentName) {
-        return componentName;
-      }
-
-      return 'html-preview';
+  },
+  watch: {
+    viewerTemplateName() {
+      this.loadComponent();
     },
+  },
+  methods: {
+    loadComponent() {
+      this.previewComponent = null;
+
+      import(`./viewers/${this.viewerTemplateName}.vue`)
+        .then((comp) => {
+          this.previewComponent = comp;
+        })
+        .catch(() => flash('Error loading file viewer.'));
+    },
+  },
+  mounted() {
+    this.loadComponent();
   },
 };
 </script>
@@ -31,7 +42,13 @@ export default {
 <template>
   <div class="blob-viewer-container">
     <component
+      v-if="previewComponent"
       :is="previewComponent"
+    />
+    <loading-icon
+      v-else
+      class="prepend-top-default"
+      size="2"
     />
   </div>
 </template>
