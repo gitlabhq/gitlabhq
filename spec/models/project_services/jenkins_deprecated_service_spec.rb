@@ -11,10 +11,11 @@ describe JenkinsDeprecatedService, use_clean_rails_memory_store_caching: true do
   describe 'commits methods' do
     def status_body_for_icon(state)
       <<eos
-        <h1 class="build-caption page-headline"><img style="width: 48px; height: 48px; " alt="Success" class="icon-#{state} icon-xlg" src="/static/855d7c3c/images/48x48/#{state}" tooltip="Success" title="Success">
-                Build #188
-              (Oct 15, 2014 9:45:21 PM)
-                    </h1>
+      <h1 class="build-caption page-headline">
+        <img src="/static/8b0a9b52/images/48x48/#{state}" alt="Success" tooltip="Success" style="width: 48px; height: 48px; " class="icon-#{state} icon-xlg" />
+        Build #188
+        (Oct 15, 2014 9:45:21 PM)
+      </h1>
 eos
     end
 
@@ -47,6 +48,13 @@ eos
           stub_request(:get, "http://jenkins.gitlab.org/job/2/scm/bySHA1/2ab7834c").to_return(status: 200, body: status_body_for_icon('yellow.png'), headers: {})
 
           expect(@service.calculate_reactive_cache('2ab7834c', 'master')).to eq(commit_status: 'success')
+        end
+      end
+
+      context 'with bad response' do
+        it 'has a commit_status of error' do
+          stub_request(:get, "http://jenkins.gitlab.org/job/2/scm/bySHA1/2ab7834c").to_return(status: 200, body: '<h1>404</h1>', headers: {})
+          expect(@service.calculate_reactive_cache('2ab7834c', 'master')).to eq(commit_status: :error)
         end
       end
     end
