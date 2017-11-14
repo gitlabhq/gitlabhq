@@ -18,7 +18,8 @@ class DiffNote < Note
   validate :positions_complete
   validate :verify_supported
 
-  before_validation :set_original_position, :update_position, on: :create
+  before_validation :set_original_position, on: :create
+  before_validation :update_position, on: :create, if: :on_text?
   before_validation :set_line_code
   after_save :keep_around_commits
 
