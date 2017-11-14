@@ -241,7 +241,7 @@ linters:
 
   # Numeric values should not contain unnecessary fractional portions.
   UnnecessaryMantissa:
-    enabled: false
+    enabled: true
 
   # Do not use parent selector references (&) when they would otherwise
   # be unnecessary.
