@@ -1,6 +1,7 @@
 /* eslint-disable space-before-function-paren, no-underscore-dangle, class-methods-use-this, consistent-return, no-shadow, no-param-reassign, max-len, no-unused-vars */
 /* global ListIssue */
 /* global ListLabel */
+import Vue from 'vue';
 import queryData from '../utils/query_data';
 
 const PER_PAGE = 20;
