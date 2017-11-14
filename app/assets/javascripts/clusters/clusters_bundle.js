@@ -60,6 +60,8 @@ export default class Clusters {
     this.showTokenButton = document.querySelector('.js-show-cluster-token');
     this.tokenField = document.querySelector('.js-cluster-token');
 
+    this.showTokenButtonHasEventListener = false;
+
     initSettingsPanels();
     this.initApplications();
 
@@ -100,13 +102,26 @@ export default class Clusters {
 
   addListeners() {
     this.toggleButton.addEventListener('click', this.toggle);
-    this.showTokenButton.addEventListener('click', this.showToken);
+    this.addEventListenerToken();
     eventHub.$on('installApplication', this.installApplication);
+  }
+  /**
+   * This button only exists when the cluster is 'created'.
+   * Because we are polling cluster status we need to make sure we only set one event listener
+   */
+  addEventListenerToken() {
+    if (this.showTokenButton && !this.showTokenButtonHasEventListener) {
+      this.showTokenButtonHasEventListener = true;
+      this.showTokenButton.addEventListener('click', this.showToken);
+    }
   }
 
   removeListeners() {
     this.toggleButton.removeEventListener('click', this.toggle);
-    this.showTokenButton.removeEventListener('click', this.showToken);
+    if (this.showTokenButton) {
+      this.showTokenButton.removeEventListener('click', this.showToken);
+      this.showTokenButtonHasEventListener = false;
+    }
     eventHub.$off('installApplication', this.installApplication);
   }
 
@@ -193,6 +208,7 @@ export default class Clusters {
       switch (status) {
         case 'created':
           this.successContainer.classList.remove('hidden');
+          this.addEventListenerToken();
           break;
         case 'errored':
           this.errorContainer.classList.remove('hidden');

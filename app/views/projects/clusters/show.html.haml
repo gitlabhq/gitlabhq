@@ -66,7 +66,10 @@
       %p= s_('ClusterIntegration|See and edit the details for your cluster')
 
     .settings-content
-      = render 'form'
+      - if @cluster.managed?
+        = render 'projects/clusters/gcp/show'
+      - else
+        = render 'projects/clusters/kubernetes/show'
 
   %section.settings.no-animate#js-cluster-advanced-settings{ class: ('expanded' if expanded) }
     .settings-header
