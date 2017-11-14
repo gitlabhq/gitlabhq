@@ -68,6 +68,7 @@ module QA
       autoload :Entry, 'qa/page/main/entry'
       autoload :Login, 'qa/page/main/login'
       autoload :Menu, 'qa/page/main/menu'
+      autoload :OAuth, 'qa/page/main/oauth'
     end
 
     module Dashboard
