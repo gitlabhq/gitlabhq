@@ -2,7 +2,9 @@
 .cgray { color: $common-gray; }
 .clgray { color: $common-gray-light; }
 .cred { color: $common-red; }
+svg.cred { fill: $common-red; }
 .cgreen { color: $common-green; }
+svg.cgreen { fill: $common-green; }
 .cdark { color: $common-gray-dark; }
 .text-secondary {
   color: $gl-text-color-secondary;
