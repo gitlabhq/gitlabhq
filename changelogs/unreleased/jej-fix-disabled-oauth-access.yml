@@ -1,0 +1,5 @@
+---
+title: Prevent OAuth login POST requests when a provider has been disabled
+merge_request:
+author:
+type: security
