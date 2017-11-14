@@ -77,7 +77,7 @@ module Projects
         Gitlab::UploadsTransfer.new.move_project(project.path, @old_namespace.full_path, @new_namespace.full_path)
 
         # Move pages
-        Gitlab::PagesTransfer.new.move_project(project.path, @old_namespace.full_path, @new_namespace.full_path)
+        PagesWorker.perform_async(:move_project, id, path, @old_namespace.full_path, @new_namespace.full_path)
 
         project.old_path_with_namespace = @old_path
         project.expires_full_path_cache

@@ -24,7 +24,7 @@ module Storage
       end
 
       Gitlab::UploadsTransfer.new.rename_namespace(full_path_was, full_path)
-      Gitlab::PagesTransfer.new.rename_namespace(full_path_was, full_path)
+      PagesWorker.perform_async(:rename_namespace, id, full_path_was, full_path)
 
       remove_exports!
 

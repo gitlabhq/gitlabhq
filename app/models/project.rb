@@ -1383,21 +1383,24 @@ class Project < ActiveRecord::Base
                .delete_all
   end
 
+  def pages_config
+    {
+      domains: pages_domains.map do |domain|
+        {
+          domain: domain.domain,
+          certificate: domain.certificate,
+          key: domain.key
+        }
+      end
+    }
+  end
+
   # TODO: what to do here when not using Legacy Storage? Do we still need to rename and delay removal?
   def remove_pages
     # Projects with a missing namespace cannot have their pages removed
     return unless namespace
 
-    ::Projects::UpdatePagesConfigurationService.new(self).execute
-
-    # 1. We rename pages to temporary directory
-    # 2. We wait 5 minutes, due to NFS caching
-    # 3. We asynchronously remove pages with force
-    temp_path = "#{path}.#{SecureRandom.hex}.deleted"
-
-    if Gitlab::PagesTransfer.new.rename_project(path, temp_path, namespace.full_path)
-      PagesWorker.perform_in(5.minutes, :remove, namespace.full_path, temp_path)
-    end
+    PagesWorker.perform_async(:remove, id, namespace.full_path, path)
   end
 
   def rename_repo
@@ -1437,7 +1440,7 @@ class Project < ActiveRecord::Base
       Gitlab::UploadsTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
     end
 
-    Gitlab::PagesTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
+    PagesWorker.perform_async(:rename_project, id, path_before_change, path, namespace.full_path)
   end
 
   def rename_repo_notify!

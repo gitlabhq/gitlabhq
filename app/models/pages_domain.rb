@@ -85,7 +85,7 @@ class PagesDomain < ActiveRecord::Base
   private
 
   def update_daemon
-    ::Projects::UpdatePagesConfigurationService.new(project).execute
+    PagesWorker.perform_async(:config, project.id, project.pages_config)
   end
 
   def validate_matching_key

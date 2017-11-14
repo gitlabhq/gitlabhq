@@ -1,15 +1,17 @@
 class PagesService
-  attr_reader :data
+  attr_reader :job
 
-  def initialize(data)
-    @data = data
+  def initialize(job)
+    @job = job
   end
 
   def execute
     return unless Settings.pages.enabled
-    return unless data[:build_name] == 'pages'
-    return unless data[:build_status] == 'success'
+    return unless job.name == 'pages'
+    return unless job.success?
 
-    PagesWorker.perform_async(:deploy, data[:build_id])
+    PagesWorker.perform_async(:deploy,
+      job.project.id, job.project.full_path, job.id,
+      job.project.pages_config)
   end
 end
