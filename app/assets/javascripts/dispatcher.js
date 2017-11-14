@@ -340,7 +340,7 @@ import ProjectVariables from './project_variables';
             container: '.js-commit-pipeline-graph',
           }).bindEvents();
           initNotes();
-          initChangesDropdown();
+          initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - 16);
           $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
         case 'projects:commit:pipelines':
