@@ -152,7 +152,7 @@ describe Projects::BlobController do
         end
       end
     end
-  
+
     describe 'simple' do
       let(:id) { 'master/README.md' }
 

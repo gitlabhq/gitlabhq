@@ -14,6 +14,6 @@ class BlobViewerEntity < Grape::Entity
   end
 
   expose :path do |viewer|
-    project_blob_viewer_path(request.project, File.join(request.ref, viewer.blob.path), viewer: viewer.type, format: :json)
+    url_for(request.params.merge(viewer: viewer.type, format: :json, only_path: true))
   end
 end

@@ -8,6 +8,8 @@ describe BlobEntity do
   let(:blob) { project.repository.blob_at(commit.id, 'README.md') }
   let(:params) do
     {
+      action: "viewer",
+      controller: "projects/blob",
       namespace_id: project.namespace,
       project_id: project,
       id: "#{ref}/#{blob.path}"
@@ -24,10 +26,10 @@ describe BlobEntity do
       :raw_path, :blame_path, :commits_path, :tree_path, :permalink, :last_commit)
   end
 
-  ['simple', 'rich'].each do |viewer|
+  %w{simple rich}.each do |viewer|
     it "includes #{viewer} viewer for rich file" do
       viewer = subject[:"#{viewer}_viewer"]
-  
+
       expect(viewer).to include(:type, :name, :switcher_title, :switcher_icon, :server_side, :render_error,
         :render_error_reason, :path)
     end

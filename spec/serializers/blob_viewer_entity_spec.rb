@@ -8,6 +8,8 @@ describe BlobViewerEntity do
   let(:blob) { project.repository.blob_at(commit.id, 'README.md') }
   let(:params) do
     {
+      action: "viewer",
+      controller: "projects/blob",
       namespace_id: project.namespace,
       project_id: project,
       id: "#{ref}/#{blob.path}"
