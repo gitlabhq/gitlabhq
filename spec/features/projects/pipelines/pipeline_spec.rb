@@ -73,7 +73,7 @@ describe 'Pipeline', :js do
         end
 
         it 'should be possible to cancel the running build' do
-          find('#ci-badge-deploy .ci-action-icon-container').trigger('click')
+          find('#ci-badge-deploy .ci-action-icon-container').click
 
           expect(page).not_to have_content('Cancel running')
         end
@@ -92,7 +92,7 @@ describe 'Pipeline', :js do
         end
 
         it 'should be possible to retry the success job' do
-          find('#ci-badge-build .ci-action-icon-container').trigger('click')
+          find('#ci-badge-build .ci-action-icon-container').click
 
           expect(page).not_to have_content('Retry job')
         end
@@ -111,7 +111,7 @@ describe 'Pipeline', :js do
         end
 
         it 'should be possible to retry the failed build' do
-          find('#ci-badge-test .ci-action-icon-container').trigger('click')
+          find('#ci-badge-test .ci-action-icon-container').click
 
           expect(page).not_to have_content('Retry job')
         end
@@ -130,7 +130,7 @@ describe 'Pipeline', :js do
         end
 
         it 'should be possible to play the manual job' do
-          find('#ci-badge-manual-build .ci-action-icon-container').trigger('click')
+          find('#ci-badge-manual-build .ci-action-icon-container').click
 
           expect(page).not_to have_content('Play job')
         end
@@ -165,7 +165,7 @@ describe 'Pipeline', :js do
 
       context 'when retrying' do
         before do
-          find('.js-retry-button').trigger('click')
+          find('.js-retry-button').click
         end
 
         it { expect(page).not_to have_content('Retry') }
@@ -231,7 +231,7 @@ describe 'Pipeline', :js do
 
       context 'when retrying' do
         before do
-          find('.js-retry-button').trigger('click')
+          find('.js-retry-button').click
         end
 
         it { expect(page).not_to have_content('Retry') }

@@ -94,7 +94,7 @@ describe 'Recent searches', :js do
 
     expect(items_before.count).to eq(1)
 
-    find('.filtered-search-history-clear-button', visible: false).trigger('click')
+    find('.filtered-search-history-clear-button', visible: false).click
     items_after = all('.filtered-search-history-dropdown-item', visible: false)
 
     expect(items_after.count).to eq(0)

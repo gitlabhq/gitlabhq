@@ -67,9 +67,9 @@ feature 'Protected Branches', :js do
         form = '.js-new-protected-branch'
 
         within form do
-          find(".js-allowed-to-merge").trigger('click')
+          find(".js-allowed-to-merge").click
           click_link 'No one'
-          find(".js-allowed-to-push").trigger('click')
+          find(".js-allowed-to-push").click
           click_link 'Developers + Masters'
         end
 
@@ -171,7 +171,7 @@ feature 'Protected Branches', :js do
   end
 
   def set_protected_branch_name(branch_name)
-    find(".js-protected-branch-select").trigger('click')
+    find(".js-protected-branch-select").click
     find(".dropdown-input-field").set(branch_name)
     click_on("Create wildcard #{branch_name}")
   end

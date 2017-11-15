@@ -139,7 +139,7 @@ feature 'Diff note avatars', :js do
         end
 
         page.within find_line(position.line_code(project.repository)) do
-          find('.diff-notes-collapse').trigger('click')
+          find('.diff-notes-collapse').click
 
           expect(page).to have_selector('img.js-diff-comment-avatar', count: 2)
         end
@@ -152,14 +152,14 @@ feature 'Diff note avatars', :js do
           page.within '.js-discussion-note-form' do
             find('.js-note-text').native.send_keys('Test')
 
-            find('.js-comment-button').trigger('click')
+            find('.js-comment-button').click
 
             wait_for_requests
           end
         end
 
         page.within find_line(position.line_code(project.repository)) do
-          find('.diff-notes-collapse').trigger('click')
+          find('.diff-notes-collapse').click
 
           expect(page).to have_selector('img.js-diff-comment-avatar', count: 3)
           expect(find('.diff-comments-more-count')).to have_content '+1'

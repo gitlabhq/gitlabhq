@@ -76,14 +76,14 @@ feature 'Dashboard Groups page', :js do
       expect(page).not_to have_selector("#group-#{group.id} .fa-caret-right")
 
       # Collapse
-      find("#group-#{group.id}").trigger('click')
+      find("#group-#{group.id}").click
 
       expect(page).not_to have_selector("#group-#{group.id} .fa-caret-down")
       expect(page).to have_selector("#group-#{group.id} .fa-caret-right", count: 1)
       expect(page).not_to have_selector("#group-#{group.id} #group-#{subgroup.id}")
 
       # Expand
-      find("#group-#{group.id}").trigger('click')
+      find("#group-#{group.id}").click
 
       expect(page).to have_selector("#group-#{group.id} .fa-caret-down", count: 1)
       expect(page).not_to have_selector("#group-#{group.id} .fa-caret-right")
@@ -115,7 +115,7 @@ feature 'Dashboard Groups page', :js do
       expect(page).not_to have_selector("#group-#{group.id}")
 
       # Go to next page
-      find(".gl-pagination .page:not(.active) a").trigger('click')
+      find(".gl-pagination .page:not(.active) a").click
 
       wait_for_requests
 

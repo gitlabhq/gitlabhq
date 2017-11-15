@@ -103,7 +103,7 @@ feature 'Merge requests > User posts diff notes', :js do
       it 'allows commenting' do
         should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
 
-        first('.js-note-delete', visible: false).trigger('click')
+        first('.js-note-delete', visible: false).click
 
         should_allow_commenting(find('[id="2f6fcd96b88b36ce98c38da085c795a27d92a3dd_10_9"]'))
       end
@@ -236,7 +236,7 @@ feature 'Merge requests > User posts diff notes', :js do
   def should_allow_dismissing_a_comment(line_holder, diff_side = nil)
     write_comment_on_line(line_holder, diff_side)
 
-    find('.js-close-discussion-note-form').trigger('click')
+    find('.js-close-discussion-note-form').click
 
     assert_comment_dismissal(line_holder)
   end

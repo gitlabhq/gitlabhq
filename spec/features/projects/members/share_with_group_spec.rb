@@ -41,7 +41,7 @@ feature 'Project > Members > Share with Group', :js do
 
           select2 group_to_share_with.id, from: '#link_group_id'
           page.find('body').click
-          find('.btn-create').trigger('click')
+          find('.btn-create').click
 
           page.within('.project-members-groups') do
             expect(page).to have_content(group_to_share_with.name)
@@ -123,7 +123,7 @@ feature 'Project > Members > Share with Group', :js do
 
       fill_in 'expires_at_groups', with: (Time.now + 4.5.days).strftime('%Y-%m-%d')
       page.find('body').click
-      find('.btn-create').trigger('click')
+      find('.btn-create').click
     end
 
     scenario 'the group link shows the expiration time with a warning class' do

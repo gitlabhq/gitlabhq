@@ -392,7 +392,7 @@ feature 'Jobs' do
         job.run!
         visit project_job_path(project, job)
         find('.js-cancel-job').click()
-        find('.js-retry-button').trigger('click')
+        find('.js-retry-button').click
       end
 
       it 'shows the right status and buttons', :js do

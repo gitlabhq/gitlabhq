@@ -21,7 +21,7 @@ feature 'Commit diff', :js do
         diff_line_num = first('.diff-line-num.new')
 
         diff_line_num.trigger('mouseover')
-        diff_line_num.find('.js-add-diff-note-button').trigger('click')
+        diff_line_num.find('.js-add-diff-note-button').click
 
         page.within(first('.diff-viewer')) do
           find('.js-note-text').set 'test comment'
