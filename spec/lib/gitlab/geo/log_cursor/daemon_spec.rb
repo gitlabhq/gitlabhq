@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
+describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared_state do
   include ::EE::GeoHelpers
 
   set(:primary) { create(:geo_node, :primary) }
@@ -15,9 +15,9 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
 
   before do
     stub_current_geo_node(secondary)
-    stub_env("::#{described_class}::POOL_WAIT", 0.1)
 
     allow(daemon).to receive(:trap_signals)
+    allow(daemon).to receive(:arbitrary_sleep).and_return(0.1)
   end
 
   describe '#run!' do
@@ -49,6 +49,14 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
     it 'delegates to #run_once! in a loop' do
       is_expected.to receive(:exit?).and_return(false, false, false, true)
       is_expected.to receive(:run_once!).twice
+
+      daemon.run!
+    end
+
+    it 'skips execution if cannot achieve a lease' do
+      is_expected.to receive(:exit?).and_return(false, true)
+      is_expected.not_to receive(:run_once!)
+      expect_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain_with_ttl).and_return({ ttl: 1, uuid: false })
 
       daemon.run!
     end

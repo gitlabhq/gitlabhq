@@ -2,8 +2,7 @@ module Gitlab
   module Geo
     module LogCursor
       class Daemon
-        VERSION = '0.1.0'.freeze
-        POOL_WAIT = 5.seconds.freeze
+        VERSION = '0.2.0'.freeze
         BATCH_SIZE = 250
 
         attr_reader :options
@@ -11,6 +10,7 @@ module Gitlab
         def initialize(options = {})
           @options = options
           @exit = false
+          logger.geo_logger.build.level = options[:debug] ? :debug : Rails.logger.level
         end
 
         def run!
@@ -19,12 +19,12 @@ module Gitlab
           full_scan! if options[:full_scan]
 
           until exit?
-            run_once!
+            lease = Lease.try_obtain_with_ttl { run_once! }
 
             return if exit?
 
             # When no new event is found sleep for a few moments
-            sleep(POOL_WAIT)
+            arbitrary_sleep(lease[:ttl])
           end
         end
 
@@ -48,9 +48,8 @@ module Gitlab
             existing = ::Geo::ProjectRegistry.where(project_id: project_ids).pluck(:project_id)
             missing_projects = project_ids - existing
 
-            Gitlab::Geo::Logger.info(
-              class: self.class.name,
-              message: "Missing projects",
+            logger.info(
+              "Missing projects",
               projects: missing_projects,
               project_count: missing_projects.count)
 
@@ -114,7 +113,7 @@ module Gitlab
           event = event_log.repository_created_event
           registry = find_or_initialize_registry(event.project_id, resync_repository: true, resync_wiki: event.wiki_path.present?)
 
-          log_event_info(
+          logger.event_info(
             event_log.created_at,
             message: 'Repository created',
             project_id: event.project_id,
@@ -132,7 +131,7 @@ module Gitlab
           event = event_log.repository_updated_event
           registry = find_or_initialize_registry(event.project_id, "resync_#{event.source}" => true)
 
-          log_event_info(
+          logger.event_info(
             event_log.created_at,
             message: 'Repository update',
             project_id: event.project_id,
@@ -154,7 +153,7 @@ module Gitlab
                      .new(event.project_id, event.deleted_project_name, disk_path, event.repository_storage_name)
                      .async_execute
 
-          log_event_info(
+          logger.event_info(
             event_log.created_at,
             message: 'Deleted project',
             project_id: event.project_id,
@@ -171,9 +170,9 @@ module Gitlab
           job_id = ::Geo::RepositoriesCleanUpWorker.perform_in(1.hour, event.geo_node_id)
 
           if job_id
-            log_info('Scheduled repositories clean up for Geo node', geo_node_id: event.geo_node_id, job_id: job_id)
+            logger.info('Scheduled repositories clean up for Geo node', geo_node_id: event.geo_node_id, job_id: job_id)
           else
-            log_error('Could not schedule repositories clean up for Geo node', geo_node_id: event.geo_node_id)
+            logger.error('Could not schedule repositories clean up for Geo node', geo_node_id: event.geo_node_id)
           end
         end
 
@@ -188,7 +187,7 @@ module Gitlab
                      .new(event.project_id, old_path, new_path)
                      .async_execute
 
-          log_event_info(
+          logger.event_info(
             event_log.created_at,
             message: 'Renaming project',
             project_id: event.project_id,
@@ -208,7 +207,7 @@ module Gitlab
             old_storage_version: event.old_storage_version
           ).async_execute
 
-          log_event_info(
+          logger.event_info(
             event_log.created_at,
             message: 'Migrating project to hashed storage',
             project_id: event.project_id,
@@ -225,21 +224,16 @@ module Gitlab
           registry
         end
 
-        def cursor_delay(created_at)
-          (Time.now - created_at).to_f.round(3)
+        # Sleeps for the expired TTL that remains on the lease plus some random seconds.
+        #
+        # This allows multiple GeoLogCursors to randomly process a batch of events,
+        # without favouring the shortest path (or latency).
+        def arbitrary_sleep(delay)
+          sleep(delay + rand(1..20) * 0.1)
         end
 
-        def log_event_info(created_at, message, params = {})
-          params[:cursor_delay_s] = cursor_delay(created_at)
-          log_info(message, params)
-        end
-
-        def log_info(message, params = {})
-          Gitlab::Geo::Logger.info({ class: self.class.name, message: message }.merge(params))
-        end
-
-        def log_error(message, params = {})
-          Gitlab::Geo::Logger.error({ class: self.class.name, message: message }.merge(params))
+        def logger
+          Gitlab::Geo::LogCursor::Logger
         end
       end
     end

@@ -2,16 +2,11 @@
 # vim: ft=ruby
 require 'rubygems'
 require 'bundler/setup'
-
-# loads rails environment / initializers
-require "#{File.dirname(__FILE__)}/../config/environment"
-
 require 'optparse'
 
 class GeoLogCursorOptionParser
   def self.parse(argv)
     options = { full_scan: false }
-    version = Gitlab::Geo::LogCursor::Daemon::VERSION
 
     op = OptionParser.new
     op.banner = 'GitLab Geo: Log Cursor'
@@ -19,6 +14,7 @@ class GeoLogCursorOptionParser
     op.separator 'Usage: ./geo_log_cursor [options]'
     op.separator ''
     op.on('-f', '--full-scan', 'Performs full-scan to lookup for un-replicated data') { options[:full_scan] = true }
+    op.on('-d', '--debug', 'Enable detailed logging with extra debug information') { options[:debug] = true }
 
     op.separator 'Common options:'
     op.on('-h', '--help') do
@@ -26,7 +22,10 @@ class GeoLogCursorOptionParser
       exit
     end
     op.on('-v', '--version') do
-      puts version
+      # Load only necessary libraries for faster startup
+      require "#{File.dirname(__FILE__)}/../lib/gitlab/geo/log_cursor/daemon"
+
+      puts Gitlab::Geo::LogCursor::Daemon::VERSION
       exit
     end
     op.separator ''
@@ -39,6 +38,9 @@ end
 
 if $0 == __FILE__
   options = GeoLogCursorOptionParser.parse(ARGV)
+
+  # We load rails environment / initializers only here to get faster command line startup when `--help` and `--version`
+  require "#{File.dirname(__FILE__)}/../config/environment"
 
   Gitlab::Geo::LogCursor::Daemon.new(options).run!
 end
