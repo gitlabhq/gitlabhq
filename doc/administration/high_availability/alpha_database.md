@@ -431,7 +431,7 @@ Repeat the above steps on all secondary nodes.
 ### Pgbouncer node
 
 1. Create a `.pgpass` file user for the `CONSUL_USER` account to be able to
-   reload pgbouncer. Confirm the password twice when asked:
+   reload pgbouncer. Confirm `PGBOUNCER_PASSWORD` twice when asked:
 
      ```sh
      gitlab-ctl write-pgpass --host PGBOUNCER_HOST --database pgbouncer --user pgbouncer --hostuser gitlab-consul
