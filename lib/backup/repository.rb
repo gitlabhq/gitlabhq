@@ -7,12 +7,16 @@ module Backup
       prepare
 
       Project.find_each(batch_size: 1000) do |project|
-        progress.print " * #{project.full_path} ... "
+        progress.print " * #{display_repo_path(project)} ... "
         path_to_project_repo = path_to_repo(project)
         path_to_project_bundle = path_to_bundle(project)
 
-        # Create namespace dir if missing
-        FileUtils.mkdir_p(File.join(backup_repos_path, project.namespace.full_path)) if project.namespace
+        # Create namespace dir or hashed path if missing
+        if project.hashed_storage?(:repository)
+          FileUtils.mkdir_p(File.dirname(File.join(backup_repos_path, project.disk_path)))
+        else
+          FileUtils.mkdir_p(File.join(backup_repos_path, project.namespace.full_path)) if project.namespace
+        end
 
         if empty_repo?(project)
           progress.puts "[SKIPPED]".color(:cyan)
@@ -42,7 +46,7 @@ module Backup
         path_to_wiki_bundle = path_to_bundle(wiki)
 
         if File.exist?(path_to_wiki_repo)
-          progress.print " * #{wiki.full_path} ... "
+          progress.print " * #{display_repo_path(wiki)} ... "
           if empty_repo?(wiki)
             progress.puts " [SKIPPED]".color(:cyan)
           else
@@ -71,7 +75,7 @@ module Backup
       end
 
       Project.find_each(batch_size: 1000) do |project|
-        progress.print " * #{project.full_path} ... "
+        progress.print " * #{display_repo_path(project)} ... "
         path_to_project_repo = path_to_repo(project)
         path_to_project_bundle = path_to_bundle(project)
 
@@ -104,7 +108,7 @@ module Backup
         path_to_wiki_bundle = path_to_bundle(wiki)
 
         if File.exist?(path_to_wiki_bundle)
-          progress.print " * #{wiki.full_path} ... "
+          progress.print " * #{display_repo_path(wiki)} ... "
 
           # If a wiki bundle exists, first remove the empty repo
           # that was initialized with ProjectWiki.new() and then
@@ -185,14 +189,14 @@ module Backup
 
     def progress_warn(project, cmd, output)
       progress.puts "[WARNING] Executing #{cmd}".color(:orange)
-      progress.puts "Ignoring error on #{project.full_path} - #{output}".color(:orange)
+      progress.puts "Ignoring error on #{display_repo_path(project)} - #{output}".color(:orange)
     end
 
     def empty_repo?(project_or_wiki)
       project_or_wiki.repository.expire_exists_cache # protect backups from stale cache
       project_or_wiki.repository.empty_repo?
     rescue => e
-      progress.puts "Ignoring repository error and continuing backing up project: #{project_or_wiki.full_path} - #{e.message}".color(:orange)
+      progress.puts "Ignoring repository error and continuing backing up project: #{display_repo_path(project_or_wiki)} - #{e.message}".color(:orange)
 
       false
     end
@@ -203,6 +207,10 @@ module Backup
 
     def progress
       $progress
+    end
+
+    def display_repo_path(project)
+      project.hashed_storage?(:repository) ? "#{project.full_path} (#{project.disk_path})" : project.full_path
     end
   end
 end
