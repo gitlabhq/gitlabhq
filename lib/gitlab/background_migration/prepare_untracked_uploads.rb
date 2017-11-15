@@ -88,9 +88,14 @@ module Gitlab
       end
 
       def insert_file_path(file_path)
+        if postgresql_pre_9_5?
+          # No easy way to do ON CONFLICT DO NOTHING before Postgres 9.5 so just use Rails
+          return UntrackedFile.where(path: file_path).first_or_create
+        end
+
         table_columns_and_values = 'untracked_files_for_uploads (path, created_at, updated_at) VALUES (?, ?, ?)'
 
-        sql = if Gitlab::Database.postgresql?
+        sql = if postgresql?
                 "INSERT INTO #{table_columns_and_values} ON CONFLICT DO NOTHING;"
               else
                 "INSERT IGNORE INTO #{table_columns_and_values};"
@@ -99,6 +104,15 @@ module Gitlab
         timestamp = Time.now.utc.iso8601
         sql = ActiveRecord::Base.send(:sanitize_sql_array, [sql, file_path, timestamp, timestamp]) # rubocop:disable GitlabSecurity/PublicSend
         ActiveRecord::Base.connection.execute(sql)
+      end
+
+      def postgresql?
+        @postgresql ||= Gitlab::Database.postgresql?
+      end
+
+      def postgresql_pre_9_5?
+        @postgresql_pre_9_5 ||= postgresql? &&
+          ActiveRecord::Base.connection.select_value('SHOW server_version_num').to_i < 90500
       end
 
       def schedule_populate_untracked_uploads_jobs
