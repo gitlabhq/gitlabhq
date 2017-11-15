@@ -1,10 +1,18 @@
 require 'spec_helper'
+require Rails.root.join('db', 'post_migrate', '20171103140253_track_untracked_uploads')
 
-describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sidekiq, schema: 20171103140253 do
+describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sidekiq, :temp_table_may_drop, schema: 20171103140253 do
   include TrackUntrackedUploadsHelpers
+
+  subject { described_class.new }
 
   let!(:untracked_files_for_uploads) { table(:untracked_files_for_uploads) }
   let!(:uploads) { table(:uploads) }
+
+  before do
+    # Prevent the TrackUntrackedUploads migration from running PrepareUntrackedUploads job
+    allow(BackgroundMigrationWorker).to receive(:perform_async).and_return(true)
+  end
 
   context 'with untracked files and tracked files in untracked_files_for_uploads' do
     let!(:appearance) { create(:appearance, logo: uploaded_file, header_logo: uploaded_file) }
@@ -35,7 +43,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
 
     it 'adds untracked files to the uploads table' do
       expect do
-        described_class.new.perform(1, 1000)
+        subject.perform(1, 1000)
       end.to change { uploads.count }.from(4).to(8)
 
       expect(user2.uploads.count).to eq(1)
@@ -44,13 +52,15 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
     end
 
     it 'sets all added or confirmed tracked files to tracked' do
+      expect(subject).to receive(:drop_temp_table_if_finished) # Don't drop the table so we can look at it
+
       expect do
-        described_class.new.perform(1, 1000)
+        subject.perform(1, 1000)
       end.to change { untracked_files_for_uploads.where(tracked: true).count }.from(0).to(8)
     end
 
     it 'does not create duplicate uploads of already tracked files' do
-      described_class.new.perform(1, 1000)
+      subject.perform(1, 1000)
 
       expect(user1.uploads.count).to eq(1)
       expect(project1.uploads.count).to eq(2)
@@ -62,7 +72,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
       end_id = untracked_files_for_uploads.all.to_a[3].id
 
       expect do
-        described_class.new.perform(start_id, end_id)
+        subject.perform(start_id, end_id)
       end.to change { uploads.count }.from(4).to(6)
 
       expect(user1.uploads.count).to eq(1)
@@ -80,7 +90,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
       end_id = untracked_files_for_uploads.all.to_a[7].id
 
       expect do
-        described_class.new.perform(start_id, end_id)
+        subject.perform(start_id, end_id)
       end.to change { uploads.count }.from(4).to(6)
 
       expect(user1.uploads.count).to eq(1)
@@ -92,12 +102,24 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
       # Only 4 have been either confirmed or added to uploads
       expect(untracked_files_for_uploads.where(tracked: true).count).to eq(4)
     end
+
+    it 'does not drop the temporary tracking table after processing the batch, if there are still untracked rows' do
+      subject.perform(1, untracked_files_for_uploads.last.id - 1)
+
+      expect(table_exists?(:untracked_files_for_uploads)).to be_truthy
+    end
+
+    it 'drops the temporary tracking table after processing the batch, if there are no untracked rows left' do
+      subject.perform(1, untracked_files_for_uploads.last.id)
+
+      expect(table_exists?(:untracked_files_for_uploads)).to be_falsey
+    end
   end
 
   context 'with no untracked files' do
     it 'does not add to the uploads table (and does not raise error)' do
       expect do
-        described_class.new.perform(1, 1000)
+        subject.perform(1, 1000)
       end.not_to change { uploads.count }.from(0)
     end
   end
