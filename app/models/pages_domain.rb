@@ -69,6 +69,10 @@ class PagesDomain < ActiveRecord::Base
     current < x509.not_before || x509.not_after < current
   end
 
+  def expiration
+    x509&.not_after
+  end
+
   def subject
     return unless x509
     x509.subject.to_s

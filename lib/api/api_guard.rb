@@ -44,6 +44,8 @@ module API
 
     # Helper Methods for Grape Endpoint
     module HelperMethods
+      include Gitlab::Utils::StrongMemoize
+
       def find_current_user!
         user = find_user_from_access_token || find_user_from_job_token || find_user_from_warden
         return unless user
@@ -54,9 +56,9 @@ module API
       end
 
       def access_token
-        return @access_token if defined?(@access_token)
-
-        @access_token = find_oauth_access_token || find_personal_access_token
+        strong_memoize(:access_token) do
+          find_oauth_access_token || find_personal_access_token
+        end
       end
 
       def validate_access_token!(scopes: [])

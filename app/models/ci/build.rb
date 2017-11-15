@@ -197,6 +197,10 @@ module Ci
       project.build_timeout
     end
 
+    def triggered_by?(current_user)
+      user == current_user
+    end
+
     # A slugified version of the build ref, suitable for inclusion in URLs and
     # domain names. Rules:
     #

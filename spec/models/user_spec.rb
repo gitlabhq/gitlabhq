@@ -670,16 +670,40 @@ describe User do
   end
 
   describe 'groups' do
+    let(:user) { create(:user) }
+    let(:group) { create(:group) }
+
     before do
-      @user = create :user
-      @group = create :group
-      @group.add_owner(@user)
+      group.add_owner(user)
     end
 
-    it { expect(@user.several_namespaces?).to be_truthy }
-    it { expect(@user.authorized_groups).to eq([@group]) }
-    it { expect(@user.owned_groups).to eq([@group]) }
-    it { expect(@user.namespaces).to match_array([@user.namespace, @group]) }
+    it { expect(user.several_namespaces?).to be_truthy }
+    it { expect(user.authorized_groups).to eq([group]) }
+    it { expect(user.owned_groups).to eq([group]) }
+    it { expect(user.namespaces).to contain_exactly(user.namespace, group) }
+    it { expect(user.manageable_namespaces).to contain_exactly(user.namespace, group) }
+
+    context 'with child groups', :nested_groups do
+      let!(:subgroup) { create(:group, parent: group) }
+
+      describe '#manageable_namespaces' do
+        it 'includes all the namespaces the user can manage' do
+          expect(user.manageable_namespaces).to contain_exactly(user.namespace, group, subgroup)
+        end
+      end
+
+      describe '#manageable_groups' do
+        it 'includes all the namespaces the user can manage' do
+          expect(user.manageable_groups).to contain_exactly(group, subgroup)
+        end
+
+        it 'does not include duplicates if a membership was added for the subgroup' do
+          subgroup.add_owner(user)
+
+          expect(user.manageable_groups).to contain_exactly(group, subgroup)
+        end
+      end
+    end
   end
 
   describe 'group multiple owners' do

@@ -13,6 +13,7 @@ export default class Project {
     if (selectedCloneOption.length > 0) {
       $(`a:contains('${selectedCloneOption}')`, $cloneOptions).addClass('is-active');
     }
+<<<<<<< HEAD
 
     $('a', $cloneOptions).on('click', (e) => {
       const $this = $(e.currentTarget);
@@ -30,6 +31,20 @@ export default class Project {
         cloneUrlPrimary: $this.data('primaryUrl') || '',
       });
 
+=======
+
+    $('a', $cloneOptions).on('click', (e) => {
+      const $this = $(e.currentTarget);
+      const url = $this.attr('href');
+
+      e.preventDefault();
+
+      $('.is-active', $cloneOptions).not($this).removeClass('is-active');
+      $this.toggleClass('is-active');
+      $projectCloneField.val(url);
+      $cloneBtnText.text($this.text());
+
+>>>>>>> upstream/master
       return $('.clone').text(url);
     });
     // Ref switcher
@@ -47,6 +62,7 @@ export default class Project {
       $(this).parents('.no-password-message').remove();
       return e.preventDefault();
     });
+<<<<<<< HEAD
     $('.hide-shared-runner-limit-message').on('click', function(e) {
       var $alert = $(this).parents('.shared-runner-quota-message');
       var scope = $alert.data('scope');
@@ -58,6 +74,12 @@ export default class Project {
   }
 
   static projectSelectDropdown() {
+=======
+    Project.projectSelectDropdown();
+  }
+
+  static projectSelectDropdown () {
+>>>>>>> upstream/master
     new ProjectSelect();
     $('.project-item-select').on('click', e => Project.changeProject($(e.currentTarget).val()));
   }

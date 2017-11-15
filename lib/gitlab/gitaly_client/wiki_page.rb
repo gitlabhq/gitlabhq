@@ -11,6 +11,10 @@ module Gitlab
         FIELDS.each do |field|
           instance_variable_set("@#{field}", params[field])
         end
+
+        # All gRPC strings in a response are frozen, so we get an unfrozen
+        # version here so appending to `raw_data` doesn't blow up.
+        @raw_data = @raw_data.dup
       end
 
       def historical?

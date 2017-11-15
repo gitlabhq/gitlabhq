@@ -59,7 +59,13 @@ module Gitlab
       end
 
       def pages
-        gollum_wiki.pages.map { |gollum_page| new_page(gollum_page) }
+        @repository.gitaly_migrate(:wiki_get_all_pages) do |is_enabled|
+          if is_enabled
+            gitaly_get_all_pages
+          else
+            gollum_get_all_pages
+          end
+        end
       end
 
       def page(title:, version: nil, dir: nil)
@@ -179,6 +185,10 @@ module Gitlab
         Gitlab::Git::WikiFile.new(gollum_file)
       end
 
+      def gollum_get_all_pages
+        gollum_wiki.pages.map { |gollum_page| new_page(gollum_page) }
+      end
+
       def gitaly_write_page(name, format, content, commit_details)
         gitaly_wiki_client.write_page(name, format, content, commit_details)
       end
@@ -203,6 +213,12 @@ module Gitlab
         return unless wiki_file
 
         Gitlab::Git::WikiFile.new(wiki_file)
+      end
+
+      def gitaly_get_all_pages
+        gitaly_wiki_client.get_all_pages.map do |wiki_page, version|
+          Gitlab::Git::WikiPage.new(wiki_page, version)
+        end
       end
     end
   end

@@ -93,15 +93,7 @@ module LfsRequest
   end
 
   def storage_project
-    @storage_project ||= begin
-      result = project
-
-      # TODO: Make this go to the fork_network root immeadiatly
-      # dependant on the discussion in: https://gitlab.com/gitlab-org/gitlab-ce/issues/39769
-      result = result.fork_source while result.forked?
-
-      result
-    end
+    @storage_project ||= project.lfs_storage_project
   end
 
   def objects

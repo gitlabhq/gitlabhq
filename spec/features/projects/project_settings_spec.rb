@@ -144,7 +144,10 @@ describe 'Edit Project Settings' do
     specify 'the project is accessible via the new path' do
       transfer_project(project, group)
       new_path = namespace_project_path(group, project)
+
       visit new_path
+      wait_for_requests
+
       expect(current_path).to eq(new_path)
       expect(find('.breadcrumbs')).to have_content(project.name)
     end
@@ -153,7 +156,10 @@ describe 'Edit Project Settings' do
       old_path = project_path(project)
       transfer_project(project, group)
       new_path = namespace_project_path(group, project)
+
       visit old_path
+      wait_for_requests
+
       expect(current_path).to eq(new_path)
       expect(find('.breadcrumbs')).to have_content(project.name)
     end

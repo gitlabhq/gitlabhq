@@ -166,8 +166,10 @@ describe Gitlab::Checks::ChangeAccess do
     end
 
     context 'LFS integrity check' do
-      let(:blob_object) { project.repository.blob_at_branch('lfs', 'files/lfs/lfs_object.iso') }
+      it 'fails if any LFS blobs are missing' do
+        allow_any_instance_of(Gitlab::Checks::LfsIntegrity).to receive(:objects_missing?).and_return(true)
 
+<<<<<<< HEAD
       before do
         allow_any_instance_of(Gitlab::Git::RevList).to receive(:new_objects) do |&lazy_block|
           lazy_block.call([blob_object.id])
@@ -180,19 +182,15 @@ describe Gitlab::Checks::ChangeAccess do
 
           subject
         end
+=======
+        expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /LFS objects are missing/)
+>>>>>>> upstream/master
       end
 
-      context 'with LFS enabled' do
-        before do
-          allow(project).to receive(:lfs_enabled?).and_return(true)
-        end
+      it 'succeeds if LFS objects have already been uploaded' do
+        allow_any_instance_of(Gitlab::Checks::LfsIntegrity).to receive(:objects_missing?).and_return(false)
 
-        context 'deletion' do
-          let(:changes) { { oldrev: oldrev, ref: ref } }
-
-          it 'skips integrity check' do
-            expect_any_instance_of(Gitlab::Git::RevList).not_to receive(:new_objects)
-
+<<<<<<< HEAD
             subject
           end
         end
@@ -583,6 +581,9 @@ describe Gitlab::Checks::ChangeAccess do
                                      .and_call_original
           expect { subject }.not_to raise_error
         end
+=======
+        expect { subject.exec }.not_to raise_error
+>>>>>>> upstream/master
       end
     end
   end

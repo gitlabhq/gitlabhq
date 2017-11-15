@@ -183,6 +183,36 @@ describe('common_utils', () => {
     });
   });
 
+  describe('historyPushState', () => {
+    afterEach(() => {
+      window.history.replaceState({}, null, null);
+    });
+
+    it('should call pushState with the correct path', () => {
+      spyOn(window.history, 'pushState');
+
+      commonUtils.historyPushState('newpath?page=2');
+
+      expect(window.history.pushState).toHaveBeenCalled();
+      expect(window.history.pushState.calls.allArgs()[0][2]).toContain('newpath?page=2');
+    });
+  });
+
+  describe('parseQueryStringIntoObject', () => {
+    it('should return object with query parameters', () => {
+      expect(commonUtils.parseQueryStringIntoObject('scope=all&page=2')).toEqual({ scope: 'all', page: '2' });
+      expect(commonUtils.parseQueryStringIntoObject('scope=all')).toEqual({ scope: 'all' });
+      expect(commonUtils.parseQueryStringIntoObject()).toEqual({});
+    });
+  });
+
+  describe('buildUrlWithCurrentLocation', () => {
+    it('should build an url with current location and given parameters', () => {
+      expect(commonUtils.buildUrlWithCurrentLocation()).toEqual(window.location.pathname);
+      expect(commonUtils.buildUrlWithCurrentLocation('?page=2')).toEqual(`${window.location.pathname}?page=2`);
+    });
+  });
+
   describe('getParameterByName', () => {
     beforeEach(() => {
       window.history.pushState({}, null, '?scope=all&p=2');

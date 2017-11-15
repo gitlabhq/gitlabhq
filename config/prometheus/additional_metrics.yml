@@ -160,8 +160,12 @@
     queries:
     - query_range: 'sum(avg(rate(container_cpu_usage_seconds_total{container_name!="POD",environment="%{ci_environment_slug}"}[2m])) without (job)) * 100'
       label: Average
+<<<<<<< HEAD
       unit: "%"
     - query_range: 'sum(avg(rate(container_cpu_usage_seconds_total{container_name!="POD",environment="%{ci_environment_slug}-canary"}[2m])) without (job)) * 100'
       label: Average
       unit: "%"
       track: canary
+=======
+      unit: "%"
+>>>>>>> upstream/master
