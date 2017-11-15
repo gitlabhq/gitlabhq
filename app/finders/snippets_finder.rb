@@ -18,7 +18,7 @@ class SnippetsFinder < UnionFinder
   private
 
   def init_collection
-    items = Snippet.all
+    items = Snippet.where(from_authorized_projects.or(not_project_related))
 
     accessible(items)
   end
@@ -70,5 +70,21 @@ class SnippetsFinder < UnionFinder
     else
       nil
     end
+  end
+
+  def from_authorized_projects
+    table[:project_id].in(authorized_project_ids)
+  end
+
+  def authorized_project_ids
+    Project.with_snippets_enabled.pluck(:id)
+  end
+
+  def not_project_related
+    table[:project_id].eq(nil)
+  end
+
+  def table
+    Snippet.arel_table
   end
 end

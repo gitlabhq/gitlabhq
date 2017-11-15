@@ -51,6 +51,13 @@ describe SnippetsFinder do
       expect(snippets).to include(snippet3, project_snippet3, authored_snippet)
       expect(snippets).not_to include(snippet1, snippet2, project_snippet1, project_snippet2)
     end
+
+    it "does not return snippets if they belong to a project with disabled feature visibility" do
+      project1.project_feature.update_attribute(:snippets_access_level, 0)
+      snippets = described_class.new(user, project: project1, visibility: Snippet::PUBLIC).execute
+      expect(project1.snippets_enabled?).to be_falsy
+      expect(snippets).to be_empty
+    end
   end
 
   context 'filter by visibility' do

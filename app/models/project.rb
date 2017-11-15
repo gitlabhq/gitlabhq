@@ -30,8 +30,8 @@ class Project < ActiveRecord::Base
   cache_markdown_field :description, pipeline: :description
 
   delegate :feature_available?, :builds_enabled?, :wiki_enabled?,
-           :merge_requests_enabled?, :issues_enabled?, to: :project_feature,
-                                                       allow_nil: true
+           :merge_requests_enabled?, :issues_enabled?, :snippets_enabled?,
+           to: :project_feature, allow_nil: true
 
   delegate :base_dir, :disk_path, :ensure_storage_path_exists, to: :storage
 
@@ -299,6 +299,7 @@ class Project < ActiveRecord::Base
   scope :with_builds_enabled, -> { with_feature_enabled(:builds) }
   scope :with_issues_enabled, -> { with_feature_enabled(:issues) }
   scope :with_merge_requests_enabled, -> { with_feature_enabled(:merge_requests) }
+  scope :with_snippets_enabled, -> { with_feature_enabled(:snippets) }
 
   enum auto_cancel_pending_pipelines: { disabled: 0, enabled: 1 }
 
