@@ -36,8 +36,6 @@ module QA
             end
           end
 
-          private
-
           class Primary
             include QA::Scenario::Actable
 
