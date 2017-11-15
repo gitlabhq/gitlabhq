@@ -37,6 +37,7 @@ describe Gitlab::Mirror do
 
           expect(Sidekiq::Cron::Job.find("update_all_mirrors_worker")).to be_enabled
 
+          allow(Gitlab::Geo).to receive(:connected?).and_return(true)
           allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
           described_class.configure_cron_job!
 
