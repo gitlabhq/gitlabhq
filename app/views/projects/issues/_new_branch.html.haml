@@ -23,14 +23,14 @@
 
       %ul#create-merge-request-dropdown.create-merge-request-dropdown-menu.dropdown-menu.dropdown-menu-align-right.gl-show-field-errors{ data: { dropdown: true } }
         - if can_create_merge_request
-          %li.create-item.droplab-item-selected{ role: 'button', data: { value: 'create-mr', text: 'Create merge request' } }
-            .menu-item
-              .icon-container= icon('check')
+          %li.create-item.droplab-item-selected.droplab-item-ignore-hiding{ role: 'button', data: { value: 'create-mr', text: 'Create merge request' } }
+            .menu-item.droplab-item-ignore-hiding
+              .icon-container.droplab-item-ignore-hiding= icon('check')
               .description.droplab-item-ignore-hiding Create merge request and branch
 
-        %li.create-item{ class: [!can_create_merge_request && 'droplab-item-selected'], role: 'button', data: {  value: 'create-branch', text: 'Create branch' } }
-          .menu-item
-            .icon-container= icon('check')
+        %li.create-item.droplab-item-ignore-hiding{ class: [!can_create_merge_request && 'droplab-item-selected'], role: 'button', data: {  value: 'create-branch', text: 'Create branch' } }
+          .menu-item.droplab-item-ignore-hiding
+            .icon-container.droplab-item-ignore-hiding= icon('check')
             .description.droplab-item-ignore-hiding Create branch
         %li.divider
 
