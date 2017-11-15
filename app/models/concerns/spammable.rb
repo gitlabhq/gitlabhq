@@ -35,7 +35,8 @@ module Spammable
   end
 
   def spam?
-    @spam
+    # @spam
+    true
   end
 
   def check_for_spam
