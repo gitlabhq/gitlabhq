@@ -1721,7 +1721,7 @@ ActiveRecord::Schema.define(version: 20171124150326) do
 
   create_table "uploads", force: :cascade do |t|
     t.integer "size", limit: 8, null: false
-    t.string "path", null: false
+    t.string "path", limit: 511, null: false
     t.string "checksum", limit: 64
     t.integer "model_id"
     t.string "model_type"
