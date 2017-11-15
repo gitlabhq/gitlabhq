@@ -3,6 +3,8 @@ module EpicIssues
     private
 
     def issues
+      return [] unless issuable&.group&.feature_available?(:epics)
+
       issuable.issues(current_user)
     end
 

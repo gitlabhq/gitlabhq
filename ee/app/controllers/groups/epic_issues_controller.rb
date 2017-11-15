@@ -1,6 +1,7 @@
 class Groups::EpicIssuesController < Groups::EpicsController
   include IssuableLinks
 
+  before_action :check_epics_available!
   skip_before_action :authorize_destroy_issuable!
   before_action :authorize_admin_epic!, only: [:create, :destroy]
   before_action :authorize_issue_link_association!, only: :destroy

@@ -7,6 +7,8 @@ feature 'Delete Epic', :js do
   let!(:epic2) { create(:epic, group: group) }
 
   before do
+    stub_licensed_features(epics: true)
+
     sign_in(user)
   end
 

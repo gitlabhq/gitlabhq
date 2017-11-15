@@ -2,6 +2,7 @@ class Groups::EpicsController < Groups::ApplicationController
   include IssuableActions
   include IssuableCollections
 
+  before_action :check_epics_available!
   before_action :epic, except: :index
   before_action :set_issuables_index, only: :index
   before_action :authorize_update_issuable!, only: :update

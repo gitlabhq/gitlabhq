@@ -1,8 +1,6 @@
 - issues = IssuesFinder.new(current_user, group_id: @group.id, state: 'opened').execute
 - merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened', non_archived: true).execute
-- epics = EpicsFinder.new(current_user, group_id: @group.id).execute
 
-- epics_items = ['epics#show', 'epics#index']
 - issues_sub_menu_items = ['groups#issues', 'labels#index', 'milestones#index']
 - if @group.feature_available?(:group_issue_boards)
   - issues_sub_menu_items.push('boards#index', 'boards#show')
@@ -45,20 +43,8 @@
                 %span
                   Contribution Analytics
 
-      -# TODO: Add the flag check to only show epics if available
-      = nav_link(path: epics_items) do
-        = link_to group_epics_path(@group) do
-          .nav-icon-container
-            = sprite_icon('epic')
-          %span.nav-item-name
-            Epics
-          %span.badge.count= number_with_delimiter(epics.count)
-        %ul.sidebar-sub-level-items.is-fly-out-only
-          = nav_link(path: epics_items, html_options: { class: "fly-out-top-item" } ) do
-            = link_to group_epics_path(@group) do
-              %strong.fly-out-top-item-name
-                #{ _('Epics') }
-              %span.badge.count.epic_counter.fly-out-badge= number_with_delimiter(epics.count)
+
+      = render "layouts/nav/ee/epic_link", group: @group
 
       = nav_link(path: issues_sub_menu_items) do
         = link_to issues_group_path(@group) do

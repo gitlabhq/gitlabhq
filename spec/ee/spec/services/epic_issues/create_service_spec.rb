@@ -37,98 +37,110 @@ describe EpicIssues::CreateService do
       end
     end
 
-    context 'when user has permissions to link the issue' do
-      before do
-        group.add_developer(user)
-      end
-
-      context 'when the reference list is empty' do
-        it 'returns an error' do
-          expect(assign_issue([])).to eq(message: 'No Issue found for given params', status: :error, http_status: 404)
-        end
-      end
-
-      context 'when there is an issue to relate' do
-        context 'when shortcut for Issue is given' do
-          subject { assign_issue([issue.to_reference]) }
-
-          include_examples 'returns an error'
-        end
-
-        context 'when a full reference is given' do
-          subject { assign_issue([valid_reference]) }
-
-          include_examples 'returns success'
-
-          it 'does not perofrm N + 1 queries' do
-            params = { issue_references: [valid_reference] }
-            control_count = ActiveRecord::QueryRecorder.new { described_class.new(epic, user, params).execute }.count
-
-            user = create(:user)
-            group = create(:group)
-            project = create(:project, group: group)
-            issues = create_list(:issue, 5, project: project)
-            epic = create(:epic, group: group)
-            group.add_developer(user)
-
-            params = { issue_references: issues.map { |i| i.to_reference(full: true) } }
-
-            expect { described_class.new(epic, user, params).execute }.not_to exceed_query_limit(control_count)
-          end
-        end
-
-        context 'when an issue links is given' do
-          subject { assign_issue([IssuesHelper.url_for_issue(issue.iid, issue.project)]) }
-
-          include_examples 'returns success'
-        end
-      end
-    end
-
-    context 'when user does not have permissions to link the issue' do
+    context 'when epics feature is disabled' do
       subject { assign_issue([valid_reference]) }
 
       include_examples 'returns an error'
     end
 
-    context 'when an issue is already assigned to another epic' do
+    context 'when epics feature is enabled' do
       before do
-        group.add_developer(user)
-        create(:epic_issue, epic: epic, issue: issue)
+        stub_licensed_features(epics: true)
       end
 
-      let(:another_epic) { create(:epic, group: group) }
+      context 'when user has permissions to link the issue' do
+        before do
+          group.add_developer(user)
+        end
 
-      subject do
-        params = { issue_references: [valid_reference] }
+        context 'when the reference list is empty' do
+          it 'returns an error' do
+            expect(assign_issue([])).to eq(message: 'No Issue found for given params', status: :error, http_status: 404)
+          end
+        end
 
-        described_class.new(another_epic, user, params).execute
+        context 'when there is an issue to relate' do
+          context 'when shortcut for Issue is given' do
+            subject { assign_issue([issue.to_reference]) }
+
+            include_examples 'returns an error'
+          end
+
+          context 'when a full reference is given' do
+            subject { assign_issue([valid_reference]) }
+
+            include_examples 'returns success'
+
+            it 'does not perofrm N + 1 queries' do
+              params = { issue_references: [valid_reference] }
+              control_count = ActiveRecord::QueryRecorder.new { described_class.new(epic, user, params).execute }.count
+
+              user = create(:user)
+              group = create(:group)
+              project = create(:project, group: group)
+              issues = create_list(:issue, 5, project: project)
+              epic = create(:epic, group: group)
+              group.add_developer(user)
+
+              params = { issue_references: issues.map { |i| i.to_reference(full: true) } }
+
+              expect { described_class.new(epic, user, params).execute }.not_to exceed_query_limit(control_count)
+            end
+          end
+
+          context 'when an issue links is given' do
+            subject { assign_issue([IssuesHelper.url_for_issue(issue.iid, issue.project)]) }
+
+            include_examples 'returns success'
+          end
+        end
       end
 
-      it 'does not create a new association' do
-        expect { subject }.not_to change(EpicIssue, :count).from(1)
+      context 'when user does not have permissions to link the issue' do
+        subject { assign_issue([valid_reference]) }
+
+        include_examples 'returns an error'
       end
 
-      it 'updates the existing association' do
-        expect { subject }.to change { EpicIssue.last.epic }.from(epic).to(another_epic)
+      context 'when an issue is already assigned to another epic' do
+        before do
+          group.add_developer(user)
+          create(:epic_issue, epic: epic, issue: issue)
+        end
+
+        let(:another_epic) { create(:epic, group: group) }
+
+        subject do
+          params = { issue_references: [valid_reference] }
+
+          described_class.new(another_epic, user, params).execute
+        end
+
+        it 'does not create a new association' do
+          expect { subject }.not_to change(EpicIssue, :count).from(1)
+        end
+
+        it 'updates the existing association' do
+          expect { subject }.to change { EpicIssue.last.epic }.from(epic).to(another_epic)
+        end
+
+        it 'returns success status' do
+          is_expected.to eq(status: :success)
+        end
       end
 
-      it 'returns success status' do
-        is_expected.to eq(status: :success)
+      context 'when issue from non group project is given' do
+        subject { assign_issue([another_issue.to_reference(full: true)]) }
+
+        let(:another_issue) { create :issue }
+
+        before do
+          group.add_developer(user)
+          another_issue.project.add_developer(user)
+        end
+
+        include_examples 'returns an error'
       end
-    end
-
-    context 'when issue from non group project is given' do
-      subject { assign_issue([another_issue.to_reference(full: true)]) }
-
-      let(:another_issue) { create :issue }
-
-      before do
-        group.add_developer(user)
-        another_issue.project.add_developer(user)
-      end
-
-      include_examples 'returns an error'
     end
   end
 end
