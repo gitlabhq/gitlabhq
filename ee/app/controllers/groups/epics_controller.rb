@@ -3,9 +3,10 @@ class Groups::EpicsController < Groups::ApplicationController
   include IssuableCollections
 
   before_action :check_epics_available!
-  before_action :epic, except: :index
+  before_action :epic, except: [:index, :create]
   before_action :set_issuables_index, only: :index
   before_action :authorize_update_issuable!, only: :update
+  before_action :authorize_create_epic!, only: [:create]
 
   skip_before_action :labels
 
@@ -20,6 +21,18 @@ class Groups::EpicsController < Groups::ApplicationController
           html: view_to_html_string("groups/epics/_epics")
         }
       end
+    end
+  end
+
+  def create
+    @epic = Epics::CreateService.new(@group, current_user, epic_params).execute
+
+    if @epic.persisted?
+      render json: {
+        web_url: group_epic_path(@group, @epic)
+      }
+    else
+      head :unprocessable_entity
     end
   end
 
@@ -72,5 +85,9 @@ class Groups::EpicsController < Groups::ApplicationController
   # states for epics and need all as default for navigation to work correctly (#4017)
   def set_default_state
     params[:state] = 'all'
+  end
+
+  def authorize_create_epic!
+    return render_404 unless can?(current_user, :create_epic, group)
   end
 end

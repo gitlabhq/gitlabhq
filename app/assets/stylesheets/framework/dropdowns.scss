@@ -1029,3 +1029,32 @@ header.header-content .dropdown-menu.projects-dropdown-menu {
     }
   }
 }
+
+.new-epic-dropdown {
+  .dropdown-menu {
+    padding-left: $gl-padding-top;
+    padding-right: $gl-padding-top;
+  }
+
+  .form-control {
+    width: 100%;
+  }
+
+  .btn-save {
+    display: flex;
+    margin-top: $gl-btn-padding;
+  }
+}
+
+.empty-state .new-epic-dropdown {
+  display: inline-flex;
+
+  .btn-save {
+    margin-left: 0;
+    margin-bottom: 0;
+  }
+
+  .btn-new {
+    margin: 0;
+  }
+}
