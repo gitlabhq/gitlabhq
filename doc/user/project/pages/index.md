@@ -75,7 +75,7 @@ _Blog posts for securing GitLab Pages custom domains with SSL/TLS certificates:_
 ## Admin GitLab Pages for CE and EE
 
 Enable and configure GitLab Pages on your own instance (GitLab Community Editions and Enterprise Editions) with
-the [Admin guide](../../../administration/pages/index.md).
+the [admin guide](../../../administration/pages/index.md).
 
 **Watch the video: https://www.youtube.com/watch?v=dD8c7WNcc6s**
 
