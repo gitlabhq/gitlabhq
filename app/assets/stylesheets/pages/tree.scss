@@ -125,7 +125,7 @@
         color: $white-normal;
       }
 
-      &:hover {
+      &:hover:not(.tree-truncated-warning) {
         td {
           background-color: $row-hover;
           border-top: 1px solid $row-hover-border;
@@ -196,6 +196,11 @@
     .commit-author-name {
       color: $gl-text-color;
     }
+  }
+
+  .tree-truncated-warning {
+    color: $orange-600;
+    background-color: $orange-100;
   }
 
   .tree-time-ago {
