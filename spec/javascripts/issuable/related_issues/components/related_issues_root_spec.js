@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import relatedIssuesRoot from '~/issuable/related_issues/components/related_issues_root.vue';
+import relatedIssuesService from '~/issuable/related_issues/services/related_issues_service';
 
 const defaultProps = {
   endpoint: '/foo/bar/issues/1/related_issues',
@@ -41,11 +42,17 @@ describe('RelatedIssuesRoot', () => {
 
   describe('methods', () => {
     describe('onRelatedIssueRemoveRequest', () => {
-      beforeEach(() => {
+      beforeEach((done) => {
+        spyOn(relatedIssuesService.prototype, 'fetchRelatedIssues').and.returnValue(Promise.reject());
+
         vm = new RelatedIssuesRoot({
           propsData: defaultProps,
         }).$mount();
-        vm.store.setRelatedIssues([issuable1]);
+
+        setTimeout(() => {
+          vm.store.setRelatedIssues([issuable1]);
+          done();
+        });
       });
 
       it('remove related issue and succeeds', (done) => {
@@ -131,6 +138,7 @@ describe('RelatedIssuesRoot', () => {
 
     describe('onPendingFormSubmit', () => {
       beforeEach(() => {
+        spyOn(relatedIssuesService.prototype, 'fetchRelatedIssues').and.returnValue(Promise.reject());
         vm = new RelatedIssuesRoot({
           propsData: defaultProps,
         }).$mount();
@@ -243,23 +251,21 @@ describe('RelatedIssuesRoot', () => {
     });
 
     describe('fetchRelatedIssues', () => {
-      beforeEach(() => {
+      beforeEach((done) => {
         vm = new RelatedIssuesRoot({
           propsData: defaultProps,
         }).$mount();
+
+        // wait for internal call to fetchRelatedIssues to resolve
+        setTimeout(() => Vue.nextTick(done));
       });
 
       describe('when the network has not responded yet', () => {
         it('should be fetching', (done) => {
           vm.fetchRelatedIssues();
+          expect(vm.isFetching).toEqual(true);
 
-          setTimeout(() => {
-            Vue.nextTick(() => {
-              expect(vm.isFetching).toEqual(true);
-
-              done();
-            });
-          });
+          setTimeout(() => Vue.nextTick(done));
         });
       });
 

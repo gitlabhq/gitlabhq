@@ -81,10 +81,6 @@ describe Gitlab::BackgroundMigration::PopulateForkNetworksRange, :migration, sch
 
   it 'only processes a single batch of links at a time' do
     expect(fork_network_members.count).to eq(5)
-
-    migration.perform(3, 5)
-
-    expect(fork_network_members.count).to eq(7)
   end
 
   it 'can be repeated without effect' do

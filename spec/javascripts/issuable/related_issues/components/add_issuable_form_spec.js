@@ -121,6 +121,48 @@ describe('AddIssuableForm', () => {
     });
   });
 
+  describe('autocomplete', () => {
+    describe('with autoCompleteSources', () => {
+      beforeEach(() => {
+        vm = new AddIssuableForm({
+          propsData: {
+            inputValue: '',
+            autoCompleteSources: {
+              issues: '/fake/issues/path',
+            },
+          },
+        }).$mount();
+      });
+
+      it('shows placeholder text', () => {
+        expect(vm.$refs.input.placeholder).toEqual('Paste issue link or <#issue id>');
+      });
+
+      it('has GfmAutoComplete', () => {
+        expect(vm.gfmAutoComplete).toBeDefined();
+      });
+    });
+
+    describe('with no autoCompleteSources', () => {
+      beforeEach(() => {
+        vm = new AddIssuableForm({
+          propsData: {
+            inputValue: '',
+            autoCompleteSources: {},
+          },
+        }).$mount();
+      });
+
+      it('shows placeholder text', () => {
+        expect(vm.$refs.input.placeholder).toEqual('Paste issue link');
+      });
+
+      it('does not have GfmAutoComplete', () => {
+        expect(vm.gfmAutoComplete).not.toBeDefined();
+      });
+    });
+  });
+
   describe('methods', () => {
     let addIssuableFormInputSpy;
     let addIssuableFormBlurSpy;
@@ -147,6 +189,9 @@ describe('AddIssuableForm', () => {
           pendingIssuables: [
             issuable1,
           ],
+          autoCompleteSources: {
+            issues: '/fake/issues/path',
+          },
         },
       }).$mount(el);
     });

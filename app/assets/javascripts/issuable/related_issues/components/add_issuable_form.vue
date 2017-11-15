@@ -43,11 +43,14 @@ export default {
 
   computed: {
     inputPlaceholder() {
-      return 'Paste issue link or <#issue id>';
+      return `Paste issue link${this.allowAutoComplete ? ' or <#issue id>' : ''}`;
     },
     isSubmitButtonDisabled() {
       return (this.inputValue.length === 0 && this.pendingReferences.length === 0)
         || this.isSubmitting;
+    },
+    allowAutoComplete() {
+      return Object.keys(this.autoCompleteSources).length > 0;
     },
   },
 
@@ -86,12 +89,14 @@ export default {
   mounted() {
     const $input = $(this.$refs.input);
 
-    this.gfmAutoComplete = new GfmAutoComplete(this.autoCompleteSources);
-    this.gfmAutoComplete.setup($input, {
-      issues: true,
-    });
-    $input.on('shown-issues.atwho', this.onAutoCompleteToggled.bind(this, true));
-    $input.on('hidden-issues.atwho', this.onAutoCompleteToggled.bind(this, false));
+    if (this.allowAutoComplete) {
+      this.gfmAutoComplete = new GfmAutoComplete(this.autoCompleteSources);
+      this.gfmAutoComplete.setup($input, {
+        issues: true,
+      });
+      $input.on('shown-issues.atwho', this.onAutoCompleteToggled.bind(this, true));
+      $input.on('hidden-issues.atwho', this.onAutoCompleteToggled.bind(this, false));
+    }
 
     this.$refs.input.focus();
   },
@@ -114,15 +119,22 @@ export default {
       role="button"
       @click="onInputWrapperClick">
       <ul class="add-issuable-form-input-token-list">
+        <!--
+          We need to ensure this key changes any time the pendingReferences array is updated
+          else two consecutive pending ref strings in an array with the same name will collide
+          and cause odd behavior when one is removed.
+        -->
         <li
-          :key="reference"
+          :key="`${pendingReferences.length}-${reference}`"
           v-for="(reference, index) in pendingReferences"
           class="js-add-issuable-form-token-list-item add-issuable-form-token-list-item">
           <issue-token
             event-namespace="pendingIssuable"
             :id-key="index"
             :display-reference="reference"
-            :can-remove="true" />
+            :can-remove="true"
+            :is-condensed="true"
+          />
         </li>
         <li class="add-issuable-form-input-list-item">
           <input
@@ -144,11 +156,10 @@ export default {
         class="js-add-issuable-form-add-button btn btn-new pull-left"
         :disabled="isSubmitButtonDisabled">
         Add
-        <loadingIcon
+        <loading-icon
           ref="loadingIcon"
           v-if="isSubmitting"
-          :inline="true"
-          label="Submitting related issues" />
+          :inline="true" />
       </button>
       <button
         type="button"

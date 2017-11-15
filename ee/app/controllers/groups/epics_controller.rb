@@ -25,7 +25,7 @@ class Groups::EpicsController < Groups::ApplicationController
   private
 
   def epic
-    @issuable = @epic ||= @group.epics.find_by(iid: params[:id])
+    @issuable = @epic ||= @group.epics.find_by(iid: params[:epic_id] || params[:id])
 
     return render_404 unless can?(current_user, :read_epic, @epic)
 

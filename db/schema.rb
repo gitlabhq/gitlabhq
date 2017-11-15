@@ -732,6 +732,14 @@ ActiveRecord::Schema.define(version: 20171107144726) do
   add_index "environments", ["project_id", "name"], name: "index_environments_on_project_id_and_name", unique: true, using: :btree
   add_index "environments", ["project_id", "slug"], name: "index_environments_on_project_id_and_slug", unique: true, using: :btree
 
+  create_table "epic_issues", force: :cascade do |t|
+    t.integer "epic_id", null: false
+    t.integer "issue_id", null: false
+  end
+
+  add_index "epic_issues", ["epic_id"], name: "index_epic_issues_on_epic_id", using: :btree
+  add_index "epic_issues", ["issue_id"], name: "index_epic_issues_on_issue_id", unique: true, using: :btree
+
   create_table "epic_metrics", force: :cascade do |t|
     t.integer "epic_id", null: false
     t.datetime_with_timezone "created_at", null: false
@@ -2393,6 +2401,8 @@ ActiveRecord::Schema.define(version: 20171107144726) do
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade
   add_foreign_key "environments", "projects", name: "fk_d1c8c1da6a", on_delete: :cascade
+  add_foreign_key "epic_issues", "epics", on_delete: :cascade
+  add_foreign_key "epic_issues", "issues", on_delete: :cascade
   add_foreign_key "epic_metrics", "epics", on_delete: :cascade
   add_foreign_key "epics", "milestones", on_delete: :nullify
   add_foreign_key "epics", "namespaces", column: "group_id", name: "fk_f081aa4489", on_delete: :cascade
