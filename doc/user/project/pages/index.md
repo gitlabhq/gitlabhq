@@ -19,7 +19,7 @@ _Minimum steps:_
 - 1. [Fork](../../../gitlab-basics/fork-project.md#how-to-fork-a-project) an [example project](https://gitlab.com/pages)
 - 2. Enable [Shared Runners](../../../ci/quick_start/README.md#shared-runners) (_Navigate to your project_ **settings** > **CI/CD** > _expand_ **Runners settings** > _click_ **Enable shared runners**)
 - 3. Change a file
-- 4. Visit your project's **settings > Pages** settings to see your **website link**, and click on it. Bam! Your website is live.
+- 4. Visit your project's **settings > Pages** to see your **website link**, and click on it. Bam! Your website is live.
 
 The steps above shouldn't take more than 5 minutes to complete.
 
