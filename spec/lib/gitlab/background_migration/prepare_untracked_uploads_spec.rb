@@ -36,7 +36,7 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :side
 
       stub_application_setting(hashed_storage_enabled: true)
 
-        # Markdown upload after enabling hashed_storage
+      # Markdown upload after enabling hashed_storage
       UploadService.new(project2, uploaded_file, FileUploader).execute
     end
 

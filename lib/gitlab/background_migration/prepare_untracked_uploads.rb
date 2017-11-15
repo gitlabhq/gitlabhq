@@ -91,13 +91,13 @@ module Gitlab
         table_columns_and_values = 'untracked_files_for_uploads (path, created_at, updated_at) VALUES (?, ?, ?)'
 
         sql = if Gitlab::Database.postgresql?
-          "INSERT INTO #{table_columns_and_values} ON CONFLICT DO NOTHING;"
-        else
-          "INSERT IGNORE INTO #{table_columns_and_values};"
-        end
+                "INSERT INTO #{table_columns_and_values} ON CONFLICT DO NOTHING;"
+              else
+                "INSERT IGNORE INTO #{table_columns_and_values};"
+              end
 
         timestamp = Time.now.utc.iso8601
-        sql = ActiveRecord::Base.send(:sanitize_sql_array, [sql, file_path, timestamp, timestamp])
+        sql = ActiveRecord::Base.send(:sanitize_sql_array, [sql, file_path, timestamp, timestamp]) # rubocop:disable GitlabSecurity/PublicSend
         ActiveRecord::Base.connection.execute(sql)
       end
 
