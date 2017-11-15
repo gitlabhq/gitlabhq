@@ -16,8 +16,6 @@ module Gitlab
         def run!
           trap_signals
 
-          full_scan! if options[:full_scan]
-
           until exit?
             lease = Lease.try_obtain_with_ttl { run_once! }
 
@@ -30,35 +28,6 @@ module Gitlab
 
         def run_once!
           LogCursor::Events.fetch_in_batches { |batch| handle_events(batch) }
-        end
-
-        # Execute routines to verify the required initial data is available
-        # and mark non-replicated data as requiring replication.
-        def full_scan!
-          # This is slow and can be improved in the future by using PostgreSQL FDW
-          # so we can query with a LEFT JOIN and have a list of
-          # Projects without corresponding ProjectRegistry in the DR database
-          # See: https://robots.thoughtbot.com/postgres-foreign-data-wrapper (requires PG 9.6)
-          $stdout.print 'Searching for non replicated projects...'
-
-          Gitlab::Geo.current_node.projects.select(:id).find_in_batches(batch_size: BATCH_SIZE) do |batch|
-            $stdout.print '.'
-
-            project_ids = batch.map(&:id)
-            existing = ::Geo::ProjectRegistry.where(project_id: project_ids).pluck(:project_id)
-            missing_projects = project_ids - existing
-
-            logger.info(
-              "Missing projects",
-              projects: missing_projects,
-              project_count: missing_projects.count)
-
-            missing_projects.each do |id|
-              ::Geo::ProjectRegistry.create(project_id: id)
-            end
-          end
-          $stdout.puts 'Done!'
-          puts
         end
 
         def handle_events(batch)
