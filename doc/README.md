@@ -81,7 +81,7 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
   - [File templates](user/project/repository/web_editor.md#template-dropdowns)
   - [Create a directory](user/project/repository/web_editor.md#create-a-directory)
   - [Start a merge request](user/project/repository/web_editor.md#tips) (when committing via UI)
-  - **(EES/EEP)** [Lock a file](user/project/file_lock.md): Lock a file to avoid merge conflicts.
+  - **(EEP)** [File locking](user/project/file_lock.md): Lock a file to avoid merge conflicts.
 - [Branches](user/project/repository/branches/index.md)
   - [Default branch](user/project/repository/branches/index.md#default-branch)
   - [Create a branch](user/project/repository/web_editor.md#create-a-new-branch)
@@ -91,7 +91,6 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
   - [Signing commits](user/project/repository/gpg_signed_commits/index.md): use GPG to sign your commits.
 - **(EES/EEP)** [Repository Mirroring](workflow/repository_mirroring.md)
 - **(EES/EEP)** [Push rules](push_rules/push_rules.md): Additional control over pushes to your project.
-- **(EEP)** [File Locking](user/project/file_lock.md): Lock a file to avoid merge conflicts.
 
 ### Issues and Merge Requests (MRs)
 
