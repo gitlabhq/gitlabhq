@@ -134,7 +134,7 @@ check_interval = 0
       "amazonec2-vpc-id=vpc-xxxxx",
       "amazonec2-subnet-id=subnet-xxxxx",
       "amazonec2-use-private-address=true",
-      "amazonec2-tags=Name,gitlab-runner-autoscale",
+      "amazonec2-tags=runner-manager-name,GitLab Runner autoscale,gitlab,true,gitlab-runner-autoscale,true",
       "amazonec2-security-group=docker-machine-scaler",
       "amazonec2-instance-type=m4.2xlarge",
     ]
@@ -169,7 +169,9 @@ From the `[[runners]]` section, the most important part is the `executor` which
 must be set to `docker+machine`. Most of those settings are taken care of when
 you register the Runner for the first time.
 
-`limit` defines how many jobs can be handled concurrently by this token.
+`limit` sets the maximum number of machines (running and idle) that this Runner
+will start. For more info check the [relationship between `limit`, `concurrent`
+and `IdleCount`](https://docs.gitlab.com/runner/configuration/autoscale.html#how-concurrent-limit-and-idlecount-generate-the-upper-limit-of-running-machines).
 
 Example:
 
@@ -269,7 +271,7 @@ Example:
       "amazonec2-vpc-id=vpc-xxxxx",
       "amazonec2-subnet-id=subnet-xxxxx",
       "amazonec2-use-private-address=true",
-      "amazonec2-tags=Name,gitlab-runner-autoscale",
+      "amazonec2-tags=runner-manager-name,GitLab Runner autoscale,gitlab,true,gitlab-runner-autoscale,true",
       "amazonec2-security-group=docker-machine-scaler",
       "amazonec2-instance-type=m4.2xlarge",
     ]
@@ -288,7 +290,7 @@ under `MachineOptions`. Let's see the most common ones:
 - `amazonec2-vpc-id=vpc-xxxxx` - Your VPC ID to launch the instance in, read more in [Docker docs about the VPC ID](https://docs.docker.com/machine/drivers/aws/#vpc-id).
 - `amazonec2-subnet-id=subnet-xxxx` - AWS VPC subnet ID.
 - `amazonec2-use-private-address=true` - Use the private IP address for docker-machine, but still create a public IP address. Useful to keep the traffic internal and avoid extra costs.
-- `amazonec2-tags=Name,gitlab-runner-autoscale` - AWS extra tag key-value pairs, useful to identify the instances on the AWS console.
+- `amazonec2-tags=runner-manager-name,GitLab Runner autoscale,gitlab,true,gitlab-runner-autoscale,true` - AWS extra tag key-value pairs, useful to identify the instances on the AWS console. Read more about [using tags in AWS](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/Using_Tags.html).
 - `amazonec2-security-group=docker-machine-scaler` - AWS VPC security group name, see [AWS security groups](#aws-security-groups).
 - `amazonec2-instance-type=m4.2xlarge` - The instance type that the child Runners will run on.
 
