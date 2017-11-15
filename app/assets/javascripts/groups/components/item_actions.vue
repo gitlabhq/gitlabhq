@@ -4,6 +4,7 @@ import tooltip from '../../vue_shared/directives/tooltip';
 import PopupDialog from '../../vue_shared/components/popup_dialog.vue';
 import eventHub from '../event_hub';
 import { COMMON_STR } from '../constants';
+import { spriteIcon } from '../../lib/utils/common_utils';
 
 export default {
   components: {
@@ -38,6 +39,9 @@ export default {
     leaveConfirmationMessage() {
       return s__(`GroupsTree|Are you sure you want to leave the "${this.group.fullName}" group?`);
     },
+    settingsIcon() {
+      return spriteIcon('settings');
+    },
   },
   methods: {
     onLeaveGroup() {
@@ -62,10 +66,8 @@ export default {
       :title="editBtnTitle"
       :aria-label="editBtnTitle"
       data-container="body"
-      class="edit-group btn no-expand">
-      <i
-        class="fa fa-cogs"
-        aria-hidden="true"/>
+      class="edit-group btn no-expand"
+      v-html="settingsIcon">
     </a>
     <a
       v-tooltip
