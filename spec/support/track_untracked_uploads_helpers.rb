@@ -4,17 +4,11 @@ module TrackUntrackedUploadsHelpers
     fixture_file_upload(fixture_path)
   end
 
-  def recreate_temp_table_if_dropped
-    TrackUntrackedUploads.new.ensure_temporary_tracking_table_exists
+  def ensure_temporary_tracking_table_exists
+    Gitlab::BackgroundMigration::PrepareUntrackedUploads.new.send(:ensure_temporary_tracking_table_exists)
   end
 
-  RSpec.configure do |config|
-    config.after(:each, :temp_table_may_drop) do
-      recreate_temp_table_if_dropped
-    end
-
-    config.after(:context, :temp_table_may_drop) do
-      recreate_temp_table_if_dropped
-    end
+  def drop_temp_table_if_exists
+    ActiveRecord::Base.connection.drop_table(:untracked_files_for_uploads) if ActiveRecord::Base.connection.table_exists?(:untracked_files_for_uploads)
   end
 end

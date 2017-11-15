@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20171103140253_track_untracked_uploads')
 
-describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sidekiq, :temp_table_may_drop, schema: 20171103140253 do
+describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sidekiq, schema: 20171103140253 do
   include TrackUntrackedUploadsHelpers
 
   subject { described_class.new }
@@ -10,8 +10,11 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
   let!(:uploads) { table(:uploads) }
 
   before do
-    # Prevent the TrackUntrackedUploads migration from running PrepareUntrackedUploads job
-    allow(BackgroundMigrationWorker).to receive(:perform_async).and_return(true)
+    ensure_temporary_tracking_table_exists
+  end
+
+  after(:all) do
+    drop_temp_table_if_exists
   end
 
   context 'with untracked files and tracked files in untracked_files_for_uploads' do
@@ -129,6 +132,14 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
   include TrackUntrackedUploadsHelpers
 
   let(:upload_class) { Gitlab::BackgroundMigration::PopulateUntrackedUploads::Upload }
+
+  before(:all) do
+    ensure_temporary_tracking_table_exists
+  end
+
+  after(:all) do
+    drop_temp_table_if_exists
+  end
 
   describe '#ensure_tracked!' do
     let!(:user1) { create(:user, :with_avatar) }

@@ -10,32 +10,12 @@ class TrackUntrackedUploads < ActiveRecord::Migration
   MIGRATION = 'PrepareUntrackedUploads'
 
   def up
-    ensure_temporary_tracking_table_exists
-
     BackgroundMigrationWorker.perform_async(MIGRATION)
   end
 
   def down
     if table_exists?(:untracked_files_for_uploads)
       drop_table :untracked_files_for_uploads
-    end
-  end
-
-  def ensure_temporary_tracking_table_exists
-    unless table_exists?(:untracked_files_for_uploads)
-      create_table :untracked_files_for_uploads do |t|
-        t.string :path, limit: 600, null: false
-        t.boolean :tracked, default: false, null: false
-        t.timestamps_with_timezone null: false
-      end
-    end
-
-    unless index_exists?(:untracked_files_for_uploads, :path)
-      add_index :untracked_files_for_uploads, :path, unique: true
-    end
-
-    unless index_exists?(:untracked_files_for_uploads, :tracked)
-      add_index :untracked_files_for_uploads, :tracked
     end
   end
 end

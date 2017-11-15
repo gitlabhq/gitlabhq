@@ -1,7 +1,7 @@
 require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20171103140253_track_untracked_uploads')
 
-describe TrackUntrackedUploads, :migration, :sidekiq, :temp_table_may_drop do
+describe TrackUntrackedUploads, :migration, :sidekiq do
   include TrackUntrackedUploadsHelpers
 
   let(:untracked_files_for_uploads) { table(:untracked_files_for_uploads) }
@@ -18,40 +18,12 @@ describe TrackUntrackedUploads, :migration, :sidekiq, :temp_table_may_drop do
     end
   end
 
-  context 'before running the background migration' do
-    around do |example|
-      # Especially important so the follow-up migration does not get run
-      Sidekiq::Testing.fake! do
-        example.run
-      end
-    end
-
-    it 'correctly schedules the follow-up background migration' do
+  it 'correctly schedules the follow-up background migration' do
+    Sidekiq::Testing.fake! do
       migrate!
 
       expect(described_class::MIGRATION).to be_scheduled_migration
       expect(BackgroundMigrationWorker.jobs.size).to eq(1)
-    end
-
-    it 'ensures the untracked_files_for_uploads table exists' do
-      expect do
-        migrate!
-      end.to change { table_exists?(:untracked_files_for_uploads) }.from(false).to(true)
-    end
-
-    it 'has a path field long enough for really long paths' do
-      migrate!
-
-      component = 'a' * 255
-
-      long_path = [
-        'uploads',
-        component, # project.full_path
-        component  # filename
-      ].flatten.join('/')
-
-      record = untracked_files_for_uploads.create!(path: long_path)
-      expect(record.reload.path.size).to eq(519)
     end
   end
 
