@@ -1,5 +1,7 @@
 module Gitlab
   module Geo
+    include LogHelpers
+
     InvalidDecryptionKeyError = Class.new(StandardError)
 
     class JwtRequestDecoder
@@ -33,7 +35,7 @@ module Gitlab
           data = decode_auth_header
         rescue OpenSSL::Cipher::CipherError
           message = 'Error decrypting the Geo secret from the database. Check that the primary and secondary have the same db_key_base.'
-          Rails.logger.error(message)
+          log_error(message)
           raise InvalidDecryptionKeyError.new(message)
         end
 
@@ -54,7 +56,7 @@ module Gitlab
           data&.deep_symbolize_keys!
           data
         rescue JWT::DecodeError => e
-          Rails.logger.error("Error decoding Geo request: #{e}")
+          log_error("Error decoding Geo request: #{e}")
           return
         end
       end

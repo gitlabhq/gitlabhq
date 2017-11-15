@@ -150,6 +150,12 @@ module Geo
       registry.update!(attrs)
     end
 
+    def fail_registry(message, error)
+      log_error(message, error)
+
+      registry.update!(last_repository_sync_failure: "#{message}: #{error.message}")
+    end
+
     def type
       self.class.type
     end

@@ -145,7 +145,7 @@ describe Geo::RepositorySyncService do
         let(:registry) { Geo::ProjectRegistry.find_by(project_id: project.id) }
 
         before do
-          allow(repository).to receive(:fetch_as_mirror).with(url_to_repo, forced: true) { raise Gitlab::Shell::Error }
+          allow(repository).to receive(:fetch_as_mirror).with(url_to_repo, forced: true) { raise Gitlab::Shell::Error, 'shell error' }
 
           subject.execute
         end
@@ -223,6 +223,10 @@ describe Geo::RepositorySyncService do
         # of range" in the first update to the project registry.
         registry.reload
         expect(registry.repository_retry_at).to be_nil
+
+        it 'sets last_repository_sync_failure' do
+          expect(registry.last_repository_sync_failure).to eq('Error syncing repository: shell error')
+        end
       end
     end
 
