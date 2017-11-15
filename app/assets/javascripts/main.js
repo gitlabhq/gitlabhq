@@ -69,8 +69,6 @@ import './notifications_dropdown';
 import './notifications_form';
 import './pager';
 import './preview_markdown';
-import './project';
-import './project_avatar';
 import './project_find_file';
 import './project_import';
 import './project_label_subscription';

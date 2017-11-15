@@ -2,6 +2,16 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.1.4 (2017-11-14)
+
+### Fixed (4 changes)
+
+- Don't try to create fork network memberships for forks with a missing source. !15366
+- Formats bytes to human reabale number in registry table.
+- Prevent error when authorizing an admin-created OAauth application without a set owner.
+- Prevents position update for image diff notes.
+
+
 ## 10.1.3 (2017-11-10)
 
 - [SECURITY] Prevent OAuth phishing attack by presenting detailed wording about app to user during authorization.

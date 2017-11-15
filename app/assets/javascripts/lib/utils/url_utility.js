@@ -100,6 +100,10 @@ export function visitUrl(url, external = false) {
   }
 }
 
+export function redirectTo(url) {
+  return window.location.assign(url);
+}
+
 window.gl = window.gl || {};
 window.gl.utils = {
   ...(window.gl.utils || {}),

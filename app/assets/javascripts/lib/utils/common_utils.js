@@ -310,6 +310,42 @@ export const setParamInURL = (param, value) => {
 };
 
 /**
+ * Given a string of query parameters creates an object.
+ *
+ * @example
+ * `scope=all&page=2` -> { scope: 'all', page: '2'}
+ * `scope=all` -> { scope: 'all' }
+ * ``-> {}
+ * @param {String} query
+ * @returns {Object}
+ */
+export const parseQueryStringIntoObject = (query = '') => {
+  if (query === '') return {};
+
+  return query
+    .split('&')
+    .reduce((acc, element) => {
+      const val = element.split('=');
+      Object.assign(acc, {
+        [val[0]]: decodeURIComponent(val[1]),
+      });
+      return acc;
+    }, {});
+};
+
+export const buildUrlWithCurrentLocation = param => (param ? `${window.location.pathname}${param}` : window.location.pathname);
+
+/**
+ * Based on the current location and the string parameters provided
+ * creates a new entry in the history without reloading the page.
+ *
+ * @param {String} param
+ */
+export const historyPushState = (newUrl) => {
+  window.history.pushState({}, document.title, newUrl);
+};
+
+/**
  * Converts permission provided as strings to booleans.
  *
  * @param  {String} string
