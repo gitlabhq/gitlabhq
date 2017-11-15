@@ -215,7 +215,6 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
     context 'for a project Markdown attachment (notes, issues, MR descriptions) file path' do
       let(:model) { create(:project) }
-      let(:expected_upload_attrs) { {} }
 
       # UntrackedFile.path is different than Upload.path
       let(:untracked_file) { create_untracked_file("/#{model.full_path}/#{model.uploads.first.path}") }
@@ -228,7 +227,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
         untracked_file
 
         # Save the expected upload attributes
-        expected_upload_attrs = model.reload.uploads.first.attributes.slice('path', 'uploader', 'size', 'checksum')
+        @expected_upload_attrs = model.reload.uploads.first.attributes.slice('path', 'uploader', 'size', 'checksum')
 
         # Untrack the file
         model.reload.uploads.delete_all
@@ -239,8 +238,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
           untracked_file.add_to_uploads
         end.to change { model.reload.uploads.count }.from(0).to(1)
 
-        hex_secret = untracked_file.path.match(/\/(\h+)\/rails_sample.jpg/)[1]
-        expect(model.uploads.first.attributes).to include(expected_upload_attrs)
+        expect(model.uploads.first.attributes).to include(@expected_upload_attrs)
       end
     end
   end

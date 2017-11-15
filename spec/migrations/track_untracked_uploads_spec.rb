@@ -42,7 +42,7 @@ describe TrackUntrackedUploads, :migration, :sidekiq, :temp_table_may_drop do
     it 'has a path field long enough for really long paths' do
       migrate!
 
-      component = 'a'*255
+      component = 'a' * 255
 
       long_path = [
         'uploads',
