@@ -12,6 +12,7 @@ class Projects::GroupLinksController < Projects::ApplicationController
 
     if group
       return render_404 unless can?(current_user, :read_group, group)
+
       Projects::GroupLinks::CreateService.new(project, current_user, group_link_create_params).execute(group)
     else
       flash[:alert] = 'Please select a group.'

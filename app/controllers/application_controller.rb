@@ -97,6 +97,7 @@ class ApplicationController < ActionController::Base
   # (e.g. tokens) to authenticate the user, whereas Devise sets current_user
   def auth_user
     return current_user if current_user.present?
+
     return try(:authenticated_user)
   end
 

@@ -24,6 +24,7 @@ module SystemCheck
     # @param [BaseCheck] check class
     def <<(check)
       raise ArgumentError unless check.is_a?(Class) && check < BaseCheck
+
       @checks << check
     end
 

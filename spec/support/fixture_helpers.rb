@@ -1,6 +1,7 @@
 module FixtureHelpers
   def fixture_file(filename)
     return '' if filename.blank?
+
     File.read(expand_fixture_path(filename))
   end
 
