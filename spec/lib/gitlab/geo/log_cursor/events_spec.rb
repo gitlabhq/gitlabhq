@@ -24,12 +24,6 @@ describe Gitlab::Geo::LogCursor::Events do
         expect(Geo::EventLogState.last.event_id).to eq(event_log_2.id)
       end
     end
-
-    it 'skips execution if cannot achieve a lease' do
-      expect_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { }
-
-      expect { |b| described_class.fetch_in_batches(&b) }.not_to yield_control
-    end
   end
 
   describe '.save_processed' do
