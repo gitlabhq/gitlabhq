@@ -14,7 +14,7 @@ module QA
           def perform(**args)
             QA::Specs::Config.act { configure_capybara! }
 
-            unless QA::Runtime::Scenario.geo_skip_setup?
+            unless args[:geo_skip_setup?]
               # TODO, Factory::License -> gitlab-org/gitlab-qa#86
               #
               QA::Runtime::Scenario.define(:gitlab_address, args[:geo_primary_address])
@@ -108,6 +108,9 @@ module QA
                 gitlab_ctl "replicate-geo-database --host=#{host} --slot-name=#{slot} " \
                            "--sslmode=disable --no-wait --force", input: 'echo mypass'
               end
+
+              puts 'Waiting until secondary node services are restarted ...'
+              sleep 60
             end
           end
         end
