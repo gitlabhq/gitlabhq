@@ -10,16 +10,17 @@ module QA
         visit current_path
       end
 
-      def scroll_to(selector)
-        if selector.start_with?('.')
-          page.execute_script <<~JS
-            document.getElementsByClassName("#{selector.sub(/^\./, '')}")[0].scrollIntoView();
-          JS
-        else
-          page.execute_script <<~JS
-            document.getElementById("#{selector}").scrollIntoView();
-          JS
-        end
+      def scroll_to(selector, text: nil)
+        page.execute_script <<~JS
+          var elements = Array.from(document.querySelectorAll('#{selector}'));
+          var text = '#{text}';
+
+          if (text.length > 0) {
+            elements.find(e => e.textContent === text).scrollIntoView();
+          } else {
+            elements[0].scrollIntoView();
+          }
+        JS
 
         page.within(selector) { yield } if block_given?
       end
