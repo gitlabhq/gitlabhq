@@ -2,6 +2,7 @@ class MergeRequestDiff < ActiveRecord::Base
   include Sortable
   include Importable
   include Gitlab::EncodingHelper
+  include ManualInverseAssociation
 
   # Prevent store of diff if commits amount more then 500
   COMMITS_SAFE_SIZE = 100
@@ -10,6 +11,8 @@ class MergeRequestDiff < ActiveRecord::Base
   VALID_CLASSES = [Hash, Rugged::Patch, Rugged::Diff::Delta].freeze
 
   belongs_to :merge_request
+  manual_inverse_association :merge_request, :merge_request_diff
+
   has_many :merge_request_diff_files, -> { order(:merge_request_diff_id, :relative_order) }
   has_many :merge_request_diff_commits, -> { order(:merge_request_diff_id, :relative_order) }
 
@@ -194,7 +197,7 @@ class MergeRequestDiff < ActiveRecord::Base
   end
 
   def latest?
-    self == merge_request.merge_request_diff
+    self.id == merge_request.latest_merge_request_diff_id
   end
 
   def compare_with(sha)

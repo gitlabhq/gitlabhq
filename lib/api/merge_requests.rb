@@ -21,7 +21,7 @@ module API
         return merge_requests if args[:view] == 'simple'
 
         merge_requests
-          .preload(:notes, :author, :assignee, :milestone, :merge_request_diff, :labels, :timelogs)
+          .preload(:notes, :author, :assignee, :milestone, :latest_merge_request_diff, :labels, :timelogs)
       end
 
       params :merge_requests_params do
