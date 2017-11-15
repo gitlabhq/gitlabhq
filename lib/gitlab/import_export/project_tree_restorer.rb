@@ -60,7 +60,13 @@ module Gitlab
           end
         end
 
+        restore_latest_merge_request_diff_ids
+
         @saved
+      end
+
+      def restore_latest_merge_request_diff_ids
+        MergeRequest.set_latest_merge_request_diff_ids(@project.merge_requests)
       end
 
       def save_relation_hash(relation_hash_batch, relation_key)

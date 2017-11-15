@@ -117,6 +117,12 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         expect(st_commits.first[:committed_date]).to be_kind_of(Time)
       end
 
+      it 'has the correct data for merge request latest_merge_request_diff' do
+        MergeRequest.find_each do |merge_request|
+          expect(merge_request.latest_merge_request_diff_id).to eq(merge_request.merge_request_diffs.maximum(:id))
+        end
+      end
+
       it 'has labels associated to label links, associated to issues' do
         expect(Label.first.label_links.first.target).not_to be_nil
       end
