@@ -30,7 +30,6 @@ import './commit/image_file';
 import { handleLocationHash } from './lib/utils/common_utils';
 import './lib/utils/datetime_utility';
 import './lib/utils/pretty_time';
-import './lib/utils/text_utility';
 import './lib/utils/url_utility';
 
 // behaviors
