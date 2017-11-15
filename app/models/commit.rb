@@ -26,7 +26,7 @@ class Commit
   DIFF_HARD_LIMIT_LINES = 50000
 
   MIN_SHA_LENGTH = 7
-  COMMIT_SHA_PATTERN = /\b(?<![~#!@:])\h{#{MIN_SHA_LENGTH},40}/.freeze
+  COMMIT_SHA_PATTERN = /(?<!\s[~#!@:])\h{#{MIN_SHA_LENGTH},40}/.freeze
 
   def banzai_render_context(field)
     context = { pipeline: :single_line, project: self.project }
