@@ -39,8 +39,13 @@ namespace :gemojione do
         fpath = File.join(dir, "#{emoji_hash['unicode']}.png")
         hash_digest = Digest::SHA256.file(fpath).hexdigest
 
+        category = emoji_hash['category']
+        if name == 'gay_pride_flag'
+          category = 'flags'
+        end
+
         entry = {
-          category: emoji_hash['category'],
+          category: category,
           moji: emoji_hash['moji'],
           description: emoji_hash['description'],
           unicodeVersion: Gitlab::Emoji.emoji_unicode_version(name),

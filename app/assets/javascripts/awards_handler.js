@@ -22,7 +22,6 @@ const categoryLabelMap = {
   objects: 'Objects',
   symbols: 'Symbols',
   flags: 'Flags',
-  extras: 'Extras',
 };
 
 const IS_VISIBLE = 'is-visible';
