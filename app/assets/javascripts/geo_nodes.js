@@ -2,6 +2,7 @@
 import axios from 'axios';
 import SmartInterval from '~/smart_interval';
 import { parseSeconds, stringifyTime } from './lib/utils/pretty_time';
+import { addDelimiter } from './lib/utils/text_utility';
 
 const healthyClass = 'geo-node-healthy';
 const unhealthyClass = 'geo-node-unhealthy';
@@ -52,7 +53,7 @@ class GeoNodeStatus {
 
   static formatCountAndPercentage(count, total, percentage) {
     if (count !== null || total != null) {
-      return `${gl.text.addDelimiter(count)}/${gl.text.addDelimiter(total)} (${percentage})`;
+      return `${addDelimiter(count)}/${addDelimiter(total)} (${percentage})`;
     }
 
     return notAvailable;
@@ -60,7 +61,7 @@ class GeoNodeStatus {
 
   static formatCount(count) {
     if (count !== null) {
-      return gl.text.addDelimiter(count);
+      return addDelimiter(count);
     }
 
     return notAvailable;

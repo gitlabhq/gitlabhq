@@ -1,7 +1,7 @@
 <script>
 import statusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-import '~/lib/utils/text_utility';
+import { pluralize } from '~/lib/utils/text_utility';
 import issuesBlock from './mr_widget_code_quality_issues.vue';
 
 export default {
@@ -90,7 +90,7 @@ export default {
 
   methods: {
     pointsText(issues) {
-      return gl.text.pluralize('point', issues.length);
+      return pluralize('point', issues.length);
     },
 
     toggleCollapsed() {
