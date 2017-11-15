@@ -1,13 +1,24 @@
 require 'rails_helper'
 
-feature 'Create Branch/Merge Request Dropdown on issue page', :feature, :js do
+describe 'User creates branch and merge request on issue page', :js do
   let(:user) { create(:user) }
   let!(:project) { create(:project, :repository) }
   let(:issue) { create(:issue, project: project, title: 'Cherry-Coloured Funk') }
 
-  context 'for team members' do
+  context 'when signed out' do
     before do
-      project.team << [user, :developer]
+      visit project_issue_path(project, issue)
+    end
+
+    it "doesn't show 'Create merge request' button" do
+      expect(page).not_to have_selector('.create-mr-dropdown-wrap')
+    end
+  end
+
+  context 'when signed in' do
+    before do
+      project.add_developer(user)
+
       sign_in(user)
     end
 
@@ -72,29 +83,19 @@ feature 'Create Branch/Merge Request Dropdown on issue page', :feature, :js do
       end
 
       it 'shows only create branch button' do
-        expect(page).not_to have_button('Create a merge request')
-        expect(page).to have_button('Create a branch')
+        expect(page).not_to have_button('Create merge request')
+        expect(page).to have_button('Create branch')
       end
     end
 
     context 'when issue is confidential' do
-      it 'disables the create branch button' do
-        issue = create(:issue, :confidential, project: project)
+      let(:issue) { create(:issue, :confidential, project: project) }
 
+      it 'disables the create branch button' do
         visit project_issue_path(project, issue)
 
         expect(page).not_to have_css('.create-mr-dropdown-wrap')
       end
-    end
-  end
-
-  context 'for visitors' do
-    before do
-      visit project_issue_path(project, issue)
-    end
-
-    it 'shows no buttons' do
-      expect(page).not_to have_selector('.create-mr-dropdown-wrap')
     end
   end
 
