@@ -1,5 +1,7 @@
 import _ from 'underscore';
 
+const DEFAULT_VIEWER = 'html';
+
 /*
   Takes the multi-dimensional tree and returns a flattened array.
   This allows for the table to recursively render the table rows but keeps the data
@@ -47,16 +49,6 @@ export const canEditFile = (state) => {
     (currentActiveFile && !currentActiveFile.binary);
 };
 
-export const canRenderLocally = (state) => {
-  const viewer = activeFileCurrentViewer(state);
-
-  if ((viewer && viewer.renderError) || (viewer && viewer.html !== '')) {
-    return true;
-  }
-
-  return false;
-};
-
 export const viewerTemplateName = (state) => {
   const viewer = activeFileCurrentViewer(state);
 
@@ -68,6 +60,17 @@ export const viewerTemplateName = (state) => {
 
   switch (viewer.name) {
     default:
-      return 'html';
+      return DEFAULT_VIEWER;
   }
+};
+
+export const canRenderLocally = (state) => {
+  const viewer = activeFileCurrentViewer(state);
+  const viewerTemplate = viewerTemplateName(state);
+
+  if (viewerTemplate !== DEFAULT_VIEWER || (viewer && viewer.html !== '')) {
+    return true;
+  }
+
+  return false;
 };
