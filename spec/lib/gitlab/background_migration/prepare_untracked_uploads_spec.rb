@@ -1,13 +1,9 @@
 require 'spec_helper'
 
 describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :sidekiq, schema: 20171103140253 do
-  let!(:untracked_files_for_uploads) { table(:untracked_files_for_uploads) }
+  include TrackUntrackedUploadsHelpers
 
-  let(:user1) { create(:user) }
-  let(:user2) { create(:user) }
-  let(:project1) { create(:project) }
-  let(:project2) { create(:project) }
-  let(:appearance) { create(:appearance) }
+  let!(:untracked_files_for_uploads) { table(:untracked_files_for_uploads) }
 
   matcher :be_scheduled_migration do |*expected|
     match do |migration|
@@ -22,20 +18,18 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :side
   end
 
   context 'when files were uploaded before and after hashed storage was enabled' do
-    before do
-      fixture = Rails.root.join('spec', 'fixtures', 'rails_sample.jpg')
-      uploaded_file = fixture_file_upload(fixture)
+    let!(:appearance) { create(:appearance, logo: uploaded_file, header_logo: uploaded_file) }
+    let!(:user) { create(:user, :with_avatar) }
+    let!(:project1) { create(:project, :with_avatar) }
+    let(:project2) { create(:project) } # instantiate after enabling hashed_storage
 
-      user1.update(avatar: uploaded_file)
-      project1.update(avatar: uploaded_file)
-      appearance.update(logo: uploaded_file, header_logo: uploaded_file)
-      uploaded_file = fixture_file_upload(fixture)
-      UploadService.new(project1, uploaded_file, FileUploader).execute # Markdown upload
+    before do
+      # Markdown upload before enabling hashed_storage
+      UploadService.new(project1, uploaded_file, FileUploader).execute
 
       stub_application_setting(hashed_storage_enabled: true)
 
-      # Hashed files
-      uploaded_file = fixture_file_upload(fixture)
+        # Markdown upload after enabling hashed_storage
       UploadService.new(project2, uploaded_file, FileUploader).execute
     end
 
