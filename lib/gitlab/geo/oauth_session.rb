@@ -9,9 +9,11 @@ module Gitlab
 
       def oauth_state_valid?
         return false unless state
+
         salt, hmac, return_to = state.split(':', 3)
 
         return false unless return_to
+
         hmac == generate_oauth_hmac(salt, return_to)
       end
 

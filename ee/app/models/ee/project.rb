@@ -366,6 +366,7 @@ module EE
     def username_only_import_url
       bare_url = read_attribute(:import_url)
       return bare_url unless ::Gitlab::UrlSanitizer.valid?(bare_url)
+
       ::Gitlab::UrlSanitizer.new(bare_url, credentials: { user: import_data&.user }).full_url
     end
 

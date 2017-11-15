@@ -9,6 +9,7 @@ module Oauth2
 
     def execute
       return error('access token not found') unless access_token
+
       status = AccessTokenValidationService.new(access_token).validate
 
       if status == AccessTokenValidationService::VALID

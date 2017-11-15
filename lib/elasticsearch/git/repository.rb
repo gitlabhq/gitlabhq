@@ -85,10 +85,12 @@ module Elasticsearch
             bulk_operations = slice.map do |delta|
               if delta.status == :deleted
                 next if delta.old_file[:mode].to_s(8) == "160000"
+
                 b = LiteBlob.new(repository_for_indexing, delta.old_file)
                 delete_blob(b)
               else
                 next if delta.new_file[:mode].to_s(8) == "160000"
+
                 b = LiteBlob.new(repository_for_indexing, delta.new_file)
                 index_blob(b, to)
               end
@@ -112,6 +114,7 @@ module Elasticsearch
 
         def delete_blob(blob)
           return unless blob.text?
+
           {
             delete: {
               _index: "#{self.class.index_name}",
@@ -124,6 +127,7 @@ module Elasticsearch
 
         def index_blob(blob, target_sha)
           return unless can_index_blob?(blob)
+
           {
             index:  {
               _index: "#{self.class.index_name}",
