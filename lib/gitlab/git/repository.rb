@@ -1145,10 +1145,12 @@ module Gitlab
         @has_visible_content = has_local_branches?
       end
 
-      def fetch(remote = 'origin')
-        args = %W(#{Gitlab.config.git.bin_path} fetch #{remote})
-
-        popen(args, @path).last.zero?
+      # Like all public `Gitlab::Git::Repository` methods, this method is part
+      # of `Repository`'s interface through `method_missing`.
+      # `Repository` has its own `fetch_remote` which uses `gitlab-shell` and
+      # takes some extra attributes, so we qualify this method name to prevent confusion.
+      def fetch_remote_without_shell(remote = 'origin')
+        run_git(['fetch', remote]).last.zero?
       end
 
       def blob_at(sha, path)

@@ -28,7 +28,6 @@ class Repository
   CreateTreeError = Class.new(StandardError)
 
   MIRROR_REMOTE = "upstream".freeze
-  MIRROR_GEO = "geo".freeze
 
   # Methods that cache data from the Git repository.
   #
@@ -940,12 +939,6 @@ class Repository
     fetch_remote(Repository::MIRROR_REMOTE, ssh_auth: project&.import_data)
   end
 
-  def fetch_geo_mirror(url)
-    add_remote(Repository::MIRROR_GEO, url)
-    set_remote_as_mirror(Repository::MIRROR_GEO)
-    fetch_remote(Repository::MIRROR_GEO, forced: true)
-  end
-
   def upstream_branches
     @upstream_branches ||= remote_branches(Repository::MIRROR_REMOTE)
   end
@@ -1025,6 +1018,19 @@ class Repository
     args = %W(ls-tree --full-tree -r #{ref || root_ref} --name-status | #{Regexp.escape(query)})
 
     run_git(args).first.lines.map(&:strip)
+  end
+
+  def fetch_as_mirror(url, forced: false, fetch_refs: :all, remote_name: nil)
+    unless remote_name
+      remote_name = "tmp-#{SecureRandom.hex}"
+      tmp_remote_name = true
+    end
+
+    add_remote(remote_name, url)
+    set_remote_as_mirror(remote_name, fetch_refs: fetch_refs)
+    fetch_remote(remote_name, forced: forced)
+  ensure
+    remove_remote(remote_name) if tmp_remote_name
   end
 
   def fetch_remote(remote, forced: false, ssh_auth: nil, no_tags: false)
@@ -1130,6 +1136,10 @@ class Repository
     raw_repository.fetch_ref(source_repository.raw_repository, source_ref: source_ref, target_ref: target_ref)
   end
 
+  def repository_storage_path
+    @project.repository_storage_path
+  end
+
   private
 
   # TODO Generice finder, later split this on finders by Ref or Oid
@@ -1193,10 +1203,6 @@ class Repository
   def last_commit_id_for_path_by_shelling_out(sha, path)
     args = %W(rev-list --max-count=1 #{sha} -- #{path})
     raw_repository.run_git_with_timeout(args, Gitlab::Git::Popen::FAST_GIT_PROCESS_TIMEOUT).first.strip
-  end
-
-  def repository_storage_path
-    @project.repository_storage_path
   end
 
   def initialize_raw_repository

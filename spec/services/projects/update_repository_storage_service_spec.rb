@@ -31,7 +31,7 @@ describe Projects::UpdateRepositoryStorageService do
 
       context 'when the move succeeds' do
         it 'moves the repository to the new storage and unmarks the repository as read only' do
-          expect_any_instance_of(Gitlab::Git::Repository).to receive(:fetch_mirror)
+          expect_any_instance_of(Gitlab::Git::Repository).to receive(:fetch_as_mirror_without_shell)
             .with(project.repository.raw.path).and_return(true)
           expect(GitlabShellWorker).to receive(:perform_async)
             .with(:mv_repository,
@@ -48,7 +48,7 @@ describe Projects::UpdateRepositoryStorageService do
 
       context 'when the move fails' do
         it 'unmarks the repository as read-only without updating the repository storage' do
-          expect_any_instance_of(Gitlab::Git::Repository).to receive(:fetch_mirror)
+          expect_any_instance_of(Gitlab::Git::Repository).to receive(:fetch_as_mirror_without_shell)
             .with(project.repository.raw.path).and_return(false)
           expect(GitlabShellWorker).not_to receive(:perform_async)
 
@@ -84,7 +84,7 @@ describe Projects::UpdateRepositoryStorageService do
 
       context 'when the move succeeds' do
         it 'moves the repository and its wiki to the new storage and unmarks the repository as read only' do
-          expect(repository_double).to receive(:fetch_mirror)
+          expect(repository_double).to receive(:fetch_as_mirror_without_shell)
             .with(project.repository.raw.path).and_return(true)
           expect(GitlabShellWorker).to receive(:perform_async)
             .with(:mv_repository,
@@ -92,7 +92,7 @@ describe Projects::UpdateRepositoryStorageService do
               project.disk_path,
               "#{project.disk_path}+#{project.id}+moved+#{time.to_i}")
 
-          expect(wiki_repository_double).to receive(:fetch_mirror)
+          expect(wiki_repository_double).to receive(:fetch_as_mirror_without_shell)
             .with(project.wiki.repository.raw.path).and_return(true)
           expect(GitlabShellWorker).to receive(:perform_async)
             .with(:mv_repository,
@@ -109,9 +109,9 @@ describe Projects::UpdateRepositoryStorageService do
 
       context 'when the move of the wiki fails' do
         it 'unmarks the repository as read-only without updating the repository storage' do
-          expect(repository_double).to receive(:fetch_mirror)
+          expect(repository_double).to receive(:fetch_as_mirror_without_shell)
             .with(project.repository.raw.path).and_return(true)
-          expect(wiki_repository_double).to receive(:fetch_mirror)
+          expect(wiki_repository_double).to receive(:fetch_as_mirror_without_shell)
             .with(project.wiki.repository.raw.path).and_return(false)
           expect(GitlabShellWorker).not_to receive(:perform_async)
 

@@ -114,13 +114,13 @@ module Geo
       authorization = ::Gitlab::Geo::BaseRequest.new.authorization
       header = { "http.#{url}.extraHeader" => "Authorization: #{authorization}" }
 
-      repository.with_config(header) { repository.fetch_geo_mirror(url) }
+      repository.with_config(header) { repository.fetch_as_mirror(url, forced: true) }
     end
 
     def fetch_ssh_geo_mirror(repository)
       url = build_repository_url(primary_ssh_path_prefix, repository)
 
-      repository.fetch_geo_mirror(url)
+      repository.fetch_as_mirror(url, forced: true)
     end
 
     def registry
