@@ -8,21 +8,19 @@ describe('Multi-file editor HTML viewer', () => {
   let vm;
   let f;
 
-  beforeEach((done) => {
+  beforeEach(() => {
     const Comp = Vue.extend(htmlPreview);
     f = file();
 
     Object.assign(f, {
       active: true,
-      rich: Object.assign(f.rich, { html: 'richHTML' }),
+      rich: Object.assign(f.rich, { loading: true, html: 'richHTML' }),
     });
 
     vm = createComponentWithStore(Comp, store);
     vm.$store.state.openFiles.push(f);
 
     vm.$mount();
-
-    Vue.nextTick(done);
   });
 
   afterEach(() => {

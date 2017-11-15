@@ -102,6 +102,82 @@ describe Projects::BlobController do
     end
   end
 
+  describe 'GET viewer' do
+    render_views
+
+    describe 'rich' do
+      context 'markup file' do
+        let(:id) { 'master/README.md' }
+
+        before do
+          get(:viewer,
+              namespace_id: project.namespace,
+              project_id: project,
+              id: id,
+              viewer: 'rich',
+              format: :json)
+        end
+
+        it do
+          expect(response).to be_ok
+          expect(json_response).to have_key 'html'
+          expect(json_response).to have_key 'name'
+          expect(json_response).to have_key 'switcher_icon'
+          expect(json_response).to have_key 'render_error'
+          expect(json_response).to have_key 'server_side'
+          expect(json_response['server_side']).to be_truthy
+        end
+      end
+
+      context 'binary file' do
+        let(:id) { 'master/files/images/logo-black.png' }
+
+        before do
+          get(:viewer,
+              namespace_id: project.namespace,
+              project_id: project,
+              id: id,
+              viewer: 'rich',
+              format: :json)
+        end
+
+        it do
+          expect(response).to be_ok
+          expect(json_response).to have_key 'html'
+          expect(json_response).to have_key 'name'
+          expect(json_response).to have_key 'switcher_icon'
+          expect(json_response).to have_key 'render_error'
+          expect(json_response).to have_key 'server_side'
+          expect(json_response['server_side']).to be_falsy
+        end
+      end
+    end
+  
+    describe 'simple' do
+      let(:id) { 'master/README.md' }
+
+      before do
+        get(:viewer,
+            namespace_id: project.namespace,
+            project_id: project,
+            id: id,
+            viewer: 'simple',
+            format: :json)
+      end
+
+      it do
+        expect(response).to be_ok
+        expect(json_response).to have_key 'html'
+        expect(json_response).to have_key 'name'
+        expect(json_response).to have_key 'switcher_icon'
+        expect(json_response).to have_key 'render_error'
+        expect(json_response).to have_key 'server_side'
+        expect(json_response['server_side']).to be_truthy
+        expect(json_response['name']).to eq('text')
+      end
+    end
+  end
+
   describe 'GET diff' do
     let(:user) { create(:user) }
 

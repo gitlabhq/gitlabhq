@@ -381,7 +381,7 @@ describe('Multi-file store file actions', () => {
       }).catch(done.fail);
     });
 
-    it('enters edit mode if file is not base64', (done) => {
+    it('enters edit mode if file is not binary', (done) => {
       store.dispatch('createTempFile', {
         tree: store.state,
         name: 'test',
@@ -392,13 +392,13 @@ describe('Multi-file store file actions', () => {
       }).catch(done.fail);
     });
 
-    it('does not enter edit mode if file is base64', (done) => {
+    it('enters edit mode if file is binary', (done) => {
       store.dispatch('createTempFile', {
         tree: store.state,
         name: 'test',
-        base64: true,
+        binary: true,
       }).then(() => {
-        expect(store.state.editMode).toBeFalsy();
+        expect(store.state.editMode).toBeTruthy();
 
         done();
       }).catch(done.fail);

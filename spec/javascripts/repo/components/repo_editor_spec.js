@@ -17,7 +17,6 @@ describe('RepoEditor', () => {
     f.active = true;
     f.tempFile = true;
     vm.$store.state.openFiles.push(f);
-    vm.$store.getters.activeFile.html = 'testing';
     vm.monaco = true;
 
     vm.$mount();
@@ -50,7 +49,7 @@ describe('RepoEditor', () => {
     });
 
     it('shows activeFile html', () => {
-      expect(vm.$el.textContent.trim()).toBe('testing');
+      expect(vm.$el.textContent.trim()).toBe('This file can not be modified.');
     });
   });
 });

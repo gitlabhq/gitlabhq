@@ -9,6 +9,10 @@ class BlobEntity < BlobBasicEntity
   expose :stored_externally?, as: :stored_externally
   expose :expanded?, as: :expanded
 
+  expose :last_commit do |blob|
+    request.project.repository.last_commit_for_path(blob.commit_id, blob.path)
+  end
+
   expose :raw_path do |blob|
     project_raw_path(request.project, File.join(request.ref, blob.path))
   end

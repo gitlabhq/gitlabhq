@@ -16,7 +16,7 @@ module RendersBlob
 
     return unless viewer
 
-    viewer_json = BlobViewerSerializer.new(params: params).represent(viewer)
+    viewer_json = BlobViewerSerializer.new(params: params, project: @project, ref: @ref).represent(viewer)
 
     viewer_json.merge(html: view_to_html_string("projects/blob/_viewer", viewer: viewer, load_async: false))
   end

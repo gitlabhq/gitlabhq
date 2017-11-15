@@ -84,7 +84,7 @@ export const changeFileContent = ({ commit }, { file, content }) => {
   commit(types.UPDATE_FILE_CONTENT, { file, content });
 };
 
-export const createTempFile = ({ state, commit, dispatch }, { tree, name, content = '', binary = '' }) => {
+export const createTempFile = ({ state, commit, dispatch }, { tree, name, content = '', binary = false }) => {
   const file = createTemp({
     name: name.replace(`${state.path}/`, ''),
     path: tree.path,
