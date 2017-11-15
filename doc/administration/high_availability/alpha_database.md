@@ -70,6 +70,7 @@ information you need to provide.
 
 When using default setup, minimum configuration requires:
 
+- `CONSUL_USERNAME`. Defaults to `gitlab-consul`
 - `CONSUL_DATABASE_PASSWORD`. Password for the database user.
 - `CONSUL_PASSWORD_HASH`. This is a hash generated out of consul username/password pair.
 Can be generated with:
@@ -119,6 +120,7 @@ We will need the following password information for the application's database u
 
 When using default setup, minimum configuration requires:
 
+- `PGBOUNCER_USERNAME`. Defaults to `pgbouncer`
 - `PGBOUNCER_PASSWORD`. This is a password for pgbouncer service.
 - `PGBOUNCER_PASSWORD_HASH`. This is a hash generated out of pgbouncer username/password pair.
 Can be generated with:
