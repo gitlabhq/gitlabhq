@@ -51,10 +51,13 @@ module Projects
 
     def import_repository
       begin
-        if project.gitea_import?
-          fetch_repository
+        fetch_refs = importer_class.try(:fetch_refs) if has_importer?
+
+        if fetch_refs
+          project.ensure_repository
+          project.repository.fetch_as_mirror(project.import_url, fetch_refs: fetch_refs)
         else
-          clone_repository
+          gitlab_shell.import_repository(project.repository_storage_path, project.disk_path, project.import_url)
         end
       rescue Gitlab::Shell::Error, Gitlab::Git::RepositoryMirroring::RemoteError => e
         # Expire cache to prevent scenarios such as:
@@ -64,17 +67,6 @@ module Projects
 
         raise Error, e.message
       end
-    end
-
-    def clone_repository
-      gitlab_shell.import_repository(project.repository_storage_path, project.disk_path, project.import_url)
-    end
-
-    def fetch_repository
-      project.ensure_repository
-      project.repository.add_remote(project.import_type, project.import_url)
-      project.repository.set_remote_as_mirror(project.import_type)
-      project.repository.fetch_remote(project.import_type, forced: true)
     end
 
     def import_data

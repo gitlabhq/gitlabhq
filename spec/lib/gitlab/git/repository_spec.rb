@@ -588,12 +588,12 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe '#fetch_mirror' do
+  describe '#fetch_as_mirror_without_shell' do
     let(:new_repository) do
       Gitlab::Git::Repository.new('default', 'my_project.git', '')
     end
 
-    subject { new_repository.fetch_mirror(repository.path) }
+    subject { new_repository.fetch_as_mirror_without_shell(repository.path) }
 
     before do
       Gitlab::Shell.new.add_repository('default', 'my_project')
@@ -1630,15 +1630,15 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe '#fetch' do
+  describe '#fetch_remote_without_shell' do
     let(:git_path) { Gitlab.config.git.bin_path }
     let(:remote_name) { 'my_remote' }
 
-    subject { repository.fetch(remote_name) }
+    subject { repository.fetch_remote_without_shell(remote_name) }
 
     it 'fetches the remote and returns true if the command was successful' do
       expect(repository).to receive(:popen)
-        .with(%W(#{git_path} fetch #{remote_name}), repository.path)
+        .with(%W(#{git_path} fetch #{remote_name}), repository.path, {})
         .and_return(['', 0])
 
       expect(subject).to be(true)
@@ -1752,21 +1752,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'without gitaly', :skip_gitaly_mock do
       it_behaves_like '#ff_merge'
-    end
-  end
-
-  describe '#fetch' do
-    let(:git_path) { Gitlab.config.git.bin_path }
-    let(:remote_name) { 'my_remote' }
-
-    subject { repository.fetch(remote_name) }
-
-    it 'fetches the remote and returns true if the command was successful' do
-      expect(repository).to receive(:popen)
-        .with(%W(#{git_path} fetch #{remote_name}), repository.path)
-        .and_return(['', 0])
-
-      expect(subject).to be(true)
     end
   end
 
