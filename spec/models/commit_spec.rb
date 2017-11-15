@@ -475,4 +475,27 @@ eos
       expect(described_class.valid_hash?('a' * 41)).to be false
     end
   end
+
+  describe '.reference_pattern' do
+    where(:ref, :matches?) do
+      sha = Digest::SHA1.hexdigest 'thisisacommitid'
+
+      [
+        [sha.first(Commit::MIN_SHA_LENGTH - 1), false],
+        [sha.first(Commit::MIN_SHA_LENGTH), true],
+        [sha, true],
+        ['~' << sha, false], # labels
+        ['!' << sha, false], # merge_request
+        [':' << sha, false], # emoji
+        ['#' << sha, false], # issue
+        ['@' << sha, false], # user
+      ]
+    end
+
+    with_them do
+      it "should match only on commit references" do
+        expect(Commit.reference_pattern.match(ref).present?).to eq(matches?)
+      end
+    end
+  end
 end
