@@ -17,6 +17,13 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :side
     end
   end
 
+  around do |example|
+    # Especially important so the follow-up migration does not get run
+    Sidekiq::Testing.fake! do
+      example.run
+    end
+  end
+
   context 'when files were uploaded before and after hashed storage was enabled' do
     let!(:appearance) { create(:appearance, logo: uploaded_file, header_logo: uploaded_file) }
     let!(:user) { create(:user, :with_avatar) }
@@ -34,38 +41,30 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :side
     end
 
     it 'adds unhashed files to the untracked_files_for_uploads table' do
-      Sidekiq::Testing.fake! do
-        expect do
-          described_class.new.perform
-        end.to change { untracked_files_for_uploads.count }.from(0).to(5)
-      end
+      expect do
+        described_class.new.perform
+      end.to change { untracked_files_for_uploads.count }.from(0).to(5)
     end
 
     it 'adds files with paths relative to CarrierWave.root' do
-      Sidekiq::Testing.fake! do
-        described_class.new.perform
-        untracked_files_for_uploads.all.each do |file|
-          expect(file.path.start_with?('uploads/')).to be_truthy
-        end
+      described_class.new.perform
+      untracked_files_for_uploads.all.each do |file|
+        expect(file.path.start_with?('uploads/')).to be_truthy
       end
     end
 
     it 'does not add hashed files to the untracked_files_for_uploads table' do
-      Sidekiq::Testing.fake! do
-        described_class.new.perform
+      described_class.new.perform
 
-        hashed_file_path = project2.uploads.where(uploader: 'FileUploader').first.path
-        expect(untracked_files_for_uploads.where("path like '%#{hashed_file_path}%'").exists?).to be_falsey
-      end
+      hashed_file_path = project2.uploads.where(uploader: 'FileUploader').first.path
+      expect(untracked_files_for_uploads.where("path like '%#{hashed_file_path}%'").exists?).to be_falsey
     end
 
     it 'correctly schedules the follow-up background migration jobs' do
-      Sidekiq::Testing.fake! do
-        described_class.new.perform
+      described_class.new.perform
 
-        expect(described_class::FOLLOW_UP_MIGRATION).to be_scheduled_migration(1, 5)
-        expect(BackgroundMigrationWorker.jobs.size).to eq(1)
-      end
+      expect(described_class::FOLLOW_UP_MIGRATION).to be_scheduled_migration(1, 5)
+      expect(BackgroundMigrationWorker.jobs.size).to eq(1)
     end
 
     # E.g. from a previous failed run of this background migration
@@ -75,11 +74,9 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :side
       end
 
       it 'does not error or produce duplicates of existing data' do
-        Sidekiq::Testing.fake! do
-          expect do
-            described_class.new.perform
-          end.not_to change { untracked_files_for_uploads.count }.from(5)
-        end
+        expect do
+          described_class.new.perform
+        end.not_to change { untracked_files_for_uploads.count }.from(5)
       end
     end
 
@@ -97,11 +94,9 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :side
       end
 
       it 'does not add files from /uploads/tmp' do
-        Sidekiq::Testing.fake! do
-          expect do
-            described_class.new.perform
-          end.to change { untracked_files_for_uploads.count }.from(0).to(5)
-        end
+        expect do
+          described_class.new.perform
+        end.to change { untracked_files_for_uploads.count }.from(0).to(5)
       end
     end
   end
@@ -110,11 +105,9 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :side
   # may not have an upload directory because they have no uploads.
   context 'when no files were ever uploaded' do
     it 'does not add to the untracked_files_for_uploads table (and does not raise error)' do
-      Sidekiq::Testing.fake! do
-        expect do
-          described_class.new.perform
-        end.not_to change { untracked_files_for_uploads.count }.from(0)
-      end
+      expect do
+        described_class.new.perform
+      end.not_to change { untracked_files_for_uploads.count }.from(0)
     end
   end
 end

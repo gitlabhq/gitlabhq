@@ -208,12 +208,18 @@ module Gitlab
             # to do.
           end
         end
+
+        drop_temp_table_if_finished
       end
 
       private
 
       def migrate?
         UntrackedFile.table_exists? && Upload.table_exists?
+      end
+
+      def drop_temp_table_if_finished
+        UntrackedFile.connection.drop_table(:untracked_files_for_uploads) if UntrackedFile.untracked.empty?
       end
     end
   end
