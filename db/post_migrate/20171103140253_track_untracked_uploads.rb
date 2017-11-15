@@ -12,7 +12,7 @@ class TrackUntrackedUploads < ActiveRecord::Migration
   def up
     unless table_exists?(:untracked_files_for_uploads)
       create_table :untracked_files_for_uploads do |t|
-        t.string :path, null: false
+        t.string :path, limit: 600, null: false
         t.boolean :tracked, default: false, null: false
         t.timestamps_with_timezone null: false
       end
