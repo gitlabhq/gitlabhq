@@ -5,8 +5,12 @@ module Gitlab
       include Database::MigrationHelpers
 
       FILE_PATH_BATCH_SIZE = 500
-      UPLOAD_DIR = "#{CarrierWave.root}/uploads".freeze
+      RELATIVE_UPLOAD_DIR = "uploads".freeze
+      ABSOLUTE_UPLOAD_DIR = "#{CarrierWave.root}/#{RELATIVE_UPLOAD_DIR}".freeze
       FOLLOW_UP_MIGRATION = 'PopulateUntrackedUploads'.freeze
+      START_WITH_CARRIERWAVE_ROOT_REGEX = %r{\A#{CarrierWave.root}/}
+      EXCLUDED_HASHED_UPLOADS_PATH = "#{ABSOLUTE_UPLOAD_DIR}/@hashed/*".freeze
+      EXCLUDED_TMP_UPLOADS_PATH = "#{ABSOLUTE_UPLOAD_DIR}/tmp/*".freeze
 
       class UntrackedFile < ActiveRecord::Base
         include EachBatch
@@ -28,9 +32,9 @@ module Gitlab
       end
 
       def store_untracked_file_paths
-        return unless Dir.exist?(UPLOAD_DIR)
+        return unless Dir.exist?(ABSOLUTE_UPLOAD_DIR)
 
-        each_file_batch(UPLOAD_DIR, FILE_PATH_BATCH_SIZE) do |file_paths|
+        each_file_batch(ABSOLUTE_UPLOAD_DIR, FILE_PATH_BATCH_SIZE) do |file_paths|
           insert_file_paths(file_paths)
         end
       end
@@ -49,7 +53,7 @@ module Gitlab
         paths = []
 
         stdout.each_line("\0") do |line|
-          paths << line.chomp("\0")
+          paths << line.chomp("\0").sub(START_WITH_CARRIERWAVE_ROOT_REGEX, '')
 
           if paths.size >= batch_size
             yield(paths)
@@ -61,9 +65,7 @@ module Gitlab
       end
 
       def build_find_command(search_dir)
-        hashed_path = "#{UPLOAD_DIR}/@hashed/*"
-        tmp_path = "#{UPLOAD_DIR}/tmp/*"
-        cmd = %W[find #{search_dir} -type f ! ( -path #{hashed_path} -prune ) ! ( -path #{tmp_path} -prune ) -print0]
+        cmd = %W[find #{search_dir} -type f ! ( -path #{EXCLUDED_HASHED_UPLOADS_PATH} -prune ) ! ( -path #{EXCLUDED_TMP_UPLOADS_PATH} -prune ) -print0]
 
         cmd = %w[ionice -c Idle] + cmd if ionice_is_available?
 

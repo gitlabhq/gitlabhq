@@ -41,15 +41,13 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
     component = 'a'*255
 
     long_path = [
-      CarrierWave.root,
       'uploads',
-      [component] * Namespace::NUMBER_OF_ANCESTORS_ALLOWED, # namespaces
-      component, # project
+      component, # project.full_path
       component  # filename
     ].flatten.join('/')
 
     record = UntrackedFile.create!(path: long_path)
-    expect(record.reload.path.size).to eq(5711)
+    expect(record.reload.path.size).to eq(519)
   end
 
   context 'with tracked and untracked uploads' do
