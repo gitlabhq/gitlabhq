@@ -1,5 +1,6 @@
 class Projects::ClustersController < Projects::ApplicationController
   before_action :cluster, except: [:login, :index, :new, :new_gcp, :create]
+  before_action :clusters, only: [:index]
   before_action :authorize_read_cluster!
   before_action :authorize_create_cluster!, only: [:new, :new_gcp, :create]
   before_action :authorize_google_api, only: [:new_gcp, :create]
@@ -7,11 +8,6 @@ class Projects::ClustersController < Projects::ApplicationController
   before_action :authorize_admin_cluster!, only: [:destroy]
 
   def index
-    if project.cluster
-      redirect_to project_cluster_path(project, project.cluster)
-    else
-      redirect_to new_project_cluster_path(project)
-    end
   end
 
   def login
@@ -89,6 +85,10 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def cluster
     @cluster ||= project.clusters.find_by(id: params[:id])&.present(current_user: current_user) || render_404
+  end
+
+  def clusters
+    @clusters ||= project.clusters.map { |cluster| cluster.present(current_user: current_user) }
   end
 
   def create_params
