@@ -139,6 +139,7 @@ describe Groups::EpicsController do
 
     describe 'GET #realtime_changes' do
       subject { get :realtime_changes, group_id: group, id: epic.to_param }
+
       it 'returns epic' do
         group.add_developer(user)
         subject
@@ -149,6 +150,59 @@ describe Groups::EpicsController do
 
       context 'with unauthorized user' do
         it 'returns a not found 404 response' do
+          subject
+
+          expect(response).to have_http_status(404)
+        end
+      end
+    end
+
+    describe '#create' do
+      subject do
+        post :create, group_id: group, epic: { title: 'new epic', description: 'some descripition' }
+      end
+
+      context 'when user has permissions to create an epic' do
+        before do
+          group.add_developer(user)
+        end
+
+        context 'when all required parameters are passed' do
+          it 'returns 200 response' do
+            subject
+
+            expect(response).to have_http_status(200)
+          end
+
+          it 'creates a new epic' do
+            expect { subject }.to change { Epic.count }.from(0).to(1)
+          end
+
+          it 'returns the correct json' do
+            subject
+
+            expect(JSON.parse(response.body)).to eq({ 'web_url' => group_epic_path(group, Epic.last) })
+          end
+        end
+
+        context 'when required parameter is missing' do
+          before do
+            post :create, group_id: group, epic: { description: 'some descripition' }
+          end
+
+          it 'returns 422 response' do
+            expect(response).to have_gitlab_http_status(422)
+          end
+
+          it 'does not create a new epic' do
+            expect(Epic.count).to eq(0)
+          end
+        end
+      end
+
+      context 'with unauthorized user' do
+        it 'returns a not found 404 response' do
+          group.add_guest(user)
           subject
 
           expect(response).to have_http_status(404)
