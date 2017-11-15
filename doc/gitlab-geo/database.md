@@ -67,6 +67,14 @@ The following guide assumes that:
     sudo -i
     ```
 
+1. Execute the command below to define the node as primary Geo node:
+
+    ```
+    gitlab-ctl set-geo-primary-node
+    ```
+
+    This command will use your defined `external_url` in `/etc/gitlab/gitlab.rb`.
+
 1. Omnibus GitLab has already a replication user called `gitlab_replicator`.
    You must set its password manually. You will be prompted to enter a
    password:
@@ -248,10 +256,44 @@ primary before the database is replicated.
     sudo -i
     ```
 
-1. Test that the remote connection to the primary server works:
+1. Set up PostgreSQL TLS verification on the secondary
+    If you configured PostgreSQL to accept TLS connections in
+    [Step 1](#step-1-configure-the-primary-server), then you need to provide a
+    list of "known-good" certificates to the secondary. It uses this list to
+    keep the connection secure against an active "man-in-the-middle" attack.
+
+    If you reused your existing certificates on the primary, you can use the
+    list of valid root certificates provided with omnibus:
+
+    ```bash
+    mkdir -p ~gitlab-psql/.postgresql
+    ln -s /opt/gitlab/embedded/ssl/certs/cacert.pem ~gitlab-psql/.postgresql/root.crt
+    ```
+
+    If you generated a self-signed certificate, that won't work. Copy the
+    generated `server.crt` file onto the secondary server from the primary, then
+    install it in the right place:
+
+    ```bash
+    install -o gitlab-psql -g gitlab-psql -m 0400 -T server.crt ~gitlab-psql/.postgresql/root.crt
+    ```
+
+    PostgreSQL will now only recognize that exact certificate when verifying TLS
+    connections.
+
+
+1. Test that the remote connection to the primary server works.
+
+    If you're using a CA-issued certificate and connecting by FQDN:
 
      ```
-     sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h 1.2.3.4 -U gitlab_replicator -d gitlabhq_production -W
+     sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h primary.geo.example.com -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W
+     ```
+
+     If you're using a self-signed certificate or connecting by IP address:
+
+     ```
+     sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h 1.2.3.4 -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-full" -W
      ```
 
     When prompted enter the password you set in the first step for the
@@ -304,31 +346,6 @@ data before running `pg_basebackup`.
    replication slot name. For example, if your domain is
    `geo-secondary.mydomain.com`, you may use `geo_secondary_my_domain_com` as
    the slot name.
-
-1. Set up PostgreSQL TLS verification on the secondary
-    If you configured the PostgreSQL to accept TLS connections in
-    [Step 1][#step-1-configure-the-primary-server], then you need to provide a
-    list of "known-good" certificates to the secondary. It uses this list to
-    keep the connection secure against an active "man-in-the-middle" attack.
-
-    If you reused your existing certificates on the primary, you can use the
-    list of valid root certificates provided with omnibus:
-
-    ```bash
-    mkdir -p ~gitlab-psql/.postgresql
-    ln -s /opt/gitlab/embedded/ssl/certs/cacert.pem ~gitlab-psql/.postgresql/root.crt
-    ```
-
-    If you generated a self-signed certificate, that won't work. Copy the
-    generated `server.crt` file onto the secondary server from the primary, then
-    install it in the right place:
-
-    ```bash
-    install -o gitlab-psql -g gitlab-psql -m 0400 -T server.crt ~gitlab-psql/.postgresql/root.crt
-    ```
-
-    PostgreSQL will now only recognize that exact certificate when verifying TLS
-    connections.
 
 1. Execute the command below to start a backup/restore and begin the replication:
 

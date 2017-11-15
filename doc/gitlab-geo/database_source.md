@@ -64,6 +64,12 @@ The following guide assumes that:
     sudo -i
     ```
 
+1. Add this node as the Geo primary by running:
+
+    ```bash
+    bundle exec rake geo:set_primary_node
+    ```
+
 1. Create a replication user named `gitlab_replicator`:
 
     ```bash
@@ -231,11 +237,45 @@ primary before the database is replicated.
     sudo -i
     ```
 
+1. Set up PostgreSQL TLS verification on the secondary
+    If you configured PostgreSQL to accept TLS connections in
+    [Step 1](#step-1-configure-the-primary-server), then you need to provide a
+    list of "known-good" certificates to the secondary. It uses this list to
+    keep the connection secure against an active "man-in-the-middle" attack.
+
+    If you reused your existing certificates on the primary, you can use the
+    list of valid root certificates provided with your distribution. For
+    Debian/Ubuntu, they can be found in `/etc/ssl/certs/ca-certificates.crt`:
+
+    ```bash
+    mkdir -p ~postgres/.postgresql
+    ln -s /etc/ssl/certs/ca-certificates.crt ~postgres/.postgresql/root.crt
+    ```
+
+    If you generated a self-signed certificate, that won't work. Copy the
+    generated `server.crt` file onto the secondary server from the primary, then
+    install it in the right place:
+
+    ```bash
+    install -o postgres -g postgres -m 0400 -T server.crt ~postgres/.postgresql/root.crt
+    ```
+
+    PostgreSQL will now only recognize that exact certificate when verifying TLS
+    connections.
+
 1. Test that the remote connection to the primary server works:
 
-    ```
-    sudo -u postgres psql -h 1.2.3.4 -U gitlab_replicator -d gitlabhq_production -W
-    ```
+    If you're using a CA-issued certificate and connecting by FQDN:
+
+     ```
+     sudo -u postgres psql -h primary.geo.example.com -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W
+     ```
+
+     If you're using a self-signed certificate or connecting by IP address:
+
+     ```
+     sudo -u postgres psql -h 1.2.3.4 -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-full" -W
+     ```
 
     When prompted enter the password you set in the first step for the
     `gitlab_replicator` user. If all worked correctly, you should see the
@@ -332,33 +372,6 @@ data before running `pg_basebackup`.
     ```
     sudo -i
     ```
-
-1. Set up PostgreSQL TLS verification on the secondary
-    If you configured the PostgreSQL to accept TLS connections in
-    [Step 1][#step-1-configure-the-primary-server], then you need to provide a
-    list of "known-good" certificates to the secondary. It uses this list to
-    keep the connection secure against an active "man-in-the-middle" attack.
-
-    If you reused your existing certificates on the primary, you can use the
-    list of valid root certificates provided with your distribution. For
-    Debian/Ubuntu, they can be found in `/etc/ssl/certs/ca-certificates.crt`:
-
-    ```bash
-    mkdir -p ~postgres/.postgresql
-    ln -s /etc/ssl/certs/ca-certificates.crt ~postgres/.postgresql/root.crt
-    ```
-
-    If you generated a self-signed certificate, that won't work. Copy the
-    generated `server.crt` file onto the secondary server from the primary, then
-    install it in the right place:
-
-    ```bash
-    install -o postgres -g postgres -m 0400 -T server.crt ~postgres/.postgresql/root.crt
-    ```
-
-    PostgreSQL will now only recognize that exact certificate when verifying TLS
-    connections.
-
 
 1. Save the snippet below in a file, let's say `/tmp/replica.sh`. Modify the
    embedded paths if necessary:

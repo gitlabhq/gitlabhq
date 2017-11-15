@@ -37,16 +37,14 @@ After having installed GitLab Enterprise Edition in the instance that will serve
 as a Geo node and set up the [database replication](database_source.md), the
 next steps can be summed up to:
 
-1. Configure the primary node
 1. Replicate some required configurations between the primary and the secondaries
 1. Configure a second, tracking database on each secondary
-1. Configure every secondary node in the primary's Admin screen
 1. Start GitLab on the secondary node's machine
 
 ### Prerequisites
 
-This is the last step of configuring a Geo node. Make sure you have followed the
-first two steps of the [Setup instructions](README.md#setup-instructions):
+This is the last step of configuring a Geo secondary node. Make sure you have
+followed the first two steps of the [Setup instructions](README.md#setup-instructions):
 
 1. You have already installed on the secondary server the same version of
    GitLab Enterprise Edition that is present on the primary server.
@@ -60,25 +58,7 @@ first two steps of the [Setup instructions](README.md#setup-instructions):
    Note that this MUST be on another instance, since the primary replicated database
    is read-only.
 
-Some of the following steps require to configure the primary and secondary
-nodes almost at the same time. For your convenience make sure you have SSH
-logins opened on all nodes as we will be moving back and forth.
-
-### Step 1. Adding the primary GitLab node
-
-1. SSH into the **primary** node and login as root:
-
-    ```
-    sudo -i
-    ```
-
-1. Add this node as the Geo primary by running:
-
-    ```bash
-    bundle exec rake geo:set_primary_node
-    ```
-
-### Step 2. Copying the database encryption key
+### Step 1. Copying the database encryption key
 
 GitLab stores a unique encryption key in disk that we use to safely store
 sensitive data in the database. Any secondary node must have the
@@ -93,7 +73,7 @@ sensitive data in the database. Any secondary node must have the
 1. Execute the command below to display the current encryption key and copy it:
 
      ```
-     bundle exec rake geo:db:show_encryption_key
+     sudo -u git -H bundle exec rake geo:db:show_encryption_key RAILS_ENV=production
      ```
 
 1. SSH into the **secondary** node and login as root:
@@ -102,21 +82,27 @@ sensitive data in the database. Any secondary node must have the
     sudo -i
     ```
 
-1. Open the secrets file and paste the value of `db_key_base` you copied in the
-   previous step:
+1. Open the `secrets.yml` file and change the value of `db_key_base` to the
+   output of the previous step:
 
      ```
-     editor /etc/gitlab/gitlab-secrets.json
+     sudo -u git -H editor config/secrets.yml
      ```
 
 1. Save and close the file.
+
+1. Restart GitLab for the changes to take effect:
+
+    ```
+    service gitlab restart
+    ```
 
 The secondary will start automatically replicating missing data from the
 primary in a process known as backfill. Meanwhile, the primary node will start
 to notify changes to the secondary, which will act on those notifications
 immediately. Make sure the secondary instance is running and accessible.
 
-### Step 3. Enabling hashed storage (from GitLab 10.0)
+### Step 2. Enabling hashed storage (from GitLab 10.0)
 
 1. Visit the **primary** node's **Admin Area ➔ Settings**
    (`/admin/application_settings`) in your browser
@@ -128,7 +114,7 @@ Using hashed storage significantly improves Geo replication - project and group
 renames no longer require synchronization between nodes - so we recommend it is
 used for all GitLab Geo installations.
 
-### Step 4. (Optional) Configuring the secondary to trust the primary
+### Step 3. (Optional) Configuring the secondary to trust the primary
 
 You can safely skip this step if your primary uses a CA-issued HTTPS certificate.
 
@@ -144,7 +130,7 @@ cp primary.geo.example.com.crt /usr/local/share/ca-certificates
 update-ca-certificates
 ```
 
-### Step 5. Managing the secondary GitLab node
+### Step 4. Managing the secondary GitLab node
 
 You can monitor the status of the syncing process on a secondary node
 by visiting the primary node's **Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`)
@@ -193,12 +179,6 @@ Point your users to the [after setup steps](after_setup.md).
 ## Selective replication
 
 Read [Selective replication](configuration.md#selective-replication).
-
-## Adding another secondary Geo node
-
-To add another Geo node in an already Geo configured infrastructure, just follow
-[the steps starting from step 2](#step-2-copying-the-database-encryption-key).
-Just omit the first step that sets up the primary node.
 
 ## Replicating wikis and repositories over SSH
 
