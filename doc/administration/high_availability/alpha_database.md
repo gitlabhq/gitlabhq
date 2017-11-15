@@ -113,8 +113,13 @@ server nodes.
 
 We will need the following password information for the application's database user:
 
+- `POSTGRESQL_USERNAME`. Defaults to `gitlab`
 - `POSTGRESQL_USER_PASSWORD`. The password for the database user
-- `POSTGRESQL_PASSWORD_HASH`. The md5 hash of POSTGRESQL_USER_PASSWORD
+- `POSTGRESQL_PASSWORD_HASH`. This is a hash generated out of the username/password pair.
+Can be generated with:
+    ```sh
+    echo -n 'POSTGRESQL_USER_PASSWORDPOSTGRESQL_USERNAME' | md5sum
+    ```
 
 #### Pgbouncer
 
