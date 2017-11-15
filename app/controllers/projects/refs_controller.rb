@@ -52,15 +52,13 @@ class Projects::RefsController < Projects::ApplicationController
     contents.push(*tree.blobs)
     contents.push(*tree.submodules)
 
-    show_path_locks = @project.feature_available?(:file_locks) && @project.path_locks.any?
-
     # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37433
     @logs = Gitlab::GitalyClient.allow_n_plus_1_calls do
       contents[@offset, @limit].to_a.map do |content|
         file = @path ? File.join(@path, content.name) : content.name
         last_commit = @repo.last_commit_for_path(@commit.id, file)
         commit_path = project_commit_path(@project, last_commit) if last_commit
-        path_lock = show_path_locks && @project.find_path_lock(file)
+        path_lock = @project.find_path_lock(file)
 
         {
           file_name: content.name,

@@ -2,6 +2,7 @@
   import { mapActions, mapGetters } from 'vuex';
   import timeAgoMixin from '../../vue_shared/mixins/timeago';
   import skeletonLoadingContainer from '../../vue_shared/components/skeleton_loading_container.vue';
+  import fileStatusIcon from './repo_file_status_icon.vue';
 
   export default {
     mixins: [
@@ -9,6 +10,7 @@
     ],
     components: {
       skeletonLoadingContainer,
+      fileStatusIcon,
     },
     props: {
       file: {
@@ -70,6 +72,9 @@
         class="repo-file-name"
       >
         {{ file.name }}
+        <fileStatusIcon
+          :file="file">
+        </fileStatusIcon>
       </a>
       <template v-if="isSubmodule && file.id">
         @

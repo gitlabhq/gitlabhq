@@ -17,6 +17,8 @@ class Gitlab::PathLocksFinder
   end
 
   def find(path, exact_match: false, downstream: false)
+    return unless @project.feature_available?(:file_locks)
+
     if exact_match
       find_by_token(path)
     else

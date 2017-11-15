@@ -64,6 +64,9 @@ export default {
       );
 
       this.monacoInstance.setModel(newModel);
+      this.monacoInstance.updateOptions({
+        readOnly: !!this.activeFile.file_lock,
+      });
     },
     addMonacoEvents() {
       this.monacoInstance.onKeyUp(() => {
@@ -87,7 +90,7 @@ export default {
       'activeFileExtension',
     ]),
     shouldHideEditor() {
-      return this.activeFile.binary && !this.activeFile.raw;
+      return this.activeFile && this.activeFile.binary && !this.activeFile.raw;
     },
   },
 };
