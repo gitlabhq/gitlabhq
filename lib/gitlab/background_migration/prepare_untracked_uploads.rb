@@ -80,8 +80,10 @@ module Gitlab
       end
 
       def insert_file_paths(file_paths)
-        file_paths.each do |file_path|
-          insert_file_path(file_path)
+        ActiveRecord::Base.transaction do
+          file_paths.each do |file_path|
+            insert_file_path(file_path)
+          end
         end
       end
 
