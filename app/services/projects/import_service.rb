@@ -11,13 +11,11 @@ module Projects
     # supported by an importer class (`Gitlab::GithubImport::ParallelImporter`
     # for example).
     def async?
-      return false unless has_importer?
-
-      !!importer_class.try(:async?)
+      has_importer? && !!importer_class.try(:async?)
     end
 
     def execute
-      add_repository_to_project unless project.gitlab_project_import?
+      add_repository_to_project
 
       import_data
 
@@ -29,6 +27,14 @@ module Projects
     private
 
     def add_repository_to_project
+      if project.external_import? && !unknown_url?
+        raise Error, 'Blocked import URL.' if Gitlab::UrlBlocker.blocked_url?(project.import_url)
+      end
+
+      # We should skip the repository for a GitHub import or GitLab project import,
+      # because these importers fetch the project repositories for us.
+      return if has_importer? && importer_class.try(:imports_repository?)
+
       if unknown_url?
         # In this case, we only want to import issues, not a repository.
         create_repository
@@ -44,12 +50,6 @@ module Projects
     end
 
     def import_repository
-      raise Error, 'Blocked import URL.' if Gitlab::UrlBlocker.blocked_url?(project.import_url)
-
-      # We should return early for a GitHub import because the new GitHub
-      # importer fetch the project repositories for us.
-      return if project.github_import?
-
       begin
         if project.gitea_import?
           fetch_repository
@@ -88,7 +88,7 @@ module Projects
     end
 
     def importer_class
-      Gitlab::ImportSources.importer(project.import_type)
+      @importer_class ||= Gitlab::ImportSources.importer(project.import_type)
     end
 
     def has_importer?
