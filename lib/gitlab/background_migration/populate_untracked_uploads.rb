@@ -166,6 +166,8 @@ module Gitlab
           return unless exist?
 
           self.checksum = Digest::SHA256.file(absolute_path).hexdigest
+        rescue StandardError
+          schedule_checksum
         end
 
         def exist?
