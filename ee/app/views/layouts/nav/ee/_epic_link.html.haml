@@ -1,0 +1,18 @@
+- return unless group.feature_available?(:epics)
+
+- epics = EpicsFinder.new(current_user, group_id: @group.id).execute
+- epics_items = ['epics#show', 'epics#index']
+
+= nav_link(path: epics_items) do
+  = link_to group_epics_path(group) do
+    .nav-icon-container
+      = sprite_icon('epic')
+    %span.nav-item-name
+      Epics
+    %span.badge.count= number_with_delimiter(epics.count)
+  %ul.sidebar-sub-level-items.is-fly-out-only
+    = nav_link(path: epics_items, html_options: { class: "fly-out-top-item" } ) do
+      = link_to group_epics_path(group) do
+        %strong.fly-out-top-item-name
+          #{ _('Epics') }
+        %span.badge.count.epic_counter.fly-out-badge= number_with_delimiter(epics.count)
