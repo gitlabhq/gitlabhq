@@ -22,8 +22,37 @@ quite powerful autoscaling machines.
 
 ## Prerequisites
 
+Your GitLab instance is going to need to talk to the Runners over the network,
+so consider the sensitivity of your projects and communication between nodes
+when moving forward. This has implications on the AWS security groups you'll
+need, your DNS configuration, and other networking factors.
+
+For example, you can keep the EC2 resources segmented away from public traffic
+in a different VPC. Your environment is likely different, so consider what works
+best for your situation.
+
+### AWS security groups
+
+Docker Machine will attempt to use a
+[default security group](https://docs.docker.com/machine/drivers/aws/#security-group)
+with rules for port 2376, which is required for communication with the Docker
+daemon. Instead of relying on Docker, you can create a security group with the
+rules you need and provide that in the Runner options as we will see below.
+This way, you can customize it to your liking ahead of time based on your
+networking environment.
+
+### AWS credentials
+
+You'll need an AWS Access Key tied to a user with permission to scale (EC2) and
+update the cache (via S3). Create a new user with policies for EC2
+(AmazonEC2FullAccess) and S3 (AmazonS3FullAccess). To be more secure, you can
+disable console login for that user. Grab the security credentials as we'll use
+them later during the Runner configuration.
+
+## Prepare the bastion instance
+
 The first step is to install GitLab Runner in an EC2 instance that will serve
-as the bastion to spawning new machines. This doesn't have to be a powerful
+as the bastion that spawns new machines. This doesn't have to be a powerful
 machine since it will not run any jobs itself, a `t2.micro` instance will do.
 This machine will be a dedicated host since we need it always up and running,
 thus it will be the only standard cost.
@@ -34,10 +63,18 @@ Runner support, for example either Ubuntu, Debian, CentOS or RHEL will work fine
 
 Install the prerequisites:
 
-1. Log in your server
+1. Log in to your server
 1. [Install GitLab Runner from the official GitLab repository](https://docs.gitlab.com/runner/install/linux-repository.html)
 1. [Install Docker](https://docs.docker.com/engine/installation/#server)
 1. [Install Docker Machine](https://docs.docker.com/machine/install-machine/)
+
+Now that the Runner is installed, it's time to register it.
+
+## Registering GitLab Runner
+
+TIP: **Tip:**
+If you want every user in your instance to be able to use the autoscaled Runners,
+register the Runner as a shared one.
 
 Before configuring the GitLab Runner, you need to first register it, so that
 it connects with your GitLab instance:
@@ -45,10 +82,6 @@ it connects with your GitLab instance:
 1. [Obtain a Runner token](../../ci/runners/README.md)
 1. [Register the Runner](https://docs.gitlab.com/runner/register/index.html#gnu-linux)
 1. When asked the executor type, enter `docker+machine`
-
-TIP: **Tip:**
-If you want every user in your instance to be able to use the autoscaled Runners,
-register the Runner as a shared one.
 
 You can now move on to the most important part, configuring GitLab Runner.
 
@@ -69,6 +102,7 @@ check_interval = 0
   url = "<URL of your GitLab instance>"
   token = "<Runner's token>"
   executor = "docker+machine"
+  limit = 20
   [runners.docker]
     image = "alpine"
     privileged = true
@@ -85,11 +119,14 @@ check_interval = 0
     IdleCount = 1
     IdleTime = 1800
     MaxBuilds = 100
-    MachineDriver = "amazonec2"
-    MachineName = "gitlab-docker-machine-%s"
-    OffPeakPeriods = ["* * 0-7,19-23 * * mon-fri *", "* * * * * sat,sun *"]
+    OffPeakPeriods = [
+      "* * 0-9,18-23 * * mon-fri *",
+      "* * * * * sat,sun *"
+    ]
     OffPeakIdleCount = 0
     OffPeakIdleTime = 1200
+    MachineDriver = "amazonec2"
+    MachineName = "gitlab-docker-machine-%s"
     MachineOptions = [
       "amazonec2-access-key=XXXX",
       "amazonec2-secret-key=XXXX",
@@ -100,21 +137,12 @@ check_interval = 0
       "amazonec2-tags=Name,gitlab-runner-autoscale",
       "amazonec2-security-group=docker-machine-scaler",
       "amazonec2-instance-type=m4.2xlarge",
-      "amazonec2-ssh-user=ubuntu",
-      "amazonec2-ssh-keypath=/etc/gitlab-runner/certs/gitlab-aws-autoscaler",
-      "amazonec2-zone=a",
-      "amazonec2-root-size=32",
     ]
 ```
 
 Let's break it down to pieces.
 
 ### Global section
-
-```toml
-concurrent = 10
-check_interval = 0
-```
 
 In the global section, you can define the limit of the jobs that can be run
 concurrently across all Runners (`concurrent`). This heavily depends on your
@@ -125,10 +153,25 @@ forward.
 The `check_interval` setting defines in seconds how often the Runner should
 check GitLab for new jobs.
 
+Example:
+
+```toml
+concurrent = 10
+check_interval = 0
+```
+
 [Read more](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-global-section)
 about all the options you can use.
 
-### `[[runners]]`
+### `[[runners]]` section
+
+From the `[[runners]]` section, the most important part is the `executor` which
+must be set to `docker+machine`. Most of those settings are taken care of when
+you register the Runner for the first time.
+
+`limit` defines how many jobs can be handled concurrently by this token.
+
+Example:
 
 ```toml
 [[runners]]
@@ -136,23 +179,13 @@ about all the options you can use.
   url = "<URL of your GitLab instance>"
   token = "<Runner's token>"
   executor = "docker+machine"
+  limit = 20
 ```
-
-From the `[[runners]]` section, the most important part is the `executor` which
-must be set to `docker+machine`. All those settings are taken care of when you
-register the Runner for the first time.
 
 [Read more](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-section)
 about all the options you can use under `[[runners]]`.
 
-### `[runners.docker]`
-
-```toml
-  [runners.docker]
-    image = "alpine"
-    privileged = true
-    disable_cache = true
-```
+### `[runners.docker]` section
 
 In the `[runners.docker]` section you can define the default Docker image to
 be used by the child Runners if it's not defined in [`.gitlab-ci.yml`](../../ci/yaml/README.md).
@@ -163,10 +196,19 @@ Next, we use `disable_cache = true` to disable the Docker executor's inner
 cache mechanism since we will use the distributed cache mode as described
 below.
 
+Example:
+
+```toml
+  [runners.docker]
+    image = "alpine"
+    privileged = true
+    disable_cache = true
+```
+
 [Read more](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-docker-section)
 about all the options you can use under `[runners.docker]`.
 
-### `[runners.cache]`
+### `[runners.cache]` section
 
 To speed up your jobs, GitLab Runner provides a cache mechanism where selected
 directories and/or files are saved and shared between subsequent jobs.
@@ -193,21 +235,33 @@ Here's some more info to get you started:
 - [Deploying and using a cache server for GitLab Runner](https://docs.gitlab.com/runner/configuration/autoscale.html#distributed-runners-caching)
 - [How cache works](../../ci/yaml/README.md#cache)
 
-### `[runners.machine]`
+### `[runners.machine]` section
 
 This is the most important part of the configuration and it's the one that
-tells GitLab Runner how and when to spawn new Docker Machine instances.
+tells GitLab Runner how and when to spawn new or remove old Docker Machine
+instances.
+
+We will focus on the AWS machine options, for the rest of the settings read
+about the:
+
+- [autoscaling algorithm and the parameters it's based on](https://docs.gitlab.com/runner/configuration/autoscale.html#autoscaling-algorithm-and-parameters) - depends on the needs of your organization
+- [off peak time configuration](https://docs.gitlab.com/runner/configuration/autoscale.html#off-peak-time-mode-configuration) - useful when there are regular time periods in your organization when no work is done, for example weekends
+
+Example:
 
 ```toml
   [runners.machine]
     IdleCount = 1
     IdleTime = 1800
-    MaxBuilds = 100
-    MachineDriver = "amazonec2"
-    MachineName = "gitlab-docker-machine-%s"
-    OffPeakPeriods = ["* * 0-7,19-23 * * mon-fri *", "* * * * * sat,sun *"]
+    MaxBuilds = 10
+    OffPeakPeriods = [
+      "* * 0-9,18-23 * * mon-fri *",
+      "* * * * * sat,sun *"
+    ]
     OffPeakIdleCount = 0
     OffPeakIdleTime = 1200
+    MachineDriver = "amazonec2"
+    MachineName = "gitlab-docker-machine-%s"
     MachineOptions = [
       "amazonec2-access-key=XXXX",
       "amazonec2-secret-key=XXXX",
@@ -218,18 +272,44 @@ tells GitLab Runner how and when to spawn new Docker Machine instances.
       "amazonec2-tags=Name,gitlab-runner-autoscale",
       "amazonec2-security-group=docker-machine-scaler",
       "amazonec2-instance-type=m4.2xlarge",
-      "amazonec2-ssh-user=ubuntu",
-      "amazonec2-ssh-keypath=/etc/gitlab-runner/certs/gitlab-aws-autoscaler",
-      "amazonec2-zone=a",
-      "amazonec2-root-size=32",
     ]
 ```
 
+The Docker Machine driver is set to `amazonec2` and the machine name has a
+standard prefix followed by `%s` (required) that is replaced by the ID of the
+child Runner: `gitlab-docker-machine-%s`.
+
+Now, depending on your AWS infrastructure, there are many options you can set up
+under `MachineOptions`. Let's see the most common ones:
+
+- `amazonec2-access-key=XXXX` - The AWS access key of the user that has permissions to create EC2 instances, see [AWS credentials](#aws-credentials).
+- `amazonec2-secret-key=XXXX` - The AWS secret key of the user that has permissions to create EC2 instances, see [AWS credentials](#aws-credentials).
+- `amazonec2-region=eu-central-1` - The region to use when launching the instance. You can omit this entirely and the default `us-east-1` will be used.
+- `amazonec2-vpc-id=vpc-xxxxx` - Your VPC ID to launch the instance in, read more in [Docker docs about the VPC ID](https://docs.docker.com/machine/drivers/aws/#vpc-id).
+- `amazonec2-subnet-id=subnet-xxxx` - AWS VPC subnet ID.
+- `amazonec2-use-private-address=true` - Use the private IP address for docker-machine, but still create a public IP address. Useful to keep the traffic internal and avoid extra costs.
+- `amazonec2-tags=Name,gitlab-runner-autoscale` - AWS extra tag key-value pairs, useful to identify the instances on the AWS console.
+- `amazonec2-security-group=docker-machine-scaler` - AWS VPC security group name, see [AWS security groups](#aws-security-groups).
+- `amazonec2-instance-type=m4.2xlarge` - The instance type that the child Runners will run on.
+
 TIP: **Tip:**
 Under `MachineOptions` you can add anything that the [AWS Docker Machine driver
-supports](https://docs.docker.com/machine/drivers/aws/#options).
+supports](https://docs.docker.com/machine/drivers/aws/#options). You are highly
+encouraged to read Docker's docs as your infrastructure setup may warrant
+different options to be applied.
 
-[Read more](/runner/configuration/advanced-configuration.html#the-runners-machine-section)
+NOTE: **Note:**
+The child instances will use by default Ubuntu 16.04 unless you choose a
+different AMI ID by setting `amazonec2-ami`.
+
+NOTE: **Note:**
+If you specify `amazonec2-private-address-only=true` as one of the machine
+options, your EC2 instance won't get assigned a public IP. This is fine if your
+VPC is configured correctly with an Internet Gateway (IGW) and routing is fine,
+but it’s something to consider if you've got a more exotic configuration. Read
+more in [Docker docs about VPC connectivity](https://docs.docker.com/machine/drivers/aws/#vpc-connectivity).
+
+[Read more](https://docs.gitlab.com/runner/configuration/advanced-configuration.html#the-runners-machine-section)
 about all the options you can use under `[runners.machine]`.
 
 ## Cutting down costs with Amazon EC2 Spot instances
@@ -243,7 +323,9 @@ pricing, you can significantly reduce the cost of running your applications,
 grow your application’s compute capacity and throughput for the same budget,
 and enable new types of cloud computing applications.
 
-In `/etc/gitlab-runner/config.toml` under the `MachineOptions` section:
+In addition to the [`[runners.machine]`](#runners-machine-section) options
+you picked above, in `/etc/gitlab-runner/config.toml` under the `MachineOptions`
+section, add the following:
 
 ```toml
     MachineOptions = [
@@ -255,7 +337,8 @@ In `/etc/gitlab-runner/config.toml` under the `MachineOptions` section:
 
 With this configuration, Docker Machines are created on Spot instances with a
 maximum bid price of $0.03 per hour and the duration of the Spot instance is
-capped at 60 minutes.
+capped at 60 minutes. Be sure to check on the current pricing based on the
+region you picked.
 
 To learn more about Amazon EC2 Spot instances, visit the following links:
 
@@ -265,29 +348,37 @@ To learn more about Amazon EC2 Spot instances, visit the following links:
 
 ### Caveats of Spot instances
 
-If the Spot price raises, the auto-scale Runner would fail to create new machines.
+While Spot instances is a great way to use unused resources and minimize the
+costs of your infrastructure, you must be aware of the implications.
 
-This eventually eats 60 requests and then AWS won't accept any more. Then once
-the spot price is acceptable, you are locked out for a bit because the call amount
-limit is exceeded.
+Running CI jobs on Spot instances may increase the failure rates because of the
+Spot instances pricing model. If the price exceeds your bid, the existing Spot
+instances will be immediately terminated and all your jobs on that host will fail.
 
-You can use the following command in the bastion machine to see the Docker Machines
-state:
+As a consequence, the auto-scale Runner would fail to create new machines while
+it will continue to request new instances. This eventually will make 60 requests
+and then AWS won't accept any more. Then once the Spot price is acceptable, you
+are locked out for a bit because the call amount limit is exceeded.
+
+If you encounter that case, you can use the following command in the bastion
+machine to see the Docker Machines state:
 
 ```sh
 docker-machine ls -q --filter state=Error --format "{{.NAME}}"
 ```
 
 NOTE: **Note:**
-Follow [issue 2771](https://gitlab.com/gitlab-org/gitlab-runner/issues/2771)
-for more information.
+In [issue 2771](https://gitlab.com/gitlab-org/gitlab-runner/issues/2771)
+there is a discussion to make GitLab Runner gracefully handle Spot price changes.
 
 ## Conclusion
 
 Using the autoscale feature of GitLab Runner can save you both time and money.
-Using the spot instances that AWS provides can save you even more.
+Using the Spot instances that AWS provides can save you even more, but you must
+be aware of the implications. As long as your bid is high enough, there won't
+be an issue.
 
-You can read the following user cases from which this tutorial was influenced:
+You can read the following use cases from which this tutorial was influenced:
 
 - [HumanGeo - Scaling GitLab CI](http://blog.thehumangeo.com/gitlab-autoscale-runners.html)
 - [subtrakt Health - Autoscale GitLab CI Runners and save 90% on EC2 costs](https://substrakthealth.com/news/gitlab-ci-cost-savings/)
