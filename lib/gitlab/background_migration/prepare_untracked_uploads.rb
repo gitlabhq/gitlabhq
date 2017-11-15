@@ -19,16 +19,29 @@ module Gitlab
       end
 
       def perform
-        return unless migrate?
-
+        ensure_temporary_tracking_table_exists
         store_untracked_file_paths
         schedule_populate_untracked_uploads_jobs
       end
 
       private
 
-      def migrate?
-        UntrackedFile.table_exists?
+      def ensure_temporary_tracking_table_exists
+        unless UntrackedFile.connection.table_exists?(:untracked_files_for_uploads)
+          UntrackedFile.connection.create_table :untracked_files_for_uploads do |t|
+            t.string :path, limit: 600, null: false
+            t.boolean :tracked, default: false, null: false
+            t.timestamps_with_timezone null: false
+          end
+        end
+
+        unless UntrackedFile.connection.index_exists?(:untracked_files_for_uploads, :path)
+          UntrackedFile.connection.add_index :untracked_files_for_uploads, :path, unique: true
+        end
+
+        unless UntrackedFile.connection.index_exists?(:untracked_files_for_uploads, :tracked)
+          UntrackedFile.connection.add_index :untracked_files_for_uploads, :tracked
+        end
       end
 
       def store_untracked_file_paths

@@ -17,11 +17,40 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :side
     end
   end
 
+  before do
+    drop_temp_table_if_exists
+  end
+
+  after(:all) do
+    drop_temp_table_if_exists
+  end
+
   around do |example|
     # Especially important so the follow-up migration does not get run
     Sidekiq::Testing.fake! do
       example.run
     end
+  end
+
+  it 'ensures the untracked_files_for_uploads table exists' do
+    expect do
+      described_class.new.perform
+    end.to change { table_exists?(:untracked_files_for_uploads) }.from(false).to(true)
+  end
+
+  it 'has a path field long enough for really long paths' do
+    described_class.new.perform
+
+    component = 'a' * 255
+
+    long_path = [
+      'uploads',
+      component, # project.full_path
+      component  # filename
+    ].flatten.join('/')
+
+    record = untracked_files_for_uploads.create!(path: long_path)
+    expect(record.reload.path.size).to eq(519)
   end
 
   context 'when files were uploaded before and after hashed storage was enabled' do
@@ -41,9 +70,9 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :side
     end
 
     it 'adds unhashed files to the untracked_files_for_uploads table' do
-      expect do
-        described_class.new.perform
-      end.to change { untracked_files_for_uploads.count }.from(0).to(5)
+      described_class.new.perform
+
+      expect(untracked_files_for_uploads.count).to eq(5)
     end
 
     it 'adds files with paths relative to CarrierWave.root' do
@@ -94,9 +123,9 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :side
       end
 
       it 'does not add files from /uploads/tmp' do
-        expect do
-          described_class.new.perform
-        end.to change { untracked_files_for_uploads.count }.from(0).to(5)
+        described_class.new.perform
+
+        expect(untracked_files_for_uploads.count).to eq(5)
       end
     end
   end
@@ -105,9 +134,9 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :side
   # may not have an upload directory because they have no uploads.
   context 'when no files were ever uploaded' do
     it 'does not add to the untracked_files_for_uploads table (and does not raise error)' do
-      expect do
-        described_class.new.perform
-      end.not_to change { untracked_files_for_uploads.count }.from(0)
+      described_class.new.perform
+
+      expect(untracked_files_for_uploads.count).to eq(0)
     end
   end
 end
