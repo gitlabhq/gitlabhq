@@ -13,7 +13,7 @@ module EpicIssues
     end
 
     def can_destroy_issue_link?(issue)
-      Ability.allowed?(current_user, :admin_issue_link, issue) && Ability.allowed?(current_user, :admin_epic, issuable)
+      Ability.allowed?(current_user, :admin_epic_issue, issue) && Ability.allowed?(current_user, :admin_epic, issuable)
     end
 
     def reference(issue)
