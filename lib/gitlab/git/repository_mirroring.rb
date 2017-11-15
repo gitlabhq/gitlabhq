@@ -1,24 +1,26 @@
 module Gitlab
   module Git
     module RepositoryMirroring
-      IMPORT_HEAD_REFS = '+refs/heads/*:refs/heads/*'.freeze
-      IMPORT_TAG_REFS = '+refs/tags/*:refs/tags/*'.freeze
-      MIRROR_REMOTE = 'mirror'.freeze
+      FETCH_REFS = {
+        # `:all` is used to define repository as equivalent as "git clone --mirror"
+        all: '+refs/*:refs/*',
+        heads: '+refs/heads/*:refs/heads/*',
+        tags: '+refs/tags/*:refs/tags/*'
+      }.freeze
 
       RemoteError = Class.new(StandardError)
 
-      def set_remote_as_mirror(remote_name)
-        # This is used to define repository as equivalent as "git clone --mirror"
-        rugged.config["remote.#{remote_name}.fetch"] = 'refs/*:refs/*'
-        rugged.config["remote.#{remote_name}.mirror"] = true
-        rugged.config["remote.#{remote_name}.prune"] = true
-      end
+      def set_remote_as_mirror(remote_name, fetch_refs: :all)
+        Array(fetch_refs).each_with_index do |fetch_ref, i|
+          fetch_ref = FETCH_REFS[fetch_ref] || fetch_ref
 
-      def set_import_remote_as_mirror(remote_name)
-        # Add first fetch with Rugged so it does not create its own.
-        rugged.config["remote.#{remote_name}.fetch"] = IMPORT_HEAD_REFS
-
-        add_remote_fetch_config(remote_name, IMPORT_TAG_REFS)
+          # Add first fetch with Rugged so it does not create its own.
+          if i == 0
+            rugged.config["remote.#{remote_name}.fetch"] = fetch_ref
+          else
+            add_remote_fetch_config(remote_name, fetch_ref)
+          end
+        end
 
         rugged.config["remote.#{remote_name}.mirror"] = true
         rugged.config["remote.#{remote_name}.prune"] = true
@@ -28,11 +30,17 @@ module Gitlab
         run_git(%W[config --add remote.#{remote_name}.fetch #{refspec}])
       end
 
-      def fetch_mirror(url)
-        add_remote(MIRROR_REMOTE, url)
-        set_remote_as_mirror(MIRROR_REMOTE)
-        fetch(MIRROR_REMOTE)
-        remove_remote(MIRROR_REMOTE)
+      # Like all public `Gitlab::Git::Repository` methods, this method is part
+      # of `Repository`'s interface through `method_missing`.
+      # `Repository` has its own `fetch_as_mirror` which uses `gitlab-shell` and
+      # takes some extra attributes, so we qualify this method name to prevent confusion.
+      def fetch_as_mirror_without_shell(url)
+        remote_name = "tmp-#{SecureRandom.hex}"
+        add_remote(remote_name, url)
+        set_remote_as_mirror(remote_name)
+        fetch_remote_without_shell(remote_name)
+      ensure
+        remove_remote(remote_name) if remote_name
       end
 
       def remote_tags(remote)
