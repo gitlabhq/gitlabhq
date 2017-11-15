@@ -41,6 +41,6 @@ feature 'Multi-file editor upload file', :js do
 
     expect(page).to have_selector('.repo-tab', text: 'dk.png')
     expect(page).not_to have_selector('.monaco-editor')
-    expect(page).to have_content('The source could not be displayed for this temporary file.')
+    expect(page).to have_content('This file can not be modified.')
   end
 end

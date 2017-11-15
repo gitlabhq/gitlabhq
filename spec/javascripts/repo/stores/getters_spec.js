@@ -167,7 +167,7 @@ describe('Multi-file store getters', () => {
       Object.assign(f, {
         active: true,
         rich: { path: 'test' },
-        simple: { path: 'test' },
+        simple: { name: 'text', path: 'test' },
       });
 
       localState.openFiles.push(f);
@@ -226,6 +226,34 @@ describe('Multi-file store getters', () => {
       localState.openFiles.push(f);
 
       expect(getters.canRenderLocally(localState)).toBeTruthy();
+    });
+  });
+
+  describe('viewerTemplateName', () => {
+    it('returns error if renderError', () => {
+      const f = file();
+
+      Object.assign(f, {
+        active: true,
+        rich: { renderError: 'test' },
+      });
+
+      localState.openFiles.push(f);
+
+      expect(getters.viewerTemplateName(localState)).toBe('error');
+    });
+
+    it('returns html by default', () => {
+      const f = file();
+
+      Object.assign(f, {
+        active: true,
+        rich: { name: 'fileName' },
+      });
+
+      localState.openFiles.push(f);
+
+      expect(getters.viewerTemplateName(localState)).toBe('html');
     });
   });
 });

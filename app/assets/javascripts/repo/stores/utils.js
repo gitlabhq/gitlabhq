@@ -39,7 +39,6 @@ export const dataStructure = () => ({
   raw: '',
   content: '',
   parentTreeUrl: '',
-  base64: false,
   currentViewer: 'rich',
   rich: viewerDataStructure(),
   simple: viewerDataStructure(),
@@ -61,7 +60,7 @@ export const decorateData = (entity) => {
     changed = false,
     parentTreeUrl = '',
     level = 0,
-    base64 = false,
+    binary = false,
   } = entity;
 
   return {
@@ -81,7 +80,7 @@ export const decorateData = (entity) => {
     parentTreeUrl,
     changed,
     content,
-    base64,
+    binary,
   };
 };
 
@@ -98,7 +97,7 @@ export const pushState = (url) => {
   history.pushState({ url }, '', url);
 };
 
-export const createTemp = ({ name, path, type, level, changed, content, base64 }) => {
+export const createTemp = ({ name, path, type, level, changed, content, binary }) => {
   const treePath = path ? `${path}/${name}` : name;
 
   return decorateData({
@@ -112,7 +111,7 @@ export const createTemp = ({ name, path, type, level, changed, content, base64 }
     content,
     parentTreeUrl: '',
     level,
-    base64,
+    binary,
   });
 };
 

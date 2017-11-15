@@ -94,7 +94,7 @@ describe('new dropdown upload', () => {
         expect(vm.$store.state.tree.length).toBe(1);
         expect(vm.$store.state.tree[0].name).toBe(file.name);
         expect(vm.$store.state.tree[0].content).toBe(binaryTarget.result.split('base64,')[1]);
-        expect(vm.$store.state.tree[0].base64).toBe(true);
+        expect(vm.$store.state.tree[0].binary).toBe(true);
 
         done();
       });

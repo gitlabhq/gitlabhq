@@ -17,7 +17,7 @@ describe('RepoFileButtons', () => {
       commitsPath: 'test',
       active: true,
       rich: { path: 'test' },
-      simple: { path: 'test' },
+      simple: { name: 'text', path: 'test' },
     });
     store.state.openFiles.push(activeFile);
 

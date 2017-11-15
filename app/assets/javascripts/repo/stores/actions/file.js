@@ -84,7 +84,7 @@ export const changeFileContent = ({ commit }, { file, content }) => {
   commit(types.UPDATE_FILE_CONTENT, { file, content });
 };
 
-export const createTempFile = ({ state, commit, dispatch }, { tree, name, content = '', base64 = '' }) => {
+export const createTempFile = ({ state, commit, dispatch }, { tree, name, content = '', binary = '' }) => {
   const file = createTemp({
     name: name.replace(`${state.path}/`, ''),
     path: tree.path,
@@ -92,7 +92,7 @@ export const createTempFile = ({ state, commit, dispatch }, { tree, name, conten
     level: tree.level !== undefined ? tree.level + 1 : 0,
     changed: true,
     content,
-    base64,
+    binary,
   });
 
   if (findEntry(tree, 'blob', file.name)) return flash(`The name "${file.name}" is already taken in this directory.`);
@@ -104,7 +104,7 @@ export const createTempFile = ({ state, commit, dispatch }, { tree, name, conten
   commit(types.TOGGLE_FILE_OPEN, file);
   dispatch('setFileActive', file);
 
-  if (!state.editMode && !file.base64) {
+  if (!state.editMode) {
     dispatch('toggleEditMode', true);
   }
 

@@ -3,6 +3,7 @@
   import { s__, sprintf } from '../../../locale';
 
   export default {
+    name: 'ErrorViewer',
     computed: {
       ...mapGetters([
         'activeFile',
@@ -13,7 +14,7 @@
         const error = this.activeFileCurrentViewer.renderError;
 
         return sprintf(
-          s__('BlobViewer|The %{name} could not be displayed because %{error}. You can %{link} download it instead.'), {
+          s__('BlobViewer|The %{name} could not be displayed because %{error}. You can %{link} instead.'), {
             name,
             error,
             link: `<a href="${this.activeFile.rawPath}" download rel="noopener noreferrer" target="_blank">

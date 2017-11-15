@@ -5,25 +5,28 @@ import { file, resetStore } from '../helpers';
 
 describe('RepoPreview', () => {
   let vm;
+  let f;
 
-  function createComponent(currentViewer = 'rich') {
-    const f = file();
+  function checkIfLoaded(done) {
+    if (vm.previewComponent) {
+      done();
+    } else {
+      setTimeout(checkIfLoaded, 1, done);
+    }
+  }
+
+  function createComponent(done) {
     const RepoPreview = Vue.extend(repoPreview);
 
     const comp = new RepoPreview({
       store,
     });
 
-    Object.assign(f, {
-      active: true,
-      currentViewer,
-      rich: { html: 'richHTML' },
-      simple: { html: 'simpleHTML' },
-    });
-
     comp.$store.state.openFiles.push(f);
 
-    return comp.$mount();
+    vm = comp.$mount();
+
+    checkIfLoaded(done);
   }
 
   afterEach(() => {
@@ -32,27 +35,37 @@ describe('RepoPreview', () => {
     resetStore(vm.$store);
   });
 
-  describe('rich', () => {
+  describe('html', () => {
     beforeEach((done) => {
-      vm = createComponent();
+      f = file();
 
-      Vue.nextTick(done);
+      Object.assign(f, {
+        active: true,
+        rich: { html: 'richHTML' },
+      });
+
+      createComponent(done);
     });
 
-    it('renders activeFile rich html', () => {
-      expect(vm.$el.textContent.trim()).toContain('richHTML');
+    it('loads HTML viewer', () => {
+      expect(vm.previewComponent.name).toBe('HTMLViewer');
     });
   });
 
-  describe('simple', () => {
+  describe('error', () => {
     beforeEach((done) => {
-      vm = createComponent('simple');
+      f = file();
 
-      Vue.nextTick(done);
+      Object.assign(f, {
+        active: true,
+        rich: { html: 'richHTML', renderError: 'error' },
+      });
+
+      createComponent(done);
     });
 
-    it('renders activeFile rich html', () => {
-      expect(vm.$el.textContent.trim()).toContain('simpleHTML');
+    it('loads HTML viewer', () => {
+      expect(vm.previewComponent.name).toBe('ErrorViewer');
     });
   });
 });

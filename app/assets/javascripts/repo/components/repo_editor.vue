@@ -27,7 +27,13 @@ export default {
       'changeFileContent',
     ]),
     initMonaco() {
-      if (this.shouldHideEditor) return;
+      if (this.shouldHideEditor) {
+        if (this.monacoInstance) {
+          this.monacoInstance.dispose();
+        }
+
+        return;
+      }
 
       if (this.monacoInstance) {
         this.monacoInstance.setModel(null);
@@ -99,8 +105,9 @@ export default {
   >
     <div
       v-if="shouldHideEditor"
-      v-html="activeFile.html"
+      class="nothing-here-block"
     >
+      This file can not be modified.
     </div>
   </div>
 </template>
