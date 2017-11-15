@@ -4,6 +4,7 @@ module Gitlab
       class Daemon
         VERSION = '0.2.0'.freeze
         BATCH_SIZE = 250
+        SECONDARY_CHECK_INTERVAL = 1.minute
 
         attr_reader :options
 
@@ -17,6 +18,12 @@ module Gitlab
           trap_signals
 
           until exit?
+            # Prevent the node from processing events unless it's a secondary
+            unless Geo.secondary?
+              sleep(SECONDARY_CHECK_INTERVAL)
+              next
+            end
+
             lease = Lease.try_obtain_with_ttl { run_once! }
 
             return if exit?

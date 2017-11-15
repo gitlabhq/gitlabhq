@@ -42,6 +42,26 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
 
       daemon.run!
     end
+
+    it 'skips execution if not a Geo node' do
+      stub_current_geo_node(nil)
+
+      is_expected.to receive(:exit?).and_return(false, true)
+      is_expected.to receive(:sleep).with(1.minute)
+      is_expected.not_to receive(:run_once!)
+
+      daemon.run!
+    end
+
+    it 'skips execution if the current node is a primary' do
+      stub_current_geo_node(primary)
+
+      is_expected.to receive(:exit?).and_return(false, true)
+      is_expected.to receive(:sleep).with(1.minute)
+      is_expected.not_to receive(:run_once!)
+
+      daemon.run!
+    end
   end
 
   describe '#run_once!' do
