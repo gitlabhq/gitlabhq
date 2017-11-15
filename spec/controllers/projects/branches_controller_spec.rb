@@ -407,9 +407,42 @@ describe Projects::BranchesController do
         get :index,
             namespace_id: project.namespace,
             project_id: project,
+            state: 'all',
             format: :html
 
         expect(response).to have_gitlab_http_status(200)
+      end
+    end
+
+    context 'when depreated sort/search/page parameters are specified' do
+      it 'returns with a status 301 when sort specified' do
+        get :index,
+            namespace_id: project.namespace,
+            project_id: project,
+            sort: 'updated_asc',
+            format: :html
+
+        expect(response).to redirect_to project_branches_filtered_path(project, state: 'all')
+      end
+
+      it 'returns with a status 301 when search specified' do
+        get :index,
+            namespace_id: project.namespace,
+            project_id: project,
+            search: 'feature',
+            format: :html
+
+        expect(response).to redirect_to project_branches_filtered_path(project, state: 'all')
+      end
+
+      it 'returns with a status 301 when page specified' do
+        get :index,
+            namespace_id: project.namespace,
+            project_id: project,
+            page: 2,
+            format: :html
+
+        expect(response).to redirect_to project_branches_filtered_path(project, state: 'all')
       end
     end
   end
