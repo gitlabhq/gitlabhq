@@ -30,6 +30,7 @@ The curriculum is composed of GitLab videos, screencasts, presentations, project
 1. [Version Control Systems](https://docs.google.com/presentation/d/16sX7hUrCZyOFbpvnrAFrg6tVO5_yT98IgdAqOmXwBho/edit#slide=id.g72f2e4906_2_29)
 1. [Operating Systems and How Git Works](https://drive.google.com/a/gitlab.com/file/d/0B41DBToSSIG_OVYxVFJDOGI3Vzg/view?usp=sharing)
 1. [Code School: An Introduction to Git](https://www.codeschool.com/account/courses/try-git)
+2. [Don't fear the SHA!  How git works under the hood.](https://www.youtube.com/edit?video_id=P6jD966jzlk)
 
 #### 1.2. GitLab Basics
 
