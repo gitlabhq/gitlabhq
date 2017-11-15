@@ -47,6 +47,15 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :side
       end
     end
 
+    it 'adds files with paths relative to CarrierWave.root' do
+      Sidekiq::Testing.fake! do
+        described_class.new.perform
+        untracked_files_for_uploads.all.each do |file|
+          expect(file.path.start_with?('uploads/')).to be_truthy
+        end
+      end
+    end
+
     it 'does not add hashed files to the untracked_files_for_uploads table' do
       Sidekiq::Testing.fake! do
         described_class.new.perform
@@ -83,7 +92,7 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :side
     # E.g. The installation is in use at the time of migration, and someone has
     # just uploaded a file
     context 'when there are files in /uploads/tmp' do
-      let(:tmp_file) { Rails.root.join(described_class::UPLOAD_DIR, 'tmp', 'some_file.jpg') }
+      let(:tmp_file) { Rails.root.join(described_class::ABSOLUTE_UPLOAD_DIR, 'tmp', 'some_file.jpg') }
 
       before do
         FileUtils.touch(tmp_file)

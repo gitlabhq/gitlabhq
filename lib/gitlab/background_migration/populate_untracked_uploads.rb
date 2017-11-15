@@ -90,7 +90,7 @@ module Gitlab
             matchd = path_relative_to_upload_dir.match(FILE_UPLOADER_PATH_PATTERN)
             matchd[0].sub(%r{\A/}, '') # remove leading slash
           else
-            path_relative_to_carrierwave_root
+            path
           end
         end
 
@@ -113,18 +113,14 @@ module Gitlab
         end
 
         def file_size
-          File.size(path)
+          absolute_path = File.join(CarrierWave.root, path)
+          File.size(absolute_path)
         end
 
         # Not including a leading slash
         def path_relative_to_upload_dir
-          base = %r{\A#{Regexp.escape(Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR)}/}
+          base = %r{\A#{Regexp.escape(Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR)}/}
           @path_relative_to_upload_dir ||= path.sub(base, '')
-        end
-
-        # Not including a leading slash
-        def path_relative_to_carrierwave_root
-          "uploads/#{path_relative_to_upload_dir}"
         end
 
         private

@@ -29,14 +29,14 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
       appearance.update!(header_logo: uploaded_file)
 
       # File records created by PrepareUntrackedUploads
-      untracked_files_for_uploads.create!(path: appearance.logo.file.file)
-      untracked_files_for_uploads.create!(path: appearance.header_logo.file.file)
-      untracked_files_for_uploads.create!(path: user1.avatar.file.file)
-      untracked_files_for_uploads.create!(path: user2.avatar.file.file)
-      untracked_files_for_uploads.create!(path: project1.avatar.file.file)
-      untracked_files_for_uploads.create!(path: project2.avatar.file.file)
-      untracked_files_for_uploads.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/#{project1.full_path}/#{project1.uploads.last.path}")
-      untracked_files_for_uploads.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/#{project2.full_path}/#{project2.uploads.last.path}")
+      untracked_files_for_uploads.create!(path: found_path(appearance.logo.file.file))
+      untracked_files_for_uploads.create!(path: found_path(appearance.header_logo.file.file))
+      untracked_files_for_uploads.create!(path: found_path(user1.avatar.file.file))
+      untracked_files_for_uploads.create!(path: found_path(user2.avatar.file.file))
+      untracked_files_for_uploads.create!(path: found_path(project1.avatar.file.file))
+      untracked_files_for_uploads.create!(path: found_path(project2.avatar.file.file))
+      untracked_files_for_uploads.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/#{project1.full_path}/#{project1.uploads.last.path}")
+      untracked_files_for_uploads.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/#{project2.full_path}/#{project2.uploads.last.path}")
 
       user2.uploads.delete_all
       project2.uploads.delete_all
@@ -122,7 +122,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     let(:user1) { create(:user) }
 
     context 'when the file is already in the uploads table' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/user/avatar/#{user1.id}/avatar.jpg") }
+      let(:untracked_file) { described_class.create!(path: "uploads/-/system/user/avatar/#{user1.id}/avatar.jpg") }
 
       before do
         upload_class.create!(path: "uploads/-/system/user/avatar/#{user1.id}/avatar.jpg", uploader: 'AvatarUploader', model_type: 'User', model_id: user1.id, size: 1234)
@@ -142,7 +142,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
     context 'for an appearance logo file path' do
       let(:model) { create(:appearance) }
-      let(:untracked_file) { described_class.create!(path: model.logo.file.file) }
+      let(:untracked_file) { described_class.create!(path: found_path(model.logo.file.file)) }
 
       before do
         model.update!(logo: uploaded_file)
@@ -163,7 +163,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
     context 'for an appearance header_logo file path' do
       let(:model) { create(:appearance) }
-      let(:untracked_file) { described_class.create!(path: model.header_logo.file.file) }
+      let(:untracked_file) { described_class.create!(path: found_path(model.header_logo.file.file)) }
 
       before do
         model.update!(header_logo: uploaded_file)
@@ -184,7 +184,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
     context 'for a pre-Markdown Note attachment file path' do
       let(:model) { create(:note) }
-      let(:untracked_file) { described_class.create!(path: model.attachment.file.file) }
+      let(:untracked_file) { described_class.create!(path: found_path(model.attachment.file.file)) }
 
       before do
         model.update!(attachment: uploaded_file)
@@ -207,7 +207,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
     context 'for a user avatar file path' do
       let(:model) { create(:user) }
-      let(:untracked_file) { described_class.create!(path: model.avatar.file.file) }
+      let(:untracked_file) { described_class.create!(path: found_path(model.avatar.file.file)) }
 
       before do
         model.update!(avatar: uploaded_file)
@@ -228,7 +228,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
     context 'for a group avatar file path' do
       let(:model) { create(:group) }
-      let(:untracked_file) { described_class.create!(path: model.avatar.file.file) }
+      let(:untracked_file) { described_class.create!(path: found_path(model.avatar.file.file)) }
 
       before do
         model.update!(avatar: uploaded_file)
@@ -251,7 +251,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
     context 'for a project avatar file path' do
       let(:model) { create(:project) }
-      let(:untracked_file) { described_class.create!(path: model.avatar.file.file) }
+      let(:untracked_file) { described_class.create!(path: found_path(model.avatar.file.file)) }
 
       before do
         model.update!(avatar: uploaded_file)
@@ -272,7 +272,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
     context 'for a project Markdown attachment (notes, issues, MR descriptions) file path' do
       let(:model) { create(:project) }
-      let(:untracked_file) { described_class.new(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/#{model.full_path}/#{model.uploads.first.path}") }
+      let(:untracked_file) { described_class.new(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/#{model.full_path}/#{model.uploads.first.path}") }
 
       before do
         UploadService.new(model, uploaded_file, FileUploader).execute # Markdown upload
@@ -295,7 +295,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
   end
 
   describe '#mark_as_tracked' do
-    let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/appearance/logo/1/some_logo.jpg") }
+    let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/appearance/logo/1/some_logo.jpg") }
 
     it 'saves the record with tracked set to true' do
       expect do
@@ -308,7 +308,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
   describe '#upload_path' do
     context 'for an appearance logo file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/appearance/logo/1/some_logo.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/appearance/logo/1/some_logo.jpg") }
 
       it 'returns the file path relative to the CarrierWave root' do
         expect(untracked_file.upload_path).to eq('uploads/-/system/appearance/logo/1/some_logo.jpg')
@@ -316,7 +316,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for an appearance header_logo file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/appearance/header_logo/1/some_logo.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/appearance/header_logo/1/some_logo.jpg") }
 
       it 'returns the file path relative to the CarrierWave root' do
         expect(untracked_file.upload_path).to eq('uploads/-/system/appearance/header_logo/1/some_logo.jpg')
@@ -324,7 +324,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for a pre-Markdown Note attachment file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/note/attachment/1234/some_attachment.pdf") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/note/attachment/1234/some_attachment.pdf") }
 
       it 'returns the file path relative to the CarrierWave root' do
         expect(untracked_file.upload_path).to eq('uploads/-/system/note/attachment/1234/some_attachment.pdf')
@@ -332,7 +332,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for a user avatar file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/user/avatar/1234/avatar.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/user/avatar/1234/avatar.jpg") }
 
       it 'returns the file path relative to the CarrierWave root' do
         expect(untracked_file.upload_path).to eq('uploads/-/system/user/avatar/1234/avatar.jpg')
@@ -340,7 +340,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for a group avatar file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/group/avatar/1234/avatar.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/group/avatar/1234/avatar.jpg") }
 
       it 'returns the file path relative to the CarrierWave root' do
         expect(untracked_file.upload_path).to eq('uploads/-/system/group/avatar/1234/avatar.jpg')
@@ -348,7 +348,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for a project avatar file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/project/avatar/1234/avatar.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/project/avatar/1234/avatar.jpg") }
 
       it 'returns the file path relative to the CarrierWave root' do
         expect(untracked_file.upload_path).to eq('uploads/-/system/project/avatar/1234/avatar.jpg')
@@ -358,7 +358,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     context 'for a project Markdown attachment (notes, issues, MR descriptions) file path' do
       let(:project) { create(:project) }
       let(:random_hex) { SecureRandom.hex }
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/#{project.full_path}/#{random_hex}/Some file.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/#{project.full_path}/#{random_hex}/Some file.jpg") }
 
       it 'returns the file path relative to the project directory in uploads' do
         expect(untracked_file.upload_path).to eq("#{random_hex}/Some file.jpg")
@@ -368,7 +368,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
   describe '#uploader' do
     context 'for an appearance logo file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/appearance/logo/1/some_logo.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/appearance/logo/1/some_logo.jpg") }
 
       it 'returns AttachmentUploader as a string' do
         expect(untracked_file.uploader).to eq('AttachmentUploader')
@@ -376,7 +376,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for an appearance header_logo file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/appearance/header_logo/1/some_logo.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/appearance/header_logo/1/some_logo.jpg") }
 
       it 'returns AttachmentUploader as a string' do
         expect(untracked_file.uploader).to eq('AttachmentUploader')
@@ -384,7 +384,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for a pre-Markdown Note attachment file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/note/attachment/1234/some_attachment.pdf") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/note/attachment/1234/some_attachment.pdf") }
 
       it 'returns AttachmentUploader as a string' do
         expect(untracked_file.uploader).to eq('AttachmentUploader')
@@ -392,7 +392,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for a user avatar file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/user/avatar/1234/avatar.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/user/avatar/1234/avatar.jpg") }
 
       it 'returns AvatarUploader as a string' do
         expect(untracked_file.uploader).to eq('AvatarUploader')
@@ -400,7 +400,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for a group avatar file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/group/avatar/1234/avatar.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/group/avatar/1234/avatar.jpg") }
 
       it 'returns AvatarUploader as a string' do
         expect(untracked_file.uploader).to eq('AvatarUploader')
@@ -408,7 +408,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for a project avatar file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/project/avatar/1234/avatar.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/project/avatar/1234/avatar.jpg") }
 
       it 'returns AvatarUploader as a string' do
         expect(untracked_file.uploader).to eq('AvatarUploader')
@@ -417,7 +417,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
     context 'for a project Markdown attachment (notes, issues, MR descriptions) file path' do
       let(:project) { create(:project) }
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/#{project.full_path}/#{SecureRandom.hex}/Some file.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/#{project.full_path}/#{SecureRandom.hex}/Some file.jpg") }
 
       it 'returns FileUploader as a string' do
         expect(untracked_file.uploader).to eq('FileUploader')
@@ -427,7 +427,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
   describe '#model_type' do
     context 'for an appearance logo file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/appearance/logo/1/some_logo.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/appearance/logo/1/some_logo.jpg") }
 
       it 'returns Appearance as a string' do
         expect(untracked_file.model_type).to eq('Appearance')
@@ -435,7 +435,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for an appearance header_logo file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/appearance/header_logo/1/some_logo.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/appearance/header_logo/1/some_logo.jpg") }
 
       it 'returns Appearance as a string' do
         expect(untracked_file.model_type).to eq('Appearance')
@@ -443,7 +443,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for a pre-Markdown Note attachment file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/note/attachment/1234/some_attachment.pdf") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/note/attachment/1234/some_attachment.pdf") }
 
       it 'returns Note as a string' do
         expect(untracked_file.model_type).to eq('Note')
@@ -451,7 +451,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for a user avatar file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/user/avatar/1234/avatar.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/user/avatar/1234/avatar.jpg") }
 
       it 'returns User as a string' do
         expect(untracked_file.model_type).to eq('User')
@@ -459,7 +459,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for a group avatar file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/group/avatar/1234/avatar.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/group/avatar/1234/avatar.jpg") }
 
       it 'returns Namespace as a string' do
         expect(untracked_file.model_type).to eq('Namespace')
@@ -467,7 +467,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for a project avatar file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/project/avatar/1234/avatar.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/project/avatar/1234/avatar.jpg") }
 
       it 'returns Project as a string' do
         expect(untracked_file.model_type).to eq('Project')
@@ -476,7 +476,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
     context 'for a project Markdown attachment (notes, issues, MR descriptions) file path' do
       let(:project) { create(:project) }
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/#{project.full_path}/#{SecureRandom.hex}/Some file.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/#{project.full_path}/#{SecureRandom.hex}/Some file.jpg") }
 
       it 'returns Project as a string' do
         expect(untracked_file.model_type).to eq('Project')
@@ -486,7 +486,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
   describe '#model_id' do
     context 'for an appearance logo file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/appearance/logo/1/some_logo.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/appearance/logo/1/some_logo.jpg") }
 
       it 'returns the ID as a string' do
         expect(untracked_file.model_id).to eq('1')
@@ -494,7 +494,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for an appearance header_logo file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/appearance/header_logo/1/some_logo.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/appearance/header_logo/1/some_logo.jpg") }
 
       it 'returns the ID as a string' do
         expect(untracked_file.model_id).to eq('1')
@@ -502,7 +502,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for a pre-Markdown Note attachment file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/note/attachment/1234/some_attachment.pdf") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/note/attachment/1234/some_attachment.pdf") }
 
       it 'returns the ID as a string' do
         expect(untracked_file.model_id).to eq('1234')
@@ -510,7 +510,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for a user avatar file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/user/avatar/1234/avatar.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/user/avatar/1234/avatar.jpg") }
 
       it 'returns the ID as a string' do
         expect(untracked_file.model_id).to eq('1234')
@@ -518,7 +518,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for a group avatar file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/group/avatar/1234/avatar.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/group/avatar/1234/avatar.jpg") }
 
       it 'returns the ID as a string' do
         expect(untracked_file.model_id).to eq('1234')
@@ -526,7 +526,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
 
     context 'for a project avatar file path' do
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/-/system/project/avatar/1234/avatar.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/-/system/project/avatar/1234/avatar.jpg") }
 
       it 'returns the ID as a string' do
         expect(untracked_file.model_id).to eq('1234')
@@ -535,7 +535,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
     context 'for a project Markdown attachment (notes, issues, MR descriptions) file path' do
       let(:project) { create(:project) }
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/#{project.full_path}/#{SecureRandom.hex}/Some file.jpg") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/#{project.full_path}/#{SecureRandom.hex}/Some file.jpg") }
 
       it 'returns the ID as a string' do
         expect(untracked_file.model_id).to eq(project.id.to_s)
@@ -549,7 +549,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
     context 'for an appearance logo file path' do
       let(:appearance) { create(:appearance) }
-      let(:untracked_file) { described_class.create!(path: appearance.logo.file.file) }
+      let(:untracked_file) { described_class.create!(path: found_path(appearance.logo.file.file)) }
 
       before do
         appearance.update!(logo: uploaded_file)
@@ -566,7 +566,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
     context 'for a project avatar file path' do
       let(:project) { create(:project) }
-      let(:untracked_file) { described_class.create!(path: project.avatar.file.file) }
+      let(:untracked_file) { described_class.create!(path: found_path(project.avatar.file.file)) }
 
       before do
         project.update!(avatar: uploaded_file)
@@ -583,7 +583,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
     context 'for a project Markdown attachment (notes, issues, MR descriptions) file path' do
       let(:project) { create(:project) }
-      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::UPLOAD_DIR}/#{project.full_path}/#{project.uploads.first.path}") }
+      let(:untracked_file) { described_class.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/#{project.full_path}/#{project.uploads.first.path}") }
 
       before do
         UploadService.new(project, uploaded_file, FileUploader).execute
@@ -598,4 +598,10 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
       end
     end
   end
+end
+
+# The path returned by the find command in PrepareUntrackedUploads
+# AKA the path relative to CarrierWave.root, without a leading slash.
+def found_path(absolute_path)
+  absolute_path.sub(%r{\A#{CarrierWave.root}/}, '')
 end
