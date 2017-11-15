@@ -12,6 +12,11 @@ module Projects
       unless project.hashed_storage?(:repository)
         return unless HashedStorage::MigrateRepositoryService.new(project, logger).execute
       end
+
+      # Migrate attachments from Legacy to Hashed Storage
+      unless project.hashed_storage?(:attachments)
+        HashedStorage::MigrateAttachmentsService.new(project, logger).execute
+      end
     end
   end
 end
