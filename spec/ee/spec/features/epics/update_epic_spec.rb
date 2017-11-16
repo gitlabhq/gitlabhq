@@ -37,4 +37,18 @@ feature 'Update Epic', :js do
       expect(find('.issuable-details .description')).to have_content('New epic description')
     end
   end
+
+  context 'when user with owner access displays the epic' do
+    before do
+      group.add_owner(user)
+      visit group_epic_path(group, epic)
+      wait_for_requests
+    end
+
+    it 'does not show delete button inside the edit form' do
+      find('.btn-edit').click
+
+      expect(page).not_to have_selector('.issuable-details .btn-danger')
+    end
+  end
 end
