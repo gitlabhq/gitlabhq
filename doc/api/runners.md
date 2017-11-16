@@ -261,6 +261,15 @@ Example response:
             "sha": "97de212e80737a608d939f648d959671fb0a0142",
             "ref": "master",
             "status": "pending"
+        },
+        "project": {
+            "id": 1,
+            "description": null,
+            "name": "project1",
+            "name_with_namespace": "John Doe2 / project1",
+            "path": "project1",
+            "path_with_namespace": "namespace1/project1",
+            "created_at": "2017-11-16T18:38:46.620Z"
         }
     }
 ]
