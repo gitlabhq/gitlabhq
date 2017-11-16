@@ -1,43 +1,24 @@
 import Vue from 'vue';
-<<<<<<< HEAD
 import mrWidgetOptions from 'ee/vue_merge_request_widget/mr_widget_options';
 import MRWidgetService from 'ee/vue_merge_request_widget/services/mr_widget_service';
 import MRWidgetStore from 'ee/vue_merge_request_widget/stores/mr_widget_store';
 import mockData, { baseIssues, headIssues, securityIssues } from './mock_data';
+import mountComponent from '../helpers/vue_mount_component_helper';
 
 describe('ee merge request widget options', () => {
   let vm;
   let Component;
-  let mountComponent;
 
   beforeEach(() => {
     delete mrWidgetOptions.extends.el; // Prevent component mounting
 
     Component = Vue.extend(mrWidgetOptions);
-
-    mountComponent = () => new Component().$mount();
-=======
-import mrWidgetOptionsEE from 'ee/vue_merge_request_widget/mr_widget_options';
-import mockData from './mock_data';
-import mountComponent from '../helpers/vue_mount_component_helper';
-
-describe('EE mrWidgetOptions', () => {
-  let vm;
-  let MrWidgetOptions;
-
-  beforeEach(() => {
-    // Prevent component mounting
-    delete mrWidgetOptionsEE.extends.el;
-
-    MrWidgetOptions = Vue.extend(mrWidgetOptionsEE);
->>>>>>> ee-com/master
   });
 
   afterEach(() => {
     vm.$destroy();
   });
 
-<<<<<<< HEAD
   describe('security widget', () => {
     beforeEach(() => {
       gl.mrWidgetData = {
@@ -54,7 +35,7 @@ describe('EE mrWidgetOptions', () => {
 
     describe('when it is loading', () => {
       it('should render loading indicator', () => {
-        vm = mountComponent();
+        vm = mountComponent(Component);
         expect(
           vm.$el.querySelector('.js-sast-widget').textContent.trim(),
         ).toContain('Loading security report');
@@ -72,7 +53,7 @@ describe('EE mrWidgetOptions', () => {
 
       beforeEach(() => {
         Vue.http.interceptors.push(interceptor);
-        vm = mountComponent();
+        vm = mountComponent(Component);
       });
 
       afterEach(() => {
@@ -100,7 +81,7 @@ describe('EE mrWidgetOptions', () => {
 
       beforeEach(() => {
         Vue.http.interceptors.push(emptyInterceptor);
-        vm = mountComponent();
+        vm = mountComponent(Component);
       });
 
       afterEach(() => {
@@ -128,7 +109,7 @@ describe('EE mrWidgetOptions', () => {
 
       beforeEach(() => {
         Vue.http.interceptors.push(errorInterceptor);
-        vm = mountComponent();
+        vm = mountComponent(Component);
       });
 
       afterEach(() => {
@@ -162,7 +143,7 @@ describe('EE mrWidgetOptions', () => {
 
     describe('when it is loading', () => {
       it('should render loading indicator', () => {
-        vm = mountComponent();
+        vm = mountComponent(Component);
         expect(
           vm.$el.querySelector('.js-codequality-widget').textContent.trim(),
         ).toContain('Loading codeclimate report');
@@ -186,7 +167,7 @@ describe('EE mrWidgetOptions', () => {
 
       beforeEach(() => {
         Vue.http.interceptors.push(interceptor);
-        vm = mountComponent();
+        vm = mountComponent(Component);
       });
 
       afterEach(() => {
@@ -247,7 +228,7 @@ describe('EE mrWidgetOptions', () => {
 
       beforeEach(() => {
         Vue.http.interceptors.push(emptyInterceptor);
-        vm = mountComponent();
+        vm = mountComponent(Component);
       });
 
       afterEach(() => {
@@ -281,7 +262,7 @@ describe('EE mrWidgetOptions', () => {
 
       beforeEach(() => {
         Vue.http.interceptors.push(errorInterceptor);
-        vm = mountComponent();
+        vm = mountComponent(Component);
       });
 
       afterEach(() => {
@@ -293,11 +274,14 @@ describe('EE mrWidgetOptions', () => {
           expect(vm.$el.querySelector('.js-codequality-widget').textContent.trim()).toContain('Failed to load codeclimate report');
           done();
         }, 0);
-=======
+      });
+    });
+  });
+
   describe('computed', () => {
     describe('shouldRenderApprovals', () => {
       it('should return false when no approvals', () => {
-        vm = mountComponent(MrWidgetOptions, {
+        vm = mountComponent(Component, {
           mrData: {
             ...mockData,
             approvalsRequired: false,
@@ -309,7 +293,7 @@ describe('EE mrWidgetOptions', () => {
       });
 
       it('should return false when in empty state', () => {
-        vm = mountComponent(MrWidgetOptions, {
+        vm = mountComponent(Component, {
           mrData: {
             ...mockData,
             approvalsRequired: true,
@@ -321,7 +305,7 @@ describe('EE mrWidgetOptions', () => {
       });
 
       it('should return true when requiring approvals and in non-empty state', () => {
-        vm = mountComponent(MrWidgetOptions, {
+        vm = mountComponent(Component, {
           mrData: {
             ...mockData,
             approvalsRequired: true,
@@ -330,7 +314,6 @@ describe('EE mrWidgetOptions', () => {
         vm.mr.state = 'readyToMerge';
 
         expect(vm.shouldRenderApprovals).toBeTruthy();
->>>>>>> ee-com/master
       });
     });
   });

@@ -1,7 +1,6 @@
 <script>
 import statusIcon from '~/vue_merge_request_widget/components/mr_widget_status_icon';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
-import '~/lib/utils/text_utility';
 import issuesBlock from './mr_widget_report_issues.vue';
 
 export default {
