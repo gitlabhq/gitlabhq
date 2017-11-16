@@ -20,10 +20,10 @@ describe Geo::FileDownloadDispatchWorker, :geo, :truncate do
 
   shared_examples '#perform' do |skip_tests|
     before do
-      skip if skip_tests
+      skip('FDW is not configured') if skip_tests
     end
 
-    it 'does not schedule anything when secondary role is disabled' do
+    it 'does not schedule anything when tracking database is not configured' do
       create(:lfs_object, :with_file)
 
       allow(Gitlab::Geo).to receive(:geo_database_configured?) { false }
