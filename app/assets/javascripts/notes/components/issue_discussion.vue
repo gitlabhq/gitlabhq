@@ -4,7 +4,7 @@
   import { SYSTEM_NOTE } from '../constants';
   import issueNote from './issue_note.vue';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-  import issueNoteHeader from './issue_note_header.vue';
+  import issueNoteHeader from '~/vue_shared/components/notes/note_header.vue';
   import issueNoteActions from './issue_note_actions.vue';
   import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
   import issueNoteEditedText from './issue_note_edited_text.vue';
