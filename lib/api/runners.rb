@@ -85,7 +85,9 @@ module API
         destroy_conditionally!(runner)
       end
 
-      desc 'List jobs running on a runner'
+      desc 'List jobs running on a runner' do
+        success Entities::JobWithProject
+      end
       params do
         requires :id, type: Integer, desc: 'The ID of the runner'
         use :pagination
@@ -94,7 +96,7 @@ module API
         runner = get_runner(params[:id])
         authenticate_list_runners_jobs!(runner)
 
-        present paginate(runner.builds.running), with: Entities::Job
+        present paginate(runner.builds.running), with: Entities::JobWithProject
       end
     end
 
