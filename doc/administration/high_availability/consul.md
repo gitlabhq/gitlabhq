@@ -60,6 +60,30 @@ To fix this:
    ```
 1. Run `gitlab-ctl reconfigure`
 
+### Consul agents do not start - Multiple private IPs
+
+In the case that a node has multiple private IPs the agent be confused as to which of the private addresses to advertise, and then immediately exit on start.
+
+You will see messages like the following in `gitlab-ctl tail consul` output if you are running into this issue:
+
+```
+2017-11-09_17:41:45.52876 ==> Starting Consul agent...
+2017-11-09_17:41:45.53057 ==> Error creating agent: Failed to get advertise address: Multiple private IPs found. Please configure one.
+```
+
+To fix this:
+
+1. Pick an address on the node that all of the other nodes can reach this node through.
+1. Update your `/etc/gitlab/gitlab.rb`
+
+   ```ruby
+   consul['configuration'] = {
+     ...
+     bind_addr: 'IP ADDRESS'
+   }
+   ```
+1. Run `gitlab-ctl reconfigure`
+
 ### Outage recovery
 
 If you lost enough server agents in the cluster to break quorum, then the cluster is considered failed, and it will not function without manual intervenetion.
