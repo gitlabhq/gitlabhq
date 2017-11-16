@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-02 14:42+0100\n"
-"PO-Revision-Date: 2017-11-16 01:22-0500\n"
+"PO-Revision-Date: 2017-11-16 01:51-0500\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -540,13 +540,13 @@ msgid "ClusterIntegration|Manage Cluster integration on your GitLab project"
 msgstr "在你的 GitLab 專案上管理叢集整合"
 
 msgid "ClusterIntegration|Manage your cluster by visiting %{link_gke}"
-msgstr "管理你的叢集中尋訪至%{link_gke}"
+msgstr "請至 %{link_gke} 管理你的叢集"
 
 msgid "ClusterIntegration|Number of nodes"
 msgstr "所有的端點數量"
 
 msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
-msgstr "請確認你的 Google 帳戶是否遵從這些需求"
+msgstr "請確認你的 Google 帳戶是否符合這些條件"
 
 msgid "ClusterIntegration|Project namespace (optional, unique)"
 msgstr "專案命名空間(選填，唯一)"
@@ -561,19 +561,20 @@ msgid "ClusterIntegration|Remove integration"
 msgstr "刪除整合"
 
 msgid "ClusterIntegration|Removing cluster integration will remove the cluster configuration you have added to this project. It will not delete your project."
-msgstr "當刪除叢集需要加入專案的定義組態檔，會刪除叢集整合。這並不會刪除你的專案。"
+msgstr "當刪除叢集需要加入專案的定義組態檔，會刪除叢集整合。這並不會刪除你的專案。\n\n"
+"刪除叢集的同時，將一起刪除已加入此專案的定義組態檔，但你的專案不會因此被刪除。"
 
 msgid "ClusterIntegration|See and edit the details for your cluster"
-msgstr "觀看與編輯你的叢集內容"
+msgstr "查看與編輯你的叢集內容"
 
 msgid "ClusterIntegration|See machine types"
-msgstr "觀看機器型別"
+msgstr "查看機器型別"
 
 msgid "ClusterIntegration|See your projects"
 msgstr "觀看你的專案"
 
 msgid "ClusterIntegration|See zones"
-msgstr "觀看區域"
+msgstr "查看區域"
 
 msgid "ClusterIntegration|Something went wrong on our end."
 msgstr "內部發生了錯誤"
@@ -588,7 +589,7 @@ msgid "ClusterIntegration|With a cluster associated to this project, you can use
 msgstr "當叢集連結到此專案，你可以使用代碼審查工具，部署你的應用程式，執行你的平行工作列，還有更多容易上手的方式可以使用。"
 
 msgid "ClusterIntegration|Your account must have %{link_to_container_engine}"
-msgstr "您的帳戶必須有 %{link_to_container_engine}"
+msgstr "您的帳號必須有 %{link_to_container_engine}"
 
 msgid "ClusterIntegration|Zone"
 msgstr "區域"
@@ -623,7 +624,7 @@ msgid "Commit Message"
 msgstr "更動訊息"
 
 msgid "Commit duration in minutes for last 30 commits"
-msgstr "最近 30 次更動花費的時間（分鐘）"
+msgstr "最近 30 次更動所花費的時間（分鐘）"
 
 msgid "Commit message"
 msgstr "更動說明 (commit) "
