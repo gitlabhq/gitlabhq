@@ -56,7 +56,7 @@ To add a new cluster:
     don't have to fill it in; by leaving it blank, GitLab will create one for you.
 1. Click the **Create cluster** button.
 
-After a few moments your cluster should be created. If something goes wrong,
+After a few moments, your cluster should be created. If something goes wrong,
 you will be notified.
 
 Now, you can proceed to [enable the Cluster integration](#enabling-or-disabling-the-cluster-integration).
@@ -73,6 +73,17 @@ You can now start using your Kubernetes cluster for your deployments.
 
 To disable the Cluster integration, follow the same procedure.
 
+## Installing applications
+
+GitLab provides a one-click install for various applications which will be
+added directly to your configured cluster. Those applications are needed for
+review apps and deployments.
+
+| Application | GitLab version | Description |
+| ----------- | :------------: | ----------- |
+| [Helm Tiller](https://docs.helm.sh/) | 10.2+ | Helm is a package manager for Kubernetes and is required to install all the other applications. It will be automatically installed as a dependency when you try to install a different app. It is installed in its own pod inside the cluster which can run the `helm` CLI in a safe environment. |
+| [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) | 10.2+ | Ingress acts as a web proxy for your web applications and is useful if you want to use Auto DevOps or deploy your own apps. |
+
 ## Removing the Cluster integration
 
 NOTE: **Note:**
@@ -88,12 +99,3 @@ To remove the Cluster integration from your project, simply click on the
 and [add a cluster](#adding-a-cluster) again.
 
 [permissions]: ../../permissions.md
-
-## Installing applications
-
-GitLab provides a one-click install for
-[Helm Tiller](https://docs.helm.sh/) and
-[Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)
-which will be added directly to your configured cluster.
-
-![Cluster application settings](img/cluster-applications.png)
