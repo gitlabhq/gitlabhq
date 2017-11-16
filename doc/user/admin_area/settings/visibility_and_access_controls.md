@@ -37,4 +37,14 @@ not selected.
   HTTP, will still be accessible. What GitLab does is restrict access on the
   application level.
 
+## Allow remote mirrors to be setup for projects
+
+> [Introduced][ee-3130] in Gitlab 10.2.
+
+This option is enabled by default. By disabling it, push mirroring will no longer
+work in every repository and can only be re-enabled on a per-project basis by an admin.
+
+![Remote mirror settings](img/remote_mirror_settings.png)
+
 [ce-4696]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/4696
+[ee-3130]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3130
