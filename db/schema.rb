@@ -615,6 +615,7 @@ ActiveRecord::Schema.define(version: 20171120145444) do
     t.datetime "updated_at", null: false
     t.boolean "enabled", default: true
     t.string "name", null: false
+    t.string "environment_scope", default: "*", null: false
   end
 
   add_index "clusters", ["enabled"], name: "index_clusters_on_enabled", using: :btree
