@@ -22,9 +22,11 @@ module EE
       end
 
       def log_geo_event(project)
-        ::Geo::RepositoryDeletedEventStore.new(project,
+        ::Geo::RepositoryDeletedEventStore.new(
+          project,
           repo_path: repo_path,
-          wiki_path: wiki_path).create
+          wiki_path: wiki_path
+        ).create
       end
 
       # Removes physical repository in a Geo replicated secondary node
@@ -37,14 +39,7 @@ module EE
         flush_caches(project)
 
         trash_repositories!
-        remove_tracking_entries!
         log_info("Project \"#{project.name}\" was removed")
-      end
-
-      def remove_tracking_entries!
-        return unless ::Gitlab::Geo.secondary?
-
-        ::Geo::ProjectRegistry.where(project_id: project.id).delete_all
       end
 
       private

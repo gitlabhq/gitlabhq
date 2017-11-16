@@ -122,7 +122,6 @@ module Gitlab
 
         def handle_repository_deleted(event_log)
           event = event_log.repository_deleted_event
-
           disk_path = File.join(event.repository_storage_path, event.deleted_path)
 
           job_id = ::Geo::RepositoryDestroyService

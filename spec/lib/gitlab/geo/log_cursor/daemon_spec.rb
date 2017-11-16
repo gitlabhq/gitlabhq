@@ -139,11 +139,11 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
 
     context 'when replaying a repository deleted event' do
       let(:event_log) { create(:geo_event_log, :deleted_event) }
-      let(:project) { event_log.repository_deleted_event.project }
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
       let(:repository_deleted_event) { event_log.repository_deleted_event }
+      let(:project) { repository_deleted_event.project }
 
-      it 'does not create a new project registry' do
+      it 'does not create a tracking database entry' do
         expect { daemon.run_once! }.not_to change(Geo::ProjectRegistry, :count)
       end
 
@@ -157,6 +157,12 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
           .with(project_id, project_name, full_path, project.repository_storage)
 
         daemon.run_once!
+      end
+
+      it 'removes the tracking database entry if exist' do
+        create(:geo_project_registry, :synced, project: project)
+
+        expect { daemon.run_once! }.to change(Geo::ProjectRegistry, :count).by(-1)
       end
     end
 
