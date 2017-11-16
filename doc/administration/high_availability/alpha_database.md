@@ -445,7 +445,7 @@ Repeat the above steps on all secondary nodes.
    reload pgbouncer. Confirm `PGBOUNCER_PASSWORD` twice when asked:
 
      ```sh
-     gitlab-ctl write-pgpass --host PGBOUNCER_HOST --database pgbouncer --user pgbouncer --hostuser gitlab-consul
+     gitlab-ctl write-pgpass --host 127.0.0.1 --database pgbouncer --user pgbouncer --hostuser gitlab-consul
      ```
 
 1. Ensure the node is talking to the current master:
