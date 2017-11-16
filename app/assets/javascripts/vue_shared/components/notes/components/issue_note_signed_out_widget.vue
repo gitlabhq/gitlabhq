@@ -2,7 +2,7 @@
   import { mapGetters } from 'vuex';
 
   export default {
-    name: 'singInLinksNotes',
+    name: 'signInLinksNotes',
     computed: {
       ...mapGetters([
         'getNotesDataByProp',
