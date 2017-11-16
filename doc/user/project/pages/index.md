@@ -2,7 +2,7 @@
 
 With GitLab Pages you can have a website live at no cost.
 
-Your files leave in a GitLab project's [repository](../repository/index.md),
+Your files live in a GitLab project's [repository](../repository/index.md),
 from which you can deploy [static websites](#explore-gitlab-pages)
 to the GitLab Pages server. GitLab Pages supports all static site generators (SSGs).
 
