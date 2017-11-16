@@ -51,6 +51,9 @@ export const decorateData = (entity) => {
     parentTreeUrl = '',
     level = 0,
     base64 = false,
+
+    file_lock,
+
   } = entity;
 
   return {
@@ -72,6 +75,9 @@ export const decorateData = (entity) => {
     renderError,
     content,
     base64,
+
+    file_lock,
+
   };
 };
 

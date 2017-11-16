@@ -111,4 +111,34 @@ describe('RepoFile', () => {
       expect(vm.$el.querySelector('td').textContent.replace(/\s+/g, ' ')).toContain('submodule name @ 12345678');
     });
   });
+
+  describe('locked file', () => {
+    let f;
+
+    beforeEach(() => {
+      f = file('locked file');
+      f.file_lock = {
+        user: {
+          name: 'testuser',
+          updated_at: new Date(),
+        },
+      };
+
+      vm = createComponent({
+        file: f,
+      });
+    });
+
+    afterEach(() => {
+      vm.$destroy();
+    });
+
+    it('renders lock icon', () => {
+      expect(vm.$el.querySelector('.file-status-icon')).not.toBeNull();
+    });
+
+    it('renders a tooltip', () => {
+      expect(vm.$el.querySelector('.repo-file-name span').dataset.originalTitle).toContain('Locked by testuser');
+    });
+  });
 });

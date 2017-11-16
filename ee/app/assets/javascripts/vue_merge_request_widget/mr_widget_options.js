@@ -23,7 +23,7 @@ export default {
   },
   computed: {
     shouldRenderApprovals() {
-      return this.mr.approvalsRequired;
+      return this.mr.approvalsRequired && this.mr.state !== 'nothingToMerge';
     },
     shouldRenderCodeQuality() {
       const { codeclimate } = this.mr;
@@ -153,7 +153,7 @@ export default {
         :mr="mr"
         :service="service" />
       <mr-widget-approvals
-        v-if="mr.approvalsRequired"
+        v-if="shouldRenderApprovals"
         :mr="mr"
         :service="service" />
       <collapsible-section

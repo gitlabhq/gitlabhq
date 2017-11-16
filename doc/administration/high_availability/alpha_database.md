@@ -66,10 +66,11 @@ the communication as well as information required for running the service.
 Bellow you will find details on each service and the minimum required
 information you need to provide.
 
-#### Consul
+#### Consul information
 
 When using default setup, minimum configuration requires:
 
+- `CONSUL_USERNAME`. Defaults to `gitlab-consul`
 - `CONSUL_DATABASE_PASSWORD`. Password for the database user.
 - `CONSUL_PASSWORD_HASH`. This is a hash generated out of consul username/password pair.
 Can be generated with:
@@ -91,7 +92,7 @@ database
   - `/var/opt/gitlab/pgbouncer/pg_auth`: hashed
   - `/var/opt/gitlab/gitlab-consul/.pgpass`: plaintext
 
-#### PostgreSQL
+#### PostgreSQL information
 
 When configuring PostgreSQL, we will set `max_wal_senders` to one more than
 the number of database nodes in the cluster.
@@ -112,12 +113,19 @@ server nodes.
 
 We will need the following password information for the application's database user:
 
+- `POSTGRESQL_USERNAME`. Defaults to `gitlab`
 - `POSTGRESQL_USER_PASSWORD`. The password for the database user
-- `POSTGRESQL_PASSWORD_HASH`. The md5 hash of POSTGRESQL_USER_PASSWORD
-#### Pgbouncer
+- `POSTGRESQL_PASSWORD_HASH`. This is a hash generated out of the username/password pair.
+Can be generated with:
+    ```sh
+    echo -n 'POSTGRESQL_USER_PASSWORDPOSTGRESQL_USERNAME' | md5sum
+    ```
+
+#### Pgbouncer information
 
 When using default setup, minimum configuration requires:
 
+- `PGBOUNCER_USERNAME`. Defaults to `pgbouncer`
 - `PGBOUNCER_PASSWORD`. This is a password for pgbouncer service.
 - `PGBOUNCER_PASSWORD_HASH`. This is a hash generated out of pgbouncer username/password pair.
 Can be generated with:
@@ -137,7 +145,7 @@ Few notes on the service itself:
   - `/etc/gitlab/gitlab.rb`: hashed, and in plain text
   - `/var/opt/gitlab/pgbouncer/pg_auth`: hashed
 
-#### Repmgr
+#### Repmgr information
 
 When using default setup, you will only have to prepare the network subnets that will
 be allowed to authenticate with the service.
@@ -162,7 +170,7 @@ When installing the GitLab package, do not supply `EXTERNAL_URL` value.
 
 Each node needs to be configured to run only the services it needs.
 
-### Consul nodes
+### Configuring the Consul nodes
 
 On each Consul node perform the following:
 
@@ -202,7 +210,7 @@ See `START user configuration` section in the next step for required information
 
 After this is completed on each Consul server node, proceed further.
 
-### Database nodes
+### Configuring the Database nodes
 
 On each database node perform the following:
 
@@ -231,7 +239,6 @@ See `START user configuration` section in the next step for required information
     postgresql['hot_standby'] = 'on'
     postgresql['wal_level'] = 'replica'
     postgresql['shared_preload_libraries'] = 'repmgr_funcs'
-    postgresql['sql_user_password'] = 'POSTGRESQL_PASSWORD_HASH'
 
     # Disable automatic database migrations
     gitlab_rails['auto_migrate'] = false
@@ -349,7 +356,7 @@ attributes set, but the following need to be set.
 After reconfigure successfully runs, the following steps must be completed to
 get the cluster up and running.
 
-### Consul
+### Consul nodes post-configuration
 
 Verify the nodes are all communicating:
 
@@ -360,13 +367,17 @@ Verify the nodes are all communicating:
 The output should be similar to:
 
 ```
-Node         Address              Status  Type    Build  Protocol  DC
-NODE_ONE    XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_cluster
-NODE_TWO    XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_cluster
-NODE_THREE  XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_cluster
+Node                 Address               Status  Type    Build  Protocol  DC
+CONSUL_NODE_ONE      XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
+CONSUL_NODE_TWO      XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
+CONSUL_NODE_THREE    XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
+DATABASE_NODE_ONE    XXX.XXX.XXX.YYY:8301  alive   client  0.9.2  2         gitlab_consul
+DATABASE_NODE_TWO    XXX.XXX.XXX.YYY:8301  alive   client  0.9.2  2         gitlab_consul
+DATABASE_NODE_THREE  XXX.XXX.XXX.YYY:8301  alive   client  0.9.2  2         gitlab_consul
+PGBOUNCER_NODE       XXX.XXX.XXX.YYY:8301  alive   client  0.9.0  2         gitlab_consul
 ```
 
-### Database nodes
+### Database nodes post-configuration
 
 #### Primary node
 
@@ -428,10 +439,10 @@ as `MASTER_NODE_NAME`.
 
 Repeat the above steps on all secondary nodes.
 
-### Pgbouncer node
+### Pgbouncer node post-configuration
 
 1. Create a `.pgpass` file user for the `CONSUL_USER` account to be able to
-   reload pgbouncer. Confirm the password twice when asked:
+   reload pgbouncer. Confirm `PGBOUNCER_PASSWORD` twice when asked:
 
      ```sh
      gitlab-ctl write-pgpass --host PGBOUNCER_HOST --database pgbouncer --user pgbouncer --hostuser gitlab-consul
@@ -465,7 +476,7 @@ Repeat the above steps on all secondary nodes.
      (2 rows)
      ```
 
-### Application node
+### Application node post-configuration
 
 Ensure that all migrations ran:
 
@@ -626,9 +637,9 @@ On the consul server nodes, it is important to restart the consul service in a c
 
 If you're running into an issue with a component not outlined here, be sure to check the troubleshooting section of their specific documentation page.
 
-[Consul](consul.md#troubleshooting)
-[PostgreSQL](http://docs.gitlab.com/omnibus/settings/database.html#troubleshooting)
-[GitLab application](gitlab.md#troubleshooting)
+- [Consul](consul.md#troubleshooting)
+- [PostgreSQL](http://docs.gitlab.com/omnibus/settings/database.html#troubleshooting)
+- [GitLab application](gitlab.md#troubleshooting)
 
 ---
 

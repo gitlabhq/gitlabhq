@@ -1,4 +1,5 @@
 import Vue from 'vue';
+<<<<<<< HEAD
 import mrWidgetOptions from 'ee/vue_merge_request_widget/mr_widget_options';
 import MRWidgetService from 'ee/vue_merge_request_widget/services/mr_widget_service';
 import MRWidgetStore from 'ee/vue_merge_request_widget/stores/mr_widget_store';
@@ -15,12 +16,28 @@ describe('ee merge request widget options', () => {
     Component = Vue.extend(mrWidgetOptions);
 
     mountComponent = () => new Component().$mount();
+=======
+import mrWidgetOptionsEE from 'ee/vue_merge_request_widget/mr_widget_options';
+import mockData from './mock_data';
+import mountComponent from '../helpers/vue_mount_component_helper';
+
+describe('EE mrWidgetOptions', () => {
+  let vm;
+  let MrWidgetOptions;
+
+  beforeEach(() => {
+    // Prevent component mounting
+    delete mrWidgetOptionsEE.extends.el;
+
+    MrWidgetOptions = Vue.extend(mrWidgetOptionsEE);
+>>>>>>> ee-com/master
   });
 
   afterEach(() => {
     vm.$destroy();
   });
 
+<<<<<<< HEAD
   describe('security widget', () => {
     beforeEach(() => {
       gl.mrWidgetData = {
@@ -276,6 +293,44 @@ describe('ee merge request widget options', () => {
           expect(vm.$el.querySelector('.js-codequality-widget').textContent.trim()).toContain('Failed to load codeclimate report');
           done();
         }, 0);
+=======
+  describe('computed', () => {
+    describe('shouldRenderApprovals', () => {
+      it('should return false when no approvals', () => {
+        vm = mountComponent(MrWidgetOptions, {
+          mrData: {
+            ...mockData,
+            approvalsRequired: false,
+          },
+        });
+        vm.mr.state = 'readyToMerge';
+
+        expect(vm.shouldRenderApprovals).toBeFalsy();
+      });
+
+      it('should return false when in empty state', () => {
+        vm = mountComponent(MrWidgetOptions, {
+          mrData: {
+            ...mockData,
+            approvalsRequired: true,
+          },
+        });
+        vm.mr.state = 'nothingToMerge';
+
+        expect(vm.shouldRenderApprovals).toBeFalsy();
+      });
+
+      it('should return true when requiring approvals and in non-empty state', () => {
+        vm = mountComponent(MrWidgetOptions, {
+          mrData: {
+            ...mockData,
+            approvalsRequired: true,
+          },
+        });
+        vm.mr.state = 'readyToMerge';
+
+        expect(vm.shouldRenderApprovals).toBeTruthy();
+>>>>>>> ee-com/master
       });
     });
   });

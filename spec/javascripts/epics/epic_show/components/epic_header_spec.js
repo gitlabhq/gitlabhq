@@ -31,4 +31,42 @@ describe('epicHeader', () => {
   it('should render username tooltip', () => {
     expect(vm.$el.querySelector('.user-avatar-link span').dataset.originalTitle).toEqual(author.username);
   });
+
+  describe('canDelete', () => {
+    it('should not show loading button by default', () => {
+      expect(vm.$el.querySelector('.btn-remove')).toBeNull();
+    });
+
+    it('should show loading button if canDelete', (done) => {
+      vm.canDelete = true;
+      Vue.nextTick(() => {
+        expect(vm.$el.querySelector('.btn-remove')).toBeDefined();
+        done();
+      });
+    });
+  });
+
+  describe('delete epic', () => {
+    let deleteEpic;
+
+    beforeEach((done) => {
+      deleteEpic = jasmine.createSpy();
+      spyOn(window, 'confirm').and.returnValue(true);
+      vm.canDelete = true;
+      vm.$on('deleteEpic', deleteEpic);
+
+      Vue.nextTick(() => {
+        vm.$el.querySelector('.btn-remove').click();
+        done();
+      });
+    });
+
+    it('should set deleteLoading', () => {
+      expect(vm.deleteLoading).toEqual(true);
+    });
+
+    it('should emit deleteEpic event', () => {
+      expect(deleteEpic).toHaveBeenCalled();
+    });
+  });
 });

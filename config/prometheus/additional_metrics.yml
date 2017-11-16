@@ -145,10 +145,10 @@
       - container_memory_usage_bytes
     weight: 1
     queries:
-    - query_range: '(sum(container_memory_usage_bytes{container_name!="POD",environment="%{ci_environment_slug}"}) / count(container_memory_usage_bytes{container_name!="POD",environment="%{ci_environment_slug}"})) /1024/1024'
+    - query_range: '(sum(avg(container_memory_usage_bytes{container_name!="POD",environment="%{ci_environment_slug}"}) without (job))) / count(avg(container_memory_usage_bytes{container_name!="POD",environment="%{ci_environment_slug}"}) without (job)) /1024/1024'
       label: Average
       unit: MB
-    - query_range: '(sum(container_memory_usage_bytes{container_name!="POD",environment="%{ci_environment_slug}-canary"}) / count(container_memory_usage_bytes{container_name!="POD",environment="%{ci_environment_slug}-canary"})) /1024/1024'
+    - query_range: '(sum(avg(container_memory_usage_bytes{container_name!="POD",environment="%{ci_environment_slug}-canary"}) without (job))) / count(avg(container_memory_usage_bytes{container_name!="POD",environment="%{ci_environment_slug}-canary"}) without (job)) /1024/1024'
       label: Average
       unit: MB
       track: canary
@@ -158,10 +158,10 @@
      - container_cpu_usage_seconds_total
     weight: 1
     queries:
-    - query_range: 'sum(rate(container_cpu_usage_seconds_total{container_name!="POD",environment="%{ci_environment_slug}"}[2m])) * 100'
-      label: CPU
+    - query_range: 'sum(avg(rate(container_cpu_usage_seconds_total{container_name!="POD",environment="%{ci_environment_slug}"}[2m])) without (job)) * 100'
+      label: Average
       unit: "%"
-    - query_range: 'sum(rate(container_cpu_usage_seconds_total{container_name!="POD",environment="%{ci_environment_slug}-canary"}[2m])) * 100'
-      label: CPU
+    - query_range: 'sum(avg(rate(container_cpu_usage_seconds_total{container_name!="POD",environment="%{ci_environment_slug}-canary"}[2m])) without (job)) * 100'
+      label: Average
       unit: "%"
       track: canary

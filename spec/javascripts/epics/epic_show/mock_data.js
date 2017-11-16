@@ -1,9 +1,11 @@
 export const contentProps = {
   endpoint: '',
+  canAdmin: true,
   canUpdate: true,
-  canDestroy: false,
+  canDestroy: true,
   markdownPreviewPath: '',
   markdownDocsPath: '',
+  issueLinksEndpoint: '/',
   groupPath: '',
   initialTitleHtml: '',
   initialTitleText: '',

@@ -26,7 +26,7 @@ describe Projects::UpdateRepositoryStorageService do
       FileUtils.rm_rf('tmp/tests/storage_b')
     end
 
-    context 'without wiki', :skip_gitaly_mock do
+    context 'without wiki', :disable_gitaly do
       let(:project) { create(:project, :repository, repository_storage: 'a', repository_read_only: true, wiki_enabled: false) }
 
       context 'when the move succeeds' do
@@ -60,7 +60,7 @@ describe Projects::UpdateRepositoryStorageService do
       end
     end
 
-    context 'with wiki', :skip_gitaly_mock do
+    context 'with wiki', :disable_gitaly do
       let(:project) { create(:project, :repository, repository_storage: 'a', repository_read_only: true, wiki_enabled: true) }
       let(:repository_double) { double(:repository) }
       let(:wiki_repository_double) { double(:repository) }

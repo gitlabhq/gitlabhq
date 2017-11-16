@@ -4,7 +4,11 @@ import tooltip from '../../../vue_shared/directives/tooltip';
 
 export default {
   name: 'IssueToken',
-
+  data() {
+    return {
+      removeDisabled: false,
+    };
+  },
   props: {
     idKey: {
       type: Number,
@@ -39,6 +43,11 @@ export default {
       required: false,
       default: false,
     },
+    isCondensed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   directives: {
@@ -47,10 +56,15 @@ export default {
 
   computed: {
     removeButtonLabel() {
-      return `Remove related issue ${this.displayReference}`;
+      return `Remove ${this.displayReference}`;
     },
     hasState() {
       return this.state && this.state.length > 0;
+    },
+    stateTitle() {
+      if (this.isCondensed) return '';
+
+      return this.isOpen ? 'Open' : 'Closed';
     },
     isOpen() {
       return this.state === 'opened';
@@ -67,6 +81,12 @@ export default {
     computedPath() {
       return this.path.length ? this.path : null;
     },
+    innerComponentType() {
+      return this.isCondensed ? 'span' : 'div';
+    },
+    issueTitle() {
+      return this.isCondensed ? this.title : '';
+    },
   },
 
   methods: {
@@ -77,53 +97,81 @@ export default {
       }
 
       eventHub.$emit(`${namespacePrefix}removeRequest`, this.idKey);
+
+      this.removeDisabled = true;
     },
   },
 };
 </script>
 
 <template>
-  <div class="issue-token">
+  <div :class="{
+    'issue-token': isCondensed,
+    'flex-row issue-info-container': !isCondensed,
+  }">
     <component
       v-tooltip
       :is="this.computedLinkElementType"
       ref="link"
-      class="issue-token-link"
+      :class="{
+        'issue-token-link': isCondensed,
+        'issue-main-info': !isCondensed,
+      }"
       :href="computedPath"
-      :title="title"
-      data-placement="top">
-      <span
+      :title="issueTitle"
+      data-placement="top"
+    >
+      <component
+        :is="innerComponentType"
+        v-if="hasTitle"
+        ref="title"
+        class="js-issue-token-title"
+        :class="{
+          'issue-token-title issue-token-end': isCondensed,
+          'issue-title block-truncated': !isCondensed,
+          'issue-token-title-standalone': !canRemove
+        }">
+        <span class="issue-token-title-text">
+          {{ title }}
+        </span>
+      </component>
+      <component
+        :is="innerComponentType"
         ref="reference"
-        class="issue-token-reference">
+        :class="{
+          'issue-token-reference': isCondensed,
+          'issuable-info': !isCondensed,
+        }">
         <i
           ref="stateIcon"
           v-if="hasState"
+          v-tooltip
           class="fa"
           :class="{
             'issue-token-state-icon-open fa-circle-o': isOpen,
             'issue-token-state-icon-closed fa-minus': isClosed,
           }"
-          :aria-label="state">
-        </i>
-        {{ displayReference }}
-      </span>
-      <span
-        v-if="hasTitle"
-        ref="title"
-        class="js-issue-token-title issue-token-title"
-        :class="{ 'issue-token-title-standalone': !canRemove }">
-        <span class="issue-token-title-text">
-          {{ title }}
-        </span>
-      </span>
+          :title="stateTitle"
+          :aria-label="state"
+        >
+        </i>{{ displayReference }}
+      </component>
     </component>
     <button
       v-if="canRemove"
+      v-tooltip
       ref="removeButton"
       type="button"
-      class="js-issue-token-remove-button issue-token-remove-button"
+      class="js-issue-token-remove-button"
+      :class="{
+        'issue-token-remove-button': isCondensed,
+        'btn btn-default': !isCondensed
+      }"
+      :title="removeButtonLabel"
       :aria-label="removeButtonLabel"
-      @click="onRemoveRequest">
+      :disabled="removeDisabled"
+      @click="onRemoveRequest"
+    >
       <i
         class="fa fa-times"
         aria-hidden="true">

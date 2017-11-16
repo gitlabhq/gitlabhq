@@ -6,8 +6,7 @@ module Banzai
       def nodes_visible_to_user(user, nodes)
         issues = issues_for_nodes(nodes)
 
-        readable_issues = Ability
-          .issues_readable_by_user(issues.values, user).to_set
+        readable_issues = Ability.issues_readable_by_user(issues.values, user).to_set
 
         nodes.select do |node|
           readable_issues.include?(issues[node])

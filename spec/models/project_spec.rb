@@ -1015,20 +1015,15 @@ describe Project do
 
     context 'when avatar file is uploaded' do
       let(:project) { create(:project, :public, :with_avatar) }
-      let(:avatar_path) { "/uploads/-/system/project/avatar/#{project.id}/dk.png" }
-      let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
 
       it 'shows correct url' do
-        expect(project.avatar_url).to eq(avatar_path)
-        expect(project.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
-
-        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-
-        expect(project.avatar_url).to eq([gitlab_host, avatar_path].join)
+        expect(project.avatar_url).to eq(project.avatar.url)
+        expect(project.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, project.avatar.url].join)
       end
 
       context 'When in a geo secondary node' do
         let(:geo_url) { 'http://geo.example.com' }
+        let(:avatar_path) { project.avatar_path(only_path: true) }
 
         before do
           allow(Gitlab::Geo).to receive(:secondary?) { true }
@@ -1039,7 +1034,7 @@ describe Project do
       end
     end
 
-    context 'When avatar file in git' do
+    context 'when avatar file in git' do
       before do
         allow(project).to receive(:avatar_in_git) { true }
       end

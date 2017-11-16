@@ -74,7 +74,7 @@ describe('RelatedIssuesBlock', () => {
     beforeEach(() => {
       vm = new RelatedIssuesBlock({
         propsData: {
-          canAddRelatedIssues: true,
+          canAdmin: true,
         },
       }).$mount();
     });

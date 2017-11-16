@@ -24,7 +24,7 @@ export default {
       required: false,
       default: () => [],
     },
-    canAddRelatedIssues: {
+    canAdmin: {
       type: Boolean,
       required: false,
       default: false,
@@ -53,6 +53,11 @@ export default {
       type: Object,
       required: false,
       default: () => ({}),
+    },
+    title: {
+      type: String,
+      required: false,
+      default: 'Related issues',
     },
   },
 
@@ -100,7 +105,7 @@ export default {
         class="panel-heading"
         :class="{ 'panel-empty-heading': !this.hasBody }">
         <h3 class="panel-title">
-          Related issues
+          {{ title }}
           <a
             v-if="hasHelpPath"
             :href="helpPath">
@@ -112,11 +117,11 @@ export default {
           <div class="js-related-issues-header-issue-count related-issues-header-issue-count issue-count-badge">
             <span
               class="issue-count-badge-count"
-              :class="{ 'has-btn': this.canAddRelatedIssues }">
+              :class="{ 'has-btn': this.canAdmin }">
               {{ badgeLabel }}
             </span>
             <button
-              v-if="canAddRelatedIssues"
+              v-if="canAdmin"
               ref="issueCountBadgeAddButton"
               type="button"
               class="js-issue-count-badge-add-button issue-count-badge-add-button btn btn-sm btn-default"
@@ -156,11 +161,11 @@ export default {
             label="Fetching related issues" />
         </div>
         <ul
-          class="related-issues-token-list">
+          class="flex-list content-list issuable-list">
           <li
             :key="issue.id"
             v-for="issue in relatedIssues"
-            class="js-related-issues-token-list-item related-issues-token-list-item">
+            class="js-related-issues-token-list-item">
             <issue-token
               event-namespace="relatedIssue"
               :id-key="issue.id"
@@ -168,7 +173,8 @@ export default {
               :title="issue.title"
               :path="issue.path"
               :state="issue.state"
-              :can-remove="true" />
+              :can-remove="canAdmin"
+            />
           </li>
         </ul>
         </div>

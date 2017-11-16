@@ -32,9 +32,9 @@ ActiveRecord::Schema.define(version: 20171107144726) do
     t.text "description", null: false
     t.string "logo"
     t.integer "updated_by"
-    t.string "header_logo"
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
+    t.string "header_logo"
     t.text "description_html"
     t.integer "cached_markdown_version"
   end
@@ -443,8 +443,8 @@ ActiveRecord::Schema.define(version: 20171107144726) do
     t.integer "auto_canceled_by_id"
     t.integer "pipeline_schedule_id"
     t.integer "source"
-    t.integer "config_source"
     t.boolean "protected"
+    t.integer "config_source"
     t.integer "failure_reason"
   end
 
@@ -710,8 +710,8 @@ ActiveRecord::Schema.define(version: 20171107144726) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "confirmation_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
+    t.datetime_with_timezone "confirmed_at"
+    t.datetime_with_timezone "confirmation_sent_at"
   end
 
   add_index "emails", ["confirmation_token"], name: "index_emails_on_confirmation_token", unique: true, using: :btree
@@ -731,6 +731,14 @@ ActiveRecord::Schema.define(version: 20171107144726) do
 
   add_index "environments", ["project_id", "name"], name: "index_environments_on_project_id_and_name", unique: true, using: :btree
   add_index "environments", ["project_id", "slug"], name: "index_environments_on_project_id_and_slug", unique: true, using: :btree
+
+  create_table "epic_issues", force: :cascade do |t|
+    t.integer "epic_id", null: false
+    t.integer "issue_id", null: false
+  end
+
+  add_index "epic_issues", ["epic_id"], name: "index_epic_issues_on_epic_id", using: :btree
+  add_index "epic_issues", ["issue_id"], name: "index_epic_issues_on_issue_id", unique: true, using: :btree
 
   create_table "epic_metrics", force: :cascade do |t|
     t.integer "epic_id", null: false
@@ -1038,8 +1046,8 @@ ActiveRecord::Schema.define(version: 20171107144726) do
   add_index "gpg_signatures", ["project_id"], name: "index_gpg_signatures_on_project_id", using: :btree
 
   create_table "group_custom_attributes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.integer "group_id", null: false
     t.string "key", null: false
     t.string "value", null: false
@@ -1114,14 +1122,13 @@ ActiveRecord::Schema.define(version: 20171107144726) do
     t.integer "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string "branch_name"
     t.text "description"
     t.integer "milestone_id"
     t.string "state"
     t.integer "iid"
     t.integer "updated_by_id"
     t.integer "weight"
-    t.boolean "confidential", default: false
+    t.boolean "confidential", default: false, null: false
     t.datetime "deleted_at"
     t.date "due_date"
     t.integer "moved_to_id"
@@ -1130,12 +1137,12 @@ ActiveRecord::Schema.define(version: 20171107144726) do
     t.text "description_html"
     t.integer "time_estimate"
     t.integer "relative_position"
-    t.datetime "closed_at"
     t.string "service_desk_reply_to"
     t.integer "cached_markdown_version"
     t.datetime "last_edited_at"
     t.integer "last_edited_by_id"
     t.boolean "discussion_locked"
+    t.datetime_with_timezone "closed_at"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
@@ -1144,13 +1151,15 @@ ActiveRecord::Schema.define(version: 20171107144726) do
   add_index "issues", ["deleted_at"], name: "index_issues_on_deleted_at", using: :btree
   add_index "issues", ["description"], name: "index_issues_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
   add_index "issues", ["milestone_id"], name: "index_issues_on_milestone_id", using: :btree
+  add_index "issues", ["moved_to_id"], name: "index_issues_on_moved_to_id", where: "(moved_to_id IS NOT NULL)", using: :btree
   add_index "issues", ["project_id", "created_at", "id", "state"], name: "index_issues_on_project_id_and_created_at_and_id_and_state", using: :btree
-  add_index "issues", ["project_id", "due_date", "id", "state"], name: "index_issues_on_project_id_and_due_date_and_id_and_state", using: :btree
+  add_index "issues", ["project_id", "due_date", "id", "state"], name: "idx_issues_on_project_id_and_due_date_and_id_and_state_partial", where: "(due_date IS NOT NULL)", using: :btree
   add_index "issues", ["project_id", "iid"], name: "index_issues_on_project_id_and_iid", unique: true, using: :btree
   add_index "issues", ["project_id", "updated_at", "id", "state"], name: "index_issues_on_project_id_and_updated_at_and_id_and_state", using: :btree
   add_index "issues", ["relative_position"], name: "index_issues_on_relative_position", using: :btree
   add_index "issues", ["state"], name: "index_issues_on_state", using: :btree
   add_index "issues", ["title"], name: "index_issues_on_title_trigram", using: :gin, opclasses: {"title"=>"gin_trgm_ops"}
+  add_index "issues", ["updated_by_id"], name: "index_issues_on_updated_by_id", where: "(updated_by_id IS NOT NULL)", using: :btree
 
   create_table "keys", force: :cascade do |t|
     t.integer "user_id"
@@ -1666,8 +1675,8 @@ ActiveRecord::Schema.define(version: 20171107144726) do
   add_index "project_auto_devops", ["project_id"], name: "index_project_auto_devops_on_project_id", unique: true, using: :btree
 
   create_table "project_custom_attributes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.integer "project_id", null: false
     t.string "key", null: false
     t.string "value", null: false
@@ -1756,12 +1765,12 @@ ActiveRecord::Schema.define(version: 20171107144726) do
     t.string "import_status"
     t.text "merge_requests_template"
     t.integer "star_count", default: 0, null: false
-    t.boolean "merge_requests_rebase_enabled", default: false
+    t.boolean "merge_requests_rebase_enabled", default: false, null: false
     t.string "import_type"
     t.string "import_source"
     t.integer "approvals_before_merge", default: 0, null: false
     t.boolean "reset_approvals_on_push", default: true
-    t.boolean "merge_requests_ff_only_enabled", default: false
+    t.boolean "merge_requests_ff_only_enabled", default: false, null: false
     t.text "issues_template"
     t.boolean "mirror", default: false, null: false
     t.datetime "mirror_last_update_at"
@@ -2184,8 +2193,8 @@ ActiveRecord::Schema.define(version: 20171107144726) do
   add_index "user_agent_details", ["subject_id", "subject_type"], name: "index_user_agent_details_on_subject_id_and_subject_type", using: :btree
 
   create_table "user_custom_attributes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.integer "user_id", null: false
     t.string "key", null: false
     t.string "value", null: false
@@ -2389,10 +2398,13 @@ ActiveRecord::Schema.define(version: 20171107144726) do
   add_foreign_key "cluster_providers_gcp", "clusters", on_delete: :cascade
   add_foreign_key "clusters", "users", on_delete: :nullify
   add_foreign_key "clusters_applications_helm", "clusters", on_delete: :cascade
+  add_foreign_key "clusters_applications_ingress", "clusters", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade
   add_foreign_key "environments", "projects", name: "fk_d1c8c1da6a", on_delete: :cascade
+  add_foreign_key "epic_issues", "epics", on_delete: :cascade
+  add_foreign_key "epic_issues", "issues", on_delete: :cascade
   add_foreign_key "epic_metrics", "epics", on_delete: :cascade
   add_foreign_key "epics", "milestones", on_delete: :nullify
   add_foreign_key "epics", "namespaces", column: "group_id", name: "fk_f081aa4489", on_delete: :cascade
@@ -2434,8 +2446,11 @@ ActiveRecord::Schema.define(version: 20171107144726) do
   add_foreign_key "issue_links", "issues", column: "source_id", name: "fk_c900194ff2", on_delete: :cascade
   add_foreign_key "issue_links", "issues", column: "target_id", name: "fk_e71bb44f1f", on_delete: :cascade
   add_foreign_key "issue_metrics", "issues", on_delete: :cascade
+  add_foreign_key "issues", "issues", column: "moved_to_id", name: "fk_a194299be1", on_delete: :nullify
+  add_foreign_key "issues", "milestones", name: "fk_96b1dd429c", on_delete: :nullify
   add_foreign_key "issues", "projects", name: "fk_899c8f3231", on_delete: :cascade
   add_foreign_key "issues", "users", column: "author_id", name: "fk_05f1e72feb", on_delete: :nullify
+  add_foreign_key "issues", "users", column: "updated_by_id", name: "fk_ffed080f01", on_delete: :nullify
   add_foreign_key "label_priorities", "labels", on_delete: :cascade
   add_foreign_key "label_priorities", "projects", on_delete: :cascade
   add_foreign_key "labels", "namespaces", column: "group_id", on_delete: :cascade

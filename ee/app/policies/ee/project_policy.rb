@@ -55,6 +55,7 @@ module EE
         enable :admin_board
         enable :read_deploy_board
         enable :admin_issue_link
+        enable :admin_epic_issue
       end
 
       rule { can?(:developer_access) }.enable :admin_board

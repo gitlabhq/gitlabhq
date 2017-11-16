@@ -8,7 +8,7 @@ class RelatedIssuesStore {
     };
   }
 
-  setRelatedIssues(issues) {
+  setRelatedIssues(issues = []) {
     this.state.relatedIssues = issues;
   }
 

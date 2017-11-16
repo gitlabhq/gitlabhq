@@ -40,7 +40,7 @@ export default {
       type: String,
       required: true,
     },
-    canAddRelatedIssues: {
+    canAdmin: {
       type: Boolean,
       required: false,
       default: false,
@@ -49,6 +49,16 @@ export default {
       type: String,
       required: false,
       default: '',
+    },
+    title: {
+      type: String,
+      required: false,
+      default: 'Related issues',
+    },
+    allowAutoComplete: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
 
@@ -70,6 +80,7 @@ export default {
 
   computed: {
     autoCompleteSources() {
+      if (!this.allowAutoComplete) return {};
       return gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources;
     },
   },
@@ -86,13 +97,11 @@ export default {
           })
           .catch((res) => {
             if (res && res.status !== 404) {
-              // eslint-disable-next-line no-new
-              new Flash('An error occurred while removing related issues.');
+              Flash('An error occurred while removing issues.');
             }
           });
       } else {
-        // eslint-disable-next-line no-new
-        new Flash('We could not determine the path to remove the related issue');
+        Flash('We could not determine the path to remove the issue');
       }
     },
     onToggleAddRelatedIssuesForm() {
@@ -119,8 +128,11 @@ export default {
           })
           .catch((res) => {
             this.isSubmitting = false;
-            // eslint-disable-next-line no-new
-            new Flash(res.data.message || 'We can\'t find an issue that matches what you are looking for.');
+            let errorMessage = 'We can\'t find an issue that matches what you are looking for.';
+            if (res.data && res.data.message) {
+              errorMessage = res.data.message;
+            }
+            Flash(errorMessage);
           });
       }
     },
@@ -137,7 +149,11 @@ export default {
           this.store.setRelatedIssues(issues);
           this.isFetching = false;
         })
-        .catch(() => new Flash('An error occurred while fetching related issues.'));
+        .catch(() => {
+          this.store.setRelatedIssues([]);
+          this.isFetching = false;
+          Flash('An error occurred while fetching issues.');
+        });
     },
 
     onInput(newValue, caretPos) {
@@ -211,9 +227,11 @@ export default {
     :is-fetching="isFetching"
     :is-submitting="isSubmitting"
     :related-issues="state.relatedIssues"
-    :can-add-related-issues="canAddRelatedIssues"
+    :can-admin="canAdmin"
     :pending-references="state.pendingReferences"
     :is-form-visible="isFormVisible"
     :input-value="inputValue"
-    :auto-complete-sources="autoCompleteSources" />
+    :auto-complete-sources="autoCompleteSources"
+    :title="title"
+  />
 </template>

@@ -2,6 +2,7 @@
 
 import timeago from 'timeago.js';
 import dateFormat from 'vendor/date.format';
+import { pluralize } from './text_utility';
 
 import {
   lang,
@@ -142,9 +143,9 @@ export function timeIntervalInWords(intervalInSeconds) {
   let text = '';
 
   if (minutes >= 1) {
-    text = `${minutes} ${gl.text.pluralize('minute', minutes)} ${seconds} ${gl.text.pluralize('second', seconds)}`;
+    text = `${minutes} ${pluralize('minute', minutes)} ${seconds} ${pluralize('second', seconds)}`;
   } else {
-    text = `${seconds} ${gl.text.pluralize('second', seconds)}`;
+    text = `${seconds} ${pluralize('second', seconds)}`;
   }
   return text;
 }

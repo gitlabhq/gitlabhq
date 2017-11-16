@@ -124,6 +124,29 @@ describe Projects::IssueLinksController do
         expect(json_response).to eq('issues' => list_service_response.as_json)
       end
     end
+
+    context 'when non of issues of the link is not the issue requested in the path' do
+      let(:referenced_issue) { create(:issue, project: project) }
+      let(:another_issue) { create(:issue, project: project) }
+      let(:issue) { create(:issue, project: project) }
+      let(:user_role) { :developer }
+
+      let!(:issue_link) { create :issue_link, source: another_issue, target: referenced_issue }
+
+      subject do
+        delete namespace_project_issue_link_path(issue_links_params(id: issue_link.id))
+      end
+
+      it 'returns 404' do
+        subject
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+
+      it 'does not delete the link' do
+        expect { subject }.not_to change { IssueLink.count }.from(1)
+      end
+    end
   end
 
   def issue_links_params(opts = {})

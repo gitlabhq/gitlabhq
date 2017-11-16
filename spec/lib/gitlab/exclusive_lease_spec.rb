@@ -19,6 +19,34 @@ describe Gitlab::ExclusiveLease, :clean_gitlab_redis_shared_state do
     end
   end
 
+  describe '#try_obtain_with_ttl' do
+    it 'cannot obtain twice before the lease has expired' do
+      lease = described_class.new(unique_key, timeout: 3600)
+
+      ttl_lease = lease.try_obtain_with_ttl
+
+      expect(ttl_lease[:uuid]).to be_present
+      expect(ttl_lease[:ttl]).to eq(0)
+
+      second_ttl_lease = lease.try_obtain_with_ttl
+
+      expect(second_ttl_lease[:uuid]).to be false
+      expect(second_ttl_lease[:ttl]).to be > 0
+    end
+
+    it 'can obtain after the lease has expired' do
+      timeout = 1
+      lease = described_class.new(unique_key, timeout: 1)
+
+      sleep(2 * timeout) # lease should have expired now
+
+      ttl_lease = lease.try_obtain_with_ttl
+
+      expect(ttl_lease[:uuid]).to be_present
+      expect(ttl_lease[:ttl]).to eq(0)
+    end
+  end
+
   describe '#renew' do
     it 'returns true when we have the existing lease' do
       lease = described_class.new(unique_key, timeout: 3600)
@@ -44,6 +72,23 @@ describe Gitlab::ExclusiveLease, :clean_gitlab_redis_shared_state do
       lease = described_class.new(unique_key, timeout: 3600)
 
       expect(lease.exists?).to eq(false)
+    end
+  end
+
+  describe '#same_uuid?' do
+    it 'returns true for an existing lease' do
+      lease = described_class.new(unique_key, timeout: 3600)
+      lease.try_obtain
+
+      expect(lease.same_uuid?).to eq(true)
+    end
+
+    it 'returns false for a lease that does not exist' do
+      described_class.new(unique_key, timeout: 3600).try_obtain
+
+      lease = described_class.new(unique_key, timeout: 3600)
+
+      expect(lease.same_uuid?).to eq(false)
     end
   end
 

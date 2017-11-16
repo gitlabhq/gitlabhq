@@ -1,6 +1,23 @@
 require 'rails_helper'
 
 describe RemoteMirror do
+  describe 'URL validation' do
+    context 'with a valid URL' do
+      it 'should be valid' do
+        remote_mirror = build(:remote_mirror)
+        expect(remote_mirror).to be_valid
+      end
+    end
+
+    context 'with an invalid URL' do
+      it 'should not be valid' do
+        remote_mirror = build(:remote_mirror, url: 'ftp://invalid.invalid')
+        expect(remote_mirror).not_to be_valid
+        expect(remote_mirror.errors[:url].size).to eq(2)
+      end
+    end
+  end
+
   describe 'encrypting credentials' do
     context 'when setting URL for a first time' do
       it 'stores the URL without credentials' do

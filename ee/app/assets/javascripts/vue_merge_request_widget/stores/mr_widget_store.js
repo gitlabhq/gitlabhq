@@ -39,7 +39,7 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.isApproved = this.isApproved || false;
     this.approvals = this.approvals || null;
     this.approvalsPath = data.approvals_path || this.approvalsPath;
-    this.approvalsRequired = Boolean(this.approvalsPath);
+    this.approvalsRequired = data.approvalsRequired || Boolean(this.approvalsPath);
   }
 
   setApprovals(data) {
@@ -137,4 +137,3 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     return firstArray.filter(item => !secondArray.find(el => el.fingerprint === item.fingerprint));
   }
 }
-

@@ -65,6 +65,36 @@ describe('RepoTab', () => {
     expect(vm.$el.querySelector('.close-btn .fa-circle')).toBeTruthy();
   });
 
+  describe('locked file', () => {
+    let f;
+
+    beforeEach(() => {
+      f = file('locked file');
+      f.file_lock = {
+        user: {
+          name: 'testuser',
+          updated_at: new Date(),
+        },
+      };
+
+      vm = createComponent({
+        tab: f,
+      });
+    });
+
+    afterEach(() => {
+      vm.$destroy();
+    });
+
+    it('renders lock icon', () => {
+      expect(vm.$el.querySelector('.file-status-icon')).not.toBeNull();
+    });
+
+    it('renders a tooltip', () => {
+      expect(vm.$el.querySelector('.repo-tab span').dataset.originalTitle).toContain('Locked by testuser');
+    });
+  });
+
   describe('methods', () => {
     describe('closeTab', () => {
       it('does not close tab if is changed', (done) => {

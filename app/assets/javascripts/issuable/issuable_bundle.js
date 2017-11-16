@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
       render: createElement => createElement('related-issues-root', {
         props: {
           endpoint: relatedIssuesRootElement.dataset.endpoint,
-          canAddRelatedIssues: convertPermissionToBoolean(
+          canAdmin: convertPermissionToBoolean(
             relatedIssuesRootElement.dataset.canAddRelatedIssues,
           ),
           helpPath: relatedIssuesRootElement.dataset.helpPath,

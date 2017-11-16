@@ -16,6 +16,7 @@ class RemoteMirror < ActiveRecord::Base
   validates :url, presence: true, url: { protocols: %w(ssh git http https), allow_blank: true }
 
   validate  :url_availability, if: -> (mirror) { mirror.url_changed? || mirror.enabled? }
+  validates :url, addressable_url: true, if: :url_changed?
 
   after_save :set_override_remote_mirror_available, unless: -> { Gitlab::CurrentSettings.current_application_settings.remote_mirror_available }
   after_save :refresh_remote, if: :mirror_url_changed?
@@ -109,6 +110,7 @@ class RemoteMirror < ActiveRecord::Base
   end
 
   def url=(value)
+    return super(value) unless Gitlab::UrlSanitizer.valid?(value)
     mirror_url = Gitlab::UrlSanitizer.new(value)
     self.credentials = mirror_url.credentials
 
@@ -119,6 +121,8 @@ class RemoteMirror < ActiveRecord::Base
     if super
       Gitlab::UrlSanitizer.new(super, credentials: credentials).full_url
     end
+  rescue
+    super
   end
 
   def safe_url

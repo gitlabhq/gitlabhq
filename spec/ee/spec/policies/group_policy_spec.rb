@@ -20,6 +20,22 @@ describe GroupPolicy do
 
   subject { described_class.new(current_user, group) }
 
+  context 'when epics feature is disabled' do
+    let(:current_user) { owner }
+
+    it { is_expected.to be_disallowed(:read_epic, :create_epic, :admin_epic, :destroy_epic) }
+  end
+
+  context 'when epics feature is enabled' do
+    before do
+      stub_licensed_features(epics: true)
+    end
+
+    let(:current_user) { owner }
+
+    it { is_expected.to be_allowed(:read_epic, :create_epic, :admin_epic, :destroy_epic) }
+  end
+
   context 'when LDAP sync is not enabled' do
     context 'owner' do
       let(:current_user) { owner }

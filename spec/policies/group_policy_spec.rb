@@ -10,7 +10,7 @@ describe GroupPolicy do
   let(:admin) { create(:admin) }
   let(:group) { create(:group) }
 
-  let(:reporter_permissions) { [:admin_label, :create_epic, :admin_epic] }
+  let(:reporter_permissions) { [:admin_label] }
 
   let(:developer_permissions) { [:admin_milestones] }
 

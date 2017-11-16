@@ -176,6 +176,7 @@ describe IssuablesHelper do
         'endpoint' => "/#{@project.full_path}/issues/#{issue.iid}",
         'canUpdate' => true,
         'canDestroy' => true,
+        'canAdmin' => true,
         'issuableRef' => "##{issue.iid}",
         'markdownPreviewPath' => "/#{@project.full_path}/preview_markdown",
         'markdownDocsPath' => '/help/user/markdown',
@@ -197,8 +198,10 @@ describe IssuablesHelper do
 
       expected_data = {
         'endpoint' => "/groups/#{@group.full_path}/-/epics/#{epic.iid}",
+        'issueLinksEndpoint' => "/groups/#{@group.full_path}/-/epics/#{epic.iid}/issues",
         'canUpdate' => true,
         'canDestroy' => true,
+        'canAdmin' => true,
         'issuableRef' => nil,
         'markdownPreviewPath' => "/groups/#{@group.full_path}/preview_markdown",
         'markdownDocsPath' => '/help/user/markdown',
