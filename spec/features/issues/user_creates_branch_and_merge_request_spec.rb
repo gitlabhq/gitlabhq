@@ -22,33 +22,90 @@ describe 'User creates branch and merge request on issue page', :js do
       sign_in(user)
     end
 
-    it 'allows creating a merge request from the issue page' do
-      visit project_issue_path(project, issue)
-
-      perform_enqueued_jobs do
-        select_dropdown_option('create-mr')
-
-        expect(page).to have_content('WIP: Resolve "Cherry-Coloured Funk"')
-        expect(current_path).to eq(project_merge_request_path(project, MergeRequest.first))
-
-        wait_for_requests
+    context 'when interacting with the dropdown' do
+      before do
+        visit project_issue_path(project, issue)
       end
 
-      visit project_issue_path(project, issue)
+      it 'shows elements' do
+        button_create_merge_request = find('.js-create-merge-request')
 
-      expect(page).to have_content("created branch 1-cherry-coloured-funk")
-      expect(page).to have_content("mentioned in merge request !1")
-    end
+        find('.create-mr-dropdown-wrap .dropdown-toggle').click
 
-    it 'allows creating a branch from the issue page' do
-      visit project_issue_path(project, issue)
+        page.within('.create-merge-request-dropdown-menu') do
+          button_create_target = find('.js-create-target')
+          input_branch_name = find('.js-branch-name')
+          li_create_branch = find("li[data-value='create-branch']")
+          li_create_merge_request = find("li[data-value='create-mr']")
 
-      select_dropdown_option('create-branch')
+          # Test that all elements are presented.
+          expect(page).to have_content('Create merge request and branch')
+          expect(page).to have_content('Create branch')
+          expect(page).to have_content('Branch name')
+          expect(page).to have_content('Source (branch or tag)')
+          expect(page).to have_button('Create merge request')
 
-      wait_for_requests
+          # Test selection mark
+          page.within(li_create_merge_request) do
+            expect(page).to have_css('i.fa.fa-check')
+            expect(button_create_target).to have_text('Create merge request')
+            expect(button_create_merge_request).to have_text('Create merge request')
+          end
 
-      expect(page).to have_selector('.dropdown-toggle-text ', text: '1-cherry-coloured-funk')
-      expect(current_path).to eq project_tree_path(project, '1-cherry-coloured-funk')
+          li_create_branch.click
+
+          page.within(li_create_branch) do
+            expect(page).to have_css('i.fa.fa-check')
+            expect(button_create_target).to have_text('Create branch')
+            expect(button_create_merge_request).to have_text('Create branch')
+          end
+
+          # Test branch name checking
+          expect(input_branch_name.value).to eq(issue.to_branch_name)
+
+          input_branch_name.set('new-branch-name')
+          branch_name_message = find('.js-branch-message')
+
+          expect(branch_name_message).to have_text('Checking branch name availability…')
+
+          wait_for_requests
+
+          expect(branch_name_message).to have_text('branch name is available')
+
+          input_branch_name.set(project.default_branch)
+
+          expect(branch_name_message).to have_text('Checking branch name availability…')
+
+          wait_for_requests
+
+          expect(branch_name_message).to have_text('Branch is already taken')
+        end
+      end
+
+      it 'creates a merge request' do
+        perform_enqueued_jobs do
+          select_dropdown_option('create-mr')
+
+          expect(page).to have_content('WIP: Resolve "Cherry-Coloured Funk"')
+          expect(current_path).to eq(project_merge_request_path(project, MergeRequest.first))
+
+          wait_for_requests
+        end
+
+        visit project_issue_path(project, issue)
+
+        expect(page).to have_content('created branch 1-cherry-coloured-funk')
+        expect(page).to have_content('mentioned in merge request !1')
+      end
+
+      it 'creates a branch' do
+        select_dropdown_option('create-branch')
+
+        wait_for_requests
+
+        expect(page).to have_selector('.dropdown-toggle-text ', text: '1-cherry-coloured-funk')
+        expect(current_path).to eq project_tree_path(project, '1-cherry-coloured-funk')
+      end
     end
 
     context "when there is a referenced merge request" do
