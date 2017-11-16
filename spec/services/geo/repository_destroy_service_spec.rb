@@ -1,8 +1,14 @@
 require 'spec_helper'
 
 describe Geo::RepositoryDestroyService do
+  set(:secondary) { create(:geo_node) }
   let(:project) { create(:project_empty_repo) }
+
   subject(:service) { described_class.new(project.id, project.name, project.disk_path, project.repository_storage) }
+
+  before do
+    allow(Gitlab::Geo).to receive(:current_node) { secondary }
+  end
 
   describe '#async_execute' do
     it 'starts the worker' do
@@ -29,6 +35,15 @@ describe Geo::RepositoryDestroyService do
 
         expect(project.gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_falsey
       end
+
+      it 'cleans up deleted repositories' do
+        project.delete
+
+        expect(::GitlabShellWorker).to receive(:perform_in)
+          .with(5.minutes, :remove_repository, project.repository_storage_path, "#{project.disk_path}+#{project.id}+deleted")
+
+        service.execute
+      end
     end
 
     context 'hashed storage project' do
@@ -42,6 +57,15 @@ describe Geo::RepositoryDestroyService do
         service.execute
 
         expect(project.gitlab_shell.exists?(project.repository_storage_path, "#{project.disk_path}.git")).to be_falsey
+      end
+
+      it 'cleans up deleted repositories' do
+        project.delete
+
+        expect(::GitlabShellWorker).to receive(:perform_in)
+          .with(5.minutes, :remove_repository, project.repository_storage_path, "#{project.disk_path}+#{project.id}+deleted")
+
+        service.execute
       end
     end
   end
