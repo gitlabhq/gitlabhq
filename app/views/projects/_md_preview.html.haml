@@ -10,14 +10,14 @@
 .md-area
   .md-header
     %ul.nav-links.clearfix
-      %li.active
+      %li.md-header-tab.active
         %a.js-md-write-button{ href: "#md-write-holder", tabindex: -1 }
           Write
-      %li
+      %li.md-header-tab
         %a.js-md-preview-button{ href: "#md-preview-holder", tabindex: -1 }
           Preview
 
-      %li.pull-right
+      %li.md-header-toolbar
         .toolbar-group
           = markdown_toolbar_button({ icon: "bold", data: { "md-tag" => "**" }, title: "Add bold text" })
           = markdown_toolbar_button({ icon: "italic", data: { "md-tag" => "*" }, title: "Add italic text" })

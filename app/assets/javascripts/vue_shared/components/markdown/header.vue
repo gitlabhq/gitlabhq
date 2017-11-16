@@ -50,7 +50,9 @@
 <template>
   <div class="md-header">
     <ul class="nav-links clearfix">
-      <li :class="{ active: !previewMarkdown }">
+      <li
+        class="md-header-tab"
+        :class="{ active: !previewMarkdown }">
         <a
           class="js-write-link"
           href="#md-write-holder"
@@ -59,7 +61,9 @@
           Write
         </a>
       </li>
-      <li :class="{ active: previewMarkdown }">
+      <li
+        class="md-header-tab"
+        :class="{ active: previewMarkdown }">
         <a
           class="js-preview-link"
           href="#md-preview-holder"
@@ -68,7 +72,7 @@
           Preview
         </a>
       </li>
-      <li class="pull-right">
+      <li class="md-header-toolbar">
         <div class="toolbar-group">
           <toolbar-button
             tag="**"
