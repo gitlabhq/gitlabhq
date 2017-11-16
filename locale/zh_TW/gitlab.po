@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-02 14:42+0100\n"
-"PO-Revision-Date: 2017-11-15 02:54-0500\n"
+"PO-Revision-Date: 2017-11-16 00:21-0500\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -26,7 +26,7 @@ msgstr[0] "%d 個圖層"
 
 msgid "%s additional commit has been omitted to prevent performance issues."
 msgid_plural "%s additional commits have been omitted to prevent performance issues."
-msgstr[0] "因效能考量，不顯示 %s 個更動 (commit)。"
+msgstr[0] "因效能考量，已隱藏 %s 個更動 (commit)。"
 
 msgid "%{commit_author_link} committed %{commit_timeago}"
 msgstr "%{commit_author_link} 在 %{commit_timeago} 送交"
@@ -39,7 +39,7 @@ msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commi
 msgstr "%{number_commits_behind} 個落後 %{default_branch} 分支的修訂版提交，%{number_commits_ahead} 個超前的修訂版提交"
 
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
-msgstr "已失敗 %{number_of_failures} 次，在失敗 %{maximum_failures} 次前 GitLab 會重試。"
+msgstr "目前已失敗 %{number_of_failures} 次。GitLab 允許在 %{maximum_failures} 次之內可再嘗試讀取 。"
 
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will block access for %{number_of_seconds} seconds."
 msgstr "已失敗 %{number_of_failures} 次，在失敗 %{maximum_failures} 次前 GitLab 會在 %{number_of_seconds} 秒後重試。"
