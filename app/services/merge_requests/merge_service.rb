@@ -10,6 +10,8 @@ module MergeRequests
 
     attr_reader :merge_request, :source
 
+    delegate :merge_jid, :state, to: :@merge_request
+
     def execute(merge_request)
       if project.merge_requests_ff_only_enabled && !self.is_a?(FfMergeService)
         FfMergeService.new(project, current_user, params).execute(merge_request)
@@ -35,6 +37,7 @@ module MergeRequests
           success
         end
       end
+      log_info("Merge process finished on JID #{merge_jid} with state #{state}")
     rescue MergeError => e
       handle_merge_error(log_message: e.message, save_message_on_model: true)
     end
@@ -44,7 +47,9 @@ module MergeRequests
     def commit
       message = params[:commit_message] || merge_request.merge_commit_message
 
+      log_info("Git merge started on JID #{merge_jid}")
       commit_id = repository.merge(current_user, source, merge_request, message)
+      log_info("Git merge finished on JID #{merge_jid} commit #{commit_id}")
 
       raise MergeError, 'Conflicts detected during merge' unless commit_id
 
@@ -58,7 +63,9 @@ module MergeRequests
     end
 
     def after_merge
+      log_info("Post merge started on JID #{merge_jid} with state #{state}")
       MergeRequests::PostMergeService.new(project, current_user).execute(merge_request)
+      log_info("Post merge finished on JID #{merge_jid} with state #{state}")
 
       if delete_source_branch?
         DeleteBranchService.new(@merge_request.source_project, branch_deletion_user)
@@ -93,6 +100,11 @@ module MergeRequests
 
     def find_merge_source
       merge_request.diff_head_sha
+    end
+
+    def log_info(message)
+      @logger ||= Rails.logger
+      @logger.info(message)
     end
   end
 end
