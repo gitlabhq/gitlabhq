@@ -150,11 +150,10 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
       it 'schedules a GeoRepositoryDestroyWorker' do
         project_id   = repository_deleted_event.project_id
         project_name = repository_deleted_event.deleted_project_name
-        full_path    = File.join(repository_deleted_event.repository_storage_path,
-                                 repository_deleted_event.deleted_path)
+        project_path = repository_deleted_event.deleted_path
 
         expect(::GeoRepositoryDestroyWorker).to receive(:perform_async)
-          .with(project_id, project_name, full_path, project.repository_storage)
+          .with(project_id, project_name, project_path, project.repository_storage)
 
         daemon.run_once!
       end
