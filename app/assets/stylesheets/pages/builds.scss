@@ -57,7 +57,6 @@
 
   .top-bar {
     height: 35px;
-    display: flex;
     justify-content: flex-end;
     background: $gray-light;
     border: 1px solid $border-color;
@@ -65,6 +64,7 @@
     position: sticky;
     position: -webkit-sticky;
     top: $header-height;
+    padding: 6px 10px;
 
     &.affix {
       top: $header-height;
@@ -90,9 +90,6 @@
     }
 
     .truncated-info {
-      margin: 0 auto;
-      align-self: center;
-
       .truncated-info-size {
         margin: 0 5px;
       }
