@@ -4,7 +4,7 @@ module NotesActions
 
   included do
     before_action :set_polling_interval_header, only: [:index]
-    before_action :noteable, only: :index
+    before_action :require_noteable!, only: [:index, :create]
     before_action :authorize_admin_note!, only: [:update, :destroy]
     before_action :note_project, only: [:create]
   end
@@ -90,7 +90,7 @@ module NotesActions
     if note.persisted?
       attrs[:valid] = true
 
-      if noteable.nil? || noteable.discussions_rendered_on_frontend?
+      if noteable.discussions_rendered_on_frontend?
         attrs.merge!(note_serializer.represent(note))
       else
         attrs.merge!(
@@ -191,7 +191,11 @@ module NotesActions
   end
 
   def noteable
-    @noteable ||= notes_finder.target || render_404
+    @noteable ||= notes_finder.target || @note&.noteable
+  end
+
+  def require_noteable!
+    render_404 unless noteable
   end
 
   def last_fetched_at
