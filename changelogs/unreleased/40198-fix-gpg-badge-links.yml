@@ -1,0 +1,6 @@
+---
+title: Fix issue where clicking a GPG verification badge would scroll to the top of
+  the page
+merge_request: 15407
+author:
+type: fixed
