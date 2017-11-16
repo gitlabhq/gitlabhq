@@ -84,6 +84,18 @@ module API
 
         destroy_conditionally!(runner)
       end
+
+      desc 'List jobs running on a runner'
+      params do
+        requires :id, type: Integer, desc: 'The ID of the runner'
+        use :pagination
+      end
+      get  ':id/jobs' do
+        runner = get_runner(params[:id])
+        authenticate_list_runners_jobs!(runner)
+
+        present paginate(runner.builds.running), with: Entities::Job
+      end
     end
 
     params do
@@ -187,6 +199,12 @@ module API
       def authenticate_enable_runner!(runner)
         forbidden!("Runner is shared") if runner.is_shared?
         forbidden!("Runner is locked") if runner.locked?
+        return if current_user.admin?
+
+        forbidden!("No access granted") unless user_can_access_runner?(runner)
+      end
+
+      def authenticate_list_runners_jobs!(runner)
         return if current_user.admin?
 
         forbidden!("No access granted") unless user_can_access_runner?(runner)
