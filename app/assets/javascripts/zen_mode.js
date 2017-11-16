@@ -81,7 +81,12 @@ export default class ZenMode {
       this.scrollTo(this.active_textarea);
       this.active_textarea = null;
       this.active_backdrop = null;
-      return Dropzone.forElement('.div-dropzone').enable();
+
+      const $dropzone = $('.div-dropzone');
+      const hasDropzone = $dropzone && !$dropzone.hasClass('js-invalid-dropzone');
+      if (hasDropzone) {
+        Dropzone.forElement('.div-dropzone').enable();
+      }
     }
   }
 
