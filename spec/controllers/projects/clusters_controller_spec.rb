@@ -13,17 +13,29 @@ describe Projects::ClustersController do
         sign_in(user)
       end
 
-      context 'when project has a cluster' do
+      context 'when project has one or more clusters' do
         let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
         let(:project) { cluster.project }
 
-        it { expect(go).to redirect_to(project_cluster_path(project, project.cluster)) }
+        it 'lists available clusters' do
+          go
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template(:index)
+          expect(assigns(:clusters)).to eq([cluster])
+        end
       end
 
       context 'when project does not have a cluster' do
         let(:project) { create(:project) }
 
-        it { expect(go).to redirect_to(new_project_cluster_path(project)) }
+        it 'returns an empty state page' do
+          go
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template(:index)
+          expect(assigns(:clusters)).to eq([])
+        end
       end
     end
 
