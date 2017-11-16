@@ -1,6 +1,5 @@
 module Gitlab
   module Auth
-
     #
     # Exceptions
     #
