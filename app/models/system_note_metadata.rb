@@ -7,7 +7,7 @@ class SystemNoteMetadata < ActiveRecord::Base
   TYPES_WITH_CROSS_REFERENCES = %w[
     cross_reference
     milestone
-  ]
+  ].freeze
 
   ICON_TYPES = %w[
     commit description merge confidential visible label assignee cross_reference
