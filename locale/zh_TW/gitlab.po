@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-02 14:42+0100\n"
-"PO-Revision-Date: 2017-11-16 00:51-0500\n"
+"PO-Revision-Date: 2017-11-16 01:22-0500\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -330,13 +330,13 @@ msgid "Branches|To avoid data loss, consider merging this branch before deleting
 msgstr "為避免資料遺失，請合併該分支後再將它刪除。"
 
 msgid "Branches|To confirm, type %{branch_name_confirmation}:"
-msgstr "為了確認，請輸入 %{branch_name_confirmation} ："
+msgstr "請輸入 %{branch_name_confirmation} 以進行確認 ："
 
 msgid "Branches|To discard the local changes and overwrite the branch with the upstream version, delete it here and choose 'Update Now' above."
 msgstr "為了捨棄目前變更並使用上游版本覆蓋本分支，請先刪除並按下 \"立刻更新\"。"
 
 msgid "Branches|You’re about to permanently delete the protected branch %{branch_name}."
-msgstr "你將要永久刪除受保護的 %{branch_name} 分支。"
+msgstr "你將永久刪除受保護的 %{branch_name} 分支。"
 
 msgid "Branches|diverged from upstream"
 msgstr "與上游存在差異"
@@ -411,7 +411,7 @@ msgid "Cherry-pick this merge request"
 msgstr "挑選此合併請求 (merge request) "
 
 msgid "Choose which groups you wish to replicate to this secondary node. Leave blank to replicate all."
-msgstr "選擇哪個群組是你要複製到第二節點的。留白則複製全部。"
+msgstr "選擇你想要複製到第二節點的群組。若留白則會複製全部的群組。"
 
 msgid "CiStatusLabel|canceled"
 msgstr "已取消"
@@ -435,7 +435,7 @@ msgid "CiStatusLabel|pending"
 msgstr "等待中"
 
 msgid "CiStatusLabel|skipped"
-msgstr "已跳過"
+msgstr "已略過"
 
 msgid "CiStatusLabel|waiting for manual action"
 msgstr "等待手動操作"
@@ -462,7 +462,7 @@ msgid "CiStatusText|pending"
 msgstr "等待中"
 
 msgid "CiStatusText|skipped"
-msgstr "已跳過"
+msgstr "已略過"
 
 msgid "CiStatus|running"
 msgstr "執行中"
