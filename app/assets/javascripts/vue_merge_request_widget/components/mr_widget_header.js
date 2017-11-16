@@ -1,5 +1,6 @@
 import tooltip from '../../vue_shared/directives/tooltip';
 import { pluralize } from '../../lib/utils/text_utility';
+import { spriteIcon } from '../../lib/utils/common_utils';
 
 export default {
   name: 'MRWidgetHeader',
@@ -24,6 +25,9 @@ export default {
         text: this.mr.sourceBranch,
         gfm: `\`${this.mr.sourceBranch}\``,
       });
+    },
+    downloadIcon() {
+      return spriteIcon('download');
     },
   },
   methods: {
@@ -82,8 +86,7 @@ export default {
             aria-label="Download as"
             role="button">
             <i
-              class="fa fa-download"
-              aria-hidden="true">
+              v-html="downloadIcon">
             </i>
             <i
               class="fa fa-caret-down"

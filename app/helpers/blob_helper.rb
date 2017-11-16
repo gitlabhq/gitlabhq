@@ -232,7 +232,7 @@ module BlobHelper
     return if blob.empty?
 
     if blob.raw_binary? || blob.stored_externally?
-      icon = icon('download')
+      icon = sprite_icon('download')
       title = 'Download'
     else
       icon = icon('file-code-o')
