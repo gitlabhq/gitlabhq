@@ -16,7 +16,7 @@ describe Project do
     it { is_expected.to have_many(:path_locks) }
     it { is_expected.to have_many(:sourced_pipelines) }
     it { is_expected.to have_many(:source_pipelines) }
-    it { is_expected.to have_many(:audit_events) }
+    it { is_expected.to have_many(:audit_events).dependent(false) }
   end
 
   describe '.mirrors_to_sync' do
