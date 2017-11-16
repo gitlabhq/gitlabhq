@@ -127,7 +127,7 @@ describe('Clusters', () => {
     });
 
     describe('when cluster is created', () => {
-      it('should show the success container', () => {
+      it('should show the success container and fresh the page', () => {
         cluster.updateContainer(null, 'created');
 
         expect(
