@@ -28,24 +28,6 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
       daemon.run!
     end
 
-    it 'does not perform a full scan by default' do
-      is_expected.to receive(:exit?).and_return(true)
-      is_expected.not_to receive(:full_scan!)
-
-      daemon.run!
-    end
-
-    context 'the command-line defines full_scan: true' do
-      let(:options) { { full_scan: true } }
-
-      it 'executes a full-scan' do
-        is_expected.to receive(:exit?).and_return(true)
-        is_expected.to receive(:full_scan!)
-
-        daemon.run!
-      end
-    end
-
     it 'delegates to #run_once! in a loop' do
       is_expected.to receive(:exit?).and_return(false, false, false, true)
       is_expected.to receive(:run_once!).twice
@@ -243,24 +225,6 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
           .with(project.id, old_disk_path, new_disk_path, old_storage_version)
 
         daemon.run_once!
-      end
-    end
-  end
-
-  describe '#full_scan!' do
-    let(:project) { create(:project) }
-
-    context 'with selective sync enabled' do
-      it 'creates registries for missing projects that belong to selected namespaces' do
-        secondary.update!(namespaces: [project.namespace])
-
-        expect { daemon.full_scan! }.to change(Geo::ProjectRegistry, :count).by(1)
-      end
-
-      it 'does not create registries for missing projects that do not belong to selected namespaces' do
-        secondary.update!(namespaces: [create(:group)])
-
-        expect { daemon.full_scan! }.not_to change(Geo::ProjectRegistry, :count)
       end
     end
   end

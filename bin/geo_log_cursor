@@ -6,14 +6,13 @@ require 'optparse'
 
 class GeoLogCursorOptionParser
   def self.parse(argv)
-    options = { full_scan: false }
+    options = {}
 
     op = OptionParser.new
     op.banner = 'GitLab Geo: Log Cursor'
     op.separator ''
     op.separator 'Usage: ./geo_log_cursor [options]'
     op.separator ''
-    op.on('-f', '--full-scan', 'Performs full-scan to lookup for un-replicated data') { options[:full_scan] = true }
     op.on('-d', '--debug', 'Enable detailed logging with extra debug information') { options[:debug] = true }
 
     op.separator 'Common options:'
