@@ -126,17 +126,6 @@
       </div>
       <epic-sidebar
         :endpoint="endpoint"
-        :issuable-ref="issuableRef"
-        :initial-title-html="initialTitleHtml"
-        :initial-title-text="initialTitleText"
-        :initial-description-html="initialDescriptionHtml"
-        :initial-description-text="initialDescriptionText"
-        :markdown-preview-path="markdownPreviewPath"
-        :markdown-docs-path="markdownDocsPath"
-        :project-path="projectPath"
-        :project-namespace="projectNamespace"
-        :show-inline-edit-button="true"
-        issuable-type="epic"
         :editable="canUpdate"
         :initial-start-date="startDate"
         :initial-end-date="endDate"
