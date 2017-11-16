@@ -4,6 +4,8 @@ class Snippets::NotesController < ApplicationController
 
   skip_before_action :authenticate_user!, only: [:index]
   before_action :snippet
+  # TODO: Authorize create_snippet!
+  # TODO: Always make sure we can actually read the snippet
   before_action :authorize_read_snippet!, only: [:show, :index, :create]
 
   private

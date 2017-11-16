@@ -69,6 +69,7 @@ class NotesFinder
     when "snippet", "project_snippet"
       SnippetsFinder.new(@current_user, project: @project).execute
     when "personal_snippet"
+      # TODO: Use finder
       PersonalSnippet.all
     else
       raise 'invalid target_type'

@@ -75,6 +75,8 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def authorize_create_note!
+    # TODO: Add :create_note for (personal?) snippets, instaed of :comment_personal_snippet?
+    # TODO: I think we should always check this
     return unless noteable.lockable?
     access_denied! unless can?(current_user, :create_note, noteable)
   end

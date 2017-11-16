@@ -56,6 +56,7 @@ class SnippetsFinder < UnionFinder
   def by_project(items)
     return items unless params[:project]
 
+    # TODO: Add where(type: ProjectSnippet.name)
     items.where(project_id: params[:project].id)
   end
 
