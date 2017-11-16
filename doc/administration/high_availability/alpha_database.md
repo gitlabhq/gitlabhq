@@ -77,8 +77,7 @@ Can be generated with:
     ```sh
     echo -n 'CONSUL_DATABASE_PASSWORDCONSUL_USERNAME' | md5sum
     ```
-- You'll also need to supply the IP addresses or DNS records of Consul
-server nodes.
+- `CONSUL_SERVER_NODES`.  The IP addresses or DNS records of the Consul server nodes.
 
 Few notes on the service itself:
 
@@ -197,7 +196,7 @@ See `START user configuration` section in the next step for required information
     # Replace placeholders:
     #
     # Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z
-    # with real information.
+    # with the addresses gathered for CONSUL_SERVER_NODES
     consul['configuration'] = {
       server: true,
       retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z)
@@ -262,7 +261,7 @@ See `START user configuration` section in the next step for required information
     # Replace placeholders:
     #
     # Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z
-    # with real information.
+    # with the addresses gathered for CONSUL_SERVER_NODES
     consul['configuration'] = {
       retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z)
     }
@@ -322,7 +321,7 @@ your configuration
     # Replace placeholders:
     #
     # Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z
-    # with real information.
+    # with the addresses gathered for CONSUL_SERVER_NODES
     consul['configuration'] = {
       retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z)
     }
