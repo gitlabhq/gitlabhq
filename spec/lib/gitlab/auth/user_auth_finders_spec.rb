@@ -65,7 +65,7 @@ describe Gitlab::Auth::UserAuthFinders do
       it 'returns exception if invalid rss_token' do
         set_param(:rss_token, 'invalid_token')
 
-        expect { find_user_from_rss_token }.to raise_error(Gitlab::Auth::UserAuthFinders::UnauthorizedError)
+        expect { find_user_from_rss_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
       end
     end
 
@@ -96,7 +96,7 @@ describe Gitlab::Auth::UserAuthFinders do
         env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         allow_any_instance_of(PersonalAccessToken).to receive(:user).and_return(nil)
 
-        expect { find_user_from_access_token }.to raise_error(Gitlab::Auth::UserAuthFinders::UnauthorizedError)
+        expect { find_user_from_access_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
       end
     end
   end
@@ -127,7 +127,7 @@ describe Gitlab::Auth::UserAuthFinders do
     it 'returns exception if invalid personal_access_token' do
       env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = 'invalid_token'
 
-      expect { find_personal_access_token }.to raise_error(Gitlab::Auth::UserAuthFinders::UnauthorizedError)
+      expect { find_personal_access_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
     end
   end
 
@@ -158,7 +158,7 @@ describe Gitlab::Auth::UserAuthFinders do
     it 'returns exception if invalid oauth_access_token' do
       env['HTTP_AUTHORIZATION'] = "Bearer invalid_token"
 
-      expect { find_oauth_access_token }.to raise_error(Gitlab::Auth::UserAuthFinders::UnauthorizedError)
+      expect { find_oauth_access_token }.to raise_error(Gitlab::Auth::UnauthorizedError)
     end
   end
 
@@ -174,20 +174,20 @@ describe Gitlab::Auth::UserAuthFinders do
         allow_any_instance_of(described_class).to receive(:access_token).and_return(personal_access_token)
       end
 
-      it 'returns Gitlab::Auth::UserAuthFinders::ExpiredError if token expired' do
+      it 'returns Gitlab::Auth::ExpiredError if token expired' do
         personal_access_token.expires_at = 1.day.ago
 
-        expect { validate_access_token! }.to raise_error(Gitlab::Auth::UserAuthFinders::ExpiredError)
+        expect { validate_access_token! }.to raise_error(Gitlab::Auth::ExpiredError)
       end
 
-      it 'returns Gitlab::Auth::UserAuthFinders::RevokedError if token revoked' do
+      it 'returns Gitlab::Auth::RevokedError if token revoked' do
         personal_access_token.revoke!
 
-        expect { validate_access_token! }.to raise_error(Gitlab::Auth::UserAuthFinders::RevokedError)
+        expect { validate_access_token! }.to raise_error(Gitlab::Auth::RevokedError)
       end
 
-      it 'returns Gitlab::Auth::UserAuthFinders::InsufficientScopeError if invalid token scope' do
-        expect { validate_access_token!(scopes: [:sudo]) }.to raise_error(Gitlab::Auth::UserAuthFinders::InsufficientScopeError)
+      it 'returns Gitlab::Auth::InsufficientScopeError if invalid token scope' do
+        expect { validate_access_token!(scopes: [:sudo]) }.to raise_error(Gitlab::Auth::InsufficientScopeError)
       end
     end
   end

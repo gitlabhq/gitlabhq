@@ -166,21 +166,21 @@ describe API::Helpers do
         personal_access_token = create(:personal_access_token, user: user, scopes: ['read_user'])
         env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
-        expect { current_user }.to raise_error Gitlab::Auth::UserAuthFinders::InsufficientScopeError
+        expect { current_user }.to raise_error Gitlab::Auth::InsufficientScopeError
       end
 
       it 'does not allow revoked tokens' do
         personal_access_token.revoke!
         env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
-        expect { current_user }.to raise_error Gitlab::Auth::UserAuthFinders::RevokedError
+        expect { current_user }.to raise_error Gitlab::Auth::RevokedError
       end
 
       it 'does not allow expired tokens' do
         personal_access_token.update_attributes!(expires_at: 1.day.ago)
         env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
-        expect { current_user }.to raise_error Gitlab::Auth::UserAuthFinders::ExpiredError
+        expect { current_user }.to raise_error Gitlab::Auth::ExpiredError
       end
     end
   end
@@ -392,7 +392,7 @@ describe API::Helpers do
           end
 
           it 'raises an error' do
-            expect { current_user }.to raise_error Gitlab::Auth::UserAuthFinders::InsufficientScopeError
+            expect { current_user }.to raise_error Gitlab::Auth::InsufficientScopeError
           end
         end
       end

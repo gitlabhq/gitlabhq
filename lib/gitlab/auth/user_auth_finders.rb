@@ -1,26 +1,27 @@
 module Gitlab
   module Auth
+
+    #
+    # Exceptions
+    #
+
+    AuthenticationException = Class.new(StandardError)
+    MissingTokenError = Class.new(AuthenticationException)
+    TokenNotFoundError = Class.new(AuthenticationException)
+    ExpiredError = Class.new(AuthenticationException)
+    RevokedError = Class.new(AuthenticationException)
+    UnauthorizedError = Class.new(AuthenticationException)
+
+    class InsufficientScopeError < AuthenticationException
+      attr_reader :scopes
+      def initialize(scopes)
+        @scopes = scopes.map { |s| s.try(:name) || s }
+      end
+    end
+
     module UserAuthFinders
       PRIVATE_TOKEN_HEADER = 'HTTP_PRIVATE_TOKEN'.freeze
       PRIVATE_TOKEN_PARAM = :private_token
-
-      #
-      # Exceptions
-      #
-
-      AuthenticationException = Class.new(StandardError)
-      MissingTokenError = Class.new(AuthenticationException)
-      TokenNotFoundError = Class.new(AuthenticationException)
-      ExpiredError = Class.new(AuthenticationException)
-      RevokedError = Class.new(AuthenticationException)
-      UnauthorizedError = Class.new(AuthenticationException)
-
-      class InsufficientScopeError < AuthenticationException
-        attr_reader :scopes
-        def initialize(scopes)
-          @scopes = scopes.map { |s| s.try(:name) || s }
-        end
-      end
 
       # Check the Rails session for valid authentication details
       def find_user_from_warden

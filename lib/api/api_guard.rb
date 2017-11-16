@@ -93,11 +93,11 @@ module API
       private
 
       def install_error_responders(base)
-        error_classes = [Gitlab::Auth::UserAuthFinders::MissingTokenError,
-                         Gitlab::Auth::UserAuthFinders::TokenNotFoundError,
-                         Gitlab::Auth::UserAuthFinders::ExpiredError,
-                         Gitlab::Auth::UserAuthFinders::RevokedError,
-                         Gitlab::Auth::UserAuthFinders::InsufficientScopeError]
+        error_classes = [Gitlab::Auth::MissingTokenError,
+                         Gitlab::Auth::TokenNotFoundError,
+                         Gitlab::Auth::ExpiredError,
+                         Gitlab::Auth::RevokedError,
+                         Gitlab::Auth::InsufficientScopeError]
 
         base.__send__(:rescue_from, *error_classes, oauth2_bearer_token_error_handler) # rubocop:disable GitlabSecurity/PublicSend
       end
@@ -106,25 +106,25 @@ module API
         proc do |e|
           response =
             case e
-            when Gitlab::Auth::UserAuthFinders::MissingTokenError
+            when Gitlab::Auth::MissingTokenError
               Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new
 
-            when Gitlab::Auth::UserAuthFinders::TokenNotFoundError
+            when Gitlab::Auth::TokenNotFoundError
               Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new(
                 :invalid_token,
                 "Bad Access Token.")
 
-            when Gitlab::Auth::UserAuthFinders::ExpiredError
+            when Gitlab::Auth::ExpiredError
               Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new(
                 :invalid_token,
                 "Token is expired. You can either do re-authorization or token refresh.")
 
-            when Gitlab::Auth::UserAuthFinders::RevokedError
+            when Gitlab::Auth::RevokedError
               Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new(
                 :invalid_token,
                 "Token was revoked. You have to re-authorize from the user.")
 
-            when Gitlab::Auth::UserAuthFinders::InsufficientScopeError
+            when Gitlab::Auth::InsufficientScopeError
               # FIXME: ForbiddenError (inherited from Bearer::Forbidden of Rack::Oauth2)
               # does not include WWW-Authenticate header, which breaks the standard.
               Rack::OAuth2::Server::Resource::Bearer::Forbidden.new(
