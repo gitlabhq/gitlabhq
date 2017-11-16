@@ -113,6 +113,8 @@
 
   .icon {
     margin-right: $issuable-warning-icon-margin;
+    vertical-align: text-bottom;
+    fill: $orange-600;
   }
 
   + .md-area {
@@ -137,10 +139,22 @@
   }
 }
 
-.sidebar-item-value {
-  .fa {
-    background-color: inherit;
+.sidebar-item-icon {
+  border-radius: $border-radius-default;
+  margin: 0 3px 0 -4px;
+  vertical-align: middle;
+
+  &.is-active {
+    fill: $orange-600;
   }
+}
+
+.sidebar-collapsed-icon .sidebar-item-icon {
+  margin: 0;
+}
+
+.sidebar-item-value .sidebar-item-icon {
+  fill: $theme-gray-700;
 }
 
 .sidebar-item-warning-message {
