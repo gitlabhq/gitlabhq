@@ -136,6 +136,7 @@ window.dateFormat = dateFormat;
  * @param  {Number} seconds
  * @return {String}
  */
+// eslint-disable-next-line import/prefer-default-export
 export function timeIntervalInWords(intervalInSeconds) {
   const secondsInteger = parseInt(intervalInSeconds, 10);
   const minutes = Math.floor(secondsInteger / 60);
