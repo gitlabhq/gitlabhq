@@ -121,6 +121,7 @@
           :project-path="projectPath"
           :project-namespace="projectNamespace"
           :show-inline-edit-button="true"
+          :show-delete-button="false"
         />
       </div>
       <epic-sidebar
@@ -135,7 +136,6 @@
         :project-path="projectPath"
         :project-namespace="projectNamespace"
         :show-inline-edit-button="true"
-        :show-delete-button="false"
         issuable-type="epic"
         :editable="canUpdate"
         :initial-start-date="startDate"
