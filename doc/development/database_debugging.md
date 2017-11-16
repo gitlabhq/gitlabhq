@@ -9,7 +9,6 @@ An easy first step is to search for your error in Slack or google "GitLab <my er
 
 Available `RAILS_ENV`
 
- - `production` (not sure if in GDK)
  - `development` (this is your main GDK db)
  - `test` (used for tests like rspec and spinach)
 
@@ -18,9 +17,9 @@ Available `RAILS_ENV`
 
 If you just want to delete everything and start over,
 
- - `bundle exec rake db:drop RAILS_ENV=development`
- - `bundle exec rake db:setup RAILS_ENV=development`
-
+ - `bundle exec rake dev:setup RAILS_ENV=development` : Also runs DB specific stuff and seeds dummy data (slow)
+ - `bundle exec rake db:reset RAILS_ENV=development` : Doesn't do the above (fast)
+ - `bundle exec rake db:reset RAILS_ENV=test` : Fix the test DB, since it doesn't contain important data.
 
 ## Migration wrangling
 
