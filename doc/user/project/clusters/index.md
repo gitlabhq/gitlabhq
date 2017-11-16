@@ -8,7 +8,7 @@ The Cluster integration is currently in **Beta**.
 With a cluster associated to your project, you can use Review Apps, deploy your
 applications, run your pipelines, and much more, in an easy way.
 
-Connect your project to Google Container Engine (GKE)  or your own Kubernetes
+Connect your project to Google Kubernetes Engine (GKE) or your own Kubernetes
 cluster in a few steps.
 
 NOTE: **Note:**
@@ -39,7 +39,7 @@ cluster.
 NOTE: **Note:**
 You need Master [permissions] and above to add a cluster.
 
-There are two options when adding a new cluster; either use Google Container
+There are two options when adding a new cluster; either use Google Kubernetes
 Engine (GKE) or provide the credentials to your own Kubernetes cluster.
 
 To add a new cluster:
@@ -55,14 +55,14 @@ To add a new cluster:
       - **GCP project ID** (required) - The ID of the project you created in your GCP
         console that will host the Kubernetes cluster. This must **not** be confused
         with the project name. Learn more about [Google Cloud Platform projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
-      - **Zone** - The zone under which the cluster will be created. Read more about
-        [the available zones](https://cloud.google.com/compute/docs/regions-zones/).
+      - **Zone** - The [zone](https://cloud.google.com/compute/docs/regions-zones/)
+        under which the cluster will be created.
       - **Number of nodes** - The number of nodes you wish the cluster to have.
-      - **Machine type** - The machine type of the Virtual Machine instance that
-        the cluster will be based on. Read more about [the available machine types](https://cloud.google.com/compute/docs/machine-types).
+      - **Machine type** - The [machine type](https://cloud.google.com/compute/docs/machine-types)
+        of the Virtual Machine instance that the cluster will be based on.
       - **Project namespace** - The unique namespace for this project. By default you
         don't have to fill it in; by leaving it blank, GitLab will create one for you.
-1. If you want to use your own Kubernetes cluster, click on
+1. If you want to use your own existing Kubernetes cluster, click on
    **Add an existing cluster** and fill in the details as described in the
    [Kubernetes integration](../integrations/kubernetes.md) documentation.
 1. Finally, click the **Create cluster** button
@@ -88,12 +88,12 @@ To disable the Cluster integration, follow the same procedure.
 
 GitLab provides a one-click install for various applications which will be
 added directly to your configured cluster. Those applications are needed for
-review apps and deployments.
+[Review Apps](../../../ci/review_apps/index.md) and [deployments](../../../ci/environments.md).
 
 | Application | GitLab version | Description |
 | ----------- | :------------: | ----------- |
 | [Helm Tiller](https://docs.helm.sh/) | 10.2+ | Helm is a package manager for Kubernetes and is required to install all the other applications. It will be automatically installed as a dependency when you try to install a different app. It is installed in its own pod inside the cluster which can run the `helm` CLI in a safe environment. |
-| [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) | 10.2+ | Ingress can provide load balancing, SSL termination and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use Auto DevOps or deploy your own web apps. |
+| [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) | 10.2+ | Ingress can provide load balancing, SSL termination and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use [Auto DevOps](../../../topics/autodevops/index.md) or deploy your own web apps. |
 
 ## Removing the Cluster integration
 
