@@ -83,14 +83,14 @@ describe Gitlab::Middleware::ReadOnly do
       expect(subject).to disallow_request
     end
 
+    it 'expects POST of new file that looks like an LFS batch url to be disallowed' do
+      response = request.post('/root/gitlab-ce/new/master/app/info/lfs/objects/batch')
+
+      expect(response).to be_a_redirect
+      expect(subject).to disallow_request
+    end
+
     context 'whitelisted requests' do
-      it 'expects DELETE request to logout to be allowed' do
-        response = request.delete('/users/sign_out')
-
-        expect(response).not_to be_a_redirect
-        expect(subject).not_to disallow_request
-      end
-
       it 'expects a POST internal request to be allowed' do
         response = request.post("/api/#{API::API.version}/internal")
 
@@ -100,6 +100,25 @@ describe Gitlab::Middleware::ReadOnly do
 
       it 'expects a POST LFS request to batch URL to be allowed' do
         response = request.post('/root/rouge.git/info/lfs/objects/batch')
+
+        expect(response).not_to be_a_redirect
+        expect(subject).not_to disallow_request
+      end
+
+      it 'expects a POST request to git-upload-pack URL to be allowed' do
+        response = request.post('/root/rouge.git/git-upload-pack')
+
+        expect(response).not_to be_a_redirect
+        expect(subject).not_to disallow_request
+      end
+
+      it 'expects requests to sidekiq admin to be allowed' do
+        response = request.post('/admin/sidekiq')
+
+        expect(response).not_to be_a_redirect
+        expect(subject).not_to disallow_request
+
+        response = request.get('/admin/sidekiq')
 
         expect(response).not_to be_a_redirect
         expect(subject).not_to disallow_request

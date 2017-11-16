@@ -3,7 +3,7 @@
 - project = local_assigns.fetch(:project)
 - expanded = Rails.env.test?
 
-%section.settings
+%section.settings.no-animate{ class: ('expanded' if expanded) }
   .settings-header
     %h4
       Export project
@@ -11,7 +11,7 @@
       = expanded ? 'Collapse' : 'Expand'
     %p
       Export this project with all its related data in order to move your project to a new GitLab instance. Once the export is finished, you can import the file from the "New Project" page.
-  .settings-content.no-animate{ class: ('expanded' if expanded) }
+  .settings-content
     .bs-callout.bs-callout-info
       %p.append-bottom-0
         %p

@@ -13,8 +13,8 @@ feature 'Project' do
     end
 
     it "allows creation from templates", :js do
-      find('#create-from-template-tab').trigger('click')
-      find("##{template.name}").trigger('click')
+      find('#create-from-template-tab').click
+      find("label[for=#{template.name}]").click
       fill_in("project_path", with: template.name)
 
       page.within '#content-body' do

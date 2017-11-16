@@ -459,11 +459,11 @@ Rendered example:
 ### cURL commands
 
 - Use `https://gitlab.example.com/api/v4/` as an endpoint.
-- Wherever needed use this private token: `9koXpg98eAheJpvBs5tK`.
+- Wherever needed use this personal access token: `9koXpg98eAheJpvBs5tK`.
 - Always put the request first. `GET` is the default so you don't have to
   include it.
 - Use double quotes to the URL when it includes additional parameters.
-- Prefer to use examples using the private token and don't pass data of
+- Prefer to use examples using the personal access token and don't pass data of
   username and password.
 
 | Methods | Description |

@@ -270,6 +270,23 @@ describe Ci::Build do
     end
   end
 
+  describe '#triggered_by?' do
+    subject { build.triggered_by?(user) }
+
+    context 'when user is owner' do
+      let(:build) { create(:ci_build, pipeline: pipeline, user: user) }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when user is not owner' do
+      let(:another_user) { create(:user) }
+      let(:build) { create(:ci_build, pipeline: pipeline, user: another_user) }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
   describe '#detailed_status' do
     it 'returns a detailed status' do
       expect(build.detailed_status(user))
@@ -1271,6 +1288,7 @@ describe Ci::Build do
         { key: 'CI_PROJECT_PATH_SLUG', value: project.full_path_slug, public: true },
         { key: 'CI_PROJECT_NAMESPACE', value: project.namespace.full_path, public: true },
         { key: 'CI_PROJECT_URL', value: project.web_url, public: true },
+        { key: 'CI_PROJECT_VISIBILITY', value: 'private', public: true },
         { key: 'CI_PIPELINE_ID', value: pipeline.id.to_s, public: true },
         { key: 'CI_CONFIG_PATH', value: pipeline.ci_yaml_file_path, public: true },
         { key: 'CI_REGISTRY_USER', value: 'gitlab-ci-token', public: true },

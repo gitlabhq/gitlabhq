@@ -165,7 +165,17 @@ describe API::Jobs do
     context 'authorized user' do
       it 'returns specific job data' do
         expect(response).to have_gitlab_http_status(200)
-        expect(json_response['name']).to eq('test')
+        expect(json_response['id']).to eq(job.id)
+        expect(json_response['status']).to eq(job.status)
+        expect(json_response['stage']).to eq(job.stage)
+        expect(json_response['name']).to eq(job.name)
+        expect(json_response['ref']).to eq(job.ref)
+        expect(json_response['tag']).to eq(job.tag)
+        expect(json_response['coverage']).to eq(job.coverage)
+        expect(Time.parse(json_response['created_at'])).to be_like_time(job.created_at)
+        expect(Time.parse(json_response['started_at'])).to be_like_time(job.started_at)
+        expect(Time.parse(json_response['finished_at'])).to be_like_time(job.finished_at)
+        expect(json_response['duration']).to eq(job.duration)
       end
 
       it 'returns pipeline data' do
@@ -490,7 +500,11 @@ describe API::Jobs do
   end
 
   describe 'POST /projects/:id/jobs/:job_id/erase' do
+    let(:role) { :master }
+
     before do
+      project.team << [user, role]
+
       post api("/projects/#{project.id}/jobs/#{job.id}/erase", user)
     end
 
@@ -517,6 +531,23 @@ describe API::Jobs do
 
       it 'responds with forbidden' do
         expect(response).to have_gitlab_http_status(403)
+      end
+    end
+
+    context 'when a developer erases a build' do
+      let(:role) { :developer }
+      let(:job) { create(:ci_build, :trace, :artifacts, :success, project: project, pipeline: pipeline, user: owner) }
+
+      context 'when the build was created by the developer' do
+        let(:owner) { user }
+
+        it { expect(response).to have_gitlab_http_status(201) }
+      end
+
+      context 'when the build was created by the other' do
+        let(:owner) { create(:user) }
+
+        it { expect(response).to have_gitlab_http_status(403) }
       end
     end
   end

@@ -61,7 +61,10 @@ module API
       mount ::API::V3::Variables
     end
 
-    before { header['X-Frame-Options'] = 'SAMEORIGIN' }
+    before do
+      header['X-Frame-Options'] = 'SAMEORIGIN'
+      header['X-Content-Type-Options'] = 'nosniff'
+    end
 
     # The locale is set to the current user's locale when `current_user` is loaded
     after { Gitlab::I18n.use_default_locale }
@@ -142,7 +145,6 @@ module API
     mount ::API::Runner
     mount ::API::Runners
     mount ::API::Services
-    mount ::API::Session
     mount ::API::Settings
     mount ::API::SidekiqMetrics
     mount ::API::Snippets

@@ -420,7 +420,7 @@ class ApplicationSetting < ActiveRecord::Base
   #   the enabling/disabling is `performance_bar_allowed_group_id`
   # - If `enable` is false, we set `performance_bar_allowed_group_id` to `nil`
   def performance_bar_enabled=(enable)
-    return if enable
+    return if Gitlab::Utils.to_boolean(enable)
 
     self.performance_bar_allowed_group_id = nil
   end

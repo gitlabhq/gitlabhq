@@ -1,10 +1,12 @@
 /* eslint-disable class-methods-use-this, no-new */
-/* global LabelsSelect */
 /* global MilestoneSelect */
-/* global IssueStatusSelect */
 /* global SubscriptionSelect */
 
 import IssuableBulkUpdateActions from './issuable_bulk_update_actions';
+import './milestone_select';
+import issueStatusSelect from './issue_status_select';
+import './subscription_select';
+import LabelsSelect from './labels_select';
 
 const HIDDEN_CLASS = 'hidden';
 const DISABLED_CONTENT_CLASS = 'disabled-content';
@@ -45,7 +47,7 @@ export default class IssuableBulkUpdateSidebar {
   initDropdowns() {
     new LabelsSelect();
     new MilestoneSelect();
-    new IssueStatusSelect();
+    issueStatusSelect();
     new SubscriptionSelect();
   }
 

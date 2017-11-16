@@ -385,7 +385,7 @@ describe API::Runner do
           end
 
           context 'when job is made for tag' do
-            let!(:job) { create(:ci_build_tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:job) { create(:ci_build, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
 
             it 'sets branch as ref_type' do
               request_job
@@ -436,8 +436,8 @@ describe API::Runner do
           end
 
           context 'when project and pipeline have multiple jobs' do
-            let!(:job) { create(:ci_build_tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
-            let!(:job2) { create(:ci_build_tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
+            let!(:job) { create(:ci_build, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:job2) { create(:ci_build, :tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
             let!(:test_job) { create(:ci_build, pipeline: pipeline, name: 'deploy', stage: 'deploy', stage_idx: 1) }
 
             before do
@@ -458,7 +458,7 @@ describe API::Runner do
           end
 
           context 'when pipeline have jobs with artifacts' do
-            let!(:job) { create(:ci_build_tag, :artifacts, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:job) { create(:ci_build, :tag, :artifacts, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
             let!(:test_job) { create(:ci_build, pipeline: pipeline, name: 'deploy', stage: 'deploy', stage_idx: 1) }
 
             before do
@@ -478,8 +478,8 @@ describe API::Runner do
           end
 
           context 'when explicit dependencies are defined' do
-            let!(:job) { create(:ci_build_tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
-            let!(:job2) { create(:ci_build_tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
+            let!(:job) { create(:ci_build, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:job2) { create(:ci_build, :tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
             let!(:test_job) do
               create(:ci_build, pipeline: pipeline, token: 'test-job-token', name: 'deploy',
                                 stage: 'deploy', stage_idx: 1,
@@ -502,8 +502,8 @@ describe API::Runner do
           end
 
           context 'when dependencies is an empty array' do
-            let!(:job) { create(:ci_build_tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
-            let!(:job2) { create(:ci_build_tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
+            let!(:job) { create(:ci_build, :tag, pipeline: pipeline, name: 'spinach', stage: 'test', stage_idx: 0) }
+            let!(:job2) { create(:ci_build, :tag, pipeline: pipeline, name: 'rubocop', stage: 'test', stage_idx: 0) }
             let!(:empty_dependencies_job) do
               create(:ci_build, pipeline: pipeline, token: 'test-job-token', name: 'empty_dependencies_job',
                                 stage: 'deploy', stage_idx: 1,

@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # Universal update guide for patch versions
 
 ## Select Version to Install

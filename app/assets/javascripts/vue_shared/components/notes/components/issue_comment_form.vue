@@ -1,10 +1,9 @@
 <script>
-  /* global Autosave */
   import { mapActions, mapGetters } from 'vuex';
   import _ from 'underscore';
-  import autosize from 'vendor/autosize';
+  import Autosize from 'autosize';
   import Flash from '~/flash';
-  import '~/autosave';
+  import Autosave from '~/autosave';
   import TaskList from '~/task_list';
   import * as constants from '../constants';
   import eventHub from '../event_hub';
@@ -220,7 +219,7 @@
       },
       resizeTextarea() {
         this.$nextTick(() => {
-          autosize.update(this.$refs.textarea);
+          Autosize.update(this.$refs.textarea);
         });
       },
     },
@@ -358,7 +357,8 @@
                   @click="handleSave(true)"
                   v-if="canUpdateIssue"
                   :class="actionButtonClassNames"
-                  class="btn btn-comment btn-comment-and-close">
+                  :disabled="isSubmitting"
+                  class="btn btn-comment btn-comment-and-close js-action-button">
                   {{issueActionButtonTitle}}
                 </button>
                 <button

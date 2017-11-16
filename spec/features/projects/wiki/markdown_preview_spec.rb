@@ -18,13 +18,13 @@ feature 'Projects > Wiki > User previews markdown changes', :js do
     sign_in(user)
 
     visit project_path(project)
-    find('.shortcuts-wiki').trigger('click')
+    find('.shortcuts-wiki').click
   end
 
   context "while creating a new wiki page" do
     context "when there are no spaces or hyphens in the page name" do
       it "rewrites relative links as expected" do
-        find('.add-new-wiki').trigger('click')
+        find('.add-new-wiki').click
         page.within '#modal-new-wiki' do
           fill_in :new_wiki_path, with: 'a/b/c/d'
           click_button 'Create page'
@@ -91,7 +91,7 @@ feature 'Projects > Wiki > User previews markdown changes', :js do
 
   context "while editing a wiki page" do
     def create_wiki_page(path)
-      find('.add-new-wiki').trigger('click')
+      find('.add-new-wiki').click
 
       page.within '#modal-new-wiki' do
         fill_in :new_wiki_path, with: path

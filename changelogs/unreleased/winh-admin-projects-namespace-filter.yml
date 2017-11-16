@@ -1,0 +1,5 @@
+---
+title: Make NamespaceSelect change URL when filtering
+merge_request: 14888
+author:
+type: fixed

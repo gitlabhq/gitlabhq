@@ -6,6 +6,8 @@ module JiraServiceHelper
     properties = {
       title: "JIRA tracker",
       url: JIRA_URL,
+      username: 'jira-user',
+      password: 'my-secret-password',
       project_key: "JIRA",
       jira_issue_transition_id: '1'
     }

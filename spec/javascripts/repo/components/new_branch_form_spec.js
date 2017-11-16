@@ -1,8 +1,8 @@
 import Vue from 'vue';
+import store from '~/repo/stores';
 import newBranchForm from '~/repo/components/new_branch_form.vue';
-import eventHub from '~/repo/event_hub';
-import RepoStore from '~/repo/stores/repo_store';
-import createComponent from '../../helpers/vue_mount_component_helper';
+import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
+import { resetStore } from '../helpers';
 
 describe('Multi-file editor new branch form', () => {
   let vm;
@@ -10,17 +10,17 @@ describe('Multi-file editor new branch form', () => {
   beforeEach(() => {
     const Component = Vue.extend(newBranchForm);
 
-    RepoStore.currentBranch = 'master';
+    vm = createComponentWithStore(Component, store);
 
-    vm = createComponent(Component, {
-      currentBranch: RepoStore.currentBranch,
-    });
+    vm.$store.state.currentBranch = 'master';
+
+    vm.$mount();
   });
 
   afterEach(() => {
     vm.$destroy();
 
-    RepoStore.currentBranch = '';
+    resetStore(vm.$store);
   });
 
   describe('template', () => {
@@ -48,6 +48,10 @@ describe('Multi-file editor new branch form', () => {
   });
 
   describe('submitNewBranch', () => {
+    beforeEach(() => {
+      spyOn(vm, 'createNewBranch').and.returnValue(Promise.resolve());
+    });
+
     it('sets to loading', () => {
       vm.submitNewBranch();
 
@@ -66,57 +70,45 @@ describe('Multi-file editor new branch form', () => {
       });
     });
 
-    it('emits an event with branchName', () => {
-      spyOn(eventHub, '$emit');
-
+    it('calls createdNewBranch with branchName', () => {
       vm.branchName = 'testing';
 
       vm.submitNewBranch();
 
-      expect(eventHub.$emit).toHaveBeenCalledWith('createNewBranch', 'testing');
+      expect(vm.createNewBranch).toHaveBeenCalledWith('testing');
     });
   });
 
-  describe('showErrorMessage', () => {
-    it('sets loading to false', () => {
+  describe('submitNewBranch with error', () => {
+    beforeEach(() => {
+      spyOn(vm, 'createNewBranch').and.returnValue(Promise.reject({
+        json: () => Promise.resolve({
+          message: 'error message',
+        }),
+      }));
+    });
+
+    it('sets loading to false', (done) => {
       vm.loading = true;
 
-      vm.showErrorMessage();
+      vm.submitNewBranch();
 
-      expect(vm.loading).toBeFalsy();
+      setTimeout(() => {
+        expect(vm.loading).toBeFalsy();
+
+        done();
+      });
     });
 
-    it('creates flash element', () => {
-      vm.showErrorMessage('error message');
+    it('creates flash element', (done) => {
+      vm.submitNewBranch();
 
-      expect(vm.$el.querySelector('.flash-alert')).not.toBeNull();
-      expect(vm.$el.querySelector('.flash-alert').textContent.trim()).toBe('error message');
-    });
-  });
+      setTimeout(() => {
+        expect(vm.$el.querySelector('.flash-alert')).not.toBeNull();
+        expect(vm.$el.querySelector('.flash-alert').textContent.trim()).toBe('error message');
 
-  describe('createdNewBranch', () => {
-    it('set loading to false', () => {
-      vm.loading = true;
-
-      vm.createdNewBranch();
-
-      expect(vm.loading).toBeFalsy();
-    });
-
-    it('resets branch name', () => {
-      vm.branchName = 'testing';
-
-      vm.createdNewBranch();
-
-      expect(vm.branchName).toBe('');
-    });
-
-    it('sets the dropdown toggle text', () => {
-      vm.dropdownText = document.createElement('span');
-
-      vm.createdNewBranch('branch name');
-
-      expect(vm.dropdownText.textContent).toBe('branch name');
+        done();
+      });
     });
   });
 });

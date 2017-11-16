@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import autosize from 'vendor/autosize';
 import store from '~/vue_shared/components/notes/stores';
 import issueCommentForm from '~/vue_shared/components/notes/components/issue_comment_form.vue';
+import Autosize from 'autosize';
 import { loggedOutIssueData, notesDataMock, userDataMock, issueDataMock } from '../mock_data';
 import { keyboardDownEvent } from '../../../../issue_show/helpers';
 
@@ -55,6 +55,25 @@ describe('issue_comment_form component', () => {
 
         expect(vm.toggleIssueState).toHaveBeenCalled();
       });
+
+      it('should disable action button whilst submitting', (done) => {
+        const saveNotePromise = Promise.resolve();
+        vm.note = 'hello world';
+        spyOn(vm, 'saveNote').and.returnValue(saveNotePromise);
+        spyOn(vm, 'stopPolling');
+
+        const actionButton = vm.$el.querySelector('.js-action-button');
+
+        vm.handleSave();
+
+        Vue.nextTick()
+          .then(() => expect(actionButton.disabled).toBeTruthy())
+          .then(saveNotePromise)
+          .then(Vue.nextTick)
+          .then(() => expect(actionButton.disabled).toBeFalsy())
+          .then(done)
+          .catch(done.fail);
+      });
     });
 
     describe('textarea', () => {
@@ -97,14 +116,14 @@ describe('issue_comment_form component', () => {
       });
 
       it('should resize textarea after note discarded', (done) => {
-        spyOn(autosize, 'update');
+        spyOn(Autosize, 'update');
         spyOn(vm, 'discard').and.callThrough();
 
         vm.note = 'foo';
         vm.discard();
 
         Vue.nextTick(() => {
-          expect(autosize.update).toHaveBeenCalled();
+          expect(Autosize.update).toHaveBeenCalled();
           done();
         });
       });

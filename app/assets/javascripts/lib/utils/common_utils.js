@@ -172,7 +172,6 @@ export const getSelectedFragment = () => {
   return documentFragment;
 };
 
-// TODO: Update this name, there is a gl.text.insertText function.
 export const insertText = (target, text) => {
   // Firefox doesn't support `document.execCommand('insertText', false, text)` on textareas
   const selectionStart = target.selectionStart;

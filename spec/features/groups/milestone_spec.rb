@@ -19,9 +19,9 @@ feature 'Group milestones', :js do
     end
 
     it 'renders description preview' do
-      form = find('.gfm-form')
+      description = find('.note-textarea')
 
-      form.fill_in(:milestone_description, with: '')
+      description.native.send_keys('')
 
       click_link('Preview')
 
@@ -31,7 +31,7 @@ feature 'Group milestones', :js do
 
       click_link('Write')
 
-      form.fill_in(:milestone_description, with: ':+1: Nice')
+      description.native.send_keys(':+1: Nice')
 
       click_link('Preview')
 
@@ -50,6 +50,13 @@ feature 'Group milestones', :js do
       click_button 'Create milestone'
 
       expect(find('.start_date')).to have_content(Date.today.at_beginning_of_month.strftime('%b %-d, %Y'))
+    end
+
+    it 'description input does not support autocomplete' do
+      description = find('.note-textarea')
+      description.native.send_keys('!')
+
+      expect(page).not_to have_selector('.atwho-view')
     end
   end
 

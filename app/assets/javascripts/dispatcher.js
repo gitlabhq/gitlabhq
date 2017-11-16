@@ -1,9 +1,10 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
+import { s__ } from './locale';
 /* global ProjectSelect */
-/* global IssuableIndex */
+import IssuableIndex from './issuable_index';
 /* global Milestone */
-/* global IssuableForm */
-/* global LabelsSelect */
+import IssuableForm from './issuable_form';
+import LabelsSelect from './labels_select';
 /* global MilestoneSelect */
 /* global NewBranchForm */
 /* global NotificationsForm */
@@ -13,25 +14,26 @@ import GroupLabelSubscription from './group_label_subscription';
 /* global LineHighlighter */
 import BuildArtifacts from './build_artifacts';
 import CILintEditor from './ci_lint_editor';
-/* global GroupsSelect */
+import groupsSelect from './groups_select';
 /* global Search */
 /* global Admin */
-/* global NamespaceSelects */
+import NamespaceSelect from './namespace_select';
 /* global NewCommitForm */
 /* global NewBranchForm */
-/* global Project */
-/* global ProjectAvatar */
+import Project from './project';
+import projectAvatar from './project_avatar';
 /* global MergeRequest */
 /* global Compare */
 /* global CompareAutocomplete */
 /* global ProjectFindFile */
 /* global ProjectNew */
 /* global ProjectShow */
-/* global ProjectImport */
+import projectImport from './project_import';
 import Labels from './labels';
 import LabelManager from './label_manager';
 /* global Sidebar */
 
+import Flash from './flash';
 import CommitsList from './commits';
 import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
@@ -173,7 +175,7 @@ import Diff from './diff';
             filteredSearchManager.setup();
           }
           const pagePrefix = page === 'projects:merge_requests:index' ? 'merge_request_' : 'issue_';
-          IssuableIndex.init(pagePrefix);
+          new IssuableIndex(pagePrefix);
 
           shortcut_handler = new ShortcutsNavigation();
           new UsersSelect();
@@ -231,12 +233,16 @@ import Diff from './diff';
         case 'projects:milestones:new':
         case 'projects:milestones:edit':
         case 'projects:milestones:update':
+          new ZenMode();
+          new DueDateSelectors();
+          new GLForm($('.milestone-form'), true);
+          break;
         case 'groups:milestones:new':
         case 'groups:milestones:edit':
         case 'groups:milestones:update':
           new ZenMode();
           new DueDateSelectors();
-          new GLForm($('.milestone-form'), true);
+          new GLForm($('.milestone-form'), false);
           break;
         case 'projects:compare:show':
           new Diff();
@@ -373,7 +379,7 @@ import Diff from './diff';
           initSettingsPanels();
           break;
         case 'projects:imports:show':
-          new ProjectImport();
+          projectImport();
           break;
         case 'projects:pipelines:new':
           new NewBranchForm($('.js-new-pipeline-form'));
@@ -415,7 +421,7 @@ import Diff from './diff';
           break;
         case 'projects:project_members:index':
           memberExpirationDate('.js-access-expiration-date-groups');
-          new GroupsSelect();
+          groupsSelect();
           memberExpirationDate();
           new Members();
           new UsersSelect();
@@ -540,9 +546,12 @@ import Diff from './diff';
           new DueDateSelectors();
           break;
         case 'projects:clusters:show':
-          import(/* webpackChunkName: "clusters" */ './clusters')
+          import(/* webpackChunkName: "clusters" */ './clusters/clusters_bundle')
             .then(cluster => new cluster.default()) // eslint-disable-line new-cap
-            .catch(() => {});
+            .catch((err) => {
+              Flash(s__('ClusterIntegration|Problem setting up the cluster JavaScript'));
+              throw err;
+            });
           break;
       }
       switch (path[0]) {
@@ -572,7 +581,8 @@ import Diff from './diff';
               new UsersSelect();
               break;
             case 'projects':
-              new NamespaceSelects();
+              document.querySelectorAll('.js-namespace-select')
+                .forEach(dropdown => new NamespaceSelect({ dropdown }));
               break;
             case 'labels':
               switch (path[2]) {
@@ -595,7 +605,7 @@ import Diff from './diff';
           break;
         case 'projects':
           new Project();
-          new ProjectAvatar();
+          projectAvatar();
           switch (path[1]) {
             case 'compare':
               new CompareAutocomplete();

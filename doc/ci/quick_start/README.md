@@ -1,4 +1,4 @@
-# Getting started with GitLab CI
+# Getting started with GitLab CI/CD
 
 >**Note:** Starting from version 8.0, GitLab [Continuous Integration][ci] (CI)
 is fully integrated into GitLab itself and is [enabled] by default on all

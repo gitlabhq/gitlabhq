@@ -1,4 +1,8 @@
-## GitLab CI Services
+---
+comments: false
+---
+
+# GitLab CI Services
 
 GitLab CI uses the `services` keyword to define what docker containers should
 be linked with your base image. Below is a list of examples you may use.

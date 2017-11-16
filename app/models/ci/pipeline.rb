@@ -66,8 +66,8 @@ module Ci
 
     state_machine :status, initial: :created do
       event :enqueue do
-        transition created: :pending
-        transition [:success, :failed, :canceled, :skipped] => :running
+        transition [:created, :skipped] => :pending
+        transition [:success, :failed, :canceled] => :running
       end
 
       event :run do
@@ -249,9 +249,7 @@ module Ci
     end
 
     def commit
-      @commit ||= project.commit(sha)
-    rescue
-      nil
+      @commit ||= project.commit_by(oid: sha)
     end
 
     def branch?
@@ -411,7 +409,7 @@ module Ci
     end
 
     def notes
-      Note.for_commit_id(sha)
+      project.notes.for_commit_id(sha)
     end
 
     def process!

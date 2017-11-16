@@ -110,7 +110,7 @@ You can mark that content for translation with:
 In JavaScript we added the `__()` (double underscore parenthesis) function
 for translations.
 
-### Updating the PO files with the new content
+## Updating the PO files with the new content
 
 Now that the new content is marked for translation, we need to update the PO
 files with the following command:
@@ -119,23 +119,20 @@ files with the following command:
 bundle exec rake gettext:find
 ```
 
-This command will update the `locale/**/gitlab.edit.po` file with the
-new content that the parser has found.
+This command will update the `locale/gitlab.pot` file with the newly externalized
+strings and remove any strings that aren't used anymore. You should check this
+file in. Once the changes are on master, they will be picked up by
+[Crowdin](http://translate.gitlab.com) and be presented for translation.
 
-New translations will be added with their default content and will be marked
-fuzzy. To use the translation, look for the `#, fuzzy` mention in `gitlab.edit.po`
-and remove it.
+The command also updates the translation files for each language: `locale/*/gitlab.po`
+These changes can be discarded, the languange files will be updated by Crowdin
+automatically.
 
-We need to make sure we remove the `fuzzy` translations before generating the
-`locale/**/gitlab.po` file. When they aren't removed, the resulting `.po` will
-be treated as a binary file which could overwrite translations that were merged
-before the new translations.
+Discard all of them at once like this:
 
-When we are just preparing a page to be translated, but not actually adding any
-translations. There's no need to generate `.po` files.
-
-Translations that aren't used in the source code anymore will be marked with
-`~#`; these can be removed to keep our translation files clutter-free.
+```sh
+git checkout locale/*/gitlab.po
+```
 
 ### Validating PO files
 
@@ -180,15 +177,43 @@ aren't in the message with id `1 pipeline`.
 
 ## Working with special content
 
+
+### Just marking content for parsing
+
+- In Ruby/HAML:
+
+    ```ruby
+    _('Subscribe')
+    ```
+
+- In JavaScript:
+
+    ```js
+    import { __ } from '../../../locale';
+    const label = __('Subscribe');
+    ```
+
+
+Sometimes there are some dynamic translations that can't be found by the
+parser when running `bundle exec rake gettext:find`. For these scenarios you can
+use the [`_N` method](https://github.com/grosser/gettext_i18n_rails/blob/c09e38d481e0899ca7d3fc01786834fa8e7aab97/Readme.md#unfound-translations-with-rake-gettextfind).
+
+There is also and alternative method to [translate messages from validation errors](https://github.com/grosser/gettext_i18n_rails/blob/c09e38d481e0899ca7d3fc01786834fa8e7aab97/Readme.md#option-a).
+
 ### Interpolation
 
 - In Ruby/HAML:
 
     ```ruby
-    _("Hello %{name}") % { name: 'Joe' }
+    _("Hello %{name}") % { name: 'Joe' } => 'Hello Joe'
     ```
 
-- In JavaScript: Not supported at this moment.
+- In JavaScript:
+
+    ```js
+    import { __, sprintf } from '../../../locale';
+    sprintf(__('Hello %{username}'), { username: 'Joe' }) => 'Hello Joe'
+    ```
 
 ### Plurals
 
@@ -233,14 +258,6 @@ Sometimes you need to add some context to the text that you want to translate
     ```js
     s__('OpenedNDaysAgo|Opened')
     ```
-
-### Just marking content for parsing
-
-Sometimes there are some dynamic translations that can't be found by the
-parser when running `bundle exec rake gettext:find`. For these scenarios you can
-use the [`_N` method](https://github.com/grosser/gettext_i18n_rails/blob/c09e38d481e0899ca7d3fc01786834fa8e7aab97/Readme.md#unfound-translations-with-rake-gettextfind).
-
-There is also and alternative method to [translate messages from validation errors](https://github.com/grosser/gettext_i18n_rails/blob/c09e38d481e0899ca7d3fc01786834fa8e7aab97/Readme.md#option-a).
 
 ## Adding a new language
 

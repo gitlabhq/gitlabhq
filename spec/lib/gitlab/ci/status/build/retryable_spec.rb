@@ -66,7 +66,7 @@ describe Gitlab::Ci::Status::Build::Retryable do
     end
 
     describe '#action_icon' do
-      it { expect(subject.action_icon).to eq 'icon_action_retry' }
+      it { expect(subject.action_icon).to eq 'retry' }
     end
 
     describe '#action_title' do

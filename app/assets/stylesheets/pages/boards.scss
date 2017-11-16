@@ -72,7 +72,7 @@
 }
 
 .boards-list {
-  height: calc(100vh - 152px);
+  height: calc(100vh - 105px);
   width: 100%;
   padding-top: 25px;
   padding-bottom: 25px;
@@ -81,11 +81,12 @@
   overflow-x: scroll;
   white-space: nowrap;
 
-  @media (min-width: $screen-sm-min) {
-    height: 475px; // Needed for PhantomJS
-    // scss-lint:disable DuplicateProperty
-    height: calc(100vh - 222px);
-    // scss-lint:enable DuplicateProperty
+  @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
+    height: calc(100vh - 90px);
+  }
+
+  @media (min-width: $screen-md-min) {
+    height: calc(100vh - 160px);
     min-height: 475px;
   }
 }

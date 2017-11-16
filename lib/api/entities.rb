@@ -57,10 +57,6 @@ module API
       expose :admin?, as: :is_admin
     end
 
-    class UserWithPrivateDetails < UserWithAdmin
-      expose :private_token
-    end
-
     class Email < Grape::Entity
       expose :id, :email
     end
@@ -246,10 +242,7 @@ module API
       end
 
       expose :merged do |repo_branch, options|
-        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37442
-        Gitlab::GitalyClient.allow_n_plus_1_calls do
-          options[:project].repository.merged_to_root_ref?(repo_branch.name)
-        end
+        options[:project].repository.merged_to_root_ref?(repo_branch, options[:merged_branch_names])
       end
 
       expose :protected do |repo_branch, options|
@@ -481,6 +474,10 @@ module API
     class MergeRequest < MergeRequestBasic
       expose :subscribed do |merge_request, options|
         merge_request.subscribed?(options[:current_user], options[:project])
+      end
+
+      expose :changes_count do |merge_request, _options|
+        merge_request.merge_request_diff.real_size
       end
     end
 
@@ -826,6 +823,7 @@ module API
     class Job < Grape::Entity
       expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
+      expose :duration
       expose :user, with: User
       expose :artifacts_file, using: JobArtifactFile, if: -> (job, opts) { job.artifacts? }
       expose :commit, with: Commit
@@ -1044,6 +1042,11 @@ module API
       expose :value
     end
 
+    class PagesDomainCertificateExpiration < Grape::Entity
+      expose :expired?, as: :expired
+      expose :expiration
+    end
+
     class PagesDomainCertificate < Grape::Entity
       expose :subject
       expose :expired?, as: :expired
@@ -1051,12 +1054,23 @@ module API
       expose :certificate_text
     end
 
+    class PagesDomainBasic < Grape::Entity
+      expose :domain
+      expose :url
+      expose :certificate,
+        as: :certificate_expiration,
+        if: ->(pages_domain, _) { pages_domain.certificate? },
+        using: PagesDomainCertificateExpiration do |pages_domain|
+        pages_domain
+      end
+    end
+
     class PagesDomain < Grape::Entity
       expose :domain
       expose :url
       expose :certificate,
-             if: ->(pages_domain, _) { pages_domain.certificate? },
-             using: PagesDomainCertificate do |pages_domain|
+        if: ->(pages_domain, _) { pages_domain.certificate? },
+        using: PagesDomainCertificate do |pages_domain|
         pages_domain
       end
     end

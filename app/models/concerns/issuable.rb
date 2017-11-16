@@ -14,10 +14,11 @@ module Issuable
   include StripAttribute
   include Awardable
   include Taskable
-  include TimeTrackable
   include Importable
   include Editable
   include AfterCommitQueue
+  include Sortable
+  include CreatedAtFilterable
 
   # This object is used to gather issuable meta data for displaying
   # upvotes, downvotes, notes and closing merge requests count for issues and merge requests
@@ -94,8 +95,6 @@ module Issuable
     participant :notes_with_associations
 
     strip_attributes :title
-
-    acts_as_paranoid
 
     after_save :record_metrics, unless: :imported?
 

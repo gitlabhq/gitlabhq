@@ -24,6 +24,7 @@ describe Project do
     it { is_expected.to have_one(:slack_service) }
     it { is_expected.to have_one(:microsoft_teams_service) }
     it { is_expected.to have_one(:mattermost_service) }
+    it { is_expected.to have_one(:packagist_service) }
     it { is_expected.to have_one(:pushover_service) }
     it { is_expected.to have_one(:asana_service) }
     it { is_expected.to have_many(:boards) }
@@ -78,6 +79,7 @@ describe Project do
     it { is_expected.to have_many(:pipeline_schedules) }
     it { is_expected.to have_many(:members_and_requesters) }
     it { is_expected.to have_one(:cluster) }
+    it { is_expected.to have_many(:custom_attributes).class_name('ProjectCustomAttribute') }
 
     context 'after initialized' do
       it "has a project_feature" do
@@ -272,6 +274,12 @@ describe Project do
       it 'allows a reserved group name' do
         parent = create(:group)
         project = build(:project, path: 'avatar', namespace: parent)
+
+        expect(project).to be_valid
+      end
+
+      it 'allows a path ending in a period' do
+        project = build(:project, path: 'foo.')
 
         expect(project).to be_valid
       end
@@ -875,20 +883,14 @@ describe Project do
 
     context 'when avatar file is uploaded' do
       let(:project) { create(:project, :public, :with_avatar) }
-      let(:avatar_path) { "/uploads/-/system/project/avatar/#{project.id}/dk.png" }
-      let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
 
       it 'shows correct url' do
-        expect(project.avatar_url).to eq(avatar_path)
-        expect(project.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
-
-        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-
-        expect(project.avatar_url).to eq([gitlab_host, avatar_path].join)
+        expect(project.avatar_url).to eq(project.avatar.url)
+        expect(project.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, project.avatar.url].join)
       end
     end
 
-    context 'When avatar file in git' do
+    context 'when avatar file in git' do
       before do
         allow(project).to receive(:avatar_in_git) { true }
       end
@@ -1922,6 +1924,38 @@ describe Project do
         expect(forked_project.in_fork_network_of?(other_project)).to be_falsy
       end
     end
+
+    describe '#fork_source' do
+      let!(:second_fork) { fork_project(forked_project) }
+
+      it 'returns the direct source if it exists' do
+        expect(second_fork.fork_source).to eq(forked_project)
+      end
+
+      it 'returns the root of the fork network when the directs source was deleted' do
+        forked_project.destroy
+
+        expect(second_fork.fork_source).to eq(project)
+      end
+    end
+
+    describe '#lfs_storage_project' do
+      it 'returns self for non-forks' do
+        expect(project.lfs_storage_project).to eq project
+      end
+
+      it 'returns the fork network root for forks' do
+        second_fork = fork_project(forked_project)
+
+        expect(second_fork.lfs_storage_project).to eq project
+      end
+
+      it 'returns self when fork_source is nil' do
+        expect(forked_project).to receive(:fork_source).and_return(nil)
+
+        expect(forked_project.lfs_storage_project).to eq forked_project
+      end
+    end
   end
 
   describe '#pushes_since_gc' do
@@ -2452,6 +2486,7 @@ describe Project do
   context 'legacy storage' do
     let(:project) { create(:project, :repository) }
     let(:gitlab_shell) { Gitlab::Shell.new }
+    let(:project_storage) { project.send(:storage) }
 
     before do
       allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
@@ -2493,7 +2528,7 @@ describe Project do
 
     describe '#hashed_storage?' do
       it 'returns false' do
-        expect(project.hashed_storage?).to be_falsey
+        expect(project.hashed_storage?(:repository)).to be_falsey
       end
     end
 
@@ -2545,6 +2580,30 @@ describe Project do
         subject { project.rename_repo }
 
         it { expect { subject }.to raise_error(StandardError) }
+      end
+
+      context 'gitlab pages' do
+        before do
+          expect(project_storage).to receive(:rename_repo) { true }
+        end
+
+        it 'moves pages folder to new location' do
+          expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project)
+
+          project.rename_repo
+        end
+      end
+
+      context 'attachments' do
+        before do
+          expect(project_storage).to receive(:rename_repo) { true }
+        end
+
+        it 'moves uploads folder to new location' do
+          expect_any_instance_of(Gitlab::UploadsTransfer).to receive(:rename_project)
+
+          project.rename_repo
+        end
       end
     end
 
@@ -2605,8 +2664,14 @@ describe Project do
     end
 
     describe '#hashed_storage?' do
-      it 'returns true' do
-        expect(project.hashed_storage?).to be_truthy
+      it 'returns true if rolled out' do
+        expect(project.hashed_storage?(:attachments)).to be_truthy
+      end
+
+      it 'returns false when not rolled out yet' do
+        project.storage_version = 1
+
+        expect(project.hashed_storage?(:attachments)).to be_falsey
       end
     end
 
@@ -2649,10 +2714,6 @@ describe Project do
           .to receive(:execute_hooks_for)
             .with(project, :rename)
 
-        expect_any_instance_of(Gitlab::UploadsTransfer)
-          .to receive(:rename_project)
-            .with('foo', project.path, project.namespace.full_path)
-
         expect(project).to receive(:expire_caches_before_rename)
 
         expect(project).to receive(:expires_full_path_cache)
@@ -2672,6 +2733,32 @@ describe Project do
         subject { project.rename_repo }
 
         it { expect { subject }.to raise_error(StandardError) }
+      end
+
+      context 'gitlab pages' do
+        it 'moves pages folder to new location' do
+          expect_any_instance_of(Gitlab::PagesTransfer).to receive(:rename_project)
+
+          project.rename_repo
+        end
+      end
+
+      context 'attachments' do
+        it 'keeps uploads folder location unchanged' do
+          expect_any_instance_of(Gitlab::UploadsTransfer).not_to receive(:rename_project)
+
+          project.rename_repo
+        end
+
+        context 'when not rolled out' do
+          let(:project) { create(:project, :repository, storage_version: 1) }
+
+          it 'moves pages folder to new location' do
+            expect_any_instance_of(Gitlab::UploadsTransfer).to receive(:rename_project)
+
+            project.rename_repo
+          end
+        end
       end
     end
 
@@ -2939,6 +3026,79 @@ describe Project do
         expect(project.latest_successful_pipeline_for_default_branch)
           .to eq(pipeline)
       end
+    end
+  end
+
+  describe '#after_import' do
+    let(:project) { build(:project) }
+
+    it 'runs the correct hooks' do
+      expect(project.repository).to receive(:after_import)
+      expect(project).to receive(:import_finish)
+      expect(project).to receive(:update_project_counter_caches)
+      expect(project).to receive(:remove_import_jid)
+
+      project.after_import
+    end
+  end
+
+  describe '#update_project_counter_caches' do
+    let(:project) { create(:project) }
+
+    it 'updates all project counter caches' do
+      expect_any_instance_of(Projects::OpenIssuesCountService)
+        .to receive(:refresh_cache)
+        .and_call_original
+
+      expect_any_instance_of(Projects::OpenMergeRequestsCountService)
+        .to receive(:refresh_cache)
+        .and_call_original
+
+      project.update_project_counter_caches
+    end
+  end
+
+  describe '#remove_import_jid', :clean_gitlab_redis_cache do
+    let(:project) {  }
+
+    context 'without an import JID' do
+      it 'does nothing' do
+        project = create(:project)
+
+        expect(Gitlab::SidekiqStatus)
+          .not_to receive(:unset)
+
+        project.remove_import_jid
+      end
+    end
+
+    context 'with an import JID' do
+      it 'unsets the import JID' do
+        project = create(:project, import_jid: '123')
+
+        expect(Gitlab::SidekiqStatus)
+          .to receive(:unset)
+          .with('123')
+          .and_call_original
+
+        project.remove_import_jid
+
+        expect(project.import_jid).to be_nil
+      end
+    end
+  end
+
+  describe '#wiki_repository_exists?' do
+    it 'returns true when the wiki repository exists' do
+      project = create(:project, :wiki_repo)
+
+      expect(project.wiki_repository_exists?).to eq(true)
+    end
+
+    it 'returns false when the wiki repository does not exist' do
+      project = create(:project)
+
+      expect(project.wiki_repository_exists?).to eq(false)
     end
   end
 end

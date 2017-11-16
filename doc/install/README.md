@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # Installation
 
 GitLab can be installed via various ways. Check the [installation methods][methods]

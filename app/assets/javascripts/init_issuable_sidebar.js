@@ -1,7 +1,7 @@
 /* eslint-disable no-new */
 /* global MilestoneSelect */
-/* global LabelsSelect */
-/* global IssuableContext */
+import LabelsSelect from './labels_select';
+import IssuableContext from './issuable_context';
 /* global Sidebar */
 
 import DueDateSelectors from './due_date_select';

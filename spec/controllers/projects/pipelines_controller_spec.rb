@@ -46,7 +46,7 @@ describe Projects::PipelinesController do
 
     context 'when performing gitaly calls', :request_store do
       it 'limits the Gitaly requests' do
-        expect { subject }.to change { Gitlab::GitalyClient.get_request_count }.by(10)
+        expect { subject }.to change { Gitlab::GitalyClient.get_request_count }.by(8)
       end
     end
   end

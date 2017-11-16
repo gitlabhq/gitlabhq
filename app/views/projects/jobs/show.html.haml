@@ -71,7 +71,7 @@
                     class: 'js-raw-link-controller has-tooltip controllers-buttons' do
               = icon('file-text-o')
 
-          - if can?(current_user, :update_build, @project) && @build.erasable?
+          - if @build.erasable? && can?(current_user, :erase_build, @build)
             = link_to erase_project_job_path(@project, @build),
                       method: :post,
                       data: { confirm: 'Are you sure you want to erase this build?', placement: 'top', container: 'body' },

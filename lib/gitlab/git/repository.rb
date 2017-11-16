@@ -6,6 +6,7 @@ require "rubygems/package"
 module Gitlab
   module Git
     class Repository
+      include Gitlab::Git::RepositoryMirroring
       include Gitlab::Git::Popen
 
       ALLOWED_OBJECT_DIRECTORIES_VARIABLES = %w[
@@ -57,7 +58,7 @@ module Gitlab
       # Rugged repo object
       attr_reader :rugged
 
-      attr_reader :storage, :gl_repository, :relative_path, :gitaly_resolver
+      attr_reader :storage, :gl_repository, :relative_path
 
       # This initializer method is only used on the client side (gitlab-ce).
       # Gitaly-ruby uses a different initializer.
@@ -65,7 +66,6 @@ module Gitlab
         @storage = storage
         @relative_path = relative_path
         @gl_repository = gl_repository
-        @gitaly_resolver = Gitlab::GitalyClient
 
         storage_path = Gitlab.config.repositories.storages[@storage]['path']
         @path = File.join(storage_path, @relative_path)
@@ -104,7 +104,7 @@ module Gitlab
       end
 
       def exists?
-        Gitlab::GitalyClient.migrate(:repository_exists) do |enabled|
+        Gitlab::GitalyClient.migrate(:repository_exists, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
           if enabled
             gitaly_repository_client.exists?
           else
@@ -166,7 +166,7 @@ module Gitlab
       end
 
       def local_branches(sort_by: nil)
-        gitaly_migrate(:local_branches) do |is_enabled|
+        gitaly_migrate(:local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
           if is_enabled
             gitaly_ref_client.local_branches(sort_by: sort_by)
           else
@@ -287,6 +287,14 @@ module Gitlab
           else
             rugged_branch_exists?(name)
           end
+        end
+      end
+
+      def batch_existence(object_ids, existing: true)
+        filter_method = existing ? :select : :reject
+
+        object_ids.public_send(filter_method) do |oid| # rubocop:disable GitlabSecurity/PublicSend
+          rugged.exists?(oid)
         end
       end
 
@@ -509,6 +517,10 @@ module Gitlab
       # Returns true is +from+ is direct ancestor to +to+, otherwise false
       def ancestor?(from, to)
         gitaly_commit_client.ancestor?(from, to)
+      end
+
+      def merged_branch_names(branch_names = [])
+        Set.new(git_merged_branch_names(branch_names))
       end
 
       # Return an array of Diff objects that represent the diff
@@ -746,13 +758,13 @@ module Gitlab
       end
 
       def ff_merge(user, source_sha, target_branch)
-        OperationService.new(user, self).with_branch(target_branch) do |our_commit|
-          raise ArgumentError, 'Invalid merge target' unless our_commit
-
-          source_sha
+        gitaly_migrate(:operation_user_ff_branch) do |is_enabled|
+          if is_enabled
+            gitaly_ff_merge(user, source_sha, target_branch)
+          else
+            rugged_ff_merge(user, source_sha, target_branch)
+          end
         end
-      rescue Rugged::ReferenceError
-        raise ArgumentError, 'Invalid merge source'
       end
 
       def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
@@ -886,16 +898,30 @@ module Gitlab
         end
       end
 
-      # Delete the specified remote from this repository.
-      def remote_delete(remote_name)
-        rugged.remotes.delete(remote_name)
-        nil
+      def add_remote(remote_name, url)
+        rugged.remotes.create(remote_name, url)
+      rescue Rugged::ConfigError
+        remote_update(remote_name, url: url)
       end
 
-      # Add a new remote to this repository.
-      def remote_add(remote_name, url)
-        rugged.remotes.create(remote_name, url)
-        nil
+      def remove_remote(remote_name)
+        # When a remote is deleted all its remote refs are deleted too, but in
+        # the case of mirrors we map its refs (that would usualy go under
+        # [remote_name]/) to the top level namespace. We clean the mapping so
+        # those don't get deleted.
+        if rugged.config["remote.#{remote_name}.mirror"]
+          rugged.config.delete("remote.#{remote_name}.fetch")
+        end
+
+        rugged.remotes.delete(remote_name)
+        true
+      rescue Rugged::ConfigError
+        false
+      end
+
+      # Returns true if a remote exists.
+      def remote_exists?(name)
+        rugged.remotes[name].present?
       end
 
       # Update the specified remote using the values in the +options+ hash
@@ -987,23 +1013,22 @@ module Gitlab
 
       def with_repo_branch_commit(start_repository, start_branch_name)
         Gitlab::Git.check_namespace!(start_repository)
+        start_repository = RemoteRepository.new(start_repository) unless start_repository.is_a?(RemoteRepository)
 
         return yield nil if start_repository.empty_repo?
 
-        if start_repository == self
+        if start_repository.same_repository?(self)
           yield commit(start_branch_name)
         else
-          start_commit = start_repository.commit(start_branch_name)
+          start_commit_id = start_repository.commit_id(start_branch_name)
 
-          return yield nil unless start_commit
+          return yield nil unless start_commit_id
 
-          sha = start_commit.sha
-
-          if branch_commit = commit(sha)
+          if branch_commit = commit(start_commit_id)
             yield branch_commit
           else
             with_repo_tmp_commit(
-              start_repository, start_branch_name, sha) do |tmp_commit|
+              start_repository, start_branch_name, start_commit_id) do |tmp_commit|
               yield tmp_commit
             end
           end
@@ -1022,7 +1047,7 @@ module Gitlab
         delete_refs(tmp_ref) if tmp_ref
       end
 
-      def fetch_source_branch(source_repository, source_branch, local_ref)
+      def fetch_source_branch!(source_repository, source_branch, local_ref)
         with_repo_branch_commit(source_repository, source_branch) do |commit|
           if commit
             write_ref(local_ref, commit.sha)
@@ -1060,6 +1085,9 @@ module Gitlab
       end
 
       def fetch_ref(source_repository, source_ref:, target_ref:)
+        Gitlab::Git.check_namespace!(source_repository)
+        source_repository = RemoteRepository.new(source_repository) unless source_repository.is_a?(RemoteRepository)
+
         message, status = GitalyClient.migrate(:fetch_ref) do |is_enabled|
           if is_enabled
             gitaly_fetch_ref(source_repository, source_ref: source_ref, target_ref: target_ref)
@@ -1165,10 +1193,10 @@ module Gitlab
         Gitlab::GitalyClient.migrate(method, status: status, &block)
       rescue GRPC::NotFound => e
         raise NoRepository.new(e)
-      rescue GRPC::BadStatus => e
-        raise CommandError.new(e)
       rescue GRPC::InvalidArgument => e
         raise ArgumentError.new(e)
+      rescue GRPC::BadStatus => e
+        raise CommandError.new(e)
       end
 
       private
@@ -1188,6 +1216,13 @@ module Gitlab
         end
 
         sort_branches(branches, sort_by)
+      end
+
+      def git_merged_branch_names(branch_names = [])
+        lines = run_git(['branch', '--merged', root_ref] + branch_names)
+          .first.lines
+
+        lines.map(&:strip)
       end
 
       def log_using_shell?(options)
@@ -1586,22 +1621,25 @@ module Gitlab
       end
 
       def gitaly_fetch_ref(source_repository, source_ref:, target_ref:)
-        gitaly_ssh = File.absolute_path(File.join(Gitlab.config.gitaly.client_path, 'gitaly-ssh'))
-        gitaly_address = gitaly_resolver.address(source_repository.storage)
-        gitaly_token = gitaly_resolver.token(source_repository.storage)
-
-        request = Gitaly::SSHUploadPackRequest.new(repository: source_repository.gitaly_repository)
-        env = {
-          'GITALY_ADDRESS' => gitaly_address,
-          'GITALY_PAYLOAD' => request.to_json,
-          'GITALY_WD' => Dir.pwd,
-          'GIT_SSH_COMMAND' => "#{gitaly_ssh} upload-pack"
-        }
-        env['GITALY_TOKEN'] = gitaly_token if gitaly_token.present?
-
         args = %W(fetch --no-tags -f ssh://gitaly/internal.git #{source_ref}:#{target_ref})
 
-        run_git(args, env: env)
+        run_git(args, env: source_repository.fetch_env)
+      end
+
+      def gitaly_ff_merge(user, source_sha, target_branch)
+        gitaly_operations_client.user_ff_branch(user, source_sha, target_branch)
+      rescue GRPC::FailedPrecondition => e
+        raise CommitError, e
+      end
+
+      def rugged_ff_merge(user, source_sha, target_branch)
+        OperationService.new(user, self).with_branch(target_branch) do |our_commit|
+          raise ArgumentError, 'Invalid merge target' unless our_commit
+
+          source_sha
+        end
+      rescue Rugged::ReferenceError
+        raise ArgumentError, 'Invalid merge source'
       end
     end
   end

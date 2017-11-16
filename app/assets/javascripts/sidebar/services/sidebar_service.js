@@ -7,6 +7,7 @@ export default class SidebarService {
   constructor(endpointMap) {
     if (!SidebarService.singleton) {
       this.endpoint = endpointMap.endpoint;
+      this.toggleSubscriptionEndpoint = endpointMap.toggleSubscriptionEndpoint;
       this.moveIssueEndpoint = endpointMap.moveIssueEndpoint;
       this.projectsAutocompleteEndpoint = endpointMap.projectsAutocompleteEndpoint;
 
@@ -34,6 +35,10 @@ export default class SidebarService {
         search: searchTerm,
       },
     });
+  }
+
+  toggleSubscription() {
+    return Vue.http.post(this.toggleSubscriptionEndpoint);
   }
 
   moveIssue(moveToProjectId) {

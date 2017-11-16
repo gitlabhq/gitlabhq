@@ -1,6 +1,6 @@
 /* global Notes */
 
-import 'vendor/autosize';
+import 'autosize';
 import '~/gl_form';
 import '~/lib/utils/text_utility';
 import '~/render_gfm';

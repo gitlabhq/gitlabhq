@@ -138,7 +138,7 @@ feature 'Dashboard Groups page', :js do
       expect(page).not_to have_selector("#group-#{group.id}")
 
       # Go to next page
-      find(".gl-pagination .page:not(.active) a").trigger('click')
+      find(".gl-pagination .page:not(.active) a").click
 
       wait_for_requests
 

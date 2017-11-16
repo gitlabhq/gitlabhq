@@ -8,6 +8,12 @@ module QA
         #
         class Mattermost < Scenario::Entrypoint
           tags :core, :mattermost
+
+          def perform(address, mattermost, *files)
+            Runtime::Scenario.define(:mattermost_address, mattermost)
+
+            super(address, *files)
+          end
         end
       end
     end

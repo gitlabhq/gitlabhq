@@ -1,8 +1,6 @@
 require 'spec_helper'
 
 feature 'Multi-file editor new file', :js do
-  include WaitForRequests
-
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 
@@ -10,7 +8,7 @@ feature 'Multi-file editor new file', :js do
     project.add_master(user)
     sign_in(user)
 
-    page.driver.set_cookie('new_repo', 'true')
+    set_cookie('new_repo', 'true')
 
     visit project_tree_path(project, :master)
 
@@ -28,13 +26,10 @@ feature 'Multi-file editor new file', :js do
       click_button('Create file')
     end
 
-    find('.inputarea').send_keys('file content')
-
     fill_in('commit-message', with: 'commit message')
 
     click_button('Commit 1 file')
 
-    expect(page).to have_content('Your changes have been committed')
     expect(page).to have_selector('td', text: 'commit message')
   end
 end

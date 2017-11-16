@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # The GitLab Book Club
 
 The Book Club is a casual meet-up to read and discuss books we like.

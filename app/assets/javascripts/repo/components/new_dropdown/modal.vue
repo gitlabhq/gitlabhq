@@ -1,30 +1,38 @@
 <script>
+  import { mapActions } from 'vuex';
   import { __ } from '../../../locale';
   import popupDialog from '../../../vue_shared/components/popup_dialog.vue';
-  import eventHub from '../../event_hub';
 
   export default {
     props: {
-      currentPath: {
+      type: {
         type: String,
         required: true,
       },
-      type: {
+      path: {
         type: String,
         required: true,
       },
     },
     data() {
       return {
-        entryName: this.currentPath !== '' ? `${this.currentPath}/` : '',
+        entryName: this.path !== '' ? `${this.path}/` : '',
       };
     },
     components: {
       popupDialog,
     },
     methods: {
+      ...mapActions([
+        'createTempEntry',
+      ]),
       createEntryInStore() {
-        eventHub.$emit('createNewEntry', this.entryName, this.type);
+        this.createTempEntry({
+          name: this.entryName.replace(new RegExp(`^${this.path}/`), ''),
+          type: this.type,
+        });
+
+        this.toggleModalOpen();
       },
       toggleModalOpen() {
         this.$emit('toggle');

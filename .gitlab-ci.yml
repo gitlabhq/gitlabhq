@@ -1,7 +1,7 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-phantomjs-2.1-node-8.x-yarn-1.0-postgresql-9.6"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.5-golang-1.8-git-2.13-chrome-62.0-node-8.x-yarn-1.2-postgresql-9.6"
 
 .default-cache: &default-cache
-  key: "ruby-233-with-yarn"
+  key: "ruby-235-with-yarn"
   paths:
     - vendor/ruby
     - .yarn-cache/
@@ -23,7 +23,6 @@ variables:
   SIMPLECOV: "true"
   GIT_DEPTH: "20"
   GIT_SUBMODULE_STRATEGY: "none"
-  PHANTOMJS_VERSION: "2.1.1"
   GET_SOURCES_ATTEMPTS: "3"
   KNAPSACK_RSPEC_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/rspec_report-master.json
   KNAPSACK_SPINACH_SUITE_REPORT_PATH: knapsack/${CI_PROJECT_NAME}/spinach_report-master.json
@@ -417,12 +416,8 @@ ee_compat_check:
     - /^[\d-]+-stable(-ee)?/
     - branches@gitlab-org/gitlab-ee
     - branches@gitlab/gitlab-ee
-  allow_failure: yes
+  allow_failure: no
   retry: 0
-  cache:
-    key: "ee_compat_check_repo"
-    paths:
-      - ee_compat_check/ee-repo/
   artifacts:
     name: "${CI_JOB_NAME}_${CI_COMIT_REF_NAME}_${CI_COMMIT_SHA}"
     when: on_failure
@@ -454,8 +449,9 @@ db:migrate:reset-mysql:
   stage: test
   variables:
     SETUP_DB: "false"
+    CREATE_DB_USER: "true"
   script:
-    - git fetch origin v8.14.10
+    - git fetch https://gitlab.com/gitlab-org/gitlab-ce.git v9.3.0
     - git checkout -f FETCH_HEAD
     - bundle install $BUNDLE_INSTALL_FLAGS
     - cp config/gitlab.yml.example config/gitlab.yml
@@ -498,6 +494,7 @@ db:rollback-mysql:
   variables:
     SIZE: "1"
     SETUP_DB: "false"
+    CREATE_DB_USER: "true"
   script:
     - git clone https://gitlab.com/gitlab-org/gitlab-test.git
        /home/git/repositories/gitlab-org/gitlab-test.git
@@ -533,7 +530,6 @@ gitlab:assets:compile:
     NODE_ENV: "production"
     RAILS_ENV: "production"
     SETUP_DB: "false"
-    USE_DB: "false"
     SKIP_STORAGE_VALIDATION: "true"
     WEBPACK_REPORT: "true"
     NO_COMPRESSION: "true"
@@ -551,7 +547,6 @@ karma:
   <<: *dedicated-runner
   <<: *except-docs
   <<: *pull-cache
-  image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.3-golang-1.8-git-2.13-chrome-61.0-node-8.x-yarn-1.0-postgresql-9.6"
   stage: test
   variables:
     BABEL_ENV: "coverage"
@@ -588,6 +583,16 @@ codequality:
     - mv .rubocop.yml.bak .rubocop.yml
   artifacts:
     paths: [codeclimate.json]
+
+qa:internal:
+  stage: test
+  variables:
+    SETUP_DB: "false"
+  services: []
+  script:
+    - cd qa/
+    - bundle install
+    - bundle exec rspec
 
 coverage:
   <<: *dedicated-runner

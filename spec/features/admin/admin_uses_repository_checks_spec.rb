@@ -37,7 +37,7 @@ feature 'Admin uses repository checks' do
 
     expect(RepositoryCheck::ClearWorker).to receive(:perform_async)
 
-    click_link 'Clear all repository checks'
+    accept_confirm { find(:link, 'Clear all repository checks').send_keys(:return) }
 
     expect(page).to have_content('Started asynchronous removal of all repository check states.')
   end

@@ -89,4 +89,38 @@ describe Gitlab::GitalyClient::OperationService do
       end
     end
   end
+
+  describe '#user_ff_branch' do
+    let(:target_branch) { 'my-branch' }
+    let(:source_sha) { 'cfe32cf61b73a0d5e9f13e774abde7ff789b1660' }
+    let(:request) do
+      Gitaly::UserFFBranchRequest.new(
+        repository: repository.gitaly_repository,
+        branch: target_branch,
+        commit_id: source_sha,
+        user: gitaly_user
+      )
+    end
+    let(:branch_update) do
+      Gitaly::OperationBranchUpdate.new(
+        commit_id: source_sha,
+        repo_created: false,
+        branch_created: false
+      )
+    end
+    let(:response) { Gitaly::UserFFBranchResponse.new(branch_update: branch_update) }
+
+    subject { client.user_ff_branch(user, source_sha, target_branch) }
+
+    it 'sends a user_ff_branch message and returns a BranchUpdate object' do
+      expect_any_instance_of(Gitaly::OperationService::Stub)
+        .to receive(:user_ff_branch).with(request, kind_of(Hash))
+        .and_return(response)
+
+      expect(subject).to be_a(Gitlab::Git::OperationService::BranchUpdate)
+      expect(subject.newrev).to eq(source_sha)
+      expect(subject.repo_created).to be(false)
+      expect(subject.branch_created).to be(false)
+    end
+  end
 end

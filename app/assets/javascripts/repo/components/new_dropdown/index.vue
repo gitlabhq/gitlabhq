@@ -1,19 +1,23 @@
 <script>
-  import RepoStore from '../../stores/repo_store';
-  import RepoHelper from '../../helpers/repo_helper';
-  import eventHub from '../../event_hub';
+  import { mapState } from 'vuex';
   import newModal from './modal.vue';
+  import upload from './upload.vue';
 
   export default {
     components: {
       newModal,
+      upload,
     },
     data() {
       return {
         openModal: false,
         modalType: '',
-        currentPath: RepoStore.path,
       };
+    },
+    computed: {
+      ...mapState([
+        'path',
+      ]),
     },
     methods: {
       createNewItem(type) {
@@ -23,17 +27,6 @@
       toggleModalOpen() {
         this.openModal = !this.openModal;
       },
-      createNewEntryInStore(name, type) {
-        RepoHelper.createNewEntry(name, type);
-
-        this.toggleModalOpen();
-      },
-    },
-    created() {
-      eventHub.$on('createNewEntry', this.createNewEntryInStore);
-    },
-    beforeDestroy() {
-      eventHub.$off('createNewEntry', this.createNewEntryInStore);
     },
   };
 </script>
@@ -65,6 +58,11 @@
             </a>
           </li>
           <li>
+            <upload
+              :path="path"
+            />
+          </li>
+          <li>
             <a
               href="#"
               role="button"
@@ -79,7 +77,7 @@
     <new-modal
       v-if="openModal"
       :type="modalType"
-      :current-path="currentPath"
+      :path="path"
       @toggle="toggleModalOpen"
     />
   </div>

@@ -181,6 +181,21 @@ describe "Internal Project Access"  do
     it { is_expected.to be_denied_for(:visitor) }
   end
 
+  describe "GET /:project_path/issues/:id/edit" do
+    let(:issue) { create(:issue, project: project) }
+    subject { edit_project_issue_path(project, issue) }
+
+    it { is_expected.to be_allowed_for(:admin) }
+    it { is_expected.to be_allowed_for(:owner).of(project) }
+    it { is_expected.to be_allowed_for(:master).of(project) }
+    it { is_expected.to be_allowed_for(:developer).of(project) }
+    it { is_expected.to be_allowed_for(:reporter).of(project) }
+    it { is_expected.to be_denied_for(:guest).of(project) }
+    it { is_expected.to be_denied_for(:user) }
+    it { is_expected.to be_denied_for(:external) }
+    it { is_expected.to be_denied_for(:visitor) }
+  end
+
   describe "GET /:project_path/snippets" do
     subject { project_snippets_path(project) }
 

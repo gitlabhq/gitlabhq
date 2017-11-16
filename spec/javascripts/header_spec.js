@@ -1,4 +1,4 @@
-import '~/header';
+import initTodoToggle from '~/header';
 
 describe('Header', function () {
   const todosPendingCount = '.todos-count';
@@ -14,6 +14,7 @@ describe('Header', function () {
 
   preloadFixtures(fixtureTemplate);
   beforeEach(() => {
+    initTodoToggle();
     loadFixtures(fixtureTemplate);
   });
 
