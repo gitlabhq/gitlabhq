@@ -1,0 +1,5 @@
+---
+title: Add warning when Geo is configured insecurely
+merge_request: 3368
+author:
+type: added
