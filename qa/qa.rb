@@ -72,6 +72,7 @@ module QA
     end
 
     module Dashboard
+      autoload :Projects, 'qa/page/dashboard/projects'
       autoload :Groups, 'qa/page/dashboard/groups'
     end
 

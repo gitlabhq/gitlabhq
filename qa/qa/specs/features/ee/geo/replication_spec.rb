@@ -9,6 +9,9 @@ module QA
         scenario.description = 'Geo test project'
       end
 
+      geo_project_name = Page::Project::Show.act { project_name }
+      expect(geo_project_name).to include 'geo-project'
+
       Git::Repository.perform do |repository|
         repository.location = Page::Project::Show.act do
           choose_repository_clone_http
@@ -34,8 +37,22 @@ module QA
 
       expect(page).to have_content 'You are on a secondary (read-only) Geo node'
 
-      Page::Main::Menu.act { go_to_projects }
-      expect(page).to have_content 'geo-project'
+      Page::Main::Menu.perform do |menu|
+        menu.go_to_projects
+
+        expect(page).to have_content(geo_project_name)
+      end
+
+      sleep 10 # wait for repository replication
+
+      Page::Dashboard::Projects.perform do |dashboard|
+        dashboard.go_to_project(geo_project_name)
+      end
+
+      Page::Project::Show.perform do
+        expect(page).to have_content 'README.md'
+        expect(page).to have_content 'This is Geo project!'
+      end
     end
   end
 end

@@ -24,10 +24,10 @@ module QA
                 enable_hashed_storage
                 set_replication_password
                 set_primary_node
+                add_secondary_node
               end
 
               Geo::Secondary.act { replicate_database }
-              Geo::Primary.act { add_secondary_node }
             end
 
             Specs::Runner.perform do |specs|
@@ -108,6 +108,9 @@ module QA
               end
 
               puts 'Waiting until secondary node services are restarted ...'
+
+              # TODO, use Capybara helper to wait for HTTP status 200 on secondary
+              #
               sleep 60
             end
           end
