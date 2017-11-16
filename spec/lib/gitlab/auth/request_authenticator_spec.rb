@@ -33,7 +33,7 @@ describe Gitlab::Auth::RequestAuthenticator do
     end
 
     it 'bubbles up exceptions' do
-      allow_any_instance_of(described_class).to receive(:find_user_from_warden).and_raise(API::APIGuard::UnauthorizedError)
+      allow_any_instance_of(described_class).to receive(:find_user_from_warden).and_raise(Gitlab::Auth::UserAuthFinders::UnauthorizedError)
     end
   end
 
@@ -59,7 +59,7 @@ describe Gitlab::Auth::RequestAuthenticator do
     end
 
     it 'rescue API::APIGuard::AuthenticationException exceptions' do
-      allow_any_instance_of(described_class).to receive(:find_user_from_access_token).and_raise(API::APIGuard::UnauthorizedError)
+      allow_any_instance_of(described_class).to receive(:find_user_from_access_token).and_raise(Gitlab::Auth::UserAuthFinders::UnauthorizedError)
 
       expect(subject.find_sessionless_user).to be_blank
     end

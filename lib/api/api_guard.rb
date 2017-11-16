@@ -93,8 +93,11 @@ module API
       private
 
       def install_error_responders(base)
-        error_classes = [MissingTokenError, TokenNotFoundError,
-                         ExpiredError, RevokedError, InsufficientScopeError]
+        error_classes = [Gitlab::Auth::UserAuthFinders::MissingTokenError,
+                         Gitlab::Auth::UserAuthFinders::TokenNotFoundError,
+                         Gitlab::Auth::UserAuthFinders::ExpiredError,
+                         Gitlab::Auth::UserAuthFinders::RevokedError,
+                         Gitlab::Auth::UserAuthFinders::InsufficientScopeError]
 
         base.__send__(:rescue_from, *error_classes, oauth2_bearer_token_error_handler) # rubocop:disable GitlabSecurity/PublicSend
       end
@@ -103,25 +106,25 @@ module API
         proc do |e|
           response =
             case e
-            when MissingTokenError
+            when Gitlab::Auth::UserAuthFinders::MissingTokenError
               Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new
 
-            when TokenNotFoundError
+            when Gitlab::Auth::UserAuthFinders::TokenNotFoundError
               Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new(
                 :invalid_token,
                 "Bad Access Token.")
 
-            when ExpiredError
+            when Gitlab::Auth::UserAuthFinders::ExpiredError
               Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new(
                 :invalid_token,
                 "Token is expired. You can either do re-authorization or token refresh.")
 
-            when RevokedError
+            when Gitlab::Auth::UserAuthFinders::RevokedError
               Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new(
                 :invalid_token,
                 "Token was revoked. You have to re-authorize from the user.")
 
-            when InsufficientScopeError
+            when Gitlab::Auth::UserAuthFinders::InsufficientScopeError
               # FIXME: ForbiddenError (inherited from Bearer::Forbidden of Rack::Oauth2)
               # does not include WWW-Authenticate header, which breaks the standard.
               Rack::OAuth2::Server::Resource::Bearer::Forbidden.new(
@@ -132,24 +135,6 @@ module API
 
           response.finish
         end
-      end
-    end
-
-    #
-    # Exceptions
-    #
-
-    AuthenticationException = Class.new(StandardError)
-    MissingTokenError = Class.new(AuthenticationException)
-    TokenNotFoundError = Class.new(AuthenticationException)
-    ExpiredError = Class.new(AuthenticationException)
-    RevokedError = Class.new(AuthenticationException)
-    UnauthorizedError = Class.new(AuthenticationException)
-
-    class InsufficientScopeError < AuthenticationException
-      attr_reader :scopes
-      def initialize(scopes)
-        @scopes = scopes.map { |s| s.try(:name) || s }
       end
     end
   end

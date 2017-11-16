@@ -4,6 +4,24 @@ module Gitlab
       PRIVATE_TOKEN_HEADER = 'HTTP_PRIVATE_TOKEN'.freeze
       PRIVATE_TOKEN_PARAM = :private_token
 
+      #
+      # Exceptions
+      #
+
+      AuthenticationException = Class.new(StandardError)
+      MissingTokenError = Class.new(AuthenticationException)
+      TokenNotFoundError = Class.new(AuthenticationException)
+      ExpiredError = Class.new(AuthenticationException)
+      RevokedError = Class.new(AuthenticationException)
+      UnauthorizedError = Class.new(AuthenticationException)
+
+      class InsufficientScopeError < AuthenticationException
+        attr_reader :scopes
+        def initialize(scopes)
+          @scopes = scopes.map { |s| s.try(:name) || s }
+        end
+      end
+
       # Check the Rails session for valid authentication details
       def find_user_from_warden
         current_request.env['warden']&.authenticate if verified_request?
@@ -15,7 +33,7 @@ module Gitlab
         token = current_request.params[:rss_token].presence
         return unless token
 
-        User.find_by_rss_token(token) || raise(API::APIGuard::UnauthorizedError)
+        User.find_by_rss_token(token) || raise(UnauthorizedError)
       end
 
       def find_user_from_access_token
@@ -23,7 +41,7 @@ module Gitlab
 
         validate_access_token!
 
-        access_token.user || raise(API::APIGuard::UnauthorizedError)
+        access_token.user || raise(UnauthorizedError)
       end
 
       def validate_access_token!(scopes: [])
@@ -31,11 +49,11 @@ module Gitlab
 
         case AccessTokenValidationService.new(access_token, request: request).validate(scopes: scopes)
         when AccessTokenValidationService::INSUFFICIENT_SCOPE
-          raise API::APIGuard::InsufficientScopeError.new(scopes)
+          raise InsufficientScopeError.new(scopes)
         when AccessTokenValidationService::EXPIRED
-          raise API::APIGuard::ExpiredError
+          raise ExpiredError
         when AccessTokenValidationService::REVOKED
-          raise API::APIGuard::RevokedError
+          raise RevokedError
         end
       end
 
@@ -55,7 +73,7 @@ module Gitlab
         return unless token
 
         # Expiration, revocation and scopes are verified in `validate_access_token!`
-        PersonalAccessToken.find_by(token: token) || raise(API::APIGuard::UnauthorizedError)
+        PersonalAccessToken.find_by(token: token) || raise(UnauthorizedError)
       end
 
       def find_oauth_access_token
@@ -64,7 +82,7 @@ module Gitlab
 
         # Expiration, revocation and scopes are verified in `validate_access_token!`
         oauth_token = OauthAccessToken.by_token(token)
-        raise API::APIGuard::UnauthorizedError  unless oauth_token
+        raise UnauthorizedError unless oauth_token
 
         oauth_token.revoke_previous_refresh_token!
         oauth_token
