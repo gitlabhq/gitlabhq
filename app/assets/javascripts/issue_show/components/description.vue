@@ -22,6 +22,11 @@
         required: false,
         default: '',
       },
+      issuableType: {
+        type: String,
+        required: false,
+        default: 'issue',
+      },
     },
     data() {
       return {
@@ -48,7 +53,7 @@
         if (this.canUpdate) {
           // eslint-disable-next-line no-new
           new TaskList({
-            dataType: 'issue',
+            dataType: this.issuableType,
             fieldName: 'description',
             selector: '.detail-page-description',
           });

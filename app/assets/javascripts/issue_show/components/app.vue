@@ -250,6 +250,7 @@ export default {
         :description-text="state.descriptionText"
         :updated-at="state.updatedAt"
         :task-status="state.taskStatus"
+        :issuable-type="issuableType"
       />
       <edited-component
         v-if="hasUpdated"
