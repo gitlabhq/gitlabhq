@@ -13,16 +13,7 @@ RSpec.describe Geo::MetricsUpdateWorker, :geo do
       stub_current_geo_node(secondary)
     end
 
-    it 'does not execute when Prometheus metrics are disabled' do
-      allow(Gitlab::Metrics).to receive(:prometheus_metrics_enabled?).and_return(false)
-      expect(Geo::MetricsUpdateService).not_to receive(:new)
-
-      subject.perform
-    end
-
-    it 'executes when Prometheus metrics are enabled' do
-      allow(Gitlab::Metrics).to receive(:prometheus_metrics_enabled?).and_return(true)
-
+    it 'executes MetricsUpdateService' do
       service = double(:service, execute: true)
       expect(Geo::MetricsUpdateService).to receive(:new).and_return(service)
 
