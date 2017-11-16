@@ -215,6 +215,57 @@ DELETE /runners/:id
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/runners/6"
 ```
 
+## List runner's running jobs
+
+List running jobs assigned to the specified Runner.
+
+```
+GET /runners/:id/jobs
+```
+
+| Attribute | Type    | Required | Description         |
+|-----------|---------|----------|---------------------|
+| `id`      | integer | yes      | The ID of a runner  |
+
+```
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/runners/1/jobs"
+```
+
+Example response:
+
+```json
+[
+    {
+        "id": 2,
+        "status": "running",
+        "stage": "test",
+        "name": "test",
+        "ref": "master",
+        "tag": false,
+        "coverage": null,
+        "created_at": "2017-11-16T08:50:29.000Z",
+        "started_at": "2017-11-16T08:51:29.000Z",
+        "finished_at": "2017-11-16T08:53:29.000Z",
+        "duration": 120,
+        "user": null,
+        "commit": null,
+        "runner": {
+            "id": 1,
+            "description": "My runner1",
+            "active": true,
+            "is_shared": true,
+            "name": null
+        },
+        "pipeline": {
+            "id": 2,
+            "sha": "97de212e80737a608d939f648d959671fb0a0142",
+            "ref": "master",
+            "status": "pending"
+        }
+    }
+]
+```
+
 ## List project's runners
 
 List all runners (specific and shared) available in the project. Shared runners
