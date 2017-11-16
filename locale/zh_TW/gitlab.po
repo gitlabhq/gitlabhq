@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-02 14:42+0100\n"
-"PO-Revision-Date: 2017-11-16 01:51-0500\n"
+"PO-Revision-Date: 2017-11-16 09:04-0500\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -167,13 +167,13 @@ msgid "Author"
 msgstr "作者"
 
 msgid "Auto Review Apps and Auto Deploy need a domain name and the %{kubernetes} to work correctly."
-msgstr "自動審查程序 & 自動部屬程序需要一個網域和 %{kubernetes} 才能運作。"
+msgstr "自動複閱應用 (review apps) 與自動部署需要網域和 %{kubernetes} 才能運作。"
 
 msgid "Auto Review Apps and Auto Deploy need a domain name to work correctly."
-msgstr "自動審查程序 & 自動部屬程序需要一個網域才能正常運作。"
+msgstr "自動複閱應用 (review apps) 與自動部署需要網域才能運作。"
 
 msgid "Auto Review Apps and Auto Deploy need the %{kubernetes} to work correctly."
-msgstr "自動審查程序 & 自動部屬程序需要 %{kubernetes} 才能正常運作。"
+msgstr "自動複閱應用 (review apps) 與自動部署需要 %{kubernetes} 才能運作。"
 
 msgid "AutoDevOps|Auto DevOps (Beta)"
 msgstr "DevOps 自動化 (測試版)"
@@ -339,7 +339,7 @@ msgid "Branches|You’re about to permanently delete the protected branch %{bran
 msgstr "你將永久刪除受保護的 %{branch_name} 分支。"
 
 msgid "Branches|diverged from upstream"
-msgstr "與上游存在差異"
+msgstr "與上游分歧"
 
 msgid "Branches|merged"
 msgstr "已合併"
@@ -468,7 +468,7 @@ msgid "CiStatus|running"
 msgstr "執行中"
 
 msgid "CircuitBreakerApiLink|circuitbreaker api"
-msgstr "斷路器 API"
+msgstr "斷路器 (circuitbreaker) API"
 
 msgid "Clone repository"
 msgstr "克隆倉庫"
@@ -480,7 +480,7 @@ msgid "Cluster"
 msgstr "叢集"
 
 msgid "ClusterIntegration|A %{link_to_container_project} must have been created under this account"
-msgstr "必須在此帳戶下建立 %{link_to_container_project}"
+msgstr "必須在此帳號下建立 %{link_to_container_project}"
 
 msgid "ClusterIntegration|Cluster details"
 msgstr "叢集詳情"
@@ -586,7 +586,7 @@ msgid "ClusterIntegration|Toggle Cluster"
 msgstr "叢集開關"
 
 msgid "ClusterIntegration|With a cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
-msgstr "當叢集連結到此專案，你可以使用代碼審查工具，部署你的應用程式，執行你的平行工作列，還有更多容易上手的方式可以使用。"
+msgstr "當叢集連結到此專案，你可以使用複閱應用 (review apps)，部署你的應用程式，執行你的流水線 (pipelines)，還有更多容易上手的方式可以使用。"
 
 msgid "ClusterIntegration|Your account must have %{link_to_container_engine}"
 msgstr "您的帳號必須有 %{link_to_container_engine}"
@@ -672,7 +672,7 @@ msgid "ContainerRegistry|No tags in Container Registry for this container image.
 msgstr "在這個容器註冊中的容器圖片沒有標籤"
 
 msgid "ContainerRegistry|Once you log in, you&rsquo;re free to create and upload a container image using the common %{build} and %{push} commands"
-msgstr "每次登入，你可以使用一般的%{build} 與 %{push} 指令來免費創立與更新容器圖片"
+msgstr "當您登入後，您可以透過 %{build} 和 %{push} 指令來自由建立和上傳容器映像檔 (container image)"
 
 msgid "ContainerRegistry|Remove repository"
 msgstr "刪除儲存庫"
@@ -702,10 +702,10 @@ msgid "Contributors"
 msgstr "協作者"
 
 msgid "Control the maximum concurrency of LFS/attachment backfill for this secondary node"
-msgstr "控制LFS的最大的並行率/將第二節點備份"
+msgstr "控制次節點 (secondary node) 同步 LFS 和附檔的最大並行率 (concurrency)"
 
 msgid "Control the maximum concurrency of repository backfill for this secondary node"
-msgstr "控制第二節點的回復儲倉之最大並行率"
+msgstr "控制次節點 (secondary node) 同步檔案庫 (repository) 的最大並行率 (concurrency)"
 
 msgid "Copy SSH public key to clipboard"
 msgstr "複製 SSH 公鑰到剪貼簿"
@@ -1037,10 +1037,10 @@ msgid "GroupsTree|Edit group"
 msgstr "編輯群組"
 
 msgid "GroupsTree|Failed to leave the group. Please make sure you are not the only owner."
-msgstr "無法離開群組，請確保您不是你唯一的擁有者。"
+msgstr "無法離開群組，請確保您不是唯一的擁有者。"
 
 msgid "GroupsTree|Filter by name..."
-msgstr "按照名稱篩選⋯"
+msgstr "以名稱篩選⋯"
 
 msgid "GroupsTree|Leave this group"
 msgstr "離開此群組"
