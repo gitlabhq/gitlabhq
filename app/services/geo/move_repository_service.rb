@@ -14,14 +14,28 @@ module Geo
     end
 
     def execute
-      project.ensure_storage_path_exists
-      move_project_repository && move_wiki_repository
-    rescue
-      log_error('Repository cannot be renamed')
-      false
+      unless move_repositories!
+        return false
+      end
+
+      unless project.hashed_storage?(:attachments)
+        Geo::FilesExpireService.new(project, old_disk_path).execute
+      end
+
+      true
     end
 
     private
+
+    def move_repositories!
+      begin
+        project.ensure_storage_path_exists
+        move_project_repository && move_wiki_repository
+      rescue => ex
+        log_error('Repository cannot be renamed', error: ex)
+        false
+      end
+    end
 
     def move_project_repository
       gitlab_shell.mv_repository(project.repository_storage_path, old_disk_path, new_disk_path)
