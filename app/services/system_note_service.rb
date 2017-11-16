@@ -637,6 +637,10 @@ module SystemNoteService
     create_note(NoteSummary.new(issuable, issuable.project, author, body, action: action))
   end
 
+  def cross_reference?(note_text)
+    note_text =~ /\A#{cross_reference_note_prefix}/i
+  end
+
   private
 
   def notes_for_mentioner(mentioner, noteable, notes)
