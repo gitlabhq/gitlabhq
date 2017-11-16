@@ -1,14 +1,15 @@
-# Connecting GitLab with GKE
+# Connecting GitLab with a Kubernetes cluster
 
 > [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/issues/35954) in 10.1.
 
 CAUTION: **Warning:**
 The Cluster integration is currently in **Beta**.
 
-Connect your project to Google Container Engine (GKE) in a few steps.
-
 With a cluster associated to your project, you can use Review Apps, deploy your
-applications, run your pipelines, and much more in an easy way.
+applications, run your pipelines, and much more, in an easy way.
+
+Connect your project to Google Kubernetes Engine (GKE) or your own Kubernetes
+cluster in a few steps.
 
 NOTE: **Note:**
 The Cluster integration will eventually supersede the
@@ -30,36 +31,58 @@ prerequisites must be met:
 - You must have Master [permissions] in order to be able to access the **Cluster**
   page.
 
-If all of the above requirements are met, you can proceed to add a new cluster.
+If all of the above requirements are met, you can proceed to add a new GKE
+cluster.
 
 ## Adding a cluster
 
 NOTE: **Note:**
 You need Master [permissions] and above to add a cluster.
 
+There are two options when adding a new cluster; either use Google Kubernetes
+Engine (GKE) or provide the credentials to your own Kubernetes cluster.
+
 To add a new cluster:
 
-1. Navigate to your project's **CI/CD > Cluster** page.
-1. Connect your Google account if you haven't done already by clicking the
-   "Sign-in with Google" button.
-1. Fill in the requested values:
-  - **Cluster name** (required) - The name you wish to give the cluster.
-  - **GCP project ID** (required) - The ID of the project you created in your GCP
-    console that will host the Kubernetes cluster. This must **not** be confused
-    with the project name. Learn more about [Google Cloud Platform projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
-  - **Zone** - The zone under which the cluster will be created. Read more about
-    [the available zones](https://cloud.google.com/compute/docs/regions-zones/).
-  - **Number of nodes** - The number of nodes you wish the cluster to have.
-  - **Machine type** - The machine type of the Virtual Machine instance that
-    the cluster will be based on. Read more about [the available machine types](https://cloud.google.com/compute/docs/machine-types).
-  - **Project namespace** - The unique namespace for this project. By default you
-    don't have to fill it in; by leaving it blank, GitLab will create one for you.
-1. Click the **Create cluster** button.
+1. Navigate to your project's **CI/CD > Cluster** page
+1. If you want to let GitLab create a cluster on GKE for you, go through the
+   following steps, otherwise skip to the next one.
+    1. Click on **Create with GKE**
+    1. Connect your Google account if you haven't done already by clicking the
+       **Sign in with Google** button
+    1. Fill in the requested values:
+      - **Cluster name** (required) - The name you wish to give the cluster.
+      - **GCP project ID** (required) - The ID of the project you created in your GCP
+        console that will host the Kubernetes cluster. This must **not** be confused
+        with the project name. Learn more about [Google Cloud Platform projects](https://cloud.google.com/resource-manager/docs/creating-managing-projects).
+      - **Zone** - The [zone](https://cloud.google.com/compute/docs/regions-zones/)
+        under which the cluster will be created.
+      - **Number of nodes** - The number of nodes you wish the cluster to have.
+      - **Machine type** - The [machine type](https://cloud.google.com/compute/docs/machine-types)
+        of the Virtual Machine instance that the cluster will be based on.
+      - **Project namespace** - The unique namespace for this project. By default you
+        don't have to fill it in; by leaving it blank, GitLab will create one for you.
+1. If you want to use your own existing Kubernetes cluster, click on
+   **Add an existing cluster** and fill in the details as described in the
+   [Kubernetes integration](../integrations/kubernetes.md) documentation.
+1. Finally, click the **Create cluster** button
 
-After a few moments your cluster should be created. If something goes wrong,
+After a few moments, your cluster should be created. If something goes wrong,
 you will be notified.
 
-Now, you can proceed to [enable the Cluster integration](#enabling-or-disabling-the-cluster-integration).
+You can now proceed to install some pre-defined applications and then
+enable the Cluster integration.
+
+## Installing applications
+
+GitLab provides a one-click install for various applications which will be
+added directly to your configured cluster. Those applications are needed for
+[Review Apps](../../../ci/review_apps/index.md) and [deployments](../../../ci/environments.md).
+
+| Application | GitLab version | Description |
+| ----------- | :------------: | ----------- |
+| [Helm Tiller](https://docs.helm.sh/) | 10.2+ | Helm is a package manager for Kubernetes and is required to install all the other applications. It will be automatically installed as a dependency when you try to install a different app. It is installed in its own pod inside the cluster which can run the `helm` CLI in a safe environment. |
+| [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) | 10.2+ | Ingress can provide load balancing, SSL termination and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use [Auto DevOps](../../../topics/autodevops/index.md) or deploy your own web apps. |
 
 ## Enabling or disabling the Cluster integration
 
@@ -88,12 +111,3 @@ To remove the Cluster integration from your project, simply click on the
 and [add a cluster](#adding-a-cluster) again.
 
 [permissions]: ../../permissions.md
-
-## Installing applications
-
-GitLab provides a one-click install for
-[Helm Tiller](https://docs.helm.sh/) and
-[Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/)
-which will be added directly to your configured cluster.
-
-![Cluster application settings](img/cluster-applications.png)
