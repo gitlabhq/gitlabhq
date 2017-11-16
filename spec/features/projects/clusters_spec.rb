@@ -22,61 +22,66 @@ feature 'Clusters', :js do
     context 'when user does not have a cluster and visits cluster index page' do
       before do
         visit project_clusters_path(project)
-
-        click_link 'Create on GKE'
       end
 
       it 'user sees a new page' do
-        expect(page).to have_button('Create cluster')
+        expect(page).to have_button('Add cluster')
       end
 
-      context 'when user filled form with valid parameters' do
+      context 'when user opens opens create on gke page' do
         before do
-          double.tap do |dbl|
-            allow(dbl).to receive(:status).and_return('RUNNING')
-            allow(dbl).to receive(:self_link)
-              .and_return('projects/gcp-project-12345/zones/us-central1-a/operations/ope-123')
-            allow_any_instance_of(GoogleApi::CloudPlatform::Client)
-              .to receive(:projects_zones_clusters_create).and_return(dbl)
+          click_button 'Add cluster'
+          click_link 'Create on GKE'
+        end
+
+        context 'when user filled form with valid parameters' do
+          before do
+            double.tap do |dbl|
+              allow(dbl).to receive(:status).and_return('RUNNING')
+              allow(dbl).to receive(:self_link)
+                .and_return('projects/gcp-project-12345/zones/us-central1-a/operations/ope-123')
+              allow_any_instance_of(GoogleApi::CloudPlatform::Client)
+                .to receive(:projects_zones_clusters_create).and_return(dbl)
+            end
+
+            allow(WaitForClusterCreationWorker).to receive(:perform_in).and_return(nil)
+
+            fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
+            fill_in 'cluster_name', with: 'dev-cluster'
+            click_button 'Create cluster'
           end
 
-          allow(WaitForClusterCreationWorker).to receive(:perform_in).and_return(nil)
+          it 'user sees a cluster details page and creation status' do
+            expect(page).to have_content('Cluster is being created on Google Container Engine...')
 
-          fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
-          fill_in 'cluster_name', with: 'dev-cluster'
-          click_button 'Create cluster'
-        end
+            # Application Installation buttons
+            page.within('.js-cluster-application-row-helm') do
+              expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
+              expect(page.find(:css, '.js-cluster-application-install-button').text).to eq('Install')
+            end
 
-        it 'user sees a cluster details page and creation status' do
-          expect(page).to have_content('Cluster is being created on Google Container Engine...')
+            Clusters::Cluster.last.provider.make_created!
 
-          # Application Installation buttons
-          page.within('.js-cluster-application-row-helm') do
-            expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
-            expect(page.find(:css, '.js-cluster-application-install-button').text).to eq('Install')
+            expect(page).to have_content('Cluster was successfully created on Google Container Engine')
           end
 
-          Clusters::Cluster.last.provider.make_created!
+          it 'user sees a error if something worng during creation' do
+            expect(page).to have_content('Cluster is being created on Google Container Engine...')
 
-          expect(page).to have_content('Cluster was successfully created on Google Container Engine')
+            Clusters::Cluster.last.provider.make_errored!('Something wrong!')
+
+            expect(page).to have_content('Something wrong!')
+          end
         end
 
-        it 'user sees a error if something worng during creation' do
-          expect(page).to have_content('Cluster is being created on Google Container Engine...')
+        context 'when user filled form with invalid parameters' do
+          before do
+            click_button 'Create cluster'
+          end
 
-          Clusters::Cluster.last.provider.make_errored!('Something wrong!')
-
-          expect(page).to have_content('Something wrong!')
-        end
-      end
-
-      context 'when user filled form with invalid parameters' do
-        before do
-          click_button 'Create cluster'
-        end
-
-        it 'user sees a validation error' do
-          expect(page).to have_css('#error_explanation')
+          it 'user sees a validation error' do
+            expect(page).to have_css('#error_explanation')
+          end
         end
       end
     end
@@ -89,104 +94,111 @@ feature 'Clusters', :js do
         visit project_clusters_path(project)
       end
 
-      it 'user sees an cluster details page' do
-        expect(page).to have_button('Save')
-        expect(page.find(:css, '.cluster-name').value).to eq(cluster.name)
-
-        # Application Installation buttons
-        page.within('.js-cluster-application-row-helm') do
-          expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to be_nil
-          expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Install')
-        end
-      end
-
-      context 'when user installs application: Helm Tiller' do
+      context 'when user clicks on a cluster' do
         before do
-          allow(ClusterInstallAppWorker).to receive(:perform_async).and_return(nil)
+          # TODO: Replace with Click on cluster after frontend implements list
+          visit project_cluster_path(project, cluster)
+        end
 
+        it 'user sees an cluster details page' do
+          expect(page).to have_button('Save')
+          expect(page.find(:css, '.cluster-name').value).to eq(cluster.name)
+
+          # Application Installation buttons
           page.within('.js-cluster-application-row-helm') do
-            page.find(:css, '.js-cluster-application-install-button').click
-          end
-        end
-
-        it 'user sees status transition' do
-          page.within('.js-cluster-application-row-helm') do
-            # FE sends request and gets the response, then the buttons is "Install"
-            expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
+            expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to be_nil
             expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Install')
-
-            Clusters::Cluster.last.application_helm.make_installing!
-
-            # FE starts polling and update the buttons to "Installing"
-            expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
-            expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Installing')
-
-            Clusters::Cluster.last.application_helm.make_installed!
-
-            expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
-            expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Installed')
-          end
-
-          expect(page).to have_content('Helm Tiller was successfully installed on your cluster')
-        end
-      end
-
-      context 'when user installs application: Ingress' do
-        before do
-          allow(ClusterInstallAppWorker).to receive(:perform_async).and_return(nil)
-          # Helm Tiller needs to be installed before you can install Ingress
-          create(:cluster_applications_helm, :installed, cluster: cluster)
-
-          visit project_clusters_path(project)
-
-          page.within('.js-cluster-application-row-ingress') do
-            page.find(:css, '.js-cluster-application-install-button').click
           end
         end
 
-        it 'user sees status transition' do
-          page.within('.js-cluster-application-row-ingress') do
-            # FE sends request and gets the response, then the buttons is "Install"
-            expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
-            expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Install')
+        context 'when user installs application: Helm Tiller' do
+          before do
+            allow(ClusterInstallAppWorker).to receive(:perform_async).and_return(nil)
 
-            Clusters::Cluster.last.application_ingress.make_installing!
-
-            # FE starts polling and update the buttons to "Installing"
-            expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
-            expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Installing')
-
-            Clusters::Cluster.last.application_ingress.make_installed!
-
-            expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
-            expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Installed')
+            page.within('.js-cluster-application-row-helm') do
+              page.find(:css, '.js-cluster-application-install-button').click
+            end
           end
 
-          expect(page).to have_content('Ingress was successfully installed on your cluster')
-        end
-      end
+          it 'user sees status transition' do
+            page.within('.js-cluster-application-row-helm') do
+              # FE sends request and gets the response, then the buttons is "Install"
+              expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
+              expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Install')
 
-      context 'when user disables the cluster' do
-        before do
-          page.find(:css, '.js-toggle-cluster').click
-          click_button 'Save'
-        end
+              Clusters::Cluster.last.application_helm.make_installing!
 
-        it 'user sees the succeccful message' do
-          expect(page).to have_content('Cluster was successfully updated.')
-        end
-      end
+              # FE starts polling and update the buttons to "Installing"
+              expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
+              expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Installing')
 
-      context 'when user destory the cluster' do
-        before do
-          page.accept_confirm do
-            click_link 'Remove integration'
+              Clusters::Cluster.last.application_helm.make_installed!
+
+              expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
+              expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Installed')
+            end
+
+            expect(page).to have_content('Helm Tiller was successfully installed on your cluster')
           end
         end
 
-        it 'user sees creation form with the succeccful message' do
-          expect(page).to have_content('Cluster integration was successfully removed.')
-          expect(page).to have_link('Create on GKE')
+        context 'when user installs application: Ingress' do
+          before do
+            allow(ClusterInstallAppWorker).to receive(:perform_async).and_return(nil)
+            # Helm Tiller needs to be installed before you can install Ingress
+            create(:cluster_applications_helm, :installed, cluster: cluster)
+
+            visit project_clusters_path(project)
+
+            page.within('.js-cluster-application-row-ingress') do
+              page.find(:css, '.js-cluster-application-install-button').click
+            end
+          end
+
+          it 'user sees status transition' do
+            page.within('.js-cluster-application-row-ingress') do
+              # FE sends request and gets the response, then the buttons is "Install"
+              expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
+              expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Install')
+
+              Clusters::Cluster.last.application_ingress.make_installing!
+
+              # FE starts polling and update the buttons to "Installing"
+              expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
+              expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Installing')
+
+              Clusters::Cluster.last.application_ingress.make_installed!
+
+              expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
+              expect(page.find(:css, '.js-cluster-application-install-button')).to have_content('Installed')
+            end
+
+            expect(page).to have_content('Ingress was successfully installed on your cluster')
+          end
+        end
+
+        context 'when user disables the cluster' do
+          before do
+            page.find(:css, '.js-toggle-cluster').click
+            click_button 'Save'
+          end
+
+          it 'user sees the succeccful message' do
+            expect(page).to have_content('Cluster was successfully updated.')
+          end
+        end
+
+        context 'when user destory the cluster' do
+          before do
+            page.accept_confirm do
+              click_link 'Remove integration'
+            end
+          end
+
+          it 'user sees creation form with the succeccful message' do
+            expect(page).to have_content('Cluster integration was successfully removed.')
+            expect(page).to have_link('Create on GKE')
+          end
         end
       end
     end
@@ -196,6 +208,7 @@ feature 'Clusters', :js do
     before do
       visit project_clusters_path(project)
 
+      click_button 'Add cluster'
       click_link 'Create on GKE'
     end
 
