@@ -11,7 +11,7 @@ to the GitLab Pages server. GitLab Pages supports all static site generators (SS
 _Minimum requirements to have your website live:_
 
 1. An account on GitLab
-2. A project
+2. A project with your website files
 3. Enabled GitLab Runners to deploy your website with GitLab CI/CD
 
 _Minimum steps:_
