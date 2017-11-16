@@ -93,7 +93,7 @@ review apps and deployments.
 | Application | GitLab version | Description |
 | ----------- | :------------: | ----------- |
 | [Helm Tiller](https://docs.helm.sh/) | 10.2+ | Helm is a package manager for Kubernetes and is required to install all the other applications. It will be automatically installed as a dependency when you try to install a different app. It is installed in its own pod inside the cluster which can run the `helm` CLI in a safe environment. |
-| [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) | 10.2+ | Ingress acts as a web proxy for your web applications and is useful if you want to use Auto DevOps or deploy your own apps. |
+| [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) | 10.2+ | Ingress can provide load balancing, SSL termination and name-based virtual hosting. It acts as a web proxy for your applications and is useful if you want to use Auto DevOps or deploy your own web apps. |
 
 ## Removing the Cluster integration
 
