@@ -1,6 +1,7 @@
 class Admin::GeoNodesController < Admin::ApplicationController
   before_action :check_license, except: [:index, :destroy]
   before_action :load_node, only: [:edit, :update, :destroy, :repair, :toggle, :status]
+  before_action :check_insecure_nodes
 
   helper EE::GeoHelper
 
@@ -9,7 +10,7 @@ class Admin::GeoNodesController < Admin::ApplicationController
     @node = GeoNode.new
 
     unless Gitlab::Geo.license_allows?
-      flash.now[:alert] = 'You need a different license to enable Geo replication'
+      flash_now(:alert, 'You need a different license to enable Geo replication')
     end
   end
 
@@ -100,5 +101,19 @@ class Admin::GeoNodesController < Admin::ApplicationController
 
   def load_node
     @node = GeoNode.find(params[:id])
+  end
+
+  def check_insecure_nodes
+    if has_insecure_nodes?
+      flash_now(:alert, 'You have configured Geo nodes using an insecure HTTP connection. We recommend the use of HTTPS.')
+    end
+  end
+
+  def has_insecure_nodes?
+    GeoNode.where(schema: 'http').any?
+  end
+
+  def flash_now(type, message)
+    flash.now[type] = flash.now[type].blank? ? message : "#{flash.now[type]}<BR>#{message}".html_safe
   end
 end
