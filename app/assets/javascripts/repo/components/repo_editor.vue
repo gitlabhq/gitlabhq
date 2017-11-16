@@ -14,8 +14,9 @@ export default {
     if (this.monaco) {
       this.initMonaco();
     } else {
-      monacoLoader(['vs/editor/editor.main'], () => {
+      monacoLoader(['vs/editor/editor.main', 'vs/editor/common/diff/diffComputer'], (_, { DiffComputer }) => {
         this.monaco = monaco;
+        this.DiffComputer = DiffComputer;
 
         this.initMonaco();
       });
@@ -44,8 +45,6 @@ export default {
             });
 
             this.languages = this.monaco.languages.getLanguages();
-
-            this.addMonacoEvents();
           }
 
           this.setupEditor();
@@ -62,11 +61,50 @@ export default {
       const newModel = this.monaco.editor.createModel(
         content, foundLang ? foundLang.id : 'plaintext',
       );
+      const originalLines = this.monaco.editor.createModel(
+        this.activeFile.raw, foundLang ? foundLang.id : 'plaintext',
+      ).getLinesContent();
 
       this.monacoInstance.setModel(newModel);
-    },
-    addMonacoEvents() {
-      this.monacoInstance.onKeyUp(() => {
+      this.decorations = [];
+
+      const modifiedType = (change) => {
+        if (change.originalEndLineNumber === 0) {
+          return 'added';
+        } else if (change.modifiedEndLineNumber === 0) {
+          return 'removed';
+        }
+
+        return 'modified';
+      };
+
+      this.monacoModelChangeContents = newModel.onDidChangeContent(() => {
+        const diffComputer = new this.DiffComputer(
+          originalLines,
+          newModel.getLinesContent(),
+          {
+            shouldPostProcessCharChanges: true,
+            shouldIgnoreTrimWhitespace: true,
+            shouldMakePrettyDiff: true,
+          },
+        );
+
+        this.decorations = this.monacoInstance.deltaDecorations(this.decorations,
+          diffComputer.computeDiff().map(change => ({
+            range: new monaco.Range(
+              change.modifiedStartLineNumber,
+              1,
+              !change.modifiedEndLineNumber ?
+                change.modifiedStartLineNumber : change.modifiedEndLineNumber,
+              1,
+            ),
+            options: {
+              isWholeLine: true,
+              linesDecorationsClassName: `dirty-diff dirty-diff-${modifiedType(change)}`,
+            },
+          })),
+        );
+
         this.changeFileContent({
           file: this.activeFile,
           content: this.monacoInstance.getValue(),
