@@ -804,7 +804,7 @@ describe User do
       end
     end
 
-    describe '#require_ssh_key?' do
+    describe '#require_ssh_key?', :use_clean_rails_memory_store_caching do
       protocol_and_expectation = {
         'http' => false,
         'ssh' => true,
@@ -818,6 +818,12 @@ describe User do
 
           expect(user.require_ssh_key?).to eq(expected)
         end
+      end
+
+      it 'returns false when the user has 1 or more SSH keys' do
+        key = create(:personal_key)
+
+        expect(key.user.require_ssh_key?).to eq(false)
       end
     end
   end
