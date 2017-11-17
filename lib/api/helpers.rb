@@ -33,6 +33,10 @@ module API
     end
 
     # rubocop:disable Cop/ModuleWithInstanceVariables
+    # We can't rewrite this with StrongMemoize because `sudo!` would
+    # actually write to `@current_user`, and `sudo?` would immediately
+    # call `current_user` again which reads from `@current_user`.
+    # We should rewrite this in a way that using StrongMemoize is possible
     def current_user
       return @current_user if defined?(@current_user)
 
@@ -46,6 +50,7 @@ module API
 
       @current_user
     end
+    # rubocop:enable Cop/ModuleWithInstanceVariables
 
     def sudo?
       initial_current_user != current_user
@@ -394,6 +399,7 @@ module API
 
     private
 
+    # rubocop:disable Cop/ModuleWithInstanceVariables
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user)
 
@@ -403,8 +409,8 @@ module API
         unauthorized!
       end
     end
+    # rubocop:enable Cop/ModuleWithInstanceVariables
 
-    # rubocop:disable Cop/ModuleWithInstanceVariables
     def sudo!
       return unless sudo_identifier
 
@@ -423,7 +429,7 @@ module API
       sudoed_user = find_user(sudo_identifier)
       not_found!("User with ID or username '#{sudo_identifier}'") unless sudoed_user
 
-      @current_user = sudoed_user
+      @current_user = sudoed_user # rubocop:disable Cop/ModuleWithInstanceVariables
     end
 
     def sudo_identifier

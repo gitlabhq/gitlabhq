@@ -16,14 +16,13 @@ module RspecProfilingExt
   end
 
   module Run
-    # rubocop:disable Cop/ModuleWithInstanceVariables
     def example_finished(*args)
       super
     rescue => err
-      return if @already_logged_example_finished_error
+      return if @already_logged_example_finished_error # rubocop:disable Cop/ModuleWithInstanceVariables
 
       $stderr.puts "rspec_profiling couldn't collect an example: #{err}. Further warnings suppressed."
-      @already_logged_example_finished_error = true
+      @already_logged_example_finished_error = true # rubocop:disable Cop/ModuleWithInstanceVariables
     end
 
     alias_method :example_passed, :example_finished

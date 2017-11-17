@@ -14,6 +14,7 @@ module SpamCheckService
     @recaptcha_verified = params.delete(:recaptcha_verified)
     @spam_log_id        = params.delete(:spam_log_id)
   end
+  # rubocop:enable Cop/ModuleWithInstanceVariables
 
   # In order to be proceed to the spam check process, @spammable has to be
   # a dirty instance, which means it should be already assigned with the new
@@ -26,4 +27,5 @@ module SpamCheckService
       user.spam_logs.find_by(id: @spam_log_id)&.update!(recaptcha_verified: true)
     end
   end
+  # rubocop:enable Cop/ModuleWithInstanceVariables
 end

@@ -44,7 +44,6 @@ module RelativePositioning
     next_pos
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def move_between(before, after)
     return move_after(before) unless after
     return move_before(after) unless before
@@ -53,13 +52,12 @@ module RelativePositioning
     # to its predecessor. This process will recursively move all the predecessors until we have a place
     if (after.relative_position - before.relative_position) < 2
       before.move_before
-      @positionable_neighbours = [before]
+      @positionable_neighbours = [before] # rubocop:disable Cop/ModuleWithInstanceVariables
     end
 
     self.relative_position = position_between(before.relative_position, after.relative_position)
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def move_after(before = self)
     pos_before = before.relative_position
     pos_after = before.next_relative_position
@@ -67,7 +65,7 @@ module RelativePositioning
     if before.shift_after?
       issue_to_move = self.class.in_projects(project_ids).find_by!(relative_position: pos_after)
       issue_to_move.move_after
-      @positionable_neighbours = [issue_to_move]
+      @positionable_neighbours = [issue_to_move] # rubocop:disable Cop/ModuleWithInstanceVariables
 
       pos_after = issue_to_move.relative_position
     end
@@ -75,7 +73,6 @@ module RelativePositioning
     self.relative_position = position_between(pos_before, pos_after)
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def move_before(after = self)
     pos_after = after.relative_position
     pos_before = after.prev_relative_position
@@ -83,7 +80,7 @@ module RelativePositioning
     if after.shift_before?
       issue_to_move = self.class.in_projects(project_ids).find_by!(relative_position: pos_before)
       issue_to_move.move_before
-      @positionable_neighbours = [issue_to_move]
+      @positionable_neighbours = [issue_to_move] # rubocop:disable Cop/ModuleWithInstanceVariables
 
       pos_before = issue_to_move.relative_position
     end
@@ -144,4 +141,5 @@ module RelativePositioning
 
     status
   end
+  # rubocop:enable Cop/ModuleWithInstanceVariables
 end

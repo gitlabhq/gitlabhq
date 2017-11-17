@@ -1,5 +1,6 @@
 module CreatesCommit
   extend ActiveSupport::Concern
+  include Gitlab::Utils::StrongMemoize
 
   # rubocop:disable Cop/ModuleWithInstanceVariables
   def create_commit(service, success_path:, failure_path:, failure_view: nil, success_notice: nil)
@@ -94,15 +95,20 @@ module CreatesCommit
   # rubocop:enable Cop/ModuleWithInstanceVariables
 
   def existing_merge_request_path
-    project_merge_request_path(@project, @merge_request)
+    project_merge_request_path(@project, @merge_request) # rubocop:disable Cop/ModuleWithInstanceVariables
   end
 
   # rubocop:disable Cop/ModuleWithInstanceVariables
   def merge_request_exists?
-    return @merge_request if defined?(@merge_request)
-
-    @merge_request = MergeRequestsFinder.new(current_user, project_id: @project.id).execute.opened
-      .find_by(source_project_id: @project_to_commit_into, source_branch: @branch_name, target_branch: @start_branch)
+    strong_memoize(:merge_request) do
+      MergeRequestsFinder.new(current_user, project_id: @project.id)
+        .execute
+        .opened
+        .find_by(
+          source_project_id: @project_to_commit_into,
+          source_branch: @branch_name,
+          target_branch: @start_branch)
+    end
   end
   # rubocop:enable Cop/ModuleWithInstanceVariables
 

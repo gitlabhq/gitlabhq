@@ -171,6 +171,7 @@ module Gitlab
           @pool
         end
       end
+      # rubocop:enable Cop/ModuleWithInstanceVariables
     end
   end
 end

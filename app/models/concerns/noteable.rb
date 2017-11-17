@@ -55,6 +55,7 @@ module Noteable
         discussion_notes.resolvable.discussions(self)
       end
   end
+  # rubocop:enable Cop/ModuleWithInstanceVariables
 
   def discussions_resolvable?
     resolvable_discussions.any?(&:resolvable?)

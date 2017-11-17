@@ -2,12 +2,11 @@ module Gitlab
   module Ci
     module Charts
       module DailyInterval
-        # rubocop:disable Cop/ModuleWithInstanceVariables
         def grouped_count(query)
           query
             .group("DATE(#{::Ci::Pipeline.table_name}.created_at)")
             .count(:created_at)
-            .transform_keys { |date| date.strftime(@format) }
+            .transform_keys { |date| date.strftime(@format) } # rubocop:disable Cop/ModuleWithInstanceVariables
         end
 
         def interval_step

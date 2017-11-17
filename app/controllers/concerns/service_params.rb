@@ -65,9 +65,8 @@ module ServiceParams
   # Parameters to ignore if no value is specified
   FILTER_BLANK_PARAMS = [:password].freeze
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def service_params
-    dynamic_params = @service.event_channel_names + @service.event_names
+    dynamic_params = @service.event_channel_names + @service.event_names # rubocop:disable Cop/ModuleWithInstanceVariables
     service_params = params.permit(:id, service: ALLOWED_PARAMS_CE + dynamic_params)
 
     if service_params[:service].is_a?(Hash)

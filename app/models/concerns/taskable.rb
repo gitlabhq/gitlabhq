@@ -36,11 +36,10 @@ module Taskable
   end
 
   # Called by `TaskList::Summary`
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def task_list_items
     return [] if description.blank?
 
-    @task_list_items ||= Taskable.get_tasks(description)
+    @task_list_items ||= Taskable.get_tasks(description) # rubocop:disable Cop/ModuleWithInstanceVariables
   end
 
   def tasks

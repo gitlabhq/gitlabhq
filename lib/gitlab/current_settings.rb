@@ -52,9 +52,8 @@ module Gitlab
       ::ApplicationSetting.create_from_defaults || in_memory_application_settings
     end
 
-    # rubocop:disable Cop/ModuleWithInstanceVariables
     def in_memory_application_settings
-      @in_memory_application_settings ||= ::ApplicationSetting.new(::ApplicationSetting.defaults)
+      @in_memory_application_settings ||= ::ApplicationSetting.new(::ApplicationSetting.defaults) # rubocop:disable Cop/ModuleWithInstanceVariables
     rescue ActiveRecord::StatementInvalid, ActiveRecord::UnknownAttributeError
       # In case migrations the application_settings table is not created yet,
       # we fallback to a simple OpenStruct

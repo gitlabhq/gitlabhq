@@ -3,11 +3,10 @@ module Gitlab
     module RenameReservedPathsMigration
       module V1
         module MigrationClasses
-          # rubocop:disable Cop/ModuleWithInstanceVariables
           module Routable
             def full_path
               if route && route.path.present?
-                @full_path ||= route.path
+                @full_path ||= route.path # rubocop:disable Cop/ModuleWithInstanceVariables
               else
                 update_route if persisted?
 
@@ -31,7 +30,7 @@ module Gitlab
             def prepare_route
               route || build_route(source: self)
               route.path = build_full_path
-              @full_path = nil
+              @full_path = nil # rubocop:disable Cop/ModuleWithInstanceVariables
             end
           end
 

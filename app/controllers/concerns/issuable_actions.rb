@@ -142,6 +142,7 @@ module IssuableActions
     @resource_name ||= controller_name.singularize
   end
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def render_entity_json
     if @issuable.valid?
       render json: serializer.represent(@issuable)
@@ -149,6 +150,7 @@ module IssuableActions
       render json: { errors: @issuable.errors.full_messages }, status: :unprocessable_entity
     end
   end
+  # rubocop:enable Cop/ModuleWithInstanceVariables
 
   def serializer
     raise NotImplementedError
@@ -159,6 +161,6 @@ module IssuableActions
   end
 
   def parent
-    @project || @group
+    @project || @group # rubocop:disable Cop/ModuleWithInstanceVariables
   end
 end

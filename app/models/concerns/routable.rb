@@ -86,10 +86,9 @@ module Routable
     end
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def full_name
     if route && route.name.present?
-      @full_name ||= route.name
+      @full_name ||= route.name # rubocop:disable Cop/ModuleWithInstanceVariables
     else
       update_route if persisted?
 
@@ -113,7 +112,7 @@ module Routable
 
   def expires_full_path_cache
     RequestStore.delete(full_path_key) if RequestStore.active?
-    @full_path = nil
+    @full_path = nil # rubocop:disable Cop/ModuleWithInstanceVariables
   end
 
   def build_full_path
@@ -126,10 +125,9 @@ module Routable
 
   private
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def uncached_full_path
     if route && route.path.present?
-      @full_path ||= route.path
+      @full_path ||= route.path # rubocop:disable Cop/ModuleWithInstanceVariables
     else
       update_route if persisted?
 
@@ -164,12 +162,11 @@ module Routable
     route.save
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def prepare_route
     route || build_route(source: self)
     route.path = build_full_path
     route.name = build_full_name
-    @full_path = nil
-    @full_name = nil
+    @full_path = nil # rubocop:disable Cop/ModuleWithInstanceVariables
+    @full_name = nil # rubocop:disable Cop/ModuleWithInstanceVariables
   end
 end

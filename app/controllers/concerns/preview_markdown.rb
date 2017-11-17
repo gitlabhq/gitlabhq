@@ -1,6 +1,7 @@
 module PreviewMarkdown
   extend ActiveSupport::Concern
 
+  # rubocop:disable Cop/ModuleWithInstanceVariables
   def preview_markdown
     result = PreviewMarkdownService.new(@project, current_user, params).execute
 
@@ -19,4 +20,5 @@ module PreviewMarkdown
       }
     }
   end
+  # rubocop:enable Cop/ModuleWithInstanceVariables
 end

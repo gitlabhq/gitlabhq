@@ -15,6 +15,7 @@ module SnippetsActions
       filename: @snippet.sanitized_file_name
     )
   end
+  # rubocop:enable Cop/ModuleWithInstanceVariables
 
   private
 

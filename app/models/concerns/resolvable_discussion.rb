@@ -84,7 +84,6 @@ module ResolvableDiscussion
 
   private
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def update
     # Do not select `Note.resolvable`, so that system notes remain in the collection
     notes_relation = Note.where(id: notes.map(&:id))

@@ -37,11 +37,10 @@ module ExtractsPath
   #
   # Returns an Array where the first value is the tree-ish and the second is the
   # path
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def extract_ref(id)
     pair = ['', '']
 
-    return pair unless @project
+    return pair unless @project # rubocop:disable Cop/ModuleWithInstanceVariables
 
     if id =~ /^(\h{40})(.+)/
       # If the ref appears to be a SHA, we're done, just split the string
@@ -133,10 +132,10 @@ module ExtractsPath
   rescue RuntimeError, NoMethodError, InvalidPathError
     render_404
   end
+  # rubocop:enable Cop/ModuleWithInstanceVariables
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def tree
-    @tree ||= @repo.tree(@commit.id, @path)
+    @tree ||= @repo.tree(@commit.id, @path) # rubocop:disable Cop/ModuleWithInstanceVariables
   end
 
   private
@@ -148,10 +147,9 @@ module ExtractsPath
     id
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
   def ref_names
-    return [] unless @project
+    return [] unless @project # rubocop:disable Cop/ModuleWithInstanceVariables
 
-    @ref_names ||= @project.repository.ref_names
+    @ref_names ||= @project.repository.ref_names # rubocop:disable Cop/ModuleWithInstanceVariables
   end
 end

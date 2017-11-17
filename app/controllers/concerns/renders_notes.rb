@@ -8,6 +8,7 @@ module RendersNotes
 
     notes
   end
+  # rubocop:enable Cop/ModuleWithInstanceVariables
 
   private
 

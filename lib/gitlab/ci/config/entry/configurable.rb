@@ -24,21 +24,20 @@ module Gitlab
             end
           end
 
-          # rubocop:disable Cop/ModuleWithInstanceVariables
           def compose!(deps = nil)
             return unless valid?
 
             self.class.nodes.each do |key, factory|
               factory
-                .value(@config[key])
+                .value(config[key])
                 .with(key: key, parent: self)
 
-              @entries[key] = factory.create!
+              entries[key] = factory.create!
             end
 
             yield if block_given?
 
-            @entries.each_value do |entry|
+            entries.each_value do |entry|
               entry.compose!(deps)
             end
           end

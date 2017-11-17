@@ -30,10 +30,9 @@ module Gitlab
         execute(%W(tar -#{options} #{archive} -C #{dir}))
       end
 
-      # rubocop:disable Cop/ModuleWithInstanceVariables
       def execute(cmd)
         output, status = Gitlab::Popen.popen(cmd)
-        @shared.error(Gitlab::ImportExport::Error.new(output.to_s)) unless status.zero?
+        @shared.error(Gitlab::ImportExport::Error.new(output.to_s)) unless status.zero? # rubocop:disable Cop/ModuleWithInstanceVariables
         status.zero?
       end
 
