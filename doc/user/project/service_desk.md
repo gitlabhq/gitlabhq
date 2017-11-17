@@ -109,6 +109,11 @@ you can read and write comments as you normally do:
 
 > Note that the project's visibility (private, internal, public) does not affect Service Desk.
 
+### Support Bot user
+
+Behind the scenes, Service Desk works by the special Support Bot user creating issues. This user
+does not count toward the license limit count.
+
 [ee-149]: https://gitlab.com/gitlab-org/gitlab-ee/issues/149 "Service Desk with email"
 [ee]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition landing page"
 [eep-9.1]: https://about.gitlab.com/2017/04/22/gitlab-9-1-released/#service-desk-eep

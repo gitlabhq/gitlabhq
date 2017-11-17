@@ -46,7 +46,6 @@ class Projects::MirrorsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html { redirect_to_repository_settings(@project) }
-
       format.json do
         if @project.errors.present?
           render json: @project.errors, status: :unprocessable_entity

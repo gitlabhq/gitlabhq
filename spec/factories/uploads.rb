@@ -9,5 +9,10 @@ FactoryGirl.define do
       model { build(:personal_snippet) }
       uploader "PersonalFileUploader"
     end
+
+    trait :issuable_upload do
+      path { "#{SecureRandom.hex}/myfile.jpg" }
+      uploader "FileUploader"
+    end
   end
 end

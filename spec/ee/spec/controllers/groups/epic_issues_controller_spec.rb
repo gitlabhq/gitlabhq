@@ -8,6 +8,8 @@ describe Groups::EpicIssuesController do
   let(:user)  { create(:user) }
 
   before do
+    stub_licensed_features(epics: true)
+
     sign_in(user)
   end
 

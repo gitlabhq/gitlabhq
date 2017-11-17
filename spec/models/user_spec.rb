@@ -1177,19 +1177,13 @@ describe User do
     let(:user) { create(:user, :with_avatar) }
 
     context 'when avatar file is uploaded' do
-      let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
-      let(:avatar_path) { "/uploads/-/system/user/avatar/#{user.id}/dk.png" }
-
       it 'shows correct avatar url' do
-        expect(user.avatar_url).to eq(avatar_path)
-        expect(user.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
-
-        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-
-        expect(user.avatar_url).to eq([gitlab_host, avatar_path].join)
+        expect(user.avatar_url).to eq(user.avatar.url)
+        expect(user.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, user.avatar.url].join)
       end
 
       context 'when in a geo secondary node' do
+        let(:avatar_path) { user.avatar_path(only_path: true) }
         let(:geo_host) { 'http://geo.example.com' }
         let(:geo_avatar_url) { [geo_host, avatar_path].join }
 

@@ -5,7 +5,7 @@ module QA
       include Scenario::Actable
 
       def refresh
-        visit current_path
+        visit current_url
       end
     end
   end

@@ -56,6 +56,18 @@ module Gitlab
       end
     end
 
+    # Try to obtain the lease. Returns the UUID and current TTL, which will be
+    # zero if it's not taken.
+    def try_obtain_with_ttl
+      Gitlab::Redis::SharedState.with do |redis|
+        output = redis.set(@redis_shared_state_key, @uuid, nx: true, ex: @timeout) && @uuid
+
+        ttl = output ? 0 : redis.ttl(@redis_shared_state_key)
+
+        { ttl: [ttl, 0].max, uuid: output }
+      end
+    end
+
     # Try to renew an existing lease. Return lease UUID on success,
     # false if the lease is taken by a different UUID or inexistent.
     def renew
@@ -69,6 +81,13 @@ module Gitlab
     def exists?
       Gitlab::Redis::SharedState.with do |redis|
         redis.exists(@redis_shared_state_key)
+      end
+    end
+
+    # Returns true if the UUID for the key hasn't changed.
+    def same_uuid?
+      Gitlab::Redis::SharedState.with do |redis|
+        redis.get(@redis_shared_state_key) == @uuid
       end
     end
   end

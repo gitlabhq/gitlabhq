@@ -4,7 +4,7 @@ module Ci
     include AfterCommitQueue
     include Presentable
     include Importable
-    prepend EE::Build
+    prepend EE::Ci::Build
 
     belongs_to :runner
     belongs_to :trigger_request
@@ -40,7 +40,6 @@ module Ci
     scope :with_artifacts_stored_locally, ->() { with_artifacts.where(artifacts_file_store: [nil, ArtifactUploader::LOCAL_STORE]) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
-    scope :codequality, ->() { where(name: %w[codequality codeclimate]) }
     scope :ref_protected, -> { where(protected: true) }
 
     mount_uploader :artifacts_file, ArtifactUploader
@@ -469,11 +468,6 @@ module Ci
       Gitlab::Ci::MaskSecret.mask!(trace, project.runners_token) if project
       Gitlab::Ci::MaskSecret.mask!(trace, token)
       trace
-    end
-
-    def has_codeclimate_json?
-      options.dig(:artifacts, :paths) == ['codeclimate.json'] &&
-        artifacts_metadata?
     end
 
     def serializable_hash(options = {})

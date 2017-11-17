@@ -521,6 +521,12 @@ module API
           name: :webhook,
           type: String,
           desc: 'The Mattermost webhook. e.g. http://mattermost_host/hooks/...'
+        },
+        {
+          required: false,
+          name: :username,
+          type: String,
+          desc: 'The username to use to post the message'
         }
       ],
       'teamcity' => [

@@ -85,8 +85,8 @@ class ProjectWiki
 
   # Returns an Array of Gitlab WikiPage instances or an
   # empty Array if this Wiki has no pages.
-  def pages
-    wiki.pages.map { |page| WikiPage.new(self, page, true) }
+  def pages(limit: nil)
+    wiki.pages(limit: limit).map { |page| WikiPage.new(self, page, true) }
   end
 
   # Finds a page within the repository based on a tile

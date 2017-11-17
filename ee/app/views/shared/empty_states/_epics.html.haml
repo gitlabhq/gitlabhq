@@ -8,5 +8,8 @@
         = _('Epics let you manage your portfolio of projects more efficiently and with less effort')
       %p
         = _('Track groups of issues that share a theme, across projects and milestones')
-      %button.btn.btn-new{ type: 'button' }
-        New epic
+      - if can?(current_user, :create_epic, @group)
+        - content_for :page_specific_javascripts do
+          = webpack_bundle_tag 'common_vue'
+          = webpack_bundle_tag 'new_epic'
+        #new-epic-app{ data: { endpoint: request.url } }

@@ -161,4 +161,38 @@ describe Ci::Build do
       it { expect(build.has_codeclimate_json?).to be_falsey }
     end
   end
+
+  describe '#has_sast_json?' do
+    context 'valid build' do
+      let!(:build) do
+        create(
+          :ci_build,
+          :artifacts,
+          name: 'sast',
+          pipeline: pipeline,
+          options: {
+            artifacts: {
+              paths: ['gl-sast-report.json']
+            }
+          }
+        )
+      end
+
+      it { expect(build.has_sast_json?).to be_truthy }
+    end
+
+    context 'invalid build' do
+      let!(:build) do
+        create(
+          :ci_build,
+          :artifacts,
+          name: 'sast',
+          pipeline: pipeline,
+          options: {}
+        )
+      end
+
+      it { expect(build.has_sast_json?).to be_falsey }
+    end
+  end
 end

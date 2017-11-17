@@ -14,8 +14,8 @@ export default class Job {
     this.state = this.options.logState;
     this.buildStage = this.options.buildStage;
     this.$document = $(document);
+    this.$window = $(window);
     this.logBytes = 0;
-    this.hasBeenScrolled = false;
     this.updateDropdown = this.updateDropdown.bind(this);
 
     this.$buildTrace = $('#build-trace');
@@ -54,23 +54,18 @@ export default class Job {
 
     this.scrollThrottled = _.throttle(this.toggleScroll.bind(this), 100);
 
-    $(window)
+    this.$window
       .off('scroll')
       .on('scroll', () => {
-        const contentHeight = this.$buildTraceOutput.height();
-        if (contentHeight > this.windowSize) {
-          // means the user did not scroll, the content was updated.
-          this.windowSize = contentHeight;
-        } else {
-          // User scrolled
-          this.hasBeenScrolled = true;
+        if (!this.isScrolledToBottom()) {
           this.toggleScrollAnimation(false);
+        } else if (this.isScrolledToBottom() && !this.isLogComplete) {
+          this.toggleScrollAnimation(true);
         }
-
         this.scrollThrottled();
       });
 
-    $(window)
+    this.$window
       .off('resize.build')
       .on('resize.build', _.throttle(this.sidebarOnResize.bind(this), 100));
 
@@ -99,14 +94,14 @@ export default class Job {
 
   // eslint-disable-next-line class-methods-use-this
   canScroll() {
-    return $(document).height() > $(window).height();
+    return this.$document.height() > this.$window.height();
   }
 
   toggleScroll() {
-    const currentPosition = $(document).scrollTop();
-    const scrollHeight = $(document).height();
+    const currentPosition = this.$document.scrollTop();
+    const scrollHeight = this.$document.height();
 
-    const windowHeight = $(window).height();
+    const windowHeight = this.$window.height();
     if (this.canScroll()) {
       if (currentPosition > 0 &&
         (scrollHeight - currentPosition !== windowHeight)) {
@@ -119,7 +114,7 @@ export default class Job {
 
         this.toggleDisableButton(this.$scrollTopBtn, true);
         this.toggleDisableButton(this.$scrollBottomBtn, false);
-      } else if (scrollHeight - currentPosition === windowHeight) {
+      } else if (this.isScrolledToBottom()) {
         // User is at the bottom of the build log.
 
         this.toggleDisableButton(this.$scrollTopBtn, false);
@@ -131,9 +126,17 @@ export default class Job {
     }
   }
 
+  isScrolledToBottom() {
+    const currentPosition = this.$document.scrollTop();
+    const scrollHeight = this.$document.height();
+
+    const windowHeight = this.$window.height();
+    return scrollHeight - currentPosition === windowHeight;
+  }
+
   // eslint-disable-next-line class-methods-use-this
   scrollDown() {
-    $(document).scrollTop($(document).height());
+    this.$document.scrollTop(this.$document.height());
   }
 
   scrollToBottom() {
@@ -143,7 +146,7 @@ export default class Job {
   }
 
   scrollToTop() {
-    $(document).scrollTop(0);
+    this.$document.scrollTop(0);
     this.hasBeenScrolled = true;
     this.toggleScroll();
   }
@@ -174,7 +177,7 @@ export default class Job {
           this.state = log.state;
         }
 
-        this.windowSize = this.$buildTraceOutput.height();
+        this.isScrollInBottom = this.isScrolledToBottom();
 
         if (log.append) {
           this.$buildTraceOutput.append(log.html);
@@ -194,14 +197,9 @@ export default class Job {
         } else {
           this.$truncatedInfo.addClass('hidden');
         }
+        this.isLogComplete = log.complete;
 
         if (!log.complete) {
-          if (!this.hasBeenScrolled) {
-            this.toggleScrollAnimation(true);
-          } else {
-            this.toggleScrollAnimation(false);
-          }
-
           this.timeout = setTimeout(() => {
             this.getBuildTrace();
           }, 4000);
@@ -218,7 +216,7 @@ export default class Job {
         this.$buildRefreshAnimation.remove();
       })
       .then(() => {
-        if (!this.hasBeenScrolled) {
+        if (this.isScrollInBottom) {
           this.scrollDown();
         }
       })

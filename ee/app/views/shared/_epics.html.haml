@@ -1,5 +1,11 @@
 .top-area
   = render 'shared/issuable/nav', type: :epics
+  .nav-controls
+    - if can?(current_user, :create_epic, @group)
+      - content_for :page_specific_javascripts do
+        = webpack_bundle_tag 'common_vue'
+        = webpack_bundle_tag 'new_epic'
+      #new-epic-app{ data: { endpoint: request.url, 'align-right' => true } }
 
 %ul.content-list.issuable-list
   = render partial: 'groups/epics/epic', collection: @epics

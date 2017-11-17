@@ -11,7 +11,6 @@ describe API::Helpers do
   let(:admin) { create(:admin) }
   let(:key) { create(:key, user: user) }
 
-  let(:params) { {} }
   let(:csrf_token) { SecureRandom.base64(ActionController::RequestForgeryProtection::AUTHENTICITY_TOKEN_LENGTH) }
   let(:env) do
     {
@@ -19,11 +18,14 @@ describe API::Helpers do
       'rack.session' => {
         _csrf_token: csrf_token
       },
-      'REQUEST_METHOD' => 'GET'
+      'REQUEST_METHOD' => 'GET',
+      'CONTENT_TYPE' => 'text/plain;charset=utf-8'
     }
   end
   let(:header) { }
   let(:route_authentication_setting) { {} }
+  let(:request) { Grape::Request.new(env)}
+  let(:params) { request.params }
 
   before do
     allow_any_instance_of(self.class).to receive(:options).and_return({})
@@ -38,6 +40,10 @@ describe API::Helpers do
 
   def error!(message, status, header)
     raise Exception.new("#{status} - #{message}")
+  end
+
+  def set_param(key, value)
+    request.update_param(key, value)
   end
 
   describe ".current_user" do
@@ -135,13 +141,13 @@ describe API::Helpers do
       let(:personal_access_token) { create(:personal_access_token, user: user) }
 
       it "returns a 401 response for an invalid token" do
-        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = 'invalid token'
+        env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = 'invalid token'
 
         expect { current_user }.to raise_error /401/
       end
 
       it "returns a 403 response for a user without access" do
-        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
 
         expect { current_user }.to raise_error /403/
@@ -149,35 +155,35 @@ describe API::Helpers do
 
       it 'returns a 403 response for a user who is blocked' do
         user.block!
-        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
         expect { current_user }.to raise_error /403/
       end
 
       it "sets current_user" do
-        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
         expect(current_user).to eq(user)
       end
 
       it "does not allow tokens without the appropriate scope" do
         personal_access_token = create(:personal_access_token, user: user, scopes: ['read_user'])
-        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
-        expect { current_user }.to raise_error API::APIGuard::InsufficientScopeError
+        expect { current_user }.to raise_error Gitlab::Auth::InsufficientScopeError
       end
 
       it 'does not allow revoked tokens' do
         personal_access_token.revoke!
-        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
-        expect { current_user }.to raise_error API::APIGuard::RevokedError
+        expect { current_user }.to raise_error Gitlab::Auth::RevokedError
       end
 
       it 'does not allow expired tokens' do
         personal_access_token.update_attributes!(expires_at: 1.day.ago)
-        env[API::APIGuard::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+        env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
 
-        expect { current_user }.to raise_error API::APIGuard::ExpiredError
+        expect { current_user }.to raise_error Gitlab::Auth::ExpiredError
       end
     end
 
@@ -188,13 +194,13 @@ describe API::Helpers do
         let(:route_authentication_setting) { { job_token_allowed: true } }
 
         it "returns a 401 response for an invalid token" do
-          env[API::APIGuard::JOB_TOKEN_HEADER] = 'invalid token'
+          env[Gitlab::Auth::UserAuthFinders::JOB_TOKEN_HEADER] = 'invalid token'
 
           expect { current_user }.to raise_error /401/
         end
 
         it "returns a 403 response for a user without access" do
-          env[API::APIGuard::JOB_TOKEN_HEADER] = job.token
+          env[Gitlab::Auth::UserAuthFinders::JOB_TOKEN_HEADER] = job.token
           allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(false)
 
           expect { current_user }.to raise_error /403/
@@ -202,13 +208,13 @@ describe API::Helpers do
 
         it 'returns a 403 response for a user who is blocked' do
           user.block!
-          env[API::APIGuard::JOB_TOKEN_HEADER] = job.token
+          env[Gitlab::Auth::UserAuthFinders::JOB_TOKEN_HEADER] = job.token
 
           expect { current_user }.to raise_error /403/
         end
 
         it "sets current_user" do
-          env[API::APIGuard::JOB_TOKEN_HEADER] = job.token
+          env[Gitlab::Auth::UserAuthFinders::JOB_TOKEN_HEADER] = job.token
 
           expect(current_user).to eq(user)
         end
@@ -218,7 +224,7 @@ describe API::Helpers do
         let(:route_authentication_setting) { { job_token_allowed: false } }
 
         it "sets current_user to nil" do
-          env[API::APIGuard::JOB_TOKEN_HEADER] = job.token
+          env[Gitlab::Auth::UserAuthFinders::JOB_TOKEN_HEADER] = job.token
           allow_any_instance_of(Gitlab::UserAccess).to receive(:allowed?).and_return(true)
 
           expect(current_user).to be_nil
@@ -398,7 +404,7 @@ describe API::Helpers do
             context 'when using param' do
               context 'when providing username' do
                 before do
-                  params[API::Helpers::SUDO_PARAM] = user.username
+                  set_param(API::Helpers::SUDO_PARAM, user.username)
                 end
 
                 it_behaves_like 'successful sudo'
@@ -406,7 +412,7 @@ describe API::Helpers do
 
               context 'when providing user ID' do
                 before do
-                  params[API::Helpers::SUDO_PARAM] = user.id.to_s
+                  set_param(API::Helpers::SUDO_PARAM, user.id.to_s)
                 end
 
                 it_behaves_like 'successful sudo'
@@ -416,7 +422,7 @@ describe API::Helpers do
 
           context 'when user does not exist' do
             before do
-              params[API::Helpers::SUDO_PARAM] = 'nonexistent'
+              set_param(API::Helpers::SUDO_PARAM, 'nonexistent')
             end
 
             it 'raises an error' do
@@ -430,11 +436,11 @@ describe API::Helpers do
             token.scopes = %w[api]
             token.save!
 
-            params[API::Helpers::SUDO_PARAM] = user.id.to_s
+            set_param(API::Helpers::SUDO_PARAM, user.id.to_s)
           end
 
           it 'raises an error' do
-            expect { current_user }.to raise_error API::APIGuard::InsufficientScopeError
+            expect { current_user }.to raise_error Gitlab::Auth::InsufficientScopeError
           end
         end
       end
@@ -444,7 +450,7 @@ describe API::Helpers do
           token.user = user
           token.save!
 
-          params[API::Helpers::SUDO_PARAM] = user.id.to_s
+          set_param(API::Helpers::SUDO_PARAM, user.id.to_s)
         end
 
         it 'raises an error' do
@@ -468,7 +474,7 @@ describe API::Helpers do
 
       context 'passed as param' do
         before do
-          params[API::APIGuard::PRIVATE_TOKEN_PARAM] = token.token
+          set_param(Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_PARAM, token.token)
         end
 
         it_behaves_like 'sudo'
@@ -476,7 +482,7 @@ describe API::Helpers do
 
       context 'passed as header' do
         before do
-          env[API::APIGuard::PRIVATE_TOKEN_HEADER] = token.token
+          env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = token.token
         end
 
         it_behaves_like 'sudo'
