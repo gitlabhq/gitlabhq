@@ -80,14 +80,15 @@ module Gitlab
       def build_find_command(search_dir)
         cmd = %W[find #{search_dir} -type f ! ( -path #{EXCLUDED_HASHED_UPLOADS_PATH} -prune ) ! ( -path #{EXCLUDED_TMP_UPLOADS_PATH} -prune ) -print0]
 
-        cmd = %w[ionice -c Idle] + cmd if ionice_is_available?
+        ionice = which_ionice
+        cmd = %W[#{ionice} -c Idle] + cmd if ionice
 
         Rails.logger.info "PrepareUntrackedUploads find command: \"#{cmd.join(' ')}\""
 
         cmd
       end
 
-      def ionice_is_available?
+      def which_ionice
         Gitlab::Utils.which('ionice')
       rescue StandardError
         # In this case, returning false is relatively safe, even though it isn't very nice
