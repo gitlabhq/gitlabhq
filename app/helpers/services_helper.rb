@@ -1,4 +1,6 @@
 module ServicesHelper
+  prepend EE::ServicesHelper
+
   def service_event_description(event)
     case event
     when "push", "push_events"
