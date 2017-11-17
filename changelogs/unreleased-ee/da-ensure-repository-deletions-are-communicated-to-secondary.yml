@@ -1,0 +1,6 @@
+---
+title: Geo - Ensure that repository deletions in a primary node are correctly deleted
+  in a secondary node
+merge_request:
+author:
+type: fixed
