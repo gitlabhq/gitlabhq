@@ -1,13 +1,15 @@
 require 'spec_helper'
 
 describe Geo::RepositoryDestroyService do
+  include ::EE::GeoHelpers
+
   set(:secondary) { create(:geo_node) }
   let(:project) { create(:project_empty_repo) }
 
   subject(:service) { described_class.new(project.id, project.name, project.disk_path, project.repository_storage) }
 
   before do
-    allow(Gitlab::Geo).to receive(:current_node) { secondary }
+    stub_current_geo_node(secondary)
   end
 
   describe '#async_execute' do
