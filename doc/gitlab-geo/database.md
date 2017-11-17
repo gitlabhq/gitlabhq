@@ -59,6 +59,10 @@ The following guide assumes that:
   **must** be able to communicate over these addresses (using HTTPS & SSH).
   These IP addresses can either be public or private.
 
+If your GitLab installation is using external PostgreSQL, the Omnibus roles
+will not be able to perform all necessary configuration steps. Refer to
+[External PostreSQL][external postgresql] for additional instructions.
+
 ### Step 1. Configure the primary server
 
 1. SSH into your GitLab **primary** server and login as root:
@@ -161,6 +165,8 @@ The following guide assumes that:
     # postgresql['max_wal_senders'] = 10
     # postgresql['wal_keep_segments'] = 10
     ```
+
+    For external PostgreSQL instances, [see additional instructions][external postgresql].
 
     Where `1.2.3.4` is the IP address of the primary server, and `5.6.7.8`
     is the IP address of the secondary one.
@@ -312,6 +318,8 @@ primary before the database is replicated.
     geo_secondary_role['enable'] = true
     ```
 
+    For external PostgreSQL instances, [see additional instructions][external postgresql].
+
 1. [Reconfigure GitLab][] for the changes to take effect.
 
 1. Setup clock synchronization service in your Linux distro.
@@ -390,6 +398,50 @@ data before running `pg_basebackup`.
 
 The replication process is now over.
 
+### External PostgreSQL instances
+
+For installations using external PostgreSQL instances, the `geo_primary_role`
+and `geo_secondary_role` includes configuration changes that must be applied
+manually.
+
+The `geo_primary_role` makes configuration changes to `pg_hba.conf` and
+`postgresql.conf` on the primary:
+
+```
+# pg_hba.conf
+# GitLab Geo Primary
+host    replication gitlab_replicator <trusted secondary IP>/32     md5
+```
+
+```
+# postgresql.conf
+# Geo Primary Role
+sql_replication_user = gitlab_replicator
+wal_level = hot_standby
+max_wal_senders = 10
+wal_keep_segments = 50
+max_replication_slots = 1 # number of secondary instances
+hot_standby = on
+```
+
+Th `geo_secondary_role` makes configuration changes to `postgresql.conf` and
+enables the Geo Log Cursor (`geo_logcursor`) and secondary tracking database
+on the secondary. The PostgreSQL settings for this database it adds to
+the default settings:
+
+```
+# postgresql.conf
+# Geo Secondary Role
+wal_level = hot_standby
+max_wal_senders = 10
+wal_keep_segments = 10
+hot_standby = on
+```
+
+Geo secondary nodes use a tracking database to keep track of replication
+status and recover automatically from some replication issues. Follow the
+instructions for [enabling tracking database on the secondary server][tracking].
+
 ### Next steps
 
 Now that the database replication is done, the next step is to configure GitLab.
@@ -406,3 +458,5 @@ Read the [troubleshooting document](troubleshooting.md).
 
 [pgback]: http://www.postgresql.org/docs/9.2/static/app-pgbasebackup.html
 [reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
+[external postgresql]: #external-postgresql-instances
+[tracking]: database_source.md#enable-tracking-database-on-the-secondary-server
