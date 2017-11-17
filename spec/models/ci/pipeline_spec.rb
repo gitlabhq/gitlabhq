@@ -1472,32 +1472,4 @@ describe Ci::Pipeline, :mailer do
       expect(query_count).to eq(1)
     end
   end
-
-  describe '#codeclimate_artifact' do
-    context 'has codequality job' do
-      let!(:build) do
-        create(
-          :ci_build,
-          :artifacts,
-          name: 'codequality',
-          pipeline: pipeline,
-          options: {
-            artifacts: {
-              paths: ['codeclimate.json']
-            }
-          }
-        )
-      end
-
-      it { expect(pipeline.codeclimate_artifact).to eq(build) }
-    end
-
-    context 'no codequality job' do
-      before do
-        create(:ci_build, pipeline: pipeline)
-      end
-
-      it { expect(pipeline.codeclimate_artifact).to be_nil }
-    end
-  end
 end

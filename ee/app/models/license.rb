@@ -53,8 +53,9 @@ class License < ActiveRecord::Base
   ].freeze
 
   EEU_FEATURES = EEP_FEATURES + %i[
+    sast
     epics
-  ]
+  ].freeze
 
   # List all features available for early adopters,
   # i.e. users that started using GitLab.com before
