@@ -53,7 +53,7 @@ module EE
       # with Sidekiq through the after_commit callback. In a Geo secondary
       # node we don't have access to the original model anymore then we
       # rebuild a Geo::DeletedProject model. Since this model is read-only,
-      # this callback will not be triggered letting us with stalled
+      # this callback will not be triggered leaving us with stalled
       # repositories on disk.
       def trash_repositories_cleanup!
         repo_removed_path = removal_path(repo_path)
