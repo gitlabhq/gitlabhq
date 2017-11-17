@@ -70,6 +70,7 @@
 
       .line-numbers {
         cursor: pointer;
+        min-width: initial;
 
         &:hover {
           text-decoration: underline;
@@ -309,16 +310,29 @@
 	left: 0 !important;
 
   &-modified {
-    background-color: rgb(19, 117, 150);
+    background-color: $blue-500;
   }
 
   &-added {
-    background-color: rgb(89, 119, 11);
+    background-color: $green-600;
   }
 
   &-removed {
-    height: 4px!important;
+    height: 0!important;
+    width: 0!important;
     bottom: -2px;
-    background-color: red;
+    border-style: solid;
+    border-width: 5px;
+    border-color: transparent transparent transparent $red-500;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100px;
+      height: 1px;
+      background-color: rgba($red-500, .5);
+    }
   }
 }
