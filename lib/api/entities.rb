@@ -271,7 +271,11 @@ module API
       end
 
       expose :merged do |repo_branch, options|
-        options[:project].repository.merged_to_root_ref?(repo_branch, options[:merged_branch_names])
+        if options[:merged_branch_names]
+          options[:merged_branch_names].include?(repo_branch.name)
+        else
+          options[:project].repository.merged_to_root_ref?(repo_branch)
+        end
       end
 
       expose :protected do |repo_branch, options|
