@@ -269,7 +269,10 @@ The prerequisites for a HA Redis setup are the following:
 
     ```ruby
     # Specify server role as 'redis_master_role'
+    # You can specify multiple roles like sentinel and redis as: roles ['redis_sentinel_role', 'redis_master_role']
+    # Read more about high availability roles at https://docs.gitlab.com/omnibus/roles/
     roles ['redis_master_role']
+
 
     # IP address pointing to a local IP that the other machines can reach to.
     # You can also set bind to '0.0.0.0' which listen in all interfaces.
@@ -284,6 +287,7 @@ The prerequisites for a HA Redis setup are the following:
     # Set up password authentication for Redis (use the same password in all nodes).
     redis['password'] = 'redis-password-goes-here'
     ```
+
 
 1. Only the primary GitLab application server should handle migrations. To
    prevent database migrations from running on upgrade, add the following
@@ -312,7 +316,10 @@ The prerequisites for a HA Redis setup are the following:
 
     ```ruby
     # Specify server role as 'redis_slave_role'
+    # You can specify multiple roles like sentinel and redis as: roles ['redis_sentinel_role', 'redis_slave_role']
+    # Read more about high availability roles at https://docs.gitlab.com/omnibus/roles/
     roles ['redis_slave_role']
+
 
     # IP address pointing to a local IP that the other machines can reach to.
     # You can also set bind to '0.0.0.0' which listen in all interfaces.
@@ -397,7 +404,7 @@ multiple machines with the Sentinel daemon.
    be duplicate below):
 
     ```ruby
-    redis_sentinel_role['enable'] = true
+    roles ['redis_sentinel_role']
 
     # Must be the same in every sentinel node
     redis['master_name'] = 'gitlab-redis'
