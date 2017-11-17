@@ -46,14 +46,18 @@ module RuboCop
       def check_method_definition(node)
         node.each_child_node(:def) do |definition|
           # We allow this pattern:
-          # def f
-          #   @f ||= true
-          # end
+          #
+          #     def f
+          #       @f ||= true
+          #     end
           if only_ivar_or_assignment?(definition)
             # We don't allow if any other ivar is used
             definition.each_descendant(:ivar) do |offense|
               add_offense(offense, :expression)
             end
+          # We allow initialize method and single ivar
+          elsif initialize_method?(definition) || single_ivar?(definition)
+            next
           else
             definition.each_descendant(:ivar, :ivasgn) do |offense|
               add_offense(offense, :expression)
@@ -67,6 +71,16 @@ module RuboCop
 
         definition.child_nodes.size == 2 &&
           node.or_asgn_type? && node.child_nodes.first.ivasgn_type?
+      end
+
+      def single_ivar?(definition)
+        node = definition.child_nodes.last
+
+        definition.child_nodes.size == 2 && node.ivar_type?
+      end
+
+      def initialize_method?(definition)
+        definition.children.first == :initialize
       end
     end
   end

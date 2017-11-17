@@ -137,6 +137,35 @@ describe RuboCop::Cop::ModuleWithInstanceVariables do
     it_behaves_like 'not registering offense'
   end
 
+  context 'when source is using simple ivar' do
+    let(:source) do
+      <<~RUBY
+        module M
+          def f?
+            @f
+          end
+        end
+      RUBY
+    end
+
+    it_behaves_like 'not registering offense'
+  end
+
+  context 'when source is defining initialize' do
+    let(:source) do
+      <<~RUBY
+        module M
+          def initialize
+            @a = 1
+            @b = 2
+          end
+        end
+      RUBY
+    end
+
+    it_behaves_like 'not registering offense'
+  end
+
   context 'when source is using simple or ivar assignment with other ivar' do
     let(:source) do
       <<~RUBY
