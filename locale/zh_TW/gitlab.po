@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-02 14:42+0100\n"
-"PO-Revision-Date: 2017-11-16 09:04-0500\n"
+"PO-Revision-Date: 2017-11-17 07:54-0500\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Chinese Traditional\n"
 "Language: zh_TW\n"
@@ -36,7 +36,7 @@ msgid_plural "%{count} participants"
 msgstr[0] "%{count} 參與者"
 
 msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
-msgstr "%{number_commits_behind} 個落後 %{default_branch} 分支的修訂版提交，%{number_commits_ahead} 個超前的修訂版提交"
+msgstr ""
 
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
 msgstr "目前已失敗 %{number_of_failures} 次。GitLab 允許在 %{maximum_failures} 次之內可再嘗試讀取 。"
@@ -104,7 +104,7 @@ msgid "Add Contribution guide"
 msgstr "新增協作指南"
 
 msgid "Add Group Webhooks and GitLab Enterprise Edition."
-msgstr "加入來自 Webhooks 或者是 GitHub 企業版的群組"
+msgstr "加入來自 Webhooks 或者是 GitLab 企業版的群組"
 
 msgid "Add License"
 msgstr "新增授權條款"
@@ -155,13 +155,13 @@ msgid "Are you sure?"
 msgstr "確定嗎？"
 
 msgid "Artifacts"
-msgstr "產物"
+msgstr ""
 
 msgid "Attach a file by drag &amp; drop or %{upload_link}"
 msgstr "拖放檔案到此處或者 %{upload_link}"
 
 msgid "Authentication Log"
-msgstr "驗證 Log"
+msgstr "登入紀錄"
 
 msgid "Author"
 msgstr "作者"
@@ -176,7 +176,7 @@ msgid "Auto Review Apps and Auto Deploy need the %{kubernetes} to work correctly
 msgstr "自動複閱應用 (review apps) 與自動部署需要 %{kubernetes} 才能運作。"
 
 msgid "AutoDevOps|Auto DevOps (Beta)"
-msgstr "DevOps 自動化 (測試版)"
+msgstr "DevOps 自動化（beta）"
 
 msgid "AutoDevOps|Auto DevOps documentation"
 msgstr "「DevOps 自動化」 文件"
@@ -233,7 +233,7 @@ msgid "BillingPlans|Upgrade"
 msgstr "升級"
 
 msgid "BillingPlans|You are currently on the %{plan_link} plan."
-msgstr "你目前正在使用方案 %{plan_link}"
+msgstr "目前使用 %{plan_link} 方案。"
 
 msgid "BillingPlans|frequently asked questions"
 msgstr "常見問題"
@@ -242,7 +242,7 @@ msgid "BillingPlans|monthly"
 msgstr "每個月"
 
 msgid "BillingPlans|paid annually at %{price_per_year}"
-msgstr "每年支付 %{price_per_year}"
+msgstr "每年收取 %{price_per_year}"
 
 msgid "BillingPlans|per user"
 msgstr "每位使用者"
@@ -288,16 +288,16 @@ msgid "Branches|Delete protected branch '%{branch_name}'?"
 msgstr "確定移除受保護的分支 %{branch_name} ？"
 
 msgid "Branches|Deleting the '%{branch_name}' branch cannot be undone. Are you sure?"
-msgstr "移除 %{branch_name} 分支將無法還原，你確定？"
+msgstr "移除 %{branch_name} 分支將無法還原，確定嗎？"
 
 msgid "Branches|Deleting the merged branches cannot be undone. Are you sure?"
 msgstr "移除已合併的分支後將無法還原。您確定要執行？"
 
 msgid "Branches|Filter by branch name"
-msgstr "按分支名稱篩選"
+msgstr "以分支名稱篩選"
 
 msgid "Branches|Merged into %{default_branch}"
-msgstr "合併到 %{default_branch}"
+msgstr "已合併至 %{default_branch}"
 
 msgid "Branches|New branch"
 msgstr "新增分支"
@@ -333,7 +333,7 @@ msgid "Branches|To confirm, type %{branch_name_confirmation}:"
 msgstr "請輸入 %{branch_name_confirmation} 以進行確認 ："
 
 msgid "Branches|To discard the local changes and overwrite the branch with the upstream version, delete it here and choose 'Update Now' above."
-msgstr "為了捨棄目前變更並使用上游版本覆蓋本分支，請先刪除並按下 \"立刻更新\"。"
+msgstr ""
 
 msgid "Branches|You’re about to permanently delete the protected branch %{branch_name}."
 msgstr "你將永久刪除受保護的 %{branch_name} 分支。"
@@ -471,7 +471,7 @@ msgid "CircuitBreakerApiLink|circuitbreaker api"
 msgstr "斷路器 (circuitbreaker) API"
 
 msgid "Clone repository"
-msgstr "克隆倉庫"
+msgstr "複製（clone）檔案庫（repository）"
 
 msgid "Close"
 msgstr "關閉"
@@ -546,13 +546,13 @@ msgid "ClusterIntegration|Number of nodes"
 msgstr "所有的端點數量"
 
 msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
-msgstr "請確認你的 Google 帳戶是否符合這些條件"
+msgstr "請確認你的 Google 帳號是否符合這些條件"
 
 msgid "ClusterIntegration|Project namespace (optional, unique)"
-msgstr "專案命名空間(選填，唯一)"
+msgstr "專案命名空間（選填，不可重複）"
 
 msgid "ClusterIntegration|Read our %{link_to_help_page} on cluster integration."
-msgstr "在叢集整合中觀看我們的%{link_to_help_page} "
+msgstr ""
 
 msgid "ClusterIntegration|Remove cluster integration"
 msgstr "刪除叢集整合"
@@ -571,7 +571,7 @@ msgid "ClusterIntegration|See machine types"
 msgstr "查看機器型別"
 
 msgid "ClusterIntegration|See your projects"
-msgstr "觀看你的專案"
+msgstr "查看您的專案"
 
 msgid "ClusterIntegration|See zones"
 msgstr "查看區域"
@@ -580,7 +580,7 @@ msgid "ClusterIntegration|Something went wrong on our end."
 msgstr "內部發生了錯誤"
 
 msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine"
-msgstr "在 Google 容器引擎上建立叢集時發生了錯誤"
+msgstr "在 Google Container Engine 上建立叢集時發生了錯誤"
 
 msgid "ClusterIntegration|Toggle Cluster"
 msgstr "叢集開關"
@@ -595,13 +595,13 @@ msgid "ClusterIntegration|Zone"
 msgstr "區域"
 
 msgid "ClusterIntegration|access to Google Container Engine"
-msgstr "存取 Google 容器引擎"
+msgstr "存取 Google Container Engine"
 
 msgid "ClusterIntegration|cluster"
 msgstr "叢集"
 
 msgid "ClusterIntegration|help page"
-msgstr "幫助頁面"
+msgstr "說明頁面"
 
 msgid "ClusterIntegration|meets the requirements"
 msgstr "符合需求"
@@ -642,7 +642,7 @@ msgid "Commits feed"
 msgstr "更動摘要 (commit feed)"
 
 msgid "Commits|History"
-msgstr "過去更動 (commit) "
+msgstr "更動紀錄 (commit)"
 
 msgid "Committed by"
 msgstr "送交者為 "
@@ -651,37 +651,37 @@ msgid "Compare"
 msgstr "比較"
 
 msgid "Container Registry"
-msgstr "容器註冊"
+msgstr "Container Registry"
 
 msgid "ContainerRegistry|Created"
 msgstr "已建立"
 
 msgid "ContainerRegistry|First log in to GitLab&rsquo;s Container Registry using your GitLab username and password. If you have %{link_2fa} you need to use a %{link_token}:"
-msgstr "首先使用你的 Gitlab 帳號與密碼來登入 Gitlab 的 Container Registry。如果你有 %{link_2fa} ，你得使用 %{link_token}:"
+msgstr "請先使用你的 Gitlab 帳號來登入 Gitlab 的 Container Registry。如果你有 %{link_2fa} ，你必須使用 %{link_token}:"
 
 msgid "ContainerRegistry|GitLab supports up to 3 levels of image names. The following examples of images are valid for your project:"
-msgstr "GitLab 支援多達3級的映像檔名稱。以下映像檔範例對您的專案有幫助:"
+msgstr "GitLab 支援多達 3 級的映像檔名稱。以下映像檔範例對您的專案有幫助："
 
 msgid "ContainerRegistry|How to use the Container Registry"
-msgstr "如何使用容器註冊"
+msgstr "如何使用 Container Registry"
 
 msgid "ContainerRegistry|Learn more about"
-msgstr "關於更多"
+msgstr "了解更多"
 
 msgid "ContainerRegistry|No tags in Container Registry for this container image."
-msgstr "在這個容器註冊中的容器圖片沒有標籤"
+msgstr "在這個 Container Registry 中不包含任何有標籤的容器映像檔"
 
 msgid "ContainerRegistry|Once you log in, you&rsquo;re free to create and upload a container image using the common %{build} and %{push} commands"
 msgstr "當您登入後，您可以透過 %{build} 和 %{push} 指令來自由建立和上傳容器映像檔 (container image)"
 
 msgid "ContainerRegistry|Remove repository"
-msgstr "刪除儲存庫"
+msgstr "刪除檔案庫（repository）"
 
 msgid "ContainerRegistry|Remove tag"
 msgstr "刪除標籤"
 
 msgid "ContainerRegistry|Size"
-msgstr "大小"
+msgstr ""
 
 msgid "ContainerRegistry|Tag"
 msgstr "標籤"
@@ -693,7 +693,7 @@ msgid "ContainerRegistry|Use different image names"
 msgstr "使用不同的映像檔名稱"
 
 msgid "ContainerRegistry|With the Docker Container Registry integrated into GitLab, every project can have its own space to store its Docker images."
-msgstr "將 Docker 容器註冊表整合到 GitLab 中，每個項目都可以有自己的空間來儲存 Docker 的映像檔"
+msgstr "將 Docker Container Registry 整合到 GitLab 中後，每個專案都可以有自己的空間來儲存 Docker 的映像檔"
 
 msgid "Contribution guide"
 msgstr "協作指南"
@@ -708,7 +708,7 @@ msgid "Control the maximum concurrency of repository backfill for this secondary
 msgstr "控制次節點 (secondary node) 同步檔案庫 (repository) 的最大並行率 (concurrency)"
 
 msgid "Copy SSH public key to clipboard"
-msgstr "複製 SSH 公鑰到剪貼簿"
+msgstr "複製 SSH 金鑰到剪貼簿"
 
 msgid "Copy URL to clipboard"
 msgstr "複製網址到剪貼簿"
@@ -729,19 +729,19 @@ msgid "Create empty bare repository"
 msgstr "建立一個新的 bare repository"
 
 msgid "Create file"
-msgstr "新建檔案"
+msgstr "新增檔案"
 
 msgid "Create merge request"
 msgstr "發出合併請求 (merge request) "
 
 msgid "Create new branch"
-msgstr "新建分支(branch)"
+msgstr "新增分支（branch）"
 
 msgid "Create new directory"
-msgstr "新建資料夾"
+msgstr "新增資料夾"
 
 msgid "Create new file"
-msgstr "新建檔案"
+msgstr "新增檔案"
 
 msgid "Create new..."
 msgstr "建立..."
@@ -765,13 +765,13 @@ msgid "Custom notification events"
 msgstr "自訂事件通知"
 
 msgid "Custom notification levels are the same as participating levels. With custom notification levels you will also receive notifications for select events. To find out more, check out %{notification_link}."
-msgstr "自訂通知層級相當於參與度設定。使用自訂通知層級，您可以只收到特定的事件通知。請參照 %{notification_link} 以獲得更多訊息。"
+msgstr "自訂通知的等級與參與度設定相同。使用自訂通知讓你只收到特定的事件通知。想了解更多資訊，請查閱 %{notification_link} 。"
 
 msgid "Cycle Analytics"
 msgstr "週期分析"
 
 msgid "Cycle Analytics gives an overview of how much time it takes to go from idea to production in your project."
-msgstr "週期分析讓您可以有效的釐清專案從發想到產品推出所花的時間長短。"
+msgstr "週期分析讓你可以有效地釐清專案從發想到產品推出所花費的時間。"
 
 msgid "CycleAnalyticsStage|Code"
 msgstr "程式開發"
@@ -817,7 +817,7 @@ msgid "Description"
 msgstr "描述"
 
 msgid "Description templates allow you to define context-specific templates for issue and merge request description fields for your project."
-msgstr "描述範本允許你為項目的議題和合併請求在建立時選擇特定的範本。"
+msgstr "描述範本 (Description templates) 讓你在建立專案的議題 (Issue) 和合併請求時可以選擇特定的範本。"
 
 msgid "Details"
 msgstr "細節"
@@ -832,7 +832,7 @@ msgid "Dismiss Cycle Analytics introduction box"
 msgstr "關閉循環分析介紹視窗"
 
 msgid "Dismiss Merge Request promotion"
-msgstr "關閉合併請求中的促銷廣告"
+msgstr ""
 
 msgid "Don't show again"
 msgstr "不再顯示"
@@ -901,7 +901,7 @@ msgid "Every week (Sundays at 4:00am)"
 msgstr "每週執行（週日淩晨 四點）"
 
 msgid "Explore projects"
-msgstr "瀏覽項目"
+msgstr "瀏覽專案"
 
 msgid "Explore public groups"
 msgstr "搜尋公開的群組"
@@ -965,7 +965,7 @@ msgid "Geo|Groups to replicate"
 msgstr "要複製的群組"
 
 msgid "Geo|Repository sync capacity"
-msgstr "儲存庫同步容量"
+msgstr "檔案庫（repository）同步量"
 
 msgid "Geo|Select groups to replicate."
 msgstr "選擇欲複製之群組。"
@@ -986,25 +986,25 @@ msgid "Google authentication is not %{link_to_documentation}. Ask your GitLab ad
 msgstr "Google 身份驗證不是 %{link_to_documentation}。如果您想使用此服務，請諮詢管理員。"
 
 msgid "GroupSettings|Prevent sharing a project within %{group} with other groups"
-msgstr "禁止與其他群組共享 %{group} 中的項目"
+msgstr "禁止與其他群組共享 %{group} 中的專案"
 
 msgid "GroupSettings|Share with group lock"
-msgstr "分享群組鎖"
+msgstr ""
 
 msgid "GroupSettings|This setting is applied on %{ancestor_group} and has been overridden on this subgroup."
-msgstr "這個設定已經套用至 %{ancestor_group}，並已經覆蓋此子組的設定。"
+msgstr "這個設定已經套用至 %{ancestor_group}，並覆蓋了它的子群組設定。"
 
 msgid "GroupSettings|This setting is applied on %{ancestor_group}. To share projects in this group with another group, ask the owner to override the setting or %{remove_ancestor_share_with_group_lock}."
-msgstr "此設定已經套用在 %{ancestor_group}。若要與其他群組共享此群組中的項目，請聯繫擁有者覆蓋這個設定或者 %{remove_ancestor_share_with_group_lock}"
+msgstr "此設定已經套用在 %{ancestor_group}。若要與其他群組共享此群組中的專案，請聯繫擁有者覆蓋這個設定或者 %{remove_ancestor_share_with_group_lock}"
 
 msgid "GroupSettings|This setting is applied on %{ancestor_group}. You can override the setting or %{remove_ancestor_share_with_group_lock}."
 msgstr "此設定已經套用至 %{ancestor_group}。你可以覆蓋此設定或是 %{remove_ancestor_share_with_group_lock}"
 
 msgid "GroupSettings|This setting will be applied to all subgroups unless overridden by a group owner. Groups that already have access to the project will continue to have access unless removed manually."
-msgstr "此設定將套用在所有子組，除非群組擁有者覆蓋。已經有權限瀏覽本項目的群組將仍可瀏覽，除非手動移除。"
+msgstr "除非群組擁有者覆蓋此設定，否則此設定將套用在所有子群組。此外，如果沒有手動移除原本已經擁有瀏覽專案權限的群組，這些群組仍可繼續瀏覽。"
 
 msgid "GroupSettings|cannot be disabled when the parent group \"Share with group lock\" is enabled, except by the owner of the parent group"
-msgstr "無法調用父組的 \"共享群組鎖\"，僅父群組的所有者才可操作。"
+msgstr "無法啟用上級群組的「共享群組鎖」。只有上級群組的所有者才可啟用。"
 
 msgid "GroupSettings|remove the share with group lock from %{ancestor_group_name}"
 msgstr "從 %{ancestor_group_name} 中移除共享群組鎖"
@@ -1013,7 +1013,7 @@ msgid "GroupsEmptyState|A group is a collection of several projects."
 msgstr "群組是數個專案的集合。"
 
 msgid "GroupsEmptyState|If you organize your projects under a group, it works like a folder."
-msgstr "當你在群組下建立一個專案，他會像檔案夾一樣運作"
+msgstr "當你在群組下建立一個專案，這個專案的運作方式就如同一個資料夾。"
 
 msgid "GroupsEmptyState|No groups found"
 msgstr "找不到群組"
@@ -1082,10 +1082,10 @@ msgid "Import repository"
 msgstr "匯入檔案庫 (repository)"
 
 msgid "Improve Issue boards with GitLab Enterprise Edition."
-msgstr "協助改進 GitLab 企業版的問題看板。"
+msgstr "協助改進 GitLab 企業版的議題看板（issue boards）"
 
 msgid "Improve issues management with Issue weight and GitLab Enterprise Edition."
-msgstr "協助改善 GitLab 企業版的問題管理與權重。"
+msgstr "協助改進 GitLab 企業版的議題管理與權重。"
 
 msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition."
 msgstr "協助改進 GitLab 企業版的搜尋 & 進階全局搜尋。"
@@ -1095,7 +1095,7 @@ msgstr "安裝與 GitLab CI 相容的 Runner"
 
 msgid "Instance"
 msgid_plural "Instances"
-msgstr[0] "實例"
+msgstr[0] "主機"
 
 msgid "Internal - The group and any internal projects can be viewed by any logged in user."
 msgstr "內部 - 任何登入的使用者都可以查看該群組及其專案"
@@ -1110,10 +1110,10 @@ msgid "Introducing Cycle Analytics"
 msgstr "週期分析簡介"
 
 msgid "Issue board focus mode"
-msgstr "問題看板模式"
+msgstr "議題看板（issue boards）模式"
 
 msgid "Issue boards with milestones"
-msgstr "問題看板 & 里程碑"
+msgstr "議題看板（issue boards）與里程碑"
 
 msgid "Issue events"
 msgstr "議題 (issue) 事件"
@@ -1147,10 +1147,10 @@ msgid "Last commit"
 msgstr "最後更動記錄 (commit) "
 
 msgid "Last edited %{date}"
-msgstr "上次編輯於 %{date}"
+msgstr "最後編輯於 %{date}"
 
 msgid "Last edited by %{name}"
-msgstr "上次編輯由 %{name}"
+msgstr "最後由 %{name} 編輯"
 
 msgid "Last update"
 msgstr "上次更新"
@@ -1193,7 +1193,7 @@ msgid "Locked"
 msgstr "鎖定"
 
 msgid "Locked Files"
-msgstr "被鎖定檔案"
+msgstr "被鎖定的檔案"
 
 msgid "Login"
 msgstr "登入"
@@ -1229,7 +1229,7 @@ msgid "More information is available|here"
 msgstr "健康檢查"
 
 msgid "Multiple issue boards"
-msgstr "多個問題看板"
+msgstr "多個議題看板 (issue boards)"
 
 msgid "New Cluster"
 msgstr "新叢集"
@@ -1275,7 +1275,7 @@ msgid "New tag"
 msgstr "新增標籤"
 
 msgid "No container images stored for this project. Add one by following the instructions above."
-msgstr "沒有為此項目增加容器映像檔。請按上述說明添加一個。"
+msgstr ""
 
 msgid "No repository"
 msgstr "找不到檔案庫 (repository)"
@@ -1353,7 +1353,7 @@ msgid "Number of access attempts"
 msgstr "嘗試存取的次數"
 
 msgid "Number of failures before backing off"
-msgstr "再回復前的所有錯誤"
+msgstr ""
 
 msgid "OfSearchInADropdown|Filter"
 msgstr "篩選"
@@ -1377,7 +1377,7 @@ msgid "Owner"
 msgstr "所有權"
 
 msgid "Pagination|Last »"
-msgstr "尾頁 »"
+msgstr "最末頁 »"
 
 msgid "Pagination|Next"
 msgstr "下一頁"
@@ -1386,13 +1386,13 @@ msgid "Pagination|Prev"
 msgstr "上一頁"
 
 msgid "Pagination|« First"
-msgstr "« 首頁"
+msgstr "« 第一頁"
 
 msgid "Password"
 msgstr "密碼"
 
 msgid "People without permission will never get a notification and won\\'t be able to comment."
-msgstr "當使用者沒有權限，將不會收到任何通知以及無法留言"
+msgstr "沒有權限的使用者將不會收到通知，也無法留言。"
 
 msgid "Pipeline"
 msgstr "流水線 (pipeline) "
@@ -1407,7 +1407,7 @@ msgid "Pipeline Schedules"
 msgstr "流水線 (pipeline) 排程"
 
 msgid "Pipeline quota"
-msgstr "流水線配額"
+msgstr "流水線額度"
 
 msgid "PipelineCharts|Failed:"
 msgstr "失敗："
@@ -1506,7 +1506,7 @@ msgid "Profile"
 msgstr "個人資料"
 
 msgid "Profiles|Account scheduled for removal."
-msgstr "帳戶將會被刪除"
+msgstr "帳號將會被刪除"
 
 msgid "Profiles|Delete Account"
 msgstr "刪除帳號"
@@ -1515,16 +1515,16 @@ msgid "Profiles|Delete account"
 msgstr "刪除帳號"
 
 msgid "Profiles|Delete your account?"
-msgstr "刪除您的帳戶？"
+msgstr "刪除您的帳號？"
 
 msgid "Profiles|Deleting an account has the following effects:"
-msgstr "刪除帳戶將會造成以下引響"
+msgstr "刪除帳號將會造成以下影響："
 
 msgid "Profiles|Invalid password"
 msgstr "無效的密碼"
 
 msgid "Profiles|Invalid username"
-msgstr "無效的用戶名"
+msgstr "無效的使用者名稱"
 
 msgid "Profiles|Type your %{confirmationValue} to confirm:"
 msgstr "輸入您的 %{confirmationValue} 以確認："
@@ -1599,16 +1599,16 @@ msgid "ProjectSettings|Contact an admin to change this setting."
 msgstr "聯絡管理員以變更設定。"
 
 msgid "ProjectSettings|Only signed commits can be pushed to this repository."
-msgstr "只有已簽署的變更才能被推送到倉庫。"
+msgstr "只有已簽章的變更才能被推送到檔案庫（repository）。"
 
 msgid "ProjectSettings|This setting is applied on the server level and can be overridden by an admin."
 msgstr "此設定已經套用於伺服器層級，並且可被管理員覆寫。"
 
 msgid "ProjectSettings|This setting is applied on the server level but has been overridden for this project."
-msgstr "此設定已經套用於伺服器級別，但已經在這個專案被覆寫。"
+msgstr "此設定已經套用至伺服器層級，但此專案使用另一個設定。"
 
 msgid "ProjectSettings|This setting will be applied to all projects unless overridden by an admin."
-msgstr "此設定將套用於所有專案，除非被管理員覆寫。"
+msgstr "此設定將套用至所有專案，除非被管理員覆寫。"
 
 msgid "ProjectSettings|Users can only push commits to this repository that were committed with one of their own verified emails."
 msgstr "使用者推送的修改 (commits) 只能使用他們自己的電子郵件。"
@@ -1737,13 +1737,13 @@ msgid "Search branches and tags"
 msgstr "搜尋分支 (branch) 和標籤"
 
 msgid "Seconds before reseting failure information"
-msgstr "重置失敗訊息等待時間(秒)"
+msgstr "重置失敗訊息等待時間（秒）"
 
 msgid "Seconds to wait after a storage failure"
 msgstr "儲存失敗後等待時間(秒)"
 
 msgid "Seconds to wait for a storage access attempt"
-msgstr "等待存取訪問嘗試時間(秒)"
+msgstr "等待存取儲存空間的嘗試時間（秒）"
 
 msgid "Select Archive Format"
 msgstr "選擇下載格式"
@@ -1776,7 +1776,7 @@ msgid "Settings"
 msgstr "設定"
 
 msgid "Show parent pages"
-msgstr "顯示父頁面"
+msgstr "顯示上層頁面"
 
 msgid "Show parent subgroups"
 msgstr "顯示群組中的子群組"
@@ -1795,19 +1795,19 @@ msgid "Something went wrong trying to change the locked state of this ${this.iss
 msgstr "有個地方出錯了，因為他嘗試去變更 ${this.issuableDisplayName(this.issuableType)} 的鎖定狀態。"
 
 msgid "Something went wrong while fetching the projects."
-msgstr "提取專案時發生錯誤。"
+msgstr "讀取專案時發生錯誤。"
 
 msgid "Something went wrong while fetching the registry list."
-msgstr "提取註冊列表時發生錯誤。"
+msgstr "讀取註冊列表時發生錯誤。"
 
 msgid "Sort by"
 msgstr "排序"
 
 msgid "SortOptions|Access level, ascending"
-msgstr "訪問級別、升冪排列"
+msgstr "存取層級，以升冪排列"
 
 msgid "SortOptions|Access level, descending"
-msgstr "訪問級別、降冪排列"
+msgstr ""
 
 msgid "SortOptions|Created date"
 msgstr "建立日期"
@@ -1828,7 +1828,7 @@ msgid "SortOptions|Largest group"
 msgstr "最大群組"
 
 msgid "SortOptions|Largest repository"
-msgstr "最大儲存庫"
+msgstr "最大檔案庫（repository）"
 
 msgid "SortOptions|Last created"
 msgstr "最近建立"
@@ -1970,7 +1970,7 @@ msgid "The number of attempts GitLab will make to access a storage."
 msgstr "GitLab 存取儲存空間的嘗試次數。"
 
 msgid "The number of failures after which GitLab will start temporarily disabling access to a storage shard on a host"
-msgstr "GitLab 禁用對主機上存儲碎片的訪問的失敗次數"
+msgstr ""
 
 msgid "The number of failures of after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
 msgstr "GitLab 將阻擋存取失敗的次數。在管理者介面中可以重置失敗次數: %{link_to_health_page} 或使用 %{api_documentation_link}。"
@@ -2021,7 +2021,7 @@ msgid "There are problems accessing Git storage: "
 msgstr "存取 Git 儲存空間時出現問題："
 
 msgid "This branch has changed since you started editing. Would you like to create a new branch?"
-msgstr "當你開始編輯後，此分支已經被更改，您想要創建一個新的分支嗎？"
+msgstr "在您編輯後，此分支已被更改，您想要建立一個新的分支嗎？"
 
 msgid "This is a confidential issue."
 msgstr "這是個隱密問題。"
@@ -2221,7 +2221,7 @@ msgid "Upgrade your plan to activate Issue weight."
 msgstr "升級您的方案以啟用問題權重。"
 
 msgid "Upgrade your plan to improve Issue boards."
-msgstr "升級您的方案以使用問題看版"
+msgstr "升級您的方案以使用議題看板（issue boards）"
 
 msgid "Upload New File"
 msgstr "上傳新檔案"
@@ -2266,7 +2266,7 @@ msgid "We don't have enough data to show this stage."
 msgstr "因該階段的資料不足而無法顯示相關資訊"
 
 msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
-msgstr "如果有新的推送或新的议题，Webhook 将自动触发您设置 URL。 您可以配置 Webhook 来监听特定事件，如推送、议题或合并请求。 群组 Webhook 将适用于团队中的所有项目，并允许您设置整个团队中的 Webhook 。"
+msgstr ""
 
 msgid "Weight"
 msgstr "權重"
@@ -2278,7 +2278,7 @@ msgid "Wiki"
 msgstr "Wiki"
 
 msgid "WikiClone|Clone your wiki"
-msgstr "克隆你的維基"
+msgstr "複製（clone）您的 Wiki"
 
 msgid "WikiClone|Git Access"
 msgstr "Git 讀取"
@@ -2293,10 +2293,10 @@ msgid "WikiClone|Start Gollum and edit locally"
 msgstr "開始你的 Gollum 並在本機編輯。"
 
 msgid "WikiEmptyPageError|You are not allowed to create wiki pages"
-msgstr "你沒有權限去建立維基頁面"
+msgstr "你沒有權限建立 Wiki 頁面"
 
 msgid "WikiHistoricalPage|This is an old version of this page."
-msgstr "這是這個頁面較舊的版本。"
+msgstr "這個頁面較舊的版本。"
 
 msgid "WikiHistoricalPage|You can view the %{most_recent_link} or browse the %{history_link}."
 msgstr "你可以查看 %{most_recent_link} 或是瀏覽 %{history_link} 。"
@@ -2344,7 +2344,7 @@ msgid "WikiPage|Page slug"
 msgstr "頁面 slug"
 
 msgid "WikiPage|Write your content or drag files here..."
-msgstr "寫上你的內容或拖曳檔案到這..."
+msgstr "填寫內容或拖曳檔案至此..."
 
 msgid "Wiki|Create Page"
 msgstr "建立頁面"
