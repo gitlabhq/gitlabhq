@@ -4,6 +4,7 @@
   import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
 
   export default {
+    name: 'HTMLViewer',
     components: {
       loadingIcon,
     },

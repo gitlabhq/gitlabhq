@@ -280,7 +280,7 @@ describe('Multi-file store file actions', () => {
       store.dispatch('getFileData', localFile)
         .then(Vue.nextTick)
         .then(() => {
-          expect(getFileHTMLSpy).toHaveBeenCalledWith(localFile);
+          expect(getFileHTMLSpy).toHaveBeenCalledWith({ file: localFile });
 
           store._actions.getFileHTML = oldGetFileHTML; // eslint-disable-line
 
