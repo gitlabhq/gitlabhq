@@ -2,8 +2,6 @@ module RendersBlob
   extend ActiveSupport::Concern
 
   def blob_viewer_json(blob)
-    blob.expand!
-
     viewer =
       case params[:viewer]
       when 'rich'

@@ -37,11 +37,7 @@ class Projects::BlobController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
-        @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
-        @last_commit = @repository.last_commit_for_path(@commit.id, @blob.path)
-
-        render 'show'
+        show_html
       end
 
       format.json do
@@ -53,6 +49,8 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def viewer
+    conditionally_expand_blob(@blob)
+
     respond_to do |format|
       format.json do
         render_blob_json(@blob)
@@ -198,5 +196,13 @@ class Projects::BlobController < Projects::ApplicationController
   def set_last_commit_sha
     @last_commit_sha = Gitlab::Git::Commit
       .last_for_path(@repository, @ref, @path).sha
+  end
+
+  def show_html
+    environment_params = @repository.branch_exists?(@ref) ? { ref: @ref } : { commit: @commit }
+    @environment = EnvironmentsFinder.new(@project, current_user, environment_params).execute.last
+    @last_commit = @repository.last_commit_for_path(@commit.id, @blob.path)
+
+    render 'show'
   end
 end
