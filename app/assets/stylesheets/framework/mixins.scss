@@ -181,42 +181,6 @@
   }
 }
 
-@mixin fade($gradient-direction, $gradient-color) {
-  visibility: hidden;
-  opacity: 0;
-  z-index: 2;
-  position: absolute;
-  bottom: 12px;
-  width: 43px;
-  height: 30px;
-  transition-duration: .3s;
-  -webkit-transform: translateZ(0);
-  background: linear-gradient(to $gradient-direction, $gradient-color 45%, rgba($gradient-color, 0.4));
-
-  &.scrolling {
-    visibility: visible;
-    opacity: 1;
-    transition-duration: .3s;
-  }
-
-  .fa {
-    position: relative;
-    top: 5px;
-    font-size: 18px;
-  }
-}
-
-@mixin scrolling-links() {
-  overflow-x: auto;
-  overflow-y: hidden;
-  -webkit-overflow-scrolling: touch;
-  display: flex;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-}
-
 @mixin triangle($color, $border-color, $size, $border-size) {
   &::before,
   &::after {
