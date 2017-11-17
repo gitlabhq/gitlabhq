@@ -139,4 +139,73 @@ describe API::Namespaces do
       end
     end
   end
+
+  describe 'GET /namespaces/:id' do
+    let(:owned_group) { group1 }
+
+    shared_examples 'namespace reader' do
+      before do
+        owned_group.add_owner(request_actor)
+      end
+
+      context 'when namespace exists' do
+        it 'returns namespace details' do
+          get api("/namespaces/#{owned_group.id}", request_actor)
+
+          expect(response).to have_gitlab_http_status(200)
+
+          expect(json_response['id']).to eq(owned_group.id)
+          expect(json_response['name']).to eq(owned_group.name)
+        end
+      end
+
+      context "when namespace doesn't exist" do
+        it 'returns not-found' do
+          get api('/namespaces/9999', request_actor)
+
+          expect(response).to have_gitlab_http_status(404)
+        end
+      end
+    end
+
+    context 'when unauthenticated' do
+      it 'returns authentication error' do
+        get api("/namespaces/#{group1.id}")
+
+        expect(response).to have_gitlab_http_status(401)
+      end
+    end
+
+    context 'when authenticated as regular user' do
+      let(:request_actor) { user }
+
+      context 'when requested namespace is not owned by user' do
+        it 'returns authentication error' do
+          get api("/namespaces/#{group2.id}", request_actor)
+
+          expect(response).to have_gitlab_http_status(403)
+        end
+      end
+
+      context 'when requested namespace is owned by user' do
+        it_behaves_like 'namespace reader'
+      end
+    end
+
+    context 'when authenticated as admin' do
+      let(:request_actor) { admin }
+
+      context 'when requested namespace is not owned by user' do
+        it 'returns authentication error' do
+          get api("/namespaces/#{group2.id}", request_actor)
+
+          expect(response).to have_gitlab_http_status(200)
+        end
+      end
+
+      context 'when requested namespace is owned by user' do
+        it_behaves_like 'namespace reader'
+      end
+    end
+  end
 end
