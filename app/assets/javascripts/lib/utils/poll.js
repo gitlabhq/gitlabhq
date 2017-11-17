@@ -3,7 +3,9 @@ import { normalizeHeaders } from './common_utils';
 
 /**
  * Polling utility for handling realtime updates.
- * Service for vue resouce and method need to be provided as props
+ * Requirements: Promise based HTTP client
+ *
+ * Service for promise based http client and method need to be provided as props
  *
  * @example
  * new Poll({
