@@ -4,14 +4,14 @@ module Gitlab
     # Exceptions
     #
 
-    AuthenticationException = Class.new(StandardError)
-    MissingTokenError = Class.new(AuthenticationException)
-    TokenNotFoundError = Class.new(AuthenticationException)
-    ExpiredError = Class.new(AuthenticationException)
-    RevokedError = Class.new(AuthenticationException)
-    UnauthorizedError = Class.new(AuthenticationException)
+    AuthenticationError = Class.new(StandardError)
+    MissingTokenError = Class.new(AuthenticationError)
+    TokenNotFoundError = Class.new(AuthenticationError)
+    ExpiredError = Class.new(AuthenticationError)
+    RevokedError = Class.new(AuthenticationError)
+    UnauthorizedError = Class.new(AuthenticationError)
 
-    class InsufficientScopeError < AuthenticationException
+    class InsufficientScopeError < AuthenticationError
       attr_reader :scopes
       def initialize(scopes)
         @scopes = scopes.map { |s| s.try(:name) || s }

@@ -58,7 +58,7 @@ describe Gitlab::Auth::RequestAuthenticator do
       expect(subject.find_sessionless_user).to be_blank
     end
 
-    it 'rescue API::APIGuard::AuthenticationException exceptions' do
+    it 'rescue Gitlab::Auth::AuthenticationError exceptions' do
       allow_any_instance_of(described_class).to receive(:find_user_from_access_token).and_raise(Gitlab::Auth::UnauthorizedError)
 
       expect(subject.find_sessionless_user).to be_blank
