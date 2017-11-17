@@ -130,7 +130,7 @@ module Gitlab
 
     config.action_view.sanitized_allowed_protocols = %w(smb)
 
-    config.middleware.insert_before Warden::Manager, Rack::Attack
+    config.middleware.insert_after Warden::Manager, Rack::Attack
 
     # Allow access to GitLab API from other domains
     config.middleware.insert_before Warden::Manager, Rack::Cors do

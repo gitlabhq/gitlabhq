@@ -431,7 +431,7 @@ module API
 
       begin
         @initial_current_user = Gitlab::Auth::UniqueIpsLimiter.limit_user! { find_current_user! }
-      rescue APIGuard::UnauthorizedError
+      rescue Gitlab::Auth::UnauthorizedError
         unauthorized!
       end
     end
