@@ -261,6 +261,12 @@ primary before the database is replicated.
    secondary node. Leave blank to replicate all. Read more in
    [selective replication](#selective-replication).
 1. Click the **Add node** button.
+1. SSH into your GitLab **primary** server and login as root to verify the
+   secondary is reachable.
+
+    ```
+    gitlab-rake gitlab:geo:check
+    ```
 
 ### Step 3. Configure the secondary server
 
