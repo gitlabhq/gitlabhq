@@ -39,7 +39,7 @@ module ChatMessage
     private
 
     def message
-      if state == 'opened'
+      if opened_issue?
         "[#{project_link}] Issue #{state} by #{user_combined_name}"
       else
         "[#{project_link}] Issue #{issue_link} #{state} by #{user_combined_name}"

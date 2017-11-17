@@ -42,8 +42,7 @@
   &.avatar-inline {
     float: none;
     display: inline-block;
-    margin-left: 4px;
-    margin-bottom: 2px;
+    margin-left: 2px;
     flex-shrink: 0;
     -webkit-flex-shrink: 0;
 
@@ -59,7 +58,7 @@
 
   &.avatar-tile {
     border-radius: 0;
-    border: none;
+    border: 0;
   }
 
   &:not([href]):hover {
@@ -96,7 +95,7 @@
 
   .avatar {
     border-radius: 0;
-    border: none;
+    border: 0;
     height: auto;
     width: 100%;
     margin: 0;

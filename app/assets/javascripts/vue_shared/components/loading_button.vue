@@ -26,9 +26,19 @@ export default {
       required: false,
       default: false,
     },
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     label: {
       type: String,
       required: false,
+    },
+    containerClass: {
+      type: String,
+      required: false,
+      default: 'btn btn-align-content',
     },
   },
   components: {
@@ -44,10 +54,10 @@ export default {
 
 <template>
   <button
-    class="btn btn-align-content"
     @click="onClick"
     type="button"
-    :disabled="loading"
+    :class="containerClass"
+    :disabled="loading || disabled"
   >
       <transition name="fade">
         <loading-icon

@@ -17,6 +17,8 @@ module Issuable
   include Importable
   include Editable
   include AfterCommitQueue
+  include Sortable
+  include CreatedAtFilterable
 
   # This object is used to gather issuable meta data for displaying
   # upvotes, downvotes, notes and closing merge requests count for issues and merge requests
@@ -253,7 +255,7 @@ module Issuable
     participants(user).include?(user)
   end
 
-  def to_hook_data(user, old_labels: [], old_assignees: [])
+  def to_hook_data(user, old_labels: [], old_assignees: [], old_total_time_spent: nil)
     changes = previous_changes
 
     if old_labels != labels
@@ -266,6 +268,10 @@ module Issuable
       else
         changes[:assignee] = [old_assignees&.first&.hook_attrs, assignee&.hook_attrs]
       end
+    end
+
+    if old_total_time_spent != total_time_spent
+      changes[:total_time_spent] = [old_total_time_spent, total_time_spent]
     end
 
     Gitlab::HookData::IssuableBuilder.new(self).build(user: user, changes: changes)

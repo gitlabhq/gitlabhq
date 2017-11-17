@@ -47,8 +47,10 @@
       },
     },
     methods: {
-      toggleMarkdownPreview() {
-        this.previewMarkdown = !this.previewMarkdown;
+      showPreviewTab() {
+        if (this.previewMarkdown) return;
+
+        this.previewMarkdown = true;
 
         /*
           Can't use `$refs` as the component is technically in the parent component
@@ -56,20 +58,22 @@
         */
         const text = this.$slots.textarea[0].elm.value;
 
-        if (!this.previewMarkdown) {
-          this.markdownPreview = '';
-        } else if (text) {
+        if (text) {
           this.markdownPreviewLoading = true;
           this.$http.post(this.markdownPreviewPath, { text })
             .then(resp => resp.json())
-            .then((data) => {
-              this.renderMarkdown(data);
-            })
+            .then(data => this.renderMarkdown(data))
             .catch(() => new Flash('Error loading markdown preview'));
         } else {
           this.renderMarkdown();
         }
       },
+
+      showWriteTab() {
+        this.markdownPreview = '';
+        this.previewMarkdown = false;
+      },
+
       renderMarkdown(data = {}) {
         this.markdownPreviewLoading = false;
         this.markdownPreview = data.body || 'Nothing to preview.';
@@ -106,7 +110,8 @@
     ref="gl-form">
     <markdown-header
       :preview-markdown="previewMarkdown"
-      @toggle-markdown="toggleMarkdownPreview" />
+      @preview-markdown="showPreviewTab"
+      @write-markdown="showWriteTab" />
     <div
       class="md-write-holder"
       v-show="!previewMarkdown">

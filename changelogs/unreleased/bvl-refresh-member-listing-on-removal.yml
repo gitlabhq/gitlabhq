@@ -1,0 +1,5 @@
+---
+title: Don't use JS to delete memberships from projects and groups
+merge_request: 15344
+author:
+type: fixed

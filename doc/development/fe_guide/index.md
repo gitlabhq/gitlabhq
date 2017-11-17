@@ -77,6 +77,8 @@ Vue resource specific practices and gotchas.
 ## [Icons](icons.md)
 How we use SVG for our Icons.
 
+## [Dropdowns](dropdowns.md)
+How we use dropdowns.
 ---
 
 ## Style Guides

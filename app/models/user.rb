@@ -146,7 +146,7 @@ class User < ActiveRecord::Base
     presence: true,
     numericality: { greater_than_or_equal_to: 0, less_than_or_equal_to: Gitlab::Database::MAX_INT_VALUE }
   validates :username,
-    dynamic_path: true,
+    user_path: true,
     presence: true,
     uniqueness: { case_sensitive: false }
 
@@ -164,12 +164,13 @@ class User < ActiveRecord::Base
   before_validation :set_notification_email, if: :email_changed?
   before_validation :set_public_email, if: :public_email_changed?
   before_save :ensure_incoming_email_token
-  before_save :ensure_user_rights_and_limits, if: :external_changed?
+  before_save :ensure_user_rights_and_limits, if: ->(user) { user.new_record? || user.external_changed? }
   before_save :skip_reconfirmation!, if: ->(user) { user.email_changed? && user.read_only_attribute?(:email) }
   before_save :check_for_verified_email, if: ->(user) { user.email_changed? && !user.new_record? }
   after_save :ensure_namespace_correct
   after_update :username_changed_hook, if: :username_changed?
   after_destroy :post_destroy_hook
+  after_destroy :remove_key_cache
   after_commit :update_emails_with_primary_email, on: :update, if: -> { previous_changes.key?('email') }
   after_commit :update_invalid_gpg_signatures, on: :update, if: -> { previous_changes.key?('email') }
 
@@ -267,18 +268,23 @@ class User < ActiveRecord::Base
       end
     end
 
+    def for_github_id(id)
+      joins(:identities)
+        .where(identities: { provider: :github, extern_uid: id.to_s })
+    end
+
     # Find a User by their primary email or any associated secondary email
     def find_by_any_email(email)
-      sql = 'SELECT *
-      FROM users
-      WHERE id IN (
-        SELECT id FROM users WHERE email = :email
-        UNION
-        SELECT emails.user_id FROM emails WHERE email = :email
-      )
-      LIMIT 1;'
+      by_any_email(email).take
+    end
 
-      User.find_by_sql([sql, { email: email }]).first
+    # Returns a relation containing all the users for the given Email address
+    def by_any_email(email)
+      users = where(email: email)
+      emails = joins(:emails).where(emails: { email: email })
+      union = Gitlab::SQL::Union.new([users, emails])
+
+      from("(#{union.to_sql}) #{table_name}")
     end
 
     def filter(filter_name)
@@ -619,7 +625,9 @@ class User < ActiveRecord::Base
   end
 
   def require_ssh_key?
-    keys.count == 0 && Gitlab::ProtocolAccess.allowed?('ssh')
+    count = Users::KeysCountService.new(self).count
+
+    count.zero? && Gitlab::ProtocolAccess.allowed?('ssh')
   end
 
   def require_password_creation?
@@ -881,6 +889,10 @@ class User < ActiveRecord::Base
     system_hook_service.execute_hooks_for(self, :destroy)
   end
 
+  def remove_key_cache
+    Users::KeysCountService.new(self).delete_cache
+  end
+
   def delete_async(deleted_by:, params: {})
     block if params[:hard_delete]
     DeleteUserWorker.perform_async(deleted_by.id, id, params)
@@ -916,7 +928,16 @@ class User < ActiveRecord::Base
   end
 
   def manageable_namespaces
-    @manageable_namespaces ||= [namespace] + owned_groups + masters_groups
+    @manageable_namespaces ||= [namespace] + manageable_groups
+  end
+
+  def manageable_groups
+    union = Gitlab::SQL::Union.new([owned_groups.select(:id),
+                                    masters_groups.select(:id)])
+    arel_union = Arel::Nodes::SqlLiteral.new(union.to_sql)
+    owned_and_master_groups = Group.where(Group.arel_table[:id].in(arel_union))
+
+    Gitlab::GroupHierarchy.new(owned_and_master_groups).base_and_descendants
   end
 
   def namespaces
@@ -1139,8 +1160,9 @@ class User < ActiveRecord::Base
       self.can_create_group = false
       self.projects_limit   = 0
     else
-      self.can_create_group = gitlab_config.default_can_create_group
-      self.projects_limit = current_application_settings.default_projects_limit
+      # Only revert these back to the default if they weren't specifically changed in this update.
+      self.can_create_group = gitlab_config.default_can_create_group unless can_create_group_changed?
+      self.projects_limit = current_application_settings.default_projects_limit unless projects_limit_changed?
     end
   end
 

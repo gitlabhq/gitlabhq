@@ -192,4 +192,13 @@ installations from source.
 
 It logs information whenever a [repository check is run][repocheck] on a project.
 
+## Reconfigure Logs
+
+Reconfigure log files live in `/var/log/gitlab/reconfigure` for Omnibus GitLab 
+packages. Installations from source don't have reconfigure logs. A reconfigure log 
+is populated whenever `gitlab-ctl reconfigure` is run manually or as part of an upgrade.
+
+Reconfigure logs files are named according to the UNIX timestamp of when the reconfigure
+was initiated, such as `1509705644.log`
+
 [repocheck]: repository_checks.md

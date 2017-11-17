@@ -396,6 +396,25 @@ describe('Filtered Search Manager', () => {
     });
   });
 
+  describe('Clearing search', () => {
+    beforeEach(() => {
+      initializeManager();
+    });
+
+    it('Clicking the "x" clear button, clears the input', () => {
+      const inputValue = 'label:~bug ';
+      manager.filteredSearchInput.value = inputValue;
+      manager.filteredSearchInput.dispatchEvent(new Event('input'));
+
+      expect(gl.DropdownUtils.getSearchQuery()).toEqual(inputValue);
+
+      manager.clearSearchButton.click();
+
+      expect(manager.filteredSearchInput.value).toEqual('');
+      expect(gl.DropdownUtils.getSearchQuery()).toEqual('');
+    });
+  });
+
   describe('toggleInputContainerFocus', () => {
     beforeEach(() => {
       initializeManager();

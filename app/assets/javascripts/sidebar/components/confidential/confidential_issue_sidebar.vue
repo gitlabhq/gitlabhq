@@ -1,10 +1,12 @@
 <script>
 import Flash from '../../../flash';
 import editForm from './edit_form.vue';
+import Icon from '../../../vue_shared/components/icon.vue';
 
 export default {
   components: {
     editForm,
+    Icon,
   },
   props: {
     isConfidential: {
@@ -26,11 +28,8 @@ export default {
     };
   },
   computed: {
-    faEye() {
-      const eye = this.isConfidential ? 'fa-eye-slash' : 'fa-eye';
-      return {
-        [eye]: true,
-      };
+    confidentialityIcon() {
+      return this.isConfidential ? 'eye-slash' : 'eye';
     },
   },
   methods: {
@@ -49,7 +48,11 @@ export default {
 <template>
   <div class="block issuable-sidebar-item confidentiality">
     <div class="sidebar-collapsed-icon">
-      <i class="fa" :class="faEye" aria-hidden="true"></i>
+      <icon
+        :name="confidentialityIcon"
+        :size="16"
+        aria-hidden="true">
+      </icon>
     </div>
     <div class="title hide-collapsed">
       Confidentiality
@@ -70,11 +73,21 @@ export default {
         :update-confidential-attribute="updateConfidentialAttribute"
       />
       <div v-if="!isConfidential" class="no-value sidebar-item-value">
-        <i class="fa fa-eye sidebar-item-icon"></i>
+        <icon
+          name="eye"
+          :size="16"
+          aria-hidden="true"
+          class="sidebar-item-icon inline">
+        </icon>
         Not confidential
       </div>
       <div v-else class="value sidebar-item-value hide-collapsed">
-        <i aria-hidden="true" class="fa fa-eye-slash sidebar-item-icon is-active"></i>
+        <icon
+          name="eye-slash"
+          :size="16"
+          aria-hidden="true"
+          class="sidebar-item-icon inline is-active">
+        </icon>
         This issue is confidential
       </div>
     </div>

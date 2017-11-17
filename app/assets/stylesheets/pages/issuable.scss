@@ -6,28 +6,20 @@
 }
 
 .issuable-warning-icon {
-  color: $orange-600;
   background-color: $orange-100;
   border-radius: $border-radius-default;
-  padding: 5px;
   margin: 0 $btn-side-margin 0 0;
   width: $issuable-warning-size;
   height: $issuable-warning-size;
   text-align: center;
 
+  .icon {
+    fill: $orange-600;
+    vertical-align: text-bottom;
+  }
+
   &:first-of-type {
     margin-right: $issuable-warning-icon-margin;
-  }
-}
-
-.sidebar-item-icon {
-  border-radius: $border-radius-default;
-  padding: 5px;
-  margin: 0 3px 0 -4px;
-
-  &.is-active {
-    color: $orange-600;
-    background-color: $orange-50;
   }
 }
 
@@ -79,7 +71,7 @@
   .title {
     padding: 0;
     margin-bottom: 16px;
-    border-bottom: none;
+    border-bottom: 0;
   }
 
   .btn-edit {
@@ -131,12 +123,12 @@
   top: $header-height;
   bottom: 0;
   right: 0;
-  transition: width .3s;
+  transition: width $right-sidebar-transition-duration;
   background: $gray-light;
   z-index: 200;
   overflow: hidden;
 
-  a,
+  a:not(.btn-retry),
   .btn-link {
     color: inherit;
   }
@@ -164,7 +156,7 @@
     }
 
     &:last-child {
-      border: none;
+      border: 0;
     }
 
     span {
@@ -338,7 +330,7 @@
     .block {
       width: $gutter_collapsed_width - 2px;
       padding: 15px 0 0;
-      border-bottom: none;
+      border-bottom: 0;
       overflow: hidden;
     }
 
@@ -399,7 +391,7 @@
       }
 
       .btn-clipboard {
-        border: none;
+        border: 0;
         color: $issuable-sidebar-color;
 
         &:hover {
@@ -613,6 +605,8 @@
   float: none;
   display: inline-block;
   margin-top: 0;
+  height: auto;
+  align-self: center;
 
   @media (max-width: $screen-xs-max) {
     position: absolute;
@@ -626,6 +620,8 @@
   padding-left: 45px;
   padding-right: 45px;
   line-height: 35px;
+  display: flex;
+  flex-grow: 1;
 
   @media (min-width: $screen-sm-min) {
     float: left;
@@ -637,11 +633,12 @@
 .issuable-actions {
   @include new-style-dropdown;
 
-  padding-top: 10px;
+  align-self: center;
+  flex-shrink: 0;
+  flex: 0 0 auto;
 
   @media (min-width: $screen-sm-min) {
     float: right;
-    padding-top: 0;
   }
 }
 
@@ -655,8 +652,9 @@
 
 .issuable-meta {
   display: inline-block;
-  line-height: 18px;
   font-size: 14px;
+  line-height: 24px;
+  align-self: center;
 }
 
 .js-issuable-selector-wrap {

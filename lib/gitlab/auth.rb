@@ -25,7 +25,7 @@ module Gitlab
         result =
           service_request_check(login, password, project) ||
           build_access_token_check(login, password) ||
-          lfs_token_check(login, password) ||
+          lfs_token_check(login, password, project) ||
           oauth_access_token_check(login, password) ||
           personal_access_token_check(password) ||
           user_with_password_for_git(login, password) ||
@@ -146,7 +146,7 @@ module Gitlab
         end.flatten.uniq
       end
 
-      def lfs_token_check(login, password)
+      def lfs_token_check(login, password, project)
         deploy_key_matches = login.match(/\Alfs\+deploy-key-(\d+)\z/)
 
         actor =
@@ -163,6 +163,8 @@ module Gitlab
         authentication_abilities =
           if token_handler.user?
             full_authentication_abilities
+          elsif token_handler.deploy_key_pushable?(project)
+            read_write_authentication_abilities
           else
             read_authentication_abilities
           end
@@ -208,10 +210,15 @@ module Gitlab
         ]
       end
 
-      def full_authentication_abilities
+      def read_write_authentication_abilities
         read_authentication_abilities + [
           :push_code,
-          :create_container_image,
+          :create_container_image
+        ]
+      end
+
+      def full_authentication_abilities
+        read_write_authentication_abilities + [
           :admin_container_image
         ]
       end

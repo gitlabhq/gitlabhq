@@ -125,7 +125,7 @@
         color: $white-normal;
       }
 
-      &:hover {
+      &:hover:not(.tree-truncated-warning) {
         td {
           background-color: $row-hover;
           border-top: 1px solid $row-hover-border;
@@ -198,6 +198,11 @@
     }
   }
 
+  .tree-truncated-warning {
+    color: $orange-600;
+    background-color: $orange-100;
+  }
+
   .tree-time-ago {
     min-width: 135px;
     color: $gl-text-color-secondary;
@@ -252,7 +257,7 @@
     margin-top: 20px;
     padding: 0;
     border-top: 1px solid $white-dark;
-    border-bottom: none;
+    border-bottom: 0;
   }
 
   .commit-stats li {

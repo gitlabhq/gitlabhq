@@ -52,6 +52,37 @@
   .label.label-gray {
     background-color: $well-expand-item;
   }
+
+  .branches {
+    display: inline;
+  }
+
+  .branch-link {
+    margin-bottom: 2px;
+  }
+
+  .limit-box {
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    background-color: $red-100;
+    border-radius: $border-radius-default;
+    text-align: center;
+
+    &:hover {
+      background-color: $red-200;
+    }
+
+    .limit-icon {
+      margin: 0 8px;
+    }
+
+    .limit-message {
+      line-height: 16px;
+      margin-right: 8px;
+      font-size: 12px;
+    }
+  }
 }
 
 .light-well {

@@ -139,7 +139,7 @@
       border-left: 1px solid $border-color;
 
       &:first-of-type {
-        border-left: none;
+        border-left: 0;
         border-top-left-radius: $border-radius-default;
       }
 
@@ -165,7 +165,7 @@
         border-bottom: 1px solid $border-color;
 
         a {
-          border: none;
+          border: 0;
           border-bottom: 2px solid $link-underline-blue;
           margin-right: 0;
           color: $black;

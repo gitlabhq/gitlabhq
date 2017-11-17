@@ -193,7 +193,7 @@ module Gitlab
           # Repository is initially cloned with a depth of 20 so we need to fetch
           # deeper in the case the branch has more than 20 commits on top of master
           fetch(branch: branch, depth: depth)
-          fetch(branch: 'master', depth: depth)
+          fetch(branch: 'master', depth: depth, remote: DEFAULT_CE_PROJECT_URL)
 
           merge_base_found?
         end
@@ -201,10 +201,10 @@ module Gitlab
       raise "\n#{branch} is too far behind master, please rebase it!\n" unless success
     end
 
-    def fetch(branch:, depth:)
+    def fetch(branch:, depth:, remote: 'origin')
       step(
         "Fetching deeper...",
-        %W[git fetch --depth=#{depth} --prune origin +refs/heads/#{branch}:refs/remotes/origin/#{branch}]
+        %W[git fetch --depth=#{depth} --prune #{remote} +refs/heads/#{branch}:refs/remotes/origin/#{branch}]
       ) do |output, status|
         raise "Fetch failed: #{output}" unless status.zero?
       end

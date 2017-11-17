@@ -249,8 +249,6 @@ module IssuablesHelper
   end
 
   def issuables_count_for_state(issuable_type, state)
-    finder = public_send("#{issuable_type}_finder") # rubocop:disable GitlabSecurity/PublicSend
-
     Gitlab::IssuablesCountForState.new(finder)[state]
   end
 

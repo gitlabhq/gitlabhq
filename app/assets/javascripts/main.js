@@ -30,7 +30,6 @@ import './commit/image_file';
 import { handleLocationHash } from './lib/utils/common_utils';
 import './lib/utils/datetime_utility';
 import './lib/utils/pretty_time';
-import './lib/utils/text_utility';
 import './lib/utils/url_utility';
 
 // behaviors
@@ -46,7 +45,6 @@ import './commits';
 import './compare';
 import './compare_autocomplete';
 import './confirm_danger_modal';
-import './copy_as_gfm';
 import './copy_to_clipboard';
 import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
@@ -71,8 +69,6 @@ import './notifications_dropdown';
 import './notifications_form';
 import './pager';
 import './preview_markdown';
-import './project';
-import './project_avatar';
 import './project_find_file';
 import './project_import';
 import './project_label_subscription';

@@ -19,7 +19,6 @@ module Gitlab
         merge_user_id
         merge_when_pipeline_succeeds
         milestone_id
-        ref_fetched
         source_branch
         source_project_id
         state
@@ -34,6 +33,7 @@ module Gitlab
       SAFE_HOOK_RELATIONS = %i[
         assignee
         labels
+        total_time_spent
       ].freeze
 
       attr_accessor :merge_request

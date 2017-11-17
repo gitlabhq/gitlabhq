@@ -331,7 +331,7 @@ ul.notes {
 
     td {
       border: 1px solid $white-normal;
-      border-left: none;
+      border-left: 0;
 
       &.notes_line {
         vertical-align: middle;
@@ -475,6 +475,10 @@ ul.notes {
   @include notes-media('max', $screen-md-max) {
     float: none;
     margin-left: 0;
+  }
+
+  .btn-group > .discussion-next-btn {
+    margin-left: -1px;
   }
 }
 
@@ -666,7 +670,7 @@ ul.notes {
     .timeline-entry-inner {
       padding-left: $gl-padding;
       padding-right: $gl-padding;
-      border-bottom: none;
+      border-bottom: 0;
     }
   }
 }
@@ -679,7 +683,7 @@ ul.notes {
   padding: 90px 0;
 
   &.discussion-locked {
-    border: none;
+    border: 0;
     background-color: $white-light;
   }
 
@@ -759,7 +763,7 @@ ul.notes {
   top: 0;
   padding: 0;
   background-color: transparent;
-  border: none;
+  border: 0;
   outline: 0;
   color: $gray-darkest;
   transition: color $general-hover-transition-duration $general-hover-transition-curve;

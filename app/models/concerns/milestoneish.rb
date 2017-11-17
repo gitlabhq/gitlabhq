@@ -86,6 +86,14 @@ module Milestoneish
     false
   end
 
+  def total_issue_time_spent
+    @total_issue_time_spent ||= issues.joins(:timelogs).sum(:time_spent)
+  end
+
+  def human_total_issue_time_spent
+    Gitlab::TimeTrackingFormatter.output(total_issue_time_spent)
+  end
+
   private
 
   def count_issues_by_state(user)

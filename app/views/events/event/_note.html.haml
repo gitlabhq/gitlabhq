@@ -10,7 +10,7 @@
 .event-body
   .event-note
     .md
-      = event_note(event.target.note, project: event.project)
+      = first_line_in_markdown(event.target, :note, 150, project: event.project)
     - note = event.target
     - if note.attachment.url
       - if note.attachment.image?

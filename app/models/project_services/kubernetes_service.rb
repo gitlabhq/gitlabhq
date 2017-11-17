@@ -136,6 +136,10 @@ class KubernetesService < DeploymentService
     { pods: read_pods }
   end
 
+  def kubeclient
+    @kubeclient ||= build_kubeclient!
+  end
+
   TEMPLATE_PLACEHOLDER = 'Kubernetes namespace'.freeze
 
   private

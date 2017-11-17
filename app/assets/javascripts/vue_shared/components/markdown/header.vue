@@ -18,23 +18,31 @@
       icon,
     },
     methods: {
-      toggleMarkdownPreview(e, form) {
-        if (form && !form.find('.js-vue-markdown-field').length) {
-          return;
-        } else if (e.target.blur) {
-          e.target.blur();
-        }
+      isMarkdownForm(form) {
+        return form && !form.find('.js-vue-markdown-field').length;
+      },
 
-        this.$emit('toggle-markdown');
+      previewMarkdownTab(event, form) {
+        if (event.target.blur) event.target.blur();
+        if (this.isMarkdownForm(form)) return;
+
+        this.$emit('preview-markdown');
+      },
+
+      writeMarkdownTab(event, form) {
+        if (event.target.blur) event.target.blur();
+        if (this.isMarkdownForm(form)) return;
+
+        this.$emit('write-markdown');
       },
     },
     mounted() {
-      $(document).on('markdown-preview:show.vue', this.toggleMarkdownPreview);
-      $(document).on('markdown-preview:hide.vue', this.toggleMarkdownPreview);
+      $(document).on('markdown-preview:show.vue', this.previewMarkdownTab);
+      $(document).on('markdown-preview:hide.vue', this.writeMarkdownTab);
     },
     beforeDestroy() {
-      $(document).on('markdown-preview:show.vue', this.toggleMarkdownPreview);
-      $(document).off('markdown-preview:hide.vue', this.toggleMarkdownPreview);
+      $(document).off('markdown-preview:show.vue', this.previewMarkdownTab);
+      $(document).off('markdown-preview:hide.vue', this.writeMarkdownTab);
     },
   };
 </script>
@@ -44,17 +52,19 @@
     <ul class="nav-links clearfix">
       <li :class="{ active: !previewMarkdown }">
         <a
+          class="js-write-link"
           href="#md-write-holder"
           tabindex="-1"
-          @click.prevent="toggleMarkdownPreview($event)">
+          @click.prevent="writeMarkdownTab($event)">
           Write
         </a>
       </li>
       <li :class="{ active: previewMarkdown }">
         <a
+          class="js-preview-link"
           href="#md-preview-holder"
           tabindex="-1"
-          @click.prevent="toggleMarkdownPreview($event)">
+          @click.prevent="previewMarkdownTab($event)">
           Preview
         </a>
       </li>

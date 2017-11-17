@@ -449,7 +449,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
       let(:repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
 
       after do
-        FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
         ensure_seeds
       end
 
@@ -484,7 +483,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
       let(:repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
 
       after do
-        FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
         ensure_seeds
       end
 
@@ -544,7 +542,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     after(:all) do
-      FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
       ensure_seeds
     end
   end
@@ -570,7 +567,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     after(:all) do
-      FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
       ensure_seeds
     end
   end
@@ -588,7 +584,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     after(:all) do
-      FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
       ensure_seeds
     end
   end
@@ -645,6 +640,21 @@ describe Gitlab::Git::Repository, seed_helper: true do
       expect(subject.first).to be_an_instance_of(Gitlab::Git::Tag)
       expect(subject.first.name).to eq('v0.0.1')
       expect(subject.first.dereferenced_target.id).to eq(target_commit_id)
+    end
+  end
+
+  describe '#remote_exists?' do
+    before(:all) do
+      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
+      @repo.add_remote("new_remote", SeedHelper::GITLAB_GIT_TEST_REPO_URL)
+    end
+
+    it 'returns true for an existing remote' do
+      expect(@repo.remote_exists?('new_remote')).to eq(true)
+    end
+
+    it 'returns false for a non-existing remote' do
+      expect(@repo.remote_exists?('foo')).to eq(false)
     end
   end
 
@@ -1107,7 +1117,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
 
       after do
-        FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
         ensure_seeds
       end
 
@@ -1154,7 +1163,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
 
       after do
-        FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
         ensure_seeds
       end
 
@@ -1404,7 +1412,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     after(:all) do
-      FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
       ensure_seeds
     end
 
@@ -1521,35 +1528,60 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe '#fetch_source_branch' do
-    let(:local_ref) { 'refs/merge-requests/1/head' }
+  describe '#fetch_source_branch!' do
+    shared_examples '#fetch_source_branch!' do
+      let(:local_ref) { 'refs/merge-requests/1/head' }
+      let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
+      let(:source_repository) { Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '') }
 
-    context 'when the branch exists' do
-      let(:source_branch) { 'master' }
-
-      it 'writes the ref' do
-        expect(repository).to receive(:write_ref).with(local_ref, /\h{40}/)
-
-        repository.fetch_source_branch(repository, source_branch, local_ref)
+      after do
+        ensure_seeds
       end
 
-      it 'returns true' do
-        expect(repository.fetch_source_branch(repository, source_branch, local_ref)).to eq(true)
+      context 'when the branch exists' do
+        context 'when the commit does not exist locally' do
+          let(:source_branch) { 'new-branch-for-fetch-source-branch' }
+          let(:source_rugged) { source_repository.rugged }
+          let(:new_oid) { new_commit_edit_old_file(source_rugged).oid }
+
+          before do
+            source_rugged.branches.create(source_branch, new_oid)
+          end
+
+          it 'writes the ref' do
+            expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to eq(true)
+            expect(repository.commit(local_ref).sha).to eq(new_oid)
+          end
+        end
+
+        context 'when the commit exists locally' do
+          let(:source_branch) { 'master' }
+          let(:expected_oid) { SeedRepo::LastCommit::ID }
+
+          it 'writes the ref' do
+            # Sanity check: the commit should already exist
+            expect(repository.commit(expected_oid)).not_to be_nil
+
+            expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to eq(true)
+            expect(repository.commit(local_ref).sha).to eq(expected_oid)
+          end
+        end
+      end
+
+      context 'when the branch does not exist' do
+        let(:source_branch) { 'definitely-not-master' }
+
+        it 'does not write the ref' do
+          expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to eq(false)
+          expect(repository.commit(local_ref)).to be_nil
+        end
       end
     end
 
-    context 'when the branch does not exist' do
-      let(:source_branch) { 'definitely-not-master' }
+    it_behaves_like '#fetch_source_branch!'
 
-      it 'does not write the ref' do
-        expect(repository).not_to receive(:write_ref)
-
-        repository.fetch_source_branch(repository, source_branch, local_ref)
-      end
-
-      it 'returns false' do
-        expect(repository.fetch_source_branch(repository, source_branch, local_ref)).to eq(false)
-      end
+    context 'without gitaly', :skip_gitaly_mock do
+      it_behaves_like '#fetch_source_branch!'
     end
   end
 
@@ -1626,7 +1658,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     after do
-      FileUtils.rm_rf(TEST_MUTABLE_REPO_PATH)
       ensure_seeds
     end
 

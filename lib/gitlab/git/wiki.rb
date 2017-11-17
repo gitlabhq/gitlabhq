@@ -48,15 +48,24 @@ module Gitlab
       end
 
       def update_page(page_path, title, format, content, commit_details)
-        assert_type!(format, Symbol)
-        assert_type!(commit_details, CommitDetails)
-
-        gollum_wiki.update_page(gollum_page_by_path(page_path), title, format, content, commit_details.to_h)
-        nil
+        @repository.gitaly_migrate(:wiki_update_page) do |is_enabled|
+          if is_enabled
+            gitaly_update_page(page_path, title, format, content, commit_details)
+            gollum_wiki.clear_cache
+          else
+            gollum_update_page(page_path, title, format, content, commit_details)
+          end
+        end
       end
 
       def pages
-        gollum_wiki.pages.map { |gollum_page| new_page(gollum_page) }
+        @repository.gitaly_migrate(:wiki_get_all_pages) do |is_enabled|
+          if is_enabled
+            gitaly_get_all_pages
+          else
+            gollum_get_all_pages
+          end
+        end
       end
 
       def page(title:, version: nil, dir: nil)
@@ -149,6 +158,14 @@ module Gitlab
         nil
       end
 
+      def gollum_update_page(page_path, title, format, content, commit_details)
+        assert_type!(format, Symbol)
+        assert_type!(commit_details, CommitDetails)
+
+        gollum_wiki.update_page(gollum_page_by_path(page_path), title, format, content, commit_details.to_h)
+        nil
+      end
+
       def gollum_find_page(title:, version: nil, dir: nil)
         if version
           version = Gitlab::Git::Commit.find(@repository, version).id
@@ -168,8 +185,16 @@ module Gitlab
         Gitlab::Git::WikiFile.new(gollum_file)
       end
 
+      def gollum_get_all_pages
+        gollum_wiki.pages.map { |gollum_page| new_page(gollum_page) }
+      end
+
       def gitaly_write_page(name, format, content, commit_details)
         gitaly_wiki_client.write_page(name, format, content, commit_details)
+      end
+
+      def gitaly_update_page(page_path, title, format, content, commit_details)
+        gitaly_wiki_client.update_page(page_path, title, format, content, commit_details)
       end
 
       def gitaly_delete_page(page_path, commit_details)
@@ -188,6 +213,12 @@ module Gitlab
         return unless wiki_file
 
         Gitlab::Git::WikiFile.new(wiki_file)
+      end
+
+      def gitaly_get_all_pages
+        gitaly_wiki_client.get_all_pages.map do |wiki_page, version|
+          Gitlab::Git::WikiPage.new(wiki_page, version)
+        end
       end
     end
   end

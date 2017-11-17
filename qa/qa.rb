@@ -18,6 +18,7 @@ module QA
     ##
     # Support files
     #
+    autoload :Bootable, 'qa/scenario/bootable'
     autoload :Actable, 'qa/scenario/actable'
     autoload :Entrypoint, 'qa/scenario/entrypoint'
     autoload :Template, 'qa/scenario/template'
@@ -61,6 +62,7 @@ module QA
 
     module Main
       autoload :Entry, 'qa/page/main/entry'
+      autoload :Login, 'qa/page/main/login'
       autoload :Menu, 'qa/page/main/menu'
     end
 

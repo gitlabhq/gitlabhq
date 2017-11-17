@@ -5,11 +5,9 @@ class Issue < ActiveRecord::Base
   include Issuable
   include Noteable
   include Referable
-  include Sortable
   include Spammable
   include FasterCacheKeys
   include RelativePositioning
-  include CreatedAtFilterable
   include TimeTrackable
 
   DueDateStruct = Struct.new(:title, :name).freeze
@@ -262,10 +260,6 @@ class Issue < ActiveRecord::Base
 
   def discussions_rendered_on_frontend?
     true
-  end
-
-  def update_project_counter_caches?
-    state_changed? || confidential_changed?
   end
 
   def update_project_counter_caches
