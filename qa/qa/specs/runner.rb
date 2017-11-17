@@ -17,7 +17,7 @@ module QA
         tags.to_a.each { |tag| args.push(['-t', tag.to_s]) }
         args.push(files)
 
-        Specs::Config.perform
+        Runtime::Browser.configure!
 
         RSpec::Core::Runner.run(args.flatten, $stderr, $stdout).tap do |status|
           abort if status.nonzero?

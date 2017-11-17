@@ -9,6 +9,7 @@ module QA
     autoload :User, 'qa/runtime/user'
     autoload :Namespace, 'qa/runtime/namespace'
     autoload :Scenario, 'qa/runtime/scenario'
+    autoload :Browser, 'qa/runtime/browser'
   end
 
   ##
