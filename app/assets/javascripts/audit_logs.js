@@ -1,9 +1,8 @@
 /* eslint-disable class-methods-use-this, no-unneeded-ternary, quote-props, no-new */
-/* global ProjectSelect */
 
 import UsersSelect from './users_select';
 import groupsSelect from './groups_select';
-import './project_select';
+import projectSelect from './project_select';
 
 class AuditLogs {
   constructor() {
@@ -11,7 +10,7 @@ class AuditLogs {
   }
 
   initFilters() {
-    new ProjectSelect();
+    projectSelect();
     groupsSelect();
     new UsersSelect();
 
