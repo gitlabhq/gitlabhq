@@ -103,13 +103,33 @@ will not be able to perform all necessary configuration steps. Refer to
     "man-in-the-middle" attackers.
 
     To do this, PostgreSQL needs to be provided with a key and certificate to
-    use. You can re-use the same files you're using for your main GitLab
-    instance, or generate a self-signed certificate just for PostgreSQL's use.
+    use. There are two options to do this:
 
-    Prefer the first option if you already have a long-lived certificate. Prefer
-    the second if your certificates expire regularly (e.g. LetsEncrypt), or if
+    **Option A**: Re-use the same files you're using for your main GitLab
+    instance.
+
+    **Option B**: Generate a self-signed certificate just for PostgreSQL's use.
+
+    Prefer option A if you already have a long-lived certificate. Prefer
+    option B if your certificates expire regularly (e.g., Let's Encrypt), or if
     PostgreSQL is running on a different server to the main GitLab services
     (this may be the case in a HA configuration, for instance).
+
+    For **Option A**:
+
+    Copy the SSL keys from your existing GitLab installation. If you're
+    re-using certificates already in GitLab, they are likely to be in the
+    `/etc/gitlab/ssl` directory. Copy them into the PostgreSQL directory via
+    this example:
+
+    ```bash
+    # Certificate and key currently used by GitLab
+    # - replace primary.geo.example.com with your domain
+    install -o gitlab-psql -g gitlab-psql -m 0400 -T /etc/gitlab/ssl/primary.geo.example.com.crt ~gitlab-psql/data/server.crt
+    install -o gitlab-psql -g gitlab-psql -m 0400 -T /etc/gitlab/ssl/primary.geo.example.com.key ~gitlab-psql/data/server.key
+    ```
+
+    For **Option B**:
 
     To generate a self-signed certificate and key, run this command:
 
@@ -122,28 +142,16 @@ will not be able to perform all necessary configuration steps. Refer to
 
     PostgreSQL's permission requirements are very strict, so whether you're
     re-using your certificates or just generated new ones, **copy** the files
-    to the correct location.
+    to the correct location:
 
-    If you're re-using certificates already in GitLab, they are likely to be in
-    the `/etc/gitlab/ssl` directory. If your domain is `primary.geo.example.com`,
-    the commands would be:
-
-    ```bash
-    # Copying a certificate and key currently used by GitLab
-    install -o gitlab-psql -g gitlab-psql -m 0400 -T /etc/gitlab/ssl/primary.geo.example.com.crt ~gitlab-psql/data/server.crt
-    install -o gitlab-psql -g gitlab-psql -m 0400 -T /etc/gitlab/ssl/primary.geo.example.com.key ~gitlab-psql/data/server.key
     ```
-
-    If you just generated a self-signed certificate and key, the files will be
-    in your current working directory, so run:
-
-    ```bash
-    # Copying a self-signed certificate and key
+    # Self-signed certificate and key
+    # - assumes the files are in your current working directory
     install -o gitlab-psql -g gitlab-psql -m 0400 -T server.crt ~gitlab-psql/data/server.crt
     install -o gitlab-psql -g gitlab-psql -m 0400 -T server.key ~gitlab-psql/data/server.key
     ```
 
-    Add this configuration to `/etc/gitlab/gitlab.rb`. Additional options are
+1.  Add this configuration to `/etc/gitlab/gitlab.rb`. Additional options are
     documented [here](http://docs.gitlab.com/omnibus/settings/database.html#enabling-ssl).
 
     ```ruby
@@ -228,7 +236,7 @@ will not be able to perform all necessary configuration steps. Refer to
     for more information.
 
 1. Check to make sure your firewall rules are set so that the secondary nodes
-   can access port 5432 on the primary node.
+   can access port `5432` on the primary node.
 1. Save the file and [reconfigure GitLab][] for the DB listen changes to take effect.
    This will fail and is expected.
 1. You will need to manually restart postgres `gitlab-ctl restart postgresql` until [Omnibus#2797](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2797) gets fixed.
@@ -236,8 +244,8 @@ will not be able to perform all necessary configuration steps. Refer to
 1. New for 9.4: Restart your primary PostgreSQL server to ensure the replication slot changes
    take effect (`sudo gitlab-ctl restart postgresql` for Omnibus-provided PostgreSQL).
 1. Now that the PostgreSQL server is set up to accept remote connections, run
-   `netstat -plnt` to make sure that PostgreSQL is listening to the server's
-   public IP.
+   `netstat -plnt` to make sure that PostgreSQL is listening on port `5432` to
+   the server's public IP.
 
 ### Step 2. Add the secondary GitLab node
 
@@ -263,24 +271,26 @@ primary before the database is replicated.
     ```
 
 1. Set up PostgreSQL TLS verification on the secondary
+
     If you configured PostgreSQL to accept TLS connections in
     [Step 1](#step-1-configure-the-primary-server), then you need to provide a
     list of "known-good" certificates to the secondary. It uses this list to
     keep the connection secure against an active "man-in-the-middle" attack.
 
     If you reused your existing certificates on the primary, you can use the
-    list of valid root certificates provided with omnibus:
+    list of valid root certificates provided with omnibus.
+
+    Or, if you generated a self-signed certificate, copy the generated
+    `server.crt` file onto the secondary server from the primary, then install
+    it in the right location.
 
     ```bash
+    # Certificate and key currently used by GitLab
     mkdir -p ~gitlab-psql/.postgresql
     ln -s /opt/gitlab/embedded/ssl/certs/cacert.pem ~gitlab-psql/.postgresql/root.crt
-    ```
 
-    If you generated a self-signed certificate, that won't work. Copy the
-    generated `server.crt` file onto the secondary server from the primary, then
-    install it in the right place:
 
-    ```bash
+    # Self-signed certificate and key
     install -o gitlab-psql -g gitlab-psql -m 0400 -T server.crt ~gitlab-psql/.postgresql/root.crt
     ```
 
@@ -290,17 +300,14 @@ primary before the database is replicated.
 
 1. Test that the remote connection to the primary server works.
 
-    If you're using a CA-issued certificate and connecting by FQDN:
+    ```
+    # Certificate and key currently used by GitLab
+    sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h primary.geo.example.com -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W
 
-     ```
-     sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h primary.geo.example.com -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W
-     ```
 
-     If you're using a self-signed certificate or connecting by IP address:
-
-     ```
-     sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h 1.2.3.4 -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-full" -W
-     ```
+    # Self-signed certificate and key
+    sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h 1.2.3.4 -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-full" -W
+    ```
 
     When prompted enter the password you set in the first step for the
     `gitlab_replicator` user. If all worked correctly, you should see the
@@ -358,7 +365,11 @@ data before running `pg_basebackup`.
 1. Execute the command below to start a backup/restore and begin the replication:
 
     ```
+    # Certificate and key currently used by GitLab
     gitlab-ctl replicate-geo-database --host=geo.primary.my.domain.com --slot-name=geo_secondary_my_domain_com
+
+    # Self-signed certificate and key
+    gitlab-ctl replicate-geo-database --host=1.2.3.4 --slot-name=geo_secondary_my_domain_com --sslmode=verify-ca
     ```
 
     If PostgreSQL is listening on a non-standard port, add `--port=` as well.

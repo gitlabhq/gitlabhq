@@ -180,9 +180,10 @@ groups to be replicated.
 
 ## Replicating wikis and repositories over SSH
 
+>**Warning:**
 In GitLab 10.2, replicating repositories and wikis over SSH was deprecated.
-Support for this option will be removed within a few releases, but if you need
-to add a new secondary in the short term, you can follow these instructions:
+Support for SSH replication will be removed in 10.3. These instructions should
+only be used if you need to add a new secondary in the short term.
 
 1. SSH into the **secondary** node and login as root:
 
@@ -192,9 +193,9 @@ to add a new secondary in the short term, you can follow these instructions:
 
 1. Add the primary's SSH key fingerprint to the `known_hosts` file.
 
-   ```bash
-     sudo -u git -H ssh git@<primary-node-url>
-   ```
+    ```bash
+    sudo -u git -H ssh git@<primary-node-url>
+    ```
 
     Replace `<primary-node-url>` with the FQDN of the primary node. You should
     manually check the displayed fingerprint against a trusted record of the
