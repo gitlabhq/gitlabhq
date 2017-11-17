@@ -1,6 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
 import { s__ } from './locale';
-/* global ProjectSelect */
+import projectSelect from './project_select';
 import IssuableIndex from './issuable_index';
 /* global Milestone */
 import IssuableForm from './issuable_form';
@@ -26,8 +26,7 @@ import projectAvatar from './project_avatar';
 /* global Compare */
 /* global CompareAutocomplete */
 /* global ProjectFindFile */
-/* global ProjectNew */
-/* global ProjectShow */
+import ProjectNew from './project_new';
 import projectImport from './project_import';
 import Labels from './labels';
 import LabelManager from './label_manager';
@@ -91,6 +90,8 @@ import Members from './members';
 import memberExpirationDate from './member_expiration_date';
 import DueDateSelectors from './due_date_select';
 import Diff from './diff';
+import ProjectLabelSubscription from './project_label_subscription';
+import ProjectVariables from './project_variables';
 
 (function() {
   var Dispatcher;
@@ -187,7 +188,7 @@ import Diff from './diff';
           initIssuableSidebar();
           break;
         case 'dashboard:milestones:index':
-          new ProjectSelect();
+          projectSelect();
           break;
         case 'projects:milestones:show':
         case 'groups:milestones:show':
@@ -197,7 +198,7 @@ import Diff from './diff';
           break;
         case 'dashboard:issues':
         case 'dashboard:merge_requests':
-          new ProjectSelect();
+          projectSelect();
           initLegacyFilters();
           break;
         case 'groups:issues':
@@ -206,7 +207,7 @@ import Diff from './diff';
             const filteredSearchManager = new gl.FilteredSearchManager(page === 'groups:issues' ? 'issues' : 'merge_requests');
             filteredSearchManager.setup();
           }
-          new ProjectSelect();
+          projectSelect();
           break;
         case 'dashboard:todos:index':
           new Todos();
@@ -484,7 +485,7 @@ import Diff from './diff';
             if ($el.find('.dropdown-group-label').length) {
               new GroupLabelSubscription($el);
             } else {
-              new gl.ProjectLabelSubscription($el);
+              new ProjectLabelSubscription($el);
             }
           });
           break;
@@ -520,7 +521,7 @@ import Diff from './diff';
           // Initialize expandable settings panels
           initSettingsPanels();
         case 'groups:settings:ci_cd:show':
-          new gl.ProjectVariables();
+          new ProjectVariables();
           break;
         case 'ci:lints:create':
         case 'ci:lints:show':
@@ -623,7 +624,6 @@ import Diff from './diff';
             case 'show':
               new Star();
               new ProjectNew();
-              new ProjectShow();
               new NotificationsDropdown();
               break;
             case 'wikis':

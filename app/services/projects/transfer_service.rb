@@ -60,15 +60,8 @@ module Projects
         # Notifications
         project.send_move_instructions(@old_path)
 
-        # Move main repository
-        # TODO: check storage type and NOOP when not using Legacy
-        unless move_repo_folder(@old_path, @new_path)
-          raise TransferError.new('Cannot move project')
-        end
-
-        # Move wiki repo also if present
-        # TODO: check storage type and NOOP when not using Legacy
-        move_repo_folder("#{@old_path}.wiki", "#{@new_path}.wiki")
+        # Directories on disk
+        move_project_folders(project)
 
         # Move missing group labels to project
         Labels::TransferService.new(current_user, @old_group, project).execute
@@ -130,6 +123,21 @@ module Projects
 
     def execute_system_hooks
       SystemHooksService.new.execute_hooks_for(project, :transfer)
+    end
+
+    def move_project_folders(project)
+      return if project.hashed_storage?(:repository)
+
+      # Move main repository
+      unless move_repo_folder(@old_path, @new_path)
+        raise TransferError.new("Cannot move project")
+      end
+
+      # Disk path is changed; we need to ensure we reload it
+      project.reload_repository!
+
+      # Move wiki repo also if present
+      move_repo_folder("#{@old_path}.wiki", "#{@new_path}.wiki")
     end
   end
 end

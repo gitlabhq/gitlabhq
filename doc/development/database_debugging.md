@@ -9,18 +9,24 @@ An easy first step is to search for your error in Slack or google "GitLab <my er
 
 Available `RAILS_ENV`
 
- - `production` (not sure if in GDK)
+ - `production` (generally not for your main GDK db, but you may need this for e.g. omnibus)
  - `development` (this is your main GDK db)
  - `test` (used for tests like rspec and spinach)
 
 
 ## Nuke everything and start over
 
-If you just want to delete everything and start over,
+If you just want to delete everything and start over with an empty DB (~1 minute):
 
- - `bundle exec rake db:drop RAILS_ENV=development`
- - `bundle exec rake db:setup RAILS_ENV=development`
+ - `bundle exec rake db:reset RAILS_ENV=development`
 
+If you just want to delete everything and start over with dummy data (~40 minutes). This also does `db:reset` and runs DB-specific migrations:
+
+ - `bundle exec rake dev:setup RAILS_ENV=development`
+
+If your test DB is giving you problems, it is safe to nuke it because it doesn't contain important data:
+
+ - `bundle exec rake db:reset RAILS_ENV=test`
 
 ## Migration wrangling
 
