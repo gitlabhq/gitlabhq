@@ -4,7 +4,6 @@
   import loadingIcon from '../../../vue_shared/components/loading_icon.vue';
 
   export default {
-    name: 'HTMLViewer',
     components: {
       loadingIcon,
     },
@@ -15,7 +14,10 @@
     },
     methods: {
       highlightFile() {
-        $(this.$el).find('.file-content').syntaxHighlight();
+        const $el = $(this.$el).find('.file-content');
+
+        $el.syntaxHighlight();
+        $el.renderGFM();
       },
     },
     mounted() {
@@ -28,6 +30,7 @@
     updated() {
       this.$nextTick(() => {
         this.highlightFile();
+        this.lineHighlighter.highlightHash();
       });
     },
   };

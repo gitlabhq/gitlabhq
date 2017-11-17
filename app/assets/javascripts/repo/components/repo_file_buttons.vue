@@ -1,14 +1,12 @@
 <script>
 import { mapGetters } from 'vuex';
-import tooltip from '../../vue_shared/directives/tooltip';
 import viewerSwitch from './blob_viewer_switch.vue';
+import sourceCopyButton from './source_copy_button.vue';
 
 export default {
-  directives: {
-    tooltip,
-  },
   components: {
     viewerSwitch,
+    sourceCopyButton,
   },
   computed: {
     ...mapGetters([
@@ -27,15 +25,6 @@ export default {
     rawDownloadButtonIcon() {
       return this.activeFile.binary ? 'fa-download' : 'fa-file-code-o';
     },
-    blobContentElementSelector() {
-      return `.blob-content[data-blob-id='${this.activeFile.id}']`;
-    },
-    copySourceButtonDisabled() {
-      return this.activeFile.currentViewer !== 'simple';
-    },
-    copySourceButtonTitle() {
-      return this.activeFile.currentViewer !== 'simple' ? 'Switch to source to copy it to clipboard' : 'Copy source to clipboard';
-    },
   },
 };
 </script>
@@ -52,25 +41,9 @@ export default {
       class="btn-group"
       role="group"
     >
-      <button
-        v-tooltip
+      <source-copy-button
         v-if="canActiveFileSwitchViewer"
-        type="button"
-        class="btn btn-default btn-sm"
-        :class="{
-          disabled: copySourceButtonDisabled,
-        }"
-        :title="copySourceButtonTitle"
-        :aria-label="copySourceButtonTitle"
-        data-container="body"
-       :data-clipboard-target="blobContentElementSelector"
-      >
-        <i
-          aria-hidden="true"
-          class="fa fa-clipboard"
-        >
-        </i>
-      </button>
+      />
       <a
         :href="activeFile.rawPath"
         target="_blank"

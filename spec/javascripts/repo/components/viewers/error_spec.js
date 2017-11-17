@@ -15,7 +15,11 @@ describe('Multi-file editor error viewer', () => {
     Object.assign(f, {
       active: true,
       rawPath: 'rawPath',
-      rich: Object.assign(f.rich, { name: 'image', renderError: 'it is too large' }),
+      rich: Object.assign(f.rich, {
+        name: 'image',
+        renderErrorReason: 'it is too large',
+        renderError: 'collapsed',
+      }),
     });
 
     vm = createComponentWithStore(Comp, store);
@@ -34,18 +38,80 @@ describe('Multi-file editor error viewer', () => {
 
   it('renders error message', () => {
     expect(
-      vm.$el.textContent.trim(),
+      vm.$el.textContent.replace(/\s+/g, ' ').trim(),
     ).toContain('The image could not be displayed because it is too large');
   });
 
   it('renders download link', () => {
-    const link = vm.$el.querySelector('a');
+    expect(
+      vm.$el.textContent.trim(),
+    ).toContain('download it');
+  });
 
-    expect(
-      link.textContent.trim(),
-    ).toBe('download it');
-    expect(
-      link.getAttribute('href'),
-    ).toBe('rawPath');
+  describe('collapsed', () => {
+    beforeEach(() => {
+      spyOn(vm, 'getFileHTML');
+    });
+
+    it('calls getFileHTML with expanded when clicking load anyway link', () => {
+      vm.$el.querySelector('a').click();
+
+      expect(vm.getFileHTML).toHaveBeenCalledWith({
+        file: f,
+        expanded: true,
+      });
+    });
+  });
+
+  describe('too_large', () => {
+    beforeEach((done) => {
+      f.simple.name = 'text';
+      f.rich.renderError = 'too_large';
+
+      spyOn(vm, 'changeFileViewer');
+
+      Vue.nextTick(done);
+    });
+
+    it('renders view source link', () => {
+      expect(
+        vm.$el.querySelector('a').textContent.trim(),
+      ).toBe('view the source');
+    });
+
+    it('calls changeFileViewer with simple type', () => {
+      vm.$el.querySelector('a').click();
+
+      expect(vm.changeFileViewer).toHaveBeenCalledWith({
+        file: f,
+        type: 'simple',
+      });
+    });
+  });
+
+  describe('server_side_but_stored_externally', () => {
+    beforeEach((done) => {
+      f.simple.name = 'text';
+      f.rich.renderError = 'server_side_but_stored_externally';
+
+      spyOn(vm, 'changeFileViewer');
+
+      Vue.nextTick(done);
+    });
+
+    it('renders view source link', () => {
+      expect(
+        vm.$el.querySelector('a').textContent.trim(),
+      ).toBe('view the source');
+    });
+
+    it('calls changeFileViewer with simple type', () => {
+      vm.$el.querySelector('a').click();
+
+      expect(vm.changeFileViewer).toHaveBeenCalledWith({
+        file: f,
+        type: 'simple',
+      });
+    });
   });
 });

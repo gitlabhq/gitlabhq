@@ -10,6 +10,9 @@
       ...mapGetters([
         'activeFile',
       ]),
+      displayTooltip() {
+        return `Display ${this.activeFile.simple.switcherTitle}`;
+      },
     },
     methods: {
       ...mapActions([
@@ -31,7 +34,7 @@
       :class="{
         active: activeFile.currentViewer === 'simple',
       }"
-      title="Display source"
+      :title="displayTooltip"
       data-container="body"
       @click="changeFileViewer({ file: activeFile, type: 'simple' })"
     >

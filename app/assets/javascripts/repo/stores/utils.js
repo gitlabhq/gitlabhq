@@ -4,7 +4,9 @@ export const viewerDataStructure = () => ({
   icon: '',
   html: '',
   name: '',
+  switcherTitle: '',
   serverRender: true,
+  renderErrorReason: '',
   renderError: '',
 });
 
@@ -143,7 +145,9 @@ export const createViewerStructure = (file, type, data) => {
       icon: viewerData.switcher_icon,
       name: viewerData.name,
       serverRender: viewerData.server_side,
-      renderError: viewerData.render_error_reason,
+      switcherTitle: viewerData.switcher_title,
+      renderError: viewerData.render_error,
+      renderErrorReason: viewerData.render_error_reason,
     });
   }
 };

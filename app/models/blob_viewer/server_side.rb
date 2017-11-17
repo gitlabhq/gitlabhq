@@ -4,8 +4,8 @@ module BlobViewer
 
     included do
       self.load_async = true
-      self.collapse_limit = 2.megabytes
-      self.size_limit = 5.megabytes
+      self.collapse_limit = 1.byte
+      self.size_limit = 1.megabyte
     end
 
     def prepare!

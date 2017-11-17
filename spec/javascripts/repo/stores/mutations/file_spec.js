@@ -224,4 +224,19 @@ describe('Multi-file store file mutations', () => {
       expect(f.rich.loading).toBeFalsy();
     });
   });
+
+  describe('RESET_VIEWER_RENDER_ERROR', () => {
+    it('resets render error and render error reason', () => {
+      const f = file();
+      Object.assign(f.rich, {
+        renderError: 'error',
+        renderErrorReason: 'error',
+      });
+
+      mutations.RESET_VIEWER_RENDER_ERROR(localState, f.rich);
+
+      expect(f.rich.renderError).toBe('');
+      expect(f.rich.renderErrorReason).toBe('');
+    });
+  });
 });

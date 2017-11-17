@@ -455,9 +455,9 @@ describe('Multi-file store file actions', () => {
       });
 
       it('calls service', (done) => {
-        store.dispatch('getFileHTML', localFile)
+        store.dispatch('getFileHTML', { file: localFile })
           .then(() => {
-            expect(service.getFileHTML).toHaveBeenCalledWith('richPath');
+            expect(service.getFileHTML).toHaveBeenCalledWith('richPath', false);
 
             done();
           }).catch(done.fail);
@@ -466,7 +466,7 @@ describe('Multi-file store file actions', () => {
       it('does not call service if already has HTML', (done) => {
         localFile.rich.html = 'testing';
 
-        store.dispatch('getFileHTML', localFile)
+        store.dispatch('getFileHTML', { file: localFile })
           .then(() => {
             expect(service.getFileHTML).not.toHaveBeenCalled();
 
@@ -475,7 +475,7 @@ describe('Multi-file store file actions', () => {
       });
 
       it('sets viewer as loading', (done) => {
-        store.dispatch('getFileHTML', localFile)
+        store.dispatch('getFileHTML', { file: localFile })
           .then(() => {
             expect(localFile.rich.loading).toBeTruthy();
 
@@ -489,10 +489,44 @@ describe('Multi-file store file actions', () => {
       });
 
       it('updates file data', (done) => {
-        store.dispatch('getFileHTML', localFile)
+        store.dispatch('getFileHTML', { file: localFile })
           .then(Vue.nextTick)
           .then(() => {
             expect(localFile.rich.html).toBe('fileHTML');
+
+            done();
+          }).catch(done.fail);
+      });
+
+      it('does not call service if file has renderError', (done) => {
+        localFile.rich.renderError = 'error';
+
+        store.dispatch('getFileHTML', { file: localFile })
+          .then(() => {
+            expect(service.getFileHTML).not.toHaveBeenCalled();
+
+            done();
+          }).catch(done.fail);
+      });
+
+      it('calls service if file has renderError and expanded is true', (done) => {
+        localFile.rich.renderError = 'error';
+
+        store.dispatch('getFileHTML', { file: localFile, expanded: true })
+          .then(() => {
+            expect(service.getFileHTML).toHaveBeenCalled();
+
+            done();
+          }).catch(done.fail);
+      });
+
+      it('resets renderError if expanded is true', (done) => {
+        localFile.rich.renderError = 'error';
+
+        store.dispatch('getFileHTML', { file: localFile, expanded: true })
+          .then(Vue.nextTick)
+          .then(() => {
+            expect(localFile.rich.renderError).not.toBe('error');
 
             done();
           }).catch(done.fail);
@@ -547,7 +581,7 @@ describe('Multi-file store file actions', () => {
         file: localFile,
         type: 'simple',
       }).then(() => {
-        expect(getFileHTMLSpy).toHaveBeenCalledWith(localFile);
+        expect(getFileHTMLSpy).toHaveBeenCalledWith({ file: localFile });
 
         done();
       }).catch(done.fail);

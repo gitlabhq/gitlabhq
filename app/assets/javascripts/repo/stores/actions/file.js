@@ -64,7 +64,7 @@ export const getFileData = ({ state, commit, dispatch, getters }, file) => {
       dispatch('setFileActive', file);
       commit(types.TOGGLE_LOADING, file);
 
-      dispatch('getFileHTML', getters.activeFile);
+      dispatch('getFileHTML', { file: getters.activeFile });
 
       pushState(file.url);
     })
@@ -111,14 +111,18 @@ export const createTempFile = ({ state, commit, dispatch }, { tree, name, conten
   return Promise.resolve(file);
 };
 
-export const getFileHTML = ({ commit, getters }, file) => {
+export const getFileHTML = ({ commit, getters }, { file, expanded = false }) => {
   const currentViewer = getters.activeFileCurrentViewer;
+
+  if (expanded) {
+    commit(types.RESET_VIEWER_RENDER_ERROR, currentViewer);
+  }
 
   if (getters.canRenderLocally) return;
 
   commit(types.TOGGLE_FILE_VIEWER_LOADING, currentViewer);
 
-  service.getFileHTML(currentViewer.path)
+  service.getFileHTML(currentViewer.path, expanded)
     .then(res => res.json())
     .then((data) => {
       commit(types.TOGGLE_FILE_VIEWER_LOADING, currentViewer);
@@ -134,5 +138,5 @@ export const changeFileViewer = ({ commit, dispatch }, { file, type }) => {
   if (file.currentViewer === type) return;
 
   commit(types.SET_CURRENT_FILE_VIEWER, { file, type });
-  dispatch('getFileHTML', file);
+  dispatch('getFileHTML', { file });
 };

@@ -73,4 +73,10 @@ export default {
       loading: !viewer.loading,
     });
   },
+  [types.RESET_VIEWER_RENDER_ERROR](sstate, viewer) {
+    Object.assign(viewer, {
+      renderError: '',
+      renderErrorReason: '',
+    });
+  },
 };
