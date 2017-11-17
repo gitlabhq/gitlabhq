@@ -66,7 +66,6 @@ module QA
     autoload :Base, 'qa/page/base'
 
     module Main
-      autoload :Entry, 'qa/page/main/entry'
       autoload :Login, 'qa/page/main/login'
       autoload :Menu, 'qa/page/main/menu'
       autoload :OAuth, 'qa/page/main/oauth'
