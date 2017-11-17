@@ -39,7 +39,7 @@ module API
 
     # Helper Methods for Grape Endpoint
     module HelperMethods
-      include Gitlab::Utils::StrongMemoize
+      include Gitlab::Auth::UserAuthFinders
 
       def find_current_user!
         user = find_user_from_access_token || find_user_from_warden
@@ -48,25 +48,6 @@ module API
         forbidden!('User is blocked') unless Gitlab::UserAccess.new(user).allowed? && user.can?(:access_api)
 
         user
-      end
-
-      def access_token
-        strong_memoize(:access_token) do
-          find_oauth_access_token || find_personal_access_token
-        end
-      end
-
-      def validate_access_token!(scopes: [])
-        return unless access_token
-
-        case AccessTokenValidationService.new(access_token, request: request).validate(scopes: scopes)
-        when AccessTokenValidationService::INSUFFICIENT_SCOPE
-          raise InsufficientScopeError.new(scopes)
-        when AccessTokenValidationService::EXPIRED
-          raise ExpiredError
-        when AccessTokenValidationService::REVOKED
-          raise RevokedError
-        end
       end
 
       private
