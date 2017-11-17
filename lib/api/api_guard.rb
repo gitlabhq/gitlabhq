@@ -6,11 +6,6 @@ module API
   module APIGuard
     extend ActiveSupport::Concern
 
-    PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN".freeze
-    PRIVATE_TOKEN_PARAM = :private_token
-    JOB_TOKEN_HEADER = "HTTP_JOB_TOKEN".freeze
-    JOB_TOKEN_PARAM = :job_token
-
     included do |base|
       # OAuth2 Resource Server Authentication
       use Rack::OAuth2::Server::Resource::Bearer, 'The API' do |request|
@@ -44,6 +39,8 @@ module API
 
     # Helper Methods for Grape Endpoint
     module HelperMethods
+      include Gitlab::Auth::UserAuthFinders
+
       def find_current_user!
         user = find_user_from_access_token || find_user_from_job_token || find_user_from_warden
         return unless user
@@ -53,95 +50,7 @@ module API
         user
       end
 
-      def access_token
-        return @access_token if defined?(@access_token)
-
-        @access_token = find_oauth_access_token || find_personal_access_token
-      end
-
-      def validate_access_token!(scopes: [])
-        return unless access_token
-
-        case AccessTokenValidationService.new(access_token, request: request).validate(scopes: scopes)
-        when AccessTokenValidationService::INSUFFICIENT_SCOPE
-          raise InsufficientScopeError.new(scopes)
-        when AccessTokenValidationService::EXPIRED
-          raise ExpiredError
-        when AccessTokenValidationService::REVOKED
-          raise RevokedError
-        end
-      end
-
       private
-
-      def find_user_from_access_token
-        return unless access_token
-
-        validate_access_token!
-
-        access_token.user || raise(UnauthorizedError)
-      end
-
-      def find_user_from_job_token
-        return unless route_authentication_setting[:job_token_allowed]
-
-        token = (params[JOB_TOKEN_PARAM] || env[JOB_TOKEN_HEADER]).to_s
-        return unless token.present?
-
-        job = Ci::Build.find_by(token: token)
-        raise UnauthorizedError unless job
-
-        @job_token_authentication = true
-
-        job.user
-      end
-
-      # Check the Rails session for valid authentication details
-      def find_user_from_warden
-        warden.try(:authenticate) if verified_request?
-      end
-
-      def warden
-        env['warden']
-      end
-
-      # Check if the request is GET/HEAD, or if CSRF token is valid.
-      def verified_request?
-        Gitlab::RequestForgeryProtection.verified?(env)
-      end
-
-      def route_authentication_setting
-        return {} unless respond_to?(:route_setting)
-
-        route_setting(:authentication) || {}
-      end
-
-      def find_oauth_access_token
-        token = Doorkeeper::OAuth::Token.from_request(doorkeeper_request, *Doorkeeper.configuration.access_token_methods)
-        return unless token
-
-        # Expiration, revocation and scopes are verified in `find_user_by_access_token`
-        access_token = OauthAccessToken.by_token(token)
-        raise UnauthorizedError unless access_token
-
-        access_token.revoke_previous_refresh_token!
-        access_token
-      end
-
-      def find_personal_access_token
-        token = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
-        return unless token.present?
-
-        # Expiration, revocation and scopes are verified in `find_user_by_access_token`
-        access_token = PersonalAccessToken.find_by(token: token)
-        raise UnauthorizedError unless access_token
-
-        access_token
-      end
-
-      def doorkeeper_request
-        @doorkeeper_request ||= ActionDispatch::Request.new(env)
-      end
 
       # An array of scopes that were registered (using `allow_access_with_scope`)
       # for the current endpoint class. It also returns scopes registered on
@@ -165,8 +74,11 @@ module API
       private
 
       def install_error_responders(base)
-        error_classes = [MissingTokenError, TokenNotFoundError,
-                         ExpiredError, RevokedError, InsufficientScopeError]
+        error_classes = [Gitlab::Auth::MissingTokenError,
+                         Gitlab::Auth::TokenNotFoundError,
+                         Gitlab::Auth::ExpiredError,
+                         Gitlab::Auth::RevokedError,
+                         Gitlab::Auth::InsufficientScopeError]
 
         base.__send__(:rescue_from, *error_classes, oauth2_bearer_token_error_handler) # rubocop:disable GitlabSecurity/PublicSend
       end
@@ -175,25 +87,25 @@ module API
         proc do |e|
           response =
             case e
-            when MissingTokenError
+            when Gitlab::Auth::MissingTokenError
               Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new
 
-            when TokenNotFoundError
+            when Gitlab::Auth::TokenNotFoundError
               Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new(
                 :invalid_token,
                 "Bad Access Token.")
 
-            when ExpiredError
+            when Gitlab::Auth::ExpiredError
               Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new(
                 :invalid_token,
                 "Token is expired. You can either do re-authorization or token refresh.")
 
-            when RevokedError
+            when Gitlab::Auth::RevokedError
               Rack::OAuth2::Server::Resource::Bearer::Unauthorized.new(
                 :invalid_token,
                 "Token was revoked. You have to re-authorize from the user.")
 
-            when InsufficientScopeError
+            when Gitlab::Auth::InsufficientScopeError
               # FIXME: ForbiddenError (inherited from Bearer::Forbidden of Rack::Oauth2)
               # does not include WWW-Authenticate header, which breaks the standard.
               Rack::OAuth2::Server::Resource::Bearer::Forbidden.new(
@@ -204,23 +116,6 @@ module API
 
           response.finish
         end
-      end
-    end
-
-    #
-    # Exceptions
-    #
-
-    MissingTokenError = Class.new(StandardError)
-    TokenNotFoundError = Class.new(StandardError)
-    ExpiredError = Class.new(StandardError)
-    RevokedError = Class.new(StandardError)
-    UnauthorizedError = Class.new(StandardError)
-
-    class InsufficientScopeError < StandardError
-      attr_reader :scopes
-      def initialize(scopes)
-        @scopes = scopes.map { |s| s.try(:name) || s }
       end
     end
   end

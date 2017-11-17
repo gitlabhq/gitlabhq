@@ -13,6 +13,7 @@ describe EE::API::Helpers do
     }
   end
   let(:header) { }
+  let(:request) { Grape::Request.new(env)}
 
   before do
     allow(Gitlab::Database::LoadBalancing).to receive(:enable?).and_return(true)

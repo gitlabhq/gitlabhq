@@ -11,8 +11,7 @@ class ApplicationController < ActionController::Base
   include EnforcesTwoFactorAuthentication
   include WithPerformanceBar
 
-  before_action :authenticate_user_from_personal_access_token!
-  before_action :authenticate_user_from_rss_token!
+  before_action :authenticate_sessionless_user!
   before_action :authenticate_user!
   before_action :validate_user_service_ticket!
   before_action :check_password_expiration
@@ -100,27 +99,11 @@ class ApplicationController < ActionController::Base
     return try(:authenticated_user)
   end
 
-  def authenticate_user_from_personal_access_token!
-    token = params[:private_token].presence || request.headers['PRIVATE-TOKEN'].presence
+  # This filter handles personal access tokens, and atom requests with rss tokens
+  def authenticate_sessionless_user!
+    user = Gitlab::Auth::RequestAuthenticator.new(request).find_sessionless_user
 
-    return unless token.present?
-
-    user = User.find_by_personal_access_token(token)
-
-    sessionless_sign_in(user)
-  end
-
-  # This filter handles authentication for atom request with an rss_token
-  def authenticate_user_from_rss_token!
-    return unless request.format.atom?
-
-    token = params[:rss_token].presence
-
-    return unless token.present?
-
-    user = User.find_by_rss_token(token)
-
-    sessionless_sign_in(user)
+    sessionless_sign_in(user) if user
   end
 
   def verify_namespace_plan_check_enabled
