@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Geo::HashedStorageMigrationService do
-  let(:project) { create(:project, :repository, :hashed) }
+  let(:project) { create(:project, :repository) }
   let(:old_path) { project.full_path }
   let(:new_path) { "#{old_path}+renamed" }
 
@@ -38,6 +38,8 @@ describe Geo::HashedStorageMigrationService do
     end
 
     it 'does not move project backed by hashed storage' do
+      project = create(:project, :repository, :hashed)
+
       service = described_class.new(
         project.id,
         old_disk_path: project.full_path,
