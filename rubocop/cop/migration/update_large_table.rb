@@ -12,12 +12,12 @@ module RuboCop
       #
       # See https://gitlab.com/gitlab-com/infrastructure/issues/1602 for more
       # information.
-      class AddColumnWithDefaultToLargeTable < RuboCop::Cop::Cop
+      class UpdateLargeTable < RuboCop::Cop::Cop
         include MigrationHelpers
 
-        MSG = 'Using `add_column_with_default` on the `%s` table will take a ' \
-          'long time to complete, and should be avoided unless absolutely ' \
-          'necessary'.freeze
+        MSG = 'Using `%s` on the `%s` table will take a long time to ' \
+              'complete, and should be avoided unless absolutely ' \
+              'necessary'.freeze
 
         LARGE_TABLES = %i[
           ci_pipelines
@@ -34,20 +34,22 @@ module RuboCop
           users
         ].freeze
 
-        def_node_matcher :add_column_with_default?, <<~PATTERN
-          (send nil :add_column_with_default $(sym ...) ...)
+        def_node_matcher :batch_update?, <<~PATTERN
+          (send nil ${:add_column_with_default :update_column_in_batches} $(sym ...) ...)
         PATTERN
 
         def on_send(node)
           return unless in_migration?(node)
 
-          matched = add_column_with_default?(node)
-          return unless matched
+          matches = batch_update?(node)
+          return unless matches
 
-          table = matched.to_a.first
+          update_method = matches.first
+          table = matches.last.to_a.first
+
           return unless LARGE_TABLES.include?(table)
 
-          add_offense(node, :expression, format(MSG, table))
+          add_offense(node, :expression, format(MSG, update_method, table))
         end
       end
     end

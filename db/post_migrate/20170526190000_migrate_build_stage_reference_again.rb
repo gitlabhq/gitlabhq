@@ -1,3 +1,4 @@
+# rubocop:disable Migration/UpdateLargeTable
 class MigrateBuildStageReferenceAgain < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

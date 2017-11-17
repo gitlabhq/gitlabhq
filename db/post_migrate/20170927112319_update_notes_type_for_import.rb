@@ -1,3 +1,4 @@
+# rubocop:disable Migration/UpdateLargeTable
 class UpdateNotesTypeForImport < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
