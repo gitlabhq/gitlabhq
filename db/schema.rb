@@ -140,6 +140,15 @@ ActiveRecord::Schema.define(version: 20171114104051) do
     t.integer "circuitbreaker_storage_timeout", default: 30
     t.integer "circuitbreaker_access_retries", default: 3
     t.integer "circuitbreaker_backoff_threshold", default: 80
+    t.boolean "throttle_unauthenticated_enabled", default: false, null: false
+    t.integer "throttle_unauthenticated_requests_per_period", default: 3600, null: false
+    t.integer "throttle_unauthenticated_period_in_seconds", default: 3600, null: false
+    t.boolean "throttle_authenticated_api_enabled", default: false, null: false
+    t.integer "throttle_authenticated_api_requests_per_period", default: 7200, null: false
+    t.integer "throttle_authenticated_api_period_in_seconds", default: 3600, null: false
+    t.boolean "throttle_authenticated_web_enabled", default: false, null: false
+    t.integer "throttle_authenticated_web_requests_per_period", default: 7200, null: false
+    t.integer "throttle_authenticated_web_period_in_seconds", default: 3600, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
