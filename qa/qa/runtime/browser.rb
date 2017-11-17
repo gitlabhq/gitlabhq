@@ -3,37 +3,45 @@ require 'capybara/rspec'
 require 'capybara-screenshot/rspec'
 require 'selenium-webdriver'
 
-# rubocop:disable Metrics/MethodLength
-# rubocop:disable Metrics/LineLength
-
 module QA
-  module Specs
-    class Config < Scenario::Template
-      include Scenario::Actable
+  module Runtime
+    module Browser
+      extend self
 
-      def perform
-        configure_rspec!
-        configure_capybara!
-      end
+      def session(address, &block)
+        configure!
+        page.visit(address)
 
-      def configure_rspec!
-        RSpec.configure do |config|
-          config.expect_with :rspec do |expectations|
-            expectations.include_chain_clauses_in_custom_matcher_descriptions = true
-          end
+        block.call(page)
 
-          config.mock_with :rspec do |mocks|
-            mocks.verify_partial_doubles = true
-          end
-
-          config.order = :random
-          Kernel.srand config.seed
-          config.formatter = :documentation
-          config.color = true
+        page.visit(address)
+        reset_domain_session!
+      rescue
+        # RSpec examples will take care of screenshots on their own
+        #
+        unless block.binding.receiver.class < RSpec::Core::ExampleGroup
+          Capybara::Screenshot.screenshot_and_save_page
         end
+
+        raise
       end
 
-      def configure_capybara!
+      def page
+        Capybara.current_session
+      end
+
+      def reset_domain_session(address)
+        ##
+        # Selenium allows to reset session cookies for current domain only.
+        #
+        # See gitlab-org/gitlab-qa#102
+        #
+        Capybar.reset_session!
+      end
+
+      def configure!
+        return if Capybara.drivers.include?(:chrome)
+
         Capybara.register_driver :chrome do |app|
           capabilities = Selenium::WebDriver::Remote::Capabilities.chrome(
             'chromeOptions' => {
@@ -52,8 +60,7 @@ module QA
         Capybara.configure do |config|
           config.default_driver = :chrome
           config.javascript_driver = :chrome
-          config.default_max_wait_time = 10
-
+          config.default_max_wait_time = 4
           # https://github.com/mattheworiordan/capybara-screenshot/issues/164
           config.save_path = 'tmp'
         end
