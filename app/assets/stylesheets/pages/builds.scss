@@ -49,6 +49,7 @@
     font-size: 12px;
     border-radius: 0;
     border: 0;
+    padding: $grid-size;
 
     .bash {
       display: block;
@@ -57,14 +58,13 @@
 
   .top-bar {
     height: 35px;
-    justify-content: flex-end;
     background: $gray-light;
     border: 1px solid $border-color;
     color: $gl-text-color;
     position: sticky;
     position: -webkit-sticky;
     top: $header-height;
-    padding: 6px 10px;
+    padding: $grid-size;
 
     &.affix {
       top: $header-height;
@@ -115,7 +115,11 @@
 
       .controllers-buttons {
         color: $gl-text-color;
-        margin: 0 10px;
+        margin: 0 $grid-size;
+
+        &:last-child {
+          margin-right: 0;
+        }
       }
 
       .btn-scroll.animate {
