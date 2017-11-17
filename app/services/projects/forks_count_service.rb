@@ -1,6 +1,6 @@
 module Projects
   # Service class for getting and caching the number of forks of a project.
-  class ForksCountService < CountService
+  class ForksCountService < Projects::CountService
     def relation_for_count
       @project.forks
     end

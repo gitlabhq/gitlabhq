@@ -1,0 +1,5 @@
+---
+title: Don't try to create fork network memberships for forks with a missing source
+merge_request: 15366
+author:
+type: fixed

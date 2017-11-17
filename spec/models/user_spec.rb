@@ -804,7 +804,7 @@ describe User do
       end
     end
 
-    describe '#require_ssh_key?' do
+    describe '#require_ssh_key?', :use_clean_rails_memory_store_caching do
       protocol_and_expectation = {
         'http' => false,
         'ssh' => true,
@@ -818,6 +818,12 @@ describe User do
 
           expect(user.require_ssh_key?).to eq(expected)
         end
+      end
+
+      it 'returns false when the user has 1 or more SSH keys' do
+        key = create(:personal_key)
+
+        expect(key.user.require_ssh_key?).to eq(false)
       end
     end
   end
@@ -1149,16 +1155,9 @@ describe User do
     let(:user) { create(:user, :with_avatar) }
 
     context 'when avatar file is uploaded' do
-      let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
-      let(:avatar_path) { "/uploads/-/system/user/avatar/#{user.id}/dk.png" }
-
       it 'shows correct avatar url' do
-        expect(user.avatar_url).to eq(avatar_path)
-        expect(user.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
-
-        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-
-        expect(user.avatar_url).to eq([gitlab_host, avatar_path].join)
+        expect(user.avatar_url).to eq(user.avatar.url)
+        expect(user.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, user.avatar.url].join)
       end
     end
   end
