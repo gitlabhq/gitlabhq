@@ -136,7 +136,7 @@ module Geo
       if started_at
         attrs["last_#{type}_synced_at"] = started_at
         attrs["#{type}_retry_count"] = retry_count + 1
-        attrs["#{type}_retry_at"] = Time.now + delay(attrs["#{type}_retry_count"]).seconds
+        attrs["#{type}_retry_at"] = next_retry_time(attrs["#{type}_retry_count"])
       end
 
       if finished_at
@@ -209,6 +209,15 @@ module Geo
       unless gitlab_shell.mv_repository(project.repository_storage_path, disk_path_temp, repository.disk_path)
         raise Gitlab::Shell::Error, 'Can not move temporary repository'
       end
+    end
+
+    # To prevent the retry time from storing invalid dates in the database,
+    # cap the max time to a week plus some random jitter value.
+    def next_retry_time(retry_count)
+      proposed_time = Time.now + delay(retry_count).seconds
+      max_future_time = Time.now + 7.days + delay(1).seconds
+
+      [proposed_time, max_future_time].min
     end
   end
 end
