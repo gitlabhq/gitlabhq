@@ -173,9 +173,12 @@ build-package:
     # We need to download the script rather than clone the repo since the
     # review-docs-cleanup job will not be able to run when the branch gets
     # deleted (when merging the MR).
-    - apk add --update openssl
+    - apk add --update openssl git
     - wget https://gitlab.com/gitlab-org/gitlab-ce/raw/master/scripts/trigger-build-docs
     - chmod 755 trigger-build-docs
+    # Temporary hack for https://gitlab.com/gitlab-org/gitlab-ce/issues/40263
+    - echo "gem 'gitlab', :git => 'https://github.com/nolith/gitlab.git', :branch => '338-user-agent'" > Gemfile
+    - bundle install
   cache: {}
   dependencies: []
   variables:
