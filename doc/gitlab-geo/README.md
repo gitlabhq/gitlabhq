@@ -180,9 +180,14 @@ Read how to [update your Geo nodes to the latest GitLab version](updating_the_ge
 ## Current limitations
 
 - You cannot push code to secondary nodes
-- The primary node has to be online for OAuth login to happen (existing sessions and Git are not affected)
-- It works for repos, wikis, issues, and merge requests, but not for job logs,
-  artifacts, and Docker images of the Container Registry
+- The primary node has to be online for OAuth login to happen (existing
+  sessions and Git are not affected)
+- It works for repos, wikis, issues, and merge requests
+- It does not work for job logs, artifacts, Docker images of the Container
+  Registry, and GitLab Pages
+- It does not work for attachments uploaded before GitLab 9.0 because they will
+  not present in the uploads table, until
+  [#29249](https://gitlab.com/gitlab-org/gitlab-ce/issues/29240) is fixed.
 
 ## Frequently Asked Questions
 
