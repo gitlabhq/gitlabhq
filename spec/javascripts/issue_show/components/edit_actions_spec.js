@@ -61,6 +61,15 @@ describe('Edit Actions components', () => {
     });
   });
 
+  it('should not show delete button if showDeleteButton is false', (done) => {
+    vm.showDeleteButton = false;
+
+    Vue.nextTick(() => {
+      expect(vm.$el.querySelector('.btn-danger')).toBeNull();
+      done();
+    });
+  });
+
   describe('updateIssuable', () => {
     it('sends update.issauble event when clicking save button', () => {
       vm.$el.querySelector('.btn-save').click();

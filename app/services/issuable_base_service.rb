@@ -172,6 +172,7 @@ class IssuableBaseService < BaseService
     old_labels = issuable.labels.to_a
     old_mentioned_users = issuable.mentioned_users.to_a
     old_assignees = issuable.assignees.to_a
+    old_total_time_spent = issuable.total_time_spent
 
     label_ids = process_label_ids(params, existing_label_ids: issuable.label_ids)
     params[:label_ids] = label_ids if labels_changing?(issuable.label_ids, label_ids)
@@ -187,7 +188,7 @@ class IssuableBaseService < BaseService
 
       # We have to perform this check before saving the issuable as Rails resets
       # the changed fields upon calling #save.
-      update_project_counters = issuable.project && issuable.update_project_counter_caches?
+      update_project_counters = issuable.project && update_project_counter_caches?(issuable)
 
       if issuable.with_transaction_returning_status { issuable.save }
         # We do not touch as it will affect a update on updated_at field
@@ -208,7 +209,12 @@ class IssuableBaseService < BaseService
         invalidate_cache_counts(issuable, users: affected_assignees.compact)
         after_update(issuable)
         issuable.create_new_cross_references!(current_user)
-        execute_hooks(issuable, 'update', old_labels: old_labels, old_assignees: old_assignees)
+        execute_hooks(
+          issuable,
+          'update',
+          old_labels: old_labels,
+          old_assignees: old_assignees,
+          old_total_time_spent: old_total_time_spent)
 
         issuable.update_project_counter_caches if update_project_counters
       end
@@ -287,5 +293,9 @@ class IssuableBaseService < BaseService
 
   # override if needed
   def execute_hooks(issuable, action = 'open', params = {})
+  end
+
+  def update_project_counter_caches?(issuable)
+    issuable.state_changed?
   end
 end

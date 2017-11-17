@@ -42,6 +42,21 @@ describe AutocompleteUsersFinder do
       it { is_expected.to match_array([user1]) }
     end
 
+    context 'when passed a subgroup', :nested_groups do
+      let(:grandparent) { create(:group, :public) }
+      let(:parent) { create(:group, :public, parent: grandparent) }
+      let(:child) { create(:group, :public, parent: parent) }
+      let(:group) { parent }
+
+      let!(:grandparent_user) { create(:group_member, :developer, group: grandparent).user }
+      let!(:parent_user) { create(:group_member, :developer, group: parent).user }
+      let!(:child_user) { create(:group_member, :developer, group: child).user }
+
+      it 'includes users from parent groups as well' do
+        expect(subject).to match_array([grandparent_user, parent_user])
+      end
+    end
+
     it { is_expected.to match_array([user1, external_user, omniauth_user, current_user]) }
 
     context 'when filtered by search' do

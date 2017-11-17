@@ -61,8 +61,6 @@
     "three-orbit-controls": "^82.1.0",
     "three-stl-loader": "^1.0.4",
     "timeago.js": "^2.0.5",
-    "ts-loader": "^3.1.1",
-    "typescript": "^2.6.1",
     "underscore": "^1.8.3",
     "url-loader": "^0.5.8",
     "visibilityjs": "^1.2.4",
@@ -76,6 +74,7 @@
     "webpack-stats-plugin": "^0.1.5"
   },
   "devDependencies": {
+    "@gitlab-org/gitlab-svgs": "^1.0.2",
     "babel-plugin-istanbul": "^4.0.0",
     "eslint": "^3.10.1",
     "eslint-config-airbnb-base": "^10.0.1",
@@ -84,7 +83,6 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jasmine": "^2.1.0",
     "eslint-plugin-promise": "^3.5.0",
-    "gitlab-svgs": "https://gitlab.com/gitlab-org/gitlab-svgs.git",
     "istanbul": "^0.4.5",
     "jasmine-core": "^2.6.3",
     "jasmine-jquery": "^2.1.1",

@@ -2,16 +2,8 @@
   export default {
     name: 'PipelineNavigationTabs',
     props: {
-      scope: {
-        type: String,
-        required: true,
-      },
-      count: {
-        type: Object,
-        required: true,
-      },
-      paths: {
-        type: Object,
+      tabs: {
+        type: Array,
         required: true,
       },
     },
@@ -23,68 +15,37 @@
         // 0 is valid in a badge, but evaluates to false, we need to check for undefined
         return count !== undefined;
       },
+
+      onTabClick(tab) {
+        this.$emit('onChangeTab', tab.scope);
+      },
     },
 };
 </script>
 <template>
   <ul class="nav-links scrolling-tabs">
     <li
-      class="js-pipelines-tab-all"
-      :class="{ active: scope === 'all'}">
-      <a :href="paths.allPath">
-        All
+      v-for="(tab, i) in tabs"
+      :key="i"
+      :class="{
+        active: tab.isActive,
+      }"
+      >
+      <a
+        role="button"
+        @click="onTabClick(tab)"
+        :class="`js-pipelines-tab-${tab.scope}`"
+        >
+        {{ tab.name }}
+
         <span
-          v-if="shouldRenderBadge(count.all)"
-          class="badge js-totalbuilds-count">
-          {{count.all}}
+          v-if="shouldRenderBadge(tab.count)"
+          class="badge"
+          >
+          {{tab.count}}
         </span>
+
       </a>
-    </li>
-    <li
-      class="js-pipelines-tab-pending"
-      :class="{ active: scope === 'pending'}">
-      <a :href="paths.pendingPath">
-        Pending
-        <span
-          v-if="shouldRenderBadge(count.pending)"
-          class="badge">
-          {{count.pending}}
-        </span>
-      </a>
-    </li>
-    <li
-      class="js-pipelines-tab-running"
-      :class="{ active: scope === 'running'}">
-      <a :href="paths.runningPath">
-        Running
-        <span
-          v-if="shouldRenderBadge(count.running)"
-          class="badge">
-          {{count.running}}
-        </span>
-      </a>
-    </li>
-    <li
-      class="js-pipelines-tab-finished"
-      :class="{ active: scope === 'finished'}">
-      <a :href="paths.finishedPath">
-        Finished
-        <span
-          v-if="shouldRenderBadge(count.finished)"
-          class="badge">
-          {{count.finished}}
-        </span>
-      </a>
-    </li>
-    <li
-      class="js-pipelines-tab-branches"
-      :class="{ active: scope === 'branches'}">
-      <a :href="paths.branchesPath">Branches</a>
-    </li>
-    <li
-      class="js-pipelines-tab-tags"
-      :class="{ active: scope === 'tags'}">
-      <a :href="paths.tagsPath">Tags</a>
     </li>
   </ul>
 </template>

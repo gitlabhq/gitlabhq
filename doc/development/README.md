@@ -22,6 +22,7 @@ comments: false
 
 - [UX guide](ux_guide/index.md) for building GitLab with existing CSS styles and elements
 - [Frontend guidelines](fe_guide/index.md)
+- [Emoji guide](fe_guide/emojis.md)
 
 ## Backend guides
 
@@ -37,6 +38,7 @@ comments: false
 - [Gotchas](gotchas.md) to avoid
 - [Issue and merge requests state models](object_state_models.md)
 - [How to dump production data to staging](db_dump.md)
+- [Working with the GitHub importer](github_importer.md)
 
 ## Performance guides
 
@@ -69,6 +71,7 @@ comments: false
 - [Iterating tables in batches](iterating_tables_in_batches.md)
 - [Ordering table columns](ordering_table_columns.md)
 - [Verifying database capabilities](verifying_database_capabilities.md)
+- [Database Debugging and Troubleshooting](database_debugging.md)
 
 ## Testing guides
 

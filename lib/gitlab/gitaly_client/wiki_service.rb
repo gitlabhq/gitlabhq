@@ -37,6 +37,31 @@ module Gitlab
         end
       end
 
+      def update_page(page_path, title, format, content, commit_details)
+        request = Gitaly::WikiUpdatePageRequest.new(
+          repository: @gitaly_repo,
+          page_path: GitalyClient.encode(page_path),
+          title: GitalyClient.encode(title),
+          format: format.to_s,
+          commit_details: gitaly_commit_details(commit_details)
+        )
+
+        strio = StringIO.new(content)
+
+        enum = Enumerator.new do |y|
+          until strio.eof?
+            chunk = strio.read(MAX_MSG_SIZE)
+            request.content = GitalyClient.encode(chunk)
+
+            y.yield request
+
+            request = Gitaly::WikiUpdatePageRequest.new
+          end
+        end
+
+        GitalyClient.call(@repository.storage, :wiki_service, :wiki_update_page, enum)
+      end
+
       def delete_page(page_path, commit_details)
         request = Gitaly::WikiDeletePageRequest.new(
           repository: @gitaly_repo,
@@ -56,28 +81,23 @@ module Gitlab
         )
 
         response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_find_page, request)
-        wiki_page = version = nil
 
-        response.each do |message|
-          page = message.page
-          next unless page
+        wiki_page_from_iterator(response)
+      end
 
-          if wiki_page
-            wiki_page.raw_data << page.raw_data
-          else
-            wiki_page = GitalyClient::WikiPage.new(page.to_h)
-            # All gRPC strings in a response are frozen, so we get
-            # an unfrozen version here so appending in the else clause below doesn't blow up.
-            wiki_page.raw_data = wiki_page.raw_data.dup
+      def get_all_pages
+        request = Gitaly::WikiGetAllPagesRequest.new(repository: @gitaly_repo)
+        response = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_all_pages, request)
+        pages = []
 
-            version = Gitlab::Git::WikiPageVersion.new(
-              Gitlab::Git::Commit.decorate(@repository, page.version.commit),
-              page.version.format
-            )
-          end
+        loop do
+          page, version = wiki_page_from_iterator(response) { |message| message.end_of_page }
+
+          break unless page && version
+          pages << [page, version]
         end
 
-        [wiki_page, version]
+        pages
       end
 
       def find_file(name, revision)
@@ -107,6 +127,35 @@ module Gitlab
       end
 
       private
+
+      # If a block is given and the yielded value is true, iteration will be
+      # stopped early at that point; else the iterator is consumed entirely.
+      # The iterator is traversed with `next` to allow resuming the iteration.
+      def wiki_page_from_iterator(iterator)
+        wiki_page = version = nil
+
+        while message = iterator.next
+          break if block_given? && yield(message)
+
+          page = message.page
+          next unless page
+
+          if wiki_page
+            wiki_page.raw_data << page.raw_data
+          else
+            wiki_page = GitalyClient::WikiPage.new(page.to_h)
+
+            version = Gitlab::Git::WikiPageVersion.new(
+              Gitlab::Git::Commit.decorate(@repository, page.version.commit),
+              page.version.format
+            )
+          end
+        end
+
+        [wiki_page, version]
+      rescue StopIteration
+        [wiki_page, version]
+      end
 
       def gitaly_commit_details(commit_details)
         Gitaly::WikiCommitDetails.new(

@@ -1042,6 +1042,11 @@ module API
       expose :value
     end
 
+    class PagesDomainCertificateExpiration < Grape::Entity
+      expose :expired?, as: :expired
+      expose :expiration
+    end
+
     class PagesDomainCertificate < Grape::Entity
       expose :subject
       expose :expired?, as: :expired
@@ -1049,12 +1054,23 @@ module API
       expose :certificate_text
     end
 
+    class PagesDomainBasic < Grape::Entity
+      expose :domain
+      expose :url
+      expose :certificate,
+        as: :certificate_expiration,
+        if: ->(pages_domain, _) { pages_domain.certificate? },
+        using: PagesDomainCertificateExpiration do |pages_domain|
+        pages_domain
+      end
+    end
+
     class PagesDomain < Grape::Entity
       expose :domain
       expose :url
       expose :certificate,
-             if: ->(pages_domain, _) { pages_domain.certificate? },
-             using: PagesDomainCertificate do |pages_domain|
+        if: ->(pages_domain, _) { pages_domain.certificate? },
+        using: PagesDomainCertificate do |pages_domain|
         pages_domain
       end
     end

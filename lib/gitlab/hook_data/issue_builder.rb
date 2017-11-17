@@ -4,7 +4,6 @@ module Gitlab
       SAFE_HOOK_ATTRIBUTES = %i[
         assignee_id
         author_id
-        branch_name
         closed_at
         confidential
         created_at
@@ -29,6 +28,7 @@ module Gitlab
       SAFE_HOOK_RELATIONS = %i[
         assignees
         labels
+        total_time_spent
       ].freeze
 
       attr_accessor :issue

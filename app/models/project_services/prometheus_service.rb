@@ -25,7 +25,7 @@ class PrometheusService < MonitoringService
   end
 
   def description
-    'Prometheus monitoring'
+    s_('PrometheusService|Prometheus monitoring')
   end
 
   def self.to_param
@@ -38,8 +38,8 @@ class PrometheusService < MonitoringService
         type: 'text',
         name: 'api_url',
         title: 'API URL',
-        placeholder: 'Prometheus API Base URL, like http://prometheus.example.com/',
-        help: 'By default, Prometheus listens on ‘http://localhost:9090’. It’s not recommended to change the default address and port as this might affect or conflict with other services running on the GitLab server.',
+        placeholder: s_('PrometheusService|Prometheus API Base URL, like http://prometheus.example.com/'),
+        help: s_('PrometheusService|By default, Prometheus listens on ‘http://localhost:9090’. It’s not recommended to change the default address and port as this might affect or conflict with other services running on the GitLab server.'),
         required: true
       }
     ]

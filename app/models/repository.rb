@@ -973,6 +973,10 @@ class Repository
     raw_repository.fetch_source_branch!(source_repository.raw_repository, source_branch, local_ref)
   end
 
+  def remote_exists?(name)
+    raw_repository.remote_exists?(name)
+  end
+
   def compare_source_branch(target_branch_name, source_repository, source_branch_name, straight:)
     raw_repository.compare_source_branch(target_branch_name, source_repository.raw_repository, source_branch_name, straight: straight)
   end
@@ -1056,6 +1060,10 @@ class Repository
 
   def gitlab_ci_yml_for(sha, path = '.gitlab-ci.yml')
     blob_data_at(sha, path)
+  end
+
+  def fetch_ref(source_repository, source_ref:, target_ref:)
+    raw_repository.fetch_ref(source_repository.raw_repository, source_ref: source_ref, target_ref: target_ref)
   end
 
   private

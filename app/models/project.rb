@@ -365,6 +365,7 @@ class Project < ActiveRecord::Base
   scope :abandoned, -> { where('projects.last_activity_at < ?', 6.months.ago) }
 
   scope :excluding_project, ->(project) { where.not(id: project) }
+  scope :import_started, -> { where(import_status: 'started') }
 
   state_machine :import_status, initial: :none do
     event :import_schedule do
@@ -701,10 +702,6 @@ class Project < ActiveRecord::Base
 
   def gitea_import?
     import_type == 'gitea'
-  end
-
-  def github_import?
-    import_type == 'github'
   end
 
   def check_limit
@@ -1050,6 +1047,18 @@ class Project < ActiveRecord::Base
     forked_from_project || fork_network&.root_project
   end
 
+  def lfs_storage_project
+    @lfs_storage_project ||= begin
+      result = self
+
+      # TODO: Make this go to the fork_network root immeadiatly
+      # dependant on the discussion in: https://gitlab.com/gitlab-org/gitlab-ce/issues/39769
+      result = result.fork_source while result&.forked?
+
+      result || self
+    end
+  end
+
   def personal?
     !group
   end
@@ -1192,6 +1201,10 @@ class Project < ActiveRecord::Base
 
   def repository_exists?
     !!repository.exists?
+  end
+
+  def wiki_repository_exists?
+    wiki.repository_exists?
   end
 
   # update visibility_level of forks
@@ -1435,6 +1448,31 @@ class Project < ActiveRecord::Base
     SystemHooksService.new.execute_hooks_for(self, :rename)
 
     reload_repository!
+  end
+
+  def after_import
+    repository.after_import
+    import_finish
+    remove_import_jid
+    update_project_counter_caches
+  end
+
+  def update_project_counter_caches
+    classes = [
+      Projects::OpenIssuesCountService,
+      Projects::OpenMergeRequestsCountService
+    ]
+
+    classes.each do |klass|
+      klass.new(self).refresh_cache
+    end
+  end
+
+  def remove_import_jid
+    return unless import_jid
+
+    Gitlab::SidekiqStatus.unset(import_jid)
+    update_column(:import_jid, nil)
   end
 
   def running_or_pending_build_count(force: false)
@@ -1692,6 +1730,17 @@ class Project < ActiveRecord::Base
 
   def reference_counter(wiki: false)
     Gitlab::ReferenceCounter.new(gl_repository(is_wiki: wiki))
+  end
+
+  # Refreshes the expiration time of the associated import job ID.
+  #
+  # This method can be used by asynchronous importers to refresh the status,
+  # preventing the StuckImportJobsWorker from marking the import as failed.
+  def refresh_import_jid_expiration
+    return unless import_jid
+
+    Gitlab::SidekiqStatus
+      .set(import_jid, StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION)
   end
 
   private

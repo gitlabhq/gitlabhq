@@ -1,0 +1,5 @@
+---
+title: Update container repository path reference and allow using double underscore
+merge_request: 15417
+author:
+type: fixed

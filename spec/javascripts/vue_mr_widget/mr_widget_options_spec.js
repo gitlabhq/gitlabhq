@@ -1,16 +1,9 @@
 import Vue from 'vue';
-import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 import mrWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import eventHub from '~/vue_merge_request_widget/event_hub';
 import notify from '~/lib/utils/notify';
 import mockData from './mock_data';
-
-const createComponent = () => {
-  delete mrWidgetOptions.el; // Prevent component mounting
-  gl.mrWidgetData = mockData;
-  const Component = Vue.extend(mrWidgetOptions);
-  return new Component();
-};
+import mountComponent from '../helpers/vue_mount_component_helper';
 
 const returnPromise = data => new Promise((resolve) => {
   resolve({
@@ -23,9 +16,16 @@ const returnPromise = data => new Promise((resolve) => {
 
 describe('mrWidgetOptions', () => {
   let vm;
+  let MrWidgetOptions;
 
   beforeEach(() => {
-    vm = createComponent();
+    // Prevent component mounting
+    delete mrWidgetOptions.el;
+
+    MrWidgetOptions = Vue.extend(mrWidgetOptions);
+    vm = mountComponent(MrWidgetOptions, {
+      mrData: { ...mockData },
+    });
   });
 
   describe('data', () => {
@@ -78,7 +78,7 @@ describe('mrWidgetOptions', () => {
       });
 
       it('should return true if there is relatedLinks in MR', () => {
-        vm.mr.relatedLinks = {};
+        Vue.set(vm.mr, 'relatedLinks', {});
         expect(vm.shouldRenderRelatedLinks).toBeTruthy();
       });
     });
@@ -314,28 +314,6 @@ describe('mrWidgetOptions', () => {
 
         vm.stopPolling();
         expect(vm.pollingInterval.stopTimer).toHaveBeenCalled();
-      });
-    });
-
-    describe('createService', () => {
-      it('should instantiate a Service', () => {
-        const endpoints = {
-          mergePath: '/nice/path',
-          mergeCheckPath: '/nice/path',
-          cancelAutoMergePath: '/nice/path',
-          removeWIPPath: '/nice/path',
-          sourceBranchPath: '/nice/path',
-          ciEnvironmentsStatusPath: '/nice/path',
-          statusPath: '/nice/path',
-          mergeActionsContentPath: '/nice/path',
-        };
-
-        const serviceInstance = vm.createService(endpoints);
-        const isInstanceOfMRService = serviceInstance instanceof MRWidgetService;
-        expect(isInstanceOfMRService).toBe(true);
-        Object.keys(serviceInstance).forEach((key) => {
-          expect(serviceInstance[key]).toBeDefined();
-        });
       });
     });
   });

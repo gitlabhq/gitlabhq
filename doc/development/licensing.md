@@ -4,11 +4,11 @@ GitLab CE is licensed under the terms of the MIT License. GitLab EE is licensed 
 
 ## Automated Testing
 
-In order to comply with the terms the libraries we use are licensed under, we have to make sure to check new gems for compatible licenses whenever they're added. To automate this process, we use the [license_finder][license_finder] gem by Pivotal. It runs every time a new commit is pushed and verifies that all gems in the bundle use a license that doesn't conflict with the licensing of either GitLab Community Edition or GitLab Enterprise Edition.
+In order to comply with the terms the libraries we use are licensed under, we have to make sure to check new gems for compatible licenses whenever they're added. To automate this process, we use the [license_finder][license_finder] gem by Pivotal. It runs every time a new commit is pushed and verifies that all gems and node modules in the bundle use a license that doesn't conflict with the licensing of either GitLab Community Edition or GitLab Enterprise Edition.
 
-There are some limitations with the automated testing, however. CSS and JavaScript libraries, as well as any Ruby libraries not included by way of Bundler, must be verified manually and independently. Take care whenever one such library is used, as automated tests won't catch problematic licenses from them.
+There are some limitations with the automated testing, however. CSS, JavaScript, or Ruby libraries which are not included by way of Bundler, NPM, or Yarn (for instance those manually copied into our source tree in the `vendor` directory), must be verified manually and independently. Take care whenever one such library is used, as automated tests won't catch problematic licenses from them.
 
-Some gems may not include their license information in their `gemspec` file. These won't be detected by License Finder, and will have to be verified manually.
+Some gems may not include their license information in their `gemspec` file, and some node modules may not include their license information in their `package.json` file. These won't be detected by License Finder, and will have to be verified manually.
 
 ### License Finder commands
 

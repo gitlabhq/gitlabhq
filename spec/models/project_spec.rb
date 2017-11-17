@@ -883,20 +883,14 @@ describe Project do
 
     context 'when avatar file is uploaded' do
       let(:project) { create(:project, :public, :with_avatar) }
-      let(:avatar_path) { "/uploads/-/system/project/avatar/#{project.id}/dk.png" }
-      let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
 
       it 'shows correct url' do
-        expect(project.avatar_url).to eq(avatar_path)
-        expect(project.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
-
-        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-
-        expect(project.avatar_url).to eq([gitlab_host, avatar_path].join)
+        expect(project.avatar_url).to eq(project.avatar.url)
+        expect(project.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, project.avatar.url].join)
       end
     end
 
-    context 'When avatar file in git' do
+    context 'when avatar file in git' do
       before do
         allow(project).to receive(:avatar_in_git) { true }
       end
@@ -1942,6 +1936,24 @@ describe Project do
         forked_project.destroy
 
         expect(second_fork.fork_source).to eq(project)
+      end
+    end
+
+    describe '#lfs_storage_project' do
+      it 'returns self for non-forks' do
+        expect(project.lfs_storage_project).to eq project
+      end
+
+      it 'returns the fork network root for forks' do
+        second_fork = fork_project(forked_project)
+
+        expect(second_fork.lfs_storage_project).to eq project
+      end
+
+      it 'returns self when fork_source is nil' do
+        expect(forked_project).to receive(:fork_source).and_return(nil)
+
+        expect(forked_project.lfs_storage_project).to eq forked_project
       end
     end
   end
@@ -3014,6 +3026,79 @@ describe Project do
         expect(project.latest_successful_pipeline_for_default_branch)
           .to eq(pipeline)
       end
+    end
+  end
+
+  describe '#after_import' do
+    let(:project) { build(:project) }
+
+    it 'runs the correct hooks' do
+      expect(project.repository).to receive(:after_import)
+      expect(project).to receive(:import_finish)
+      expect(project).to receive(:update_project_counter_caches)
+      expect(project).to receive(:remove_import_jid)
+
+      project.after_import
+    end
+  end
+
+  describe '#update_project_counter_caches' do
+    let(:project) { create(:project) }
+
+    it 'updates all project counter caches' do
+      expect_any_instance_of(Projects::OpenIssuesCountService)
+        .to receive(:refresh_cache)
+        .and_call_original
+
+      expect_any_instance_of(Projects::OpenMergeRequestsCountService)
+        .to receive(:refresh_cache)
+        .and_call_original
+
+      project.update_project_counter_caches
+    end
+  end
+
+  describe '#remove_import_jid', :clean_gitlab_redis_cache do
+    let(:project) {  }
+
+    context 'without an import JID' do
+      it 'does nothing' do
+        project = create(:project)
+
+        expect(Gitlab::SidekiqStatus)
+          .not_to receive(:unset)
+
+        project.remove_import_jid
+      end
+    end
+
+    context 'with an import JID' do
+      it 'unsets the import JID' do
+        project = create(:project, import_jid: '123')
+
+        expect(Gitlab::SidekiqStatus)
+          .to receive(:unset)
+          .with('123')
+          .and_call_original
+
+        project.remove_import_jid
+
+        expect(project.import_jid).to be_nil
+      end
+    end
+  end
+
+  describe '#wiki_repository_exists?' do
+    it 'returns true when the wiki repository exists' do
+      project = create(:project, :wiki_repo)
+
+      expect(project.wiki_repository_exists?).to eq(true)
+    end
+
+    it 'returns false when the wiki repository does not exist' do
+      project = create(:project)
+
+      expect(project.wiki_repository_exists?).to eq(false)
     end
   end
 end

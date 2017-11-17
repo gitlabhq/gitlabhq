@@ -36,6 +36,11 @@
         type: String,
         required: true,
       },
+      showDeleteButton: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
     components: {
       lockedWarning,
@@ -81,6 +86,7 @@
       :markdown-docs-path="markdownDocsPath" />
     <edit-actions
       :form-state="formState"
-      :can-destroy="canDestroy" />
+      :can-destroy="canDestroy"
+      :show-delete-button="showDeleteButton" />
   </form>
 </template>

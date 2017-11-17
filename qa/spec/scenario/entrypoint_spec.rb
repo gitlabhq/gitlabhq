@@ -6,31 +6,30 @@ describe QA::Scenario::Entrypoint do
   end
 
   context '#perform' do
-    let(:config) { spy('Specs::Config') }
+    let(:arguments) { spy('Runtime::Scenario') }
     let(:release) { spy('Runtime::Release') }
     let(:runner) { spy('Specs::Runner') }
 
     before do
-      allow(config).to receive(:perform) { |&block| block.call config }
-      allow(runner).to receive(:perform) { |&block| block.call runner }
-
-      stub_const('QA::Specs::Config', config)
       stub_const('QA::Runtime::Release', release)
+      stub_const('QA::Runtime::Scenario', arguments)
       stub_const('QA::Specs::Runner', runner)
+
+      allow(runner).to receive(:perform).and_yield(runner)
     end
 
-    it 'should set address' do
+    it 'sets an address of the subject' do
       subject.perform("hello")
 
-      expect(config).to have_received(:address=).with("hello")
+      expect(arguments).to have_received(:define)
+        .with(:gitlab_address, "hello")
     end
 
     context 'no paths' do
       it 'should call runner with default arguments' do
         subject.perform("test")
 
-        expect(runner).to have_received(:rspec)
-          .with(hash_including(files: 'qa/specs/features'))
+        expect(runner).to have_received(:files=).with('qa/specs/features')
       end
     end
 
@@ -38,8 +37,7 @@ describe QA::Scenario::Entrypoint do
       it 'should call runner with paths' do
         subject.perform('test', 'path1', 'path2')
 
-        expect(runner).to have_received(:rspec)
-          .with(hash_including(files: %w(path1 path2)))
+        expect(runner).to have_received(:files=).with(%w[path1 path2])
       end
     end
   end

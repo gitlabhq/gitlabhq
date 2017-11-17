@@ -1,0 +1,4 @@
+{
+  "type": "array",
+  "items": { "$ref": "pages_domain/basic.json" }
+}

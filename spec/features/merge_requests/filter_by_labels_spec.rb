@@ -79,22 +79,6 @@ feature 'Merge Request filtering by Labels', :js do
     end
   end
 
-  context 'clear button' do
-    before do
-      input_filtered_search('label:~bug')
-    end
-
-    it 'allows user to remove filtered labels' do
-      first('.clear-search').click
-      filtered_search.send_keys(:enter)
-
-      expect(page).to have_issuable_counts(open: 3, closed: 0, all: 3)
-      expect(page).to have_content "Bugfix2"
-      expect(page).to have_content "Feature1"
-      expect(page).to have_content "Bugfix1"
-    end
-  end
-
   context 'filter dropdown' do
     it 'filters by label name' do
       init_label_search

@@ -1,5 +1,6 @@
 /* eslint-disable func-names, prefer-arrow-callback */
 import Api from './api';
+import { humanize } from './lib/utils/text_utility';
 
 export default class CreateLabelDropdown {
   constructor($el, namespacePath, projectPath) {
@@ -107,7 +108,7 @@ export default class CreateLabelDropdown {
           errors = label.message;
         } else {
           errors = Object.keys(label.message).map(key =>
-            `${gl.text.humanize(key)} ${label.message[key].join(', ')}`,
+            `${humanize(key)} ${label.message[key].join(', ')}`,
           ).join('<br/>');
         }
 

@@ -642,16 +642,40 @@ describe User do
   end
 
   describe 'groups' do
+    let(:user) { create(:user) }
+    let(:group) { create(:group) }
+
     before do
-      @user = create :user
-      @group = create :group
-      @group.add_owner(@user)
+      group.add_owner(user)
     end
 
-    it { expect(@user.several_namespaces?).to be_truthy }
-    it { expect(@user.authorized_groups).to eq([@group]) }
-    it { expect(@user.owned_groups).to eq([@group]) }
-    it { expect(@user.namespaces).to match_array([@user.namespace, @group]) }
+    it { expect(user.several_namespaces?).to be_truthy }
+    it { expect(user.authorized_groups).to eq([group]) }
+    it { expect(user.owned_groups).to eq([group]) }
+    it { expect(user.namespaces).to contain_exactly(user.namespace, group) }
+    it { expect(user.manageable_namespaces).to contain_exactly(user.namespace, group) }
+
+    context 'with child groups', :nested_groups do
+      let!(:subgroup) { create(:group, parent: group) }
+
+      describe '#manageable_namespaces' do
+        it 'includes all the namespaces the user can manage' do
+          expect(user.manageable_namespaces).to contain_exactly(user.namespace, group, subgroup)
+        end
+      end
+
+      describe '#manageable_groups' do
+        it 'includes all the namespaces the user can manage' do
+          expect(user.manageable_groups).to contain_exactly(group, subgroup)
+        end
+
+        it 'does not include duplicates if a membership was added for the subgroup' do
+          subgroup.add_owner(user)
+
+          expect(user.manageable_groups).to contain_exactly(group, subgroup)
+        end
+      end
+    end
   end
 
   describe 'group multiple owners' do
@@ -804,7 +828,7 @@ describe User do
       end
     end
 
-    describe '#require_ssh_key?' do
+    describe '#require_ssh_key?', :use_clean_rails_memory_store_caching do
       protocol_and_expectation = {
         'http' => false,
         'ssh' => true,
@@ -818,6 +842,12 @@ describe User do
 
           expect(user.require_ssh_key?).to eq(expected)
         end
+      end
+
+      it 'returns false when the user has 1 or more SSH keys' do
+        key = create(:personal_key)
+
+        expect(key.user.require_ssh_key?).to eq(false)
       end
     end
   end
@@ -838,6 +868,19 @@ describe User do
 
     it 'returns nil when nothing found' do
       expect(described_class.find_by_any_email('')).to be_nil
+    end
+  end
+
+  describe '.by_any_email' do
+    it 'returns an ActiveRecord::Relation' do
+      expect(described_class.by_any_email('foo@example.com'))
+        .to be_a_kind_of(ActiveRecord::Relation)
+    end
+
+    it 'returns a relation of users' do
+      user = create(:user)
+
+      expect(described_class.by_any_email(user.email)).to eq([user])
     end
   end
 
@@ -1136,16 +1179,9 @@ describe User do
     let(:user) { create(:user, :with_avatar) }
 
     context 'when avatar file is uploaded' do
-      let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
-      let(:avatar_path) { "/uploads/-/system/user/avatar/#{user.id}/dk.png" }
-
       it 'shows correct avatar url' do
-        expect(user.avatar_url).to eq(avatar_path)
-        expect(user.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
-
-        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-
-        expect(user.avatar_url).to eq([gitlab_host, avatar_path].join)
+        expect(user.avatar_url).to eq(user.avatar.url)
+        expect(user.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, user.avatar.url].join)
       end
     end
   end

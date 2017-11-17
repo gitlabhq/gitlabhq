@@ -1,16 +1,16 @@
 module Gitlab
   module GitalyClient
     class WikiPage
-      FIELDS = %i(title format url_path path name historical raw_data).freeze
+      ATTRS = %i(title format url_path path name historical raw_data).freeze
 
-      attr_accessor(*FIELDS)
+      include AttributesBag
 
       def initialize(params)
-        params = params.with_indifferent_access
+        super
 
-        FIELDS.each do |field|
-          instance_variable_set("@#{field}", params[field])
-        end
+        # All gRPC strings in a response are frozen, so we get an unfrozen
+        # version here so appending to `raw_data` doesn't blow up.
+        @raw_data = @raw_data.dup
       end
 
       def historical?

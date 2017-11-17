@@ -60,7 +60,6 @@ export default class Poll {
   checkConditions(response) {
     const headers = normalizeHeaders(response.headers);
     const pollInterval = parseInt(headers[this.intervalHeader], 10);
-
     if (pollInterval > 0 && response.status === httpStatusCodes.OK && this.canPoll) {
       this.timeoutID = setTimeout(() => {
         this.makeRequest();
@@ -102,7 +101,12 @@ export default class Poll {
   /**
    * Restarts polling after it has been stoped
    */
-  restart() {
+  restart(options) {
+    // update data
+    if (options && options.data) {
+      this.options.data = options.data;
+    }
+
     this.canPoll = true;
     this.makeRequest();
   }

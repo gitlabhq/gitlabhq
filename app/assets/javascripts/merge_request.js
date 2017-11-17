@@ -5,6 +5,7 @@ import 'vendor/jquery.waitforimages';
 import TaskList from './task_list';
 import './merge_request_tabs';
 import IssuablesHelper from './helpers/issuables_helper';
+import { addDelimiter } from './lib/utils/text_utility';
 
 (function() {
   this.MergeRequest = (function() {
@@ -124,7 +125,7 @@ import IssuablesHelper from './helpers/issuables_helper';
       const $el = $('.nav-links .js-merge-counter');
       const count = Math.max((parseInt($el.text().replace(/[^\d]/, ''), 10) - by), 0);
 
-      $el.text(gl.text.addDelimiter(count));
+      $el.text(addDelimiter(count));
     };
 
     MergeRequest.prototype.hideCloseButton = function() {

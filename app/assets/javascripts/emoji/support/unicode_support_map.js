@@ -1,5 +1,7 @@
 import AccessorUtilities from '../../lib/utils/accessor';
 
+const GL_EMOJI_VERSION = '0.2.0';
+
 const unicodeSupportTestMap = {
   // man, student (emojione does not have any of these yet), http://emojipedia.org/emoji-zwj-sequences/
   // occupationZwj: '\u{1F468}\u{200D}\u{1F393}',
@@ -13,6 +15,7 @@ const unicodeSupportTestMap = {
   horseRacing: '\u{1F3C7}\u{1F3FF}',
   // US flag, http://emojipedia.org/flags/
   flag: '\u{1F1FA}\u{1F1F8}',
+  rainbowFlag: '\u{1F3F3}\u{1F308}',
   // http://emojipedia.org/modifiers/
   skinToneModifier: [
     // spy_tone5
@@ -141,23 +144,31 @@ function generateUnicodeSupportMap(testMap) {
 }
 
 export default function getUnicodeSupportMap() {
-  let unicodeSupportMap;
-  let userAgentFromCache;
-
   const isLocalStorageAvailable = AccessorUtilities.isLocalStorageAccessSafe();
 
-  if (isLocalStorageAvailable) userAgentFromCache = window.localStorage.getItem('gl-emoji-user-agent');
+  let glEmojiVersionFromCache;
+  let userAgentFromCache;
+  if (isLocalStorageAvailable) {
+    glEmojiVersionFromCache = window.localStorage.getItem('gl-emoji-version');
+    userAgentFromCache = window.localStorage.getItem('gl-emoji-user-agent');
+  }
 
+  let unicodeSupportMap;
   try {
     unicodeSupportMap = JSON.parse(window.localStorage.getItem('gl-emoji-unicode-support-map'));
   } catch (err) {
     // swallow
   }
 
-  if (!unicodeSupportMap || userAgentFromCache !== navigator.userAgent) {
+  if (
+    !unicodeSupportMap ||
+    glEmojiVersionFromCache !== GL_EMOJI_VERSION ||
+    userAgentFromCache !== navigator.userAgent
+  ) {
     unicodeSupportMap = generateUnicodeSupportMap(unicodeSupportTestMap);
 
     if (isLocalStorageAvailable) {
+      window.localStorage.setItem('gl-emoji-version', GL_EMOJI_VERSION);
       window.localStorage.setItem('gl-emoji-user-agent', navigator.userAgent);
       window.localStorage.setItem('gl-emoji-unicode-support-map', JSON.stringify(unicodeSupportMap));
     }

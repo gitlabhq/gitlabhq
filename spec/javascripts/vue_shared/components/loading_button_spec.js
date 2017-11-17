@@ -66,6 +66,23 @@ describe('LoadingButton', function () {
     });
   });
 
+  describe('container class', () => {
+    it('should default to btn btn-align-content', () => {
+      vm = mountComponent(LoadingButton, {});
+      expect(vm.$el.classList.contains('btn')).toEqual(true);
+      expect(vm.$el.classList.contains('btn-align-content')).toEqual(true);
+    });
+
+    it('should be configurable through props', () => {
+      vm = mountComponent(LoadingButton, {
+        containerClass: 'test-class',
+      });
+      expect(vm.$el.classList.contains('btn')).toEqual(false);
+      expect(vm.$el.classList.contains('btn-align-content')).toEqual(false);
+      expect(vm.$el.classList.contains('test-class')).toEqual(true);
+    });
+  });
+
   describe('click callback prop', () => {
     it('calls given callback when normal', () => {
       vm = mountComponent(LoadingButton, {

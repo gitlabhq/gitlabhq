@@ -155,7 +155,7 @@ describe('Poll', () => {
         successCallback: () => {
           Polling.stop();
           setTimeout(() => {
-            Polling.restart();
+            Polling.restart({ data: { page: 4 } });
           }, 0);
         },
         errorCallback: callbacks.error,
@@ -170,10 +170,10 @@ describe('Poll', () => {
         Polling.stop();
 
         expect(service.fetch.calls.count()).toEqual(2);
-        expect(service.fetch).toHaveBeenCalledWith({ page: 1 });
+        expect(service.fetch).toHaveBeenCalledWith({ page: 4 });
         expect(Polling.stop).toHaveBeenCalled();
         expect(Polling.restart).toHaveBeenCalled();
-
+        expect(Polling.options.data).toEqual({ page: 4 });
         done();
       });
     });

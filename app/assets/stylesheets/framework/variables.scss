@@ -163,7 +163,7 @@ $gl-text-color: #2e2e2e;
 $gl-text-color-secondary: #707070;
 $gl-text-color-tertiary: #949494;
 $gl-text-color-quaternary: #d6d6d6;
-$gl-text-color-inverted: rgba(255, 255, 255, 1.0);
+$gl-text-color-inverted: rgba(255, 255, 255, 1);
 $gl-text-color-secondary-inverted: rgba(255, 255, 255, .85);
 $gl-text-green: $green-600;
 $gl-text-green-hover: $green-700;
@@ -486,8 +486,8 @@ $callout-success-color: $green-700;
 /*
 * Commit Page
 */
-$commit-max-width-marker-color: rgba(0, 0, 0, 0.0);
-$commit-message-text-area-bg: rgba(0, 0, 0, 0.0);
+$commit-max-width-marker-color: rgba(0, 0, 0, 0);
+$commit-message-text-area-bg: rgba(0, 0, 0, 0);
 
 /*
 * Common
@@ -719,3 +719,10 @@ Image Commenting cursor
 */
 $image-comment-cursor-left-offset: 12;
 $image-comment-cursor-top-offset: 30;
+
+/*
+Popup
+*/
+$popup-triangle-size: 15px;
+$popup-triangle-border-size: 1px;
+$popup-box-shadow-color: rgba(90, 90, 90, 0.05);
