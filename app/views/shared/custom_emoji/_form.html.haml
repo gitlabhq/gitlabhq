@@ -3,17 +3,25 @@
 - page_title _("New Custom Emoji")
 
 %div{ class: container_class }
-  .nav-controls
-    = form_for(url, html: { class: 'form-horizontal gl-show-field-errors' }) do |f|
-      = form_errors(@custom_emoji)
+  = form_for(url, html: { class: 'form-horizontal gl-show-field-errors prepend-top-default' }) do |f|
+    = form_errors(@custom_emoji)
 
-      .row
-        = f.label :name
-        = f.text_field :name, class: 'form-control', placeholder: _('emoji name')
+    .row
+      .col-lg-4
+        %h4.prepend-top-0
+          New custom emoji
+        %p
+          We recommend your emoji image be at least 64x64.
 
-      .row.form-group
-        = f.file_field :file, accept: 'image/*'
-        .light
-          = _('the maximum file size allowed is 128Kb.')
-
-      = f.submit _('Add custom emoji'), class: 'btn btn-create'
+      .col-lg-8
+        %h5.prepend-top-0
+        = f.text_field :name, class: 'form-control append-bottom-10', placeholder: _('emoji-name')
+        .prepend-top-5.append-bottom-10
+          %a.btn.js-choose-custom-emoji-image-button
+            Browse file...
+          %span.file_name.prepend-left-default.js-avatar-filename No file chosen
+          = f.file_field :file, class: 'js-custom-emoji-image-input hidden', accept: 'image/*'
+        .help-block
+          = _('The maximum file size allowed is 128Kb.')
+        %hr
+        = f.submit _('Save new emoji'), class: 'btn btn-create'
