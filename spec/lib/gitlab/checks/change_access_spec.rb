@@ -10,7 +10,8 @@ describe Gitlab::Checks::ChangeAccess do
     let(:ref) { 'refs/heads/master' }
     let(:changes) { { oldrev: oldrev, newrev: newrev, ref: ref } }
     let(:protocol) { 'ssh' }
-    let(:change_access) do
+
+    subject(:change_access) do
       described_class.new(
         changes,
         project: project,
@@ -19,15 +20,13 @@ describe Gitlab::Checks::ChangeAccess do
       )
     end
 
-    subject { change_access.exec }
-
     before do
       project.add_developer(user)
     end
 
     context 'without failed checks' do
       it "doesn't raise an error" do
-        expect { subject }.not_to raise_error
+        expect { subject.exec }.not_to raise_error
       end
     end
 
@@ -35,7 +34,7 @@ describe Gitlab::Checks::ChangeAccess do
       it 'raises an error' do
         expect(user_access).to receive(:can_do_action?).with(:push_code).and_return(false)
 
-        expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to push code to this project.')
+        expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to push code to this project.')
       end
     end
 
@@ -46,7 +45,7 @@ describe Gitlab::Checks::ChangeAccess do
         allow(user_access).to receive(:can_do_action?).with(:push_code).and_return(true)
         expect(user_access).to receive(:can_do_action?).with(:admin_project).and_return(false)
 
-        expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to change existing tags on this project.')
+        expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to change existing tags on this project.')
       end
 
       context 'with protected tag' do
@@ -62,7 +61,7 @@ describe Gitlab::Checks::ChangeAccess do
             let(:newrev) { '0000000000000000000000000000000000000000' }
 
             it 'is prevented' do
-              expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /cannot be deleted/)
+              expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /cannot be deleted/)
             end
           end
 
@@ -71,7 +70,7 @@ describe Gitlab::Checks::ChangeAccess do
             let(:newrev) { '54fcc214b94e78d7a41a9a8fe6d87a5e59500e51' }
 
             it 'is prevented' do
-              expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /cannot be updated/)
+              expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /cannot be updated/)
             end
           end
         end
@@ -82,14 +81,14 @@ describe Gitlab::Checks::ChangeAccess do
           let(:ref) { 'refs/tags/v9.1.0' }
 
           it 'prevents creation below access level' do
-            expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /allowed to create this tag as it is protected/)
+            expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /allowed to create this tag as it is protected/)
           end
 
           context 'when user has access' do
             let!(:protected_tag) { create(:protected_tag, :developers_can_create, project: project, name: 'v*') }
 
             it 'allows tag creation' do
-              expect { subject }.not_to raise_error
+              expect { subject.exec }.not_to raise_error
             end
           end
         end
@@ -102,7 +101,7 @@ describe Gitlab::Checks::ChangeAccess do
         let(:ref) { 'refs/heads/master' }
 
         it 'raises an error' do
-          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'The default branch of a project cannot be deleted.')
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'The default branch of a project cannot be deleted.')
         end
       end
 
@@ -115,7 +114,7 @@ describe Gitlab::Checks::ChangeAccess do
         it 'raises an error if the user is not allowed to do forced pushes to protected branches' do
           expect(Gitlab::Checks::ForcePush).to receive(:force_push?).and_return(true)
 
-          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to force push code to a protected branch on this project.')
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to force push code to a protected branch on this project.')
         end
 
         it 'raises an error if the user is not allowed to merge to protected branches' do
@@ -123,13 +122,13 @@ describe Gitlab::Checks::ChangeAccess do
           expect(user_access).to receive(:can_merge_to_branch?).and_return(false)
           expect(user_access).to receive(:can_push_to_branch?).and_return(false)
 
-          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to merge code into protected branches on this project.')
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to merge code into protected branches on this project.')
         end
 
         it 'raises an error if the user is not allowed to push to protected branches' do
           expect(user_access).to receive(:can_push_to_branch?).and_return(false)
 
-          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to push code to protected branches on this project.')
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to push code to protected branches on this project.')
         end
 
         context 'branch deletion' do
@@ -138,7 +137,7 @@ describe Gitlab::Checks::ChangeAccess do
 
           context 'if the user is not allowed to delete protected branches' do
             it 'raises an error' do
-              expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to delete protected branches from this project. Only a project master or owner can delete a protected branch.')
+              expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You are not allowed to delete protected branches from this project. Only a project master or owner can delete a protected branch.')
             end
           end
 
@@ -151,13 +150,13 @@ describe Gitlab::Checks::ChangeAccess do
               let(:protocol) { 'web' }
 
               it 'allows branch deletion' do
-                expect { subject }.not_to raise_error
+                expect { subject.exec }.not_to raise_error
               end
             end
 
             context 'over SSH or HTTP' do
               it 'raises an error' do
-                expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You can only delete protected branches using the web interface.')
+                expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You can only delete protected branches using the web interface.')
               end
             end
           end
@@ -178,7 +177,7 @@ describe Gitlab::Checks::ChangeAccess do
         it 'skips integrity check' do
           expect_any_instance_of(Gitlab::Git::RevList).not_to receive(:new_objects)
 
-          subject
+          subject.exec
         end
       end
 
@@ -193,19 +192,19 @@ describe Gitlab::Checks::ChangeAccess do
           it 'skips integrity check' do
             expect_any_instance_of(Gitlab::Git::RevList).not_to receive(:new_objects)
 
-            subject
+            subject.exec
           end
         end
 
         it 'fails if any LFS blobs are missing' do
-          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /LFS objects are missing/)
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /LFS objects are missing/)
         end
 
         it 'succeeds if LFS objects have already been uploaded' do
           lfs_object = create(:lfs_object, oid: blob_object.lfs_oid)
           create(:lfs_objects_project, project: project, lfs_object: lfs_object)
 
-          expect { subject }.not_to raise_error
+          expect { subject.exec }.not_to raise_error
         end
       end
     end
@@ -240,14 +239,14 @@ describe Gitlab::Checks::ChangeAccess do
         it_behaves_like 'check ignored when push rule unlicensed'
 
         it 'returns an error if the rule denies tag deletion' do
-          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You cannot delete a tag')
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, 'You cannot delete a tag')
         end
 
         context 'when tag is deleted in web UI' do
           let(:protocol) { 'web' }
 
           it 'ignores the push rule' do
-            expect(subject).to be_truthy
+            expect(subject.exec).to be_truthy
           end
         end
       end
@@ -258,7 +257,7 @@ describe Gitlab::Checks::ChangeAccess do
         it_behaves_like 'check ignored when push rule unlicensed'
 
         it 'returns an error if the rule fails' do
-          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Commit message does not follow the pattern '#{push_rule.commit_message_regex}'")
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Commit message does not follow the pattern '#{push_rule.commit_message_regex}'")
         end
       end
 
@@ -275,13 +274,13 @@ describe Gitlab::Checks::ChangeAccess do
         it 'returns an error if the rule fails for the committer' do
           allow_any_instance_of(Commit).to receive(:committer_email).and_return('ana@invalid.com')
 
-          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Committer's email 'ana@invalid.com' does not follow the pattern '.*@valid.com'")
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Committer's email 'ana@invalid.com' does not follow the pattern '.*@valid.com'")
         end
 
         it 'returns an error if the rule fails for the author' do
           allow_any_instance_of(Commit).to receive(:author_email).and_return('joan@invalid.com')
 
-          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Author's email 'joan@invalid.com' does not follow the pattern '.*@valid.com'")
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Author's email 'joan@invalid.com' does not follow the pattern '.*@valid.com'")
         end
       end
 
@@ -292,14 +291,14 @@ describe Gitlab::Checks::ChangeAccess do
         it_behaves_like 'check ignored when push rule unlicensed'
 
         it 'rejects the branch that is not allowed' do
-          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Branch name does not follow the pattern '^(w*)$'")
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Branch name does not follow the pattern '^(w*)$'")
         end
 
         context 'when the ref is not a branch ref' do
           let(:ref) { 'a/ref/thats/not/abranch' }
 
           it 'allows the creation' do
-            expect { subject }.not_to raise_error
+            expect { subject.exec }.not_to raise_error
           end
         end
 
@@ -309,7 +308,7 @@ describe Gitlab::Checks::ChangeAccess do
           end
 
           it 'rejects the branch that is not allowed' do
-            expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Branch name does not follow the pattern '^(w*)$'")
+            expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Branch name does not follow the pattern '^(w*)$'")
           end
         end
 
@@ -318,7 +317,7 @@ describe Gitlab::Checks::ChangeAccess do
           let(:ref) { "refs/heads/#{project.default_branch}" }
 
           it 'allows the default branch even if it does not match push rule' do
-            expect { subject }.not_to raise_error
+            expect { subject.exec }.not_to raise_error
           end
         end
       end
@@ -334,7 +333,7 @@ describe Gitlab::Checks::ChangeAccess do
         it_behaves_like 'check ignored when push rule unlicensed'
 
         it 'returns an error if the commit author is not a GitLab member' do
-          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Author 'some@mail.com' is not a member of team")
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Author 'some@mail.com' is not a member of team")
         end
       end
 
@@ -346,7 +345,7 @@ describe Gitlab::Checks::ChangeAccess do
           it_behaves_like 'check ignored when push rule unlicensed'
 
           it "returns an error if a new or renamed filed doesn't match the file name regex" do
-            expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "File name README was blacklisted by the pattern READ*.")
+            expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "File name README was blacklisted by the pattern READ*.")
           end
         end
 
@@ -373,7 +372,7 @@ describe Gitlab::Checks::ChangeAccess do
                 project.repository.commits_between(old_rev, new_rev)
               )
 
-              expect(subject).to be_truthy
+              expect(subject.exec).to be_truthy
             end
           end
 
@@ -396,7 +395,7 @@ describe Gitlab::Checks::ChangeAccess do
                 project.repository.commits_between(old_rev, new_rev)
               )
 
-              expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /File name #{file_path} was blacklisted by the pattern/)
+              expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, /File name #{file_path} was blacklisted by the pattern/)
             end
           end
         end
@@ -412,7 +411,7 @@ describe Gitlab::Checks::ChangeAccess do
         it_behaves_like 'check ignored when push rule unlicensed'
 
         it 'returns an error if file exceeds the maximum file size' do
-          expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "File \"README\" is larger than the allowed size of 1 MB")
+          expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "File \"README\" is larger than the allowed size of 1 MB")
         end
       end
 
@@ -437,7 +436,7 @@ describe Gitlab::Checks::ChangeAccess do
             end
 
             it 'returns an error' do
-              expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Commit must be signed with a GPG key")
+              expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Commit must be signed with a GPG key")
             end
           end
         end
@@ -449,14 +448,14 @@ describe Gitlab::Checks::ChangeAccess do
             end
 
             it 'returns an error' do
-              expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Commit must be signed with a GPG key")
+              expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "Commit must be signed with a GPG key")
             end
 
             context 'but the change is made in the web application' do
               let(:protocol) { 'web' }
 
               it 'does not return an error' do
-                expect { subject }.not_to raise_error
+                expect { subject.exec }.not_to raise_error
               end
             end
           end
@@ -467,7 +466,7 @@ describe Gitlab::Checks::ChangeAccess do
             end
 
             it 'does not return an error' do
-              expect { subject }.not_to raise_error
+              expect { subject.exec }.not_to raise_error
             end
           end
         end
@@ -481,7 +480,7 @@ describe Gitlab::Checks::ChangeAccess do
             end
 
             it 'does not return an error' do
-              expect { subject }.not_to raise_error
+              expect { subject.exec }.not_to raise_error
             end
           end
         end
@@ -498,7 +497,7 @@ describe Gitlab::Checks::ChangeAccess do
       end
 
       it 'returns an error if the changes update a path locked by another user' do
-        expect { subject }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "The path 'README' is locked by #{path_lock.user.name}")
+        expect { subject.exec }.to raise_error(Gitlab::GitAccess::UnauthorizedError, "The path 'README' is locked by #{path_lock.user.name}")
       end
     end
 
@@ -519,28 +518,28 @@ describe Gitlab::Checks::ChangeAccess do
         end
 
         it 'does not return an error' do
-          expect { subject }.not_to raise_error
+          expect { subject.exec }.not_to raise_error
         end
 
         it 'allows the commit when they were done with another email that belongs to the current user' do
           user.emails.create(email: 'secondary_email@user.com', confirmed_at: Time.now)
           allow_any_instance_of(Commit).to receive(:committer_email).and_return('secondary_email@user.com')
 
-          expect { subject }.not_to raise_error
+          expect { subject.exec }.not_to raise_error
         end
 
         it 'raises an error when the commit was done with an unverified email' do
           user.emails.create(email: 'secondary_email@user.com')
           allow_any_instance_of(Commit).to receive(:committer_email).and_return('secondary_email@user.com')
 
-          expect { subject }
+          expect { subject.exec }
             .to raise_error(Gitlab::GitAccess::UnauthorizedError,
                             "Comitter email '%{commiter_email}' is not verified.")
         end
 
         it 'raises an error when using an unknown email' do
           allow_any_instance_of(Commit).to receive(:committer_email).and_return('some@mail.com')
-          expect { subject }
+          expect { subject.exec }
             .to raise_error(Gitlab::GitAccess::UnauthorizedError,
                             "You cannot push commits for 'some@mail.com'. You can only push commits that were committed with one of your own verified emails.")
         end
@@ -552,7 +551,7 @@ describe Gitlab::Checks::ChangeAccess do
 
         it 'does not raise errors for a fast forward' do
           expect(change_access).not_to receive(:committer_check)
-          expect { subject }.not_to raise_error
+          expect { subject.exec }.not_to raise_error
         end
       end
 
@@ -581,7 +580,7 @@ describe Gitlab::Checks::ChangeAccess do
         it 'does not raise errors for a merge commit' do
           expect(change_access).to receive(:committer_check).once
                                      .and_call_original
-          expect { subject }.not_to raise_error
+          expect { subject.exec }.not_to raise_error
         end
       end
     end
