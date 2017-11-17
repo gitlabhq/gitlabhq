@@ -67,7 +67,7 @@ module Projects
         Labels::TransferService.new(current_user, @old_group, project).execute
 
         # Move uploads
-        Gitlab::UploadsTransfer.new.move_project(project.path, @old_namespace.full_path, @new_namespace.full_path)
+        move_project_uploads(project)
 
         # Move pages
         Gitlab::PagesTransfer.new.move_project(project.path, @old_namespace.full_path, @new_namespace.full_path)
@@ -138,6 +138,16 @@ module Projects
 
       # Move wiki repo also if present
       move_repo_folder("#{@old_path}.wiki", "#{@new_path}.wiki")
+    end
+
+    def move_project_uploads(project)
+      return if project.hashed_storage?(:attachments)
+
+      Gitlab::UploadsTransfer.new.move_project(
+        project.path,
+        @old_namespace.full_path,
+        @new_namespace.full_path
+      )
     end
   end
 end
