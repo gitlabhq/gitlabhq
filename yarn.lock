@@ -2,6 +2,10 @@
 # yarn lockfile v1
 
 
+"@gitlab-org/gitlab-svgs@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.0.2.tgz#e4d29058e2bb438ba71ac525c6397ef15ae2877b"
+
 abbrev@1, abbrev@1.0.x:
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/abbrev/-/abbrev-1.0.9.tgz#91b4792588a7738c25f35dd6f63752a2f8776135"
@@ -2719,10 +2723,6 @@ getpass@^0.1.1:
   resolved "https://registry.yarnpkg.com/getpass/-/getpass-0.1.7.tgz#5eff8e3e684d569ae4cb2b1282604e8ba62149fa"
   dependencies:
     assert-plus "^1.0.0"
-
-"gitlab-svgs@https://gitlab.com/gitlab-org/gitlab-svgs.git":
-  version "1.1.0"
-  resolved "https://gitlab.com/gitlab-org/gitlab-svgs.git#f73ef3cb04d9bde261c2552c679c431cc44928f2"
 
 glob-base@^0.3.0:
   version "0.3.0"

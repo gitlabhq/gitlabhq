@@ -75,6 +75,11 @@ module EE
       def search_by_visibility(level)
         where(visibility_level: ::Gitlab::VisibilityLevel.string_options[level])
       end
+
+      def with_slack_application_disabled
+        joins('LEFT JOIN services ON services.project_id = projects.id AND services.type = \'GitlabSlackApplicationService\' AND services.active IS true')
+          .where('services.id IS NULL')
+      end
     end
 
     def mirror
