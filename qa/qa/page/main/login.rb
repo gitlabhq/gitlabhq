@@ -2,6 +2,14 @@ module QA
   module Page
     module Main
       class Login < Page::Base
+        def self.address
+          Runtime::Scenario.gitlab_address + '/users/sign_in'
+        end
+
+        def initialize
+          wait('.application', time: 500)
+        end
+
         def sign_in_using_credentials
           if page.has_content?('Change your password')
             fill_in :user_password, with: Runtime::User.password

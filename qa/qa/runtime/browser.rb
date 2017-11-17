@@ -8,14 +8,18 @@ module QA
     module Browser
       extend self
 
-      def session(address, &block)
+      def visit(entry, &block)
+        address = entry.is_a?(String) ? entry : entry.address
+
         configure!
         page.visit(address)
 
-        block.call(page)
+        if block_given?
+          block.call(page)
 
-        page.visit(address)
-        reset_domain_session!
+          page.visit(address)
+          reset_domain_session!
+        end
       rescue
         # RSpec examples will take care of screenshots on their own
         #
@@ -26,6 +30,10 @@ module QA
         raise
       end
 
+      ##
+      # Current session, when Capybara::DSL is included `page` method is
+      # mixed in as well.
+      #
       def page
         Capybara.current_session
       end

@@ -2,8 +2,8 @@ module QA
   module Page
     module Mattermost
       class Login < Page::Base
-        def initialize
-          visit(Runtime::Scenario.mattermost_address + '/login')
+        def self.address
+          Runtime::Scenario.mattermost_address + '/login'
         end
 
         def sign_in_using_oauth
