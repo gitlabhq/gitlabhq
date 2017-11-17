@@ -11,8 +11,8 @@ to the GitLab Pages server. GitLab Pages supports all static site generators (SS
 _Minimum requirements to have your website live:_
 
 1. An account on GitLab
-2. A project with your website files
-3. Enabled GitLab Runners to deploy your website with GitLab CI/CD
+1. A project with your website files
+1. Enabled GitLab Runners to deploy your website with GitLab CI/CD
 
 _Minimum steps:_
 
@@ -40,7 +40,7 @@ _Advanced options:_
 With GitLab Pages you can create [static websites](getting_started_part_one.md#what-you-need-to-know-before-getting-started)
 for your GitLab projects, groups, or user accounts. You can use any static
 website generator: Jekyll, Middleman, Hexo, Hugo, Pelican, you name it!
-Connect as many customs domains as you like and bring your own TLS certificate
+Connect as many custom domains as you like and bring your own TLS certificate
 to secure them.
 
 Read the following tutorials to know more about:
@@ -74,7 +74,7 @@ _Blog posts for securing GitLab Pages custom domains with SSL/TLS certificates:_
 
 ## Admin GitLab Pages for CE and EE
 
-Enable and configure GitLab Pages on your own instance (GitLab Community Editions and Enterprise Editions) with
+Enable and configure GitLab Pages on your own instance (GitLab Community Edition and Enterprise Editions) with
 the [admin guide](../../../administration/pages/index.md).
 
 **Watch the video: https://www.youtube.com/watch?v=dD8c7WNcc6s**
