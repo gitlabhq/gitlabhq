@@ -82,6 +82,8 @@ module Gitlab
 
         cmd = %w[ionice -c Idle] + cmd if ionice_is_available?
 
+        Rails.logger.info "PrepareUntrackedUploads find command: \"#{cmd.join(' ')}\""
+
         cmd
       end
 
