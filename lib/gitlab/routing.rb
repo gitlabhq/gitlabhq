@@ -46,10 +46,10 @@ module Gitlab
         # Only replace the last occurence of `path`.
         #
         # `request.fullpath` includes the querystring
-        path = request.path.sub(%r{/#{path}/*(?!.*#{path})}, "/-/#{path}/")
-        path << "?#{request.query_string}" if request.query_string.present?
+        new_path = request.path.sub(%r{/#{path}(/*)(?!.*#{path})}, "/-/#{path}\\1")
+        new_path << "?#{request.query_string}" if request.query_string.present?
 
-        path
+        new_path
       end
 
       paths.each do |path|
