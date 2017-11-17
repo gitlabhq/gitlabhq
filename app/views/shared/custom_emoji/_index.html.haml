@@ -1,15 +1,15 @@
 - page_title _("Custom Emoji")
 
-%div{ class: container_class }
-  .top-area.adjust
-    .nav-text
-      = _("Custom Emoji can be used in for example titles, descriptions and notes for both issues and merge requests. They can also be used as award emoji.")
 
-    .nav-controls
-      = link_to new_custom_emoji_url, class: "btn btn-new" do
-        = _('New custom emoji')
+.top-area.adjust
+  .nav-text
+    = _("Custom Emoji can be used in for example titles, descriptions and notes for both issues and merge requests. They can also be used as award emoji.")
 
-.table-holder
+  .nav-controls
+    = link_to new_custom_emoji_url, class: "btn btn-new" do
+      = _('New custom emoji')
+
+.table-responsive
   %table.table
     %thead
       %tr
