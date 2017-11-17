@@ -84,7 +84,7 @@ will not be able to perform all necessary configuration steps. Refer to
    password:
 
     ```bash
-      gitlab-ctl set-replication-password
+    gitlab-ctl set-replication-password
     ```
 
    This command will also read `postgresql['sql_replication_user']` Omnibus
@@ -343,6 +343,13 @@ primary before the database is replicated.
     clocks synchronized. It is not required for all nodes to be set to the
     same time zone, but when the respective times are converted to UTC time,
     the clocks must be synchronized to within 60 seconds of each other.
+
+1. Verify the secondary if configured correctly and that the primary is
+   reachable.
+
+    ```
+    gitlab-rake gitlab:geo:check
+    ```
 
 ### Step 4. Initiate the replication process
 
