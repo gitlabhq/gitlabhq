@@ -43,6 +43,7 @@ describe Geo::RepositoryDestroyService do
 
         expect(::GitlabShellWorker).to receive(:perform_in)
           .with(5.minutes, :remove_repository, project.repository_storage_path, "#{project.disk_path}+#{project.id}+deleted")
+          .and_return(true)
 
         service.execute
       end
@@ -66,6 +67,7 @@ describe Geo::RepositoryDestroyService do
 
         expect(::GitlabShellWorker).to receive(:perform_in)
           .with(5.minutes, :remove_repository, project.repository_storage_path, "#{project.disk_path}+#{project.id}+deleted")
+          .and_return(true)
 
         service.execute
       end
