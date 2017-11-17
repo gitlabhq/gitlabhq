@@ -1,7 +1,7 @@
 # See http://doc.gitlab.com/ce/development/migration_style_guide.html
 # for more information on how to write migrations for GitLab.
 
-# rubocop:disable Migration/AddColumnWithDefaultToLargeTable
+# rubocop:disable Migration/UpdateLargeTable
 class AddPrintingMergeRequestLinkEnabledToProject < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
   disable_ddl_transaction!
