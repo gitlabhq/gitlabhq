@@ -124,11 +124,11 @@ GET /projects
     ],
     "owner": {
       "id": 4,
-      "name": "Brightbox",
+      "name": "brightbox",
       "created_at": "2013-09-30T13:46:02Z"
     },
-    "name": "Puppet",
-    "name_with_namespace": "Brightbox / Puppet",
+    "name": "puppet",
+    "name_with_namespace": "brightbox / puppet",
     "path": "puppet",
     "path_with_namespace": "brightbox/puppet",
     "issues_enabled": true,
@@ -144,7 +144,7 @@ GET /projects
     "creator_id": 3,
     "namespace": {
       "id": 4,
-      "name": "Brightbox",
+      "name": "brightbox",
       "path": "brightbox",
       "kind": "group",
       "full_path": "brightbox"
@@ -307,11 +307,11 @@ GET /users/:user_id/projects
     ],
     "owner": {
       "id": 4,
-      "name": "Brightbox",
+      "name": "brightbox",
       "created_at": "2013-09-30T13:46:02Z"
     },
-    "name": "Puppet",
-    "name_with_namespace": "Brightbox / Puppet",
+    "name": "puppet",
+    "name_with_namespace": "brightbox / puppet",
     "path": "puppet",
     "path_with_namespace": "brightbox/puppet",
     "issues_enabled": true,
@@ -327,7 +327,7 @@ GET /users/:user_id/projects
     "creator_id": 3,
     "namespace": {
       "id": 4,
-      "name": "Brightbox",
+      "name": "brightbox",
       "path": "brightbox",
       "kind": "group",
       "full_path": "brightbox"
