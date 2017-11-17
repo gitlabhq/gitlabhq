@@ -1,7 +1,7 @@
 module QA
   feature 'standard user login', :core do
     scenario 'user logs in using credentials' do
-      Page::Main::Entry.act { visit_login_page }
+      Runtime::Browser.visit(Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
       # TODO, since `Signed in successfully` message was removed
