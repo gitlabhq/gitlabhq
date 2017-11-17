@@ -127,6 +127,14 @@ describe Gitlab::Middleware::Go do
 
         include_examples 'go-get=1', enabled_protocol: nil
       end
+
+      context 'with nothing disabled (blank string)' do
+        before do
+          stub_application_setting(enabled_git_access_protocol: '')
+        end
+
+        include_examples 'go-get=1', enabled_protocol: nil
+      end
     end
 
     def go
