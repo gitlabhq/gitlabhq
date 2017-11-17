@@ -1,5 +1,8 @@
 <script>
 import identicon from '../../vue_shared/components/identicon.vue';
+import { truncate } from '../../lib/utils/text_utility';
+
+import { MAX_LENGTH } from '../constants';
 
 export default {
   components: {
@@ -38,15 +41,27 @@ export default {
       return this.avatarUrl !== null;
     },
     highlightedProjectName() {
+      let projectName = this.projectName;
+      if (projectName.length > MAX_LENGTH.ITEM_NAME) {
+        projectName = truncate(projectName, MAX_LENGTH.ITEM_NAME);
+      }
+
       if (this.matcher) {
         const matcherRegEx = new RegExp(this.matcher, 'gi');
-        const matches = this.projectName.match(matcherRegEx);
+        const matches = projectName.match(matcherRegEx);
 
         if (matches && matches.length > 0) {
-          return this.projectName.replace(matches[0], `<b>${matches[0]}</b>`);
+          return projectName.replace(matches[0], `<b>${matches[0]}</b>`);
         }
       }
-      return this.projectName;
+      return projectName;
+    },
+    truncatedNamespace() {
+      if (this.namespace.length > MAX_LENGTH.ITEM_NAMESPACE) {
+        return truncate(this.namespace, MAX_LENGTH.ITEM_NAMESPACE);
+      }
+
+      return this.namespace;
     },
   },
 };
@@ -87,9 +102,7 @@ export default {
         <div
           class="project-namespace"
           :title="namespace"
-        >
-          {{namespace}}
-        </div>
+        >{{truncatedNamespace}}</div>
       </div>
     </a>
   </li>

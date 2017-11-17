@@ -49,6 +49,24 @@ describe('ProjectsListItemComponent', () => {
         vm.matcher = null;
         expect(vm.highlightedProjectName).toBe(mockProject.name);
       });
+
+      it('should truncate project name if it exceeds 40 characters', () => {
+        vm.projectName = 'platform / hardware / broadcom / Wifi Group / Mobile Chipset / nokia-3310';
+        expect(vm.highlightedProjectName).not.toBe(vm.projectName);
+
+        vm.projectName = 'platform / hardware';
+        expect(vm.highlightedProjectName).toBe(vm.projectName);
+      });
+    });
+
+    describe('truncatedNamespace', () => {
+      it('should truncate namespace string if it exceeds 45 characters', () => {
+        vm.namespace = 'platform / hardware / broadcom / Wifi Group / Mobile Chipset / nokia-3310';
+        expect(vm.truncatedNamespace).not.toBe(vm.namespace);
+
+        vm.namespace = 'platform / hardware';
+        expect(vm.truncatedNamespace).toBe(vm.namespace);
+      });
     });
   });
 

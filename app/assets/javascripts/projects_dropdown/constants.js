@@ -7,4 +7,9 @@ export const FREQUENT_PROJECTS = {
 
 export const HOUR_IN_MS = 3600000;
 
+export const MAX_LENGTH = {
+  ITEM_NAME: 40,
+  ITEM_NAMESPACE: 45,
+};
+
 export const STORAGE_KEY = 'frequent-projects';
