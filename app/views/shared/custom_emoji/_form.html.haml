@@ -17,10 +17,10 @@
         %h5.prepend-top-0
         = f.text_field :name, class: 'form-control append-bottom-10', placeholder: _('emoji-name')
         .prepend-top-5.append-bottom-10
-          %a.btn.js-choose-custom-emoji-image-button
+          %a.btn.js-browse-file-button{ data: { id: 'custom-emoji-image' } }
             Browse file...
-          %span.file_name.prepend-left-default.js-avatar-filename No file chosen
-          = f.file_field :file, class: 'js-custom-emoji-image-input hidden', accept: 'image/*'
+          %span.file_name.prepend-left-default.js-browse-file-name{ data: { id: 'custom-emoji-image' } } No file chosen
+          = f.file_field :file, accept: 'image/*', class: 'js-browse-file-input hidden', data: { id: 'custom-emoji-image' }
         .help-block
           = _('The maximum file size allowed is 128Kb.')
         %hr

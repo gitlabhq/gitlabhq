@@ -21,7 +21,7 @@ import NamespaceSelect from './namespace_select';
 /* global NewCommitForm */
 /* global NewBranchForm */
 import Project from './project';
-import projectAvatar from './project_avatar';
+import setupBrowseFile from './behaviors/browse_file';
 /* global MergeRequest */
 /* global Compare */
 /* global CompareAutocomplete */
@@ -506,6 +506,10 @@ import Diff from './diff';
           new ShortcutsNavigation();
           new BlobViewer();
           break;
+        case 'profiles:custom_emoji:new':
+        case 'groups:settings:custom_emoji:new':
+          setupBrowseFile();
+          break;
         case 'help:index':
           VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
           break;
@@ -604,7 +608,7 @@ import Diff from './diff';
           break;
         case 'projects':
           new Project();
-          projectAvatar();
+          setupBrowseFile();
           switch (path[1]) {
             case 'compare':
               new CompareAutocomplete();
