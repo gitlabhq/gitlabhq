@@ -21,7 +21,7 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :side
     drop_temp_table_if_exists
   end
 
-  after(:all) do
+  after do
     drop_temp_table_if_exists
   end
 
