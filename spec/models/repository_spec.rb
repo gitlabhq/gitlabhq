@@ -2343,4 +2343,111 @@ describe Repository do
       end
     end
   end
+
+  describe '#contributors' do
+    let(:author_a) { build(:author, email: 'tiagonbotelho@hotmail.com', name: 'tiagonbotelho') }
+    let(:author_b) { build(:author, email: 'gitlab@winniehell.de', name: 'Winnie') }
+    let(:author_c) { build(:author, email: 'douwe@gitlab.com', name: 'Douwe Maan') }
+    let(:stubbed_commits) do
+      [build(:commit, author: author_a),
+       build(:commit, author: author_a),
+       build(:commit, author: author_b),
+       build(:commit, author: author_c),
+       build(:commit, author: author_c),
+       build(:commit, author: author_c)]
+    end
+    let(:order_by) { nil }
+    let(:sort) { nil }
+
+    before do
+      allow(repository).to receive(:commits).with(nil, limit: 2000, offset: 0, skip_merges: true).and_return(stubbed_commits)
+    end
+
+    subject { repository.contributors(order_by: order_by, sort: sort) }
+
+    def expect_contributors(*contributors)
+      expect(subject.map(&:email)).to eq(contributors.map(&:email))
+    end
+
+    it 'returns the array of Gitlab::Contributor for the repository' do
+      expect_contributors(author_a, author_b, author_c)
+    end
+
+    context 'order_by email' do
+      let(:order_by) { 'email' }
+
+      context 'asc' do
+        let(:sort) { 'asc' }
+
+        it 'returns all the contributors ordered by email asc case insensitive' do
+          expect_contributors(author_c, author_b, author_a)
+        end
+      end
+
+      context 'desc' do
+        let(:sort) { 'desc' }
+
+        it 'returns all the contributors ordered by email desc case insensitive' do
+          expect_contributors(author_a, author_b, author_c)
+        end
+      end
+    end
+
+    context 'order_by name' do
+      let(:order_by) { 'name' }
+
+      context 'asc' do
+        let(:sort) { 'asc' }
+
+        it 'returns all the contributors ordered by name asc case insensitive' do
+          expect_contributors(author_c, author_a, author_b)
+        end
+      end
+
+      context 'desc' do
+        let(:sort) { 'desc' }
+
+        it 'returns all the contributors ordered by name desc case insensitive' do
+          expect_contributors(author_b, author_a, author_c)
+        end
+      end
+    end
+
+    context 'order_by commits' do
+      let(:order_by) { 'commits' }
+
+      context 'asc' do
+        let(:sort) { 'asc' }
+
+        it 'returns all the contributors ordered by commits asc' do
+          expect_contributors(author_b, author_a, author_c)
+        end
+      end
+
+      context 'desc' do
+        let(:sort) { 'desc' }
+
+        it 'returns all the contributors ordered by commits desc' do
+          expect_contributors(author_c, author_a, author_b)
+        end
+      end
+    end
+
+    context 'invalid ordering' do
+      let(:order_by) { 'unknown' }
+
+      it 'returns the contributors unsorted' do
+        expect_contributors(author_a, author_b, author_c)
+      end
+    end
+
+    context 'invalid sorting' do
+      let(:order_by) { 'name' }
+      let(:sort) { 'unknown' }
+
+      it 'returns the contributors unsorted' do
+        expect_contributors(author_a, author_b, author_c)
+      end
+    end
+  end
 end
