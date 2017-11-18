@@ -455,9 +455,10 @@ instructions for [enabling tracking database on the secondary server][tracking].
 
 ### Next steps
 
-Now that the database replication is done, the next step is to configure GitLab.
+Now that the database replication is done, the next step is to configure SSH
+authorizations to use the database.
 
-[➤ GitLab Geo configuration](configuration.md)
+[➤ Configure SSH authorizations to use the database](ssh.md)
 
 ## MySQL replication
 

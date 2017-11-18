@@ -451,9 +451,10 @@ The replication process is now over.
 
 ### Next steps
 
-Now that the database replication is done, the next step is to configure GitLab.
+Now that the database replication is done, the next step is to configure SSH
+authorizations to use the database.
 
-[➤ GitLab Geo configuration](configuration_source.md)
+[➤ Configure SSH authorizations to use the database](ssh.md)
 
 ## MySQL replication
 
