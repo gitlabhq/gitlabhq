@@ -262,7 +262,7 @@ primary before the database is replicated.
    [selective replication](#selective-replication).
 1. Click the **Add node** button.
 1. SSH into your GitLab **primary** server and login as root to verify the
-   secondary is reachable.
+   secondary is reachable:
 
     ```
     gitlab-rake gitlab:geo:check
@@ -345,7 +345,7 @@ primary before the database is replicated.
     the clocks must be synchronized to within 60 seconds of each other.
 
 1. Verify the secondary if configured correctly and that the primary is
-   reachable.
+   reachable:
 
     ```
     gitlab-rake gitlab:geo:check
