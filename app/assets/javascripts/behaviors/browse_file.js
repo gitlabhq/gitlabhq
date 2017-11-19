@@ -1,3 +1,17 @@
+/*
+  Used to setup all "Browse file" pickers and update the label when a file is chosen
+
+  | Browse file...| No file chosen
+
+  Sample configuration:
+
+  %button.btn.js-browse-file-button{ data: { id: 'some-avatar' } }
+    Browse file...
+  %span.file_name.prepend-left-default.js-browse-file-name{ data: { id: 'some-avatar' } }
+    No file chosen
+  = f.file_field :file, accept: 'image/*', class: 'js-browse-file-input hidden',
+                                           data: { id: 'some-avatar' }
+*/
 export default function setupBrowseFile() {
   const browseButtons = document.querySelectorAll('.js-browse-file-button');
   browseButtons.forEach((browseButton) => {
