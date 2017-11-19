@@ -506,8 +506,8 @@ import Diff from './diff';
           new ShortcutsNavigation();
           new BlobViewer();
           break;
-        case 'profiles:custom_emoji:new':
-        case 'groups:settings:custom_emoji:new':
+        case 'profiles:custom_emoji:index':
+        case 'groups:settings:custom_emoji:index':
           setupBrowseFile();
           break;
         case 'help:index':

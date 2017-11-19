@@ -4,10 +4,7 @@ module Groups
       before_action :authorize_admin_group!
 
       def index
-        @custom_emoji = @group.custom_emoji
-      end
-
-      def new
+        @custom_emojis = @group.custom_emoji.all
         @custom_emoji = @group.custom_emoji.new
       end
 
@@ -17,7 +14,7 @@ module Groups
         if @custom_emoji.save
           redirect_to group_settings_custom_emoji_index_path(@group)
         else
-          render :new
+          render :index
         end
       end
 

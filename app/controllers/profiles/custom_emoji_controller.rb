@@ -1,9 +1,6 @@
 class Profiles::CustomEmojiController < Profiles::ApplicationController
   def index
-    @custom_emoji = namespace.custom_emoji
-  end
-
-  def new
+    @custom_emojis = namespace.custom_emoji.all
     @custom_emoji = namespace.custom_emoji.new
   end
 
@@ -13,7 +10,7 @@ class Profiles::CustomEmojiController < Profiles::ApplicationController
     if @custom_emoji.save
       redirect_to profile_custom_emoji_index_path
     else
-      render :new
+      render :index
     end
   end
 
