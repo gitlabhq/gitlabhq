@@ -156,7 +156,7 @@ module API
       expose :public_builds, as: :public_jobs
       expose :ci_config_path
       expose :shared_with_groups do |project, options|
-        SharedGroup.represent(project.project_group_links.all, options)
+        SharedGroup.represent(project.project_group_links, options)
       end
       expose :only_allow_merge_if_pipeline_succeeds
       expose :request_access_enabled
