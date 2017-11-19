@@ -5,49 +5,24 @@ require 'selenium-webdriver'
 
 module QA
   module Runtime
-    module Browser
-      extend self
+    class Browser
+      include Scenario::Actable
 
-      def visit(entry, &block)
-        address = entry.is_a?(String) ? entry : entry.address
+      def initialize
+        self.class.configure!
+      end
 
-        configure!
-        page.visit(address)
-
-        if block_given?
-          block.call(page)
-
-          page.visit(address)
-          reset_domain_session!
+      def visit(page, &block)
+        Browser::Session.new(page).tap do |session|
+          session.perform(&block)
         end
-      rescue
-        # RSpec examples will take care of screenshots on their own
-        #
-        unless block.binding.receiver.class < RSpec::Core::ExampleGroup
-          Capybara::Screenshot.screenshot_and_save_page
-        end
-
-        raise
       end
 
-      ##
-      # Current session, when Capybara::DSL is included `page` method is
-      # mixed in as well.
-      #
-      def page
-        Capybara.current_session
+      def self.visit(page, &block)
+        new.visit(page, &block)
       end
 
-      def reset_domain_session(address)
-        ##
-        # Selenium allows to reset session cookies for current domain only.
-        #
-        # See gitlab-org/gitlab-qa#102
-        #
-        Capybar.reset_session!
-      end
-
-      def configure!
+      def self.configure!
         return if Capybara.drivers.include?(:chrome)
 
         Capybara.register_driver :chrome do |app|
@@ -71,6 +46,42 @@ module QA
           config.default_max_wait_time = 4
           # https://github.com/mattheworiordan/capybara-screenshot/issues/164
           config.save_path = 'tmp'
+        end
+      end
+
+      class Session
+        include Capybara::DSL
+
+        attr_reader :address
+
+        def initialize(page)
+          @address = page.is_a?(String) ? page : page.address
+        end
+
+        def perform(&block)
+          visit(@address)
+
+          block.call if block_given?
+        rescue
+          # RSpec examples will take care of screenshots on their own
+          #
+          unless block.binding.receiver.class < RSpec::Core::ExampleGroup
+            Capybara::Screenshot.screenshot_and_save_page
+          end
+
+          raise
+        ensure
+          clear! if block_given?
+        end
+
+        ##
+        # Selenium allows to reset session cookies for current domain only.
+        #
+        # See gitlab-org/gitlab-qa#102
+        #
+        def clear!
+          visit(@address)
+          Capybara.reset_session!
         end
       end
     end
