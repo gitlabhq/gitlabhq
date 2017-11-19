@@ -2,10 +2,6 @@ module QA
   module Page
     module Main
       class Login < Page::Base
-        def self.address
-          Runtime::Scenario.gitlab_address + '/users/sign_in'
-        end
-
         def initialize
           wait('.application', time: 500)
         end
@@ -20,6 +16,10 @@ module QA
           fill_in :user_login, with: Runtime::User.name
           fill_in :user_password, with: Runtime::User.password
           click_button 'Sign in'
+        end
+
+        def self.address
+          Runtime::Scenario.gitlab_address + '/users/sign_in'
         end
       end
     end
