@@ -76,6 +76,7 @@ class Projects::NotesController < Projects::ApplicationController
 
   def authorize_create_note!
     return unless noteable.lockable?
+
     access_denied! unless can?(current_user, :create_note, noteable)
   end
 end

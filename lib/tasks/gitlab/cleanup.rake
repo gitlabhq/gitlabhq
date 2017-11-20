@@ -60,6 +60,7 @@ namespace :gitlab do
               .chomp('.git')
               .chomp('.wiki')
             next if Project.find_by_full_path(repo_with_namespace)
+
             new_path = path + move_suffix
             puts path.inspect + ' -> ' + new_path.inspect
             File.rename(path, new_path)
@@ -75,6 +76,7 @@ namespace :gitlab do
 
       User.find_each do |user|
         next unless user.ldap_user?
+
         print "#{user.name} (#{user.ldap_identity.extern_uid}) ..."
         if Gitlab::LDAP::Access.allowed?(user)
           puts " [OK]".color(:green)

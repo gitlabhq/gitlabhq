@@ -336,8 +336,10 @@ module Ci
 
     def latest?
       return false unless ref
+
       commit = project.commit(ref)
       return false unless commit
+
       commit.sha == sha
     end
 

@@ -7,6 +7,7 @@ module Gitlab
 
         def sql(event)
           return unless current_transaction
+
           metric_sql_duration_seconds.observe(current_transaction.labels, event.duration / 1000.0)
 
           current_transaction.increment(:sql_duration, event.duration, false)

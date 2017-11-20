@@ -65,6 +65,7 @@ class PagesDomain < ActiveRecord::Base
 
   def expired?
     return false unless x509
+
     current = Time.new
     current < x509.not_before || x509.not_after < current
   end
@@ -75,6 +76,7 @@ class PagesDomain < ActiveRecord::Base
 
   def subject
     return unless x509
+
     x509.subject.to_s
   end
 
@@ -102,6 +104,7 @@ class PagesDomain < ActiveRecord::Base
 
   def validate_pages_domain
     return unless domain
+
     if domain.downcase.ends_with?(Settings.pages.host.downcase)
       self.errors.add(:domain, "*.#{Settings.pages.host} is restricted")
     end
@@ -109,6 +112,7 @@ class PagesDomain < ActiveRecord::Base
 
   def x509
     return unless certificate
+
     @x509 ||= OpenSSL::X509::Certificate.new(certificate)
   rescue OpenSSL::X509::CertificateError
     nil
@@ -116,6 +120,7 @@ class PagesDomain < ActiveRecord::Base
 
   def pkey
     return unless key
+
     @pkey ||= OpenSSL::PKey::RSA.new(key)
   rescue OpenSSL::PKey::PKeyError, OpenSSL::Cipher::CipherError
     nil

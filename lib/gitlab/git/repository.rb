@@ -1376,6 +1376,7 @@ module Gitlab
             end
 
             return nil unless tmp_entry.type == :tree
+
             tmp_entry = tmp_entry[dir]
           end
         end
@@ -1496,6 +1497,7 @@ module Gitlab
       # Ref names must start with `refs/`.
       def rugged_ref_exists?(ref_name)
         raise ArgumentError, 'invalid refname' unless ref_name.start_with?('refs/')
+
         rugged.references.exist?(ref_name)
       rescue Rugged::ReferenceError
         false
@@ -1562,6 +1564,7 @@ module Gitlab
         Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
       rescue Rugged::ReferenceError => e
         raise InvalidRef.new("Branch #{ref} already exists") if e.to_s =~ /'refs\/heads\/#{ref}'/
+
         raise InvalidRef.new("Invalid reference #{start_point}")
       end
 

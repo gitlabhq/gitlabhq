@@ -246,6 +246,7 @@ class Repository
       Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
     rescue Rugged::OSError => ex
       raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
+
       Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
     end
   end
@@ -666,6 +667,7 @@ class Repository
   def next_branch(name, opts = {})
     branch_ids = self.branch_names.map do |n|
       next 1 if n == name
+
       result = n.match(/\A#{name}-([0-9]+)\z/)
       result[1].to_i if result
     end.compact
