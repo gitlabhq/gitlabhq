@@ -128,9 +128,9 @@ export default {
         </a>
         <span
           v-if="group.permission"
-          class="access-type"
+          class="user-access-type"
         >
-          {{s__('GroupsTreeRole|as')}} {{group.permission}}
+          {{group.permission}}
         </span>
       </div>
       <div
