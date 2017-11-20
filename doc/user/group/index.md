@@ -63,34 +63,36 @@ together in a single list view.
 
 ## Epics
 
-Epics are available in GitLab Enterprise Edition Ultimate. Epics are designed to 
-enable you plan and track work at the feature level, as opposed to the design and 
-implementation details level of an issue.
+> Introduced in [GitLab Enterprise Edition Ultimate][ee] 10.2.
 
-Epics are scoped at the group level. A paginated list of epics is available in each
-group. From this page, you can also click the `New epic` button at the top right to
-create a new epic. Creating a new epic will bring you to the epic view itself for
-that newly created epic.
+With epics you can plan and track your work at the feature level by collecting
+multiple related issues together in the same group/subgroup.
 
-![epics list view](img/epics-list-view.png)
+A paginated list of epics is available in each group from where you can create
+a new epic. From the group page, click the **New epic** button at the top right,
+enter a descriptive title and hit **Create epic**.
 
-When creating an epic, you only specify its title.
-For existing epics, you can add/change its title, description, planned start date, and planned
-end date. The planned end date cannot be before the planned start date (but they
-can be the same day).
-
-An epic contains a list of issues. And an issue can be associated with at most one epic.
-In an epic, you add (and remove) issues associated with the epic by clicking `+`,
-pasting in the link to the issue, and clicking `Add`. Any issue belonging to a project 
-in the epic's group or any of the epic's subgroups can are eligible to be added. 
-When you add an issue to an epic that's already associated with another epic,
-the issue is automatically removed from the previous epic. In other words, an issue
-can be associated with at most one epic.
-
-You can also delete an epic from the epic view. Deleting an epic releases all existing
-issues fromt their associated epic in the system.
+Once created, you will be taken to the view for that newly-created epic where
+you can change its title, description, planned start date, and planned end date.
+The planned end date cannot be before the planned start date
+(but they can be the same day).
 
 ![epic view](img/epic-view.png)
+
+An epic contains a list of issues and an issue can be associated with at most
+one epic. You can add issues associated with the epic by clicking the
+plus icon (<kbd>+</kbd>) under the epic description, pasting the link of the
+issue, and clicking **Add**. Any issue belonging to a project in the epic's
+group or any of the epic's subgroups are eligible to be added. To remove an
+issue from an epic, simply click on the <kbd>x</kbd> button in the epic's
+issue list.
+
+When you add an issue to an epic that's already associated with another epic,
+the issue is automatically removed from the previous epic. In other words, an
+issue can be associated with at most one epic.
+
+Deleting an epic releases all existing issues from their associated epic in the
+system.
 
 [See group permissions for epics and associating issues.](../permissions.md#group-members-permissions)
 
