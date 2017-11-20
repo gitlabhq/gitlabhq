@@ -21,6 +21,7 @@ module Gitlab
       GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'.freeze
       REBASE_WORKTREE_PREFIX = 'rebase'.freeze
       SQUASH_WORKTREE_PREFIX = 'squash'.freeze
+      GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'.freeze
 
       NoRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
