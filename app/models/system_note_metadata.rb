@@ -5,8 +5,8 @@ class SystemNoteMetadata < ActiveRecord::Base
   # Other notes can always be safely shown as all its references are
   # in the same project (i.e. with the same permissions)
   TYPES_WITH_CROSS_REFERENCES = %w[
-    cross_reference
-    milestone
+    commit cross_reference
+    close duplicate
   ].freeze
 
   ICON_TYPES = %w[
