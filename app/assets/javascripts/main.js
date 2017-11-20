@@ -319,6 +319,8 @@ $(function () {
   const flashContainer = document.querySelector('.flash-container');
 
   if (flashContainer && flashContainer.children.length) {
-    removeFlashClickListener(flashContainer.children[0]);
+    flashContainer.querySelectorAll('.flash-alert, .flash-notice, .flash-success').forEach((flashEl) => {
+      removeFlashClickListener(flashEl);
+    });
   }
 });
