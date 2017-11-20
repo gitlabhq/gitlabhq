@@ -21,8 +21,10 @@ module Gollum
         commit = @access.commit(sha)
         tree_map_for(sha).inject([]) do |list, entry|
           next list unless @page_class.valid_page_name?(entry.name)
+
           list << entry.page(self, commit)
           break list if limit && list.size >= limit
+
           list
         end
       else
