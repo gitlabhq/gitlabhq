@@ -21,14 +21,14 @@ class MergeRequestsSourceProjectIdForeignKey < ActiveRecord::Migration
   end
 
   def up
-    MergeRequest.with_orphaned_source_projects.each_batch(of: 100) do |batch|
-      batch.update_all(source_project_id: nil)
-    end
-
     # We need to allow NULL values so we can nullify the column when the source
     # project is removed. We _don't_ want to remove the merge request, instead
     # the application will keep them but close them.
     change_column_null(:merge_requests, :source_project_id, true)
+
+    MergeRequest.with_orphaned_source_projects.each_batch(of: 100) do |batch|
+      batch.update_all(source_project_id: nil)
+    end
 
     add_concurrent_foreign_key(
       :merge_requests,
