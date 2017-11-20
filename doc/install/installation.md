@@ -513,8 +513,7 @@ Check if GitLab and its environment are configured correctly:
 
 ### Compile GetText PO files
 
-    sudo -u git -H bundle exec rake gettext:pack RAILS_ENV=production
-    sudo -u git -H bundle exec rake gettext:po_to_json RAILS_ENV=production
+    sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
 
 ### Compile Assets
 
