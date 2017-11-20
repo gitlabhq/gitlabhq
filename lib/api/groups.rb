@@ -172,7 +172,7 @@ module API
       get ":id/projects" do
         group = find_group!(params[:id])
         projects = GroupProjectsFinder.new(group: group, current_user: current_user, params: project_finder_params).execute
-        projects = projects.preload(:fork_network, :forked_project_link, :project_feature, :project_group_links, :tags, :taggings, :group, :namespace)
+        projects = projects.preload(:fork_network, :forked_project_link, :project_feature, :project_group_links, :tags, :taggings, :group, :namespace, :route)
         projects = reorder_projects(projects)
         entity = params[:simple] ? Entities::BasicProjectDetails : Entities::Project
         present paginate(projects), with: entity, current_user: current_user
