@@ -14,6 +14,10 @@ module QA
           find('#project_clone').value
         end
 
+        def project_name
+          find('.project-title').text
+        end
+
         def wait_for_push
           sleep 5
         end
