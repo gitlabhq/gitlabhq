@@ -173,6 +173,7 @@ class User < ActiveRecord::Base
   after_save :ensure_namespace_correct
   after_update :username_changed_hook, if: :username_changed?
   after_destroy :post_destroy_hook
+  after_destroy :remove_key_cache
   after_commit :update_emails_with_primary_email, on: :update, if: -> { previous_changes.key?('email') }
   after_commit :update_invalid_gpg_signatures, on: :update, if: -> { previous_changes.key?('email') }
 
@@ -278,8 +279,7 @@ class User < ActiveRecord::Base
     end
 
     def for_github_id(id)
-      joins(:identities)
-        .where(identities: { provider: :github, extern_uid: id.to_s })
+      joins(:identities).merge(Identity.with_extern_uid(:github, id))
     end
 
     # Find a User by their primary email or any associated secondary email
@@ -643,7 +643,9 @@ class User < ActiveRecord::Base
   end
 
   def require_ssh_key?
-    keys.count == 0 && Gitlab::ProtocolAccess.allowed?('ssh')
+    count = Users::KeysCountService.new(self).count
+
+    count.zero? && Gitlab::ProtocolAccess.allowed?('ssh')
   end
 
   def require_password_creation?
@@ -903,6 +905,10 @@ class User < ActiveRecord::Base
   def post_destroy_hook
     log_info("User \"#{name}\" (#{email})  was removed")
     system_hook_service.execute_hooks_for(self, :destroy)
+  end
+
+  def remove_key_cache
+    Users::KeysCountService.new(self).delete_cache
   end
 
   def delete_async(deleted_by:, params: {})

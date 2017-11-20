@@ -10,7 +10,10 @@ describe Gitlab::Auth::UserAuthFinders do
     }
   end
   let(:request) { Rack::Request.new(env)}
+<<<<<<< HEAD
   let(:params) { request.params }
+=======
+>>>>>>> ce-com/master
 
   def set_param(key, value)
     request.update_param(key, value)
@@ -102,6 +105,7 @@ describe Gitlab::Auth::UserAuthFinders do
     end
   end
 
+<<<<<<< HEAD
   describe '#find_user_from_job_token' do
     let(:job) { create(:ci_build, user: user) }
 
@@ -151,6 +155,8 @@ describe Gitlab::Auth::UserAuthFinders do
     end
   end
 
+=======
+>>>>>>> ce-com/master
   describe '#find_personal_access_token' do
     let(:personal_access_token) { create(:personal_access_token, user: user) }
 

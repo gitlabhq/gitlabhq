@@ -96,12 +96,15 @@ import DueDateSelectors from './due_date_select';
 import Diff from './diff';
 import ProjectLabelSubscription from './project_label_subscription';
 import ProjectVariables from './project_variables';
+<<<<<<< HEAD
 
 // EE-only
 import ApproversSelect from './approvers_select';
 import AuditLogs from './audit_logs';
 import initGeoInfoModal from './init_geo_info_modal';
 import initGroupAnalytics from './init_group_analytics';
+=======
+>>>>>>> ce-com/master
 
 (function() {
   var Dispatcher;
@@ -368,7 +371,8 @@ import initGroupAnalytics from './init_group_analytics';
             container: '.js-commit-pipeline-graph',
           }).bindEvents();
           initNotes();
-          initChangesDropdown();
+          const stickyBarPaddingTop = 16;
+          initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - stickyBarPaddingTop);
           $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
         case 'projects:commit:pipelines':

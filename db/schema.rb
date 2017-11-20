@@ -173,6 +173,7 @@ ActiveRecord::Schema.define(version: 20171114104051) do
     t.boolean "throttle_authenticated_web_enabled", default: false, null: false
     t.integer "throttle_authenticated_web_requests_per_period", default: 7200, null: false
     t.integer "throttle_authenticated_web_period_in_seconds", default: 3600, null: false
+<<<<<<< HEAD
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -190,6 +191,8 @@ ActiveRecord::Schema.define(version: 20171114104051) do
     t.integer "group_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+=======
+>>>>>>> ce-com/master
   end
 
   add_index "approver_groups", ["group_id"], name: "index_approver_groups_on_group_id", using: :btree

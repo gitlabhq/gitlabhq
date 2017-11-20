@@ -6,28 +6,20 @@
 }
 
 .issuable-warning-icon {
-  color: $orange-600;
   background-color: $orange-100;
   border-radius: $border-radius-default;
-  padding: 5px;
   margin: 0 $btn-side-margin 0 0;
   width: $issuable-warning-size;
   height: $issuable-warning-size;
   text-align: center;
 
+  .icon {
+    fill: $orange-600;
+    vertical-align: text-bottom;
+  }
+
   &:first-of-type {
     margin-right: $issuable-warning-icon-margin;
-  }
-}
-
-.sidebar-item-icon {
-  border-radius: $border-radius-default;
-  padding: 5px;
-  margin: 0 3px 0 -4px;
-
-  &.is-active {
-    color: $orange-600;
-    background-color: $orange-50;
   }
 }
 

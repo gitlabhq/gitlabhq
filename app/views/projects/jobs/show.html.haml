@@ -59,13 +59,13 @@
 
     .build-trace-container.prepend-top-default
       .top-bar.js-top-bar
-        .js-truncated-info.truncated-info.hidden<
+        .js-truncated-info.truncated-info.hidden-xs.pull-left.hidden<
           Showing last
           %span.js-truncated-info-size.truncated-info-size><
           KiB of log -
           %a.js-raw-link.raw-link{ href: raw_project_job_path(@project, @build) }>< Complete Raw
 
-        .controllers
+        .controllers.pull-right
           - if @build.has_trace?
             = link_to raw_project_job_path(@project, @build),
                     title: 'Show complete raw',

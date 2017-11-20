@@ -57,7 +57,11 @@ export default class Project {
     Project.projectSelectDropdown();
   }
 
+<<<<<<< HEAD
   static projectSelectDropdown() {
+=======
+  static projectSelectDropdown () {
+>>>>>>> ce-com/master
     projectSelect();
     $('.project-item-select').on('click', e => Project.changeProject($(e.currentTarget).val()));
   }

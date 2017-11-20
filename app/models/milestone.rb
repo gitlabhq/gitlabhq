@@ -260,7 +260,7 @@ class Milestone < ActiveRecord::Base
 
   def start_date_should_be_less_than_due_date
     if due_date <= start_date
-      errors.add(:start_date, "Can't be greater than due date")
+      errors.add(:due_date, "must be greater than start date")
     end
   end
 

@@ -282,18 +282,18 @@ describe Issuable do
   end
 
   describe '#to_hook_data' do
+    let(:builder) { double }
+
     context 'labels are updated' do
       let(:labels) { create_list(:label, 2) }
 
       before do
         issue.update(labels: [labels[1]])
+        expect(Gitlab::HookData::IssuableBuilder)
+          .to receive(:new).with(issue).and_return(builder)
       end
 
       it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
-        builder = double
-
-        expect(Gitlab::HookData::IssuableBuilder)
-          .to receive(:new).with(issue).and_return(builder)
         expect(builder).to receive(:build).with(
           user: user,
           changes: hash_including(
@@ -304,18 +304,35 @@ describe Issuable do
       end
     end
 
+    context 'total_time_spent is updated' do
+      before do
+        issue.spend_time(duration: 2, user: user, spent_at: Time.now)
+        issue.save
+        expect(Gitlab::HookData::IssuableBuilder)
+          .to receive(:new).with(issue).and_return(builder)
+      end
+
+      it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
+        expect(builder).to receive(:build).with(
+          user: user,
+          changes: hash_including(
+            'total_time_spent' => [1, 2]
+          ))
+
+        issue.to_hook_data(user, old_total_time_spent: 1)
+      end
+    end
+
     context 'issue is assigned' do
       let(:user2) { create(:user) }
 
       before do
         issue.assignees << user << user2
+        expect(Gitlab::HookData::IssuableBuilder)
+          .to receive(:new).with(issue).and_return(builder)
       end
 
       it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
-        builder = double
-
-        expect(Gitlab::HookData::IssuableBuilder)
-          .to receive(:new).with(issue).and_return(builder)
         expect(builder).to receive(:build).with(
           user: user,
           changes: hash_including(
@@ -333,13 +350,11 @@ describe Issuable do
       before do
         merge_request.update(assignee: user)
         merge_request.update(assignee: user2)
+        expect(Gitlab::HookData::IssuableBuilder)
+          .to receive(:new).with(merge_request).and_return(builder)
       end
 
       it 'delegates to Gitlab::HookData::IssuableBuilder#build' do
-        builder = double
-
-        expect(Gitlab::HookData::IssuableBuilder)
-          .to receive(:new).with(merge_request).and_return(builder)
         expect(builder).to receive(:build).with(
           user: user,
           changes: hash_including(

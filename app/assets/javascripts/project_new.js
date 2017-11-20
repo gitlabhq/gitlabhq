@@ -1,4 +1,4 @@
-/* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, wrap-iife, no-unused-vars, one-var, no-underscore-dangle, prefer-template, no-else-return, prefer-arrow-callback, max-len */
+/* eslint-disable func-names, no-var, no-underscore-dangle, prefer-template, prefer-arrow-callback*/
 
 import VisibilitySelect from './visibility_select';
 
@@ -12,6 +12,7 @@ export default class ProjectNew {
     this.toggleSettings = this.toggleSettings.bind(this);
     this.$selects = $('.features select');
     this.$repoSelects = this.$selects.filter('.js-repo-select');
+<<<<<<< HEAD
     this.$enableApprovers = $('.js-require-approvals-toggle');
     this.$projectSelects = this.$selects.not('.js-repo-select');
 
@@ -21,10 +22,19 @@ export default class ProjectNew {
         return $('.save-project-loader').show();
       };
     })(this));
+=======
+    this.$projectSelects = this.$selects.not('.js-repo-select');
+
+    $('.project-edit-container').on('ajax:before', () => {
+      $('.project-edit-container').hide();
+      return $('.save-project-loader').show();
+    });
+>>>>>>> ce-com/master
 
     this.initVisibilitySelect();
 
     this.toggleSettings();
+<<<<<<< HEAD
     this.bindEvents();
     this.toggleRepoVisibility();
   }
@@ -34,6 +44,12 @@ export default class ProjectNew {
     $('#require_approvals').on('change', e => this.toggleApproverSettingsVisibility(e));
   }
 
+=======
+    this.toggleSettingsOnclick();
+    this.toggleRepoVisibility();
+  }
+
+>>>>>>> ce-com/master
   initVisibilitySelect() {
     const visibilityContainer = document.querySelector('.js-visibility-select');
     if (!visibilityContainer) return;
@@ -77,6 +93,7 @@ export default class ProjectNew {
     });
   }
 
+<<<<<<< HEAD
   toggleApproverSettingsVisibility(e) {
     this.$requiredApprovals = $('#project_approvals_before_merge');
     const enabled = $(e.target).prop('checked');
@@ -86,6 +103,8 @@ export default class ProjectNew {
     $('.nested-settings').toggleClass('hidden', !enabled);
   }
 
+=======
+>>>>>>> ce-com/master
   toggleSettings() {
     this.$selects.each(function () {
       var $select = $(this);
@@ -96,6 +115,7 @@ export default class ProjectNew {
     });
   }
 
+<<<<<<< HEAD
   static _showOrHide(checkElement, container) {
     var $container = $(container);
 
@@ -107,6 +127,22 @@ export default class ProjectNew {
   }
 
   toggleRepoVisibility () {
+=======
+  toggleSettingsOnclick() {
+    this.$selects.on('change', this.toggleSettings);
+  }
+
+  static _showOrHide(checkElement, container) {
+    const $container = $(container);
+
+    if ($(checkElement).val() !== '0') {
+      return $container.show();
+    }
+    return $container.hide();
+  }
+
+  toggleRepoVisibility() {
+>>>>>>> ce-com/master
     var $repoAccessLevel = $('.js-repo-access-level select');
     var $lfsEnabledOption = $('.js-lfs-enabled select');
     var containerRegistry = document.querySelectorAll('.js-container-registry')[0];
@@ -117,7 +153,12 @@ export default class ProjectNew {
       .nextAll()
       .hide();
 
+<<<<<<< HEAD
     $repoAccessLevel.off('change')
+=======
+    $repoAccessLevel
+      .off('change')
+>>>>>>> ce-com/master
       .on('change', function () {
         var selectedVal = parseInt($repoAccessLevel.val(), 10);
 

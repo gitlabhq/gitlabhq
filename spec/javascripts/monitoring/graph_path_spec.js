@@ -32,4 +32,21 @@ describe('Monitoring Paths', () => {
     expect(metricLine.getAttribute('stroke')).toBe('#1f78d1');
     expect(metricLine.getAttribute('d')).toBe(firstTimeSeries.linePath);
   });
+
+  describe('Computed properties', () => {
+    it('strokeDashArray', () => {
+      const component = createComponent({
+        generatedLinePath: firstTimeSeries.linePath,
+        generatedAreaPath: firstTimeSeries.areaPath,
+        lineColor: firstTimeSeries.lineColor,
+        areaColor: firstTimeSeries.areaColor,
+      });
+
+      component.lineStyle = 'dashed';
+      expect(component.strokeDashArray).toBe('3, 1');
+
+      component.lineStyle = 'dotted';
+      expect(component.strokeDashArray).toBe('1, 1');
+    });
+  });
 });

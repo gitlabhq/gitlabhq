@@ -23,7 +23,10 @@ describe API::Helpers do
     }
   end
   let(:header) { }
+<<<<<<< HEAD
   let(:route_authentication_setting) { {} }
+=======
+>>>>>>> ce-com/master
   let(:request) { Grape::Request.new(env)}
   let(:params) { request.params }
 
@@ -182,6 +185,7 @@ describe API::Helpers do
       it 'does not allow expired tokens' do
         personal_access_token.update_attributes!(expires_at: 1.day.ago)
         env[Gitlab::Auth::UserAuthFinders::PRIVATE_TOKEN_HEADER] = personal_access_token.token
+<<<<<<< HEAD
 
         expect { current_user }.to raise_error Gitlab::Auth::ExpiredError
       end
@@ -229,6 +233,10 @@ describe API::Helpers do
 
           expect(current_user).to be_nil
         end
+=======
+
+        expect { current_user }.to raise_error Gitlab::Auth::ExpiredError
+>>>>>>> ce-com/master
       end
     end
   end

@@ -55,7 +55,9 @@ module Gitlab
     def first_collection_last_page_size
       return @first_collection_last_page_size if defined?(@first_collection_last_page_size)
 
-      @first_collection_last_page_size = paginated_first_collection(first_collection_page_count).count
+      @first_collection_last_page_size = paginated_first_collection(first_collection_page_count)
+                                           .except(:select)
+                                           .size
     end
   end
 end
