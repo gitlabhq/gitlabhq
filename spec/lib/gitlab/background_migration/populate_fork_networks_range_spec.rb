@@ -3,12 +3,9 @@ require 'spec_helper'
 describe Gitlab::BackgroundMigration::PopulateForkNetworksRange, :migration, schema: 20170929131201 do
   let(:migration) { described_class.new }
   let(:base1) { create(:project) }
-  let(:base1_fork1) { create(:project) }
-  let(:base1_fork2) { create(:project) }
 
   let(:base2) { create(:project) }
   let(:base2_fork1) { create(:project) }
-  let(:base2_fork2) { create(:project) }
 
   let!(:forked_project_links) { table(:forked_project_links) }
   let!(:fork_networks) { table(:fork_networks) }
@@ -21,21 +18,24 @@ describe Gitlab::BackgroundMigration::PopulateForkNetworksRange, :migration, sch
     # A normal fork link
     forked_project_links.create(id: 1,
                                 forked_from_project_id: base1.id,
-                                forked_to_project_id: base1_fork1.id)
+                                forked_to_project_id: create(:project).id)
     forked_project_links.create(id: 2,
                                 forked_from_project_id: base1.id,
-                                forked_to_project_id: base1_fork2.id)
-
+                                forked_to_project_id: create(:project).id)
     forked_project_links.create(id: 3,
                                 forked_from_project_id: base2.id,
                                 forked_to_project_id: base2_fork1.id)
+
+    # create a fork of a fork
     forked_project_links.create(id: 4,
                                 forked_from_project_id: base2_fork1.id,
                                 forked_to_project_id: create(:project).id)
-
     forked_project_links.create(id: 5,
-                                forked_from_project_id: base2.id,
-                                forked_to_project_id: base2_fork2.id)
+                                forked_from_project_id: create(:project).id,
+                                forked_to_project_id: create(:project).id)
+
+    # Stub out the calls to the other migrations
+    allow(BackgroundMigrationWorker).to receive(:perform_in)
 
     migration.perform(1, 3)
   end
@@ -80,7 +80,11 @@ describe Gitlab::BackgroundMigration::PopulateForkNetworksRange, :migration, sch
   end
 
   it 'only processes a single batch of links at a time' do
-    expect(fork_network_members.count).to eq(5)
+    expect(fork_networks.count).to eq(2)
+
+    migration.perform(3, 5)
+
+    expect(fork_networks.count).to eq(3)
   end
 
   it 'can be repeated without effect' do
