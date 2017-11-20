@@ -31,7 +31,7 @@ module Gitlab
 
     def check
       ensure_patches_dir
-      generate_patch(ce_branch, ce_patch_full_path)
+      generate_patch(branch: ce_branch, patch_path: ce_patch_full_path, remote: DEFAULT_CE_PROJECT_URL)
 
       ensure_ee_repo
       Dir.chdir(ee_repo_dir) do
@@ -71,14 +71,14 @@ module Gitlab
       FileUtils.mkdir_p(patches_dir)
     end
 
-    def generate_patch(branch, patch_path)
+    def generate_patch(branch:, patch_path:, remote:)
       FileUtils.rm(patch_path, force: true)
 
-      find_merge_base_with_master(branch: branch)
+      find_merge_base_with_master(branch: branch, remote: remote)
 
       step(
-        "Generating the patch against origin/master in #{patch_path}",
-        %w[git diff --binary origin/master...HEAD]
+        "Generating the patch against FETCH_HEAD in #{patch_path}",
+        %w[git diff --binary FETCH_HEAD...HEAD]
       ) do |output, status|
         throw(:halt_check, :ko) unless status.zero?
 
@@ -116,9 +116,9 @@ module Gitlab
     end
 
     def ee_branch_compat_check!
-      step("Checking out origin/#{ee_branch_found}", %W[git checkout -b #{ee_branch_found} FETCH_HEAD])
+      step("Checking out #{ee_branch_found}", %W[git checkout -b #{ee_branch_found} FETCH_HEAD])
 
-      generate_patch(ee_branch_found, ee_patch_full_path)
+      generate_patch(branch: ee_branch_found, patch_path: ee_patch_full_path, remote: EE_REPO_URL)
 
       unless check_patch(ee_patch_full_path).zero?
         puts
@@ -134,7 +134,6 @@ module Gitlab
     def check_patch(patch_path)
       step("Checking out master", %w[git checkout master])
       step("Resetting to latest master", %w[git reset --hard origin/master])
-      step("Fetching CE/#{ce_branch}", %W[git fetch #{ce_repo_url} #{ce_branch}])
       step(
         "Checking if #{patch_path} applies cleanly to EE/master",
         # Don't use --check here because it can result in a 0-exit status even
@@ -173,8 +172,8 @@ module Gitlab
 
     def merge_base_found?
       step(
-        "Finding merge base with master",
-        %w[git merge-base origin/master HEAD]
+        "Finding merge base with FETCH_HEAD",
+        %w[git merge-base FETCH_HEAD HEAD]
       ) do |output, status|
         if status.zero?
           puts "Merge base was found: #{output}"
@@ -183,7 +182,7 @@ module Gitlab
       end
     end
 
-    def find_merge_base_with_master(branch:)
+    def find_merge_base_with_master(branch:, remote:)
       # Start with (Math.exp(3).to_i = 20) until (Math.exp(6).to_i = 403)
       # In total we go (20 + 54 + 148 + 403 = 625) commits deeper
       depth = 20
@@ -193,7 +192,7 @@ module Gitlab
           # Repository is initially cloned with a depth of 20 so we need to fetch
           # deeper in the case the branch has more than 20 commits on top of master
           fetch(branch: branch, depth: depth)
-          fetch(branch: 'master', depth: depth, remote: DEFAULT_CE_PROJECT_URL)
+          fetch(branch: 'master', depth: depth, remote: remote)
 
           merge_base_found?
         end
