@@ -24,8 +24,18 @@ module Banzai
 
       def url_for_object(commit, project)
         h = Gitlab::Routing.url_helpers
-        h.project_commit_url(project, commit,
-                                        only_path: context[:only_path])
+        noteable = context[:merge_request] || context[:noteable]
+
+        if noteable.is_a?(MergeRequest) &&
+           noteable.all_commit_shas.include?(commit.id)
+
+          # the internal shas are in the context?
+          # why not preload in the object?, just make sure we have the same ref
+          # in all the rendering
+          h.diffs_project_merge_request_url(project, noteable, commit_id: commit.id)
+        else
+          h.project_commit_url(project, commit, only_path: context[:only_path])
+        end
       end
 
       def object_link_text_extras(object, matches)

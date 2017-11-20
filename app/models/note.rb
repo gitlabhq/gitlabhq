@@ -405,6 +405,10 @@ class Note < ActiveRecord::Base
     noteable_object&.touch
   end
 
+  def banzai_render_context(field)
+    super.merge(noteable: noteable)
+  end
+
   private
 
   def keep_around_commit
