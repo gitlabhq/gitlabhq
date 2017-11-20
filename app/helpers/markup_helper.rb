@@ -53,6 +53,7 @@ module MarkupHelper
       # text, wrapping anything found in the requested link
       fragment.children.each do |node|
         next unless node.text?
+
         node.replace(link_to(node.text, url, html_options))
       end
     end

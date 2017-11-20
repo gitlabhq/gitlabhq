@@ -35,11 +35,13 @@ class AddIndexForPushrulesIsSample < ActiveRecord::Migration
 
   def up
     return if index_exists? :push_rules, :is_sample
+
     add_concurrent_index(:push_rules, :is_sample, where: "is_sample")
   end
 
   def down
     return unless index_exists? :push_rules, :is_sample
+
     remove_concurrent_index(:push_rules, :is_sample, where: "is_sample")
   end
 end

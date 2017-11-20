@@ -178,6 +178,7 @@ class License < ActiveRecord::Base
       license = self.last
 
       return unless license && license.valid?
+
       license
     end
   end

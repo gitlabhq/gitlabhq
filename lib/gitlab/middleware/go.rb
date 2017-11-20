@@ -66,6 +66,7 @@ module Gitlab
 
         project_path_match = "#{path_info}/".match(PROJECT_PATH_REGEX)
         return unless project_path_match
+
         path = project_path_match[1]
 
         # Go subpackages may be in the form of `namespace/project/path1/path2/../pathN`.

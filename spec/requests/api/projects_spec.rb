@@ -437,6 +437,7 @@ describe API::Projects do
 
       project.each_pair do |k, v|
         next if %i[has_external_issue_tracker issues_enabled merge_requests_enabled wiki_enabled].include?(k)
+
         expect(json_response[k.to_s]).to eq(v)
       end
 
@@ -643,6 +644,7 @@ describe API::Projects do
       expect(response).to have_gitlab_http_status(201)
       project.each_pair do |k, v|
         next if %i[has_external_issue_tracker path].include?(k)
+
         expect(json_response[k.to_s]).to eq(v)
       end
     end

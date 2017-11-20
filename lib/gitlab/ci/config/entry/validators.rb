@@ -111,6 +111,7 @@ module Gitlab
             def validate_string_or_regexp(value)
               return false unless value.is_a?(String)
               return validate_regexp(value) if look_like_regexp?(value)
+
               true
             end
           end

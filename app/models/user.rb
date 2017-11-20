@@ -1133,6 +1133,7 @@ class User < ActiveRecord::Base
   # override, from Devise::Validatable
   def password_required?
     return false if internal?
+
     super
   end
 
@@ -1150,6 +1151,7 @@ class User < ActiveRecord::Base
   # Added according to https://github.com/plataformatec/devise/blob/7df57d5081f9884849ca15e4fde179ef164a575f/README.md#activejob-integration
   def send_devise_notification(notification, *args)
     return true unless can?(:receive_notifications)
+
     devise_mailer.__send__(notification, self, *args).deliver_later # rubocop:disable GitlabSecurity/PublicSend
   end
 

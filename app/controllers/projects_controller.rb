@@ -272,6 +272,7 @@ class ProjectsController < Projects::ApplicationController
   def render_landing_page
     if can?(current_user, :download_code, @project)
       return render 'projects/no_repo' unless @project.repository_exists?
+
       render 'projects/empty' if @project.empty_repo?
     else
       if @project.wiki_enabled?

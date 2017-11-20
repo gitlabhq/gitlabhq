@@ -94,6 +94,7 @@ module Gitlab
           page, version = wiki_page_from_iterator(response) { |message| message.end_of_page }
 
           break unless page && version
+
           pages << [page, version]
         end
 

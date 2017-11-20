@@ -426,6 +426,7 @@ module Gitlab
       args = [gitlab_shell_projects_path, 'delete-remote-branches', storage, "#{project_name}.git", remote_name, *branch_names]
       output, status = Popen.popen(args)
       raise Error, output unless status.zero?
+
       true
     end
 
@@ -500,6 +501,7 @@ module Gitlab
       output, status = gitlab_shell_fast_execute_helper(cmd, vars)
 
       raise Error, output unless status.zero?
+
       true
     end
 

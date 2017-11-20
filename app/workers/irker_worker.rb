@@ -104,6 +104,7 @@ class IrkerWorker
     parents = commit.parents
     # Return old value if there's no new one
     return push_data['before'] if parents.empty?
+
     # Or return the first parent-commit
     parents[0].id
   end

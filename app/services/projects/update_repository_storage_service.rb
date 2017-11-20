@@ -69,6 +69,7 @@ module Projects
       # Try for 30 seconds, polling every 10
       3.times do
         return true if reference_counter.value == 0
+
         sleep 10
       end
 

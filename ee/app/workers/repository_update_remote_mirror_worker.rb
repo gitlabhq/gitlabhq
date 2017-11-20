@@ -19,6 +19,7 @@ class RepositoryUpdateRemoteMirrorWorker
     return if remote_mirror.updated_since?(scheduled_time)
 
     raise UpdateAlreadyInProgressError if remote_mirror.update_in_progress?
+
     remote_mirror.update_start
 
     project = remote_mirror.project
