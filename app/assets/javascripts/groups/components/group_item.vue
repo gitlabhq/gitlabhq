@@ -123,18 +123,23 @@ export default {
           :title="group.fullName"
           class="no-expand"
           data-placement="top"
-        >
-          {{group.name}}
-        </a>
+        >{{
+          // ending bracket must be by closing tag to prevent
+          // link hover text-decoration from over-extending
+          group.name
+        }}</a>
         <span
           v-if="group.permission"
-          class="access-type"
+          class="user-access-role"
         >
-          {{s__('GroupsTreeRole|as')}} {{group.permission}}
+          {{group.permission}}
         </span>
       </div>
       <div
-        class="description">{{group.description}}</div>
+        v-if="group.description"
+        class="description">
+        {{group.description}}
+      </div>
     </div>
     <group-folder
       v-if="group.isOpen && hasChildren"

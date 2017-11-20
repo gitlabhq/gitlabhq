@@ -262,6 +262,18 @@ table.pipeline-project-metrics tr td {
   }
 }
 
+.user-access-role {
+  display: inline-block;
+  color: $gl-text-color-secondary;
+  font-size: 12px;
+  line-height: 20px;
+  margin: -5px 3px;
+  padding: 0 $label-padding;
+  border: 1px solid $border-color;
+  border-radius: $label-border-radius;
+  font-weight: $gl-font-weight-normal;
+}
+
 .plan-badge {
   margin-right: 15px;
 
