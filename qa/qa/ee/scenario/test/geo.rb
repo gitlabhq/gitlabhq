@@ -109,9 +109,7 @@ module QA
 
               puts 'Waiting until secondary node services are restarted ...'
 
-              # TODO, use Capybara helper to wait for HTTP status 200 on secondary
-              #
-              sleep 60
+              sleep 60 # Wait until services are restarted correctly
             end
           end
         end

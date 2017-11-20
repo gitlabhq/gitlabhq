@@ -19,8 +19,10 @@ module QA
 
       private
 
-      # TODO gitlab-qa/library issue
-
+      ##
+      # TODO, make it possible to use generic QA framework classes
+      # as a library - gitlab-org/gitlab-qa#94
+      #
       def shell(command)
         puts "Executing `#{command}`"
 
