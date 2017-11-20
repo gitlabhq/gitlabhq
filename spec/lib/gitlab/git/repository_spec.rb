@@ -634,16 +634,29 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#remote_tags' do
+    let(:remote_name) { 'upstream' }
     let(:target_commit_id) { SeedRepo::Commit::ID }
+    let(:user) { create(:user) }
+    let(:tag_name) { 'v0.0.1' }
+    let(:tag_message) { 'My tag' }
+    let(:remote_repository) do
+      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
+    end
 
-    subject { repository.remote_tags('upstream') }
+    subject { repository.remote_tags(remote_name) }
+
+    before do
+      repository.add_remote(remote_name, remote_repository.path)
+      remote_repository.add_tag(tag_name, user: user, target: target_commit_id)
+    end
+
+    after do
+      ensure_seeds
+    end
 
     it 'gets the remote tags' do
-      expect(repository).to receive(:list_remote_tags).with('upstream')
-        .and_return(["#{target_commit_id}\trefs/tags/v0.0.1\n"])
-
       expect(subject.first).to be_an_instance_of(Gitlab::Git::Tag)
-      expect(subject.first.name).to eq('v0.0.1')
+      expect(subject.first.name).to eq(tag_name)
       expect(subject.first.dereferenced_target.id).to eq(target_commit_id)
     end
   end
