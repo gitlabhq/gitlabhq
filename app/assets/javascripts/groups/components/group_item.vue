@@ -128,7 +128,7 @@ export default {
         </a>
         <span
           v-if="group.permission"
-          class="user-access-type"
+          class="user-access-role"
         >
           {{group.permission}}
         </span>
