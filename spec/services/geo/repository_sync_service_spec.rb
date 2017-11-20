@@ -189,6 +189,25 @@ describe Geo::RepositorySyncService do
 
         subject.execute
       end
+
+      it 'successfully redownloads the file even if the retry time exceeds max value' do
+        timestamp = Time.now.utc
+        registry = create(
+          :geo_project_registry,
+          project: project,
+          repository_retry_count: Geo::BaseSyncService::RETRY_BEFORE_REDOWNLOAD + 2000,
+          repository_retry_at: timestamp,
+          force_to_redownload_repository: true
+        )
+
+        subject.execute
+
+        # The repository should be redownloaded and cleared without errors. If
+        # the timestamp were not capped, we would have seen a "timestamp out
+        # of range" in the first update to the project registry.
+        registry.reload
+        expect(registry.repository_retry_at).to be_nil
+      end
     end
 
     context 'secondary replicates over SSH' do
