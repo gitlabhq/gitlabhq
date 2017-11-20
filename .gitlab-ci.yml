@@ -594,6 +594,19 @@ qa:internal:
     - bundle install
     - bundle exec rspec
 
+qa:staging:
+  stage: test
+  variables:
+    SETUP_DB: "false"
+    GITLAB_USERNAME: 'gitlab-qa'
+    GITLAB_PASSWORD: ${GITLAB_QA_STAGING_PASSWORD}
+  services: []
+  when: manual
+  script:
+    - cd qa/
+    - bundle install
+    - bundle exec bin/qa Test::Instance ${GITLAB_QA_STAGING_URL}
+
 coverage:
   <<: *dedicated-runner
   <<: *except-docs
