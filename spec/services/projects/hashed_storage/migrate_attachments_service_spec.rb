@@ -49,13 +49,10 @@ describe Projects::HashedStorage::MigrateAttachmentsService do
         FileUtils.mkdir_p(base_path(hashed_storage))
       end
 
-      it 'skips moving the file and goes to next' do
+      it 'raises AttachmentMigrationError' do
         expect(FileUtils).not_to receive(:mv).with(base_path(legacy_storage), base_path(hashed_storage))
 
-        service.execute
-
-        expect(File.exist?(base_path(legacy_storage))).to be_truthy
-        expect(File.file?(old_path)).to be_truthy
+        expect { service.execute }.to raise_error(Projects::HashedStorage::AttachmentMigrationError)
       end
     end
   end

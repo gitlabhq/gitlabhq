@@ -1,5 +1,7 @@
 module Projects
   module HashedStorage
+    AttachmentMigrationError = Class.new(StandardError)
+
     class MigrateAttachmentsService < BaseService
       attr_reader :logger
 
@@ -27,7 +29,7 @@ module Projects
 
         if File.exist?(new_path)
           logger.error("Cannot migrate attachments from '#{old_path}' to '#{new_path}', target path already exist (PROJECT_ID=#{project.id})")
-          return
+          raise AttachmentMigrationError, "Target path '#{new_path}' already exist"
         end
 
         # Create hashed storage base path folder
