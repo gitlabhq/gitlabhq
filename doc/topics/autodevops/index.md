@@ -321,7 +321,7 @@ Auto DevOps uses [Helm](https://helm.sh/) to deploy your application to Kubernet
 You can override the Helm chart used by bundling up a chart into your project
 repo or by specifying a project variable:
 
-- **Bundled chart** - If your project has a `./charts` directory with a `Chart.yaml`
+- **Bundled chart** - If your project has a `./chart` directory with a `Chart.yaml`
   file in it, Auto DevOps will detect the chart and use it instead of the [default
   one](https://gitlab.com/charts/charts.gitlab.io/tree/master/charts/auto-deploy-app).
   This can be a great way to control exactly how your application is deployed.

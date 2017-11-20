@@ -1,0 +1,5 @@
+---
+title: Revert a regression on runners sorting (!15134)
+merge_request: 15341
+author: Takuya Noguchi
+type: fixed

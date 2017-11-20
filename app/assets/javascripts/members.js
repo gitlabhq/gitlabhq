@@ -59,17 +59,6 @@ export default class Members {
       });
     });
   }
-  // eslint-disable-next-line class-methods-use-this
-  removeRow(e) {
-    const $target = $(e.target);
-
-    if ($target.hasClass('btn-remove')) {
-      $target.closest('.member')
-        .fadeOut(function fadeOutMemberRow() {
-          $(this).remove();
-        });
-    }
-  }
 
   formSubmit(e, $el = null) {
     const $this = e ? $(e.currentTarget) : $el;

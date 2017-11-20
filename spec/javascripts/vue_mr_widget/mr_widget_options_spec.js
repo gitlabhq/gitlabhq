@@ -79,7 +79,6 @@ describe('mrWidgetOptions', () => {
 
       it('should return true if there is relatedLinks in MR', () => {
         Vue.set(vm.mr, 'relatedLinks', {});
-
         expect(vm.shouldRenderRelatedLinks).toBeTruthy();
       });
     });

@@ -79,8 +79,8 @@ module Ci
 
     state_machine :status, initial: :created do
       event :enqueue do
-        transition created: :pending
-        transition [:success, :failed, :canceled, :skipped] => :running
+        transition [:created, :skipped] => :pending
+        transition [:success, :failed, :canceled] => :running
       end
 
       event :run do

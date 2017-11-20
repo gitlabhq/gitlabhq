@@ -944,7 +944,16 @@ class User < ActiveRecord::Base
   end
 
   def manageable_namespaces
-    @manageable_namespaces ||= [namespace] + owned_groups + masters_groups
+    @manageable_namespaces ||= [namespace] + manageable_groups
+  end
+
+  def manageable_groups
+    union = Gitlab::SQL::Union.new([owned_groups.select(:id),
+                                    masters_groups.select(:id)])
+    arel_union = Arel::Nodes::SqlLiteral.new(union.to_sql)
+    owned_and_master_groups = Group.where(Group.arel_table[:id].in(arel_union))
+
+    Gitlab::GroupHierarchy.new(owned_and_master_groups).base_and_descendants
   end
 
   def namespaces

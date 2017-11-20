@@ -175,6 +175,11 @@ module API
       end
     end
 
+    def authenticated_with_full_private_access!
+      authenticate!
+      forbidden! unless current_user.full_private_access?
+    end
+
     def authenticated_as_admin!
       authenticate!
       forbidden! unless current_user.admin?
@@ -208,6 +213,10 @@ module API
 
     def require_pages_enabled!
       not_found! unless user_project.pages_available?
+    end
+
+    def require_pages_config_enabled!
+      not_found! unless Gitlab.config.pages.enabled
     end
 
     def can?(object, action, subject = :global)

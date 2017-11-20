@@ -67,6 +67,28 @@ describe('GfmAutoComplete', function () {
     });
   });
 
+  describe('DefaultOptions.beforeInsert', () => {
+    const beforeInsert = (context, value) => (
+      gfmAutoCompleteCallbacks.beforeInsert.call(context, value)
+    );
+
+    const atwhoInstance = { setting: { skipSpecialCharacterTest: false } };
+
+    it('should not quote if value only contains alphanumeric charecters', () => {
+      expect(beforeInsert(atwhoInstance, '@user1')).toBe('@user1');
+      expect(beforeInsert(atwhoInstance, '~label1')).toBe('~label1');
+    });
+
+    it('should quote if value contains any non-alphanumeric characters', () => {
+      expect(beforeInsert(atwhoInstance, '~label-20')).toBe('~"label-20"');
+      expect(beforeInsert(atwhoInstance, '~label 20')).toBe('~"label 20"');
+    });
+
+    it('should quote integer labels', () => {
+      expect(beforeInsert(atwhoInstance, '~1234')).toBe('~"1234"');
+    });
+  });
+
   describe('DefaultOptions.matcher', function () {
     const defaultMatcher = (context, flag, subtext) => (
       gfmAutoCompleteCallbacks.matcher.call(context, flag, subtext)

@@ -189,7 +189,7 @@ class IssuableBaseService < BaseService
 
       # We have to perform this check before saving the issuable as Rails resets
       # the changed fields upon calling #save.
-      update_project_counters = issuable.project && issuable.update_project_counter_caches?
+      update_project_counters = issuable.project && update_project_counter_caches?(issuable)
 
       if issuable.with_transaction_returning_status { issuable.save }
         # We do not touch as it will affect a update on updated_at field
@@ -289,5 +289,9 @@ class IssuableBaseService < BaseService
 
   # override if needed
   def execute_hooks(issuable, action = 'open', params = {})
+  end
+
+  def update_project_counter_caches?(issuable)
+    issuable.state_changed?
   end
 end
