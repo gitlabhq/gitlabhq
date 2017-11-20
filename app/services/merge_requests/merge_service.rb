@@ -94,17 +94,17 @@ module MergeRequests
       @merge_request.update(merge_error: log_message) if save_message_on_model
     end
 
+    def log_info(message)
+      @logger ||= Rails.logger
+      @logger.info("#{merge_request_info} - #{message}")
+    end
+
     def merge_request_info
       merge_request.to_reference(full: true)
     end
 
     def find_merge_source
       merge_request.diff_head_sha
-    end
-
-    def log_info(message)
-      @logger ||= Rails.logger
-      @logger.info(message)
     end
   end
 end
