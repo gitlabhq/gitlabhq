@@ -96,15 +96,12 @@ import DueDateSelectors from './due_date_select';
 import Diff from './diff';
 import ProjectLabelSubscription from './project_label_subscription';
 import ProjectVariables from './project_variables';
-<<<<<<< HEAD
 
 // EE-only
 import ApproversSelect from './approvers_select';
 import AuditLogs from './audit_logs';
 import initGeoInfoModal from './init_geo_info_modal';
 import initGroupAnalytics from './init_group_analytics';
-=======
->>>>>>> ce-com/master
 
 (function() {
   var Dispatcher;
