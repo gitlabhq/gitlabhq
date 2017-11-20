@@ -8,65 +8,59 @@ describe Projects::HashedStorage::MigrateAttachmentsService do
 
   let!(:upload) { Upload.find_by(path: file_uploader.relative_path) }
   let(:file_uploader) { build(:file_uploader, project: project) }
-  let(:old_path) { attachments_path(legacy_storage, upload) }
-  let(:new_path) { attachments_path(hashed_storage, upload) }
-
-  let(:other_file_uploader) { build(:file_uploader, project: project) }
-  let(:other_old_path) { attachments_path(legacy_storage, other_upload) }
-  let(:other_new_path) { attachments_path(hashed_storage, other_upload) }
+  let(:old_path) { File.join(base_path(legacy_storage), upload.path) }
+  let(:new_path) { File.join(base_path(hashed_storage), upload.path) }
 
   context '#execute' do
     context 'when succeeds' do
       it 'moves attachments to hashed storage layout' do
         expect(File.file?(old_path)).to be_truthy
         expect(File.file?(new_path)).to be_falsey
+        expect(File.exist?(base_path(legacy_storage))).to be_truthy
+        expect(File.exist?(base_path(hashed_storage))).to be_falsey
+        expect(FileUtils).to receive(:mv).with(base_path(legacy_storage), base_path(hashed_storage)).and_call_original
 
         service.execute
 
+        expect(File.exist?(base_path(hashed_storage))).to be_truthy
+        expect(File.exist?(base_path(legacy_storage))).to be_falsey
         expect(File.file?(old_path)).to be_falsey
         expect(File.file?(new_path)).to be_truthy
       end
     end
 
-    context 'when original file does not exist anymore' do
-      let!(:other_upload) { Upload.find_by(path: other_file_uploader.relative_path) }
-
+    context 'when original folder does not exist anymore' do
       before do
-        File.unlink(old_path)
+        FileUtils.rm_rf(base_path(legacy_storage))
       end
 
-      it 'skips moving the file and goes to next' do
-        expect(FileUtils).not_to receive(:mv).with(old_path, new_path)
-        expect(FileUtils).to receive(:mv).with(other_old_path, other_new_path).and_call_original
+      it 'skips moving folders and go to next' do
+        expect(FileUtils).not_to receive(:mv).with(base_path(legacy_storage), base_path(hashed_storage))
 
         service.execute
 
+        expect(File.exist?(base_path(hashed_storage))).to be_falsey
         expect(File.file?(new_path)).to be_falsey
-        expect(File.file?(other_new_path)).to be_truthy
       end
     end
 
-    context 'when target file already exists' do
-      let!(:other_upload) { Upload.find_by(path: other_file_uploader.relative_path) }
-
+    context 'when target folder already exists' do
       before do
-        FileUtils.mkdir_p(File.dirname(new_path))
-        FileUtils.touch(new_path)
+        FileUtils.mkdir_p(base_path(hashed_storage))
       end
 
       it 'skips moving the file and goes to next' do
-        expect(FileUtils).not_to receive(:mv).with(old_path, new_path)
-        expect(FileUtils).to receive(:mv).with(other_old_path, other_new_path).and_call_original
-        expect(File.file?(new_path)).to be_truthy
+        expect(FileUtils).not_to receive(:mv).with(base_path(legacy_storage), base_path(hashed_storage))
 
         service.execute
 
+        expect(File.exist?(base_path(legacy_storage))).to be_truthy
         expect(File.file?(old_path)).to be_truthy
       end
     end
   end
 
-  def attachments_path(storage, upload)
-    File.join(CarrierWave.root, FileUploader.base_dir, storage.disk_path, upload.path)
+  def base_path(storage)
+    File.join(CarrierWave.root, FileUploader.base_dir, storage.disk_path)
   end
 end
