@@ -2,8 +2,8 @@
 /* global notes */
 
 import Vue from 'vue';
-import collapseIcon from '../icons/collapse_icon.svg';
-import userAvatarImage from '../../vue_shared/components/user_avatar/user_avatar_image.vue';
+import Icon from '~/vue_shared/components/icon.vue';
+import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 
 const DiffNoteAvatars = Vue.extend({
   props: ['discussionId'],
@@ -13,11 +13,11 @@ const DiffNoteAvatars = Vue.extend({
       lineType: '',
       storeState: CommentsStore.state,
       shownAvatars: 3,
-      collapseIcon,
     };
   },
   components: {
-    userAvatarImage,
+    Icon,
+    UserAvatarImage,
   },
   template: `
     <div class="diff-comment-avatar-holders"
@@ -51,8 +51,8 @@ const DiffNoteAvatars = Vue.extend({
         aria-label="Show comments"
         :data-line-type="lineType"
         @click="clickedAvatar($event)"
-        v-if="isVisible"
-        v-html="collapseIcon">
+        v-if="isVisible">
+        <icon name="collapse" :size="12" />
       </button>
     </div>
   `,
