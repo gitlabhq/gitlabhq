@@ -2,9 +2,16 @@ module QA
   module Page
     module Admin
       class Menu < Page::Base
+        def go_to_geo_nodes
+          click_link 'Geo Nodes'
+        end
+
         def go_to_license
-          link = find_link 'License'
-          link.click
+          click_link 'License'
+        end
+
+        def go_to_settings
+          click_link 'Settings'
         end
       end
     end
