@@ -37,18 +37,18 @@ describe('Sprite Icon Component', function () {
       expect(icon.iconSizeClass).toBe('s32');
     });
 
-    it('forbids invalid size prop', () => {
-      expect(icon.$options.props.size.validator(NaN)).toBeFalsy();
-      expect(icon.$options.props.size.validator(0)).toBeFalsy();
-      expect(icon.$options.props.size.validator(9001)).toBeFalsy();
-    });
-
     it('should properly render img css', function () {
       const classList = icon.$el.classList;
       const containsSizeClass = classList.contains('s32');
       const containsCustomClass = classList.contains('extraclasses');
       expect(containsSizeClass).toBe(true);
       expect(containsCustomClass).toBe(true);
+    });
+
+    it('forbids invalid size prop', () => {
+      expect(icon.$options.props.size.validator(NaN)).toBeFalsy();
+      expect(icon.$options.props.size.validator(0)).toBeFalsy();
+      expect(icon.$options.props.size.validator(9001)).toBeFalsy();
     });
   });
 });
