@@ -299,12 +299,15 @@ describe API::Jobs do
     context 'normal authentication' do
       before do
         stub_artifacts_object_storage
-        get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
       end
 
       context 'job with artifacts' do
         context 'when artifacts are stored locally' do
           let(:job) { create(:ci_build, :artifacts, pipeline: pipeline) }
+
+          before do
+            get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+          end
 
           context 'authorized user' do
             it_behaves_like 'downloads artifact'
@@ -320,7 +323,14 @@ describe API::Jobs do
         end
 
         context 'when artifacts are stored remotely' do
-          let(:job) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline) }
+          let(:job) { create(:ci_build, pipeline: pipeline) }
+          let!(:artifact) { create(:ci_job_artifact, :remote_store, job: job) }
+
+          before do
+            job.reload
+
+            get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+          end
 
           it 'returns location redirect' do
             expect(response).to have_gitlab_http_status(302)
@@ -328,6 +338,8 @@ describe API::Jobs do
         end
 
         it 'does not return job artifacts if not uploaded' do
+          get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+
           expect(response).to have_gitlab_http_status(404)
         end
       end
@@ -440,7 +452,14 @@ describe API::Jobs do
         end
 
         context 'when artifacts are stored remotely' do
-          let(:job) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline, user: api_user) }
+          let(:job) { create(:ci_build, pipeline: pipeline, user: api_user) }
+          let!(:artifact) { create(:ci_job_artifact, :remote_store, job: job) }
+
+          before do
+            job.reload
+
+            get api("/projects/#{project.id}/jobs/#{job.id}/artifacts", api_user)
+          end
 
           it 'returns location redirect' do
             expect(response).to have_gitlab_http_status(302)

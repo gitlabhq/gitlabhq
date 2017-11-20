@@ -1,4 +1,4 @@
-class AddFileStoreJobArtifacts <  ActiveRecord::Migration
+class AddFileStoreJobArtifacts < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 
   disable_ddl_transaction!
@@ -12,6 +12,6 @@ class AddFileStoreJobArtifacts <  ActiveRecord::Migration
   end
 
   def down
-    drop_column(:ci_job_artifacts, :file_store)
+    remove_column(:ci_job_artifacts, :file_store)
   end
 end
