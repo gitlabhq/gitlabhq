@@ -86,7 +86,7 @@
   <div class="note-actions">
     <span
       v-if="accessLevel"
-      class="note-role note-role-access">{{accessLevel}}</span>
+      class="note-role project-user-role">{{accessLevel}}</span>
     <div
       v-if="canAddAwardEmoji"
       class="note-actions-item">

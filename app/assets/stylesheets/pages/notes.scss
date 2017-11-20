@@ -623,14 +623,7 @@ ul.notes {
   display: inline-block;
   color: $gl-text-color-secondary;
   font-size: 12px;
-  line-height: 20px;
   margin: 0 3px;
-
-  &.note-role-access {
-    padding: 0 7px;
-    border: 1px solid $border-color;
-    border-radius: $label-border-radius;
-  }
 
   &.note-role-special {
     text-shadow: 0 0 15px $gl-text-color-inverted;

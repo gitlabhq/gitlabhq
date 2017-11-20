@@ -212,3 +212,14 @@
     height: 50px;
   }
 }
+
+.user-access-type {
+  display: inline-block;
+  color: $gl-text-color-secondary;
+  font-size: 12px;
+  line-height: 20px;
+  margin: 0 3px;
+  padding: 0 7px;
+  border: 1px solid $border-color;
+  border-radius: $label-border-radius;
+}
