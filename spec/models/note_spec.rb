@@ -231,6 +231,37 @@ describe Note do
     end
   end
 
+  describe '#cross_reference?' do
+    it 'falsey for user-generated notes' do
+      note = create(:note, system: false)
+
+      expect(note.cross_reference?).to be_falsy
+    end
+
+    context 'when the note might contain cross references' do
+      SystemNoteMetadata::TYPES_WITH_CROSS_REFERENCES.each do |type|
+        let(:note) { create(:note, :system) }
+        let!(:metadata) { create(:system_note_metadata, note: note, action: type) }
+
+        it 'delegates to the cross-reference regex' do
+          expect(note).to receive(:matches_cross_reference_regex?).and_return(false)
+
+          note.cross_reference?
+        end
+      end
+    end
+
+    context 'when the note cannot contain cross references' do
+      let(:commit_note) { build(:note, note: 'mentioned in 1312312313 something else.', system: true) }
+      let(:label_note) { build(:note, note: 'added ~2323232323', system: true) }
+
+      it 'scan for a `mentioned in` prefix' do
+        expect(commit_note.cross_reference?).to be_truthy
+        expect(label_note.cross_reference?).to be_falsy
+      end
+    end
+  end
+
   describe 'clear_blank_line_code!' do
     it 'clears a blank line code before validation' do
       note = build(:note, line_code: ' ')
