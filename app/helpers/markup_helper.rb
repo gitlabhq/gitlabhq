@@ -222,7 +222,7 @@ module MarkupHelper
     data = options[:data].merge({ container: 'body' })
     content_tag :button,
       type: 'button',
-      class: 'toolbar-btn js-md has-tooltip hidden-xs',
+      class: 'toolbar-btn js-md has-tooltip',
       tabindex: -1,
       data: data,
       title: options[:title],
