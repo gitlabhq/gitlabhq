@@ -457,7 +457,7 @@ describe('Multi-file store file actions', () => {
       it('calls service', (done) => {
         store.dispatch('getFileHTML', { file: localFile })
           .then(() => {
-            expect(service.getFileHTML).toHaveBeenCalledWith('richPath', false);
+            expect(service.getFileHTML).toHaveBeenCalledWith('richPath');
 
             done();
           }).catch(done.fail);

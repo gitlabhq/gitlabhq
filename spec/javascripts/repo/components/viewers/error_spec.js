@@ -16,7 +16,7 @@ describe('Multi-file editor error viewer', () => {
       active: true,
       rawPath: 'rawPath',
       rich: Object.assign(f.rich, {
-        name: 'image',
+        switcherTitle: 'image',
         renderErrorReason: 'it is too large',
         renderError: 'collapsed',
       }),
@@ -102,16 +102,7 @@ describe('Multi-file editor error viewer', () => {
     it('renders view source link', () => {
       expect(
         vm.$el.querySelector('a').textContent.trim(),
-      ).toBe('view the source');
-    });
-
-    it('calls changeFileViewer with simple type', () => {
-      vm.$el.querySelector('a').click();
-
-      expect(vm.changeFileViewer).toHaveBeenCalledWith({
-        file: f,
-        type: 'simple',
-      });
+      ).toBe('download it');
     });
   });
 });
