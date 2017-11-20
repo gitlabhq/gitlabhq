@@ -84,6 +84,7 @@ describe Gitlab::Middleware::ReadOnly do
     end
 
     it 'expects POST of new file that looks like an LFS batch url to be disallowed' do
+      expect(Rails.application.routes).to receive(:recognize_path).and_call_original
       response = request.post('/root/gitlab-ce/new/master/app/info/lfs/objects/batch')
 
       expect(response).to be_a_redirect
@@ -92,6 +93,8 @@ describe Gitlab::Middleware::ReadOnly do
 
     context 'whitelisted requests' do
       it 'expects a POST internal request to be allowed' do
+        expect(Rails.application.routes).not_to receive(:recognize_path)
+
         response = request.post("/api/#{API::API.version}/internal")
 
         expect(response).not_to be_a_redirect
@@ -99,6 +102,7 @@ describe Gitlab::Middleware::ReadOnly do
       end
 
       it 'expects a POST LFS request to batch URL to be allowed' do
+        expect(Rails.application.routes).to receive(:recognize_path).and_call_original
         response = request.post('/root/rouge.git/info/lfs/objects/batch')
 
         expect(response).not_to be_a_redirect
@@ -106,6 +110,7 @@ describe Gitlab::Middleware::ReadOnly do
       end
 
       it 'expects a POST request to git-upload-pack URL to be allowed' do
+        expect(Rails.application.routes).to receive(:recognize_path).and_call_original
         response = request.post('/root/rouge.git/git-upload-pack')
 
         expect(response).not_to be_a_redirect
