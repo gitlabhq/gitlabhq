@@ -133,6 +133,19 @@ describe('Issue model', () => {
     expect(relativePositionIssue.position).toBe(1);
   });
 
+  it('updates data', () => {
+    issue.updateData({ subscribed: true });
+    expect(issue.subscribed).toBe(true);
+  });
+
+  it('sets fetching state', () => {
+    expect(issue.isFetching.subscriptions).toBe(true);
+
+    issue.setFetchingState('subscriptions', false);
+
+    expect(issue.isFetching.subscriptions).toBe(false);
+  });
+
   describe('update', () => {
     it('passes assignee ids when there are assignees', (done) => {
       spyOn(Vue.http, 'patch').and.callFake((url, data) => {

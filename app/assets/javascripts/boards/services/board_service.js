@@ -2,7 +2,7 @@
 
 import Vue from 'vue';
 
-class BoardService {
+export default class BoardService {
   constructor ({ boardsEndpoint, listsEndpoint, bulkUpdatePath, boardId }) {
     this.boards = Vue.resource(`${boardsEndpoint}{/id}.json`, {}, {
       issues: {
@@ -87,6 +87,14 @@ class BoardService {
     };
 
     return this.issues.bulkUpdate(data);
+  }
+
+  static getIssueInfo(endpoint) {
+    return Vue.http.get(endpoint);
+  }
+
+  static toggleIssueSubscription(endpoint) {
+    return Vue.http.post(endpoint);
   }
 }
 
