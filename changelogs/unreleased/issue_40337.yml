@@ -1,0 +1,5 @@
+---
+title: Fix promoting milestone updating all issuables without milestone
+merge_request:
+author:
+type: fixed
