@@ -420,3 +420,41 @@ table.u2f-registrations {
     }
   }
 }
+
+.gitlab-slack-gif {
+  width: 100%;
+  max-width: $add-to-slack-gif-max-width;
+}
+
+.gitlab-slack-well {
+  background-color: $white-light;
+  box-shadow: none;
+  max-width: $add-to-slack-well-max-width;
+}
+
+.gitlab-slack-logo {
+  width: $add-to-slack-logo-size;
+  height: $add-to-slack-logo-size;
+}
+
+.gitlab-slack-popup {
+  width: 100%;
+  max-width: $add-to-slack-popup-max-width;
+}
+
+.gitlab-slack-right-arrow svg {
+  fill: $white-dark;
+  width: $right-arrow-size;
+  height: $right-arrow-size;
+  vertical-align: text-bottom;
+}
+
+.gitlab-slack-double-headed-arrow {
+  vertical-align: text-top;
+
+  svg {
+    fill: $gray-darker;
+    width: $double-headed-arrow-width;
+    height: $double-headed-arrow-height;
+  }
+}

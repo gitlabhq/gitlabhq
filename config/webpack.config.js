@@ -27,6 +27,7 @@ var config = {
   context: path.join(ROOT_PATH, 'app/assets/javascripts'),
   entry: {
     account:              './profile/account/index.js',
+    add_gitlab_slack_application: './add_gitlab_slack_application/index.js',
     balsamiq_viewer:      './blob/balsamiq_viewer.js',
     blob:                 './blob_edit/blob_bundle.js',
     boards:               './boards/boards_bundle.js',
@@ -41,6 +42,7 @@ var config = {
     environments:         './environments/environments_bundle.js',
     environments_folder:  './environments/folder/environments_folder_bundle.js',
     epic_show:            'ee/epics/epic_show/epic_show_bundle.js',
+    new_epic:             'ee/epics/new_epic/new_epic_bundle.js',
     filtered_search:      './filtered_search/filtered_search_bundle.js',
     graphs:               './graphs/graphs_bundle.js',
     graphs_charts:        './graphs/graphs_charts.js',

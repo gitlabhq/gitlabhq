@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
+describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared_state do
   include ::EE::GeoHelpers
 
   set(:primary) { create(:geo_node, :primary) }
@@ -15,9 +15,9 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
 
   before do
     stub_current_geo_node(secondary)
-    stub_env("::#{described_class}::POOL_WAIT", 0.1)
 
     allow(daemon).to receive(:trap_signals)
+    allow(daemon).to receive(:arbitrary_sleep).and_return(0.1)
   end
 
   describe '#run!' do
@@ -28,27 +28,37 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
       daemon.run!
     end
 
-    it 'does not perform a full scan by default' do
-      is_expected.to receive(:exit?).and_return(true)
-      is_expected.not_to receive(:full_scan!)
+    it 'delegates to #run_once! in a loop' do
+      is_expected.to receive(:exit?).and_return(false, false, false, true)
+      is_expected.to receive(:run_once!).twice
 
       daemon.run!
     end
 
-    context 'the command-line defines full_scan: true' do
-      let(:options) { { full_scan: true } }
+    it 'skips execution if cannot achieve a lease' do
+      is_expected.to receive(:exit?).and_return(false, true)
+      is_expected.not_to receive(:run_once!)
+      expect_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain_with_ttl).and_return({ ttl: 1, uuid: false })
 
-      it 'executes a full-scan' do
-        is_expected.to receive(:exit?).and_return(true)
-        is_expected.to receive(:full_scan!)
-
-        daemon.run!
-      end
+      daemon.run!
     end
 
-    it 'delegates to #run_once! in a loop' do
-      is_expected.to receive(:exit?).and_return(false, false, false, true)
-      is_expected.to receive(:run_once!).twice
+    it 'skips execution if not a Geo node' do
+      stub_current_geo_node(nil)
+
+      is_expected.to receive(:exit?).and_return(false, true)
+      is_expected.to receive(:sleep).with(1.minute)
+      is_expected.not_to receive(:run_once!)
+
+      daemon.run!
+    end
+
+    it 'skips execution if the current node is a primary' do
+      stub_current_geo_node(primary)
+
+      is_expected.to receive(:exit?).and_return(false, true)
+      is_expected.to receive(:sleep).with(1.minute)
+      is_expected.not_to receive(:run_once!)
 
       daemon.run!
     end
@@ -129,24 +139,29 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
 
     context 'when replaying a repository deleted event' do
       let(:event_log) { create(:geo_event_log, :deleted_event) }
-      let(:project) { event_log.repository_deleted_event.project }
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
       let(:repository_deleted_event) { event_log.repository_deleted_event }
+      let(:project) { repository_deleted_event.project }
 
-      it 'does not create a new project registry' do
+      it 'does not create a tracking database entry' do
         expect { daemon.run_once! }.not_to change(Geo::ProjectRegistry, :count)
       end
 
       it 'schedules a GeoRepositoryDestroyWorker' do
         project_id   = repository_deleted_event.project_id
         project_name = repository_deleted_event.deleted_project_name
-        full_path    = File.join(repository_deleted_event.repository_storage_path,
-                                 repository_deleted_event.deleted_path)
+        project_path = repository_deleted_event.deleted_path
 
         expect(::GeoRepositoryDestroyWorker).to receive(:perform_async)
-          .with(project_id, project_name, full_path, project.repository_storage)
+          .with(project_id, project_name, project_path, project.repository_storage)
 
         daemon.run_once!
+      end
+
+      it 'removes the tracking database entry if exist' do
+        create(:geo_project_registry, :synced, project: project)
+
+        expect { daemon.run_once! }.to change(Geo::ProjectRegistry, :count).by(-1)
       end
     end
 
@@ -235,24 +250,6 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql do
           .with(project.id, old_disk_path, new_disk_path, old_storage_version)
 
         daemon.run_once!
-      end
-    end
-  end
-
-  describe '#full_scan!' do
-    let(:project) { create(:project) }
-
-    context 'with selective sync enabled' do
-      it 'creates registries for missing projects that belong to selected namespaces' do
-        secondary.update!(namespaces: [project.namespace])
-
-        expect { daemon.full_scan! }.to change(Geo::ProjectRegistry, :count).by(1)
-      end
-
-      it 'does not create registries for missing projects that do not belong to selected namespaces' do
-        secondary.update!(namespaces: [create(:group)])
-
-        expect { daemon.full_scan! }.not_to change(Geo::ProjectRegistry, :count)
       end
     end
   end

@@ -35,6 +35,14 @@ resource :profile, only: [:show, :update] do
         put :resend_confirmation_instructions
       end
     end
+
+    ## EE-specific
+    resource :slack, only: [:edit] do
+      member do
+        get :slack_link
+      end
+    end
+
     resources :chat_names, only: [:index, :new, :create, :destroy] do
       collection do
         delete :deny

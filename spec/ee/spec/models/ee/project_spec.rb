@@ -16,7 +16,7 @@ describe Project do
     it { is_expected.to have_many(:path_locks) }
     it { is_expected.to have_many(:sourced_pipelines) }
     it { is_expected.to have_many(:source_pipelines) }
-    it { is_expected.to have_many(:audit_events) }
+    it { is_expected.to have_many(:audit_events).dependent(false) }
   end
 
   describe '.mirrors_to_sync' do
@@ -1085,6 +1085,19 @@ describe Project do
       expect(project.import_url).to eq('')
       expect(project.import_data.user).to be_nil
       expect(project.import_data.password).to eq('pass')
+    end
+  end
+
+  describe '#with_slack_application_disabled' do
+    it 'returns projects where Slack application is disabled' do
+      project1 = create(:project)
+      project2 = create(:project)
+      create(:gitlab_slack_application_service, project: project2)
+
+      projects = described_class.with_slack_application_disabled
+
+      expect(projects).to include(project1)
+      expect(projects).not_to include(project2)
     end
   end
 end

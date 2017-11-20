@@ -1,5 +1,6 @@
 module ServiceParams
   extend ActiveSupport::Concern
+  prepend EE::ServiceParams
 
   ALLOWED_PARAMS_CE = [
     :active,
@@ -62,19 +63,12 @@ module ServiceParams
     :webhook
   ].freeze
 
-  ALLOWED_PARAMS_EE = [
-    :jenkins_url,
-    :multiproject_enabled,
-    :pass_unstable,
-    :project_name
-  ].freeze
-
   # Parameters to ignore if no value is specified
   FILTER_BLANK_PARAMS = [:password].freeze
 
   def service_params
     dynamic_params = @service.event_channel_names + @service.event_names
-    service_params = params.permit(:id, service: ALLOWED_PARAMS_CE + ALLOWED_PARAMS_EE + dynamic_params)
+    service_params = params.permit(:id, service: allowed_service_params + dynamic_params)
 
     if service_params[:service].is_a?(Hash)
       FILTER_BLANK_PARAMS.each do |param|
@@ -83,5 +77,9 @@ module ServiceParams
     end
 
     service_params
+  end
+
+  def allowed_service_params
+    ALLOWED_PARAMS_CE
   end
 end

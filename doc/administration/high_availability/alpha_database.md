@@ -66,7 +66,7 @@ the communication as well as information required for running the service.
 Bellow you will find details on each service and the minimum required
 information you need to provide.
 
-#### Consul
+#### Consul information
 
 When using default setup, minimum configuration requires:
 
@@ -77,8 +77,7 @@ Can be generated with:
     ```sh
     echo -n 'CONSUL_DATABASE_PASSWORDCONSUL_USERNAME' | md5sum
     ```
-- You'll also need to supply the IP addresses or DNS records of Consul
-server nodes.
+- `CONSUL_SERVER_NODES`.  The IP addresses or DNS records of the Consul server nodes.
 
 Few notes on the service itself:
 
@@ -92,7 +91,7 @@ database
   - `/var/opt/gitlab/pgbouncer/pg_auth`: hashed
   - `/var/opt/gitlab/gitlab-consul/.pgpass`: plaintext
 
-#### PostgreSQL
+#### PostgreSQL information
 
 When configuring PostgreSQL, we will set `max_wal_senders` to one more than
 the number of database nodes in the cluster.
@@ -113,10 +112,15 @@ server nodes.
 
 We will need the following password information for the application's database user:
 
+- `POSTGRESQL_USERNAME`. Defaults to `gitlab`
 - `POSTGRESQL_USER_PASSWORD`. The password for the database user
-- `POSTGRESQL_PASSWORD_HASH`. The md5 hash of POSTGRESQL_USER_PASSWORD
+- `POSTGRESQL_PASSWORD_HASH`. This is a hash generated out of the username/password pair.
+Can be generated with:
+    ```sh
+    echo -n 'POSTGRESQL_USER_PASSWORDPOSTGRESQL_USERNAME' | md5sum
+    ```
 
-#### Pgbouncer
+#### Pgbouncer information
 
 When using default setup, minimum configuration requires:
 
@@ -140,7 +144,7 @@ Few notes on the service itself:
   - `/etc/gitlab/gitlab.rb`: hashed, and in plain text
   - `/var/opt/gitlab/pgbouncer/pg_auth`: hashed
 
-#### Repmgr
+#### Repmgr information
 
 When using default setup, you will only have to prepare the network subnets that will
 be allowed to authenticate with the service.
@@ -165,7 +169,7 @@ When installing the GitLab package, do not supply `EXTERNAL_URL` value.
 
 Each node needs to be configured to run only the services it needs.
 
-### Consul nodes
+### Configuring the Consul nodes
 
 On each Consul node perform the following:
 
@@ -192,7 +196,7 @@ See `START user configuration` section in the next step for required information
     # Replace placeholders:
     #
     # Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z
-    # with real information.
+    # with the addresses gathered for CONSUL_SERVER_NODES
     consul['configuration'] = {
       server: true,
       retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z)
@@ -205,7 +209,7 @@ See `START user configuration` section in the next step for required information
 
 After this is completed on each Consul server node, proceed further.
 
-### Database nodes
+### Configuring the Database nodes
 
 On each database node perform the following:
 
@@ -257,7 +261,7 @@ See `START user configuration` section in the next step for required information
     # Replace placeholders:
     #
     # Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z
-    # with real information.
+    # with the addresses gathered for CONSUL_SERVER_NODES
     consul['configuration'] = {
       retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z)
     }
@@ -317,7 +321,7 @@ your configuration
     # Replace placeholders:
     #
     # Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z
-    # with real information.
+    # with the addresses gathered for CONSUL_SERVER_NODES
     consul['configuration'] = {
       retry_join: %w(Y.Y.Y.Y consul1.gitlab.example.com Z.Z.Z.Z)
     }
@@ -351,7 +355,7 @@ attributes set, but the following need to be set.
 After reconfigure successfully runs, the following steps must be completed to
 get the cluster up and running.
 
-### Consul
+### Consul nodes post-configuration
 
 Verify the nodes are all communicating:
 
@@ -372,7 +376,7 @@ DATABASE_NODE_THREE  XXX.XXX.XXX.YYY:8301  alive   client  0.9.2  2         gitl
 PGBOUNCER_NODE       XXX.XXX.XXX.YYY:8301  alive   client  0.9.0  2         gitlab_consul
 ```
 
-### Database nodes
+### Database nodes post-configuration
 
 #### Primary node
 
@@ -434,13 +438,13 @@ as `MASTER_NODE_NAME`.
 
 Repeat the above steps on all secondary nodes.
 
-### Pgbouncer node
+### Pgbouncer node post-configuration
 
 1. Create a `.pgpass` file user for the `CONSUL_USER` account to be able to
    reload pgbouncer. Confirm `PGBOUNCER_PASSWORD` twice when asked:
 
      ```sh
-     gitlab-ctl write-pgpass --host PGBOUNCER_HOST --database pgbouncer --user pgbouncer --hostuser gitlab-consul
+     gitlab-ctl write-pgpass --host 127.0.0.1 --database pgbouncer --user pgbouncer --hostuser gitlab-consul
      ```
 
 1. Ensure the node is talking to the current master:
@@ -471,7 +475,7 @@ Repeat the above steps on all secondary nodes.
      (2 rows)
      ```
 
-### Application node
+### Application node post-configuration
 
 Ensure that all migrations ran:
 

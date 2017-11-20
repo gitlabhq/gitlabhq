@@ -1,4 +1,6 @@
 class Admin::UsersController < Admin::ApplicationController
+  prepend EE::Admin::UsersController
+
   before_action :user, except: [:index, :new, :create]
 
   def index
@@ -187,10 +189,10 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(user_params_ce << user_params_ee)
+    params.require(:user).permit(allowed_user_params)
   end
 
-  def user_params_ce
+  def allowed_user_params
     [
       :access_level,
       :avatar,
@@ -215,13 +217,6 @@ class Admin::UsersController < Admin::ApplicationController
       :twitter,
       :username,
       :website_url
-    ]
-  end
-
-  def user_params_ee
-    [
-      :note,
-      namespace_attributes: [:id, :shared_runners_minutes_limit, :plan_id]
     ]
   end
 

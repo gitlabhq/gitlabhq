@@ -10,7 +10,7 @@ describe GroupPolicy do
   let(:admin) { create(:admin) }
   let(:group) { create(:group) }
 
-  let(:reporter_permissions) { [:admin_label, :create_epic, :admin_epic] }
+  let(:reporter_permissions) { [:admin_label] }
 
   let(:developer_permissions) { [:admin_milestones] }
 
@@ -26,7 +26,6 @@ describe GroupPolicy do
       :admin_namespace,
       :admin_group_member,
       :change_visibility_level,
-      :destroy_epic,
       (Gitlab::Database.postgresql? ? :create_subgroup : nil)
     ].compact
   end

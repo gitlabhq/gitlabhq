@@ -17,6 +17,8 @@ describe 'Epic Issues', :js do
   end
 
   def visit_epic
+    stub_licensed_features(epics: true)
+
     sign_in(user)
     visit group_epic_path(group, epic)
     wait_for_requests

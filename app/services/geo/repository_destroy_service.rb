@@ -1,16 +1,16 @@
 module Geo
   class RepositoryDestroyService
-    attr_reader :id, :name, :full_path, :storage_name
+    attr_reader :id, :name, :disk_path, :repository_storage
 
-    def initialize(id, name, full_path, storage_name)
+    def initialize(id, name, disk_path, repository_storage)
       @id = id
       @name = name
-      @full_path = full_path
-      @storage_name = storage_name
+      @disk_path = disk_path
+      @repository_storage = repository_storage
     end
 
     def async_execute
-      GeoRepositoryDestroyWorker.perform_async(id, name, full_path, storage_name)
+      GeoRepositoryDestroyWorker.perform_async(id, name, disk_path, repository_storage)
     end
 
     def execute
@@ -24,8 +24,8 @@ module Geo
       # rebuilding only what our service class requires
       ::Geo::DeletedProject.new(id: id,
                                 name: name,
-                                full_path: full_path,
-                                repository_storage: storage_name)
+                                disk_path: disk_path,
+                                repository_storage: repository_storage)
     end
   end
 end

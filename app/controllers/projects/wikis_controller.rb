@@ -74,7 +74,11 @@ class Projects::WikisController < Projects::ApplicationController
   def history
     @page = @project_wiki.find_page(params[:id])
 
-    unless @page
+    if @page
+      @page_versions = Kaminari.paginate_array(@page.versions(page: params[:page]),
+                                               total_count: @page.count_versions)
+                               .page(params[:page])
+    else
       redirect_to(
         project_wiki_path(@project, :home),
         notice: "Page not found"
@@ -102,7 +106,7 @@ class Projects::WikisController < Projects::ApplicationController
 
     # Call #wiki to make sure the Wiki Repo is initialized
     @project_wiki.wiki
-    @sidebar_wiki_entries = WikiPage.group_by_directory(@project_wiki.pages.first(15))
+    @sidebar_wiki_entries = WikiPage.group_by_directory(@project_wiki.pages(limit: 15))
   rescue ProjectWiki::CouldNotCreateWikiError
     flash[:notice] = "Could not create Wiki Repository at this time. Please try again later."
     redirect_to project_path(@project)

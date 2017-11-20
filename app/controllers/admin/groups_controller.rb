@@ -1,4 +1,6 @@
 class Admin::GroupsController < Admin::ApplicationController
+  prepend EE::Admin::GroupsController
+
   before_action :group, only: [:edit, :update, :destroy, :project_update, :members_update]
 
   def index
@@ -68,10 +70,10 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(group_params_ce << group_params_ee)
+    params.require(:group).permit(allowed_group_params)
   end
 
-  def group_params_ce
+  def allowed_group_params
     [
       :avatar,
       :description,
@@ -82,14 +84,6 @@ class Admin::GroupsController < Admin::ApplicationController
       :visibility_level,
       :require_two_factor_authentication,
       :two_factor_grace_period
-    ]
-  end
-
-  def group_params_ee
-    [
-      :repository_size_limit,
-      :shared_runners_minutes_limit,
-      :plan_id
     ]
   end
 end

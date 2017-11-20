@@ -3,24 +3,24 @@ module EE
     include ::ProjectsHelper
     include ::ApplicationSettingsHelper
 
-    def geo_primary_web_url(project)
-      File.join(::Gitlab::Geo.primary_node.url, ::Gitlab::Routing.url_helpers.project_path(project))
+    def geo_primary_web_url(project_or_wiki)
+      File.join(::Gitlab::Geo.primary_node.url, project_or_wiki.full_path)
     end
 
-    def geo_primary_ssh_url_to_repo(project)
-      "#{::Gitlab::Geo.primary_node.clone_url_prefix}#{project.full_path}.git"
+    def geo_primary_ssh_url_to_repo(project_or_wiki)
+      "#{::Gitlab::Geo.primary_node.clone_url_prefix}#{project_or_wiki.full_path}.git"
     end
 
-    def geo_primary_http_url_to_repo(project)
-      "#{geo_primary_web_url(project)}.git"
+    def geo_primary_http_url_to_repo(project_or_wiki)
+      geo_primary_web_url(project_or_wiki) + '.git'
     end
 
-    def geo_primary_default_url_to_repo(project)
+    def geo_primary_default_url_to_repo(project_or_wiki)
       case default_clone_protocol
       when 'ssh'
-        geo_primary_ssh_url_to_repo(project)
+        geo_primary_ssh_url_to_repo(project_or_wiki)
       else
-        geo_primary_http_url_to_repo(project)
+        geo_primary_http_url_to_repo(project_or_wiki)
       end
     end
 

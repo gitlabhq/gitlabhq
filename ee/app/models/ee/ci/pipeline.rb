@@ -12,6 +12,14 @@ module EE
 
         result
       end
+
+      def codeclimate_artifact
+        artifacts.codequality.find(&:has_codeclimate_json?)
+      end
+
+      def sast_artifact
+        artifacts.sast.find(&:has_sast_json?)
+      end
     end
   end
 end

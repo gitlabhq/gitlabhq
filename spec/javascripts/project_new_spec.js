@@ -1,4 +1,4 @@
-import '~/project_new';
+import ProjectNew from '~/project_new';
 
 describe('ApproversSelect', function () {
   const projectSettingsTemplate = 'projects/edit.html.raw';
@@ -7,7 +7,7 @@ describe('ApproversSelect', function () {
   beforeEach(() => {
     loadFixtures(projectSettingsTemplate);
     this.$requireApprovalsToggle = $('.js-require-approvals-toggle');
-    this.project = new window.ProjectNew();
+    this.project = new ProjectNew();
   });
 
   it('shows approver settings if enabled', () => {
