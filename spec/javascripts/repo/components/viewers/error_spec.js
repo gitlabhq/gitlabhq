@@ -53,12 +53,12 @@ describe('Multi-file editor error viewer', () => {
       spyOn(vm, 'getFileHTML');
     });
 
-    it('calls getFileHTML with expanded when clicking load anyway link', () => {
+    it('calls getFileHTML with override when clicking load anyway link', () => {
       vm.$el.querySelector('a').click();
 
       expect(vm.getFileHTML).toHaveBeenCalledWith({
         file: f,
-        expanded: true,
+        override: true,
       });
     });
   });

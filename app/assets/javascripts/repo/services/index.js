@@ -11,8 +11,8 @@ export default {
   getFileData(endpoint) {
     return Vue.http.get(endpoint, { params: { format: 'json' } });
   },
-  getFileHTML(endpoint, expanded) {
-    return Vue.http.get(endpoint, { params: { expanded } });
+  getFileHTML(endpoint) {
+    return Vue.http.get(endpoint);
   },
   getRawFileData(file) {
     if (file.tempFile) {

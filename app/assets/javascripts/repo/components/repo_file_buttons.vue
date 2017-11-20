@@ -1,9 +1,13 @@
 <script>
 import { mapGetters } from 'vuex';
+import tooltip from '../../vue_shared/directives/tooltip';
 import viewerSwitch from './blob_viewer_switch.vue';
 import sourceCopyButton from './source_copy_button.vue';
 
 export default {
+  directives: {
+    tooltip,
+  },
   components: {
     viewerSwitch,
     sourceCopyButton,
@@ -12,6 +16,7 @@ export default {
     ...mapGetters([
       'activeFile',
       'canActiveFileSwitchViewer',
+      'canCopySource',
     ]),
     showButtons() {
       return this.activeFile.rawPath ||
@@ -20,10 +25,10 @@ export default {
         this.activeFile.permalink;
     },
     rawDownloadButtonLabel() {
-      return this.activeFile.binary ? 'Download' : 'Raw';
+      return this.activeFile.binary || this.activeFile.storedExternally ? 'Download' : 'Open raw';
     },
     rawDownloadButtonIcon() {
-      return this.activeFile.binary ? 'fa-download' : 'fa-file-code-o';
+      return this.activeFile.binary || this.activeFile.storedExternally ? 'fa-download' : 'fa-file-code-o';
     },
   },
 };
@@ -42,14 +47,17 @@ export default {
       role="group"
     >
       <source-copy-button
-        v-if="canActiveFileSwitchViewer"
+        v-if="canCopySource"
       />
       <a
+        v-tooltip
         :href="activeFile.rawPath"
         target="_blank"
         class="btn btn-default btn-sm raw"
         rel="noopener noreferrer"
         :aria-label="rawDownloadButtonLabel"
+        :title="rawDownloadButtonLabel"
+        data-container="body"
       >
         <i
           class="fa"

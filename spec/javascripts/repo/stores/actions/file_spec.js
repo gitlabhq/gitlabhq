@@ -509,10 +509,10 @@ describe('Multi-file store file actions', () => {
           }).catch(done.fail);
       });
 
-      it('calls service if file has renderError and expanded is true', (done) => {
+      it('calls service if file has renderError and override is true', (done) => {
         localFile.rich.renderError = 'error';
 
-        store.dispatch('getFileHTML', { file: localFile, expanded: true })
+        store.dispatch('getFileHTML', { file: localFile, override: true })
           .then(() => {
             expect(service.getFileHTML).toHaveBeenCalled();
 
@@ -520,10 +520,10 @@ describe('Multi-file store file actions', () => {
           }).catch(done.fail);
       });
 
-      it('resets renderError if expanded is true', (done) => {
+      it('resets renderError if override is true', (done) => {
         localFile.rich.renderError = 'error';
 
-        store.dispatch('getFileHTML', { file: localFile, expanded: true })
+        store.dispatch('getFileHTML', { file: localFile, override: true })
           .then(Vue.nextTick)
           .then(() => {
             expect(localFile.rich.renderError).not.toBe('error');

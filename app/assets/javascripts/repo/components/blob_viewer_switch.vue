@@ -13,6 +13,9 @@
       displayTooltip() {
         return `Display ${this.activeFile.simple.switcherTitle}`;
       },
+      richTooltip() {
+        return `Display ${this.activeFile.rich.switcherTitle}`;
+      },
     },
     methods: {
       ...mapActions([
@@ -24,18 +27,19 @@
 
 <template>
   <div
-    class="btn-group"
+    class="btn-group js-blob-viewer-switcher"
     role="group"
   >
     <button
       v-tooltip
       type="button"
-      class="btn btn-default btn-sm"
+      class="btn btn-default btn-sm js-blob-viewer-switch-btn"
       :class="{
         active: activeFile.currentViewer === 'simple',
       }"
       :title="displayTooltip"
       data-container="body"
+      data-viewer="simple"
       @click="changeFileViewer({ file: activeFile, type: 'simple' })"
     >
       <i
@@ -48,12 +52,13 @@
     <button
       v-tooltip
       type="button"
-      class="btn btn-default btn-sm"
+      class="btn btn-default btn-sm js-blob-viewer-switch-btn"
       :class="{
         active: activeFile.currentViewer === 'rich',
       }"
-      title="Display rendered file"
+      :title="richTooltip"
       data-container="body"
+      data-viewer="rich"
       @click="changeFileViewer({ file: activeFile, type: 'rich' })"
     >
       <i

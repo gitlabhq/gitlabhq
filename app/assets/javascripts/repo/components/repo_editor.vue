@@ -92,7 +92,7 @@ export default {
       'activeFile',
     ]),
     shouldHideEditor() {
-      return this.activeFile.binary && !this.activeFile.raw;
+      return (this.activeFile.binary || this.activeFile.storedExternally) && !this.activeFile.raw;
     },
   },
 };

@@ -94,7 +94,7 @@
       overflow: auto;
 
       .blob-full-height,
-      .file-content:not(.wiki) {
+      .file-content:not(.wiki):not(.image_file) {
         display: flex;
       }
 

@@ -31,6 +31,7 @@ export default {
       renderError: data.render_error,
       currentViewer: data.rich_viewer ? 'rich' : 'simple',
       extension: data.extension,
+      storedExternally: data.stored_externally,
     });
 
     createViewerStructure(file, 'rich', data);

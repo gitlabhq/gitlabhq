@@ -49,7 +49,7 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def viewer
-    conditionally_expand_blob(@blob)
+    @blob.expand!
 
     respond_to do |format|
       format.json do

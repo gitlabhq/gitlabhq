@@ -111,10 +111,10 @@ export const createTempFile = ({ state, commit, dispatch }, { tree, name, conten
   return Promise.resolve(file);
 };
 
-export const getFileHTML = ({ commit, getters }, { file, expanded = false }) => {
+export const getFileHTML = ({ commit, getters }, { file, override = false }) => {
   const currentViewer = getters.activeFileCurrentViewer;
 
-  if (expanded) {
+  if (override) {
     commit(types.RESET_VIEWER_RENDER_ERROR, currentViewer);
   }
 
@@ -122,7 +122,7 @@ export const getFileHTML = ({ commit, getters }, { file, expanded = false }) => 
 
   commit(types.TOGGLE_FILE_VIEWER_LOADING, currentViewer);
 
-  service.getFileHTML(currentViewer.path, expanded)
+  service.getFileHTML(currentViewer.path)
     .then(res => res.json())
     .then((data) => {
       commit(types.TOGGLE_FILE_VIEWER_LOADING, currentViewer);

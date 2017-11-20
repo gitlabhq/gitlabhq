@@ -15,10 +15,7 @@
     },
     methods: {
       highlightFile() {
-        const $el = $(this.$el).find('.file-content');
-
-        $el.syntaxHighlight();
-        $el.renderGFM();
+        $(this.$el).find('.blob-viewer').renderGFM();
       },
     },
     mounted() {
@@ -32,6 +29,7 @@
       this.$nextTick(() => {
         this.highlightFile();
         this.lineHighlighter.highlightHash();
+        gl.utils.handleLocationHash();
       });
     },
   };

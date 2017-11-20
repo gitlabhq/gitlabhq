@@ -31,10 +31,19 @@ export const activeFileCurrentViewer = (state) => {
 export const canActiveFileSwitchViewer = (state) => {
   const file = activeFile(state);
 
-  if (!file) return false;
+  if (!file || state.editMode) return false;
   if (file.binary) return false;
 
-  return file.rich.path !== '' && file.simple.path !== '' && file.simple.name === 'text' && !file.simple.renderError;
+  return file.rich.path !== '' && file.simple.path !== '' && file.simple.name === 'text' && !file.binary;
+};
+
+export const canCopySource = (state) => {
+  const file = activeFile(state);
+
+  if (!file || state.editMode) return false;
+  if (file.binary) return false;
+
+  return file.simple.name === 'text' && !file.simple.renderError;
 };
 
 export const isCollapsed = state => !!state.openFiles.length;

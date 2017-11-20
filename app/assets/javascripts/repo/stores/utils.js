@@ -44,6 +44,7 @@ export const dataStructure = () => ({
   currentViewer: 'rich',
   rich: viewerDataStructure(),
   simple: viewerDataStructure(),
+  storedExternally: false,
 });
 
 export const decorateData = (entity) => {

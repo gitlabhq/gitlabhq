@@ -117,7 +117,9 @@ export const createTempEntry = ({ state, dispatch }, { name, type, content = '',
   }
 };
 
-export const popHistoryState = ({ state, dispatch, getters }) => {
+export const popHistoryState = ({ state, dispatch, getters }, e) => {
+  if (!e.state) return;
+
   const treeList = getters.treeList;
   const tree = treeList.find(file => file.url === state.previousUrl);
 

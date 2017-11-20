@@ -17,14 +17,15 @@
             text: 'load it anyway',
             callback: () => this.getFileHTML({
               file: this.activeFile,
-              expanded: true,
+              override: true,
             }),
           });
         }
 
         if (
           this.activeFile.simple.name === 'text' &&
-          (this.activeFileCurrentViewer.renderError === 'server_side_but_stored_externally' || this.activeFileCurrentViewer.renderError === 'too_large')
+          this.activeFile.currentViewer === 'rich' &&
+          (this.activeFileCurrentViewer.renderError !== 'server_side_but_stored_externally')
         ) {
           links.push({
             href: '#',
@@ -64,7 +65,7 @@
   <div
     class="nothing-here-block"
   >
-    The {{ activeFileCurrentViewer.name }} could not be displayed because {{ activeFileCurrentViewer.renderErrorReason }}.
+    The {{ activeFileCurrentViewer.switcherTitle }} could not be displayed because {{ activeFileCurrentViewer.renderErrorReason }}.
     You can
     <template
       v-for="(link, index) in optionLinks"

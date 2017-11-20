@@ -54,7 +54,7 @@
   <button
     v-tooltip
     type="button"
-    class="btn btn-default btn-sm"
+    class="btn btn-default btn-sm js-copy-blob-source-btn"
     :class="{
       disabled: copySourceButtonDisabled,
     }"
