@@ -18,6 +18,11 @@ class ListIssue {
     this.assignees = [];
     this.selected = false;
     this.position = obj.relative_position || Infinity;
+    this.isFetching = {
+      subscriptions: true,
+    };
+    this.sidebarInfoEndpoint = obj.issue_sidebar_endpoint;
+    this.toggleSubscriptionEndpoint = obj.toggle_subscription_endpoint;
     this.milestone_id = obj.milestone_id;
     this.project_id = obj.project_id;
     this.weight = obj.weight;
@@ -79,6 +84,14 @@ class ListIssue {
 
   getLists () {
     return gl.issueBoards.BoardsStore.state.lists.filter(list => list.findIssue(this.id));
+  }
+
+  updateData(newData) {
+    Object.assign(this, newData);
+  }
+
+  setFetchingState(key, value) {
+    this.isFetching[key] = value;
   }
 
   update (url) {
