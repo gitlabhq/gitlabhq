@@ -96,7 +96,6 @@ class ApplicationController < ActionController::Base
   # (e.g. tokens) to authenticate the user, whereas Devise sets current_user
   def auth_user
     return current_user if current_user.present?
-<<<<<<< HEAD
 
     return try(:authenticated_user)
   end
@@ -110,17 +109,6 @@ class ApplicationController < ActionController::Base
 
   def verify_namespace_plan_check_enabled
     render_404 unless current_application_settings.should_check_namespace_plan?
-=======
-
-    return try(:authenticated_user)
-  end
-
-  # This filter handles personal access tokens, and atom requests with rss tokens
-  def authenticate_sessionless_user!
-    user = Gitlab::Auth::RequestAuthenticator.new(request).find_sessionless_user
-
-    sessionless_sign_in(user) if user
->>>>>>> ce-com/master
   end
 
   def log_exception(exception)

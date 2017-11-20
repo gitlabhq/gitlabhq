@@ -39,10 +39,6 @@ module API
 
     # Helper Methods for Grape Endpoint
     module HelperMethods
-<<<<<<< HEAD
-      include Gitlab::Utils::StrongMemoize
-=======
->>>>>>> ce-com/master
       include Gitlab::Auth::UserAuthFinders
 
       def find_current_user!

@@ -101,11 +101,7 @@ module Gitlab
         end
       end
 
-<<<<<<< HEAD
-      def count_page_versions(page_path, options = {})
-=======
       def count_page_versions(page_path)
->>>>>>> ce-com/master
         @repository.count_commits(ref: 'HEAD', path: page_path)
       end
 

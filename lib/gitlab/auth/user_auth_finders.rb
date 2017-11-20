@@ -19,17 +19,12 @@ module Gitlab
     end
 
     module UserAuthFinders
-<<<<<<< HEAD
-      PRIVATE_TOKEN_HEADER = 'HTTP_PRIVATE_TOKEN'.freeze
-      PRIVATE_TOKEN_PARAM = :private_token
-      JOB_TOKEN_HEADER = "HTTP_JOB_TOKEN".freeze
-      JOB_TOKEN_PARAM = :job_token
-=======
       include Gitlab::Utils::StrongMemoize
 
       PRIVATE_TOKEN_HEADER = 'HTTP_PRIVATE_TOKEN'.freeze
       PRIVATE_TOKEN_PARAM = :private_token
->>>>>>> ce-com/master
+      JOB_TOKEN_HEADER = "HTTP_JOB_TOKEN".freeze
+      JOB_TOKEN_PARAM = :job_token
 
       # Check the Rails session for valid authentication details
       def find_user_from_warden
@@ -53,7 +48,6 @@ module Gitlab
         access_token.user || raise(UnauthorizedError)
       end
 
-<<<<<<< HEAD
       def find_user_from_job_token
         return unless route_authentication_setting[:job_token_allowed]
 
@@ -68,8 +62,6 @@ module Gitlab
         job.user
       end
 
-=======
->>>>>>> ce-com/master
       def validate_access_token!(scopes: [])
         return unless access_token
 
@@ -85,7 +77,6 @@ module Gitlab
 
       private
 
-<<<<<<< HEAD
       def route_authentication_setting
         return {} unless respond_to?(:route_setting)
 
@@ -93,15 +84,9 @@ module Gitlab
       end
 
       def access_token
-        return @access_token if defined?(@access_token)
-
-        @access_token = find_oauth_access_token || find_personal_access_token
-=======
-      def access_token
         strong_memoize(:access_token) do
           find_oauth_access_token || find_personal_access_token
         end
->>>>>>> ce-com/master
       end
 
       def find_personal_access_token
