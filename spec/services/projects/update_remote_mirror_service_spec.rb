@@ -4,7 +4,7 @@ describe Projects::UpdateRemoteMirrorService do
   let(:project) { create(:project, :repository) }
   let(:remote_project) { create(:forked_project_with_submodules) }
   let(:repository) { project.repository }
-  let(:remote_mirror) { project.remote_mirrors.create!(url: remote_project.http_url_to_repo, enabled: true) }
+  let(:remote_mirror) { project.remote_mirrors.create!(url: remote_project.http_url_to_repo, enabled: true, only_protected_branches: false) }
 
   subject { described_class.new(project, project.creator) }
 
@@ -81,6 +81,40 @@ describe Projects::UpdateRemoteMirrorService do
         subject.execute(remote_mirror)
       end
 
+      context 'when push only protected branches option is set' do
+        let(:protected_branch_name) { project.repository.branch_names.first }
+        let!(:protected_branch) do
+          create(:protected_branch, project: project, name: protected_branch_name)
+        end
+
+        before do
+          project.reload
+          remote_mirror.only_protected_branches = true
+        end
+
+        it "sync updated protected branches" do
+          allow(repository).to receive(:fetch_remote) do
+            sync_remote(repository, remote_mirror.ref_name, local_branch_names)
+            update_branch(repository, protected_branch_name)
+          end
+
+          expect(repository).to receive(:push_remote_branches).with(remote_mirror.ref_name, [protected_branch_name])
+
+          subject.execute(remote_mirror)
+        end
+
+        it 'does not sync unprotected branches' do
+          allow(repository).to receive(:fetch_remote) do
+            sync_remote(repository, remote_mirror.ref_name, local_branch_names)
+            update_branch(repository, 'existing-branch')
+          end
+
+          expect(repository).not_to receive(:push_remote_branches).with(remote_mirror.ref_name, ['existing-branch'])
+
+          subject.execute(remote_mirror)
+        end
+      end
+
       context 'when branch exists in local and remote repo' do
         context 'when it has diverged' do
           it 'syncs branches' do
@@ -110,14 +144,89 @@ describe Projects::UpdateRemoteMirrorService do
           end
         end
 
+        context 'when push only protected branches option is set' do
+          before do
+            remote_mirror.only_protected_branches = true
+          end
+
+          context 'when branch exists in local and remote repo' do
+            let!(:protected_branch_name) { local_branch_names.first }
+
+            before do
+              create(:protected_branch, project: project, name: protected_branch_name)
+              project.reload
+            end
+
+            it 'deletes the protected branch from remote repo' do
+              allow(repository).to receive(:fetch_remote) do
+                sync_remote(repository, remote_mirror.ref_name, local_branch_names)
+                delete_branch(repository, protected_branch_name)
+              end
+
+              expect(repository).not_to receive(:delete_remote_branches).with(remote_mirror.ref_name, [protected_branch_name])
+
+              subject.execute(remote_mirror)
+            end
+
+            it 'does not delete the unprotected branch from remote repo' do
+              allow(repository).to receive(:fetch_remote) do
+                sync_remote(repository, remote_mirror.ref_name, local_branch_names)
+                delete_branch(repository, 'existing-branch')
+              end
+
+              expect(repository).not_to receive(:delete_remote_branches).with(remote_mirror.ref_name, ['existing-branch'])
+
+              subject.execute(remote_mirror)
+            end
+          end
+
+          context 'when branch only exists on remote repo' do
+            let!(:protected_branch_name) { 'remote-branch' }
+
+            before do
+              create(:protected_branch, project: project, name: protected_branch_name)
+            end
+
+            context 'when it has diverged' do
+              it 'does not delete the remote branch' do
+                allow(repository).to receive(:fetch_remote) do
+                  sync_remote(repository, remote_mirror.ref_name, local_branch_names)
+
+                  rev = repository.find_branch('markdown').dereferenced_target
+                  create_remote_branch(repository, remote_mirror.ref_name, 'remote-branch', rev.id)
+                end
+
+                expect(repository).not_to receive(:delete_remote_branches)
+
+                subject.execute(remote_mirror)
+              end
+            end
+
+            context 'when it has not diverged' do
+              it 'deletes the remote branch' do
+                allow(repository).to receive(:fetch_remote) do
+                  sync_remote(repository, remote_mirror.ref_name, local_branch_names)
+
+                  masterrev = repository.find_branch('master').dereferenced_target
+                  create_remote_branch(repository, remote_mirror.ref_name, protected_branch_name, masterrev.id)
+                end
+
+                expect(repository).to receive(:delete_remote_branches).with(remote_mirror.ref_name, [protected_branch_name])
+
+                subject.execute(remote_mirror)
+              end
+            end
+          end
+        end
+
         context 'when branch only exists on remote repo' do
           context 'when it has diverged' do
             it 'does not delete the remote branch' do
               allow(repository).to receive(:fetch_remote) do
                 sync_remote(repository, remote_mirror.ref_name, local_branch_names)
 
-                blob_id = 'c74175afd117781cbc983664339a0f599b5bb34e'
-                create_remote_branch(repository, remote_mirror.ref_name, 'remote-branch', blob_id)
+                rev = repository.find_branch('markdown').dereferenced_target
+                create_remote_branch(repository, remote_mirror.ref_name, 'remote-branch', rev.id)
               end
 
               expect(repository).not_to receive(:delete_remote_branches)

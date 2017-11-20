@@ -31,6 +31,8 @@ module Projects
 
     def local_branches
       @local_branches ||= repository.local_branches.each_with_object({}) do |branch, branches|
+        next if mirror.only_protected_branches? && !protected_branch?(branch.name)
+
         branches[branch.name] = branch
       end
     end
@@ -113,6 +115,7 @@ module Projects
 
       remote_refs.each_with_object([]) do |(name, remote_ref), refs_to_delete|
         next if local_refs[name] # skip if branch or tag exist in local repo
+        next if type == :branches && mirror.only_protected_branches? && !protected_branch?(name)
 
         remote_ref_id = remote_ref.dereferenced_target.try(:id)
 
@@ -120,6 +123,10 @@ module Projects
           refs_to_delete << name
         end
       end
+    end
+
+    def protected_branch?(name)
+      ProtectedBranch.protected?(project, name)
     end
   end
 end

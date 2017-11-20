@@ -11,6 +11,8 @@ class RemoteMirror < ActiveRecord::Base
                  insecure_mode: true,
                  algorithm: 'aes-256-cbc'
 
+  default_value_for :only_protected_branches, true
+
   belongs_to :project, inverse_of: :remote_mirrors
 
   validates :url, presence: true, url: { protocols: %w(ssh git http https), allow_blank: true }
