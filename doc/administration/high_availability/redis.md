@@ -268,9 +268,8 @@ The prerequisites for a HA Redis setup are the following:
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
     ```ruby
-    # Enable the master role and disable all other services in the machine
-    # (you can still enable Sentinel).
-    redis_master_role['enable'] = true
+    # Specify server role as 'redis_master_role'
+    roles ['redis_master_role']
 
     # IP address pointing to a local IP that the other machines can reach to.
     # You can also set bind to '0.0.0.0' which listen in all interfaces.
@@ -296,6 +295,10 @@ The prerequisites for a HA Redis setup are the following:
 
 1. [Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.
 
+> Note: You can specify multiple roles like sentinel and redis as:
+> roles ['redis_sentinel_role', 'redis_master_role']. Read more about high
+> availability roles at https://docs.gitlab.com/omnibus/roles/
+
 ### Step 2. Configuring the slave Redis instances
 
 1. SSH into the **slave** Redis server.
@@ -308,10 +311,8 @@ The prerequisites for a HA Redis setup are the following:
 1. Edit `/etc/gitlab/gitlab.rb` and add the contents:
 
     ```ruby
-    # Enable the slave role and disable all other services in the machine
-    # (you can still enable Sentinel). This will also set automatically
-    # `redis['master'] = false`.
-    redis_slave_role['enable'] = true
+    # Specify server role as 'redis_slave_role'
+    roles ['redis_slave_role']
 
     # IP address pointing to a local IP that the other machines can reach to.
     # You can also set bind to '0.0.0.0' which listen in all interfaces.
@@ -344,6 +345,10 @@ The prerequisites for a HA Redis setup are the following:
 
 1. [Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.
 1. Go through the steps again for all the other slave nodes.
+
+> Note: You can specify multiple roles like sentinel and redis as:
+> roles ['redis_sentinel_role', 'redis_slave_role']. Read more about high
+> availability roles at https://docs.gitlab.com/omnibus/roles/
 
 ---
 
@@ -392,7 +397,7 @@ multiple machines with the Sentinel daemon.
    be duplicate below):
 
     ```ruby
-    redis_sentinel_role['enable'] = true
+    roles ['redis_sentinel_role']
 
     # Must be the same in every sentinel node
     redis['master_name'] = 'gitlab-redis'
