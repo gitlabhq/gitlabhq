@@ -3,7 +3,7 @@ module RendersNotes
     preload_noteable_for_regular_notes(notes)
     preload_max_access_for_authors(notes, @project)
     preload_first_time_contribution_for_authors(noteable, notes)
-    Notes::RenderService.new(current_user).execute(notes, @project)
+    Notes::RenderService.new(current_user).execute(notes, @project, noteable_context(noteable))
 
     notes
   end
@@ -25,5 +25,14 @@ module RendersNotes
     return unless noteable.is_a?(Issuable) && noteable.first_contribution?
 
     notes.each {|n| n.specialize_for_first_contribution!(noteable)}
+  end
+
+  def noteable_context(noteable)
+    case noteable
+    when MergeRequest
+      { merge_request: noteable }
+    else
+      {}
+    end
   end
 end

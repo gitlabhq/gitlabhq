@@ -1042,4 +1042,13 @@ class MergeRequest < ActiveRecord::Base
 
     project.merge_requests.merged.where(author_id: author_id).empty?
   end
+
+  def banzai_render_context(field)
+    # this will be used to reference these commit in the context of the MR
+    # the URL are built differently
+    {
+      merge_request: self,
+      mr_commit_shas: all_commit_shas
+    }
+  end
 end

@@ -379,6 +379,42 @@ class Note < ActiveRecord::Base
     Gitlab::EtagCaching::Store.new.touch(key)
   end
 
+  def touch(*args)
+    # We're not using an explicit transaction here because this would in all
+    # cases result in all future queries going to the primary, even if no writes
+    # are performed.
+    #
+    # We touch the noteable first so its SELECT query can run before our writes,
+    # ensuring it runs on a secondary (if no prior write took place).
+    touch_noteable
+    super
+  end
+
+  # By default Rails will issue an "SELECT *" for the relation, which is
+  # overkill for just updating the timestamps. To work around this we manually
+  # touch the data so we can SELECT only the columns we need.
+  def touch_noteable
+    # Commits are not stored in the DB so we can't touch them.
+    return if for_commit?
+
+    assoc = association(:noteable)
+
+    noteable_object =
+      if assoc.loaded?
+        noteable
+      else
+        # If the object is not loaded (e.g. when notes are loaded async) we
+        # _only_ want the data we actually need.
+        assoc.scope.select(:id, :updated_at).take
+      end
+
+    noteable_object&.touch
+  end
+
+  def banzai_render_context(field)
+    super.merge(noteable: noteable)
+  end
+
   private
 
   def keep_around_commit
