@@ -985,6 +985,10 @@ module Gitlab
         @attributes.attributes(path)
       end
 
+      def gitattribute(path, name)
+        attributes(path)[name]
+      end
+
       def languages(ref = nil)
         Gitlab::GitalyClient.migrate(:commit_languages) do |is_enabled|
           if is_enabled
