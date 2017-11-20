@@ -146,7 +146,7 @@ module API
       expose :shared_runners_enabled
       expose :lfs_enabled?, as: :lfs_enabled
       expose :creator_id
-      expose :namespace, using: 'API::Entities::Namespace'
+      expose :namespace, using: 'API::Entities::NamespaceBasic'
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? }
       expose :import_status
       expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] }
@@ -618,9 +618,11 @@ module API
       expose :created_at
     end
 
-    class Namespace < Grape::Entity
+    class NamespaceBasic < Grape::Entity
       expose :id, :name, :path, :kind, :full_path, :parent_id
+    end
 
+    class Namespace < NamespaceBasic
       expose :members_count_with_descendants, if: -> (namespace, opts) { expose_members_count_with_descendants?(namespace, opts) } do |namespace, _|
         namespace.users_with_descendants.count
       end
