@@ -123,7 +123,7 @@ class Project < ActiveRecord::Base
   has_one :bugzilla_service
   has_one :gitlab_issue_tracker_service, inverse_of: :project
   has_one :external_wiki_service
-  has_one :kubernetes_service, inverse_of: :project
+  # has_one :kubernetes_service, inverse_of: :project
   has_one :prometheus_service, inverse_of: :project
   has_one :mock_ci_service
   has_one :mock_deployment_service
@@ -907,7 +907,17 @@ class Project < ActiveRecord::Base
   end
 
   def deployment_service
-    @deployment_service ||= deployment_services.reorder(nil).find_by(active: true)
+    deployment_platform
+  end
+
+  def kubernetes_service
+    deployment_platform
+  end
+
+  # TODO: This will be extended for multiple enviroment clusters
+  def deployment_platform
+    @deployment_platform ||= clusters.where(enabled: true).first&.platform_kubernetes
+    @deployment_platform ||= deployment_services.reorder(nil).find_by(active: true)
   end
 
   def monitoring_services
