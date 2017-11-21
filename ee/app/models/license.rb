@@ -84,6 +84,7 @@ class License < ActiveRecord::Base
     push_rules
     related_issues
     repository_mirrors
+    scoped_issue_board
     service_desk
     variable_environment_scope
   ].freeze
