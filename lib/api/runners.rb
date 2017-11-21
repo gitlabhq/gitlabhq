@@ -86,7 +86,7 @@ module API
       end
 
       desc 'List jobs running on a runner' do
-        success Entities::JobWithProject
+        success Entities::JobBasicWithProject
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the runner'
@@ -103,7 +103,7 @@ module API
           jobs = jobs.where(status: params[:status].to_sym)
         end
 
-        present paginate(jobs), with: Entities::JobWithProject
+        present paginate(jobs), with: Entities::JobBasicWithProject
       end
     end
 

@@ -832,18 +832,21 @@ module API
       expose :id, :sha, :ref, :status
     end
 
-    class Job < Grape::Entity
+    class JobBasic < Grape::Entity
       expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
       expose :duration
       expose :user, with: User
-      expose :artifacts_file, using: JobArtifactFile, if: -> (job, opts) { job.artifacts? }
       expose :commit, with: Commit
-      expose :runner, with: Runner
       expose :pipeline, with: PipelineBasic
     end
 
-    class JobWithProject < Job
+    class Job < JobBasic
+      expose :artifacts_file, using: JobArtifactFile, if: -> (job, opts) { job.artifacts? }
+      expose :runner, with: Runner
+    end
+
+    class JobBasicWithProject < JobBasic
       expose :project, with: ProjectIdentity
     end
 
