@@ -73,7 +73,7 @@ describe Namespace do
         before do
           namespace.shared_runners_minutes_limit = 100
         end
-        
+
         context 'when group is subgroup' do
           set(:root_ancestor) { create(:group) }
           let(:namespace) { create(:namespace, parent: root_ancestor) }
@@ -431,7 +431,7 @@ describe Namespace do
         is_expected.to eq(true)
       end
     end
-    
+
     context 'group without projects' do
       it "returns false" do
         is_expected.to eq(false)
@@ -515,9 +515,5 @@ describe Namespace do
         expect(namespace.actual_plan_name).to eq 'free'
       end
     end
-  end
-
-  describe '#validate_shared_runner_minutes_support' do
-
   end
 end

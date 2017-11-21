@@ -110,7 +110,7 @@ feature 'Groups > Pipeline Quota' do
       let(:group) { create(:group, :with_used_build_minutes_limit) }
       let!(:subgroup) { create(:group, parent: group) }
       let!(:subproject) { create(:project, namespace: subgroup, shared_runners_enabled: true) }
-      
+
       it 'does not show project of subgroup' do
         visit_pipeline_quota_page
 
@@ -119,7 +119,7 @@ feature 'Groups > Pipeline Quota' do
       end
     end
   end
-  
+
   context 'with shared_runner_minutes_on_root_namespace enabled' do
     before do
       stub_feature_flags(shared_runner_minutes_on_root_namespace: true)
@@ -128,7 +128,7 @@ feature 'Groups > Pipeline Quota' do
     context 'when accessing subgroup' do
       let(:root_ancestor) { create(:group) }
       let(:group) { create(:group, :with_used_build_minutes_limit, parent: root_ancestor) }
-      
+
       it 'does not show subproject' do
         visit_pipeline_quota_page
 

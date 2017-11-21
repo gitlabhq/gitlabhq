@@ -52,5 +52,5 @@ describe 'admin/groups/_form' do
         expect(rendered).to render_template('namespaces/_shared_runners_minutes_setting')
       end
     end
-  end  
+  end
 end

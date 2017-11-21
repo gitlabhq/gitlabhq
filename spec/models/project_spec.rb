@@ -3483,7 +3483,7 @@ describe Project do
     context 'when namespace has parent group' do
       let(:root_ancestor) { create(:group) }
       let(:parent) { build(:group, parent: root_ancestor) }
-      
+
       it 'returns root ancestor' do
         is_expected.to eq(root_ancestor)
       end
