@@ -16,7 +16,7 @@ export const treeList = (state) => {
 
 export const changedFiles = state => state.openFiles.filter(file => file.changed);
 
-export const activeFile = state => state.openFiles.find(file => file.active);
+export const activeFile = state => state.openFiles.find(file => file.active) || null;
 
 export const activeFileExtension = (state) => {
   const file = activeFile(state);

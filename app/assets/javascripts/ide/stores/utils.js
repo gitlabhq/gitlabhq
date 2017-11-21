@@ -85,7 +85,7 @@ export const setPageTitle = (title) => {
 };
 
 export const pushState = (url) => {
-  history.pushState({ url }, '', url);
+  // history.pushState({ url }, '', url);
 };
 
 export const createTemp = ({ name, path, type, level, changed, content, base64 }) => {

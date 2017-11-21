@@ -1,0 +1,306 @@
+.modal.popup-dialog {
+  display: block;
+  background-color: $black-transparent;
+  z-index: 2100;
+
+  @media (min-width: $screen-md-min) {
+    .modal-dialog {
+      width: 600px;
+      margin: 30px auto;
+    }
+  }
+}
+
+.project-refs-form,
+.project-refs-target-form {
+  display: inline-block;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.commit-message {
+  @include str-truncated(250px);
+}
+
+.editable-mode {
+  display: inline-block;
+}
+
+@media (min-width: $screen-md-min) {
+  .blob-viewer[data-type="rich"] {
+    margin: 20px;
+  }
+}
+
+.ide-view {  
+  display: flex;
+  height: calc(100vh - #{$header-height});
+  margin-top: $header-height;
+  color: $almost-black;
+
+  .code.white pre .hll {
+    background-color: $well-light-border !important;
+  }
+
+  .ide-content-holder {
+    display: -webkit-flex;
+    display: flex;
+    flex: 1;
+    height: 100vh;
+  }
+
+  .tree-content-holder-mini {
+    height: 100vh;
+  }
+
+  .panel-right {
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-direction: column;
+    flex-direction: column;
+    width: 80%;
+    height: 100%;
+
+    .monaco-editor.vs {
+      .current-line {
+        border: 0;
+        background: $well-light-border;
+      }
+
+      .line-numbers {
+        cursor: pointer;
+
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+
+    .blob-no-preview {
+      .vertical-center {
+        justify-content: center;
+        width: 100%;
+      }
+    }
+
+    &.blob-editor-container {
+      overflow: hidden;
+    }
+
+    .blob-viewer-container {
+      -webkit-flex: 1;
+      flex: 1;
+      overflow: auto;
+
+      > div,
+      .file-content:not(.wiki) {
+        display: flex;
+      }
+
+      > div,
+      .file-content,
+      .blob-viewer,
+      .line-number,
+      .blob-content,
+      .code {
+        min-height: 100%;
+        width: 100%;
+      }
+
+      .line-numbers {
+        min-width: 44px;
+      }
+
+      .blob-content {
+        flex: 1;
+        overflow-x: auto;
+      }
+    }
+
+    #tabs {
+      position: relative;
+      flex-shrink: 0;
+      display: flex;
+      width: 100%;
+      padding-left: 0;
+      margin-bottom: 0;
+      white-space: nowrap;
+      overflow-y: hidden;
+      overflow-x: auto;
+
+      li {
+        position: relative;
+        background: $gray-normal;
+        padding: #{$gl-padding / 2} $gl-padding;
+        border-right: 1px solid $white-dark;
+        border-bottom: 1px solid $white-dark;
+        cursor: pointer;
+
+        &.active {
+          background: $white-light;
+          border-bottom: 0;
+        }
+
+        a {
+          @include str-truncated(100px);
+          color: $gl-text-color;
+          vertical-align: middle;
+          text-decoration: none;
+          margin-right: 12px;
+
+          &:focus {
+            outline: none;
+          }
+        }
+
+        .close-btn {
+          position: absolute;
+          right: 8px;
+          top: 50%;
+          padding: 0;
+          background: none;
+          border: 0;
+          font-size: $gl-font-size;
+          transform: translateY(-50%);
+        }
+
+        .close-icon:hover {
+          color: $hint-color;
+        }
+
+        .close-icon,
+        .unsaved-icon {
+          color: $gray-darkest;
+        }
+
+        .unsaved-icon {
+          color: $brand-success;
+        }
+
+        &.tabs-divider {
+          width: 100%;
+          background-color: $white-light;
+          border-right: 0;
+          border-top-right-radius: 2px;
+        }
+      }
+    }
+
+    .repo-file-buttons {
+      background-color: $white-light;
+      padding: 5px 10px;
+      border-top: 1px solid $white-normal;
+    }
+
+    #binary-viewer {
+      height: 80vh;
+      overflow: auto;
+      margin: 0;
+
+      .blob-viewer {
+        padding-top: 20px;
+        padding-left: 20px;
+      }
+
+      .binary-unknown {
+        text-align: center;
+        padding-top: 100px;
+        background: $gray-light;
+        height: 100%;
+        font-size: 17px;
+
+        span {
+          display: block;
+        }
+      }
+    }
+  }
+
+  #commit-area {
+    background: $gray-light;
+    padding: 20px;
+
+    .help-block {
+      padding-top: 7px;
+      margin-top: 0;
+    }
+  }
+
+  #view-toggler {
+    height: 41px;
+    position: relative;
+    display: block;
+    border-bottom: 1px solid $white-normal;
+    background: $white-light;
+    margin-top: -5px;
+  }
+
+  #binary-viewer {
+    img {
+      max-width: 100%;
+    }
+  }
+
+  #sidebar {
+    flex: 1;
+    height: 100%;
+
+    &.sidebar-mini {
+      width: 20%;
+      border-right: 1px solid $white-normal;
+      overflow: auto;
+    }
+
+    .table {
+      margin-bottom: 0;
+    }
+
+    tr {
+      .repo-file-options {
+        padding: 2px 16px;
+        width: 100%;
+      }
+
+      .title {
+        font-size: 10px;
+        text-transform: uppercase;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: middle;
+      }
+
+      .file-icon {
+        margin-right: 5px;
+      }
+
+      td {
+        white-space: nowrap;
+      }
+    }
+
+    .file {
+      cursor: pointer;
+    }
+
+    a {
+      @include str-truncated(250px);
+      color: $almost-black;
+    }
+  }
+}
+
+.render-error {
+  min-height: calc(100vh - 62px);
+
+  p {
+    width: 100%;
+  }
+}
+
+.multi-file-table-col-name {
+  width: 350px;
+}

@@ -23,6 +23,9 @@ export default {
     return Vue.http.get(file.rawPath, { params: { format: 'json' } })
       .then(res => res.text());
   },
+  getProjectData(namespace, project) {
+    return Api.project(`${namespace}/${project}`);
+  },
   getBranchData(projectId, currentBranch) {
     return Api.branchSingle(projectId, currentBranch);
   },

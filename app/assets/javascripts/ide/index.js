@@ -1,21 +1,23 @@
 import Vue from 'vue';
 import { mapActions } from 'vuex';
 import { convertPermissionToBoolean } from '../lib/utils/common_utils';
-import Repo from './components/repo.vue';
+import Ide from './components/ide.vue';
 import RepoEditButton from './components/repo_edit_button.vue';
 import newBranchForm from './components/new_branch_form.vue';
 import newDropdown from './components/new_dropdown/index.vue';
 import store from './stores';
+import router from './ide_router';
 import Translate from '../vue_shared/translate';
 
-function initRepo(el) {
+function initIde(el) {
   if (!el) return null;
 
   return new Vue({
     el,
     store,
+    router,
     components: {
-      repo: Repo,
+      ide: Ide,
     },
     methods: {
       ...mapActions([
@@ -46,12 +48,12 @@ function initRepo(el) {
       });
     },
     render(createElement) {
-      return createElement('repo');
+      return createElement('ide');
     },
   });
 }
 
-function initRepoEditButton(el) {
+function initIdeEditButton(el) {
   return new Vue({
     el,
     store,
@@ -94,13 +96,13 @@ function initNewBranchForm() {
   });
 }
 
-const repo = document.getElementById('repo');
+const ide = document.getElementById('ide');
 const editButton = document.querySelector('.editable-mode');
 const newDropdownHolder = document.querySelector('.js-new-dropdown');
 
 Vue.use(Translate);
 
-initRepo(repo);
-initRepoEditButton(editButton);
+initIde(ide);
+initIdeEditButton(editButton);
 initNewBranchForm();
 initNewDropdown(newDropdownHolder);
