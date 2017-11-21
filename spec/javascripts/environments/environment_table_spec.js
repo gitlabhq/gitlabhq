@@ -2,12 +2,18 @@ import Vue from 'vue';
 import environmentTableComp from '~/environments/components/environments_table.vue';
 import eventHub from '~/environments/event_hub';
 import { deployBoardMockData } from './mock_data';
+import mountComponent from '../helpers/vue_mount_component_helper';
 
-describe('Environment item', () => {
-  let EnvironmentTable;
+describe('Environment table', () => {
+  let Component;
+  let vm;
 
   beforeEach(() => {
-    EnvironmentTable = Vue.extend(environmentTableComp);
+    Component = Vue.extend(environmentTableComp);
+  });
+
+  afterEach(() => {
+    vm.$destroy();
   });
 
   it('Should render a table', () => {
@@ -19,16 +25,13 @@ describe('Environment item', () => {
       environment_path: 'url',
     };
 
-    const component = new EnvironmentTable({
-      el: document.querySelector('.test-dom-element'),
-      propsData: {
-        environments: [mockItem],
-        canCreateDeployment: false,
-        canReadEnvironment: true,
-      },
-    }).$mount();
+    vm = mountComponent(Component, {
+      environments: [mockItem],
+      canCreateDeployment: false,
+      canReadEnvironment: true,
+    });
 
-    expect(component.$el.getAttribute('class')).toContain('ci-table');
+    expect(vm.$el.getAttribute('class')).toContain('ci-table');
   });
 
   it('should render deploy board container when data is provided', () => {
@@ -44,18 +47,15 @@ describe('Environment item', () => {
       isEmptyDeployBoard: false,
     };
 
-    const component = new EnvironmentTable({
-      el: document.querySelector('.test-dom-element'),
-      propsData: {
-        environments: [mockItem],
-        canCreateDeployment: true,
-        canReadEnvironment: true,
-      },
-    }).$mount();
+    vm = mountComponent(Component, {
+      environments: [mockItem],
+      canCreateDeployment: false,
+      canReadEnvironment: true,
+    });
 
-    expect(component.$el.querySelector('.js-deploy-board-row')).toBeDefined();
+    expect(vm.$el.querySelector('.js-deploy-board-row')).toBeDefined();
     expect(
-      component.$el.querySelector('.deploy-board-icon i').classList.contains('fa-caret-right'),
+      vm.$el.querySelector('.deploy-board-icon i').classList.contains('fa-caret-right'),
     ).toEqual(true);
   });
 
@@ -82,15 +82,12 @@ describe('Environment item', () => {
       expect(env.id).toEqual(mockItem.id);
     });
 
-    const component = new EnvironmentTable({
-      el: document.querySelector('.test-dom-element'),
-      propsData: {
-        environments: [mockItem],
-        canCreateDeployment: true,
-        canReadEnvironment: true,
-      },
-    }).$mount();
+    vm = mountComponent(Component, {
+      environments: [mockItem],
+      canCreateDeployment: false,
+      canReadEnvironment: true,
+    });
 
-    component.$el.querySelector('.deploy-board-icon').click();
+    vm.$el.querySelector('.deploy-board-icon').click();
   });
 });

@@ -3,15 +3,14 @@
   import PipelinesService from '../services/pipelines_service';
   import pipelinesMixin from '../mixins/pipelines';
   import tablePagination from '../../vue_shared/components/table_pagination.vue';
-  import navigationTabs from './navigation_tabs.vue';
+  import navigationTabs from '../../vue_shared/components/navigation_tabs.vue';
   import navigationControls from './nav_controls.vue';
   import {
     convertPermissionToBoolean,
     getParameterByName,
-    historyPushState,
-    buildUrlWithCurrentLocation,
     parseQueryStringIntoObject,
   } from '../../lib/utils/common_utils';
+  import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
 
   export default {
     props: {
@@ -36,6 +35,7 @@
     },
     mixins: [
       pipelinesMixin,
+      CIPaginationMixin,
     ],
     data() {
       const pipelinesData = document.querySelector('#pipelines-list-vue').dataset;
@@ -170,22 +170,7 @@
        *  - Update the internal state
        */
       updateContent(parameters) {
-        // stop polling
-        this.poll.stop();
-
-        const queryString = Object.keys(parameters).map((parameter) => {
-          const value = parameters[parameter];
-          // update internal state for UI
-          this[parameter] = value;
-          return `${parameter}=${encodeURIComponent(value)}`;
-        }).join('&');
-
-        // update polling parameters
-        this.requestData = parameters;
-
-        historyPushState(buildUrlWithCurrentLocation(`?${queryString}`));
-
-        this.isLoading = true;
+        this.updateInternalState(parameters);
         // fetch new data
         return this.service.getPipelines(this.requestData)
           .then((response) => {
@@ -202,14 +187,6 @@
             // restart polling
             this.poll.restart();
           });
-      },
-
-      onChangeTab(scope) {
-        this.updateContent({ scope, page: '1' });
-      },
-      onChangePage(page) {
-      /* URLS parameters are strings, we need to parse to match types */
-        this.updateContent({ scope: this.scope, page: Number(page).toString() });
       },
     },
   };
@@ -235,6 +212,7 @@
       <navigation-tabs
         :tabs="tabs"
         @onChangeTab="onChangeTab"
+        scope="pipelines"
         />
 
       <navigation-controls
