@@ -258,7 +258,7 @@ Layout/TrailingWhitespace:
 # Style #######################################################################
 
 # Check the naming of accessor methods for get_/set_.
-Style/AccessorMethodName:
+Naming/AccessorMethodName:
   Enabled: false
 
 # Use alias_method instead of alias.
