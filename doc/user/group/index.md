@@ -61,41 +61,6 @@ Issues and merge requests are part of projects. For a given group, view all the
 [issues](../project/issues/index.md#issues-per-group) and [merge requests](../project/merge_requests/index.md#merge-requests-per-group) across all the projects in that group,
 together in a single list view.
 
-## Epics
-
-> Introduced in [GitLab Enterprise Edition Ultimate][ee] 10.2.
-
-With epics you can plan and track your work at the feature level by collecting
-multiple related issues together in the same group/subgroup.
-
-A paginated list of epics is available in each group from where you can create
-a new epic. From the group page, click the **New epic** button at the top right,
-enter a descriptive title and hit **Create epic**.
-
-Once created, you will be taken to the view for that newly-created epic where
-you can change its title, description, planned start date, and planned end date.
-The planned end date cannot be before the planned start date
-(but they can be the same day).
-
-![epic view](img/epic-view.png)
-
-An epic contains a list of issues and an issue can be associated with at most
-one epic. You can add issues associated with the epic by clicking the
-plus icon (<kbd>+</kbd>) under the epic description, pasting the link of the
-issue, and clicking **Add**. Any issue belonging to a project in the epic's
-group or any of the epic's subgroups are eligible to be added. To remove an
-issue from an epic, simply click on the <kbd>x</kbd> button in the epic's
-issue list.
-
-When you add an issue to an epic that's already associated with another epic,
-the issue is automatically removed from the previous epic. In other words, an
-issue can be associated with at most one epic.
-
-Deleting an epic releases all existing issues from their associated epic in the
-system.
-
-[See group permissions for epics and associating issues.](../permissions.md#group-members-permissions)
-
 ## Create a new group
 
 > **Notes:**
@@ -209,6 +174,16 @@ Alternatively, you can [lock the sharing with group feature](#share-with-group-l
 
 In GitLab Enterprise Edition it is possible to manage GitLab group memberships using LDAP groups.
 See [the GitLab Enterprise Edition documentation](../../integration/ldap.md) for more information.
+
+## Epics
+
+> Introduced in [GitLab Enterprise Edition Ultimate][ee] 10.2.
+
+Epics let you manage your portfolio of projects more efficiently and with less
+effort by tracking groups of issues that share a theme, across projects and
+milestones.
+
+[Learn more about Epics.](epics/index.md)
 
 ## Group settings
 
