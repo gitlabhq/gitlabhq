@@ -33,7 +33,7 @@ module API
               # paginate() only works with a relation. This could lead to a
               # mismatch between the pagination headers info and the actual notes
               # array returned, but this is really a edge-case.
-              paginate(noteable.notes)
+              paginate(noteable.notes.with_metadata)
               .reject { |n| n.cross_reference_not_visible_for?(current_user) }
             present notes, with: Entities::Note
           else
@@ -50,7 +50,7 @@ module API
         end
         get ":id/#{noteables_str}/:noteable_id/notes/:note_id" do
           noteable = find_project_noteable(noteables_str, params[:noteable_id])
-          note = noteable.notes.find(params[:note_id])
+          note = noteable.notes.with_metadata.find(params[:note_id])
           can_read_note = can?(current_user, noteable_read_ability_name(noteable), noteable) && !note.cross_reference_not_visible_for?(current_user)
 
           if can_read_note
