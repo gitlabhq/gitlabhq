@@ -49,7 +49,7 @@ describe 'Group routing', "routing" do
         create(:group, path: 'boards', parent: parent)
 
         expect(get('/groups/complex.group-namegit/boards/issues/'))
-          .to redirect_to('/groups/complex.group-namegit/boards/-/issues/')
+          .to redirect_to('/groups/complex.group-namegit/boards/-/issues')
       end
 
       it 'does not redirect when the nested group exists' do
