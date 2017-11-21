@@ -7,19 +7,7 @@ from source, follow the
 
 >**Note:**
 Stages of the setup process must be completed in the documented order.
-Before attempting the steps in this stage, complete all prior stages.
-
-1. [Install GitLab Enterprise Edition][install-ee] on the server that will serve
-   as the **secondary** Geo node. Do not login or set up anything else in the
-   secondary node for the moment.
-1. [Upload the GitLab License](../user/admin_area/license.md) to the **primary** Geo Node to unlock GitLab Geo.
-1. **Setup the database replication** (`primary (read-write) <-> secondary (read-only)` topology).
-1. [Configure SSH authorizations to use the database](ssh.md)
-1. [Configure GitLab](configuration.md) to set the primary and secondary nodes.
-1. Optional: [Configure a secondary LDAP server](../administration/auth/ldap.md) for the secondary. See [notes on LDAP](#ldap).
-1. [Follow the after setup steps](after_setup.md).
-
-[install-ee]: https://about.gitlab.com/downloads-ee/ "GitLab Enterprise Edition Omnibus packages downloads page"
+Before attempting the steps in this stage, [complete all prior stages][toc].
 
 This document describes the minimal steps you have to take in order to
 replicate your GitLab database into another server. You may have to change
@@ -79,17 +67,17 @@ will not be able to perform all necessary configuration steps. Refer to
 
     This command will use your defined `external_url` in `/etc/gitlab/gitlab.rb`.
 
-1. Omnibus GitLab has already a replication user called `gitlab_replicator`.
+1. Omnibus GitLab already has a replication user called `gitlab_replicator`.
    You must set its password manually. You will be prompted to enter a
    password:
 
     ```bash
-      gitlab-ctl set-replication-password
+    gitlab-ctl set-replication-password
     ```
 
-   This command will also read `postgresql['sql_replication_user']` Omnibus
-   setting in case you have changed `gitlab_replicator` username to something
-   else.
+    This command will also read `postgresql['sql_replication_user']` Omnibus
+    setting in case you have changed `gitlab_replicator` username to something
+    else.
 
 1. Set up TLS support for the PostgreSQL primary server
     > **Warning**: Only skip this step if you **know** that PostgreSQL traffic
@@ -151,8 +139,8 @@ will not be able to perform all necessary configuration steps. Refer to
     install -o gitlab-psql -g gitlab-psql -m 0400 -T server.key ~gitlab-psql/data/server.key
     ```
 
-1.  Add this configuration to `/etc/gitlab/gitlab.rb`. Additional options are
-    documented [here](http://docs.gitlab.com/omnibus/settings/database.html#enabling-ssl).
+1. Add this configuration to `/etc/gitlab/gitlab.rb`. Additional options are
+   documented [here](http://docs.gitlab.com/omnibus/settings/database.html#enabling-ssl).
 
     ```ruby
     postgresql['ssl'] = 'on'
@@ -165,7 +153,7 @@ will not be able to perform all necessary configuration steps. Refer to
 
     ```ruby
     geo_primary_role['enable'] = true
-    postgresql['listen_address'] = "1.2.3.4"
+    postgresql['listen_address'] = '1.2.3.4'
     postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','1.2.3.4/32']
     postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
     # New for 9.4: Set this to be the number of Geo secondary nodes you have
@@ -214,7 +202,7 @@ will not be able to perform all necessary configuration steps. Refer to
     ```ruby
     # Example configuration using internal IPs for a cloud configuration
     geo_primary_role['enable'] = true
-    postgresql['listen_address'] = "10.1.5.3"
+    postgresql['listen_address'] = '10.1.5.3'
     postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','10.1.5.3/32']
     postgresql['md5_auth_cidr_addresses'] = ['10.1.10.5/32']
     postgresql['max_replication_slots'] = 1 # Number of Geo secondary nodes
@@ -225,7 +213,7 @@ will not be able to perform all necessary configuration steps. Refer to
     If you prefer that your nodes communicate over the public Internet, you
     may choose the IP addresses from the "External IP" column above.
 
-1.  Optional: If you want to add another secondary, the relevant setting would look like:
+1. Optional: If you want to add another secondary, the relevant setting would look like:
 
     ```ruby
     postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32','11.22.33.44/32']
@@ -237,15 +225,45 @@ will not be able to perform all necessary configuration steps. Refer to
 
 1. Check to make sure your firewall rules are set so that the secondary nodes
    can access port `5432` on the primary node.
-1. Save the file and [reconfigure GitLab][] for the DB listen changes to take effect.
-   This will fail and is expected.
-1. You will need to manually restart postgres `gitlab-ctl restart postgresql` until [Omnibus#2797](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2797) gets fixed.
-1. You should now reconfigure again, and it should complete cleanly.
-1. New for 9.4: Restart your primary PostgreSQL server to ensure the replication slot changes
-   take effect (`sudo gitlab-ctl restart postgresql` for Omnibus-provided PostgreSQL).
+
+1. Save the file and [reconfigure GitLab][] for the database listen changes to
+   take effect.
+
+    **This step will fail.** This is caused by
+    [Omnibus#2797](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2797).
+
+    Restart PostgreSQL:
+
+    ```bash
+    gitlab-ctl restart postgresql
+    ```
+
+    [Reconfigure GitLab][reconfigure GitLab] again. It should complete cleanly.
+
+1. New for 9.4: Restart your primary PostgreSQL server to ensure the
+   replication slot changes take effect (`sudo gitlab-ctl restart postgresql`
+   for Omnibus-provided PostgreSQL).
+
 1. Now that the PostgreSQL server is set up to accept remote connections, run
    `netstat -plnt` to make sure that PostgreSQL is listening on port `5432` to
    the server's public IP.
+
+1. Verify that clock synchronization is enabled.
+
+    >**Important:**
+    For Geo to work correctly, all nodes must have their clocks
+    synchronized. It is not required for all nodes to be set to the same time
+    zone, but when the respective times are converted to UTC time, the clocks
+    must be synchronized to within 60 seconds of each other.
+
+    If you are using Ubuntu, verify NTP sync is enabled:
+
+    ```bash
+    timedatectl status | grep 'NTP synchronized'
+    ```
+
+    Refer to your Linux distribution documentation to setup clock
+    synchronization. This can easily be done using any NTP-compatible daemon.
 
 ### Step 2. Add the secondary GitLab node
 
@@ -329,14 +347,22 @@ primary before the database is replicated.
 
 1. [Reconfigure GitLab][] for the changes to take effect.
 
-1. Setup clock synchronization service in your Linux distro.
-   This can easily be done via any NTP-compatible daemon. For example,
-   here are [instructions for setting up NTP with Ubuntu](https://help.ubuntu.com/lts/serverguide/NTP.html).
+1. Verify that clock synchronization is enabled.
 
-    **IMPORTANT:** For Geo to work correctly, all nodes must be with their
-    clocks synchronized. It is not required for all nodes to be set to the
-    same time zone, but when the respective times are converted to UTC time,
-    the clocks must be synchronized to within 60 seconds of each other.
+    >**Important:**
+    For Geo to work correctly, all nodes must have their clocks
+    synchronized. It is not required for all nodes to be set to the same time
+    zone, but when the respective times are converted to UTC time, the clocks
+    must be synchronized to within 60 seconds of each other.
+
+    If you are using Ubuntu, verify NTP sync is enabled:
+
+    ```bash
+    timedatectl status | grep 'NTP synchronized'
+    ```
+
+    Refer to your Linux distribution documentation to setup clock
+    synchronization. This can easily be done using any NTP-compatible daemon.
 
 ### Step 4. Initiate the replication process
 
@@ -357,19 +383,19 @@ data before running `pg_basebackup`.
     sudo -i
     ```
 
-1. New for 9.4: Choose a database-friendly name to use for your secondary to use as the
-   replication slot name. For example, if your domain is
-   `geo-secondary.mydomain.com`, you may use `geo_secondary_my_domain_com` as
-   the slot name.
+1. New for 9.4: Choose a database-friendly name to use for your secondary to
+   use as the replication slot name. For example, if your domain is
+   `secondary.geo.example.com`, you may use `secondary_example` as the slot
+   name.
 
 1. Execute the command below to start a backup/restore and begin the replication:
 
     ```
     # Certificate and key currently used by GitLab
-    gitlab-ctl replicate-geo-database --host=geo.primary.my.domain.com --slot-name=geo_secondary_my_domain_com
+    gitlab-ctl replicate-geo-database --host=primary.geo.example.com --slot-name=secondary_example
 
     # Self-signed certificate and key
-    gitlab-ctl replicate-geo-database --host=1.2.3.4 --slot-name=geo_secondary_my_domain_com --sslmode=verify-ca
+    gitlab-ctl replicate-geo-database --host=1.2.3.4 --slot-name=secondary_example --sslmode=verify-ca
     ```
 
     If PostgreSQL is listening on a non-standard port, add `--port=` as well.
@@ -472,3 +498,4 @@ Read the [troubleshooting document](troubleshooting.md).
 [reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
 [external postgresql]: #external-postgresql-instances
 [tracking]: database_source.md#enable-tracking-database-on-the-secondary-server
+[toc]: README.md#using-omnibus-gitlab

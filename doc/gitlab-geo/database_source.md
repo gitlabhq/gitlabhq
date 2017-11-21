@@ -7,19 +7,7 @@ using the Omnibus GitLab packages, follow the
 
 >**Note:**
 Stages of the setup process must be completed in the documented order.
-Before attempting the steps in this stage, complete all prior stages.
-
-1. [Install GitLab Enterprise Edition][install-ee-source] on the server that
-   will serve as the **secondary** Geo node. Do not login or set up anything
-   else in the secondary node for the moment.
-1. [Upload the GitLab License](../user/admin_area/license.md) you purchased for GitLab Enterprise Edition to unlock GitLab Geo.
-1. **Setup the database replication topology** (`primary (read-write) <-> secondary (read-only)`)
-1. [Configure SSH authorizations to use the database](ssh.md)
-1. [Configure GitLab](configuration_source.md) to set the primary and secondary
-   nodes.
-1. [Follow the after setup steps](after_setup.md).
-
-[install-ee-source]: https://docs.gitlab.com/ee/install/installation.html "GitLab Enterprise Edition installation from source"
+Before attempting the steps in this stage, [complete all prior stages][toc].
 
 This document describes the minimal steps you have to take in order to
 replicate your GitLab database into another server. You may have to change
@@ -186,33 +174,50 @@ The following guide assumes that:
     secondary, add one more row like the replication one and change the IP
     address:
 
-      ```bash
-      host    all             all                      127.0.0.1/32    trust
-      host    all             all                      1.2.3.4/32      trust
-      host    replication     gitlab_replicator        5.6.7.8/32      md5
-      host    replication     gitlab_replicator        11.22.33.44/32  md5
-      ```
+    ```bash
+    host    all             all                      127.0.0.1/32    trust
+    host    all             all                      1.2.3.4/32      trust
+    host    replication     gitlab_replicator        5.6.7.8/32      md5
+    host    replication     gitlab_replicator        11.22.33.44/32  md5
+    ```
 
 1. Restart PostgreSQL for the changes to take effect.
 
 1. Choose a database-friendly name to use for your secondary to use as the
    replication slot name. For example, if your domain is
-   `geo-secondary.mydomain.com`, you may use `geo_secondary_my_domain_com` as
-   the slot name.
+   `secondary.geo.example.com`, you may use `secondary_example` as the slot
+   name.
 
 1. Create the replication slot on the primary:
 
-     ```
-     $ sudo -u postgres psql -c "SELECT * FROM pg_create_physical_replication_slot('geo_secondary_my_domain');"
-           slot_name             | xlog_position
-        -------------------------+---------------
-         geo_secondary_my_domain |
-        (1 row)
-     ```
+    ```
+    $ sudo -u postgres psql -c "SELECT * FROM pg_create_physical_replication_slot('secondary_example');"
+      slot_name         | xlog_position
+      ------------------+---------------
+      secondary_example |
+      (1 row)
+    ```
 
 1. Now that the PostgreSQL server is set up to accept remote connections, run
    `netstat -plnt` to make sure that PostgreSQL is listening to the server's
    public IP.
+
+1. Verify that clock synchronization is enabled.
+
+    >**Important:**
+    For Geo to work correctly, all nodes must have their clocks
+    synchronized. It is not required for all nodes to be set to the same time
+    zone, but when the respective times are converted to UTC time, the clocks
+    must be synchronized to within 60 seconds of each other.
+
+    If you are using Ubuntu, verify NTP sync is enabled:
+
+    ```bash
+    timedatectl status | grep 'NTP synchronized'
+    ```
+
+    Refer to your Linux distribution documentation to setup clock
+    synchronization. This can easily be done using any NTP-compatible daemon.
 
 ### Step 2. Add the secondary GitLab node
 
@@ -267,15 +272,15 @@ primary before the database is replicated.
 
     If you're using a CA-issued certificate and connecting by FQDN:
 
-     ```
-     sudo -u postgres psql -h primary.geo.example.com -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W
-     ```
+    ```
+    sudo -u postgres psql -h primary.geo.example.com -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W
+    ```
 
-     If you're using a self-signed certificate or connecting by IP address:
+    If you're using a self-signed certificate or connecting by IP address:
 
-     ```
-     sudo -u postgres psql -h 1.2.3.4 -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-full" -W
-     ```
+    ```
+    sudo -u postgres psql -h 1.2.3.4 -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-full" -W
+    ```
 
     When prompted enter the password you set in the first step for the
     `gitlab_replicator` user. If all worked correctly, you should see the
@@ -307,19 +312,27 @@ primary before the database is replicated.
 
 #### Enable tracking database on the secondary server
 
-Geo secondary nodes use a tracking database to keep track of replication status and recover
-automatically from some replication issues.
+Geo secondary nodes use a tracking database to keep track of replication status
+and recover automatically from some replication issues.
 
 It is added in GitLab 9.1, and since GitLab 10.0 it is required.
 
-> **IMPORTANT:** For this feature to work correctly, all nodes must be
-with their clocks synchronized. It is not required for all nodes to be set to
-the same time zone, but when the respective times are converted to UTC time,
-the clocks must be synchronized to within 60 seconds of each other.
+1. Verify that clock synchronization is enabled.
 
-1. Setup clock synchronization service in your Linux distro.
-   This can easily be done via any NTP-compatible daemon. For example,
-   here are [instructions for setting up NTP with Ubuntu](https://help.ubuntu.com/lts/serverguide/NTP.html).
+    >**Important:**
+    For Geo to work correctly, all nodes must have their clocks
+    synchronized. It is not required for all nodes to be set to the same time
+    zone, but when the respective times are converted to UTC time, the clocks
+    must be synchronized to within 60 seconds of each other.
+
+    If you are using Ubuntu, verify NTP sync is enabled:
+
+    ```bash
+    timedatectl status | grep 'NTP synchronized'
+    ```
+
+    Refer to your Linux distribution documentation to setup clock
+    synchronization. This can easily be done using any NTP-compatible daemon.
 
 1. Create `database_geo.yml` with the information of your secondary PostgreSQL
    database.  Note that GitLab will set up another database instance separate
@@ -332,19 +345,19 @@ the clocks must be synchronized to within 60 seconds of each other.
 
 1. Edit the content of `database_geo.yml` in `production:` like the example below:
 
-     ```yaml
-     #
-     # PRODUCTION
-     #
-     production:
-       adapter: postgresql
-       encoding: unicode
-       database: gitlabhq_geo_production
-       pool: 10
-       username: gitlab_geo
-       # password:
-       host: /var/opt/gitlab/geo-postgresql
-     ```
+    ```yaml
+    #
+    # PRODUCTION
+    #
+    production:
+      adapter: postgresql
+      encoding: unicode
+      database: gitlabhq_geo_production
+      pool: 10
+      username: gitlab_geo
+      # password:
+      host: /var/opt/gitlab/geo-postgresql
+    ```
 
 1. Create the database `gitlabhq_geo_production` in that PostgreSQL
    instance.
@@ -466,3 +479,4 @@ Read the [troubleshooting document](troubleshooting.md).
 
 [pgback]: http://www.postgresql.org/docs/9.6/static/app-pgbasebackup.html
 [reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
+[toc]: README.md#using-gitlab-installed-from-source
