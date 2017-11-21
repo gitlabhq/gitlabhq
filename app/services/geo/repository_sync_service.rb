@@ -1,7 +1,5 @@
 module Geo
   class RepositorySyncService < BaseSyncService
-    include Gitlab::ShellAdapter
-
     self.type = :repository
 
     private

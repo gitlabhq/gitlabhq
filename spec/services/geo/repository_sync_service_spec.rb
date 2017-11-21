@@ -172,9 +172,14 @@ describe Geo::RepositorySyncService do
       it 'tries to redownload repo' do
         create(:geo_project_registry, project: project, repository_retry_count: Geo::BaseSyncService::RETRY_BEFORE_REDOWNLOAD + 1)
 
-        expect_any_instance_of(described_class).to receive(:fetch_project_repository).with(true)
+        expect(subject).to receive(:fetch_project_repository).with(true).and_call_original
+        expect(subject.gitlab_shell).to receive(:mv_repository).exactly(2).times.and_call_original
+        expect(subject.gitlab_shell).to receive(:remove_repository).exactly(3).times.and_call_original
 
         subject.execute
+
+        expect(File.directory?("#{project.repository.path}+failed-geo-sync")).to be false
+        expect(File.directory?(project.repository.path)).to be true
       end
 
       it 'tries to redownload repo when force_redownload flag is set' do
