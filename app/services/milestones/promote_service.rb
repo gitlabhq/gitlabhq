@@ -6,14 +6,14 @@ module Milestones
       check_project_milestone!(milestone)
 
       Milestone.transaction do
-        # Destroy all milestones with same title across projects
-        destroy_old_milestones(milestone)
-
         group_milestone = clone_project_milestone(milestone)
 
         move_children_to_group_milestone(group_milestone)
 
-        # Just to be safe
+        # Destroy all milestones with same title across projects
+        destroy_old_milestones(milestone)
+
+        # Rollback if milestone is not valid
         unless group_milestone.valid?
           raise_error(group_milestone.errors.full_messages.to_sentence)
         end
@@ -35,7 +35,7 @@ module Milestones
     end
 
     def move_children_to_group_milestone(group_milestone)
-      milestone_ids_for_merge(group_milestone).in_groups_of(100) do |milestone_ids|
+      milestone_ids_for_merge(group_milestone).in_groups_of(100, false) do |milestone_ids|
         update_children(group_milestone, milestone_ids)
       end
     end
@@ -49,7 +49,12 @@ module Milestones
 
       create_service = CreateService.new(group, current_user, params)
 
-      create_service.execute
+      milestone = create_service.execute
+
+      # milestone won't be valid here because of duplicated title
+      milestone.save(validate: false)
+
+      milestone
     end
 
     def update_children(group_milestone, milestone_ids)
@@ -65,12 +70,12 @@ module Milestones
       @group ||= parent.group || raise_error('Project does not belong to a group.')
     end
 
-    def destroy_old_milestones(group_milestone)
-      Milestone.where(id: milestone_ids_for_merge(group_milestone)).destroy_all
+    def destroy_old_milestones(milestone)
+      Milestone.where(id: milestone_ids_for_merge(milestone)).destroy_all
     end
 
     def group_project_ids
-      @group_project_ids ||= group.projects.map(&:id)
+      @group_project_ids ||= group.projects.pluck(:id)
     end
 
     def raise_error(message)
