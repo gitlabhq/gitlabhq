@@ -40,7 +40,7 @@ class UsersController < ApplicationController
       format.html { render 'show' }
       format.json do
         render json: {
-          html: view_to_html_string("shared/projects/_list", projects: @projects)
+          html: view_to_html_string("shared/projects/_list", projects: @projects, user: user)
         }
       end
     end
@@ -53,7 +53,7 @@ class UsersController < ApplicationController
       format.html { render 'show' }
       format.json do
         render json: {
-          html: view_to_html_string("shared/projects/_list", projects: @contributed_projects)
+          html: view_to_html_string("shared/projects/_list", projects: @contributed_projects, user: user)
         }
       end
     end
