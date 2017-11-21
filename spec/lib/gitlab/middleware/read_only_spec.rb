@@ -91,6 +91,12 @@ describe Gitlab::Middleware::ReadOnly do
       expect(subject).to disallow_request
     end
 
+    it 'returns last_vistited_url for disallowed request' do
+      response = request.post('/test_request')
+
+      expect(response.location).to eq 'http://localhost/'
+    end
+
     context 'whitelisted requests' do
       it 'expects a POST internal request to be allowed' do
         expect(Rails.application.routes).not_to receive(:recognize_path)
