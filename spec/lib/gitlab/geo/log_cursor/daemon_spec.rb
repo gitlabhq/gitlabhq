@@ -252,5 +252,32 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
         daemon.run_once!
       end
     end
+
+    context 'when replaying a LFS object deleted event' do
+      let(:event_log) { create(:geo_event_log, :lfs_object_deleted_event) }
+      let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
+      let(:lfs_object_deleted_event) { event_log.lfs_object_deleted_event }
+      let(:lfs_object) { lfs_object_deleted_event.lfs_object }
+
+      it 'does not create a tracking database entry' do
+        expect { daemon.run_once! }.not_to change(Geo::FileRegistry, :count)
+      end
+
+      it 'schedules a Geo::FileRemovalWorker' do
+        file_path = File.join(LfsObjectUploader.local_store_path,
+          lfs_object_deleted_event.file_path)
+
+        expect(::Geo::FileRemovalWorker).to receive(:perform_async)
+          .with(file_path)
+
+        daemon.run_once!
+      end
+
+      it 'removes the tracking database entry if exist' do
+        create(:geo_file_registry, :lfs, file_id: lfs_object.id)
+
+        expect { daemon.run_once! }.to change(Geo::FileRegistry.lfs_objects, :count).by(-1)
+      end
+    end
   end
 end
