@@ -44,22 +44,12 @@ module Clusters
       delegate :project, to: :cluster, allow_nil: true
       delegate :enabled?, to: :cluster, allow_nil: true
 
-      class << self
-        def namespace_for_project(project)
-          "#{project.path}-#{project.id}"
-        end
-      end
-
       def actual_namespace
         if namespace.present?
           namespace
         else
           default_namespace
         end
-      end
-
-      def default_namespace
-        self.class.namespace_for_project(project) if project
       end
 
       def predefined_variables
@@ -101,41 +91,6 @@ module Clusters
         { pods: read_pods }
       end
 
-      def kubeconfig
-        to_kubeconfig(
-          url: api_url,
-          namespace: actual_namespace,
-          token: token,
-          ca_pem: ca_pem)
-      end
-
-      def read_secrets
-        kubeclient = build_kubeclient!
-
-        kubeclient.get_secrets.as_json
-      end
-
-      # Returns a hash of all pods in the namespace
-      def read_pods
-        kubeclient = build_kubeclient!
-
-        kubeclient.get_pods(namespace: actual_namespace).as_json
-      rescue KubeException => err
-        raise err unless err.error_code == 404
-        []
-      end
-
-      def kubeclient_ssl_options
-        opts = { verify_ssl: OpenSSL::SSL::VERIFY_PEER }
-
-        if ca_pem.present?
-          opts[:cert_store] = OpenSSL::X509::Store.new
-          opts[:cert_store].add_cert(OpenSSL::X509::Certificate.new(ca_pem))
-        end
-
-        opts
-      end
-
       def kubeclient
         @kubeclient ||= kubernetes_service.kubeclient if manages_kubernetes_service?
       end
@@ -161,6 +116,83 @@ module Clusters
 
       private
 
+      def kubeconfig
+        to_kubeconfig(
+          url: api_url,
+          namespace: actual_namespace,
+          token: token,
+          ca_pem: ca_pem)
+      end
+
+      def default_namespace
+        return unless project
+
+        slug = "#{project.path}-#{project.id}".downcase
+        slug.gsub(/[^-a-z0-9]/, '-').gsub(/^-+/, '')
+      end
+
+      def build_kubeclient!(api_path: 'api', api_version: 'v1')
+        raise "Incomplete settings" unless api_url && actual_namespace
+
+        unless (username && password) || token
+          raise "Either username/password or token is required to access API"
+        end
+
+        ::Kubeclient::Client.new(
+          join_api_url(api_path),
+          api_version,
+          auth_options: kubeclient_auth_options,
+          ssl_options: kubeclient_ssl_options,
+          http_proxy_uri: ENV['http_proxy']
+        )
+      end
+
+      # Returns a hash of all pods in the namespace
+      def read_pods
+        kubeclient = build_kubeclient!
+
+        kubeclient.get_pods(namespace: actual_namespace).as_json
+      rescue KubeException => err
+        raise err unless err.error_code == 404
+        []
+      end
+
+      def kubeclient_ssl_options
+        opts = { verify_ssl: OpenSSL::SSL::VERIFY_PEER }
+
+        if ca_pem.present?
+          opts[:cert_store] = OpenSSL::X509::Store.new
+          opts[:cert_store].add_cert(OpenSSL::X509::Certificate.new(ca_pem))
+        end
+
+        opts
+      end
+
+      def kubeclient_auth_options
+        { bearer_token: token }
+      end
+
+      def join_api_url(api_path)
+        url = URI.parse(api_url)
+        prefix = url.path.sub(%r{/+\z}, '')
+
+        url.path = [prefix, api_path].join("/")
+
+        url.to_s
+      end
+
+      def terminal_auth
+        {
+          token: token,
+          ca_pem: ca_pem,
+          max_session_time: current_application_settings.terminal_max_session_time
+        }
+      end
+
+      def enforce_namespace_to_lower_case
+        self.namespace = self.namespace&.downcase
+      end
+
       def enforce_namespace_to_lower_case
         self.namespace = self.namespace&.downcase
       end
@@ -184,48 +216,6 @@ module Clusters
 
       def ensure_kubernetes_service
         @kubernetes_service ||= kubernetes_service || project&.build_kubernetes_service
-      end
-
-      def build_kubeclient!(api_path: 'api', api_version: 'v1')
-        raise "Incomplete settings" unless api_url && actual_namespace
-
-        unless (username && password) || token
-          raise "Either username/password or token is required to access API"
-        end
-
-        ::Kubeclient::Client.new(
-          join_api_url(api_path),
-          api_version,
-          auth_options: kubeclient_auth_options,
-          ssl_options: kubeclient_ssl_options,
-          http_proxy_uri: ENV['http_proxy']
-        )
-      end
-
-      def kubeclient_auth_options
-        return { username: username, password: password } if username && password
-        return { bearer_token: token } if token
-      end
-
-      def join_api_url(api_path)
-        url = URI.parse(api_url)
-        prefix = url.path.sub(%r{/+\z}, '')
-
-        url.path = [prefix, api_path].join("/")
-
-        url.to_s
-      end
-
-      def terminal_auth
-        {
-          token: token,
-          ca_pem: ca_pem,
-          max_session_time: current_application_settings.terminal_max_session_time
-        }
-      end
-
-      def enforce_namespace_to_lower_case
-        self.namespace = self.namespace&.downcase
       end
     end
   end
