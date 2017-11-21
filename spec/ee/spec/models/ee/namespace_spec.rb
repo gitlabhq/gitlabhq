@@ -66,7 +66,7 @@ describe Namespace do
 
     describe '#validate_shared_runner_minutes_support' do
       before do
-        stub_feature_flags(shared_runner_minutes_on_subnamespace: false)
+        stub_feature_flags(shared_runner_minutes_on_root_namespace: true)
       end
 
       context 'when changing :shared_runners_minutes_limit' do
@@ -331,9 +331,9 @@ describe Namespace do
         namespace.parent = build(:group)
       end
 
-      context 'when shared_runner_minutes_on_subnamespace is enabled' do
+      context 'when shared_runner_minutes_on_root_namespace is disabled' do
         before do
-          stub_feature_flags(shared_runner_minutes_on_subnamespace: true)
+          stub_feature_flags(shared_runner_minutes_on_root_namespace: false)
         end
 
         it 'returns true' do
@@ -341,9 +341,9 @@ describe Namespace do
         end
       end
 
-      context 'when shared_runner_minutes_on_subnamespace is disalbed' do
+      context 'when shared_runner_minutes_on_root_namespace is enabled' do
         before do
-          stub_feature_flags(shared_runner_minutes_on_subnamespace: false)
+          stub_feature_flags(shared_runner_minutes_on_root_namespace: true)
         end
 
         it 'returns false' do
@@ -382,7 +382,7 @@ describe Namespace do
 
         context 'when is subgroup' do
           before do
-            stub_feature_flags(shared_runner_minutes_on_subnamespace: false)
+            stub_feature_flags(shared_runner_minutes_on_root_namespace: true)
             namespace.parent = build(:group)
           end
 
@@ -403,9 +403,9 @@ describe Namespace do
       let(:subgroup) { create(:group, parent: namespace) }
       let!(:subproject) { create(:project, namespace: subgroup, shared_runners_enabled: true) }
 
-      context 'when shared_runner_minutes_on_subnamespace is enabled' do
+      context 'when shared_runner_minutes_on_root_namespace is disabled' do
         before do
-          stub_feature_flags(shared_runner_minutes_on_subnamespace: true)
+          stub_feature_flags(shared_runner_minutes_on_root_namespace: false)
         end
 
         it "returns false" do
@@ -413,9 +413,9 @@ describe Namespace do
         end
       end
 
-      context 'when shared_runner_minutes_on_subnamespace is disabled' do
+      context 'when shared_runner_minutes_on_root_namespace is enabled' do
         before do
-          stub_feature_flags(shared_runner_minutes_on_subnamespace: false)
+          stub_feature_flags(shared_runner_minutes_on_root_namespace: true)
         end
 
         it "returns true" do

@@ -95,7 +95,7 @@ module EE
 
     def shared_runner_minutes_supported?
       if has_parent?
-        Feature.enabled?(:shared_runner_minutes_on_subnamespace)
+        !Feature.enabled?(:shared_runner_minutes_on_root_namespace)
       else
         true
       end
@@ -118,10 +118,10 @@ module EE
     end
 
     def shared_runners_enabled?
-      if Feature.enabled?(:shared_runner_minutes_on_subnamespace)
-        projects.with_shared_runners.any?
-      else
+      if Feature.enabled?(:shared_runner_minutes_on_root_namespace)
         all_projects.with_shared_runners.any?
+      else
+        projects.with_shared_runners.any?
       end
     end
 

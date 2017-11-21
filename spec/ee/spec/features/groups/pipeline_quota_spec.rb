@@ -101,9 +101,9 @@ feature 'Groups > Pipeline Quota' do
     end
   end
 
-  context 'with shared_runner_minutes_on_subnamespace enabled' do
+  context 'with shared_runner_minutes_on_root_namespace disabled' do
     before do
-      stub_feature_flags(shared_runner_minutes_on_subnamespace: true)
+      stub_feature_flags(shared_runner_minutes_on_root_namespace: false)
     end
 
     context 'when accessing group with subgroups' do
@@ -120,9 +120,9 @@ feature 'Groups > Pipeline Quota' do
     end
   end
   
-  context 'with shared_runner_minutes_on_subnamespace disabled' do
+  context 'with shared_runner_minutes_on_root_namespace enabled' do
     before do
-      stub_feature_flags(shared_runner_minutes_on_subnamespace: false)
+      stub_feature_flags(shared_runner_minutes_on_root_namespace: true)
     end
 
     context 'when accessing subgroup' do

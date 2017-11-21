@@ -46,11 +46,11 @@ describe UpdateBuildMinutesService do
       context 'when namespace is subgroup' do
         let(:root_ancestor) { create(:group, shared_runners_minutes_limit: 100) }
 
-        context 'when shared_runner_minutes_on_subnamespace is enabled' do
+        context 'when shared_runner_minutes_on_root_namespace is disabled' do
           let(:namespace) { create(:namespace, parent: root_ancestor, shared_runners_minutes_limit: 100) }
 
           before do
-            stub_feature_flags(shared_runner_minutes_on_subnamespace: true)
+            stub_feature_flags(shared_runner_minutes_on_root_namespace: false)
           end
 
           it 'creates a statistics in current namespace' do
@@ -61,11 +61,11 @@ describe UpdateBuildMinutesService do
           end
         end
 
-        context 'when shared_runner_minutes_on_subnamespace is disabled' do
+        context 'when shared_runner_minutes_on_root_namespace is enabled' do
           let(:namespace) { create(:namespace, parent: root_ancestor) }
 
           before do
-            stub_feature_flags(shared_runner_minutes_on_subnamespace: false)
+            stub_feature_flags(shared_runner_minutes_on_root_namespace: true)
           end
 
           it 'creates a statistics in root namespace' do

@@ -539,9 +539,9 @@ describe Project do
 
     subject { project.shared_runners_limit_namespace }
 
-    context 'when shared_runner_minutes_on_subnamespace is enabled' do
+    context 'when shared_runner_minutes_on_root_namespace is disabled' do
       before do
-        stub_feature_flags(shared_runner_minutes_on_subnamespace: true)
+        stub_feature_flags(shared_runner_minutes_on_root_namespace: false)
       end
 
       it 'returns parent namespace' do
@@ -549,9 +549,9 @@ describe Project do
       end
     end
 
-    context 'when shared_runner_minutes_on_subnamespace is disabled' do
+    context 'when shared_runner_minutes_on_root_namespace is enabled' do
       before do
-        stub_feature_flags(shared_runner_minutes_on_subnamespace: false)
+        stub_feature_flags(shared_runner_minutes_on_root_namespace: true)
       end
 
       it 'returns root namespace' do

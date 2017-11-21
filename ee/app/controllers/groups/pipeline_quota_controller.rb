@@ -11,10 +11,10 @@ class Groups::PipelineQuotaController < Groups::ApplicationController
   private
 
   def all_projects
-    if Feature.enabled?(:shared_runner_minutes_on_subnamespace)
-      @group.projects
-    else
+    if Feature.enabled?(:shared_runner_minutes_on_root_namespace)
       @group.all_projects
+    else
+      @group.projects
     end
   end
 

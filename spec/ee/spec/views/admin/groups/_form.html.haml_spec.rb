@@ -10,9 +10,9 @@ describe 'admin/groups/_form' do
     allow(view).to receive(:visibility_level) { group.visibility_level }
   end
 
-  describe 'when :shared_runner_minutes_on_subnamespace is enabled' do
+  describe 'when :shared_runner_minutes_on_root_namespace is disabled' do
     before do
-      stub_feature_flags(shared_runner_minutes_on_subnamespace: true)
+      stub_feature_flags(shared_runner_minutes_on_root_namespace: false)
     end
 
     context 'when sub group is used' do
@@ -27,9 +27,9 @@ describe 'admin/groups/_form' do
     end
   end
 
-  describe 'when :shared_runner_minutes_on_subnamespace is disabled' do
+  describe 'when :shared_runner_minutes_on_root_namespace is enabled' do
     before do
-      stub_feature_flags(shared_runner_minutes_on_subnamespace: false)
+      stub_feature_flags(shared_runner_minutes_on_root_namespace: true)
     end
 
     context 'when sub group is used' do
