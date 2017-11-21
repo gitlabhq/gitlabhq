@@ -1,6 +1,0 @@
----
-title: Fix markdown form tabs toggling preview mode from double clicking write mode
-  button
-merge_request: 15119
-author:
-type: fixed
