@@ -200,6 +200,8 @@ describe GeoNodeStatus, :geo do
     before do
       create(:geo_project_registry, :sync_failed, project: project_1)
       create(:geo_project_registry, :sync_failed, project: project_3)
+      create(:geo_project_registry, :repository_syncing, project: project_4)
+      create(:geo_project_registry, :wiki_syncing)
     end
 
     it 'returns the right number of failed repos with no group restrictions' do
