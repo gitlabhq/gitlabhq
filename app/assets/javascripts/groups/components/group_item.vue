@@ -134,7 +134,10 @@ export default {
         </span>
       </div>
       <div
-        class="description">{{group.description}}</div>
+        v-if="group.description"
+        class="description">
+        {{group.description}}
+      </div>
     </div>
     <group-folder
       v-if="group.isOpen && hasChildren"

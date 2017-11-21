@@ -446,10 +446,6 @@ ul.indent-list {
       display: block;
       padding: 20px 10px;
     }
-
-    .description {
-      min-height: 1em;
-    }
   }
 }
 
@@ -461,13 +457,11 @@ ul.indent-list {
 
 ul.group-list-tree {
   li.group-row {
-    &.has-description {
-      .title {
-        line-height: inherit;
-      }
+    &.has-description .title {
+      line-height: inherit;
     }
 
-    .title {
+    &:not(.has-description) .title {
       line-height: $list-text-height;
     }
   }
