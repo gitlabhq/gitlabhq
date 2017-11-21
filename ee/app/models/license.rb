@@ -15,7 +15,6 @@ class License < ActiveRecord::Base
     group_webhooks
     issuable_default_templates
     issue_board_focus_mode
-    issue_board_milestone
     issue_weights
     jenkins_integration
     ldap_group_sync
