@@ -43,10 +43,6 @@ module EE
       end
     end
 
-    def root_ancestor
-      ancestors.reorder(nil).find_by(parent_id: nil)
-    end
-
     def move_dir
       raise NotImplementedError unless defined?(super)
 

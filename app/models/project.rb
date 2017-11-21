@@ -501,7 +501,11 @@ class Project < ActiveRecord::Base
   end
 
   def root_namespace
-    @root_namespace ||= Gitlab::GroupHierarchy.new(Namespace.where(id: namespace_id)).roots.take
+    if namespace.has_parent?
+      namespace.root_ancestor
+    else
+      namespace
+    end
   end
 
   def lfs_enabled?
