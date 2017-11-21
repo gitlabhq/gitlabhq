@@ -36,6 +36,13 @@ feature 'Update Epic', :js do
       expect(find('.issuable-details h2.title')).to have_content('New epic title')
       expect(find('.issuable-details .description')).to have_content('New epic description')
     end
+
+    # File attachment feature is not implemented yet for epics
+    it 'cannot attach files' do
+      find('.btn-edit').click
+
+      expect(page).not_to have_selector('.uploading-container .button-attach-file')
+    end
   end
 
   context 'when user with owner access displays the epic' do
