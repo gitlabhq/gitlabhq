@@ -84,7 +84,7 @@ class Commit
   end
 
   def id
-    @raw.id
+    raw.id
   end
 
   def ==(other)
@@ -361,7 +361,7 @@ class Commit
     @deltas ||= raw.deltas
   end
 
-  def diffs(diff_options = nil)
+  def diffs(diff_options = {})
     Gitlab::Diff::FileCollection::Commit.new(self, diff_options: diff_options)
   end
 
