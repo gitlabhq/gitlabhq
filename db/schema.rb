@@ -1011,8 +1011,6 @@ ActiveRecord::Schema.define(version: 20171124132536) do
 
   create_table "merge_request_diffs", force: :cascade do |t|
     t.string "state"
-    t.text "st_commits"
-    t.text "st_diffs"
     t.integer "merge_request_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"

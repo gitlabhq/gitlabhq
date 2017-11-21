@@ -731,8 +731,6 @@ X-Gitlab-Event: Merge Request Hook
     "title": "MS-Viewport",
     "created_at": "2013-12-03T17:23:34Z",
     "updated_at": "2013-12-03T17:23:34Z",
-    "st_commits": null,
-    "st_diffs": null,
     "milestone_id": null,
     "state": "opened",
     "merge_status": "unchecked",
