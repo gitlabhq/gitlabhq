@@ -6,9 +6,6 @@ module RuboCop
         for the rationale behind it:
 
         https://docs.gitlab.com/ee/development/module_with_instance_variables.html
-
-        If you think the use for this is fine, please just add:
-        # rubocop:disable Cop/ModuleWithInstanceVariables
       EOL
 
       def on_module(node)

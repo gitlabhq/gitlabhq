@@ -178,6 +178,35 @@ rather than whatever includes the module, and those modules which were also
 included, making it much easier to track down any issues,
 and reducing the chance of having name conflicts.
 
+### How to disable this cop
+
+Put the disabling comment right after your code in the same line:
+
+``` ruby
+module M
+  def violating_method
+    @f + @g # rubocop:disable Cop/ModuleWithInstanceVariables
+  end
+end
+```
+
+If there are multiple lines, you could also enable and disable for a section:
+
+``` ruby
+module M
+  # rubocop:disable Cop/ModuleWithInstanceVariables
+  def violating_method
+    @f = 0
+    @g = 1
+    @h = 2
+  end
+  # rubocop:enable Cop/ModuleWithInstanceVariables
+end
+```
+
+Note that you need to enable it at some point, otherwise everything below
+won't be checked.
+
 ### Things we might need to ignore right now
 
 Because of the way Rails helpers and mailers work, we might not be able to
