@@ -108,7 +108,7 @@ module EE
           end
 
           def member_uid_to_dn(uid)
-            identity = Identity.find_by(provider: provider, secondary_extern_uid: uid)
+            identity = ::Identity.with_secondary_extern_uid(provider, uid).take
 
             if identity.present?
               # Use the DN on record in GitLab when it's available
@@ -127,8 +127,7 @@ module EE
           end
 
           def update_identity(dn, uid)
-            identity =
-              Identity.find_by(provider: provider, extern_uid: dn)
+            identity = ::Identity.with_extern_uid(provider, dn).take
 
             # User may not exist in GitLab yet. Skip.
             return unless identity.present?

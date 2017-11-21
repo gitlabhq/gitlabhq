@@ -182,11 +182,9 @@ describe EE::Gitlab::LDAP::Sync::Proxy do
 
       it 'retrieves the DN from the identity' do
         expect(Identity)
-          .to receive(:find_by)
-                .with(
-                  provider: sync_proxy.provider,
-                  secondary_extern_uid: user.username
-                ).once.and_call_original
+          .to receive(:with_secondary_extern_uid)
+                .with(sync_proxy.provider, user.username)
+                .once.and_call_original
       end
     end
   end

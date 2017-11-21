@@ -278,8 +278,7 @@ class User < ActiveRecord::Base
     end
 
     def for_github_id(id)
-      joins(:identities)
-        .where(identities: { provider: :github, extern_uid: id.to_s })
+      joins(:identities).merge(Identity.with_extern_uid(:github, id))
     end
 
     # Find a User by their primary email or any associated secondary email
