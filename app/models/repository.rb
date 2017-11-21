@@ -217,11 +217,7 @@ class Repository
   def branch_exists?(branch_name)
     return false unless raw_repository
 
-    @branch_exists_memo ||= Hash.new do |hash, key|
-      hash[key] = raw_repository.branch_exists?(key)
-    end
-
-    @branch_exists_memo[branch_name]
+    branch_names.include?(branch_name)
   end
 
   def ref_exists?(ref)

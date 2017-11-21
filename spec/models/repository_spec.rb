@@ -1166,6 +1166,31 @@ describe Repository do
     end
   end
 
+  describe '#branch_exists?' do
+    it 'uses branch_names' do
+      allow(repository).to receive(:branch_names).and_return(['foobar'])
+
+      expect(repository.branch_exists?('foobar')).to eq(true)
+      expect(repository.branch_exists?('master')).to eq(false)
+    end
+  end
+
+  describe '#branch_names', :use_clean_rails_memory_store_caching do
+    let(:fake_branch_names) { ['foobar'] }
+
+    it 'gets cached across Repository instances' do
+      allow(repository.raw_repository).to receive(:branch_names).once.and_return(fake_branch_names)
+
+      expect(repository.branch_names).to eq(fake_branch_names)
+
+      fresh_repository = Project.find(project.id).repository
+      expect(fresh_repository.object_id).not_to eq(repository.object_id)
+
+      expect(fresh_repository.raw_repository).not_to receive(:branch_names)
+      expect(fresh_repository.branch_names).to eq(fake_branch_names)
+    end
+  end
+
   describe '#update_autocrlf_option' do
     describe 'when autocrlf is not already set to :input' do
       before do
