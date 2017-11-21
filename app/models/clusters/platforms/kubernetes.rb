@@ -36,9 +36,6 @@ module Clusters
 
       after_save :clear_reactive_cache!
 
-      # TODO: Glue code till we migrate Kubernetes Integration into Platforms::Kubernetes
-      after_destroy :destroy_kubernetes_integration!
-
       alias_attribute :ca_pem, :ca_cert
 
       delegate :project, to: :cluster, allow_nil: true
@@ -85,33 +82,14 @@ module Clusters
       # Caches resources in the namespace so other calls don't need to block on
       # network access
       def calculate_reactive_cache
-        return unless active? && project && !project.pending_delete?
+        return unless enabled? && project && !project.pending_delete?
 
         # We may want to cache extra things in the future
         { pods: read_pods }
       end
 
       def kubeclient
-        @kubeclient ||= kubernetes_service.kubeclient if manages_kubernetes_service?
-      end
-
-      def update_kubernetes_integration!
-        raise 'Kubernetes service already configured' unless manages_kubernetes_service?
-
-        # This is neccesary, otheriwse enabled? returns true even though cluster updated with enabled: false
-        cluster.reload
-
-        ensure_kubernetes_service&.update!(
-          active: enabled?,
-          api_url: api_url,
-          namespace: namespace,
-          token: token,
-          ca_pem: ca_cert
-        )
-      end
-
-      def active?
-        manages_kubernetes_service?
+        @kubeclient ||= build_kubeclient!
       end
 
       private
@@ -191,31 +169,6 @@ module Clusters
 
       def enforce_namespace_to_lower_case
         self.namespace = self.namespace&.downcase
-      end
-
-      def enforce_namespace_to_lower_case
-        self.namespace = self.namespace&.downcase
-      end
-
-      # TODO: glue code till we migrate Kubernetes Service into Platforms::Kubernetes class
-      def manages_kubernetes_service?
-        return true unless kubernetes_service&.active?
-
-        kubernetes_service.api_url == api_url
-      end
-
-      def destroy_kubernetes_integration!
-        return unless manages_kubernetes_service?
-
-        kubernetes_service&.destroy!
-      end
-
-      def kubernetes_service
-        @kubernetes_service ||= project&.kubernetes_service
-      end
-
-      def ensure_kubernetes_service
-        @kubernetes_service ||= kubernetes_service || project&.build_kubernetes_service
       end
     end
   end
