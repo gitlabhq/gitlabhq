@@ -138,10 +138,14 @@ class Namespace < ActiveRecord::Base
 
   def custom_emoji_url_by_name(candidates)
     @custom_emoji_url_by_name ||=
-      CustomEmoji.for_namespace(id).where(name: candidates)
+      all_custom_emoji.where(name: candidates)
         .each_with_object({}) do |emoji, hsh|
           hsh[emoji.name] = emoji.url
         end
+  end
+
+  def all_custom_emoji
+    CustomEmoji.for_namespace(self)
   end
 
   def kind

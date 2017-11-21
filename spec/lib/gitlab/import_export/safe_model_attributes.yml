@@ -501,6 +501,13 @@ AwardEmoji:
 - awardable_type
 - created_at
 - updated_at
+CustomEmoji:
+- id
+- namespace_id
+- name
+- created_at
+- updated_at
+- file
 LabelPriority:
 - id
 - project_id

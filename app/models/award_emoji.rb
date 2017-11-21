@@ -54,7 +54,7 @@ class AwardEmoji < ActiveRecord::Base
 
   def valid_emoji_name
     valid_emoji = Gitlab::Emoji.emojis_names
-    valid_emoji += namespace.custom_emoji_names if namespace
+    valid_emoji += namespace.all_custom_emoji.pluck(:name) if namespace
 
     self.errors.add(:name, 'invalid emoji name') unless valid_emoji.include?(name)
   end

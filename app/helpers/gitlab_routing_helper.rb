@@ -97,6 +97,14 @@ module GitlabRoutingHelper
     toggle_award_emoji_namespace_project_snippet_path(*args)
   end
 
+  def custom_emoji_path(emoji)
+    if emoji.namespace.kind == 'group'
+      group_settings_custom_emoji_path(emoji.namespace, emoji)
+    else
+      profile_custom_emoji_path(emoji)
+    end
+  end
+
   ## Members
   def project_members_url(project, *args)
     project_project_members_url(project, *args)

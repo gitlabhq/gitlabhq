@@ -6,7 +6,7 @@ describe CustomEmojiUploader do
 
   describe "#store_dir" do
     it "stores in the system dir" do
-      expect(uploader.store_dir).to start_with("uploads/-/system/custom_emoji/#{custom_emoji.namespace.full_path}")
+      expect(uploader.store_dir).to start_with("uploads/-/system/custom_emoji/#{custom_emoji.namespace_id}")
     end
 
     it "uses the old path when using object storage" do

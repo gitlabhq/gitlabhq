@@ -59,7 +59,7 @@ describe AwardEmoji do
     context 'when an invalid name is used' do
       let(:issue) { create(:issue) }
 
-      it 'accepts the award emoji' do
+      it 'rejects the award emoji' do
         new_award = build(:award_emoji, awardable: issue, name: 'z' * 30)
 
         expect(new_award).not_to be_valid

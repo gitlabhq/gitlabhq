@@ -6,18 +6,17 @@
 %p
   = s_('CustomEmoji|Custom Emoji can be used in for example titles, descriptions and notes for both issues and merge requests. They can also be used as award emoji.')
 
-
 = form_for(url, html: { class: 'gl-show-field-errors prepend-top-default' }) do |f|
-  = form_errors(@custom_emoji)
+  = form_errors(@new_custom_emoji)
 
-  = f.label 'Add a new custom emoji'
+  = f.label _('Add a new custom emoji')
 
   .form-group
     = f.label :name
     = f.text_field :name, class: 'form-control append-bottom-10', placeholder: _('emoji-name')
 
   .form-group
-    = f.label :file, 'Image'
+    = f.label :file, s_('CustomEmoji|Image')
     .prepend-top-5.append-bottom-10
       %a.btn.js-browse-file-button{ data: { id: 'custom-emoji-image' } }
         = _('Browse file...')
@@ -40,10 +39,10 @@
         %th
           = s_('CustomEmoji|Name')
         %th
-    - @custom_emojis.each do |emoji|
+    - @custom_emoji.each do |emoji|
       %tr
         %td= custom_emoji_icon(emoji.name, emoji.url)
         %td= ":#{emoji.name}:"
         %td
-          = link_to profile_custom_emoji_path(emoji), method: :delete, class: 'btn btn-remove pull-right', aria: { label: _('Delete') } do
+          = link_to custom_emoji_path(emoji), method: :delete, class: 'btn btn-remove pull-right', aria: { label: _('Delete') } do
             = icon('trash', class: 'hidden-xs')

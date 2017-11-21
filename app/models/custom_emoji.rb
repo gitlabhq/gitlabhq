@@ -15,8 +15,8 @@ class CustomEmoji < ActiveRecord::Base
     length: { maximum: 36 },
     format: { with: /\A\w+\z/ }
 
-  scope :for_namespace, ->(namespace_id) do
-    where(namespace_id: Namespace.find_by_id(namespace_id).self_and_ancestors.select(:id))
+  scope :for_namespace, ->(namespace) do
+    where(namespace_id: namespace.self_and_ancestors.select(:id))
   end
 
   def url
@@ -36,7 +36,6 @@ class CustomEmoji < ActiveRecord::Base
   end
 
   def taken_emoji_names
-    Gitlab::Emoji.emojis_names +
-      CustomEmoji.for_namespace(self.namespace_id).pluck(:name)
+    Gitlab::Emoji.emojis_names + self.class.for_namespace(namespace).pluck(:name)
   end
 end

@@ -5,7 +5,7 @@ class CustomEmojiUploader < GitlabUploader
   storage :file
 
   def store_dir
-    "#{base_dir}/#{model.class.to_s.underscore}/#{model.namespace.full_path}/#{model.id}"
+    "#{base_dir}/#{model.class.to_s.underscore}/#{model.namespace_id}/#{model.id}"
   end
 
   def move_to_store

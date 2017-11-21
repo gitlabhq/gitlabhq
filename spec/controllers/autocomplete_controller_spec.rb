@@ -380,8 +380,8 @@ describe AutocompleteController do
     let!(:custom_emoji2) { create(:custom_emoji, name: 'trollface', namespace: project.namespace) }
     let!(:custom_emoji3) { create(:custom_emoji, name: 'partyparrot', namespace: project.namespace) }
 
-    context 'sign in as user without custom emoji' do
-      it 'returns empty json' do
+    context 'when the user has no access' do
+      it 'returns a 404 status code' do
         sign_in(create(:user))
 
         get :custom_emoji, project_id: project.id
@@ -392,7 +392,7 @@ describe AutocompleteController do
 
     context 'sign in as user with custom emoji' do
       it 'returns json sorted by name count' do
-        sign_in(user)
+        sign_in(project.owner)
 
         get :custom_emoji, project_id: project.id
 

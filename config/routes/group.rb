@@ -25,7 +25,7 @@ constraints(GroupUrlConstrainer.new) do
         constraints: { group_id: Gitlab::PathRegex.full_namespace_route_regex }) do
     namespace :settings do
       resource :ci_cd, only: [:show], controller: 'ci_cd'
-      resources :custom_emoji, only: [:index, :new, :create, :destroy], controller: :custom_emoji
+      resources :custom_emoji, only: [:index, :create, :destroy], controller: :custom_emoji
     end
 
     resources :variables, only: [:index, :show, :update, :create, :destroy]

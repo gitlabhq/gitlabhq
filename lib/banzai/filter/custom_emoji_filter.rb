@@ -46,7 +46,7 @@ module Banzai
       end
 
       def custom_emoji_candidates
-        doc.to_html.scan(/:\w+:/).map { |p_emoji| p_emoji.gsub(':', '') }
+        doc.to_html.scan(/:(\w+):/).flatten
       end
 
       def all_custom_emoji

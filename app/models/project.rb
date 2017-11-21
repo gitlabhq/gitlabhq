@@ -782,7 +782,7 @@ class Project < ActiveRecord::Base
   end
 
   def custom_emoji
-    CustomEmoji.for_namespace(namespace_id)
+    namespace.all_custom_emoji
   end
 
   def build_commit_note(commit)
