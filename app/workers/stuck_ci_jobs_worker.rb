@@ -45,12 +45,17 @@ class StuckCiJobsWorker
   end
 
   def search(status, timeout)
-    Ci::Build.where(status: status).in_batches(of: 1000) do |batch|
-      batch = batch.where('ci_builds.updated_at < ?', timeout.ago)
+    loop do
+      jobs = Ci::Build.where(status: status)
+        .where('ci_builds.updated_at < ?', timeout.ago)
         .joins(:project).merge(Project.without_deleted)
         .includes(:tags, :runner, project: :namespace)
-      batch.each do |build|
-        yield(build)
+        .limit(100)
+        .to_a
+      break if jobs.empty?
+
+      jobs.each do |job|
+        yield(job)
       end
     end
   end
