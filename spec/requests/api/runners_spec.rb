@@ -370,8 +370,8 @@ describe API::Runners do
             expect(response).to have_gitlab_http_status(200)
             expect(response).to include_pagination_headers
 
-            expect(json_response.length).to eq(1)
-            expect(json_response[0]).to include('id' => job_2.id)
+            expect(json_response).to be_an(Array)
+            expect(json_response.length).to eq(2)
           end
         end
 
@@ -382,8 +382,29 @@ describe API::Runners do
             expect(response).to have_gitlab_http_status(200)
             expect(response).to include_pagination_headers
 
+            expect(json_response).to be_an(Array)
+            expect(json_response.length).to eq(2)
+          end
+        end
+
+        context 'when valid status is provided' do
+          it 'return filtered jobs' do
+            get api("/runners/#{specific_runner.id}/jobs?status=failed", admin)
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(response).to include_pagination_headers
+
+            expect(json_response).to be_an(Array)
             expect(json_response.length).to eq(1)
-            expect(json_response[0]).to include('id' => job_4.id)
+            expect(json_response.first).to include('id' => job_5.id)
+          end
+        end
+
+        context 'when invalid status is provided' do
+          it 'return 404' do
+            get api("/runners/#{specific_runner.id}/jobs?status=non-existing", admin)
+
+            expect(response).to have_gitlab_http_status(404)
           end
         end
       end
@@ -414,8 +435,29 @@ describe API::Runners do
             expect(response).to have_gitlab_http_status(200)
             expect(response).to include_pagination_headers
 
+            expect(json_response).to be_an(Array)
+            expect(json_response.length).to eq(2)
+          end
+        end
+
+        context 'when valid status is provided' do
+          it 'return filtered jobs' do
+            get api("/runners/#{specific_runner.id}/jobs?status=failed", user)
+
+            expect(response).to have_gitlab_http_status(200)
+            expect(response).to include_pagination_headers
+
+            expect(json_response).to be_an(Array)
             expect(json_response.length).to eq(1)
-            expect(json_response[0]).to include('id' => job_4.id)
+            expect(json_response.first).to include('id' => job_5.id)
+          end
+        end
+
+        context 'when invalid status is provided' do
+          it 'return 404' do
+            get api("/runners/#{specific_runner.id}/jobs?status=non-existing", user)
+
+            expect(response).to have_gitlab_http_status(404)
           end
         end
       end

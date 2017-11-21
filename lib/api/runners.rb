@@ -90,13 +90,20 @@ module API
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the runner'
+        optional :status, type: String, desc: 'Status of job'
         use :pagination
       end
       get  ':id/jobs' do
         runner = get_runner(params[:id])
         authenticate_list_runners_jobs!(runner)
 
-        present paginate(runner.builds.running), with: Entities::JobWithProject
+        jobs = runner.builds
+        if params[:status]
+          not_found!('Status') unless Ci::Build::AVAILABLE_STATUSES.include?(params[:status])
+          jobs = jobs.where(status: params[:status].to_sym)
+        end
+
+        present paginate(jobs), with: Entities::JobWithProject
       end
     end
 
