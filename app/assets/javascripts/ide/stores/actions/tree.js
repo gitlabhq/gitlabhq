@@ -10,6 +10,7 @@ import {
   createTemp,
   createOrMergeEntry,
 } from '../utils';
+import router from '../../ide_router';
 
 export const getTreeData = (
   { commit, state, dispatch },
@@ -75,11 +76,12 @@ export const clickedTreeRow = ({ commit, dispatch }, row) => {
     commit(types.TOGGLE_LOADING, row);
 
     visitUrl(row.url);
-  } else if (row.type === 'blob' && row.opened) {
+  }
+  /*else if (row.type === 'blob' && row.opened) {
     dispatch('setFileActive', row);
   } else {
     dispatch('getFileData', row);
-  }
+  }*/
 };
 
 export const createTempTree = ({ state, commit, dispatch }, name) => {

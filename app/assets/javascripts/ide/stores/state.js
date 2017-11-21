@@ -4,7 +4,7 @@ export default () => ({
   currentBlobView: 'repo-preview',
   currentRef: '',
   discardPopupOpen: false,
-  editMode: false,
+  editMode: true,
   endpoints: {},
   isRoot: false,
   isInitialRoot: false,
@@ -21,4 +21,6 @@ export default () => ({
   parentTreeUrl: '',
   previousUrl: '',
   tree: [],
+  workspaces: [],
+  projects: {},
 });

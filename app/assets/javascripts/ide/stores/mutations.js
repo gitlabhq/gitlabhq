@@ -1,4 +1,5 @@
 import * as types from './mutation_types';
+import projectMutations from './mutations/project';
 import fileMutations from './mutations/file';
 import treeMutations from './mutations/tree';
 import branchMutations from './mutations/branch';
@@ -55,6 +56,7 @@ export default {
       updatedAt: lastCommit.commit.authored_date,
     });
   },
+  ...projectMutations,
   ...fileMutations,
   ...treeMutations,
   ...branchMutations,
