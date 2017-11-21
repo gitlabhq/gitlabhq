@@ -101,8 +101,7 @@ module Gitlab
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
     def import_repository(storage, name, url)
-      # Timeout should be less than 900 ideally, to prevent the memory killer
-      # to silently kill the process without knowing we are timing out here.
+      # The timeout ensures the subprocess won't hang forever
       cmd = [gitlab_shell_projects_path, 'import-project',
              storage, "#{name}.git", url, "#{Gitlab.config.gitlab_shell.git_timeout}"]
       gitlab_shell_fast_execute_raise_error(cmd)
