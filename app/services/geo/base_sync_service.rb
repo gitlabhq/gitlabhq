@@ -8,6 +8,7 @@ module Geo
   class BaseSyncService
     include ExclusiveLeaseGuard
     include ::Gitlab::Geo::ProjectLogHelpers
+    include ::Gitlab::ShellAdapter
     include Delay
 
     class << self
@@ -173,13 +174,17 @@ module Geo
       registry.public_send("last_#{type}_synced_at") # rubocop:disable GitlabSecurity/PublicSend
     end
 
-    def disk_path_temp
-      unless @disk_path_temp
-        random_string = SecureRandom.hex(7)
-        @disk_path_temp = "#{repository.disk_path}_#{random_string}"
-      end
+    def random_disk_path(prefix)
+      random_string = SecureRandom.hex(7)
+      "#{repository.disk_path}_#{prefix}#{random_string}"
+    end
 
-      @disk_path_temp
+    def disk_path_temp
+      @disk_path_temp ||= random_disk_path('')
+    end
+
+    def deleted_disk_path_temp
+      @deleted_path ||= "#{repository.disk_path}+failed-geo-sync"
     end
 
     def build_temporary_repository
@@ -199,15 +204,25 @@ module Geo
         "Setting newly downloaded repository as main",
         storage_path: project.repository_storage_path,
         temp_path: disk_path_temp,
+        deleted_disk_path_temp: deleted_disk_path_temp,
         disk_path: repository.disk_path
       )
 
-      unless gitlab_shell.remove_repository(project.repository_storage_path, repository.disk_path)
-        raise Gitlab::Shell::Error, 'Can not remove outdated main repository to replace it'
+      # Remove the deleted path in case it exists, but it may not be there
+      gitlab_shell.remove_repository(project.repository_storage_path, deleted_disk_path_temp)
+
+      # Move the original repository out of the way
+      unless gitlab_shell.mv_repository(project.repository_storage_path, repository.disk_path, deleted_disk_path_temp)
+        raise Gitlab::Shell::Error, 'Can not move original repository out of the way'
       end
 
       unless gitlab_shell.mv_repository(project.repository_storage_path, disk_path_temp, repository.disk_path)
         raise Gitlab::Shell::Error, 'Can not move temporary repository'
+      end
+
+      # Purge the original repository
+      unless gitlab_shell.remove_repository(project.repository_storage_path, deleted_disk_path_temp)
+        raise Gitlab::Shell::Error, 'Can not remove outdated main repository'
       end
     end
 
