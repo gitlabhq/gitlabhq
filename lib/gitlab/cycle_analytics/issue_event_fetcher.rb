@@ -17,10 +17,6 @@ module Gitlab
         AnalyticsIssueSerializer.new(project: @project).represent(event)
       end
 
-      def allowed_ids
-        load_allowed_ids
-      end
-
       def allowed_ids_finder_class
         IssuesFinder
       end

@@ -56,10 +56,6 @@ module Gitlab
       end
 
       def allowed_ids
-        nil
-      end
-
-      def load_allowed_ids
         allowed_ids_finder_class
           .new(@options[:current_user], project_id: @project.id)
           .execute.where(id: event_result_ids).pluck(:id)
