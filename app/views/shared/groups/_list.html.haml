@@ -1,6 +1,8 @@
+- user = local_assigns.fetch(:user, current_user)
+
 - if groups.any?
   %ul.content-list
     - groups.each_with_index do |group, i|
-      = render "shared/groups/group", group: group
+      = render "shared/groups/group", group: group, user: user
 - else
   .nothing-here-block= s_("GroupsEmptyState|No groups found")
