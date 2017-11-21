@@ -122,6 +122,36 @@ module Gitlab
         ).branch_update
         Gitlab::Git::OperationService::BranchUpdate.from_gitaly(branch_update)
       end
+
+      def user_cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
+        request = Gitaly::UserCherryPickRequest.new(
+          repository: @gitaly_repo,
+          user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
+          commit: commit.to_gitaly_commit,
+          branch_name: GitalyClient.encode(branch_name),
+          message: GitalyClient.encode(message),
+          start_branch_name: GitalyClient.encode(start_branch_name.to_s),
+          start_repository: start_repository.gitaly_repository
+        )
+
+        response = GitalyClient.call(
+          @repository.storage,
+          :operation_service,
+          :user_cherry_pick,
+          request,
+          remote_storage: start_repository.storage
+        )
+
+        if response.pre_receive_error.presence
+          raise Gitlab::Git::HooksService::PreReceiveError, response.pre_receive_error
+        elsif response.commit_error.presence
+          raise Gitlab::Git::CommitError, response.commit_error
+        elsif response.create_tree_error.presence
+          raise Gitlab::Git::Repository::CreateTreeError, response.create_tree_error
+        else
+          Gitlab::Git::OperationService::BranchUpdate.from_gitaly(response.branch_update)
+        end
+      end
     end
   end
 end
