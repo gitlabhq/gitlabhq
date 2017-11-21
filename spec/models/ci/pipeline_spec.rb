@@ -1502,6 +1502,10 @@ describe Ci::Pipeline, :mailer do
       create(:ci_build, :success, :artifacts, pipeline: pipeline)
     end
 
+    it 'returns an Array' do
+      expect(pipeline.latest_builds_with_artifacts).to be_an_instance_of(Array)
+    end
+
     it 'returns the latest builds' do
       expect(pipeline.latest_builds_with_artifacts).to eq([build])
     end
