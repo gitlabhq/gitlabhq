@@ -31,16 +31,22 @@ module Gitlab
 
     def check
       ensure_patches_dir
-      generate_patch(branch: ce_branch, patch_path: ce_patch_full_path, remote: DEFAULT_CE_PROJECT_URL)
+      add_remote('canonical-ce', DEFAULT_CE_PROJECT_URL)
+      generate_patch(branch: ce_branch, patch_path: ce_patch_full_path, remote: 'canonical-ce')
 
       ensure_ee_repo
       Dir.chdir(ee_repo_dir) do
         step("In the #{ee_repo_dir} directory")
 
+        add_remote('canonical-ee', EE_REPO_URL)
+
         status = catch(:halt_check) do
           ce_branch_compat_check!
           delete_ee_branches_locally!
           ee_branch_presence_check!
+
+          step("Checking out #{ee_branch_found}", %W[git checkout -b #{ee_branch_found} canonical-ee/master])
+          generate_patch(branch: ee_branch_found, patch_path: ee_patch_full_path, remote: 'canonical-ee')
           ee_branch_compat_check!
         end
 
@@ -55,6 +61,13 @@ module Gitlab
     end
 
     private
+
+    def add_remote(name, url)
+      step(
+        "Adding the #{name} remote (#{url})",
+        %W[git remote add #{name} #{url}]
+      )
+    end
 
     def ensure_ee_repo
       if Dir.exist?(ee_repo_dir)
@@ -74,11 +87,11 @@ module Gitlab
     def generate_patch(branch:, patch_path:, remote:)
       FileUtils.rm(patch_path, force: true)
 
-      find_merge_base_with_master(branch: branch, remote: remote)
+      find_merge_base_with_master(branch: branch, master_remote: remote)
 
       step(
-        "Generating the patch against FETCH_HEAD in #{patch_path}",
-        %w[git diff --binary FETCH_HEAD...HEAD]
+        "Generating the patch against #{remote}/master in #{patch_path}",
+        %W[git diff --binary #{remote}/master...#{branch}]
       ) do |output, status|
         throw(:halt_check, :ko) unless status.zero?
 
@@ -89,21 +102,21 @@ module Gitlab
     end
 
     def ce_branch_compat_check!
-      if check_patch(ce_patch_full_path).zero?
+      if check_patch(ce_patch_full_path, remote: 'canonical-ce').zero?
         puts applies_cleanly_msg(ce_branch)
         throw(:halt_check)
       end
     end
 
     def ee_branch_presence_check!
-      _, status = step("Fetching origin/#{ee_branch_prefix}", %W[git fetch origin #{ee_branch_prefix}])
+      _, status = step("Fetching origin/#{ee_branch_prefix}", %W[git fetch canonical-ee #{ee_branch_prefix}])
 
       if status.zero?
         @ee_branch_found = ee_branch_prefix
         return
       end
 
-      _, status = step("Fetching origin/#{ee_branch_suffix}", %W[git fetch origin #{ee_branch_suffix}])
+      _, status = step("Fetching origin/#{ee_branch_suffix}", %W[git fetch canonical-ee #{ee_branch_suffix}])
 
       if status.zero?
         @ee_branch_found = ee_branch_suffix
@@ -116,11 +129,7 @@ module Gitlab
     end
 
     def ee_branch_compat_check!
-      step("Checking out #{ee_branch_found}", %W[git checkout -b #{ee_branch_found} FETCH_HEAD])
-
-      generate_patch(branch: ee_branch_found, patch_path: ee_patch_full_path, remote: EE_REPO_URL)
-
-      unless check_patch(ee_patch_full_path).zero?
+      unless check_patch(ee_patch_full_path, remote: 'canonical-ee').zero?
         puts
         puts ee_branch_doesnt_apply_cleanly_msg
 
@@ -131,9 +140,9 @@ module Gitlab
       puts applies_cleanly_msg(ee_branch_found)
     end
 
-    def check_patch(patch_path)
+    def check_patch(patch_path, remote:)
       step("Checking out master", %w[git checkout master])
-      step("Resetting to latest master", %w[git reset --hard origin/master])
+      step("Resetting to latest master", %W[git reset --hard #{remote}/master])
       step(
         "Checking if #{patch_path} applies cleanly to EE/master",
         # Don't use --check here because it can result in a 0-exit status even
@@ -170,10 +179,10 @@ module Gitlab
       command(%W[git branch --delete --force #{ee_branch_suffix}])
     end
 
-    def merge_base_found?
+    def merge_base_found?(master_remote:)
       step(
-        "Finding merge base with FETCH_HEAD",
-        %w[git merge-base FETCH_HEAD HEAD]
+        "Finding merge base with #{master_remote}/master",
+        %W[git merge-base #{master_remote}/master #{ce_branch}]
       ) do |output, status|
         if status.zero?
           puts "Merge base was found: #{output}"
@@ -182,7 +191,7 @@ module Gitlab
       end
     end
 
-    def find_merge_base_with_master(branch:, remote:)
+    def find_merge_base_with_master(branch:, master_remote:)
       # Start with (Math.exp(3).to_i = 20) until (Math.exp(6).to_i = 403)
       # In total we go (20 + 54 + 148 + 403 = 625) commits deeper
       depth = 20
@@ -191,13 +200,13 @@ module Gitlab
           depth += Math.exp(factor).to_i
           # Repository is initially cloned with a depth of 20 so we need to fetch
           # deeper in the case the branch has more than 20 commits on top of master
-          fetch(branch: branch, depth: depth)
-          fetch(branch: 'master', depth: depth, remote: remote)
+          fetch(branch: branch, depth: depth, remote: 'origin')
+          fetch(branch: 'master', depth: depth, master_remote: master_remote)
 
-          merge_base_found?
+          merge_base_found?(master_remote: master_remote)
         end
 
-      raise "\n#{branch} is too far behind master, please rebase it!\n" unless success
+      raise "\n#{branch} is too far behind #{master_remote}/master, please rebase it!\n" unless success
     end
 
     def fetch(branch:, depth:, remote: 'origin')
@@ -303,8 +312,8 @@ module Gitlab
         1. Create a new branch from master and cherry-pick your CE commits
 
           # In the EE repo
-          $ git fetch origin
-          $ git checkout -b #{ee_branch_prefix} origin/master
+          $ git fetch #{EE_REPO_URL} master
+          $ git checkout -b #{ee_branch_prefix} FETCH_HEAD
           $ git fetch #{ce_repo_url} #{ce_branch}
           $ git cherry-pick SHA # Repeat for all the commits you want to pick
 
@@ -313,10 +322,9 @@ module Gitlab
         2. Apply your branch's patch to EE
 
           # In the EE repo
-          $ git fetch origin master
-          $ git checkout -b #{ee_branch_prefix} origin/master
-          $ wget #{patch_url}
-          $ git apply --3way #{ce_patch_name}
+          $ git fetch #{EE_REPO_URL} master
+          $ git checkout -b #{ee_branch_prefix} FETCH_HEAD
+          $ wget #{patch_url} && git apply --3way #{ce_patch_name}
 
           At this point you might have conflicts such as:
 
