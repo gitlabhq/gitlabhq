@@ -27,6 +27,11 @@
         required: false,
         default: 'issue',
       },
+      updateUrl: {
+        type: String,
+        required: false,
+        default: null,
+      },
     },
     data() {
       return {
@@ -100,7 +105,9 @@
     <textarea
       class="hidden js-task-list-field"
       v-if="descriptionText"
-      v-model="descriptionText">
+      v-model="descriptionText"
+      :data-update-url="updateUrl"
+    >
     </textarea>
   </div>
 </template>
