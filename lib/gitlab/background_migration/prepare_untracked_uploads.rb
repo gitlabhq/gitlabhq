@@ -20,7 +20,19 @@ module Gitlab
 
       def perform
         ensure_temporary_tracking_table_exists
+
+        # Since Postgres < 9.5 does not have ON CONFLICT DO NOTHING, and since
+        # doing inserts-if-not-exists without ON CONFLICT DO NOTHING would be
+        # slow, start with an empty table for Postgres < 9.5.
+        # That way we can do bulk inserts at ~30x the speed of individual
+        # inserts (~20 minutes worth of inserts at GitLab.com scale instead of
+        # ~10 hours).
+        # In all other cases, installations will get both bulk inserts and the
+        # ability for these jobs to retry without having to clear and reinsert.
+        clear_untracked_file_paths unless can_bulk_insert_and_ignore_duplicates?
+
         store_untracked_file_paths
+
         schedule_populate_untracked_uploads_jobs
       end
 
@@ -42,6 +54,10 @@ module Gitlab
         unless UntrackedFile.connection.index_exists?(:untracked_files_for_uploads, :tracked)
           UntrackedFile.connection.add_index :untracked_files_for_uploads, :tracked
         end
+      end
+
+      def clear_untracked_file_paths
+        UntrackedFile.delete_all
       end
 
       def store_untracked_file_paths
@@ -96,34 +112,33 @@ module Gitlab
       end
 
       def insert_file_paths(file_paths)
-        ActiveRecord::Base.transaction do
-          file_paths.each do |file_path|
-            insert_file_path(file_path)
-          end
-        end
-      end
-
-      def insert_file_path(file_path)
-        if postgresql_pre_9_5?
-          # No easy way to do ON CONFLICT DO NOTHING before Postgres 9.5 so just use Rails
-          return UntrackedFile.where(path: file_path).first_or_create
-        end
-
-        table_columns_and_values = 'untracked_files_for_uploads (path, created_at, updated_at) VALUES (?, ?, ?)'
-
-        sql = if postgresql?
-                "INSERT INTO #{table_columns_and_values} ON CONFLICT DO NOTHING;"
-              else
-                "INSERT IGNORE INTO #{table_columns_and_values};"
+        sql = if postgresql_pre_9_5?
+                "INSERT INTO #{table_columns_and_values_for_insert(file_paths)};"
+              elsif postgresql?
+                "INSERT INTO #{table_columns_and_values_for_insert(file_paths)} ON CONFLICT DO NOTHING;"
+              else # MySQL
+                "INSERT IGNORE INTO #{table_columns_and_values_for_insert(file_paths)};"
               end
 
-        timestamp = Time.now.utc.iso8601
-        sql = ActiveRecord::Base.send(:sanitize_sql_array, [sql, file_path, timestamp, timestamp]) # rubocop:disable GitlabSecurity/PublicSend
         ActiveRecord::Base.connection.execute(sql)
+      end
+
+      def table_columns_and_values_for_insert(file_paths)
+        timestamp = Time.now.utc.iso8601
+
+        values = file_paths.map do |file_path|
+          ActiveRecord::Base.send(:sanitize_sql_array, ['(?, ?, ?)', file_path, timestamp, timestamp]) # rubocop:disable GitlabSecurity/PublicSend
+        end.join(', ')
+
+        "#{UntrackedFile.table_name} (path, created_at, updated_at) VALUES #{values}"
       end
 
       def postgresql?
         @postgresql ||= Gitlab::Database.postgresql?
+      end
+
+      def can_bulk_insert_and_ignore_duplicates?
+        !postgresql_pre_9_5?
       end
 
       def postgresql_pre_9_5?

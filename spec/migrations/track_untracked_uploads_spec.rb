@@ -62,8 +62,8 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
 
       expect(appearance.reload.uploads.where("path like '%/header_logo/%'").first.attributes).to include(@appearance_header_logo_attributes)
       expect(user2.reload.uploads.first.attributes).to include(@user2_avatar_attributes)
-      expect(project2.reload.uploads.first.attributes).to include(@project2_avatar_attributes)
-      expect(project2.uploads.last.attributes).to include(@project2_markdown_attributes)
+      expect(project2.reload.uploads.where(uploader: 'AvatarUploader').first.attributes).to include(@project2_avatar_attributes)
+      expect(project2.uploads.where(uploader: 'FileUploader').first.attributes).to include(@project2_markdown_attributes)
     end
 
     it 'ignores already-tracked uploads' do
@@ -71,8 +71,8 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
 
       expect(appearance.reload.uploads.where("path like '%/logo/%'").first.attributes).to include(@appearance_logo_attributes)
       expect(user1.reload.uploads.first.attributes).to include(@user1_avatar_attributes)
-      expect(project1.reload.uploads.first.attributes).to include(@project1_avatar_attributes)
-      expect(project1.uploads.last.attributes).to include(@project1_markdown_attributes)
+      expect(project1.reload.uploads.where(uploader: 'AvatarUploader').first.attributes).to include(@project1_avatar_attributes)
+      expect(project1.uploads.where(uploader: 'FileUploader').first.attributes).to include(@project1_markdown_attributes)
     end
 
     it 'the temporary table untracked_files_for_uploads no longer exists' do
