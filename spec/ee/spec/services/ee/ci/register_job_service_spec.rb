@@ -64,8 +64,8 @@ module Ci
         end
 
         context 'when group is subgroup' do
-          let!(:root_ancestor) { create(:group, shared_runners_minutes_limit: 10) }
-          let!(:group) { create(:group, parent: root_ancestor, shared_runners_minutes_limit: 10) }
+          let!(:root_ancestor) { create(:group) }
+          let!(:group) { create(:group, parent: root_ancestor) }
           let!(:project) { create :project, shared_runners_enabled: true, group: group }
           let(:build) { execute(shared_runner) }
 

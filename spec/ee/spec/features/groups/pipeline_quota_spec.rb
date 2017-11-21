@@ -127,7 +127,7 @@ feature 'Groups > Pipeline Quota' do
 
     context 'when accessing subgroup' do
       let(:root_ancestor) { create(:group) }
-      let(:group) { create(:group, :with_used_build_minutes_limit, parent: root_ancestor) }
+      let(:group) { create(:group, parent: root_ancestor) }
 
       it 'does not show subproject' do
         visit_pipeline_quota_page
