@@ -26,11 +26,15 @@ class FileUploader < GitlabUploader
   # This is used to build Upload paths dynamically based on the model's current
   # namespace and path, allowing us to ignore renames or transfers.
   #
-  # model - Object that responds to `path_with_namespace`
+  # model - Object that responds to `full_path` and `disk_path`
   #
   # Returns a String without a trailing slash
-  def self.dynamic_path_segment(model)
-    File.join(CarrierWave.root, base_dir, model.disk_path)
+  def self.dynamic_path_segment(project)
+    if project.hashed_storage?(:attachments)
+      File.join(CarrierWave.root, base_dir, project.disk_path)
+    else
+      File.join(CarrierWave.root, base_dir, project.full_path)
+    end
   end
 
   attr_accessor :model
