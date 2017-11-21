@@ -173,9 +173,9 @@ Each node needs to be configured to run only the services it needs.
 
 On each Consul node perform the following:
 
-1. Make sure you collect all required information before executing the next step.
-See `START user configuration` section in the next step for required information.
-1. Edit `/etc/gitlab/gitlab.rb`:
+1. Make sure you collect [`CONSUL_SERVER_NODES`](#consul_information) before executing the next step.
+
+1. Edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
 
     ```ruby
     # Disable all components except Consul
@@ -213,9 +213,9 @@ After this is completed on each Consul server node, proceed further.
 
 On each database node perform the following:
 
-1. Make sure you collect all required information before executing the next step.
-See `START user configuration` section in the next step for required information.
-1. Edit `/etc/gitlab/gitlab.rb`:
+1. Make sure you collect [`CONSUL_SERVER_NODES`](#consul_information), [`PGBOUNCER_PASSWORD_HASH`](#pgbouncer_information), [`POSTGRESQL_PASSWORD_HASH`](#postgresql_information), [`Number of db nodes`](#postgresql_information), and [`Network Address`](#network_address) before executing the next step.
+
+1. Edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
 
     ```ruby
     # Disable all components except PostgreSQL and Repmgr and Consul
@@ -250,6 +250,7 @@ See `START user configuration` section in the next step for required information
     #
     # Replace PGBOUNCER_PASSWORD_HASH with a generated md5 value
     postgresql['pgbouncer_user_password'] = 'PGBOUNCER_PASSWORD_HASH'
+    # Replace POSTGRESQL_PASSWORD_HASH with a generated md5 value
     postgresql['sql_user_password'] = 'POSTGRESQL_PASSWORD_HASH'
     # Replace X with value of number of db nodes + 1
     postgresql['max_wal_senders'] = X
@@ -281,7 +282,9 @@ your configuration
 
 ### Configuring the Pgbouncer node
 
-1. Edit `/etc/gitlab/gitlab.rb`:
+1. Make sure you collect [`CONSUL_SERVER_NODES`](#consul_information), [`CONSUL_PASSWORD_HASH`](#consul_information), and [`PGBOUNCER_PASSWORD_HASH`](#pgbouncer_information) before executing the next step.
+
+1. Edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
 
     ```ruby
     # Disable all components except Pgbouncer and Consul agent
