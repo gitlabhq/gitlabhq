@@ -7,14 +7,14 @@ Vue.use(VueRouter);
 /**
  * Routes below /-/ide/:
 
-/project/h5bp/html5-boilerplate/tree/master
-/project/h5bp/html5-boilerplate/tree/master/app/js/test.js
+/project/h5bp/html5-boilerplate/blob/master
+/project/h5bp/html5-boilerplate/blob/master/app/js/test.js
 
 /project/h5bp/html5-boilerplate/mr/123
 /project/h5bp/html5-boilerplate/mr/123/app/js/test.js
 
 /workspace/123
-/workspace/project/h5bp/html5-boilerplate/tree/my-special-branch
+/workspace/project/h5bp/html5-boilerplate/blob/my-special-branch
 /workspace/project/h5bp/html5-boilerplate/mr/123
 
 / = /workspace
@@ -31,20 +31,28 @@ const router = new VueRouter({
       beforeEnter: (to, from, next) => {
         console.log('To Project : ' + JSON.stringify(to.params));
 
-        debugger;
-
         store.dispatch('getProjectData', {
           namespace: to.params.namespace,
           projectId: to.params.project,
+        }).then(() => {
+          next();
+        })
+        .catch(() => {
+          alert('ERROR LOADING PROJECT');
+          next(false);
         });
-
-        next();
       },
       children: [
         {
-          path: 'tree/:repo',
+          path: 'blob/:branch',
           beforeEnter: (to, from, next) => {
             console.log('To File List : ', to.params);
+            store.dispatch('getTreeData', {
+              namespace: to.params.namespace,
+              projectId: to.params.project,
+              branch: to.params.branch,
+              endpoint: '/h5bp/html5-boilerplate/tree/master',
+            });
             next();
           },
           children: [
@@ -70,5 +78,12 @@ const router = new VueRouter({
     },
   ],
 });
+
+console.log('INIT ROUTER');
+
+router.beforeEach((to, from, next) => {
+  console.log('Routing : ',to);
+  next();
+})
 
 export default router;

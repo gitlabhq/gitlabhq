@@ -17,7 +17,7 @@ export default {
     //window.removeEventListener('popstate', this.popHistoryState);
   },
   mounted() {
-    this.getTreeData('/h5bp/html5-boilerplate/tree/master');
+    //this.getTreeData('/h5bp/html5-boilerplate/tree/master');
   },
   computed: {
     ...mapState([

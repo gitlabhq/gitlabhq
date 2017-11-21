@@ -59,6 +59,7 @@ export default {
           <template
             v-else>
             EMPTY
+             <router-link to="/project/bar/bar">Go to Bar</router-link>
           </template>
         </div>
       </div>

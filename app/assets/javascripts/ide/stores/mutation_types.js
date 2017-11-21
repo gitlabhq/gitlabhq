@@ -6,6 +6,10 @@ export const SET_ROOT = 'SET_ROOT';
 export const SET_PREVIOUS_URL = 'SET_PREVIOUS_URL';
 export const SET_LAST_COMMIT_DATA = 'SET_LAST_COMMIT_DATA';
 
+// Project Mutation Types
+export const SET_PROJECT = 'SET_PROJECT';
+export const TOGGLE_PROJECT_OPEN = 'TOGGLE_PROJECT_OPEN';
+
 // Tree mutation types
 export const SET_DIRECTORY_DATA = 'SET_DIRECTORY_DATA';
 export const TOGGLE_TREE_OPEN = 'TOGGLE_TREE_OPEN';

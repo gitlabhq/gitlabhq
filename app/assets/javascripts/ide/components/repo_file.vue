@@ -46,6 +46,9 @@
       ...mapActions([
         'clickedTreeRow',
       ]),
+      clickFile(row) {
+        this.$router.push({ path:`/project/${row.url}`, params: { userId: new Date() }});
+      }
     },
   };
 </script>
@@ -53,7 +56,7 @@
 <template>
   <tr
     class="file"
-    @click.prevent="clickedTreeRow(file)">
+    @click.prevent="clickFile(file)">
     <td
       class="multi-file-table-name"
       :colspan="submoduleColSpan"
