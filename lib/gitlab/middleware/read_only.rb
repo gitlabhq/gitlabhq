@@ -58,7 +58,7 @@ module Gitlab
       end
 
       def last_visited_url
-        @env['HTTP_REFERER'] || rack_session['user_return_to'] || Rails.application.routes.url_helpers.root_url
+        @env['HTTP_REFERER'] || rack_session['user_return_to'] || Gitlab::Routing.url_helpers.root_url
       end
 
       def route_hash
@@ -74,10 +74,16 @@ module Gitlab
       end
 
       def grack_route
+        # Calling route_hash may be expensive. Only do it if we think there's a possible match
+        return false unless request.path.end_with?('.git/git-upload-pack')
+
         route_hash[:controller] == 'projects/git_http' && route_hash[:action] == 'git_upload_pack'
       end
 
       def lfs_route
+        # Calling route_hash may be expensive. Only do it if we think there's a possible match
+        return false unless request.path.end_with?('/info/lfs/objects/batch')
+
         route_hash[:controller] == 'projects/lfs_api' && route_hash[:action] == 'batch'
       end
     end
