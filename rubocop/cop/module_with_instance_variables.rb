@@ -5,7 +5,7 @@ module RuboCop
         Do not use instance variables in a module. Please read this
         for the rationale behind it:
 
-        doc/development/module_with_instance_variables.md
+        https://docs.gitlab.com/ee/development/module_with_instance_variables.html
 
         If you think the use for this is fine, please just add:
         # rubocop:disable Cop/ModuleWithInstanceVariables
@@ -56,9 +56,7 @@ module RuboCop
               add_offense(offense, :expression)
             end
           # We allow initialize method and single ivar
-          elsif initialize_method?(definition) || single_ivar?(definition)
-            next
-          else
+          elsif !initialize_method?(definition) && !single_ivar?(definition)
             definition.each_descendant(:ivar, :ivasgn) do |offense|
               add_offense(offense, :expression)
             end

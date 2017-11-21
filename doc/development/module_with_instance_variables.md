@@ -55,10 +55,9 @@ they communicate in a clear way, rather than implicit dependencies.
 
 ### Acceptable use
 
-However, it's not all that bad when using instance variables in a module,
-as long as it's contained in the same module, that is no other modules or
-objects are touching them. If that's the case, then it would be an acceptable
-use.
+However, it's not always bad to use instance variables in a module,
+as long as it's contained in the same module; that is, no other modules or
+objects are touching them, then it would be an acceptable use.
 
 We especially allow the case where a single instance variable is used with
 `||=` to setup the value. This would look like:
@@ -93,7 +92,7 @@ module Gitlab
 end
 ```
 
-It's still offending because it's not just `||=`, but We could split this
+It's still offending because it's not just `||=`, but we could split this
 method into two:
 
 ``` ruby
@@ -135,7 +134,7 @@ end
 ```
 
 There are several implicit dependencies here. First, `params` should be
-defined before using. Second, `filter_spam_check_params` should be called
+defined before use. Second, `filter_spam_check_params` should be called
 before `spam_check`. These are all implicit and the includer could be using
 those instance variables without awareness.
 
@@ -175,18 +174,18 @@ end
 ```
 
 This way, all those instance variables are isolated in `SpamCheckService`
-rather than who ever include the module, and those modules which were also
-included, making it much easier to track down the issues if there's any,
-and it also reduces the chance of having name conflicts.
+rather than whatever includes the module, and those modules which were also
+included, making it much easier to track down any issues,
+and reducing the chance of having name conflicts.
 
 ### Things we might need to ignore right now
 
-Since the way how Rails helpers and mailers work, we might not be able to
+Because of the way Rails helpers and mailers work, we might not be able to
 avoid the use of instance variables there. For those cases, we could ignore
 them at the moment. At least we're not going to share those modules with
-other random objects, so they're still somehow isolated.
+other random objects, so they're still somewhat isolated.
 
-### Instance variables in the views
+### Instance variables in views
 
 They're terrible, because they're also shared between different controllers,
 and it's very hard to track where those instance variables were set when we
@@ -210,5 +209,5 @@ And in the partial:
 - project = local_assigns.fetch(:project)
 ```
 
-This way it's very clear where those values were coming from. In the future,
+This way it's clearer where those values were coming from. In the future,
 we should also forbid the use of instance variables in partials.

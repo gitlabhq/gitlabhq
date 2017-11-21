@@ -8,7 +8,9 @@ describe RuboCop::Cop::ModuleWithInstanceVariables do
 
   subject(:cop) { described_class.new }
 
-  shared_examples('registering offense') do
+  shared_examples('registering offense') do |options|
+    let(:offending_lines) { options[:offending_lines] }
+
     it 'registers an offense when instance variable is used in a module' do
       inspect_source(cop, source)
 
@@ -28,63 +30,57 @@ describe RuboCop::Cop::ModuleWithInstanceVariables do
   end
 
   context 'when source is a regular module' do
-    let(:source) do
-      <<~RUBY
-        module M
-          def f
-            @f = true
+    it_behaves_like 'registering offense', offending_lines: [3] do
+      let(:source) do
+        <<~RUBY
+          module M
+            def f
+              @f = true
+            end
           end
-        end
-      RUBY
+        RUBY
+      end
     end
-
-    let(:offending_lines) { [3] }
-
-    it_behaves_like 'registering offense'
   end
 
   context 'when source is a nested module' do
-    let(:source) do
-      <<~RUBY
-        module N
-          module M
-            def f
-              @f = true
+    it_behaves_like 'registering offense', offending_lines: [4] do
+      let(:source) do
+        <<~RUBY
+          module N
+            module M
+              def f
+                @f = true
+              end
             end
           end
-        end
-      RUBY
+        RUBY
+      end
     end
-
-    let(:offending_lines) { [4] }
-
-    it_behaves_like 'registering offense'
   end
 
   context 'when source is a nested module with multiple offenses' do
-    let(:source) do
-      <<~RUBY
-        module N
-          module M
-            def f
-              @f = true
-            end
+    it_behaves_like 'registering offense', offending_lines: [4, 12] do
+      let(:source) do
+        <<~RUBY
+          module N
+            module M
+              def f
+                @f = true
+              end
 
-            def g
-              true
-            end
+              def g
+                true
+              end
 
-            def h
-              @h = true
+              def h
+                @h = true
+              end
             end
           end
-        end
-      RUBY
+        RUBY
+      end
     end
-
-    let(:offending_lines) { [4, 12] }
-
-    it_behaves_like 'registering offense'
   end
 
   context 'with regular ivar assignment' do
@@ -124,78 +120,74 @@ describe RuboCop::Cop::ModuleWithInstanceVariables do
   end
 
   context 'when source is using simple or ivar assignment' do
-    let(:source) do
-      <<~RUBY
-        module M
-          def f
-            @f ||= true
+    it_behaves_like 'not registering offense' do
+      let(:source) do
+        <<~RUBY
+          module M
+            def f
+              @f ||= true
+            end
           end
-        end
-      RUBY
+        RUBY
+      end
     end
-
-    it_behaves_like 'not registering offense'
   end
 
   context 'when source is using simple ivar' do
-    let(:source) do
-      <<~RUBY
-        module M
-          def f?
-            @f
+    it_behaves_like 'not registering offense' do
+      let(:source) do
+        <<~RUBY
+          module M
+            def f?
+              @f
+            end
           end
-        end
-      RUBY
+        RUBY
+      end
     end
-
-    it_behaves_like 'not registering offense'
   end
 
   context 'when source is defining initialize' do
-    let(:source) do
-      <<~RUBY
-        module M
-          def initialize
-            @a = 1
-            @b = 2
+    it_behaves_like 'not registering offense' do
+      let(:source) do
+        <<~RUBY
+          module M
+            def initialize
+              @a = 1
+              @b = 2
+            end
           end
-        end
-      RUBY
+        RUBY
+      end
     end
-
-    it_behaves_like 'not registering offense'
   end
 
   context 'when source is using simple or ivar assignment with other ivar' do
-    let(:source) do
-      <<~RUBY
-        module M
-          def f
-            @f ||= g(@g)
+    it_behaves_like 'registering offense', offending_lines: [3] do
+      let(:source) do
+        <<~RUBY
+          module M
+            def f
+              @f ||= g(@g)
+            end
           end
-        end
-      RUBY
+        RUBY
+      end
     end
-
-    let(:offending_lines) { [3] }
-
-    it_behaves_like 'registering offense'
   end
 
   context 'when source is using or ivar assignment with something else' do
-    let(:source) do
-      <<~RUBY
-        module M
-          def f
-            @f ||= true
-            @f.to_s
+    it_behaves_like 'registering offense', offending_lines: [3, 4] do
+      let(:source) do
+        <<~RUBY
+          module M
+            def f
+              @f ||= true
+              @f.to_s
+            end
           end
-        end
-      RUBY
+        RUBY
+      end
     end
-
-    let(:offending_lines) { [3, 4] }
-
-    it_behaves_like 'registering offense'
   end
 end

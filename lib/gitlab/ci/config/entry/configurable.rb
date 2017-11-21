@@ -59,13 +59,13 @@ module Gitlab
             def helpers(*nodes)
               nodes.each do |symbol|
                 define_method("#{symbol}_defined?") do
-                  @entries[symbol]&.specified?
+                  entries[symbol]&.specified?
                 end
 
                 define_method("#{symbol}_value") do
-                  return unless @entries[symbol] && @entries[symbol].valid?
+                  return unless entries[symbol] && entries[symbol].valid?
 
-                  @entries[symbol].value
+                  entries[symbol].value
                 end
               end
             end
