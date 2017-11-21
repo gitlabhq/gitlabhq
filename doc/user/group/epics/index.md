@@ -36,6 +36,12 @@ issue can be associated with at most one epic.
 
 ## Deleting an epic
 
+NOTE: **Note:**
+To delete an epic, you need to be an [Owner][permissions] of a group/subgroup.
+
+When inside a single epic view, click the **Delete** button to delete the epic.
+A modal will pop-up to confirm your action.
+
 Deleting an epic releases all existing issues from their associated epic in the
 system.
 
@@ -51,7 +57,7 @@ Note that for a given group, the visibility of all projects must be the same as
 the group, or less restrictive. That means if you have access to a group's epic,
 then you already have access to its projects' issues.
 
-You may also consult the
-[group permissions table](../../permissions.md#group-members-permissions).
+You may also consult the [group permissions table][permissions].
 
 [ee]: https://about.gitlab.com/gitlab-ee/
+[permissions]: ../../permissions.md#group-members-permissions

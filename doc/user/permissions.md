@@ -151,6 +151,7 @@ group.
 | View internal group epic | ✓       | ✓        | ✓         | ✓      | ✓     |
 | View public group epic   | ✓       | ✓        | ✓         | ✓      | ✓     |
 | Create/edit group epic   |         | ✓        | ✓         | ✓      | ✓     |
+| Delete group epic        |         |          |           |        | ✓     |
 
 ### Subgroup permissions
 
