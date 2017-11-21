@@ -6,8 +6,8 @@ module MergeRequests
       SystemNoteService.change_status(merge_request, merge_request.target_project, current_user, state, nil)
     end
 
-    def hook_data(merge_request, action, old_rev: nil, old_labels: [], old_assignees: [], old_total_time_spent: nil)
-      hook_data = merge_request.to_hook_data(current_user, old_labels: old_labels, old_assignees: old_assignees, old_total_time_spent: old_total_time_spent)
+    def hook_data(merge_request, action, old_rev: nil, old_associations: {})
+      hook_data = merge_request.to_hook_data(current_user, old_associations: old_associations)
       hook_data[:object_attributes][:action] = action
       if old_rev && !Gitlab::Git.blank_ref?(old_rev)
         hook_data[:object_attributes][:oldrev] = old_rev
@@ -16,9 +16,9 @@ module MergeRequests
       hook_data
     end
 
-    def execute_hooks(merge_request, action = 'open', old_rev: nil, old_labels: [], old_assignees: [], old_total_time_spent: nil)
+    def execute_hooks(merge_request, action = 'open', old_rev: nil, old_associations: {})
       if merge_request.project
-        merge_data = hook_data(merge_request, action, old_rev: old_rev, old_labels: old_labels, old_assignees: old_assignees, old_total_time_spent: old_total_time_spent)
+        merge_data = hook_data(merge_request, action, old_rev: old_rev, old_associations: old_associations)
         merge_request.project.execute_hooks(merge_data, :merge_request_hooks)
         merge_request.project.execute_services(merge_data, :merge_request_hooks)
       end
