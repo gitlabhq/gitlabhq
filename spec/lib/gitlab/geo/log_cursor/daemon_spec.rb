@@ -42,6 +42,26 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
 
       daemon.run!
     end
+
+    it 'skips execution if not a Geo node' do
+      stub_current_geo_node(nil)
+
+      is_expected.to receive(:exit?).and_return(false, true)
+      is_expected.to receive(:sleep).with(1.minute)
+      is_expected.not_to receive(:run_once!)
+
+      daemon.run!
+    end
+
+    it 'skips execution if the current node is a primary' do
+      stub_current_geo_node(primary)
+
+      is_expected.to receive(:exit?).and_return(false, true)
+      is_expected.to receive(:sleep).with(1.minute)
+      is_expected.not_to receive(:run_once!)
+
+      daemon.run!
+    end
   end
 
   describe '#run_once!' do
@@ -119,24 +139,29 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
 
     context 'when replaying a repository deleted event' do
       let(:event_log) { create(:geo_event_log, :deleted_event) }
-      let(:project) { event_log.repository_deleted_event.project }
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
       let(:repository_deleted_event) { event_log.repository_deleted_event }
+      let(:project) { repository_deleted_event.project }
 
-      it 'does not create a new project registry' do
+      it 'does not create a tracking database entry' do
         expect { daemon.run_once! }.not_to change(Geo::ProjectRegistry, :count)
       end
 
       it 'schedules a GeoRepositoryDestroyWorker' do
         project_id   = repository_deleted_event.project_id
         project_name = repository_deleted_event.deleted_project_name
-        full_path    = File.join(repository_deleted_event.repository_storage_path,
-                                 repository_deleted_event.deleted_path)
+        project_path = repository_deleted_event.deleted_path
 
         expect(::GeoRepositoryDestroyWorker).to receive(:perform_async)
-          .with(project_id, project_name, full_path, project.repository_storage)
+          .with(project_id, project_name, project_path, project.repository_storage)
 
         daemon.run_once!
+      end
+
+      it 'removes the tracking database entry if exist' do
+        create(:geo_project_registry, :synced, project: project)
+
+        expect { daemon.run_once! }.to change(Geo::ProjectRegistry, :count).by(-1)
       end
     end
 
@@ -225,6 +250,33 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
           .with(project.id, old_disk_path, new_disk_path, old_storage_version)
 
         daemon.run_once!
+      end
+    end
+
+    context 'when replaying a LFS object deleted event' do
+      let(:event_log) { create(:geo_event_log, :lfs_object_deleted_event) }
+      let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
+      let(:lfs_object_deleted_event) { event_log.lfs_object_deleted_event }
+      let(:lfs_object) { lfs_object_deleted_event.lfs_object }
+
+      it 'does not create a tracking database entry' do
+        expect { daemon.run_once! }.not_to change(Geo::FileRegistry, :count)
+      end
+
+      it 'schedules a Geo::FileRemovalWorker' do
+        file_path = File.join(LfsObjectUploader.local_store_path,
+          lfs_object_deleted_event.file_path)
+
+        expect(::Geo::FileRemovalWorker).to receive(:perform_async)
+          .with(file_path)
+
+        daemon.run_once!
+      end
+
+      it 'removes the tracking database entry if exist' do
+        create(:geo_file_registry, :lfs, file_id: lfs_object.id)
+
+        expect { daemon.run_once! }.to change(Geo::FileRegistry.lfs_objects, :count).by(-1)
       end
     end
   end

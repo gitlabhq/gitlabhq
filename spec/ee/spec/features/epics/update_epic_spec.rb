@@ -29,7 +29,6 @@ feature 'Update Epic', :js do
   end
 
   context 'when user with developer access displays the epic' do
-
     before do
       group.add_developer(user)
       visit group_epic_path(group, epic)
@@ -46,7 +45,14 @@ feature 'Update Epic', :js do
       expect(find('.issuable-details h2.title')).to have_content('New epic title')
       expect(find('.issuable-details .description')).to have_content('New epic description')
     end
+    
+    # File attachment feature is not implemented yet for epics
+    it 'cannot attach files' do
+      find('.btn-edit').click
 
+      expect(page).not_to have_selector('.uploading-container .button-attach-file')
+    end
+    
     it 'updates the tasklist' do
       expect(page).to have_selector('ul.task-list',      count: 1)
       expect(page).to have_selector('li.task-list-item', count: 1)
@@ -55,6 +61,20 @@ feature 'Update Epic', :js do
       find('.task-list .task-list-item', text: 'Incomplete entry 1').find('input').click
 
       expect(page).to have_selector('ul input[checked]', count: 1)
+    end
+  end
+
+  context 'when user with owner access displays the epic' do
+    before do
+      group.add_owner(user)
+      visit group_epic_path(group, epic)
+      wait_for_requests
+    end
+
+    it 'does not show delete button inside the edit form' do
+      find('.btn-edit').click
+
+      expect(page).not_to have_selector('.issuable-details .btn-danger')
     end
   end
 end

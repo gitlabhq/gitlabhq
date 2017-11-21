@@ -285,7 +285,12 @@ class Issue < ActiveRecord::Base
 
   def as_json(options = {})
     super(options).tap do |json|
-      json[:subscribed] = subscribed?(options[:user], project) if options.key?(:user) && options[:user]
+      if options.key?(:sidebar_endpoints) && project
+        url_helper = Gitlab::Routing.url_helpers
+
+        json.merge!(issue_sidebar_endpoint: url_helper.project_issue_path(project, self, format: :json, serializer: 'sidebar'),
+                    toggle_subscription_endpoint: url_helper.toggle_subscription_project_issue_path(project, self))
+      end
 
       if options.key?(:labels)
         json[:labels] = labels.as_json(
@@ -299,10 +304,6 @@ class Issue < ActiveRecord::Base
 
   def discussions_rendered_on_frontend?
     true
-  end
-
-  def update_project_counter_caches?
-    state_changed? || confidential_changed?
   end
 
   def update_project_counter_caches

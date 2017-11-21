@@ -151,16 +151,7 @@ group.
 | View internal group epic | ✓       | ✓        | ✓         | ✓      | ✓     |
 | View public group epic   | ✓       | ✓        | ✓         | ✓      | ✓     |
 | Create/edit group epic   |         | ✓        | ✓         | ✓      | ✓     |
-
-If you have access to view an epic and have access to view an issue already added to that epic,
-then you can view the issue in the epic issue list.
-
-If you have access to edit an epic and have access to edit an issue, then you can
-add the issue to or remove it from the epic.
-
-Note that for a given group, the visibility of all projects must be the same as the
-group, or less restrictive. So that means if you have access to a group's epic, then 
-you already have access to its projects' issues.
+| Delete group epic        |         |          |           |        | ✓     |
 
 ### Subgroup permissions
 
@@ -231,6 +222,7 @@ instance and project. In addition, all admins can use the admin interface under
 |---------------------------------------|-----------------|-------------|----------|--------|
 | See commits and jobs                  | ✓               | ✓           | ✓        | ✓      |
 | Retry or cancel job                   |                 | ✓           | ✓        | ✓      |
+| Erase job artifacts and trace         |                 | ✓ [^7]      | ✓        | ✓      |
 | Remove project                        |                 |             | ✓        | ✓      |
 | Create project                        |                 |             | ✓        | ✓      |
 | Change project configuration          |                 |             | ✓        | ✓      |
@@ -295,6 +287,7 @@ only.
 [^4]: Not allowed for Guest, Reporter, Developer, Master, or Owner
 [^5]: Only if user is not external one.
 [^6]: Only if user is a member of the project.
+[^7]: Only if the build was triggered by the user
 [ce-18994]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18994
 [new-mod]: project/new_ci_build_permissions_model.md
 [ee-998]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/998

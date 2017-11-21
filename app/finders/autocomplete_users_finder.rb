@@ -57,7 +57,7 @@ class AutocompleteUsersFinder
 
   def find_users
     return users_from_project if project
-    return group.users if group
+    return group.users_with_parents if group
     return User.all if current_user
 
     User.none

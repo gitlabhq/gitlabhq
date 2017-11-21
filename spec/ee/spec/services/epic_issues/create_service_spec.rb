@@ -88,7 +88,17 @@ describe EpicIssues::CreateService do
             end
           end
 
-          context 'when an issue links is given' do
+          context 'when an issue link is given' do
+            subject { assign_issue([IssuesHelper.url_for_issue(issue.iid, issue.project)]) }
+
+            include_examples 'returns success'
+          end
+
+          context 'when a link of an issue in a subgroup is given', :nested_groups do
+            let(:subgroup) { create(:group, parent: group) }
+            let(:project2) { create(:project, group: subgroup) }
+            let(:issue) { create(:issue, project: project2) }
+
             subject { assign_issue([IssuesHelper.url_for_issue(issue.iid, issue.project)]) }
 
             include_examples 'returns success'

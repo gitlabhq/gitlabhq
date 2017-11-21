@@ -11,11 +11,8 @@ module Gitlab
 
       class << self
         def find_by_uid_and_provider(uid, provider)
-          uid = Gitlab::LDAP::Person.normalize_dn(uid)
+          identity = ::Identity.with_extern_uid(provider, uid).take
 
-          identity = ::Identity
-            .where(provider: provider)
-            .where(extern_uid: uid).last
           identity && identity.user
         end
       end

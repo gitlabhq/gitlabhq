@@ -159,7 +159,7 @@ module Gitlab
       end
 
       def find_by_uid_and_provider
-        identity = Identity.find_by(provider: auth_hash.provider, extern_uid: auth_hash.uid)
+        identity = Identity.with_extern_uid(auth_hash.provider, auth_hash.uid).take
         identity && identity.user
       end
 

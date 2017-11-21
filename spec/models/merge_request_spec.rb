@@ -2259,16 +2259,4 @@ describe MergeRequest do
         .to change { project.open_merge_requests_count }.from(1).to(0)
     end
   end
-
-  describe '#update_project_counter_caches?' do
-    it 'returns true when the state changes' do
-      subject.state = 'closed'
-
-      expect(subject.update_project_counter_caches?).to eq(true)
-    end
-
-    it 'returns false when the state did not change' do
-      expect(subject.update_project_counter_caches?).to eq(false)
-    end
-  end
 end

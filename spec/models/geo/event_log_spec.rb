@@ -56,6 +56,13 @@ RSpec.describe Geo::EventLog, type: :model do
 
       expect(subject.event).to eq hashed_storage_migrated_event
     end
+
+    it 'returns lfs_object_deleted_event when set' do
+      lfs_object_deleted_event = build(:geo_lfs_object_deleted_event)
+      subject.lfs_object_deleted_event = lfs_object_deleted_event
+
+      expect(subject.event).to eq lfs_object_deleted_event
+    end
   end
 
   describe '#project_id' do

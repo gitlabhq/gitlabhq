@@ -11,6 +11,7 @@ module EE
 
       delegate :codeclimate_artifact, to: :head_pipeline, prefix: :head, allow_nil: true
       delegate :codeclimate_artifact, to: :base_pipeline, prefix: :base, allow_nil: true
+      delegate :sast_artifact, to: :head_pipeline, allow_nil: true
       delegate :sha, to: :head_pipeline, prefix: :head_pipeline, allow_nil: true
       delegate :sha, to: :base_pipeline, prefix: :base_pipeline, allow_nil: true
     end
@@ -63,6 +64,10 @@ module EE
     def has_codeclimate_data?
       !!(head_codeclimate_artifact&.success? &&
          base_codeclimate_artifact&.success?)
+    end
+
+    def has_sast_data?
+      sast_artifact&.success?
     end
   end
 end

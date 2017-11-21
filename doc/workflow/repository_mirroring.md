@@ -226,6 +226,14 @@ In case of a diverged branch, you will see an error indicated at the
 
 ![Diverged branch](repository_mirroring/repository_mirroring_diverged_branch_push.png)
 
+### Push only protected branches
+
+>[Introduced][ee-3350] in Gitlab Enterprise Edition 10.3.
+
+You can choose to only push your protected branches from GitLab to your remote repository.
+
+To use this option go to your project's repository settings page under push mirror.
+
 ## Setting up a mirror from GitLab to GitHub
 
 To set up a mirror from GitLab to GitHub, you need to follow these steps:
@@ -265,6 +273,7 @@ to resolve this issue.
 [ee-51]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51
 [ee-2551]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2551
 [ee-3117]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3117
+[ee-3350]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3350
 [perms]: ../user/permissions.md
 [hooks]: https://docs.gitlab.com/ee/administration/custom_hooks.html
 [deploy-key]: ../ssh/README.md#deploy-keys

@@ -1,10 +1,17 @@
 <script>
+  import _ from 'underscore';
   import PipelinesService from '../services/pipelines_service';
   import pipelinesMixin from '../mixins/pipelines';
   import tablePagination from '../../vue_shared/components/table_pagination.vue';
   import navigationTabs from './navigation_tabs.vue';
   import navigationControls from './nav_controls.vue';
-  import { convertPermissionToBoolean, getParameterByName, setParamInURL } from '../../lib/utils/common_utils';
+  import {
+    convertPermissionToBoolean,
+    getParameterByName,
+    historyPushState,
+    buildUrlWithCurrentLocation,
+    parseQueryStringIntoObject,
+  } from '../../lib/utils/common_utils';
 
   export default {
     props: {
@@ -41,26 +48,17 @@
         autoDevopsPath: pipelinesData.helpAutoDevopsPath,
         newPipelinePath: pipelinesData.newPipelinePath,
         canCreatePipeline: pipelinesData.canCreatePipeline,
-        allPath: pipelinesData.allPath,
-        pendingPath: pipelinesData.pendingPath,
-        runningPath: pipelinesData.runningPath,
-        finishedPath: pipelinesData.finishedPath,
-        branchesPath: pipelinesData.branchesPath,
-        tagsPath: pipelinesData.tagsPath,
         hasCi: pipelinesData.hasCi,
         ciLintPath: pipelinesData.ciLintPath,
         state: this.store.state,
-        apiScope: 'all',
-        pagenum: 1,
+        scope: getParameterByName('scope') || 'all',
+        page: getParameterByName('page') || '1',
+        requestData: {},
       };
     },
     computed: {
       canCreatePipelineParsed() {
         return convertPermissionToBoolean(this.canCreatePipeline);
-      },
-      scope() {
-        const scope = getParameterByName('scope');
-        return scope === null ? 'all' : scope;
       },
 
       /**
@@ -106,46 +104,112 @@
       hasCiEnabled() {
         return this.hasCi !== undefined;
       },
-      paths() {
-        return {
-          allPath: this.allPath,
-          pendingPath: this.pendingPath,
-          finishedPath: this.finishedPath,
-          runningPath: this.runningPath,
-          branchesPath: this.branchesPath,
-          tagsPath: this.tagsPath,
-        };
-      },
-      pageParameter() {
-        return getParameterByName('page') || this.pagenum;
-      },
-      scopeParameter() {
-        return getParameterByName('scope') || this.apiScope;
+
+      tabs() {
+        const { count } = this.state;
+        return [
+          {
+            name: 'All',
+            scope: 'all',
+            count: count.all,
+            isActive: this.scope === 'all',
+          },
+          {
+            name: 'Pending',
+            scope: 'pending',
+            count: count.pending,
+            isActive: this.scope === 'pending',
+          },
+          {
+            name: 'Running',
+            scope: 'running',
+            count: count.running,
+            isActive: this.scope === 'running',
+          },
+          {
+            name: 'Finished',
+            scope: 'finished',
+            count: count.finished,
+            isActive: this.scope === 'finished',
+          },
+          {
+            name: 'Branches',
+            scope: 'branches',
+            isActive: this.scope === 'branches',
+          },
+          {
+            name: 'Tags',
+            scope: 'tags',
+            isActive: this.scope === 'tags',
+          },
+        ];
       },
     },
     created() {
       this.service = new PipelinesService(this.endpoint);
-      this.requestData = { page: this.pageParameter, scope: this.scopeParameter };
+      this.requestData = { page: this.page, scope: this.scope };
     },
     methods: {
-      /**
-       * Will change the page number and update the URL.
-       *
-       * @param  {Number} pageNumber desired page to go to.
-       */
-      change(pageNumber) {
-        const param = setParamInURL('page', pageNumber);
-
-        gl.utils.visitUrl(param);
-        return param;
-      },
-
       successCallback(resp) {
         return resp.json().then((response) => {
-          this.store.storeCount(response.count);
-          this.store.storePagination(resp.headers);
-          this.setCommonData(response.pipelines);
+          // Because we are polling & the user is interacting verify if the response received
+          // matches the last request made
+          if (_.isEqual(parseQueryStringIntoObject(resp.url.split('?')[1]), this.requestData)) {
+            this.store.storeCount(response.count);
+            this.store.storePagination(resp.headers);
+            this.setCommonData(response.pipelines);
+          }
         });
+      },
+      /**
+       * Handles URL and query parameter changes.
+       * When the user uses the pagination or the tabs,
+       *  - update URL
+       *  - Make API request to the server with new parameters
+       *  - Update the polling function
+       *  - Update the internal state
+       */
+      updateContent(parameters) {
+        // stop polling
+        this.poll.stop();
+
+        const queryString = Object.keys(parameters).map((parameter) => {
+          const value = parameters[parameter];
+          // update internal state for UI
+          this[parameter] = value;
+          return `${parameter}=${encodeURIComponent(value)}`;
+        }).join('&');
+
+        // update polling parameters
+        this.requestData = parameters;
+
+        historyPushState(buildUrlWithCurrentLocation(`?${queryString}`));
+
+        this.isLoading = true;
+        // fetch new data
+        return this.service.getPipelines(this.requestData)
+          .then((response) => {
+            this.isLoading = false;
+            this.successCallback(response);
+
+            // restart polling
+            this.poll.restart({ data: this.requestData });
+          })
+          .catch(() => {
+            this.isLoading = false;
+            this.errorCallback();
+
+            // restart polling
+            this.poll.restart();
+          });
+      },
+
+      onChangeTab(scope) {
+        this.updateContent({ scope, page: '1' });
+      },
+      onChangePage(page) {
+      /* URLS parameters are strings, we need to parse to match types */
+        this.updateContent({ scope: this.scope, page: Number(page).toString() });
       },
     },
   };
@@ -154,7 +218,7 @@
   <div class="pipelines-container">
     <div
       class="top-area scrolling-tabs-container inner-page-scroll-tabs"
-      v-if="!isLoading && !shouldRenderEmptyState">
+      v-if="!shouldRenderEmptyState">
       <div class="fade-left">
         <i
           class="fa fa-angle-left"
@@ -167,17 +231,17 @@
           aria-hidden="true">
         </i>
       </div>
+
       <navigation-tabs
-        :scope="scope"
-        :count="state.count"
-        :paths="paths"
+        :tabs="tabs"
+        @onChangeTab="onChangeTab"
         />
 
       <navigation-controls
         :new-pipeline-path="newPipelinePath"
         :has-ci-enabled="hasCiEnabled"
         :help-page-path="helpPagePath"
-        :ciLintPath="ciLintPath"
+        :ci-lint-path="ciLintPath"
         :can-create-pipeline="canCreatePipelineParsed "
         />
     </div>
@@ -188,6 +252,7 @@
         label="Loading Pipelines"
         size="3"
         v-if="isLoading"
+        class="prepend-top-20"
         />
 
       <empty-state
@@ -221,8 +286,8 @@
 
       <table-pagination
         v-if="shouldRenderPagination"
-        :change="change"
-        :pageInfo="state.pageInfo"
+        :change="onChangePage"
+        :page-info="state.pageInfo"
         />
     </div>
   </div>

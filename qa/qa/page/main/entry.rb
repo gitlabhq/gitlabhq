@@ -14,8 +14,9 @@ module QA
           #
           start = Time.now
 
-          while Time.now - start < 240
+          while Time.now - start < 1000
             break if page.has_css?('.application', wait: 10)
+
             refresh
           end
         end

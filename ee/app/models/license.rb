@@ -15,7 +15,6 @@ class License < ActiveRecord::Base
     group_webhooks
     issuable_default_templates
     issue_board_focus_mode
-    issue_board_milestone
     issue_weights
     jenkins_integration
     ldap_group_sync
@@ -53,8 +52,9 @@ class License < ActiveRecord::Base
   ].freeze
 
   EEU_FEATURES = EEP_FEATURES + %i[
+    sast
     epics
-  ]
+  ].freeze
 
   # List all features available for early adopters,
   # i.e. users that started using GitLab.com before
@@ -84,6 +84,7 @@ class License < ActiveRecord::Base
     push_rules
     related_issues
     repository_mirrors
+    scoped_issue_board
     service_desk
     variable_environment_scope
   ].freeze
@@ -177,6 +178,7 @@ class License < ActiveRecord::Base
       license = self.last
 
       return unless license && license.valid?
+
       license
     end
   end

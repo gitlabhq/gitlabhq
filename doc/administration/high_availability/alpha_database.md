@@ -173,9 +173,9 @@ Each node needs to be configured to run only the services it needs.
 
 On each Consul node perform the following:
 
-1. Make sure you collect all required information before executing the next step.
-See `START user configuration` section in the next step for required information.
-1. Edit `/etc/gitlab/gitlab.rb`:
+1. Make sure you collect [`CONSUL_SERVER_NODES`](#consul_information) before executing the next step.
+
+1. Edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
 
     ```ruby
     # Disable all components except Consul
@@ -213,9 +213,9 @@ After this is completed on each Consul server node, proceed further.
 
 On each database node perform the following:
 
-1. Make sure you collect all required information before executing the next step.
-See `START user configuration` section in the next step for required information.
-1. Edit `/etc/gitlab/gitlab.rb`:
+1. Make sure you collect [`CONSUL_SERVER_NODES`](#consul_information), [`PGBOUNCER_PASSWORD_HASH`](#pgbouncer_information), [`POSTGRESQL_PASSWORD_HASH`](#postgresql_information), [`Number of db nodes`](#postgresql_information), and [`Network Address`](#network_address) before executing the next step.
+
+1. Edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
 
     ```ruby
     # Disable all components except PostgreSQL and Repmgr and Consul
@@ -250,6 +250,7 @@ See `START user configuration` section in the next step for required information
     #
     # Replace PGBOUNCER_PASSWORD_HASH with a generated md5 value
     postgresql['pgbouncer_user_password'] = 'PGBOUNCER_PASSWORD_HASH'
+    # Replace POSTGRESQL_PASSWORD_HASH with a generated md5 value
     postgresql['sql_user_password'] = 'POSTGRESQL_PASSWORD_HASH'
     # Replace X with value of number of db nodes + 1
     postgresql['max_wal_senders'] = X
@@ -281,7 +282,9 @@ your configuration
 
 ### Configuring the Pgbouncer node
 
-1. Edit `/etc/gitlab/gitlab.rb`:
+1. Make sure you collect [`CONSUL_SERVER_NODES`](#consul_information), [`CONSUL_PASSWORD_HASH`](#consul_information), and [`PGBOUNCER_PASSWORD_HASH`](#pgbouncer_information) before executing the next step.
+
+1. Edit `/etc/gitlab/gitlab.rb` replacing values noted in the `# START user configuration` section:
 
     ```ruby
     # Disable all components except Pgbouncer and Consul agent
@@ -421,6 +424,22 @@ as `MASTER_NODE_NAME`.
     Do note that this will remove the existing data on the node. The command
     has a wait time.
 
+    The output should be similar to the following:
+
+    ```console
+    # gitlab-ctl repmgr standby setup MASTER_NODE_NAME
+    Doing this will delete the entire contents of /var/opt/gitlab/postgresql/data
+    If this is not what you want, hit Ctrl-C now to exit
+    To skip waiting, rerun with the -w option
+    Sleeping for 30 seconds
+    Stopping the database
+    Removing the data
+    Cloning the data
+    Starting the database
+    Registering the node with the cluster
+    ok: run: repmgrd: (pid 19068) 0s
+    ```
+
 1. Verify the node now appears in the cluster:
 
      ```sh
@@ -444,7 +463,7 @@ Repeat the above steps on all secondary nodes.
    reload pgbouncer. Confirm `PGBOUNCER_PASSWORD` twice when asked:
 
      ```sh
-     gitlab-ctl write-pgpass --host PGBOUNCER_HOST --database pgbouncer --user pgbouncer --hostuser gitlab-consul
+     gitlab-ctl write-pgpass --host 127.0.0.1 --database pgbouncer --user pgbouncer --hostuser gitlab-consul
      ```
 
 1. Ensure the node is talking to the current master:
@@ -535,7 +554,25 @@ after it has been restored to service.
     gitlab-ctl repmgr standby unregister --node=X
     ```
 
-    where X is be the value of node in `repmgr.conf` on the old server.
+    where X is the value of node in `repmgr.conf` on the old server.
+
+    To find this, you can use:
+
+    ```sh
+    awk -F = '$1 == "node" { print $2 }' /var/opt/gitlab/postgresql/repmgr.conf
+    ```
+
+    It will output something like:
+
+    ```
+    959789412
+    ```
+
+    Then you will use this id to unregister the node:
+
+    ```sh
+    gitlab-ctl repmgr standby unregister --node=959789412
+    ```
 
 - To add the node as a standby server:
 
@@ -619,6 +656,24 @@ the previous section:
   1. Ensure `gitlab_rails['db_password']` is set to the plaintext password for
      the `gitlab` database user
   1. [Reconfigure GitLab] for the changes to take effect
+
+## Architecture
+
+![PG HA Architecture](pg_ha_architecture.png)
+
+Database nodes run two services besides PostgreSQL
+1. Repmgrd -- monitors the cluster and handles failover in case of an issue with the master
+
+   The failover consists of
+   * Selecting a new master for the cluster
+   * Promoting the new node to master
+   * Instructing remaining servers to follow the new master node
+
+   On failure, the old master node is automatically evicted from the cluster, and should be rejoined manually once recovered.
+
+1. Consul -- Monitors the status of each node in the database cluster, and tracks its health in a service definiton on the consul cluster.
+
+Alongside pgbouncer, there is a consul agent that watches the status of the PostgreSQL service. If that status changes, consul runs a script which updates the configuration and reloads pgbouncer
 
 ## Troubleshooting
 

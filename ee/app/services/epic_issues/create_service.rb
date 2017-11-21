@@ -19,7 +19,11 @@ module EpicIssues
     def linkable_issues(issues)
       return [] unless can?(current_user, :admin_epic, issuable.group)
 
-      issues.select { |issue| issue.project.group == issuable.group }
+      issues.select { |issue| issuable_group_descendants.include?(issue.project.group) }
+    end
+
+    def issuable_group_descendants
+      @descendants ||= issuable.group.self_and_descendants
     end
   end
 end

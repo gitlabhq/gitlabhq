@@ -1,16 +1,36 @@
 # GitLab Slack application
 
->**Notes:**
-- Introduced in [GitLab Enterprise Edition] 9.4.
-- Currently only configurable for GitLab.com, it will not work for on-premises
-  installations. You can configure the [Slack slash commands](slack_slash_commands.md)
-  service instead. We're working with Slack on making this configurable for all
-  GitLab installations.
+NOTE: **Note:**
+The GitLab Slack application is only configurable for GitLab.com. It will **not**
+work for on-premises installations where you can configure the
+[Slack slash commands](slack_slash_commands.md) service instead. We're working
+with Slack on making this configurable for all GitLab installations, but there's
+no ETA.
+It was first introduced in GitLab 9.4 and distributed to Slack App Directory in
+GitLab 10.2 (with availability toward the end of November 2017).
 
 Slack provides a native application which you can enable via your project's
 integrations on GitLab.com.
 
+## Slack App Directory 
+
+The simplest way to enable the GitLab Slack application for your workspace is to
+install the GitLab application from
+the [Slack App Directory](https://slack.com/apps).
+
+> This will be available toward the end of November 2017, and the docs will be updated here
+when it is ready.
+
+Clicking install will take you to the
+[GitLab Slack application landing page](https://gitlab.com/profile/slack/edit)
+where you can select a project to enable the GitLab Slack application for.
+
+![GitLab Slack application landing page](img/gitlab_slack_app_landing_page.png)
+
 ## Configuration
+
+Alternatively, you can configure the Slack application with a project's
+integration settings.
 
 Keep in mind that you need to have the appropriate permissions for your Slack
 team in order to be able to install a new application, read more in Slack's

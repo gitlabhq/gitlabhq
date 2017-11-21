@@ -662,4 +662,13 @@ describe Gitlab::OAuth::User do
       end
     end
   end
+
+  describe '.find_by_uid_and_provider' do
+    let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
+
+    it 'normalizes extern_uid' do
+      allow(oauth_user.auth_hash).to receive(:uid).and_return('MY-UID')
+      expect(oauth_user.find_user).to eql gl_user
+    end
+  end
 end

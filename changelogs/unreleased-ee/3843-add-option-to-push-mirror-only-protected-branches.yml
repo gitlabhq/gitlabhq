@@ -1,0 +1,5 @@
+---
+title: Add option to remote mirrors to only push protected branches
+merge_request: 3350
+author:
+type: added

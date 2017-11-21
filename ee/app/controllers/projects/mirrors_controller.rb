@@ -75,7 +75,7 @@ class Projects::MirrorsController < Projects::ApplicationController
   end
 
   def remote_mirror_attributes
-    { remote_mirrors_attributes: %i[url id enabled] }
+    { remote_mirrors_attributes: %i[url id enabled only_protected_branches] }
   end
 
   def mirror_params_attributes

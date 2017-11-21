@@ -1,5 +1,12 @@
 import MergeRequestStore from 'ee/vue_merge_request_widget/stores/mr_widget_store';
-import mockData, { headIssues, baseIssues } from '../mock_data';
+import mockData, {
+  headIssues,
+  baseIssues,
+  securityIssues,
+  parsedBaseIssues,
+  parsedHeadIssues,
+  parsedSecurityIssuesStore,
+} from '../mock_data';
 
 describe('MergeRequestStore', () => {
   let store;
@@ -60,27 +67,32 @@ describe('MergeRequestStore', () => {
     });
 
     it('should return the new issues', () => {
-      const parsed = MergeRequestStore.addPathToIssues(headIssues, 'headPath');
-      expect(store.codeclimateMetrics.newIssues[0]).toEqual(parsed[0]);
+      expect(store.codeclimateMetrics.newIssues[0]).toEqual(parsedHeadIssues[0]);
     });
 
     it('should return the resolved issues', () => {
-      const parsed = MergeRequestStore.addPathToIssues(baseIssues, 'basePath');
-      expect(store.codeclimateMetrics.resolvedIssues[0]).toEqual(parsed[1]);
+      expect(store.codeclimateMetrics.resolvedIssues[0]).toEqual(parsedBaseIssues[0]);
     });
   });
 
-  describe('addPathToIssues', () => {
-    it('should add urlPath key to each entry', () => {
-      expect(
-        MergeRequestStore.addPathToIssues(headIssues, 'path')[0].location.urlPath,
-      ).toEqual(`path/${headIssues[0].location.path}#L${headIssues[0].location.lines.begin}`);
-    });
+  describe('setSecurityReport', () => {
+    it('should set security issues', () => {
+      store.setSecurityReport(securityIssues, 'path');
 
-    it('should return the same object whe there is no locaiton', () => {
-      expect(
-        MergeRequestStore.addPathToIssues([{ check_name: 'foo' }], 'path'),
-      ).toEqual([{ check_name: 'foo' }]);
+      expect(store.securityReport).toEqual(parsedSecurityIssuesStore);
+    });
+  });
+
+  describe('parseIssues', () => {
+    it('should parse the received issues', () => {
+      const codequality = MergeRequestStore.parseIssues(baseIssues, 'path')[0];
+      expect(codequality.name).toEqual(baseIssues[0].check_name);
+      expect(codequality.path).toEqual(baseIssues[0].location.path);
+      expect(codequality.line).toEqual(baseIssues[0].location.lines.begin);
+
+      const security = MergeRequestStore.parseIssues(securityIssues, 'path')[0];
+      expect(security.name).toEqual(securityIssues[0].message);
+      expect(security.path).toEqual(securityIssues[0].file);
     });
   });
 });

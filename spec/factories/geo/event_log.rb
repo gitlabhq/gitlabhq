@@ -19,6 +19,10 @@ FactoryGirl.define do
     trait :hashed_storage_migration_event do
       hashed_storage_migrated_event factory: :geo_hashed_storage_migrated_event
     end
+
+    trait :lfs_object_deleted_event do
+      lfs_object_deleted_event factory: :geo_lfs_object_deleted_event
+    end
   end
 
   factory :geo_repository_created_event, class: Geo::RepositoryCreatedEvent do
@@ -75,5 +79,14 @@ FactoryGirl.define do
     old_wiki_disk_path { project.wiki.path_with_namespace }
     new_wiki_disk_path { project.wiki.path_with_namespace + '_new' }
     new_storage_version { Project::LATEST_STORAGE_VERSION }
+  end
+
+  factory :geo_lfs_object_deleted_event, class: Geo::LfsObjectDeletedEvent do
+    lfs_object { create(:lfs_object, :with_file) }
+
+    after(:build, :stub) do |event, _|
+      event.oid = event.lfs_object.oid
+      event.file_path = event.lfs_object.file.path
+    end
   end
 end

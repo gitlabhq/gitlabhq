@@ -459,15 +459,15 @@
     :versions: []
     :when: 2017-09-13 17:31:16.425819400 Z
 - - :approve
-  - gitlab-svgs
+  - "@gitlab-org/gitlab-svgs"
   - :who: Tim Zallmann
-    :why: Our own library - https://gitlab.com/gitlab-org/gitlab-svgs
+    :why: Our own library - GitLab License https://gitlab.com/gitlab-org/gitlab-svgs
     :versions: []
     :when: 2017-09-19 14:36:32.795496000 Z
 - - :license
   - pikaday
   - MIT
-  - :who: 
-    :why: 
+  - :who:
+    :why:
     :versions: []
     :when: 2017-10-17 17:46:12.367554000 Z

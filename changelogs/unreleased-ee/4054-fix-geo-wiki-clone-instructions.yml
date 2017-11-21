@@ -1,0 +1,5 @@
+---
+title: Fix generated clone URLs for wikis on Geo secondaries
+merge_request: 3448
+author:
+type: fixed

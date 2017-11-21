@@ -70,6 +70,7 @@ module Gitlab
 
     def generate_full_url
       return @url unless valid_credentials?
+
       @full_url = @url.dup
 
       @full_url.password = credentials[:password] if credentials[:password].present?

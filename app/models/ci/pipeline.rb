@@ -79,8 +79,8 @@ module Ci
 
     state_machine :status, initial: :created do
       event :enqueue do
-        transition created: :pending
-        transition [:success, :failed, :canceled, :skipped] => :running
+        transition [:created, :skipped] => :pending
+        transition [:success, :failed, :canceled] => :running
       end
 
       event :run do
@@ -313,8 +313,10 @@ module Ci
 
     def latest?
       return false unless ref
+
       commit = project.commit(ref)
       return false unless commit
+
       commit.sha == sha
     end
 
@@ -479,10 +481,6 @@ module Ci
       Gitlab::Ci::Status::Pipeline::Factory
         .new(self, current_user)
         .fabricate!
-    end
-
-    def codeclimate_artifact
-      artifacts.codequality.find(&:has_codeclimate_json?)
     end
 
     def latest_builds_with_artifacts

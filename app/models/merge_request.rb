@@ -988,10 +988,6 @@ class MergeRequest < ActiveRecord::Base
     @base_pipeline ||= project.pipelines.find_by(sha: merge_request_diff&.base_commit_sha)
   end
 
-  def update_project_counter_caches?
-    state_changed?
-  end
-
   def update_project_counter_caches
     Projects::OpenMergeRequestsCountService.new(target_project).refresh_cache
   end

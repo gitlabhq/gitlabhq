@@ -11,6 +11,10 @@ module Gitlab
         true
       end
 
+      def self.imports_repository?
+        true
+      end
+
       def initialize(project)
         @project = project
       end

@@ -154,8 +154,10 @@ module Gitlab
         # there can be only one Kerberos identity in GitLab; if the user has a Kerberos identity in AD,
         # replace any existing Kerberos identity for the user
         return unless ldap_user.kerberos_principal.present?
+
         kerberos_identity = user.identities.where(provider: :kerberos).first
         return if kerberos_identity && kerberos_identity.extern_uid == ldap_user.kerberos_principal
+
         kerberos_identity ||= Identity.new(provider: :kerberos, user: user)
         kerberos_identity.extern_uid = ldap_user.kerberos_principal
         unless kerberos_identity.save

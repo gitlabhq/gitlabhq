@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Geo::HashedStorageMigrationService do
-  let(:project) { create(:project, :repository, :hashed) }
+  let!(:project) { create(:project, :repository) }
   let(:old_path) { project.full_path }
   let(:new_path) { "#{old_path}+renamed" }
 
@@ -9,6 +9,10 @@ describe Geo::HashedStorageMigrationService do
 
   describe '#execute' do
     context 'project backed by legacy storage' do
+      before do
+        project.update_attribute(:storage_version, Project::LATEST_STORAGE_VERSION)
+      end
+
       it 'moves the project repositories' do
         expect_any_instance_of(Geo::MoveRepositoryService).to receive(:execute)
           .once.and_return(true)
@@ -38,6 +42,8 @@ describe Geo::HashedStorageMigrationService do
     end
 
     it 'does not move project backed by hashed storage' do
+      project = create(:project, :repository, :hashed)
+
       service = described_class.new(
         project.id,
         old_disk_path: project.full_path,

@@ -4,6 +4,7 @@ module Gitlab
       class Daemon
         VERSION = '0.2.0'.freeze
         BATCH_SIZE = 250
+        SECONDARY_CHECK_INTERVAL = 1.minute
 
         attr_reader :options
 
@@ -17,6 +18,12 @@ module Gitlab
           trap_signals
 
           until exit?
+            # Prevent the node from processing events unless it's a secondary
+            unless Geo.secondary?
+              sleep(SECONDARY_CHECK_INTERVAL)
+              next
+            end
+
             lease = Lease.try_obtain_with_ttl { run_once! }
 
             return if exit?
@@ -34,18 +41,14 @@ module Gitlab
           batch.each do |event_log|
             next unless can_replay?(event_log)
 
-            if event_log.repository_updated_event
-              handle_repository_updated(event_log)
-            elsif event_log.repository_created_event
-              handle_repository_created(event_log)
-            elsif event_log.repository_deleted_event
-              handle_repository_deleted(event_log)
-            elsif event_log.repositories_changed_event
-              handle_repositories_changed(event_log.repositories_changed_event)
-            elsif event_log.repository_renamed_event
-              handle_repository_renamed(event_log)
-            elsif event_log.hashed_storage_migrated_event
-              handle_hashed_storage_migrated(event_log)
+            begin
+              event = event_log.event
+              handler = "handle_#{event.class.name.demodulize.underscore}"
+
+              __send__(handler, event, event_log.created_at) # rubocop:disable GitlabSecurity/PublicSend
+            rescue NoMethodError => e
+              logger.error(e.message)
+              raise e
             end
           end
         end
@@ -78,12 +81,11 @@ module Gitlab
           Gitlab::Geo.current_node&.projects_include?(event_log.project_id)
         end
 
-        def handle_repository_created(event_log)
-          event = event_log.repository_created_event
+        def handle_repository_created_event(event, created_at)
           registry = find_or_initialize_registry(event.project_id, resync_repository: true, resync_wiki: event.wiki_path.present?)
 
           logger.event_info(
-            event_log.created_at,
+            created_at,
             message: 'Repository created',
             project_id: event.project_id,
             repo_path: event.repo_path,
@@ -96,12 +98,11 @@ module Gitlab
           ::Geo::ProjectSyncWorker.perform_async(event.project_id, Time.now)
         end
 
-        def handle_repository_updated(event_log)
-          event = event_log.repository_updated_event
+        def handle_repository_updated_event(event, created_at)
           registry = find_or_initialize_registry(event.project_id, "resync_#{event.source}" => true)
 
           logger.event_info(
-            event_log.created_at,
+            created_at,
             message: 'Repository update',
             project_id: event.project_id,
             source: event.source,
@@ -113,27 +114,24 @@ module Gitlab
           ::Geo::ProjectSyncWorker.perform_async(event.project_id, Time.now)
         end
 
-        def handle_repository_deleted(event_log)
-          event = event_log.repository_deleted_event
-
-          disk_path = File.join(event.repository_storage_path, event.deleted_path)
-
+        def handle_repository_deleted_event(event, created_at)
           job_id = ::Geo::RepositoryDestroyService
-                     .new(event.project_id, event.deleted_project_name, disk_path, event.repository_storage_name)
+                     .new(event.project_id, event.deleted_project_name, event.deleted_path, event.repository_storage_name)
                      .async_execute
 
           logger.event_info(
-            event_log.created_at,
+            created_at,
             message: 'Deleted project',
             project_id: event.project_id,
-            disk_path: disk_path,
+            repository_storage_name: event.repository_storage_name,
+            disk_path: event.deleted_path,
             job_id: job_id)
 
           # No need to create a project entry if it doesn't exist
           ::Geo::ProjectRegistry.where(project_id: event.project_id).delete_all
         end
 
-        def handle_repositories_changed(event)
+        def handle_repositories_changed_event(event, created_at)
           return unless Gitlab::Geo.current_node.id == event.geo_node_id
 
           job_id = ::Geo::RepositoriesCleanUpWorker.perform_in(1.hour, event.geo_node_id)
@@ -145,8 +143,7 @@ module Gitlab
           end
         end
 
-        def handle_repository_renamed(event_log)
-          event = event_log.repository_renamed_event
+        def handle_repository_renamed_event(event, created_at)
           return unless event.project_id
 
           old_path = event.old_path_with_namespace
@@ -157,7 +154,7 @@ module Gitlab
                      .async_execute
 
           logger.event_info(
-            event_log.created_at,
+            created_at,
             message: 'Renaming project',
             project_id: event.project_id,
             old_path: old_path,
@@ -165,8 +162,7 @@ module Gitlab
             job_id: job_id)
         end
 
-        def handle_hashed_storage_migrated(event_log)
-          event = event_log.hashed_storage_migrated_event
+        def handle_hashed_storage_migrated_event(event, created_at)
           return unless event.project_id
 
           job_id = ::Geo::HashedStorageMigrationService.new(
@@ -177,7 +173,7 @@ module Gitlab
           ).async_execute
 
           logger.event_info(
-            event_log.created_at,
+            created_at,
             message: 'Migrating project to hashed storage',
             project_id: event.project_id,
             old_storage_version: event.old_storage_version,
@@ -185,6 +181,22 @@ module Gitlab
             old_disk_path: event.old_disk_path,
             new_disk_path: event.new_disk_path,
             job_id: job_id)
+        end
+
+        def handle_lfs_object_deleted_event(event, created_at)
+          file_path = File.join(LfsObjectUploader.local_store_path, event.file_path)
+
+          job_id = ::Geo::FileRemovalWorker.perform_async(file_path)
+
+          logger.event_info(
+            created_at,
+            message: 'Deleted LFS object',
+            oid: event.oid,
+            file_id: event.lfs_object_id,
+            file_path: file_path,
+            job_id: job_id)
+
+          ::Geo::FileRegistry.lfs_objects.where(file_id: event.lfs_object_id).delete_all
         end
 
         def find_or_initialize_registry(project_id, attrs)

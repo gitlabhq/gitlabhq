@@ -1,11 +1,5 @@
 # GitLab Geo
 
->**Note:**
-GitLab Geo is in **Beta** development. It is considered experimental and
-not production-ready. It will undergo significant changes over the next year,
-and there is significant chance of data loss. For the latest updates, check the
-[meta issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/846).
-
 > **Notes:**
 - GitLab Geo is part of [GitLab Enterprise Edition Premium][ee].
 - Introduced in GitLab Enterprise Edition 8.9.
@@ -14,6 +8,7 @@ and there is significant chance of data loss. For the latest updates, check the
 - You should make sure that all nodes run the same GitLab version.
 - GitLab Geo requires PostgreSQL 9.6 and Git 2.9 in addition to GitLab's usual
   [minimum requirements](../install/requirements.md)
+- Using GitLab Geo in combination with High Availability is considered **Beta**
 
 >**Note:**
 GitLab Geo changes significantly from release to release. Upgrades **are**
@@ -144,7 +139,7 @@ If you installed GitLab using the Omnibus packages (highly recommended):
 1. [Install GitLab Enterprise Edition][install-ee] on the server that will serve
    as the **secondary** Geo node. Do not login or set up anything else in the
    secondary node for the moment.
-1. [Upload the GitLab License](../user/admin_area/license.md) to the **primary** Geo Node to unlock GitLab Geo.
+1. [Upload the GitLab License](../user/admin_area/license.md) on the **primary** Geo Node to unlock GitLab Geo.
 1. [Setup the database replication](database.md) (`primary (read-write) <-> secondary (read-only)` topology).
 1. [Configure SSH authorizations to use the database](ssh.md)
 1. [Configure GitLab](configuration.md) to set the primary and secondary nodes.
@@ -160,7 +155,7 @@ If you installed GitLab from source:
 1. [Install GitLab Enterprise Edition][install-ee-source] on the server that
    will serve as the **secondary** Geo node. Do not login or set up anything
    else in the secondary node for the moment.
-1. [Upload the GitLab License](../user/admin_area/license.md) you purchased for GitLab Enterprise Edition to unlock GitLab Geo.
+1. [Upload the GitLab License](../user/admin_area/license.md) on the **primary** Geo Node to unlock GitLab Geo.
 1. [Setup the database replication](database_source.md) (`primary (read-write) <-> secondary (read-only)` topology).
 1. [Configure SSH authorizations to use the database](ssh.md)
 1. [Configure GitLab](configuration_source.md) to set the primary and secondary
@@ -180,9 +175,14 @@ Read how to [update your Geo nodes to the latest GitLab version](updating_the_ge
 ## Current limitations
 
 - You cannot push code to secondary nodes
-- The primary node has to be online for OAuth login to happen (existing sessions and Git are not affected)
-- It works for repos, wikis, issues, and merge requests, but not for job logs,
-  artifacts, and Docker images of the Container Registry
+- The primary node has to be online for OAuth login to happen (existing
+  sessions and Git are not affected)
+- It works for repos, wikis, issues, and merge requests
+- It does not work for job logs, artifacts, Docker images of the Container
+  Registry, and GitLab Pages
+- It does not work for attachments uploaded before GitLab 9.0 because they will
+  not present in the uploads table, until
+  [#29249](https://gitlab.com/gitlab-org/gitlab-ce/issues/29240) is fixed.
 
 ## Frequently Asked Questions
 

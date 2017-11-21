@@ -56,31 +56,37 @@ describe 'Pipelines', :js do
         end
 
         it 'shows a tab for All pipelines and count' do
-          expect(page.find('.js-pipelines-tab-all a').text).to include('All')
+          expect(page.find('.js-pipelines-tab-all').text).to include('All')
           expect(page.find('.js-pipelines-tab-all .badge').text).to include('1')
         end
 
         it 'shows a tab for Pending pipelines and count' do
-          expect(page.find('.js-pipelines-tab-pending a').text).to include('Pending')
+          expect(page.find('.js-pipelines-tab-pending').text).to include('Pending')
           expect(page.find('.js-pipelines-tab-pending .badge').text).to include('0')
         end
 
         it 'shows a tab for Running pipelines and count' do
-          expect(page.find('.js-pipelines-tab-running a').text).to include('Running')
+          expect(page.find('.js-pipelines-tab-running').text).to include('Running')
           expect(page.find('.js-pipelines-tab-running .badge').text).to include('1')
         end
 
         it 'shows a tab for Finished pipelines and count' do
-          expect(page.find('.js-pipelines-tab-finished a').text).to include('Finished')
+          expect(page.find('.js-pipelines-tab-finished').text).to include('Finished')
           expect(page.find('.js-pipelines-tab-finished .badge').text).to include('0')
         end
 
         it 'shows a tab for Branches' do
-          expect(page.find('.js-pipelines-tab-branches a').text).to include('Branches')
+          expect(page.find('.js-pipelines-tab-branches').text).to include('Branches')
         end
 
         it 'shows a tab for Tags' do
-          expect(page.find('.js-pipelines-tab-tags a').text).to include('Tags')
+          expect(page.find('.js-pipelines-tab-tags').text).to include('Tags')
+        end
+
+        it 'updates content when tab is clicked' do
+          page.find('.js-pipelines-tab-pending').click
+          wait_for_requests
+          expect(page).to have_content('No pipelines to show.')
         end
       end
 
@@ -393,6 +399,14 @@ describe 'Pipelines', :js do
         it 'should render second page of pipelines' do
           visit project_pipelines_path(project, page: '2')
           wait_for_requests
+
+          expect(page).to have_selector('.gl-pagination .page', count: 2)
+        end
+
+        it 'should show updated content' do
+          visit project_pipelines_path(project)
+          wait_for_requests
+          page.find('.js-next-button a').click
 
           expect(page).to have_selector('.gl-pagination .page', count: 2)
         end
