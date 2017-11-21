@@ -233,7 +233,6 @@ describe API::Helpers do
     end
   end
 
-
   describe '.handle_api_exception' do
     before do
       allow_any_instance_of(self.class).to receive(:sentry_enabled?).and_return(true)
