@@ -11,7 +11,7 @@ require 'fileutils'
 
 dir = 'tmp/tests/gitaly'
 
-abort 'gitaly build failed' unless system('make', chdir: dir)
+abort 'gitaly build failed' unless system('make', 'BUNDLE_FLAGS=--no-deployment', chdir: dir)
 
 # Make the 'gitaly' executable look newer than 'GITALY_SERVER_VERSION'.
 # Without this a gitaly executable created in the setup-test-env job
