@@ -1,5 +1,66 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.2.0 (2017-11-22)
+
+### Fixed (17 changes)
+
+- Geo - Does not move projects backed by hashed storage when handling renamed events. !3066
+- Geo: Don't sync disabled project wikis. !3109
+- Reconfigure the Geo tracking database pool size when running as Sidekiq. !3181
+- Geo - Ensures that leases were returned. !3241
+- Fix (un)approver names not being shown in plaintext emails. !3266
+- Add post-migration to drain all Geo related redis queues. !3289
+- Prevent the Geo log cursor from running on primary nodes. !3411
+- Reduce the number of Elasticsearch client instances that are created. !3432
+- Fix generated clone URLs for wikis on Geo secondaries. !3448
+- Remove duplicate delete button in epic.
+- Fix: Failed to rebase MR from forked repo.
+- Fix: Geo API bug. Statistic is not collected when prometheus is disabled.
+- Geo - Ensure that repository deletions in a primary node are correctly deleted in a secondary node.
+- Geo: Fix handling of nil values on advanced section in admin screen.
+- Redirect to existing group boards using old URL if there is no subgroup called 'boards'.
+- Geo - Allow Sidekiq to retry failed jobs to rename project repositories.
+- Geo: Ensure database is connected before attempting to check for secondary status.
+
+### Changed (4 changes)
+
+- Add project actions in Audit events. !3160
+- Add group actions in Audit events. !3176
+- Geo: Don't retry repositories or files until everything has been backfilled. !3182
+- Improve Codeclimate UI.
+
+### Performance (1 change)
+
+- Reduce the quiet times between scheduler runs on Geo secondaries. !3185
+
+### Added (19 changes, 1 of them is from the community)
+
+- Make the maximum capacity of Geo backfill operations configurable. !3107
+- Mirrors can now hard fail, keeping them from being retried until a project admin takes action. !3117
+- View/edit epic at group level. !3126
+- Add worker to prune the Geo Event Log. !3172
+- julian7 Add required_groups option to SAML config, to restrict access to GitLab to specific SAML groups. !3223 (Balazs Nagy)
+- Geo: Expire and resync attachments from renamed projects in secondary nodes when using legacy storage. !3259
+- On Secondary read-only Geo Nodes now a flash banner is shown on all pages. !3260
+- Make GeoLogCursor Highly Available. !3305
+- Allow Geo repository sync over HTTPS. !3341
+- Allow persisting board configuration in order to automatically filter issues.
+- Improve error handling.
+- Add epics list and add epics to nav sidebar.
+- Introduce EEU lincese with epics as the first feature.
+- Add ability to create new epics.
+- Add sidebar for epic.
+- Add delete epic button.
+- Allow admins to globally disable all remote mirrors from application settings page.
+- Add support for logging Prometheus metrics for Geo.
+- Use PostgreSQL FDW for Geo downloads.
+
+### Other (2 changes, 1 of them is from the community)
+
+- Suppress MergeableSelector warning candidates in EE-only files. !3225 (Takuya Noguchi)
+- Enhance the documentation for gitlab-ctl replicate-geo-database. !3268
+
+
 ## 10.1.4 (2017-11-14)
 
 - No changes.

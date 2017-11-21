@@ -1,6 +1,0 @@
----
-title: julian7 Add required_groups option to SAML config, to restrict access to GitLab
-  to specific SAML groups.
-merge_request: 3223
-author: Balazs Nagy
-type: added
