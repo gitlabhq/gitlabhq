@@ -355,7 +355,7 @@ describe API::Runners do
   end
 
   describe 'GET /runners/:id/jobs' do
-    let!(:job_1) { create(:ci_build) }
+    set(:job_1) { create(:ci_build) }
     let!(:job_2) { create(:ci_build, :running, runner: shared_runner, project: project) }
     let!(:job_3) { create(:ci_build, :failed, runner: shared_runner, project: project) }
     let!(:job_4) { create(:ci_build, :running, runner: specific_runner, project: project) }
