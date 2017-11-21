@@ -554,7 +554,25 @@ after it has been restored to service.
     gitlab-ctl repmgr standby unregister --node=X
     ```
 
-    where X is be the value of node in `repmgr.conf` on the old server.
+    where X is the value of node in `repmgr.conf` on the old server.
+
+    To find this, you can use:
+
+    ```sh
+    awk -F = '$1 == "node" { print $2 }' /var/opt/gitlab/postgresql/repmgr.conf
+    ```
+
+    It will output something like:
+
+    ```
+    959789412
+    ```
+
+    Then you will use this id to unregister the node:
+
+    ```sh
+    gitlab-ctl repmgr standby unregister --node=959789412
+    ```
 
 - To add the node as a standby server:
 
