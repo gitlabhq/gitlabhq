@@ -89,15 +89,23 @@ running and accessible.
 
 ### Step 2. Enabling hashed storage (from GitLab 10.0)
 
+>**Warning**
+Hashed storage is in **Beta**. It is considered experimental and not
+production-ready. For the latest updates, check 
+[issue](https://gitlab.com/gitlab-com/infrastructure/issues/2821).
+Hashed Storage is not required to run GitLab Geo, but in some edge cases race
+conditions can lead to errors and Geo to break. Known issues are renaming a
+project multiple times in short succession, deleting a project and recreating
+with the same name very quickly.
+
+Using hashed storage significantly improves Geo replication - project and group
+renames no longer require synchronization between nodes.
+
 1. Visit the **primary** node's **Admin Area ➔ Settings**
    (`/admin/application_settings`) in your browser
 1. In the `Repository Storages` section, check `Create new projects using hashed storage paths`:
 
     ![](img/hashed-storage.png)
-
-Using hashed storage significantly improves Geo replication - project and group
-renames no longer require synchronization between nodes - so we recommend it is
-used for all GitLab Geo installations.
 
 ### Step 3. (Optional) Configuring the secondary to trust the primary
 
