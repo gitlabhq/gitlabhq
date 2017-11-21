@@ -6,11 +6,8 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
   scope :dirty, -> { where(arel_table[:resync_repository].eq(true).or(arel_table[:resync_wiki].eq(true))) }
 
   def self.failed
-    repository_sync_failed = arel_table[:last_repository_synced_at].not_eq(nil)
-      .and(arel_table[:last_repository_successful_sync_at].eq(nil))
-
-    wiki_sync_failed = arel_table[:last_wiki_synced_at].not_eq(nil)
-      .and(arel_table[:last_wiki_successful_sync_at].eq(nil))
+    repository_sync_failed = arel_table[:repository_retry_count].gt(0)
+    wiki_sync_failed = arel_table[:wiki_retry_count].gt(0)
 
     where(repository_sync_failed.or(wiki_sync_failed))
   end

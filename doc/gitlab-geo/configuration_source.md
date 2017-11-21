@@ -7,18 +7,7 @@ using the Omnibus GitLab packages, follow the
 
 >**Note:**
 Stages of the setup process must be completed in the documented order.
-Before attempting the steps in this stage, complete all prior stages.
-
-1. [Install GitLab Enterprise Edition][install-ee-source] on the server that
-   will serve as the **secondary** Geo node. Do not login or set up anything
-   else in the secondary node for the moment.
-1. [Upload the GitLab License](../user/admin_area/license.md) you purchased for GitLab Enterprise Edition to unlock GitLab Geo.
-1. [Setup the database replication](database_source.md) (`primary (read-write) <-> secondary (read-only)` topology).
-1. [Configure SSH authorizations to use the database](ssh.md)
-1. **Configure GitLab to set the primary and secondary nodes.**
-1. [Follow the after setup steps](after_setup.md).
-
-[install-ee-source]: https://docs.gitlab.com/ee/install/installation.html "GitLab Enterprise Edition installation from source"
+Before attempting the steps in this stage, [complete all prior stages][toc].
 
 This is the final step you need to follow in order to setup a Geo node.
 
@@ -72,9 +61,9 @@ sensitive data in the database. Any secondary node must have the
 
 1. Execute the command below to display the current encryption key and copy it:
 
-     ```
-     sudo -u git -H bundle exec rake geo:db:show_encryption_key RAILS_ENV=production
-     ```
+    ```
+    sudo -u git -H bundle exec rake geo:db:show_encryption_key RAILS_ENV=production
+    ```
 
 1. SSH into the **secondary** node and login as root:
 
@@ -85,9 +74,9 @@ sensitive data in the database. Any secondary node must have the
 1. Open the `secrets.yml` file and change the value of `db_key_base` to the
    output of the previous step:
 
-     ```
-     sudo -u git -H editor config/secrets.yml
-     ```
+    ```
+    sudo -u git -H editor config/secrets.yml
+    ```
 
 1. Save and close the file.
 
@@ -104,15 +93,28 @@ immediately. Make sure the secondary instance is running and accessible.
 
 ### Step 2. Enabling hashed storage (from GitLab 10.0)
 
+>**Note:**
+Hashed storage is in **Beta**. It is considered experimental and not
+production-ready. For the latest updates, check 
+[issue](https://gitlab.com/gitlab-com/infrastructure/issues/2821).
+Hashed Storage is not required to run GitLab Geo, but in some edge cases race
+conditions can lead to errors and Geo to break. Known issues are renaming a
+project multiple times in short succession, deleting a project and recreating
+with the same name very quickly.
+
+>**Note:**
+Instances already using hashed storage are not recommended to disable hashed
+storage, since bugs affecting hashed storage would continue to affect these
+projects.
+
+Using hashed storage significantly improves Geo replication - project and group
+renames no longer require synchronization between nodes.
+
 1. Visit the **primary** node's **Admin Area ➔ Settings**
    (`/admin/application_settings`) in your browser
 1. In the `Repository Storages` section, check `Create new projects using hashed storage paths`:
 
     ![](img/hashed-storage.png)
-
-Using hashed storage significantly improves Geo replication - project and group
-renames no longer require synchronization between nodes - so we recommend it is
-used for all GitLab Geo installations.
 
 ### Step 3. (Optional) Configuring the secondary to trust the primary
 
@@ -187,3 +189,5 @@ Read [Replicating wikis and repositories over SSH](configuration.md#replicating-
 ## Troubleshooting
 
 Read the [troubleshooting document](troubleshooting.md).
+
+[toc]: README.md#using-gitlab-installed-from-source

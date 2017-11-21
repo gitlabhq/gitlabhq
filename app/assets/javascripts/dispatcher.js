@@ -2,11 +2,11 @@
 import { s__ } from './locale';
 import projectSelect from './project_select';
 import IssuableIndex from './issuable_index';
-/* global Milestone */
+import Milestone from './milestone';
 import IssuableForm from './issuable_form';
 import LabelsSelect from './labels_select';
 /* global MilestoneSelect */
-/* global NewBranchForm */
+import NewBranchForm from './new_branch_form';
 /* global NotificationsForm */
 /* global NotificationsDropdown */
 import groupAvatar from './group_avatar';
@@ -18,8 +18,7 @@ import groupsSelect from './groups_select';
 /* global Search */
 /* global Admin */
 import NamespaceSelect from './namespace_select';
-/* global NewCommitForm */
-/* global NewBranchForm */
+import NewCommitForm from './new_commit_form';
 import Project from './project';
 import projectAvatar from './project_avatar';
 /* global MergeRequest */

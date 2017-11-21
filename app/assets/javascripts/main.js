@@ -61,11 +61,7 @@ import './line_highlighter';
 import initLogoAnimation from './logo';
 import './merge_request';
 import './merge_request_tabs';
-import './milestone';
 import './milestone_select';
-import './namespace_select';
-import './new_branch_form';
-import './new_commit_form';
 import './notes';
 import './notifications_dropdown';
 import './notifications_form';
@@ -81,9 +77,6 @@ import './render_gfm';
 import './right_sidebar';
 import './search';
 import './search_autocomplete';
-import './smart_interval';
-import './subscription';
-import './subscription_select';
 import initBreadcrumbs from './breadcrumb';
 
 // EE-only scripts

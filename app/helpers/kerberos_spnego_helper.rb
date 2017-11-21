@@ -45,7 +45,7 @@ module KerberosSpnegoHelper
     krb_principal = spnego_credentials!(spnego_token)
     return unless krb_principal
 
-    identity = ::Identity.find_by(provider: :kerberos, extern_uid: krb_principal)
+    identity = ::Identity.with_extern_uid(:kerberos, krb_principal).take
     identity&.user
   end
 

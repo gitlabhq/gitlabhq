@@ -1,4 +1,6 @@
 class Identity < ActiveRecord::Base
+  prepend EE::Identity
+
   include Sortable
   include CaseSensitivity
 

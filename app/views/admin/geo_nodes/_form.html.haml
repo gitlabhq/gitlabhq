@@ -2,15 +2,16 @@
 
 = form_errors(geo_node)
 .form-group
+  = form.label :url, 'URL', class: 'control-label'
+  .col-sm-10
+    = form.text_field :url, class: 'form-control'
+
+.form-group
   .col-sm-offset-2.col-sm-10
     .checkbox
       = form.label :primary do
         = form.check_box :primary
         %strong This is a primary node
-.form-group
-  = form.label :url, 'URL', class: 'control-label'
-  .col-sm-10
-    = form.text_field :url, class: 'form-control'
 
 .form-group.js-hide-if-geo-primary{ class: ('hidden' unless geo_node.secondary?) }
   = form.label :clone_protocol, s_('Geo|Repository cloning'), class: 'control-label'

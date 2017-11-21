@@ -1,26 +1,11 @@
+<script>
 import './issue_card_inner';
+import eventHub from '../eventhub';
 
 const Store = gl.issueBoards.BoardsStore;
 
 export default {
   name: 'BoardsIssueCard',
-  template: `
-    <li class="card"
-      :class="{ 'user-can-drag': !disabled && issue.id, 'is-disabled': disabled || !issue.id, 'is-active': issueDetailVisible }"
-      :index="index"
-      :data-issue-id="issue.id"
-      @mousedown="mouseDown"
-      @mousemove="mouseMove"
-      @mouseup="showIssue($event)">
-      <issue-card-inner
-        :list="list"
-        :issue="issue"
-        :issue-link-base="issueLinkBase"
-        :group-id="groupId"
-        :root-path="rootPath"
-        :update-filters="true" />
-    </li>
-  `,
   components: {
     'issue-card-inner': gl.issueBoards.IssueCardInner,
   },
@@ -58,12 +43,31 @@ export default {
         this.showDetail = false;
 
         if (Store.detail.issue && Store.detail.issue.id === this.issue.id) {
-          Store.detail.issue = {};
+          eventHub.$emit('clearDetailIssue');
         } else {
-          Store.detail.issue = this.issue;
+          eventHub.$emit('newDetailIssue', this.issue);
           Store.detail.list = this.list;
         }
       }
     },
   },
 };
+</script>
+
+<template>
+  <li class="card"
+    :class="{ 'user-can-drag': !disabled && issue.id, 'is-disabled': disabled || !issue.id, 'is-active': issueDetailVisible }"
+    :index="index"
+    :data-issue-id="issue.id"
+    @mousedown="mouseDown"
+    @mousemove="mouseMove"
+    @mouseup="showIssue($event)">
+    <issue-card-inner
+      :list="list"
+      :issue="issue"
+      :issue-link-base="issueLinkBase"
+      :group-id="groupId"
+      :root-path="rootPath"
+      :update-filters="true" />
+  </li>
+</template>

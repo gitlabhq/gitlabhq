@@ -49,6 +49,10 @@ module QA
       module Sandbox
         autoload :Prepare, 'qa/scenario/gitlab/sandbox/prepare'
       end
+
+      module Admin
+        autoload :HashedStorage, 'qa/scenario/gitlab/admin/hashed_storage'
+      end
     end
   end
 
@@ -64,9 +68,11 @@ module QA
       autoload :Entry, 'qa/page/main/entry'
       autoload :Login, 'qa/page/main/login'
       autoload :Menu, 'qa/page/main/menu'
+      autoload :OAuth, 'qa/page/main/oauth'
     end
 
     module Dashboard
+      autoload :Projects, 'qa/page/dashboard/projects'
       autoload :Groups, 'qa/page/dashboard/groups'
     end
 
@@ -82,6 +88,7 @@ module QA
 
     module Admin
       autoload :Menu, 'qa/page/admin/menu'
+      autoload :Settings, 'qa/page/admin/settings'
     end
 
     module Mattermost
@@ -95,6 +102,13 @@ module QA
   #
   module Git
     autoload :Repository, 'qa/git/repository'
+  end
+
+  ##
+  # Classes describing shell interaction with GitLab
+  #
+  module Shell
+    autoload :Omnibus, 'qa/shell/omnibus'
   end
 
   ##

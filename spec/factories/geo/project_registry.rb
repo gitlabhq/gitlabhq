@@ -39,6 +39,7 @@ FactoryGirl.define do
       last_wiki_successful_sync_at nil
       resync_repository true
       resync_wiki true
+      repository_retry_count 1
     end
 
     trait :repository_sync_failed do
@@ -48,6 +49,12 @@ FactoryGirl.define do
       last_wiki_successful_sync_at  { 5.days.ago }
       resync_repository true
       resync_wiki false
+      repository_retry_count 1
+    end
+
+    trait :repository_syncing do
+      repository_sync_failed
+      repository_retry_count 0
     end
 
     trait :wiki_sync_failed do
@@ -57,6 +64,12 @@ FactoryGirl.define do
       last_wiki_successful_sync_at nil
       resync_repository false
       resync_wiki true
+      wiki_retry_count 2
+    end
+
+    trait :wiki_syncing do
+      wiki_sync_failed
+      wiki_retry_count 0
     end
   end
 end

@@ -62,6 +62,7 @@ Shortcuts to GitLab's most visited docs:
   - [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
 - [Groups](user/group/index.md): Organize your projects in groups.
   - [Subgroups](user/group/subgroups/index.md)
+  - **(EEU)** [Epics](user/group/epics/index.md)
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
   - **(EES/EEP)** [Advanced Global Search](user/search/advanced_global_search.md): Leverage Elasticsearch for faster, more advanced code search across your entire GitLab instance.
   - **(EES/EEP)** [Advanced Syntax Search](user/search/advanced_search_syntax.md): Use advanced queries for more targeted search results.
