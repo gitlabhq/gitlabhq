@@ -151,16 +151,7 @@ group.
 | View internal group epic | ✓       | ✓        | ✓         | ✓      | ✓     |
 | View public group epic   | ✓       | ✓        | ✓         | ✓      | ✓     |
 | Create/edit group epic   |         | ✓        | ✓         | ✓      | ✓     |
-
-If you have access to view an epic and have access to view an issue already added to that epic,
-then you can view the issue in the epic issue list.
-
-If you have access to edit an epic and have access to edit an issue, then you can
-add the issue to or remove it from the epic.
-
-Note that for a given group, the visibility of all projects must be the same as the
-group, or less restrictive. So that means if you have access to a group's epic, then 
-you already have access to its projects' issues.
+| Delete group epic        |         |          |           |        | ✓     |
 
 ### Subgroup permissions
 
