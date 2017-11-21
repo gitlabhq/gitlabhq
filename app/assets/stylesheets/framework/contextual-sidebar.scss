@@ -40,12 +40,6 @@
   a:hover {
     background-color: $link-hover-background;
     color: $gl-text-color;
-
-    .settings-avatar {
-      svg {
-        fill: $gl-text-color;
-      }
-    }
   }
 
   .avatar-container {
@@ -138,10 +132,6 @@
       color: $gl-text-color-secondary;
     }
 
-    svg {
-      fill: $gl-text-color-secondary;
-    }
-
     .nav-item-name {
       flex: 1;
     }
@@ -224,10 +214,6 @@
 
       &:hover {
         color: $gl-text-color;
-
-        svg {
-          fill: $gl-text-color;
-        }
       }
     }
 
@@ -338,7 +324,6 @@
   align-items: center;
 
   svg {
-    fill: $gl-text-color-secondary;
     margin-right: 8px;
   }
 
@@ -349,10 +334,6 @@
   &:hover {
     background-color: $border-color;
     color: $gl-text-color;
-
-    svg {
-      fill: $gl-text-color;
-    }
   }
 }
 
