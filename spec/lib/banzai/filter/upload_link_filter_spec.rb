@@ -89,7 +89,19 @@ describe Banzai::Filter::UploadLinkFilter do
     end
   end
 
-  context 'when project context does not exist' do
+  context 'in group context' do
+    let(:upload_link) { link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg') }
+    let(:group) { create(:group) }
+
+    it 'rewrites the link correctly' do
+      doc = raw_filter(upload_link, project: nil, group: group)
+
+      expect(doc.at_css('a')['href'])
+        .to eq "#{Gitlab.config.gitlab.url}/groups/#{group.full_path}/-/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+    end
+  end
+
+  context 'when project or group context does not exist' do
     let(:upload_link) { link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg') }
 
     it 'does not raise error' do

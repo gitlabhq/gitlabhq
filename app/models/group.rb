@@ -303,6 +303,10 @@ class Group < Namespace
     "#{parent.full_path}/#{path_was}"
   end
 
+  def disk_path
+    full_path
+  end
+
   private
 
   def update_two_factor_requirement

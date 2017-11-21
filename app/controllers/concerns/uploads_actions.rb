@@ -24,4 +24,28 @@ module UploadsActions
 
     send_file uploader.file.path, disposition: disposition
   end
+
+  private
+
+  def uploader
+    return @uploader if defined?(@uploader)
+
+    if show_model.nil?
+      @uploader = nil
+      return
+    end
+
+    @uploader = FileUploader.new(show_model, params[:secret])
+    @uploader.retrieve_from_store!(params[:filename])
+
+    @uploader
+  end
+
+  def image_or_video?
+    uploader && uploader.exists? && uploader.image_or_video?
+  end
+
+  def uploader_class
+    FileUploader
+  end
 end

@@ -8,7 +8,7 @@ module Banzai
     #
     class UploadLinkFilter < HTML::Pipeline::Filter
       def call
-        return doc unless project
+        return doc unless project || group
 
         doc.xpath('descendant-or-self::a[starts-with(@href, "/uploads/")]').each do |el|
           process_link_attr el.attribute('href')
@@ -28,11 +28,22 @@ module Banzai
       end
 
       def build_url(uri)
-        File.join(Gitlab.config.gitlab.url, project.full_path, uri)
+        base_path = Gitlab.config.gitlab.url
+        model_path = if group
+                       File.join('groups', group.full_path, '-')
+                     else
+                       project.full_path
+                     end
+
+        File.join(base_path, model_path, uri)
       end
 
       def project
         context[:project]
+      end
+
+      def group
+        context[:group]
       end
 
       # Ensure that a :project key exists in context
