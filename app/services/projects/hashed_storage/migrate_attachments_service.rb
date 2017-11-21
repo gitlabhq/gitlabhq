@@ -22,8 +22,8 @@ module Projects
       private
 
       def move_folder!(old_path, new_path)
-        unless File.exist?(old_path)
-          logger.info("Skipped attachments migration from '#{old_path}' to '#{new_path}', source path doesn't exist (PROJECT_ID=#{project.id})")
+        unless File.directory?(old_path)
+          logger.info("Skipped attachments migration from '#{old_path}' to '#{new_path}', source path doesn't exist or is not a directory (PROJECT_ID=#{project.id})")
           return
         end
 
