@@ -59,7 +59,10 @@ namespace :gitlab do
               .sub(%r{^/*}, '')
               .chomp('.git')
               .chomp('.wiki')
-            next if Project.find_by_full_path(repo_with_namespace)
+
+            # TODO ignoring hashed repositories for now.  But revisit to fully support
+            # possible orphaned hashed repos
+            next if repo_with_namespace.start_with?('@hashed/') || Project.find_by_full_path(repo_with_namespace)
 
             new_path = path + move_suffix
             puts path.inspect + ' -> ' + new_path.inspect
