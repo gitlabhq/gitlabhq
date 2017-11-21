@@ -27,6 +27,8 @@
 }
 
 svg {
+  fill: currentColor;
+
   &.s8 { @include svg-size(8px); }
   &.s12 { @include svg-size(12px); }
   &.s16 { @include svg-size(16px); }
