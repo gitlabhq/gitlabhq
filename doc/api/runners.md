@@ -215,9 +215,9 @@ DELETE /runners/:id
 curl --request DELETE --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/runners/6"
 ```
 
-## List runner's running jobs
+## List runner's jobs
 
-List running jobs assigned to the specified Runner.
+List jobs that are being processed or were processed by specified Runner.
 
 ```
 GET /runners/:id/jobs
@@ -226,9 +226,10 @@ GET /runners/:id/jobs
 | Attribute | Type    | Required | Description         |
 |-----------|---------|----------|---------------------|
 | `id`      | integer | yes      | The ID of a runner  |
+| `status`  | string  | no       | Status of the job; one of: `running`, `success`, `failed`, `canceled` |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/runners/1/jobs"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/runners/1/jobs?status=running"
 ```
 
 Example response:
@@ -247,20 +248,44 @@ Example response:
         "started_at": "2017-11-16T08:51:29.000Z",
         "finished_at": "2017-11-16T08:53:29.000Z",
         "duration": 120,
-        "user": null,
-        "commit": null,
-        "runner": {
+        "user": {
             "id": 1,
-            "description": "My runner1",
-            "active": true,
-            "is_shared": true,
-            "name": null
+            "name": "John Doe2",
+            "username": "user2",
+            "state": "active",
+            "avatar_url": "http://www.gravatar.com/avatar/c922747a93b40d1ea88262bf1aebee62?s=80&d=identicon",
+            "web_url": "http://localhost/user2",
+            "created_at": "2017-11-16T18:38:46.000Z",
+            "bio": null,
+            "location": null,
+            "skype": "",
+            "linkedin": "",
+            "twitter": "",
+            "website_url": "",
+            "organization": null
+        },
+        "commit": {
+            "id": "97de212e80737a608d939f648d959671fb0a0142",
+            "short_id": "97de212e",
+            "title": "Update configuration\r",
+            "created_at": "2017-11-16T08:50:28.000Z",
+            "parent_ids": [
+                "1b12f15a11fc6e62177bef08f47bc7b5ce50b141",
+                "498214de67004b1da3d820901307bed2a68a8ef6"
+            ],
+            "message": "See merge request !123",
+            "author_name": "John Doe2",
+            "author_email": "user2@example.org",
+            "authored_date": "2017-11-16T08:50:27.000Z",
+            "committer_name": "John Doe2",
+            "committer_email": "user2@example.org",
+            "committed_date": "2017-11-16T08:50:27.000Z"
         },
         "pipeline": {
             "id": 2,
             "sha": "97de212e80737a608d939f648d959671fb0a0142",
             "ref": "master",
-            "status": "pending"
+            "status": "running"
         },
         "project": {
             "id": 1,
