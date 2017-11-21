@@ -1,4 +1,5 @@
 import $ from 'jquery';
+import axios from '~/lib/utils/axios_utils';
 
 const Api = {
   groupsPath: '/api/:version/groups.json',
@@ -6,6 +7,7 @@ const Api = {
   namespacesPath: '/api/:version/namespaces.json',
   groupProjectsPath: '/api/:version/groups/:id/projects.json',
   projectsPath: '/api/:version/projects.json',
+  projectPath: '/api/:version/projects/:id',
   projectLabelsPath: '/:namespace_path/:project_path/labels',
   groupLabelsPath: '/groups/:namespace_path/labels',
   licensePath: '/api/:version/templates/licenses/:key',
@@ -74,6 +76,14 @@ const Api = {
       dataType: 'json',
     })
       .done(projects => callback(projects));
+  },
+
+  // Return single project
+  project(projectPath) {
+    const url = Api.buildUrl(Api.projectPath)
+            .replace(':id', encodeURIComponent(projectPath));
+
+    return axios.get(url);
   },
 
   newLabel(namespacePath, projectPath, data, callback) {

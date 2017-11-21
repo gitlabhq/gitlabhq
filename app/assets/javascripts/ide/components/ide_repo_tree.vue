@@ -11,13 +11,13 @@ export default {
     'repo-loading-file': RepoLoadingFile,
   },
   created() {
-    window.addEventListener('popstate', this.popHistoryState);
+    //window.addEventListener('popstate', this.popHistoryState);
   },
   destroyed() {
-    window.removeEventListener('popstate', this.popHistoryState);
+    //window.removeEventListener('popstate', this.popHistoryState);
   },
   mounted() {
-    this.getTreeData();
+    this.getTreeData('/h5bp/html5-boilerplate/tree/master');
   },
   computed: {
     ...mapState([

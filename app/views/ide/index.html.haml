@@ -1,14 +1,14 @@
 - breadcrumb_title "IDE"
 - @no_container = true
 
-- page_title '@blob.path, @ref'
+- page_title 'IDE'
 
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag 'blob'
   = webpack_bundle_tag 'common_vue'
-  = webpack_bundle_tag 'repo'
+  = webpack_bundle_tag 'ide'
 
-#ide-container.page-gutter.page-with-contextual-sidebar.page-with-sidebar.right-sidebar-collapsed
+#ide
   #content-body.content
     .test{ style: 'padding-top: 200px'}
       IDE LOADING ... 
