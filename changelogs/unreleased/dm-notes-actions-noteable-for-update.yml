@@ -1,5 +1,0 @@
----
-title: Make sure NotesActions#noteable returns a Noteable in the update action
-merge_request:
-author:
-type: fixed

@@ -1,5 +1,0 @@
----
-title: Add Prometheus equivalent of all InfluxDB metrics
-merge_request: 13891
-author:
-type: changed

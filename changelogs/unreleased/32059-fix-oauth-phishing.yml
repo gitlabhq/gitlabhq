@@ -1,6 +1,0 @@
----
-title: Prevent OAuth phishing attack by presenting detailed wording about app to user
-  during authorization
-merge_request: 
-author:
-type: security

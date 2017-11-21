@@ -1,6 +1,0 @@
----
-title: Fix crash when navigating to second page of the group dashbaord when there
-  are projects and groups on the first page
-merge_request: 15456
-author:
-type: fixed
