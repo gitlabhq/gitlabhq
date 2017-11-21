@@ -421,6 +421,22 @@ as `MASTER_NODE_NAME`.
     Do note that this will remove the existing data on the node. The command
     has a wait time.
 
+    The output should be similar to the following:
+
+    ```console
+    # gitlab-ctl repmgr standby setup MASTER_NODE_NAME
+    Doing this will delete the entire contents of /var/opt/gitlab/postgresql/data
+    If this is not what you want, hit Ctrl-C now to exit
+    To skip waiting, rerun with the -w option
+    Sleeping for 30 seconds
+    Stopping the database
+    Removing the data
+    Cloning the data
+    Starting the database
+    Registering the node with the cluster
+    ok: run: repmgrd: (pid 19068) 0s
+    ```
+
 1. Verify the node now appears in the cluster:
 
      ```sh
