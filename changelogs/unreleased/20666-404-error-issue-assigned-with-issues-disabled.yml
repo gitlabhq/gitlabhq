@@ -1,6 +1,0 @@
----
-title: Fixes 404 error to 'Issues assigned to me' and 'Issues I've created' when issues
-  are disabled
-merge_request: 15021
-author: Jacopo Beschi @jacopo-beschi
-type: fixed

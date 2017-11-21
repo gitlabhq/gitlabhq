@@ -1,6 +1,0 @@
----
-title: Allow multiple queries in a single Prometheus graph to support additional environments
-  (Canary, Staging, et al.)
-merge_request: 15201
-author:
-type: added
