@@ -270,7 +270,7 @@ module Issuable
       end
     end
 
-    if old_total_time_spent != total_time_spent
+    if self.respond_to?(:total_time_spent) && old_total_time_spent != total_time_spent
       changes[:total_time_spent] = [old_total_time_spent, total_time_spent]
     end
 
