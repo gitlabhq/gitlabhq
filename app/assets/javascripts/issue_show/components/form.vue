@@ -41,6 +41,11 @@
         required: false,
         default: true,
       },
+      canAttachFile: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
     components: {
       lockedWarning,
@@ -83,7 +88,8 @@
     <description-field
       :form-state="formState"
       :markdown-preview-path="markdownPreviewPath"
-      :markdown-docs-path="markdownDocsPath" />
+      :markdown-docs-path="markdownDocsPath"
+      :can-attach-file="canAttachFile" />
     <edit-actions
       :form-state="formState"
       :can-destroy="canDestroy"
