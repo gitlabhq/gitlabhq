@@ -620,6 +620,24 @@ the previous section:
      the `gitlab` database user
   1. [Reconfigure GitLab] for the changes to take effect
 
+## Architecture
+
+![PG HA Architecture](pg_ha_architecture.png)
+
+Database nodes run two services besides PostgreSQL
+1. Repmgrd -- monitors the cluster and handles failover in case of an issue with the master
+
+   The failover consists of
+   * Selecting a new master for the cluster
+   * Promoting the new node to master
+   * Instructing remaining servers to follow the new master node
+
+   On failure, the old master node is automatically evicted from the cluster, and should be rejoined manually once recovered.
+
+1. Consul -- Monitors the status of each node in the database cluster, and tracks its health in a service definiton on the consul cluster.
+
+Alongside pgbouncer, there is a consul agent that watches the status of the PostgreSQL service. If that status changes, consul runs a script which updates the configuration and reloads pgbouncer
+
 ## Troubleshooting
 
 ### Consul and PostgreSQL changes not taking effect.
