@@ -161,16 +161,8 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     end
   end
 
-  describe '.namespace_for_project' do
-    subject { described_class.namespace_for_project(project) }
-
-    let(:project) { create(:project) }
-
-    it { is_expected.to eq("#{project.path}-#{project.id}") }
-  end
-
   describe '#default_namespace' do
-    subject { kubernetes.default_namespace }
+    subject { kubernetes.send(:default_namespace) }
 
     let(:kubernetes) { create(:cluster_platform_kubernetes, :configured) }
 
@@ -190,7 +182,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
   describe '#predefined_variables' do
     let!(:cluster) { create(:cluster, :project, platform_kubernetes: kubernetes) }
-    let(:kubernetes) { create(:platform_kubernetes, api_url: api_url, ca_cert: ca_pem, token: token) }
+    let(:kubernetes) { create(:cluster_platform_kubernetes, api_url: api_url, ca_cert: ca_pem, token: token) }
     let(:api_url) { 'https://kube.domain.com' }
     let(:ca_pem) { 'CA PEM DATA' }
     let(:token) { 'token' }
@@ -248,7 +240,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
 
     let!(:cluster) { create(:cluster, :project, platform_kubernetes: service) }
     let(:project) { cluster.project }
-    let(:service) { create(:platform_kubernetes, :configured) }
+    let(:service) { create(:cluster_platform_kubernetes, :configured) }
     let(:environment) { build(:environment, project: project, name: "env", slug: "env-000000") }
 
     context 'with invalid pods' do
@@ -287,7 +279,7 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     subject { service.calculate_reactive_cache }
 
     let!(:cluster) { create(:cluster, :project, enabled: enabled, platform_kubernetes: service) }
-    let(:service) { create(:platform_kubernetes, :configured) }
+    let(:service) { create(:cluster_platform_kubernetes, :configured) }
     let(:enabled) { true }
 
     context 'when cluster is disabled' do
