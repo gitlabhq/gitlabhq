@@ -313,7 +313,7 @@ ul.indent-list {
       padding: 2px;
 
       .avatar {
-        border: 2px solid $white-normal;
+        border: 2px solid $grey-100;
 
         &.identicon {
           line-height: 30px;
@@ -417,7 +417,7 @@ ul.indent-list {
     }
 
     &:first-child {
-      border-top: 1px solid $white-normal;
+      border-top: 1px solid $grey-100;
     }
 
     &:last-of-type {

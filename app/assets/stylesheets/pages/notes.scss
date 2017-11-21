@@ -330,7 +330,7 @@ ul.notes {
     font-family: $regular_font;
 
     td {
-      border: 1px solid $white-normal;
+      border: 1px solid $grey-100;
       border-left: 0;
 
       &.notes_line {
@@ -470,7 +470,7 @@ ul.notes {
 .discussion-actions {
   float: right;
   margin-left: 10px;
-  color: $gey-400;
+  color: $grey-400;
 
   @include notes-media('max', $screen-md-max) {
     float: none;
