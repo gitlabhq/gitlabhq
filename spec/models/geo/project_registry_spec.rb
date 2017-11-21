@@ -21,6 +21,9 @@ describe Geo::ProjectRegistry do
     it 'returns projects where last attempt to sync failed' do
       create(:geo_project_registry, :synced)
       create(:geo_project_registry, :synced, :dirty)
+      create(:geo_project_registry, :repository_syncing)
+      create(:geo_project_registry, :wiki_syncing)
+
       repository_sync_failed = create(:geo_project_registry, :repository_sync_failed)
       wiki_sync_failed = create(:geo_project_registry, :wiki_sync_failed)
 

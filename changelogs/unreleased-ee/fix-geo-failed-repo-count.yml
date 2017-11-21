@@ -1,0 +1,5 @@
+---
+title: Fix in-progress repository syncs counting as failed
+merge_request: 3424
+author:
+type: fixed
