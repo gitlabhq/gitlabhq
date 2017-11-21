@@ -1,4 +1,5 @@
 /* global monaco */
+import Disposable from '../common/disposable';
 import DirtyDiffWorker from './worker';
 import decorationsController from '../decorations/controller';
 
@@ -32,27 +33,21 @@ export const decorate = (model, changes) => {
 };
 
 export default class DirtyDiffController {
-  constructor() {
+  constructor(modelManager) {
+    this.disposable = new Disposable();
     this.editorSimpleWorker = null;
-    this.models = new Map();
-    this.worker = new DirtyDiffWorker();
+    this.modelManager = modelManager;
+    this.disposable.add(this.worker = new DirtyDiffWorker());
   }
 
   attachModel(model) {
-    if (this.models.has(model.getModel().uri.toString())) return;
+    if (model.attachedToWorker) return;
 
-    [model.getModel(), model.getOriginalModel()].forEach((iModel) => {
-      this.worker.attachModel({
-        url: iModel.uri.toString(),
-        versionId: iModel.getVersionId(),
-        lines: iModel.getLinesContent(),
-        EOL: '\n',
-      });
+    [model.getModel(), model.getOriginalModel()].forEach(() => {
+      this.worker.attachModel(model);
     });
 
     model.onChange((_, e) => this.computeDiff(model, e));
-
-    this.models.set(model.getModel().uri.toString(), model);
   }
 
   computeDiff(model, e) {
@@ -66,8 +61,6 @@ export default class DirtyDiffController {
   }
 
   dispose() {
-    this.models.clear();
-    this.worker.dispose();
-    decorationsController.dispose();
+    this.disposable.dispose();
   }
 }

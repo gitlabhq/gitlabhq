@@ -33,7 +33,7 @@ class DecorationsController {
 
     this.editorDecorations.set(
       model.url,
-      editor.instance.deltaDecorations(oldDecorations, decorations),
+      editor.editorInstance.instance.deltaDecorations(oldDecorations, decorations),
     );
   }
 

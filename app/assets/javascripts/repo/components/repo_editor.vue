@@ -3,13 +3,15 @@
 import { mapGetters, mapActions } from 'vuex';
 import flash from '../../flash';
 import monacoLoader from '../monaco_loader';
-import editor from '../lib/editor';
+import Editor from '../lib/editor';
 
 export default {
   destroyed() {
-    editor.dispose();
+    this.editor.dispose();
   },
   mounted() {
+    this.editor = Editor.create();
+
     if (this.monaco) {
       this.initMonaco();
     } else {
@@ -26,11 +28,11 @@ export default {
     initMonaco() {
       if (this.shouldHideEditor) return;
 
-      editor.clearEditor();
+      this.editor.clearEditor();
 
       this.getRawFileData(this.activeFile)
         .then(() => {
-          editor.createInstance(this.$el);
+          this.editor.createInstance(this.$el);
         })
         .then(() => this.setupEditor())
         .catch(() => flash('Error setting up monaco. Please try again.'));
@@ -38,9 +40,9 @@ export default {
     setupEditor() {
       if (!this.activeFile) return;
 
-      const model = editor.createModel(this.activeFile);
+      const model = this.editor.createModel(this.activeFile);
 
-      editor.attachModel(model);
+      this.editor.attachModel(model);
       model.onChange((m) => {
         this.changeFileContent({
           file: this.activeFile,

@@ -1,14 +1,24 @@
 /* global monaco */
 import DirtyDiffController from './diff/controller';
-import Model from './common/model';
+import Disposable from './common/disposable';
+import ModelManager from './common/model_manager';
 
-class Editor {
+export default class Editor {
+  static create() {
+    this.editorInstance = new Editor();
+
+    return this.editorInstance;
+  }
+
   constructor() {
-    this.models = new Map();
     this.diffComputers = new Map();
     this.currentModel = null;
     this.instance = null;
     this.dirtyDiffController = null;
+    this.modelManager = new ModelManager();
+    this.disposable = new Disposable();
+
+    this.disposable.add(this.modelManager);
   }
 
   createInstance(domElement) {
@@ -20,19 +30,14 @@ class Editor {
         scrollBeyondLastLine: false,
       });
 
-      this.dirtyDiffController = new DirtyDiffController();
+      this.dirtyDiffController = new DirtyDiffController(this.modelManager);
+
+      this.disposable.add(this.dirtyDiffController, this.instance);
     }
   }
 
   createModel(file) {
-    if (this.models.has(file.path)) {
-      return this.models.get(file.path);
-    }
-
-    const model = new Model(file);
-    this.models.set(file.path, model);
-
-    return model;
+    return this.modelManager.addModel(file);
   }
 
   attachModel(model) {
@@ -51,19 +56,11 @@ class Editor {
   }
 
   dispose() {
+    this.disposable.dispose();
+
     // dispose main monaco instance
     if (this.instance) {
-      this.instance.dispose();
       this.instance = null;
     }
-
-    // dispose of all the models
-    this.models.forEach(model => model.dispose());
-    this.models.clear();
-
-    this.dirtyDiffController.dispose();
-    this.dirtyDiffController = null;
   }
 }
-
-export default new Editor();

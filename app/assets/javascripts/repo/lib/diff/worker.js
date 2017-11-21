@@ -1,15 +1,17 @@
 /* global monaco */
+import Disposable from '../common/disposable';
+
 export default class DirtyDiffWorker {
   constructor() {
     this.editorSimpleWorker = null;
-    this.models = new Map();
+    this.disposable = new Disposable();
     this.actions = new Set();
 
     // eslint-disable-next-line promise/catch-or-return
     monaco.editor.createWebWorker({
       moduleId: 'vs/editor/common/services/editorSimpleWorker',
     }).getProxy().then((editorSimpleWorker) => {
-      this.editorSimpleWorker = editorSimpleWorker;
+      this.disposable.add(this.editorSimpleWorker = editorSimpleWorker);
       this.ready();
     });
   }
@@ -26,10 +28,11 @@ export default class DirtyDiffWorker {
   }
 
   attachModel(model) {
-    if (this.editorSimpleWorker && !this.models.has(model.url)) {
-      this.editorSimpleWorker.acceptNewModel(model);
+    if (this.editorSimpleWorker && !model.attachedToWorker) {
+      this.editorSimpleWorker.acceptNewModel(model.diffModel);
+      this.editorSimpleWorker.acceptNewModel(model.originalDiffModel);
 
-      this.models.set(model.url, model);
+      model.setAttachedToWorker(true);
     } else if (!this.editorSimpleWorker) {
       this.actions.add({
         attachModel: [model],
@@ -40,7 +43,7 @@ export default class DirtyDiffWorker {
   modelChanged(model, e) {
     if (this.editorSimpleWorker) {
       this.editorSimpleWorker.acceptModelChanged(
-        model.getModel().uri.toString(),
+        model.url,
         e,
       );
     } else {
@@ -52,27 +55,23 @@ export default class DirtyDiffWorker {
 
   compute(model, cb) {
     if (this.editorSimpleWorker) {
-      // eslint-disable-next-line promise/catch-or-return
-      this.editorSimpleWorker.computeDiff(
-        model.getOriginalModel().uri.toString(),
-        model.getModel().uri.toString(),
+      return this.editorSimpleWorker.computeDiff(
+        model.originalUrl,
+        model.url,
       ).then(cb);
-    } else {
-      this.actions.add({
-        compute: [model, cb],
-      });
     }
+
+    this.actions.add({
+      compute: [model, cb],
+    });
+
+    return null;
   }
 
   dispose() {
-    this.models.forEach(model =>
-      this.editorSimpleWorker.acceptRemovedModel(model.url),
-    );
-    this.models.clear();
-
     this.actions.clear();
 
-    this.editorSimpleWorker.dispose();
+    this.disposable.dispose();
     this.editorSimpleWorker = null;
   }
 }
