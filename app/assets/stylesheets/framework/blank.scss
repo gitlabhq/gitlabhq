@@ -56,6 +56,12 @@
   }
 }
 
+.blank-state-center {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  text-align: center;
+}
+
 .blank-state {
   padding: 20px;
   border: 1px solid $border-color;
@@ -66,7 +72,10 @@
     align-items: center;
     padding: 50px 30px;
   }
+}
 
+.blank-state,
+.blank-state-center {
   .blank-state-icon {
     svg {
       display: block;
