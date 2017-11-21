@@ -1,5 +1,0 @@
----
-title: Improve performance of the /projects/:id/repository/branches API endpoint
-merge_request: 15215
-author:
-type: performance

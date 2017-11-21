@@ -1,5 +1,0 @@
----
-title: Add metric tagging for sidekiq workers
-merge_request: 15111
-author:
-type: added

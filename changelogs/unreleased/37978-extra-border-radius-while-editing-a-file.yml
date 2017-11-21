@@ -1,6 +1,0 @@
----
-title: Removed extra border radius from .file-editor and .file-holder when editing
-  a file
-merge_request: 14803
-author: Rachel Pipkin
-type: fixed

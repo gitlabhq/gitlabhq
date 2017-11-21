@@ -1,6 +1,0 @@
----
-title: Removed d3.js from the graph and users bundles and used the common_d3 bundle
-  instead
-merge_request: 14826
-author:
-type: other
