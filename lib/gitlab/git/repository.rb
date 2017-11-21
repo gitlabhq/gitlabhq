@@ -304,7 +304,13 @@ module Gitlab
       end
 
       def delete_all_refs_except(prefixes)
-        delete_refs(*all_ref_names_except(prefixes))
+        gitaly_migrate(:ref_delete_refs) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.delete_refs(except_with_prefixes: prefixes)
+          else
+            delete_refs(*all_ref_names_except(prefixes))
+          end
+        end
       end
 
       # Returns an Array of all ref names, except when it's matching pattern

@@ -29,7 +29,6 @@ import './commit/image_file';
 // lib/utils
 import { handleLocationHash } from './lib/utils/common_utils';
 import './lib/utils/datetime_utility';
-import './lib/utils/pretty_time';
 import './lib/utils/url_utility';
 
 // behaviors
@@ -80,7 +79,6 @@ import './right_sidebar';
 import './search';
 import './search_autocomplete';
 import './smart_interval';
-import './subscription';
 import './subscription_select';
 import initBreadcrumbs from './breadcrumb';
 
