@@ -57,7 +57,7 @@ describe 'gitlab:gitaly namespace rake task' do
 
         it 'calls gmake in the gitaly directory' do
           expect(Gitlab::Popen).to receive(:popen).with(%w[which gmake]).and_return(['/usr/bin/gmake', 0])
-          expect(main_object).to receive(:run_command!).with(command_preamble + %w[gmake BUNDLE_PATH=/fake/bundle_path]).and_return(true)
+          expect(main_object).to receive(:run_command!).with(command_preamble + %w[gmake BUNDLE_FLAGS=--no-deployment]).and_return(true)
 
           run_rake_task('gitlab:gitaly:install', clone_path)
         end
@@ -70,7 +70,7 @@ describe 'gitlab:gitaly namespace rake task' do
         end
 
         it 'calls make in the gitaly directory' do
-          expect(main_object).to receive(:run_command!).with(command_preamble + %w[make BUNDLE_PATH=/fake/bundle_path]).and_return(true)
+          expect(main_object).to receive(:run_command!).with(command_preamble + %w[make BUNDLE_FLAGS=--no-deployment]).and_return(true)
 
           run_rake_task('gitlab:gitaly:install', clone_path)
         end
