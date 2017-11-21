@@ -17,9 +17,7 @@ namespace :gitlab do
       _, status = Gitlab::Popen.popen(%w[which gmake])
       command = status.zero? ? ['gmake'] : ['make']
 
-      if Rails.env.test?
-        command += %W[BUNDLE_PATH=#{Bundler.bundle_path}]
-      end
+      command << 'BUNDLE_FLAGS=--no-deployment' if Rails.env.test?
 
       Dir.chdir(args.dir) do
         create_gitaly_configuration
