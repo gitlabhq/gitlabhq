@@ -1,11 +1,5 @@
 # GitLab Geo
 
->**Note:**
-GitLab Geo is in **Beta** development. It is considered experimental and
-not production-ready. It will undergo significant changes over the next year,
-and there is significant chance of data loss. For the latest updates, check the
-[meta issue](https://gitlab.com/gitlab-org/gitlab-ee/issues/846).
-
 > **Notes:**
 - GitLab Geo is part of [GitLab Enterprise Edition Premium][ee].
 - Introduced in GitLab Enterprise Edition 8.9.
@@ -14,6 +8,7 @@ and there is significant chance of data loss. For the latest updates, check the
 - You should make sure that all nodes run the same GitLab version.
 - GitLab Geo requires PostgreSQL 9.6 and Git 2.9 in addition to GitLab's usual
   [minimum requirements](../install/requirements.md)
+- Using GitLab Geo in combination with High Availability is considered **Beta**
 
 >**Note:**
 GitLab Geo changes significantly from release to release. Upgrades **are**
