@@ -83,6 +83,20 @@ describe Gitlab::GroupHierarchy, :postgresql do
     end
   end
 
+  describe '#root' do
+    it 'includes only the roots' do
+      relation = described_class.new(Group.where(id: child2)).roots
+
+      expect(relation).to contain_exactly(parent)
+    end
+
+    it 'when quering parent it includes parent' do
+      relation = described_class.new(Group.where(id: parent)).roots
+
+      expect(relation).to contain_exactly(parent)
+    end
+  end
+
   describe '#all_groups' do
     let(:relation) do
       described_class.new(Group.where(id: child1.id)).all_groups

@@ -94,7 +94,7 @@ module EE
     end
 
     def shared_runner_minutes_supported?
-      if parent_id
+      if has_parent?
         Feature.enabled?(:shared_runner_minutes_on_subnamespace)
       else
         true
@@ -115,6 +115,14 @@ module EE
     def shared_runners_minutes_used?
       shared_runners_minutes_limit_enabled? &&
         shared_runners_minutes.to_i >= actual_shared_runners_minutes_limit
+    end
+
+    def shared_runners_enabled?
+      if Feature.enabled?(:shared_runner_minutes_on_subnamespace)
+        projects.with_shared_runners.any?
+      else
+        all_projects.with_shared_runners.any?
+      end
     end
 
     # These helper methods are required to not break the Namespace API.
