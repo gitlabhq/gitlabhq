@@ -16,6 +16,12 @@
       richTooltip() {
         return `Display ${this.activeFile.rich.switcherTitle}`;
       },
+      simpleIconClass() {
+        return `fa-${this.activeFile.simple.icon}`;
+      },
+      richIconClass() {
+        return `fa-${this.activeFile.rich.icon}`;
+      },
     },
     methods: {
       ...mapActions([
@@ -44,7 +50,7 @@
     >
       <i
         class="fa"
-        :class="'fa-' + activeFile.simple.icon"
+        :class="simpleIconClass"
         aria-hidden="true"
       >
       </i>
@@ -63,7 +69,7 @@
     >
       <i
         class="fa"
-        :class="'fa-' + activeFile.rich.icon"
+        :class="richIconClass"
         aria-hidden="true"
       >
       </i>

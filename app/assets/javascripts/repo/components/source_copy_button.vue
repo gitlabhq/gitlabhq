@@ -29,10 +29,10 @@
         'changeFileViewer',
       ]),
       clickCopy(e) {
-        if (this.activeFile.currentViewer !== 'simple') {
+        if (this.activeFile.currentViewer !== 'simple' && this.activeFile.simple.html !== '') {
           e.stopPropagation();
 
-          this.changeFileViewer({
+          return this.changeFileViewer({
             file: this.activeFile,
             type: 'simple',
           }).then(() => {
@@ -43,8 +43,13 @@
             setTimeout(() => {
               this.$refs.clipboardBtn.click();
             });
-          }).catch(() => {});
+          });
+        } else if (this.activeFile.currentViewer !== 'simple' && this.activeFile.simple.html === '') {
+          e.stopPropagation();
+          return false;
         }
+
+        return true;
       },
     },
   };
@@ -61,9 +66,9 @@
     :title="copySourceButtonTitle"
     :aria-label="copySourceButtonTitle"
     data-container="body"
-   :data-clipboard-target="blobContentElementSelector"
-   @click="clickCopy($event)"
-   ref="clipboardBtn"
+    :data-clipboard-target="blobContentElementSelector"
+    @click="clickCopy($event)"
+    ref="clipboardBtn"
   >
     <i
       aria-hidden="true"
