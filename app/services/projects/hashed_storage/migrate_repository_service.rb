@@ -31,7 +31,7 @@ module Projects
 
         unless result
           rollback_folder_move
-          return result
+          project.storage_version = nil
         end
 
         project.repository_read_only = false

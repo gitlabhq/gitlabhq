@@ -48,18 +48,20 @@ describe Projects::HashedStorage::MigrateRepositoryService do
 
         expect(gitlab_shell.exists?(project.repository_storage_path, "#{hashed_storage.disk_path}.git")).to be_falsey
         expect(gitlab_shell.exists?(project.repository_storage_path, "#{hashed_storage.disk_path}.wiki.git")).to be_falsey
+        expect(project.repository_read_only?).to be_falsey
       end
 
       context 'when rollback fails' do
-        before do
-          from_name = legacy_storage.disk_path
-          to_name = hashed_storage.disk_path
+        let(:from_name) { legacy_storage.disk_path }
+        let(:to_name) { hashed_storage.disk_path }
 
+        before do
           hashed_storage.ensure_storage_path_exists
           gitlab_shell.mv_repository(project.repository_storage_path, from_name, to_name)
         end
 
         it 'does not try to move nil repository over hashed' do
+          expect(gitlab_shell).not_to receive(:mv_repository).with(project.repository_storage_path, from_name, to_name)
           expect_move_repository("#{project.disk_path}.wiki", "#{hashed_storage.disk_path}.wiki")
 
           service.execute
