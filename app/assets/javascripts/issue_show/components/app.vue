@@ -34,6 +34,11 @@ export default {
       required: false,
       default: true,
     },
+    canAttachFile: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     issuableRef: {
       type: String,
       required: true,
@@ -234,6 +239,7 @@ export default {
       :project-path="projectPath"
       :project-namespace="projectNamespace"
       :show-delete-button="showDeleteButton"
+      :can-attach-file="canAttachFile"
     />
     <div v-else>
       <title-component
