@@ -174,7 +174,7 @@ class IssuableBaseService < BaseService
     old_labels = issuable.labels.to_a
     old_mentioned_users = issuable.mentioned_users.to_a
     old_assignees = issuable.assignees.to_a
-    old_total_time_spent = issuable.total_time_spent
+    old_total_time_spent = issuable.total_time_spent if issuable.respond_to?(:total_time_spent)
 
     label_ids = process_label_ids(params, existing_label_ids: issuable.label_ids)
     params[:label_ids] = label_ids if labels_changing?(issuable.label_ids, label_ids)
