@@ -30,7 +30,7 @@ describe('Description component', () => {
   });
 
   afterEach(() => {
-    vm.$destroy;
+    vm.$destroy();
   });
 
   it('animates description changes', (done) => {
