@@ -59,8 +59,10 @@ module Gitlab
         @cpu_time += cpu_time
         @call_count += 1
 
-        self.class.call_real_duration_histogram.observe(@transaction.labels.merge(labels), real_time / 1000.0)
-        self.class.call_cpu_duration_histogram.observe(@transaction.labels.merge(labels), cpu_time / 1000.0)
+        if prometheus_enabled?
+          self.class.call_real_duration_histogram.observe(@transaction.labels.merge(labels), real_time / 1000.0)
+          self.class.call_cpu_duration_histogram.observe(@transaction.labels.merge(labels), cpu_time / 1000.0)
+        end
 
         retval
       end
@@ -82,6 +84,10 @@ module Gitlab
       # threshold.
       def above_threshold?
         real_time >= Metrics.method_call_threshold
+      end
+
+      def prometheus_enabled?
+        @prometheus_enabled ||= current_application_settings(:prometheus_metrics_method_instrumentation_enabled)
       end
     end
   end

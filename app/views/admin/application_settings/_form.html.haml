@@ -361,6 +361,14 @@
               %code prometheus_multiproc_dir
               does not exist or is not pointing to a valid directory.
               = link_to icon('question-circle'), help_page_path('administration/monitoring/prometheus/gitlab_metrics', anchor: 'metrics-shared-directory')
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        .checkbox
+          = f.label :prometheus_metrics_method_instrumentation_enabled do
+            = f.check_box :prometheus_metrics_method_instrumentation_enabled
+            Track method execution time.
+            .help-block
+              Provides method execution metrics. Can adversely impact GitLab's responsiveness.
 
   %fieldset
     %legend Profiling - Performance Bar
