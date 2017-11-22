@@ -1,4 +1,5 @@
 import PANEL_STATE from './constants';
+import axios from '../lib/utils/axios_utils';
 import { backOff } from '../lib/utils/common_utils';
 
 export default class PrometheusMetrics {
@@ -80,25 +81,26 @@ export default class PrometheusMetrics {
 
   loadActiveMetrics() {
     this.showMonitoringMetricsPanelState(PANEL_STATE.LOADING);
+    console.log('here...');
+    console.log(this.activeMetricsEndpoint);
     backOff((next, stop) => {
-      $.ajax({
-        url: this.activeMetricsEndpoint,
-        dataType: 'json',
-        global: false,
-      })
-        .done((res) => {
-          if (res && res.success) {
-            stop(res);
+      console.log('backing off..');
+      axios.get(this.activeMetricsEndpoint)
+        .then(resp => resp.data)
+        .then((response) => {
+          console.log('response: ', response);
+          if (response && response.success) {
+            stop(response);
           } else {
             this.backOffRequestCounter = this.backOffRequestCounter += 1;
             if (this.backOffRequestCounter < 3) {
               next();
             } else {
-              stop(res);
+              stop(response);
             }
           }
         })
-        .fail(stop);
+        .catch(stop);
     })
     .then((res) => {
       if (res && res.data && res.data.length) {
@@ -107,7 +109,8 @@ export default class PrometheusMetrics {
         this.showMonitoringMetricsPanelState(PANEL_STATE.EMPTY);
       }
     })
-    .catch(() => {
+    .catch((err) => {
+      console.log('empty data...', err);
       this.showMonitoringMetricsPanelState(PANEL_STATE.EMPTY);
     });
   }
