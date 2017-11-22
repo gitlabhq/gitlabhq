@@ -1,5 +1,0 @@
----
-title: Cleanup data-page attribute after each Karma test
-merge_request: 14742
-author:
-type: fixed

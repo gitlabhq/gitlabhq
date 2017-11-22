@@ -1,5 +1,0 @@
----
-title: Fix 404 errors in API caused when the branch name had a dot
-merge_request: 14462
-author: gvieira37
-type: fixed

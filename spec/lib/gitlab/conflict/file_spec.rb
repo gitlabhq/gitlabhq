@@ -84,6 +84,13 @@ describe Gitlab::Conflict::File do
         expect(line.text).to eq(html_to_text(line.rich_text))
       end
     end
+
+    # This spec will break if Rouge's highlighting changes, but we need to
+    # ensure that the lines are actually highlighted.
+    it 'highlights the lines correctly' do
+      expect(conflict_file.lines.first.rich_text)
+        .to eq("<span id=\"LC1\" class=\"line\" lang=\"ruby\"><span class=\"k\">module</span> <span class=\"nn\">Gitlab</span></span>\n")
+    end
   end
 
   describe '#sections' do

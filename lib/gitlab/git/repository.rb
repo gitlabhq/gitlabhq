@@ -304,7 +304,13 @@ module Gitlab
       end
 
       def delete_all_refs_except(prefixes)
-        delete_refs(*all_ref_names_except(prefixes))
+        gitaly_migrate(:ref_delete_refs) do |is_enabled|
+          if is_enabled
+            gitaly_ref_client.delete_refs(except_with_prefixes: prefixes)
+          else
+            delete_refs(*all_ref_names_except(prefixes))
+          end
+        end
       end
 
       # Returns an Array of all ref names, except when it's matching pattern
@@ -984,6 +990,10 @@ module Gitlab
         @attributes.attributes(path)
       end
 
+      def gitattribute(path, name)
+        attributes(path)[name]
+      end
+
       def languages(ref = nil)
         Gitlab::GitalyClient.migrate(:commit_languages) do |is_enabled|
           if is_enabled
@@ -1149,6 +1159,11 @@ module Gitlab
 
       def blob_at(sha, path)
         Gitlab::Git::Blob.find(self, sha, path) unless Gitlab::Git.blank_ref?(sha)
+      end
+
+      # Items should be of format [[commit_id, path], [commit_id1, path1]]
+      def batch_blobs(items, blob_size_limit: nil)
+        Gitlab::Git::Blob.batch(self, items, blob_size_limit: blob_size_limit)
       end
 
       def commit_index(user, branch_name, index, options)
@@ -1376,6 +1391,7 @@ module Gitlab
             end
 
             return nil unless tmp_entry.type == :tree
+
             tmp_entry = tmp_entry[dir]
           end
         end
@@ -1496,6 +1512,7 @@ module Gitlab
       # Ref names must start with `refs/`.
       def rugged_ref_exists?(ref_name)
         raise ArgumentError, 'invalid refname' unless ref_name.start_with?('refs/')
+
         rugged.references.exist?(ref_name)
       rescue Rugged::ReferenceError
         false
@@ -1562,6 +1579,7 @@ module Gitlab
         Gitlab::Git::Branch.new(self, rugged_ref.name, rugged_ref.target, target_commit)
       rescue Rugged::ReferenceError => e
         raise InvalidRef.new("Branch #{ref} already exists") if e.to_s =~ /'refs\/heads\/#{ref}'/
+
         raise InvalidRef.new("Invalid reference #{start_point}")
       end
 

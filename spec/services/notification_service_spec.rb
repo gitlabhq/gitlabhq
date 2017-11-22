@@ -280,6 +280,7 @@ describe NotificationService, :mailer do
             next if member.id == @u_disabled.id
             # Author should not be notified
             next if member.id == note.author.id
+
             should_email(member)
           end
 
@@ -327,6 +328,7 @@ describe NotificationService, :mailer do
             next if member.id == @u_disabled.id
             # Author should not be notified
             next if member.id == note.author.id
+
             should_email(member)
           end
 

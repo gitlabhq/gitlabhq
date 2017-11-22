@@ -46,6 +46,7 @@ describe FlowdockService do
       @sample_data[:commits].each do |commit|
         # One request to Flowdock per new commit
         next if commit[:id] == @sample_data[:before]
+
         expect(WebMock).to have_requested(:post, @api_url).with(
           body: /#{commit[:id]}.*#{project.path}/
         ).once

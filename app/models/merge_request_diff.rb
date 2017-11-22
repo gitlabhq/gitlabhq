@@ -284,8 +284,10 @@ class MergeRequestDiff < ActiveRecord::Base
 
   def load_commits
     commits = st_commits.presence || merge_request_diff_commits
+    commits = commits.map { |commit| Commit.from_hash(commit.to_hash, project) }
 
-    commits.map { |commit| Commit.from_hash(commit.to_hash, project) }
+    CommitCollection
+      .new(merge_request.source_project, commits, merge_request.source_branch)
   end
 
   def save_diffs

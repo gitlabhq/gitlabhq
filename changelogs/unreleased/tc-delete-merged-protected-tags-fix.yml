@@ -1,5 +1,0 @@
----
-title: When deleting merged branches, ignore protected tags
-merge_request: 15252
-author:
-type: fixed

@@ -29,7 +29,6 @@ import './commit/image_file';
 // lib/utils
 import { handleLocationHash } from './lib/utils/common_utils';
 import './lib/utils/datetime_utility';
-import './lib/utils/pretty_time';
 import './lib/utils/url_utility';
 
 // behaviors
@@ -59,11 +58,7 @@ import './line_highlighter';
 import initLogoAnimation from './logo';
 import './merge_request';
 import './merge_request_tabs';
-import './milestone';
 import './milestone_select';
-import './namespace_select';
-import './new_branch_form';
-import './new_commit_form';
 import './notes';
 import './notifications_dropdown';
 import './notifications_form';
@@ -71,11 +66,6 @@ import './pager';
 import './preview_markdown';
 import './project_find_file';
 import './project_import';
-import './project_label_subscription';
-import './project_new';
-import './project_select';
-import './project_show';
-import './project_variables';
 import './projects_dropdown';
 import './projects_list';
 import './syntax_highlight';
@@ -84,9 +74,6 @@ import './render_gfm';
 import './right_sidebar';
 import './search';
 import './search_autocomplete';
-import './smart_interval';
-import './subscription';
-import './subscription_select';
 import initBreadcrumbs from './breadcrumb';
 
 import './dispatcher';

@@ -1,5 +1,0 @@
----
-title: Get Project Branch API shows an helpful error message on invalid refname
-merge_request: 14884
-author: Jacopo Beschi @jacopo-beschi
-type: added

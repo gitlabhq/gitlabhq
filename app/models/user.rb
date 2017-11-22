@@ -269,8 +269,7 @@ class User < ActiveRecord::Base
     end
 
     def for_github_id(id)
-      joins(:identities)
-        .where(identities: { provider: :github, extern_uid: id.to_s })
+      joins(:identities).merge(Identity.with_extern_uid(:github, id))
     end
 
     # Find a User by their primary email or any associated secondary email
@@ -444,6 +443,10 @@ class User < ActiveRecord::Base
 
   def skip_confirmation=(bool)
     skip_confirmation! if bool
+  end
+
+  def skip_reconfirmation=(bool)
+    skip_reconfirmation! if bool
   end
 
   def generate_reset_token
@@ -1126,6 +1129,7 @@ class User < ActiveRecord::Base
   # override, from Devise::Validatable
   def password_required?
     return false if internal?
+
     super
   end
 
@@ -1143,6 +1147,7 @@ class User < ActiveRecord::Base
   # Added according to https://github.com/plataformatec/devise/blob/7df57d5081f9884849ca15e4fde179ef164a575f/README.md#activejob-integration
   def send_devise_notification(notification, *args)
     return true unless can?(:receive_notifications)
+
     devise_mailer.__send__(notification, self, *args).deliver_later # rubocop:disable GitlabSecurity/PublicSend
   end
 

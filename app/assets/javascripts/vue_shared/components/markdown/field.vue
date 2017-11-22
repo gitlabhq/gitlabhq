@@ -25,6 +25,11 @@
         type: String,
         required: false,
       },
+      canAttachFile: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
     data() {
       return {
@@ -129,6 +134,7 @@
         <markdown-toolbar
           :markdown-docs-path="markdownDocsPath"
           :quick-actions-docs-path="quickActionsDocsPath"
+          :can-attach-file="canAttachFile"
           />
       </div>
     </div>

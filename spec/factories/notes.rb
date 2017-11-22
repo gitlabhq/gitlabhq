@@ -130,6 +130,7 @@ FactoryGirl.define do
     before(:create) do |note, evaluator|
       discussion = evaluator.in_reply_to
       next unless discussion
+
       discussion = discussion.to_discussion if discussion.is_a?(Note)
       next unless discussion
 

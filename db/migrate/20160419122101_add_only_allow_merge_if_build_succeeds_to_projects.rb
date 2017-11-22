@@ -1,4 +1,4 @@
-# rubocop:disable Migration/AddColumnWithDefaultToLargeTable
+# rubocop:disable Migration/UpdateLargeTable
 class AddOnlyAllowMergeIfBuildSucceedsToProjects < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
   disable_ddl_transaction!

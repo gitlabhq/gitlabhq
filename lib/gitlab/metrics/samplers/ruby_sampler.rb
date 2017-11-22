@@ -96,6 +96,7 @@ module Gitlab
 
         def worker_label
           return {} unless defined?(Unicorn::Worker)
+
           worker_no = ::Prometheus::Client::Support::Unicorn.worker_id
 
           if worker_no

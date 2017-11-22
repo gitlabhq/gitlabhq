@@ -1,5 +1,0 @@
----
-title: Improve GitLab Import rake task to work with Hashed Storage and Subgroups
-merge_request:
-author:
-type: changed
