@@ -79,10 +79,6 @@
           .catch(() => Flash('Unable to build Slack link.'));
       },
     },
-
-    mounted() {
-      GitlabSlackService.init();
-    },
   };
 </script>
 
