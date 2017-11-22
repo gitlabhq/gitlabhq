@@ -341,7 +341,7 @@ describe Namespace do
         end
       end
 
-      context 'when shared_runner_minutes_on_root_namespace is enabled' do
+      context 'when shared_runner_minutes_on_root_namespace is enabled', :nested_groups do
         before do
           stub_feature_flags(shared_runner_minutes_on_root_namespace: true)
         end
@@ -380,7 +380,7 @@ describe Namespace do
 
         it { is_expected.to be_truthy }
 
-        context 'when is subgroup' do
+        context 'when is subgroup', :nested_groups do
           before do
             stub_feature_flags(shared_runner_minutes_on_root_namespace: true)
             namespace.parent = build(:group)
@@ -413,7 +413,7 @@ describe Namespace do
         end
       end
 
-      context 'when shared_runner_minutes_on_root_namespace is enabled' do
+      context 'when shared_runner_minutes_on_root_namespace is enabled', :nested_groups do
         before do
           stub_feature_flags(shared_runner_minutes_on_root_namespace: true)
         end

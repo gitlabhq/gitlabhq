@@ -61,7 +61,7 @@ describe UpdateBuildMinutesService do
           end
         end
 
-        context 'when shared_runner_minutes_on_root_namespace is enabled' do
+        context 'when shared_runner_minutes_on_root_namespace is enabled', :nested_groups do
           let(:namespace) { create(:namespace, parent: root_ancestor) }
 
           before do

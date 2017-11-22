@@ -120,7 +120,7 @@ feature 'Groups > Pipeline Quota' do
     end
   end
 
-  context 'with shared_runner_minutes_on_root_namespace enabled' do
+  context 'with shared_runner_minutes_on_root_namespace enabled', :nested_groups do
     before do
       stub_feature_flags(shared_runner_minutes_on_root_namespace: true)
     end

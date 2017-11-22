@@ -90,7 +90,7 @@ module Ci
             end
           end
 
-          context 'when shared_runner_minutes_on_root_namespace is enabled' do
+          context 'when shared_runner_minutes_on_root_namespace is enabled', :nested_groups do
             before do
               stub_feature_flags(shared_runner_minutes_on_root_namespace: true)
             end
