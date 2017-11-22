@@ -146,16 +146,53 @@ will not be able to perform all necessary configuration steps. Refer to
     postgresql['ssl'] = 'on'
     ```
 
-1. Configure PostgreSQL to listen on an external network interface
+1. Configure PostgreSQL to listen on network interfaces
 
-    Edit `/etc/gitlab/gitlab.rb` and add the following. Note that GitLab 9.1 added
-    the `geo_primary_role` configuration variable:
+    For security reasons, PostgreSQL does not listen on any network interfaces
+    by default. However, GitLab Geo requires the primary and secondary nodes to
+    be able to communicate over a common network. For this reason, we need the
+    IP address of each node.
 
+    To lookup the interface IP address of the primary, on the primary execute:
+
+    ```bash
+    # Primary interface IP address
+    ip route get 1 | awk '{print $NF; exit}'
+    ```
+
+    Depending on your network configuration, the primary and secondary may
+    connect over the public internet, a local area network, or a vitual
+    network connecting availability zones like Amazon's [Virtual Provate
+    Cloud](https://aws.amazon.com/vpc/). If you are using a local or virtual
+    network use the interface IP address, otherwise use the public IP address.
+
+    To lookup addresses, on the secondary execute:
+
+    ```bash
+    # Secondary interface IP address
+    ip route get 1 | awk '{print $NF; exit}'
+
+    # Secondary public IP address
+    dig +short myip.opendns.com @resolver1.opendns.com
+    ```
+    
+    Edit `/etc/gitlab/gitlab.rb` and add the following, replacing the secondary
+    IP addresses with address appropriate to your network configuration:
+    
     ```ruby
     geo_primary_role['enable'] = true
+
+    # Primary IP address
+    # - replace 1.2.3.4 with the primary interface IP address
     postgresql['listen_address'] = '1.2.3.4'
     postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','1.2.3.4/32']
+
+    # Seconday IP addresses
+    # - local/virual networks: replace 5.6.7.8 with the secondary interface IP address
+    # - otherwise: replace 5.6.7.8 with the secondary public IP address
     postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
+
+    # Replication settings
     # New for 9.4: Set this to be the number of Geo secondary nodes you have
     postgresql['max_replication_slots'] = 1
     # postgresql['max_wal_senders'] = 10
@@ -163,55 +200,11 @@ will not be able to perform all necessary configuration steps. Refer to
     ```
 
     For external PostgreSQL instances, [see additional instructions][external postgresql].
-
-    Where `1.2.3.4` is the IP address of the primary server, and `5.6.7.8`
-    is the IP address of the secondary one.
-
-    For security reasons, PostgreSQL by default only listens on the local
-    interface (e.g. 127.0.0.1). However, GitLab Geo needs to communicate
-    between the primary and secondary nodes over a common network, such as a
-    corporate LAN or the public Internet. For this reason, we need to
-    configure PostgreSQL to listen on more interfaces.
-
+    
     The `listen_address` option opens PostgreSQL up to external connections
     with the interface corresponding to the given IP. See [the PostgreSQL
     documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-connection.html)
     for more details.
-
-    Note that if you are running GitLab Geo with a cloud provider (e.g. Amazon
-    Web Services), the internal interface IP (as provided by `ifconfig`) may
-    be different from the public IP address. For example, suppose you have a
-    nodes with the following configuration:
-
-    |Node Type|Internal IP|External IP|
-    |---------|-----------|-----------|
-    |Primary|10.1.5.3|54.193.124.100|
-    |Secondary|10.1.10.5|54.193.100.155|
-
-    If you are running two nodes in different cloud availability zones, you
-    may need to double check that the nodes can communicate over the internal
-    IP addresses. For example, servers on Amazon Web Services in the same
-    [Virtual Private Cloud (VPC)](https://aws.amazon.com/vpc/) can do
-    this. Google Compute Engine also offers an [internal network]
-    (https://cloud.google.com/compute/docs/networking) that supports
-    cross-availability zone networking.
-
-    For the above example, the following configuration uses the internal IPs
-    to replicate the database from the primary to the secondary:
-
-    ```ruby
-    # Example configuration using internal IPs for a cloud configuration
-    geo_primary_role['enable'] = true
-    postgresql['listen_address'] = '10.1.5.3'
-    postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','10.1.5.3/32']
-    postgresql['md5_auth_cidr_addresses'] = ['10.1.10.5/32']
-    postgresql['max_replication_slots'] = 1 # Number of Geo secondary nodes
-    # postgresql['max_wal_senders'] = 10
-    # postgresql['wal_keep_segments'] = 10
-    ```
-
-    If you prefer that your nodes communicate over the public Internet, you
-    may choose the IP addresses from the "External IP" column above.
 
 1. Optional: If you want to add another secondary, the relevant setting would look like:
 
@@ -220,7 +213,8 @@ will not be able to perform all necessary configuration steps. Refer to
     ```
 
     You may also want to edit the `wal_keep_segments` and `max_wal_senders` to
-    match your database replication requirements. Consult the [PostgreSQL - Replication documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-replication.html)
+    match your database replication requirements. Consult the [PostgreSQL - 
+    Replication documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-replication.html)
     for more information.
 
 1. Check to make sure your firewall rules are set so that the secondary nodes
