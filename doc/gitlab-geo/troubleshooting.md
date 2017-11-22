@@ -65,6 +65,27 @@ where you have to fix (all commands and path locations are for Omnibus installs)
     secondary by that name. You may want to rerun the [replication
     process](database.md) on the secondary.
 
+- Very large repositories never successfully synchronize on the secondary.
+
+  - GitLab places a timeout on all repository clones, including project imports
+    and Geo synchronization operations. If a fresh `git clone` of a repository
+    on the primary takes more than a few minutes, you may be affected by this.
+    To increase the timeout, add the following line to `/etc/gitlab/gitlab.rb`
+    on the secondary:
+
+        ```ruby
+        gitlab_rails['gitlab_shell_git_timeout'] = 10800
+        ```
+
+        Then reconfigure GitLab:
+
+        ```
+        sudo gitlab-ctl reconfigure
+        ```
+
+    This will increase the timeout to three hours (10800 seconds). Choose a time
+    long enough to accomodate a full clone of your largest repositories.
+
 Visit the primary node's **Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`) in
 your browser. We perform the following health checks on each secondary node
 to help identify if something is wrong:
