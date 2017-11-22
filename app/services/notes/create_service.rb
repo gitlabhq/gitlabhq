@@ -37,18 +37,8 @@ module Notes
 
       quick_actions_service.execute(commands, note)
 
-      # We must add the error after we call #save because errors are reset
-      # when #save is called
-      if only_quick_actions
-        note.errors.add(:commands_only, 'Commands applied')
-      end
-
-      create_branch_result = results&.delete(:create_branch)
-      if create_branch_result&.fetch(:status) == :error
-        note.errors.add(:commands_only, "Error creating branch: #{create_branch_result.fetch(:message)}")
-      end
-
-      note.commands_changes = commands
+      note.quick_actions_commands = commands
+      note.quick_actions_results = results
 
       note
     end

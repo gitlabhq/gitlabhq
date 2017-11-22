@@ -92,23 +92,45 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
 
   return dispatch(methodToDispatch, noteData)
     .then((res) => {
-      const { errors } = res;
-      const commandsChanges = res.commands_changes;
+      const quickActionsCommands = res.quick_actions_commands;
+      const hasQuickActionsCommands = quickActionsCommands
+        && Object.keys(quickActionsCommands).length;
+      let quickActionsMessage = null;
+      let quickActionsMessageType = 'notice';
 
-      if (hasQuickActions && errors && Object.keys(errors).length) {
-        eTagPoll.makeRequest();
+      // If the note is invalid with quickActionsCommands, that means it only
+      // contained quick actions
+      if (!res.valid) {
+        if (hasQuickActionsCommands) {
+          quickActionsMessage = 'Commands applied';
+        }
 
-        $('.js-gfm-input').trigger('clear-commands-cache.atwho');
-        Flash('Commands applied', 'notice', noteData.flashContainer);
-      }
+        const quickActionsResults = res.quick_actions_results;
 
-      if (commandsChanges) {
-        if (commandsChanges.emoji_award) {
-          const votesBlock = $('.js-awards-block').eq(0);
+        if (quickActionsResults && quickActionsResults.create_branch) {
+          const createBranchResult = quickActionsResults.create_branch;
 
-          loadAwardsHandler()
+          if (createBranchResult.status === 'error') {
+            if (quickActionsMessage) {
+              quickActionsMessage = `Commands applied, but the branch '${createBranchResult.branch_name}' could not be created.`;
+            } else {
+              quickActionsMessage = `The branch '${createBranchResult.branch_name}' could not be created!`;
+              quickActionsMessageType = 'alert';
+            }
+          } else {
+            quickActionsMessage = 'Commands applied';
+          }
+        }
+
+        if (quickActionsMessage) {
+          Flash(quickActionsMessage, quickActionsMessageType, noteData.flashContainer);
+
+          if (quickActionsCommands.emoji_award) {
+            const votesBlock = $('.js-awards-block').eq(0);
+
+            loadAwardsHandler()
             .then((awardsHandler) => {
-              awardsHandler.addAwardToEmojiBar(votesBlock, commandsChanges.emoji_award);
+              awardsHandler.addAwardToEmojiBar(votesBlock, quickActionsCommands.emoji_award);
               awardsHandler.scrollToAwards();
             })
             .catch(() => {
@@ -118,16 +140,21 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
                 noteData.flashContainer,
               );
             });
-        }
+          }
 
-        if (commandsChanges.spend_time != null || commandsChanges.time_estimate != null) {
-          sidebarTimeTrackingEventHub.$emit('timeTrackingUpdated', res);
+          if (quickActionsCommands.spend_time != null
+            || quickActionsCommands.time_estimate != null) {
+            sidebarTimeTrackingEventHub.$emit('timeTrackingUpdated', res);
+          }
         }
       }
 
-      if (errors && errors.commands_only) {
-        Flash(errors.commands_only, 'notice', noteData.flashContainer);
+      if (hasQuickActionsCommands) {
+        eTagPoll.makeRequest();
+
+        $('.js-gfm-input').trigger('clear-commands-cache.atwho');
       }
+
       commit(types.REMOVE_PLACEHOLDER_NOTES);
 
       return res;

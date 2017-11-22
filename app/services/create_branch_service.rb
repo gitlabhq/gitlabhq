@@ -14,19 +14,19 @@ class CreateBranchService < BaseService
     new_branch = repository.add_branch(current_user, sanitized_branch_name, ref)
 
     if new_branch
-      success(new_branch)
+      success(branch: new_branch)
     else
-      error('Invalid reference name')
+      error('Invalid reference name', nil, branch_name)
     end
   rescue Gitlab::Git::HooksService::PreReceiveError => ex
-    error(ex.message)
-  end
-
-  def success(branch)
-    super().merge(branch: branch)
+    error(ex.message,  nil, branch_name)
   end
 
   private
+
+  def error(message, http_status = nil, branch_name = nil)
+    super(message, http_status).merge(branch_name: branch_name)
+  end
 
   def create_master_branch
     project.repository.create_file(

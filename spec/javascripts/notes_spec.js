@@ -550,15 +550,12 @@ import '~/notes';
       });
     });
 
-    describe('postComment with Slash commands', () => {
+    describe('postComment with Quick actions', () => {
       const sampleComment = '/assign @root\n/award :100:';
       const note = {
-        commands_changes: {
+        quick_actions_commands: {
           assignee_id: 1,
           emoji_award: '100'
-        },
-        errors: {
-          commands_only: ['Commands applied']
         },
         valid: false
       };
@@ -583,7 +580,7 @@ import '~/notes';
         $form.find('textarea.js-note-text').val(sampleComment);
       });
 
-      it('should remove slash command placeholder when comment with slash commands is done posting', () => {
+      it('should remove quick action placeholder when comment with quick actions is done posting', () => {
         const deferred = $.Deferred();
         spyOn($, 'ajax').and.returnValue(deferred.promise());
         spyOn(gl.awardsHandler, 'addAwardToEmojiBar').and.callThrough();

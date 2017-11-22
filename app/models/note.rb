@@ -45,7 +45,9 @@ class Note < ActiveRecord::Base
   attr_accessor :user_visible_reference_count
 
   # Attribute used to store the attributes that have been changed by quick actions.
-  attr_accessor :commands_changes
+  attr_accessor :quick_actions_commands
+  # Attribute used to store results of quick actions that don't act on the note's noteable.
+  attr_accessor :quick_actions_results
 
   # A special role that may be displayed on issuable's discussions
   attr_accessor :special_role

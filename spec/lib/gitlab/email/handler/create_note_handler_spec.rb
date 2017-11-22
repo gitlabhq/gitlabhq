@@ -56,7 +56,7 @@ describe Gitlab::Email::Handler::CreateNoteHandler do
     end
 
     context 'because the note was commands only' do
-      let!(:email_raw) { fixture_file("emails/commands_only_reply.eml") }
+      let!(:email_raw) { fixture_file("emails/only_quick_actions_reply.eml") }
 
       context 'and current user cannot update noteable' do
         it 'raises a CommandsOnlyNoteError' do
@@ -83,7 +83,7 @@ describe Gitlab::Email::Handler::CreateNoteHandler do
   end
 
   context 'when the note contains quick actions' do
-    let!(:email_raw) { fixture_file("emails/commands_in_reply.eml") }
+    let!(:email_raw) { fixture_file("emails/quick_actions_in_reply.eml") }
 
     context 'and current user cannot update noteable' do
       it 'post a note and does not update the noteable' do

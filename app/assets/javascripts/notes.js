@@ -292,16 +292,16 @@ export default class Notes {
 
   handleQuickActions(noteEntity) {
     var votesBlock;
-    if (noteEntity.commands_changes) {
-      if ('merge' in noteEntity.commands_changes) {
+    if (noteEntity.quick_actions_commands) {
+      if ('merge' in noteEntity.quick_actions_commands) {
         Notes.checkMergeRequestStatus();
       }
 
-      if ('emoji_award' in noteEntity.commands_changes) {
+      if ('emoji_award' in noteEntity.quick_actions_commands) {
         votesBlock = $('.js-awards-block').eq(0);
 
         loadAwardsHandler().then((awardsHandler) => {
-          awardsHandler.addAwardToEmojiBar(votesBlock, noteEntity.commands_changes.emoji_award);
+          awardsHandler.addAwardToEmojiBar(votesBlock, noteEntity.quick_actions_commands.emoji_award);
           awardsHandler.scrollToAwards();
         }).catch(() => {
           // ignore
@@ -348,15 +348,38 @@ export default class Notes {
       return this.renderDiscussionNote(noteEntity, $form);
     }
 
+    const quickActionsCommands = noteEntity.quick_actions_commands;
+    const hasQuickActionsCommands = quickActionsCommands && Object.keys(quickActionsCommands).length;
+    let quickActionsMessage = null;
+    let quickActionsMessageType = 'notice';
+
+    // If the note is invalid with quickActionsCommands, that means it only contained quick actions
     if (!noteEntity.valid) {
-      if (noteEntity.errors.commands_only) {
-        if (noteEntity.commands_changes &&
-            Object.keys(noteEntity.commands_changes).length > 0) {
-          $notesList.find('.system-note.being-posted').remove();
-        }
-        this.addFlash(noteEntity.errors.commands_only.join(", "), 'notice', this.parentTimeline.get(0));
-        this.refresh();
+      if (hasQuickActionsCommands) {
+        quickActionsMessage = 'Commands applied';
       }
+
+      const quickActionsResults = noteEntity.quick_actions_results;
+
+      if (quickActionsResults && quickActionsResults.create_branch) {
+        const createBranchResult = quickActionsResults.create_branch;
+
+        if (createBranchResult.status === 'error') {
+          if (quickActionsMessage) {
+            quickActionsMessage = `Commands applied, but the branch '${createBranchResult.branch_name}' could not be created.`;
+          } else {
+            quickActionsMessage = `The branch '${createBranchResult.branch_name}' could not be created!`;
+            quickActionsMessageType = 'alert';
+          }
+        }
+      }
+
+      if (quickActionsMessage) {
+        this.addFlash(quickActionsMessage, quickActionsMessageType, this.parentTimeline.get(0));
+        this.refresh();
+        $notesList.find('.system-note.being-posted').remove();
+      }
+
       return;
     }
 
@@ -1549,7 +1572,7 @@ export default class Notes {
           this.reenableTargetFormSubmitButton(e);
         }
 
-        if (note.commands_changes) {
+        if (note.quick_actions_commands) {
           this.handleQuickActions(note);
         }
 

@@ -139,15 +139,11 @@
               this.restartPolling();
 
               if (res.errors) {
-                if (res.errors.commands_only) {
-                  this.discard();
-                } else {
-                  Flash(
-                    'Something went wrong while adding your comment. Please try again.',
-                    'alert',
-                    this.$refs.commentForm,
-                  );
-                }
+                Flash(
+                  'Something went wrong while adding your comment. Please try again.',
+                  'alert',
+                  this.$refs.commentForm,
+                );
               } else {
                 this.discard();
               }

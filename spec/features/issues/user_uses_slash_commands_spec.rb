@@ -284,7 +284,7 @@ feature 'Issues > User uses quick actions', :js do
           write_note("/create_branch A New Feature")
 
           expect(page).not_to have_content '/create_branch'
-          expect(page).to have_content 'Branch name is invalid'
+          expect(page).to have_content "The branch 'A New Feature' could not be created!"
         end
       end
 

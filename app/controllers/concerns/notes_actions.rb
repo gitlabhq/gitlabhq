@@ -89,7 +89,8 @@ module NotesActions
 
   def note_json(note)
     attrs = {
-      commands_changes: note.commands_changes
+      quick_actions_commands: note.quick_actions_commands,
+      quick_actions_results: note.quick_actions_results
     }
 
     if note.persisted?

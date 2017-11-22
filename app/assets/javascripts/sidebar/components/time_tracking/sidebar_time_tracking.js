@@ -29,8 +29,8 @@ export default {
       const subscribedCommands = ['spend_time', 'time_estimate'];
       let changedCommands;
       if (data !== undefined) {
-        changedCommands = data.commands_changes
-          ? Object.keys(data.commands_changes)
+        changedCommands = data.quick_actions_commands
+          ? Object.keys(data.quick_actions_commands)
           : [];
       } else {
         changedCommands = [];

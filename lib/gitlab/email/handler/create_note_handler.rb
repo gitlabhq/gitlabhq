@@ -44,6 +44,16 @@ module Gitlab
         def create_note
           sent_notification.create_reply(message)
         end
+
+        def note_contains_only_quick_actions?(note)
+          note.note.empty? && (note.quick_actions_commands.any? || note.quick_actions_results.any?)
+        end
+
+        def verify_record!(record:, invalid_exception:, record_name:)
+          return if note_contains_only_quick_actions?(record)
+
+          super
+        end
       end
     end
   end
