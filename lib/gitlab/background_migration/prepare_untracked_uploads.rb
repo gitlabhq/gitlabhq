@@ -44,15 +44,9 @@ module Gitlab
             t.string :path, limit: 600, null: false
             t.boolean :tracked, default: false, null: false
             t.timestamps_with_timezone null: false
+            t.index :path, unique: true
+            t.index :tracked
           end
-        end
-
-        unless UntrackedFile.connection.index_exists?(:untracked_files_for_uploads, :path)
-          UntrackedFile.connection.add_index :untracked_files_for_uploads, :path, unique: true
-        end
-
-        unless UntrackedFile.connection.index_exists?(:untracked_files_for_uploads, :tracked)
-          UntrackedFile.connection.add_index :untracked_files_for_uploads, :tracked
         end
       end
 
@@ -140,8 +134,7 @@ module Gitlab
       end
 
       def postgresql_pre_9_5?
-        @postgresql_pre_9_5 ||= postgresql? &&
-          ActiveRecord::Base.connection.select_value('SHOW server_version_num').to_i < 90500
+        @postgresql_pre_9_5 ||= postgresql? && Gitlab::Database.version.to_f < 9.5
       end
 
       def schedule_populate_untracked_uploads_jobs
