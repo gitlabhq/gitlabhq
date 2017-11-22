@@ -29,7 +29,6 @@ import './commit/image_file';
 // lib/utils
 import { handleLocationHash } from './lib/utils/common_utils';
 import './lib/utils/datetime_utility';
-import './lib/utils/pretty_time';
 import './lib/utils/url_utility';
 
 // behaviors
@@ -73,6 +72,7 @@ import './projects_dropdown';
 import './projects_list';
 import './syntax_highlight';
 import './render_math';
+import './render_mermaid';
 import './render_gfm';
 import './right_sidebar';
 import './search';

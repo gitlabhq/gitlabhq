@@ -23,6 +23,7 @@ class ListIssue {
     };
     this.sidebarInfoEndpoint = obj.issue_sidebar_endpoint;
     this.toggleSubscriptionEndpoint = obj.toggle_subscription_endpoint;
+<<<<<<< HEAD
     this.milestone_id = obj.milestone_id;
     this.project_id = obj.project_id;
     this.weight = obj.weight;
@@ -30,6 +31,8 @@ class ListIssue {
     if (obj.project) {
       this.project = new IssueProject(obj.project);
     }
+=======
+>>>>>>> upstream/master
 
     if (obj.milestone) {
       this.milestone = new ListMilestone(obj.milestone);

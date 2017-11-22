@@ -80,13 +80,13 @@ errors during usage.
 - 256GB RAM supports up to 32,000 users
 - More users? Run it on [multiple application servers](https://about.gitlab.com/high-availability/)
 
-We recommend having at least 2GB of swap on your server, even if you currently have
+We recommend having at least [2GB of swap on your server](https://askubuntu.com/a/505344/310789), even if you currently have
 enough available RAM. Having swap will help reduce the chance of errors occurring
 if your available memory changes. We also recommend [configuring the kernel's swappiness setting](https://askubuntu.com/a/103916)
 to a low value like `10` to make the most of your RAM while still having the swap
 available when needed.
 
-Notice: The 25 workers of Sidekiq will show up as separate processes in your process overview (such as top or htop) but they share the same RAM allocation since Sidekiq is a multithreaded application. Please see the section below about Unicorn workers for information about how many you need of those.
+Notice: The 25 workers of Sidekiq will show up as separate processes in your process overview (such as `top` or `htop`) but they share the same RAM allocation since Sidekiq is a multithreaded application. Please see the section below about Unicorn workers for information about how many you need of those.
 
 ## Database
 
@@ -148,7 +148,7 @@ So for a machine with 2 cores, 3 unicorn workers is ideal.
 For all machines that have 2GB and up we recommend a minimum of three unicorn workers.
 If you have a 1GB machine we recommend to configure only two Unicorn workers to prevent excessive swapping.
 
-To change the Unicorn workers when you have the Omnibus package please see [the Unicorn settings in the Omnibus GitLab documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/unicorn.md#unicorn-settings).
+To change the Unicorn workers when you have the Omnibus package (which defaults to the recommendation above) please see [the Unicorn settings in the Omnibus GitLab documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/unicorn.md#unicorn-settings).
 
 ## Redis and Sidekiq
 

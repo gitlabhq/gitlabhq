@@ -438,6 +438,7 @@ img.emoji {
 /** COMMON CLASSES **/
 .prepend-top-0 { margin-top: 0; }
 .prepend-top-5 { margin-top: 5px; }
+.prepend-top-8 { margin-top: $grid-size; }
 .prepend-top-10 { margin-top: 10px; }
 .prepend-top-15 { margin-top: 15px; }
 .prepend-top-default { margin-top: $gl-padding !important; }

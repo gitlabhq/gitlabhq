@@ -4,8 +4,9 @@
 import 'autosize';
 import '~/gl_form';
 import '~/lib/utils/text_utility';
-import '~/render_gfm';
 import '~/render_math';
+import '~/render_mermaid';
+import '~/render_gfm';
 import '~/notes';
 
 (function() {

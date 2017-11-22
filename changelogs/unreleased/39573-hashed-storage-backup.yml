@@ -1,5 +1,0 @@
----
-title: Fix gitlab:backup rake for hashed storage based repositories
-merge_request: 15400
-author:
-type: fixed

@@ -249,25 +249,27 @@ export default {
         />
 
       <div
-        class="blank-state blank-state-no-icon"
+        class="blank-state-row"
         v-if="!isLoading && state.environments.length === 0">
-        <h2 class="blank-state-title js-blank-state-title">
-          You don't have any environments right now.
-        </h2>
-        <p class="blank-state-text">
-          Environments are places where code gets deployed, such as staging or production.
-          <br />
-          <a :href="helpPagePath">
-            Read more about environments
-          </a>
-        </p>
+        <div class="blank-state-center">
+          <h2 class="blank-state-title js-blank-state-title">
+            You don't have any environments right now.
+          </h2>
+          <p class="blank-state-text">
+            Environments are places where code gets deployed, such as staging or production.
+            <br />
+            <a :href="helpPagePath">
+              Read more about environments
+            </a>
+          </p>
 
-        <a
-          v-if="canCreateEnvironmentParsed"
-          :href="newEnvironmentPath"
-          class="btn btn-create js-new-environment-button">
-          New environment
-        </a>
+          <a
+            v-if="canCreateEnvironmentParsed"
+            :href="newEnvironmentPath"
+            class="btn btn-create js-new-environment-button">
+            New environment
+          </a>
+        </div>
       </div>
 
       <div

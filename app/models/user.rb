@@ -464,6 +464,10 @@ class User < ActiveRecord::Base
     skip_confirmation! if bool
   end
 
+  def skip_reconfirmation=(bool)
+    skip_reconfirmation! if bool
+  end
+
   def generate_reset_token
     @reset_token, enc = Devise.token_generator.generate(self.class, :reset_password_token)
 

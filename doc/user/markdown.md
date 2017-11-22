@@ -368,6 +368,37 @@ _Be advised that KaTeX only supports a [subset][katex-subset] of LaTeX._
 >**Note:**
 This also works for the asciidoctor `:stem: latexmath`. For details see the [asciidoctor user manual][asciidoctor-manual].
 
+### Mermaid
+
+> If this is not rendered correctly, see
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#mermaid
+
+It is possible to generate diagrams and flowcharts from text using [Mermaid][mermaid]. 
+
+In order to generate a diagram or flowchart, you should write your text inside the `mermaid` block. 
+
+Example: 
+
+    ```mermaid
+    graph TD;
+      A-->B;
+      A-->C;
+      B-->D;
+      C-->D;
+    ```   
+
+Becomes:
+
+```mermaid
+graph TD;
+  A-->B;
+  A-->C;
+  B-->D;
+  C-->D;
+```   
+
+For details see the [Mermaid official page][mermaid].
+
 ## Standard Markdown
 
 ### Headers
@@ -814,6 +845,7 @@ A link starting with a `/` is relative to the wiki root.
 [^2]: This is my awesome footnote.
 
 [markdown.md]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md
+[mermaid]: https://mermaidjs.github.io/ "Mermaid website"
 [rouge]: http://rouge.jneen.net/ "Rouge website"
 [redcarpet]: https://github.com/vmg/redcarpet "Redcarpet website"
 [katex]: https://github.com/Khan/KaTeX "KaTeX website"

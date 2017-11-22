@@ -345,7 +345,6 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'projects:merge_requests:show':
           new Diff();
-          shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
 
           initIssuableSidebar();
@@ -355,6 +354,8 @@ import initGroupAnalytics from './init_group_analytics';
           window.mergeRequest = new MergeRequest({
             action: mrShowNode.dataset.mrAction,
           });
+
+          shortcut_handler = new ShortcutsIssuable(true);
           break;
         case 'dashboard:activity':
           new gl.Activities();

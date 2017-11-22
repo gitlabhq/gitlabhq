@@ -7,7 +7,10 @@ class SystemNoteMetadata < ActiveRecord::Base
   TYPES_WITH_CROSS_REFERENCES = %w[
     commit cross_reference
     close duplicate
+<<<<<<< HEAD
     relate unrelate
+=======
+>>>>>>> upstream/master
   ].freeze
 
   ICON_TYPES = %w[

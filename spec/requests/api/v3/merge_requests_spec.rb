@@ -317,7 +317,7 @@ describe API::MergeRequests do
 
     context 'forked projects' do
       let!(:user2) { create(:user) }
-      let!(:forked_project) { fork_project(project, user2) }
+      let!(:forked_project) { fork_project(project, user2, repository: true) }
       let!(:unrelated_project) { create(:project,  namespace: create(:user).namespace, creator_id: user2.id) }
 
       before do
