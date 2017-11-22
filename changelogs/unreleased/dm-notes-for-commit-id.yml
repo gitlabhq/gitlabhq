@@ -1,6 +1,0 @@
----
-title: Improve performance of commits list by fully using DB index when getting commit
-  note counts
-merge_request:
-author:
-type: performance

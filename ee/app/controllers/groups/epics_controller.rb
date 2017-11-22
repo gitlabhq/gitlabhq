@@ -77,6 +77,10 @@ class Groups::EpicsController < Groups::ApplicationController
     @collection_type ||= 'Epic'
   end
 
+  # we don't support custom sorting for epics and therefore don't want to use the issuable_sort cookie
+  def set_sort_order_from_cookie
+  end
+
   def preload_for_collection
     @preload_for_collection ||= [:group, :author]
   end

@@ -1,5 +1,0 @@
----
-title: Add new push rule to enforce that only the author of a commit can push to the repository
-merge_request: 3086
-author:
-type: added

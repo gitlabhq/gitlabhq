@@ -1,6 +1,0 @@
----
-title: Redirect to existing group boards using old URL if there is no subgroup called
-  'boards'
-merge_request:
-author:
-type: fixed

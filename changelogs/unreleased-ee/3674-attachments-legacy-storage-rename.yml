@@ -1,6 +1,0 @@
----
-title: 'Geo: Expire and resync attachments from renamed projects in secondary nodes
-  when using legacy storage'
-merge_request: 3259
-author:
-type: added

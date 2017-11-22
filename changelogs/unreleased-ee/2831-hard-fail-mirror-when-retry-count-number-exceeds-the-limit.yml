@@ -1,6 +1,0 @@
----
-title: Mirrors can now hard fail, keeping them from being retried until a project
-  admin takes action.
-merge_request: 3117
-author:
-type: added

@@ -1,6 +1,0 @@
----
-title: 'Geo: Ensure database is connected before attempting to check for secondary
-  status'
-merge_request:
-author:
-type: fixed

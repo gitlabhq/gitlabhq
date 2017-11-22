@@ -1,5 +1,0 @@
----
-title: 'Fix: Geo API bug. Statistic is not collected when prometheus is disabled'
-merge_request:
-author:
-type: fixed

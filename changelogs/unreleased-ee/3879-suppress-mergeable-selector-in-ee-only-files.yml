@@ -1,5 +1,0 @@
----
-title: Suppress MergeableSelector warning candidates in EE-only files
-merge_request: 3225
-author: Takuya Noguchi
-type: other

@@ -1,5 +1,0 @@
----
-title: Reconfigure the Geo tracking database pool size when running as Sidekiq
-merge_request: 3181
-author:
-type: fixed

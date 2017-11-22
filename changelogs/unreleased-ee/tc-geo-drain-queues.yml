@@ -1,5 +1,0 @@
----
-title: Add post-migration to drain all Geo related redis queues
-merge_request: 3289
-author:
-type: fixed
