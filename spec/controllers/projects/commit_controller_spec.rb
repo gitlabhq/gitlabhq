@@ -338,7 +338,7 @@ describe Projects::CommitController do
 
     context 'when the commit does not exist' do
       before do
-        diff_for_path(id: commit.id.succ, old_path: existing_path, new_path: existing_path)
+        diff_for_path(id: commit.id.reverse, old_path: existing_path, new_path: existing_path)
       end
 
       it 'returns a 404' do

@@ -6,6 +6,7 @@ module Gitlab
 
       attr_accessor :raw_commit, :head
 
+      MIN_SHA_LENGTH = 7
       SERIALIZE_KEYS = [
         :id, :message, :parent_ids,
         :authored_date, :author_name, :author_email,

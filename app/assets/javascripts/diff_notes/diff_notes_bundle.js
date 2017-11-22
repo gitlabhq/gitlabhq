@@ -17,7 +17,7 @@ import './components/diff_note_avatars';
 import './components/new_issue_for_discussion';
 
 $(() => {
-  const projectPathHolder = document.querySelector('.merge-request') || document.querySelector('.commit-box')
+  const projectPathHolder = document.querySelector('.merge-request') || document.querySelector('.commit-box');
   const projectPath = projectPathHolder.dataset.projectPath;
   const COMPONENT_SELECTOR = 'resolve-btn, resolve-discussion-btn, jump-to-discussion, comment-and-resolve-btn, new-issue-for-discussion-btn';
 

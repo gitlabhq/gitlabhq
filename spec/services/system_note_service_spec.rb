@@ -691,20 +691,11 @@ describe SystemNoteService do
   end
 
   describe '.new_commit_summary' do
-    let(:merge_request) { create(:merge_request, :simple, target_project: project, source_project: project) }
-
     it 'escapes HTML titles' do
       commit = double(title: '<pre>This is a test</pre>', short_id: '12345678')
       escaped = '&lt;pre&gt;This is a test&lt;&#x2F;pre&gt;'
 
-      expect(described_class.new_commit_summary(merge_request, [commit])).to all(match(%r[- #{escaped}]))
-    end
-
-    it 'contains the MR diffs commit url' do
-      commit = merge_request.commits.last
-      url = %r[/merge_requests/#{merge_request.iid}/diffs\?commit_id=#{commit.id}]
-
-      expect(described_class.new_commit_summary(merge_request, [commit])).to all(match(url))
+      expect(described_class.new_commit_summary([commit])).to all(match(%r[- #{escaped}]))
     end
   end
 

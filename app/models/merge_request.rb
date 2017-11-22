@@ -667,6 +667,7 @@ class MergeRequest < ActiveRecord::Base
       .to_sql
 
     Note.from("(#{union}) #{Note.table_name}")
+      .includes(:noteable)
   end
 
   alias_method :discussion_notes, :related_notes
@@ -937,16 +938,13 @@ class MergeRequest < ActiveRecord::Base
   def all_pipelines
     return Ci::Pipeline.none unless source_project
 
+    commit_shas = all_commits.unscope(:limit).select(:sha)
     @all_pipelines ||= source_project.pipelines
-      .where(sha: all_commit_shas, ref: source_branch)
+      .where(sha: commit_shas, ref: source_branch)
       .order(id: :desc)
   end
 
-  # Note that this could also return SHA from now dangling commits
-  #
-  def all_commit_shas
-    return commit_shas unless persisted?
-
+  def all_commits
     diffs_relation = merge_request_diffs
 
     # MySQL doesn't support LIMIT in a subquery.
@@ -955,8 +953,15 @@ class MergeRequest < ActiveRecord::Base
     MergeRequestDiffCommit
       .where(merge_request_diff: diffs_relation)
       .limit(10_000)
-      .pluck('sha')
-      .uniq
+  end
+
+  # Note that this could also return SHA from now dangling commits
+  #
+  def all_commit_shas
+    @all_commit_shas ||= begin
+      return commit_shas unless persisted?
+      all_commits.pluck(:sha).uniq
+    end
   end
 
   def merge_commit
