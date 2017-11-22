@@ -54,12 +54,12 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
       expect(appearance.uploads.count).to eq(2)
     end
 
-    it 'sets all added or confirmed tracked files to tracked' do
+    it 'deletes rows after processing them' do
       expect(subject).to receive(:drop_temp_table_if_finished) # Don't drop the table so we can look at it
 
       expect do
         subject.perform(1, 1000)
-      end.to change { untracked_files_for_uploads.where(tracked: true).count }.from(0).to(8)
+      end.to change { untracked_files_for_uploads.count }.from(8).to(0)
     end
 
     it 'does not create duplicate uploads of already tracked files' do
@@ -85,7 +85,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
       expect(project2.uploads.count).to eq(0)
 
       # Only 4 have been either confirmed or added to uploads
-      expect(untracked_files_for_uploads.where(tracked: true).count).to eq(4)
+      expect(untracked_files_for_uploads.count).to eq(4)
     end
 
     it 'uses the start and end batch ids [only 2nd half]' do
@@ -103,7 +103,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
       expect(project2.uploads.count).to eq(2)
 
       # Only 4 have been either confirmed or added to uploads
-      expect(untracked_files_for_uploads.where(tracked: true).count).to eq(4)
+      expect(untracked_files_for_uploads.count).to eq(4)
     end
 
     it 'does not drop the temporary tracking table after processing the batch, if there are still untracked rows' do
@@ -251,18 +251,6 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
         expect(model.uploads.first.attributes).to include(@expected_upload_attrs)
       end
-    end
-  end
-
-  describe '#mark_as_tracked' do
-    it 'saves the record with tracked set to true' do
-      untracked_file = create_untracked_file("/-/system/appearance/logo/1/some_logo.jpg")
-
-      expect do
-        untracked_file.mark_as_tracked
-      end.to change { untracked_file.tracked }.from(false).to(true)
-
-      expect(untracked_file.persisted?).to be_truthy
     end
   end
 

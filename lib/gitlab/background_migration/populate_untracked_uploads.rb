@@ -50,14 +50,10 @@ module Gitlab
           }
         ].freeze
 
-        scope :untracked, -> { where(tracked: false) }
-
         def ensure_tracked!
-          return if persisted? && tracked?
-
           add_to_uploads unless in_uploads?
 
-          mark_as_tracked
+          delete
         end
 
         def in_uploads?
@@ -77,10 +73,6 @@ module Gitlab
             model_id: model_id,
             size: file_size
           )
-        end
-
-        def mark_as_tracked
-          update!(tracked: true)
         end
 
         def upload_path
@@ -197,7 +189,7 @@ module Gitlab
       def perform(start_id, end_id)
         return unless migrate?
 
-        files = UntrackedFile.untracked.where(id: start_id..end_id)
+        files = UntrackedFile.where(id: start_id..end_id)
         files.each do |untracked_file|
           begin
             untracked_file.ensure_tracked!
@@ -220,7 +212,7 @@ module Gitlab
       end
 
       def drop_temp_table_if_finished
-        UntrackedFile.connection.drop_table(:untracked_files_for_uploads) if UntrackedFile.untracked.empty?
+        UntrackedFile.connection.drop_table(:untracked_files_for_uploads) if UntrackedFile.all.empty?
       end
     end
   end

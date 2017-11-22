@@ -42,10 +42,8 @@ module Gitlab
         unless UntrackedFile.connection.table_exists?(:untracked_files_for_uploads)
           UntrackedFile.connection.create_table :untracked_files_for_uploads do |t|
             t.string :path, limit: 600, null: false
-            t.boolean :tracked, default: false, null: false
             t.timestamps_with_timezone null: false
             t.index :path, unique: true
-            t.index :tracked
           end
         end
       end
