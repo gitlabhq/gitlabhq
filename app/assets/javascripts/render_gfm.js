@@ -2,12 +2,13 @@
 
 // Render Gitlab flavoured Markdown
 //
-// Delegates to syntax highlight and render math
+// Delegates to syntax highlight and render math & mermaid diagrams.
 //
 (function() {
   $.fn.renderGFM = function() {
     this.find('.js-syntax-highlight').syntaxHighlight();
     this.find('.js-render-math').renderMath();
+    this.find('.js-render-mermaid').renderMermaid();
     return this;
   };
 
