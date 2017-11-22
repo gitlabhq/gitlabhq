@@ -1,1 +1,57 @@
-Hello World!
+- if @clusters.empty?
+  = render "empty_state"
+- else
+  .top-area.scrolling-tabs-container.inner-page-scroll-tabs
+    .fade-left= icon('angle-left')
+    .fade-right= icon('angle-right')
+    %ul.nav-links.scrolling-tabs
+      %li
+        %a
+          = s_('ClusterIntegration|Active')
+          %span.badge
+            0
+      %li
+        %a
+          = s_('ClusterIntegration|Inactive')
+          %span.badge
+            0
+      %li
+        %a
+          = s_('ClusterIntegration|All')
+          %span.badge
+            0
+    .nav-controls
+      = link_to s_('ClusterIntegration|Add cluster'), '', class: 'btn btn-success', title: 'Add cluster'
+  .ci-table
+    .gl-responsive-table-row.table-row-header{ role: 'row' }
+      .table-section.section-30{ role: 'rowheader' }
+        = s_('ClusterIntegration|Cluster')
+      .table-section.section-30{ role: 'rowheader' }
+        = s_('ClusterIntegration|Environment pattern')
+      .table-section.section-30{ role: 'rowheader' }
+        = s_('ClusterIntegration|Project namespace')
+      .table-section.section-10{ role: 'rowheader' }
+    .gl-responsive-table-row
+      .table-section.section-30
+        .table-mobile-header{ role: 'rowheader' }
+          = s_('ClusterIntegration|Cluster')
+        .table-mobile-content
+          Content goes here
+      .table-section.section-30
+        .table-mobile-header{ role: 'rowheader' }
+          = s_('ClusterIntegration|Environment pattern')
+        .table-mobile-content
+          Content goes here
+      .table-section.section-30
+        .table-mobile-header{ role: 'rowheader' }
+          = s_('ClusterIntegration|Project namespace')
+        .table-mobile-content
+          Content goes here
+      .table-section.section-10
+        .table-mobile-header{ role: 'rowheader' }
+        .table-mobile-content
+          %button{ type: 'button',
+            class: "js-toggle-cluster project-feature-toggle",
+            'aria-label': s_('ClusterIntegration|Toggle Cluster'),
+            data: { 'enabled-text': 'Enabled', 'disabled-text': 'Disabled' } }
+
