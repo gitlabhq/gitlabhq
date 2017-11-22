@@ -118,7 +118,7 @@ describe PreferencesHelper do
     end
 
     context 'user signed in' do
-      let(:user) { create(:user, :readme) }
+      let(:user) { create(:user) }
       let(:project) { create(:project, :public, :repository) }
 
       before do
@@ -130,7 +130,7 @@ describe PreferencesHelper do
         it 'returns the project view' do
           allow(helper).to receive(:can?).with(user, :download_code, project).and_return(true)
 
-          expect(helper.default_project_view).to eq('readme')
+          expect(helper.default_project_view).to eq('files')
         end
       end
 
