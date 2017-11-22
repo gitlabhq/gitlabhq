@@ -3,6 +3,7 @@
 import $ from 'jquery';
 import Sortable from 'vendor/Sortable';
 import Vue from 'vue';
+import Sortable from 'sortablejs';
 import AccessorUtilities from '../../lib/utils/accessor';
 import boardList from './board_list.vue';
 import BoardBlankState from './board_blank_state.vue';
