@@ -14,6 +14,7 @@ fi
 retry gem install knapsack
 
 cp config/gitlab.yml.example config/gitlab.yml
+sed -i 's/bin_path: \/usr\/bin\/git/bin_path: \/usr\/local\/bin\/git/' config/gitlab.yml
 
 # Determine the database by looking at the job name.
 # For example, we'll get pg if the job is `rspec-pg 19 20`
