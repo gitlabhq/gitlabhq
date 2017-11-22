@@ -15,8 +15,8 @@
             .col-sm-7.brand-holder.pull-left
               %h1
                 = brand_title
-              - if brand_item
                 = brand_image
+              - if brand_item&.description?
                 = brand_text
               - else
                 %h3 Open source software to collaborate on code
