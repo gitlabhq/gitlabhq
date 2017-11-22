@@ -1,77 +1,34 @@
-/* global monaco */
-import Disposable from '../common/disposable';
+import { diffLines } from 'diff';
 
 export default class DirtyDiffWorker {
-  constructor() {
-    this.editorSimpleWorker = null;
-    this.disposable = new Disposable();
-    this.actions = new Set();
+  // eslint-disable-next-line class-methods-use-this
+  compute(model) {
+    const originalContent = model.getOriginalModel().getValue();
+    const newContent = model.getModel().getValue();
+    const changes = diffLines(originalContent, newContent);
 
-    // eslint-disable-next-line promise/catch-or-return
-    monaco.editor.createWebWorker({
-      moduleId: 'vs/editor/common/services/editorSimpleWorker',
-    }).getProxy().then((editorSimpleWorker) => {
-      this.disposable.add(this.editorSimpleWorker = editorSimpleWorker);
-      this.ready();
-    });
-  }
+    let lineNumber = 1;
+    return changes.reduce((acc, change) => {
+      const findOnLine = acc.find(c => c.lineNumber === lineNumber);
 
-  // loop through all the previous cached actions
-  // this way we don't block the user from editing the file
-  ready() {
-    this.actions.forEach((action) => {
-      const methodName = Object.keys(action)[0];
-      this[methodName](...action[methodName]);
-    });
+      if (findOnLine) {
+        Object.assign(findOnLine, change, {
+          modified: true,
+          endLineNumber: change.count > 1 ? lineNumber + change.count : lineNumber,
+        });
+      } else if ('added' in change || 'removed' in change) {
+        acc.push(Object.assign({}, change, {
+          lineNumber,
+          modified: undefined,
+          endLineNumber: change.count > 1 ? lineNumber + change.count : lineNumber,
+        }));
+      }
 
-    this.actions.clear();
-  }
+      if (!change.removed) {
+        lineNumber += change.count;
+      }
 
-  attachModel(model) {
-    if (this.editorSimpleWorker && !model.attachedToWorker) {
-      this.editorSimpleWorker.acceptNewModel(model.diffModel);
-      this.editorSimpleWorker.acceptNewModel(model.originalDiffModel);
-
-      model.setAttachedToWorker(true);
-    } else if (!this.editorSimpleWorker) {
-      this.actions.add({
-        attachModel: [model],
-      });
-    }
-  }
-
-  modelChanged(model, e) {
-    if (this.editorSimpleWorker) {
-      this.editorSimpleWorker.acceptModelChanged(
-        model.url,
-        e,
-      );
-    } else {
-      this.actions.add({
-        modelChanged: [model, e],
-      });
-    }
-  }
-
-  compute(model, cb) {
-    if (this.editorSimpleWorker) {
-      return this.editorSimpleWorker.computeDiff(
-        model.originalUrl,
-        model.url,
-      ).then(cb);
-    }
-
-    this.actions.add({
-      compute: [model, cb],
-    });
-
-    return null;
-  }
-
-  dispose() {
-    this.actions.clear();
-
-    this.disposable.dispose();
-    this.editorSimpleWorker = null;
+      return acc;
+    }, []);
   }
 }

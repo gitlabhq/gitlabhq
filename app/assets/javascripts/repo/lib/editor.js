@@ -11,28 +11,27 @@ export default class Editor {
   }
 
   constructor() {
-    this.diffComputers = new Map();
     this.currentModel = null;
     this.instance = null;
     this.dirtyDiffController = null;
-    this.modelManager = new ModelManager();
     this.disposable = new Disposable();
 
-    this.disposable.add(this.modelManager);
+    this.disposable.add(
+      this.modelManager = new ModelManager(),
+    );
   }
 
   createInstance(domElement) {
     if (!this.instance) {
-      this.instance = monaco.editor.create(domElement, {
-        model: null,
-        readOnly: false,
-        contextmenu: true,
-        scrollBeyondLastLine: false,
-      });
-
-      this.dirtyDiffController = new DirtyDiffController(this.modelManager);
-
-      this.disposable.add(this.dirtyDiffController, this.instance);
+      this.disposable.add(
+        this.instance = monaco.editor.create(domElement, {
+          model: null,
+          readOnly: false,
+          contextmenu: true,
+          scrollBeyondLastLine: false,
+        }),
+        this.dirtyDiffController = new DirtyDiffController(this.modelManager),
+      );
     }
   }
 

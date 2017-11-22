@@ -1,24 +1,25 @@
 /* global monaco */
-import Disposable from '../common/disposable';
 import DirtyDiffWorker from './worker';
+import Disposable from '../common/disposable';
 import decorationsController from '../decorations/controller';
 
 export const getDiffChangeType = (change) => {
-  if (change.originalEndLineNumber === 0) {
+  if (change.modified) {
+    return 'modified';
+  } else if (change.added) {
     return 'added';
-  } else if (change.modifiedEndLineNumber === 0) {
+  } else if (change.removed) {
     return 'removed';
   }
 
-  return 'modified';
+  return '';
 };
 
 export const getDecorator = change => ({
   range: new monaco.Range(
-    change.modifiedStartLineNumber,
+    change.lineNumber,
     1,
-    !change.modifiedEndLineNumber ?
-      change.modifiedStartLineNumber : change.modifiedEndLineNumber,
+    change.endLineNumber,
     1,
   ),
   options: {
@@ -37,22 +38,15 @@ export default class DirtyDiffController {
     this.disposable = new Disposable();
     this.editorSimpleWorker = null;
     this.modelManager = modelManager;
-    this.disposable.add(this.worker = new DirtyDiffWorker());
+    this.dirtyDiffWorker = new DirtyDiffWorker();
   }
 
   attachModel(model) {
-    if (model.attachedToWorker) return;
-
-    [model.getModel(), model.getOriginalModel()].forEach(() => {
-      this.worker.attachModel(model);
-    });
-
-    model.onChange((_, e) => this.computeDiff(model, e));
+    model.onChange(() => this.computeDiff(model));
   }
 
-  computeDiff(model, e) {
-    this.worker.modelChanged(model, e);
-    this.worker.compute(model, changes => decorate(model, changes));
+  computeDiff(model) {
+    decorate(model, this.dirtyDiffWorker.compute(model));
   }
 
   // eslint-disable-next-line class-methods-use-this
