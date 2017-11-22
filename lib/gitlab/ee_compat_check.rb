@@ -102,7 +102,7 @@ module Gitlab
     end
 
     def ce_branch_compat_check!
-      if check_patch(ce_patch_full_path, remote: 'canonical-ce').zero?
+      if check_patch(ce_patch_full_path).zero?
         puts applies_cleanly_msg(ce_branch)
         throw(:halt_check)
       end
@@ -129,7 +129,7 @@ module Gitlab
     end
 
     def ee_branch_compat_check!
-      unless check_patch(ee_patch_full_path, remote: 'canonical-ee').zero?
+      unless check_patch(ee_patch_full_path).zero?
         puts
         puts ee_branch_doesnt_apply_cleanly_msg
 
@@ -140,9 +140,9 @@ module Gitlab
       puts applies_cleanly_msg(ee_branch_found)
     end
 
-    def check_patch(patch_path, remote:)
+    def check_patch(patch_path)
       step("Checking out master", %w[git checkout master])
-      step("Resetting to latest master", %W[git reset --hard #{remote}/master])
+      step("Resetting to latest master", %w[git reset --hard canonical-ee/master])
       step(
         "Checking if #{patch_path} applies cleanly to EE/master",
         # Don't use --check here because it can result in a 0-exit status even
