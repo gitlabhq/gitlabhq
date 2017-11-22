@@ -55,10 +55,6 @@
     &:not(span):hover {
       background-color: rgba($gl-text-color-secondary, .07);
     }
-
-    svg {
-      fill: $gl-text-color-secondary;
-    }
   }
 }
 

@@ -86,6 +86,7 @@ module Banzai
 
     def save_options
       return {} unless base_context[:xhtml]
+
       { save_with: Nokogiri::XML::Node::SaveOptions::AS_XHTML }
     end
   end

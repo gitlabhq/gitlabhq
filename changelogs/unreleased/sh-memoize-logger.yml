@@ -1,5 +1,0 @@
----
-title: Memoize GitLab logger to reduce open file descriptors
-merge_request:
-author:
-type: fixed

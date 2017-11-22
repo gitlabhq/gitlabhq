@@ -220,6 +220,15 @@ module Gitlab
       # column - The name of the column to update.
       # value - The value for the column.
       #
+      # The `value` argument is typically a literal. To perform a computed
+      # update, an Arel literal can be used instead:
+      #
+      #     update_value = Arel.sql('bar * baz')
+      #
+      #     update_column_in_batches(:projects, :foo, update_value) do |table, query|
+      #       query.where(table[:some_column].eq('hello'))
+      #     end
+      #
       # Rubocop's Metrics/AbcSize metric is disabled for this method as Rubocop
       # determines this method to be too complex while there's no way to make it
       # less "complex" without introducing extra methods (which actually will

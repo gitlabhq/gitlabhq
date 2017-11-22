@@ -31,6 +31,7 @@ module Banzai
         nodes.each do |node|
           if node.has_attribute?(group_attr)
             next unless can_read_group_reference?(node, user, groups)
+
             visible << node
           elsif can_read_project_reference?(node)
             visible << node

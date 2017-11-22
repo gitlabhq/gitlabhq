@@ -9,6 +9,13 @@ RUN sed -i "s/httpredir.debian.org/ftp.us.debian.org/" /etc/apt/sources.list
 RUN apt-get update && apt-get install -y wget git unzip xvfb
 
 ##
+# Install Docker
+#
+RUN wget -q https://download.docker.com/linux/static/stable/x86_64/docker-17.09.0-ce.tgz && \
+    tar -zxf docker-17.09.0-ce.tgz && mv docker/docker /usr/local/bin/docker && \
+    rm docker-17.09.0-ce.tgz
+
+##
 # Install Google Chrome version with headless support
 #
 RUN curl -sS -L https://dl.google.com/linux/linux_signing_key.pub | apt-key add -

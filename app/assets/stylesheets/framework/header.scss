@@ -235,10 +235,6 @@
           opacity: 1;
           color: $white-light;
 
-          svg {
-            fill: currentColor;
-          }
-
           &.header-user-dropdown-toggle .header-user-avatar {
             border-color: $white-light;
           }
@@ -269,14 +265,6 @@
           font-size: 20px;
         }
       }
-
-      &.active > a,
-      &.dropdown.open > a {
-
-        svg {
-          fill: currentColor;
-        }
-      }
     }
   }
 }
@@ -289,10 +277,6 @@
       text-decoration: none;
       outline: 0;
       color: $white-light;
-
-      svg {
-        fill: currentColor;
-      }
     }
 
     > a {
@@ -307,10 +291,6 @@
       border-radius: $border-radius-default;
       height: 32px;
       font-weight: $gl-font-weight-bold;
-
-      svg {
-        fill: currentColor;
-      }
     }
 
     &.line-separator {

@@ -6,6 +6,10 @@ describe ApplicationController do
   describe '#check_password_expiration' do
     let(:controller) { described_class.new }
 
+    before do
+      allow(controller).to receive(:session).and_return({})
+    end
+
     it 'redirects if the user is over their password expiry' do
       user.password_expires_at = Time.new(2002)
 

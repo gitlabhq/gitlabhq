@@ -98,7 +98,6 @@ describe('LoadingButton', function () {
     it('does not call given callback when disabled because of loading', () => {
       vm = mountComponent(LoadingButton, {
         loading: true,
-        indeterminate: true,
       });
       spyOn(vm, '$emit');
 

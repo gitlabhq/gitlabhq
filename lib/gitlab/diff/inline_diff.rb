@@ -102,6 +102,7 @@ module Gitlab
           new_char = b[pos]
 
           break if old_char != new_char
+
           length += 1
         end
 

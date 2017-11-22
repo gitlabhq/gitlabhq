@@ -1,5 +1,0 @@
----
-title: Replace WikiPage::CreateService calls with wiki_page factory in specs
-merge_request: 14850
-author: Jacopo Beschi @jacopo-beschi
-type: changed

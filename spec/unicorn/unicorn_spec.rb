@@ -71,6 +71,7 @@ describe 'Unicorn' do
     timeout = 5 * 60
     timeout.times do
       return if File.exist?(ready_file)
+
       pid = Process.waitpid(master_pid, Process::WNOHANG)
       raise "unicorn failed to boot: #{$?}" unless pid.nil?
 

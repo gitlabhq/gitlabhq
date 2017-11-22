@@ -1,5 +1,0 @@
----
-title: Fix problem with issuable header wrapping when content is too long
-merge_request:
-author:
-type: fixed

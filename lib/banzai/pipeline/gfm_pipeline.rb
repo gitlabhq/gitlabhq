@@ -14,6 +14,7 @@ module Banzai
           Filter::SyntaxHighlightFilter,
 
           Filter::MathFilter,
+          Filter::MermaidFilter,
           Filter::UploadLinkFilter,
           Filter::VideoLinkFilter,
           Filter::ImageLazyLoadFilter,

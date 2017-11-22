@@ -126,6 +126,15 @@ module Gitlab
         GitalyClient.call(@repository.storage, :ref_service, :delete_branch, request)
       end
 
+      def delete_refs(except_with_prefixes:)
+        request = Gitaly::DeleteRefsRequest.new(
+          repository: @gitaly_repo,
+          except_with_prefix: except_with_prefixes
+        )
+
+        GitalyClient.call(@repository.storage, :ref_service, :delete_refs, request)
+      end
+
       private
 
       def consume_refs_response(response)
@@ -137,6 +146,7 @@ module Gitlab
 
         enum_value = Gitaly::FindLocalBranchesRequest::SortBy.resolve(sort_by.upcase.to_sym)
         raise ArgumentError, "Invalid sort_by key `#{sort_by}`" unless enum_value
+
         enum_value
       end
 

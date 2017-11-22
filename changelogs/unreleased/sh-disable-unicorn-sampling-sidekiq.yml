@@ -1,5 +1,0 @@
----
-title: Disable Unicorn sampling in Sidekiq since there are no Unicorn sockets to monitor
-merge_request:
-author:
-type: performance

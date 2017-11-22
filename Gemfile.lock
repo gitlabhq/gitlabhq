@@ -73,6 +73,7 @@ GEM
       thread_safe (~> 0.3, >= 0.3.1)
     babosa (1.0.2)
     base32 (0.3.2)
+    batch-loader (1.1.1)
     bcrypt (3.1.11)
     bcrypt_pbkdf (1.0.0)
     benchmark-ips (2.3.0)
@@ -275,7 +276,7 @@ GEM
       po_to_json (>= 1.0.0)
       rails (>= 3.2.0)
     gherkin-ruby (0.3.2)
-    gitaly-proto (0.52.0)
+    gitaly-proto (0.54.0)
       google-protobuf (~> 3.1)
       grpc (~> 1.0)
     github-linguist (4.7.6)
@@ -355,10 +356,10 @@ GEM
       rake
     grape_logging (1.7.0)
       grape
-    grpc (1.6.6)
+    grpc (1.7.2)
       google-protobuf (~> 3.1)
       googleapis-common-protos-types (~> 1.0.0)
-      googleauth (~> 0.5.1)
+      googleauth (>= 0.5.1, < 0.7)
     haml (4.0.7)
       tilt
     haml_lint (0.26.0)
@@ -982,6 +983,7 @@ DEPENDENCIES
   awesome_print (~> 1.2.0)
   babosa (~> 1.0.2)
   base32 (~> 0.3.0)
+  batch-loader
   bcrypt_pbkdf (~> 1.0)
   benchmark-ips (~> 2.3.0)
   better_errors (~> 2.1.0)
@@ -1034,7 +1036,7 @@ DEPENDENCIES
   gettext (~> 3.2.2)
   gettext_i18n_rails (~> 1.8.0)
   gettext_i18n_rails_js (~> 1.2.0)
-  gitaly-proto (~> 0.52.0)
+  gitaly-proto (~> 0.54.0)
   github-linguist (~> 4.7.0)
   gitlab-flowdock-git-hook (~> 1.0.1)
   gitlab-markup (~> 1.6.2)

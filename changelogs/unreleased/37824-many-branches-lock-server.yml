@@ -1,6 +1,0 @@
----
-title: While displaying a commit, do not show list of related branches if there are
-  thousands of branches
-merge_request: 14812
-author:
-type: other

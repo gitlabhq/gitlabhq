@@ -98,6 +98,7 @@ module Awardable
 
   def create_award_emoji(name, current_user)
     return unless emoji_awardable?
+
     award_emoji.create(name: normalize_name(name), user: current_user)
   end
 

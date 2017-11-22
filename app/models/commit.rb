@@ -80,10 +80,11 @@ class Commit
 
     @raw = raw_commit
     @project = project
+    @statuses = {}
   end
 
   def id
-    @raw.id
+    raw.id
   end
 
   def ==(other)
@@ -236,11 +237,13 @@ class Commit
   end
 
   def status(ref = nil)
-    @statuses ||= {}
-
     return @statuses[ref] if @statuses.key?(ref)
 
-    @statuses[ref] = pipelines.latest_status(ref)
+    @statuses[ref] = project.pipelines.latest_status_per_commit(id, ref)[id]
+  end
+
+  def set_status_for_ref(ref, status)
+    @statuses[ref] = status
   end
 
   def signature
@@ -358,7 +361,7 @@ class Commit
     @deltas ||= raw.deltas
   end
 
-  def diffs(diff_options = nil)
+  def diffs(diff_options = {})
     Gitlab::Diff::FileCollection::Commit.new(self, diff_options: diff_options)
   end
 

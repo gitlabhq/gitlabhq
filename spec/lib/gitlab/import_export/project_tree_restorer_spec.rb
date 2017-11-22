@@ -155,7 +155,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         end
 
         it 'has no source if source/target differ' do
-          expect(MergeRequest.find_by_title('MR2').source_project_id).to eq(-1)
+          expect(MergeRequest.find_by_title('MR2').source_project_id).to be_nil
         end
       end
 
