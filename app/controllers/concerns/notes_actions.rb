@@ -31,7 +31,7 @@ module NotesActions
     render json: notes_json
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def create
     create_params = note_params.merge(
       merge_request_diff_head_sha: params[:merge_request_diff_head_sha],
@@ -49,9 +49,9 @@ module NotesActions
       format.html { redirect_back_or_default }
     end
   end
-  # rubocop:enable Cop/ModuleWithInstanceVariables
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def update
     @note = Notes::UpdateService.new(project, current_user, note_params).execute(note)
 
@@ -64,7 +64,7 @@ module NotesActions
       format.html { redirect_back_or_default }
     end
   end
-  # rubocop:enable Cop/ModuleWithInstanceVariables
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def destroy
     if note.editable?
@@ -143,7 +143,7 @@ module NotesActions
         end
     else
       template = "discussions/_diff_discussion"
-      @fresh_discussion = true # rubocop:disable Cop/ModuleWithInstanceVariables
+      @fresh_discussion = true # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
       locals = { discussions: [discussion], on_image: on_image }
     end
@@ -196,7 +196,7 @@ module NotesActions
   end
 
   def noteable
-    @noteable ||= notes_finder.target || @note&.noteable # rubocop:disable Cop/ModuleWithInstanceVariables
+    @noteable ||= notes_finder.target || @note&.noteable # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   def require_noteable!

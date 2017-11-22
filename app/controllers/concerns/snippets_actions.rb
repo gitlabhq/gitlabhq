@@ -4,7 +4,7 @@ module SnippetsActions
   def edit
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def raw
     disposition = params[:inline] == 'false' ? 'attachment' : 'inline'
 
@@ -15,7 +15,7 @@ module SnippetsActions
       filename: @snippet.sanitized_file_name
     )
   end
-  # rubocop:enable Cop/ModuleWithInstanceVariables
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   private
 

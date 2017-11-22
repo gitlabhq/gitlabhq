@@ -2,7 +2,7 @@ module MergeRequestsAction
   extend ActiveSupport::Concern
   include IssuableCollections
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def merge_requests
     @finder_type = MergeRequestsFinder
     @label = finder.labels.first
@@ -11,7 +11,7 @@ module MergeRequestsAction
 
     @issuable_meta_data = issuable_meta_data(@merge_requests, collection_type)
   end
-  # rubocop:enable Cop/ModuleWithInstanceVariables
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   private
 

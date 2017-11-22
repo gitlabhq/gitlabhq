@@ -185,7 +185,7 @@ Put the disabling comment right after your code in the same line:
 ``` ruby
 module M
   def violating_method
-    @f + @g # rubocop:disable Cop/ModuleWithInstanceVariables
+    @f + @g # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 end
 ```
@@ -194,13 +194,13 @@ If there are multiple lines, you could also enable and disable for a section:
 
 ``` ruby
 module M
-  # rubocop:disable Cop/ModuleWithInstanceVariables
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def violating_method
     @f = 0
     @g = 1
     @h = 2
   end
-  # rubocop:enable Cop/ModuleWithInstanceVariables
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 end
 ```
 

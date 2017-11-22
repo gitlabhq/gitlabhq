@@ -20,7 +20,7 @@ module TimeTrackable
     has_many :timelogs, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def spend_time(options)
     @time_spent = options[:duration]
     @time_spent_user = options[:user]
@@ -36,7 +36,7 @@ module TimeTrackable
     end
   end
   alias_method :spend_time=, :spend_time
-  # rubocop:enable Cop/ModuleWithInstanceVariables
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def total_time_spent
     timelogs.sum(:time_spent)
@@ -53,10 +53,10 @@ module TimeTrackable
   private
 
   def reset_spent_time
-    timelogs.new(time_spent: total_time_spent * -1, user: @time_spent_user) # rubocop:disable Cop/ModuleWithInstanceVariables
+    timelogs.new(time_spent: total_time_spent * -1, user: @time_spent_user) # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def add_or_subtract_spent_time
     timelogs.new(
       time_spent: time_spent,
@@ -64,7 +64,7 @@ module TimeTrackable
       spent_at: @spent_at
     )
   end
-  # rubocop:enable Cop/ModuleWithInstanceVariables
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def check_negative_time_spent
     return if time_spent.nil? || time_spent == :reset

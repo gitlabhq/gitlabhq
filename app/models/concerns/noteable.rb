@@ -46,7 +46,7 @@ module Noteable
     notes.inc_relations_for_view.grouped_diff_discussions(*args)
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def resolvable_discussions
     @resolvable_discussions ||=
       if defined?(@discussions)
@@ -55,7 +55,7 @@ module Noteable
         discussion_notes.resolvable.discussions(self)
       end
   end
-  # rubocop:enable Cop/ModuleWithInstanceVariables
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def discussions_resolvable?
     resolvable_discussions.any?(&:resolvable?)

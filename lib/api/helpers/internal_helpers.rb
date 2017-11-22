@@ -9,13 +9,13 @@ module API
       attr_reader :redirected_path
 
       def wiki?
-        set_project unless defined?(@wiki) # rubocop:disable Cop/ModuleWithInstanceVariables
-        @wiki # rubocop:disable Cop/ModuleWithInstanceVariables
+        set_project unless defined?(@wiki) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        @wiki # rubocop:disable Gitlab/ModuleWithInstanceVariables
       end
 
       def project
-        set_project unless defined?(@project) # rubocop:disable Cop/ModuleWithInstanceVariables
-        @project # rubocop:disable Cop/ModuleWithInstanceVariables
+        set_project unless defined?(@project) # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        @project # rubocop:disable Gitlab/ModuleWithInstanceVariables
       end
 
       def ssh_authentication_abilities
@@ -67,7 +67,7 @@ module API
 
       private
 
-      # rubocop:disable Cop/ModuleWithInstanceVariables
+      # rubocop:disable Gitlab/ModuleWithInstanceVariables
       def set_project
         if params[:gl_repository]
           @project, @wiki = Gitlab::GlRepository.parse(params[:gl_repository])
@@ -76,7 +76,7 @@ module API
           @project, @wiki, @redirected_path = Gitlab::RepoPath.parse(params[:project])
         end
       end
-      # rubocop:enable Cop/ModuleWithInstanceVariables
+      # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
       # Project id to pass between components that don't share/don't have
       # access to the same filesystem mounts

@@ -1,9 +1,9 @@
 require 'spec_helper'
 require 'rubocop'
 require 'rubocop/rspec/support'
-require_relative '../../../rubocop/cop/module_with_instance_variables'
+require_relative '../../../../rubocop/cop/gitlab/module_with_instance_variables'
 
-describe RuboCop::Cop::ModuleWithInstanceVariables do
+describe RuboCop::Cop::Gitlab::ModuleWithInstanceVariables do
   include CopHelper
 
   subject(:cop) { described_class.new }
@@ -80,42 +80,6 @@ describe RuboCop::Cop::ModuleWithInstanceVariables do
           end
         RUBY
       end
-    end
-  end
-
-  context 'with regular ivar assignment' do
-    let(:source) do
-      <<~RUBY
-        module M
-          def f
-            @f = true
-          end
-        end
-      RUBY
-    end
-
-    context 'when source is offending but it is a rails helper' do
-      before do
-        allow(cop).to receive(:rails_helper?).and_return(true)
-      end
-
-      it_behaves_like 'not registering offense'
-    end
-
-    context 'when source is offending but it is a rails mailer' do
-      before do
-        allow(cop).to receive(:rails_mailer?).and_return(true)
-      end
-
-      it_behaves_like 'not registering offense'
-    end
-
-    context 'when source is offending but it is a spec helper' do
-      before do
-        allow(cop).to receive(:spec_helper?).and_return(true)
-      end
-
-      it_behaves_like 'not registering offense'
     end
   end
 

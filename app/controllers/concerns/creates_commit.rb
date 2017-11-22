@@ -2,7 +2,7 @@ module CreatesCommit
   extend ActiveSupport::Concern
   include Gitlab::Utils::StrongMemoize
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def create_commit(service, success_path:, failure_path:, failure_view: nil, success_notice: nil)
     if can?(current_user, :push_code, @project)
       @project_to_commit_into = @project
@@ -47,7 +47,7 @@ module CreatesCommit
       end
     end
   end
-  # rubocop:enable Cop/ModuleWithInstanceVariables
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def authorize_edit_tree!
     return if can_collaborate_with_project?
@@ -80,7 +80,7 @@ module CreatesCommit
     end
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def new_merge_request_path
     project_new_merge_request_path(
       @project_to_commit_into,
@@ -92,13 +92,13 @@ module CreatesCommit
       }
     )
   end
-  # rubocop:enable Cop/ModuleWithInstanceVariables
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def existing_merge_request_path
-    project_merge_request_path(@project, @merge_request) # rubocop:disable Cop/ModuleWithInstanceVariables
+    project_merge_request_path(@project, @merge_request) # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def merge_request_exists?
     strong_memoize(:merge_request) do
       MergeRequestsFinder.new(current_user, project_id: @project.id)
@@ -110,10 +110,10 @@ module CreatesCommit
           target_branch: @start_branch)
     end
   end
-  # rubocop:enable Cop/ModuleWithInstanceVariables
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def different_project?
-    @project_to_commit_into != @project # rubocop:disable Cop/ModuleWithInstanceVariables
+    @project_to_commit_into != @project # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   def create_merge_request?
@@ -121,6 +121,6 @@ module CreatesCommit
     # as the target branch in the same project,
     # we don't want to create a merge request.
     params[:create_merge_request].present? &&
-      (different_project? || @start_branch != @branch_name) # rubocop:disable Cop/ModuleWithInstanceVariables
+      (different_project? || @start_branch != @branch_name) # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 end

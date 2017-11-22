@@ -1,7 +1,7 @@
 module PreviewMarkdown
   extend ActiveSupport::Concern
 
-  # rubocop:disable Cop/ModuleWithInstanceVariables
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def preview_markdown
     result = PreviewMarkdownService.new(@project, current_user, params).execute
 
@@ -20,5 +20,5 @@ module PreviewMarkdown
       }
     }
   end
-  # rubocop:enable Cop/ModuleWithInstanceVariables
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 end
