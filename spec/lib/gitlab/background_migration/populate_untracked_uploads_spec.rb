@@ -166,7 +166,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
     end
   end
 
-  describe '#add_to_uploads' do
+  describe '#add_to_uploads_if_needed' do
     shared_examples_for 'add_to_uploads_non_markdown_files' do
       let!(:expected_upload_attrs) { model.uploads.first.attributes.slice('path', 'uploader', 'size', 'checksum') }
       let!(:untracked_file) { described_class.create!(path: expected_upload_attrs['path']) }
@@ -177,7 +177,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
       it 'creates an Upload record' do
         expect do
-          untracked_file.add_to_uploads
+          untracked_file.add_to_uploads_if_needed
         end.to change { model.reload.uploads.count }.from(0).to(1)
 
         expect(model.uploads.first.attributes).to include(expected_upload_attrs)
@@ -246,7 +246,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
       it 'creates an Upload record' do
         expect do
-          untracked_file.add_to_uploads
+          untracked_file.add_to_uploads_if_needed
         end.to change { model.reload.uploads.count }.from(0).to(1)
 
         expect(model.uploads.first.attributes).to include(@expected_upload_attrs)

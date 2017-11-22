@@ -51,28 +51,25 @@ module Gitlab
         ].freeze
 
         def ensure_tracked!
-          add_to_uploads unless in_uploads?
+          add_to_uploads_if_needed
 
           delete
         end
 
-        def in_uploads?
+        def add_to_uploads_if_needed
           # Even though we are checking relative paths, path is enough to
           # uniquely identify uploads. There is no ambiguity between
           # FileUploader paths and other Uploader paths because we use the /-/
           # separator kind of like an escape character. Project full_path will
           # never conflict with an upload path starting with "uploads/-/".
-          Upload.exists?(path: upload_path)
-        end
-
-        def add_to_uploads
-          Upload.create!(
-            path: upload_path,
-            uploader: uploader,
-            model_type: model_type,
-            model_id: model_id,
-            size: file_size
-          )
+          Upload.
+            where(path: upload_path).
+            first_or_create!(
+              uploader: uploader,
+              model_type: model_type,
+              model_id: model_id,
+              size: file_size
+            )
         end
 
         def upload_path
