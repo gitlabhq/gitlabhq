@@ -1,5 +1,5 @@
 ---
-title: Optimize API /groups/:id/projects by preloading fork_networks table
+title: Optimize API /groups/:id/projects by preloading associations
 merge_request:
 author:
 type: performance
