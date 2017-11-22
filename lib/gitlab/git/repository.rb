@@ -1058,12 +1058,11 @@ module Gitlab
       end
 
       def fetch_source_branch!(source_repository, source_branch, local_ref)
-        with_repo_branch_commit(source_repository, source_branch) do |commit|
-          if commit
-            write_ref(local_ref, commit.sha)
-            true
+        Gitlab::GitalyClient.migrate(:fetch_source_branch) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.fetch_source_branch(source_repository, source_branch, local_ref)
           else
-            false
+            rugged_fetch_source_branch(source_repository, source_branch, local_ref)
           end
         end
       end
@@ -1215,6 +1214,17 @@ module Gitlab
       end
 
       private
+
+      def rugged_fetch_source_branch(source_repository, source_branch, local_ref)
+        with_repo_branch_commit(source_repository, source_branch) do |commit|
+          if commit
+            write_ref(local_ref, commit.sha)
+            true
+          else
+            false
+          end
+        end
+      end
 
       # Gitaly note: JV: Trying to get rid of the 'filter' option so we can implement this with 'git'.
       def branches_filter(filter: nil, sort_by: nil)

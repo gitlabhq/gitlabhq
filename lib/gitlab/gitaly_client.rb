@@ -75,6 +75,10 @@ module Gitlab
       address
     end
 
+    def self.address_metadata(storage)
+      Base64.strict_encode64(JSON.dump({ storage => { 'address' => address(storage), 'token' => token(storage) } }))
+    end
+
     # All Gitaly RPC call sites should use GitalyClient.call. This method
     # makes sure that per-request authentication headers are set.
     #
@@ -89,18 +93,19 @@ module Gitlab
     #   kwargs.merge(deadline: Time.now + 10)
     # end
     #
-    def self.call(storage, service, rpc, request)
+    def self.call(storage, service, rpc, request, remote_storage: nil)
       start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
       enforce_gitaly_request_limits(:call)
 
-      kwargs = request_kwargs(storage)
+      kwargs = request_kwargs(storage, remote_storage: remote_storage)
       kwargs = yield(kwargs) if block_given?
+
       stub(service, storage).__send__(rpc, request, kwargs) # rubocop:disable GitlabSecurity/PublicSend
     ensure
       self.query_time += Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
     end
 
-    def self.request_kwargs(storage)
+    def self.request_kwargs(storage, remote_storage: nil)
       encoded_token = Base64.strict_encode64(token(storage).to_s)
       metadata = {
         'authorization' => "Bearer #{encoded_token}",
@@ -110,6 +115,7 @@ module Gitlab
       feature_stack = Thread.current[:gitaly_feature_stack]
       feature = feature_stack && feature_stack[0]
       metadata['call_site'] = feature.to_s if feature
+      metadata['gitaly-servers'] = address_metadata(remote_storage) if remote_storage
 
       { metadata: metadata }
     end

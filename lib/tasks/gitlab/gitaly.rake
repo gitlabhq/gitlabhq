@@ -78,6 +78,8 @@ namespace :gitlab do
       config[:auth] = { token: 'secret' } if Rails.env.test?
       config[:'gitaly-ruby'] = { dir: File.join(Dir.pwd, 'ruby') } if gitaly_ruby
       config[:'gitlab-shell'] = { dir: Gitlab.config.gitlab_shell.path }
+      config[:bin_dir] = Gitlab.config.gitaly.client_path
+
       TOML.dump(config)
     end
 
