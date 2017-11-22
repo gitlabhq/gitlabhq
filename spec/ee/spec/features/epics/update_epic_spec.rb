@@ -45,14 +45,14 @@ feature 'Update Epic', :js do
       expect(find('.issuable-details h2.title')).to have_content('New epic title')
       expect(find('.issuable-details .description')).to have_content('New epic description')
     end
-    
+
     # File attachment feature is not implemented yet for epics
     it 'cannot attach files' do
       find('.btn-edit').click
 
       expect(page).not_to have_selector('.uploading-container .button-attach-file')
     end
-    
+
     it 'updates the tasklist' do
       expect(page).to have_selector('ul.task-list',      count: 1)
       expect(page).to have_selector('li.task-list-item', count: 1)
