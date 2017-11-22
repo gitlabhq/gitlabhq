@@ -12,7 +12,7 @@ import './components/jump_to_discussion';
 import './components/resolve_btn';
 import './components/resolve_count';
 import './components/resolve_discussion_btn';
-import './components/diff_note_avatars';
+import DiffNoteAvatars from './components/diff_note_avatars.vue';
 import './components/new_issue_for_discussion';
 
 $(() => {
@@ -26,10 +26,13 @@ $(() => {
 
   gl.diffNotesCompileComponents = () => {
     $('diff-note-avatars').each(function () {
-      const tmp = Vue.extend({
-        template: $(this).get(0).outerHTML
-      });
-      const tmpApp = new tmp().$mount();
+      const propsData = {
+        discussionId: $(this).attr('discussion-id'),
+      };
+      const tmp = Vue.extend(DiffNoteAvatars);
+      const tmpApp = new tmp({
+        propsData,
+      }).$mount();
 
       $(this).replaceWith(tmpApp.$el);
       $(tmpApp.$el).one('remove.vue', () => {
