@@ -69,6 +69,12 @@ describe 'GitLab Markdown' do
         end
       end
 
+      it 'parses mermaid code block' do
+        aggregate_failures do
+          expect(doc).to have_selector('pre.code.js-render-mermaid')
+        end
+      end
+
       it 'parses strikethroughs' do
         expect(doc).to have_selector(%{del:contains("and this text doesn't")})
       end
