@@ -1215,6 +1215,10 @@ describe Gitlab::Git::Repository, seed_helper: true do
         repository.create_branch('identical', 'master')
       end
 
+      after do
+        ensure_seeds
+      end
+
       it 'returns all merged branch names except for identical one' do
         names = repository.merged_branch_names
 
