@@ -25,9 +25,9 @@ describe PipelineScheduleWorker do
       shared_examples 'successful scheduling' do
         it 'creates a new pipeline' do
           expect { subject }.to change { project.pipelines.count }.by(1)
+          expect(Ci::Pipeline.last).to be_schedule
 
           pipeline_schedule.reload
-          expect(Ci::Pipeline.last).to be_schedule
           expect(pipeline_schedule.next_run_at).to be > Time.now
           expect(pipeline_schedule).to eq(project.pipelines.last.pipeline_schedule)
           expect(pipeline_schedule).to be_active
