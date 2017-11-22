@@ -1,5 +1,6 @@
 /* global monaco */
-import DirtyDiffWorker from 'worker-loader!./worker.diff';
+import { throttle } from 'underscore';
+import DirtyDiffWorker from './diff_worker';
 import Disposable from '../common/disposable';
 
 export const getDiffChangeType = (change) => {
@@ -34,12 +35,14 @@ export default class DirtyDiffController {
     this.modelManager = modelManager;
     this.decorationsController = decorationsController;
     this.dirtyDiffWorker = new DirtyDiffWorker();
+    this.throttledComputeDiff = throttle(this.computeDiff, 250);
+    this.decorate = this.decorate.bind(this);
 
-    this.dirtyDiffWorker.addEventListener('message', e => this.decorate(e));
+    this.dirtyDiffWorker.addEventListener('message', this.decorate);
   }
 
   attachModel(model) {
-    model.onChange(() => this.computeDiff(model));
+    model.onChange(() => this.throttledComputeDiff(model));
   }
 
   computeDiff(model) {
@@ -61,6 +64,8 @@ export default class DirtyDiffController {
 
   dispose() {
     this.disposable.dispose();
+
+    this.dirtyDiffWorker.removeEventListener('message', this.decorate);
     this.dirtyDiffWorker.terminate();
   }
 }

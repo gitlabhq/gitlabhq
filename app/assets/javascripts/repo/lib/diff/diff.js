@@ -1,5 +1,6 @@
 import { diffLines } from 'diff';
 
+// eslint-disable-next-line import/prefer-default-export
 export const computeDiff = (originalContent, newContent) => {
   const changes = diffLines(originalContent, newContent);
 

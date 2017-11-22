@@ -35,7 +35,7 @@ export default {
           this.editor.createInstance(this.$el);
         })
         .then(() => this.setupEditor())
-        .catch((e) => { throw e;flash('Error setting up monaco. Please try again.'); });
+        .catch(() => flash('Error setting up monaco. Please try again.'));
     },
     setupEditor() {
       if (!this.activeFile) return;
