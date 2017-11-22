@@ -91,7 +91,7 @@ module Gitlab
 
       step(
         "Generating the patch against #{remote}/master in #{patch_path}",
-        %W[git diff --binary #{remote}/master...#{branch}]
+        %W[git diff --binary #{remote}/master...origin/#{branch}]
       ) do |output, status|
         throw(:halt_check, :ko) unless status.zero?
 
