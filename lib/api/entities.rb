@@ -337,6 +337,12 @@ module API
 
     class ProtectedRefAccess < Grape::Entity
       expose :access_level
+
+      ## EE-only
+      expose :user_id
+      expose :group_id
+      ## EE-only
+
       expose :access_level_description do |protected_ref_access|
         protected_ref_access.humanize
       end

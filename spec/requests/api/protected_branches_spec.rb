@@ -66,6 +66,27 @@ describe API::ProtectedBranches do
           let(:message) { '404 Not found' }
         end
       end
+
+      context 'with per user/group access levels' do
+        let(:push_user) { create(:user) }
+        let(:merge_group) { create(:group) }
+
+        before do
+          protected_branch.push_access_levels.create!(user: push_user)
+          protected_branch.merge_access_levels.create!(group: merge_group)
+        end
+
+        it 'returns access level details' do
+          get api(route, user)
+
+          push_user_ids = json_response['push_access_levels'].map {|level| level['user_id']}
+          merge_group_ids = json_response['merge_access_levels'].map {|level| level['group_id']}
+
+          expect(response).to have_gitlab_http_status(200)
+          expect(push_user_ids).to include(push_user.id)
+          expect(merge_group_ids).to include(merge_group.id)
+        end
+      end
     end
 
     context 'when authenticated as a master' do
