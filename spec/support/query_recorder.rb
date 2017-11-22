@@ -76,10 +76,17 @@ RSpec::Matchers.define :exceed_query_limit do |expected|
     @recorder.count
   end
 
+  def count_queries(queries)
+    queries.each_with_object(Hash.new(0)) { |query, counts| counts[query] += 1 }
+  end
+
   def log_message
     if expected.is_a?(ActiveRecord::QueryRecorder)
-      extra_queries = (expected.log - @recorder.log).join("\n\n")
-      "Extra queries: \n\n #{extra_queries}"
+      counts = count_queries(expected.log)
+      extra_queries = @recorder.log.reject { |query| counts[query] -= 1 unless counts[query].zero? }
+      extra_queries_display = count_queries(extra_queries).map { |query, count| "[#{count}] #{query}" }
+
+      (['Extra queries:'] + extra_queries_display).join("\n\n")
     else
       @recorder.log_message
     end
