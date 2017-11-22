@@ -77,8 +77,7 @@ we could easily add to the cop, we should do it.
 ### How to rewrite and avoid disabling this cop
 
 Even if we could just disable the cop, we should avoid doing so. Some code
-could be easily rewritten in simple form. Here's an example. Consider this
-acceptable method:
+could be easily rewritten in simple form. Consider this acceptable method:
 
 ``` ruby
 module Gitlab
@@ -92,8 +91,12 @@ module Gitlab
 end
 ```
 
-It's still offending because it's not just `||=`, but we could split this
-method into two:
+This method is totally fine because it's already self-contained. No other
+methods should be using `@emoji_unicode_versions_by_name` and we're good.
+However it's still offending the cop because it's not just `||=`, and the
+cop is not smart enough to judge that this is fine.
+
+On the other hand, we could split this method into two:
 
 ``` ruby
 module Gitlab
@@ -112,7 +115,7 @@ module Gitlab
 end
 ```
 
-Now the cop won't complain. Here's another bad example which we could rewrite:
+Now the cop won't complain. Here's a bad example which we could rewrite:
 
 ``` ruby
 module SpamCheckService
