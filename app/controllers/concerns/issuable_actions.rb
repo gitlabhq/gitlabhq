@@ -98,7 +98,7 @@ module IssuableActions
   end
 
   def labels
-    @labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute   # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    @labels ||= LabelsFinder.new(current_user, project_id: @project.id).execute # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   def authorize_destroy_issuable!

@@ -30,7 +30,6 @@ module MilestoneActions
       format.json do
         render json: tabs_json("shared/milestones/_labels_tab", {
           labels: @milestone.labels # rubocop:disable Gitlab/ModuleWithInstanceVariables
-
         })
       end
     end

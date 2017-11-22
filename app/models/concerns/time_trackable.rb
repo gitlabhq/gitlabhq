@@ -4,6 +4,7 @@
 #
 # Used by Issue and MergeRequest.
 #
+
 module TimeTrackable
   extend ActiveSupport::Concern
 
