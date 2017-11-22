@@ -165,7 +165,7 @@ class IssuableBaseService < BaseService
     # To be overridden by subclasses
   end
 
-  def update(issuable)
+  def update(issuable) # rubocop:disable Metrics/AbcSize
     change_state(issuable)
     change_subscription(issuable)
     change_todo(issuable)
@@ -174,6 +174,7 @@ class IssuableBaseService < BaseService
     old_labels = issuable.labels.to_a
     old_mentioned_users = issuable.mentioned_users.to_a
     old_assignees = issuable.assignees.to_a
+    old_total_time_spent = issuable.total_time_spent if issuable.respond_to?(:total_time_spent)
 
     label_ids = process_label_ids(params, existing_label_ids: issuable.label_ids)
     params[:label_ids] = label_ids if labels_changing?(issuable.label_ids, label_ids)
@@ -210,7 +211,12 @@ class IssuableBaseService < BaseService
         invalidate_cache_counts(issuable, users: affected_assignees.compact)
         after_update(issuable)
         issuable.create_new_cross_references!(current_user)
-        execute_hooks(issuable, 'update', old_labels: old_labels, old_assignees: old_assignees)
+        execute_hooks(
+          issuable,
+          'update',
+          old_labels: old_labels,
+          old_assignees: old_assignees,
+          old_total_time_spent: old_total_time_spent)
 
         issuable.update_project_counter_caches if update_project_counters
       end

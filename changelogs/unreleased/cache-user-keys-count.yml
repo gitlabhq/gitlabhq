@@ -1,0 +1,5 @@
+---
+title: Cache the number of user SSH keys
+merge_request:
+author:
+type: performance

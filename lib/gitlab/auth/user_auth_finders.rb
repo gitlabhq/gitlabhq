@@ -19,6 +19,8 @@ module Gitlab
     end
 
     module UserAuthFinders
+      include Gitlab::Utils::StrongMemoize
+
       PRIVATE_TOKEN_HEADER = 'HTTP_PRIVATE_TOKEN'.freeze
       PRIVATE_TOKEN_PARAM = :private_token
       JOB_TOKEN_HEADER = "HTTP_JOB_TOKEN".freeze
@@ -82,9 +84,9 @@ module Gitlab
       end
 
       def access_token
-        return @access_token if defined?(@access_token)
-
-        @access_token = find_oauth_access_token || find_personal_access_token
+        strong_memoize(:access_token) do
+          find_oauth_access_token || find_personal_access_token
+        end
       end
 
       def find_personal_access_token

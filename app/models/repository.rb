@@ -140,7 +140,8 @@ class Repository
 
     commits = Gitlab::Git::Commit.where(options)
     commits = Commit.decorate(commits, @project) if commits.present?
-    commits
+
+    CommitCollection.new(project, commits, ref)
   end
 
   def commits_between(from, to)
@@ -156,11 +157,14 @@ class Repository
     end
 
     raw_repository.gitaly_migrate(:commits_by_message) do |is_enabled|
-      if is_enabled
-        find_commits_by_message_by_gitaly(query, ref, path, limit, offset)
-      else
-        find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
-      end
+      commits =
+        if is_enabled
+          find_commits_by_message_by_gitaly(query, ref, path, limit, offset)
+        else
+          find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
+        end
+
+      CommitCollection.new(project, commits, ref)
     end
   end
 
@@ -1046,10 +1050,6 @@ class Repository
   def ls_files(ref)
     actual_ref = ref || root_ref
     raw_repository.ls_files(actual_ref)
-  end
-
-  def gitattribute(path, name)
-    raw_repository.attributes(path)[name]
   end
 
   def copy_gitattributes(ref)

@@ -25,7 +25,7 @@ class ProjectWiki
   end
 
   delegate :empty?, to: :pages
-  delegate :repository_storage_path, to: :project
+  delegate :repository_storage_path, :hashed_storage?, to: :project
 
   def path
     @project.path + '.wiki'

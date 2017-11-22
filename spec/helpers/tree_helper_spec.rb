@@ -1,10 +1,36 @@
 require 'spec_helper'
 
 describe TreeHelper do
+  let(:project) { create(:project, :repository) }
+  let(:repository) { project.repository }
+  let(:sha) { 'ce369011c189f62c815f5971d096b26759bab0d1' }
+
+  describe '.render_tree' do
+    before do
+      @id = sha
+      @project = project
+    end
+
+    it 'displays all entries without a warning' do
+      tree = repository.tree(sha, 'files')
+
+      html = render_tree(tree)
+
+      expect(html).not_to have_selector('.tree-truncated-warning')
+    end
+
+    it 'truncates entries and adds a warning' do
+      stub_const('TreeHelper::FILE_LIMIT', 1)
+      tree = repository.tree(sha, 'files')
+
+      html = render_tree(tree)
+
+      expect(html).to have_selector('.tree-truncated-warning', count: 1)
+      expect(html).to have_selector('.tree-item-file-name', count: 1)
+    end
+  end
+
   describe 'flatten_tree' do
-    let(:project) { create(:project, :repository) }
-    let(:repository) { project.repository }
-    let(:sha) { 'ce369011c189f62c815f5971d096b26759bab0d1' }
     let(:tree) { repository.tree(sha, 'files') }
     let(:root_path) { 'files' }
     let(:tree_item) { tree.entries.find { |entry| entry.path == path } }

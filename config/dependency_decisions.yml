@@ -471,3 +471,35 @@
     :why:
     :versions: []
     :when: 2017-10-17 17:46:12.367554000 Z
+- - :license
+  - component-emitter
+  - MIT
+  - :who: Winnie Hellmann
+    :why: package.json does not specify the license (README.md does)
+    :versions:
+    - 1.1.2
+    :when: 2017-11-13 12:23:10.502463000 Z
+- - :license
+  - json-schema
+  - BSD
+  - :who: Winnie Hellmann
+    :why: https://github.com/kriszyp/json-schema/blob/v0.2.3/package.json#L18-L19
+    :versions:
+    - 0.2.3
+    :when: 2017-11-16 12:52:18.286091000 Z
+- - :license
+  - node-forge
+  - New BSD
+  - :who: Winnie Hellmann
+    :why: https://github.com/digitalbazaar/forge/blob/0.6.33/LICENSE
+    :versions:
+    - 0.6.33
+    :when: 2017-11-16 12:56:17.974767000 Z
+- - :license
+  - sntp
+  - BSD
+  - :who: Winnie Hellmann
+    :why: https://github.com/hueniverse/sntp/blob/v1.0.9/package.json#L28-L29
+    :versions:
+    - 1.0.9
+    :when: 2017-11-16 13:02:06.765282000 Z

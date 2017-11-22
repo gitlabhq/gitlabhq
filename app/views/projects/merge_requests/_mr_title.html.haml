@@ -16,7 +16,7 @@
 
     .issuable-meta
       - if @merge_request.discussion_locked?
-        = icon('lock', class: 'issuable-warning-icon')
+        .issuable-warning-icon.inline= sprite_icon('lock', size: 16, css_class: 'icon')
       = issuable_meta(@merge_request, @project, "Merge request")
 
   .issuable-actions.js-issuable-actions

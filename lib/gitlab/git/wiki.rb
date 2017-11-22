@@ -101,7 +101,7 @@ module Gitlab
         end
       end
 
-      def count_page_versions(page_path, options = {})
+      def count_page_versions(page_path)
         @repository.count_commits(ref: 'HEAD', path: page_path)
       end
 

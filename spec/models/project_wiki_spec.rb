@@ -10,6 +10,10 @@ describe ProjectWiki do
 
   subject { project_wiki }
 
+  it { is_expected.to delegate_method(:empty?).to :pages }
+  it { is_expected.to delegate_method(:repository_storage_path).to :project }
+  it { is_expected.to delegate_method(:hashed_storage?).to :project }
+
   describe "#path_with_namespace" do
     it "returns the project path with namespace with the .wiki extension" do
       expect(subject.path_with_namespace).to eq(project.full_path + '.wiki')

@@ -1,0 +1,5 @@
+---
+title: Fix hashed storage with project transfers to another namespace
+merge_request:
+author:
+type: fixed

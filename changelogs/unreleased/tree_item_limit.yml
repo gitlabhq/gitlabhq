@@ -1,0 +1,5 @@
+---
+title: Truncate tree to max 1,000 items and display notice to users
+merge_request:
+author:
+type: performance

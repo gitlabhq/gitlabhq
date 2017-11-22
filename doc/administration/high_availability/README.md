@@ -53,7 +53,9 @@ or in different cloud availability zones.
 
 > **Note:** GitLab recommends against choosing this HA method because of the
   complexity of managing DRBD and crafting automatic failover. This is
-  *compatible* with GitLab, but not officially *supported*.
+  *compatible* with GitLab, but not officially *supported*. If you are 
+  an EE customer, support will help you with GitLab related problems, but if the
+  root cause is identified as DRBD, we will not troubleshoot further.
 
 Components/Servers Required: 2 servers/virtual machines (one active/one passive)
 

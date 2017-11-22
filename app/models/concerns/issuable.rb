@@ -265,7 +265,7 @@ module Issuable
     participants(user).include?(user)
   end
 
-  def to_hook_data(user, old_labels: [], old_assignees: [])
+  def to_hook_data(user, old_labels: [], old_assignees: [], old_total_time_spent: nil)
     changes = previous_changes
 
     if old_labels != labels
@@ -278,6 +278,10 @@ module Issuable
       else
         changes[:assignee] = [old_assignees&.first&.hook_attrs, assignee&.hook_attrs]
       end
+    end
+
+    if self.respond_to?(:total_time_spent) && old_total_time_spent != total_time_spent
+      changes[:total_time_spent] = [old_total_time_spent, total_time_spent]
     end
 
     Gitlab::HookData::IssuableBuilder.new(self).build(user: user, changes: changes)

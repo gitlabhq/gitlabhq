@@ -30,9 +30,9 @@
 
     .issuable-meta
       - if @issue.confidential
-        = icon('eye-slash', class: 'issuable-warning-icon')
+        .issuable-warning-icon.inline= sprite_icon('eye-slash', size: 16, css_class: 'icon')
       - if @issue.discussion_locked?
-        = icon('lock', class: 'issuable-warning-icon')
+        .issuable-warning-icon.inline= sprite_icon('lock', size: 16, css_class: 'icon')
       = issuable_meta(@issue, @project, "Issue")
 
   .issuable-actions.js-issuable-actions

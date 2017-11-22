@@ -500,7 +500,7 @@ migration:path-mysql:
   <<: *pull-cache
   stage: test
   script:
-    - bundle exec rake db:rollback STEP=120
+    - bundle exec rake db:rollback STEP=119
     - bundle exec rake db:migrate
 
 db:rollback-pg:
