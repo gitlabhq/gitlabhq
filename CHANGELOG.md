@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.2.1 (2017-11-22)
+
+### Fixed (1 change)
+
+- Force disable Prometheus metrics.
+
+
 ## 10.2.0 (2017-11-22)
 
 ### Security (4 changes)
