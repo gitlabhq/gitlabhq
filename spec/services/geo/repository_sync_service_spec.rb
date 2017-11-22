@@ -178,7 +178,10 @@ describe Geo::RepositorySyncService do
 
         subject.execute
 
-        expect(File.directory?("#{project.repository.path}+failed-geo-sync")).to be false
+        # gitlab-shell always appends .git to the end of the repository, so
+        # we're relying on the fact that projects can't contain + in the name
+        deleted_dir = File.join(project.repository.storage_path, project.path) + "+failed-geo-sync.git"
+        expect(File.directory?(deleted_dir)).to be false
         expect(File.directory?(project.repository.path)).to be true
       end
 
