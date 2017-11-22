@@ -33,8 +33,9 @@ Please view this file on the master branch, on stable branches it's out of date.
 
 - Reduce the quiet times between scheduler runs on Geo secondaries. !3185
 
-### Added (19 changes, 1 of them is from the community)
+### Added (20 changes, 1 of them is from the community)
 
+- Add new push rule to enforce that only the author of a commit can push to the repository. !3086
 - Make the maximum capacity of Geo backfill operations configurable. !3107
 - Mirrors can now hard fail, keeping them from being retried until a project admin takes action. !3117
 - View/edit epic at group level. !3126
