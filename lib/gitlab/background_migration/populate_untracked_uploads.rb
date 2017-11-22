@@ -138,6 +138,7 @@ module Gitlab
         def file_uploader_model_id
           matchd = path_relative_to_upload_dir.match(FILE_UPLOADER_CAPTURE_FULL_PATH_PATTERN)
           raise "Could not capture project full_path from a FileUploader path: \"#{path_relative_to_upload_dir}\"" unless matchd
+
           full_path = matchd[1]
           project = Project.find_by_full_path(full_path)
           project.id.to_s
