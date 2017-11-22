@@ -34,6 +34,11 @@ export default {
       required: false,
       default: true,
     },
+    enableAutocomplete: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     issuableRef: {
       type: String,
       required: true,
@@ -240,6 +245,7 @@ export default {
       :project-namespace="projectNamespace"
       :show-delete-button="showDeleteButton"
       :can-attach-file="canAttachFile"
+      :enable-autocomplete="enableAutocomplete"
     />
     <div v-else>
       <title-component
