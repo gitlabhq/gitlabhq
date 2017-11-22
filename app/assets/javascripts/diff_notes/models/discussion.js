@@ -3,7 +3,7 @@
 
 import Vue from 'vue';
 
-class DiscussionModel {
+export default class DiscussionModel {
   constructor (discussionId) {
     this.id = discussionId;
     this.notes = {};

@@ -5,6 +5,7 @@
 import Vue from 'vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
+import { n__ } from '~/locale';
 
 export default {
   props: {
@@ -73,9 +74,7 @@ export default {
     },
     extraNotesTitle() {
       if (this.discussion) {
-        const extra = this.discussion.notesCount() - this.shownAvatars;
-
-        return `${extra} more comment${extra > 1 ? 's' : ''}`;
+        return n__('%d more comment', '%d more comments', this.extraComments);
       }
 
       return '';
@@ -90,10 +89,13 @@ export default {
 
       return 0;
     },
+    extraComments() {
+      return this.notesCount - this.shownAvatars;
+    },
     moreText() {
       const plusSign = this.notesCount < 100 ? '+' : '';
 
-      return `${plusSign}${this.notesCount - this.shownAvatars}`;
+      return `${plusSign}${this.extraComments}`;
     },
   },
   methods: {
@@ -139,7 +141,20 @@ export default {
   <div class="diff-comment-avatar-holders"
     :class="discussionClassName"
     v-show="notesCount !== 0">
-    <div v-if="!isVisible">
+    <button
+      v-if="isVisible"
+      class="diff-notes-collapse js-diff-comment-avatar"
+      type="button"
+      aria-label="Show comments"
+      :data-line-type="lineType"
+      @click="clickedAvatar($event)"
+    >
+      <icon
+        name="collapse"
+        :size="12"
+      />
+    </button>
+    <div v-else>
       <!-- FIXME: Pass an alt attribute here for accessibility -->
       <user-avatar-image
         v-for="note in notesSubset"
@@ -162,13 +177,5 @@ export default {
         :title="extraNotesTitle"
         @click="clickedAvatar($event)">{{ moreText }}</span>
     </div>
-    <button class="diff-notes-collapse js-diff-comment-avatar"
-      type="button"
-      aria-label="Show comments"
-      :data-line-type="lineType"
-      @click="clickedAvatar($event)"
-      v-if="isVisible">
-      <icon name="collapse" :size="12" />
-    </button>
   </div>
 </template>
