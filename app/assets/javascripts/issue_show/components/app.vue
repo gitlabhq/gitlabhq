@@ -34,11 +34,6 @@ export default {
       required: false,
       default: true,
     },
-    canAttachFile: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
     issuableRef: {
       type: String,
       required: true,
