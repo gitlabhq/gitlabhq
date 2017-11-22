@@ -98,6 +98,7 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.4",
     "nodemon": "^1.11.0",
-    "webpack-dev-server": "^2.6.1"
+    "webpack-dev-server": "^2.6.1",
+    "worker-loader": "^1.1.0"
   }
 }

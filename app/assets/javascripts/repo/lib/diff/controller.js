@@ -1,6 +1,5 @@
 /* global monaco */
-import DirtyDiffWorker from './diff';
-console.log(DirtyDiffWorker);
+import DirtyDiffWorker from 'worker-loader!./worker.diff';
 import Disposable from '../common/disposable';
 
 export const getDiffChangeType = (change) => {
@@ -34,8 +33,9 @@ export default class DirtyDiffController {
     this.editorSimpleWorker = null;
     this.modelManager = modelManager;
     this.decorationsController = decorationsController;
-    console.log(DirtyDiffWorker);
-    // this.dirtyDiffWorker = new DirtyDiffWorker();
+    this.dirtyDiffWorker = new DirtyDiffWorker();
+
+    this.dirtyDiffWorker.addEventListener('message', e => this.decorate(e));
   }
 
   attachModel(model) {
@@ -43,20 +43,24 @@ export default class DirtyDiffController {
   }
 
   computeDiff(model) {
-    this.decorate(model, this.dirtyDiffWorker.compute(model));
+    this.dirtyDiffWorker.postMessage({
+      path: model.path,
+      originalContent: model.getOriginalModel().getValue(),
+      newContent: model.getModel().getValue(),
+    });
   }
 
-  // eslint-disable-next-line class-methods-use-this
   reDecorate(model) {
     this.decorationsController.decorate(model);
   }
 
-  decorate(model, changes) {
-    const decorations = changes.map(change => getDecorator(change));
-    this.decorationsController.addDecorations(model, 'dirtyDiff', decorations);
+  decorate({ data }) {
+    const decorations = data.changes.map(change => getDecorator(change));
+    this.decorationsController.addDecorations(data.path, 'dirtyDiff', decorations);
   }
 
   dispose() {
     this.disposable.dispose();
+    this.dirtyDiffWorker.terminate();
   }
 }
