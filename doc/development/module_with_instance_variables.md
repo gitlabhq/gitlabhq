@@ -216,13 +216,9 @@ other random objects, so they're still somewhat isolated.
 
 ### Instance variables in views
 
-They're terrible, because they're also shared between different controllers,
-and it's very hard to track where those instance variables were set when we
-saw somewhere is using it, neither do we know where those were used when we
-saw somewhere is setting up them. We hit into a number of 500 errors when we
-tried to remove some instance variables in the controller in the past.
-
-Somewhere, some partials might be using it, and we don't know.
+They're bad because we can't easily tell who's using the instance variables
+(from controller's point of view) and where we set them up (from partials'
+point of view), making it extremely hard to track data dependency.
 
 We're trying to use something like this instead:
 
@@ -238,5 +234,6 @@ And in the partial:
 - project = local_assigns.fetch(:project)
 ```
 
-This way it's clearer where those values were coming from. In the future,
+This way it's clearer where those values were coming from, and we gain the
+benefit to have typo check over using instance variables. In the future,
 we should also forbid the use of instance variables in partials.
