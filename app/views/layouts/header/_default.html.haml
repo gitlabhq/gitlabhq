@@ -7,7 +7,7 @@
           = link_to root_path, title: 'Dashboard', id: 'logo' do
             = brand_header_logo
             %span.logo-text.hidden-xs
-              = render 'shared/logo_type.svg'
+              = brand_header_logo_type
 
         - if current_user
           = render "layouts/nav/dashboard"

@@ -132,7 +132,8 @@ class Repository
 
     commits = Gitlab::Git::Commit.where(options)
     commits = Commit.decorate(commits, @project) if commits.present?
-    commits
+
+    CommitCollection.new(project, commits, ref)
   end
 
   def commits_between(from, to)
@@ -148,11 +149,14 @@ class Repository
     end
 
     raw_repository.gitaly_migrate(:commits_by_message) do |is_enabled|
-      if is_enabled
-        find_commits_by_message_by_gitaly(query, ref, path, limit, offset)
-      else
-        find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
-      end
+      commits =
+        if is_enabled
+          find_commits_by_message_by_gitaly(query, ref, path, limit, offset)
+        else
+          find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
+        end
+
+      CommitCollection.new(project, commits, ref)
     end
   end
 
@@ -213,11 +217,7 @@ class Repository
   def branch_exists?(branch_name)
     return false unless raw_repository
 
-    @branch_exists_memo ||= Hash.new do |hash, key|
-      hash[key] = raw_repository.branch_exists?(key)
-    end
-
-    @branch_exists_memo[branch_name]
+    branch_names.include?(branch_name)
   end
 
   def ref_exists?(ref)
@@ -242,6 +242,7 @@ class Repository
       Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
     rescue Rugged::OSError => ex
       raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
+
       Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
     end
   end
@@ -473,6 +474,11 @@ class Repository
     nil
   end
 
+  # items is an Array like: [[oid, path], [oid1, path1]]
+  def blobs_at(items)
+    raw_repository.batch_blobs(items).map { |blob| Blob.decorate(blob, project) }
+  end
+
   def root_ref
     if raw_repository
       raw_repository.root_ref
@@ -662,6 +668,7 @@ class Repository
   def next_branch(name, opts = {})
     branch_ids = self.branch_names.map do |n|
       next 1 if n == name
+
       result = n.match(/\A#{name}-([0-9]+)\z/)
       result[1].to_i if result
     end.compact
@@ -988,10 +995,6 @@ class Repository
   def ls_files(ref)
     actual_ref = ref || root_ref
     raw_repository.ls_files(actual_ref)
-  end
-
-  def gitattribute(path, name)
-    raw_repository.attributes(path)[name]
   end
 
   def copy_gitattributes(ref)

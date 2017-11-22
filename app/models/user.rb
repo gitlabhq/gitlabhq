@@ -170,6 +170,7 @@ class User < ActiveRecord::Base
   after_save :ensure_namespace_correct
   after_update :username_changed_hook, if: :username_changed?
   after_destroy :post_destroy_hook
+  after_destroy :remove_key_cache
   after_commit :update_emails_with_primary_email, on: :update, if: -> { previous_changes.key?('email') }
   after_commit :update_invalid_gpg_signatures, on: :update, if: -> { previous_changes.key?('email') }
 
@@ -268,8 +269,7 @@ class User < ActiveRecord::Base
     end
 
     def for_github_id(id)
-      joins(:identities)
-        .where(identities: { provider: :github, extern_uid: id.to_s })
+      joins(:identities).merge(Identity.with_extern_uid(:github, id))
     end
 
     # Find a User by their primary email or any associated secondary email
@@ -443,6 +443,10 @@ class User < ActiveRecord::Base
 
   def skip_confirmation=(bool)
     skip_confirmation! if bool
+  end
+
+  def skip_reconfirmation=(bool)
+    skip_reconfirmation! if bool
   end
 
   def generate_reset_token
@@ -624,7 +628,9 @@ class User < ActiveRecord::Base
   end
 
   def require_ssh_key?
-    keys.count == 0 && Gitlab::ProtocolAccess.allowed?('ssh')
+    count = Users::KeysCountService.new(self).count
+
+    count.zero? && Gitlab::ProtocolAccess.allowed?('ssh')
   end
 
   def require_password_creation?
@@ -886,6 +892,10 @@ class User < ActiveRecord::Base
     system_hook_service.execute_hooks_for(self, :destroy)
   end
 
+  def remove_key_cache
+    Users::KeysCountService.new(self).delete_cache
+  end
+
   def delete_async(deleted_by:, params: {})
     block if params[:hard_delete]
     DeleteUserWorker.perform_async(deleted_by.id, id, params)
@@ -1119,6 +1129,7 @@ class User < ActiveRecord::Base
   # override, from Devise::Validatable
   def password_required?
     return false if internal?
+
     super
   end
 
@@ -1136,6 +1147,7 @@ class User < ActiveRecord::Base
   # Added according to https://github.com/plataformatec/devise/blob/7df57d5081f9884849ca15e4fde179ef164a575f/README.md#activejob-integration
   def send_devise_notification(notification, *args)
     return true unless can?(:receive_notifications)
+
     devise_mailer.__send__(notification, self, *args).deliver_later # rubocop:disable GitlabSecurity/PublicSend
   end
 

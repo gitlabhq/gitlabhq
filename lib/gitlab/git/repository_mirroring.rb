@@ -78,7 +78,7 @@ module Gitlab
 
       def list_remote_tags(remote)
         tag_list, exit_code, error = nil
-        cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{full_path} ls-remote --tags #{remote})
+        cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path} ls-remote --tags #{remote})
 
         Open3.popen3(*cmd) do |stdin, stdout, stderr, wait_thr|
           tag_list  = stdout.read
@@ -88,7 +88,7 @@ module Gitlab
 
         raise RemoteError, error unless exit_code.zero?
 
-        tag_list.split('\n')
+        tag_list.split("\n")
       end
     end
   end

@@ -57,6 +57,7 @@ class Projects::CommitsController < Projects::ApplicationController
         @repository.commits(@ref, path: @path, limit: @limit, offset: @offset)
       end
 
+    @commits = @commits.with_pipeline_status
     @commits = prepare_commits_for_rendering(@commits)
   end
 end

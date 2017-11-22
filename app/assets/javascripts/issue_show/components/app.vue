@@ -102,6 +102,11 @@ export default {
       required: false,
       default: 'issue',
     },
+    canAttachFile: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
   },
   data() {
     const store = new Store({
@@ -234,6 +239,7 @@ export default {
       :project-path="projectPath"
       :project-namespace="projectNamespace"
       :show-delete-button="showDeleteButton"
+      :can-attach-file="canAttachFile"
     />
     <div v-else>
       <title-component

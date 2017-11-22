@@ -140,7 +140,8 @@ module SearchHelper
         placeholder: 'Search or filter results...',
         data: {
           'username-params' => @users.to_json(only: [:id, :username])
-        }
+        },
+        autocomplete: 'off'
       }
 
     if @project.present?

@@ -1,5 +1,0 @@
----
-title: Hides pipeline duration in commit box when it is zero (nil)
-merge_request: 14979
-author: gvieira37
-type: fixed

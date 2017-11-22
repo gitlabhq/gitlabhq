@@ -28,6 +28,7 @@ module MergeRequests
 
     def find_target_project
       return target_project if target_project.present? && can?(current_user, :read_project, target_project)
+
       project.default_merge_request_target
     end
 

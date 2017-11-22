@@ -22,12 +22,7 @@ class Projects::CommitController < Projects::ApplicationController
     apply_diff_view_cookie!
 
     respond_to do |format|
-      format.html do
-        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37599
-        Gitlab::GitalyClient.allow_n_plus_1_calls do
-          render
-        end
-      end
+      format.html  { render }
       format.diff  { render text: @commit.to_diff }
       format.patch { render text: @commit.to_patch }
     end
@@ -112,7 +107,7 @@ class Projects::CommitController < Projects::ApplicationController
   end
 
   def commit
-    @noteable = @commit ||= @project.commit(params[:id])
+    @noteable = @commit ||= @project.commit_by(oid: params[:id])
   end
 
   def define_commit_vars
