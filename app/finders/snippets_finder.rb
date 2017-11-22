@@ -1,4 +1,18 @@
+# Snippets Finder
+#
+# Used to filter Snippets collections by a set of params
+#
+# Arguments.
+#
+# current_user - The current user, nil also can be used.
+# params:
+#   visibility (integer) - Individual snippet visibility: Public(20), internal(10) or private(0).
+#   project (Project) - Project related.
+#   author (User) - Author related.
+#
+# params are optional
 class SnippetsFinder < UnionFinder
+  include Gitlab::Allowable
   attr_accessor :current_user, :params
 
   def initialize(current_user, params = {})
@@ -8,7 +22,7 @@ class SnippetsFinder < UnionFinder
 
   def execute
     items = init_collection
-    items = by_project(items)
+    items = by_scope(items)
     items = by_author(items)
     items = by_visibility(items)
 
@@ -18,17 +32,47 @@ class SnippetsFinder < UnionFinder
   private
 
   def init_collection
-    items = Snippet.where(from_authorized_projects.or(not_project_related))
-
-    accessible(items)
+    if params[:project].present?
+      if can?(current_user, :read_project_snippet, params[:project])
+        ProjectSnippet.where(project_id: params[:project].id)
+      else
+        Snippet.none
+      end
+    else
+      Snippet.where(feature_available_projects)
+    end
   end
 
-  def accessible(items)
+  def feature_available_projects
+    table[:project_id].in(authorized_project_ids).or(not_project_related)
+  end
+
+  def authorized_project_ids
+    Project.with_feature_available_for_user(:snippets, current_user).select(:id).map(&:id)
+  end
+
+  def not_project_related
+    table[:project_id].eq(nil)
+  end
+
+  def table
+    Snippet.arel_table
+  end
+
+  def by_scope(items)
     segments = []
-    segments << items.public_to_user(current_user)
-    segments << authorized_to_user(items)  if current_user
+    segments << public_to_user(items)
+    segments << authorized_to_user(items) if current_user
 
     find_union(segments, Snippet)
+  end
+
+  def public_to_user(items)
+    if params[:project].present? && params[:project].project_member(current_user)
+      items
+    else
+      items.public_to_user(current_user)
+    end
   end
 
   def authorized_to_user(items)
@@ -53,12 +97,6 @@ class SnippetsFinder < UnionFinder
     items.where(author_id: params[:author].id)
   end
 
-  def by_project(items)
-    return items unless params[:project]
-
-    items.where(project_id: params[:project].id)
-  end
-
   def visibility_from_scope
     case params[:scope].to_s
     when 'are_private'
@@ -70,21 +108,5 @@ class SnippetsFinder < UnionFinder
     else
       nil
     end
-  end
-
-  def from_authorized_projects
-    table[:project_id].in(authorized_project_ids)
-  end
-
-  def authorized_project_ids
-    Project.with_snippets_enabled.pluck(:id)
-  end
-
-  def not_project_related
-    table[:project_id].eq(nil)
-  end
-
-  def table
-    Snippet.arel_table
   end
 end
