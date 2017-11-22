@@ -33,7 +33,7 @@ module Projects
         end
 
         # Create hashed storage base path folder
-        FileUtils.mkdir_p(File.expand_path('..', new_path))
+        FileUtils.mkdir_p(File.dirname(new_path))
 
         FileUtils.mv(old_path, new_path)
         logger.info("Migrated project attachments from '#{old_path}' to '#{new_path}' (PROJECT_ID=#{project.id})")
