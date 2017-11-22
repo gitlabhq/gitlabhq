@@ -1,5 +1,5 @@
-import './render_math';
-import './render_mermaid';
+import renderMath from './render_math';
+import renderMermaid from './render_mermaid';
 
 // Render Gitlab flavoured Markdown
 //
@@ -7,8 +7,8 @@ import './render_mermaid';
 //
 $.fn.renderGFM = function renderGFM() {
   this.find('.js-syntax-highlight').syntaxHighlight();
-  this.find('.js-render-math').renderMath();
-  this.find('.js-render-mermaid').renderMermaid();
+  renderMath(this.find('.js-render-math'));
+  renderMermaid(this.find('.js-render-mermaid'));
   return this;
 };
 
