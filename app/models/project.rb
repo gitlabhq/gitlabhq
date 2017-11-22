@@ -914,13 +914,6 @@ class Project < ActiveRecord::Base
     deployment_platform
   end
 
-  # TODO: This will be extended for multiple enviroment clusters
-  # TODO: Add super nice tests to check this interchangeability
-  def deployment_platform
-    @deployment_platform ||= clusters.where(enabled: true).first&.platform_kubernetes
-    @deployment_platform ||= deployment_services.reorder(nil).find_by(active: true)
-  end
-
   def monitoring_services
     services.where(category: :monitoring)
   end
@@ -1857,5 +1850,12 @@ class Project < ActiveRecord::Base
     end
 
     raise ex
+  end
+
+  # TODO: This will be extended for multiple enviroment clusters
+  # TODO: Add super nice tests to check this interchangeability
+  def deployment_platform
+    @deployment_platform ||= clusters.where(enabled: true).first&.platform_kubernetes
+    @deployment_platform ||= deployment_services.reorder(nil).find_by(active: true)
   end
 end
