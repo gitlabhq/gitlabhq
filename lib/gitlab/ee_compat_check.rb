@@ -182,7 +182,7 @@ module Gitlab
     def merge_base_found?(master_remote:, branch:)
       step(
         "Finding merge base with #{master_remote}/master",
-        %W[git merge-base #{master_remote}/master #{branch}]
+        %W[git merge-base #{master_remote}/master origin/#{branch}]
       ) do |output, status|
         if status.zero?
           puts "Merge base was found: #{output}"
