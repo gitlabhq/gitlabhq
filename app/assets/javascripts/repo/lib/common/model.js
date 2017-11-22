@@ -2,25 +2,25 @@
 import Disposable from './disposable';
 
 export default class Model {
-  constructor(file) {
+  constructor(monaco, file) {
+    this.monaco = monaco;
     this.disposable = new Disposable();
     this.file = file;
     this.content = file.content !== '' ? file.content : file.raw;
 
     this.disposable.add(
-      this.originalModel = monaco.editor.createModel(
-        this.content,
+      this.originalModel = this.monaco.editor.createModel(
+        this.file.raw,
         undefined,
-        new monaco.Uri(null, null, `original/${this.file.path}`),
+        new this.monaco.Uri(null, null, `original/${this.file.path}`),
       ),
-      this.model = monaco.editor.createModel(
+      this.model = this.monaco.editor.createModel(
         this.content,
         undefined,
-        new monaco.Uri(null, null, this.file.path),
+        new this.monaco.Uri(null, null, this.file.path),
       ),
     );
 
-    this.attachedToWorker = false;
     this.events = new Map();
   }
 
@@ -37,19 +37,18 @@ export default class Model {
   }
 
   get diffModel() {
-    return {
-      url: this.model.uri.toString(),
-      versionId: this.model.getVersionId(),
-      lines: this.model.getLinesContent(),
-      EOL: '\n',
-    };
+    return Model.getDiffModel(this.model);
   }
 
   get originalDiffModel() {
+    return Model.getDiffModel(this.originalModel);
+  }
+
+  static getDiffModel(model) {
     return {
-      url: this.originalModel.uri.toString(),
-      versionId: this.originalModel.getVersionId(),
-      lines: this.originalModel.getLinesContent(),
+      url: model.uri.toString(),
+      versionId: model.getVersionId(),
+      lines: model.getLinesContent(),
       EOL: '\n',
     };
   }
@@ -62,21 +61,17 @@ export default class Model {
     return this.originalModel;
   }
 
-  setAttachedToWorker(val) {
-    this.attachedToWorker = val;
-  }
-
   onChange(cb) {
     this.events.set(
       this.file.path,
-      this.model.onDidChangeContent(e => cb(this.model, e)),
+      this.disposable.add(
+        this.model.onDidChangeContent(e => cb(this.model, e)),
+      ),
     );
   }
 
   dispose() {
     this.disposable.dispose();
-
-    this.events.forEach(disposer => disposer.dispose());
     this.events.clear();
   }
 }

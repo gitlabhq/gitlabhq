@@ -1,7 +1,6 @@
-import editor from '../editor';
-
-class DecorationsController {
-  constructor() {
+export default class DecorationsController {
+  constructor(editor) {
+    this.editor = editor;
     this.decorations = new Map();
     this.editorDecorations = new Map();
   }
@@ -33,7 +32,7 @@ class DecorationsController {
 
     this.editorDecorations.set(
       model.url,
-      editor.editorInstance.instance.deltaDecorations(oldDecorations, decorations),
+      this.editor.instance.deltaDecorations(oldDecorations, decorations),
     );
   }
 
@@ -42,5 +41,3 @@ class DecorationsController {
     this.editorDecorations.clear();
   }
 }
-
-export default new DecorationsController();

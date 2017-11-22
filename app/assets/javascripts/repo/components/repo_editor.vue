@@ -10,12 +10,12 @@ export default {
     this.editor.dispose();
   },
   mounted() {
-    this.editor = Editor.create();
-
     if (this.monaco) {
       this.initMonaco();
     } else {
       monacoLoader(['vs/editor/editor.main'], () => {
+        this.editor = Editor.create(monaco);
+
         this.initMonaco();
       });
     }
@@ -35,7 +35,7 @@ export default {
           this.editor.createInstance(this.$el);
         })
         .then(() => this.setupEditor())
-        .catch(() => flash('Error setting up monaco. Please try again.'));
+        .catch((e) => { throw e;flash('Error setting up monaco. Please try again.'); });
     },
     setupEditor() {
       if (!this.activeFile) return;

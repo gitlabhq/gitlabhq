@@ -1,7 +1,7 @@
 /* global monaco */
-import DirtyDiffWorker from './worker';
+import DirtyDiffWorker from './diff';
+console.log(DirtyDiffWorker);
 import Disposable from '../common/disposable';
-import decorationsController from '../decorations/controller';
 
 export const getDiffChangeType = (change) => {
   if (change.modified) {
@@ -28,17 +28,14 @@ export const getDecorator = change => ({
   },
 });
 
-export const decorate = (model, changes) => {
-  const decorations = changes.map(change => getDecorator(change));
-  decorationsController.addDecorations(model, 'dirtyDiff', decorations);
-};
-
 export default class DirtyDiffController {
-  constructor(modelManager) {
+  constructor(modelManager, decorationsController) {
     this.disposable = new Disposable();
     this.editorSimpleWorker = null;
     this.modelManager = modelManager;
-    this.dirtyDiffWorker = new DirtyDiffWorker();
+    this.decorationsController = decorationsController;
+    console.log(DirtyDiffWorker);
+    // this.dirtyDiffWorker = new DirtyDiffWorker();
   }
 
   attachModel(model) {
@@ -46,12 +43,17 @@ export default class DirtyDiffController {
   }
 
   computeDiff(model) {
-    decorate(model, this.dirtyDiffWorker.compute(model));
+    this.decorate(model, this.dirtyDiffWorker.compute(model));
   }
 
   // eslint-disable-next-line class-methods-use-this
   reDecorate(model) {
-    decorationsController.decorate(model);
+    this.decorationsController.decorate(model);
+  }
+
+  decorate(model, changes) {
+    const decorations = changes.map(change => getDecorator(change));
+    this.decorationsController.addDecorations(model, 'dirtyDiff', decorations);
   }
 
   dispose() {

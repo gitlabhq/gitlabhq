@@ -1,36 +1,40 @@
-/* global monaco */
+import DecorationsController from './decorations/controller';
 import DirtyDiffController from './diff/controller';
 import Disposable from './common/disposable';
 import ModelManager from './common/model_manager';
 
 export default class Editor {
-  static create() {
-    this.editorInstance = new Editor();
+  static create(monaco) {
+    this.editorInstance = new Editor(monaco);
 
     return this.editorInstance;
   }
 
-  constructor() {
+  constructor(monaco) {
+    this.monaco = monaco;
     this.currentModel = null;
     this.instance = null;
     this.dirtyDiffController = null;
     this.disposable = new Disposable();
 
     this.disposable.add(
-      this.modelManager = new ModelManager(),
+      this.modelManager = new ModelManager(this.monaco),
+      this.decorationsController = new DecorationsController(this),
     );
   }
 
   createInstance(domElement) {
     if (!this.instance) {
       this.disposable.add(
-        this.instance = monaco.editor.create(domElement, {
+        this.instance = this.monaco.editor.create(domElement, {
           model: null,
           readOnly: false,
           contextmenu: true,
           scrollBeyondLastLine: false,
         }),
-        this.dirtyDiffController = new DirtyDiffController(this.modelManager),
+        this.dirtyDiffController = new DirtyDiffController(
+          this.modelManager, this.decorationsController,
+        ),
       );
     }
   }
