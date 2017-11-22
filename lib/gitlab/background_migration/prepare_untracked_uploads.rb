@@ -124,10 +124,8 @@ module Gitlab
       end
 
       def table_columns_and_values_for_insert(file_paths)
-        timestamp = Time.now.utc.iso8601
-
         values = file_paths.map do |file_path|
-          ActiveRecord::Base.send(:sanitize_sql_array, ['(?, ?, ?)', file_path, timestamp, timestamp]) # rubocop:disable GitlabSecurity/PublicSend
+          ActiveRecord::Base.send(:sanitize_sql_array, ['(?, NOW(), NOW())', file_path]) # rubocop:disable GitlabSecurity/PublicSend
         end.join(', ')
 
         "#{UntrackedFile.table_name} (path, created_at, updated_at) VALUES #{values}"
