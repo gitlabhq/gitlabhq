@@ -144,7 +144,7 @@ If you installed GitLab using the Omnibus packages (highly recommended):
 1. [Configure SSH authorizations to use the database](ssh.md)
 1. [Configure GitLab](configuration.md) to set the primary and secondary nodes.
 1. Optional: [Configure a secondary LDAP server](../administration/auth/ldap.md) for the secondary. See [notes on LDAP](#ldap).
-1. [Follow the after setup steps](after_setup.md).
+1. [Follow the "Using a Geo Server" guide](using_a_geo_server.md).
 
 [install-ee]: https://about.gitlab.com/downloads-ee/ "GitLab Enterprise Edition Omnibus packages downloads page"
 
@@ -160,7 +160,7 @@ If you installed GitLab from source:
 1. [Configure SSH authorizations to use the database](ssh.md)
 1. [Configure GitLab](configuration_source.md) to set the primary and secondary
    nodes.
-1. [Follow the after setup steps](after_setup.md).
+1. [Follow the "Using a Geo Server" guide](using_a_geo_server.md).
 
 [install-ee-source]: https://docs.gitlab.com/ee/install/installation.html "GitLab Enterprise Edition installation from source"
 
