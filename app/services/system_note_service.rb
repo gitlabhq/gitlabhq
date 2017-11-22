@@ -23,7 +23,7 @@ module SystemNoteService
 
     body = "added #{commits_text}\n\n"
     body << existing_commit_summary(noteable, existing_commits, oldrev)
-    body << new_commit_summary(noteable, new_commits).join("\n")
+    body << new_commit_summary(new_commits).join("\n")
     body << "\n\n[Compare with previous version](#{diff_comparison_url(noteable, project, oldrev)})"
 
     create_note(NoteSummary.new(noteable, project, author, body, action: 'commit', commit_count: total_count))
@@ -486,9 +486,9 @@ module SystemNoteService
   # new_commits - Array of new Commit objects
   #
   # Returns an Array of Strings
-  def new_commit_summary(merge_request, new_commits)
+  def new_commit_summary(new_commits)
     new_commits.collect do |commit|
-      "* [#{commit.short_id}](#{merge_request_commit_url(merge_request, commit)}) - #{escape_html(commit.title)}"
+      "* #{commit.short_id} - #{escape_html(commit.title)}"
     end
   end
 
@@ -666,14 +666,6 @@ module SystemNoteService
       merge_request,
       diff_id: diff_id,
       start_sha: oldrev
-    )
-  end
-
-  def merge_request_commit_url(merge_request, commit)
-    url_helpers.diffs_project_merge_request_url(
-      merge_request.target_project,
-      merge_request,
-      commit_id: commit
     )
   end
 end

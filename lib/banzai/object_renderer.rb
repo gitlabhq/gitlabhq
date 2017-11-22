@@ -17,11 +17,11 @@ module Banzai
 
     # project - A Project to use for redacting Markdown.
     # user - The user viewing the Markdown/HTML documents, if any.
-    # context - A Hash containing extra attributes to use during redaction
-    def initialize(project, user = nil, context = {})
+    # redaction_context - A Hash containing extra attributes to use during redaction
+    def initialize(project, user = nil, redaction_context = {})
       @project = project
       @user = user
-      @context = base_context.merge(context)
+      @redaction_context = base_context.merge(redaction_context)
     end
 
     # Renders and redacts an Array of objects.
@@ -48,8 +48,7 @@ module Banzai
       pipeline = HTML::Pipeline.new([])
 
       objects.map do |object|
-        context = context_for(object, attribute)
-        pipeline.to_document(Banzai.render_field(object, attribute, context))
+        pipeline.to_document(Banzai.render_field(object, attribute))
       end
     end
 
@@ -74,7 +73,7 @@ module Banzai
 
     # Returns a Banzai context for the given object and attribute.
     def context_for(object, attribute)
-      @context.merge(object.banzai_render_context(attribute))
+      @redaction_context.merge(object.banzai_render_context(attribute))
     end
 
     def base_context
@@ -86,7 +85,7 @@ module Banzai
     end
 
     def save_options
-      return {} unless @context[:xhtml]
+      return {} unless @redaction_context[:xhtml]
       { save_with: Nokogiri::XML::Node::SaveOptions::AS_XHTML }
     end
   end

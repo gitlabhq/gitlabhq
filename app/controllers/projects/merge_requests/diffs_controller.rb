@@ -21,8 +21,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
   private
 
   def define_diff_vars
-    @merge_request_diffs = @merge_request.merge_request_diffs.viewable.select_without_diff.order_id_desc
-
+    @merge_request_diffs = @merge_request.merge_request_diffs.viewable.order_id_desc
     @compare = commit || find_merge_request_diff_compare
     return render_404 unless @compare
 
@@ -31,7 +30,7 @@ class Projects::MergeRequests::DiffsController < Projects::MergeRequests::Applic
 
   def commit
     return nil unless commit_id = params[:commit_id].presence
-    return nil unless @merge_request.all_commit_shas.include?(commit_id)
+    return nil unless @merge_request.all_commits.exists?(sha: commit_id)
 
     @commit ||= @project.commit(commit_id)
   end

@@ -22,19 +22,29 @@ module Banzai
         end
       end
 
+      def referenced_merge_request_commit_shas
+        return [] unless noteable.is_a?(MergeRequest)
+
+        @referenced_merge_request_commit_shas ||= begin
+          referenced_shas = references_per_project.values.reduce(:|).to_a
+          noteable.all_commit_shas.select do |sha|
+            referenced_shas.any? { |ref| Gitlab::Git.shas_eql?(sha, ref) }
+          end
+        end
+      end
+
       def url_for_object(commit, project)
         h = Gitlab::Routing.url_helpers
-        noteable = context[:merge_request] || context[:noteable]
 
-        if noteable.is_a?(MergeRequest) &&
-           noteable.all_commit_shas.include?(commit.id)
-
-          # the internal shas are in the context?
-          # why not preload in the object?, just make sure we have the same ref
-          # in all the rendering
-          h.diffs_project_merge_request_url(project, noteable, commit_id: commit.id)
+        if referenced_merge_request_commit_shas.include?(commit.id)
+          h.diffs_project_merge_request_url(project,
+                                            noteable,
+                                            commit_id: commit.id,
+                                            only_path: only_path?)
         else
-          h.project_commit_url(project, commit, only_path: context[:only_path])
+          h.project_commit_url(project,
+                               commit,
+                               only_path: only_path?)
         end
       end
 
@@ -47,6 +57,16 @@ module Banzai
         end
 
         extras
+      end
+
+      private
+
+      def noteable
+        context[:noteable]
+      end
+
+      def only_path?
+        context[:only_path]
       end
     end
   end
