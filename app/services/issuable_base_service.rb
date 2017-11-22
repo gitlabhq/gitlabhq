@@ -163,7 +163,7 @@ class IssuableBaseService < BaseService
     # To be overridden by subclasses
   end
 
-  def update(issuable)
+  def update(issuable) # rubocop:disable Metrics/AbcSize
     change_state(issuable)
     change_subscription(issuable)
     change_todo(issuable)
