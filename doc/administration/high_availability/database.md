@@ -537,7 +537,7 @@ gitlab-rake gitlab:db:configure
 #### Ensure GitLab is running
 
 At this point, your GitLab instance should be up and running. Verify you are
-able to login, and create issues and merge requests.
+able to login, and create issues and merge requests.  If you have troubles check the [Troubleshooting section](#troubleshooting).
 
 ### Failover procedure
 
