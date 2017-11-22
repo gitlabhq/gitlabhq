@@ -317,7 +317,6 @@ import Diff from './diff';
           break;
         case 'projects:merge_requests:show':
           new Diff();
-          shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
 
           initIssuableSidebar();
@@ -327,6 +326,8 @@ import Diff from './diff';
           window.mergeRequest = new MergeRequest({
             action: mrShowNode.dataset.mrAction,
           });
+
+          shortcut_handler = new ShortcutsIssuable(true);
           break;
         case 'dashboard:activity':
           new gl.Activities();
