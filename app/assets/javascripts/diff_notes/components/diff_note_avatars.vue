@@ -2,7 +2,6 @@
 /* global CommentsStore */
 /* global notes */
 
-import Vue from 'vue';
 import Icon from '~/vue_shared/components/icon.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
 import { n__ } from '~/locale';
