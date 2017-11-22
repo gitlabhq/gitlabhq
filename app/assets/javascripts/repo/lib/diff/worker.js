@@ -14,13 +14,13 @@ export default class DirtyDiffWorker {
       if (findOnLine) {
         Object.assign(findOnLine, change, {
           modified: true,
-          endLineNumber: change.count > 1 ? lineNumber + change.count : lineNumber,
+          endLineNumber: (lineNumber + change.count) - 1,
         });
       } else if ('added' in change || 'removed' in change) {
         acc.push(Object.assign({}, change, {
           lineNumber,
           modified: undefined,
-          endLineNumber: change.count > 1 ? lineNumber + change.count : lineNumber,
+          endLineNumber: (lineNumber + change.count) - 1,
         }));
       }
 
