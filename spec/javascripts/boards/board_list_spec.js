@@ -4,7 +4,6 @@
 import Vue from 'vue';
 import MockAdapter from 'axios-mock-adapter';
 import axios from '~/lib/utils/axios_utils';
-import Sortable from 'vendor/Sortable';
 import BoardList from '~/boards/components/board_list.vue';
 import eventHub from '~/boards/eventhub';
 import '~/boards/mixins/sortable_default_options';
@@ -12,8 +11,6 @@ import '~/boards/models/issue';
 import '~/boards/models/list';
 import '~/boards/stores/boards_store';
 import { listObj, boardsMockInterceptor, mockBoardService } from './mock_data';
-
-window.Sortable = Sortable;
 
 describe('Board list component', () => {
   let mock;
