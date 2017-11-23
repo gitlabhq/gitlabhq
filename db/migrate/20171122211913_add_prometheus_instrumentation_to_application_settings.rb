@@ -13,4 +13,3 @@ class AddPrometheusInstrumentationToApplicationSettings < ActiveRecord::Migratio
     remove_column(:application_settings, :prometheus_metrics_method_instrumentation_enabled)
   end
 end
-

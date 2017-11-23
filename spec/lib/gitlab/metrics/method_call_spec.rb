@@ -25,11 +25,7 @@ describe Gitlab::Metrics::MethodCall do
         end
 
         it 'observes the performance of the supplied block' do
-          expect(described_class.call_real_duration_histogram)
-            .to receive(:observe)
-                  .with({ module: :Foo, method: '#bar' }, be_a_kind_of(Numeric))
-
-          expect(described_class.call_cpu_duration_histogram)
+          expect(described_class.call_duration_histogram)
             .to receive(:observe)
                   .with({ module: :Foo, method: '#bar' }, be_a_kind_of(Numeric))
 
@@ -44,10 +40,7 @@ describe Gitlab::Metrics::MethodCall do
         end
 
         it 'does not observe the performance' do
-          expect(described_class.call_real_duration_histogram)
-            .not_to receive(:observe)
-
-          expect(described_class.call_cpu_duration_histogram)
+          expect(described_class.call_duration_histogram)
             .not_to receive(:observe)
 
           method_call.measure { 'foo' }
@@ -64,10 +57,7 @@ describe Gitlab::Metrics::MethodCall do
       end
 
       it 'does not observe the performance' do
-        expect(described_class.call_real_duration_histogram)
-          .not_to receive(:observe)
-
-        expect(described_class.call_cpu_duration_histogram)
+        expect(described_class.call_duration_histogram)
           .not_to receive(:observe)
 
         method_call.measure { 'foo' }
@@ -92,7 +82,13 @@ describe Gitlab::Metrics::MethodCall do
   end
 
   describe '#above_threshold?' do
+    before do
+      allow(Gitlab::Metrics).to receive(:method_call_threshold).and_return(100)
+    end
+
     it 'returns false when the total call time is not above the threshold' do
+      expect(method_call).to receive(:real_time).and_return(9)
+
       expect(method_call.above_threshold?).to eq(false)
     end
 
