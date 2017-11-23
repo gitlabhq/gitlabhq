@@ -1,5 +1,13 @@
 <script>
-  import d3 from 'd3';
+  import {
+    scaleLinear as d3ScaleLinear,
+    scaleTime as d3ScaleTime,
+    axisLeft as d3AxisLeft,
+    axisBottom as d3AxisBottom,
+    max as d3Max,
+    extent as d3Extent,
+    select as d3Select,
+    } from 'd3';
   import GraphLegend from './graph/legend.vue';
   import GraphFlag from './graph/flag.vue';
   import GraphDeployment from './graph/deployment.vue';
@@ -7,7 +15,7 @@
   import MonitoringMixin from '../mixins/monitoring_mixins';
   import eventHub from '../event_hub';
   import measurements from '../utils/measurements';
-  import { timeScaleFormat, bisectDate } from '../utils/date_time_formatters';
+  import { bisectDate } from '../utils/date_time_formatters';
   import createTimeSeries from '../utils/multiple_time_series';
   import bp from '../../breakpoints';
 
@@ -156,34 +164,30 @@
           this.baseGraphHeight = this.baseGraphHeight += (this.timeSeries.length - 3) * 20;
         }
 
-        const axisXScale = d3.time.scale()
+        const axisXScale = d3ScaleTime()
           .range([0, this.graphWidth - 70]);
-        const axisYScale = d3.scale.linear()
+        const axisYScale = d3ScaleLinear()
           .range([this.graphHeight - this.graphHeightOffset, 0]);
 
         const allValues = this.timeSeries.reduce((all, { values }) => all.concat(values), []);
-        axisXScale.domain(d3.extent(allValues, d => d.time));
-        axisYScale.domain([0, d3.max(allValues.map(d => d.value))]);
+        axisXScale.domain(d3Extent(allValues, d => d.time));
+        axisYScale.domain([0, d3Max(allValues.map(d => d.value))]);
 
-        const xAxis = d3.svg.axis()
-          .scale(axisXScale)
-          .ticks(d3.time.minute, 60)
-          .tickFormat(timeScaleFormat)
-          .orient('bottom');
+        const xAxis = d3AxisBottom()
+          .scale(axisXScale);
 
-        const yAxis = d3.svg.axis()
+        const yAxis = d3AxisLeft()
           .scale(axisYScale)
-          .ticks(measurements.yTicks)
-          .orient('left');
+          .ticks(measurements.yTicks);
 
-        d3.select(this.$refs.baseSvg).select('.x-axis').call(xAxis);
+        d3Select(this.$refs.baseSvg).select('.x-axis').call(xAxis);
 
         const width = this.graphWidth;
-        d3.select(this.$refs.baseSvg).select('.y-axis').call(yAxis)
+        d3Select(this.$refs.baseSvg).select('.y-axis').call(yAxis)
           .selectAll('.tick')
           .each(function createTickLines(d, i) {
             if (i > 0) {
-              d3.select(this).select('line')
+              d3Select(this).select('line')
                 .attr('x2', width)
                 .attr('class', 'axis-tick');
             } // Avoid adding the class to the first tick, to prevent coloring
