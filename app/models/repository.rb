@@ -966,6 +966,19 @@ class Repository
     run_git(args).first.lines.map(&:strip)
   end
 
+  def fetch_as_mirror(url, forced: false, refmap: :all_refs, remote_name: nil)
+    unless remote_name
+      remote_name = "tmp-#{SecureRandom.hex}"
+      tmp_remote_name = true
+    end
+
+    add_remote(remote_name, url)
+    set_remote_as_mirror(remote_name, refmap: refmap)
+    fetch_remote(remote_name, forced: forced)
+  ensure
+    remove_remote(remote_name) if tmp_remote_name
+  end
+
   def fetch_remote(remote, forced: false, ssh_auth: nil, no_tags: false)
     gitlab_shell.fetch_remote(raw_repository, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
   end
@@ -1063,6 +1076,10 @@ class Repository
     raw_repository.fetch_ref(source_repository.raw_repository, source_ref: source_ref, target_ref: target_ref)
   end
 
+  def repository_storage_path
+    @project.repository_storage_path
+  end
+
   private
 
   # TODO Generice finder, later split this on finders by Ref or Oid
@@ -1126,10 +1143,6 @@ class Repository
   def last_commit_id_for_path_by_shelling_out(sha, path)
     args = %W(rev-list --max-count=1 #{sha} -- #{path})
     raw_repository.run_git_with_timeout(args, Gitlab::Git::Popen::FAST_GIT_PROCESS_TIMEOUT).first.strip
-  end
-
-  def repository_storage_path
-    @project.repository_storage_path
   end
 
   def initialize_raw_repository
