@@ -1,4 +1,5 @@
 require 'spec_helper'
+require Rails.root.join('db', 'post_migrate', '20171013104327_migrate_gcp_clusters_to_new_clusters_architectures.rb')
 require Rails.root.join('db', 'migrate', '20171123104051_fix_cluster_platforms_kubernetes_association_mismatch.rb')
 
 ##
@@ -10,9 +11,10 @@ describe FixClusterPlatformsKubernetesAssociationMismatch, :migration do
 
   shared_examples 'expected behavior' do
     it 'has correct association' do
+      puts "described_class.name: #{described_class.name}"
       migrate!
 
-      Cluster.all.each do |cluster|
+      Clusters::Cluster.all.each do |cluster|
         expect(cluster.platform_kubernetes.api_url).to eq(api_url(cluster.provider_gcp.endpoint))
       end
     end
@@ -37,13 +39,8 @@ describe FixClusterPlatformsKubernetesAssociationMismatch, :migration do
 
   def prepare
     create_test_data
-    migrate_gcp_clusters_to_new_clusters_architectures!
-  end
 
-  def migrate_gcp_clusters_to_new_clusters_architectures!
-    ActiveRecord::Migrator.up(migrations_paths) do |migration|
-      migration.name == 'MigrateGcpClustersToNewClustersArchitectures'
-    end
+    MigrateGcpClustersToNewClustersArchitectures.new.up
   end
 
   def create_test_data
@@ -65,18 +62,18 @@ describe FixClusterPlatformsKubernetesAssociationMismatch, :migration do
       project_namespace = "'sample-app-#{i}'"
       endpoint = "'111.111.111.#{i}'"
       ca_cert = "'ca_cert-#{i}'"
-      encrypted_kubernetes_token = "'NULL'"
-      encrypted_kubernetes_token_iv = "'NULL'"
+      encrypted_kubernetes_token = "'kubernetes_token-#{i}'"
+      encrypted_kubernetes_token_iv = "'kubernetes_token_iv-#{i}'"
       username = "'username-#{i}'"
-      encrypted_password = "'encrypted_password-#{i}'"
-      encrypted_password_iv = "'encrypted_password_iv-#{i}'"
+      encrypted_password = "'password_#{i}'"
+      encrypted_password_iv = "'password_iv_#{i}'"
       gcp_project_id = "'gcp_project_id-#{i}'"
       gcp_cluster_zone = "'gcp_cluster_zone-#{i}'"
       gcp_cluster_name = "'gcp_cluster_name-#{i}'"
       gcp_machine_type = "'gcp_machine_type-#{i}'"
       gcp_operation_id = "'gcp_operation_id-#{i}'"
-      encrypted_gcp_token = "'encrypted_gcp_token-#{i}'"
-      encrypted_gcp_token_iv = "'encrypted_gcp_token_iv-#{i}'"
+      encrypted_gcp_token = "'gcp_token_#{i}'"
+      encrypted_gcp_token_iv = "'gcp_token_iv_#{i}'"
 
       ActiveRecord::Base.connection.execute <<-SQL
         INSERT INTO gcp_clusters (project_id, user_id, service_id, status, gcp_cluster_size, created_at, updated_at, enabled, status_reason, project_namespace, endpoint, ca_cert, encrypted_kubernetes_token, encrypted_kubernetes_token_iv, username, encrypted_password, encrypted_password_iv, gcp_project_id, gcp_cluster_zone, gcp_cluster_name, gcp_machine_type, gcp_operation_id, encrypted_gcp_token, encrypted_gcp_token_iv)
@@ -87,8 +84,8 @@ describe FixClusterPlatformsKubernetesAssociationMismatch, :migration do
 
   def culprit
     (1..5).each do |i|
-      cluster = Cluster.find_by_id(i)
-      cluster.platform_kubernetes.update!(cluster_id: (i % 5) + 1)
+      cluster = Clusters::Cluster.find_by_id(i)
+      cluster.platform_kubernetes.update_attribute(:cluster_id, (i % 5) + 1)
     end
   end
 

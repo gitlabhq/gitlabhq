@@ -16,12 +16,16 @@ class FixClusterPlatformsKubernetesAssociationMismatch < ActiveRecord::Migration
 
   class ProvidersGcp < ActiveRecord::Base
     self.table_name = 'cluster_providers_gcp'
+
+    belongs_to :cluster, inverse_of: :provider_gcp, class_name: 'Cluster'
   end
 
   class PlatformsKubernetes < ActiveRecord::Base
     include EachBatch
 
     self.table_name = 'cluster_platforms_kubernetes'
+
+    belongs_to :cluster, inverse_of: :platform_kubernetes, class_name: 'Cluster'
   end
 
   def up
@@ -29,7 +33,7 @@ class FixClusterPlatformsKubernetesAssociationMismatch < ActiveRecord::Migration
       # This is the culprit. See https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15566
       gcp_cluster = GcpCluster.find_by_id(platforms_kubernetes.cluster_id)
 
-      provider_gcp = ProvidersGcp.join(:clusters)
+      provider_gcp = ProvidersGcp.joins(:cluster)
         .where(gcp_project_id: gcp_cluster.gcp_project_id,
                zone: gcp_cluster.gcp_cluster_zone,
                num_nodes: gcp_cluster.gcp_cluster_size,
