@@ -41,14 +41,13 @@ describe ApplicationController do
       controller.send(:check_password_expiration)
     end
 
-    it 'redirects if the user is over their password expiry and sign-in is disabled' do
-      stub_application_setting(password_authentication_enabled: false)
+    it 'does not redirect if the user is over their password expiry but password authentication is disabled for the web interface' do
+      stub_application_setting(password_authentication_enabled_for_web: false)
+      stub_application_setting(password_authentication_enabled_for_git: false)
       user.password_expires_at = Time.new(2002)
 
-      expect(user.ldap_user?).to be_falsey
       allow(controller).to receive(:current_user).and_return(user)
-      expect(controller).to receive(:redirect_to)
-      expect(controller).to receive(:new_profile_password_path)
+      expect(controller).not_to receive(:redirect_to)
 
       controller.send(:check_password_expiration)
     end

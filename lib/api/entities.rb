@@ -763,7 +763,10 @@ module API
       expose(:default_project_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_project_visibility) }
       expose(:default_snippet_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_snippet_visibility) }
       expose(:default_group_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_group_visibility) }
-      expose :password_authentication_enabled, as: :signin_enabled
+
+      # support legacy names, can be removed in v5
+      expose :password_authentication_enabled_for_web, as: :password_authentication_enabled
+      expose :password_authentication_enabled_for_web, as: :signin_enabled
     end
 
     class Release < Grape::Entity
