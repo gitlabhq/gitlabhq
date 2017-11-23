@@ -462,13 +462,6 @@ data before running `pg_basebackup`.
 
 The replication process is now over.
 
-### Next steps
-
-Now that the database replication is done, the next step is to configure SSH
-authorizations to use the database.
-
-[➤ Configure SSH authorizations to use the database](ssh.md)
-
 ## MySQL replication
 
 We don't support MySQL replication for GitLab Geo.
