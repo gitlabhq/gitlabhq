@@ -63,6 +63,34 @@ describe Namespace do
         end
       end
     end
+
+    describe '#validate_shared_runner_minutes_support' do
+      before do
+        stub_feature_flags(shared_runner_minutes_on_root_namespace: true)
+      end
+
+      context 'when changing :shared_runners_minutes_limit' do
+        before do
+          namespace.shared_runners_minutes_limit = 100
+        end
+
+        context 'when group is subgroup' do
+          set(:root_ancestor) { create(:group) }
+          let(:namespace) { create(:namespace, parent: root_ancestor) }
+
+          it 'is invalid' do
+            expect(namespace).not_to be_valid
+            expect(namespace.errors[:shared_runners_minutes_limit]).to include('is not supported for this namespace')
+          end
+        end
+
+        context 'when group is root' do
+          it 'is valid' do
+            expect(namespace).to be_valid
+          end
+        end
+      end
+    end
   end
 
   describe '#move_dir' do
@@ -295,6 +323,42 @@ describe Namespace do
     end
   end
 
+  describe '#shared_runner_minutes_supported?' do
+    subject { namespace.shared_runner_minutes_supported? }
+
+    context 'when is subgroup' do
+      before do
+        namespace.parent = build(:group)
+      end
+
+      context 'when shared_runner_minutes_on_root_namespace is disabled' do
+        before do
+          stub_feature_flags(shared_runner_minutes_on_root_namespace: false)
+        end
+
+        it 'returns true' do
+          is_expected.to eq(true)
+        end
+      end
+
+      context 'when shared_runner_minutes_on_root_namespace is enabled', :nested_groups do
+        before do
+          stub_feature_flags(shared_runner_minutes_on_root_namespace: true)
+        end
+
+        it 'returns false' do
+          is_expected.to eq(false)
+        end
+      end
+    end
+
+    context 'when is root' do
+      it 'returns true' do
+        is_expected.to eq(true)
+      end
+    end
+  end
+
   describe '#shared_runners_minutes_limit_enabled?' do
     subject { namespace.shared_runners_minutes_limit_enabled? }
 
@@ -315,11 +379,63 @@ describe Namespace do
         end
 
         it { is_expected.to be_truthy }
+
+        context 'when is subgroup', :nested_groups do
+          before do
+            stub_feature_flags(shared_runner_minutes_on_root_namespace: true)
+            namespace.parent = build(:group)
+          end
+
+          it { is_expected.to be_falsey }
+        end
       end
     end
 
     context 'without project' do
       it { is_expected.to be_falsey }
+    end
+  end
+
+  describe '#shared_runners_enabled?' do
+    subject { namespace.shared_runners_enabled? }
+
+    context 'subgroup with shared runners enabled project' do
+      let(:subgroup) { create(:group, parent: namespace) }
+      let!(:subproject) { create(:project, namespace: subgroup, shared_runners_enabled: true) }
+
+      context 'when shared_runner_minutes_on_root_namespace is disabled' do
+        before do
+          stub_feature_flags(shared_runner_minutes_on_root_namespace: false)
+        end
+
+        it "returns false" do
+          is_expected.to eq(false)
+        end
+      end
+
+      context 'when shared_runner_minutes_on_root_namespace is enabled', :nested_groups do
+        before do
+          stub_feature_flags(shared_runner_minutes_on_root_namespace: true)
+        end
+
+        it "returns true" do
+          is_expected.to eq(true)
+        end
+      end
+    end
+
+    context 'group with shared runners enabled project' do
+      let!(:project) { create(:project, namespace: namespace, shared_runners_enabled: true) }
+
+      it "returns true" do
+        is_expected.to eq(true)
+      end
+    end
+
+    context 'group without projects' do
+      it "returns false" do
+        is_expected.to eq(false)
+      end
     end
   end
 
@@ -360,19 +476,6 @@ describe Namespace do
 
     context 'without project' do
       it { is_expected.to be_falsey }
-    end
-  end
-
-  describe '#root_ancestor' do
-    it 'returns the top most ancestor', :nested_groups do
-      root_group = create(:group)
-      nested_group = create(:group, parent: root_group)
-      deep_nested_group = create(:group, parent: nested_group)
-      very_deep_nested_group = create(:group, parent: deep_nested_group)
-
-      expect(nested_group.root_ancestor).to eq(root_group)
-      expect(deep_nested_group.root_ancestor).to eq(root_group)
-      expect(very_deep_nested_group.root_ancestor).to eq(root_group)
     end
   end
 
