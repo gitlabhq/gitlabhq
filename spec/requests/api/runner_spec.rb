@@ -1166,7 +1166,7 @@ describe API::Runner do
           let(:store) { JobArtifactUploader::LOCAL_STORE }
 
           before do
-            create(:ci_job_artifact, file_store: store, job: job)
+            create(:ci_job_artifact, :archive, file_store: store, job: job)
 
             download_artifact
           end

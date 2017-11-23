@@ -216,7 +216,7 @@ describe API::V3::Builds do
 
       context 'when artifacts are stored remotely' do
         let(:build) { create(:ci_build, pipeline: pipeline) }
-        let!(:artifact) { create(:ci_job_artifact, :remote_store, job: build) }
+        let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: build) }
 
         it 'returns location redirect' do
           get v3_api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user)
@@ -313,7 +313,7 @@ describe API::V3::Builds do
 
         context 'when artifacts are stored remotely' do
           let(:build) { create(:ci_build, pipeline: pipeline) }
-          let!(:artifact) { create(:ci_job_artifact, :remote_store, job: build) }
+          let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: build) }
 
           before do
             build.reload

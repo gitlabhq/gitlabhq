@@ -324,7 +324,7 @@ describe API::Jobs do
 
         context 'when artifacts are stored remotely' do
           let(:job) { create(:ci_build, pipeline: pipeline) }
-          let!(:artifact) { create(:ci_job_artifact, :remote_store, job: job) }
+          let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: job) }
 
           before do
             job.reload
@@ -453,7 +453,7 @@ describe API::Jobs do
 
         context 'when artifacts are stored remotely' do
           let(:job) { create(:ci_build, pipeline: pipeline, user: api_user) }
-          let!(:artifact) { create(:ci_job_artifact, :remote_store, job: job) }
+          let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: job) }
 
           before do
             job.reload

@@ -83,7 +83,7 @@ describe ObjectStorageUploadWorker do
   end
 
   context 'for job artifacts' do
-    let(:artifact) { create(:ci_job_artifact) }
+    let(:artifact) { create(:ci_job_artifact, :archive) }
     let(:uploader_class) { JobArtifactUploader }
     let(:subject_class) { Ci::JobArtifact }
     let(:file_field) { :file }

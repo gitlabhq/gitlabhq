@@ -69,7 +69,7 @@ describe 'gitlab:artifacts namespace rake task' do
   end
 
   context 'job artifacts' do
-    let!(:artifact) { create(:ci_job_artifact, file_store: store) }
+    let!(:artifact) { create(:ci_job_artifact, :archive, file_store: store) }
 
     context 'when local storage is used' do
       let(:store) { ObjectStoreUploader::LOCAL_STORE }
