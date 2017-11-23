@@ -1,169 +1,4 @@
 <script>
-<<<<<<< HEAD
-import Visibility from 'visibilityjs';
-import Flash from '../../flash';
-import EnvironmentsService from '../services/environments_service';
-import environmentTable from '../components/environments_table.vue';
-import EnvironmentsStore from '../stores/environments_store';
-import loadingIcon from '../../vue_shared/components/loading_icon.vue';
-import tablePagination from '../../vue_shared/components/table_pagination.vue';
-import Poll from '../../lib/utils/poll';
-import eventHub from '../event_hub';
-import environmentsMixin from '../mixins/environments_mixin';
-import { convertPermissionToBoolean, getParameterByName, setParamInURL } from '../../lib/utils/common_utils';
-
-export default {
-  components: {
-    environmentTable,
-    tablePagination,
-    loadingIcon,
-  },
-
-  mixins: [
-    environmentsMixin,
-  ],
-
-  data() {
-    const environmentsData = document.querySelector('#environments-folder-list-view').dataset;
-    const store = new EnvironmentsStore();
-    const pathname = window.location.pathname;
-    const endpoint = `${pathname}.json`;
-    const folderName = pathname.substr(pathname.lastIndexOf('/') + 1);
-
-    return {
-      store,
-      service: {},
-      folderName,
-      endpoint,
-      state: store.state,
-      visibility: 'available',
-      isLoading: false,
-      cssContainerClass: environmentsData.cssClass,
-      canCreateDeployment: environmentsData.canCreateDeployment,
-      canReadEnvironment: environmentsData.canReadEnvironment,
-      // Pagination Properties,
-      paginationInformation: {},
-      pageNumber: 1,
-    };
-  },
-
-  computed: {
-    scope() {
-      return getParameterByName('scope');
-    },
-
-    canReadEnvironmentParsed() {
-      return convertPermissionToBoolean(this.canReadEnvironment);
-    },
-
-    canCreateDeploymentParsed() {
-      return convertPermissionToBoolean(this.canCreateDeployment);
-    },
-
-    /**
-     * URL to link in the stopped tab.
-     *
-     * @return {String}
-     */
-    stoppedPath() {
-      return `${window.location.pathname}?scope=stopped`;
-    },
-
-    /**
-     * URL to link in the available tab.
-     *
-     * @return {String}
-     */
-    availablePath() {
-      return window.location.pathname;
-    },
-  },
-
-  /**
-   * Fetches all the environments and stores them.
-   * Toggles loading property.
-   */
-  created() {
-    const scope = getParameterByName('scope') || this.visibility;
-    const page = getParameterByName('page') || this.pageNumber;
-
-    this.service = new EnvironmentsService(this.endpoint);
-
-    const poll = new Poll({
-      resource: this.service,
-      method: 'get',
-      data: { scope, page },
-      successCallback: this.successCallback,
-      errorCallback: this.errorCallback,
-      notificationCallback: (isMakingRequest) => {
-        this.isMakingRequest = isMakingRequest;
-      },
-    });
-
-    if (!Visibility.hidden()) {
-      this.isLoading = true;
-      poll.makeRequest();
-    }
-
-    Visibility.change(() => {
-      if (!Visibility.hidden()) {
-        poll.restart();
-      } else {
-        poll.stop();
-      }
-    });
-
-    eventHub.$on('postAction', this.postAction);
-  },
-
-  beforeDestroyed() {
-    eventHub.$off('postAction');
-  },
-
-  methods: {
-
-    /**
-     * Toggles the visibility of the deploy boards of the clicked environment.
-     *
-     * @param  {Object} model
-     * @return {Object}
-     */
-    toggleDeployBoard(model) {
-      return this.store.toggleDeployBoard(model.id);
-    },
-
-    /**
-     * Will change the page number and update the URL.
-     *
-     * @param  {Number} pageNumber desired page to go to.
-     */
-    changePage(pageNumber) {
-      const param = setParamInURL('page', pageNumber);
-
-      gl.utils.visitUrl(param);
-      return param;
-    },
-
-    fetchEnvironments() {
-      const scope = getParameterByName('scope') || this.visibility;
-      const page = getParameterByName('page') || this.pageNumber;
-
-      this.isLoading = true;
-
-      return this.service.get({ scope, page })
-        .then(this.successCallback)
-        .catch(this.errorCallback);
-    },
-
-    successCallback(resp) {
-      this.saveData(resp);
-    },
-
-    errorCallback() {
-      this.isLoading = false;
-      // eslint-disable-next-line no-new
-      new Flash('An error occurred while fetching the environments.');
-=======
   import environmentsMixin from '../mixins/environments_mixin';
   import CIPaginationMixin from '../../vue_shared/mixins/ci_pagination_api_mixin';
 
@@ -189,12 +24,13 @@ export default {
         type: Boolean,
         required: true,
       },
->>>>>>> ce/master
     },
+
     mixins: [
       environmentsMixin,
       CIPaginationMixin,
     ],
+
     methods: {
       successCallback(resp) {
         this.saveData(resp);
@@ -212,64 +48,11 @@ export default {
         {{s__("Environments|Environments")}} / <b>{{folderName}}</b>
       </h4>
 
-<<<<<<< HEAD
-      <ul class="nav-links">
-        <li :class="{ 'active': scope === null || scope === 'available' }">
-          <a
-            :href="availablePath"
-            class="js-available-environments-folder-tab">
-            Available
-            <span class="badge js-available-environments-count">
-              {{state.availableCounter}}
-            </span>
-          </a>
-        </li>
-        <li :class="{ 'active' : scope === 'stopped' }">
-          <a
-            :href="stoppedPath"
-            class="js-stopped-environments-folder-tab">
-            Stopped
-            <span class="badge js-stopped-environments-count">
-              {{state.stoppedCounter}}
-            </span>
-          </a>
-        </li>
-      </ul>
-    </div>
-
-    <div class="environments-container">
-
-      <loading-icon
-        label="Loading environments"
-        v-if="isLoading"
-        size="3"
-        />
-
-      <div
-        class="table-holder"
-        v-if="!isLoading && state.environments.length > 0">
-
-        <environment-table
-          :environments="state.environments"
-          :can-create-deployment="canCreateDeploymentParsed"
-          :can-read-environment="canReadEnvironmentParsed"
-          :toggleDeployBoard="toggleDeployBoard"
-          :store="store"
-          :service="service"
-          />
-
-        <table-pagination
-          v-if="state.paginationInformation && state.paginationInformation.totalPages > 1"
-          :change="changePage"
-          :pageInfo="state.paginationInformation"/>
-      </div>
-=======
       <tabs
         :tabs="tabs"
         @onChangeTab="onChangeTab"
         scope="environments"
         />
->>>>>>> ce/master
     </div>
 
     <container
@@ -279,6 +62,6 @@ export default {
       :can-create-deployment="canCreateDeployment"
       :can-read-environment="canReadEnvironment"
       @onChangePage="onChangePage"
-    />
+      />
   </div>
 </template>
