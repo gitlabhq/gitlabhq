@@ -48,13 +48,32 @@
 
     created() {
       eventHub.$on('toggleFolder', this.toggleFolder);
+<<<<<<< HEAD
+=======
+      eventHub.$on('toggleDeployBoard', this.toggleDeployBoard);
+>>>>>>> origin/master
     },
 
     beforeDestroy() {
       eventHub.$off('toggleFolder');
+<<<<<<< HEAD
     },
 
     methods: {
+=======
+      eventHub.$off('toggleDeployBoard');
+    },
+
+    methods: {
+      /**
+       * Toggles the visibility of the deploy boards of the clicked environment.
+       * @param {Object} model
+       */
+      toggleDeployBoard(model) {
+        this.store.toggleDeployBoard(model.id);
+      },
+
+>>>>>>> origin/master
       toggleFolder(folder) {
         this.store.toggleFolder(folder);
 

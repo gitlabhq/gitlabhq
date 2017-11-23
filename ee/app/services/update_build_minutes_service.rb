@@ -18,10 +18,10 @@ class UpdateBuildMinutesService < BaseService
   end
 
   def project_statistics
-    project.statistics || project.create_statistics(namespace: namespace)
+    project.statistics || project.create_statistics(namespace: project.namespace)
   end
 
   def namespace
-    project.namespace
+    project.shared_runners_limit_namespace
   end
 end

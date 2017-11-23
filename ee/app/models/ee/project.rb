@@ -54,7 +54,7 @@ module EE
         to: :statistics, allow_nil: true
 
       delegate :actual_shared_runners_minutes_limit,
-        :shared_runners_minutes_used?, to: :namespace
+        :shared_runners_minutes_used?, to: :shared_runners_limit_namespace
 
       validates :repository_size_limit,
         numericality: { only_integer: true, greater_than_or_equal_to: 0, allow_nil: true }
@@ -79,6 +79,14 @@ module EE
       def with_slack_application_disabled
         joins('LEFT JOIN services ON services.project_id = projects.id AND services.type = \'GitlabSlackApplicationService\' AND services.active IS true')
           .where('services.id IS NULL')
+      end
+    end
+
+    def shared_runners_limit_namespace
+      if Feature.enabled?(:shared_runner_minutes_on_root_namespace)
+        root_namespace
+      else
+        namespace
       end
     end
 
@@ -190,11 +198,12 @@ module EE
     end
 
     def shared_runners_available?
-      super && !namespace.shared_runners_minutes_used?
+      super && !shared_runners_limit_namespace.shared_runners_minutes_used?
     end
 
     def shared_runners_minutes_limit_enabled?
-      !public? && shared_runners_enabled? && namespace.shared_runners_minutes_limit_enabled?
+      !public? && shared_runners_enabled? &&
+        shared_runners_limit_namespace.shared_runners_minutes_limit_enabled?
     end
 
     def feature_available?(feature, user = nil)

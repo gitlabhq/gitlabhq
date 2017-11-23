@@ -20,7 +20,8 @@
 
   = render 'groups/group_admin_settings', f: f
 
-  = render 'namespaces/shared_runners_minutes_setting', f: f
+  - if @group.shared_runner_minutes_supported?
+    = render 'namespaces/shared_runners_minutes_setting', f: f
 
   - if @group.new_record?
     .form-group

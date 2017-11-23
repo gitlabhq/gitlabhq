@@ -3474,4 +3474,27 @@ describe Project do
       expect(project.wiki_repository_exists?).to eq(false)
     end
   end
+
+  describe '#root_namespace' do
+    let(:project) { build(:project, namespace: parent) }
+
+    subject { project.root_namespace }
+
+    context 'when namespace has parent group' do
+      let(:root_ancestor) { create(:group) }
+      let(:parent) { build(:group, parent: root_ancestor) }
+
+      it 'returns root ancestor' do
+        is_expected.to eq(root_ancestor)
+      end
+    end
+
+    context 'when namespace is root ancestor' do
+      let(:parent) { build(:group) }
+
+      it 'returns current namespace' do
+        is_expected.to eq(parent)
+      end
+    end
+  end
 end

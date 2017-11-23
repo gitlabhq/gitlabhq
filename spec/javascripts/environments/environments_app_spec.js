@@ -128,7 +128,10 @@ describe('Environment', () => {
           setTimeout(() => {
             spyOn(component, 'updateContent');
             component.$el.querySelector('.js-environments-tab-stopped').click();
+<<<<<<< HEAD:spec/javascripts/environments/environments_app_spec.js
 
+=======
+>>>>>>> origin/master:spec/javascripts/environments/environments_app_spec.js
             expect(component.updateContent).toHaveBeenCalledWith({ scope: 'stopped', page: '1' });
             done();
           });

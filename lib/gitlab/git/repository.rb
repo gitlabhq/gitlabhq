@@ -1246,11 +1246,19 @@ module Gitlab
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/695
       def git_merged_branch_names(branch_names = [])
         root_sha = find_branch(root_ref).target
+<<<<<<< HEAD
 
         git_arguments =
           %W[branch --merged #{root_sha}
              --format=%(refname:short)\ %(objectname)] + branch_names
 
+=======
+
+        git_arguments =
+          %W[branch --merged #{root_sha}
+             --format=%(refname:short)\ %(objectname)] + branch_names
+
+>>>>>>> origin/master
         lines = run_git(git_arguments).first.lines
 
         lines.each_with_object([]) do |line, branches|
