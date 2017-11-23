@@ -5,18 +5,6 @@ import Translate from '../../vue_shared/translate';
 
 Vue.use(Translate);
 
-<<<<<<< HEAD
-document.addEventListener('DOMContentLoaded', () => {
-  // eslint-disable-next-line no-new
-  new Vue({
-    el: '#environments-folder-list-view',
-    components: {
-      'environments-folder-app': EnvironmentsFolderComponent,
-    },
-    render: createElement => createElement('environments-folder-app'),
-  });
-});
-=======
 document.addEventListener('DOMContentLoaded', () => new Vue({
   el: '#environments-folder-list-view',
   components: {
@@ -45,4 +33,3 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
     });
   },
 }));
->>>>>>> ce/master
