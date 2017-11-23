@@ -21,10 +21,7 @@ import tabs from '../../vue_shared/components/navigation_tabs.vue';
 import container from '../components/container.vue';
 
 export default {
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
   components: {
     environmentTable,
     container,
@@ -61,10 +58,7 @@ export default {
         }
       });
     },
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
     /**
      * Handles URL and query parameter changes.
      * When the user uses the pagination or the tabs,
