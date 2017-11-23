@@ -13,22 +13,24 @@ FactoryGirl.define do
       artifact.project ||= artifact.job.project
     end
 
-    after :create do |artifact|
-      if artifact.archive?
-        artifact.file = fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts.zip'),
-                                            'application/zip')
-        artifact.save
+    trait :archive do
+      after(:create) do |artifact, _|
+        artifact.update!(
+          file_type: :archive,
+          file: fixture_file_upload(
+            Rails.root.join('spec/fixtures/ci_build_artifacts.zip'), 'application/zip')
+        )
       end
     end
-  end
 
-  factory :ci_job_metadata, parent: :ci_job_artifact do
-    file_type :metadata
-
-    after :create do |artifact|
-      artifact.file = fixture_file_upload(Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'),
-                                            'application/x-gzip')
-      artifact.save
+    trait :metadata do
+      after(:create) do |artifact, _|
+        artifact.update!(
+          file_type: :metadata,
+          file: fixture_file_upload(
+            Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'), 'application/x-gzip')
+        )
+      end
     end
   end
 end

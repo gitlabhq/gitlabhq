@@ -67,4 +67,22 @@ describe LegacyArtifactUploader do
 
     it { is_expected.to be_nil }
   end
+
+  context 'file is stored in valid path' do
+    let(:file) do
+      fixture_file_upload(Rails.root.join(
+        'spec/fixtures/ci_build_artifacts.zip'), 'application/zip')
+    end
+
+    before do
+      uploader.store!(file)
+    end
+
+    subject { uploader.file.path }
+
+    it { is_expected.to start_with(path) }
+    it { is_expected.to include("/#{job.created_at.utc.strftime('%Y_%m')}/") }
+    it { is_expected.to include("/#{job.project_id.to_s}/") }
+    it { is_expected.to end_with("ci_build_artifacts.zip") }
+  end
 end

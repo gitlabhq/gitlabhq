@@ -40,7 +40,7 @@ describe MigrateOldArtifacts do
     end
 
     it "legacy artifacts are set" do
-      expect(build_with_legacy_artifacts.artifacts_file_identifier).not_to be_nil
+      expect(build_with_legacy_artifacts.legacy_artifacts_file_identifier).not_to be_nil
     end
 
     describe '#min_id' do

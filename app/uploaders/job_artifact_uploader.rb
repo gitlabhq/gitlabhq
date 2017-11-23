@@ -6,7 +6,7 @@ class JobArtifactUploader < ObjectStoreUploader
   end
 
   def self.artifacts_upload_path
-    File.join(self.local_artifacts_store, 'tmp/uploads/')
+    File.join(self.local_store_path, 'tmp/uploads/')
   end
 
   def size

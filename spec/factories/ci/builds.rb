@@ -167,8 +167,8 @@ FactoryGirl.define do
 
     trait :artifacts do
       after(:create) do |build|
-        create(:ci_job_artifact, job: build)
-        create(:ci_job_metadata, job: build)
+        create(:ci_job_artifact, :archive, job: build)
+        create(:ci_job_artifact, :metadata, job: build)
         build.reload
       end
     end
