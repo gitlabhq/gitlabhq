@@ -6,6 +6,10 @@ describe ObjectStoreUploader do
   let(:object) { double }
   let(:uploader) { uploader_class.new(object, :file) }
 
+  before do
+    allow(object.class).to receive(:uploader_option).with(:file, :mount_on) { nil }
+  end
+
   describe '#object_store' do
     it "calls artifacts_file_store on object" do
       expect(object).to receive(:file_store)
@@ -83,7 +87,7 @@ describe ObjectStoreUploader do
   end
 
   context 'when using JobArtifactsUploader' do
-    let(:artifact) { create(:ci_job_artifact, file_store: store) }
+    let(:artifact) { create(:ci_job_artifact, :archive, file_store: store) }
     let(:uploader) { artifact.file }
 
     context 'checking described_class' do
@@ -130,7 +134,7 @@ describe ObjectStoreUploader do
     end
 
     describe '#migrate!' do
-      let(:artifact) { create(:ci_job_artifact, file_store: store) }
+      let(:artifact) { create(:ci_job_artifact, :archive, file_store: store) }
       let(:uploader) { artifact.file }
       let(:store) { described_class::LOCAL_STORE }
 
