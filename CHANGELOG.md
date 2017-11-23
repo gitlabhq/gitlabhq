@@ -2,6 +2,28 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.2.2 (2017-11-23)
+
+### Fixed (5 changes)
+
+- Label addition/removal are not going to be redacted wrongfully in the API. !15080
+- Fix bitbucket wiki import with hashed storage enabled. !15490
+- Impersonation no longer gets stuck on password change. !15497
+- Fix blank states using old css.
+- Fix promoting milestone updating all issuables without milestone.
+
+### Performance (3 changes)
+
+- Update Issue Boards to fetch the notification subscription status asynchronously.
+- Update composite pipelines index to include "id".
+- Use arrays in Pipeline#latest_builds_with_artifacts.
+
+### Other (2 changes)
+
+- Don't move repositories and attachments for projects using hashed storage. !15479
+- Add logs for monitoring the merge process.
+
+
 ## 10.2.1 (2017-11-22)
 
 ### Fixed (1 change)
