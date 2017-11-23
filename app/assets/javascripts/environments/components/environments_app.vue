@@ -48,19 +48,11 @@
 
     created() {
       eventHub.$on('toggleFolder', this.toggleFolder);
-<<<<<<< HEAD
-=======
       eventHub.$on('toggleDeployBoard', this.toggleDeployBoard);
->>>>>>> origin/master
     },
 
     beforeDestroy() {
       eventHub.$off('toggleFolder');
-<<<<<<< HEAD
-    },
-
-    methods: {
-=======
       eventHub.$off('toggleDeployBoard');
     },
 
@@ -73,7 +65,6 @@
         this.store.toggleDeployBoard(model.id);
       },
 
->>>>>>> origin/master
       toggleFolder(folder) {
         this.store.toggleFolder(folder);
 
