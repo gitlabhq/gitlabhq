@@ -57,7 +57,7 @@ describe ObjectStorageUploadWorker do
 
     before do
       # Mock the legacy way of artifacts
-      path = Rails.root.join('shared/artifacts',
+      path = Rails.root.join(uploader_class.local_store_path,
                   build.created_at.utc.strftime('%Y_%m'),
                   build.project_id.to_s,
                   build.id.to_s)

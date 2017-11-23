@@ -118,9 +118,10 @@ describe Projects::ArtifactsController do
     context 'when the file exists' do
       let(:path) { 'ci_artifacts.txt' }
       let(:job) { create(:ci_build, :success, pipeline: pipeline) }
-      let!(:artifact) { create(:ci_job_artifact, job: job, file_store: store) }
 
       shared_examples 'a valid file' do
+        let!(:artifact) { create(:ci_job_artifact, job: job, file_store: store) }
+
         it 'serves the file using workhorse' do
           subject
 

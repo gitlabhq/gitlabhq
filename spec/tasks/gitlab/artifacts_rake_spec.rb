@@ -5,6 +5,12 @@ describe 'gitlab:artifacts namespace rake task' do
     Rake.application.rake_require 'tasks/gitlab/artifacts'
   end
 
+  let(:object_storage_enabled) { false }  
+
+  before do
+    stub_artifacts_object_storage(enabled: object_storage_enabled)
+  end
+
   subject { run_rake_task('gitlab:artifacts:migrate') }
 
   context 'legacy artifacts' do
@@ -13,7 +19,7 @@ describe 'gitlab:artifacts namespace rake task' do
 
       before do
         # Mock the legacy way of artifacts
-        path = Rails.root.join('shared/artifacts',
+        path = Rails.root.join(ArtifactUploader.local_store_path,
                                build.created_at.utc.strftime('%Y_%m'),
                                build.project_id.to_s,
                                build.id.to_s)
@@ -36,13 +42,13 @@ describe 'gitlab:artifacts namespace rake task' do
         let(:store) { ObjectStoreUploader::LOCAL_STORE }
 
         context 'and job does not have file store defined' do
+          let(:object_storage_enabled) { true }
+
           before do
             build.update(artifacts_file_store: nil)
           end
 
           it "migrates file to remote storage" do
-            stub_artifacts_object_storage
-
             subject
 
             expect(build.reload.artifacts_file_store).to eq(ObjectStoreUploader::REMOTE_STORE)
@@ -51,9 +57,9 @@ describe 'gitlab:artifacts namespace rake task' do
         end
 
         context 'and remote storage is defined' do
-          it "migrates file to remote storage" do
-            stub_artifacts_object_storage
+          let(:object_storage_enabled) { true }
 
+          it "migrates file to remote storage" do
             subject
 
             expect(build.reload.artifacts_file_store).to eq(ObjectStoreUploader::REMOTE_STORE)
@@ -72,11 +78,11 @@ describe 'gitlab:artifacts namespace rake task' do
       end
 
       context 'when remote storage is used' do
+        let(:object_storage_enabled) { true }
+
         let(:store) { ObjectStoreUploader::REMOTE_STORE }
 
         it "file stays on remote storage" do
-          stub_artifacts_object_storage
-
           subject
 
           expect(build.reload.artifacts_file_store).to eq(ObjectStoreUploader::REMOTE_STORE)
@@ -87,19 +93,16 @@ describe 'gitlab:artifacts namespace rake task' do
   end
 
   context 'job artifacts' do
-    let(:artifact) { create(:ci_job_artifact, file_store: store) }
+    let!(:artifact) { create(:ci_job_artifact, file_store: store) }
 
     context 'when local storage is used' do
       let(:store) { ObjectStoreUploader::LOCAL_STORE }
 
       context 'and job does not have file store defined' do
-        before do
-          artifact.update(file_store: nil)
-        end
+        let(:object_storage_enabled) { true }
+        let(:store) { nil }
 
         it "migrates file to remote storage" do
-          stub_artifacts_object_storage
-
           subject
 
           expect(artifact.reload.file_store).to eq(ObjectStoreUploader::REMOTE_STORE)
@@ -107,9 +110,9 @@ describe 'gitlab:artifacts namespace rake task' do
       end
 
       context 'and remote storage is defined' do
-        it "migrates file to remote storage" do
-          stub_artifacts_object_storage
+        let(:object_storage_enabled) { true }
 
+        it "migrates file to remote storage" do
           subject
 
           expect(artifact.reload.file_store).to eq(ObjectStoreUploader::REMOTE_STORE)
@@ -126,11 +129,10 @@ describe 'gitlab:artifacts namespace rake task' do
     end
 
     context 'when remote storage is used' do
+      let(:object_storage_enabled) { true }
       let(:store) { ObjectStoreUploader::REMOTE_STORE }
 
       it "file stays on remote storage" do
-        stub_artifacts_object_storage
-
         subject
 
         expect(artifact.reload.file_store).to eq(ObjectStoreUploader::REMOTE_STORE)
