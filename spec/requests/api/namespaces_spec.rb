@@ -95,19 +95,36 @@ describe API::Namespaces do
   describe 'GET /namespaces/:id' do
     let(:owned_group) { group1 }
 
+    shared_examples 'can access namespace' do
+      it 'returns namespace details' do
+        get api("/namespaces/#{namespace_id}", request_actor)
+
+        expect(response).to have_gitlab_http_status(200)
+
+        expect(json_response['id']).to eq(requested_namespace.id)
+        expect(json_response['path']).to eq(requested_namespace.path)
+        expect(json_response['name']).to eq(requested_namespace.name)
+      end
+    end
+
     shared_examples 'namespace reader' do
+      let(:requested_namespace) { owned_group }
+
       before do
         owned_group.add_owner(request_actor)
       end
 
       context 'when namespace exists' do
-        it 'returns namespace details' do
-          get api("/namespaces/#{owned_group.id}", request_actor)
+        context 'when requested by ID' do
+          let(:namespace_id) { owned_group.id }
 
-          expect(response).to have_gitlab_http_status(200)
+          it_behaves_like 'can access namespace'
+        end
 
-          expect(json_response['id']).to eq(owned_group.id)
-          expect(json_response['name']).to eq(owned_group.name)
+        context 'when requested by path' do
+          let(:namespace_id) { owned_group.path }
+
+          it_behaves_like 'can access namespace'
         end
       end
 
@@ -132,10 +149,10 @@ describe API::Namespaces do
       let(:request_actor) { user }
 
       context 'when requested namespace is not owned by user' do
-        it 'returns authentication error' do
+        it 'returns not-found' do
           get api("/namespaces/#{group2.id}", request_actor)
 
-          expect(response).to have_gitlab_http_status(403)
+          expect(response).to have_gitlab_http_status(404)
         end
       end
 
@@ -148,11 +165,10 @@ describe API::Namespaces do
       let(:request_actor) { admin }
 
       context 'when requested namespace is not owned by user' do
-        it 'returns authentication error' do
-          get api("/namespaces/#{group2.id}", request_actor)
+        let(:namespace_id) { group2.id }
+        let(:requested_namespace) { group2 }
 
-          expect(response).to have_gitlab_http_status(200)
-        end
+        it_behaves_like 'can access namespace'
       end
 
       context 'when requested namespace is owned by user' do
