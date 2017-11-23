@@ -88,17 +88,6 @@
     border-color: $border-dark;
     color: $color;
   }
-
-  svg {
-
-    path {
-      fill: $color;
-    }
-
-    use {
-      stroke: $color;
-    }
-  }
 }
 
 @mixin btn-green {
