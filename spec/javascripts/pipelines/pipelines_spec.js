@@ -187,34 +187,6 @@ describe('Pipelines', () => {
           store: new Store(),
         });
         component.updateContent({ scope: 'finished', page: '4' });
-<<<<<<< HEAD
-
-        expect(component.page).toEqual('4');
-        expect(component.scope).toEqual('finished');
-        expect(component.requestData.scope).toEqual('finished');
-        expect(component.requestData.page).toEqual('4');
-      });
-    });
-
-    describe('onChangeTab', () => {
-      it('should set page to 1', () => {
-        component = mountComponent(PipelinesComponent, {
-          store: new Store(),
-        });
-        spyOn(component, 'updateContent');
-
-        component.onChangeTab('running');
-
-        expect(component.updateContent).toHaveBeenCalledWith({ scope: 'running', page: '1' });
-      });
-    });
-
-    describe('onChangePage', () => {
-      it('should update page and keep scope', () => {
-        component = mountComponent(PipelinesComponent, {
-          store: new Store(),
-        });
-=======
 
         expect(component.page).toEqual('4');
         expect(component.scope).toEqual('finished');
@@ -243,7 +215,6 @@ describe('Pipelines', () => {
           store: new Store(),
         });
 
->>>>>>> origin/master
         spyOn(component, 'updateContent');
 
         component.onChangePage(4);
