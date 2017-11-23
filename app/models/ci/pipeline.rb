@@ -505,7 +505,10 @@ module Ci
     end
 
     def latest_builds_with_artifacts
-      @latest_builds_with_artifacts ||= builds.latest.with_artifacts
+      # We purposely cast the builds to an Array here. Because we always use the
+      # rows if there are more than 0 this prevents us from having to run two
+      # queries: one to get the count and one to get the rows.
+      @latest_builds_with_artifacts ||= builds.latest.with_artifacts.to_a
     end
 
     private

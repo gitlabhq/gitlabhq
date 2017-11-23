@@ -218,8 +218,8 @@ production:
              --volume /var/run/docker.sock:/var/run/docker.sock \
              --volume /tmp/cc:/tmp/cc"
 
-    docker run ${cc_opts} codeclimate/codeclimate init
-    docker run ${cc_opts} codeclimate/codeclimate analyze -f json > codeclimate.json
+    docker run ${cc_opts} codeclimate/codeclimate:0.69.0 init
+    docker run ${cc_opts} codeclimate/codeclimate:0.69.0 analyze -f json > codeclimate.json
   }
 
   function deploy() {

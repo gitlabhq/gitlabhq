@@ -212,7 +212,11 @@ class ApplicationController < ActionController::Base
   end
 
   def check_password_expiration
-    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now && !current_user.ldap_user?
+    return if session[:impersonator_id] || current_user&.ldap_user?
+
+    password_expires_at = current_user&.password_expires_at
+
+    if password_expires_at && password_expires_at < Time.now
       return redirect_to new_profile_password_path
     end
   end

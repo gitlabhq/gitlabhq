@@ -110,6 +110,7 @@ class Note < ActiveRecord::Base
     includes(:author, :noteable, :updated_by,
              project: [:project_members, { group: [:group_members] }])
   end
+  scope :with_metadata, -> { includes(:system_note_metadata) }
 
   after_initialize :ensure_discussion_id
   before_validation :nullify_blank_type, :nullify_blank_line_code
@@ -169,7 +170,13 @@ class Note < ActiveRecord::Base
   end
 
   def cross_reference?
-    system? && matches_cross_reference_regex?
+    return unless system?
+
+    if force_cross_reference_regex_check?
+      matches_cross_reference_regex?
+    else
+      SystemNoteService.cross_reference?(note)
+    end
   end
 
   def diff_note?
@@ -381,5 +388,11 @@ class Note < ActiveRecord::Base
 
   def set_discussion_id
     self.discussion_id ||= discussion_class.discussion_id(self)
+  end
+
+  def force_cross_reference_regex_check?
+    return unless system?
+
+    SystemNoteMetadata::TYPES_WITH_CROSS_REFERENCES.include?(system_note_metadata&.action)
   end
 end
