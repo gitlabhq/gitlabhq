@@ -65,7 +65,7 @@ Below is the table of events users can be notified of:
 | Group access level changed   | User                                                              | Sent when user group access level is changed |
 | Project moved                | Project members [1]                                               | [1] not disabled |
 
-### Issue / Merge Request events
+### Issue / Merge request events
 
 In all of the below cases, the notification will be sent to:
 - Participants:

@@ -105,7 +105,7 @@ describe 'Admin::Hooks' do
 
         fill_in 'hook_url', with: url
         uncheck 'Repository update events'
-        check 'Merge Request events'
+        check 'Merge request events'
 
         expect { click_button 'Add system hook' }.to change(SystemHook, :count).by(1)
         expect(current_path).to eq(admin_hooks_path)
