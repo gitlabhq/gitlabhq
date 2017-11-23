@@ -13,16 +13,65 @@ describe Gitlab::Metrics::MethodCall do
       expect(method_call.call_count).to eq(1)
     end
 
-    it 'observes the performance of the supplied block' do
-      expect(described_class.call_real_duration_histogram)
-        .to receive(:observe)
-              .with({ module: :Foo, method: '#bar' }, be_a_kind_of(Numeric))
+    context 'when measurement is above threshold' do
+      before do
+        allow(method_call).to receive(:above_threshold?).and_return(true)
+      end
 
-      expect(described_class.call_cpu_duration_histogram)
-        .to receive(:observe)
-              .with({ module: :Foo, method: '#bar' }, be_a_kind_of(Numeric))
+      context 'prometheus instrumentation is enabled' do
+        before do
+          allow(Gitlab::CurrentSettings).to receive(:current_application_settings)
+                                              .and_return(prometheus_metrics_method_instrumentation_enabled: true)
+        end
 
-      method_call.measure { 'foo' }
+        it 'observes the performance of the supplied block' do
+          expect(described_class.call_real_duration_histogram)
+            .to receive(:observe)
+                  .with({ module: :Foo, method: '#bar' }, be_a_kind_of(Numeric))
+
+          expect(described_class.call_cpu_duration_histogram)
+            .to receive(:observe)
+                  .with({ module: :Foo, method: '#bar' }, be_a_kind_of(Numeric))
+
+          method_call.measure { 'foo' }
+        end
+      end
+
+      context 'prometheus instrumentation is disabled' do
+        before do
+          allow(Gitlab::CurrentSettings).to receive(:current_application_settings)
+                                              .and_return(prometheus_metrics_method_instrumentation_enabled: false)
+        end
+
+        it 'does not observe the performance' do
+          expect(described_class.call_real_duration_histogram)
+            .not_to receive(:observe)
+
+          expect(described_class.call_cpu_duration_histogram)
+            .not_to receive(:observe)
+
+          method_call.measure { 'foo' }
+        end
+      end
+    end
+
+    context 'when measurement is below threshold' do
+      before do
+        allow(method_call).to receive(:above_threshold?).and_return(false)
+
+        allow(Gitlab::CurrentSettings).to receive(:current_application_settings)
+                                            .and_return(prometheus_metrics_method_instrumentation_enabled: true)
+      end
+
+      it 'does not observe the performance' do
+        expect(described_class.call_real_duration_histogram)
+          .not_to receive(:observe)
+
+        expect(described_class.call_cpu_duration_histogram)
+          .not_to receive(:observe)
+
+        method_call.measure { 'foo' }
+      end
     end
   end
 
