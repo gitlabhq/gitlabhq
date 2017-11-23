@@ -13,7 +13,7 @@
     },
     computed: {
       iconName() {
-        return this.file.tempFile ? 'file-addition' : 'file-modifed';
+        return this.file.tempFile ? 'file-addition' : 'file-modified';
       },
       iconClass() {
         return `multi-file-${this.file.tempFile ? 'addition' : 'modified'} append-right-8`;
