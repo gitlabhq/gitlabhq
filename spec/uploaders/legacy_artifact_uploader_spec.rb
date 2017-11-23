@@ -3,7 +3,7 @@ require 'rails_helper'
 describe LegacyArtifactUploader do
   let(:store) { described_class::LOCAL_STORE }
   let(:job) { create(:ci_build, artifacts_file_store: store) }
-  let(:uploader) { described_class.new(job, :artifacts_file) }
+  let(:uploader) { described_class.new(job, :legacy_artifacts_file) }
   let(:local_path) { Gitlab.config.artifacts.path }
 
   describe '.local_store_path' do
@@ -80,7 +80,7 @@ describe LegacyArtifactUploader do
 
     subject { uploader.file.path }
 
-    it { is_expected.to start_with(path) }
+    it { is_expected.to start_with(local_path) }
     it { is_expected.to include("/#{job.created_at.utc.strftime('%Y_%m')}/") }
     it { is_expected.to include("/#{job.project_id.to_s}/") }
     it { is_expected.to end_with("ci_build_artifacts.zip") }
