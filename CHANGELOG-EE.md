@@ -1,5 +1,21 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.2.2 (2017-11-23)
+
+### Fixed (6 changes)
+
+- Fix in-progress repository syncs counting as failed. !3424
+- Don't user issuable_sort cookie for epics collection.
+- Enable scoped boards for Early Adopters.
+- Account shared runner minutes to top-level namespace.
+- Geo - Ensure that LFS object deletions are communicated to the secondary.
+- Disable file attachments for epics.
+
+### Other (1 change)
+
+- Document a failure mode for large repositories in Geo. !3500
+
+
 ## 10.2.1 (2017-11-22)
 
 - No changes.
