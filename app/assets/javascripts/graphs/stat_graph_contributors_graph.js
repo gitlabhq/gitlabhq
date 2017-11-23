@@ -13,7 +13,7 @@ import {
   area as d3Area,
   brush as d3Brush,
   timeParse as d3TimeParse,
-} from 'd3';
+} from '../common_d3/index';
 
 const extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 const hasProp = {}.hasOwnProperty;

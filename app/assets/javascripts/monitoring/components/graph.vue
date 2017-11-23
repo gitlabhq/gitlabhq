@@ -7,7 +7,7 @@
     max as d3Max,
     extent as d3Extent,
     select as d3Select,
-    } from 'd3';
+    } from '../../common_d3/index';
   import GraphLegend from './graph/legend.vue';
   import GraphFlag from './graph/flag.vue';
   import GraphDeployment from './graph/deployment.vue';

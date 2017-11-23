@@ -4,7 +4,7 @@ import {
   scaleLinear as d3ScaleLinear,
   scaleTime as d3ScaleTime,
   timeParse as d3TimeParse,
-} from 'd3';
+} from '~/common_d3/index';
 import { ContributorsGraph, ContributorsMasterGraph } from '~/graphs/stat_graph_contributors_graph';
 
 describe("ContributorsGraph", function () {

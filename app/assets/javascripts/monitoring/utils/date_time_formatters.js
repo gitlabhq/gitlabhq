@@ -1,6 +1,6 @@
 import {
   timeFormat as d3TimeFormat,
-  bisector } from 'd3';
+  bisector } from '../../common_d3/index';
 
 export const dateFormat = d3TimeFormat('%b %-d, %Y');
 export const timeFormat = d3TimeFormat('%-I:%M%p');

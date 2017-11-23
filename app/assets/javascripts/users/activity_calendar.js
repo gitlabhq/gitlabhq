@@ -3,7 +3,7 @@ import {
   select as d3Select,
   scaleLinear as d3ScaleLinear,
   scaleThreshold as d3ScaleThreshold,
-} from 'd3';
+} from '../common_d3/index';
 import { getDayName, getDayDifference } from '../lib/utils/datetime_utility';
 
 const LOADING_HTML = `

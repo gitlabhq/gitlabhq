@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import {
   scaleLinear as d3ScaleLinear,
   scaleTime as d3ScaleTime,
@@ -7,8 +8,7 @@ import {
   max as d3Max,
   timeMinute as d3TimeMinute,
   curveLinear as d3CurveLinear,
-} from 'd3';
-import _ from 'underscore';
+} from '../../common_d3/index';
 
 const defaultColorPalette = {
   blue: ['#1f78d1', '#8fbce8'],
