@@ -1,5 +1,5 @@
 module Geo
-  class RegistryFinder
+  class FileRegistryFinder
     attr_reader :current_node
 
     def initialize(current_node: nil)

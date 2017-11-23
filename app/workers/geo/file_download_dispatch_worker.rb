@@ -13,7 +13,7 @@ module Geo
     end
 
     def finder
-      @finder ||= RegistryFinder.new(current_node: current_node)
+      @finder ||= FileRegistryFinder.new(current_node: current_node)
     end
 
     # Pools for new resources to be transferred
