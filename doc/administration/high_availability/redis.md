@@ -571,8 +571,7 @@ or a failover promotes a different **Master** node.
 In `/etc/gitlab/gitlab.rb`:
 
 ```ruby
-redis_master_role['enable'] = true
-redis_sentinel_role['enable'] = true
+roles ['redis_sentinel_role', 'redis_master_role']
 redis['bind'] = '10.0.0.1'
 redis['port'] = 6379
 redis['password'] = 'redis-password-goes-here'
@@ -594,8 +593,7 @@ sentinel['quorum'] = 2
 In `/etc/gitlab/gitlab.rb`:
 
 ```ruby
-redis_slave_role['enable'] = true
-redis_sentinel_role['enable'] = true
+roles ['redis_sentinel_role', 'redis_slave_role']
 redis['bind'] = '10.0.0.2'
 redis['port'] = 6379
 redis['password'] = 'redis-password-goes-here'
@@ -617,8 +615,7 @@ sentinel['quorum'] = 2
 In `/etc/gitlab/gitlab.rb`:
 
 ```ruby
-redis_slave_role['enable'] = true
-redis_sentinel_role['enable'] = true
+roles ['redis_sentinel_role', 'redis_slave_role']
 redis['bind'] = '10.0.0.3'
 redis['port'] = 6379
 redis['password'] = 'redis-password-goes-here'
