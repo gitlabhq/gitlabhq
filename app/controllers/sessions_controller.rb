@@ -64,7 +64,7 @@ class SessionsController < Devise::SessionsController
 
     user = User.admins.last
 
-    return unless user && user.require_password_creation?
+    return unless user && user.require_password_creation_for_web?
 
     Users::UpdateService.new(current_user, user: user).execute do |user|
       @token = user.generate_reset_token

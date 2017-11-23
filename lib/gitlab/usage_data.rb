@@ -113,7 +113,7 @@ module Gitlab
 
       def features_usage_data_ce
         {
-          signup: current_application_settings.signup_enabled?,
+          signup: current_application_settings.allow_signup?,
           ldap: Gitlab.config.ldap.enabled,
           gravatar: current_application_settings.gravatar_enabled?,
           omniauth: Gitlab.config.omniauth.enabled,

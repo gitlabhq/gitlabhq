@@ -39,6 +39,12 @@ immediately block all access.
 >**Note**: GitLab EE supports a configurable sync time, with a default
 of one hour.
 
+## Git password authentication
+
+LDAP-enabled users can always authenticate with Git using their GitLab username
+or email and LDAP password, even if password authentication for Git is disabled
+in the application settings.
+
 ## Configuration
 
 To enable LDAP integration you need to add your LDAP server settings in

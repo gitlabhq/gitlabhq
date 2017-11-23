@@ -289,7 +289,8 @@ class ApplicationSetting < ActiveRecord::Base
       koding_url: nil,
       max_artifacts_size: Settings.artifacts['max_size'],
       max_attachment_size: Settings.gitlab['max_attachment_size'],
-      password_authentication_enabled: Settings.gitlab['password_authentication_enabled'],
+      password_authentication_enabled_for_web: Settings.gitlab['signin_enabled'],
+      password_authentication_enabled_for_git: true,
       performance_bar_allowed_group_id: nil,
       rsa_key_restriction: 0,
       plantuml_enabled: false,
@@ -519,6 +520,14 @@ class ApplicationSetting < ActiveRecord::Base
     attr_name = "#{type}_key_restriction"
 
     has_attribute?(attr_name) ? public_send(attr_name) : FORBIDDEN_KEY_VALUE # rubocop:disable GitlabSecurity/PublicSend
+  end
+
+  def allow_signup?
+    signup_enabled? && password_authentication_enabled_for_web?
+  end
+
+  def password_authentication_enabled?
+    password_authentication_enabled_for_web? || password_authentication_enabled_for_git?
   end
 
   private

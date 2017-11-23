@@ -29,12 +29,12 @@ describe API::V3::Settings, 'Settings' do
 
       it "updates application settings" do
         put v3_api("/application/settings", admin),
-          default_projects_limit: 3, password_authentication_enabled: false, repository_storage: 'custom', koding_enabled: true, koding_url: 'http://koding.example.com',
+          default_projects_limit: 3, password_authentication_enabled_for_web: false, repository_storage: 'custom', koding_enabled: true, koding_url: 'http://koding.example.com',
           plantuml_enabled: true, plantuml_url: 'http://plantuml.example.com'
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['default_projects_limit']).to eq(3)
-        expect(json_response['password_authentication_enabled']).to be_falsey
+        expect(json_response['password_authentication_enabled_for_web']).to be_falsey
         expect(json_response['repository_storage']).to eq('custom')
         expect(json_response['repository_storages']).to eq(['custom'])
         expect(json_response['koding_enabled']).to be_truthy
