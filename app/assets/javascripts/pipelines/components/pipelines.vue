@@ -171,10 +171,7 @@
        */
       updateContent(parameters) {
         this.updateInternalState(parameters);
-<<<<<<< HEAD
 
-=======
->>>>>>> origin/master
         // fetch new data
         return this.service.getPipelines(this.requestData)
           .then((response) => {
