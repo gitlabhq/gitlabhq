@@ -72,7 +72,6 @@ import './project_import';
 import './projects_dropdown';
 import './projects_list';
 import './syntax_highlight';
-import './render_math';
 import './render_gfm';
 import './right_sidebar';
 import './search';
