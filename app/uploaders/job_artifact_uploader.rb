@@ -10,21 +10,21 @@ class JobArtifactUploader < ObjectStoreUploader
   end
 
   def size
-    return super if subject.size.nil?
+    return super if model.size.nil?
 
-    subject.size
+    model.size
   end
 
   private
 
   def default_path
-    creation_date = subject.created_at.utc.strftime('%Y_%m_%d')
+    creation_date = model.created_at.utc.strftime('%Y_%m_%d')
 
     File.join(disk_hash[0..1], disk_hash[2..3], disk_hash,
-              creation_date, subject.job_id.to_s, subject.id.to_s)
+              creation_date, model.job_id.to_s, model.id.to_s)
   end
 
   def disk_hash
-    @disk_hash ||= Digest::SHA2.hexdigest(subject.project_id.to_s)
+    @disk_hash ||= Digest::SHA2.hexdigest(model.project_id.to_s)
   end
 end

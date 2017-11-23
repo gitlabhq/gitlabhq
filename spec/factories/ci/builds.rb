@@ -154,6 +154,17 @@ FactoryGirl.define do
       runner factory: :ci_runner
     end
 
+    trait :legacy_artifacts do
+      after(:create) do |build, _|
+        build.update!(
+          legacy_artifacts_file: fixture_file_upload(
+            Rails.root.join('spec/fixtures/ci_build_artifacts.zip'), 'application/zip'),
+          legacy_artifacts_metadata: fixture_file_upload(
+            Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'), 'application/x-gzip')
+        )
+      end
+    end
+
     trait :artifacts do
       after(:create) do |build|
         create(:ci_job_artifact, job: build)

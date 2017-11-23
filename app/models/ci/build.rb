@@ -50,8 +50,8 @@ module Ci
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
     scope :ref_protected, -> { where(protected: true) }
 
-    mount_uploader :artifacts_file, ArtifactUploader
-    mount_uploader :artifacts_metadata, ArtifactUploader
+    mount_uploader :legacy_artifacts_file, LegacyArtifactUploader, mount_on: :artifacts_file
+    mount_uploader :legacy_artifacts_metadata, LegacyArtifactUploader, mount_on: :artifacts_metadata
 
     acts_as_taggable
 
