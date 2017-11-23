@@ -95,11 +95,7 @@ describe('Environments Folder View', () => {
     it('should render parent folder name', (done) => {
       setTimeout(() => {
         expect(
-<<<<<<< HEAD
-          component.$el.querySelector('.js-folder-name').textContent.trim(),
-=======
           component.$el.querySelector('.js-folder-name').textContent,
->>>>>>> origin/master
         ).toContain('Environments / review');
         done();
       }, 0);
@@ -111,30 +107,10 @@ describe('Environments Folder View', () => {
           expect(
             component.$el.querySelectorAll('.gl-pagination'),
           ).not.toBeNull();
-<<<<<<< HEAD
           done();
         }, 0);
       });
 
-      it('should make an API request when changing page', (done) => {
-        spyOn(component, 'updateContent');
-        setTimeout(() => {
-          component.$el.querySelector('.gl-pagination .js-last-button a').click();
-
-          expect(component.updateContent).toHaveBeenCalledWith({ scope: component.scope, page: '10' });
-=======
->>>>>>> origin/master
-          done();
-        }, 0);
-      });
-
-<<<<<<< HEAD
-      it('should make an API request when using tabs', (done) => {
-        setTimeout(() => {
-          spyOn(component, 'updateContent');
-          component.$el.querySelector('.js-environments-tab-stopped').click();
-
-=======
       it('should make an API request when changing page', (done) => {
         spyOn(component, 'updateContent');
         setTimeout(() => {
@@ -148,7 +124,6 @@ describe('Environments Folder View', () => {
         setTimeout(() => {
           spyOn(component, 'updateContent');
           component.$el.querySelector('.js-environments-tab-stopped').click();
->>>>>>> origin/master
           expect(component.updateContent).toHaveBeenCalledWith({ scope: 'stopped', page: '1' });
           done();
         });
