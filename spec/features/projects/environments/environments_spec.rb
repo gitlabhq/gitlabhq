@@ -14,8 +14,10 @@ feature 'Environments page', :js do
     it 'shows "Available" and "Stopped" tab with links' do
       visit_environments(project)
 
-      expect(page).to have_link('Available')
-      expect(page).to have_link('Stopped')
+      expect(page).to have_selector('.js-environments-tab-available')
+      expect(page).to have_content('Available')
+      expect(page).to have_selector('.js-environments-tab-stopped')
+      expect(page).to have_content('Stopped')
     end
 
     describe 'with one available environment' do
@@ -75,8 +77,8 @@ feature 'Environments page', :js do
     it 'does not show environments and counters are set to zero' do
       expect(page).to have_content('You don\'t have any environments right now.')
 
-      expect(page.find('.js-available-environments-count').text).to eq('0')
-      expect(page.find('.js-stopped-environments-count').text).to eq('0')
+      expect(page.find('.js-environments-tab-available .badge').text).to eq('0')
+      expect(page.find('.js-environments-tab-stopped .badge').text).to eq('0')
     end
   end
 
@@ -93,8 +95,8 @@ feature 'Environments page', :js do
       it 'shows environments names and counters' do
         expect(page).to have_link(environment.name)
 
-        expect(page.find('.js-available-environments-count').text).to eq('1')
-        expect(page.find('.js-stopped-environments-count').text).to eq('0')
+        expect(page.find('.js-environments-tab-available .badge').text).to eq('1')
+        expect(page.find('.js-environments-tab-stopped .badge').text).to eq('0')
       end
 
       it 'does not show deployments' do
@@ -294,11 +296,32 @@ feature 'Environments page', :js do
     end
   end
 
+  describe 'environments folders view' do
+    before do
+      create(:environment, project: project,
+                           name: 'staging.review/review-1',
+                           state: :available)
+      create(:environment, project: project,
+                           name: 'staging.review/review-2',
+                           state: :available)
+    end
+
+    scenario 'user opens folder view' do
+      visit folder_project_environments_path(project, 'staging.review')
+      wait_for_requests
+
+      expect(page).to have_content('Environments / staging.review')
+      expect(page).to have_content('review-1')
+      expect(page).to have_content('review-2')
+    end
+  end
+
   def have_terminal_button
     have_link(nil, href: terminal_project_environment_path(project, environment))
   end
 
   def visit_environments(project, **opts)
     visit project_environments_path(project, **opts)
+    wait_for_requests
   end
 end
