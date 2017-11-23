@@ -137,7 +137,7 @@ describe ProjectStatistics do
 
     before do
       create(:ci_build, pipeline: pipeline, artifacts_size: 56.megabytes)
-      create(:ci_job_artifact, project: pipeline.project, job: ci_build)
+      create(:ci_job_artifact, :archive, project: pipeline.project, job: ci_build)
 
       statistics.update_build_artifacts_size
     end

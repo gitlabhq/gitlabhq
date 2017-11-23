@@ -5,8 +5,8 @@ describe LegacyArtifactUploader do
   let(:uploader) { described_class.new(job, :artifacts_file) }
   let(:path) { Gitlab.config.artifacts.path }
 
-  describe '.local_artifacts_store' do
-    subject { described_class.local_artifacts_store }
+  describe '.local_store_path' do
+    subject { described_class.local_store_path }
 
     it "delegate to artifacts path" do
       expect(Gitlab.config.artifacts).to receive(:path)
@@ -57,5 +57,23 @@ describe LegacyArtifactUploader do
 
       it { is_expected.not_to be_nil }
     end
+  end
+
+  context 'file is stored in valid path' do
+    let(:file) do
+      fixture_file_upload(Rails.root.join(
+        'spec/fixtures/ci_build_artifacts.zip'), 'application/zip')
+    end
+
+    before do
+      uploader.store!(file)
+    end
+
+    subject { uploader.file.path }
+
+    it { is_expected.to start_with(path) }
+    it { is_expected.to include("/#{job.created_at.utc.strftime('%Y_%m')}/") }
+    it { is_expected.to include("/#{job.project_id.to_s}/") }
+    it { is_expected.to end_with("ci_build_artifacts.zip") }
   end
 end

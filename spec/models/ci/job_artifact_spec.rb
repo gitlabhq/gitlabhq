@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::JobArtifact do
-  set(:artifact) { create(:ci_job_artifact) }
+  set(:artifact) { create(:ci_job_artifact, :archive) }
 
   describe "Associations" do
     it { is_expected.to belong_to(:project) }
