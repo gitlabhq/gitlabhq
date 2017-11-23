@@ -4,9 +4,11 @@ import tooltip from '../../vue_shared/directives/tooltip';
 import PopupDialog from '../../vue_shared/components/popup_dialog.vue';
 import eventHub from '../event_hub';
 import { COMMON_STR } from '../constants';
+import Icon from '../../vue_shared/components/icon.vue';
 
 export default {
   components: {
+    Icon,
     PopupDialog,
   },
   directives: {
@@ -63,9 +65,9 @@ export default {
       :aria-label="editBtnTitle"
       data-container="body"
       class="edit-group btn no-expand">
-      <i
-        class="fa fa-cogs"
-        aria-hidden="true"/>
+      <icon
+        name="settings">
+      </icon>
     </a>
     <a
       v-tooltip
