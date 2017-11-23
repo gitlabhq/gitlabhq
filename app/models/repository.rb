@@ -1020,14 +1020,14 @@ class Repository
     run_git(args).first.lines.map(&:strip)
   end
 
-  def fetch_as_mirror(url, forced: false, fetch_refs: :all, remote_name: nil)
+  def fetch_as_mirror(url, forced: false, refmap: :all_refs, remote_name: nil)
     unless remote_name
       remote_name = "tmp-#{SecureRandom.hex}"
       tmp_remote_name = true
     end
 
     add_remote(remote_name, url)
-    set_remote_as_mirror(remote_name, fetch_refs: fetch_refs)
+    set_remote_as_mirror(remote_name, refmap: refmap)
     fetch_remote(remote_name, forced: forced)
   ensure
     remove_remote(remote_name) if tmp_remote_name

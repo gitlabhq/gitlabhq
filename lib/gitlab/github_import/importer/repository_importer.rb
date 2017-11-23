@@ -45,8 +45,8 @@ module Gitlab
         def import_repository
           project.ensure_repository
 
-          fetch_refs = Gitlab::GithubImport.fetch_refs
-          project.repository.fetch_as_mirror(project.import_url, fetch_refs: fetch_refs, forced: true, remote_name: 'github')
+          refmap = Gitlab::GithubImport.refmap
+          project.repository.fetch_as_mirror(project.import_url, refmap: refmap, forced: true, remote_name: 'github')
 
           true
         rescue Gitlab::Git::Repository::NoRepository, Gitlab::Shell::Error => e
