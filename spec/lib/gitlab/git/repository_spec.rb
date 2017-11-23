@@ -1211,12 +1211,21 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     context 'when no branch names are specified' do
-      it 'returns all merged branch names' do
+      before do
+        repository.create_branch('identical', 'master')
+      end
+
+      after do
+        ensure_seeds
+      end
+
+      it 'returns all merged branch names except for identical one' do
         names = repository.merged_branch_names
 
         expect(names).to include('merge-test')
         expect(names).to include('fix-mode')
         expect(names).not_to include('feature')
+        expect(names).not_to include('identical')
       end
     end
   end

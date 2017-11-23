@@ -1222,11 +1222,21 @@ module Gitlab
         sort_branches(branches, sort_by)
       end
 
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/695
       def git_merged_branch_names(branch_names = [])
-        lines = run_git(['branch', '--merged', root_ref] + branch_names)
-          .first.lines
+        root_sha = find_branch(root_ref).target
 
-        lines.map(&:strip)
+        git_arguments =
+          %W[branch --merged #{root_sha}
+             --format=%(refname:short)\ %(objectname)] + branch_names
+
+        lines = run_git(git_arguments).first.lines
+
+        lines.each_with_object([]) do |line, branches|
+          name, sha = line.strip.split(' ', 2)
+
+          branches << name if sha != root_sha
+        end
       end
 
       def log_using_shell?(options)

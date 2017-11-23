@@ -916,19 +916,13 @@ class Repository
     end
   end
 
-  def merged_to_root_ref?(branch_or_name, pre_loaded_merged_branches = nil)
+  def merged_to_root_ref?(branch_or_name)
     branch = Gitlab::Git::Branch.find(self, branch_or_name)
 
     if branch
       @root_ref_sha ||= commit(root_ref).sha
       same_head = branch.target == @root_ref_sha
-      merged =
-        if pre_loaded_merged_branches
-          pre_loaded_merged_branches.include?(branch.name)
-        else
-          ancestor?(branch.target, @root_ref_sha)
-        end
-
+      merged = ancestor?(branch.target, @root_ref_sha)
       !same_head && merged
     else
       nil
