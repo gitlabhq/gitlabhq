@@ -1,9 +1,9 @@
 require 'rails_helper'
 
 describe LegacyArtifactUploader do
-  set(:job) { create(:ci_build) }
-  let(:uploader) { described_class.new(job, :artifacts_file) }
-  let(:path) { Gitlab.config.artifacts.path }
+  let(:job) { create(:ci_build) }
+  let(:uploader) { described_class.new(job, :legacy_artifacts_file) }
+  let(:local_path) { Gitlab.config.artifacts.path }
 
   describe '.local_store_path' do
     subject { described_class.local_store_path }
@@ -18,28 +18,32 @@ describe LegacyArtifactUploader do
   describe '.artifacts_upload_path' do
     subject { described_class.artifacts_upload_path }
 
-    it { is_expected.to start_with(path) }
+    it { is_expected.to start_with(local_path) }
     it { is_expected.to end_with('tmp/uploads/') }
   end
 
   describe '#store_dir' do
     subject { uploader.store_dir }
 
-    it { is_expected.to start_with(path) }
-    it { is_expected.to end_with("#{job.project_id}/#{job.id}") }
+    let(:path) { "#{job.created_at.utc.strftime('%Y_%m')}/#{job.project_id}/#{job.id}" }
+
+    context 'when using local storage' do
+      it { is_expected.to start_with(local_path) }
+      it { is_expected.to end_with(path) }
+    end
   end
 
   describe '#cache_dir' do
     subject { uploader.cache_dir }
 
-    it { is_expected.to start_with(path) }
+    it { is_expected.to start_with(local_path) }
     it { is_expected.to end_with('/tmp/cache') }
   end
 
   describe '#work_dir' do
     subject { uploader.work_dir }
 
-    it { is_expected.to start_with(path) }
+    it { is_expected.to start_with(local_path) }
     it { is_expected.to end_with('/tmp/work') }
   end
 
@@ -51,12 +55,6 @@ describe LegacyArtifactUploader do
     subject { uploader.filename }
 
     it { is_expected.to be_nil }
-
-    context 'with artifacts' do
-      let(:job) { create(:ci_build, :artifacts) }
-
-      it { is_expected.not_to be_nil }
-    end
   end
 
   context 'file is stored in valid path' do
@@ -71,7 +69,7 @@ describe LegacyArtifactUploader do
 
     subject { uploader.file.path }
 
-    it { is_expected.to start_with(path) }
+    it { is_expected.to start_with(local_path) }
     it { is_expected.to include("/#{job.created_at.utc.strftime('%Y_%m')}/") }
     it { is_expected.to include("/#{job.project_id.to_s}/") }
     it { is_expected.to end_with("ci_build_artifacts.zip") }
