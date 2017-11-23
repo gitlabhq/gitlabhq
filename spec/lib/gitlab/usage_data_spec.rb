@@ -120,7 +120,7 @@ describe Gitlab::UsageData do
     subject { described_class.features_usage_data_ce }
 
     it 'gathers feature usage data' do
-      expect(subject[:signup]).to eq(current_application_settings.signup_enabled?)
+      expect(subject[:signup]).to eq(current_application_settings.allow_signup?)
       expect(subject[:ldap]).to eq(Gitlab.config.ldap.enabled)
       expect(subject[:gravatar]).to eq(current_application_settings.gravatar_enabled?)
       expect(subject[:omniauth]).to eq(Gitlab.config.omniauth.enabled)

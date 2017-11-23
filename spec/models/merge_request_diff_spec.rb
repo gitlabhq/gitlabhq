@@ -18,8 +18,8 @@ describe MergeRequestDiff do
     let!(:first_diff) { mr.merge_request_diff }
     let!(:last_diff) { mr.create_merge_request_diff }
 
-    it { expect(last_diff.latest?).to be_truthy }
-    it { expect(first_diff.latest?).to be_falsey }
+    it { expect(last_diff.reload).to be_latest }
+    it { expect(first_diff.reload).not_to be_latest }
   end
 
   describe '#diffs' do
@@ -29,7 +29,7 @@ describe MergeRequestDiff do
     context 'when the :ignore_whitespace_change option is set' do
       it 'creates a new compare object instead of loading from the DB' do
         expect(mr_diff).not_to receive(:load_diffs)
-        expect(Gitlab::Git::Compare).to receive(:new).and_call_original
+        expect(mr_diff.compare).to receive(:diffs).and_call_original
 
         mr_diff.raw_diffs(ignore_whitespace_change: true)
       end

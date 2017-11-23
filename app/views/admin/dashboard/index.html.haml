@@ -48,10 +48,10 @@
           .well-segment.admin-well.admin-well-features
             %h4 Features
             - sign_up = "Sign up"
-            %p{ "aria-label" => "#{sign_up}: status " + (signup_enabled? ? "on" : "off") }
+            %p{ "aria-label" => "#{sign_up}: status " + (allow_signup? ? "on" : "off") }
               = sign_up
               %span.light.pull-right
-                = boolean_to_icon signup_enabled?
+                = boolean_to_icon allow_signup?
             - ldap = "LDAP"
             %p{ "aria-label" => "#{ldap}: status " + (Gitlab.config.ldap.enabled ? "on" : "off") }
               = ldap

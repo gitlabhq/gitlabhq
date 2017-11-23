@@ -247,7 +247,7 @@ module Ci
 
       @merge_request ||=
         begin
-          merge_requests = MergeRequest.includes(:merge_request_diff)
+          merge_requests = MergeRequest.includes(:latest_merge_request_diff)
             .where(source_branch: ref,
                    source_project: pipeline.project)
             .reorder(iid: :desc)

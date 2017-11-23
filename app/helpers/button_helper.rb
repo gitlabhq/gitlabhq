@@ -58,12 +58,12 @@ module ButtonHelper
 
   def http_clone_button(project, placement = 'right', append_link: true)
     klass = 'http-selector'
-    klass << ' has-tooltip' if current_user.try(:require_password_creation?) || current_user.try(:require_personal_access_token_creation_for_git_auth?)
+    klass << ' has-tooltip' if current_user.try(:require_extra_setup_for_git_auth?)
 
     protocol = gitlab_config.protocol.upcase
 
     tooltip_title =
-      if current_user.try(:require_password_creation?)
+      if current_user.try(:require_password_creation_for_git?)
         _("Set a password on your account to pull or push via %{protocol}.") % { protocol: protocol }
       else
         _("Create a personal access token on your account to pull or push via %{protocol}.") % { protocol: protocol }

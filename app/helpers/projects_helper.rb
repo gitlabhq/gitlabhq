@@ -236,11 +236,11 @@ module ProjectsHelper
 
   def show_no_password_message?
     cookies[:hide_no_password_message].blank? && !current_user.hide_no_password &&
-      ( current_user.require_password_creation? || current_user.require_personal_access_token_creation_for_git_auth? )
+      current_user.require_extra_setup_for_git_auth?
   end
 
   def link_to_set_password
-    if current_user.require_password_creation?
+    if current_user.require_password_creation_for_git?
       link_to s_('SetPasswordToCloneLink|set a password'), edit_profile_password_path
     else
       link_to s_('CreateTokenToCloneLink|create a personal access token'), profile_personal_access_tokens_path

@@ -1,8 +1,8 @@
 import Vue from 'vue';
-import navigationTabs from '~/pipelines/components/navigation_tabs.vue';
-import mountComponent from '../helpers/vue_mount_component_helper';
+import navigationTabs from '~/vue_shared/components/navigation_tabs.vue';
+import mountComponent from '../../helpers/vue_mount_component_helper';
 
-describe('navigation tabs pipeline component', () => {
+describe('navigation tabs component', () => {
   let vm;
   let Component;
   let data;
@@ -29,7 +29,7 @@ describe('navigation tabs pipeline component', () => {
     ];
 
     Component = Vue.extend(navigationTabs);
-    vm = mountComponent(Component, { tabs: data });
+    vm = mountComponent(Component, { tabs: data, scope: 'pipelines' });
   });
 
   afterEach(() => {
@@ -51,5 +51,11 @@ describe('navigation tabs pipeline component', () => {
 
   it('should not render badge', () => {
     expect(vm.$el.querySelector('.js-pipelines-tab-running .badge')).toEqual(null);
+  });
+
+  it('should trigger onTabClick', () => {
+    spyOn(vm, '$emit');
+    vm.$el.querySelector('.js-pipelines-tab-pending').click();
+    expect(vm.$emit).toHaveBeenCalledWith('onChangeTab', 'pending');
   });
 });

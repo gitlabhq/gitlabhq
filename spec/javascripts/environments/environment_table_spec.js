@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import environmentTableComp from '~/environments/components/environments_table.vue';
+<<<<<<< HEAD
 import eventHub from '~/environments/event_hub';
 import { deployBoardMockData } from './mock_data';
 
@@ -8,6 +9,20 @@ describe('Environment item', () => {
 
   beforeEach(() => {
     EnvironmentTable = Vue.extend(environmentTableComp);
+=======
+import mountComponent from '../helpers/vue_mount_component_helper';
+
+describe('Environment table', () => {
+  let Component;
+  let vm;
+
+  beforeEach(() => {
+    Component = Vue.extend(environmentTableComp);
+  });
+
+  afterEach(() => {
+    vm.$destroy();
+>>>>>>> ce/master
   });
 
   it('Should render a table', () => {
@@ -19,6 +34,7 @@ describe('Environment item', () => {
       environment_path: 'url',
     };
 
+<<<<<<< HEAD
     const component = new EnvironmentTable({
       el: document.querySelector('.test-dom-element'),
       propsData: {
@@ -27,8 +43,15 @@ describe('Environment item', () => {
         canReadEnvironment: true,
       },
     }).$mount();
+=======
+    vm = mountComponent(Component, {
+      environments: [mockItem],
+      canCreateDeployment: false,
+      canReadEnvironment: true,
+    });
+>>>>>>> ce/master
 
-    expect(component.$el.getAttribute('class')).toContain('ci-table');
+    expect(vm.$el.getAttribute('class')).toContain('ci-table');
   });
 
   it('should render deploy board container when data is provided', () => {

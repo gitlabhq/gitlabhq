@@ -11,7 +11,11 @@ describe API::Settings, 'Settings' do
       expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Hash
       expect(json_response['default_projects_limit']).to eq(42)
+<<<<<<< HEAD
       expect(json_response['signin_enabled']).to be_truthy
+=======
+      expect(json_response['password_authentication_enabled_for_web']).to be_truthy
+>>>>>>> ce/master
       expect(json_response['repository_storages']).to eq(['default'])
       expect(json_response['password_authentication_enabled']).to be_truthy
       expect(json_response['koding_enabled']).to be_falsey
@@ -39,6 +43,10 @@ describe API::Settings, 'Settings' do
       it "updates application settings" do
         put api("/application/settings", admin),
           default_projects_limit: 3,
+<<<<<<< HEAD
+=======
+          password_authentication_enabled_for_web: false,
+>>>>>>> ce/master
           repository_storages: ['custom'],
           password_authentication_enabled: false,
           koding_enabled: true,
@@ -60,8 +68,12 @@ describe API::Settings, 'Settings' do
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['default_projects_limit']).to eq(3)
+<<<<<<< HEAD
         expect(json_response['signin_enabled']).to be_falsey
         expect(json_response['password_authentication_enabled']).to be_falsey
+=======
+        expect(json_response['password_authentication_enabled_for_web']).to be_falsey
+>>>>>>> ce/master
         expect(json_response['repository_storages']).to eq(['custom'])
         expect(json_response['koding_enabled']).to be_truthy
         expect(json_response['koding_url']).to eq('http://koding.example.com')
