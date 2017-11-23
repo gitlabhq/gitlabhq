@@ -211,7 +211,6 @@ module ApplicationSettingsHelper
       :polling_interval_multiplier,
       :project_export_enabled,
       :prometheus_metrics_enabled,
-      :prometheus_metrics_method_instrumentation_enabled,
       :recaptcha_enabled,
       :recaptcha_private_key,
       :recaptcha_site_key,

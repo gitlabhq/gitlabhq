@@ -66,9 +66,6 @@ module API
       optional :max_pages_size, type: Integer, desc: 'Maximum size of pages in MB'
       optional :container_registry_token_expire_delay, type: Integer, desc: 'Authorization token duration (minutes)'
       optional :prometheus_metrics_enabled, type: Boolean, desc: 'Enable Prometheus metrics'
-      given prometheus_metrics_enabled: ->(val) { val } do
-        requires :prometheus_metrics_method_instrumentation_enabled, type: Boolean, desc: 'Enable method call instrumentation'
-      end
       optional :metrics_enabled, type: Boolean, desc: 'Enable the InfluxDB metrics'
       given metrics_enabled: ->(val) { val } do
         requires :metrics_host, type: String, desc: 'The InfluxDB host'

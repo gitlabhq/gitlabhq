@@ -20,8 +20,7 @@ describe Gitlab::Metrics::MethodCall do
 
       context 'prometheus instrumentation is enabled' do
         before do
-          allow(Gitlab::CurrentSettings).to receive(:current_application_settings)
-                                              .and_return(prometheus_metrics_method_instrumentation_enabled: true)
+          Feature.get(:prometheus_metrics_method_instrumentation).enable
         end
 
         it 'observes the performance of the supplied block' do
@@ -35,8 +34,7 @@ describe Gitlab::Metrics::MethodCall do
 
       context 'prometheus instrumentation is disabled' do
         before do
-          allow(Gitlab::CurrentSettings).to receive(:current_application_settings)
-                                              .and_return(prometheus_metrics_method_instrumentation_enabled: false)
+          Feature.get(:prometheus_metrics_method_instrumentation).disable
         end
 
         it 'does not observe the performance' do
@@ -52,8 +50,7 @@ describe Gitlab::Metrics::MethodCall do
       before do
         allow(method_call).to receive(:above_threshold?).and_return(false)
 
-        allow(Gitlab::CurrentSettings).to receive(:current_application_settings)
-                                            .and_return(prometheus_metrics_method_instrumentation_enabled: true)
+        Feature.get(:prometheus_metrics_method_instrumentation).enable
       end
 
       it 'does not observe the performance' do
