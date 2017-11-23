@@ -21,7 +21,6 @@ module Gitlab
         usage_data = {
           uuid: current_application_settings.uuid,
           hostname: Gitlab.config.gitlab.host,
-          version: Gitlab::VERSION,
           active_user_count: User.active.count,
           recorded_at: Time.now,
           mattermost_enabled: Gitlab.config.mattermost.enabled,
@@ -92,7 +91,6 @@ module Gitlab
       def components_usage_data
         {
           gitlab_pages: { enabled: Gitlab.config.pages.enabled, version: Gitlab::Pages::VERSION },
-          git: { version: Gitlab::Git.version },
           database: { adapter: Gitlab::Database.adapter_name, version: Gitlab::Database.version }
         }
       end

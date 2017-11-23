@@ -54,10 +54,6 @@ module Gitlab
         ref == BLANK_SHA
       end
 
-      def version
-        Gitlab::VersionInfo.parse(Gitlab::Popen.popen(%W(#{Gitlab.config.git.bin_path} --version)).first)
-      end
-
       def check_namespace!(*objects)
         expected_namespace = self.name + '::'
         objects.each do |object|

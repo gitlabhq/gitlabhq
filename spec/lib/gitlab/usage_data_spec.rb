@@ -34,7 +34,6 @@ describe Gitlab::UsageData do
         container_registry
         gitlab_pages
         gitlab_shared_runners
-        git
         database
       ))
     end
@@ -119,7 +118,6 @@ describe Gitlab::UsageData do
     it 'gathers components usage data' do
       expect(subject[:gitlab_pages][:enabled]).to eq(Gitlab.config.pages.enabled)
       expect(subject[:gitlab_pages][:version]).to eq(Gitlab::Pages::VERSION)
-      expect(subject[:git][:version]).to eq(Gitlab::Git.version)
       expect(subject[:database][:adapter]).to eq(Gitlab::Database.adapter_name)
       expect(subject[:database][:version]).to eq(Gitlab::Database.version)
     end
@@ -130,7 +128,6 @@ describe Gitlab::UsageData do
 
     it "gathers license data" do
       expect(subject[:uuid]).to eq(current_application_settings.uuid)
-      expect(subject[:version]).to eq(Gitlab::VERSION)
       expect(subject[:active_user_count]).to eq(User.active.count)
       expect(subject[:recorded_at]).to be_a(Time)
     end
