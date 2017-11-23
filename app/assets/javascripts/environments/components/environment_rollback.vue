@@ -48,10 +48,10 @@ export default {
     :disabled="isLoading">
 
     <span v-if="isLastDeployment">
-      Re-deploy
+      {{s__("Environments|Re-deploy")}}
     </span>
     <span v-else>
-      Rollback
+      {{s__("Environments|Rollback")}}
     </span>
 
     <loading-icon v-if="isLoading" />
