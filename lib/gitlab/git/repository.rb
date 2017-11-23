@@ -1091,13 +1091,8 @@ module Gitlab
         raise ArgumentError, "invalid ref_path #{ref_path.inspect}" if ref_path.include?(' ')
         raise ArgumentError, "invalid ref #{ref.inspect}" if ref.include?("\x00")
 
-        command = [Gitlab.config.git.bin_path] + %w[update-ref --stdin -z]
         input = "update #{ref_path}\x00#{ref}\x00\x00"
-        output, status = circuit_breaker.perform do
-          popen(command, path) { |stdin| stdin.write(input) }
-        end
-
-        raise GitError, output unless status.zero?
+        run_git!(%w[update-ref --stdin -z]) { |stdin| stdin.write(input) }
       end
 
       def fetch_ref(source_repository, source_ref:, target_ref:)
@@ -1119,12 +1114,20 @@ module Gitlab
       end
 
       # Refactoring aid; allows us to copy code from app/models/repository.rb
-      def run_git(args, env: {}, nice: false)
+      def run_git(args, chdir: path, env: {}, nice: false, &block)
         cmd = [Gitlab.config.git.bin_path, *args]
         cmd.unshift("nice") if nice
         circuit_breaker.perform do
-          popen(cmd, path, env)
+          popen(cmd, chdir, env, &block)
         end
+      end
+
+      def run_git!(args, chdir: path, env: {}, nice: false, &block)
+        output, status = run_git(args, chdir: chdir, env: env, nice: nice, &block)
+
+        raise GitError, output unless status.zero?
+
+        output
       end
 
       # Refactoring aid; allows us to copy code from app/models/repository.rb
