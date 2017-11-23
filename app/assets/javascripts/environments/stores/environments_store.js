@@ -44,7 +44,12 @@ export default class EnvironmentsStore {
   storeEnvironments(environments = []) {
     const filteredEnvironments = environments.map((env) => {
       const oldEnvironmentState = this.state.environments
-        .find(element => element.id === env.latest.id) || {};
+        .find((element) => {
+          if (env.latest) {
+            return element.id === env.latest.id;
+          }
+          return element.id === env.id;
+        }) || {};
 
       let filtered = {};
 

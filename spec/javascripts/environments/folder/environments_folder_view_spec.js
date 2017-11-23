@@ -1,24 +1,27 @@
 import Vue from 'vue';
-import '~/flash';
 import environmentsFolderViewComponent from '~/environments/folder/environments_folder_view.vue';
 import { environmentsList } from '../mock_data';
 import { headersInterceptor } from '../../helpers/vue_resource_helper';
+import mountComponent from '../../helpers/vue_mount_component_helper';
 
 describe('Environments Folder View', () => {
-  preloadFixtures('static/environments/environments_folder_view.html.raw');
-  let EnvironmentsFolderViewComponent;
+  let Component;
+  let component;
+  const mockData = {
+    endpoint: 'environments.json',
+    folderName: 'review',
+    canCreateDeployment: true,
+    canReadEnvironment: true,
+    cssContainerClass: 'container',
+  };
 
   beforeEach(() => {
-    loadFixtures('static/environments/environments_folder_view.html.raw');
-    EnvironmentsFolderViewComponent = Vue.extend(environmentsFolderViewComponent);
-    window.history.pushState({}, null, 'environments/folders/build');
+    Component = Vue.extend(environmentsFolderViewComponent);
   });
 
   afterEach(() => {
-    window.history.pushState({}, null, '/');
+    component.$destroy();
   });
-
-  let component;
 
   describe('successfull request', () => {
     const environmentsResponseInterceptor = (request, next) => {
@@ -31,10 +34,10 @@ describe('Environments Folder View', () => {
         headers: {
           'X-nExt-pAge': '2',
           'x-page': '1',
-          'X-Per-Page': '1',
+          'X-Per-Page': '2',
           'X-Prev-Page': '',
-          'X-TOTAL': '37',
-          'X-Total-Pages': '2',
+          'X-TOTAL': '20',
+          'X-Total-Pages': '10',
         },
       }));
     };
@@ -43,9 +46,7 @@ describe('Environments Folder View', () => {
       Vue.http.interceptors.push(environmentsResponseInterceptor);
       Vue.http.interceptors.push(headersInterceptor);
 
-      component = new EnvironmentsFolderViewComponent({
-        el: document.querySelector('#environments-folder-list-view'),
-      });
+      component = mountComponent(Component, mockData);
     });
 
     afterEach(() => {
@@ -57,7 +58,7 @@ describe('Environments Folder View', () => {
 
     it('should render a table with environments', (done) => {
       setTimeout(() => {
-        expect(component.$el.querySelectorAll('table')).toBeDefined();
+        expect(component.$el.querySelectorAll('table')).not.toBeNull();
         expect(
           component.$el.querySelector('.environment-name').textContent.trim(),
         ).toEqual(environmentsList[0].name);
@@ -68,11 +69,11 @@ describe('Environments Folder View', () => {
     it('should render available tab with count', (done) => {
       setTimeout(() => {
         expect(
-          component.$el.querySelector('.js-available-environments-folder-tab').textContent,
+          component.$el.querySelector('.js-environments-tab-available').textContent,
         ).toContain('Available');
 
         expect(
-          component.$el.querySelector('.js-available-environments-folder-tab .js-available-environments-count').textContent,
+          component.$el.querySelector('.js-environments-tab-available .badge').textContent,
         ).toContain('0');
         done();
       }, 0);
@@ -81,11 +82,11 @@ describe('Environments Folder View', () => {
     it('should render stopped tab with count', (done) => {
       setTimeout(() => {
         expect(
-          component.$el.querySelector('.js-stopped-environments-folder-tab').textContent,
+          component.$el.querySelector('.js-environments-tab-stopped').textContent,
         ).toContain('Stopped');
 
         expect(
-          component.$el.querySelector('.js-stopped-environments-folder-tab .js-stopped-environments-count').textContent,
+          component.$el.querySelector('.js-environments-tab-stopped .badge').textContent,
         ).toContain('1');
         done();
       }, 0);
@@ -95,7 +96,7 @@ describe('Environments Folder View', () => {
       setTimeout(() => {
         expect(
           component.$el.querySelector('.js-folder-name').textContent,
-        ).toContain('Environments / build');
+        ).toContain('Environments / review');
         done();
       }, 0);
     });
@@ -104,50 +105,26 @@ describe('Environments Folder View', () => {
       it('should render pagination', (done) => {
         setTimeout(() => {
           expect(
-            component.$el.querySelectorAll('.gl-pagination li').length,
-          ).toEqual(5);
+            component.$el.querySelectorAll('.gl-pagination'),
+          ).not.toBeNull();
           done();
         }, 0);
       });
 
-      it('should update url when no search params are present', (done) => {
-        spyOn(gl.utils, 'visitUrl');
+      it('should make an API request when changing page', (done) => {
+        spyOn(component, 'updateContent');
         setTimeout(() => {
-          component.$el.querySelector('.gl-pagination li:nth-child(5) a').click();
-          expect(gl.utils.visitUrl).toHaveBeenCalledWith('?page=2');
+          component.$el.querySelector('.gl-pagination .js-last-button a').click();
+          expect(component.updateContent).toHaveBeenCalledWith({ scope: component.scope, page: '10' });
           done();
         }, 0);
       });
 
-      it('should update url when page is already present', (done) => {
-        spyOn(gl.utils, 'visitUrl');
-        window.history.pushState({}, null, '?page=1');
-
+      it('should make an API request when using tabs', (done) => {
         setTimeout(() => {
-          component.$el.querySelector('.gl-pagination li:nth-child(5) a').click();
-          expect(gl.utils.visitUrl).toHaveBeenCalledWith('?page=2');
-          done();
-        }, 0);
-      });
-
-      it('should update url when page and scope are already present', (done) => {
-        spyOn(gl.utils, 'visitUrl');
-        window.history.pushState({}, null, '?scope=all&page=1');
-
-        setTimeout(() => {
-          component.$el.querySelector('.gl-pagination li:nth-child(5) a').click();
-          expect(gl.utils.visitUrl).toHaveBeenCalledWith('?scope=all&page=2');
-          done();
-        }, 0);
-      });
-
-      it('should update url when page and scope are already present and page is first param', (done) => {
-        spyOn(gl.utils, 'visitUrl');
-        window.history.pushState({}, null, '?page=1&scope=all');
-
-        setTimeout(() => {
-          component.$el.querySelector('.gl-pagination li:nth-child(5) a').click();
-          expect(gl.utils.visitUrl).toHaveBeenCalledWith('?page=2&scope=all');
+          spyOn(component, 'updateContent');
+          component.$el.querySelector('.js-environments-tab-stopped').click();
+          expect(component.updateContent).toHaveBeenCalledWith({ scope: 'stopped', page: '1' });
           done();
         }, 0);
       });
@@ -183,9 +160,7 @@ describe('Environments Folder View', () => {
     });
 
     it('should not render a table', (done) => {
-      component = new EnvironmentsFolderViewComponent({
-        el: document.querySelector('#environments-folder-list-view'),
-      });
+      component = mountComponent(Component, mockData);
 
       setTimeout(() => {
         expect(
@@ -198,11 +173,11 @@ describe('Environments Folder View', () => {
     it('should render available tab with count 0', (done) => {
       setTimeout(() => {
         expect(
-          component.$el.querySelector('.js-available-environments-folder-tab').textContent,
+          component.$el.querySelector('.js-environments-tab-available').textContent,
         ).toContain('Available');
 
         expect(
-          component.$el.querySelector('.js-available-environments-folder-tab .js-available-environments-count').textContent,
+          component.$el.querySelector('.js-environments-tab-available .badge').textContent,
         ).toContain('0');
         done();
       }, 0);
@@ -211,14 +186,70 @@ describe('Environments Folder View', () => {
     it('should render stopped tab with count 0', (done) => {
       setTimeout(() => {
         expect(
-          component.$el.querySelector('.js-stopped-environments-folder-tab').textContent,
+          component.$el.querySelector('.js-environments-tab-stopped').textContent,
         ).toContain('Stopped');
 
         expect(
-          component.$el.querySelector('.js-stopped-environments-folder-tab .js-stopped-environments-count').textContent,
+          component.$el.querySelector('.js-environments-tab-stopped .badge').textContent,
         ).toContain('0');
         done();
       }, 0);
+    });
+  });
+
+  describe('methods', () => {
+    const environmentsEmptyResponseInterceptor = (request, next) => {
+      next(request.respondWith(JSON.stringify([]), {
+        status: 200,
+      }));
+    };
+
+    beforeEach(() => {
+      Vue.http.interceptors.push(environmentsEmptyResponseInterceptor);
+      Vue.http.interceptors.push(headersInterceptor);
+
+      component = mountComponent(Component, mockData);
+      spyOn(history, 'pushState').and.stub();
+    });
+
+    afterEach(() => {
+      Vue.http.interceptors = _.without(
+        Vue.http.interceptors, environmentsEmptyResponseInterceptor,
+      );
+      Vue.http.interceptors = _.without(Vue.http.interceptors, headersInterceptor);
+    });
+
+    describe('updateContent', () => {
+      it('should set given parameters', (done) => {
+        component.updateContent({ scope: 'stopped', page: '4' })
+          .then(() => {
+            expect(component.page).toEqual('4');
+            expect(component.scope).toEqual('stopped');
+            expect(component.requestData.scope).toEqual('stopped');
+            expect(component.requestData.page).toEqual('4');
+            done();
+          })
+          .catch(done.fail);
+      });
+    });
+
+    describe('onChangeTab', () => {
+      it('should set page to 1', () => {
+        spyOn(component, 'updateContent');
+        component.onChangeTab('stopped');
+
+        expect(component.updateContent).toHaveBeenCalledWith({ scope: 'stopped', page: '1' });
+      });
+    });
+
+    describe('onChangePage', () => {
+      it('should update page and keep scope', () => {
+        spyOn(component, 'updateContent');
+
+        component.onChangePage(4);
+
+        expect(component.updateContent).toHaveBeenCalledWith({ scope: component.scope, page: '4' });
+      });
     });
   });
 });

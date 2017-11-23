@@ -430,7 +430,7 @@ export default {
         v-if="!model.isFolder"
         class="table-mobile-header"
         role="rowheader">
-        Environment
+        {{s__("Environments|Environment")}}
       </div>
       <span
         class="deploy-board-icon"
@@ -520,7 +520,7 @@ export default {
       <div
         role="rowheader"
         class="table-mobile-header">
-        Commit
+        {{s__("Environments|Commit")}}
       </div>
       <div
         v-if="hasLastDeploymentKey"
@@ -536,7 +536,7 @@ export default {
       <div
         v-if="!hasLastDeploymentKey"
         class="commit-title table-mobile-content">
-        No deployments yet
+        {{s__("Environments|No deployments yet")}}
       </div>
     </div>
 
@@ -546,7 +546,7 @@ export default {
       <div
         role="rowheader"
         class="table-mobile-header">
-        Updated
+        {{s__("Environments|Updated")}}
       </div>
       <span
         v-if="canShowDate"

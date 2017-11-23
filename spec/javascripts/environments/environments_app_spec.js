@@ -1,18 +1,24 @@
 import Vue from 'vue';
-import '~/flash';
-import environmentsComponent from '~/environments/components/environment.vue';
+import environmentsComponent from '~/environments/components/environments_app.vue';
 import { environment, folder } from './mock_data';
 import { headersInterceptor } from '../helpers/vue_resource_helper';
+import mountComponent from '../helpers/vue_mount_component_helper';
 
 describe('Environment', () => {
-  preloadFixtures('static/environments/environments.html.raw');
+  const mockData = {
+    endpoint: 'environments.json',
+    canCreateEnvironment: true,
+    canCreateDeployment: true,
+    canReadEnvironment: true,
+    cssContainerClass: 'container',
+    newEnvironmentPath: 'environments/new',
+    helpPagePath: 'help',
+  };
 
   let EnvironmentsComponent;
   let component;
 
   beforeEach(() => {
-    loadFixtures('static/environments/environments.html.raw');
-
     EnvironmentsComponent = Vue.extend(environmentsComponent);
   });
 
@@ -37,9 +43,7 @@ describe('Environment', () => {
       });
 
       it('should render the empty state', (done) => {
-        component = new EnvironmentsComponent({
-          el: document.querySelector('#environments-list-view'),
-        });
+        component = mountComponent(EnvironmentsComponent, mockData);
 
         setTimeout(() => {
           expect(
@@ -81,9 +85,7 @@ describe('Environment', () => {
       beforeEach(() => {
         Vue.http.interceptors.push(environmentsResponseInterceptor);
         Vue.http.interceptors.push(headersInterceptor);
-        component = new EnvironmentsComponent({
-          el: document.querySelector('#environments-list-view'),
-        });
+        component = mountComponent(EnvironmentsComponent, mockData);
       });
 
       afterEach(() => {
@@ -95,7 +97,7 @@ describe('Environment', () => {
 
       it('should render a table with environments', (done) => {
         setTimeout(() => {
-          expect(component.$el.querySelectorAll('table')).toBeDefined();
+          expect(component.$el.querySelectorAll('table')).not.toBeNull();
           expect(
             component.$el.querySelector('.environment-name').textContent.trim(),
           ).toEqual(environment.name);
@@ -104,10 +106,6 @@ describe('Environment', () => {
       });
 
       describe('pagination', () => {
-        afterEach(() => {
-          window.history.pushState({}, null, '');
-        });
-
         it('should render pagination', (done) => {
           setTimeout(() => {
             expect(
@@ -117,44 +115,20 @@ describe('Environment', () => {
           }, 0);
         });
 
-        it('should update url when no search params are present', (done) => {
-          spyOn(gl.utils, 'visitUrl');
+        it('should make an API request when page is clicked', (done) => {
+          spyOn(component, 'updateContent');
           setTimeout(() => {
             component.$el.querySelector('.gl-pagination li:nth-child(5) a').click();
-            expect(gl.utils.visitUrl).toHaveBeenCalledWith('?page=2');
+            expect(component.updateContent).toHaveBeenCalledWith({ scope: 'available', page: '2' });
             done();
           }, 0);
         });
 
-        it('should update url when page is already present', (done) => {
-          spyOn(gl.utils, 'visitUrl');
-          window.history.pushState({}, null, '?page=1');
-
+        it('should make an API request when using tabs', (done) => {
           setTimeout(() => {
-            component.$el.querySelector('.gl-pagination li:nth-child(5) a').click();
-            expect(gl.utils.visitUrl).toHaveBeenCalledWith('?page=2');
-            done();
-          }, 0);
-        });
-
-        it('should update url when page and scope are already present', (done) => {
-          spyOn(gl.utils, 'visitUrl');
-          window.history.pushState({}, null, '?scope=all&page=1');
-
-          setTimeout(() => {
-            component.$el.querySelector('.gl-pagination li:nth-child(5) a').click();
-            expect(gl.utils.visitUrl).toHaveBeenCalledWith('?scope=all&page=2');
-            done();
-          }, 0);
-        });
-
-        it('should update url when page and scope are already present and page is first param', (done) => {
-          spyOn(gl.utils, 'visitUrl');
-          window.history.pushState({}, null, '?page=1&scope=all');
-
-          setTimeout(() => {
-            component.$el.querySelector('.gl-pagination li:nth-child(5) a').click();
-            expect(gl.utils.visitUrl).toHaveBeenCalledWith('?page=2&scope=all');
+            spyOn(component, 'updateContent');
+            component.$el.querySelector('.js-environments-tab-stopped').click();
+            expect(component.updateContent).toHaveBeenCalledWith({ scope: 'stopped', page: '1' });
             done();
           }, 0);
         });
@@ -191,9 +165,7 @@ describe('Environment', () => {
     });
 
     it('should render empty state', (done) => {
-      component = new EnvironmentsComponent({
-        el: document.querySelector('#environments-list-view'),
-      });
+      component = mountComponent(EnvironmentsComponent, mockData);
 
       setTimeout(() => {
         expect(
@@ -225,9 +197,7 @@ describe('Environment', () => {
 
     beforeEach(() => {
       Vue.http.interceptors.push(environmentsResponseInterceptor);
-      component = new EnvironmentsComponent({
-        el: document.querySelector('#environments-list-view'),
-      });
+      component = mountComponent(EnvironmentsComponent, mockData);
     });
 
     afterEach(() => {
@@ -297,6 +267,61 @@ describe('Environment', () => {
             done();
           });
         });
+      });
+    });
+  });
+
+  describe('methods', () => {
+    const environmentsEmptyResponseInterceptor = (request, next) => {
+      next(request.respondWith(JSON.stringify([]), {
+        status: 200,
+      }));
+    };
+
+    beforeEach(() => {
+      Vue.http.interceptors.push(environmentsEmptyResponseInterceptor);
+      Vue.http.interceptors.push(headersInterceptor);
+
+      component = mountComponent(EnvironmentsComponent, mockData);
+      spyOn(history, 'pushState').and.stub();
+    });
+
+    afterEach(() => {
+      Vue.http.interceptors = _.without(
+        Vue.http.interceptors, environmentsEmptyResponseInterceptor,
+      );
+      Vue.http.interceptors = _.without(Vue.http.interceptors, headersInterceptor);
+    });
+
+    describe('updateContent', () => {
+      it('should set given parameters', (done) => {
+        component.updateContent({ scope: 'stopped', page: '3' })
+          .then(() => {
+            expect(component.page).toEqual('3');
+            expect(component.scope).toEqual('stopped');
+            expect(component.requestData.scope).toEqual('stopped');
+            expect(component.requestData.page).toEqual('3');
+            done();
+          })
+          .catch(done.fail);
+      });
+    });
+
+    describe('onChangeTab', () => {
+      it('should set page to 1', () => {
+        spyOn(component, 'updateContent');
+        component.onChangeTab('stopped');
+
+        expect(component.updateContent).toHaveBeenCalledWith({ scope: 'stopped', page: '1' });
+      });
+    });
+
+    describe('onChangePage', () => {
+      it('should update page and keep scope', () => {
+        spyOn(component, 'updateContent');
+        component.onChangePage(4);
+
+        expect(component.updateContent).toHaveBeenCalledWith({ scope: component.scope, page: '4' });
       });
     });
   });
