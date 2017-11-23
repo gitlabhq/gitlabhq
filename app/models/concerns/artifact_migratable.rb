@@ -3,11 +3,15 @@
 # Meant to be prepended so the interface can stay the same
 module ArtifactMigratable
   def artifacts_file
-    job_archive&.file || super
+    job_archive&.file || legacy_artifacts_file
+  end
+
+  def artifacts_file?
+    job_archive&.file? || legacy_artifacts_file?
   end
 
   def artifacts_metadata
-    job_metadata&.file || super
+    job_metadata&.file || legacy_artifacts_metadata
   end
 
   def artifacts?
@@ -19,14 +23,14 @@ module ArtifactMigratable
   end
 
   def artifacts_file_changed?
-    job_archive&.file_changed? || super
+    job_archive&.file_changed? || attribute_changed?(:artifacts_file)
   end
 
   def remove_artifacts_file!
     if job_archive
       job_archive.destroy
     else
-      super
+      remove_legacy_artifacts_file!
     end
   end
 
@@ -34,7 +38,7 @@ module ArtifactMigratable
     if job_metadata
       job_metadata.destroy
     else
-      super
+      remove_legacy_artifacts_metadata!
     end
   end
 
