@@ -147,14 +147,10 @@ ActiveRecord::Schema.define(version: 20171121144800) do
     t.boolean "authorized_keys_enabled", default: true, null: false
     t.boolean "help_page_hide_commercial_content", default: false
     t.string "help_page_support_url"
-<<<<<<< HEAD
     t.boolean "slack_app_enabled", default: false
     t.string "slack_app_id"
     t.string "slack_app_secret"
     t.string "slack_app_verification_token"
-    t.boolean "password_authentication_enabled"
-=======
->>>>>>> ce/master
     t.integer "performance_bar_allowed_group_id"
     t.boolean "allow_group_owners_to_manage_ldap", default: true, null: false
     t.boolean "hashed_storage_enabled", default: false, null: false
