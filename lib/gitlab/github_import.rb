@@ -1,6 +1,6 @@
 module Gitlab
   module GithubImport
-    def self.fetch_refs
+    def self.refmap
       [:heads, :tags, '+refs/pull/*/head:refs/merge-requests/*/head']
     end
 

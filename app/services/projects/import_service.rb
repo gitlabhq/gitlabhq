@@ -51,11 +51,11 @@ module Projects
 
     def import_repository
       begin
-        fetch_refs = importer_class.try(:fetch_refs) if has_importer?
+        refmap = importer_class.try(:refmap) if has_importer?
 
-        if fetch_refs
+        if refmap
           project.ensure_repository
-          project.repository.fetch_as_mirror(project.import_url, fetch_refs: fetch_refs)
+          project.repository.fetch_as_mirror(project.import_url, refmap: refmap)
         else
           gitlab_shell.import_repository(project.repository_storage_path, project.disk_path, project.import_url)
         end
