@@ -157,7 +157,7 @@ correctly identified as a secondary Geo node and if Geo is enabled.
 If your installation isn't working properly, check the
 [troubleshooting](#troubleshooting) section.
 
-Point your users to the [after setup steps](after_setup.md).
+Point your users to the ["Using a Geo Server" guide](using_a_geo_server.md).
 
 ## Selective replication
 

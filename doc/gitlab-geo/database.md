@@ -479,13 +479,6 @@ Geo secondary nodes use a tracking database to keep track of replication
 status and recover automatically from some replication issues. Follow the
 instructions for [enabling tracking database on the secondary server][tracking].
 
-### Next steps
-
-Now that the database replication is done, the next step is to configure SSH
-authorizations to use the database.
-
-[➤ Configure SSH authorizations to use the database](ssh.md)
-
 ## MySQL replication
 
 We don't support MySQL replication for GitLab Geo.
