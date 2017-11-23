@@ -12,11 +12,11 @@ Prometheus::Client.configure do |config|
   end
 
   config.pid_provider = -> do
-    wid = Prometheus::Client::Support::Unicorn.worker_id
-    if wid.nil?
+    worker_id = Prometheus::Client::Support::Unicorn.worker_id
+    if worker_id.nil?
       "process_pid_#{Process.pid}"
     else
-      "worker_id_#{wid}"
+      "worker_id_#{worker_id}"
     end
   end
 end
