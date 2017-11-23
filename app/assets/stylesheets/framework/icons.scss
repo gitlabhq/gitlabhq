@@ -1,14 +1,16 @@
 .ci-status-icon-success,
 .ci-status-icon-passed {
   &,
-  &:hover {
+  &:hover,
+  &:focus {
     color: $green-500;
   }
 }
 
 .ci-status-icon-failed {
   &,
-  &:hover {
+  &:hover,
+  &:focus {
     color: $gl-danger;
   }
 }
@@ -17,14 +19,16 @@
 .ci-status-icon-failed_with_warnings,
 .ci-status-icon-success_with_warnings {
   &,
-  &:hover {
+  &:hover,
+  &:focus {
     color: $orange-500;
   }
 }
 
 .ci-status-icon-running {
   &,
-  &:hover {
+  &:hover,
+  &:focus {
     color: $blue-400;
   }
 }
@@ -33,7 +37,8 @@
 .ci-status-icon-disabled,
 .ci-status-icon-not-found {
   &,
-  &:hover {
+  &:hover,
+  &:focus {
     color: $gl-text-color;
   }
 }
@@ -41,14 +46,16 @@
 .ci-status-icon-created,
 .ci-status-icon-skipped {
   &,
-  &:hover {
+  &:hover,
+  &:focus {
     color: $gray-darkest;
   }
 }
 
 .ci-status-icon-manual {
   &,
-  &:hover {
+  &:hover,
+  &:focus {
     color: $gl-text-color;
   }
 }
