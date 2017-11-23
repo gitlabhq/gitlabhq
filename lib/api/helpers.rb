@@ -127,7 +127,7 @@ module API
     def find_namespace!(id)
       namespace = find_namespace(id)
 
-      if can?(current_user, :admin_namespace, namespace)
+      if can?(current_user, :read_namespace, namespace)
         namespace
       else
         not_found!('Namespace')
