@@ -1,3 +1,5 @@
+require 'request_store'
+
 module Gitlab
   module Git
     class Wiki
