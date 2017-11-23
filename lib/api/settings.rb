@@ -154,14 +154,11 @@ module API
     put "application/settings" do
       attrs = declared_params(include_missing: false)
 
-<<<<<<< HEAD
       unless ::License.feature_available?(:repository_mirrors)
         attrs = attrs.except(*::EE::ApplicationSettingsHelper.repository_mirror_attributes)
       end
 
-=======
       # support legacy names, can be removed in v5
->>>>>>> ce/master
       if attrs.has_key?(:signin_enabled)
         attrs[:password_authentication_enabled_for_web] = attrs.delete(:signin_enabled)
       elsif attrs.has_key?(:password_authentication_enabled)
