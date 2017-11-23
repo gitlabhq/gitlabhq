@@ -163,7 +163,7 @@ describe Ci::Build do
 
     context 'artifacts metadata does not exist' do
       before do
-        build.update_attributes(artifacts_metadata: nil)
+        build.update_attributes(legacy_artifacts_metadata: nil)
       end
 
       it { is_expected.to be_falsy }

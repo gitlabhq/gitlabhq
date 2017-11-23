@@ -149,7 +149,7 @@ describe Projects::ArtifactsController do
       context 'when using local file storage' do
         it_behaves_like 'a valid file' do
           let(:store) { ObjectStoreUploader::LOCAL_STORE }
-          let(:archive_path) { ArtifactUploader.local_store_path }
+          let(:archive_path) { LegacyArtifactUploader.local_store_path }
         end
       end
 

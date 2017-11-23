@@ -5,7 +5,7 @@ describe 'gitlab:artifacts namespace rake task' do
     Rake.application.rake_require 'tasks/gitlab/artifacts'
   end
 
-  let(:object_storage_enabled) { false }  
+  let(:object_storage_enabled) { false }
 
   before do
     stub_artifacts_object_storage(enabled: object_storage_enabled)
@@ -15,38 +15,14 @@ describe 'gitlab:artifacts namespace rake task' do
 
   context 'legacy artifacts' do
     describe 'migrate' do
-      let(:build) { create(:ci_build, artifacts_file_store: store, artifacts_metadata_store: store) }
-
-      before do
-        # Mock the legacy way of artifacts
-        path = Rails.root.join(ArtifactUploader.local_store_path,
-                               build.created_at.utc.strftime('%Y_%m'),
-                               build.project_id.to_s,
-                               build.id.to_s)
-
-        FileUtils.mkdir_p(path)
-        FileUtils.copy(
-          Rails.root.join('spec/fixtures/ci_build_artifacts.zip'),
-          File.join(path, "ci_build_artifacts.zip"))
-
-        FileUtils.copy(
-          Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'),
-          File.join(path, "ci_build_artifacts_metadata.gz"))
-
-        build.update_columns(
-          artifacts_file: 'ci_build_artifacts.zip',
-          artifacts_metadata: 'ci_build_artifacts_metadata.gz')
-      end
+      let!(:build) { create(:ci_build, :legacy_artifacts, artifacts_file_store: store, artifacts_metadata_store: store) }
 
       context 'when local storage is used' do
         let(:store) { ObjectStoreUploader::LOCAL_STORE }
 
         context 'and job does not have file store defined' do
           let(:object_storage_enabled) { true }
-
-          before do
-            build.update(artifacts_file_store: nil)
-          end
+          let(:store) { nil }
 
           it "migrates file to remote storage" do
             subject

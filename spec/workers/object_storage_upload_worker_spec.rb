@@ -49,32 +49,11 @@ describe ObjectStorageUploadWorker do
   end
 
   context 'for legacy artifacts' do
-    let(:build) { create(:ci_build) }
-    let(:uploader_class) { ArtifactUploader }
+    let(:build) { create(:ci_build, :legacy_artifacts) }
+    let(:uploader_class) { LegacyArtifactUploader }
     let(:subject_class) { Ci::Build }
     let(:file_field) { :artifacts_file }
     let(:subject_id) { build.id }
-
-    before do
-      # Mock the legacy way of artifacts
-      path = Rails.root.join(uploader_class.local_store_path,
-                  build.created_at.utc.strftime('%Y_%m'),
-                  build.project_id.to_s,
-                  build.id.to_s)
-
-      FileUtils.mkdir_p(path)
-      FileUtils.copy(
-        Rails.root.join('spec/fixtures/ci_build_artifacts.zip'),
-        File.join(path, "ci_build_artifacts.zip"))
-
-      FileUtils.copy(
-        Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'),
-        File.join(path, "ci_build_artifacts_metadata.gz"))
-
-      build.update_columns(
-        artifacts_file: 'ci_build_artifacts.zip',
-        artifacts_metadata: 'ci_build_artifacts_metadata.gz')
-    end
 
     context 'when local storage is used' do
       let(:store) { local }
