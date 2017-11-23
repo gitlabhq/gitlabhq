@@ -33,6 +33,7 @@ Example response:
     "created_at":"2016-10-31T12:32:15.192Z",
     "push_events":true,
     "tag_push_events":false,
+    "merge_requests_events": true,
     "enable_ssl_verification":true
   }
 ]
