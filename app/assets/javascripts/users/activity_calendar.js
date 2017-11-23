@@ -1,5 +1,9 @@
 import _ from 'underscore';
-import d3 from 'd3';
+import {
+  select as d3Select,
+  scaleLinear as d3ScaleLinear,
+  scaleThreshold as d3ScaleThreshold,
+} from 'd3';
 import { getDayName, getDayDifference } from '../lib/utils/datetime_utility';
 
 const LOADING_HTML = `
@@ -28,7 +32,7 @@ function formatTooltipText({ date, count }) {
   return `${contribText}<br />${dateDayName} ${dateText}`;
 }
 
-const initColorKey = () => d3.scale.linear().range(['#acd5f2', '#254e77']).domain([0, 3]);
+const initColorKey = () => d3ScaleLinear().range(['#acd5f2', '#254e77']).domain([0, 3]);
 
 export default class ActivityCalendar {
   constructor(container, timestamps, calendarActivitiesPath, utcOffset = 0) {
@@ -103,7 +107,7 @@ export default class ActivityCalendar {
 
   renderSvg(container, group) {
     const width = ((group + 1) * this.daySizeWithSpace) + this.getExtraWidthPadding(group);
-    return d3.select(container)
+    return d3Select(container)
       .append('svg')
         .attr('width', width)
         .attr('height', 167)
@@ -205,7 +209,7 @@ export default class ActivityCalendar {
 
   initColor() {
     const colorRange = ['#ededed', this.colorKey(0), this.colorKey(1), this.colorKey(2), this.colorKey(3)];
-    return d3.scale.threshold().domain([0, 10, 20, 30]).range(colorRange);
+    return d3ScaleThreshold().domain([0, 10, 20, 30]).range(colorRange);
   }
 
   clickDay(stamp) {
