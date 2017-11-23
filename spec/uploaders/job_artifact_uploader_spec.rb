@@ -45,8 +45,8 @@ describe JobArtifactUploader do
 
   context 'file is stored in valid local_path' do
     let(:file) do
-      fixture_file_upload(Rails.root.join(
-        'spec/fixtures/ci_build_artifacts.zip'), 'application/zip')
+      fixture_file_upload(
+        Rails.root.join('spec/fixtures/ci_build_artifacts.zip'), 'application/zip')
     end
 
     before do
@@ -57,7 +57,7 @@ describe JobArtifactUploader do
 
     it { is_expected.to start_with(local_path) }
     it { is_expected.to include("/#{job_artifact.created_at.utc.strftime('%Y_%m_%d')}/") }
-    it { is_expected.to include("/#{job_artifact.project_id.to_s}/") }
+    it { is_expected.to include("/#{job_artifact.project_id}/") }
     it { is_expected.to end_with("ci_build_artifacts.zip") }
   end
 end
