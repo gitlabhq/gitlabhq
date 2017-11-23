@@ -1,7 +1,3 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> origin/master
 import Vue from 'vue';
 import emptyState from '~/environments/components/empty_state.vue';
 import mountComponent from '../helpers/vue_mount_component_helper';
