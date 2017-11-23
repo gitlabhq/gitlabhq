@@ -119,14 +119,6 @@ describe 'Admin::Hooks' do
         WebMock.stub_request(:post, system_hook.url)
       end
 
-      it 'fails if the user does not have any repository with a merge request' do
-        visit admin_hooks_path
-        find('.hook-test-button.dropdown').click
-        click_link 'Merge requests events'
-
-        expect(page).to have_content 'Ensure one of your projects has merge requests.'
-      end
-
       it 'succeeds if the user has a repository with a merge request' do
         project = create(:project, :repository)
         create(:project_member, user: user, project: project)
