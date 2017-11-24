@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Geo::RepositorySyncWorker, :postgresql do
+describe Geo::RepositorySyncWorker, :geo do
   include ::EE::GeoHelpers
 
   set(:primary) { create(:geo_node, :primary, host: 'primary-geo-node') }
