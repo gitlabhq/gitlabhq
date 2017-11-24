@@ -9,7 +9,7 @@
   import tooltip from '../../vue_shared/directives/tooltip';
 
   export default {
-    name: 'issueNoteActions',
+    name: 'noteActions',
     props: {
       authorId: {
         type: Number,
