@@ -19,6 +19,19 @@ module Geo
       relation.limit(batch_size)
     end
 
+    def find_projects_updated_recently(batch_size:)
+      # Selective project replication adds a wrinkle to FDW queries, so
+      # we fallback to the legacy version for now.
+      relation =
+        if Gitlab::Geo.fdw? && !selective_sync
+          fdw_find_projects_updated_recently
+        else
+          legacy_find_projects_updated_recently
+        end
+
+      relation.limit(batch_size)
+    end
+
     protected
 
     def selective_sync
@@ -32,7 +45,16 @@ module Geo
     def fdw_find_unsynced_projects
       fdw_table = Geo::Fdw::Project.table_name
 
-      Geo::Fdw::Project.joins("LEFT OUTER JOIN project_registry ON project_registry.project_id = #{fdw_table}.id").where('project_registry.project_id IS NULL')
+      Geo::Fdw::Project.joins("LEFT OUTER JOIN project_registry ON project_registry.project_id = #{fdw_table}.id")
+        .where('project_registry.project_id IS NULL')
+    end
+
+    def fdw_find_projects_updated_recently
+      fdw_table = Geo::Fdw::Project.table_name
+
+      Geo::Fdw::Project.joins("INNER JOIN project_registry ON project_registry.project_id = #{fdw_table}.id")
+        .merge(Geo::ProjectRegistry.dirty)
+        .merge(Geo::ProjectRegistry.retry_due)
     end
 
     #
@@ -51,6 +73,20 @@ module Geo
       SQL
 
       joined_relation.where(project_registry: { registry_present: [nil, false] })
+    end
+
+    def legacy_find_projects_updated_recently
+      registry_project_ids = current_node.project_registries.dirty.retry_due.pluck(:project_id)
+      return Project.none if registry_project_ids.empty?
+
+      joined_relation = current_node.projects.joins(<<~SQL)
+        INNER JOIN
+        (VALUES #{registry_project_ids.map { |id| "(#{id})" }.join(',')})
+        project_registry(project_id)
+        ON projects.id = project_registry.project_id
+      SQL
+
+      joined_relation
     end
   end
 end
