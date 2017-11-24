@@ -539,6 +539,301 @@ gitlab-rake gitlab:db:configure
 At this point, your GitLab instance should be up and running. Verify you are
 able to login, and create issues and merge requests.  If you have troubles check the [Troubleshooting section](#troubleshooting).
 
+### Example configuration
+
+Here we'll show you some fully expanded example configurations.
+
+#### Example recommended setup
+
+This example uses 3 consul servers, 3 postgresql servers, and 1 application node.
+
+We start with all servers on the same 10.6.0.0/16 private network range, they
+can connect to each freely other on those addresses.
+
+Here is a list and description of each machine and the assigned IP:
+
+* `10.6.0.11`: Consul 1
+* `10.6.0.12`: Consul 2
+* `10.6.0.13`: Consul 3
+* `10.6.0.21`: PostgreSQL master
+* `10.6.0.22`: PostgreSQL secondary
+* `10.6.0.23`: PostgreSQL secondary
+* `10.6.0.31`: GitLab application
+
+All passwords are set to `toomanysecrets`, please do not use this password or derived hashes.
+
+The external_url for GitLab is `http://gitlab.example.com`
+
+Please note that after the initial configuration, if a failover occurs, the PostgresSQL master will change to one of the available secondaries until it is failed back.
+
+##### Example recommended setup for Consul servers
+
+On each server edit `/etc/gitlab/gitlab.rb`:
+
+```ruby
+# Disable all components except Consul
+bootstrap['enable'] = false
+gitlab_rails['auto_migrate'] = false
+gitaly['enable'] = false
+gitlab_workhorse['enable'] = false
+mailroom['enable'] = false
+nginx['enable'] = false
+postgresql['enable'] = false
+redis['enable'] = false
+sidekiq['enable'] = false
+prometheus['enable'] = false
+unicorn['enable'] = false
+
+consul['enable'] = true
+consul['configuration'] = {
+  server: true,
+  retry_join: %w(10.6.0.11 10.6.0.12 10.6.0.13)
+}
+```
+
+[Reconfigure Omnibus GitLab][reconfigure Gitlab] for the changes to take effect.
+
+##### Example recommended setup for PostgreSQL servers
+
+On each server edit `/etc/gitlab/gitlab.rb`:
+
+```ruby
+# Disable all components except PostgreSQL and Repmgr and Consul
+bootstrap['enable'] = false
+gitaly['enable'] = false
+mailroom['enable'] = false
+nginx['enable'] = false
+unicorn['enable'] = false
+sidekiq['enable'] = false
+redis['enable'] = false
+gitlab_workhorse['enable'] = false
+prometheus_monitoring['enable'] = false
+
+repmgr['enable'] = true
+postgresql['enable'] = true
+consul['enable'] = true
+
+# PostgreSQL configuration
+postgresql['listen_address'] = '0.0.0.0'
+postgresql['hot_standby'] = 'on'
+postgresql['wal_level'] = 'replica'
+postgresql['shared_preload_libraries'] = 'repmgr_funcs'
+
+# Disable automatic database migrations
+gitlab_rails['auto_migrate'] = false
+
+# Configure the consul agent
+consul['services'] = %w(postgresql)
+
+postgresql['pgbouncer_user_password'] = '771a8625958a529132abe6f1a4acb19c'
+postgresql['sql_user_password'] = '450409b85a0223a214b5fb1484f34d0f'
+postgresql['max_wal_senders'] = 4
+
+postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/16)
+repmgr['trust_auth_cidr_addresses'] = %w(10.6.0.0/16)
+
+consul['configuration'] = {
+  retry_join: %w(10.6.0.11 10.6.0.12 10.6.0.13)
+}
+```
+
+[Reconfigure Omnibus GitLab][reconfigure Gitlab] for the changes to take effect.
+
+##### Example recommended setup for application server
+
+On the server edit `/etc/gitlab/gitlab.rb`:
+
+```ruby
+external_url 'http://gitlab.example.com'
+
+gitlab_rails['db_host'] = '127.0.0.1'
+gitlab_rails['db_port'] = 6432
+gitlab_rails['db_password'] = 'toomanysecrets'
+gitlab_rails['auto_migrate'] = false
+
+postgresql['enable'] = false
+pgbouncer['enable'] = true
+consul['enable'] = true
+
+# Configure Pgbouncer
+pgbouncer['admin_users'] = %w(pgbouncer gitlab-consul)
+
+# Configure Consul agent
+consul['watchers'] = %w(postgresql)
+
+pgbouncer['users'] = {
+  'gitlab-consul': {
+    password: '5e0e3263571e3704ad655076301d6ebe'
+  },
+  'pgbouncer': {
+    password: '771a8625958a529132abe6f1a4acb19c'
+  }
+}
+
+consul['configuration'] = {
+  retry_join: %w(10.6.0.11 10.6.0.12 10.6.0.13)
+}
+```
+
+[Reconfigure Omnibus GitLab][reconfigure Gitlab] for the changes to take effect.
+
+##### Example recommended setup manual steps
+
+After deploying the configuration follow these steps:
+
+1. On `10.6.0.21`, our primary database
+
+    Enable the `pg_trgm` extension
+
+    ```sh
+    gitlab-psql -d gitlabhq_production
+    ```
+
+    ```
+    CREATE EXTENSION pg_trgm;
+    ```
+
+1. On `10.6.0.22`, our first standby database
+
+    Make this node a standby of the primary
+
+    ```sh
+    gitlab-ctl repmgr standby setup 10.6.0.21
+    ```
+
+1. On `10.6.0.23`, our second standby database
+
+    Make this node a standby of the primary
+
+    ```sh
+    gitlab-ctl repmgr standby setup 10.6.0.21
+    ```
+
+1. On `10.6.0.31`, our application server
+
+    Set gitlab-consul's pgbouncer password to `toomanysecrets`
+
+    ```sh
+    gitlab-ctl write-pgpass --host 127.0.0.1 --database pgbouncer --user pgbouncer --hostuser gitlab-consul
+    ```
+
+    Run database migrations
+
+    ```sh
+    gitlab-rake gitlab:db:configure
+    ```
+
+#### Example minimal setup
+
+This example uses 3 postgresql servers, and 1 application node.
+
+It differs from the [recommended setup](#example_recommended_setup) by moving the consul servers into the same servers we use for PostgreSQL.
+The trade-off is between reducing server counts, against the increased operational complexity of needing to deal with postgres [failover](#failover_procedure) and [restore](#restore_procedure) procedures in addition to [consul outage recovery](consul.md#outage_recovery) on the same set of machines.
+
+In this example we start with all servers on the same 10.6.0.0/16 private network range, they can connect to each freely other on those addresses.
+
+Here is a list and description of each machine and the assigned IP:
+
+* `10.6.0.21`: PostgreSQL master
+* `10.6.0.22`: PostgreSQL secondary
+* `10.6.0.23`: PostgreSQL secondary
+* `10.6.0.31`: GitLab application
+
+All passwords are set to `toomanysecrets`, please do not use this password or derived hashes.
+
+The external_url for GitLab is `http://gitlab.example.com`
+
+Please note that after the initial configuration, if a failover occurs, the PostgresSQL master will change to one of the available secondaries until it is failed back.
+
+##### Example minimal configuration for database servers
+
+On each server edit `/etc/gitlab/gitlab.rb`:
+
+```ruby
+# Disable all components except PostgreSQL, Repmgr, and Consul
+bootstrap['enable'] = false
+gitaly['enable'] = false
+mailroom['enable'] = false
+nginx['enable'] = false
+unicorn['enable'] = false
+sidekiq['enable'] = false
+redis['enable'] = false
+gitlab_workhorse['enable'] = false
+prometheus_monitoring['enable'] = false
+
+repmgr['enable'] = true
+postgresql['enable'] = true
+consul['enable'] = true
+
+# PostgreSQL configuration
+postgresql['listen_address'] = '0.0.0.0'
+postgresql['hot_standby'] = 'on'
+postgresql['wal_level'] = 'replica'
+postgresql['shared_preload_libraries'] = 'repmgr_funcs'
+
+# Disable automatic database migrations
+gitlab_rails['auto_migrate'] = false
+
+# Configure the consul agent
+consul['services'] = %w(postgresql)
+
+postgresql['pgbouncer_user_password'] = '771a8625958a529132abe6f1a4acb19c'
+postgresql['sql_user_password'] = '450409b85a0223a214b5fb1484f34d0f'
+postgresql['max_wal_senders'] = 4
+
+postgresql['trust_auth_cidr_addresses'] = %w(10.6.0.0/16)
+repmgr['trust_auth_cidr_addresses'] = %w(10.6.0.0/16)
+
+consul['configuration'] = {
+  server: true,
+  retry_join: %w(10.6.0.21 10.6.0.22 10.6.0.23)
+}
+```
+
+[Reconfigure Omnibus GitLab][reconfigure Gitlab] for the changes to take effect.
+
+##### Example minimal configuration for application server
+
+On the server edit `/etc/gitlab/gitlab.rb`:
+
+```ruby
+external_url 'http://gitlab.example.com'
+
+gitlab_rails['db_host'] = '127.0.0.1'
+gitlab_rails['db_port'] = 6432
+gitlab_rails['db_password'] = 'toomanysecrets'
+gitlab_rails['auto_migrate'] = false
+
+postgresql['enable'] = false
+pgbouncer['enable'] = true
+consul['enable'] = true
+
+# Configure Pgbouncer
+pgbouncer['admin_users'] = %w(pgbouncer gitlab-consul)
+
+# Configure Consul agent
+consul['watchers'] = %w(postgresql)
+
+pgbouncer['users'] = {
+  'gitlab-consul': {
+    password: '5e0e3263571e3704ad655076301d6ebe'
+  },
+  'pgbouncer': {
+    password: '771a8625958a529132abe6f1a4acb19c'
+  }
+}
+
+consul['configuration'] = {
+  retry_join: %w(10.6.0.21 10.6.0.22 10.6.0.23)
+}
+```
+
+[Reconfigure Omnibus GitLab][reconfigure Gitlab] for the changes to take effect.
+
+##### Example minimal setup manual steps
+
+The manual steps for this configuration are the same as for the [example recommended setup](#example_recommended_setup_manual_steps).
+
 ### Failover procedure
 
 By default, if the master database fails, `repmgrd` should promote one of the
