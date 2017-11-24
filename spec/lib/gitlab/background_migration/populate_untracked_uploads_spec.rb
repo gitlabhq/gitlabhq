@@ -126,6 +126,91 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
       end.not_to change { uploads.count }.from(0)
     end
   end
+
+  describe 'upload outcomes for each path pattern' do
+    shared_examples_for 'non_markdown_file' do
+      let!(:expected_upload_attrs) { model.uploads.first.attributes.slice('path', 'uploader', 'size', 'checksum') }
+      let!(:untracked_file) { untracked_files_for_uploads.create!(path: expected_upload_attrs['path']) }
+
+      before do
+        model.uploads.delete_all
+      end
+
+      it 'creates an Upload record' do
+        expect do
+          subject.perform(1, 1000)
+        end.to change { model.reload.uploads.count }.from(0).to(1)
+
+        expect(model.uploads.first.attributes).to include(expected_upload_attrs)
+      end
+    end
+
+    context 'for an appearance logo file path' do
+      let(:model) { create(:appearance, logo: uploaded_file) }
+
+      it_behaves_like 'non_markdown_file'
+    end
+
+    context 'for an appearance header_logo file path' do
+      let(:model) { create(:appearance, header_logo: uploaded_file) }
+
+      it_behaves_like 'non_markdown_file'
+    end
+
+    context 'for a pre-Markdown Note attachment file path' do
+      class Note < ActiveRecord::Base
+        has_many :uploads, as: :model, dependent: :destroy
+      end
+
+      let(:model) { create(:note, :with_attachment) }
+
+      it_behaves_like 'non_markdown_file'
+    end
+
+    context 'for a user avatar file path' do
+      let(:model) { create(:user, :with_avatar) }
+
+      it_behaves_like 'non_markdown_file'
+    end
+
+    context 'for a group avatar file path' do
+      let(:model) { create(:group, :with_avatar) }
+
+      it_behaves_like 'non_markdown_file'
+    end
+
+    context 'for a project avatar file path' do
+      let(:model) { create(:project, :with_avatar) }
+
+      it_behaves_like 'non_markdown_file'
+    end
+
+    context 'for a project Markdown attachment (notes, issues, MR descriptions) file path' do
+      let(:model) { create(:project) }
+
+      before do
+        # Upload the file
+        UploadService.new(model, uploaded_file, FileUploader).execute
+
+        # Create the untracked_files_for_uploads record
+        untracked_files_for_uploads.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/#{model.full_path}/#{model.uploads.first.path}")
+
+        # Save the expected upload attributes
+        @expected_upload_attrs = model.reload.uploads.first.attributes.slice('path', 'uploader', 'size', 'checksum')
+
+        # Untrack the file
+        model.reload.uploads.delete_all
+      end
+
+      it 'creates an Upload record' do
+        expect do
+          subject.perform(1, 1000)
+        end.to change { model.reload.uploads.count }.from(0).to(1)
+
+        expect(model.uploads.first.attributes).to include(@expected_upload_attrs)
+      end
+    end
+  end
 end
 
 describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
@@ -139,119 +224,6 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
   after(:all) do
     drop_temp_table_if_exists
-  end
-
-  describe '#ensure_tracked!' do
-    let!(:user1) { create(:user, :with_avatar) }
-    let!(:untracked_file) { described_class.create!(path: user1.uploads.first.path) }
-
-    context 'when the file is already in the uploads table' do
-      it 'does not add an upload' do
-        expect do
-          untracked_file.ensure_tracked!
-        end.not_to change { upload_class.count }.from(1)
-      end
-    end
-
-    context 'when the file is not already in the uploads table' do
-      before do
-        user1.uploads.delete_all
-      end
-
-      it 'adds an upload' do
-        expect do
-          untracked_file.ensure_tracked!
-        end.to change { upload_class.count }.from(0).to(1)
-      end
-    end
-  end
-
-  describe '#add_to_uploads_if_needed' do
-    shared_examples_for 'add_to_uploads_non_markdown_files' do
-      let!(:expected_upload_attrs) { model.uploads.first.attributes.slice('path', 'uploader', 'size', 'checksum') }
-      let!(:untracked_file) { described_class.create!(path: expected_upload_attrs['path']) }
-
-      before do
-        model.uploads.delete_all
-      end
-
-      it 'creates an Upload record' do
-        expect do
-          untracked_file.add_to_uploads_if_needed
-        end.to change { model.reload.uploads.count }.from(0).to(1)
-
-        expect(model.uploads.first.attributes).to include(expected_upload_attrs)
-      end
-    end
-
-    context 'for an appearance logo file path' do
-      let(:model) { create(:appearance, logo: uploaded_file) }
-
-      it_behaves_like 'add_to_uploads_non_markdown_files'
-    end
-
-    context 'for an appearance header_logo file path' do
-      let(:model) { create(:appearance, header_logo: uploaded_file) }
-
-      it_behaves_like 'add_to_uploads_non_markdown_files'
-    end
-
-    context 'for a pre-Markdown Note attachment file path' do
-      class Note < ActiveRecord::Base
-        has_many :uploads, as: :model, dependent: :destroy
-      end
-
-      let(:model) { create(:note, :with_attachment) }
-
-      it_behaves_like 'add_to_uploads_non_markdown_files'
-    end
-
-    context 'for a user avatar file path' do
-      let(:model) { create(:user, :with_avatar) }
-
-      it_behaves_like 'add_to_uploads_non_markdown_files'
-    end
-
-    context 'for a group avatar file path' do
-      let(:model) { create(:group, :with_avatar) }
-
-      it_behaves_like 'add_to_uploads_non_markdown_files'
-    end
-
-    context 'for a project avatar file path' do
-      let(:model) { create(:project, :with_avatar) }
-
-      it_behaves_like 'add_to_uploads_non_markdown_files'
-    end
-
-    context 'for a project Markdown attachment (notes, issues, MR descriptions) file path' do
-      let(:model) { create(:project) }
-
-      # UntrackedFile.path is different than Upload.path
-      let(:untracked_file) { create_untracked_file("/#{model.full_path}/#{model.uploads.first.path}") }
-
-      before do
-        # Upload the file
-        UploadService.new(model, uploaded_file, FileUploader).execute
-
-        # Create the untracked_files_for_uploads record
-        untracked_file
-
-        # Save the expected upload attributes
-        @expected_upload_attrs = model.reload.uploads.first.attributes.slice('path', 'uploader', 'size', 'checksum')
-
-        # Untrack the file
-        model.reload.uploads.delete_all
-      end
-
-      it 'creates an Upload record' do
-        expect do
-          untracked_file.add_to_uploads_if_needed
-        end.to change { model.reload.uploads.count }.from(0).to(1)
-
-        expect(model.uploads.first.attributes).to include(@expected_upload_attrs)
-      end
-    end
   end
 
   describe '#upload_path' do

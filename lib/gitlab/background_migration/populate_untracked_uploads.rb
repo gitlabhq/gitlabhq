@@ -50,37 +50,25 @@ module Gitlab
           }
         ].freeze
 
-        def ensure_tracked!
-          add_to_uploads_if_needed
-
-          delete
-        end
-
-        def add_to_uploads_if_needed
-          # Even though we are checking relative paths, path is enough to
-          # uniquely identify uploads. There is no ambiguity between
-          # FileUploader paths and other Uploader paths because we use the /-/
-          # separator kind of like an escape character. Project full_path will
-          # never conflict with an upload path starting with "uploads/-/".
-          Upload.
-            where(path: upload_path).
-            first_or_create!(
-              uploader: uploader,
-              model_type: model_type,
-              model_id: model_id,
-              size: file_size
-            )
+        def to_h
+          {
+            path: upload_path,
+            uploader: uploader,
+            model_type: model_type,
+            model_id: model_id,
+            size: file_size
+          }
         end
 
         def upload_path
           # UntrackedFile#path is absolute, but Upload#path depends on uploader
-          if uploader == 'FileUploader'
-            # Path relative to project directory in uploads
-            matchd = path_relative_to_upload_dir.match(FILE_UPLOADER_PATH_PATTERN)
-            matchd[0].sub(%r{\A/}, '') # remove leading slash
-          else
-            path
-          end
+          @upload_path ||= if uploader == 'FileUploader'
+                             # Path relative to project directory in uploads
+                             matchd = path_relative_to_upload_dir.match(FILE_UPLOADER_PATH_PATTERN)
+                             matchd[0].sub(%r{\A/}, '') # remove leading slash
+                           else
+                             path
+                           end
         end
 
         def uploader
@@ -187,17 +175,8 @@ module Gitlab
         return unless migrate?
 
         files = UntrackedFile.where(id: start_id..end_id)
-        files.each do |untracked_file|
-          begin
-            untracked_file.ensure_tracked!
-          rescue StandardError => e
-            Rails.logger.warn "Failed to add untracked file to uploads: #{e.message}"
-
-            # The untracked rows will remain in the DB. We will be able to see
-            # which ones failed to become tracked, and then we can decide what
-            # to do.
-          end
-        end
+        insert_uploads_if_needed(files)
+        files.delete_all
 
         drop_temp_table_if_finished
       end
@@ -206,6 +185,31 @@ module Gitlab
 
       def migrate?
         UntrackedFile.table_exists? && Upload.table_exists?
+      end
+
+      def insert_uploads_if_needed(files)
+        filtered_files = filter_existing_uploads(files)
+        filtered_files = filter_deleted_models(filtered_files)
+        insert(filtered_files)
+      end
+
+      def filter_existing_uploads(files)
+        paths = files.map(&:upload_path)
+        existing_paths = Upload.where(path: paths).pluck(:path).to_set
+
+        files.reject do |file|
+          existing_paths.include?(file.upload_path)
+        end
+      end
+
+      def filter_deleted_models(files)
+        files # TODO
+      end
+
+      def insert(files)
+        files.each do |file|
+          Upload.create!(file.to_h)
+        end
       end
 
       def drop_temp_table_if_finished
