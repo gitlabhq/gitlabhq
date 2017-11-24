@@ -181,6 +181,12 @@ class MergeRequest < ActiveRecord::Base
     work_in_progress?(title) ? title : "WIP: #{title}"
   end
 
+  # Verifies if title has changed not taking into account WIP prefix
+  # for merge requests.
+  def wipless_title_changed(old_title)
+    self.class.wipless_title(old_title) != self.wipless_title
+  end
+
   def hook_attrs
     Gitlab::HookData::MergeRequestBuilder.new(self).build
   end

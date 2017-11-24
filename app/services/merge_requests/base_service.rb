@@ -4,6 +4,7 @@ module MergeRequests
       SystemNoteService.change_status(merge_request, merge_request.target_project, current_user, state, nil)
     end
 
+<<<<<<< HEAD
     def create_title_change_note(issuable, old_title)
       removed_wip = MergeRequest.work_in_progress?(old_title) && !issuable.work_in_progress?
       added_wip = !MergeRequest.work_in_progress?(old_title) && issuable.work_in_progress?
@@ -20,6 +21,10 @@ module MergeRequests
 
     def hook_data(merge_request, action, old_rev: nil, old_labels: [], old_assignees: [])
       hook_data = merge_request.to_hook_data(current_user, old_labels: old_labels, old_assignees: old_assignees)
+=======
+    def hook_data(merge_request, action, old_rev: nil, old_labels: [], old_assignees: [], old_total_time_spent: nil)
+      hook_data = merge_request.to_hook_data(current_user, old_labels: old_labels, old_assignees: old_assignees, old_total_time_spent: old_total_time_spent)
+>>>>>>> c4d844f08b... Merge branch 'issue_40374' into 'master'
       hook_data[:object_attributes][:action] = action
       if old_rev && !Gitlab::Git.blank_ref?(old_rev)
         hook_data[:object_attributes][:oldrev] = old_rev
