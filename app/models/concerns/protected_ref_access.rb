@@ -7,6 +7,12 @@ module ProtectedRefAccess
     Gitlab::Access::NO_ACCESS
   ].freeze
 
+  HUMAN_ACCESS_LEVELS = {
+    Gitlab::Access::MASTER => "Masters".freeze,
+    Gitlab::Access::DEVELOPER => "Developers + Masters".freeze,
+    Gitlab::Access::NO_ACCESS => "No one".freeze
+  }.freeze
+
   included do
     scope :master, -> { where(access_level: Gitlab::Access::MASTER) }
     scope :developer, -> { where(access_level: Gitlab::Access::DEVELOPER) }
@@ -17,7 +23,7 @@ module ProtectedRefAccess
   end
 
   def humanize
-    self.class.human_access_levels[self.access_level]
+    HUMAN_ACCESS_LEVELS[self.access_level]
   end
 
   # CE access levels are always role-based,
