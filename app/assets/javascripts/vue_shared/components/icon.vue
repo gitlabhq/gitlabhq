@@ -22,7 +22,7 @@
       size: {
         type: Number,
         required: false,
-        default: 0,
+        default: 16,
       },
 
       cssClasses: {
@@ -45,7 +45,7 @@
 <template>
   <svg
     :class="[iconSizeClass, cssClasses]">
-    <use 
+    <use
       v-bind="{'xlink:href':spriteHref}"/>
   </svg>
 </template>

@@ -4,7 +4,7 @@
   import { SYSTEM_NOTE } from '../constants';
   import issueNote from './issue_note.vue';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-  import issueNoteHeader from './issue_note_header.vue';
+  import noteHeader from './note_header.vue';
   import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
   import issueNoteEditedText from './issue_note_edited_text.vue';
   import issueNoteForm from './issue_note_form.vue';
@@ -27,7 +27,7 @@
     components: {
       issueNote,
       userAvatarLink,
-      issueNoteHeader,
+      noteHeader,
       issueNoteSignedOutWidget,
       issueNoteEditedText,
       issueNoteForm,
@@ -169,7 +169,7 @@
       <div class="timeline-content">
         <div class="discussion">
           <div class="discussion-header">
-            <issue-note-header
+            <note-header
               :author="author"
               :created-at="discussion.created_at"
               :note-id="discussion.id"
@@ -177,7 +177,7 @@
               @toggleHandler="toggleDiscussionHandler"
               action-text="started a discussion"
               class="discussion"
-              />
+            />
             <issue-note-edited-text
               v-if="lastUpdatedAt"
               :edited-at="lastUpdatedAt"

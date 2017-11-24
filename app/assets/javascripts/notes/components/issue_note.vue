@@ -2,7 +2,7 @@
   import { mapGetters, mapActions } from 'vuex';
   import Flash from '../../flash';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
-  import issueNoteHeader from './issue_note_header.vue';
+  import noteHeader from './note_header.vue';
   import noteActions from './note_actions.vue';
   import issueNoteBody from './issue_note_body.vue';
   import eventHub from '../event_hub';
@@ -23,7 +23,7 @@
     },
     components: {
       userAvatarLink,
-      issueNoteHeader,
+      noteHeader,
       noteActions,
       issueNoteBody,
     },
@@ -155,7 +155,7 @@
       </div>
       <div class="timeline-content">
         <div class="note-header">
-          <issue-note-header
+          <note-header
             :author="author"
             :created-at="note.created_at"
             :note-id="note.id"
