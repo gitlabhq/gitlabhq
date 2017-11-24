@@ -15,15 +15,15 @@ describe ClustersHelper do
     context 'when project has a cluster' do
       before do
         params =
-        {
-          name: 'test-cluster',
-          provider_type: :gcp,
-          provider_gcp_attributes: {
-            gcp_project_id: 'gcp-project',
-            zone: 'us-central1-a',
-            num_nodes: 1,
-            machine_type: 'machine_type-a'
-          }
+          {
+            name: 'test-cluster',
+            provider_type: :gcp,
+            provider_gcp_attributes: {
+              gcp_project_id: 'gcp-project',
+              zone: 'us-central1-a',
+              num_nodes: 1,
+              machine_type: 'machine_type-a'
+            }
         }
         Clusters::Cluster.create(params.merge(user: user, projects: [project]))
       end
