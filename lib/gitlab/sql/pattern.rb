@@ -7,6 +7,12 @@ module Gitlab
       REGEX_QUOTED_WORD = /(?<=\A| )"[^"]+"(?= |\z)/
 
       class_methods do
+        def fuzzy_search(query, columns)
+          matches = columns.map { |col| fuzzy_arel_match(col, query) }.compact.reduce(:or)
+
+          where(matches)
+        end
+
         def to_pattern(query)
           if partial_matching?(query)
             "%#{sanitize_sql_like(query)}%"

@@ -170,7 +170,7 @@ class Note < ActiveRecord::Base
     end
 
     def search(query)
-      where(arel_table[:note].matches(to_pattern(query)))
+      fuzzy_search(query, [:note])
     end
   end
 

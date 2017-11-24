@@ -60,10 +60,7 @@ module Ci
     #
     # Returns an ActiveRecord::Relation.
     def self.search(query)
-      t = arel_table
-      pattern = to_pattern(query)
-
-      where(t[:token].matches(pattern).or(t[:description].matches(pattern)))
+      fuzzy_search(query, [:token, :description])
     end
 
     def self.contact_time_deadline

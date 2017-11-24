@@ -87,10 +87,7 @@ class Namespace < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation
     def search(query)
-      t = arel_table
-      pattern = to_pattern(query)
-
-      where(t[:name].matches(pattern).or(t[:path].matches(pattern)))
+      fuzzy_search(query, [:name, :path])
     end
 
     def clean_path(path)

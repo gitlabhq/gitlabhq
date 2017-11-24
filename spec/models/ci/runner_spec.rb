@@ -473,7 +473,7 @@ describe Ci::Runner do
   end
 
   describe '.search' do
-    let(:runner) { create(:ci_runner, token: '123abc') }
+    let(:runner) { create(:ci_runner, token: '123abc', description: 'test runner') }
 
     it 'returns runners with a matching token' do
       expect(described_class.search(runner.token)).to eq([runner])
