@@ -3,7 +3,7 @@ module Projects
     AttachmentMigrationError = Class.new(StandardError)
 
     class MigrateAttachmentsService < BaseService
-      attr_reader :logger
+      attr_reader :logger, :old_path, :new_path
 
       def initialize(project, logger = nil)
         @project = project
@@ -11,16 +11,21 @@ module Projects
       end
 
       def execute
-        old_path = FileUploader.dynamic_path_segment(project)
-        project.storage_version = ::Project::HASHED_STORAGE_FEATURES[:attachments]
-        new_path = FileUploader.dynamic_path_segment(project)
+        @old_path = project.full_path
+        @new_path = project.disk_path
 
-        move_folder!(old_path, new_path)
+        origin = FileUploader.dynamic_path_segment(project)
+        project.storage_version = ::Project::HASHED_STORAGE_FEATURES[:attachments]
+        target = FileUploader.dynamic_path_segment(project)
+
+        result = move_folder!(origin, target)
         project.save!
 
-        if block_given?
+        if result && block_given?
           yield
         end
+
+        result
       end
 
       private
@@ -41,6 +46,8 @@ module Projects
 
         FileUtils.mv(old_path, new_path)
         logger.info("Migrated project attachments from '#{old_path}' to '#{new_path}' (PROJECT_ID=#{project.id})")
+
+        true
       end
     end
   end

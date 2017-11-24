@@ -58,6 +58,6 @@ describe Projects::HashedStorage::MigrateAttachmentsService do
   end
 
   def base_path(storage)
-    File.join(CarrierWave.root, FileUploader.base_dir, storage.disk_path)
+    FileUploader.dynamic_path_builder(storage.disk_path)
   end
 end
