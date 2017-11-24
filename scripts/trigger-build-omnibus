@@ -4,27 +4,6 @@ require 'net/http'
 require 'json'
 require 'cgi'
 
-<<<<<<< HEAD
-#
-# Dummy way to find out in which repo we are, CE or EE
-#
-def ee?
-  File.exist?('CHANGELOG-EE.md')
-end
-
-uri = URI('https://gitlab.com/api/v4/projects/20699/trigger/pipeline')
-params = {
-  "ref" => ENV["OMNIBUS_BRANCH"] || "master",
-  "token" => ENV["BUILD_TRIGGER_TOKEN"],
-  "variables[GITLAB_VERSION]" => ENV["CI_COMMIT_SHA"],
-  "variables[ALTERNATIVE_SOURCES]" => true,
-  "variables[ee]" => ee? ? 'true' : 'false'
-}
-
-Dir.glob("*_VERSION").each do |version_file|
-  params["variables[#{version_file}]"] = File.read(version_file).strip
-end
-=======
 module Omnibus
   PROJECT_PATH = 'gitlab-org/omnibus-gitlab'.freeze
 
@@ -68,7 +47,6 @@ module Omnibus
       end
     end
   end
->>>>>>> upstream/master
 
   class Pipeline
     INTERVAL = 60 # seconds
