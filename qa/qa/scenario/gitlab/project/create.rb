@@ -11,7 +11,7 @@ module QA
             @name = "#{name}-#{SecureRandom.hex(8)}"
           end
 
-          def perform
+          def perform(with_repo: false)
             Scenario::Gitlab::Sandbox::Prepare.perform
 
             Page::Group::Show.perform do |page|
@@ -33,6 +33,29 @@ module QA
               page.choose_name(@name)
               page.add_description(@description)
               page.create_new_project
+            end
+
+            if with_repo
+              Git::Repository.perform do |repository|
+                repository.location = Page::Project::Show.act do
+                  choose_repository_clone_http
+                  repository_location
+                end
+                repository.use_default_credentials
+
+                repository.act do
+                  clone
+                  configure_identity('GitLab QA', 'root@gitlab.com')
+                  commit_file('test.rb', 'class Test; end', 'Add Test class')
+                  commit_file('README.md', '# Test', 'Add Readme')
+                  push_changes
+                end
+              end
+
+              Page::Project::Show.act do
+                wait_for_push
+                refresh
+              end
             end
           end
         end

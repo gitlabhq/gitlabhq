@@ -41,8 +41,6 @@ module QA
       end
 
       scenario 'user pushes code to a protected branch' do
-        binding.pry
-
         Page::Main::Entry.act { visit_login_page }
         Page::Main::Login.act { sign_in_using_credentials }
 

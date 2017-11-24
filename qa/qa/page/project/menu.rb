@@ -1,13 +1,9 @@
 module QA
   module Page
-    module Gitlab
-      module Project
-        class Menu < Page::Base
-
-          def branches
-            click_link 'Branches'
-          end
-
+    module Project
+      class Menu < Page::Base
+        def branches
+          find('a', text: /\ABranch/).click
         end
       end
     end

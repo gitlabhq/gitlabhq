@@ -1,3 +1,5 @@
+require 'pry'
+
 module QA
   module Scenario
     module Gitlab
@@ -9,9 +11,7 @@ module QA
                           :name
 
               def perform
-                Scenario::Gitlab::Sandbox::Prepare.perform
-
-                Scenario::Gitlab::Project::Create.perform do |project|
+                Scenario::Gitlab::Project::Create.perform(with_repo: true) do |project|
                   project.name = 'awesome-project'
                 end
 
@@ -19,7 +19,6 @@ module QA
                 Page::Project::Repository::Branches.act { new }
 
                 Page::Project::Repository::Branch::New.perform do |page|
-                  page.choose_ref(@ref)
                   page.choose_name(@name)
                   page.create_branch
                 end
