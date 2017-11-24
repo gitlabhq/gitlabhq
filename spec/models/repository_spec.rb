@@ -2140,7 +2140,7 @@ describe Repository do
   describe '#push_remote_branches' do
     it 'push branches to the remote repo' do
       expect_any_instance_of(Gitlab::Shell).to receive(:push_remote_branches)
-        .with(repository.storage_path, repository.disk_path, 'remote_name', ['branch'])
+        .with(repository.repository_storage_path, repository.disk_path, 'remote_name', ['branch'])
 
       repository.push_remote_branches('remote_name', ['branch'])
     end
@@ -2149,7 +2149,7 @@ describe Repository do
   describe '#delete_remote_branches' do
     it 'delete branches to the remote repo' do
       expect_any_instance_of(Gitlab::Shell).to receive(:delete_remote_branches)
-        .with(repository.storage_path, repository.disk_path, 'remote_name', ['branch'])
+        .with(repository.repository_storage_path, repository.disk_path, 'remote_name', ['branch'])
 
       repository.delete_remote_branches('remote_name', ['branch'])
     end

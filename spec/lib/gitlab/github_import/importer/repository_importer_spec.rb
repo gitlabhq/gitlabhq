@@ -164,12 +164,9 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
       expect(project)
         .to receive(:ensure_repository)
 
-      expect(importer)
-        .to receive(:configure_repository_remote)
-
       expect(repository)
-        .to receive(:fetch_remote)
-        .with('github', forced: true)
+        .to receive(:fetch_as_mirror)
+        .with(project.import_url, refmap: Gitlab::GithubImport.refmap, forced: true, remote_name: 'github')
 
       expect(importer.import_repository).to eq(true)
     end
@@ -183,40 +180,6 @@ describe Gitlab::GithubImport::Importer::RepositoryImporter do
         .and_return(false)
 
       expect(importer.import_repository).to eq(false)
-    end
-  end
-
-  describe '#configure_repository_remote' do
-    it 'configures the remote details' do
-      expect(repository)
-        .to receive(:remote_exists?)
-        .with('github')
-        .and_return(false)
-
-      expect(repository)
-        .to receive(:add_remote)
-        .with('github', 'foo.git')
-
-      expect(repository)
-        .to receive(:set_import_remote_as_mirror)
-        .with('github')
-
-      expect(repository)
-        .to receive(:add_remote_fetch_config)
-
-      importer.configure_repository_remote
-    end
-
-    it 'does not configure the remote if already configured' do
-      expect(repository)
-        .to receive(:remote_exists?)
-        .with('github')
-        .and_return(true)
-
-      expect(repository)
-        .not_to receive(:add_remote)
-
-      importer.configure_repository_remote
     end
   end
 
