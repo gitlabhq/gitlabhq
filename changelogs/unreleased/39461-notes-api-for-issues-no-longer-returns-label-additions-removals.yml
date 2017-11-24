@@ -1,5 +1,0 @@
----
-title: Label addition/removal are not going to be redacted wrongfully in the API.
-merge_request: 15080
-author:
-type: fixed

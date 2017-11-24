@@ -1,9 +1,9 @@
-# The protected branches API still uses the `developers_can_push` and `developers_can_merge`
+# The branches#protect API still uses the `developers_can_push` and `developers_can_merge`
 # flags for backward compatibility, and so performs translation between that format and the
 # internal data model (separate access levels). The translation code is non-trivial, and so
 # lives in this service.
 module ProtectedBranches
-  class ApiUpdateService < BaseService
+  class LegacyApiUpdateService < BaseService
     def execute(protected_branch)
       @developers_can_push = params.delete(:developers_can_push)
       @developers_can_merge = params.delete(:developers_can_merge)

@@ -1,10 +1,35 @@
 <script>
+  /**
+   * Given an array of tabs, renders non linked bootstrap tabs.
+   * When a tab is clicked it will trigger an event and provide the clicked scope.
+   *
+   * This component is used in apps that handle the API call.
+   * If you only need to change the URL this component should not be used.
+   *
+   * @example
+   * <navigation-tabs
+   *   :tabs="[
+   *   {
+   *      name: String,
+   *      scope: String,
+   *      count: Number || Undefined,
+   *      isActive: Boolean,
+   *    },
+   *   ]"
+   *   @onChangeTab="onChangeTab"
+   *   />
+   */
   export default {
-    name: 'PipelineNavigationTabs',
+    name: 'NavigationTabs',
     props: {
       tabs: {
         type: Array,
         required: true,
+      },
+      scope: {
+        type: String,
+        required: false,
+        default: '',
       },
     },
     mounted() {
@@ -34,7 +59,7 @@
       <a
         role="button"
         @click="onTabClick(tab)"
-        :class="`js-pipelines-tab-${tab.scope}`"
+        :class="`js-${scope}-tab-${tab.scope}`"
         >
         {{ tab.name }}
 

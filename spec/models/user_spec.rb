@@ -2143,25 +2143,47 @@ describe User do
     end
   end
 
-  describe '#allow_password_authentication?' do
+  describe '#allow_password_authentication_for_web?' do
     context 'regular user' do
       let(:user) { build(:user) }
 
-      it 'returns true when sign-in is enabled' do
-        expect(user.allow_password_authentication?).to be_truthy
+      it 'returns true when password authentication is enabled for the web interface' do
+        expect(user.allow_password_authentication_for_web?).to be_truthy
       end
 
-      it 'returns false when sign-in is disabled' do
-        stub_application_setting(password_authentication_enabled: false)
+      it 'returns false when password authentication is disabled for the web interface' do
+        stub_application_setting(password_authentication_enabled_for_web: false)
 
-        expect(user.allow_password_authentication?).to be_falsey
+        expect(user.allow_password_authentication_for_web?).to be_falsey
       end
     end
 
     it 'returns false for ldap user' do
       user = create(:omniauth_user, provider: 'ldapmain')
 
-      expect(user.allow_password_authentication?).to be_falsey
+      expect(user.allow_password_authentication_for_web?).to be_falsey
+    end
+  end
+
+  describe '#allow_password_authentication_for_git?' do
+    context 'regular user' do
+      let(:user) { build(:user) }
+
+      it 'returns true when password authentication is enabled for Git' do
+        expect(user.allow_password_authentication_for_git?).to be_truthy
+      end
+
+      it 'returns false when password authentication is disabled Git' do
+        stub_application_setting(password_authentication_enabled_for_git: false)
+
+        expect(user.allow_password_authentication_for_git?).to be_falsey
+      end
+    end
+
+    it 'returns false for ldap user' do
+      user = create(:omniauth_user, provider: 'ldapmain')
+
+      expect(user.allow_password_authentication_for_git?).to be_falsey
     end
   end
 
@@ -2381,7 +2403,8 @@ describe User do
       let(:expected) { !(password_automatically_set || ldap_user || password_authentication_disabled) }
 
       before do
-        stub_application_setting(password_authentication_enabled: !password_authentication_disabled)
+        stub_application_setting(password_authentication_enabled_for_web: !password_authentication_disabled)
+        stub_application_setting(password_authentication_enabled_for_git: !password_authentication_disabled)
       end
 
       it 'returns false unless all inputs are true' do

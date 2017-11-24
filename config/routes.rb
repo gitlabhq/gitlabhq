@@ -100,7 +100,5 @@ Rails.application.routes.draw do
 
   root to: "root#index"
 
-  draw :test if Rails.env.test?
-
   get '*unmatched_route', to: 'application#route_not_found'
 end

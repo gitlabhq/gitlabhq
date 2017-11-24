@@ -9,7 +9,7 @@
     .controls.hidden-xs
       - if can?(current_user, :admin_group, group)
         = link_to edit_group_path(group), class: "btn" do
-          = icon('cogs')
+          = sprite_icon('settings')
 
       = link_to leave_group_group_members_path(group), data: { confirm: leave_confirmation_message(group) }, method: :delete, class: "btn", title: s_("GroupsTree|Leave this group") do
         = icon('sign-out')
