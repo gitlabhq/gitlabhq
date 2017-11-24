@@ -510,6 +510,7 @@ import ProjectVariables from './project_variables';
           break;
         case 'profiles:custom_emoji:index':
         case 'groups:settings:custom_emoji:index':
+        case 'groups:settings:custom_emoji:create':
           setupBrowseFile();
           break;
         case 'help:index':
