@@ -26,7 +26,10 @@
     "bootstrap-sass": "^3.3.6",
     "brace-expansion": "^1.1.8",
     "classlist-polyfill": "^1.2.0",
+<<<<<<< HEAD
     "clipboard": "^1.6.1",
+=======
+>>>>>>> upstream/master
     "compression-webpack-plugin": "^1.0.0",
     "copy-webpack-plugin": "^4.0.1",
     "core-js": "^2.4.1",
@@ -64,7 +67,7 @@
     "three": "^0.84.0",
     "three-orbit-controls": "^82.1.0",
     "three-stl-loader": "^1.0.4",
-    "timeago.js": "^2.0.5",
+    "timeago.js": "^3.0.2",
     "underscore": "^1.8.3",
     "url-loader": "^0.5.8",
     "visibilityjs": "^1.2.4",

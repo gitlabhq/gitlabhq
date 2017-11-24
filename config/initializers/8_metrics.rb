@@ -145,11 +145,6 @@ def instrument_classes(instrumentation)
 end
 # rubocop:enable Metrics/AbcSize
 
-Gitlab::Application.configure do |config|
-  # 0 should be Sentry to catch errors in this middleware
-  config.middleware.insert(1, Gitlab::Metrics::RequestsRackMiddleware)
-end
-
 if Gitlab::Metrics.enabled?
   require 'pathname'
   require 'influxdb'

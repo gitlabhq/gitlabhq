@@ -516,7 +516,7 @@ GEM
     mini_mime (0.1.4)
     mini_portile2 (2.3.0)
     minitest (5.7.0)
-    mmap2 (2.2.7)
+    mmap2 (2.2.9)
     mousetrap-rails (1.4.6)
     multi_json (1.12.2)
     multi_xml (0.6.0)
@@ -654,8 +654,8 @@ GEM
       parser
       unparser
     procto (0.0.3)
-    prometheus-client-mmap (0.7.0.beta18)
-      mmap2 (~> 2.2, >= 2.2.7)
+    prometheus-client-mmap (0.7.0.beta36)
+      mmap2 (~> 2.2, >= 2.2.9)
     pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -1149,7 +1149,7 @@ DEPENDENCIES
   peek-sidekiq (~> 1.0.3)
   pg (~> 0.18.2)
   premailer-rails (~> 1.9.7)
-  prometheus-client-mmap (~> 0.7.0.beta18)
+  prometheus-client-mmap (~> 0.7.0.beta36)
   pry-byebug (~> 3.4.1)
   pry-rails (~> 0.3.4)
   rack-attack (~> 4.4.1)
