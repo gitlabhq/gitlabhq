@@ -77,7 +77,7 @@
     "webpack-stats-plugin": "^0.1.5"
   },
   "devDependencies": {
-    "@gitlab-org/gitlab-svgs": "^1.0.2",
+    "@gitlab-org/gitlab-svgs": "^1.1.1",
     "babel-plugin-istanbul": "^4.1.5",
     "eslint": "^3.10.1",
     "eslint-config-airbnb-base": "^10.0.1",
