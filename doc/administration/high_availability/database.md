@@ -543,9 +543,12 @@ able to login, and create issues and merge requests.
 
 Here we'll show you some fully expanded example configurations.
 
-#### Example recommended setup.  3 consul servers, 3 postgresql, 1 application node
+#### Example recommended setup
 
-In this example we start with all servers on the same 10.6.0.0/16 private network range, they can connect to each freely other on those addresses.
+This example uses 3 consul servers, 3 postgresql servers, and 1 application node.
+
+We start with all servers on the same 10.6.0.0/16 private network range, they
+can connect to each freely other on those addresses.
 
 Here is a list and description of each machine and the assigned IP:
 
@@ -720,9 +723,11 @@ After deploying the configuration follow these steps:
     gitlab-rake gitlab:db:configure
     ```
 
-#### Example minimal setup. 3 database servers, 1 application node
+#### Example minimal setup
 
-This example is more minimal.  It moves the consul servers into the same nodes we use for the PostgreSQL servers.
+This example uses 3 postgresql servers, and 1 application node.
+
+It moves the consul servers into the same nodes we use for the PostgreSQL servers.
 
 In this example we start with all servers on the same 10.6.0.0/16 private network range, they can connect to each freely other on those addresses.
 
