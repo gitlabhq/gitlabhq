@@ -204,7 +204,7 @@ module Gitlab
           file.to_h.merge(created_at: 'NOW()')
         end
 
-        Gitlab::Database.bulk_insert('uploads', rows)
+        Gitlab::Database.bulk_insert('uploads', rows, disable_quote: :created_at)
       end
 
       def drop_temp_table_if_finished
