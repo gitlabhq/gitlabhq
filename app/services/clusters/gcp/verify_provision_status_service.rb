@@ -26,7 +26,7 @@ module Clusters
 
       def continue_creation(operation)
         if elapsed_time_from_creation(operation) < TIMEOUT
-          WaitForClusterCreationWorker.perform_in(EAGER_INTERVAL, provider.cluster_id)
+          Clusters::WaitForClusterCreationWorker.perform_in(EAGER_INTERVAL, provider.cluster_id)
         else
           provider.make_errored!("Cluster creation time exceeds timeout; #{TIMEOUT}")
         end

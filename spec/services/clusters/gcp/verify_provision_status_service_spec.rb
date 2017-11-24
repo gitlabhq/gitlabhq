@@ -11,7 +11,7 @@ describe Clusters::Gcp::VerifyProvisionStatusService do
 
     shared_examples 'continue_creation' do
       it 'schedules a worker for status minitoring' do
-        expect(WaitForClusterCreationWorker).to receive(:perform_in)
+        expect(Clusters::WaitForClusterCreationWorker).to receive(:perform_in)
 
         described_class.new.execute(provider)
       end

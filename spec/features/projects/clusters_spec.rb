@@ -40,7 +40,7 @@ feature 'Clusters', :js do
               .to receive(:projects_zones_clusters_create).and_return(dbl)
           end
 
-          allow(WaitForClusterCreationWorker).to receive(:perform_in).and_return(nil)
+          allow(Clusters::WaitForClusterCreationWorker).to receive(:perform_in).and_return(nil)
 
           fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
           fill_in 'cluster_name', with: 'dev-cluster'
@@ -102,7 +102,7 @@ feature 'Clusters', :js do
 
       context 'when user installs application: Helm Tiller' do
         before do
-          allow(ClusterInstallAppWorker).to receive(:perform_async).and_return(nil)
+          allow(Clusters::ClusterInstallAppWorker).to receive(:perform_async).and_return(nil)
 
           page.within('.js-cluster-application-row-helm') do
             page.find(:css, '.js-cluster-application-install-button').click
@@ -133,7 +133,7 @@ feature 'Clusters', :js do
 
       context 'when user installs application: Ingress' do
         before do
-          allow(ClusterInstallAppWorker).to receive(:perform_async).and_return(nil)
+          allow(Clusters::ClusterInstallAppWorker).to receive(:perform_async).and_return(nil)
           # Helm Tiller needs to be installed before you can install Ingress
           create(:cluster_applications_helm, :installed, cluster: cluster)
 

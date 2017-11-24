@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe WaitForClusterCreationWorker do
+describe Clusters::WaitForClusterCreationWorker do
   describe '#perform' do
     context 'when provider type is gcp' do
       let(:cluster) { create(:cluster, provider_type: :gcp, provider_gcp: provider) }

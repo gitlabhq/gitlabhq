@@ -4,7 +4,7 @@ module Clusters
       def execute
         application_class.find_or_create_by!(cluster: cluster).try do |application|
           application.make_scheduled!
-          ClusterInstallAppWorker.perform_async(application.name, application.id)
+          Clusters::ClusterInstallAppWorker.perform_async(application.name, application.id)
         end
       end
 

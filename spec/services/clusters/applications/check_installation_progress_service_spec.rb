@@ -22,7 +22,7 @@ describe Clusters::Applications::CheckInstallationProgressService do
     context "when phase is #{a_phase}" do
       context 'when not timeouted' do
         it 'reschedule a new check' do
-          expect(ClusterWaitForAppInstallationWorker).to receive(:perform_in).once
+          expect(Clusters::ClusterWaitForAppInstallationWorker).to receive(:perform_in).once
           expect(service).not_to receive(:remove_installation_pod)
 
           service.execute
@@ -38,7 +38,7 @@ describe Clusters::Applications::CheckInstallationProgressService do
         it_behaves_like 'a terminated installation'
 
         it 'make the application errored' do
-          expect(ClusterWaitForAppInstallationWorker).not_to receive(:perform_in)
+          expect(Clusters::ClusterWaitForAppInstallationWorker).not_to receive(:perform_in)
 
           service.execute
 
@@ -63,7 +63,7 @@ describe Clusters::Applications::CheckInstallationProgressService do
       it_behaves_like 'a terminated installation'
 
       it 'make the application installed' do
-        expect(ClusterWaitForAppInstallationWorker).not_to receive(:perform_in)
+        expect(Clusters::ClusterWaitForAppInstallationWorker).not_to receive(:perform_in)
 
         service.execute
 

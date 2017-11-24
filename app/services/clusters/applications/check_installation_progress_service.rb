@@ -38,13 +38,13 @@ module Clusters
             remove_installation_pod
           end
         else
-          ClusterWaitForAppInstallationWorker.perform_in(
-            ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
+          Clusters::ClusterWaitForAppInstallationWorker.perform_in(
+            Clusters::ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
         end
       end
 
       def timeouted?
-        Time.now.utc - app.updated_at.to_time.utc > ClusterWaitForAppInstallationWorker::TIMEOUT
+        Time.now.utc - app.updated_at.to_time.utc > Clusters::ClusterWaitForAppInstallationWorker::TIMEOUT
       end
 
       def remove_installation_pod

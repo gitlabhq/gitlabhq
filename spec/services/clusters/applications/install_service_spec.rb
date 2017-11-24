@@ -13,7 +13,7 @@ describe Clusters::Applications::InstallService do
     context 'when there are no errors' do
       before do
         expect(helm_client).to receive(:install).with(application.install_command)
-        allow(ClusterWaitForAppInstallationWorker).to receive(:perform_in).and_return(nil)
+        allow(Clusters::ClusterWaitForAppInstallationWorker).to receive(:perform_in).and_return(nil)
       end
 
       it 'make the application installing' do
@@ -24,7 +24,7 @@ describe Clusters::Applications::InstallService do
       end
 
       it 'schedule async installation status check' do
-        expect(ClusterWaitForAppInstallationWorker).to receive(:perform_in).once
+        expect(Clusters::ClusterWaitForAppInstallationWorker).to receive(:perform_in).once
 
         service.execute
       end

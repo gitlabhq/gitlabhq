@@ -10,7 +10,7 @@ describe Clusters::Gcp::ProvisionService do
 
     shared_examples 'success' do
       it 'schedules a worker for status minitoring' do
-        expect(WaitForClusterCreationWorker).to receive(:perform_in)
+        expect(Clusters::WaitForClusterCreationWorker).to receive(:perform_in)
 
         described_class.new.execute(provider)
 

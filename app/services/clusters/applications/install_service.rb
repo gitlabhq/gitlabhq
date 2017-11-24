@@ -8,8 +8,8 @@ module Clusters
           app.make_installing!
           helm_api.install(install_command)
 
-          ClusterWaitForAppInstallationWorker.perform_in(
-            ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
+          Clusters::ClusterWaitForAppInstallationWorker.perform_in(
+            Clusters::ClusterWaitForAppInstallationWorker::INTERVAL, app.name, app.id)
         rescue KubeException => ke
           app.make_errored!("Kubernetes error: #{ke.message}")
         rescue StandardError

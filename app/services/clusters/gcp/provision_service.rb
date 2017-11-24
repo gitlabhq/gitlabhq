@@ -8,7 +8,7 @@ module Clusters
 
         get_operation_id do |operation_id|
           if provider.make_creating(operation_id)
-            WaitForClusterCreationWorker.perform_in(
+            Clusters::WaitForClusterCreationWorker.perform_in(
               Clusters::Gcp::VerifyProvisionStatusService::INITIAL_INTERVAL,
               provider.cluster_id)
           else

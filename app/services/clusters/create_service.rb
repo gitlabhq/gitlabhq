@@ -6,7 +6,7 @@ module Clusters
       @access_token = access_token
 
       create_cluster.tap do |cluster|
-        ClusterProvisionWorker.perform_async(cluster.id) if cluster.persisted?
+        Clusters::ClusterProvisionWorker.perform_async(cluster.id) if cluster.persisted?
       end
     end
 

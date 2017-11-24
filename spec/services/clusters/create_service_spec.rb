@@ -22,7 +22,7 @@ describe Clusters::CreateService do
       end
 
       it 'creates a cluster object and performs a worker' do
-        expect(ClusterProvisionWorker).to receive(:perform_async)
+        expect(Clusters::ClusterProvisionWorker).to receive(:perform_async)
 
         expect { result }
           .to change { Clusters::Cluster.count }.by(1)
@@ -55,7 +55,7 @@ describe Clusters::CreateService do
       end
 
       it 'returns an error' do
-        expect(ClusterProvisionWorker).not_to receive(:perform_async)
+        expect(Clusters::ClusterProvisionWorker).not_to receive(:perform_async)
         expect { result }.to change { Clusters::Cluster.count }.by(0)
         expect(result.errors[:"provider_gcp.gcp_project_id"]).to be_present
       end

@@ -7,7 +7,7 @@ describe Clusters::Applications::ScheduleInstallationService do
 
   shared_examples 'a failing service' do
     it 'raise an exception' do
-      expect(ClusterInstallAppWorker).not_to receive(:perform_async)
+      expect(Clusters::ClusterInstallAppWorker).not_to receive(:perform_async)
       count_before = count_scheduled
 
       expect { service.execute }.to raise_error(StandardError)
@@ -26,7 +26,7 @@ describe Clusters::Applications::ScheduleInstallationService do
     end
 
     it 'make the application scheduled' do
-      expect(ClusterInstallAppWorker).to receive(:perform_async).with(application_class.application_name, kind_of(Numeric)).once
+      expect(Clusters::ClusterInstallAppWorker).to receive(:perform_async).with(application_class.application_name, kind_of(Numeric)).once
 
       expect { service.execute }.to change { application_class.with_status(:scheduled).count }.by(1)
     end

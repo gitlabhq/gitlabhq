@@ -22,7 +22,7 @@ describe Projects::Clusters::ApplicationsController do
       end
 
       it 'schedule an application installation' do
-        expect(ClusterInstallAppWorker).to receive(:perform_async).with(application, anything).once
+        expect(Clusters::ClusterInstallAppWorker).to receive(:perform_async).with(application, anything).once
 
         expect { go }.to change { current_application.count }
         expect(response).to have_http_status(:no_content)
@@ -65,7 +65,7 @@ describe Projects::Clusters::ApplicationsController do
 
     describe 'security' do
       before do
-        allow(ClusterInstallAppWorker).to receive(:perform_async)
+        allow(Clusters::ClusterInstallAppWorker).to receive(:perform_async)
       end
 
       it { expect { go }.to be_allowed_for(:admin) }

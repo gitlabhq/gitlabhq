@@ -29,7 +29,7 @@ FactoryGirl.define do
 
     trait :timeouted do
       installing
-      updated_at ClusterWaitForAppInstallationWorker::TIMEOUT.ago
+      updated_at Clusters::ClusterWaitForAppInstallationWorker::TIMEOUT.ago
     end
   end
 end

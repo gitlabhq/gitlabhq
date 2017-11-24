@@ -195,7 +195,7 @@ describe Projects::ClustersController do
 
         context 'when creates a cluster on gke' do
           it 'creates a new cluster' do
-            expect(ClusterProvisionWorker).to receive(:perform_async)
+            expect(Clusters::ClusterProvisionWorker).to receive(:perform_async)
             expect { go }.to change { Clusters::Cluster.count }
             expect(response).to redirect_to(project_cluster_path(project, project.cluster))
           end
