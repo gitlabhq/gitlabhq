@@ -41,6 +41,8 @@ module EE
 
     # Is this a role-based access level?
     def role?
+      raise NotImplementedError unless defined?(super)
+
       type == :role
     end
 
