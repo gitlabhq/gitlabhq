@@ -339,7 +339,7 @@ class User < ActiveRecord::Base
     def search_with_secondary_emails(query)
       table = arel_table
       email_table = Email.arel_table
-      pattern = "%#{query}%"
+      pattern = to_pattern(query)
       matched_by_emails_user_ids = email_table.project(email_table[:user_id]).where(email_table[:email].matches(pattern))
 
       where(

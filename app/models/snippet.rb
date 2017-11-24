@@ -9,6 +9,7 @@ class Snippet < ActiveRecord::Base
   include Mentionable
   include Spammable
   include Editable
+  include Gitlab::SQL::Pattern
 
   extend Gitlab::CurrentSettings
 
@@ -136,7 +137,7 @@ class Snippet < ActiveRecord::Base
     # Returns an ActiveRecord::Relation.
     def search(query)
       t = arel_table
-      pattern = "%#{query}%"
+      pattern = to_pattern(query)
 
       where(t[:title].matches(pattern).or(t[:file_name].matches(pattern)))
     end
@@ -149,10 +150,7 @@ class Snippet < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation.
     def search_code(query)
-      table   = Snippet.arel_table
-      pattern = "%#{query}%"
-
-      where(table[:content].matches(pattern))
+      where(arel_table[:content].matches(to_pattern(query)))
     end
   end
 end

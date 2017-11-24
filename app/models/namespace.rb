@@ -9,6 +9,7 @@ class Namespace < ActiveRecord::Base
   include Routable
   include AfterCommitQueue
   include Storage::LegacyNamespace
+  include Gitlab::SQL::Pattern
 
   # Prevent users from creating unreasonably deep level of nesting.
   # The number 20 was taken based on maximum nesting level of
@@ -87,7 +88,7 @@ class Namespace < ActiveRecord::Base
     # Returns an ActiveRecord::Relation
     def search(query)
       t = arel_table
-      pattern = "%#{query}%"
+      pattern = to_pattern(query)
 
       where(t[:name].matches(pattern).or(t[:path].matches(pattern)))
     end

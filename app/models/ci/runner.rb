@@ -1,6 +1,7 @@
 module Ci
   class Runner < ActiveRecord::Base
     extend Gitlab::Ci::Model
+    include Gitlab::SQL::Pattern
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     ONLINE_CONTACT_TIMEOUT = 1.hour
@@ -60,7 +61,7 @@ module Ci
     # Returns an ActiveRecord::Relation.
     def self.search(query)
       t = arel_table
-      pattern = "%#{query}%"
+      pattern = to_pattern(query)
 
       where(t[:token].matches(pattern).or(t[:description].matches(pattern)))
     end
