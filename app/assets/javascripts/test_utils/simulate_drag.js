@@ -105,7 +105,7 @@ export default function simulateDrag(options) {
   window.SIMULATE_DRAG_ACTIVE = 1;
 
   if (options.to.index === 0) {
-    toRect.cy = firstRect.y;
+    toRect.cy = firstRect.y - 50;
   } else if (isLast(options.to)) {
     toRect.cy = lastRect.y + lastRect.h + 50;
   }
