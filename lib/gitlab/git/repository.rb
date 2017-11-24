@@ -7,6 +7,7 @@ module Gitlab
   module Git
     class Repository
       include Gitlab::Git::RepositoryMirroring
+      include Gitlab::Git::RepositoryWorktree
       include Gitlab::Git::Popen
 
       ALLOWED_OBJECT_DIRECTORIES_VARIABLES = %w[
@@ -1212,6 +1213,29 @@ module Gitlab
         raise GitError.new("Could not fsck repository:\n#{output}") unless status.zero?
       end
 
+      def rebase(user, rebase_id, source_branch:, source_branch_sha:, target_repository:, target_branch:)
+        rebase_path = rebase_dir_path(rebase_id)
+        env = git_env_for_user(user)
+
+        with_worktree(rebase_path, source_branch, env: env) do
+          run_git!(
+            %W(pull --rebase #{target_repository.path} #{target_branch}),
+            chdir: rebase_path, env: env
+          )
+
+          rebase_sha = run_git!(%w(rev-parse HEAD), chdir: rebase_path, env: env).strip
+
+          Gitlab::Git::OperationService.new(user, self)
+            .update_branch(source_branch, rebase_sha, source_branch_sha)
+
+          rebase_sha
+        end
+      end
+
+      def rebase_in_progress?(rebase_id)
+        fresh_worktree?(rebase_dir_path(rebase_id))
+      end
+
       def gitaly_repository
         Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
       end
@@ -1257,6 +1281,20 @@ module Gitlab
             false
           end
         end
+      end
+
+      def rebase_dir_path(id)
+        File.join(::Gitlab.config.shared.path, 'tmp/rebase', gl_repository, id.to_s).to_s
+      end
+
+      def git_env_for_user(user)
+        {
+          'GIT_COMMITTER_NAME' => user.name,
+          'GIT_COMMITTER_EMAIL' => user.email,
+          'GL_ID' => Gitlab::GlId.gl_id(user),
+          'GL_PROTOCOL' => Gitlab::Git::Hook::GL_PROTOCOL,
+          'GL_REPOSITORY' => gl_repository
+        }
       end
 
       # Gitaly note: JV: Trying to get rid of the 'filter' option so we can implement this with 'git'.

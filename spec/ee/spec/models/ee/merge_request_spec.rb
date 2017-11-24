@@ -51,7 +51,7 @@ describe MergeRequest do
     end
 
     it 'returns false when there is no rebase directory' do
-      allow(File).to receive(:exist?).with(subject.rebase_dir_path).and_return(false)
+      allow(File).to receive(:exist?).and_return(false)
 
       expect(subject.rebase_in_progress?).to be_falsey
     end

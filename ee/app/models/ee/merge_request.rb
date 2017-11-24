@@ -16,10 +16,6 @@ module EE
       delegate :sha, to: :base_pipeline, prefix: :base_pipeline, allow_nil: true
     end
 
-    def rebase_dir_path
-      File.join(::Gitlab.config.shared.path, 'tmp/rebase', source_project.id.to_s, id.to_s).to_s
-    end
-
     def squash_dir_path
       File.join(::Gitlab.config.shared.path, 'tmp/squash', source_project.id.to_s, id.to_s).to_s
     end
@@ -28,7 +24,7 @@ module EE
       # The source project can be deleted
       return false unless source_project
 
-      File.exist?(rebase_dir_path) && !clean_stuck_rebase
+      source_project.repository.rebase_in_progress?(id)
     end
 
     def squash_in_progress?
@@ -36,13 +32,6 @@ module EE
       return false unless source_project
 
       File.exist?(squash_dir_path) && !clean_stuck_squash
-    end
-
-    def clean_stuck_rebase
-      if File.mtime(rebase_dir_path) < 15.minutes.ago
-        FileUtils.rm_rf(rebase_dir_path)
-        true
-      end
     end
 
     def clean_stuck_squash
