@@ -63,11 +63,11 @@ module API
                                     forked_project_link: :forked_from_project,
                                     forked_from_project: [:route, :forks, namespace: :route, tags: :taggings])
         projects = reorder_projects(projects)
-        paginated_projects = paginate(projects)
-        projects_with_fork = paginated_projects + paginated_projects.map(&:forked_from_project).compact
+        projects = paginate(projects)
+        projects_with_fork = projects + projects.map(&:forked_from_project).compact
         ::Projects::BatchForksCountService.new(projects_with_fork).refresh_cache
-        ::Projects::BatchOpenIssuesCountService.new(paginated_projects).refresh_cache
-        paginated_projects
+        ::Projects::BatchOpenIssuesCountService.new(projects).refresh_cache
+        projects
       end
 
       def present_groups(params, groups)
