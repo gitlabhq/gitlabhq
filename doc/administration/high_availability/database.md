@@ -568,7 +568,7 @@ Please note that after the initial configuration, if a failover occurs, the Post
 
 ##### Example recommended setup for Consul servers
 
-In `/etc/gitlab/gitlab.rb`:
+On each server edit `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 # Disable all components except Consul
@@ -595,7 +595,7 @@ consul['configuration'] = {
 
 ##### Example recommended setup for PostgreSQL servers
 
-In `/etc/gitlab/gitlab.rb`:
+On each server edit `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 # Disable all components except PostgreSQL and Repmgr and Consul
@@ -641,7 +641,7 @@ consul['configuration'] = {
 
 ##### Example recommended setup for application server
 
-In `/etc/gitlab/gitlab.rb`:
+On the server edit `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 external_url 'http://gitlab.example.com'
@@ -746,7 +746,7 @@ Please note that after the initial configuration, if a failover occurs, the Post
 
 ##### Example minimal configuration for database servers
 
-In `/etc/gitlab/gitlab.rb`:
+On each server edit `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 # Disable all components except PostgreSQL, Repmgr, and Consul
@@ -793,7 +793,7 @@ consul['configuration'] = {
 
 ##### Example minimal configuration for application server
 
-In `/etc/gitlab/gitlab.rb`:
+On the server edit `/etc/gitlab/gitlab.rb`:
 
 ```ruby
 external_url 'http://gitlab.example.com'
