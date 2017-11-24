@@ -42,7 +42,6 @@ module Gitlab
         unless UntrackedFile.connection.table_exists?(:untracked_files_for_uploads)
           UntrackedFile.connection.create_table :untracked_files_for_uploads do |t|
             t.string :path, limit: 600, null: false
-            t.timestamps_with_timezone null: false
             t.index :path, unique: true
           end
         end
@@ -117,10 +116,10 @@ module Gitlab
 
       def table_columns_and_values_for_insert(file_paths)
         values = file_paths.map do |file_path|
-          ActiveRecord::Base.send(:sanitize_sql_array, ['(?, NOW(), NOW())', file_path]) # rubocop:disable GitlabSecurity/PublicSend
+          ActiveRecord::Base.send(:sanitize_sql_array, ['(?)', file_path]) # rubocop:disable GitlabSecurity/PublicSend
         end.join(', ')
 
-        "#{UntrackedFile.table_name} (path, created_at, updated_at) VALUES #{values}"
+        "#{UntrackedFile.table_name} (path) VALUES #{values}"
       end
 
       def postgresql?
