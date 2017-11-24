@@ -5,7 +5,8 @@ namespace :gitlab do
       warn_user_is_not_gitlab
       remove_flag = ENV['REMOVE']
 
-      namespaces = Namespace.pluck(:path)
+      namespaces  = Namespace.pluck(:path)
+      namespaces << '@hashed'  # add so that it will be ignored
       Gitlab.config.repositories.storages.each do |name, repository_storage|
         git_base_path = repository_storage['path']
         all_dirs = Dir.glob(git_base_path + '/*')
