@@ -3,6 +3,10 @@ module Gitlab
     class Importer
       include Gitlab::ShellAdapter
 
+      def self.refmap
+        Gitlab::GithubImport.refmap
+      end
+
       attr_reader :errors, :project, :repo, :repo_url
 
       def initialize(project)
