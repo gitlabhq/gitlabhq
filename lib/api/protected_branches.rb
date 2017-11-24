@@ -40,10 +40,10 @@ module API
       params do
         requires :name, type: String, desc: 'The name of the protected branch'
         optional :push_access_level, type: Integer, default: Gitlab::Access::MASTER,
-                                     values: ProtectedBranchAccess::ALLOWED_ACCESS_LEVELS,
+                                     values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
                                      desc: 'Access levels allowed to push (defaults: `40`, master access level)'
         optional :merge_access_level, type: Integer, default: Gitlab::Access::MASTER,
-                                      values: ProtectedBranchAccess::ALLOWED_ACCESS_LEVELS,
+                                      values: ProtectedRefAccess::ALLOWED_ACCESS_LEVELS,
                                       desc: 'Access levels allowed to merge (defaults: `40`, master access level)'
       end
       post ':id/protected_branches' do

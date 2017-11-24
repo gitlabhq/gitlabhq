@@ -1,10 +1,6 @@
 class ProtectedTag::CreateAccessLevel < ActiveRecord::Base
   include ProtectedTagAccess
 
-  validates :access_level, presence: true, inclusion: { in: [Gitlab::Access::MASTER,
-                                                             Gitlab::Access::DEVELOPER,
-                                                             Gitlab::Access::NO_ACCESS] }
-
   def self.human_access_levels
     {
       Gitlab::Access::MASTER => "Masters",
