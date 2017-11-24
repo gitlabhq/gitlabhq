@@ -128,7 +128,7 @@ module Gitlab
         token = PersonalAccessTokensFinder.new(state: 'active').find_by(token: password)
 
         if token && valid_scoped_token?(token, available_scopes)
-          Gitlab::Auth::Result.new(token.user, nil, :personal_access_token, abilities_for_scope(token.scopes))
+          Gitlab::Auth::Result.new(token.user, nil, :personal_access_token, abilities_for_scopes(token.scopes))
         end
       end
 
@@ -140,10 +140,15 @@ module Gitlab
         AccessTokenValidationService.new(token).include_any_scope?(scopes)
       end
 
-      def abilities_for_scope(scopes)
-        scopes.map do |scope|
-          self.public_send(:"#{scope}_scope_authentication_abilities") # rubocop:disable GitlabSecurity/PublicSend
-        end.flatten.uniq
+      def abilities_for_scopes(scopes)
+        abilities_by_scope = {
+          api: full_authentication_abilities,
+          read_registry: [:read_container_image]
+        }
+
+        scopes.flat_map do |scope|
+          abilities_by_scope.fetch(scope.to_sym, [])
+        end.uniq
       end
 
       def lfs_token_check(login, password, project)
@@ -221,16 +226,6 @@ module Gitlab
         read_write_authentication_abilities + [
           :admin_container_image
         ]
-      end
-      alias_method :api_scope_authentication_abilities, :full_authentication_abilities
-
-      def read_registry_scope_authentication_abilities
-        [:read_container_image]
-      end
-
-      # The currently used auth method doesn't allow any actions for this scope
-      def read_user_scope_authentication_abilities
-        []
       end
 
       def available_scopes(current_user = nil)
