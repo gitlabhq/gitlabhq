@@ -365,16 +365,28 @@ class MergeRequest < ActiveRecord::Base
   # We use these attributes to force these to the intended values.
   attr_writer :target_branch_sha, :source_branch_sha
 
+  def source_branch_ref
+    return @source_branch_sha if @source_branch_sha
+    return unless source_branch
+
+    Gitlab::Git::BRANCH_REF_PREFIX + source_branch
+  end
+
+  def target_branch_ref
+    return @target_branch_sha if @target_branch_sha
+    return unless target_branch
+
+    Gitlab::Git::BRANCH_REF_PREFIX + target_branch
+  end
+
   def source_branch_head
     return unless source_project
 
-    source_branch_ref = @source_branch_sha || source_branch
     source_project.repository.commit(source_branch_ref) if source_branch_ref
   end
 
   def target_branch_head
-    target_branch_ref = @target_branch_sha || target_branch
-    target_project.repository.commit(target_branch_ref) if target_branch_ref
+    target_project.repository.commit(target_branch_ref)
   end
 
   def branch_merge_base_commit
