@@ -98,12 +98,6 @@ module Gitlab
           Digest::SHA256.file(absolute_path).hexdigest
         end
 
-        # Not including a leading slash
-        def path_relative_to_upload_dir
-          base = %r{\A#{Regexp.escape(Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR)}/}
-          @path_relative_to_upload_dir ||= path.sub(base, '')
-        end
-
         private
 
         def matching_pattern_map
@@ -125,6 +119,12 @@ module Gitlab
           return nil unless project
 
           project.id
+        end
+
+        # Not including a leading slash
+        def path_relative_to_upload_dir
+          base = %r{\A#{Regexp.escape(Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR)}/}
+          @path_relative_to_upload_dir ||= path.sub(base, '')
         end
 
         def absolute_path
