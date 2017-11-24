@@ -6,7 +6,6 @@ describe 'gitlab:cleanup rake tasks' do
   end
 
   describe 'cleanup' do
-
     let(:gitaly_address) { Gitlab.config.repositories.storages.default.gitaly_address }
     let(:storages) do
       {
