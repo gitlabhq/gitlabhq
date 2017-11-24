@@ -10,15 +10,6 @@ export default {
     'repo-file': RepoFile,
     'repo-loading-file': RepoLoadingFile,
   },
-  created() {
-    //window.addEventListener('popstate', this.popHistoryState);
-  },
-  destroyed() {
-    //window.removeEventListener('popstate', this.popHistoryState);
-  },
-  mounted() {
-    //this.getTreeData('/h5bp/html5-boilerplate/tree/master');
-  },
   computed: {
     ...mapState([
       'loading',
@@ -32,12 +23,6 @@ export default {
     ...mapGetters([
       'treeList',
       'isCollapsed',
-    ]),
-  },
-  methods: {
-    ...mapActions([
-      'getTreeData',
-      'popHistoryState',
     ]),
   },
 };
