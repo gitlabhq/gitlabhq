@@ -813,7 +813,7 @@ pgbouncer['users'] = {
     password: '5e0e3263571e3704ad655076301d6ebe'
   },
   'pgbouncer': {
-    password: '771a8625958a529132abe6f1a4acb19c
+    password: '771a8625958a529132abe6f1a4acb19c'
   }
 }
 
