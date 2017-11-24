@@ -63,8 +63,6 @@ export const getFileData = ({ state, commit, dispatch }, file) => {
       commit(types.TOGGLE_FILE_OPEN, file);
       dispatch('setFileActive', file);
       commit(types.TOGGLE_LOADING, file);
-
-      pushState(file.url);
     })
     .catch(() => {
       commit(types.TOGGLE_LOADING, file);

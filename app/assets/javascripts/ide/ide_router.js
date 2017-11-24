@@ -24,7 +24,7 @@ Vue.use(VueRouter);
 
 const router = new VueRouter({
   mode: 'history',
-  base: '/-/ide',
+  base: '/-/ide/',
   routes: [
     {
       path: '/project/:namespace/:project',
@@ -42,6 +42,11 @@ const router = new VueRouter({
           next(false);
         });
       },
+      component: () => {
+        // There is a bug in vue-router that if we wouldn't have here
+        // anything then beforeEnter wouldn't be called and also
+        // not the nested routes
+      },
       children: [
         {
           path: 'blob/:branch',
@@ -51,7 +56,7 @@ const router = new VueRouter({
               namespace: to.params.namespace,
               projectId: to.params.project,
               branch: to.params.branch,
-              endpoint: '/h5bp/html5-boilerplate/tree/master',
+              endpoint: `/${to.params.namespace}/${to.params.project}/tree/${to.params.branch}`,
             });
             next();
           },
@@ -60,6 +65,7 @@ const router = new VueRouter({
               path: '*',
               beforeEnter: (to, from, next) => {
                 console.log('To Selected File : ', to.params);
+                store.dispatch('getFileData', { url: `/${to.params.namespace}/${to.params.project}/tree/${to.params.branch}/${to.params[0]}` });
                 next();
               },
             },
@@ -78,12 +84,5 @@ const router = new VueRouter({
     },
   ],
 });
-
-console.log('INIT ROUTER');
-
-router.beforeEach((to, from, next) => {
-  console.log('Routing : ',to);
-  next();
-})
 
 export default router;

@@ -47,7 +47,7 @@
         'clickedTreeRow',
       ]),
       clickFile(row) {
-        this.$router.push({ path:`/project/${row.url}`, params: { userId: new Date() }});
+        this.$router.push({ path:`/project${row.url}`, params: { userId: new Date() }});
       }
     },
   };
