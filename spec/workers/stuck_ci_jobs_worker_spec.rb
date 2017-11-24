@@ -105,8 +105,8 @@ describe StuckCiJobsWorker do
       job.project.update(pending_delete: true)
     end
 
-    it 'does not drop job' do
-      expect_any_instance_of(Ci::Build).not_to receive(:drop)
+    it 'does drop job' do
+      expect_any_instance_of(Ci::Build).to receive(:drop)
       worker.perform
     end
   end

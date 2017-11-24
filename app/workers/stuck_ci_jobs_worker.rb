@@ -48,7 +48,6 @@ class StuckCiJobsWorker
     loop do
       jobs = Ci::Build.where(status: status)
         .where('ci_builds.updated_at < ?', timeout.ago)
-        .joins(:project).merge(Project.without_deleted)
         .includes(:tags, :runner, project: :namespace)
         .limit(100)
         .to_a
@@ -67,4 +66,3 @@ class StuckCiJobsWorker
     end
   end
 end
-
