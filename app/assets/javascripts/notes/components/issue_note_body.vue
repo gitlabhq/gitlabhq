@@ -1,6 +1,6 @@
 <script>
   import noteEditedText from './note_edited_text.vue';
-  import issueNoteAwardsList from './issue_note_awards_list.vue';
+  import noteAwardsList from './note_awards_list.vue';
   import noteAttachment from './note_attachment.vue';
   import issueNoteForm from './issue_note_form.vue';
   import TaskList from '../../task_list';
@@ -27,7 +27,7 @@
     ],
     components: {
       noteEditedText,
-      issueNoteAwardsList,
+      noteAwardsList,
       noteAttachment,
       issueNoteForm,
     },
@@ -107,7 +107,7 @@
       :edited-by="note.last_edited_by"
       action-text="Edited"
       />
-    <issue-note-awards-list
+    <note-awards-list
       v-if="note.award_emoji.length"
       :note-id="note.id"
       :note-author-id="note.author.id"
