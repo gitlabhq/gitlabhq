@@ -15,7 +15,7 @@ export default {
   },
   data() {
     return {
-      isVisible: false,
+      showCollapseButton: false,
       lineType: '',
       storeState: CommentsStore.state,
       shownAvatars: 3,
@@ -127,7 +127,7 @@ export default {
       $toggleDiffCommentsBtn.toggleClass('active', $notesHolders.length === $visibleNotesHolders.length);
     },
     setDiscussionVisible() {
-      this.isVisible = $(`.diffs .notes[data-discussion-id="${this.discussion.id}"]`).is(':visible');
+      this.showCollapseButton = $(`.diffs .notes[data-discussion-id="${this.discussion.id}"]`).is(':visible');
     },
     getTooltipText(note) {
       return `${note.authorName}: ${note.noteTruncated}`;
@@ -141,7 +141,7 @@ export default {
     :class="discussionClassName"
     v-show="notesCount !== 0">
     <button
-      v-if="isVisible"
+      v-if="showCollapseButton"
       class="diff-notes-collapse js-diff-comment-avatar"
       type="button"
       aria-label="Show comments"
