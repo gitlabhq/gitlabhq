@@ -25,6 +25,7 @@
     "blackst0ne-mermaid": "^7.1.0-fixed",
     "bootstrap-sass": "^3.3.6",
     "brace-expansion": "^1.1.8",
+    "classlist-polyfill": "^1.2.0",
     "compression-webpack-plugin": "^1.0.0",
     "copy-webpack-plugin": "^4.0.1",
     "core-js": "^2.4.1",
