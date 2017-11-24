@@ -64,8 +64,8 @@ module API
                                     forked_from_project: [:route, :forks, namespace: :route, tags: :taggings])
         projects = reorder_projects(projects)
         projects = paginate(projects)
-        projects_with_fork = projects + projects.map(&:forked_from_project).compact
-        ::Projects::BatchForksCountService.new(projects_with_fork).refresh_cache
+        projects_with_forks = projects + projects.map(&:forked_from_project).compact
+        ::Projects::BatchForksCountService.new(projects_with_forks).refresh_cache
         ::Projects::BatchOpenIssuesCountService.new(projects).refresh_cache
         projects
       end

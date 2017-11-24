@@ -12,7 +12,9 @@ module Projects
 
     def refresh_cache
       @projects.each do |project|
-        current_count_service(project).refresh_cache { global_count[project.id].to_i }
+        unless current_count_service(project).count_stored?
+          current_count_service(project).refresh_cache { global_count[project.id].to_i }
+        end
       end
     end
 
@@ -20,8 +22,10 @@ module Projects
       if defined? @service
         @service.project = project
       else
-        count_service.new(project)
+        @service = count_service.new(project)
       end
+
+      @service
     end
 
     def global_count(project)
