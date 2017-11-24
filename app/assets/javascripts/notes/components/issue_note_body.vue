@@ -1,5 +1,5 @@
 <script>
-  import issueNoteEditedText from './issue_note_edited_text.vue';
+  import noteEditedText from './note_edited_text.vue';
   import issueNoteAwardsList from './issue_note_awards_list.vue';
   import issueNoteAttachment from './issue_note_attachment.vue';
   import issueNoteForm from './issue_note_form.vue';
@@ -26,7 +26,7 @@
       autosave,
     ],
     components: {
-      issueNoteEditedText,
+      noteEditedText,
       issueNoteAwardsList,
       issueNoteAttachment,
       issueNoteForm,
@@ -101,7 +101,7 @@
       v-model="note.note"
       :data-update-url="note.path"
       class="hidden js-task-list-field"></textarea>
-    <issue-note-edited-text
+    <note-edited-text
       v-if="note.last_edited_at"
       :edited-at="note.last_edited_at"
       :edited-by="note.last_edited_by"

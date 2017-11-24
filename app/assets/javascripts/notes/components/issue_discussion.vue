@@ -6,7 +6,7 @@
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
   import noteHeader from './note_header.vue';
   import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
-  import issueNoteEditedText from './issue_note_edited_text.vue';
+  import noteEditedText from './note_edited_text.vue';
   import issueNoteForm from './issue_note_form.vue';
   import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
   import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
@@ -29,7 +29,7 @@
       userAvatarLink,
       noteHeader,
       issueNoteSignedOutWidget,
-      issueNoteEditedText,
+      noteEditedText,
       issueNoteForm,
       placeholderNote,
       placeholderSystemNote,
@@ -178,7 +178,7 @@
               action-text="started a discussion"
               class="discussion"
             />
-            <issue-note-edited-text
+            <note-edited-text
               v-if="lastUpdatedAt"
               :edited-at="lastUpdatedAt"
               :edited-by="lastUpdatedBy"
