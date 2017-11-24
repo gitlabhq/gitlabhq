@@ -35,6 +35,8 @@ GEM
     pry-byebug (3.4.2)
       byebug (~> 9.0)
       pry (~> 0.10)
+    pry-rails (0.3.6)
+      pry (>= 0.10.4)
     public_suffix (2.0.5)
     rack (2.0.1)
     rack-test (0.6.3)
@@ -70,9 +72,10 @@ DEPENDENCIES
   capybara (~> 2.12.1)
   capybara-screenshot (~> 1.0.14)
   pry-byebug (~> 3.4.1)
+  pry-rails
   rake (~> 12.0.0)
   rspec (~> 3.5)
   selenium-webdriver (~> 2.53)
 
 BUNDLED WITH
-   1.15.4
+   1.16.0
