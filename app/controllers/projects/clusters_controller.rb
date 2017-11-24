@@ -7,7 +7,7 @@ class Projects::ClustersController < Projects::ApplicationController
   before_action :authorize_admin_cluster!, only: [:destroy]
 
   def index
-    @clusters ||= project.clusters.map { |cluster| cluster.present(current_user: current_user) }
+    @clusters ||= project.clusters.page(params[:page]).per(20).map { |cluster| cluster.present(current_user: current_user) }
   end
 
   def login
@@ -64,10 +64,20 @@ class Projects::ClustersController < Projects::ApplicationController
       .execute(cluster)
 
     if cluster.valid?
-      flash[:notice] = "Cluster was successfully updated."
-      redirect_to project_cluster_path(project, project.cluster)
+      respond_to do |format|
+        format.json do
+          head :no_content
+        end
+        format.html do
+          flash[:notice] = "Cluster was successfully updated."
+          redirect_to project_cluster_path(project, project.cluster)
+        end
+      end
     else
-      render :show
+      respond_to do |format|
+        format.json { head :bad_request }
+        format.html { render :show }
+      end
     end
   end
 

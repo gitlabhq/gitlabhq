@@ -94,6 +94,33 @@ feature 'Clusters', :js do
         visit project_clusters_path(project)
       end
 
+      it 'user sees a table with one cluster' do
+
+      end
+
+      it 'user sees a disabled add cluster button ' do
+
+      end
+
+      it 'user sees navigation tabs' do
+
+      end
+
+      context 'update cluster' do
+        it 'user can update cluster' do
+        end
+
+        context 'with sucessfull request' do
+          it 'user sees updated cluster' do
+          end
+        end
+
+        context 'with failed request' do
+          it 'user sees not update cluster and error message' do
+          end
+        end
+      end
+
       context 'when user clicks on a cluster' do
         before do
           # TODO: Replace with Click on cluster after frontend implements list
@@ -216,4 +243,6 @@ feature 'Clusters', :js do
       expect(page).to have_css('.signin-with-google')
     end
   end
+
+  context
 end
