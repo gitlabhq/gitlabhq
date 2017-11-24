@@ -5,13 +5,12 @@ import {
   extent as d3Extent,
   max as d3Max,
   select as d3Select,
-  selectAll as d3SelectAll,
   scaleTime as d3ScaleTime,
   scaleLinear as d3ScaleLinear,
   axisLeft as d3AxisLeft,
   axisBottom as d3AxisBottom,
   area as d3Area,
-  brush as d3Brush,
+  brushX as d3BrushX,
   timeParse as d3TimeParse,
 } from '../common_d3/index';
 
@@ -163,11 +162,11 @@ export const ContributorsMasterGraph = (function(superClass) {
     }).y0(this.height).y1(function(d) {
       d.commits = d.commits || d.additions || d.deletions;
       return y(d.commits);
-    }).interpolate("basis");
+    });
   };
 
   ContributorsMasterGraph.prototype.create_brush = function() {
-    return this.brush = d3Brush().x(this.x).on("brushend", this.update_content);
+    return this.brush = d3BrushX(this.x).on("end", this.update_content);
   };
 
   ContributorsMasterGraph.prototype.draw_path = function(data) {
@@ -257,11 +256,11 @@ export const ContributorsAuthorGraph = (function(superClass) {
           return y(0);
         }
       };
-    })(this)).interpolate("basis");
+    })(this));
   };
 
   ContributorsAuthorGraph.prototype.create_svg = function() {
-    this.list_item = d3SelectAll(".person")[0].pop();
+    this.list_item = document.querySelectorAll('.person')[0];
     return this.svg = d3Select(this.list_item).append("svg").attr("width", this.width + this.MARGIN.left + this.MARGIN.right).attr("height", this.height + this.MARGIN.top + this.MARGIN.bottom).attr("class", "spark").append("g").attr("transform", "translate(" + this.MARGIN.left + "," + this.MARGIN.top + ")");
   };
 

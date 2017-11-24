@@ -36,5 +36,5 @@ export {
 } from 'd3-axis';
 
 export {
-  brush,
+  brushX,
 } from 'd3-brush';
