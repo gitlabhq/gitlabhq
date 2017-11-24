@@ -1,5 +1,0 @@
----
-title: Fix bitbucket wiki import with hashed storage enabled
-merge_request: 15490
-author:
-type: fixed

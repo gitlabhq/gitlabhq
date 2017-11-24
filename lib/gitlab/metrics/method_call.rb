@@ -6,29 +6,15 @@ module Gitlab
       BASE_LABELS = { module: nil, method: nil }.freeze
       attr_reader :real_time, :cpu_time, :call_count, :labels
 
-      def self.call_real_duration_histogram
-        return @call_real_duration_histogram if @call_real_duration_histogram
-
-        MUTEX.synchronize do
-          @call_real_duration_histogram ||= Gitlab::Metrics.histogram(
-            :gitlab_method_call_real_duration_seconds,
-            'Method calls real duration',
-            Transaction::BASE_LABELS.merge(BASE_LABELS),
-            [0.1, 0.2, 0.5, 1, 2, 5, 10]
-          )
-        end
-      end
-
-      def self.call_cpu_duration_histogram
-        return @call_cpu_duration_histogram if @call_cpu_duration_histogram
+      def self.call_duration_histogram
+        return @call_duration_histogram if @call_duration_histogram
 
         MUTEX.synchronize do
           @call_duration_histogram ||= Gitlab::Metrics.histogram(
-            :gitlab_method_call_cpu_duration_seconds,
-            'Method calls cpu duration',
+            :gitlab_method_call_duration_seconds,
+            'Method calls real duration',
             Transaction::BASE_LABELS.merge(BASE_LABELS),
-            [0.1, 0.2, 0.5, 1, 2, 5, 10]
-          )
+            [0.01, 0.05, 0.1, 0.5, 1])
         end
       end
 
@@ -59,8 +45,9 @@ module Gitlab
         @cpu_time += cpu_time
         @call_count += 1
 
-        self.class.call_real_duration_histogram.observe(@transaction.labels.merge(labels), real_time / 1000.0)
-        self.class.call_cpu_duration_histogram.observe(@transaction.labels.merge(labels), cpu_time / 1000.0)
+        if call_measurement_enabled? && above_threshold?
+          self.class.call_duration_histogram.observe(@transaction.labels.merge(labels), real_time / 1000.0)
+        end
 
         retval
       end
@@ -82,6 +69,10 @@ module Gitlab
       # threshold.
       def above_threshold?
         real_time >= Metrics.method_call_threshold
+      end
+
+      def call_measurement_enabled?
+        Feature.get(:prometheus_metrics_method_instrumentation).enabled?
       end
     end
   end
