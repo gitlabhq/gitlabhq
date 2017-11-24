@@ -17,6 +17,10 @@ module Projects
 
         move_folder!(old_path, new_path)
         project.save!
+
+        if block_given?
+          yield
+        end
       end
 
       private
