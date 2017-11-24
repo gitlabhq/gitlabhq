@@ -7,7 +7,6 @@ module Gitlab
   module Git
     class Repository
       include Gitlab::Git::RepositoryMirroring
-      include Gitlab::Git::RepositoryWorktree
       include Gitlab::Git::Popen
 
       ALLOWED_OBJECT_DIRECTORIES_VARIABLES = %w[
@@ -1236,6 +1235,41 @@ module Gitlab
         fresh_worktree?(rebase_dir_path(rebase_id))
       end
 
+      def squash(user, squash_id, target_branch:, start_sha:, end_sha:, author:, message:)
+        squash_path = squash_dir_path(squash_id)
+        env = git_env_for_user(user).merge(
+          'GIT_AUTHOR_NAME' => author.name,
+          'GIT_AUTHOR_EMAIL' => author.email
+        )
+        diff_range = "#{start_sha}...#{end_sha}"
+        diff_files = run_git!(
+          %W(diff --name-only --diff-filter=a --binary #{diff_range})
+        ).chomp
+
+        with_worktree(squash_path, target_branch, sparse_checkout_files: diff_files, env: env) do
+          # Apply diff of the `diff_range` to the worktree
+          diff = run_git!(%W(diff --binary #{diff_range}))
+          run_git!(%w(apply --index), chdir: squash_path, env: env) do |stdin|
+            stdin.write(diff)
+          end
+
+          # Commit the `diff_range` diff
+          run_git!(%W(commit --no-verify --message #{message}), chdir: squash_path, env: env)
+
+          # Return the squash sha. May print a warning for ambiguous refs, but
+          # we can ignore that with `--quiet` and just take the SHA, if present.
+          # HEAD here always refers to the current HEAD commit, even if there is
+          # another ref called HEAD.
+          run_git!(
+            %w(rev-parse --quiet --verify HEAD), chdir: squash_path, env: env
+          ).chomp
+        end
+      end
+
+      def squash_in_progress?(squash_id)
+        fresh_worktree?(squash_dir_path(squash_id))
+      end
+
       def gitaly_repository
         Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
       end
@@ -1272,6 +1306,57 @@ module Gitlab
 
       private
 
+      def fresh_worktree?(path)
+        File.exist?(path) && !clean_stuck_worktree(path)
+      end
+
+      def with_worktree(worktree_path, branch, sparse_checkout_files: nil, env:)
+        worktree_git_path = File.join(path, 'worktrees', File.basename(worktree_path))
+        base_args = %w(worktree add --detach)
+
+        # Note that we _don't_ want to test for `.present?` here: If the caller
+        # passes an non nil empty value it means it still wants sparse checkout
+        # but just isn't interested in any file, perhaps because it wants to
+        # checkout files in by a changeset but that changeset only adds files.
+        if sparse_checkout_files
+          # Create worktree without checking out
+          run_git!(base_args + ['--no-checkout', worktree_path], env: env)
+
+          configure_sparse_checkout(worktree_git_path, sparse_checkout_files)
+
+          # After sparse checkout configuration, checkout `branch` in worktree
+          run_git!(%W(checkout --detach #{branch}), chdir: worktree_path, env: env)
+        else
+          # Create worktree and checkout `branch` in it
+          run_git!(base_args + [worktree_path, branch], env: env)
+        end
+
+        yield
+      ensure
+        FileUtils.rm_rf(worktree_path) if File.exist?(worktree_path)
+        FileUtils.rm_rf(worktree_git_path) if File.exist?(worktree_git_path)
+      end
+
+      def clean_stuck_worktree(path)
+        return false unless File.mtime(path) < 15.minutes.ago
+
+        FileUtils.rm_rf(path)
+        true
+      end
+
+      # Adding a worktree means checking out the repository. For large repos,
+      # this can be very expensive, so set up sparse checkout for the worktree
+      # to only check out the files we're interested in.
+      def configure_sparse_checkout(worktree_git_path, files)
+        run_git!(%w(config core.sparseCheckout true))
+
+        return if files.empty?
+
+        worktree_info_path = File.join(worktree_git_path, 'info')
+        FileUtils.mkdir_p(worktree_info_path)
+        File.write(File.join(worktree_info_path, 'sparse-checkout'), files)
+      end
+
       def rugged_fetch_source_branch(source_repository, source_branch, local_ref)
         with_repo_branch_commit(source_repository, source_branch) do |commit|
           if commit
@@ -1285,6 +1370,10 @@ module Gitlab
 
       def rebase_dir_path(id)
         File.join(::Gitlab.config.shared.path, 'tmp/rebase', gl_repository, id.to_s).to_s
+      end
+
+      def squash_dir_path(id)
+        File.join(::Gitlab.config.shared.path, 'tmp/squash', gl_repository, id.to_s).to_s
       end
 
       def git_env_for_user(user)
