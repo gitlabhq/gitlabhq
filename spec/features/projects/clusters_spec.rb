@@ -95,23 +95,32 @@ feature 'Clusters', :js do
       end
 
       it 'user sees a table with one cluster' do
-
+        expect(page).to have_selector('.gl-responsive-table-row', count: 2)
       end
 
       it 'user sees a disabled add cluster button ' do
-
+        expect(page.find(:css, '.js-add-cluster')['disabled']).to eq('true')
       end
 
       it 'user sees navigation tabs' do
+        expect(page.find('.js-active-tab').text).to include('Active')
+        expect(page.find('.js-active-tab .badge').text).to include('1')
 
+        expect(page.find('.js-inactive-tab').text).to include('Inactive')
+        expect(page.find('.js-inactive-tab .badge').text).to include('0')
+
+        expect(page.find('.js-all-tab').text).to include('All')
+        expect(page.find('.js-all-tab .badge').text).to include('1')
       end
 
       context 'update cluster' do
         it 'user can update cluster' do
+          expect(page).to have_selector('.js-toggle-cluster-list')
         end
 
         context 'with sucessfull request' do
           it 'user sees updated cluster' do
+
           end
         end
 

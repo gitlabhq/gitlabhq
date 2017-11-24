@@ -8,6 +8,8 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def index
     @clusters ||= project.clusters.page(params[:page]).per(20).map { |cluster| cluster.present(current_user: current_user) }
+
+    @clusters_count = @clusters.count
   end
 
   def login

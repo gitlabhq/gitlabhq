@@ -454,11 +454,3 @@ img.emoji {
 .inline { display: inline-block; }
 .center { text-align: center; }
 .vertical-align-middle { vertical-align: middle; }
-
-.flex-justify-content-center { justify-content: center; }
-.flex-wrap { flex-wrap: wrap; }
-.flex-right { margin-left: auto; }
-.flex-container-block {
-  display: -webkit-flex;
-  display: flex;
-}

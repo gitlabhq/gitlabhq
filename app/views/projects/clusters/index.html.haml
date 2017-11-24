@@ -2,26 +2,26 @@
   = render "empty_state"
 - else
   .top-area.scrolling-tabs-container.inner-page-scroll-tabs
-    .fade-left= icon('angle-left')
-    .fade-right= icon('angle-right')
+    .fade-left= icon("angle-left")
+    .fade-right= icon("angle-right")
     %ul.nav-links.scrolling-tabs
       %li
-        %a
-          = s_('ClusterIntegration|Active')
+        %a.js-active-tab
+          =s_("ClusterIntegration|Active")
           %span.badge
-            0
+            TODO
+
       %li
-        %a
-          = s_('ClusterIntegration|Inactive')
+        %a.js-inactive-tab
+          = s_("ClusterIntegration|Inactive")
           %span.badge
-            0
+            TODO
       %li
-        %a
-          = s_('ClusterIntegration|All')
-          %span.badge
-            0
+        %a.js-all-tab
+          = s_("ClusterIntegration|All")
+          %span.badge= @clusters_count
     .nav-controls
-      = link_to s_('ClusterIntegration|Add cluster'), new_project_cluster_path(@project), class: 'btn btn-success', title: 'Add cluster'
+      = link_to s_('ClusterIntegration|Add cluster'), new_project_cluster_path(@project), class: "btn btn-success disabled has-tooltip js-add-cluster", title: s_("ClusterIntegration|Multiple clusters are available in GitLab Entreprise Edition Premium and Ultimate")
   .ci-table.js-clusters-list
     .gl-responsive-table-row.table-row-header{ role: 'row' }
       .table-section.section-30{ role: 'rowheader' }
@@ -35,17 +35,17 @@
       .gl-responsive-table-row
         .table-section.section-30
           .table-mobile-header{ role: 'rowheader' }= s_('ClusterIntegration|Cluster')
-          .table-mobile-content= cluster.name
+          .table-mobile-content
+            = link_to cluster.name, namespace_project_cluster_path(@project.namespace, @project, cluster)
         .table-section.section-30
           .table-mobile-header{ role: 'rowheader' }
             = s_('ClusterIntegration|Environment pattern')
-          .table-mobile-content
-            Content goes here
+          .table-mobile-content= cluster.environment_scope
         .table-section.section-30
           .table-mobile-header{ role: 'rowheader' }
             = s_('ClusterIntegration|Project namespace')
           .table-mobile-content
-            Content goes here
+            Content goes here - TODO
         .table-section.section-10
           .table-mobile-header{ role: 'rowheader' }
           .table-mobile-content
@@ -56,5 +56,5 @@
               data: { 'enabled-text': 'Enabled',
                 'disabled-text': 'Disabled',
                 endpoint: namespace_project_cluster_path(@project.namespace, @project, cluster, format: :json) } }
-              = icon('loading', class: 'hidden')
+              = icon('spinner spin', class: 'hidden loading-icon')
 

@@ -47,9 +47,15 @@ export default class ClusterTable {
    * @param {HTMLElement} button
    */
   static toggleLoadingButton(button) {
-    button.setAttribute('disabled', button.getAttribute('disabled'));
+    if (button.getAttribute('disabled')) {
+      button.removeAttribute('disabled');
+    } else {
+      button.setAttribute('disabled', true);
+    }
+
     button.classList.toggle('disabled');
-    button.classList.toggle('loading');
+    button.classList.toggle('is-loading');
+    button.querySelector('.loading-icon').classList.toggle('hidden');
   }
 
   /**
