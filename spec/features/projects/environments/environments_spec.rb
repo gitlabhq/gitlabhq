@@ -208,22 +208,35 @@ feature 'Environments page', :js do
         end
 
         context 'when kubernetes terminal is available' do
-          let(:project) { create(:kubernetes_project, :test_repo) }
+          shared_examples 'correct behavior with terminal' do
+            context 'for project master' do
+              let(:role) { :master }
 
-          context 'for project master' do
-            let(:role) { :master }
+              it 'shows the terminal button' do
+                expect(page).to have_terminal_button
+              end
+            end
 
-            it 'shows the terminal button' do
-              expect(page).to have_terminal_button
+            context 'when user is a developer' do
+              let(:role) { :developer }
+
+              it 'does not show terminal button' do
+                expect(page).not_to have_terminal_button
+              end
             end
           end
+          
+          context 'when user configured kubernetes from Integration > Kubernetes' do
+            let(:project) { create(:kubernetes_project, :test_repo) }
 
-          context 'when user is a developer' do
-            let(:role) { :developer }
+            it_behaves_like 'correct behavior with terminal'
+          end
 
-            it 'does not show terminal button' do
-              expect(page).not_to have_terminal_button
-            end
+          context 'when user configured kubernetes from CI/CD > Clusters' do
+            let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+            let(:project) { cluster.project }
+
+            it_behaves_like 'correct behavior with terminal'
           end
         end
       end

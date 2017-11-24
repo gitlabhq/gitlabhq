@@ -2365,12 +2365,25 @@ describe Project do
     end
 
     context 'when project has a deployment service' do
-      let(:project) { create(:kubernetes_project) }
+      shared_examples 'correct behavior with variables' do
+        it 'returns variables from this service' do
+          expect(project.deployment_variables).to include(
+            { key: 'KUBE_TOKEN', value: project.kubernetes_service.token, public: false }
+          )
+        end
+      end
 
-      it 'returns variables from this service' do
-        expect(project.deployment_variables).to include(
-          { key: 'KUBE_TOKEN', value: project.kubernetes_service.token, public: false }
-        )
+      context 'when user configured kubernetes from Integration > Kubernetes' do
+        let(:project) { create(:kubernetes_project) }
+
+        it_behaves_like 'correct behavior with variables'
+      end
+
+      context 'when user configured kubernetes from CI/CD > Clusters' do
+        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+        let(:project) { cluster.project }
+
+        it_behaves_like 'correct behavior with variables'
       end
     end
   end
