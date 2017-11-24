@@ -25,11 +25,6 @@ You must make the changes in the exact specific order:
 1. Promote the Postgres in your secondary node as primary
 1. Modify the `gitlab.rb` for both nodes to reflect their new statuses
 1. Log-in to your secondary node with a user with `sudo` permission
-1. **Remove** the Geo SSH client keys (this is very important!):
-
-    ```bash
-    sudo rm ~git/.ssh/id_rsa ~git/.ssh/id_rsa.pub
-    ```
 1. Run `sudo gitlab-rake geo:set_secondary_as_primary`
 1. Rsync everything in `/var/opt/gitlab/gitlab-rails/uploads` and
    `/var/opt/gitlab/gitlab-rails/shared` from your old node to the new one.

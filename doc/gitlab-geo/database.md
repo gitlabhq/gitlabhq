@@ -44,8 +44,8 @@ The following guide assumes that:
   make sure the GitLab version is the same on all nodes.
 - The IP of the primary server for our examples will be `1.2.3.4`, whereas the
   secondary's IP will be `5.6.7.8`. Note that the primary and secondary servers
-  **must** be able to communicate over these addresses (using HTTPS & SSH).
-  These IP addresses can either be public or private.
+  **must** be able to communicate over these addresses. These IP addresses can
+  either be public or private.
 
 If your GitLab installation is using external PostgreSQL, the Omnibus roles
 will not be able to perform all necessary configuration steps. Refer to

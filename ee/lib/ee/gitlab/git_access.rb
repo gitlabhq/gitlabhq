@@ -12,8 +12,7 @@ module EE
       def can_read_project?
         raise NotImplementedError.new unless defined?(super)
 
-        return geo_node_key.active? if geo_node_key?
-        return true if actor == :geo
+        return true if geo?
 
         super
       end
@@ -52,16 +51,8 @@ module EE
         end
       end
 
-      def geo_node_key
-        actor if geo_node_key?
-      end
-
-      def geo_node_key?
-        actor.is_a?(::GeoNodeKey)
-      end
-
       def geo?
-        geo_node_key? || actor == :geo
+        actor == :geo
       end
     end
   end

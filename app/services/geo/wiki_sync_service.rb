@@ -28,8 +28,7 @@ module Geo
                download_time_s: download_time_in_seconds)
     rescue Gitlab::Git::RepositoryMirroring::RemoteError,
            Gitlab::Shell::Error,
-           ProjectWiki::CouldNotCreateWikiError,
-           Geo::EmptyCloneUrlPrefixError => e
+           ProjectWiki::CouldNotCreateWikiError => e
       fail_registry!('Error syncing wiki repository', e)
     rescue Gitlab::Git::Repository::NoRepository => e
       log_info('Setting force_to_redownload flag')

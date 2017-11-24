@@ -24,7 +24,7 @@ Example response:
     "enabled": true,
     "files_max_capacity": 10,
     "repos_max_capacity": 25,
-    "clone_protocol": "ssh"
+    "clone_protocol": "http"
   },
   {
     "id": 2,
@@ -58,7 +58,7 @@ Example response:
   "enabled": true,
   "files_max_capacity": 10,
   "repos_max_capacity": 25,
-  "clone_protocol": "ssh"
+  "clone_protocol": "http"
 }
 ```
 

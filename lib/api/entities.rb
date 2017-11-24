@@ -1092,7 +1092,11 @@ module API
       expose :enabled
       expose :files_max_capacity
       expose :repos_max_capacity
-      expose :clone_protocol
+
+      # Retained for backwards compatibility. Remove in API v5
+      expose :clone_protocol do |_record, _options|
+        'http'
+      end
     end
 
     class PersonalAccessToken < Grape::Entity

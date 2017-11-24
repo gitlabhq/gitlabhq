@@ -1,7 +1,10 @@
 class GeoNode < ActiveRecord::Base
+  include IgnorableColumn
   include Presentable
 
-  belongs_to :geo_node_key, inverse_of: :geo_node, dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
+  ignore_column :clone_protocol
+  ignore_column :geo_node_key_id
+
   belongs_to :oauth_application, class_name: 'Doorkeeper::Application', dependent: :destroy # rubocop: disable Cop/ActiveRecordDependent
 
   has_many :geo_node_namespace_links
@@ -9,10 +12,7 @@ class GeoNode < ActiveRecord::Base
   has_one :status, class_name: 'GeoNodeStatus'
 
   default_values url: ->(record) { record.class.current_node_url },
-                 primary: false,
-                 clone_protocol: 'http'
-
-  accepts_nested_attributes_for :geo_node_key
+                 primary: false
 
   validates :url, presence: true, uniqueness: { case_sensitive: false }
   validate :check_url_is_valid
@@ -21,12 +21,9 @@ class GeoNode < ActiveRecord::Base
 
   validates :access_key, presence: true
   validates :encrypted_secret_access_key, presence: true
-  validates :clone_protocol, presence: true, inclusion: %w(ssh http)
 
-  validates :geo_node_key, presence: true, if: :uses_ssh_key?
   validate :check_not_adding_primary_as_secondary, if: :secondary?
 
-  after_initialize :build_dependents
   after_save :expire_cache!
   after_destroy :expire_cache!
   before_validation :update_dependents_attributes
@@ -246,19 +243,7 @@ class GeoNode < ActiveRecord::Base
     { protocol: uri.scheme, host: uri.host, port: uri.port, script_name: uri.path }
   end
 
-  def build_dependents
-    build_geo_node_key if new_record? && secondary? && geo_node_key.nil?
-  end
-
   def update_dependents_attributes
-    if primary?
-      self.geo_node_key = nil
-    elsif uses_ssh_key?
-      self.geo_node_key&.title = "Geo node: #{self.url}"
-    end
-
-    self.geo_node_key = nil unless uses_ssh_key? || geo_node_key&.persisted?
-
     if self.primary?
       self.oauth_application = nil
       update_clone_url
