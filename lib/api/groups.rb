@@ -52,6 +52,24 @@ module API
         groups
       end
 
+      def find_group_projects(params)
+        group = find_group!(params[:id])
+        projects = GroupProjectsFinder.new(group: group, current_user: current_user, params: project_finder_params).execute
+        projects = projects.preload(:project_feature, :route, :group)
+                           .preload(namespace: [:route, :owner],
+                                    tags: :taggings,
+                                    project_group_links: :group,
+                                    fork_network: :root_project,
+                                    forked_project_link: :forked_from_project,
+                                    forked_from_project: [:route, :forks, namespace: :route, tags: :taggings])
+        projects = reorder_projects(projects)
+        paginated_projects = paginate(projects)
+        projects_with_fork = paginated_projects + paginated_projects.map(&:forked_from_project).compact
+        ::Projects::BatchForksCountService.new(projects_with_fork).refresh_cache
+        ::Projects::BatchOpenIssuesCountService.new(paginated_projects).refresh_cache
+        paginated_projects
+      end
+
       def present_groups(params, groups)
         options = {
           with: Entities::Group,
@@ -170,12 +188,9 @@ module API
         use :pagination
       end
       get ":id/projects" do
-        group = find_group!(params[:id])
-        projects = GroupProjectsFinder.new(group: group, current_user: current_user, params: project_finder_params).execute
-        projects = projects.preload(:fork_network, :forked_project_link, :project_feature, :project_group_links, :tags, :taggings, :group, :namespace, :route)
-        projects = reorder_projects(projects)
+        projects = find_group_projects(params)
         entity = params[:simple] ? Entities::BasicProjectDetails : Entities::Project
-        present paginate(projects), with: entity, current_user: current_user
+        present projects, with: entity, current_user: current_user
       end
 
       desc 'Get a list of subgroups in this group.' do
