@@ -19,7 +19,7 @@ module Gitlab
           query.length >= MIN_CHARS_FOR_PARTIAL_MATCHING
         end
 
-        def to_fuzzy_arel(column, query)
+        def fuzzy_arel_match(column, query)
           words = select_fuzzy_words(query)
 
           matches = words.map { |word| arel_table[column].matches(to_pattern(word)) }

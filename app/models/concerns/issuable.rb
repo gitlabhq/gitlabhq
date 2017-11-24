@@ -122,7 +122,7 @@ module Issuable
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      title = to_fuzzy_arel(:title, query)
+      title = fuzzy_arel_match(:title, query)
 
       where(title)
     end
@@ -135,8 +135,8 @@ module Issuable
     #
     # Returns an ActiveRecord::Relation.
     def full_search(query)
-      title = to_fuzzy_arel(:title, query)
-      description = to_fuzzy_arel(:description, query)
+      title = fuzzy_arel_match(:title, query)
+      description = fuzzy_arel_match(:description, query)
 
       where(title&.or(description))
     end
