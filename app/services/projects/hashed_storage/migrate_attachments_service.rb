@@ -5,6 +5,8 @@ module Projects
     class MigrateAttachmentsService < BaseService
       attr_reader :logger, :old_path, :new_path
 
+      prepend ::EE::Projects::HashedStorage::MigrateAttachmentsService
+
       def initialize(project, logger = nil)
         @project = project
         @logger = logger || Rails.logger
