@@ -35,6 +35,10 @@ module Projects
         project.repository_read_only = false
         project.save!
 
+        if result && block_given?
+          yield
+        end
+
         result
       end
 
