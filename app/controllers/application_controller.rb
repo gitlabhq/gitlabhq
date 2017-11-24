@@ -204,8 +204,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_password_expiration
-    return if session[:impersonator_id]
-    return unless current_user&.allow_password_authentication?
+    return if session[:impersonator_id] || !current_user&.allow_password_authentication?
 
     password_expires_at = current_user&.password_expires_at
 

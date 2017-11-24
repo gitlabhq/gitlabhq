@@ -53,7 +53,6 @@ module Gitlab
       slash-command-logo.png
       snippets
       u
-      unicorn_test
       unsubscribes
       uploads
       users

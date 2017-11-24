@@ -1777,6 +1777,32 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe '#delete_all_refs_except' do
+    let(:repository) do
+      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
+    end
+
+    before do
+      repository.write_ref("refs/delete/a", "0b4bc9a49b562e85de7cc9e834518ea6828729b9")
+      repository.write_ref("refs/also-delete/b", "12d65c8dd2b2676fa3ac47d955accc085a37a9c1")
+      repository.write_ref("refs/keep/c", "6473c90867124755509e100d0d35ebdc85a0b6ae")
+      repository.write_ref("refs/also-keep/d", "0b4bc9a49b562e85de7cc9e834518ea6828729b9")
+    end
+
+    after do
+      ensure_seeds
+    end
+
+    it 'deletes all refs except those with the specified prefixes' do
+      repository.delete_all_refs_except(%w(refs/keep refs/also-keep refs/heads))
+      expect(repository.ref_exists?("refs/delete/a")).to be(false)
+      expect(repository.ref_exists?("refs/also-delete/b")).to be(false)
+      expect(repository.ref_exists?("refs/keep/c")).to be(true)
+      expect(repository.ref_exists?("refs/also-keep/d")).to be(true)
+      expect(repository.ref_exists?("refs/heads/master")).to be(true)
+    end
+  end
+
   def create_remote_branch(repository, remote_name, branch_name, source_branch_name)
     source_branch = repository.branches.find { |branch| branch.name == source_branch_name }
     rugged = repository.rugged

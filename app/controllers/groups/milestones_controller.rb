@@ -86,7 +86,8 @@ class Groups::MilestonesController < Groups::ApplicationController
         GroupMilestone.build_collection(group, group_projects, params)
       end
 
-    milestones + legacy_milestones
+    @sort = params[:sort] || 'due_date_asc'
+    MilestoneArray.sort(milestones + legacy_milestones, @sort)
   end
 
   def milestone

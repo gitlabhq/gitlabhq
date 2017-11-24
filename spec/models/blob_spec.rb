@@ -16,6 +16,23 @@ describe Blob do
     end
   end
 
+  describe '.lazy' do
+    let(:project) { create(:project, :repository) }
+    let(:commit) { project.commit_by(oid: 'e63f41fe459e62e1228fcef60d7189127aeba95a') }
+
+    it 'fetches all blobs when the first is accessed' do
+      changelog = described_class.lazy(project, commit.id, 'CHANGELOG')
+      contributing = described_class.lazy(project, commit.id, 'CONTRIBUTING.md')
+
+      expect(Gitlab::Git::Blob).to receive(:batch).once.and_call_original
+      expect(Gitlab::Git::Blob).not_to receive(:find)
+
+      # Access property so the values are loaded
+      changelog.id
+      contributing.id
+    end
+  end
+
   describe '#data' do
     context 'using a binary blob' do
       it 'returns the data as-is' do

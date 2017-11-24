@@ -17,9 +17,9 @@ module Gitlab
       end
 
       def prometheus_metrics_enabled?
-        return @prometheus_metrics_enabled if defined?(@prometheus_metrics_enabled)
-
-        @prometheus_metrics_enabled = prometheus_metrics_enabled_unmemoized
+        # force disable prometheus_metrics until
+        # https://gitlab.com/gitlab-org/prometheus-client-mmap/merge_requests/11 is ready
+        false
       end
 
       def registry

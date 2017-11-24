@@ -544,6 +544,7 @@ When having your code reviewed and when reviewing merge requests please take the
    etc.), they should conform to our [Licensing guidelines][license-finder-doc].
    See the instructions in that document for help if your MR fails the
    "license-finder" test with a "Dependencies that need approval" error.
+1. The merge request meets the [definition of done](#definition-of-done).
 
 ## Definition of done
 

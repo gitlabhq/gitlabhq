@@ -456,12 +456,16 @@ class User < ActiveRecord::Base
     username
   end
 
-  def to_reference(_from_project = nil, target_project: nil, full: nil)
+  def to_reference(_from = nil, target_project: nil, full: nil)
     "#{self.class.reference_prefix}#{username}"
   end
 
   def skip_confirmation=(bool)
     skip_confirmation! if bool
+  end
+
+  def skip_reconfirmation=(bool)
+    skip_reconfirmation! if bool
   end
 
   def generate_reset_token

@@ -301,6 +301,7 @@ Parameters:
 - `location` (optional)         - User's location
 - `admin` (optional)            - User is admin - true or false (default)
 - `can_create_group` (optional) - User can create groups - true or false
+- `skip_reconfirmation` (optional) - Skip reconfirmation - true or false (default)
 - `external` (optional)         - Flags the user as external - true or false(default)
 - `shared_runners_minutes_limit` (optional) - Pipeline minutes quota for this user
 - `avatar` (optional)           - Image file for user's avatar

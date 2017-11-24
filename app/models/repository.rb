@@ -224,11 +224,7 @@ class Repository
   def branch_exists?(branch_name)
     return false unless raw_repository
 
-    @branch_exists_memo ||= Hash.new do |hash, key|
-      hash[key] = raw_repository.branch_exists?(key)
-    end
-
-    @branch_exists_memo[branch_name]
+    branch_names.include?(branch_name)
   end
 
   def ref_exists?(ref)
@@ -483,6 +479,11 @@ class Repository
     Blob.decorate(raw_repository.blob_at(sha, path), project)
   rescue Gitlab::Git::Repository::NoRepository
     nil
+  end
+
+  # items is an Array like: [[oid, path], [oid1, path1]]
+  def blobs_at(items)
+    raw_repository.batch_blobs(items).map { |blob| Blob.decorate(blob, project) }
   end
 
   def root_ref

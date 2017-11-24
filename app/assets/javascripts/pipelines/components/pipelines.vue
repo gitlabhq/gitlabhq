@@ -171,6 +171,7 @@
        */
       updateContent(parameters) {
         this.updateInternalState(parameters);
+
         // fetch new data
         return this.service.getPipelines(this.requestData)
           .then((response) => {
@@ -245,9 +246,11 @@
         />
 
       <div
-        class="blank-state blank-state-no-icon"
+        class="blank-state-row"
         v-if="shouldRenderNoPipelinesMessage">
-        <h2 class="blank-state-title js-blank-state-title">No pipelines to show.</h2>
+        <div class="blank-state-center">
+          <h2 class="blank-state-title js-blank-state-title">No pipelines to show.</h2>
+        </div>
       </div>
 
       <div

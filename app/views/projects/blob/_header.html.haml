@@ -2,7 +2,7 @@
 .js-file-title.file-title-flex-parent
   = render 'projects/blob/header_content', blob: blob
 
-  .file-actions.hidden-xs
+  .file-actions
     = render 'projects/blob/viewer_switcher', blob: blob unless blame
 
     .btn-group{ role: "group" }<

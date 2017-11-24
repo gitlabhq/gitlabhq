@@ -25,6 +25,18 @@ describe Milestones::PromoteService do
 
         expect { service.execute(milestone) }.to raise_error(described_class::PromoteMilestoneError)
       end
+
+      it 'does not promote milestone and update issuables if promoted milestone is not valid' do
+        issue = create(:issue, milestone: milestone, project: project)
+        merge_request = create(:merge_request, milestone: milestone, source_project: project)
+        allow_any_instance_of(Milestone).to receive(:valid?).and_return(false)
+
+        expect { service.execute(milestone) }.to raise_error(described_class::PromoteMilestoneError)
+
+        expect(milestone.reload).to be_persisted
+        expect(issue.reload.milestone).to eq(milestone)
+        expect(merge_request.reload.milestone).to eq(milestone)
+      end
     end
 
     context 'without duplicated milestone titles across projects' do
@@ -32,6 +44,16 @@ describe Milestones::PromoteService do
         promoted_milestone = service.execute(milestone)
 
         expect(promoted_milestone).to be_group_milestone
+      end
+
+      it 'does not update issuables without milestone with the new promoted milestone' do
+        issue_without_milestone = create(:issue, project: project, milestone: nil)
+        merge_request_without_milestone = create(:merge_request, milestone: nil, source_project: project)
+
+        service.execute(milestone)
+
+        expect(issue_without_milestone.reload.milestone).to be_nil
+        expect(merge_request_without_milestone.reload.milestone).to be_nil
       end
 
       it 'sets issuables with new promoted milestone' do
@@ -57,6 +79,20 @@ describe Milestones::PromoteService do
         expect(promoted_milestone).to be_valid
         expect(Milestone.exists?(milestone.id)).to be_falsy
         expect(Milestone.exists?(milestone_2.id)).to be_falsy
+      end
+
+      it 'does not update issuables without milestone with the new promoted milestone' do
+        issue_without_milestone_1 = create(:issue, project: project, milestone: nil)
+        issue_without_milestone_2 = create(:issue, project: project_2, milestone: nil)
+        merge_request_without_milestone_1 = create(:merge_request, milestone: nil, source_project: project)
+        merge_request_without_milestone_2 = create(:merge_request, milestone: nil, source_project: project_2)
+
+        service.execute(milestone)
+
+        expect(issue_without_milestone_1.reload.milestone).to be_nil
+        expect(issue_without_milestone_2.reload.milestone).to be_nil
+        expect(merge_request_without_milestone_1.reload.milestone).to be_nil
+        expect(merge_request_without_milestone_2.reload.milestone).to be_nil
       end
 
       it 'sets all issuables with new promoted milestone' do

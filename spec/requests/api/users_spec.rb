@@ -524,6 +524,14 @@ describe API::Users do
       expect(user.reload.notification_email).to eq('new@email.com')
     end
 
+    it 'skips reconfirmation when requested' do
+      put api("/users/#{user.id}", admin), { skip_reconfirmation: true }
+
+      user.reload
+
+      expect(user.confirmed_at).to be_present
+    end
+
     it 'updates user with his own username' do
       put api("/users/#{user.id}", admin), username: user.username
 

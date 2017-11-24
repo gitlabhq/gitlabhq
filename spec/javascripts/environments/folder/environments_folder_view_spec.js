@@ -126,7 +126,7 @@ describe('Environments Folder View', () => {
           component.$el.querySelector('.js-environments-tab-stopped').click();
           expect(component.updateContent).toHaveBeenCalledWith({ scope: 'stopped', page: '1' });
           done();
-        }, 0);
+        });
       });
     });
 

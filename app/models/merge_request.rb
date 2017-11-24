@@ -6,6 +6,8 @@ class MergeRequest < ActiveRecord::Base
   include Elastic::MergeRequestsSearch
   include IgnorableColumn
   include TimeTrackable
+  include ManualInverseAssociation
+  include EachBatch
 
   ignore_column :locked_at,
                 :ref_fetched
@@ -18,8 +20,27 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :merge_user, class_name: "User"
 
   has_many :merge_request_diffs
+
   has_one :merge_request_diff,
     -> { order('merge_request_diffs.id DESC') }, inverse_of: :merge_request
+
+  belongs_to :latest_merge_request_diff, class_name: 'MergeRequestDiff'
+  manual_inverse_association :latest_merge_request_diff, :merge_request
+
+  # This is the same as latest_merge_request_diff unless:
+  # 1. There are arguments - in which case we might be trying to force-reload.
+  # 2. This association is already loaded.
+  # 3. The latest diff does not exist.
+  #
+  # The second one in particular is important - MergeRequestDiff#merge_request
+  # is the inverse of MergeRequest#merge_request_diff, which means it may not be
+  # the latest diff, because we could have loaded any diff from this particular
+  # MR. If we haven't already loaded a diff, then it's fine to load the latest.
+  def merge_request_diff(*args)
+    fallback = latest_merge_request_diff if args.empty? && !association(:merge_request_diff).loaded?
+
+    fallback || super
+  end
 
   belongs_to :head_pipeline, foreign_key: "head_pipeline_id", class_name: "Ci::Pipeline"
 
@@ -170,6 +191,22 @@ class MergeRequest < ActiveRecord::Base
     union  = Gitlab::SQL::Union.new([source, target])
 
     where("merge_requests.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
+  end
+
+  # This is used after project import, to reset the IDs to the correct
+  # values. It is not intended to be called without having already scoped the
+  # relation.
+  def self.set_latest_merge_request_diff_ids!
+    update = '
+      latest_merge_request_diff_id = (
+        SELECT MAX(id)
+        FROM merge_request_diffs
+        WHERE merge_requests.id = merge_request_diffs.merge_request_id
+      )'.squish
+
+    self.each_batch do |batch|
+      batch.update_all(update)
+    end
   end
 
   WIP_REGEX = /\A\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i.freeze
