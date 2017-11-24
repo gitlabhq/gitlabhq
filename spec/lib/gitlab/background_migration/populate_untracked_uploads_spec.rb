@@ -392,37 +392,37 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
     context 'for an appearance logo file path' do
       it 'returns the ID as a string' do
-        assert_model_id('/-/system/appearance/logo/1/some_logo.jpg', '1')
+        assert_model_id('/-/system/appearance/logo/1/some_logo.jpg', 1)
       end
     end
 
     context 'for an appearance header_logo file path' do
       it 'returns the ID as a string' do
-        assert_model_id('/-/system/appearance/header_logo/1/some_logo.jpg', '1')
+        assert_model_id('/-/system/appearance/header_logo/1/some_logo.jpg', 1)
       end
     end
 
     context 'for a pre-Markdown Note attachment file path' do
       it 'returns the ID as a string' do
-        assert_model_id('/-/system/note/attachment/1234/some_attachment.pdf', '1234')
+        assert_model_id('/-/system/note/attachment/1234/some_attachment.pdf', 1234)
       end
     end
 
     context 'for a user avatar file path' do
       it 'returns the ID as a string' do
-        assert_model_id('/-/system/user/avatar/1234/avatar.jpg', '1234')
+        assert_model_id('/-/system/user/avatar/1234/avatar.jpg', 1234)
       end
     end
 
     context 'for a group avatar file path' do
       it 'returns the ID as a string' do
-        assert_model_id('/-/system/group/avatar/1234/avatar.jpg', '1234')
+        assert_model_id('/-/system/group/avatar/1234/avatar.jpg', 1234)
       end
     end
 
     context 'for a project avatar file path' do
       it 'returns the ID as a string' do
-        assert_model_id('/-/system/project/avatar/1234/avatar.jpg', '1234')
+        assert_model_id('/-/system/project/avatar/1234/avatar.jpg', 1234)
       end
     end
 
@@ -430,7 +430,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
       it 'returns the ID as a string' do
         project = create(:project)
 
-        assert_model_id("/#{project.full_path}/#{SecureRandom.hex}/Some file.jpg", project.id.to_s)
+        assert_model_id("/#{project.full_path}/#{SecureRandom.hex}/Some file.jpg", project.id)
       end
     end
   end

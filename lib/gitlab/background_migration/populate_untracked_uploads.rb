@@ -81,13 +81,13 @@ module Gitlab
         end
 
         def model_id
+          return @model_id if defined?(@model_id)
+
           matchd = path_relative_to_upload_dir.match(matching_pattern_map[:pattern])
 
           # If something is captured (matchd[1] is not nil), it is a model_id
-          return matchd[1] if matchd[1]
-
           # Only the FileUploader pattern will not match an ID
-          file_uploader_model_id
+          @model_id = matchd[1] ? matchd[1].to_i : file_uploader_model_id
         end
 
         def file_size
@@ -122,7 +122,9 @@ module Gitlab
 
           full_path = matchd[1]
           project = Project.find_by_full_path(full_path)
-          project.id.to_s
+          return nil unless project
+
+          project.id
         end
 
         def absolute_path
@@ -165,8 +167,36 @@ module Gitlab
         end
       end
 
+      # There are files on disk that are not in the uploads table because their
+      # model was deleted, and we don't delete the files on disk.
       def filter_deleted_models(files)
-        files # TODO
+        ids = deleted_model_ids(files)
+
+        files.reject do |file|
+          ids[file.model_type].include?(file.model_id)
+        end
+      end
+
+      def deleted_model_ids(files)
+        ids = {
+          'Appearance' => [],
+          'Namespace' => [],
+          'Note' => [],
+          'Project' => [],
+          'User' => []
+        }
+
+        # group model IDs by model type
+        files.each do |file|
+          ids[file.model_type] << file.model_id
+        end
+
+        ids.each do |model_type, model_ids|
+          found_ids = Object.const_get(model_type).where(id: model_ids.uniq).pluck(:id)
+          ids[model_type] = ids[model_type] - found_ids # replace with deleted ids
+        end
+
+        ids
       end
 
       def insert(files)

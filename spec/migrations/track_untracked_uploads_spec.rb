@@ -75,6 +75,15 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
       expect(project1.uploads.where(uploader: 'FileUploader').first.attributes).to include(@project1_markdown_attributes)
     end
 
+    it 'ignores uploads for deleted models' do
+      user2.destroy
+      project2.destroy
+
+      expect do
+        migrate!
+      end.to change { uploads.count }.from(4).to(5)
+    end
+
     it 'the temporary table untracked_files_for_uploads no longer exists' do
       migrate!
 
