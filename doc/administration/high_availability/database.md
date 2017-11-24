@@ -70,6 +70,16 @@ Database nodes run two services besides PostgreSQL
 
 Alongside pgbouncer, there is a consul agent that watches the status of the PostgreSQL service. If that status changes, consul runs a script which updates the configuration and reloads pgbouncer
 
+#### Connection flow
+
+Each service in the package comes with a set of [default ports](https://docs.gitlab.com/omnibus/package-information/defaults.html#ports). You may need to make specific firewall rules for the connections listed below:
+
+- Application servers connect to [PgBouncer default port](https://docs.gitlab.com/omnibus/package-information/defaults.html#pgbouncer)
+- PgBouncer connects to the primary database servers [PostgreSQL default port](https://docs.gitlab.com/omnibus/package-information/defaults.html#postgresql)
+- Repmgr connects to the database servers [PostgreSQL default port](https://docs.gitlab.com/omnibus/package-information/defaults.html#postgresql)
+- Postgres secondaries connect to the primary database servers [PostgreSQL default port](https://docs.gitlab.com/omnibus/package-information/defaults.html#postgresql)
+- Consul servers and agents connect to each others [Consul default ports](https://docs.gitlab.com/omnibus/package-information/defaults.html#consul)
+
 ### Required information
 
 Before proceeding with configuration, you will need to collect all the necessary
