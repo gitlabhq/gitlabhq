@@ -62,7 +62,6 @@
     <div class="multi-file-commit-list">
       <list-collapsed
         v-if="collapsed"
-        :file-list="fileList"
       />
       <template v-else>
         <ul

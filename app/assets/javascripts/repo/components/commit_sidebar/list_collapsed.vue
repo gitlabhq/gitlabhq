@@ -6,12 +6,6 @@
     components: {
       icon,
     },
-    props: {
-      fileList: {
-        type: Array,
-        required: true,
-      },
-    },
     computed: {
       ...mapGetters([
         'addedFiles',

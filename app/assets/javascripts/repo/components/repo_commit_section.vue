@@ -31,7 +31,7 @@ export default {
       'changedFiles',
     ]),
     commitButtonDisabled() {
-      return !this.commitMessage || this.submitCommitsLoading || !this.changedFiles.length;
+      return this.commitMessage === '' || this.submitCommitsLoading || !this.changedFiles.length;
     },
     commitMessageCount() {
       return this.commitMessage.length;

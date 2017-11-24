@@ -55,7 +55,7 @@
     class="file"
     @click.prevent="clickedTreeRow(file)">
     <td
-      class="multi-file-table-col-name"
+      class="multi-file-table-name"
       :colspan="submoduleColSpan"
     >
       <i

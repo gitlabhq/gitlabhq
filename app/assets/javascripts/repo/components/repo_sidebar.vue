@@ -53,7 +53,7 @@ export default {
         >
         </th>
         <template v-else>
-          <th class="name multi-file-table-col-name">
+          <th class="name multi-file-table-name">
             Name
           </th>
           <th class="hidden-sm hidden-xs last-commit">

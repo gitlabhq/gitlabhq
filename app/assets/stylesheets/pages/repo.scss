@@ -44,13 +44,13 @@
   &.is-collapsed {
     .ide-file-list {
       max-width: 250px;
-      overflow: scroll;
     }
   }
 }
 
 .ide-file-list {
   flex: 1;
+  overflow: scroll;
 
   .file {
     cursor: pointer;
@@ -59,9 +59,14 @@
   a {
     color: $gl-text-color;
   }
+
+  th {
+    position: sticky;
+    top: 0;
+  }
 }
 
-.multi-file-table-col-name,
+.multi-file-table-name,
 .multi-file-table-col-commit-message {
   white-space: nowrap;
   overflow: hidden;
@@ -69,12 +74,12 @@
   max-width: 0;
 }
 
-.multi-file-table-col-name {
+.multi-file-table-name {
   width: 350px;
 }
 
 .multi-file-table-col-commit-message {
-  width: 450px;
+  width: 50%;
 }
 
 .multi-file-edit-pane {
@@ -97,12 +102,12 @@
 }
 
 .multi-file-tab {
+  @include str-truncated(150px);
   padding: ($gl-padding / 2) ($gl-padding + 12) ($gl-padding / 2) $gl-padding;
   background-color: $gray-normal;
   border-right: 1px solid $white-dark;
   border-bottom: 1px solid $white-dark;
   cursor: pointer;
-  @include str-truncated(150px);
 
   &.active {
     background-color: $white-light;
@@ -146,29 +151,27 @@
   height: 100%;
   overflow: scroll;
 
-  & {
-    .blob-viewer {
-      height: 100%;
-    }
+  .blob-viewer {
+    height: 100%;
+  }
 
-    .file-content.code {
-      display: flex;
+  .file-content.code {
+    display: flex;
 
-      i {
-        margin-left: -10px;
-      }
+    i {
+      margin-left: -10px;
     }
+  }
 
-    .line-numbers {
-      min-width: 50px;
-    }
+  .line-numbers {
+    min-width: 50px;
+  }
 
-    .file-content,
-    .line-numbers,
-    .blob-content,
-    .code {
-      min-height: 100%;
-    }
+  .file-content,
+  .line-numbers,
+  .blob-content,
+  .code {
+    min-height: 100%;
   }
 }
 
@@ -196,7 +199,7 @@
 .multi-file-commit-panel-header {
   display: flex;
   align-items: center;
-  padding: 0 0 12px 0;
+  padding: 0 0 12px;
   margin-bottom: 12px;
   border-bottom: 1px solid $white-dark;
 
