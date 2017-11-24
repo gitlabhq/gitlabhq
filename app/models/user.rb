@@ -314,7 +314,8 @@ class User < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      table   = arel_table
+      table = arel_table
+      query = query.downcase
       pattern = User.to_pattern(query)
 
       order = <<~SQL
@@ -328,7 +329,7 @@ class User < ActiveRecord::Base
 
       where(
         table[:name].matches(pattern)
-          .or(table[:email].matches(pattern))
+          .or(table[:email].eq(query))
           .or(table[:username].matches(pattern))
       ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
     end
@@ -340,12 +341,13 @@ class User < ActiveRecord::Base
     def search_with_secondary_emails(query)
       table = arel_table
       email_table = Email.arel_table
-      pattern = "%#{query}%"
-      matched_by_emails_user_ids = email_table.project(email_table[:user_id]).where(email_table[:email].matches(pattern))
+      query = query.downcase
+      pattern = User.to_pattern(query)
+      matched_by_emails_user_ids = email_table.project(email_table[:user_id]).where(email_table[:email].eq(query))
 
       where(
         table[:name].matches(pattern)
-          .or(table[:email].matches(pattern))
+          .or(table[:email].eq(query))
           .or(table[:username].matches(pattern))
           .or(table[:id].in(matched_by_emails_user_ids))
       )
