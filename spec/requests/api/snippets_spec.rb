@@ -47,8 +47,6 @@ describe API::Snippets do
       public_snippet = create(:personal_snippet, :public, author: user, project: project)
       project.project_feature.update_attribute(:snippets_access_level, 0)
 
-      expect(project.snippets_enabled?).to be_falsy
-
       get api("/snippets/", user)
 
       json_response.each do |snippet|

@@ -30,8 +30,8 @@ class Project < ActiveRecord::Base
   cache_markdown_field :description, pipeline: :description
 
   delegate :feature_available?, :builds_enabled?, :wiki_enabled?,
-           :merge_requests_enabled?, :issues_enabled?, :snippets_enabled?,
-           to: :project_feature, allow_nil: true
+           :merge_requests_enabled?, :issues_enabled?, to: :project_feature,
+                                                       allow_nil: true
 
   delegate :base_dir, :disk_path, :ensure_storage_path_exists, to: :storage
 

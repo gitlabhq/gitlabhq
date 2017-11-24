@@ -39,16 +39,19 @@ class SnippetsFinder < UnionFinder
         Snippet.none
       end
     else
-      Snippet.where(feature_available_projects)
+      Snippet.where(visible_snippets)
     end
   end
 
-  def feature_available_projects
-    table[:project_id].in(authorized_project_ids).or(not_project_related)
+  def visible_snippets
+    table[:project_id]
+      .in(feature_available_projects)
+      .or(not_project_related)
   end
 
-  def authorized_project_ids
-    Project.with_feature_available_for_user(:snippets, current_user).select(:id).map(&:id)
+  def feature_available_projects
+    projects = Project.with_feature_available_for_user(:snippets, current_user).select(:id)
+    Arel::Nodes::SqlLiteral.new(projects.to_sql)
   end
 
   def not_project_related
@@ -61,26 +64,41 @@ class SnippetsFinder < UnionFinder
 
   def by_scope(items)
     segments = []
-    segments << public_to_user(items)
-    segments << authorized_to_user(items) if current_user
-
+    segments << snippets_from_authorized_projects(items) if current_user
+    segments << authorized_snippets_to_user(items)
     find_union(segments, Snippet)
   end
 
-  def public_to_user(items)
-    if params[:project].present? && params[:project].project_member(current_user)
-      items
-    else
-      items.public_to_user(current_user)
-    end
-  end
-
-  def authorized_to_user(items)
+  def snippets_from_authorized_projects(items)
     items.where(
       'author_id = :author_id
        OR project_id IN (:project_ids)',
        author_id: current_user.id,
        project_ids: current_user.authorized_projects.select(:id))
+  end
+
+  def authorized_snippets_to_user(items)
+    if params[:project].present? && user_access_to_project?
+      items
+    else
+      items.where(snippets_from_public_projects).public_to_user(current_user)
+    end
+  end
+
+  def user_access_to_project?
+    params[:project].project_member(current_user) ||
+      params[:project].group&.member?(current_user)
+  end
+
+  def snippets_from_public_projects
+    table[:project_id]
+      .in(projects_public_to_user)
+      .or(not_project_related)
+  end
+
+  def projects_public_to_user
+    projects = Project.public_to_user(current_user).select(:id)
+    Arel::Nodes::SqlLiteral.new(projects.to_sql)
   end
 
   def by_visibility(items)

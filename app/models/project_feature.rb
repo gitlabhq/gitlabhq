@@ -76,10 +76,6 @@ class ProjectFeature < ActiveRecord::Base
     issues_access_level > DISABLED
   end
 
-  def snippets_enabled?
-    snippets_access_level > DISABLED
-  end
-
   private
 
   # Validates builds and merge requests access level
