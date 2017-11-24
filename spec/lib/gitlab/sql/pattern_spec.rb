@@ -151,8 +151,8 @@ describe Gitlab::SQL::Pattern do
     context 'with a word shorter than 3 chars' do
       let(:query) { 'fo' }
 
-      it 'returns nil' do
-        expect(fuzzy_arel_match).to be_nil
+      it 'returns a single equality condition' do
+        expect(fuzzy_arel_match.to_sql).to match(/title.*I?LIKE 'fo'/)
       end
     end
 
@@ -161,6 +161,22 @@ describe Gitlab::SQL::Pattern do
 
       it 'returns a joining LIKE condition using a AND' do
         expect(fuzzy_arel_match.to_sql).to match(/title.+I?LIKE '\%foo\%' AND .*title.*I?LIKE '\%baz\%'/)
+      end
+    end
+
+    context 'with two words both shorter than 3 chars' do
+      let(:query) { 'fo ba' }
+
+      it 'returns a single ILIKE condition' do
+        expect(fuzzy_arel_match.to_sql).to match(/title.*I?LIKE 'fo ba'/)
+      end
+    end
+
+    context 'with two words, one shorter 3 chars' do
+      let(:query) { 'foo ba' }
+
+      it 'returns a single ILIKE condition using the longer word' do
+        expect(fuzzy_arel_match.to_sql).to match(/title.+I?LIKE '\%foo\%'/)
       end
     end
 
