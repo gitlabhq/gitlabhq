@@ -3,7 +3,7 @@ require 'spec_helper'
 RSpec.describe Geo::WikiSyncService do
   include ::EE::GeoHelpers
 
-  set(:primary) { create(:geo_node, :primary, host: 'primary-geo-node', relative_url_root: '/gitlab') }
+  set(:primary) { create(:geo_node, :primary) }
   set(:secondary) { create(:geo_node) }
 
   let(:lease) { double(try_obtain: true) }
@@ -19,7 +19,7 @@ RSpec.describe Geo::WikiSyncService do
   describe '#execute' do
     let(:project) { create(:project_empty_repo) }
     let(:repository) { project.wiki.repository }
-    let(:url_to_repo) { "#{primary.url}/#{project.full_path}.wiki.git" }
+    let(:url_to_repo) { "#{primary.url}#{project.full_path}.wiki.git" }
 
     before do
       allow(Gitlab::ExclusiveLease).to receive(:new)
