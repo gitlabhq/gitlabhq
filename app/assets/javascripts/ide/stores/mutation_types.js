@@ -10,11 +10,16 @@ export const SET_LAST_COMMIT_DATA = 'SET_LAST_COMMIT_DATA';
 export const SET_PROJECT = 'SET_PROJECT';
 export const TOGGLE_PROJECT_OPEN = 'TOGGLE_PROJECT_OPEN';
 
+// Branch Mutation Types
+export const SET_BRANCH = 'SET_BRANCH';
+export const TOGGLE_BRANCH_OPEN = 'TOGGLE_BRANCH_OPEN';
+
 // Tree mutation types
 export const SET_DIRECTORY_DATA = 'SET_DIRECTORY_DATA';
 export const TOGGLE_TREE_OPEN = 'TOGGLE_TREE_OPEN';
 export const CREATE_TMP_TREE = 'CREATE_TMP_TREE';
 export const SET_LAST_COMMIT_URL = 'SET_LAST_COMMIT_URL';
+export const CREATE_TREE = 'CREATE_TREE';
 
 // File mutation types
 export const SET_FILE_DATA = 'SET_FILE_DATA';

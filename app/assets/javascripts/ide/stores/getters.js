@@ -5,13 +5,22 @@ import _ from 'underscore';
   This allows for the table to recursively render the table rows but keeps the data
   structure nested to make it easier to add new files/directories.
 */
-export const treeList = (state) => {
-  const mapTree = arr => (!arr.tree.length ? [] : _.map(arr.tree, a => [a, mapTree(a)]));
+export const treeList = state => (treeId) => {
+  if (state.trees[treeId]) {
+    const mapTree = arr => (!arr.tree || !arr.tree.length ? [] : _.map(arr.tree, a => [a, mapTree(a)]));
 
-  return _.chain(state.tree)
-    .map(arr => [arr, mapTree(arr)])
-    .flatten()
-    .value();
+    return _.chain(state.trees[treeId].tree)
+      .map(arr => [arr, mapTree(arr)])
+      .flatten()
+      .value();
+  }
+  return [];
+};
+
+export const getFile = state => (treeId) => {
+  const fileList = treeList(state, treeId);
+  console.log('Files ', fileList);
+  // debugger;
 };
 
 export const changedFiles = state => state.openFiles.filter(file => file.changed);
@@ -28,6 +37,8 @@ export const isCollapsed = state => !!state.openFiles.length;
 export const canEditFile = (state) => {
   const currentActiveFile = activeFile(state);
   const openedFiles = state.openFiles;
+
+  return true;
 
   return state.canCommit &&
     state.onTopOfBranch &&

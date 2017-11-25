@@ -6,6 +6,15 @@ export default {
       opened: !tree.opened,
     });
   },
+  [types.CREATE_TREE](state, { treePath }) {
+    Object.assign(state, {
+      trees: {
+        [treePath]: {
+          tree: [],
+        },
+      },
+    });
+  },
   [types.SET_DIRECTORY_DATA](state, { data, tree }) {
     Object.assign(tree, {
       tree: data,

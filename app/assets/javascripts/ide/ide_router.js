@@ -49,15 +49,26 @@ const router = new VueRouter({
       },
       children: [
         {
-          path: 'blob/:branch',
+          path: 'edit/:branch',
           beforeEnter: (to, from, next) => {
             console.log('To File List : ', to.params);
-            store.dispatch('getTreeData', {
+            store.dispatch('getBranchData', {
               namespace: to.params.namespace,
               projectId: to.params.project,
               branch: to.params.branch,
-              endpoint: `/${to.params.namespace}/${to.params.project}/tree/${to.params.branch}`,
             });
+
+            if (!to.params[0]) {
+              // We are in the root of the tree
+              console.log('Load Branch Tree');
+              store.dispatch('getTreeData', {
+                namespace: to.params.namespace,
+                projectId: to.params.project,
+                branch: to.params.branch,
+                endpoint: `/${to.params.namespace}/${to.params.project}/tree/${to.params.branch}`,
+              });
+            }
+
             next();
           },
           children: [
@@ -65,8 +76,9 @@ const router = new VueRouter({
               path: '*',
               beforeEnter: (to, from, next) => {
                 console.log('To Selected File : ', to.params);
-                store.dispatch('getFileData', { url: `/${to.params.namespace}/${to.params.project}/tree/${to.params.branch}/${to.params[0]}` });
-                next();
+                store.getters.getFile(`${to.params.namespace}/${to.params.project}/${to.params.branch}`);
+                // store.dispatch('getFileData', { url: `/${to.params.namespace}/${to.params.project}/tree/${to.params.branch}/${to.params[0]}` });
+                next(true);
               },
             },
           ],
