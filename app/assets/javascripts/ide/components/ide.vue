@@ -44,24 +44,22 @@ export default {
 <template>
   <div class="ide-view page-gutter page-with-contextual-sidebar page-with-sidebar right-sidebar-collapsed">
     <ide-sidebar/>
-    <div class="content-wrapper page-with-new-nav">
-      <div class="container-fluid container-limited limit-container-width">
-        <div class="content" id="content-body">
-          <ide-contextbar/>
-          <template
-            v-if="activeFile">
-            <repo-tabs/>
-            <component
-              :is="currentBlobView"
-            />
-            <repo-file-buttons/>
-          </template>
-          <template
-            v-else>
-            EMPTY
-             <router-link to="/project/bar/bar">Go to Bar</router-link>
-          </template>
-        </div>
+    <div class="panel-right content-wrapper page-with-new-nav">
+      <div class="content" id="content-body">
+        <ide-contextbar/>
+        <template
+          v-if="activeFile">
+          <repo-tabs/>
+          <component
+            :is="currentBlobView"
+          />
+          <repo-file-buttons/>
+        </template>
+        <template
+          v-else>
+          <br/><br/><br/><br/><br/>
+          <h4 class="muted text-center">Welcome to the GitLab IDE</h4>
+        </template>
       </div>
     </div>
   </div>

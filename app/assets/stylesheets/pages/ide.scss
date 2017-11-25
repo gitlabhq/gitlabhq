@@ -61,8 +61,13 @@
     display: flex;
     -webkit-flex-direction: column;
     flex-direction: column;
-    width: 80%;
+    margin-top: 0;
+    padding-bottom: 0;
     height: 100%;
+
+    .content {
+      height: 100%;
+    }
 
     .monaco-editor.vs {
       .current-line {
@@ -86,14 +91,14 @@
       }
     }
 
-    &.blob-editor-container {
+    .blob-editor-container {
       overflow: hidden;
+      height: calc(100vh - 125px);
     }
 
     .blob-viewer-container {
-      -webkit-flex: 1;
       flex: 1;
-      overflow: auto;
+      overflow: none;
 
       > div,
       .file-content:not(.wiki) {
@@ -279,6 +284,7 @@
 
       td {
         white-space: nowrap;
+        padding: 6px 12px;
       }
     }
 
@@ -293,6 +299,22 @@
   }
 }
 
+.nav-sidebar {
+  .toggle-sidebar-button {
+    padding: 8px 16px;
+  }
+
+  .projects-sidebar {
+    overflow-y: scroll;
+    overflow-x: auto;
+    position: absolute;
+    right: 1px;
+    top: 0;
+    bottom: 38px;
+    left: 0;
+  }
+}
+
 .render-error {
   min-height: calc(100vh - 62px);
 
@@ -303,4 +325,11 @@
 
 .multi-file-table-col-name {
   width: 350px;
+}
+
+.ide-loading {
+  padding-top: 200px;
+  text-align: center;
+  font-size: 140%;
+  
 }

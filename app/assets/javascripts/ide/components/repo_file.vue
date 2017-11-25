@@ -47,7 +47,9 @@
         'clickedTreeRow',
       ]),
       clickFile(row) {
-        this.$router.push({ path:`/project${row.url}`, params: { userId: new Date() }});
+        console.log('Going for Click : ' + `/project${row.url.replace('/blob/', '/edit/')}` + '/',this.$router.push);
+        this.$store.dispatch('getFileData', row);
+        // this.$router.push(`/project${row.url.replace('/blob/', '/edit/')}`);
       }
     },
   };

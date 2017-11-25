@@ -137,7 +137,7 @@ const Api = {
 
   branchSingle(id, branch) {
     const url = Api.buildUrl(Api.branchSinglePath)
-      .replace(':id', id)
+      .replace(':id', encodeURIComponent(id))
       .replace(':branch', branch);
 
     return this.wrapAjaxCall({

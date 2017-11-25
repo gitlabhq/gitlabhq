@@ -9,20 +9,16 @@ export default {
   computed: {
     ...mapState([
       'loading',
+      'projects',
     ]),
-    ...mapState({
-      projects(state) {
-        return state.projects;
-      },
-    }),
   },
 };
 </script>
 
 <template>
 <div class="nav-sidebar">
-  <div class="nav-sidebar-inner-scroll" style="overflow-y: scroll;">
-    
+  <div class="nav-sidebar-inner-scroll">
+    {{ projects.length }}
     <project-tree
       v-for="(project, index) in projects"
       :key="project.id"

@@ -1,7 +1,7 @@
 export default () => ({
   canCommit: false,
   currentBranch: '',
-  currentBlobView: 'repo-preview',
+  currentBlobView: 'repo-editor',
   currentRef: '',
   discardPopupOpen: false,
   editMode: true,
@@ -21,6 +21,7 @@ export default () => ({
   parentTreeUrl: '',
   previousUrl: '',
   tree: [],
+  trees: {},
   workspaces: [],
   projects: {},
 });

@@ -10,6 +10,12 @@ export default {
     'repo-file': RepoFile,
     'repo-loading-file': RepoLoadingFile,
   },
+  props: {
+    treeId: {
+      type: String,
+      required: true,
+    },
+  },
   computed: {
     ...mapState([
       'loading',
@@ -29,42 +35,45 @@ export default {
 </script>
 
 <template>
-<div class="ide-file-list">
-  <table class="table">
-    <thead>
-      <tr>
-        <th
-          v-if="isCollapsed"
-        >
-        </th>
-        <template v-else>
-          <th class="name multi-file-table-name">
-            Name
+<div id="sidebar">
+  <div class="ide-file-list">
+    <table class="table">
+      <thead>
+        <tr>
+          <th
+            v-if="isCollapsed"
+          >
           </th>
-          <th class="hidden-sm hidden-xs last-commit">
-            Last commit
-          </th>
-          <th class="hidden-xs last-update text-right">
-            Last update
-          </th>
-        </template>
-      </tr>
-    </thead>
-    <tbody>
-      <repo-previous-directory
-        v-if="!isRoot && treeList.length"
-      />
-      <repo-loading-file
-        v-if="!treeList.length && loading"
-        v-for="n in 5"
-        :key="n"
-      />
-      <repo-file
-        v-for="file in treeList"
-        :key="file.key"
-        :file="file"
-      />
-    </tbody>
-  </table>
+          <template v-else>
+            <th class="name multi-file-table-name">
+              Name
+            </th>
+            <th class="hidden-sm hidden-xs last-commit">
+              Last commit
+            </th>
+            <th class="hidden-xs last-update text-right">
+              Last update
+            </th>
+          </template>
+        </tr>
+      </thead>
+      <tbody
+        v-if="treeId">
+        <repo-previous-directory
+          v-if="!isRoot && treeList(treeId).length"
+        />
+        <repo-loading-file
+          v-if="(!treeId || !treeList(treeId).length) && loading"
+          v-for="n in 5"
+          :key="n"
+        />
+        <repo-file
+          v-for="file in treeList(treeId)"
+          :key="file.key"
+          :file="file"
+        />
+      </tbody>
+    </table>
+  </div>
 </div>
 </template>

@@ -204,7 +204,7 @@ var config = {
         'pipelines',
         'pipelines_details',
         'registry_list',
-        'repo',
+        'ide',
         'schedule_form',
         'schedules_index',
         'sidebar',
