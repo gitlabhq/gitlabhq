@@ -1,7 +1,6 @@
 namespace :gitlab do
   namespace :cleanup do
-
-    HASHED_REPOSITORY_NAME = '@hashed'
+    HASHED_REPOSITORY_NAME = '@hashed'.freeze
 
     desc "GitLab | Cleanup | Clean namespaces"
     task dirs: :environment  do
