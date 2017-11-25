@@ -28,7 +28,7 @@ export default {
     RepoPreview,
   },
   mounted() {
-    const returnValue = 'Are you sure you want to lose unsaved changes?';
+    /* const returnValue = 'Are you sure you want to lose unsaved changes?';
     window.onbeforeunload = (e) => {
       if (!this.changedFiles.length) return undefined;
 
@@ -36,7 +36,7 @@ export default {
         returnValue,
       });
       return returnValue;
-    };
+    }; */
   },
 };
 </script>
