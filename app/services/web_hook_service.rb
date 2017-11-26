@@ -23,13 +23,24 @@ class WebHookService
   end
 
   def execute
+    if skip_webhook?
+      Rails.logger.info('Hook execution was skipped due to branch filtering settings')
+
+      return {
+        status: :success,
+        http_status: 204,
+        message: 'skipped'
+      }
+    end
+
     start_time = Time.now
 
-    response = if parsed_url.userinfo.blank?
-                 make_request(hook.url)
-               else
-                 make_request_with_auth
-               end
+    response =
+      if parsed_url.userinfo.blank?
+        make_request(hook.url)
+      else
+        make_request_with_auth
+      end
 
     log_execution(
       trigger: hook_name,
@@ -129,5 +140,12 @@ class WebHookService
     return '' unless response.body
 
     response.body.encode('UTF-8', invalid: :replace, undef: :replace, replace: '')
+  end
+
+  def skip_webhook?
+    # Hook names to skip.
+    hook_names = %w(push_hooks)
+
+    hook_names.include?(hook_name) # && branch_name matches # Filter branches only for `push_hooks`.
   end
 end
