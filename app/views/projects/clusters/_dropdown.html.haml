@@ -7,6 +7,6 @@
     = icon('chevron-down')
   %ul.dropdown-menu.clusters-dropdown-menu.dropdown-menu-full-width
     %li
-      = link_to(s_('ClusterIntegration|Create cluster on Google Container Engine'), gcp_new_namespace_project_clusters_path(@project.namespace, @project))
+      = link_to(s_('ClusterIntegration|Create cluster on Google Kubernetes Engine'), gcp_new_namespace_project_clusters_path(@project.namespace, @project))
     %li
       = link_to(s_('ClusterIntegration|Add an existing cluster'), user_new_namespace_project_clusters_path(@project.namespace, @project))
