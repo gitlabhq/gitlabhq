@@ -1,0 +1,5 @@
+---
+title: Ensure that rake gitlab:cleanup:dirs task does not mess with hashed repositories
+merge_request: 15600
+author:
+type: fixed
