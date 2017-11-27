@@ -1,5 +1,5 @@
 - project = local_assigns.fetch(:project, nil)
-- namespace = local_assigns.fetch(:namespace, project && project.namespace)
+- namespace = local_assigns.fetch(:namespace, project && project.shared_runners_limit_namespace)
 - scope = (project || namespace).full_path
 - has_limit = (project || namespace).shared_runners_minutes_limit_enabled?
 - can_see_status = project.nil? || can?(current_user, :create_pipeline, project)

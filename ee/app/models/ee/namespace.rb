@@ -34,16 +34,13 @@ module EE
         to: :namespace_statistics, allow_nil: true
 
       validate :validate_plan_name
+      validate :validate_shared_runner_minutes_support
     end
 
     module ClassMethods
       def plans_with_feature(feature)
         LICENSE_PLANS_TO_NAMESPACE_PLANS.values_at(*License.plans_with_feature(feature))
       end
-    end
-
-    def root_ancestor
-      ancestors.reorder(nil).find_by(parent_id: nil)
     end
 
     def move_dir
@@ -96,19 +93,36 @@ module EE
       actual_plan&.name || FREE_PLAN
     end
 
+    def shared_runner_minutes_supported?
+      if has_parent?
+        !Feature.enabled?(:shared_runner_minutes_on_root_namespace)
+      else
+        true
+      end
+    end
+
     def actual_shared_runners_minutes_limit
       shared_runners_minutes_limit ||
         current_application_settings.shared_runners_minutes
     end
 
     def shared_runners_minutes_limit_enabled?
-      shared_runners_enabled? &&
+      shared_runner_minutes_supported? &&
+        shared_runners_enabled? &&
         actual_shared_runners_minutes_limit.nonzero?
     end
 
     def shared_runners_minutes_used?
       shared_runners_minutes_limit_enabled? &&
         shared_runners_minutes.to_i >= actual_shared_runners_minutes_limit
+    end
+
+    def shared_runners_enabled?
+      if Feature.enabled?(:shared_runner_minutes_on_root_namespace)
+        all_projects.with_shared_runners.any?
+      else
+        projects.with_shared_runners.any?
+      end
     end
 
     # These helper methods are required to not break the Namespace API.
@@ -137,6 +151,14 @@ module EE
     def validate_plan_name
       if @plan_name.present? && PLANS.exclude?(@plan_name)
         errors.add(:plan, 'is not included in the list')
+      end
+    end
+
+    def validate_shared_runner_minutes_support
+      return if shared_runner_minutes_supported?
+
+      if shared_runners_minutes_limit_changed?
+        errors.add(:shared_runners_minutes_limit, 'is not supported for this namespace')
       end
     end
 

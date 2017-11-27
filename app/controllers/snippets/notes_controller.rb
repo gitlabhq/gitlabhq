@@ -20,6 +20,7 @@ class Snippets::NotesController < ApplicationController
   def snippet
     PersonalSnippet.find_by(id: params[:snippet_id])
   end
+  alias_method :noteable, :snippet
 
   def note_params
     super.merge(noteable_id: params[:snippet_id])

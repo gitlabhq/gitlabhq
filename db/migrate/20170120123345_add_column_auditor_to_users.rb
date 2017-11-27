@@ -2,6 +2,7 @@
 # for more information on how to write migrations for GitLab.
 
 # rubocop:disable Migration/AddColumnWithDefaultToLargeTable
+# rubocop:disable Migration/UpdateLargeTable
 class AddColumnAuditorToUsers < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

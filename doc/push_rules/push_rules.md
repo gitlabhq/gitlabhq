@@ -136,8 +136,8 @@ id_ecdsa
 #####################
 # Any file with .pem or .key extensions
 #####################
-secret.pem
-private.key
+*.pem
+*.key
 
 #####################
 # Any file ending with _history or .history extension

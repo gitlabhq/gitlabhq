@@ -305,16 +305,11 @@
     color: $gl-text-color;
     border-color: $dropdown-input-focus-border;
     outline: none;
-
-    svg {
-      fill: $gl-text-color;
-    }
   }
 
   svg {
     height: 14px;
     width: 14px;
-    fill: $gl-text-color-secondary;
     vertical-align: middle;
   }
 

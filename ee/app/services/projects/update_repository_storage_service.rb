@@ -35,7 +35,7 @@ module Projects
                                                    repository.relative_path,
                                                    repository.gl_repository)
 
-      new_repository.fetch_mirror(repository.path)
+      new_repository.fetch_as_mirror_without_shell(repository.path)
     end
 
     def mark_old_paths_for_archive

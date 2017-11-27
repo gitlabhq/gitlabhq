@@ -36,7 +36,7 @@ module MergeRequests
     # target branch manually
     def close_merge_requests
       commit_ids = @commits.map(&:id)
-      merge_requests = @project.merge_requests.preload(:merge_request_diff).opened.where(target_branch: @branch_name).to_a
+      merge_requests = @project.merge_requests.preload(:latest_merge_request_diff).opened.where(target_branch: @branch_name).to_a
       merge_requests = merge_requests.select(&:diff_head_commit)
 
       merge_requests = merge_requests.select do |merge_request|

@@ -1,7 +1,7 @@
 RSpec.shared_examples "protected tags > access control > EE" do
   let(:users) { create_list(:user, 5) }
   let(:groups) { create_list(:group, 5) }
-  let(:roles) { ProtectedTag::CreateAccessLevel.human_access_levels.except(0) }
+  let(:roles) { ProtectedRefAccess::HUMAN_ACCESS_LEVELS.except(0) }
 
   before do
     users.each { |user| project.team << [user, :developer] }
@@ -146,7 +146,7 @@ RSpec.shared_examples "protected tags > access control > EE" do
       visit project_protected_tags_path(project)
 
       set_protected_tag_name('v1.0')
-      set_allowed_to('create', ProtectedTag::CreateAccessLevel.human_access_levels.values) # Last item (No one) should deselect the other ones
+      set_allowed_to('create', ProtectedRefAccess::HUMAN_ACCESS_LEVELS.values) # Last item (No one) should deselect the other ones
 
       click_on "Protect"
 

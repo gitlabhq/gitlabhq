@@ -38,7 +38,7 @@ export default {
       required: false,
       default: true,
     },
-    canAttachFile: {
+    enableAutocomplete: {
       type: Boolean,
       required: false,
       default: true,
@@ -110,6 +110,11 @@ export default {
       type: String,
       required: false,
       default: 'issue',
+    },
+    canAttachFile: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   data() {
@@ -244,6 +249,7 @@ export default {
       :project-namespace="projectNamespace"
       :show-delete-button="showDeleteButton"
       :can-attach-file="canAttachFile"
+      :enable-autocomplete="enableAutocomplete"
     />
     <div v-else>
       <title-component

@@ -1,4 +1,5 @@
 # rubocop:disable Migration/UpdateColumnInBatches
+# rubocop:disable Migration/UpdateLargeTable
 class ConvertNamespacesRepositorySizeLimitToBytes < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

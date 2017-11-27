@@ -2,9 +2,8 @@
 const path = require('path');
 const fs = require('fs');
 
-const svgsPackageName = '@gitlab-org/gitlab-svgs';
-const sourcePath = path.join('node_modules', svgsPackageName, 'dist');
-const sourcePathIllustrations = path.join('node_modules', svgsPackageName, 'dist', 'illustrations');
+const sourcePath = path.join('node_modules', '@gitlab-org/gitlab-svgs', 'dist');
+const sourcePathIllustrations = path.join('node_modules', '@gitlab-org/gitlab-svgs', 'dist', 'illustrations');
 const destPath = path.normalize(path.join('app', 'assets', 'images'));
 
 // Actual Task copying the 2 files + all illustrations

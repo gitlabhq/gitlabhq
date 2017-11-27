@@ -30,4 +30,11 @@ module AppearancesHelper
       render 'shared/logo.svg'
     end
   end
+
+  # Skip the 'GitLab' type logo when custom brand logo is set
+  def brand_header_logo_type
+    unless brand_item && brand_item.header_logo?
+      render 'shared/logo_type.svg'
+    end
+  end
 end

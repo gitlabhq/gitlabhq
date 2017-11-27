@@ -1398,24 +1398,6 @@ describe Project do
       expect(described_class.search(project.path.upcase)).to eq([project])
     end
 
-    it 'returns projects with a matching namespace name' do
-      expect(described_class.search(project.namespace.name)).to eq([project])
-    end
-
-    it 'returns projects with a partially matching namespace name' do
-      expect(described_class.search(project.namespace.name[0..2])).to eq([project])
-    end
-
-    it 'returns projects with a matching namespace name regardless of the casing' do
-      expect(described_class.search(project.namespace.name.upcase)).to eq([project])
-    end
-
-    it 'returns projects when eager loading namespaces' do
-      relation = described_class.all.includes(:namespace)
-
-      expect(relation.search(project.namespace.name)).to eq([project])
-    end
-
     describe 'with pending_delete project' do
       let(:pending_delete_project) { create(:project, pending_delete: true) }
 
@@ -3472,6 +3454,29 @@ describe Project do
       project = create(:project)
 
       expect(project.wiki_repository_exists?).to eq(false)
+    end
+  end
+
+  describe '#root_namespace' do
+    let(:project) { build(:project, namespace: parent) }
+
+    subject { project.root_namespace }
+
+    context 'when namespace has parent group' do
+      let(:root_ancestor) { create(:group) }
+      let(:parent) { build(:group, parent: root_ancestor) }
+
+      it 'returns root ancestor' do
+        is_expected.to eq(root_ancestor)
+      end
+    end
+
+    context 'when namespace is root ancestor' do
+      let(:parent) { build(:group) }
+
+      it 'returns current namespace' do
+        is_expected.to eq(parent)
+      end
     end
   end
 end

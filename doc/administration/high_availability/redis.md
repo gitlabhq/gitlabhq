@@ -336,13 +336,11 @@ The prerequisites for a HA Redis setup are the following:
     #redis['master_port'] = 6379
     ```
 
-1. To prevent database migrations from running on upgrade, run:
+1. To prevent reconfigure from running automatically on upgrade, run:
 
     ```
     sudo touch /etc/gitlab/skip-auto-migrations
     ```
-
-    Only the primary GitLab application server should handle migrations.
 
 1. [Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.
 1. Go through the steps again for all the other slave nodes.
@@ -571,8 +569,7 @@ or a failover promotes a different **Master** node.
 In `/etc/gitlab/gitlab.rb`:
 
 ```ruby
-redis_master_role['enable'] = true
-redis_sentinel_role['enable'] = true
+roles ['redis_sentinel_role', 'redis_master_role']
 redis['bind'] = '10.0.0.1'
 redis['port'] = 6379
 redis['password'] = 'redis-password-goes-here'
@@ -594,8 +591,7 @@ sentinel['quorum'] = 2
 In `/etc/gitlab/gitlab.rb`:
 
 ```ruby
-redis_slave_role['enable'] = true
-redis_sentinel_role['enable'] = true
+roles ['redis_sentinel_role', 'redis_slave_role']
 redis['bind'] = '10.0.0.2'
 redis['port'] = 6379
 redis['password'] = 'redis-password-goes-here'
@@ -617,8 +613,7 @@ sentinel['quorum'] = 2
 In `/etc/gitlab/gitlab.rb`:
 
 ```ruby
-redis_slave_role['enable'] = true
-redis_sentinel_role['enable'] = true
+roles ['redis_sentinel_role', 'redis_slave_role']
 redis['bind'] = '10.0.0.3'
 redis['port'] = 6379
 redis['password'] = 'redis-password-goes-here'
@@ -721,15 +716,11 @@ Before proceeding with the troubleshooting below, check your firewall rules:
 ### Troubleshooting Redis replication
 
 You can check if everything is correct by connecting to each server using
-`redis-cli` application, and sending the `INFO` command.
+`redis-cli` application, and sending the `info replication` command as below.
 
-If authentication was correctly defined, it should fail with:
-`NOAUTH Authentication required` error. Try to authenticate with the
-previous defined password with `AUTH redis-password-goes-here` and
-try the `INFO` command again.
-
-Look for the `# Replication` section where you should see some important
-information like the `role` of the server.
+```
+/opt/gitlab/embedded/bin/redis-cli -a <redis-password> info replication
+```
 
 When connected to a `master` redis, you will see the number of connected
 `slaves`, and a list of each with connection details:

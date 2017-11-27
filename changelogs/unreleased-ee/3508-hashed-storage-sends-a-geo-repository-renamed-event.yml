@@ -1,5 +1,0 @@
----
-title: Geo - Does not move projects backed by hashed storage when handling renamed events
-merge_request: 3066
-author:
-type: fixed

@@ -7,6 +7,17 @@ function isFlagEmoji(emojiUnicode) {
   return emojiUnicode.length === 4 && cp >= flagACodePoint && cp <= flagZCodePoint;
 }
 
+// Tested on mac OS 10.12.6 and Windows 10 FCU, it renders as two separate characters
+const baseFlagCodePoint = 127987; // parseInt('1F3F3', 16)
+const rainbowCodePoint = 127752; // parseInt('1F308', 16)
+function isRainbowFlagEmoji(emojiUnicode) {
+  const characters = Array.from(emojiUnicode);
+  // Length 4 because flags are made of 2 characters which are surrogate pairs
+  return emojiUnicode.length === 4 &&
+    characters[0].codePointAt(0) === baseFlagCodePoint &&
+    characters[1].codePointAt(0) === rainbowCodePoint;
+}
+
 // Chrome <57 renders keycaps oddly
 // See https://bugs.chromium.org/p/chromium/issues/detail?id=632294
 // Same issue on Windows also fixed in Chrome 57, http://i.imgur.com/rQF7woO.png
@@ -57,9 +68,11 @@ function isPersonZwjEmoji(emojiUnicode) {
 // in `isEmojiUnicodeSupported` logic
 function checkFlagEmojiSupport(unicodeSupportMap, emojiUnicode) {
   const isFlagResult = isFlagEmoji(emojiUnicode);
+  const isRainbowFlagResult = isRainbowFlagEmoji(emojiUnicode);
   return (
     (unicodeSupportMap.flag && isFlagResult) ||
-    !isFlagResult
+    (unicodeSupportMap.rainbowFlag && isRainbowFlagResult) ||
+    (!isFlagResult && !isRainbowFlagResult)
   );
 }
 
@@ -113,6 +126,7 @@ function isEmojiUnicodeSupported(unicodeSupportMap = {}, emojiUnicode, unicodeVe
 export {
   isEmojiUnicodeSupported as default,
   isFlagEmoji,
+  isRainbowFlagEmoji,
   isKeycapEmoji,
   isSkinToneComboEmoji,
   isHorceRacingSkinToneComboEmoji,

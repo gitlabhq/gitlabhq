@@ -1,15 +1,15 @@
 require 'spec_helper'
 
 describe Projects::CommitController do
-  let(:project)  { create(:project, :repository) }
-  let(:user)     { create(:user) }
+  set(:project)  { create(:project, :repository) }
+  set(:user)     { create(:user) }
   let(:commit)   { project.commit("master") }
   let(:master_pickable_sha) { '7d3b0f7cff5f37573aea97cebfd5692ea1689924' }
   let(:master_pickable_commit)  { project.commit(master_pickable_sha) }
 
   before do
     sign_in(user)
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe 'GET show' do

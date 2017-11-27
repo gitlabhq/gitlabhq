@@ -28,7 +28,7 @@ describe 'Group routing', "routing" do
       describe legacy_reserved_path do
         it_behaves_like 'redirecting a legacy path',
                         "/groups/complex.group-namegit/#{legacy_reserved_path}",
-                        "/groups/complex.group-namegit/-/#{legacy_reserved_path}/" do
+                        "/groups/complex.group-namegit/-/#{legacy_reserved_path}" do
           let!(:parent) { create(:group, path: 'complex.group-namegit') }
           let(:resource) { create(:group, parent: parent, path: legacy_reserved_path) }
         end
@@ -49,7 +49,7 @@ describe 'Group routing', "routing" do
         create(:group, path: 'boards', parent: parent)
 
         expect(get('/groups/complex.group-namegit/boards/issues/'))
-          .to redirect_to('/groups/complex.group-namegit/boards/-/issues/')
+          .to redirect_to('/groups/complex.group-namegit/boards/-/issues')
       end
 
       it 'does not redirect when the nested group exists' do

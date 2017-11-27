@@ -33,6 +33,10 @@ module Gitlab
       base_and_ancestors(upto: upto).where.not(id: ancestors_base.select(:id))
     end
 
+    def roots
+      base_and_ancestors.where(namespaces: { parent_id: nil })
+    end
+
     # Returns a relation that includes the ancestors_base set of groups
     # and all their ancestors (recursively).
     #

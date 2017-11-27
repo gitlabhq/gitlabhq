@@ -34,6 +34,7 @@ export default {
     :aria-label="title">
     <i
       class="fa fa-area-chart"
-      aria-hidden="true" />
+      aria-hidden="true"
+      />
   </a>
 </template>

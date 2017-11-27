@@ -1478,7 +1478,7 @@
   },
   "cartwheel_tone4": {
     "category": "activity",
-    "moji": "🤸🏾,",
+    "moji": "🤸🏾",
     "description": "person doing cartwheel tone 4",
     "unicodeVersion": "9.0",
     "digest": "8253afb672431c84e498014c30babb00b9284bec773009e79f7f06aa7108643e"
@@ -5375,6 +5375,13 @@
     "unicodeVersion": "6.0",
     "digest": "180e66f19d9285e02d0a5e859722c608206826e80323942b9938fc49d44973b1"
   },
+  "gay_pride_flag": {
+    "category": "flags",
+    "moji": "🏳🌈",
+    "description": "gay_pride_flag",
+    "unicodeVersion": "6.0",
+    "digest": "924e668c559db61b7f4724a661223081c2fc60d55169f3fe1ad6156934d1d37f"
+  },
   "gemini": {
     "category": "symbols",
     "moji": "♊",
@@ -7578,7 +7585,7 @@
     "moji": "🤶",
     "description": "mother christmas",
     "unicodeVersion": "9.0",
-    "digest": "1f72f586ca75bd7ebb4150cdcc8199a930c32fa4b81510cb8d200f1b3ddd4076"
+    "digest": "357d769371305a8584f46d6087a962d647b6af22fab363a44702f38ab7814091"
   },
   "mrs_claus_tone1": {
     "category": "people",
@@ -10708,6 +10715,13 @@
     "description": "speech balloon",
     "unicodeVersion": "6.0",
     "digest": "817100d9979456e7d2f253ac22e13b7a2302dc1590566214915b003e403c53ca"
+  },
+  "speech_left": {
+    "category": "symbols",
+    "moji": "🗨",
+    "description": "left speech bubble",
+    "unicodeVersion": "7.0",
+    "digest": "912797107d574f5665411498b6e349dbdec69846f085b6dc356548c4155e90b0"
   },
   "speedboat": {
     "category": "travel",

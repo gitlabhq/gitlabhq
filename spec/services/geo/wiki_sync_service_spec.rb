@@ -26,13 +26,13 @@ RSpec.describe Geo::WikiSyncService do
         .with(subject.lease_key, anything)
         .and_return(lease)
 
-      allow_any_instance_of(Repository).to receive(:fetch_geo_mirror)
+      allow_any_instance_of(Repository).to receive(:fetch_as_mirror)
         .and_return(true)
     end
 
     it 'fetches wiki repository with JWT credentials' do
       expect(repository).to receive(:with_config).with("http.#{url_to_repo}.extraHeader" => anything).and_call_original
-      expect(repository).to receive(:fetch_geo_mirror).with(url_to_repo).once
+      expect(repository).to receive(:fetch_as_mirror).with(url_to_repo, forced: true).once
 
       subject.execute
     end
@@ -47,26 +47,26 @@ RSpec.describe Geo::WikiSyncService do
     it 'does not fetch wiki repository if cannot obtain a lease' do
       allow(lease).to receive(:try_obtain) { false }
 
-      expect(repository).not_to receive(:fetch_geo_mirror)
+      expect(repository).not_to receive(:fetch_as_mirror)
 
       subject.execute
     end
 
     it 'rescues exception when Gitlab::Shell::Error is raised' do
-      allow(repository).to receive(:fetch_geo_mirror).with(url_to_repo) { raise Gitlab::Shell::Error }
+      allow(repository).to receive(:fetch_as_mirror).with(url_to_repo, forced: true) { raise Gitlab::Shell::Error }
 
       expect { subject.execute }.not_to raise_error
     end
 
     it 'rescues exception when Gitlab::Git::RepositoryMirroring::RemoteError is raised' do
-      allow(repository).to receive(:fetch_geo_mirror).with(url_to_repo)
+      allow(repository).to receive(:fetch_as_mirror).with(url_to_repo, forced: true)
         .and_raise(Gitlab::Git::RepositoryMirroring::RemoteError)
 
       expect { subject.execute }.not_to raise_error
     end
 
     it 'rescues exception when Gitlab::Git::Repository::NoRepository is raised' do
-      allow(repository).to receive(:fetch_geo_mirror).with(url_to_repo) { raise Gitlab::Git::Repository::NoRepository }
+      allow(repository).to receive(:fetch_as_mirror).with(url_to_repo, forced: true) { raise Gitlab::Git::Repository::NoRepository }
 
       expect { subject.execute }.not_to raise_error
     end
@@ -109,7 +109,7 @@ RSpec.describe Geo::WikiSyncService do
         let(:registry) { Geo::ProjectRegistry.find_by(project_id: project.id) }
 
         before do
-          allow(repository).to receive(:fetch_geo_mirror).with(url_to_repo) { raise Gitlab::Shell::Error }
+          allow(repository).to receive(:fetch_as_mirror).with(url_to_repo, forced: true) { raise Gitlab::Shell::Error }
 
           subject.execute
         end
@@ -134,7 +134,7 @@ RSpec.describe Geo::WikiSyncService do
       end
 
       it 'fetches wiki repository over SSH' do
-        expect(repository).to receive(:fetch_geo_mirror).with(url_to_repo).once
+        expect(repository).to receive(:fetch_as_mirror).with(url_to_repo, forced: true).once
 
         subject.execute
       end

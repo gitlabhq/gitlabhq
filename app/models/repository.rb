@@ -28,7 +28,6 @@ class Repository
   CreateTreeError = Class.new(StandardError)
 
   MIRROR_REMOTE = "upstream".freeze
-  MIRROR_GEO = "geo".freeze
 
   # Methods that cache data from the Git repository.
   #
@@ -140,7 +139,8 @@ class Repository
 
     commits = Gitlab::Git::Commit.where(options)
     commits = Commit.decorate(commits, @project) if commits.present?
-    commits
+
+    CommitCollection.new(project, commits, ref)
   end
 
   def commits_between(from, to)
@@ -156,11 +156,14 @@ class Repository
     end
 
     raw_repository.gitaly_migrate(:commits_by_message) do |is_enabled|
-      if is_enabled
-        find_commits_by_message_by_gitaly(query, ref, path, limit, offset)
-      else
-        find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
-      end
+      commits =
+        if is_enabled
+          find_commits_by_message_by_gitaly(query, ref, path, limit, offset)
+        else
+          find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
+        end
+
+      CommitCollection.new(project, commits, ref)
     end
   end
 
@@ -221,11 +224,7 @@ class Repository
   def branch_exists?(branch_name)
     return false unless raw_repository
 
-    @branch_exists_memo ||= Hash.new do |hash, key|
-      hash[key] = raw_repository.branch_exists?(key)
-    end
-
-    @branch_exists_memo[branch_name]
+    branch_names.include?(branch_name)
   end
 
   def ref_exists?(ref)
@@ -480,6 +479,11 @@ class Repository
     Blob.decorate(raw_repository.blob_at(sha, path), project)
   rescue Gitlab::Git::Repository::NoRepository
     nil
+  end
+
+  # items is an Array like: [[oid, path], [oid1, path1]]
+  def blobs_at(items)
+    raw_repository.batch_blobs(items).map { |blob| Blob.decorate(blob, project) }
   end
 
   def root_ref
@@ -912,19 +916,13 @@ class Repository
     end
   end
 
-  def merged_to_root_ref?(branch_or_name, pre_loaded_merged_branches = nil)
+  def merged_to_root_ref?(branch_or_name)
     branch = Gitlab::Git::Branch.find(self, branch_or_name)
 
     if branch
       @root_ref_sha ||= commit(root_ref).sha
       same_head = branch.target == @root_ref_sha
-      merged =
-        if pre_loaded_merged_branches
-          pre_loaded_merged_branches.include?(branch.name)
-        else
-          ancestor?(branch.target, @root_ref_sha)
-        end
-
+      merged = ancestor?(branch.target, @root_ref_sha)
       !same_head && merged
     else
       nil
@@ -934,12 +932,6 @@ class Repository
   def fetch_upstream(url)
     add_remote(Repository::MIRROR_REMOTE, url)
     fetch_remote(Repository::MIRROR_REMOTE, ssh_auth: project&.import_data)
-  end
-
-  def fetch_geo_mirror(url)
-    add_remote(Repository::MIRROR_GEO, url)
-    set_remote_as_mirror(Repository::MIRROR_GEO)
-    fetch_remote(Repository::MIRROR_GEO, forced: true)
   end
 
   def upstream_branches
@@ -1023,6 +1015,19 @@ class Repository
     run_git(args).first.lines.map(&:strip)
   end
 
+  def fetch_as_mirror(url, forced: false, refmap: :all_refs, remote_name: nil)
+    unless remote_name
+      remote_name = "tmp-#{SecureRandom.hex}"
+      tmp_remote_name = true
+    end
+
+    add_remote(remote_name, url)
+    set_remote_as_mirror(remote_name, refmap: refmap)
+    fetch_remote(remote_name, forced: forced)
+  ensure
+    remove_remote(remote_name) if tmp_remote_name
+  end
+
   def fetch_remote(remote, forced: false, ssh_auth: nil, no_tags: false)
     gitlab_shell.fetch_remote(raw_repository, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
   end
@@ -1046,10 +1051,6 @@ class Repository
   def ls_files(ref)
     actual_ref = ref || root_ref
     raw_repository.ls_files(actual_ref)
-  end
-
-  def gitattribute(path, name)
-    raw_repository.attributes(path)[name]
   end
 
   def copy_gitattributes(ref)
@@ -1130,6 +1131,10 @@ class Repository
     raw_repository.fetch_ref(source_repository.raw_repository, source_ref: source_ref, target_ref: target_ref)
   end
 
+  def repository_storage_path
+    @project.repository_storage_path
+  end
+
   private
 
   # TODO Generice finder, later split this on finders by Ref or Oid
@@ -1193,10 +1198,6 @@ class Repository
   def last_commit_id_for_path_by_shelling_out(sha, path)
     args = %W(rev-list --max-count=1 #{sha} -- #{path})
     raw_repository.run_git_with_timeout(args, Gitlab::Git::Popen::FAST_GIT_PROCESS_TIMEOUT).first.strip
-  end
-
-  def repository_storage_path
-    @project.repository_storage_path
   end
 
   def initialize_raw_repository

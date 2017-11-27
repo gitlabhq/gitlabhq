@@ -39,9 +39,9 @@ and the replicated read-only ones as **secondaries**.
 Keep in mind that:
 
 - Secondaries talk to primary to get user data for logins (API), to
-  clone/pull from repositories (SSH) and to retrieve LFS Objects and Attachments 
+  clone/pull from repositories (SSH) and to retrieve LFS Objects and Attachments
   (HTTPS + JWT).
-- Since GitLab Enterprise Edition Premium 10.0, the primary no longer talks to 
+- Since GitLab Enterprise Edition Premium 10.0, the primary no longer talks to
   secondaries to notify for changes (API).
 
 ## Use-cases
@@ -123,7 +123,7 @@ update the state.
 
 This new architecture allows us to be resilient to connectivity issues between the
 nodes. It doesn't matter if it was just a few minutes or days. The secondary
-instance will be able to replay all the events in the correct order and get in 
+instance will be able to replay all the events in the correct order and get in
 sync again.
 
 ## Setup instructions
@@ -141,10 +141,10 @@ If you installed GitLab using the Omnibus packages (highly recommended):
    secondary node for the moment.
 1. [Upload the GitLab License](../user/admin_area/license.md) on the **primary** Geo Node to unlock GitLab Geo.
 1. [Setup the database replication](database.md) (`primary (read-write) <-> secondary (read-only)` topology).
-1. [Configure SSH authorizations to use the database](ssh.md)
+1. [Lookup authorized SSH keys in the database](../administration/operations/speed_up_ssh.html), do this step for both primary AND secondary nodes.
 1. [Configure GitLab](configuration.md) to set the primary and secondary nodes.
 1. Optional: [Configure a secondary LDAP server](../administration/auth/ldap.md) for the secondary. See [notes on LDAP](#ldap).
-1. [Follow the after setup steps](after_setup.md).
+1. [Follow the "Using a Geo Server" guide](using_a_geo_server.md).
 
 [install-ee]: https://about.gitlab.com/downloads-ee/ "GitLab Enterprise Edition Omnibus packages downloads page"
 
@@ -157,10 +157,10 @@ If you installed GitLab from source:
    else in the secondary node for the moment.
 1. [Upload the GitLab License](../user/admin_area/license.md) on the **primary** Geo Node to unlock GitLab Geo.
 1. [Setup the database replication](database_source.md) (`primary (read-write) <-> secondary (read-only)` topology).
-1. [Configure SSH authorizations to use the database](ssh.md)
+1. [Lookup authorized SSH keys in the database](../administration/operations/speed_up_ssh.html), do this step for both primary AND secondary nodes.
 1. [Configure GitLab](configuration_source.md) to set the primary and secondary
    nodes.
-1. [Follow the after setup steps](after_setup.md).
+1. [Follow the "Using a Geo Server" guide](using_a_geo_server.md).
 
 [install-ee-source]: https://docs.gitlab.com/ee/install/installation.html "GitLab Enterprise Edition installation from source"
 

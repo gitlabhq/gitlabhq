@@ -79,6 +79,43 @@ describe MergeRequest do
     end
   end
 
+  describe '.set_latest_merge_request_diff_ids!' do
+    def create_merge_request_with_diffs(source_branch, diffs: 2)
+      params = {
+        target_project: project,
+        target_branch: 'master',
+        source_project: project,
+        source_branch: source_branch
+      }
+
+      create(:merge_request, params).tap do |mr|
+        diffs.times { mr.merge_request_diffs.create }
+      end
+    end
+
+    let(:project) { create(:project) }
+
+    it 'sets IDs for merge requests, whether they are already set or not' do
+      merge_requests = [
+        create_merge_request_with_diffs('feature'),
+        create_merge_request_with_diffs('feature-conflict'),
+        create_merge_request_with_diffs('wip', diffs: 0),
+        create_merge_request_with_diffs('csv')
+      ]
+
+      merge_requests.take(2).each do |merge_request|
+        merge_request.update_column(:latest_merge_request_diff_id, nil)
+      end
+
+      expected = merge_requests.map do |merge_request|
+        merge_request.merge_request_diffs.maximum(:id)
+      end
+
+      expect { project.merge_requests.set_latest_merge_request_diff_ids! }
+        .to change { merge_requests.map { |mr| mr.reload.latest_merge_request_diff_id } }.to(expected)
+    end
+  end
+
   describe '#target_branch_sha' do
     let(:project) { create(:project, :repository) }
 

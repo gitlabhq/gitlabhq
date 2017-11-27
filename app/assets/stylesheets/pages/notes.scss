@@ -547,10 +547,6 @@ ul.notes {
     width: 16px;
     top: 0;
     vertical-align: text-top;
-
-    path {
-      fill: currentColor;
-    }
   }
 
   .award-control-icon-positive,
@@ -570,10 +566,6 @@ ul.notes {
     .link-highlight {
       color: $gl-link-color;
       fill: $gl-link-color;
-
-      svg {
-        fill: $gl-link-color;
-      }
     }
 
     .award-control-icon-neutral {

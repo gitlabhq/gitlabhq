@@ -1,15 +1,15 @@
-/* eslint-disable func-names, space-before-function-paren, consistent-return, no-var, no-else-return, prefer-arrow-callback, max-len */
+import renderMath from './render_math';
+import renderMermaid from './render_mermaid';
 
 // Render Gitlab flavoured Markdown
 //
-// Delegates to syntax highlight and render math
+// Delegates to syntax highlight and render math & mermaid diagrams.
 //
-(function() {
-  $.fn.renderGFM = function() {
-    this.find('.js-syntax-highlight').syntaxHighlight();
-    this.find('.js-render-math').renderMath();
-    return this;
-  };
+$.fn.renderGFM = function renderGFM() {
+  this.find('.js-syntax-highlight').syntaxHighlight();
+  renderMath(this.find('.js-render-math'));
+  renderMermaid(this.find('.js-render-mermaid'));
+  return this;
+};
 
-  $(() => $('body').renderGFM());
-}).call(window);
+$(() => $('body').renderGFM());

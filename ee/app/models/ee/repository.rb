@@ -4,7 +4,6 @@ module EE
   # This module is intended to encapsulate EE-specific model logic
   # and be prepended in the `Repository` model
   module Repository
-    prepend RepositoryMirroring
     extend ActiveSupport::Concern
 
     # Transiently sets a configuration variable
@@ -30,6 +29,14 @@ module EE
         newrev: newrev).new_refs
 
       refs.map { |sha| commit(sha.strip) }
+    end
+
+    def push_remote_branches(remote, branches)
+      gitlab_shell.push_remote_branches(repository_storage_path, disk_path, remote, branches)
+    end
+
+    def delete_remote_branches(remote, branches)
+      gitlab_shell.delete_remote_branches(repository_storage_path, disk_path, remote, branches)
     end
   end
 end

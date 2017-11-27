@@ -223,9 +223,6 @@ will not be able to perform all necessary configuration steps. Refer to
     match your database replication requirements. Consult the [PostgreSQL - Replication documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-replication.html)
     for more information.
 
-1. Check to make sure your firewall rules are set so that the secondary nodes
-   can access port `5432` on the primary node.
-
 1. Save the file and [reconfigure GitLab][] for the database listen changes to
    take effect.
 
@@ -319,17 +316,22 @@ primary before the database is replicated.
 1. Test that the remote connection to the primary server works.
 
     ```
-    # Certificate and key currently used by GitLab
-    sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h primary.geo.example.com -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W
+    # Certificate and key currently used by GitLab, and connecting by FQDN
+    sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h primary.geo.example.com -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-full" -W
 
 
-    # Self-signed certificate and key
-    sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h 1.2.3.4 -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-full" -W
+    # Self-signed certificate and key, or connecting by IP address
+    sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h 1.2.3.4 -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W
     ```
 
     When prompted enter the password you set in the first step for the
     `gitlab_replicator` user. If all worked correctly, you should see the
     database prompt.
+
+    A failure to connect here indicates that the TLS or networking configuration
+    is incorrect. Ensure that you've used the correct certificates and IP
+    addresses / FQDNs throughout. If you have a firewall, ensure that the
+    secondary is permitted to access the primary on port 5432.
 
 1. Exit the PostgreSQL console:
 
@@ -391,10 +393,10 @@ data before running `pg_basebackup`.
 1. Execute the command below to start a backup/restore and begin the replication:
 
     ```
-    # Certificate and key currently used by GitLab
+    # Certificate and key currently used by GitLab, and connecting by FQDN
     gitlab-ctl replicate-geo-database --host=primary.geo.example.com --slot-name=secondary_example
 
-    # Self-signed certificate and key
+    # Self-signed certificate and key, or connecting by IP
     gitlab-ctl replicate-geo-database --host=1.2.3.4 --slot-name=secondary_example --sslmode=verify-ca
     ```
 
@@ -478,13 +480,6 @@ hot_standby = on
 Geo secondary nodes use a tracking database to keep track of replication
 status and recover automatically from some replication issues. Follow the
 instructions for [enabling tracking database on the secondary server][tracking].
-
-### Next steps
-
-Now that the database replication is done, the next step is to configure SSH
-authorizations to use the database.
-
-[➤ Configure SSH authorizations to use the database](ssh.md)
 
 ## MySQL replication
 

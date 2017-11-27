@@ -1,5 +1,0 @@
----
-title: Fix (un)approver names not being shown in plaintext emails
-merge_request: 3266
-author:
-type: fixed

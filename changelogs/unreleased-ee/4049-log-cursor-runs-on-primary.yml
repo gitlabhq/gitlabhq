@@ -1,5 +1,0 @@
----
-title: Prevent the Geo log cursor from running on primary nodes
-merge_request: 3411
-author:
-type: fixed

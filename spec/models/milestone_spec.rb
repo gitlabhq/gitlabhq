@@ -11,7 +11,7 @@ describe Milestone do
         milestone = build(:milestone, start_date: Date.tomorrow, due_date: Date.yesterday)
 
         expect(milestone).not_to be_valid
-        expect(milestone.errors[:start_date]).to include("Can't be greater than due date")
+        expect(milestone.errors[:due_date]).to include("must be greater than start date")
       end
     end
   end

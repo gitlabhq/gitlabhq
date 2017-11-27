@@ -270,21 +270,23 @@ primary before the database is replicated.
 
 1. Test that the remote connection to the primary server works:
 
-    If you're using a CA-issued certificate and connecting by FQDN:
 
     ```
+    # Certificate and key currently used by GitLab, and connecting by FQDN
     sudo -u postgres psql -h primary.geo.example.com -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W
-    ```
 
-    If you're using a self-signed certificate or connecting by IP address:
-
-    ```
-    sudo -u postgres psql -h 1.2.3.4 -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-full" -W
+    # Self-signed certificate and key, or connecting by IP address
+    sudo -u postgres psql -h 1.2.3.4 -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W
     ```
 
     When prompted enter the password you set in the first step for the
     `gitlab_replicator` user. If all worked correctly, you should see the
     database prompt.
+
+    A failure to connect here indicates that the TLS or networking configuration
+    is incorrect. Ensure that you've used the correct certificates and IP
+    addresses / FQDNs throughout. If you have a firewall, ensure that the
+    secondary is permitted to access the primary on port 5432.
 
 1. Exit the PostgreSQL console:
 
@@ -461,13 +463,6 @@ data before running `pg_basebackup`.
     both passive eavesdroppers and active "man-in-the-middle" attackers.
 
 The replication process is now over.
-
-### Next steps
-
-Now that the database replication is done, the next step is to configure SSH
-authorizations to use the database.
-
-[➤ Configure SSH authorizations to use the database](ssh.md)
 
 ## MySQL replication
 

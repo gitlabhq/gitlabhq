@@ -150,17 +150,26 @@ describe ProjectsHelper do
       end
     end
 
-    context 'user requires a password' do
-      let(:user) { create(:user, password_automatically_set: true) }
+    context 'user has hidden the message' do
+      it 'returns false' do
+        allow(helper).to receive(:cookies).and_return(hide_no_password_message: true)
 
+        expect(helper.show_no_password_message?).to be_falsey
+      end
+    end
+
+    context 'user requires a password for Git' do
       it 'returns true' do
+        allow(user).to receive(:require_password_creation_for_git?).and_return(true)
+
         expect(helper.show_no_password_message?).to be_truthy
       end
     end
 
-    context 'user requires a personal access token' do
+    context 'user requires a personal access token for Git' do
       it 'returns true' do
-        stub_application_setting(password_authentication_enabled?: false)
+        allow(user).to receive(:require_password_creation_for_git?).and_return(false)
+        allow(user).to receive(:require_personal_access_token_creation_for_git_auth?).and_return(true)
 
         expect(helper.show_no_password_message?).to be_truthy
       end
@@ -168,23 +177,23 @@ describe ProjectsHelper do
   end
 
   describe '#link_to_set_password' do
+    let(:user) { create(:user, password_automatically_set: true) }
+
     before do
       allow(helper).to receive(:current_user).and_return(user)
     end
 
-    context 'user requires a password' do
-      let(:user) { create(:user, password_automatically_set: true) }
-
+    context 'password authentication is enabled for Git' do
       it 'returns link to set a password' do
+        stub_application_setting(password_authentication_enabled_for_git?: true)
+
         expect(helper.link_to_set_password).to match %r{<a href="#{edit_profile_password_path}">set a password</a>}
       end
     end
 
-    context 'user requires a personal access token' do
-      let(:user) { create(:user) }
-
+    context 'password authentication is disabled for Git' do
       it 'returns link to create a personal access token' do
-        stub_application_setting(password_authentication_enabled?: false)
+        stub_application_setting(password_authentication_enabled_for_git?: false)
 
         expect(helper.link_to_set_password).to match %r{<a href="#{profile_personal_access_tokens_path}">create a personal access token</a>}
       end

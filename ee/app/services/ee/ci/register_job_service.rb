@@ -17,13 +17,22 @@ module EE
       end
 
       def builds_check_limit
-        ::Namespace.reorder(nil)
-          .where('namespaces.id = projects.namespace_id')
+        all_namespaces
           .joins('LEFT JOIN namespace_statistics ON namespace_statistics.namespace_id = namespaces.id')
           .where('COALESCE(namespaces.shared_runners_minutes_limit, ?, 0) = 0 OR ' \
             'COALESCE(namespace_statistics.shared_runners_seconds, 0) < COALESCE(namespaces.shared_runners_minutes_limit, ?, 0) * 60',
                 application_shared_runners_minutes, application_shared_runners_minutes)
           .select('1')
+      end
+
+      def all_namespaces
+        namespaces = ::Namespace.reorder(nil).where('namespaces.id = projects.namespace_id')
+
+        if Feature.enabled?(:shared_runner_minutes_on_root_namespace)
+          namespaces = ::Gitlab::GroupHierarchy.new(namespaces).roots
+        end
+
+        namespaces
       end
 
       def application_shared_runners_minutes

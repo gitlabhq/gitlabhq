@@ -33,7 +33,7 @@
         %td
           .avatar-container.s20.hidden-xs
             = project_icon(project, alt: '', class: 'avatar project-avatar s20')
-          %strong= link_to project.name, project
+          %strong= link_to project.full_name, project
         %td
           = project.shared_runners_minutes
     - if projects.blank?

@@ -46,6 +46,13 @@ feature 'Update Epic', :js do
       expect(find('.issuable-details .description')).to have_content('New epic description')
     end
 
+    it 'edits full screen' do
+      find('.btn-edit').click
+      find('.js-zen-enter').click
+
+      expect(page).to have_selector('.div-dropzone-wrapper.fullscreen')
+    end
+
     # File attachment feature is not implemented yet for epics
     it 'cannot attach files' do
       find('.btn-edit').click
@@ -61,6 +68,16 @@ feature 'Update Epic', :js do
       find('.task-list .task-list-item', text: 'Incomplete entry 1').find('input').click
 
       expect(page).to have_selector('ul input[checked]', count: 1)
+    end
+    
+    # Autocomplete is disabled for epics until #4084 is resolved
+    describe 'autocomplete disabled' do
+      it 'does not open atwho container' do
+        find('.btn-edit').click
+
+        find('#issue-description').native.send_keys('@')
+        expect(page).not_to have_selector('.atwho-container')
+      end
     end
   end
 

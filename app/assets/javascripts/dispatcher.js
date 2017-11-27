@@ -270,6 +270,9 @@ import initGroupAnalytics from './init_group_analytics';
           new DueDateSelectors();
           new GLForm($('.milestone-form'), false);
           break;
+        case 'groups:epics:show':
+          new ZenMode();
+          break;
         case 'projects:compare:show':
           new Diff();
           const paddingTop = 16;
@@ -345,7 +348,6 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'projects:merge_requests:show':
           new Diff();
-          shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
 
           initIssuableSidebar();
@@ -355,6 +357,8 @@ import initGroupAnalytics from './init_group_analytics';
           window.mergeRequest = new MergeRequest({
             action: mrShowNode.dataset.mrAction,
           });
+
+          shortcut_handler = new ShortcutsIssuable(true);
           break;
         case 'dashboard:activity':
           new gl.Activities();
@@ -367,7 +371,8 @@ import initGroupAnalytics from './init_group_analytics';
             container: '.js-commit-pipeline-graph',
           }).bindEvents();
           initNotes();
-          initChangesDropdown();
+          const stickyBarPaddingTop = 16;
+          initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - stickyBarPaddingTop);
           $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
         case 'projects:commit:pipelines':

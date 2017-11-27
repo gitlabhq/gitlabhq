@@ -42,6 +42,40 @@ describe UpdateBuildMinutesService do
             .to eq(100 + build.duration.to_i)
         end
       end
+
+      context 'when namespace is subgroup' do
+        let(:root_ancestor) { create(:group, shared_runners_minutes_limit: 100) }
+
+        context 'when shared_runner_minutes_on_root_namespace is disabled' do
+          let(:namespace) { create(:namespace, parent: root_ancestor, shared_runners_minutes_limit: 100) }
+
+          before do
+            stub_feature_flags(shared_runner_minutes_on_root_namespace: false)
+          end
+
+          it 'creates a statistics in current namespace' do
+            subject
+
+            expect(namespace.namespace_statistics.reload.shared_runners_seconds)
+              .to eq(build.duration.to_i)
+          end
+        end
+
+        context 'when shared_runner_minutes_on_root_namespace is enabled', :nested_groups do
+          let(:namespace) { create(:namespace, parent: root_ancestor) }
+
+          before do
+            stub_feature_flags(shared_runner_minutes_on_root_namespace: true)
+          end
+
+          it 'creates a statistics in root namespace' do
+            subject
+
+            expect(root_ancestor.namespace_statistics.reload.shared_runners_seconds)
+              .to eq(build.duration.to_i)
+          end
+        end
+      end
     end
 
     context 'for specific runner' do

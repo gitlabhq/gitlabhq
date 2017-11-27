@@ -1,6 +1,6 @@
-- if project.namespace.shared_runners_minutes_used?
-  - quota_used = project.namespace.shared_runners_minutes
-  - quota_limit = project.namespace.actual_shared_runners_minutes_limit
+- if project.shared_runners_limit_namespace.shared_runners_minutes_used?
+  - quota_used = project.shared_runners_limit_namespace.shared_runners_minutes
+  - quota_limit = project.shared_runners_limit_namespace.actual_shared_runners_minutes_limit
   .bs-callout.bs-callout-warning
     %p
       You have used all your shared Runners pipeline minutes.

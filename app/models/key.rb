@@ -30,8 +30,10 @@ class Key < ActiveRecord::Base
 
   after_commit :add_to_shell, on: :create
   after_create :post_create_hook
+  after_create :refresh_user_cache
   after_commit :remove_from_shell, on: :destroy
   after_destroy :post_destroy_hook
+  after_destroy :refresh_user_cache
 
   def key=(value)
     value&.delete!("\n\r")
@@ -77,6 +79,12 @@ class Key < ActiveRecord::Base
       shell_id,
       key
     )
+  end
+
+  def refresh_user_cache
+    return unless user
+
+    Users::KeysCountService.new(user).refresh_cache
   end
 
   def post_destroy_hook

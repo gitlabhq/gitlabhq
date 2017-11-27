@@ -4,7 +4,7 @@
 
 **Valid access levels**
 
-The access levels are defined in the `ProtectedBranchAccess::ALLOWED_ACCESS_LEVELS` constant. Currently, these levels are recognized:
+The access levels are defined in the `ProtectedRefAccess::ALLOWED_ACCESS_LEVELS` constant. Currently, these levels are recognized:
 ```
 0  => No access
 30 => Developer access
@@ -36,13 +36,17 @@ Example response:
     "push_access_levels": [
       {
         "access_level": 40,
+        "user_id": null,
+        "group_id": null,
         "access_level_description": "Masters"
       }
     ],
     "merge_access_levels": [
       {
-        "access_level": 40,
-        "access_level_description": "Masters"
+        "access_level": null,
+        "user_id": null,
+        "group_id": 1234,
+        "access_level_description": "Example Merge Group"
       }
     ]
   },
@@ -75,13 +79,17 @@ Example response:
   "push_access_levels": [
     {
       "access_level": 40,
+      "user_id": null,
+      "group_id": null,
       "access_level_description": "Masters"
     }
   ],
   "merge_access_levels": [
     {
-      "access_level": 40,
-      "access_level_description": "Masters"
+      "access_level": null,
+      "user_id": null,
+      "group_id": 1234,
+      "access_level_description": "Example Merge Group"
     }
   ]
 }
@@ -115,12 +123,16 @@ Example response:
   "push_access_levels": [
     {
       "access_level": 30,
+      "user_id": null,
+      "group_id": null,
       "access_level_description": "Developers + Masters"
     }
   ],
   "merge_access_levels": [
     {
       "access_level": 30,
+      "user_id": null,
+      "group_id": null,
       "access_level_description": "Developers + Masters"
     }
   ]

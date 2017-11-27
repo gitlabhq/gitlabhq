@@ -30,35 +30,7 @@ You must make the changes in the exact specific order:
     ```bash
     sudo rm ~git/.ssh/id_rsa ~git/.ssh/id_rsa.pub
     ```
-1. Open the interactive rails console: `sudo gitlab-rails console` and execute:
-    * List your primary node and note down it's id:
-
-        ```ruby
-        Gitlab::Geo.primary_node
-        ```
-    * Remove the old primary node:
-
-        ```ruby
-        Gitlab::Geo.primary_node.destroy
-        ```
-    * List your secondary nodes and note down the id of the one you want to promote:
-
-        ```ruby
-        Gitlab::Geo.secondary_nodes
-        ```
-    * To promote a node with id `2` execute:
-
-        ```ruby
-        GeoNode.find(2).update!(primary: true)
-        ```
-    * Now you have to cleanup your new promoted node by running:
-
-        ```ruby
-        Gitlab::Geo.primary_node.oauth_application.destroy!
-        Gitlab::Geo.primary_node.system_hook.destroy!
-        ```
-    * To exit the interactive console, type: `exit`
-
+1. Run `sudo gitlab-rake geo:set_secondary_as_primary`
 1. Rsync everything in `/var/opt/gitlab/gitlab-rails/uploads` and
    `/var/opt/gitlab/gitlab-rails/shared` from your old node to the new one.
 

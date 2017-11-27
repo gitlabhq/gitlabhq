@@ -124,7 +124,7 @@ stages:
 1. First, all jobs of `build` are executed in parallel.
 1. If all jobs of `build` succeed, the `test` jobs are executed in parallel.
 1. If all jobs of `test` succeed, the `deploy` jobs are executed in parallel.
-1. If all jobs of `deploy` succeed, the commit is marked as `success`.
+1. If all jobs of `deploy` succeed, the commit is marked as `passed`.
 1. If any of the previous jobs fails, the commit is marked as `failed` and no
    jobs of further stage are executed.
 

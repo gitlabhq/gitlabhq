@@ -1,5 +1,0 @@
----
-title: 'Geo: Don''t retry repositories or files until everything has been backfilled'
-merge_request: 3182
-author:
-type: changed

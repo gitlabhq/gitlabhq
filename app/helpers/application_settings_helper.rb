@@ -4,9 +4,9 @@ module ApplicationSettingsHelper
 
   include Gitlab::CurrentSettings
 
-  delegate  :gravatar_enabled?,
-            :signup_enabled?,
-            :password_authentication_enabled?,
+  delegate  :allow_signup?,
+            :gravatar_enabled?,
+            :password_authentication_enabled_for_web?,
             :akismet_enabled?,
             :koding_enabled?,
             to: :current_application_settings
@@ -204,7 +204,7 @@ module ApplicationSettingsHelper
       :metrics_port,
       :metrics_sample_interval,
       :metrics_timeout,
-      :password_authentication_enabled,
+      :password_authentication_enabled_for_web,
       :performance_bar_allowed_group_id,
       :performance_bar_enabled,
       :plantuml_enabled,

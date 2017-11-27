@@ -1,5 +1,0 @@
----
-title: Geo - Ensure that LFS object deletions are communicated to the secondary
-merge_request:
-author:
-type: fixed
