@@ -71,8 +71,9 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
     end
 
     it 'uses the start and end batch ids [only 1st half]' do
-      start_id = untracked_files_for_uploads.all.to_a[0].id
-      end_id = untracked_files_for_uploads.all.to_a[3].id
+      ids = untracked_files_for_uploads.all.order(:id).pluck(:id)
+      start_id = ids[0]
+      end_id = ids[3]
 
       expect do
         subject.perform(start_id, end_id)
@@ -89,8 +90,9 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
     end
 
     it 'uses the start and end batch ids [only 2nd half]' do
-      start_id = untracked_files_for_uploads.all.to_a[4].id
-      end_id = untracked_files_for_uploads.all.to_a[7].id
+      ids = untracked_files_for_uploads.all.order(:id).pluck(:id)
+      start_id = ids[4]
+      end_id = ids[7]
 
       expect do
         subject.perform(start_id, end_id)
