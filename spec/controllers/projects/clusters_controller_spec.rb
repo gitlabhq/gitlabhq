@@ -35,6 +35,16 @@ describe Projects::ClustersController do
           expect(assigns(:active_count)).to eq(project.clusters.enabled.count)
           expect(assigns(:inactive_count)).to eq(project.clusters.disabled.count)
         end
+
+        it 'properly paginates' do
+          PAGE_LIMIT = 20
+          project.clusters = create_list(:cluster, PAGE_LIMIT + 1, :provided_by_gcp, projects: [project])
+          go
+
+          expect(assigns(:clusters).count).to eq(20)
+          get :index, namespace_id: project.namespace.to_param, project_id: project, page: 2
+          expect(assigns(:clusters).count).to eq(1)
+        end
       end
 
       context 'when project does not have a cluster' do
