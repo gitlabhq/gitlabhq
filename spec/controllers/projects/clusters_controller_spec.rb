@@ -45,6 +45,22 @@ describe Projects::ClustersController do
           get :index, namespace_id: project.namespace.to_param, project_id: project, page: 2
           expect(assigns(:clusters).count).to eq(1)
         end
+
+        context 'when only enabled clusters are requested' do
+          it 'returns only enabled clusters' do
+            get :index, namespace_id: project.namespace.to_param, project_id: project, scope: 'enabled'
+            clusters = assigns(:clusters)
+            expect(clusters.all? { |cluster| cluster.enabled == true }).to eq(true)
+          end
+        end
+
+        context 'when only disabled clusters are requested' do
+          it 'returns only disabled clusters' do
+            get :index, namespace_id: project.namespace.to_param, project_id: project, scope: 'disabled'
+            clusters = assigns(:clusters)
+            expect(clusters.all? { |cluster| cluster.enabled == false }).to eq(true)
+          end
+        end
       end
 
       context 'when project does not have a cluster' do
