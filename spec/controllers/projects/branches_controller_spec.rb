@@ -113,40 +113,44 @@ describe Projects::BranchesController do
           expect(response).to redirect_to project_tree_path(project, branch)
         end
 
-        it 'redirects to autodeploy setup page' do
-          result = { status: :success, branch: double(name: branch) }
+        context 'when user configured kubernetes from Integration > Kubernetes' do
+          it 'redirects to autodeploy setup page' do
+            result = { status: :success, branch: double(name: branch) }
 
-          project.services << build(:kubernetes_service)
+            project.services << build(:kubernetes_service)
 
-          expect_any_instance_of(CreateBranchService).to receive(:execute).and_return(result)
-          expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
+            expect_any_instance_of(CreateBranchService).to receive(:execute).and_return(result)
+            expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
 
-          post :create,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
-            branch_name: branch,
-            issue_iid: issue.iid
+            post :create,
+              namespace_id: project.namespace.to_param,
+              project_id: project.to_param,
+              branch_name: branch,
+              issue_iid: issue.iid
 
-          expect(response.location).to include(project_new_blob_path(project, branch))
-          expect(response).to have_gitlab_http_status(302)
+            expect(response.location).to include(project_new_blob_path(project, branch))
+            expect(response).to have_gitlab_http_status(302)
+          end
         end
 
-        it 'redirects to autodeploy setup page' do
-          result = { status: :success, branch: double(name: branch) }
+        context 'when user configured kubernetes from CI/CD > Clusters' do
+          it 'redirects to autodeploy setup page' do
+            result = { status: :success, branch: double(name: branch) }
 
-          create(:cluster, :provided_by_gcp, projects: [project])
+            create(:cluster, :provided_by_gcp, projects: [project])
 
-          expect_any_instance_of(CreateBranchService).to receive(:execute).and_return(result)
-          expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
+            expect_any_instance_of(CreateBranchService).to receive(:execute).and_return(result)
+            expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
 
-          post :create,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
-            branch_name: branch,
-            issue_iid: issue.iid
+            post :create,
+              namespace_id: project.namespace.to_param,
+              project_id: project.to_param,
+              branch_name: branch,
+              issue_iid: issue.iid
 
-          expect(response.location).to include(project_new_blob_path(project, branch))
-          expect(response).to have_gitlab_http_status(302)
+            expect(response.location).to include(project_new_blob_path(project, branch))
+            expect(response).to have_gitlab_http_status(302)
+          end
         end
       end
 

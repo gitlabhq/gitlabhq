@@ -327,15 +327,28 @@ describe Environment do
 
     context 'when the enviroment is available' do
       context 'with a deployment service' do
-        let(:project) { create(:kubernetes_project) }
+        shared_examples 'correct behavior for has_terminals?' do
+          context 'and a deployment' do
+            let!(:deployment) { create(:deployment, environment: environment) }
+            it { is_expected.to be_truthy }
+          end
 
-        context 'and a deployment' do
-          let!(:deployment) { create(:deployment, environment: environment) }
-          it { is_expected.to be_truthy }
+          context 'but no deployments' do
+            it { is_expected.to be_falsy }
+          end
         end
 
-        context 'but no deployments' do
-          it { is_expected.to be_falsy }
+        context 'when user configured kubernetes from Integration > Kubernetes' do
+          let(:project) { create(:kubernetes_project) }
+
+          it_behaves_like 'correct behavior for has_terminals?'
+        end
+
+        context 'when user configured kubernetes from CI/CD > Clusters' do
+          let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+          let(:project) { cluster.project }
+
+          it_behaves_like 'correct behavior for has_terminals?'
         end
       end
 
