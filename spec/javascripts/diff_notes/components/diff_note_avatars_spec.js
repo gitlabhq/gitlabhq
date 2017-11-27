@@ -5,11 +5,10 @@ import { createNote } from '../mock_data';
 
 describe('diff_note_avatars', () => {
   let vm;
-  let notes;
   let discussion;
 
   beforeEach(() => {
-    notes = jasmine.createSpyObj('notes', ['onAddDiffNote']);
+    window.notes = jasmine.createSpyObj('notes', ['onAddDiffNote']);
     const Component = Vue.extend(DiffNoteAvatars);
 
     const discussionId = '1234abcd';

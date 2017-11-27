@@ -4,7 +4,6 @@
 
 import Icon from '~/vue_shared/components/icon.vue';
 import UserAvatarImage from '~/vue_shared/components/user_avatar/user_avatar_image.vue';
-import { n__ } from '~/locale';
 
 export default {
   props: {
@@ -73,7 +72,7 @@ export default {
     },
     extraNotesTitle() {
       if (this.discussion) {
-        return n__('%d more comment', '%d more comments', this.extraComments);
+        return this.n__('%d more comment', '%d more comments', this.extraComments);
       }
 
       return '';
