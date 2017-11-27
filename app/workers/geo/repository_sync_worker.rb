@@ -35,7 +35,7 @@ module Geo
 
     def find_project_ids_updated_recently(batch_size:)
       healthy_shards_restriction(finder.find_projects_updated_recently(batch_size: batch_size))
-        .order(Gitlab::Database.nulls_first_order(:last_repository_synced_at, :desc))
+        .order(Gitlab::Database.nulls_first_order(:last_repository_updated_at, :desc))
         .pluck(:id)
     end
 
