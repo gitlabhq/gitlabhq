@@ -22,7 +22,7 @@ class SnippetsFinder < UnionFinder
 
   def execute
     items = init_collection
-    items = by_scope(items)
+    items = by_authorization(items)
     items = by_author(items)
     items = by_visibility(items)
 
@@ -34,7 +34,7 @@ class SnippetsFinder < UnionFinder
   def init_collection
     if params[:project].present?
       if can?(current_user, :read_project_snippet, params[:project])
-        ProjectSnippet.where(project_id: params[:project].id)
+        params[:project].snippets
       else
         Snippet.none
       end
@@ -62,9 +62,9 @@ class SnippetsFinder < UnionFinder
     Snippet.arel_table
   end
 
-  def by_scope(items)
+  def by_authorization(items)
     segments = []
-    segments << snippets_from_authorized_projects(items) if current_user
+    segments << snippets_from_authorized_projects(items) if current_user && !params[:project].present?
     segments << authorized_snippets_to_user(items)
     find_union(segments, Snippet)
   end
@@ -78,16 +78,16 @@ class SnippetsFinder < UnionFinder
   end
 
   def authorized_snippets_to_user(items)
-    if params[:project].present? && user_access_to_project?
+    if params[:project].present? && project_member?
       items
     else
       items.where(snippets_from_public_projects).public_to_user(current_user)
     end
   end
 
-  def user_access_to_project?
+  def project_member?
     params[:project].project_member(current_user) ||
-      params[:project].group&.member?(current_user)
+      params[:project].team&.member?(current_user)
   end
 
   def snippets_from_public_projects

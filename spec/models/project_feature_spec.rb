@@ -97,7 +97,7 @@ describe ProjectFeature do
   end
 
   describe '#*_enabled?' do
-    let(:features) { %w(wiki builds merge_requests snippets) }
+    let(:features) { %w(wiki builds merge_requests) }
 
     it "returns false when feature is disabled" do
       features.each do |feature|
