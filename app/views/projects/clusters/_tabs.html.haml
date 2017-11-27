@@ -14,6 +14,6 @@
     %li{ class: ('active' if @scope.nil? || @scope == 'all') }>
       = link_to project_clusters_path(@project, scope: :all), class: "js-all-tab #{'active' if @scope == 'all' || @scope.nil?}" do
         = s_("ClusterIntegration|All")
-        %span.badge= @inactive_count
+        %span.badge= @all_count
   .pull-right.nav-bar-right
     = link_to s_("ClusterIntegration|Add cluster"), new_project_cluster_path(@project), class: "btn btn-success disabled has-tooltip js-add-cluster", title: s_("ClusterIntegration|Multiple clusters are available in GitLab Entreprise Edition Premium and Ultimate")

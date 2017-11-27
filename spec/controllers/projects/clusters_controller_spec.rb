@@ -14,15 +14,52 @@ describe Projects::ClustersController do
       end
 
       context 'when project has one or more clusters' do
-        let(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-        let(:project) { cluster.project }
+        let(:project) { create(:project) }
+        let(:clusters) { create_list(:cluster, 2, :provided_by_gcp, projects: [project]) }
+
+        before do
+          clusters.last.enabled = false
+        end
 
         it 'lists available clusters' do
           go
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template(:index)
-          expect(assigns(:clusters)).to eq([cluster])
+          expect(assigns(:clusters)).to eq(clusters)
+        end
+
+        it 'assigns counters to correct values' do
+          go
+
+          expect(assigns(:active_count)).to eq(project.clusters.enabled.count)
+          expect(assigns(:inactive_count)).to eq(project.clusters.disabled.count)
+        end
+
+        it 'properly paginates' do
+          PAGE_LIMIT = 20
+          project.clusters = create_list(:cluster, PAGE_LIMIT + 1, :provided_by_gcp, projects: [project])
+          go
+
+          expect(assigns(:clusters).count).to eq(20)
+          get :index, namespace_id: project.namespace.to_param, project_id: project, page: 2
+          expect(assigns(:clusters).count).to eq(1)
+        end
+
+        context 'when only enabled clusters are requested' do
+          it 'returns only enabled clusters' do
+            get :index, namespace_id: project.namespace.to_param, project_id: project, scope: 'enabled'
+            clusters = assigns(:clusters)
+            expect(clusters.all? { |cluster| cluster.enabled == true }).to eq(true)
+          end
+        end
+
+        context 'when only disabled clusters are requested' do
+          it 'returns only disabled clusters' do
+            get :index, namespace_id: project.namespace.to_param, project_id: project, scope: 'disabled'
+            clusters = assigns(:clusters)
+            expect(clusters.all? { |cluster| cluster.enabled == false }).to eq(true)
+          end
         end
       end
 
@@ -35,6 +72,13 @@ describe Projects::ClustersController do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template(:index)
           expect(assigns(:clusters)).to eq([])
+        end
+
+        it 'assigns counters to zero' do
+          go
+
+          expect(assigns(:active_count)).to eq(0)
+          expect(assigns(:inactive_count)).to eq(0)
         end
       end
     end
