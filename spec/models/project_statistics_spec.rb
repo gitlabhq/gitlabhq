@@ -133,17 +133,29 @@ describe ProjectStatistics do
 
   describe '#update_build_artifacts_size' do
     let!(:pipeline) { create(:ci_pipeline, project: project) }
-    let!(:ci_build) { create(:ci_build, pipeline: pipeline, artifacts_size: 45.megabytes) }
 
-    before do
-      create(:ci_build, pipeline: pipeline, artifacts_size: 56.megabytes)
-      create(:ci_job_artifact, :archive, project: pipeline.project, job: ci_build)
+    context 'when new job artifacts are calculated' do
+      let(:ci_build) { create(:ci_build, pipeline: pipeline) }
 
-      statistics.update_build_artifacts_size
+      before do
+        create(:ci_job_artifact, :archive, project: pipeline.project, job: ci_build)
+      end
+
+      it "stores the size of related build artifacts" do
+        statistics.update_build_artifacts_size
+
+        expect(statistics.build_artifacts_size).to be(106365)
+      end
     end
 
-    it "stores the size of related build artifacts" do
-      expect(statistics.build_artifacts_size).to eq(106012541)
+    context 'when legacy artifacts are used' do
+      let!(:ci_build) { create(:ci_build, pipeline: pipeline, artifacts_size: 10.megabytes) }
+
+      it "stores the size of related build artifacts" do
+        statistics.update_build_artifacts_size
+
+        expect(statistics.build_artifacts_size).to eq(10.megabytes)
+      end
     end
   end
 
