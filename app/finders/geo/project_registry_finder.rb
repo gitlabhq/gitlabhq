@@ -7,10 +7,8 @@ module Geo
     end
 
     def find_unsynced_projects(batch_size:)
-      # Selective project replication adds a wrinkle to FDW queries, so
-      # we fallback to the legacy version for now.
       relation =
-        if Gitlab::Geo.fdw? && !selective_sync
+        if fdw?
           fdw_find_unsynced_projects
         else
           legacy_find_unsynced_projects
@@ -20,10 +18,8 @@ module Geo
     end
 
     def find_projects_updated_recently(batch_size:)
-      # Selective project replication adds a wrinkle to FDW queries, so
-      # we fallback to the legacy version for now.
       relation =
-        if Gitlab::Geo.fdw? && !selective_sync
+        if fdw?
           fdw_find_projects_updated_recently
         else
           legacy_find_projects_updated_recently
@@ -33,6 +29,16 @@ module Geo
     end
 
     protected
+
+    def fdw?
+      # Selective project replication adds a wrinkle to FDW
+      # queries, so we fallback to the legacy version for now.
+      Gitlab::Geo.fdw? && !selective_sync
+    end
+
+    def fdw_table
+      Geo::Fdw::Project.table_name
+    end
 
     def selective_sync
       current_node.restricted_project_ids
@@ -44,16 +50,12 @@ module Geo
 
     # @return [ActiveRecord::Relation<Geo::Fdw::Project>]
     def fdw_find_unsynced_projects
-      fdw_table = Geo::Fdw::Project.table_name
-
       Geo::Fdw::Project.joins("LEFT OUTER JOIN project_registry ON project_registry.project_id = #{fdw_table}.id")
         .where('project_registry.project_id IS NULL')
     end
 
     # @return [ActiveRecord::Relation<Geo::Fdw::Project>]
     def fdw_find_projects_updated_recently
-      fdw_table = Geo::Fdw::Project.table_name
-
       Geo::Fdw::Project.joins("INNER JOIN project_registry ON project_registry.project_id = #{fdw_table}.id")
         .merge(Geo::ProjectRegistry.dirty)
         .merge(Geo::ProjectRegistry.retry_due)
