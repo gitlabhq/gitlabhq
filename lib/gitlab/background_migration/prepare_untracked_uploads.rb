@@ -1,10 +1,14 @@
+# frozen_string_literal: true
+
 module Gitlab
   module BackgroundMigration
-    class PrepareUntrackedUploads
+    # This class finds all non-hashed uploaded file paths and saves them to a
+    # `untracked_files_for_uploads` table.
+    class PrepareUntrackedUploads # rubocop:disable Metrics/ClassLength
       # For bulk_queue_background_migration_jobs_by_range
       include Database::MigrationHelpers
 
-      FILE_PATH_BATCH_SIZE = 500
+      FIND_BATCH_SIZE = 500
       RELATIVE_UPLOAD_DIR = "uploads".freeze
       ABSOLUTE_UPLOAD_DIR = "#{CarrierWave.root}/#{RELATIVE_UPLOAD_DIR}".freeze
       FOLLOW_UP_MIGRATION = 'PopulateUntrackedUploads'.freeze
@@ -12,6 +16,8 @@ module Gitlab
       EXCLUDED_HASHED_UPLOADS_PATH = "#{ABSOLUTE_UPLOAD_DIR}/@hashed/*".freeze
       EXCLUDED_TMP_UPLOADS_PATH = "#{ABSOLUTE_UPLOAD_DIR}/tmp/*".freeze
 
+      # This class is used to iterate over batches of
+      # `untracked_files_for_uploads` rows.
       class UntrackedFile < ActiveRecord::Base
         include EachBatch
 
@@ -39,8 +45,9 @@ module Gitlab
       private
 
       def ensure_temporary_tracking_table_exists
-        unless UntrackedFile.connection.table_exists?(:untracked_files_for_uploads)
-          UntrackedFile.connection.create_table :untracked_files_for_uploads do |t|
+        table_name = :untracked_files_for_uploads
+        unless UntrackedFile.connection.table_exists?(table_name)
+          UntrackedFile.connection.create_table table_name do |t|
             t.string :path, limit: 600, null: false
             t.index :path, unique: true
           end
@@ -54,7 +61,7 @@ module Gitlab
       def store_untracked_file_paths
         return unless Dir.exist?(ABSOLUTE_UPLOAD_DIR)
 
-        each_file_batch(ABSOLUTE_UPLOAD_DIR, FILE_PATH_BATCH_SIZE) do |file_paths|
+        each_file_batch(ABSOLUTE_UPLOAD_DIR, FIND_BATCH_SIZE) do |file_paths|
           insert_file_paths(file_paths)
         end
       end
@@ -85,12 +92,17 @@ module Gitlab
       end
 
       def build_find_command(search_dir)
-        cmd = %W[find #{search_dir} -type f ! ( -path #{EXCLUDED_HASHED_UPLOADS_PATH} -prune ) ! ( -path #{EXCLUDED_TMP_UPLOADS_PATH} -prune ) -print0]
+        cmd = %W[find #{search_dir}
+                 -type f
+                 ! ( -path #{EXCLUDED_HASHED_UPLOADS_PATH} -prune )
+                 ! ( -path #{EXCLUDED_TMP_UPLOADS_PATH} -prune )
+                 -print0]
 
         ionice = which_ionice
         cmd = %W[#{ionice} -c Idle] + cmd if ionice
 
-        Rails.logger.info "PrepareUntrackedUploads find command: \"#{cmd.join(' ')}\""
+        log_msg = "PrepareUntrackedUploads find command: \"#{cmd.join(' ')}\""
+        Rails.logger.info log_msg
 
         cmd
       end
@@ -98,25 +110,32 @@ module Gitlab
       def which_ionice
         Gitlab::Utils.which('ionice')
       rescue StandardError
-        # In this case, returning false is relatively safe, even though it isn't very nice
+        # In this case, returning false is relatively safe,
+        # even though it isn't very nice
         false
       end
 
       def insert_file_paths(file_paths)
-        sql = if postgresql_pre_9_5?
-                "INSERT INTO #{table_columns_and_values_for_insert(file_paths)};"
-              elsif postgresql?
-                "INSERT INTO #{table_columns_and_values_for_insert(file_paths)} ON CONFLICT DO NOTHING;"
-              else # MySQL
-                "INSERT IGNORE INTO #{table_columns_and_values_for_insert(file_paths)};"
-              end
+        sql = insert_sql(file_paths)
 
         ActiveRecord::Base.connection.execute(sql)
       end
 
+      def insert_sql(file_paths)
+        if postgresql_pre_9_5?
+          "INSERT INTO #{table_columns_and_values_for_insert(file_paths)};"
+        elsif postgresql?
+          "INSERT INTO #{table_columns_and_values_for_insert(file_paths)}"\
+            " ON CONFLICT DO NOTHING;"
+        else # MySQL
+          "INSERT IGNORE INTO"\
+            " #{table_columns_and_values_for_insert(file_paths)};"
+        end
+      end
+
       def table_columns_and_values_for_insert(file_paths)
         values = file_paths.map do |file_path|
-          ActiveRecord::Base.send(:sanitize_sql_array, ['(?)', file_path]) # rubocop:disable GitlabSecurity/PublicSend
+          ActiveRecord::Base.send(:sanitize_sql_array, ['(?)', file_path]) # rubocop:disable GitlabSecurity/PublicSend, Metrics/LineLength
         end.join(', ')
 
         "#{UntrackedFile.table_name} (path) VALUES #{values}"
@@ -131,11 +150,13 @@ module Gitlab
       end
 
       def postgresql_pre_9_5?
-        @postgresql_pre_9_5 ||= postgresql? && Gitlab::Database.version.to_f < 9.5
+        @postgresql_pre_9_5 ||= postgresql? &&
+          Gitlab::Database.version.to_f < 9.5
       end
 
       def schedule_populate_untracked_uploads_jobs
-        bulk_queue_background_migration_jobs_by_range(UntrackedFile, FOLLOW_UP_MIGRATION)
+        bulk_queue_background_migration_jobs_by_range(
+          UntrackedFile, FOLLOW_UP_MIGRATION)
       end
     end
   end
