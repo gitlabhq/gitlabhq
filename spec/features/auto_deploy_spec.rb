@@ -7,7 +7,7 @@ describe 'Auto deploy' do
   shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
     context 'when no deployment service is active' do
       before do
-        project.kubernetes_service.update!(active: false)
+        trun_off
       end
 
       it 'does not show a button to set up auto deploy' do
@@ -18,7 +18,7 @@ describe 'Auto deploy' do
 
     context 'when a deployment service is active' do
       before do
-        project.kubernetes_service.update!(active: true)
+        trun_on
         visit project_path(project)
       end
 
@@ -56,6 +56,9 @@ describe 'Auto deploy' do
       sign_in user
     end
 
+    let(:trun_on) { project.deployment_platform.update!(active: true) }
+    let(:trun_off) { project.deployment_platform.update!(active: false) }
+
     it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
   end
 
@@ -65,6 +68,9 @@ describe 'Auto deploy' do
       project.team << [user, :master]
       sign_in user
     end
+
+    let(:trun_on) { project.deployment_platform.cluster.update!(enabled: true) }
+    let(:trun_off) { project.deployment_platform.cluster.update!(enabled: false) }
 
     it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
   end

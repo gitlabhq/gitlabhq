@@ -903,7 +903,6 @@ class Project < ActiveRecord::Base
   end
 
   # TODO: This will be extended for multiple enviroment clusters
-  # TODO: Add super nice tests to check this interchangeability
   def deployment_platform
     @deployment_platform ||= clusters.find_by(enabled: true)&.platform_kubernetes
     @deployment_platform ||= services.where(category: :deployment).reorder(nil).find_by(active: true)

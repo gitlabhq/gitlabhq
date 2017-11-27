@@ -233,7 +233,7 @@ feature 'Environments page', :js do
           end
 
           context 'when user configured kubernetes from CI/CD > Clusters' do
-            let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+            let(:cluster) { create(:cluster, :provided_by_gcp, projects: [create(:project, :repository)]) }
             let(:project) { cluster.project }
 
             it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
