@@ -2002,10 +2002,10 @@ describe Project do
     end
 
     context 'when project has a deployment service' do
-      shared_examples 'correct behavior with variables' do
+      shared_examples 'correct behavior on KubernetesService and Platform::Kubernetes' do
         it 'returns variables from this service' do
           expect(project.deployment_variables).to include(
-            { key: 'KUBE_TOKEN', value: project.kubernetes_service.token, public: false }
+            { key: 'KUBE_TOKEN', value: project.deployment_platform.token, public: false }
           )
         end
       end
@@ -2013,14 +2013,14 @@ describe Project do
       context 'when user configured kubernetes from Integration > Kubernetes' do
         let(:project) { create(:kubernetes_project) }
 
-        it_behaves_like 'correct behavior with variables'
+        it_behaves_like 'correct behavior on KubernetesService and Platform::Kubernetes'
       end
 
       context 'when user configured kubernetes from CI/CD > Clusters' do
         let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
         let(:project) { cluster.project }
 
-        it_behaves_like 'correct behavior with variables'
+        it_behaves_like 'correct behavior on KubernetesService and Platform::Kubernetes'
       end
     end
   end
@@ -3094,6 +3094,23 @@ describe Project do
       project = create(:project)
 
       expect(project.wiki_repository_exists?).to eq(false)
+    end
+  end
+
+  describe '#deployment_platform' do
+    subject { project.deployment_platform }
+
+    context 'when user configured kubernetes from Integration > Kubernetes' do
+      let!(:kubernetes_service) { create(:kubernetes_service, project: project) }
+
+      it { is_expected.to eq(kubernetes_service) }
+    end
+
+    context 'when user configured kubernetes from CI/CD > Clusters' do
+      let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+      let(:platform_kubernetes) { cluster.platform_kubernetes }
+
+      it { is_expected.to eq(platform_kubernetes) }
     end
   end
 end
