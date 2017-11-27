@@ -30,7 +30,7 @@ feature 'Clusters', :js do
 
       context 'when user opens opens create on gke page' do
         before do
-          click_button 'Add cluster'
+          click_link 'Add cluster'
           click_link 'Create on GKE'
         end
 
@@ -219,12 +219,12 @@ feature 'Clusters', :js do
             click_button 'Save'
           end
 
-          it 'user sees the succeccful message' do
+          it 'user sees the successful message' do
             expect(page).to have_content('Cluster was successfully updated.')
           end
         end
 
-        context 'when user destory the cluster' do
+        context 'when user destroys the cluster' do
           before do
             page.accept_confirm do
               click_link 'Remove integration'
