@@ -12,6 +12,7 @@ import {
   area as d3Area,
   brushX as d3BrushX,
   timeParse as d3TimeParse,
+  event as d3Event,
 } from '../common_d3/index';
 
 const extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
@@ -166,7 +167,7 @@ export const ContributorsMasterGraph = (function(superClass) {
   };
 
   ContributorsMasterGraph.prototype.create_brush = function() {
-    return this.brush = d3BrushX(this.x).on("end", this.update_content);
+    return this.brush = d3BrushX(this.x).extent([[this.x.range()[0], 0], [this.x.range()[1], this.height]]).on("end", this.update_content);
   };
 
   ContributorsMasterGraph.prototype.draw_path = function(data) {
@@ -178,7 +179,12 @@ export const ContributorsMasterGraph = (function(superClass) {
   };
 
   ContributorsMasterGraph.prototype.update_content = function() {
-    ContributorsGraph.set_x_domain(this.brush.empty() ? this.x_max_domain : this.brush.extent());
+    // d3Event.selection replaces the function brush.empty() calls
+    if (d3Event.selection != null) {
+      ContributorsGraph.set_x_domain(d3Event.selection.map(this.x.invert));
+    } else {
+      ContributorsGraph.set_x_domain(this.x_max_domain);
+    }
     return $("#brush_change").trigger('change');
   };
 
@@ -260,7 +266,8 @@ export const ContributorsAuthorGraph = (function(superClass) {
   };
 
   ContributorsAuthorGraph.prototype.create_svg = function() {
-    this.list_item = document.querySelectorAll('.person')[0];
+    var persons = document.querySelectorAll('.person');
+    this.list_item = persons[persons.length - 1];
     return this.svg = d3Select(this.list_item).append("svg").attr("width", this.width + this.MARGIN.left + this.MARGIN.right).attr("height", this.height + this.MARGIN.top + this.MARGIN.bottom).attr("class", "spark").append("g").attr("transform", "translate(" + this.MARGIN.left + "," + this.MARGIN.top + ")");
   };
 
