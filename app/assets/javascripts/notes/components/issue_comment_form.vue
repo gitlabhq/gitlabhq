@@ -8,7 +8,7 @@
   import * as constants from '../constants';
   import eventHub from '../event_hub';
   import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
-  import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
+  import noteSignedOutWidget from './note_signed_out_widget.vue';
   import discussionLockedWidget from './discussion_locked_widget.vue';
   import markdownField from '../../vue_shared/components/markdown/field.vue';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -29,7 +29,7 @@
     },
     components: {
       issueWarning,
-      issueNoteSignedOutWidget,
+      noteSignedOutWidget,
       discussionLockedWidget,
       markdownField,
       userAvatarLink,
@@ -240,7 +240,7 @@
 
 <template>
   <div>
-    <issue-note-signed-out-widget v-if="!isLoggedIn" />
+    <note-signed-out-widget v-if="!isLoggedIn" />
     <discussion-locked-widget
       issuable-type="issue"
       v-else-if="!canCreateNote"

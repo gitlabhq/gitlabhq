@@ -5,7 +5,7 @@
   import issueNote from './issue_note.vue';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
   import noteHeader from './note_header.vue';
-  import issueNoteSignedOutWidget from './issue_note_signed_out_widget.vue';
+  import noteSignedOutWidget from './note_signed_out_widget.vue';
   import noteEditedText from './note_edited_text.vue';
   import issueNoteForm from './issue_note_form.vue';
   import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
@@ -28,7 +28,7 @@
       issueNote,
       userAvatarLink,
       noteHeader,
-      issueNoteSignedOutWidget,
+      noteSignedOutWidget,
       noteEditedText,
       issueNoteForm,
       placeholderNote,
@@ -218,7 +218,7 @@
                     @cancelFormEdition="cancelReplyForm"
                     ref="noteForm"
                     />
-                  <issue-note-signed-out-widget v-if="!canReply" />
+                  <note-signed-out-widget v-if="!canReply" />
                 </div>
               </div>
             </div>
