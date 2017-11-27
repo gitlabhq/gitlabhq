@@ -54,9 +54,9 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@gitlab-org/gitlab-svgs@^1.0.2":
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.0.2.tgz#e4d29058e2bb438ba71ac525c6397ef15ae2877b"
+"@gitlab-org/gitlab-svgs@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.1.1.tgz#6e07ea02c3b104fa8b5d860a5e2fa9dab4edab96"
 
 "@types/jquery@^2.0.40":
   version "2.0.48"
@@ -3584,15 +3584,15 @@ jed@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/jed/-/jed-1.1.1.tgz#7a549bbd9ffe1585b0cd0a191e203055bee574b4"
 
-jquery-ujs@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/jquery-ujs/-/jquery-ujs-1.2.1.tgz#6ee75b1ef4e9ac95e7124f8d71f7d351f5548e92"
+jquery-ujs@1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/jquery-ujs/-/jquery-ujs-1.2.2.tgz#6a8ef1020e6b6dda385b90a4bddc128c21c56397"
   dependencies:
     jquery ">=1.8.0"
 
-"jquery@>= 1.9.1", jquery@>=1.8.0, jquery@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-2.2.1.tgz#3c3e16854ad3d2ac44ac65021b17426d22ad803f"
+"jquery@>= 1.9.1", jquery@>=1.8.0, jquery@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-2.2.4.tgz#2c89d6889b5eac522a7eea32c14521559c6cbf02"
 
 js-base64@^2.1.9:
   version "2.1.9"
@@ -6088,10 +6088,6 @@ through@2, through@^2.3.6, through@~2.3, through@~2.3.1, through@~2.3.4, through
 thunky@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/thunky/-/thunky-0.1.0.tgz#bf30146824e2b6e67b0f2d7a4ac8beb26908684e"
-
-time-stamp@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/time-stamp/-/time-stamp-2.0.0.tgz#95c6a44530e15ba8d6f4a3ecb8c3a3fac46da357"
 
 timeago.js@^3.0.2:
   version "3.0.2"
