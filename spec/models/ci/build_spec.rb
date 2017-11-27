@@ -133,27 +133,55 @@ describe Ci::Build do
   end
 
   describe '#artifacts?' do
-    let(:build) { create(:ci_build, :artifacts) }
+    context 'when new artifacts are used' do
+      let(:build) { create(:ci_build, :artifacts) }
 
-    subject { build.artifacts? }
+      subject { build.artifacts? }
 
-    context 'artifacts archive does not exist' do
-      let(:build) { create(:ci_build) }
-
-      it { is_expected.to be_falsy }
-    end
-
-    context 'artifacts archive exists' do
-      it { is_expected.to be_truthy }
-
-      context 'is expired' do
-        let!(:build) { create(:ci_build, :artifacts, :expired) }
+      context 'artifacts archive does not exist' do
+        let(:build) { create(:ci_build) }
 
         it { is_expected.to be_falsy }
       end
 
-      context 'is not expired' do
+      context 'artifacts archive exists' do
         it { is_expected.to be_truthy }
+
+        context 'is expired' do
+          let!(:build) { create(:ci_build, :artifacts, :expired) }
+
+          it { is_expected.to be_falsy }
+        end
+
+        context 'is not expired' do
+          it { is_expected.to be_truthy }
+        end
+      end
+    end
+
+    context 'when legacy artifacts are used' do
+      let(:build) { create(:ci_build, :legacy_artifacts) }
+
+      subject { build.artifacts? }
+
+      context 'artifacts archive does not exist' do
+        let(:build) { create(:ci_build) }
+
+        it { is_expected.to be_falsy }
+      end
+
+      context 'artifacts archive exists' do
+        it { is_expected.to be_truthy }
+
+        context 'is expired' do
+          let!(:build) { create(:ci_build, :legacy_artifacts, :expired) }
+
+          it { is_expected.to be_falsy }
+        end
+
+        context 'is not expired' do
+          it { is_expected.to be_truthy }
+        end
       end
     end
   end
@@ -626,71 +654,144 @@ describe Ci::Build do
 
       describe '#erasable?' do
         subject { build.erasable? }
+
         it { is_expected.to eq false }
       end
     end
 
     context 'build is erasable' do
-      let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
-
-      describe '#erase' do
-        before do
-          build.erase(erased_by: user)
-        end
-
-        context 'erased by user' do
-          let!(:user) { create(:user, username: 'eraser') }
-
-          include_examples 'erasable'
-
-          it 'records user who erased a build' do
-            expect(build.erased_by).to eq user
-          end
-        end
-
-        context 'erased by system' do
-          let(:user) { nil }
-
-          include_examples 'erasable'
-
-          it 'does not set user who erased a build' do
-            expect(build.erased_by).to be_nil
-          end
-        end
-      end
-
-      describe '#erasable?' do
-        subject { build.erasable? }
-        it { is_expected.to be_truthy }
-      end
-
-      describe '#erased?' do
+      context 'new artifacts' do
         let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
-        subject { build.erased? }
-
-        context 'job has not been erased' do
-          it { is_expected.to be_falsey }
-        end
-
-        context 'job has been erased' do
-          before do
-            build.erase
-          end
-
-          it { is_expected.to be_truthy }
-        end
-      end
-
-      context 'metadata and build trace are not available' do
-        let!(:build) { create(:ci_build, :success, :artifacts) }
-
-        before do
-          build.remove_artifacts_metadata!
-        end
 
         describe '#erase' do
-          it 'does not raise error' do
-            expect { build.erase }.not_to raise_error
+          before do
+            build.erase(erased_by: user)
+          end
+
+          context 'erased by user' do
+            let!(:user) { create(:user, username: 'eraser') }
+
+            include_examples 'erasable'
+
+            it 'records user who erased a build' do
+              expect(build.erased_by).to eq user
+            end
+          end
+
+          context 'erased by system' do
+            let(:user) { nil }
+
+            include_examples 'erasable'
+
+            it 'does not set user who erased a build' do
+              expect(build.erased_by).to be_nil
+            end
+          end
+        end
+
+        describe '#erasable?' do
+          subject { build.erasable? }
+          it { is_expected.to be_truthy }
+        end
+
+        describe '#erased?' do
+          let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
+          subject { build.erased? }
+
+          context 'job has not been erased' do
+            it { is_expected.to be_falsey }
+          end
+
+          context 'job has been erased' do
+            before do
+              build.erase
+            end
+
+            it { is_expected.to be_truthy }
+          end
+        end
+
+        context 'metadata and build trace are not available' do
+          let!(:build) { create(:ci_build, :success, :artifacts) }
+
+          before do
+            build.remove_artifacts_metadata!
+          end
+
+          describe '#erase' do
+            it 'does not raise error' do
+              expect { build.erase }.not_to raise_error
+            end
+          end
+        end
+      end
+    end
+
+    context 'old artifacts' do
+      context 'build is erasable' do
+        context 'new artifacts' do
+          let!(:build) { create(:ci_build, :trace, :success, :legacy_artifacts) }
+
+          describe '#erase' do
+            before do
+              build.erase(erased_by: user)
+            end
+
+            context 'erased by user' do
+              let!(:user) { create(:user, username: 'eraser') }
+
+              include_examples 'erasable'
+
+              it 'records user who erased a build' do
+                expect(build.erased_by).to eq user
+              end
+            end
+
+            context 'erased by system' do
+              let(:user) { nil }
+
+              include_examples 'erasable'
+
+              it 'does not set user who erased a build' do
+                expect(build.erased_by).to be_nil
+              end
+            end
+          end
+
+          describe '#erasable?' do
+            subject { build.erasable? }
+            it { is_expected.to be_truthy }
+          end
+
+          describe '#erased?' do
+            let!(:build) { create(:ci_build, :trace, :success, :legacy_artifacts) }
+            subject { build.erased? }
+
+            context 'job has not been erased' do
+              it { is_expected.to be_falsey }
+            end
+
+            context 'job has been erased' do
+              before do
+                build.erase
+              end
+
+              it { is_expected.to be_truthy }
+            end
+          end
+
+          context 'metadata and build trace are not available' do
+            let!(:build) { create(:ci_build, :success, :legacy_artifacts) }
+
+            before do
+              build.remove_artifacts_metadata!
+            end
+
+            describe '#erase' do
+              it 'does not raise error' do
+                expect { build.erase }.not_to raise_error
+              end
+            end
           end
         end
       end
@@ -936,9 +1037,9 @@ describe Ci::Build do
   describe '#merge_request' do
     def create_mr(build, pipeline, factory: :merge_request, created_at: Time.now)
       create(factory, source_project: pipeline.project,
-                      target_project: pipeline.project,
-                      source_branch: build.ref,
-                      created_at: created_at)
+             target_project: pipeline.project,
+             source_branch: build.ref,
+             created_at: created_at)
     end
 
     context 'when a MR has a reference to the pipeline' do
@@ -1237,7 +1338,7 @@ describe Ci::Build do
     context 'when `when` is undefined' do
       before do
         build.when = nil
-      end
+        end
 
       context 'use from gitlab-ci.yml' do
         let(:pipeline) { create(:ci_pipeline) }
@@ -1255,10 +1356,10 @@ describe Ci::Build do
         context 'when config does not have a questioned job' do
           let(:config) do
             YAML.dump({
-                        test_other: {
-                          script: 'Hello World'
-                        }
-                      })
+              test_other: {
+                script: 'Hello World'
+              }
+            })
           end
 
           it { is_expected.to eq('on_success') }
@@ -1267,18 +1368,18 @@ describe Ci::Build do
         context 'when config has `when`' do
           let(:config) do
             YAML.dump({
-                        test: {
-                          script: 'Hello World',
-                          when: 'always'
-                        }
-                      })
+              test: {
+                script: 'Hello World',
+                when: 'always'
+              }
+            })
           end
 
           it { is_expected.to eq('always') }
         end
       end
     end
-  end
+    end
 
   describe '#variables' do
     let(:container_registry_enabled) { false }
@@ -1352,10 +1453,10 @@ describe Ci::Build do
 
       let!(:environment) do
         create(:environment,
-          project: build.project,
-          name: 'production',
-          slug: 'prod-slug',
-          external_url: '')
+               project: build.project,
+               name: 'production',
+               slug: 'prod-slug',
+               external_url: '')
       end
 
       before do
@@ -1381,7 +1482,7 @@ describe Ci::Build do
 
         before do
           environment_variables <<
-            { key: 'CI_ENVIRONMENT_URL', value: url, public: true }
+          { key: 'CI_ENVIRONMENT_URL', value: url, public: true }
         end
 
         context 'when the URL was set from the job' do
@@ -1579,8 +1680,8 @@ describe Ci::Build do
 
       let!(:pipeline_schedule_variable) do
         create(:ci_pipeline_schedule_variable,
-          key: 'SCHEDULE_VARIABLE_KEY',
-          pipeline_schedule: pipeline_schedule)
+               key: 'SCHEDULE_VARIABLE_KEY',
+               pipeline_schedule: pipeline_schedule)
       end
 
       before do
@@ -1722,8 +1823,8 @@ describe Ci::Build do
         allow_any_instance_of(EE::Project)
           .to receive(:secret_variables_for)
           .with(ref: 'master', environment: nil) do
-            [create(:ci_variable, key: 'secret', value: 'value')]
-          end
+          [create(:ci_variable, key: 'secret', value: 'value')]
+        end
 
         allow_any_instance_of(EE::Ci::Pipeline)
           .to receive(:predefined_variables) { [pipeline_pre_var] }
