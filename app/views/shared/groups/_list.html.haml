@@ -1,6 +1,7 @@
-- user = local_assigns.fetch(:user, current_user)
-
 - if groups.any?
+  - user = local_assigns.fetch(:user, current_user)
+  - user.max_member_access_for_group_ids(groups.map(&:id))
+
   %ul.content-list
     - groups.each_with_index do |group, i|
       = render "shared/groups/group", group: group, user: user

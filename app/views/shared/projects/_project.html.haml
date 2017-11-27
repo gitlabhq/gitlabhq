@@ -4,7 +4,7 @@
 - ci = false unless local_assigns[:ci] == true
 - skip_namespace = false unless local_assigns[:skip_namespace] == true
 - user = local_assigns[:user]
-- access = project.team.max_member_access(user.id) unless user.nil?
+- access = user&.max_member_access_for_project(project.id) unless user.nil?
 - css_class = '' unless local_assigns[:css_class]
 - show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true && project.commit
 - css_class += " no-description" if project.description.blank? && !show_last_commit_as_description
@@ -31,7 +31,7 @@
             %span.project-name
               = project.name
 
-        - if access && access.nonzero?
+        - if access&.nonzero?
           %span.user-access-role= Gitlab::Access.human_access(access)
 
       - if show_last_commit_as_description

@@ -1144,6 +1144,34 @@ class User < ActiveRecord::Base
     super
   end
 
+  # Determine the maximum access level for a group of projects in bulk.
+  #
+  # Returns a Hash mapping project ID -> maximum access level.
+  def max_member_access_for_project_ids(projects_ids)
+    max_member_access_for_resource_ids(Project, projects_ids) do
+      project_authorizations.where(project: projects_ids)
+                            .group(:project_id)
+                            .maximum(:access_level)
+    end
+  end
+
+  def max_member_access_for_project(project_id)
+    max_member_access_for_project_ids([project_id])[project_id]
+  end
+
+  # Determine the maximum access level for a group of groups in bulk.
+  #
+  # Returns a Hash mapping project ID -> maximum access level.
+  def max_member_access_for_group_ids(groups_ids)
+    max_member_access_for_resource_ids(Group, groups_ids) do
+      group_members.where(source: groups_ids).group(:source_id).maximum(:access_level)
+    end
+  end
+
+  def max_member_access_for_group(group_id)
+    max_member_access_for_group_ids([group_id])[group_id]
+  end
+
   protected
 
   # override, from Devise::Validatable
@@ -1276,5 +1304,38 @@ class User < ActiveRecord::Base
     user
   ensure
     Gitlab::ExclusiveLease.cancel(lease_key, uuid)
+  end
+
+  # Determine the maximum access level for a group of resources in bulk.
+  #
+  # Returns a Hash mapping resource ID -> maximum access level.
+  def max_member_access_for_resource_ids(resource_klass, resource_ids, &block)
+    raise 'Block is mandatory' unless block_given?
+
+    resource_ids = resource_ids.uniq
+    key = "max_member_access_for_#{resource_klass.name.underscore.pluralize}:#{self.id}"
+    access = {}
+
+    if RequestStore.active?
+      RequestStore.store[key] ||= {}
+      access = RequestStore.store[key]
+    end
+
+    # Look up only the IDs we need
+    resource_ids = resource_ids - access.keys
+
+    return access if resource_ids.empty?
+
+    resource_access = yield
+
+    access.merge!(resource_access)
+
+    missing_resource_ids = resource_ids - resource_access.keys
+
+    missing_resource_ids.each do |resource_id|
+      access[resource_id] = Gitlab::Access::NO_ACCESS
+    end
+
+    access
   end
 end

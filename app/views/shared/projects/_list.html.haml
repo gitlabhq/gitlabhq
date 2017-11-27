@@ -8,10 +8,12 @@
 - user = local_assigns[:user]
 - show_last_commit_as_description = false unless local_assigns[:show_last_commit_as_description] == true
 - remote = false unless local_assigns[:remote] == true
-- load_pipeline_status(projects)
 
 .js-projects-list-holder
   - if any_projects?(projects)
+    - load_pipeline_status(projects)
+    - user&.max_member_access_for_project_ids(projects.map(&:id))
+
     %ul.projects-list
       - projects.each_with_index do |project, i|
         - css_class = (i >= projects_limit) || project.pending_delete? ? 'hide' : nil
