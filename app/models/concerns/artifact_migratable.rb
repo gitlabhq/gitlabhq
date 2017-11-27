@@ -6,10 +6,6 @@ module ArtifactMigratable
     job_archive&.file || legacy_artifacts_file
   end
 
-  def artifacts_file?
-    job_archive&.file? || legacy_artifacts_file?
-  end
-
   def artifacts_metadata
     job_metadata&.file || legacy_artifacts_metadata
   end

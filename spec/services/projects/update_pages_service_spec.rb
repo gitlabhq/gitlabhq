@@ -39,7 +39,7 @@ describe Projects::UpdatePagesService do
             it "doesn't delete artifacts" do
               expect(execute).to eq(:success)
 
-              expect(build.reload.artifacts_file?).to eq(true)
+              expect(build.reload.artifacts?).to eq(true)
             end
           end
 
@@ -47,7 +47,7 @@ describe Projects::UpdatePagesService do
             it "does delete artifacts" do
               expect(execute).to eq(:success)
 
-              expect(build.reload.artifacts_file?).to eq(false)
+              expect(build.reload.artifacts?).to eq(false)
             end
           end
         end
@@ -110,7 +110,7 @@ describe Projects::UpdatePagesService do
           it "doesn't delete artifacts" do
             expect(execute).to eq(:success)
 
-            expect(build.artifacts_file?).to eq(true)
+            expect(build.artifacts?).to eq(true)
           end
         end
 
@@ -118,7 +118,7 @@ describe Projects::UpdatePagesService do
           it "does delete artifacts" do
             expect(execute).to eq(:success)
 
-            expect(build.reload.artifacts_file?).to eq(false)
+            expect(build.reload.artifacts?).to eq(false)
           end
         end
       end
