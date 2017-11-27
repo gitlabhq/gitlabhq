@@ -55,19 +55,8 @@ module API
       def find_group_projects(params)
         group = find_group!(params[:id])
         projects = GroupProjectsFinder.new(group: group, current_user: current_user, params: project_finder_params).execute
-        projects = projects.preload(:project_feature, :route, :group)
-                           .preload(namespace: [:route, :owner],
-                                    tags: :taggings,
-                                    project_group_links: :group,
-                                    fork_network: :root_project,
-                                    forked_project_link: :forked_from_project,
-                                    forked_from_project: [:route, :forks, namespace: :route, tags: :taggings])
         projects = reorder_projects(projects)
-        projects = paginate(projects)
-        projects_with_forks = projects + projects.map(&:forked_from_project).compact
-        ::Projects::BatchForksCountService.new(projects_with_forks).refresh_cache
-        ::Projects::BatchOpenIssuesCountService.new(projects).refresh_cache
-        projects
+        paginate(projects)
       end
 
       def present_groups(params, groups)
@@ -190,7 +179,8 @@ module API
       get ":id/projects" do
         projects = find_group_projects(params)
         entity = params[:simple] ? Entities::BasicProjectDetails : Entities::Project
-        present projects, with: entity, current_user: current_user
+
+        present entity.prepare_relation(projects), with: entity, current_user: current_user
       end
 
       desc 'Get a list of subgroups in this group.' do

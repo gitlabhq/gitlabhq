@@ -94,7 +94,13 @@ module API
         project.avatar_url(only_path: false)
       end
       expose :star_count, :forks_count
-      expose :last_activity_at
+      expose :created_at, :last_activity_at
+
+      def self.preload_relation(projects_relation)
+        projects_relation.preload(:project_feature, :route)
+                         .preload(namespace: [:route, :owner],
+                                  tags: :taggings)
+      end
     end
 
     class Project < BasicProjectDetails
@@ -127,6 +133,18 @@ module API
 
         expose :members do |project|
           expose_url(api_v4_projects_members_path(id: project.id))
+        end
+
+        def self.preload_relation(projects_relation)
+          super(projects_relation).preload(:group)
+                                  .preload(project_group_links: :group,
+                                           fork_network: :root_project,
+                                           forked_project_link: :forked_from_project,
+                                           forked_from_project: [:route, :forks, namespace: :route, tags: :taggings])
+        end
+
+        def self.forks_counting_projects(projects_relation)
+          projects_relation + projects_relation.map(&:forked_from_project).compact
         end
       end
 
@@ -635,9 +653,16 @@ module API
     class MemberAccess < Grape::Entity
       expose :access_level
       expose :notification_level do |member, options|
-        if member.notification_setting
-          ::NotificationSetting.levels[member.notification_setting.level]
-        end
+        notification = member_notification_setting(member)
+        ::NotificationSetting.levels[notification.level] if notification
+      end
+
+      private
+
+      def member_notification_setting(member)
+        member.user.notification_settings.select do |notification|
+          notification.source_id == member.source_id && notification.source_type == member.source_type
+        end.last
       end
     end
 
@@ -680,18 +705,21 @@ module API
       expose :permissions do
         expose :project_access, using: Entities::ProjectAccess do |project, options|
           if options.key?(:project_members)
-            (options[:project_members] || []).find { |member| member.source_id == project.id }
-          else
-            project.project_members.find_by(user_id: options[:current_user].id)
+            (options[:project_members] || []).select { |member| member.source_id == project.id }.last
+          elsif project.project_members.any?
+            # This is not the bet option to search in a CollectionProxy, but if
+            # we use find_by we will perform another query, even if the association
+            # is loaded
+            project.project_members.select { |project_member| project_member.user_id == options[:current_user].id }.last
           end
         end
 
         expose :group_access, using: Entities::GroupAccess do |project, options|
           if project.group
             if options.key?(:group_members)
-              (options[:group_members] || []).find { |member| member.source_id == project.namespace_id }
-            else
-              project.group.group_members.find_by(user_id: options[:current_user].id)
+              (options[:group_members] || []).select { |member| member.source_id == project.namespace_id }.last
+            elsif project.group.group_members.any?
+              project.group.group_members.select { |group_member| group_member.user_id == options[:current_user].id }.last
             end
           end
         end
