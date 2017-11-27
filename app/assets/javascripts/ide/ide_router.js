@@ -22,79 +22,88 @@ Vue.use(VueRouter);
 
  */
 
+// Unfortunately Vue Router doesn't work without at least a fake component
+// If you do only data handling
+const FooRouterComponent = {
+  template: '<div>foo</div>',
+};
+
 const router = new VueRouter({
   mode: 'history',
   base: '/-/ide/',
   routes: [
     {
       path: '/project/:namespace/:project',
-      beforeEnter: (to, from, next) => {
-        console.log('To Project : ' + JSON.stringify(to.params));
-
-        store.dispatch('getProjectData', {
-          namespace: to.params.namespace,
-          projectId: to.params.project,
-        }).then(() => {
-          next();
-        })
-        .catch(() => {
-          alert('ERROR LOADING PROJECT');
-          next(false);
-        });
-      },
-      component: () => {
-        // There is a bug in vue-router that if we wouldn't have here
-        // anything then beforeEnter wouldn't be called and also
-        // not the nested routes
-      },
+      component: FooRouterComponent,
       children: [
         {
-          path: 'edit/:branch',
-          beforeEnter: (to, from, next) => {
-            console.log('To File List : ', to.params);
-            store.dispatch('getBranchData', {
-              namespace: to.params.namespace,
-              projectId: to.params.project,
-              branch: to.params.branch,
-            });
-
-            if (!to.params[0]) {
-              // We are in the root of the tree
-              console.log('Load Branch Tree');
-              store.dispatch('getTreeData', {
-                namespace: to.params.namespace,
-                projectId: to.params.project,
-                branch: to.params.branch,
-                endpoint: `/${to.params.namespace}/${to.params.project}/tree/${to.params.branch}`,
-              });
-            }
-
-            next();
-          },
-          children: [
-            {
-              path: '*',
-              beforeEnter: (to, from, next) => {
-                console.log('To Selected File : ', to.params);
-                store.getters.getFile(`${to.params.namespace}/${to.params.project}/${to.params.branch}`);
-                // store.dispatch('getFileData', { url: `/${to.params.namespace}/${to.params.project}/tree/${to.params.branch}/${to.params[0]}` });
-                next(true);
-              },
-            },
-          ],
+          path: ':targetmode/:branch/*',
+          component: FooRouterComponent,
         },
         {
-          // UserPosts will be rendered inside User's <router-view>
-          // when /user/:id/posts is matched
           path: 'mr/:mrid',
-          beforeEnter: (to, from, next) => {
-            console.log('To MR : ', to.params);
-            next();
-          },
+          component: FooRouterComponent,
         },
       ],
     },
   ],
+});
+
+router.beforeEach((to, from, next) => {
+  console.log('BEFORE EACH : ',to);
+
+  store.dispatch('getProjectData', {
+    namespace: to.params.namespace,
+    projectId: to.params.project,
+  })
+  .then(() => {
+    if (to.params.branch) {
+      store.dispatch('getBranchData', {
+        namespace: to.params.namespace,
+        projectId: to.params.project,
+        branch: to.params.branch,
+      });
+
+      store.dispatch('getTreeData', {
+        namespace: to.params.namespace,
+        projectId: to.params.project,
+        branch: to.params.branch,
+        endpoint: `/${to.params.namespace}/${to.params.project}/tree/${to.params.branch}`,
+      })
+      .then(() => {
+        if (to.params[0]) {
+        const treeEntry = store.getters.getTreeEntry(`${to.params.namespace}/${to.params.project}/${to.params.branch}`, to.params[0]);
+          if (treeEntry) {
+            console.log('To Selected File : ', to.params, '/', treeEntry.url);
+            store.dispatch('handleTreeEntryAction', treeEntry);
+          }
+        } else {
+          throw (new Error(`Tree entry for ${to.params[0]} doesn't exist`));
+        }
+      })
+      .catch((e) => {
+        debugger;
+        //next(false);
+      });
+
+      if (!to.params[0]) {
+        // We are in the root of the tree
+        console.log('Load Branch Tree');
+      } else {
+        
+      }
+    }
+  })
+  .catch((e) => {
+    debugger;
+    //next(false);
+  });
+
+  next();
+});
+
+router.onError((err) => {
+  debugger;
 });
 
 export default router;

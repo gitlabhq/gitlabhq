@@ -75,7 +75,6 @@
     "vue-router": "^3.0.1",
     "vue-template-compiler": "^2.5.8",
     "vuex": "^3.0.1",
-    "vuex-persistedstate": "^2.4.2",
     "webpack": "^3.5.5",
     "webpack-bundle-analyzer": "^2.8.2",
     "webpack-stats-plugin": "^0.1.5",

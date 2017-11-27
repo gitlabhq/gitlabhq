@@ -17,10 +17,11 @@ export const treeList = state => (treeId) => {
   return [];
 };
 
-export const getFile = state => (treeId) => {
-  const fileList = treeList(state, treeId);
-  console.log('Files ', fileList);
-  // debugger;
+export const getTree = state => (namespace, projectId, branch) => state.trees[`${namespace}/${projectId}/${branch}`];
+
+export const getTreeEntry = (state, getters) => (treeId, path) => {
+  const fileList = getters.treeList(treeId);
+  return fileList.find(file => file.path === path);
 };
 
 export const changedFiles = state => state.openFiles.filter(file => file.changed);
@@ -32,7 +33,7 @@ export const activeFileExtension = (state) => {
   return file ? `.${file.path.split('.').pop()}` : '';
 };
 
-export const isCollapsed = state => !!state.openFiles.length;
+export const isCollapsed = state => true; // !!state.openFiles.length;
 
 export const canEditFile = (state) => {
   const currentActiveFile = activeFile(state);
