@@ -270,6 +270,9 @@ import initGroupAnalytics from './init_group_analytics';
           new DueDateSelectors();
           new GLForm($('.milestone-form'), false);
           break;
+        case 'groups:epics:show':
+          new ZenMode();
+          break;
         case 'projects:compare:show':
           new Diff();
           const paddingTop = 16;

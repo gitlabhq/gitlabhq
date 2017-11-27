@@ -37,6 +37,13 @@ feature 'Update Epic', :js do
       expect(find('.issuable-details .description')).to have_content('New epic description')
     end
 
+    it 'edits full screen' do
+      find('.btn-edit').click
+      find('.js-zen-enter').click
+
+      expect(page).to have_selector('.div-dropzone-wrapper.fullscreen')
+    end
+
     # File attachment feature is not implemented yet for epics
     it 'cannot attach files' do
       find('.btn-edit').click
