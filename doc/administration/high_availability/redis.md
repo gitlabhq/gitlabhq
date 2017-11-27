@@ -336,13 +336,11 @@ The prerequisites for a HA Redis setup are the following:
     #redis['master_port'] = 6379
     ```
 
-1. To prevent database migrations from running on upgrade, run:
+1. To prevent reconfigure from running automatically on upgrade, run:
 
     ```
     sudo touch /etc/gitlab/skip-auto-migrations
     ```
-
-    Only the primary GitLab application server should handle migrations.
 
 1. [Reconfigure Omnibus GitLab][reconfigure] for the changes to take effect.
 1. Go through the steps again for all the other slave nodes.
