@@ -12,6 +12,9 @@
   />
 
 */
+  // only allow classes in images.scss e.g. s12
+  const validSizes = [8, 12, 16, 18, 24, 32, 48, 72];
+
   export default {
     props: {
       name: {
@@ -22,7 +25,10 @@
       size: {
         type: Number,
         required: false,
-        default: 0,
+        default: 16,
+        validator(value) {
+          return validSizes.includes(value);
+        },
       },
 
       cssClasses: {
@@ -42,10 +48,11 @@
     },
   };
 </script>
+
 <template>
   <svg
     :class="[iconSizeClass, cssClasses]">
-    <use 
+    <use
       v-bind="{'xlink:href':spriteHref}"/>
   </svg>
 </template>
