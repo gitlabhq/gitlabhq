@@ -193,7 +193,7 @@ will not be able to perform all necessary configuration steps. Refer to
     postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
 
     # Replication settings
-    # New for 9.4: Set this to be the number of Geo secondary nodes you have
+    # Since 9.4: Set this to be the number of Geo secondary nodes you have
     postgresql['max_replication_slots'] = 1
     # postgresql['max_wal_senders'] = 10
     # postgresql['wal_keep_segments'] = 10
@@ -234,7 +234,7 @@ will not be able to perform all necessary configuration steps. Refer to
 
     [Reconfigure GitLab][reconfigure GitLab] again. It should complete cleanly.
 
-1. New for 9.4: Restart your primary PostgreSQL server to ensure the
+1. Since 9.4: Restart your primary PostgreSQL server to ensure the
    replication slot changes take effect (`sudo gitlab-ctl restart postgresql`
    for Omnibus-provided PostgreSQL).
 
