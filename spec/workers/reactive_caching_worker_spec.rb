@@ -5,7 +5,7 @@ describe ReactiveCachingWorker do
   subject { described_class.new.perform("KubernetesService", service.id) }
 
   describe '#perform' do
-    shared_examples 'correct behavior with perform' do
+    shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
       it 'calls #exclusively_update_reactive_cache!' do
         expect_any_instance_of(KubernetesService).to receive(:exclusively_update_reactive_cache!)
 
@@ -16,14 +16,14 @@ describe ReactiveCachingWorker do
     context 'when user configured kubernetes from Integration > Kubernetes' do
       let(:project) { create(:kubernetes_project) }
 
-      it_behaves_like 'correct behavior with perform'
+      it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
     end
 
     context 'when user configured kubernetes from CI/CD > Clusters' do
       let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
       let(:project) { cluster.project }
 
-      it_behaves_like 'correct behavior with perform'
+      it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
     end
   end
 end

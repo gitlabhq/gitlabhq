@@ -557,7 +557,7 @@ describe Ci::Pipeline, :mailer do
 
   describe '#has_kubernetes_active?' do
     context 'when kubernetes is active' do
-      shared_examples 'correct behavior with has_kubernetes_active?' do
+      shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
         it 'returns true' do
           expect(pipeline).to have_kubernetes_active
         end
@@ -566,14 +566,14 @@ describe Ci::Pipeline, :mailer do
       context 'when user configured kubernetes from Integration > Kubernetes' do
         let(:project) { create(:kubernetes_project) }
 
-        it_behaves_like 'correct behavior with has_kubernetes_active?'
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
 
       context 'when user configured kubernetes from CI/CD > Clusters' do
         let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
         let(:project) { cluster.project }
 
-        it_behaves_like 'correct behavior with has_kubernetes_active?'
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
     end
 

@@ -178,7 +178,7 @@ module Gitlab
           end
 
           context 'when kubernetes is active' do
-            shared_examples 'correct behavior for kubernetes policy' do
+            shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
               it 'returns seeds for kubernetes dependent job' do
                 seeds = subject.stage_seeds(pipeline)
 
@@ -192,7 +192,7 @@ module Gitlab
               let(:project) { create(:kubernetes_project) }
               let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
-              it_behaves_like 'correct behavior for kubernetes policy'
+              it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
             end
 
             context 'when user configured kubernetes from CI/CD > Clusters' do
@@ -200,7 +200,7 @@ module Gitlab
               let(:project) { cluster.project }
               let(:pipeline) { create(:ci_empty_pipeline, project: project) }
 
-              it_behaves_like 'correct behavior for kubernetes policy'
+              it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
             end
           end
 

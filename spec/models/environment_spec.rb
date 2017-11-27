@@ -327,7 +327,7 @@ describe Environment do
 
     context 'when the enviroment is available' do
       context 'with a deployment service' do
-        shared_examples 'correct behavior for has_terminals?' do
+        shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
           context 'and a deployment' do
             let!(:deployment) { create(:deployment, environment: environment) }
             it { is_expected.to be_truthy }
@@ -341,14 +341,14 @@ describe Environment do
         context 'when user configured kubernetes from Integration > Kubernetes' do
           let(:project) { create(:kubernetes_project) }
 
-          it_behaves_like 'correct behavior for has_terminals?'
+          it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
         end
 
         context 'when user configured kubernetes from CI/CD > Clusters' do
           let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
           let(:project) { cluster.project }
 
-          it_behaves_like 'correct behavior for has_terminals?'
+          it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
         end
       end
 
@@ -376,7 +376,7 @@ describe Environment do
         allow(environment).to receive(:has_terminals?).and_return(true)
       end
 
-      shared_examples 'correct behavior on KubernetesService and Platform::Kubernetes' do
+      shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
         it 'returns the terminals from the deployment service' do
           expect(project.deployment_platform)
             .to receive(:terminals).with(environment)
@@ -389,14 +389,14 @@ describe Environment do
       context 'when user configured kubernetes from Integration > Kubernetes' do
         let(:project) { create(:kubernetes_project) }
 
-        it_behaves_like 'correct behavior on KubernetesService and Platform::Kubernetes'
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
 
       context 'when user configured kubernetes from CI/CD > Clusters' do
         let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
         let(:project) { cluster.project }
 
-        it_behaves_like 'correct behavior on KubernetesService and Platform::Kubernetes'
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
     end
 

@@ -4,7 +4,7 @@ describe 'Auto deploy' do
   let(:user) { create(:user) }
   let(:project) { create(:project, :repository) }
 
-  shared_examples 'correct behavior on KubernetesService and Platform::Kubernetes' do
+  shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
     context 'when no deployment service is active' do
       before do
         project.kubernetes_service.update!(active: false)
@@ -56,7 +56,7 @@ describe 'Auto deploy' do
       sign_in user
     end
 
-    it_behaves_like 'correct behavior on KubernetesService and Platform::Kubernetes'
+    it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
   end
 
   context 'when user configured kubernetes from CI/CD > Clusters' do
@@ -66,6 +66,6 @@ describe 'Auto deploy' do
       sign_in user
     end
 
-    it_behaves_like 'correct behavior on KubernetesService and Platform::Kubernetes'
+    it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
   end
 end
