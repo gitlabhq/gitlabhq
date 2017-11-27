@@ -134,6 +134,7 @@ module Clusters
         kubeclient.get_pods(namespace: actual_namespace).as_json
       rescue KubeException => err
         raise err unless err.error_code == 404
+
         []
       end
 

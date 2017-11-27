@@ -225,7 +225,7 @@ feature 'Environments page', :js do
               end
             end
           end
-          
+
           context 'when user configured kubernetes from Integration > Kubernetes' do
             let(:project) { create(:kubernetes_project, :test_repo) }
 
