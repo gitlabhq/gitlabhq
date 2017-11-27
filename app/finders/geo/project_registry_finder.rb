@@ -42,7 +42,7 @@ module Geo
     # FDW accessors
     #
 
-     # @return [ActiveRecord::Relation<Geo::Fdw::Project>]
+    # @return [ActiveRecord::Relation<Geo::Fdw::Project>]
     def fdw_find_unsynced_projects
       fdw_table = Geo::Fdw::Project.table_name
 
@@ -50,7 +50,7 @@ module Geo
         .where('project_registry.project_id IS NULL')
     end
 
-     # @return [ActiveRecord::Relation<Geo::Fdw::Project>]
+    # @return [ActiveRecord::Relation<Geo::Fdw::Project>]
     def fdw_find_projects_updated_recently
       fdw_table = Geo::Fdw::Project.table_name
 
