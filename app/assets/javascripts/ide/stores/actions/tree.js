@@ -14,38 +14,49 @@ import router from '../../ide_router';
 export const getTreeData = (
   { commit, state, dispatch },
   { endpoint = state.endpoints.rootEndpoint, tree = null, namespace, projectId, branch } = {},
-) => {
-  if (tree) commit(types.TOGGLE_LOADING, tree);
-
-  service.getTreeData(endpoint)
-    .then((res) => {
-      const pageTitle = decodeURI(normalizeHeaders(res.headers)['PAGE-TITLE']);
-
-      setPageTitle(pageTitle);
-
-      return res.json();
-    })
-    .then((data) => {
-      if (!state.isInitialRoot) {
-        commit(types.SET_ROOT, data.path === '/');
-      }
-
-      dispatch('updateDirectoryData', { data, tree, namespace, projectId, branch });
-      commit(types.SET_PARENT_TREE_URL, data.parent_tree_url);
-      commit(types.SET_LAST_COMMIT_URL, { tree, url: data.last_commit_path });
-      if (tree) commit(types.TOGGLE_LOADING, tree);
-
-      const prevLastCommitPath = tree.lastCommitPath;
-      if (prevLastCommitPath !== null) {
-        dispatch('getLastCommitData', tree);
-      }
-      console.log('Loaded Tree');
-    })
-    .catch(() => {
-      flash('Error loading tree data. Please try again.');
-      if (tree) commit(types.TOGGLE_LOADING, tree);
-    });
-};
+) => new Promise((resolve, reject) => {
+  // We already have the base tree so we resolve immediately
+  if (!tree && state.trees[`${namespace}/${projectId}/${branch}`]) {
+    resolve();
+  } else {
+    if (tree) commit(types.TOGGLE_LOADING, tree);
+    service.getTreeData(endpoint)
+      .then((res) => {
+        const pageTitle = decodeURI(normalizeHeaders(res.headers)['PAGE-TITLE']);
+  
+        setPageTitle(pageTitle);
+  
+        return res.json();
+      })
+      .then((data) => {
+        if (!state.isInitialRoot) {
+          commit(types.SET_ROOT, data.path === '/');
+        }
+  
+        dispatch('updateDirectoryData', { data, tree, namespace, projectId, branch });
+        if (!tree) {
+          // If there was no tree given one was just created
+          tree = state.trees[`${namespace}/${projectId}/${branch}`];
+        }
+  
+        commit(types.SET_PARENT_TREE_URL, data.parent_tree_url);
+        commit(types.SET_LAST_COMMIT_URL, { tree, url: data.last_commit_path });
+        if (tree) commit(types.TOGGLE_LOADING, tree);
+  
+        const prevLastCommitPath = tree.lastCommitPath;
+        if (prevLastCommitPath !== null) {
+          dispatch('getLastCommitData', tree);
+        }
+        console.log('Loaded Tree');
+        resolve(data);
+      })
+      .catch((e) => {
+        flash('Error loading tree data. Please try again.');
+        if (tree) commit(types.TOGGLE_LOADING, tree);
+        reject(e);
+      });
+  }
+});
 
 export const toggleTreeOpen = ({ commit, dispatch }, { endpoint, tree }) => {
   if (tree.opened) {
@@ -64,7 +75,7 @@ export const toggleTreeOpen = ({ commit, dispatch }, { endpoint, tree }) => {
   commit(types.TOGGLE_TREE_OPEN, tree);
 };
 
-export const clickedTreeRow = ({ commit, dispatch }, row) => {
+export const handleTreeEntryAction = ({ commit, dispatch }, row) => {
   if (row.type === 'tree') {
     dispatch('toggleTreeOpen', {
       endpoint: row.url,
@@ -72,16 +83,12 @@ export const clickedTreeRow = ({ commit, dispatch }, row) => {
     });
   } else if (row.type === 'submodule') {
     commit(types.TOGGLE_LOADING, row);
-
-    //gl.utils.visitUrl(row.url);
-  } else {
-
-  }
-  /*else if (row.type === 'blob' && row.opened) {
+    gl.utils.visitUrl(row.url);
+  } else if (row.type === 'blob' && row.opened) {
     dispatch('setFileActive', row);
   } else {
     dispatch('getFileData', row);
-  }*/
+  }
 };
 
 export const createTempTree = ({ state, commit, dispatch }, name) => {
@@ -144,7 +151,10 @@ export const getLastCommitData = ({ state, commit, dispatch, getters }, tree = s
     .catch(() => flash('Error fetching log data.'));
 };
 
-export const updateDirectoryData = ({ commit, state }, { data, tree, namespace, projectId, branch }) => {
+export const updateDirectoryData = (
+  { commit, state },
+  { data, tree, namespace, projectId, branch }
+) => {
   if (!tree) {
     const existingTree = state.trees[`${namespace}/${projectId}/${branch}`];
     if (!existingTree) {

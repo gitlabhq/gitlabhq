@@ -20,8 +20,8 @@ export default {
       },
     });
 
-    state.projects = Object.assign({}, state.projects, {
-      [projectPath]: state.projects[projectPath]
-    });
+    Object.assign(state.projects, Object.assign({}, state.projects, {
+      [projectPath]: state.projects[projectPath],
+    }));
   },
 };

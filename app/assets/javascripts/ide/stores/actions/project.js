@@ -5,9 +5,9 @@ import * as types from '../mutation_types';
 // eslint-disable-next-line import/prefer-default-export
 export const getProjectData = (
   { commit, state, dispatch },
-  { namespace, projectId } = {},
+  { namespace, projectId, enforce = false } = {},
 ) => new Promise((resolve, reject) => {
-  if (!state.projects[`${namespace}/${projectId}`]) {
+  if (!state.projects[`${namespace}/${projectId}`] || enforce) {
     console.log('Loading project exists ' + projectId);
     service.getProjectData(namespace, projectId)
     .then(res => res.data)

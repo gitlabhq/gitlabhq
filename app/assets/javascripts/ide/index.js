@@ -8,6 +8,7 @@ import newDropdown from './components/new_dropdown/index.vue';
 import store from './stores';
 import router from './ide_router';
 import Translate from '../vue_shared/translate';
+import ContextualSidebar from '../contextual_sidebar';
 
 function initIde(el) {
   if (!el) return null;
@@ -106,3 +107,8 @@ initIde(ide);
 initIdeEditButton(editButton);
 initNewBranchForm();
 initNewDropdown(newDropdownHolder);
+
+const contextualSidebar = new ContextualSidebar();
+contextualSidebar.bindEvents();
+
+new Sidebar()
