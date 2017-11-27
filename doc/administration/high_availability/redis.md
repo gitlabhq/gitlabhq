@@ -716,15 +716,11 @@ Before proceeding with the troubleshooting below, check your firewall rules:
 ### Troubleshooting Redis replication
 
 You can check if everything is correct by connecting to each server using
-`redis-cli` application, and sending the `INFO` command.
+`redis-cli` application, and sending the `info replication` command as below.
 
-If authentication was correctly defined, it should fail with:
-`NOAUTH Authentication required` error. Try to authenticate with the
-previous defined password with `AUTH redis-password-goes-here` and
-try the `INFO` command again.
-
-Look for the `# Replication` section where you should see some important
-information like the `role` of the server.
+```
+/opt/gitlab/embedded/bin/redis-cli -a <redis-password> info replication
+```
 
 When connected to a `master` redis, you will see the number of connected
 `slaves`, and a list of each with connection details:
