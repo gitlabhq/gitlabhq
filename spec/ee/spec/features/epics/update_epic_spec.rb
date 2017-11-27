@@ -69,7 +69,7 @@ feature 'Update Epic', :js do
 
       expect(page).to have_selector('ul input[checked]', count: 1)
     end
-    
+
     # Autocomplete is disabled for epics until #4084 is resolved
     describe 'autocomplete disabled' do
       it 'does not open atwho container' do
