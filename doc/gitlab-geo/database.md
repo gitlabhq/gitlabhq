@@ -161,8 +161,8 @@ will not be able to perform all necessary configuration steps. Refer to
     ```
 
     Depending on your network configuration, the primary and secondary may
-    connect over the public internet, a local area network, or a vitual
-    network connecting availability zones like Amazon's [Virtual Provate
+    connect over the public internet, a local area network, or a virtual
+    network connecting availability zones like Amazon's [Virtual Private
     Cloud](https://aws.amazon.com/vpc/). If you are using a local or virtual
     network use the interface IP address, otherwise use the public IP address.
 
@@ -183,13 +183,13 @@ will not be able to perform all necessary configuration steps. Refer to
     geo_primary_role['enable'] = true
 
     # Primary IP address
-    # - replace 1.2.3.4 with the primary interface IP address
+    # - replace '1.2.3.4' with the primary interface IP address
     postgresql['listen_address'] = '1.2.3.4'
     postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','1.2.3.4/32']
 
-    # Seconday IP addresses
-    # - local/virual networks: replace 5.6.7.8 with the secondary interface IP address
-    # - otherwise: replace 5.6.7.8 with the secondary public IP address
+    # Secondary IP addresses
+    # - local/virtual networks: replace '5.6.7.8' with the secondary interface IP address
+    # - otherwise: replace '5.6.7.8' with the secondary public IP address
     postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
 
     # Replication settings
@@ -201,7 +201,7 @@ will not be able to perform all necessary configuration steps. Refer to
 
     For external PostgreSQL instances, [see additional instructions][external postgresql].
     
-    The `listen_address` option opens PostgreSQL up to external connections
+    The `listen_address` option opens PostgreSQL up to network connections
     with the interface corresponding to the given IP. See [the PostgreSQL
     documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-connection.html)
     for more details.
