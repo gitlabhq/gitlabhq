@@ -129,26 +129,35 @@ describe Geo::RepositorySyncWorker, :geo do
 
     context 'unhealthy shards' do
       it 'skips backfill for repositories on unhealthy shards' do
-        unhealthy = create(:project, group: synced_group, repository_storage: 'broken')
+        unhealthy_not_synced = create(:project, group: synced_group, repository_storage: 'broken')
+        unhealthy_dirty = create(:project, group: synced_group, repository_storage: 'broken')
+
+        create(:geo_project_registry, :synced, :repository_dirty, project: unhealthy_dirty)
 
         # Make the shard unhealthy
-        FileUtils.rm_rf(unhealthy.repository_storage_path)
+        FileUtils.rm_rf(unhealthy_not_synced.repository_storage_path)
 
         expect(Geo::ProjectSyncWorker).to receive(:perform_async).with(project_in_synced_group.id, anything)
-        expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(unhealthy.id, anything)
+        expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(unhealthy_not_synced.id, anything)
+        expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(unhealthy_dirty.id, anything)
 
         Sidekiq::Testing.inline! { subject.perform }
       end
 
       it 'skips backfill for projects on missing shards' do
-        missing = create(:project, group: synced_group)
-        missing.update_column(:repository_storage, 'unknown')
+        missing_not_synced = create(:project, group: synced_group)
+        missing_not_synced.update_column(:repository_storage, 'unknown')
+        missing_dirty = create(:project, group: synced_group)
+        missing_dirty.update_column(:repository_storage, 'unknown')
+
+        create(:geo_project_registry, :synced, :repository_dirty, project: missing_dirty)
 
         # hide the 'broken' storage for this spec
         stub_storage_settings({})
 
         expect(Geo::ProjectSyncWorker).to receive(:perform_async).with(project_in_synced_group.id, anything)
-        expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(missing.id, anything)
+        expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(missing_not_synced.id, anything)
+        expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(missing_dirty.id, anything)
 
         Sidekiq::Testing.inline! { subject.perform }
       end
