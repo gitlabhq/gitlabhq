@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import store from '~/notes/stores';
 import awardsNote from '~/notes/components/issue_note_awards_list.vue';
-import { issueDataMock, notesDataMock } from '../mock_data';
+import { noteableDataMock, notesDataMock } from '../mock_data';
 
 describe('issue_note_awards_list component', () => {
   let vm;
@@ -10,7 +10,7 @@ describe('issue_note_awards_list component', () => {
   beforeEach(() => {
     const Component = Vue.extend(awardsNote);
 
-    store.dispatch('setIssueData', issueDataMock);
+    store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
     awardsMock = [
       {

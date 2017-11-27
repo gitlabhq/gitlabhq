@@ -24,7 +24,7 @@ describe('issue_note_app', () => {
 
     mountComponent = (data) => {
       const props = data || {
-        issueData: mockData.issueDataMock,
+        noteableData: mockData.noteableDataMock,
         notesData: mockData.notesDataMock,
         userData: mockData.userDataMock,
       };
@@ -60,7 +60,7 @@ describe('issue_note_app', () => {
     });
 
     it('should set issue data', () => {
-      expect(vm.$store.state.issueData).toEqual(mockData.issueDataMock);
+      expect(vm.$store.state.noteableData).toEqual(mockData.noteableDataMock);
     });
 
     it('should set user data', () => {
