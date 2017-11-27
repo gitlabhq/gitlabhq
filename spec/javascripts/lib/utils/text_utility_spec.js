@@ -21,9 +21,23 @@ describe('text_utility', () => {
     });
   });
 
+<<<<<<< HEAD
   describe('gl.text.pluralize', () => {
     it('returns pluralized', () => {
       expect(gl.text.pluralize('test', 2)).toBe('tests');
+=======
+  describe('capitalizeFirstCharacter', () => {
+    it('returns string with first letter capitalized', () => {
+      expect(textUtils.capitalizeFirstCharacter('gitlab')).toEqual('Gitlab');
+      expect(textUtils.highCountTrim(105)).toBe('99+');
+      expect(textUtils.highCountTrim(100)).toBe('99+');
+    });
+  });
+
+  describe('humanize', () => {
+    it('should remove underscores and uppercase the first letter', () => {
+      expect(textUtils.humanize('foo_bar')).toEqual('Foo bar');
+>>>>>>> f8de23e626... Merge branch 'backport-add-epic-sidebar' into 'master'
     });
 
     it('returns pluralized when count is 0', () => {

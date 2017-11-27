@@ -156,6 +156,7 @@ gl.text.moveCursor = function(textArea, tag, wrapped, removedLastNewLine) {
       pos -= 1;
     }
 
+<<<<<<< HEAD
     return textArea.setSelectionRange(pos, pos);
   }
 };
@@ -195,3 +196,14 @@ gl.text.dasherize = function(str) {
 gl.text.slugify = function(str) {
   return str.trim().toLowerCase().latinise();
 };
+=======
+/**
+ * Capitalizes first character
+ *
+ * @param {String} text
+ * @return {String}
+ */
+export function capitalizeFirstCharacter(text) {
+  return `${text[0].toUpperCase()}${text.slice(1)}`;
+}
+>>>>>>> f8de23e626... Merge branch 'backport-add-epic-sidebar' into 'master'
