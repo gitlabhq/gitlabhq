@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::ArtifactsController do
-  set(:user) { create(:user) }
+  let(:user) { project.owner }
   set(:project) { create(:project, :repository, :public) }
 
   let(:pipeline) do
@@ -15,8 +15,6 @@ describe Projects::ArtifactsController do
   let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
 
   before do
-    project.add_developer(user)
-
     sign_in(user)
   end
 
@@ -117,14 +115,12 @@ describe Projects::ArtifactsController do
 
     context 'when the file exists' do
       let(:path) { 'ci_artifacts.txt' }
-      let(:job) { create(:ci_build, :success, pipeline: pipeline) }
 
       shared_examples 'a valid file' do
-        let!(:artifact) { create(:ci_job_artifact, job: job, file_store: store) }
-
         it 'serves the file using workhorse' do
           subject
 
+          expect(response).to have_gitlab_http_status(200)
           expect(send_data).to start_with('artifacts-entry:')
 
           expect(params.keys).to eq(%w(Archive Entry))
@@ -148,8 +144,9 @@ describe Projects::ArtifactsController do
 
       context 'when using local file storage' do
         it_behaves_like 'a valid file' do
+          let(:job) { create(:ci_build, :success, :artifacts, pipeline: pipeline) }
           let(:store) { ObjectStoreUploader::LOCAL_STORE }
-          let(:archive_path) { LegacyArtifactUploader.local_store_path }
+          let(:archive_path) { JobArtifactUploader.local_store_path }
         end
       end
 
@@ -159,6 +156,8 @@ describe Projects::ArtifactsController do
         end
 
         it_behaves_like 'a valid file' do
+          let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: job) }
+          let!(:job) { create(:ci_build, :success, pipeline: pipeline) }
           let(:store) { ObjectStoreUploader::REMOTE_STORE }
           let(:archive_path) { 'https://' }
         end
