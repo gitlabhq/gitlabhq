@@ -9,9 +9,9 @@ class ClustersFinder
     clusters = case @scope
                when :all
                  project.clusters
-               when :disabled
-                 project.clusters.enabled
                when :enabled
+                 project.clusters.enabled
+               when :disabled
                  project.clusters.disabled
                end
     clusters.map { |cluster| cluster.present(current_user: @user) }
