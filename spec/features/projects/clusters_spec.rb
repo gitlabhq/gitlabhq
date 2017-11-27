@@ -120,7 +120,6 @@ feature 'Clusters', :js do
 
         context 'with sucessfull request' do
           it 'user sees updated cluster' do
-
           end
         end
 
