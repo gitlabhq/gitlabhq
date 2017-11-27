@@ -8,6 +8,7 @@ class Projects::ClustersController < Projects::ApplicationController
   before_action :authorize_admin_cluster!, only: [:destroy]
 
   def index
+    @clusters = Kaminari.paginate_array(@clusters).page(params[:page]).per(20)
     @active_count = project.clusters.enabled.count
     @inactive_count = project.clusters.disabled.count
     @all_count = @active_count + @inactive_count
