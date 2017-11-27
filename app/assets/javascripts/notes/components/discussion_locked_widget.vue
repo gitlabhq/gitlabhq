@@ -3,9 +3,9 @@
   import Issuable from '~/vue_shared/mixins/issuable';
 
   export default {
-    mixins: {
+    mixins: [
       Issuable,
-    },
+    ],
     components: {
       Icon,
     },
@@ -20,7 +20,7 @@
         :size="16"
         class="icon">
       </icon>
-      <span>This {{ issuableDisplayName } is locked. Only <b>project members</b> can comment.</span>
+      <span>This {{ issuableDisplayName }} is locked. Only <b>project members</b> can comment.</span>
      </span>
   </div>
 </template>
