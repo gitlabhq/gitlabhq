@@ -184,7 +184,7 @@ feature 'Clusters', :js do
             # Helm Tiller needs to be installed before you can install Ingress
             create(:cluster_applications_helm, :installed, cluster: cluster)
 
-            visit project_clusters_path(project)
+            visit project_cluster_path(project, cluster)
 
             page.within('.js-cluster-application-row-ingress') do
               page.find(:css, '.js-cluster-application-install-button').click
