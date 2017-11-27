@@ -151,6 +151,29 @@ namespace :geo do
     set_primary_geo_node
   end
 
+  desc 'Make this secondary node the primary'
+  task set_secondary_as_primary: :environment do
+    abort 'GitLab Geo is not supported with this license. Please contact sales@gitlab.com.' unless Gitlab::Geo.license_allows?
+
+    ActiveRecord::Base.transaction do
+      primary_node = Gitlab::Geo.primary_node
+
+      unless primary_node
+        abort 'The primary is not set'
+      end
+
+      primary_node.destroy
+
+      current_node = Gitlab::Geo.current_node
+
+      unless current_node.secondary?
+        abort 'This is not a secondary node'
+      end
+
+      current_node.update!(primary: true)
+    end
+  end
+
   def set_primary_geo_node
     params = {
       schema: Gitlab.config.gitlab.protocol,
