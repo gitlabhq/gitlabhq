@@ -229,7 +229,8 @@ module Gitlab
 
       def drop_temp_table_if_finished
         if UntrackedFile.all.empty?
-          UntrackedFile.connection.drop_table(:untracked_files_for_uploads)
+          UntrackedFile.connection.drop_table(:untracked_files_for_uploads,
+                                              if_exists: true)
         end
       end
     end
