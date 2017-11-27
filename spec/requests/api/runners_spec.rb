@@ -401,10 +401,10 @@ describe API::Runners do
         end
 
         context 'when invalid status is provided' do
-          it 'return 404' do
+          it 'return 400' do
             get api("/runners/#{specific_runner.id}/jobs?status=non-existing", admin)
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(400)
           end
         end
       end
@@ -454,10 +454,10 @@ describe API::Runners do
         end
 
         context 'when invalid status is provided' do
-          it 'return 404' do
+          it 'return 400' do
             get api("/runners/#{specific_runner.id}/jobs?status=non-existing", user)
 
-            expect(response).to have_gitlab_http_status(404)
+            expect(response).to have_gitlab_http_status(400)
           end
         end
       end
