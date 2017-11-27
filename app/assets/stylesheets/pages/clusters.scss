@@ -8,3 +8,9 @@
   // Wait for the Vue to kick-in and render the applications block
   min-height: 302px;
 }
+
+.clusters-container {
+  .nav-bar-right {
+    padding: $gl-padding-top $gl-padding;
+  }
+}

@@ -24,8 +24,8 @@ feature 'Clusters', :js do
         visit project_clusters_path(project)
       end
 
-      it 'user sees a new page' do
-        expect(page).to have_button('Add cluster')
+      it 'user sees empty state' do
+        expect(page).to have_link('Add cluster')
       end
 
       context 'when user opens opens create on gke page' do
@@ -99,7 +99,7 @@ feature 'Clusters', :js do
       end
 
       it 'user sees a disabled add cluster button ' do
-        expect(page.find(:css, '.js-add-cluster')['disabled']).to eq('true')
+        expect(page).to have_selector('.js-add-cluster.disabled')
       end
 
       it 'user sees navigation tabs' do
@@ -244,7 +244,7 @@ feature 'Clusters', :js do
     before do
       visit project_clusters_path(project)
 
-      click_button 'Add cluster'
+      click_link 'Add cluster'
       click_link 'Create on GKE'
     end
 

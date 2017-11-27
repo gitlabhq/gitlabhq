@@ -5,17 +5,12 @@ import { setTimeout } from 'core-js/library/web/timers';
 
 describe('Clusters table', () => {
   preloadFixtures('clusters/index_cluster.html.raw');
-  let ClustersClass;
   let mock;
 
   beforeEach(() => {
     loadFixtures('clusters/index_cluster.html.raw');
-    ClustersClass = new ClusterTable();
     mock = new MockAdapter(axios);
-  });
-
-  afterEach(() => {
-    ClustersClass.removeListeners();
+    return new ClusterTable();
   });
 
   describe('update cluster', () => {
@@ -39,11 +34,13 @@ describe('Clusters table', () => {
     it('shows updated state after sucessfull request', (done) => {
       mock.onPut().reply(200, {}, {});
       const button = document.querySelector('.js-toggle-cluster-list');
-
       button.click();
 
+      expect(button.classList).toContain('is-loading');
+
       setTimeout(() => {
-        expect(button.classList).toContain('is-loading');
+        expect(button.classList).not.toContain('is-loading');
+        expect(button.classList).not.toContain('checked');
         done();
       }, 0);
     });
@@ -53,9 +50,11 @@ describe('Clusters table', () => {
       const button = document.querySelector('.js-toggle-cluster-list');
 
       button.click();
+      expect(button.classList).toContain('is-loading');
 
       setTimeout(() => {
-        expect(button.classList).toContain('is-loading');
+        expect(button.classList).not.toContain('is-loading');
+        expect(button.classList).toContain('checked');
         done();
       }, 0);
     });

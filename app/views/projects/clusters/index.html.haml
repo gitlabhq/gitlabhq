@@ -1,60 +1,20 @@
-- if @clusters.empty?
-  = render "empty_state"
-- else
-  .top-area.scrolling-tabs-container.inner-page-scroll-tabs
-    .fade-left= icon("angle-left")
-    .fade-right= icon("angle-right")
-    %ul.nav-links.scrolling-tabs
-      %li
-        %a.js-active-tab
-          =s_("ClusterIntegration|Active")
-          %span.badge
-            TODO
+- breadcrumb_title "Clusters"
+- page_title "Clusters"
 
-      %li
-        %a.js-inactive-tab
-          = s_("ClusterIntegration|Inactive")
-          %span.badge
-            TODO
-      %li
-        %a.js-all-tab
-          = s_("ClusterIntegration|All")
-          %span.badge= @clusters_count
-    .nav-controls
-      = link_to s_('ClusterIntegration|Add cluster'), new_project_cluster_path(@project), class: "btn btn-success disabled has-tooltip js-add-cluster", title: s_("ClusterIntegration|Multiple clusters are available in GitLab Entreprise Edition Premium and Ultimate")
-  .ci-table.js-clusters-list
-    .gl-responsive-table-row.table-row-header{ role: 'row' }
-      .table-section.section-30{ role: 'rowheader' }
-        = s_('ClusterIntegration|Cluster')
-      .table-section.section-30{ role: 'rowheader' }
-        = s_('ClusterIntegration|Environment pattern')
-      .table-section.section-30{ role: 'rowheader' }
-        = s_('ClusterIntegration|Project namespace')
-      .table-section.section-10{ role: 'rowheader' }
-    - @clusters.each do |cluster|
-      .gl-responsive-table-row
-        .table-section.section-30
-          .table-mobile-header{ role: 'rowheader' }= s_('ClusterIntegration|Cluster')
-          .table-mobile-content
-            = link_to cluster.name, namespace_project_cluster_path(@project.namespace, @project, cluster)
-        .table-section.section-30
-          .table-mobile-header{ role: 'rowheader' }
-            = s_('ClusterIntegration|Environment pattern')
-          .table-mobile-content= cluster.environment_scope
-        .table-section.section-30
-          .table-mobile-header{ role: 'rowheader' }
-            = s_('ClusterIntegration|Project namespace')
-          .table-mobile-content
-            Content goes here - TODO
-        .table-section.section-10
-          .table-mobile-header{ role: 'rowheader' }
-          .table-mobile-content
-            %button{ type: 'button',
-              class: "js-toggle-cluster-list project-feature-toggle #{'checked' unless !cluster.enabled?} #{'disabled' unless can?(current_user, :update_cluster, cluster)}",
-              'aria-label': s_('ClusterIntegration|Toggle Cluster'),
-              disabled: !can?(current_user, :update_cluster, cluster),
-              data: { 'enabled-text': 'Enabled',
-                'disabled-text': 'Disabled',
-                endpoint: namespace_project_cluster_path(@project.namespace, @project, cluster, format: :json) } }
-              = icon('spinner spin', class: 'hidden loading-icon')
-
+.clusters-container
+  - if @clusters.empty?
+    = render "empty_state"
+  - else
+    = render "tabs"
+    .ci-table.js-clusters-list
+      .gl-responsive-table-row.table-row-header{ role: "row" }
+        .table-section.section-30{ role: "rowheader" }
+          = s_("ClusterIntegration|Cluster")
+        .table-section.section-30{ role: "rowheader" }
+          = s_("ClusterIntegration|Environment pattern")
+        .table-section.section-30{ role: "rowheader" }
+          = s_("ClusterIntegration|Project namespace")
+        .table-section.section-10{ role: "rowheader" }
+      - @clusters.each do |cluster|
+        = render "cluster", cluster: cluster
+    = paginate @clusters, theme: 'gitlab'

@@ -18,11 +18,11 @@ export default class ClusterTable {
     this.container = '.js-clusters-list';
     document.querySelectorAll(`${this.container} .js-toggle-cluster-list`).forEach(button => button.addEventListener('click', e => ClusterTable.updateCluster(e)));
   }
-
-  removeListeners() {
-    document.querySelectorAll(`${this.container} .js-toggle-cluster-list`).forEach(button => button.removeEventListener('click'));
-  }
-
+  /**
+   * When the toggle button is clicked,
+   * updates the status and makes a request to the API to update the cluster
+   * @param {Event} e
+   */
   static updateCluster(e) {
     const toggleButton = e.currentTarget;
     const value = toggleButton.classList.contains('checked').toString();
