@@ -103,7 +103,7 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def clusters
     scope = params[:scope] || :all
-    @clusters = ClustersFinder.new(project, user, scope).execute
+    @clusters = ClustersFinder.new(project, current_user, scope).execute
   end
 
   def create_params
