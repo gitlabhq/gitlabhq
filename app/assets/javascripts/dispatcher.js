@@ -509,6 +509,7 @@ import ProjectVariables from './project_variables';
           new BlobViewer();
           break;
         case 'profiles:custom_emoji:index':
+        case 'profiles:custom_emoji:create':
         case 'groups:settings:custom_emoji:index':
         case 'groups:settings:custom_emoji:create':
           setupBrowseFile();
