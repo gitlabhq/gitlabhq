@@ -13,10 +13,8 @@ module Gitlab
         delegate :last_failure, :failure_count, to: :failure_info
 
         def self.reset_all!
-          pattern = "#{Gitlab::Git::Storage::REDIS_KEY_PREFIX}*"
-
           Gitlab::Git::Storage.redis.with do |redis|
-            all_storage_keys = redis.scan_each(match: pattern).to_a
+            all_storage_keys = redis.zrange(Gitlab::Git::Storage::REDIS_KNOWN_KEYS, 0, -1)
             redis.del(*all_storage_keys) unless all_storage_keys.empty?
           end
 
@@ -135,21 +133,27 @@ module Gitlab
               redis.hset(cache_key, :last_failure, last_failure.to_i)
               redis.hincrby(cache_key, :failure_count, 1)
               redis.expire(cache_key, failure_reset_time)
+              maintain_known_keys(redis)
             end
           end
         end
 
         def track_storage_accessible
-          return if no_failures?
-
           @failure_info = FailureInfo.new(nil, 0)
 
           Gitlab::Git::Storage.redis.with do |redis|
             redis.pipelined do
               redis.hset(cache_key, :last_failure, nil)
               redis.hset(cache_key, :failure_count, 0)
+              maintain_known_keys(redis)
             end
           end
+        end
+
+        def maintain_known_keys(redis)
+          expire_time = Time.now.to_i + failure_reset_time
+          redis.zadd(Gitlab::Git::Storage::REDIS_KNOWN_KEYS, expire_time, cache_key)
+          redis.zremrangebyscore(Gitlab::Git::Storage::REDIS_KNOWN_KEYS, '-inf', Time.now.to_i)
         end
 
         def get_failure_info
