@@ -63,7 +63,6 @@ describe Geo::ProjectRegistryFinder, :geo, :truncate do
       end
 
       it 'returns projects with a dirty entry on the tracking database' do
-        project_not_synced = create(:project)
         project_repository_dirty = create(:project)
         project_wiki_dirty = create(:project)
 
