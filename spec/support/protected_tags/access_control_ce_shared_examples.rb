@@ -1,5 +1,5 @@
 RSpec.shared_examples "protected tags > access control > CE" do
-  ProtectedTag::CreateAccessLevel.human_access_levels.each do |(access_type_id, access_type_name)|
+  ProtectedRefAccess::HUMAN_ACCESS_LEVELS.each do |(access_type_id, access_type_name)|
     it "allows creating protected tags that #{access_type_name} can create" do
       visit project_protected_tags_path(project)
 

@@ -12,14 +12,18 @@ Prometheus::Client.configure do |config|
   end
 
   config.pid_provider = -> do
-    wid = Prometheus::Client::Support::Unicorn.worker_id
-    wid = Process.pid if wid.nil?
-    if wid.nil?
+    worker_id = Prometheus::Client::Support::Unicorn.worker_id
+    if worker_id.nil?
       "process_pid_#{Process.pid}"
     else
-      "worker_id_#{wid}"
+      "worker_id_#{worker_id}"
     end
   end
+end
+
+Gitlab::Application.configure do |config|
+  # 0 should be Sentry to catch errors in this middleware
+  config.middleware.insert(1, Gitlab::Metrics::RequestsRackMiddleware)
 end
 
 Sidekiq.configure_server do |config|

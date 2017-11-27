@@ -970,31 +970,33 @@ describe SystemNoteService do
     end
   end
 
-  describe '.remove_merge_request_wip' do
-    let(:noteable) { create(:issue, project: project, title: 'WIP: Lorem ipsum') }
+  describe '.handle_merge_request_wip' do
+    context 'adding wip note' do
+      let(:noteable) { create(:merge_request, source_project: project, title: 'WIP Lorem ipsum') }
 
-    subject { described_class.remove_merge_request_wip(noteable, project, author) }
+      subject { described_class.handle_merge_request_wip(noteable, project, author) }
 
-    it_behaves_like 'a system note' do
-      let(:action) { 'title' }
+      it_behaves_like 'a system note' do
+        let(:action) { 'title' }
+      end
+
+      it 'sets the note text' do
+        expect(subject.note).to eq 'marked as a **Work In Progress**'
+      end
     end
 
-    it 'sets the note text' do
-      expect(subject.note).to eq 'unmarked as a **Work In Progress**'
-    end
-  end
+    context 'removing wip note' do
+      let(:noteable) { create(:merge_request, source_project: project, title: 'Lorem ipsum') }
 
-  describe '.add_merge_request_wip' do
-    let(:noteable) { create(:issue, project: project, title: 'Lorem ipsum') }
+      subject { described_class.handle_merge_request_wip(noteable, project, author) }
 
-    subject { described_class.add_merge_request_wip(noteable, project, author) }
+      it_behaves_like 'a system note' do
+        let(:action) { 'title' }
+      end
 
-    it_behaves_like 'a system note' do
-      let(:action) { 'title' }
-    end
-
-    it 'sets the note text' do
-      expect(subject.note).to eq 'marked as a **Work In Progress**'
+      it 'sets the note text' do
+        expect(subject.note).to eq 'unmarked as a **Work In Progress**'
+      end
     end
   end
 

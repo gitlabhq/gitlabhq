@@ -588,12 +588,12 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe '#fetch_mirror' do
+  describe '#fetch_as_mirror_without_shell' do
     let(:new_repository) do
       Gitlab::Git::Repository.new('default', 'my_project.git', '')
     end
 
-    subject { new_repository.fetch_mirror(repository.path) }
+    subject { new_repository.fetch_as_mirror_without_shell(repository.path) }
 
     before do
       Gitlab::Shell.new.add_repository('default', 'my_project')
@@ -1211,12 +1211,21 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
 
     context 'when no branch names are specified' do
-      it 'returns all merged branch names' do
+      before do
+        repository.create_branch('identical', 'master')
+      end
+
+      after do
+        ensure_seeds
+      end
+
+      it 'returns all merged branch names except for identical one' do
         names = repository.merged_branch_names
 
         expect(names).to include('merge-test')
         expect(names).to include('fix-mode')
         expect(names).not_to include('feature')
+        expect(names).not_to include('identical')
       end
     end
   end
@@ -1643,15 +1652,15 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe '#fetch' do
+  describe '#fetch_remote_without_shell' do
     let(:git_path) { Gitlab.config.git.bin_path }
     let(:remote_name) { 'my_remote' }
 
-    subject { repository.fetch(remote_name) }
+    subject { repository.fetch_remote_without_shell(remote_name) }
 
     it 'fetches the remote and returns true if the command was successful' do
       expect(repository).to receive(:popen)
-        .with(%W(#{git_path} fetch #{remote_name}), repository.path)
+        .with(%W(#{git_path} fetch #{remote_name}), repository.path, {})
         .and_return(['', 0])
 
       expect(subject).to be(true)
@@ -1765,21 +1774,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
     context 'without gitaly', :skip_gitaly_mock do
       it_behaves_like '#ff_merge'
-    end
-  end
-
-  describe '#fetch' do
-    let(:git_path) { Gitlab.config.git.bin_path }
-    let(:remote_name) { 'my_remote' }
-
-    subject { repository.fetch(remote_name) }
-
-    it 'fetches the remote and returns true if the command was successful' do
-      expect(repository).to receive(:popen)
-        .with(%W(#{git_path} fetch #{remote_name}), repository.path)
-        .and_return(['', 0])
-
-      expect(subject).to be(true)
     end
   end
 

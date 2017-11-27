@@ -1,0 +1,5 @@
+---
+title: Fix hashed storage for Import/Export uploads
+merge_request: 15482
+author:
+type: fixed
