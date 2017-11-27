@@ -485,6 +485,8 @@ module Ci
     end
 
     def validates_dependencies!
+      return unless Feature.enabled?('ci_validates_dependencies')
+
       dependencies.tap do |deps|
         # When `dependencies` keyword is given and depended jobs are skipped by `only` keyword
         if options[:dependencies]&.any? && deps.empty?

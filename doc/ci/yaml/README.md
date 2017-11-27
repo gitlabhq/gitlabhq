@@ -1106,8 +1106,7 @@ Note that `artifacts` from all previous [stages](#stages) are passed by default.
 To use this feature, define `dependencies` in context of the job and pass
 a list of all previous jobs from which the artifacts should be downloaded.
 You can only define jobs from stages that are executed before the current one.
-An error will be shown if you define jobs from the current stage or next ones,
-or there are no depended jobs with artifacts in previous stages.
+An error will be shown if you define jobs from the current stage or next ones.
 Defining an empty array will skip downloading any artifacts for that job.
 The status of the previous job is not considered when using `dependencies`, so
 if it failed or it is a manual job that was not run, no error occurs.
@@ -1152,6 +1151,22 @@ test:linux:
 deploy:
   stage: deploy
   script: make deploy
+```
+
+### Validations for `dependencies` keyword
+
+> Introduced in GitLab 10.3
+
+`dependencies` keyword doesn't check the depended `artifacts` strictly. Therefore
+they do not fail even though it falls into the following conditions.
+
+1. A depended `artifacts` has been [erased](https://docs.gitlab.com/ee/api/jobs.html#erase-a-job).
+1. A depended `artifacts` has been [expired](https://docs.gitlab.com/ee/ci/yaml/#artifacts-expire_in).
+
+To validate those conditions, you can flip the feature flag from a rails console:
+
+```
+Feature.enable('ci_validates_dependencies')
 ```
 
 ### before_script and after_script
