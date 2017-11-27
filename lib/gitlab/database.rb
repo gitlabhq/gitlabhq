@@ -128,7 +128,7 @@ module Gitlab
 
       disable_quote = Array(disable_quote).to_set
       tuples = rows.map do |row|
-        row.keys.map do |k|
+        keys.map do |k|
           disable_quote.include?(k) ? row[k] : connection.quote(row[k])
         end
       end
