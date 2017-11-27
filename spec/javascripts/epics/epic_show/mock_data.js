@@ -1,5 +1,6 @@
 export const contentProps = {
   endpoint: '',
+  updateEndpoint: gl.TEST_HOST,
   canAdmin: true,
   canUpdate: true,
   canDestroy: true,

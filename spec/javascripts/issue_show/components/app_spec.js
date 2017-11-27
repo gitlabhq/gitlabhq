@@ -35,6 +35,7 @@ describe('Issuable output', () => {
         canUpdate: true,
         canDestroy: true,
         endpoint: '/gitlab-org/gitlab-shell/issues/9/realtime_changes',
+        updateEndpoint: gl.TEST_HOST,
         issuableRef: '#1',
         initialTitleHtml: '',
         initialTitleText: '',
@@ -364,17 +365,6 @@ describe('Issuable output', () => {
     it('should render if showInlineEditButton', () => {
       vm.showInlineEditButton = true;
       expect(vm.$el.querySelector('.title-container .note-action-button')).toBeDefined();
-    });
-  });
-
-  describe('update url', () => {
-    it('sets update url in description textarea', (done) => {
-      vm.showForm = true;
-      vm.canUpdate = false;
-      Vue.nextTick(() => {
-        expect(vm.$el.querySelector('.js-task-list-field').dataset.updateUrl).toEqual(`${vm.endpoint}.json`);
-        done();
-      });
     });
   });
 });

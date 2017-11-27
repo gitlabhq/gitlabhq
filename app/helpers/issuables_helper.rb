@@ -213,6 +213,7 @@ module IssuablesHelper
   def issuable_initial_data(issuable)
     data = {
       endpoint: issuable_path(issuable),
+      updateEndpoint: "#{issuable_path(issuable)}.json",
       canUpdate: can?(current_user, :"update_#{issuable.to_ability_name}", issuable),
       canDestroy: can?(current_user, :"destroy_#{issuable.to_ability_name}", issuable),
       canAdmin: can?(current_user, :"admin_#{issuable.to_ability_name}", issuable),
