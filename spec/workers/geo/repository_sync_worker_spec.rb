@@ -16,7 +16,11 @@ describe Geo::RepositorySyncWorker, :geo, :truncate do
     stub_current_geo_node(secondary)
   end
 
-  describe '#perform' do
+  shared_examples '#perform' do |skip_tests|
+    before do
+      skip('FDW is not configured') if skip_tests
+    end
+
     before do
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { true }
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:renew) { true }
@@ -167,5 +171,18 @@ describe Geo::RepositorySyncWorker, :geo, :truncate do
         Sidekiq::Testing.inline! { subject.perform }
       end
     end
+  end
+
+  describe 'when PostgreSQL FDW is available', :geo do
+    # Skip if FDW isn't activated on this database
+    it_behaves_like '#perform', Gitlab::Database.postgresql? && !Gitlab::Geo.fdw?
+  end
+
+  describe 'when PostgreSQL FDW is not enabled', :geo do
+    before do
+      allow(Gitlab::Geo).to receive(:fdw?).and_return(false)
+    end
+
+    it_behaves_like '#perform', false
   end
 end
