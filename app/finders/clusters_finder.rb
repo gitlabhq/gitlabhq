@@ -8,11 +8,11 @@ class ClustersFinder
   def execute
     clusters = case @scope
                when :all
-                 project.clusters
+                 @project.clusters
                when :enabled
-                 project.clusters.enabled
+                 @project.clusters.enabled
                when :disabled
-                 project.clusters.disabled
+                 @project.clusters.disabled
                end
     clusters.map { |cluster| cluster.present(current_user: @user) }
   end
