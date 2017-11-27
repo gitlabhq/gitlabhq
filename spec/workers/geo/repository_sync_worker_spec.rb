@@ -53,6 +53,10 @@ describe Geo::RepositorySyncWorker, :geo, :truncate do
       expect(Geo::ProjectSyncWorker).not_to receive(:perform_async)
 
       subject.perform
+
+      # We need to unstub here or the DatabaseCleaner will have issues since it
+      # will appear as though the tracking DB were not available
+      allow(Gitlab::Geo).to receive(:geo_database_configured?).and_call_original
     end
 
     it 'does not perform Geo::ProjectSyncWorker when not running on a secondary' do
