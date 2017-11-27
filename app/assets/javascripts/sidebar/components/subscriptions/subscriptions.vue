@@ -14,6 +14,10 @@ export default {
       type: Boolean,
       required: false,
     },
+    id: {
+      type: Number,
+      required: false,
+    },
   },
   components: {
     loadingButton,
@@ -32,7 +36,7 @@ export default {
   },
   methods: {
     toggleSubscription() {
-      eventHub.$emit('toggleSubscription');
+      eventHub.$emit('toggleSubscription', this.id);
     },
   },
 };

@@ -30,10 +30,6 @@
         &.dropdown.open > a {
           color: $color-900;
           background-color: $color-alternate;
-
-          svg {
-            fill: currentColor;
-          }
         }
 
         &.line-separator {
@@ -51,10 +47,6 @@
         color: $color-200;
 
         > a {
-          svg {
-            fill: $color-200;
-          }
-
           &.header-user-dropdown-toggle {
             .header-user-avatar {
               border-color: $color-200;

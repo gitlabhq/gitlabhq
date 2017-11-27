@@ -102,6 +102,7 @@ module Gitlab
 
           if path_arr.size > 1
             return nil unless entry[:type] == :tree
+
             path_arr.shift
             find_entry_by_path(repository, entry[:oid], path_arr.join('/'))
           else
@@ -178,6 +179,8 @@ module Gitlab
               )
             end
           end
+        rescue Rugged::ReferenceError
+          nil
         end
 
         def rugged_raw(repository, sha, limit:)

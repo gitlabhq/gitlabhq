@@ -1,3 +1,8 @@
+# frozen_string_literal: true
+# rubocop:disable Metrics/MethodLength
+# rubocop:disable Metrics/LineLength
+# rubocop:disable Style/Documentation
+
 module Gitlab
   module BackgroundMigration
     class PopulateForkNetworksRange

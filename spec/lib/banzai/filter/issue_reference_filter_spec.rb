@@ -343,7 +343,9 @@ describe Banzai::Filter::IssueReferenceFilter do
       reference = "#{project.full_path}##{issue.iid}"
       doc = reference_filter("See #{reference}", context)
 
-      expect(doc.css('a').first.attr('href')).to eq helper.url_for_issue(issue.iid, project)
+      link = doc.css('a').first
+      expect(link.attr('href')).to eq(helper.url_for_issue(issue.iid, project))
+      expect(link.text).to include("#{project.full_path}##{issue.iid}")
     end
 
     it 'ignores reference for shorthand cross-reference' do
@@ -358,7 +360,9 @@ describe Banzai::Filter::IssueReferenceFilter do
 
       doc = reference_filter("See #{reference}", context)
 
-      expect(doc.css('a').first.attr('href')).to eq(helper.url_for_issue(issue.iid, project) + "#note_123")
+      link = doc.css('a').first
+      expect(link.attr('href')).to eq(helper.url_for_issue(issue.iid, project) + "#note_123")
+      expect(link.text).to include("#{project.full_path}##{issue.iid}")
     end
 
     it 'links to a valid reference for cross-reference in link href' do
@@ -367,7 +371,9 @@ describe Banzai::Filter::IssueReferenceFilter do
 
       doc = reference_filter("See #{reference_link}", context)
 
-      expect(doc.css('a').first.attr('href')).to eq helper.url_for_issue(issue.iid, project) + "#note_123"
+      link = doc.css('a').first
+      expect(link.attr('href')).to eq(helper.url_for_issue(issue.iid, project) + "#note_123")
+      expect(link.text).to include('Reference')
     end
 
     it 'links to a valid reference for issue reference in the link href' do
@@ -375,7 +381,9 @@ describe Banzai::Filter::IssueReferenceFilter do
       reference_link = %{<a href="#{reference}">Reference</a>}
       doc = reference_filter("See #{reference_link}", context)
 
-      expect(doc.css('a').first.attr('href')).to eq helper.url_for_issue(issue.iid, project)
+      link = doc.css('a').first
+      expect(link.attr('href')).to eq(helper.url_for_issue(issue.iid, project))
+      expect(link.text).to include('Reference')
     end
   end
 

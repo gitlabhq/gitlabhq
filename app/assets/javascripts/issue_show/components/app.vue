@@ -29,6 +29,11 @@ export default {
       required: false,
       default: false,
     },
+    showDeleteButton: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
     issuableRef: {
       type: String,
       required: true,
@@ -91,6 +96,16 @@ export default {
     projectNamespace: {
       type: String,
       required: true,
+    },
+    issuableType: {
+      type: String,
+      required: false,
+      default: 'issue',
+    },
+    canAttachFile: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   data() {
@@ -157,21 +172,21 @@ export default {
         })
         .catch(() => {
           eventHub.$emit('close.form');
-          window.Flash('Error updating issue');
+          window.Flash(`Error updating ${this.issuableType}`);
         });
     },
     deleteIssuable() {
       this.service.deleteIssuable()
         .then(res => res.json())
         .then((data) => {
-          // Stop the poll so we don't get 404's with the issue not existing
+          // Stop the poll so we don't get 404's with the issuable not existing
           this.poll.stop();
 
           gl.utils.visitUrl(data.web_url);
         })
         .catch(() => {
           eventHub.$emit('close.form');
-          window.Flash('Error deleting issue');
+          window.Flash(`Error deleting ${this.issuableType}`);
         });
     },
   },
@@ -223,6 +238,8 @@ export default {
       :markdown-preview-path="markdownPreviewPath"
       :project-path="projectPath"
       :project-namespace="projectNamespace"
+      :show-delete-button="showDeleteButton"
+      :can-attach-file="canAttachFile"
     />
     <div v-else>
       <title-component

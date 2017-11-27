@@ -1,38 +1,47 @@
 module Gitlab
   module Git
     module RepositoryMirroring
-      IMPORT_HEAD_REFS = '+refs/heads/*:refs/heads/*'.freeze
-      IMPORT_TAG_REFS = '+refs/tags/*:refs/tags/*'.freeze
-      MIRROR_REMOTE = 'mirror'.freeze
+      REFMAPS = {
+        # With `:all_refs`, the repository is equivalent to the result of `git clone --mirror`
+        all_refs: '+refs/*:refs/*',
+        heads: '+refs/heads/*:refs/heads/*',
+        tags: '+refs/tags/*:refs/tags/*'
+      }.freeze
 
       RemoteError = Class.new(StandardError)
 
-      def set_remote_as_mirror(remote_name)
-        # This is used to define repository as equivalent as "git clone --mirror"
-        rugged.config["remote.#{remote_name}.fetch"] = 'refs/*:refs/*'
-        rugged.config["remote.#{remote_name}.mirror"] = true
-        rugged.config["remote.#{remote_name}.prune"] = true
-      end
-
-      def set_import_remote_as_mirror(remote_name)
-        # Add first fetch with Rugged so it does not create its own.
-        rugged.config["remote.#{remote_name}.fetch"] = IMPORT_HEAD_REFS
-
-        add_remote_fetch_config(remote_name, IMPORT_TAG_REFS)
+      def set_remote_as_mirror(remote_name, refmap: :all_refs)
+        set_remote_refmap(remote_name, refmap)
 
         rugged.config["remote.#{remote_name}.mirror"] = true
         rugged.config["remote.#{remote_name}.prune"] = true
       end
 
-      def add_remote_fetch_config(remote_name, refspec)
-        run_git(%W[config --add remote.#{remote_name}.fetch #{refspec}])
+      def set_remote_refmap(remote_name, refmap)
+        Array(refmap).each_with_index do |refspec, i|
+          refspec = REFMAPS[refspec] || refspec
+
+          # We need multiple `fetch` entries, but Rugged only allows replacing a config, not adding to it.
+          # To make sure we start from scratch, we set the first using rugged, and use `git` for any others
+          if i == 0
+            rugged.config["remote.#{remote_name}.fetch"] = refspec
+          else
+            run_git(%W[config --add remote.#{remote_name}.fetch #{refspec}])
+          end
+        end
       end
 
-      def fetch_mirror(url)
-        add_remote(MIRROR_REMOTE, url)
-        set_remote_as_mirror(MIRROR_REMOTE)
-        fetch(MIRROR_REMOTE)
-        remove_remote(MIRROR_REMOTE)
+      # Like all_refs public `Gitlab::Git::Repository` methods, this method is part
+      # of `Repository`'s interface through `method_missing`.
+      # `Repository` has its own `fetch_as_mirror` which uses `gitlab-shell` and
+      # takes some extra attributes, so we qualify this method name to prevent confusion.
+      def fetch_as_mirror_without_shell(url)
+        remote_name = "tmp-#{SecureRandom.hex}"
+        add_remote(remote_name, url)
+        set_remote_as_mirror(remote_name)
+        fetch_remote_without_shell(remote_name)
+      ensure
+        remove_remote(remote_name) if remote_name
       end
 
       def remote_tags(remote)
@@ -78,7 +87,7 @@ module Gitlab
 
       def list_remote_tags(remote)
         tag_list, exit_code, error = nil
-        cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{full_path} ls-remote --tags #{remote})
+        cmd = %W(#{Gitlab.config.git.bin_path} --git-dir=#{path} ls-remote --tags #{remote})
 
         Open3.popen3(*cmd) do |stdin, stdout, stderr, wait_thr|
           tag_list  = stdout.read
@@ -88,7 +97,7 @@ module Gitlab
 
         raise RemoteError, error unless exit_code.zero?
 
-        tag_list.split('\n')
+        tag_list.split("\n")
       end
     end
   end

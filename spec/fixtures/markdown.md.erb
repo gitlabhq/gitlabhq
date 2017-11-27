@@ -268,3 +268,37 @@ However the wrapping tags can not be mixed as such -
 ### Videos
 
 ![My Video](/assets/videos/gitlab-demo.mp4)
+
+### Mermaid
+
+> If this is not rendered correctly, see
+https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#mermaid
+
+It is possible to generate diagrams and flowcharts from text using [Mermaid][mermaid].
+
+In order to generate a diagram or flowchart, you should write your text inside the `mermaid` block.
+
+Example:
+
+    ```mermaid
+    graph TD;
+      A-->B;
+      A-->C;
+      B-->D;
+      C-->D;
+    ```
+
+Becomes:
+
+```mermaid
+graph TD;
+  A-->B;
+  A-->C;
+  B-->D;
+  C-->D;
+```
+
+For details see the [Mermaid official page][mermaid].
+
+[mermaid]: https://mermaidjs.github.io/ "Mermaid website"
+

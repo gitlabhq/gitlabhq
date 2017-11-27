@@ -3,9 +3,9 @@ module ApplicationSettingsHelper
 
   include Gitlab::CurrentSettings
 
-  delegate  :gravatar_enabled?,
-            :signup_enabled?,
-            :password_authentication_enabled?,
+  delegate  :allow_signup?,
+            :gravatar_enabled?,
+            :password_authentication_enabled_for_web?,
             :akismet_enabled?,
             :koding_enabled?,
             to: :current_application_settings
@@ -203,7 +203,7 @@ module ApplicationSettingsHelper
       :metrics_port,
       :metrics_sample_interval,
       :metrics_timeout,
-      :password_authentication_enabled,
+      :password_authentication_enabled_for_web,
       :performance_bar_allowed_group_id,
       :performance_bar_enabled,
       :plantuml_enabled,
@@ -231,6 +231,15 @@ module ApplicationSettingsHelper
       :sign_in_text,
       :signup_enabled,
       :terminal_max_session_time,
+      :throttle_unauthenticated_enabled,
+      :throttle_unauthenticated_requests_per_period,
+      :throttle_unauthenticated_period_in_seconds,
+      :throttle_authenticated_web_enabled,
+      :throttle_authenticated_web_requests_per_period,
+      :throttle_authenticated_web_period_in_seconds,
+      :throttle_authenticated_api_enabled,
+      :throttle_authenticated_api_requests_per_period,
+      :throttle_authenticated_api_period_in_seconds,
       :two_factor_grace_period,
       :unique_ips_limit_enabled,
       :unique_ips_limit_per_user,

@@ -35,8 +35,8 @@ describe Search::GlobalService do
         expect(results.objects('projects')).to match_array [internal_project, public_project]
       end
 
-      it 'namespace name is searchable' do
-        results = described_class.new(user, search: found_project.namespace.path).execute
+      it 'project name is searchable' do
+        results = described_class.new(user, search: found_project.name).execute
 
         expect(results.objects('projects')).to match_array [found_project]
       end

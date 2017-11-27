@@ -83,6 +83,7 @@ module DeclarativePolicy
       def cached_pass?(context)
         condition = context.condition(@name)
         return nil unless condition.cached?
+
         condition.pass?
       end
 
@@ -109,6 +110,7 @@ module DeclarativePolicy
       def delegated_context(context)
         policy = context.delegated_policies[@delegate_name]
         raise MissingDelegate if policy.nil?
+
         policy
       end
 
@@ -121,6 +123,7 @@ module DeclarativePolicy
       def cached_pass?(context)
         condition = delegated_context(context).condition(@name)
         return nil unless condition.cached?
+
         condition.pass?
       rescue MissingDelegate
         false
@@ -157,6 +160,7 @@ module DeclarativePolicy
       def cached_pass?(context)
         runner = context.runner(@ability)
         return nil unless runner.cached?
+
         runner.pass?
       end
 
@@ -258,6 +262,7 @@ module DeclarativePolicy
 
       def score(context)
         return 0 unless cached_pass?(context).nil?
+
         @rules.map { |r| r.score(context) }.inject(0, :+)
       end
 

@@ -1,14 +1,11 @@
-import Vue from 'vue';
-import VueResource from 'vue-resource';
-
-Vue.use(VueResource);
+import axios from '../../lib/utils/axios_utils';
 
 export default class JobService {
   constructor(endpoint) {
-    this.job = Vue.resource(endpoint);
+    this.job = endpoint;
   }
 
   getJob() {
-    return this.job.get();
+    return axios.get(this.job);
   }
 }

@@ -71,6 +71,7 @@ comments: false
 - [Iterating tables in batches](iterating_tables_in_batches.md)
 - [Ordering table columns](ordering_table_columns.md)
 - [Verifying database capabilities](verifying_database_capabilities.md)
+- [Database Debugging and Troubleshooting](database_debugging.md)
 
 ## Testing guides
 

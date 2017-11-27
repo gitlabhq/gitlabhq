@@ -4,7 +4,7 @@
   .sidebar-container
     .blocks-container
       .block
-        %strong.prepend-top-10
+        %strong.inline.prepend-top-8
           = @build.name
         - if can?(current_user, :update_build, @build) && @build.retryable?
           = link_to "Retry", retry_namespace_project_job_path(@project.namespace, @project, @build), class: 'js-retry-button pull-right btn btn-inverted-secondary btn-retry visible-md-block visible-lg-block', method: :post
@@ -44,9 +44,10 @@
           %h4.title
             Trigger
 
-          %p
-            %span.build-light-text Token:
-            #{@build.trigger_request.trigger.short_token}
+          - if @build.trigger_request&.trigger&.short_token
+            %p
+              %span.build-light-text Token:
+              #{@build.trigger_request.trigger.short_token}
 
           - if @build.trigger_variables.any?
             %p

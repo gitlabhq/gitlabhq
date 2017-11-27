@@ -6,10 +6,9 @@
   Sample configuration:
 
   <icon
-    :img-src="userAvatarSrc"
-    :img-alt="tooltipText"
-    :tooltip-text="tooltipText"
-    tooltip-placement="top"
+    name="retry"
+    :size="32"
+    css-classes="top"
   />
 
 */

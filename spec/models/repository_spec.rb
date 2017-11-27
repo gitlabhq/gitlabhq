@@ -299,24 +299,6 @@ describe Repository do
 
       it { is_expected.to be_falsey }
     end
-
-    context 'when pre-loaded merged branches are provided' do
-      using RSpec::Parameterized::TableSyntax
-
-      where(:branch, :pre_loaded, :expected) do
-        'not-merged-branch' | ['branch-merged']     | false
-        'branch-merged'     | ['not-merged-branch'] | false
-        'branch-merged'     | ['branch-merged']     | true
-        'not-merged-branch' | ['not-merged-branch'] | false
-        'master'            | ['master']            | false
-      end
-
-      with_them do
-        subject { repository.merged_to_root_ref?(branch, pre_loaded) }
-
-        it { is_expected.to eq(expected) }
-      end
-    end
   end
 
   describe '#can_be_merged?' do
@@ -1163,6 +1145,31 @@ describe Repository do
         # Second call hits the cache
         expect(repository.has_visible_content?).to eq(false)
       end
+    end
+  end
+
+  describe '#branch_exists?' do
+    it 'uses branch_names' do
+      allow(repository).to receive(:branch_names).and_return(['foobar'])
+
+      expect(repository.branch_exists?('foobar')).to eq(true)
+      expect(repository.branch_exists?('master')).to eq(false)
+    end
+  end
+
+  describe '#branch_names', :use_clean_rails_memory_store_caching do
+    let(:fake_branch_names) { ['foobar'] }
+
+    it 'gets cached across Repository instances' do
+      allow(repository.raw_repository).to receive(:branch_names).once.and_return(fake_branch_names)
+
+      expect(repository.branch_names).to eq(fake_branch_names)
+
+      fresh_repository = Project.find(project.id).repository
+      expect(fresh_repository.object_id).not_to eq(repository.object_id)
+
+      expect(fresh_repository.raw_repository).not_to receive(:branch_names)
+      expect(fresh_repository.branch_names).to eq(fake_branch_names)
     end
   end
 

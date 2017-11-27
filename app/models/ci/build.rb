@@ -243,7 +243,7 @@ module Ci
 
       @merge_request ||=
         begin
-          merge_requests = MergeRequest.includes(:merge_request_diff)
+          merge_requests = MergeRequest.includes(:latest_merge_request_diff)
             .where(source_branch: ref,
                    source_project: pipeline.project)
             .reorder(iid: :desc)
@@ -317,6 +317,7 @@ module Ci
 
     def execute_hooks
       return unless project
+
       build_data = Gitlab::DataBuilder::Build.build(self)
       project.execute_hooks(build_data.dup, :job_hooks)
       project.execute_services(build_data.dup, :job_hooks)
