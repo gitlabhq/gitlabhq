@@ -50,6 +50,16 @@ feature 'Update Epic', :js do
 
       expect(page).not_to have_selector('.uploading-container .button-attach-file')
     end
+
+    # Autocomplete is disabled for epics until #4084 is resolved
+    describe 'autocomplete disabled' do
+      it 'does not open atwho container' do
+        find('.btn-edit').click
+
+        find('#issue-description').native.send_keys('@')
+        expect(page).not_to have_selector('.atwho-container')
+      end
+    end
   end
 
   context 'when user with owner access displays the epic' do
