@@ -42,6 +42,7 @@ module Geo
     # FDW accessors
     #
 
+     # @return [ActiveRecord::Relation<Geo::Fdw::Project>]
     def fdw_find_unsynced_projects
       fdw_table = Geo::Fdw::Project.table_name
 
@@ -49,6 +50,7 @@ module Geo
         .where('project_registry.project_id IS NULL')
     end
 
+     # @return [ActiveRecord::Relation<Geo::Fdw::Project>]
     def fdw_find_projects_updated_recently
       fdw_table = Geo::Fdw::Project.table_name
 
@@ -61,6 +63,7 @@ module Geo
     # Legacy accessors (non FDW)
     #
 
+    # @return [ActiveRecord::Relation<Project>] list of unsynced projects
     def legacy_find_unsynced_projects
       registry_project_ids = current_node.project_registries.pluck(:project_id)
       return current_node.projects if registry_project_ids.empty?
@@ -75,6 +78,7 @@ module Geo
       joined_relation.where(project_registry: { registry_present: [nil, false] })
     end
 
+    # @return [ActiveRecord::Relation<Project>] list of projects updated recently
     def legacy_find_projects_updated_recently
       registry_project_ids = current_node.project_registries.dirty.retry_due.pluck(:project_id)
       return Project.none if registry_project_ids.empty?
