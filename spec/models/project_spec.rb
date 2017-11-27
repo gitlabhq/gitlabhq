@@ -3100,6 +3100,8 @@ describe Project do
   describe '#deployment_platform' do
     subject { project.deployment_platform }
 
+    let(:project) { create(:project) }
+
     context 'when user configured kubernetes from Integration > Kubernetes' do
       let!(:kubernetes_service) { create(:kubernetes_service, project: project) }
 

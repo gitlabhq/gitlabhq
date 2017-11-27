@@ -6,7 +6,7 @@ module Clusters
       include ReactiveCaching
 
       self.table_name = 'cluster_platforms_kubernetes'
-      self.reactive_cache_key = ->(kubernetes) { [kubernetes.class.model_name.singular, kubernetes.cluster_id] }
+      self.reactive_cache_key = ->(kubernetes) { [kubernetes.class.model_name.singular, kubernetes.id] }
 
       belongs_to :cluster, inverse_of: :platform_kubernetes, class_name: 'Clusters::Cluster'
 
@@ -40,6 +40,8 @@ module Clusters
 
       delegate :project, to: :cluster, allow_nil: true
       delegate :enabled?, to: :cluster, allow_nil: true
+
+      alias_method :active?, :enabled?
 
       def actual_namespace
         if namespace.present?
