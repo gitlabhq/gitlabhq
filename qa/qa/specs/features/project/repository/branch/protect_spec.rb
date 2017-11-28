@@ -12,6 +12,7 @@ module QA
       Page::Project::Menu.act { go_to_settings }
       Page::Project::Settings::Menu.act { go_to_repository }
       Page::Project::Settings::Repository.perform do |settings|
+        settings.select_protected_branch('awesome-branch')
         settings.protect_branch
       end
     end
