@@ -57,6 +57,7 @@ describe GroupPolicy do
       expect_disallowed(*developer_permissions)
       expect_disallowed(*master_permissions)
       expect_disallowed(*owner_permissions)
+      expect_disallowed(:read_namespace)
     end
   end
 
@@ -64,7 +65,7 @@ describe GroupPolicy do
     let(:current_user) { guest }
 
     it do
-      expect_allowed(:read_group)
+      expect_allowed(:read_group, :read_namespace)
       expect_disallowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
       expect_disallowed(*master_permissions)
@@ -76,7 +77,7 @@ describe GroupPolicy do
     let(:current_user) { reporter }
 
     it do
-      expect_allowed(:read_group)
+      expect_allowed(:read_group, :read_namespace)
       expect_allowed(*reporter_permissions)
       expect_disallowed(*developer_permissions)
       expect_disallowed(*master_permissions)
@@ -88,7 +89,7 @@ describe GroupPolicy do
     let(:current_user) { developer }
 
     it do
-      expect_allowed(:read_group)
+      expect_allowed(:read_group, :read_namespace)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
       expect_disallowed(*master_permissions)
@@ -100,7 +101,7 @@ describe GroupPolicy do
     let(:current_user) { master }
 
     it do
-      expect_allowed(:read_group)
+      expect_allowed(:read_group, :read_namespace)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
       expect_allowed(*master_permissions)
@@ -114,7 +115,7 @@ describe GroupPolicy do
     it do
       allow(Group).to receive(:supports_nested_groups?).and_return(true)
 
-      expect_allowed(:read_group)
+      expect_allowed(:read_group, :read_namespace)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
       expect_allowed(*master_permissions)
@@ -128,7 +129,7 @@ describe GroupPolicy do
     it do
       allow(Group).to receive(:supports_nested_groups?).and_return(true)
 
-      expect_allowed(:read_group)
+      expect_allowed(:read_group, :read_namespace)
       expect_allowed(*reporter_permissions)
       expect_allowed(*developer_permissions)
       expect_allowed(*master_permissions)

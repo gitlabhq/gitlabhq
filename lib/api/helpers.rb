@@ -52,6 +52,10 @@ module API
       initial_current_user != current_user
     end
 
+    def user_namespace
+      @user_namespace ||= find_namespace!(params[:id])
+    end
+
     def user_group
       @group ||= find_group!(params[:id])
     end
@@ -109,14 +113,6 @@ module API
       end
     end
 
-    def find_namespace(id)
-      if id =~ /^\d+$/
-        Namespace.find_by(id: id)
-      else
-        Namespace.find_by_full_path(id)
-      end
-    end
-
     def find_group!(id)
       # CI job token authentication:
       # currently we do not allow any group access for CI job token
@@ -128,6 +124,24 @@ module API
         group
       else
         not_found!('Group')
+      end
+    end
+
+    def find_namespace(id)
+      if id.to_s =~ /^\d+$/
+        Namespace.find_by(id: id)
+      else
+        Namespace.find_by_full_path(id)
+      end
+    end
+
+    def find_namespace!(id)
+      namespace = find_namespace(id)
+
+      if can?(current_user, :read_namespace, namespace)
+        namespace
+      else
+        not_found!('Namespace')
       end
     end
 
