@@ -13,7 +13,6 @@ const toggleLoadingButton = (button) => {
     button.setAttribute('disabled', true);
   }
 
-  button.classList.toggle('is-disabled');
   button.classList.toggle('is-loading');
 };
 

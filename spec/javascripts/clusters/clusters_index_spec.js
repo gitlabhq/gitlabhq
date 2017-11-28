@@ -20,7 +20,7 @@ describe('Clusters table', () => {
       button.click();
 
       expect(button.classList).toContain('is-loading');
-      expect(button.classList).toContain('is-disabled');
+      expect(button.getAttribute('disabled')).toEqual('true');
     });
 
     afterEach(() => {
