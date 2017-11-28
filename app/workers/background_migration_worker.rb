@@ -1,6 +1,5 @@
 class BackgroundMigrationWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   # Enqueues a number of jobs in bulk.
   #
