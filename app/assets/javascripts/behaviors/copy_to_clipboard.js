@@ -35,7 +35,7 @@ function genericError(e) {
   showTooltip(e.trigger, `Press ${key}-C to copy`);
 }
 
-$(() => {
+export default function initCopyToClipboard() {
   const clipboard = new Clipboard('[data-clipboard-target], [data-clipboard-text]');
   clipboard.on('success', genericSuccess);
   clipboard.on('error', genericError);
@@ -70,4 +70,4 @@ $(() => {
     clipboardData.setData('text/plain', json.text);
     clipboardData.setData('text/x-gfm', json.gfm);
   });
-});
+}
