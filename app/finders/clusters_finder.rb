@@ -1,6 +1,4 @@
 class ClustersFinder
-  attr_reader :project, :user, :scope
-
   def initialize(project, user, scope)
     @project = project
     @user = user
@@ -14,8 +12,10 @@ class ClustersFinder
 
   private
 
+  attr_reader :project, :user, :scope
+
   def filter_by_scope(clusters)
-    case @scope.to_sym
+    case scope.to_sym
     when :all
       clusters
     when :inactive
@@ -23,7 +23,7 @@ class ClustersFinder
     when :active
       clusters.enabled
     else
-      raise "Invalid scope #{@scope}"
+      raise "Invalid scope #{scope}"
     end
   end
 end
