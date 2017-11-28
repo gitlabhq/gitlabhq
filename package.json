@@ -75,7 +75,8 @@
     "vuex": "^3.0.1",
     "webpack": "^3.5.5",
     "webpack-bundle-analyzer": "^2.8.2",
-    "webpack-stats-plugin": "^0.1.5"
+    "webpack-stats-plugin": "^0.1.5",
+    "worker-loader": "^1.1.0"
   },
   "devDependencies": {
     "@gitlab-org/gitlab-svgs": "^1.1.1",
@@ -98,7 +99,6 @@
     "karma-sourcemap-loader": "^0.3.7",
     "karma-webpack": "^2.0.4",
     "nodemon": "^1.11.0",
-    "webpack-dev-server": "^2.6.1",
-    "worker-loader": "^1.1.0"
+    "webpack-dev-server": "^2.6.1"
   }
 }

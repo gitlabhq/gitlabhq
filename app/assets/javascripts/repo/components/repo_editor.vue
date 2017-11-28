@@ -6,11 +6,11 @@ import monacoLoader from '../monaco_loader';
 import Editor from '../lib/editor';
 
 export default {
-  destroyed() {
+  beforeDestroy() {
     this.editor.dispose();
   },
   mounted() {
-    if (this.monaco) {
+    if (this.editor && monaco) {
       this.initMonaco();
     } else {
       monacoLoader(['vs/editor/editor.main'], () => {
@@ -32,7 +32,7 @@ export default {
 
       this.getRawFileData(this.activeFile)
         .then(() => {
-          this.editor.createInstance(this.$el);
+          this.editor.createInstance(this.$refs.editor);
         })
         .then(() => this.setupEditor())
         .catch(() => flash('Error setting up monaco. Please try again.'));
@@ -76,8 +76,13 @@ export default {
     class="blob-viewer-container blob-editor-container"
   >
     <div
-      v-if="shouldHideEditor"
+      v-show="shouldHideEditor"
       v-html="activeFile.html"
+    >
+    </div>
+    <div
+      v-show="!shouldHideEditor"
+      ref="editor"
     >
     </div>
   </div>
