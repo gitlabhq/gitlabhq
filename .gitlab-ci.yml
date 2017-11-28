@@ -581,7 +581,7 @@ codequality:
   script:
     - cp .rubocop.yml .rubocop.yml.bak
     - grep -v "rubocop-gitlab-security" .rubocop.yml.bak > .rubocop.yml
-    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate:0.69.0 analyze -f json > raw_codeclimate.json
+    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate analyze -f json > raw_codeclimate.json
     - cat raw_codeclimate.json | docker run -i stedolan/jq -c 'map({check_name,fingerprint,location})' > codeclimate.json
     - mv .rubocop.yml.bak .rubocop.yml
   artifacts:
