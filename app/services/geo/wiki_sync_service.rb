@@ -37,7 +37,7 @@ module Geo
     rescue Gitlab::Git::Repository::NoRepository => e
       log_error('Invalid wiki', e)
       registry.update(force_to_redownload_wiki: true,
-                      repository_retry_count: retry_count + 1)
+                      wiki_retry_count: retry_count + 1)
     ensure
       clean_up_temporary_repository if redownload
     end
