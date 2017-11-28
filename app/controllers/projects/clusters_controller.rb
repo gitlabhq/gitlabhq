@@ -1,6 +1,5 @@
 class Projects::ClustersController < Projects::ApplicationController
   before_action :cluster, except: [:login, :index, :new, :new_gcp, :create]
-  before_action :clusters, only: [:index]
   before_action :authorize_read_cluster!
   before_action :authorize_create_cluster!, only: [:new, :new_gcp, :create]
   before_action :authorize_google_api, only: [:new_gcp, :create]
@@ -8,8 +7,9 @@ class Projects::ClustersController < Projects::ApplicationController
   before_action :authorize_admin_cluster!, only: [:destroy]
 
   def index
-    @clusters = Kaminari.paginate_array(@clusters).page(params[:page]).per(20)
     @scope = params[:scope]
+    clusters = ClustersFinder.new(project, current_user, @scope).execute
+    @clusters = clusters.page(params[:page]).per(20)
     @active_count = project.clusters.enabled.count
     @inactive_count = project.clusters.disabled.count
     @all_count = @active_count + @inactive_count
@@ -100,12 +100,6 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def cluster
     @cluster ||= project.clusters.find_by(id: params[:id])&.present(current_user: current_user) || render_404
-  end
-
-  def clusters
-    @scope = params[:scope] || 'all'
-    scope = @scope&.to_sym
-    @clusters = ClustersFinder.new(project, current_user, scope).execute
   end
 
   def create_params
