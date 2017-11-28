@@ -6,16 +6,36 @@ module ApplicationWorker
   include Sidekiq::Worker
 
   included do
-    sidekiq_options queue: base_queue_name
+    set_queue
   end
 
   module ClassMethods
+    def inherited(subclass)
+      subclass.set_queue
+    end
+
+    def set_queue
+      queue_name = [queue_namespace, base_queue_name].compact.join(':')
+
+      sidekiq_options queue: queue_name
+    end
+
     def base_queue_name
       name
         .sub(/\AGitlab::/, '')
         .sub(/Worker\z/, '')
         .underscore
         .tr('/', '_')
+    end
+
+    def queue_namespace(new_namespace = nil)
+      if new_namespace
+        sidekiq_options queue_namespace: new_namespace
+
+        set_queue
+      else
+        get_sidekiq_options['queue_namespace']&.to_s
+      end
     end
 
     def queue
