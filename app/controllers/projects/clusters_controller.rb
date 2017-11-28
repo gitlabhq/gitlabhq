@@ -102,7 +102,8 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def clusters
-    scope = params[:scope]&.to_sym || :all
+    @scope = params[:scope] || 'all'
+    scope = @scope&.to_sym
     @clusters = ClustersFinder.new(project, current_user, scope).execute
   end
 

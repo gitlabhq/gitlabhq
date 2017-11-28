@@ -3,6 +3,29 @@ import { s__ } from '../locale';
 import ClustersService from './services/clusters_service';
 
 /**
+ * Toggles loading and disabled classes.
+ * @param {HTMLElement} button
+ */
+const toggleLoadingButton = (button) => {
+  if (button.getAttribute('disabled')) {
+    button.removeAttribute('disabled');
+  } else {
+    button.setAttribute('disabled', true);
+  }
+
+  button.classList.toggle('is-disabled');
+  button.classList.toggle('is-loading');
+};
+
+/**
+ * Toggles checked class for the given button
+ * @param {HTMLElement} button
+ */
+const toggleValue = (button) => {
+  button.classList.toggle('is-checked');
+};
+
+/**
  * Handles toggle buttons in the cluster's table.
  *
  * When the user clicks the toggle button for each cluster, it:
@@ -13,56 +36,24 @@ import ClustersService from './services/clusters_service';
  * 1) Show updated status in case of successfull response
  * 2) Show initial status in case of failed response
  */
-export default class ClusterTable {
-  constructor() {
-    this.container = '.js-clusters-list';
-    document.querySelectorAll(`${this.container} .js-toggle-cluster-list`).forEach(button => button.addEventListener('click', e => ClusterTable.updateCluster(e)));
-  }
-  /**
-   * When the toggle button is clicked,
-   * updates the status and makes a request to the API to update the cluster
-   * @param {Event} e
-   */
-  static updateCluster(e) {
-    const toggleButton = e.currentTarget;
-    const value = toggleButton.classList.contains('checked').toString();
-    const endpoint = toggleButton.getAttribute('data-endpoint');
+export default function setClusterTableToggles() {
+  document.querySelectorAll('.js-toggle-cluster-list')
+    .forEach(button => button.addEventListener('click', (e) => {
+      const toggleButton = e.currentTarget;
+      const value = toggleButton.classList.contains('checked').toString();
+      const endpoint = toggleButton.getAttribute('data-endpoint');
 
-    ClusterTable.toggleValue(toggleButton);
-    ClusterTable.toggleLoadingButton(toggleButton);
+      toggleValue(toggleButton);
+      toggleLoadingButton(toggleButton);
 
-    ClustersService.updateCluster(endpoint, { cluster: { enabled: value } })
-      .then(() => {
-        ClusterTable.toggleLoadingButton(toggleButton);
-      })
-      .catch(() => {
-        ClusterTable.toggleLoadingButton(toggleButton);
-        ClusterTable.toggleValue(toggleButton);
-        Flash(s__('ClusterIntegration|Something went wrong on our end.'));
-      });
-  }
-
-  /**
-   * Toggles loading and disabled classes.
-   * @param {HTMLElement} button
-   */
-  static toggleLoadingButton(button) {
-    if (button.getAttribute('disabled')) {
-      button.removeAttribute('disabled');
-    } else {
-      button.setAttribute('disabled', true);
-    }
-
-    button.classList.toggle('disabled');
-    button.classList.toggle('is-loading');
-    button.querySelector('.loading-icon').classList.toggle('hidden');
-  }
-
-  /**
-   * Toggles checked class for the given button
-   * @param {HTMLElement} button
-   */
-  static toggleValue(button) {
-    button.classList.toggle('checked');
-  }
+      ClustersService.updateCluster(endpoint, { cluster: { enabled: value } })
+        .then(() => {
+          toggleLoadingButton(toggleButton);
+        })
+        .catch(() => {
+          toggleLoadingButton(toggleButton);
+          toggleValue(toggleButton);
+          Flash(s__('ClusterIntegration|Something went wrong on our end.'));
+        });
+    }));
 }

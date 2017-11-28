@@ -2,22 +2,22 @@
 * Toggle button
 *
 * @usage
-*  ### Active text
-*  <button type="button" class="project-feature-toggle checked" data-enabled-text="Enabled" data-disabled-text="Disabled">
-*  <i class="fa fa-spinner fa-spin loading-icon hidden"></i>
-*  </button>
-
-*  ### Disabled text
+*  ### Active and Inactive text should be provided as data attributes:
 *  <button type="button" class="project-feature-toggle" data-enabled-text="Enabled" data-disabled-text="Disabled">
 *  <i class="fa fa-spinner fa-spin loading-icon hidden"></i>
 *  </button>
 
-*  ### Disabled button
-*  <button type="button" class="project-feature-toggle disabled" data-enabled-text="Enabled" data-disabled-text="Disabled" disabled="true">
+*  ### Checked should have `is-checked` class
+*  <button type="button" class="project-feature-toggle is-checked" data-enabled-text="Enabled" data-disabled-text="Disabled">
 *  <i class="fa fa-spinner fa-spin loading-icon hidden"></i>
 *  </button>
 
-*  ### Loading
+*  ### Disabled should have `is-disabled` class
+*  <button type="button" class="project-feature-toggle is-disabled" data-enabled-text="Enabled" data-disabled-text="Disabled" disabled="true">
+*  <i class="fa fa-spinner fa-spin loading-icon hidden"></i>
+*  </button>
+
+*  ### Loading should have `is-loading` and an icon with `loading-icon` class
 *  <button type="button" class="project-feature-toggle is-loading" data-enabled-text="Enabled" data-disabled-text="Disabled">
 *  <i class="fa fa-spinner fa-spin loading-icon"></i>
 *  </button>
@@ -69,37 +69,36 @@
     transition: all .2s ease;
   }
 
+  .loading-icon {
+    display: none;
+    font-size: 12px;
+    color: $white-light;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+  }
+
   &.is-loading {
     &::before {
-      left: 38px;
-      right: 5px;
+      display: none;
     }
 
     .loading-icon {
-      position: absolute;
-      left: 28px;
-      font-size: $tooltip-font-size;
-      color: $white-light;
-      top: 6px;
+      display: block;
+
+      &::before {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
     }
   }
 
-  &.checked {
+  &.is-checked {
     background: $feature-toggle-color-enabled;
-
-    &.is-loading {
-      &::before {
-        left: 10px;
-        right: 42px;
-        animation: animate-enabled .2s ease-in;
-        content: attr(data-enabled-text);
-      }
-
-      .loading-icon {
-        left: 60px;
-        top: 6px;
-      }
-    }
 
     &::before {
       left: 5px;
@@ -113,7 +112,7 @@
     }
   }
 
-  &.disabled {
+  &.is-disabled {
     opacity: 0.4;
     cursor: not-allowed;
   }
@@ -122,7 +121,7 @@
     width: 50px;
 
     &::before,
-    &.checked::before {
+    &.is-checked::before {
       display: none;
     }
   }
