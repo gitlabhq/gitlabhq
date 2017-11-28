@@ -1,19 +1,15 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, max-len, no-restricted-syntax, vars-on-top, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, wrap-iife, comma-dangle, no-return-assign, prefer-arrow-callback, quotes, prefer-template, newline-per-chained-call, no-else-return, no-shadow */
 import _ from 'underscore';
 import { dateTickFormat } from '../lib/utils/tick_formats';
-import {
-  extent as d3Extent,
-  max as d3Max,
-  select as d3Select,
-  scaleTime as d3ScaleTime,
-  scaleLinear as d3ScaleLinear,
-  axisLeft as d3AxisLeft,
-  axisBottom as d3AxisBottom,
-  area as d3Area,
-  brushX as d3BrushX,
-  timeParse as d3TimeParse,
-  event as d3Event,
-} from '../common_d3/index';
+import { extent, max } from 'd3-array';
+import { select, event as d3Event } from 'd3-selection';
+import { scaleTime, scaleLinear } from 'd3-scale';
+import { axisLeft, axisBottom } from 'd3-axis';
+import { area } from 'd3-shape';
+import { brushX } from 'd3-brush';
+import { timeParse } from 'd3-time-format';
+
+const d3 = { extent, max, select, scaleTime, scaleLinear, axisLeft, axisBottom, area, brushX, timeParse };
 
 const extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 const hasProp = {}.hasOwnProperty;
@@ -40,21 +36,21 @@ export const ContributorsGraph = (function() {
 
   ContributorsGraph.set_y_domain = function(data) {
     return ContributorsGraph.prototype.y_domain = [
-      0, d3Max(data, function(d) {
+      0, d3.max(data, function(d) {
         return d.commits = d.commits || d.additions || d.deletions;
       })
     ];
   };
 
   ContributorsGraph.init_x_domain = function(data) {
-    return ContributorsGraph.prototype.x_domain = d3Extent(data, function(d) {
+    return ContributorsGraph.prototype.x_domain = d3.extent(data, function(d) {
       return d.date;
     });
   };
 
   ContributorsGraph.init_y_domain = function(data) {
     return ContributorsGraph.prototype.y_domain = [
-      0, d3Max(data, function(d) {
+      0, d3.max(data, function(d) {
         return d.commits = d.commits || d.additions || d.deletions;
       })
     ];
@@ -83,8 +79,8 @@ export const ContributorsGraph = (function() {
   };
 
   ContributorsGraph.prototype.create_scale = function(width, height) {
-    this.x = d3ScaleTime().range([0, width]).clamp(true);
-    return this.y = d3ScaleLinear().range([height, 0]).nice();
+    this.x = d3.scaleTime().range([0, width]).clamp(true);
+    return this.y = d3.scaleLinear().range([height, 0]).nice();
   };
 
   ContributorsGraph.prototype.draw_x_axis = function() {
@@ -136,7 +132,7 @@ export const ContributorsMasterGraph = (function(superClass) {
 
   ContributorsMasterGraph.prototype.parse_dates = function(data) {
     var parseDate;
-    parseDate = d3TimeParse("%Y-%m-%d");
+    parseDate = d3.timeParse("%Y-%m-%d");
     return data.forEach(function(d) {
       return d.date = parseDate(d.date);
     });
@@ -147,18 +143,18 @@ export const ContributorsMasterGraph = (function(superClass) {
   };
 
   ContributorsMasterGraph.prototype.create_axes = function() {
-    this.x_axis = d3AxisBottom()
+    this.x_axis = d3.axisBottom()
       .scale(this.x)
       .tickFormat(dateTickFormat);
-    return this.y_axis = d3AxisLeft().scale(this.y).ticks(5);
+    return this.y_axis = d3.axisLeft().scale(this.y).ticks(5);
   };
 
   ContributorsMasterGraph.prototype.create_svg = function() {
-    return this.svg = d3Select("#contributors-master").append("svg").attr("width", this.width + this.MARGIN.left + this.MARGIN.right).attr("height", this.height + this.MARGIN.top + this.MARGIN.bottom).attr("class", "tint-box").append("g").attr("transform", "translate(" + this.MARGIN.left + "," + this.MARGIN.top + ")");
+    return this.svg = d3.select("#contributors-master").append("svg").attr("width", this.width + this.MARGIN.left + this.MARGIN.right).attr("height", this.height + this.MARGIN.top + this.MARGIN.bottom).attr("class", "tint-box").append("g").attr("transform", "translate(" + this.MARGIN.left + "," + this.MARGIN.top + ")");
   };
 
   ContributorsMasterGraph.prototype.create_area = function(x, y) {
-    return this.area = d3Area().x(function(d) {
+    return this.area = d3.area().x(function(d) {
       return x(d.date);
     }).y0(this.height).y1(function(d) {
       d.commits = d.commits || d.additions || d.deletions;
@@ -167,7 +163,7 @@ export const ContributorsMasterGraph = (function(superClass) {
   };
 
   ContributorsMasterGraph.prototype.create_brush = function() {
-    return this.brush = d3BrushX(this.x).extent([[this.x.range()[0], 0], [this.x.range()[1], this.height]]).on("end", this.update_content);
+    return this.brush = d3.brushX(this.x).extent([[this.x.range()[0], 0], [this.x.range()[1], this.height]]).on("end", this.update_content);
   };
 
   ContributorsMasterGraph.prototype.draw_path = function(data) {
@@ -242,17 +238,17 @@ export const ContributorsAuthorGraph = (function(superClass) {
   };
 
   ContributorsAuthorGraph.prototype.create_axes = function() {
-    this.x_axis = d3AxisBottom()
+    this.x_axis = d3.axisBottom()
       .scale(this.x)
       .ticks(8)
       .tickFormat(dateTickFormat);
-    return this.y_axis = d3AxisLeft().scale(this.y).ticks(5);
+    return this.y_axis = d3.axisLeft().scale(this.y).ticks(5);
   };
 
   ContributorsAuthorGraph.prototype.create_area = function(x, y) {
-    return this.area = d3Area().x(function(d) {
+    return this.area = d3.area().x(function(d) {
       var parseDate;
-      parseDate = d3TimeParse("%Y-%m-%d");
+      parseDate = d3.timeParse("%Y-%m-%d");
       return x(parseDate(d));
     }).y0(this.height).y1((function(_this) {
       return function(d) {
@@ -268,7 +264,7 @@ export const ContributorsAuthorGraph = (function(superClass) {
   ContributorsAuthorGraph.prototype.create_svg = function() {
     var persons = document.querySelectorAll('.person');
     this.list_item = persons[persons.length - 1];
-    return this.svg = d3Select(this.list_item).append("svg").attr("width", this.width + this.MARGIN.left + this.MARGIN.right).attr("height", this.height + this.MARGIN.top + this.MARGIN.bottom).attr("class", "spark").append("g").attr("transform", "translate(" + this.MARGIN.left + "," + this.MARGIN.top + ")");
+    return this.svg = d3.select(this.list_item).append("svg").attr("width", this.width + this.MARGIN.left + this.MARGIN.right).attr("height", this.height + this.MARGIN.top + this.MARGIN.bottom).attr("class", "spark").append("g").attr("transform", "translate(" + this.MARGIN.left + "," + this.MARGIN.top + ")");
   };
 
   ContributorsAuthorGraph.prototype.draw_path = function(data) {

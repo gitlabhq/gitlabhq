@@ -1,11 +1,9 @@
 /* eslint-disable quotes, jasmine/no-suite-dupes, vars-on-top, no-var */
-
-import {
-  scaleLinear as d3ScaleLinear,
-  scaleTime as d3ScaleTime,
-  timeParse as d3TimeParse,
-} from '~/common_d3/index';
+import { scaleLinear, scaleTime } from 'd3-scale';
+import { timeParse } from 'd3-time-format';
 import { ContributorsGraph, ContributorsMasterGraph } from '~/graphs/stat_graph_contributors_graph';
+
+const d3 = { scaleLinear, scaleTime, timeParse };
 
 describe("ContributorsGraph", function () {
   describe("#set_x_domain", function () {
@@ -57,7 +55,7 @@ describe("ContributorsGraph", function () {
     it("sets the instance's x domain using the prototype's x_domain", function () {
       ContributorsGraph.prototype.x_domain = 20;
       var instance = new ContributorsGraph();
-      instance.x = d3ScaleTime().range([0, 100]).clamp(true);
+      instance.x = d3.scaleTime().range([0, 100]).clamp(true);
       spyOn(instance.x, 'domain');
       instance.set_x_domain();
       expect(instance.x.domain).toHaveBeenCalledWith(20);
@@ -68,7 +66,7 @@ describe("ContributorsGraph", function () {
     it("sets the instance's y domain using the prototype's y_domain", function () {
       ContributorsGraph.prototype.y_domain = 30;
       var instance = new ContributorsGraph();
-      instance.y = d3ScaleLinear().range([100, 0]).nice();
+      instance.y = d3.scaleLinear().range([100, 0]).nice();
       spyOn(instance.y, 'domain');
       instance.set_y_domain();
       expect(instance.y.domain).toHaveBeenCalledWith(30);
@@ -122,7 +120,7 @@ describe("ContributorsMasterGraph", function () {
   describe("#parse_dates", function () {
     it("parses the dates", function () {
       var graph = new ContributorsMasterGraph();
-      var parseDate = d3TimeParse("%Y-%m-%d");
+      var parseDate = d3.timeParse("%Y-%m-%d");
       var data = [{ date: "2013-01-01" }, { date: "2012-12-15" }];
       var correct = [{ date: parseDate(data[0].date) }, { date: parseDate(data[1].date) }];
       graph.parse_dates(data);
