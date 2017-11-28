@@ -630,6 +630,7 @@ class MergeRequest < ActiveRecord::Base
       .to_sql
 
     Note.from("(#{union}) #{Note.table_name}")
+      .includes(:noteable)
   end
 
   alias_method :discussion_notes, :related_notes

@@ -1,11 +1,12 @@
+require 'pry'
+
 module QA
   module Page
     module Project
       module Settings
         class Menu < Page::Base
           def go_to_repository
-            link = find_link 'Repository'
-            link.click
+            click_link 'Repository', href: /settings/
           end
         end
       end
