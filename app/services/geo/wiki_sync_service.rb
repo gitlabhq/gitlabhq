@@ -1,7 +1,5 @@
 module Geo
   class WikiSyncService < BaseSyncService
-    include Gitlab::ShellAdapter
-
     self.type = :wiki
 
     private
@@ -37,7 +35,7 @@ module Geo
       fail_registry('Invalid wiki', e)
 
       log_info('Setting force_to_redownload flag')
-      registry.update(force_to_redownload_wiki: true,)
+      registry.update(force_to_redownload_wiki: true)
     ensure
       clean_up_temporary_repository if redownload
     end
