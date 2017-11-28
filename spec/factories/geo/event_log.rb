@@ -20,6 +20,10 @@ FactoryGirl.define do
       hashed_storage_migrated_event factory: :geo_hashed_storage_migrated_event
     end
 
+    trait :hashed_storage_attachments_event do
+      hashed_storage_attachments_event factory: :geo_hashed_storage_attachments_event
+    end
+
     trait :lfs_object_deleted_event do
       lfs_object_deleted_event factory: :geo_lfs_object_deleted_event
     end
@@ -79,6 +83,13 @@ FactoryGirl.define do
     old_wiki_disk_path { project.wiki.path_with_namespace }
     new_wiki_disk_path { project.wiki.path_with_namespace + '_new' }
     new_storage_version { Project::LATEST_STORAGE_VERSION }
+  end
+
+  factory :geo_hashed_storage_attachments_event, class: Geo::HashedStorageAttachmentsEvent do
+    project { create(:project, :repository) }
+
+    old_attachments_path { Storage::LegacyProject.new(project).disk_path }
+    new_attachments_path { Storage::HashedProject.new(project).disk_path }
   end
 
   factory :geo_lfs_object_deleted_event, class: Geo::LfsObjectDeletedEvent do

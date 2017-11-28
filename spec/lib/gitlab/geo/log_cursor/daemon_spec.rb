@@ -253,6 +253,27 @@ describe Gitlab::Geo::LogCursor::Daemon, :postgresql, :clean_gitlab_redis_shared
       end
     end
 
+    context 'when processing an attachment migration event to hashed storage' do
+      let(:event_log) { create(:geo_event_log, :hashed_storage_attachments_event) }
+      let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
+      let(:hashed_storage_attachments_event) { event_log.hashed_storage_attachments_event }
+
+      it 'does not create a new project registry' do
+        expect { daemon.run_once! }.not_to change(Geo::ProjectRegistry, :count)
+      end
+
+      it 'schedules a Geo::HashedStorageAttachmentsMigrationWorker' do
+        project = hashed_storage_attachments_event.project
+        old_attachments_path = hashed_storage_attachments_event.old_attachments_path
+        new_attachments_path = hashed_storage_attachments_event.new_attachments_path
+
+        expect(::Geo::HashedStorageAttachmentsMigrationWorker).to receive(:perform_async)
+          .with(project.id, old_attachments_path, new_attachments_path)
+
+        daemon.run_once!
+      end
+    end
+
     context 'when replaying a LFS object deleted event' do
       let(:event_log) { create(:geo_event_log, :lfs_object_deleted_event) }
       let!(:event_log_state) { create(:geo_event_log_state, event_id: event_log.id - 1) }
