@@ -815,7 +815,7 @@ GEM
       rake (>= 0.9, < 13)
       sass (~> 3.4.20)
     securecompare (1.0.0)
-    seed-fu (2.3.6)
+    seed-fu (2.3.7)
       activerecord (>= 3.1)
       activesupport (>= 3.1)
     select2-rails (3.5.9.3)
