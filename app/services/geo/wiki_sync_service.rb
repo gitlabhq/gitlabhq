@@ -32,12 +32,12 @@ module Geo
            Gitlab::Shell::Error,
            ProjectWiki::CouldNotCreateWikiError,
            Geo::EmptyCloneUrlPrefixError => e
-      log_error('Error syncing wiki repository', e)
-      registry.increment!(:wiki_retry_count)
+      fail_registry('Error syncing wiki repository', e)
     rescue Gitlab::Git::Repository::NoRepository => e
-      log_error('Invalid wiki', e)
-      registry.update(force_to_redownload_wiki: true,
-                      wiki_retry_count: retry_count + 1)
+      fail_registry('Invalid wiki', e)
+
+      log_info('Setting force_to_redownload flag')
+      registry.update(force_to_redownload_wiki: true,)
     ensure
       clean_up_temporary_repository if redownload
     end
@@ -48,6 +48,13 @@ module Geo
 
     def repository
       project.wiki.repository
+    end
+
+    def fail_registry(message, error)
+      log_error(message, error)
+
+      registry.update!(last_wiki_sync_failure: "#{message}: #{error.message}",
+                       wiki_retry_count: retry_count + 1)
     end
 
     def retry_count
