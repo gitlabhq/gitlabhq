@@ -21,10 +21,10 @@ function genericSuccess(e) {
   $(e.trigger).blur();
 }
 
-// Safari doesn't support `execCommand`, so instead we inform the user to
-// copy manually.
-//
-// See http://clipboardjs.com/#browser-support
+/**
+ * Safari > 10 doesn't support `execCommand`, so instead we inform the user to copy manually.
+ * See http://clipboardjs.com/#browser-support
+ */
 function genericError(e) {
   let key;
   if (/Mac/i.test(navigator.userAgent)) {
