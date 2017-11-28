@@ -1,6 +1,6 @@
 module Geo
   class RepositoriesCleanUpWorker
-    include Sidekiq::Worker
+    include ApplicationWorker
     include GeoQueue
     include Gitlab::ShellAdapter
     include ExclusiveLeaseGuard

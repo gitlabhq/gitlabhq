@@ -1,6 +1,6 @@
 module Geo
   class MetricsUpdateWorker
-    include Sidekiq::Worker
+    include ApplicationWorker
     include ExclusiveLeaseGuard
     include CronjobQueue
 

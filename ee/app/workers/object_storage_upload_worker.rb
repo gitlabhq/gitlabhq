@@ -1,6 +1,5 @@
 class ObjectStorageUploadWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   def perform(uploader_class_name, subject_class_name, file_field, subject_id)
     uploader_class = uploader_class_name.constantize

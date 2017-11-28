@@ -22,7 +22,7 @@ describe Gitlab::SidekiqCluster::CLI do
 
       context 'with --negate flag' do
         it 'starts Sidekiq workers for all queues on sidekiq_queues.yml except the ones on argv' do
-          expect(Gitlab::SidekiqConfig).to receive(:queues).and_return(['baz'])
+          expect(Gitlab::SidekiqConfig).to receive(:config_queues).and_return(['baz'])
           expect(Gitlab::SidekiqCluster).to receive(:start)
                                               .with([['baz']], 'test', Dir.pwd)
                                               .and_return([])

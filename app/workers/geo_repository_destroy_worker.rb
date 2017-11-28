@@ -1,5 +1,5 @@
 class GeoRepositoryDestroyWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
   include GeoQueue
   include Gitlab::ShellAdapter
 

@@ -1,5 +1,5 @@
 class PagesWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
 
   sidekiq_options queue: :pages, retry: false
 

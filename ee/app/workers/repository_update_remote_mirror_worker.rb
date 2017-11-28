@@ -2,9 +2,8 @@ class RepositoryUpdateRemoteMirrorWorker
   UpdateAlreadyInProgressError = Class.new(StandardError)
   UpdateError = Class.new(StandardError)
 
-  include Sidekiq::Worker
+  include ApplicationWorker
   include Gitlab::ShellAdapter
-  include DedicatedSidekiqQueue
 
   sidekiq_options retry: 3, dead: false
 

@@ -30,18 +30,16 @@ module Gitlab
 
         option_parser.parse!(argv)
 
-        parsed_queues = SidekiqCluster.parse_queues(argv)
+        queue_groups = SidekiqCluster.parse_queues(argv)
 
-        queues =
-          if @negate_queues
-            parsed_queues.map { |queues| SidekiqConfig.queues(@rails_path, except: queues) }
-          else
-            parsed_queues
-          end
+        if @negate_queues
+          all_queues = SidekiqConfig.config_queues(@rails_path)
+          queue_groups.map! { |queues| all_queues - queues }
+        end
 
-        @logger.info("Starting cluster with #{queues.length} processes")
+        @logger.info("Starting cluster with #{queue_groups.length} processes")
 
-        @processes = SidekiqCluster.start(queues, @environment, @rails_path)
+        @processes = SidekiqCluster.start(queue_groups, @environment, @rails_path)
 
         write_pid
         trap_signals

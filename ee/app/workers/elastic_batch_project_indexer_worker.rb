@@ -1,10 +1,9 @@
 class ElasticBatchProjectIndexerWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
   include Gitlab::CurrentSettings
 
   # Batch indexing is a generally a onetime option, so give finer control over
   # queuing and concurrency
-  include DedicatedSidekiqQueue
 
   # This worker is long-running, but idempotent, so retry many times if
   # necessary

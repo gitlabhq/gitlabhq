@@ -1,6 +1,6 @@
 module Geo
   class PruneEventLogWorker
-    include Sidekiq::Worker
+    include ApplicationWorker
     include CronjobQueue
     include ExclusiveLeaseGuard
     include ::Gitlab::Geo::LogHelpers

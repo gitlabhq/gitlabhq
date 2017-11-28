@@ -1,6 +1,6 @@
 module Geo
   class RenameRepositoryWorker
-    include Sidekiq::Worker
+    include ApplicationWorker
     include GeoQueue
 
     def perform(project_id, old_disk_path, new_disk_path)

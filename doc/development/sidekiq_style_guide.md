@@ -18,8 +18,7 @@ include the `DedicatedSidekiqQueue` concern as follows:
 
 ```ruby
 class ProcessSomethingWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 end
 ```
 

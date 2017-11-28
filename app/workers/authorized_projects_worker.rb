@@ -1,6 +1,5 @@
 class AuthorizedProjectsWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   # Schedules multiple jobs and waits for them to be completed.
   def self.bulk_perform_and_wait(args_list)

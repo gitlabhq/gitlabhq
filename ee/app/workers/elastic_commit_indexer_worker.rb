@@ -1,6 +1,5 @@
 class ElasticCommitIndexerWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
   include Gitlab::CurrentSettings
 
   sidekiq_options retry: 2

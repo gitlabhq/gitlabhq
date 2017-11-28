@@ -1,6 +1,6 @@
 module Geo
   class HashedStorageAttachmentsMigrationWorker
-    include Sidekiq::Worker
+    include ApplicationWorker
     include GeoQueue
 
     def perform(project_id, old_attachments_path, new_attachments_path)

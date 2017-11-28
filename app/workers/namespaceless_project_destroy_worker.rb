@@ -5,8 +5,7 @@
 # The worker will reject doing anything for projects that *do* have a
 # namespace. For those use ProjectDestroyWorker instead.
 class NamespacelessProjectDestroyWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
   include ExceptionBacktrace
 
   def self.bulk_perform_async(args_list)
