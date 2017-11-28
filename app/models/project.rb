@@ -905,9 +905,11 @@ class Project < ActiveRecord::Base
     @ci_service ||= ci_services.reorder(nil).find_by(active: true)
   end
 
-  # TODO: This will be extended for multiple enviroment clusters
   def deployment_platform
-    @deployment_platform ||= clusters.find_by(enabled: true)&.platform_kubernetes
+    @deployment_platform ||= clusters.select do |cluster|
+      cluster.matches?(environment) # TODO: This is the same logic with Environment Variable
+    end.first&.platform_kubernetes
+
     @deployment_platform ||= services.where(category: :deployment).reorder(nil).find_by(active: true)
   end
 
