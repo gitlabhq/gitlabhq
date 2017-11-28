@@ -2,17 +2,16 @@
   .fade-left= icon("angle-left")
   .fade-right= icon("angle-right")
   %ul.nav-links.scrolling-tabs
-    %li{ class: ('active' if @scope == 'enabled') }>
-      = link_to project_clusters_path(@project, scope: :enabled), class: "js-active-tab" do
+    %li{ class: ('active' if @scope == 'active') }>
+      = link_to project_clusters_path(@project, scope: :active), class: "js-active-tab" do
         = s_("ClusterIntegration|Active")
         %span.badge= @active_count
-
-    %li{ class: ('active' if @scope == 'disabled') }>
-      = link_to project_clusters_path(@project, scope: :disabled), class: "js-inactive-tab #{'active' if @scope == 'disabled'}" do
+    %li{ class: ('active' if @scope == 'inactive') }>
+      = link_to project_clusters_path(@project, scope: :inactive), class: "js-inactive-tab" do
         = s_("ClusterIntegration|Inactive")
         %span.badge= @inactive_count
     %li{ class: ('active' if @scope.nil? || @scope == 'all') }>
-      = link_to project_clusters_path(@project, scope: :all), class: "js-all-tab #{'active' if @scope == 'all' || @scope.nil?}" do
+      = link_to project_clusters_path(@project), class: "js-all-tab" do
         = s_("ClusterIntegration|All")
         %span.badge= @all_count
   .pull-right.nav-bar-right

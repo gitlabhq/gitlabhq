@@ -24,11 +24,12 @@ feature 'Clusters', :js do
         visit project_clusters_path(project)
       end
 
-      it 'user sees empty state' do
+      it 'sees empty state' do
         expect(page).to have_link('Add cluster')
+        expect(page).to have_selector('.empty-state')
       end
 
-      context 'when user opens opens create on gke page' do
+      context 'when user opens create on gke page' do
         before do
           click_link 'Add cluster'
           click_link 'Create on GKE'
@@ -95,6 +96,7 @@ feature 'Clusters', :js do
       end
 
       it 'user sees a table with one cluster' do
+        # One is the header row, the other the cluster row
         expect(page).to have_selector('.gl-responsive-table-row', count: 2)
       end
 
@@ -120,19 +122,29 @@ feature 'Clusters', :js do
 
         context 'with sucessfull request' do
           it 'user sees updated cluster' do
+            page.find('.js-toggle-cluster-list').click
+
+            wait_for_requests
+
+            expect(page).not_to have_selector('.is-checked')
           end
         end
 
         context 'with failed request' do
           it 'user sees not update cluster and error message' do
+            # Cluster was disabled in the last test
+            page.find('.js-toggle-cluster-list').click
+
+            Clusters::Cluster.last.provider.make_errored!('Something wrong!')
+
+            expect(page).not_to have_selector('.js-toggle-cluster-list.is-checked')
           end
         end
       end
 
       context 'when user clicks on a cluster' do
         before do
-          # TODO: Replace with Click on cluster after frontend implements list
-          visit project_cluster_path(project, cluster)
+          click_link cluster.name
         end
 
         it 'user sees an cluster details page' do

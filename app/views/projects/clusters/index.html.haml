@@ -2,9 +2,9 @@
 - page_title "Clusters"
 
 .clusters-container
-  - if @clusters.empty? && @scope == 'all'
+  - if @clusters.empty? && (@scope.nil? || @scope == 'all')
     = render "empty_state"
-  - elsif @clusters.empty? && @scope != 'all'
+  - elsif @clusters.empty? && (!@scope.nil? || @scope != 'all')
     = render "tabs"
     .prepend-top-20.text-center
       = s_("ClusterIntegration|There are no clusters to show")
