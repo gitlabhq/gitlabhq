@@ -131,6 +131,13 @@
   }
 }
 
+@mixin btn-svg {
+  height: $gl-padding;
+  width: $gl-padding;
+  top: 0;
+  vertical-align: text-top;
+}
+
 .btn {
   @include btn-default;
   @include btn-white;
@@ -428,4 +435,8 @@
     color: $gl-link-color;
     text-decoration: none;
   }
+}
+
+.btn-svg svg {
+  @include btn-svg;
 }

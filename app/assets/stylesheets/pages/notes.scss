@@ -543,10 +543,7 @@ ul.notes {
   }
 
   svg {
-    height: 16px;
-    width: 16px;
-    top: 0;
-    vertical-align: text-top;
+    @include btn-svg;
   }
 
   .award-control-icon-positive,
