@@ -183,6 +183,23 @@ module Gitlab
             job_id: job_id)
         end
 
+        def handle_hashed_storage_attachments_event(event, created_at)
+          job_id = ::Geo::HashedStorageAttachmentsMigrationService.new(
+            event.project_id,
+            old_attachments_path: event.old_attachments_path,
+            new_attachments_path: event.new_attachments_path
+          ).async_execute
+
+          logger.event_info(
+            created_at,
+            message: 'Migrating attachments to hashed storage',
+            project_id: event.project_id,
+            old_attachments_path: event.old_attachments_path,
+            new_attachments_path: event.new_attachments_path,
+            job_id: job_id
+          )
+        end
+
         def handle_lfs_object_deleted_event(event, created_at)
           file_path = File.join(LfsObjectUploader.local_store_path, event.file_path)
 

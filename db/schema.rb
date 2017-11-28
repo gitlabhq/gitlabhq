@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171121144800) do
+ActiveRecord::Schema.define(version: 20171124070437) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -882,6 +882,7 @@ ActiveRecord::Schema.define(version: 20171121144800) do
     t.integer "repository_created_event_id", limit: 8
     t.integer "hashed_storage_migrated_event_id", limit: 8
     t.integer "lfs_object_deleted_event_id", limit: 8
+    t.integer "hashed_storage_attachments_event_id", limit: 8
   end
 
   add_index "geo_event_log", ["repositories_changed_event_id"], name: "index_geo_event_log_on_repositories_changed_event_id", using: :btree
@@ -889,6 +890,14 @@ ActiveRecord::Schema.define(version: 20171121144800) do
   add_index "geo_event_log", ["repository_deleted_event_id"], name: "index_geo_event_log_on_repository_deleted_event_id", using: :btree
   add_index "geo_event_log", ["repository_renamed_event_id"], name: "index_geo_event_log_on_repository_renamed_event_id", using: :btree
   add_index "geo_event_log", ["repository_updated_event_id"], name: "index_geo_event_log_on_repository_updated_event_id", using: :btree
+
+  create_table "geo_hashed_storage_attachments_events", id: :bigserial, force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.text "old_attachments_path", null: false
+    t.text "new_attachments_path", null: false
+  end
+
+  add_index "geo_hashed_storage_attachments_events", ["project_id"], name: "index_geo_hashed_storage_attachments_events_on_project_id", using: :btree
 
   create_table "geo_hashed_storage_migrated_events", id: :bigserial, force: :cascade do |t|
     t.integer "project_id", null: false
@@ -2450,6 +2459,7 @@ ActiveRecord::Schema.define(version: 20171121144800) do
   add_foreign_key "geo_event_log", "geo_repository_deleted_events", column: "repository_deleted_event_id", name: "fk_c4b1c1f66e", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_renamed_events", column: "repository_renamed_event_id", name: "fk_86c84214ec", on_delete: :cascade
   add_foreign_key "geo_event_log", "geo_repository_updated_events", column: "repository_updated_event_id", on_delete: :cascade
+  add_foreign_key "geo_hashed_storage_attachments_events", "projects", on_delete: :cascade
   add_foreign_key "geo_hashed_storage_migrated_events", "projects", on_delete: :cascade
   add_foreign_key "geo_node_namespace_links", "geo_nodes", on_delete: :cascade
   add_foreign_key "geo_node_namespace_links", "namespaces", on_delete: :cascade
