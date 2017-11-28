@@ -1,11 +1,14 @@
 namespace :gitlab do
   namespace :cleanup do
+    HASHED_REPOSITORY_NAME = '@hashed'.freeze
+
     desc "GitLab | Cleanup | Clean namespaces"
     task dirs: :environment  do
       warn_user_is_not_gitlab
       remove_flag = ENV['REMOVE']
 
-      namespaces = Namespace.pluck(:path)
+      namespaces  = Namespace.pluck(:path)
+      namespaces << HASHED_REPOSITORY_NAME  # add so that it will be ignored
       Gitlab.config.repositories.storages.each do |name, repository_storage|
         git_base_path = repository_storage['path']
         all_dirs = Dir.glob(git_base_path + '/*')
@@ -62,7 +65,7 @@ namespace :gitlab do
 
             # TODO ignoring hashed repositories for now.  But revisit to fully support
             # possible orphaned hashed repos
-            next if repo_with_namespace.start_with?('@hashed/') || Project.find_by_full_path(repo_with_namespace)
+            next if repo_with_namespace.start_with?("#{HASHED_REPOSITORY_NAME}/") || Project.find_by_full_path(repo_with_namespace)
 
             new_path = path + move_suffix
             puts path.inspect + ' -> ' + new_path.inspect
