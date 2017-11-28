@@ -521,6 +521,13 @@ import ProjectVariables from './project_variables';
         case 'projects:settings:ci_cd:show':
           // Initialize expandable settings panels
           initSettingsPanels();
+
+          import(/* webpackChunkName: "ci-cd-settings" */ './projects/ci_cd_settings_bundle')
+            .then(ciCdSettings => ciCdSettings.default())
+            .catch((err) => {
+              Flash(s__('ProjectSettings|Problem setting up the CI/CD settings JavaScript'));
+              throw err;
+            });
         case 'groups:settings:ci_cd:show':
           new ProjectVariables();
           break;

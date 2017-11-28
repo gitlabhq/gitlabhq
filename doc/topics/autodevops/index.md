@@ -121,7 +121,7 @@ Google Cloud.
 
 ## Enabling Auto DevOps
 
-NOTE: **Note:**
+**Note:**
 If you haven't done already, read the [prerequisites](#prerequisites) to make
 full use of Auto DevOps. If this is your fist time, we recommend you follow the
 [quick start guide](#quick-start).
@@ -129,9 +129,13 @@ full use of Auto DevOps. If this is your fist time, we recommend you follow the
 1. Go to your project's **Settings > CI/CD > General pipelines settings** and
    find the Auto DevOps section
 1. Select "Enable Auto DevOps"
+1. After selecting an option to enable Auto DevOps, a checkbox will appear below
+   so you can immediately run a pipeline on the default branch
 1. Optionally, but recommended, add in the [base domain](#auto-devops-base-domain)
    that will be used by Kubernetes to deploy your application
 1. Hit **Save changes** for the changes to take effect
+
+![Project AutoDevops settings section](img/auto_devops_settings.png)
 
 Now that it's enabled, there are a few more steps depending on whether your project
 has a `.gitlab-ci.yml` or not:
