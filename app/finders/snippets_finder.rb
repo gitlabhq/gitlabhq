@@ -86,8 +86,7 @@ class SnippetsFinder < UnionFinder
   end
 
   def project_member?
-    params[:project].project_member(current_user) ||
-      params[:project].team&.member?(current_user)
+    params[:project].team.member?(current_user)
   end
 
   def snippets_from_public_projects
