@@ -121,14 +121,6 @@ describe RemoteMirror do
       end
     end
 
-    context 'with remote mirroring enabled' do
-      it 'schedules a RepositoryUpdateRemoteMirrorWorker to run within a certain backoff delay' do
-        expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_in).with(RemoteMirror::BACKOFF_DELAY, remote_mirror.id, Time.now)
-
-        remote_mirror.sync
-      end
-    end
-
     context 'with remote mirroring disabled' do
       it 'returns nil' do
         remote_mirror.update_attributes(enabled: false)
@@ -142,6 +134,52 @@ describe RemoteMirror do
         allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
 
         expect(remote_mirror.sync).to be_nil
+      end
+    end
+
+    context 'with remote mirroring enabled' do
+      context 'with only protected branches enabled' do
+        context 'when it did not update in the last minute' do
+          it 'schedules a RepositoryUpdateRemoteMirrorWorker to run now' do
+            expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_async).with(remote_mirror.id, Time.now)
+
+            remote_mirror.sync
+          end
+        end
+
+        context 'when it did update in the last minute' do
+          it 'schedules a RepositoryUpdateRemoteMirrorWorker to run in the next minute' do
+            remote_mirror.last_update_started_at = Time.now - 30.seconds
+
+            expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_in).with(RemoteMirror::PROTECTED_BACKOFF_DELAY, remote_mirror.id, Time.now)
+
+            remote_mirror.sync
+          end
+        end
+      end
+
+      context 'with only protected branches disabled' do
+        before do
+          remote_mirror.only_protected_branches = false
+        end
+
+        context 'when it did not update in the last 5 minutes' do
+          it 'schedules a RepositoryUpdateRemoteMirrorWorker to run now' do
+            expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_async).with(remote_mirror.id, Time.now)
+
+            remote_mirror.sync
+          end
+        end
+
+        context 'when it did update within the last 5 minutes' do
+          it 'schedules a RepositoryUpdateRemoteMirrorWorker to run in the next 5 minutes' do
+            remote_mirror.last_update_started_at = Time.now - 30.seconds
+
+            expect(RepositoryUpdateRemoteMirrorWorker).to receive(:perform_in).with(RemoteMirror::UNPROTECTED_BACKOFF_DELAY, remote_mirror.id, Time.now)
+
+            remote_mirror.sync
+          end
+        end
       end
     end
   end
