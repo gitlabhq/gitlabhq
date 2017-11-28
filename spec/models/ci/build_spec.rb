@@ -1037,9 +1037,9 @@ describe Ci::Build do
   describe '#merge_request' do
     def create_mr(build, pipeline, factory: :merge_request, created_at: Time.now)
       create(factory, source_project: pipeline.project,
-             target_project: pipeline.project,
-             source_branch: build.ref,
-             created_at: created_at)
+                      target_project: pipeline.project,
+                      source_branch: build.ref,
+                      created_at: created_at)
     end
 
     context 'when a MR has a reference to the pipeline' do
@@ -1338,7 +1338,7 @@ describe Ci::Build do
     context 'when `when` is undefined' do
       before do
         build.when = nil
-        end
+      end
 
       context 'use from gitlab-ci.yml' do
         let(:pipeline) { create(:ci_pipeline) }
@@ -1379,7 +1379,7 @@ describe Ci::Build do
         end
       end
     end
-    end
+  end
 
   describe '#variables' do
     let(:container_registry_enabled) { false }
@@ -1482,7 +1482,7 @@ describe Ci::Build do
 
         before do
           environment_variables <<
-          { key: 'CI_ENVIRONMENT_URL', value: url, public: true }
+            { key: 'CI_ENVIRONMENT_URL', value: url, public: true }
         end
 
         context 'when the URL was set from the job' do
