@@ -27,6 +27,9 @@ export default {
       binary: data.binary,
       html: data.html,
       renderError: data.render_error,
+      editorRow: 0,
+      editorColumn: 0,
+      fileLanguage: '',
     });
   },
   [types.SET_FILE_RAW_DATA](state, { file, raw }) {
@@ -40,6 +43,17 @@ export default {
     Object.assign(file, {
       content,
       changed,
+    });
+  },
+  [types.UPDATE_FILE_LANGUAGE](state, { file, fileLanguage }) {
+    Object.assign(file, {
+      fileLanguage,
+    });
+  },
+  [types.UPDATE_FILE_POSITION](state, { file, editorRow, editorColumn }) {
+    Object.assign(file, {
+      editorRow,
+      editorColumn,
     });
   },
   [types.DISCARD_FILE_CHANGES](state, file) {

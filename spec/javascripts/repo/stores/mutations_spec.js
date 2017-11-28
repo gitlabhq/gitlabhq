@@ -106,12 +106,4 @@ describe('Multi-file store mutations', () => {
       expect(localState.isInitialRoot).toBeFalsy();
     });
   });
-
-  describe('SET_PREVIOUS_URL', () => {
-    it('sets previousUrl', () => {
-      mutations.SET_PREVIOUS_URL(localState, 'testing');
-
-      expect(localState.previousUrl).toBe('testing');
-    });
-  });
 });

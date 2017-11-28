@@ -118,17 +118,6 @@ export const createTempEntry = ({ state, dispatch }, { name, type, content = '',
   }
 };
 
-/* export const popHistoryState = ({ state, dispatch, getters }) => {
-  const treeList = getters.treeList;
-  const tree = treeList.find(file => file.url === state.previousUrl);
-
-  if (!tree) return;
-
-  if (tree.type === 'tree') {
-    dispatch('toggleTreeOpen', { endpoint: tree.url, tree });
-  }
-}; */
-
 export const scrollToTab = () => {
   Vue.nextTick(() => {
     const tabs = document.getElementById('tabs');

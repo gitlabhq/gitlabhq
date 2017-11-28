@@ -5,18 +5,11 @@ import RepoCommitSection from './repo_commit_section.vue';
 export default {
   computed: {
     ...mapGetters([
-      'isCollapsed',
       'changedFiles',
     ]),
   },
   components: {
     RepoCommitSection,
-  },
-  created() {
-    //window.addEventListener('popstate', this.popHistoryState);
-  },
-  destroyed() {
-    //window.removeEventListener('popstate', this.popHistoryState);
   },
 };
 </script>

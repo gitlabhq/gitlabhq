@@ -178,7 +178,6 @@ describe('Multi-file store tree actions', () => {
           endpoint: 'test',
           tree,
         });
-        expect(store.state.previousUrl).toBe('test');
 
         done();
       }).catch(done.fail);

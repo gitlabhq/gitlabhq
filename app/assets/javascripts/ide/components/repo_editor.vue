@@ -24,6 +24,8 @@ export default {
     ...mapActions([
       'getRawFileData',
       'changeFileContent',
+      'setFileLanguage',
+      'setEditorPosition',
     ]),
     initMonaco() {
       if (this.shouldHideEditor) return;
@@ -43,12 +45,21 @@ export default {
       const model = this.editor.createModel(this.activeFile);
 
       this.editor.attachModel(model);
+
       model.onChange((m) => {
         this.changeFileContent({
           file: this.activeFile,
           content: m.getValue(),
         });
       });
+      /*
+      this.monacoInstance.onDidChangeCursorPosition((e) => {
+        this.setEditorPosition({
+          file: this.activeFile,
+          editorRow: e.position.lineNumber,
+          editorColumn: e.position.column,
+        });
+      });*/
     },
   },
   watch: {

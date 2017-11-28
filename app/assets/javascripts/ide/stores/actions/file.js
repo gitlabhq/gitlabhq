@@ -80,6 +80,14 @@ export const changeFileContent = ({ commit }, { file, content }) => {
   commit(types.UPDATE_FILE_CONTENT, { file, content });
 };
 
+export const setFileLanguage = ({ commit }, { file, fileLanguage }) => {
+  commit(types.UPDATE_FILE_LANGUAGE, { file, fileLanguage });
+};
+
+export const setEditorPosition = ({ commit }, { file, editorRow, editorColumn }) => {
+  commit(types.UPDATE_FILE_POSITION, { file, editorRow, editorColumn });
+};
+
 export const createTempFile = ({ state, commit, dispatch }, { tree, name, content = '', base64 = '' }) => {
   const file = createTemp({
     name: name.replace(`${state.path}/`, ''),
