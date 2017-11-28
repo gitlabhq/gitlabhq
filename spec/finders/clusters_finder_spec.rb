@@ -15,19 +15,19 @@ describe ClustersFinder do
     context 'when scope is all' do
       let(:scope) { :all }
 
-      it { is_expected.to eq(project.clusters.to_a) }
+      it { is_expected.to eq(project.clusters) }
     end
 
     context 'when scope is enabled' do
-      let(:scope) { :enabled }
+      let(:scope) { :active }
 
-      it { is_expected.to eq(project.clusters.enabled.to_a) }
+      it { is_expected.to eq(project.clusters.enabled) }
     end
 
     context 'when scope is disabled' do
-      let(:scope) { :disabled }
+      let(:scope) { :inactive }
 
-      it { is_expected.to eq(project.clusters.disabled.to_a) }
+      it { is_expected.to eq(project.clusters.disabled) }
     end
   end
 end

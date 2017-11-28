@@ -1,19 +1,29 @@
 class ClustersFinder
+  attr_reader :project, :user, :scope
+
   def initialize(project, user, scope)
     @project = project
     @user = user
-    @scope = scope
+    @scope = scope || :active
   end
 
   def execute
-    clusters = case @scope
-               when :all
-                 @project.clusters
-               when :enabled
-                 @project.clusters.enabled
-               when :disabled
-                 @project.clusters.disabled
-               end
-    clusters.map { |cluster| cluster.present(current_user: @user) }
+    clusters = project.clusters
+    filter_by_scope(clusters)
+  end
+
+  private
+
+  def filter_by_scope(clusters)
+    case @scope.to_sym
+    when :all
+      clusters
+    when :inactive
+      clusters.disabled
+    when :active
+      clusters.enabled
+    else
+      raise "Invalid scope #{@scope}"
+    end
   end
 end
