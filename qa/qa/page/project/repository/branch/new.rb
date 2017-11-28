@@ -5,7 +5,6 @@ module QA
         module Branch
           class New < Page::Base
             def choose_ref(ref)
-              binding.pry
               fill_in 'ref', with: ref
             end
 

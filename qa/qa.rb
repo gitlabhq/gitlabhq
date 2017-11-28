@@ -49,12 +49,6 @@ module QA
             autoload :Create, 'qa/scenario/gitlab/project/repository/branch/create'
           end
         end
-
-        module Settings
-          module Repository
-            autoload :ProtectBranch, 'qa/scenario/gitlab/project/settings/repository/protect_branch.rb'
-          end
-        end
       end
 
       module Sandbox
@@ -103,11 +97,6 @@ module QA
         module Branch
           autoload :New, 'qa/page/project/repository/branch/new'
         end
-      end
-
-      module Settings
-        autoload :Menu, 'qa/page/project/settings/menu'
-        autoload :Repository, 'qa/page/project/settings/repository'
       end
     end
 
