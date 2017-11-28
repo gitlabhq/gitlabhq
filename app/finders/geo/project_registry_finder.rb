@@ -1,11 +1,5 @@
 module Geo
-  class ProjectRegistryFinder
-    attr_reader :current_node
-
-    def initialize(current_node: nil)
-      @current_node = current_node
-    end
-
+  class ProjectRegistryFinder < RegistryFinder
     def find_unsynced_projects(batch_size:)
       relation =
         if fdw?
@@ -30,18 +24,8 @@ module Geo
 
     protected
 
-    def fdw?
-      # Selective project replication adds a wrinkle to FDW
-      # queries, so we fallback to the legacy version for now.
-      Gitlab::Geo.fdw? && !selective_sync
-    end
-
     def fdw_table
       Geo::Fdw::Project.table_name
-    end
-
-    def selective_sync
-      current_node.restricted_project_ids
     end
 
     #
