@@ -4,7 +4,6 @@ module Ci
     include HasVariable
     include Presentable
     prepend EE::Ci::Variable
-    include Presentable
 
     belongs_to :project
 
