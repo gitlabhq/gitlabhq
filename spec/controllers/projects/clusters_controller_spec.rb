@@ -26,7 +26,7 @@ describe Projects::ClustersController do
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template(:index)
-          expect(assigns(:clusters)).to eq(clusters)
+          expect(assigns(:clusters)).to match_array(clusters)
         end
 
         it 'assigns counters to correct values' do
@@ -48,7 +48,7 @@ describe Projects::ClustersController do
 
         context 'when only enabled clusters are requested' do
           it 'returns only enabled clusters' do
-            get :index, namespace_id: project.namespace.to_param, project_id: project, scope: 'enabled'
+            get :index, namespace_id: project.namespace.to_param, project_id: project, scope: 'active'
             clusters = assigns(:clusters)
             expect(clusters.all? { |cluster| cluster.enabled == true }).to eq(true)
           end
@@ -56,7 +56,7 @@ describe Projects::ClustersController do
 
         context 'when only disabled clusters are requested' do
           it 'returns only disabled clusters' do
-            get :index, namespace_id: project.namespace.to_param, project_id: project, scope: 'disabled'
+            get :index, namespace_id: project.namespace.to_param, project_id: project, scope: 'inactive'
             clusters = assigns(:clusters)
             expect(clusters.all? { |cluster| cluster.enabled == false }).to eq(true)
           end
