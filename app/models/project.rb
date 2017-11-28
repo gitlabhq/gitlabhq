@@ -20,9 +20,6 @@ class Project < ActiveRecord::Base
   include GroupDescendant
   include Gitlab::SQL::Pattern
 
-  # EE specific modules
-  prepend EE::Project
-
   extend Gitlab::ConfigHelper
   extend Gitlab::CurrentSettings
 
@@ -103,7 +100,6 @@ class Project < ActiveRecord::Base
   # Project services
   has_one :campfire_service
   has_one :drone_ci_service
-  has_one :gitlab_slack_application_service
   has_one :emails_on_push_service
   has_one :pipelines_email_service
   has_one :irker_service
@@ -127,7 +123,7 @@ class Project < ActiveRecord::Base
   has_one :bugzilla_service
   has_one :gitlab_issue_tracker_service, inverse_of: :project
   has_one :external_wiki_service
-  # has_one :kubernetes_service, inverse_of: :project
+  has_one :kubernetes_service, inverse_of: :project
   has_one :prometheus_service, inverse_of: :project
   has_one :mock_ci_service
   has_one :mock_deployment_service
@@ -293,6 +289,7 @@ class Project < ActiveRecord::Base
   scope :non_archived, -> { where(archived: false) }
   scope :for_milestones, ->(ids) { joins(:milestones).where('milestones.id' => ids).distinct }
   scope :with_push, -> { joins(:events).where('events.action = ?', Event::PUSHED) }
+
   scope :with_project_feature, -> { joins('LEFT JOIN project_features ON projects.id = project_features.project_id') }
   scope :with_statistics, -> { includes(:statistics) }
   scope :with_shared_runners, -> { where(shared_runners_enabled: true) }
@@ -393,6 +390,10 @@ class Project < ActiveRecord::Base
       transition [:scheduled, :started] => :failed
     end
 
+    event :import_retry do
+      transition failed: :started
+    end
+
     state :scheduled
     state :started
     state :finished
@@ -479,14 +480,6 @@ class Project < ActiveRecord::Base
   def ancestors_upto(top = nil)
     Gitlab::GroupHierarchy.new(Group.where(id: namespace_id))
       .base_and_ancestors(upto: top)
-  end
-
-  def root_namespace
-    if namespace.has_parent?
-      namespace.root_ancestor
-    else
-      namespace
-    end
   end
 
   def lfs_enabled?
@@ -624,8 +617,6 @@ class Project < ActiveRecord::Base
     else
       super
     end
-  rescue
-    super
   end
 
   def valid_import_url?
@@ -906,16 +897,10 @@ class Project < ActiveRecord::Base
     @ci_service ||= ci_services.reorder(nil).find_by(active: true)
   end
 
-  def deployment_services
-    services.where(category: :deployment)
-  end
-
-  def deployment_service
-    deployment_platform
-  end
-
-  def kubernetes_service
-    deployment_platform
+  # TODO: This will be extended for multiple enviroment clusters
+  def deployment_platform
+    @deployment_platform ||= clusters.find_by(enabled: true)&.platform_kubernetes
+    @deployment_platform ||= services.where(category: :deployment).reorder(nil).find_by(active: true)
   end
 
   def monitoring_services
@@ -1055,7 +1040,6 @@ class Project < ActiveRecord::Base
 
   # Expires various caches before a project is renamed.
   def expire_caches_before_rename(old_path)
-    # TODO: if we start using UUIDs for cache, we don't need to do this HACK anymore
     repo = Repository.new(old_path, self)
     wiki = Repository.new("#{old_path}.wiki", self)
 
@@ -1561,9 +1545,9 @@ class Project < ActiveRecord::Base
   end
 
   def deployment_variables
-    return [] unless deployment_service
+    return [] unless deployment_platform
 
-    deployment_service.predefined_variables
+    deployment_platform.predefined_variables
   end
 
   def auto_devops_variables
@@ -1633,6 +1617,10 @@ class Project < ActiveRecord::Base
 
   def multiple_issue_boards_available?(user)
     feature_available?(:multiple_issue_boards, user)
+  end
+
+  def issue_board_milestone_available?(user = nil)
+    feature_available?(:issue_board_milestone, user)
   end
 
   def full_path_was
@@ -1851,12 +1839,5 @@ class Project < ActiveRecord::Base
     end
 
     raise ex
-  end
-
-  # TODO: This will be extended for multiple enviroment clusters
-  # TODO: Add super nice tests to check this interchangeability
-  def deployment_platform
-    @deployment_platform ||= clusters.where(enabled: true).first&.platform_kubernetes
-    @deployment_platform ||= deployment_services.reorder(nil).find_by(active: true)
   end
 end

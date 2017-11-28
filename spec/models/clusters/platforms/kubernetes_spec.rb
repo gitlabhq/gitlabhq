@@ -92,55 +92,6 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
     end
   end
 
-  describe 'after_save from Clusters::Cluster' do
-    context 'when platform_kubernetes is being cerated' do
-      let(:enabled) { true }
-      let(:project) { create(:project) }
-      let(:cluster) { build(:cluster, provider_type: :gcp, platform_type: :kubernetes, platform_kubernetes: platform, provider_gcp: provider, enabled: enabled, projects: [project]) }
-      let(:platform) { build(:cluster_platform_kubernetes, :configured) }
-      let(:provider) { build(:cluster_provider_gcp) }
-      let(:kubernetes_service) { project.kubernetes_service }
-
-      it 'updates KubernetesService' do
-        cluster.save!
-
-        expect(kubernetes_service.active).to eq(enabled)
-        expect(kubernetes_service.api_url).to eq(platform.api_url)
-        expect(kubernetes_service.namespace).to eq(platform.namespace)
-        expect(kubernetes_service.ca_pem).to eq(platform.ca_cert)
-      end
-    end
-
-    context 'when platform_kubernetes has been created' do
-      let(:enabled) { false }
-      let!(:project) { create(:project) }
-      let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
-      let(:platform) { cluster.platform }
-      let(:kubernetes_service) { project.kubernetes_service }
-
-      it 'updates KubernetesService' do
-        cluster.update(enabled: enabled)
-
-        expect(kubernetes_service.active).to eq(enabled)
-      end
-    end
-
-    context 'when kubernetes_service has been configured without cluster integration' do
-      let!(:project) { create(:project) }
-      let(:cluster) { build(:cluster, provider_type: :gcp, platform_type: :kubernetes, platform_kubernetes: platform, provider_gcp: provider, projects: [project]) }
-      let(:platform) { build(:cluster_platform_kubernetes, :configured, api_url: 'https://111.111.111.111') }
-      let(:provider) { build(:cluster_provider_gcp) }
-
-      before do
-        create(:kubernetes_service, project: project)
-      end
-
-      it 'raises an error' do
-        expect { cluster.save! }.to raise_error('Kubernetes service already configured')
-      end
-    end
-  end
-
   describe '#actual_namespace' do
     subject { kubernetes.actual_namespace }
 

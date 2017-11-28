@@ -101,7 +101,7 @@ feature 'Environment' do
           end
 
           context 'with terminal' do
-            shared_examples 'correct behavior with terminal' do
+            shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
               context 'for project master' do
                 let(:role) { :master }
 
@@ -135,14 +135,14 @@ feature 'Environment' do
             context 'when user configured kubernetes from Integration > Kubernetes' do
               let(:project) { create(:kubernetes_project, :test_repo) }
 
-              it_behaves_like 'correct behavior with terminal'
+              it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
             end
 
             context 'when user configured kubernetes from CI/CD > Clusters' do
               let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
               let(:project) { cluster.project }
 
-              it_behaves_like 'correct behavior with terminal'
+              it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
             end
           end
 
