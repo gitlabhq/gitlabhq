@@ -46,18 +46,16 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
     # with Platforms::Kubernetes due to delegate Kubernetes specific logic.
     # We only target unmanaged KubernetesService records.
     scope :unmanaged_kubernetes_service, -> do
-      joins(
-        'INNER JOIN projects ON projects.id = services.project_id' \
-        'INNER JOIN cluster_projects ON projects.id = cluster_projects.project_id' \
-        'INNER JOIN clusters ON cluster_projects.cluster_id = clusters.id' \
+      joins('INNER JOIN projects ON projects.id = services.project_id ' \
+        'INNER JOIN cluster_projects ON projects.id = cluster_projects.project_id ' \
+        'INNER JOIN clusters ON cluster_projects.cluster_id = clusters.id ' \
         'INNER JOIN cluster_platforms_kubernetes ON cluster_platforms_kubernetes.cluster_id = clusters.id')
-      .where(
-        "services.category = 'deployment' AND services.type = 'KubernetesService'" \
-        "AND (" \
-        "    cluster_projects.project_id IS NULL" \
-        "    OR" \
-        "    services.properties NOT LIKE CONCAT('%', cluster_platforms_kubernetes.api_url, '%')" \
-        ")")
+      .where("services.category = 'deployment' AND services.type = 'KubernetesService' " \
+        "AND ( " \
+        "    cluster_projects.project_id IS NULL " \
+        "    OR " \
+        "    services.properties NOT LIKE CONCAT('%', cluster_platforms_kubernetes.api_url, '%') " \
+        ") ")
     end
   end
 
@@ -95,6 +93,9 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
             encrypted_password_iv: nil, # KubernetesService doesn't have
             token: kubernetes_service.token # encrypted_token and encrypted_token_iv
           } )
+
+      # Disable the service, so that new cluster archetecture is going to be used
+      kubernetes_service.updated(active: false)
     end
   end
 
