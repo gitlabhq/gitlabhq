@@ -1,13 +1,14 @@
 require 'spec_helper'
 
-describe Geo::RepositorySyncWorker, :postgresql do
+# Disable transactions via :truncate method because a foreign table
+# can't see changes inside a transaction of a different connection.
+describe Geo::RepositorySyncWorker, :geo, :truncate do
   include ::EE::GeoHelpers
 
-  set(:primary) { create(:geo_node, :primary, host: 'primary-geo-node') }
-  set(:secondary) { create(:geo_node) }
-  set(:synced_group) { create(:group) }
-  set(:project_in_synced_group) { create(:project, group: synced_group) }
-  set(:unsynced_project) { create(:project) }
+  let(:secondary) { create(:geo_node) }
+  let(:synced_group) { create(:group) }
+  let!(:project_in_synced_group) { create(:project, group: synced_group) }
+  let!(:unsynced_project) { create(:project) }
 
   subject { described_class.new }
 
@@ -15,7 +16,11 @@ describe Geo::RepositorySyncWorker, :postgresql do
     stub_current_geo_node(secondary)
   end
 
-  describe '#perform' do
+  shared_examples '#perform' do |skip_tests|
+    before do
+      skip('FDW is not configured') if skip_tests
+    end
+
     before do
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:try_obtain) { true }
       allow_any_instance_of(Gitlab::ExclusiveLease).to receive(:renew) { true }
@@ -52,6 +57,10 @@ describe Geo::RepositorySyncWorker, :postgresql do
       expect(Geo::ProjectSyncWorker).not_to receive(:perform_async)
 
       subject.perform
+
+      # We need to unstub here or the DatabaseCleaner will have issues since it
+      # will appear as though the tracking DB were not available
+      allow(Gitlab::Geo).to receive(:geo_database_configured?).and_call_original
     end
 
     it 'does not perform Geo::ProjectSyncWorker when not running on a secondary' do
@@ -129,29 +138,51 @@ describe Geo::RepositorySyncWorker, :postgresql do
 
     context 'unhealthy shards' do
       it 'skips backfill for repositories on unhealthy shards' do
-        unhealthy = create(:project, group: synced_group, repository_storage: 'broken')
+        unhealthy_not_synced = create(:project, group: synced_group, repository_storage: 'broken')
+        unhealthy_dirty = create(:project, group: synced_group, repository_storage: 'broken')
+
+        create(:geo_project_registry, :synced, :repository_dirty, project: unhealthy_dirty)
 
         # Make the shard unhealthy
-        FileUtils.rm_rf(unhealthy.repository_storage_path)
+        FileUtils.rm_rf(unhealthy_not_synced.repository_storage_path)
 
         expect(Geo::ProjectSyncWorker).to receive(:perform_async).with(project_in_synced_group.id, anything)
-        expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(unhealthy.id, anything)
+        expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(unhealthy_not_synced.id, anything)
+        expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(unhealthy_dirty.id, anything)
 
         Sidekiq::Testing.inline! { subject.perform }
       end
 
       it 'skips backfill for projects on missing shards' do
-        missing = create(:project, group: synced_group)
-        missing.update_column(:repository_storage, 'unknown')
+        missing_not_synced = create(:project, group: synced_group)
+        missing_not_synced.update_column(:repository_storage, 'unknown')
+        missing_dirty = create(:project, group: synced_group)
+        missing_dirty.update_column(:repository_storage, 'unknown')
+
+        create(:geo_project_registry, :synced, :repository_dirty, project: missing_dirty)
 
         # hide the 'broken' storage for this spec
         stub_storage_settings({})
 
         expect(Geo::ProjectSyncWorker).to receive(:perform_async).with(project_in_synced_group.id, anything)
-        expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(missing.id, anything)
+        expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(missing_not_synced.id, anything)
+        expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(missing_dirty.id, anything)
 
         Sidekiq::Testing.inline! { subject.perform }
       end
     end
+  end
+
+  describe 'when PostgreSQL FDW is available', :geo do
+    # Skip if FDW isn't activated on this database
+    it_behaves_like '#perform', Gitlab::Database.postgresql? && !Gitlab::Geo.fdw?
+  end
+
+  describe 'when PostgreSQL FDW is not enabled', :geo do
+    before do
+      allow(Gitlab::Geo).to receive(:fdw?).and_return(false)
+    end
+
+    it_behaves_like '#perform', false
   end
 end
