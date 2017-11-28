@@ -1369,11 +1369,11 @@ module Gitlab
       end
 
       def rebase_dir_path(id)
-        File.join(::Gitlab.config.shared.path, 'tmp/rebase', gl_repository, id.to_s).to_s
+        File.join(path, 'gitlab-worktree', "rebase-#{id}")
       end
 
       def squash_dir_path(id)
-        File.join(::Gitlab.config.shared.path, 'tmp/squash', gl_repository, id.to_s).to_s
+        File.join(path, 'gitlab-worktree', "squash-#{id}")
       end
 
       def git_env_for_user(user)
