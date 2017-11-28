@@ -6,7 +6,6 @@ module Ci
     belongs_to :job, class_name: "Ci::Build", foreign_key: :job_id
 
     before_save :set_size, if: :file_changed?
-    after_commit :remove_file!, on: :destroy
 
     mount_uploader :file, JobArtifactUploader
 
