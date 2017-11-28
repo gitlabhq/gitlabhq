@@ -1,13 +1,13 @@
 import Vue from 'vue';
-import issueNoteHeader from '~/notes/components/issue_note_header.vue';
+import noteHeader from '~/notes/components/note_header.vue';
 import store from '~/notes/stores';
 
-describe('issue_note_header component', () => {
+describe('note_header component', () => {
   let vm;
   let Component;
 
   beforeEach(() => {
-    Component = Vue.extend(issueNoteHeader);
+    Component = Vue.extend(noteHeader);
   });
 
   afterEach(() => {

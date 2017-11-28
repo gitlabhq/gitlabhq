@@ -1,6 +1,6 @@
 <script>
   export default {
-    name: 'issueNoteAttachment',
+    name: 'noteAttachment',
     props: {
       attachment: {
         type: Object,

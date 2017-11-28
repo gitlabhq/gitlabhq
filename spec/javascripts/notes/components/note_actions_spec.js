@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import store from '~/notes/stores';
-import issueActions from '~/notes/components/issue_note_actions.vue';
+import noteActions from '~/notes/components/note_actions.vue';
 import { userDataMock } from '../mock_data';
 
 describe('issse_note_actions component', () => {
@@ -8,7 +8,7 @@ describe('issse_note_actions component', () => {
   let Component;
 
   beforeEach(() => {
-    Component = Vue.extend(issueActions);
+    Component = Vue.extend(noteActions);
   });
 
   afterEach(() => {
