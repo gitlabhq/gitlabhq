@@ -94,6 +94,7 @@ describe API::Namespaces do
     end
   end
 
+<<<<<<< HEAD
   describe 'PUT /namespaces/:id' do
     context 'when authenticated as admin' do
       it 'updates namespace using full_path' do
@@ -140,6 +141,8 @@ describe API::Namespaces do
     end
   end
 
+=======
+>>>>>>> c26d7089d058dc22116f383815da8cec80a99ac5
   describe 'GET /namespaces/:id' do
     let(:owned_group) { group1 }
     let(:user2) { create(:user) }

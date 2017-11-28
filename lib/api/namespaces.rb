@@ -20,6 +20,7 @@ module API
         present paginate(namespaces), with: Entities::Namespace, current_user: current_user
       end
 
+<<<<<<< HEAD
       desc 'Update a namespace' do
         success Entities::Namespace
       end
@@ -41,6 +42,8 @@ module API
         end
       end
 
+=======
+>>>>>>> c26d7089d058dc22116f383815da8cec80a99ac5
       desc 'Get a namespace by ID' do
         success Entities::Namespace
       end

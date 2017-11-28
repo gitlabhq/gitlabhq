@@ -90,16 +90,21 @@ module API
       expose :group_access, as: :group_access_level
     end
 
-    class BasicProjectDetails < Grape::Entity
-      expose :id, :description, :default_branch, :tag_list
-      expose :ssh_url_to_repo, :http_url_to_repo, :web_url
+    class ProjectIdentity < Grape::Entity
+      expose :id, :description
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
+      expose :created_at
+    end
+
+    class BasicProjectDetails < ProjectIdentity
+      expose :default_branch, :tag_list
+      expose :ssh_url_to_repo, :http_url_to_repo, :web_url
       expose :avatar_url do |project, options|
         project.avatar_url(only_path: false)
       end
       expose :star_count, :forks_count
-      expose :created_at, :last_activity_at
+      expose :last_activity_at
     end
 
     class Project < BasicProjectDetails
@@ -938,15 +943,22 @@ module API
       expose :id, :sha, :ref, :status
     end
 
-    class Job < Grape::Entity
+    class JobBasic < Grape::Entity
       expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
       expose :duration
       expose :user, with: User
-      expose :artifacts_file, using: JobArtifactFile, if: -> (job, opts) { job.artifacts? }
       expose :commit, with: Commit
-      expose :runner, with: Runner
       expose :pipeline, with: PipelineBasic
+    end
+
+    class Job < JobBasic
+      expose :artifacts_file, using: JobArtifactFile, if: -> (job, opts) { job.artifacts? }
+      expose :runner, with: Runner
+    end
+
+    class JobBasicWithProject < JobBasic
+      expose :project, with: ProjectIdentity
     end
 
     class Trigger < Grape::Entity

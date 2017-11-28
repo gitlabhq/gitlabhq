@@ -3,7 +3,10 @@ require 'spec_helper'
 describe NamespacePolicy do
   let(:user) { create(:user) }
   let(:owner) { create(:user) }
+<<<<<<< HEAD
   let(:auditor) { create(:user, :auditor) }
+=======
+>>>>>>> c26d7089d058dc22116f383815da8cec80a99ac5
   let(:admin) { create(:admin) }
   let(:namespace) { create(:namespace, owner: owner) }
 
@@ -27,6 +30,7 @@ describe NamespacePolicy do
     let(:current_user) { owner }
 
     it { is_expected.to be_allowed(*owner_permissions) }
+<<<<<<< HEAD
 
     context 'user who has exceeded project limit' do
       let(:owner) { create(:user, projects_limit: 0) }
@@ -43,6 +47,11 @@ describe NamespacePolicy do
 
       it { is_expected.to be_allowed(*owner_permissions) }
     end
+=======
+
+    context 'user who has exceeded project limit' do
+      let(:owner) { create(:user, projects_limit: 0) }
+>>>>>>> c26d7089d058dc22116f383815da8cec80a99ac5
 
     context 'non-owner' do
       it { is_expected.to be_disallowed(*owner_permissions) }

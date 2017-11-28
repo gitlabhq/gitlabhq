@@ -292,6 +292,8 @@
     .gutter-toggle {
       margin-top: 7px;
       border-left: 1px solid $border-gray-normal;
+      padding-left: 0;
+      text-align: center;
     }
 
     .title .gutter-toggle {
@@ -908,6 +910,7 @@
   }
 }
 
+<<<<<<< HEAD
 .add-issuable-form-input-wrapper {
   height: auto;
   padding: $gl-vert-padding $gl-vert-padding 0 $gl-input-padding;
@@ -953,6 +956,8 @@
   margin-top: $gl-padding;
 }
 
+=======
+>>>>>>> c26d7089d058dc22116f383815da8cec80a99ac5
 .right-sidebar-collapsed {
   .sidebar-grouped-item {
     .sidebar-collapsed-icon {
