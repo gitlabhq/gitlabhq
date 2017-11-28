@@ -273,8 +273,9 @@ class Project < ActiveRecord::Base
   scope :pending_delete, -> { where(pending_delete: true) }
   scope :without_deleted, -> { where(pending_delete: false) }
 
-  scope :with_hashed_storage, -> { where('storage_version >= 1') }
-  scope :with_legacy_storage, -> { where(storage_version: [nil, 0]) }
+  scope :with_storage_feature, ->(feature) { where('storage_version >= :version', version: HASHED_STORAGE_FEATURES[feature]) }
+  scope :without_storage_feature, ->(feature) { where('storage_version < :version OR storage_version IS NULL', version: HASHED_STORAGE_FEATURES[feature]) }
+  scope :with_unmigrated_storage, -> { where('storage_version < :version OR storage_version IS NULL', version: LATEST_STORAGE_VERSION) }
 
   scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
   scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
