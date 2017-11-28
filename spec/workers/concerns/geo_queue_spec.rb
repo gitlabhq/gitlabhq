@@ -13,6 +13,6 @@ describe GeoQueue do
   end
 
   it 'sets the queue name of a worker' do
-    expect(worker.sidekiq_options['queue'].to_s).to eq('geo')
+    expect(worker.sidekiq_options['queue'].to_s).to eq('geo:dummy')
   end
 end

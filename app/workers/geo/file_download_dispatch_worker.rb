@@ -1,5 +1,7 @@
 module Geo
   class FileDownloadDispatchWorker < Geo::BaseSchedulerWorker
+    include CronjobQueue
+
     private
 
     def max_capacity

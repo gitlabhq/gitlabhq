@@ -3,6 +3,6 @@ module GeoQueue
   extend ActiveSupport::Concern
 
   included do
-    sidekiq_options queue: :geo
+    queue_namespace :geo
   end
 end

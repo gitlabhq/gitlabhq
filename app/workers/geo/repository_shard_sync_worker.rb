@@ -1,8 +1,6 @@
 module Geo
   class RepositoryShardSyncWorker < Geo::BaseSchedulerWorker
-    # We may have many long-running threads, so split them out
-    # into their own queue to make it possible for other jobs to run.
-    sidekiq_options queue: :geo_repository_shard_sync, retry: false
+    sidekiq_options retry: false
 
     attr_accessor :shard_name
 
