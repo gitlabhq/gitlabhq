@@ -1,35 +1,63 @@
 .ci-status-icon-success,
 .ci-status-icon-passed {
-  color: $green-500;
+  &,
+  &:hover,
+  &:focus {
+    color: $green-500;
+  }
 }
 
 .ci-status-icon-failed {
-  color: $gl-danger;
+  &,
+  &:hover,
+  &:focus {
+    color: $gl-danger;
+  }
 }
 
 .ci-status-icon-pending,
 .ci-status-icon-failed_with_warnings,
 .ci-status-icon-success_with_warnings {
-  color: $orange-500;
+  &,
+  &:hover,
+  &:focus {
+    color: $orange-500;
+  }
 }
 
 .ci-status-icon-running {
-  color: $blue-400;
+  &,
+  &:hover,
+  &:focus {
+    color: $blue-400;
+  }
 }
 
 .ci-status-icon-canceled,
 .ci-status-icon-disabled,
 .ci-status-icon-not-found {
-  color: $gl-text-color;
+  &,
+  &:hover,
+  &:focus {
+    color: $gl-text-color;
+  }
 }
 
 .ci-status-icon-created,
 .ci-status-icon-skipped {
-  color: $gray-darkest;
+  &,
+  &:hover,
+  &:focus {
+    color: $gray-darkest;
+  }
 }
 
 .ci-status-icon-manual {
-  color: $gl-text-color;
+  &,
+  &:hover,
+  &:focus {
+    color: $gl-text-color;
+  }
 }
 
 .icon-link {
