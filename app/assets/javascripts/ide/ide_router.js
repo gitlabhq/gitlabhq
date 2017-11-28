@@ -98,12 +98,7 @@ router.beforeEach((to, from, next) => {
     debugger;
     //next(false);
   });
-
   next();
-});
-
-router.onError((err) => {
-  debugger;
 });
 
 export default router;

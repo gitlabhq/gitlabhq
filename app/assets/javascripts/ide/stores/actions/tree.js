@@ -65,10 +65,8 @@ export const toggleTreeOpen = ({ commit, dispatch }, { endpoint, tree }) => {
 
     pushState(tree.parentTreeUrl);
 
-    commit(types.SET_PREVIOUS_URL, tree.parentTreeUrl);
     dispatch('updateDirectoryData', { data, tree });
   } else {
-    commit(types.SET_PREVIOUS_URL, endpoint);
     dispatch('getTreeData', { endpoint, tree });
   }
 

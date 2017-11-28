@@ -44,11 +44,6 @@ export default {
       isInitialRoot: isRoot,
     });
   },
-  [types.SET_PREVIOUS_URL](state, previousUrl) {
-    Object.assign(state, {
-      previousUrl,
-    });
-  },
   [types.SET_LAST_COMMIT_DATA](state, { entry, lastCommit }) {
     Object.assign(entry.lastCommit, {
       url: lastCommit.commit_path,

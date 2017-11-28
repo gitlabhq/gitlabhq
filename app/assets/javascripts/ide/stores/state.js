@@ -19,9 +19,6 @@ export default () => ({
     url: '',
   },
   parentTreeUrl: '',
-  previousUrl: '',
-  tree: [],
   trees: {},
-  workspaces: [],
   projects: {},
 });

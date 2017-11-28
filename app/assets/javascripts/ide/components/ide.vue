@@ -5,6 +5,7 @@ import IdeContextbar from './ide_context_bar.vue';
 
 import RepoTabs from './repo_tabs.vue';
 import RepoFileButtons from './repo_file_buttons.vue';
+import IdeStatusBar from './ide_status_bar.vue';
 import RepoPreview from './repo_preview.vue';
 import RepoEditor from './repo_editor.vue';
 
@@ -24,6 +25,7 @@ export default {
     IdeContextbar,
     RepoTabs,
     RepoFileButtons,
+    IdeStatusBar,
     RepoEditor,
     RepoPreview,
   },
@@ -54,6 +56,7 @@ export default {
             :is="currentBlobView"
           />
           <repo-file-buttons/>
+          <ide-status-bar/>
         </template>
         <template
           v-else>
