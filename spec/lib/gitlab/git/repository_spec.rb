@@ -257,7 +257,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#empty?' do
-    it { expect(repository.empty?).to be_falsey }
+    it { expect(repository).not_to be_empty }
   end
 
   describe '#ref_names' do

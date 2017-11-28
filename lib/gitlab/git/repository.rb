@@ -76,9 +76,6 @@ module Gitlab
         @attributes = Gitlab::Git::Attributes.new(path)
       end
 
-      delegate  :empty?,
-                to: :rugged
-
       def ==(other)
         path == other.path
       end
@@ -195,6 +192,10 @@ module Gitlab
             end
           end
         end
+      end
+
+      def empty?
+        !exists? || !has_local_branches?
       end
 
       def has_local_branches?
