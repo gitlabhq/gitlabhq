@@ -899,7 +899,8 @@ class MergeRequest < ActiveRecord::Base
   def compute_diverged_commits_count
     return 0 unless source_branch_sha && target_branch_sha
 
-    Gitlab::Git::Commit.between(target_project.repository.raw_repository, source_branch_sha, target_branch_sha).size
+    target_project.repository
+      .count_commits_between(source_branch_sha, target_branch_sha)
   end
   private :compute_diverged_commits_count
 
