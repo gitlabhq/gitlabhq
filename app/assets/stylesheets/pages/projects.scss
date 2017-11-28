@@ -291,14 +291,7 @@
     }
 
     svg {
-
-      path {
-        fill: $layout-link-gray;
-      }
-
-      use {
-        stroke: $layout-link-gray;
-      }
+      fill: $layout-link-gray;
     }
 
     .fa-caret-down {
