@@ -28,29 +28,8 @@ export default class Model {
     return this.model.uri.toString();
   }
 
-  get originalUrl() {
-    return this.originalModel.uri.toString();
-  }
-
   get path() {
     return this.file.path;
-  }
-
-  get diffModel() {
-    return Model.getDiffModel(this.model);
-  }
-
-  get originalDiffModel() {
-    return Model.getDiffModel(this.originalModel);
-  }
-
-  static getDiffModel(model) {
-    return {
-      url: model.uri.toString(),
-      versionId: model.getVersionId(),
-      lines: model.getLinesContent(),
-      EOL: '\n',
-    };
   }
 
   getModel() {
@@ -63,7 +42,7 @@ export default class Model {
 
   onChange(cb) {
     this.events.set(
-      this.file.path,
+      this.path,
       this.disposable.add(
         this.model.onDidChangeContent(e => cb(this.model, e)),
       ),
