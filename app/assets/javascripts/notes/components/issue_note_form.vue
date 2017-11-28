@@ -46,8 +46,8 @@
     computed: {
       ...mapGetters([
         'getDiscussionLastNote',
-        'getIssueData',
-        'getIssueDataByProp',
+        'getNoteableData',
+        'getNoteableDataByProp',
         'getNotesDataByProp',
         'getUserDataByProp',
       ]),
@@ -55,7 +55,7 @@
         return `#note_${this.noteId}`;
       },
       markdownPreviewPath() {
-        return this.getIssueDataByProp('preview_note_path');
+        return this.getNoteableDataByProp('preview_note_path');
       },
       markdownDocsPath() {
         return this.getNotesDataByProp('markdownDocsPath');
@@ -129,9 +129,9 @@
       class="edit-note common-note-form js-quick-submit gfm-form">
 
       <issue-warning
-        v-if="hasWarning(getIssueData)"
-        :is-locked="isLocked(getIssueData)"
-        :is-confidential="isConfidential(getIssueData)"
+        v-if="hasWarning(getNoteableData)"
+        :is-locked="isLocked(getNoteableData)"
+        :is-confidential="isConfidential(getNoteableData)"
       />
 
       <markdown-field
