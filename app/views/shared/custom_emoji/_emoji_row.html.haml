@@ -1,0 +1,8 @@
+%tr
+  %td= custom_emoji_icon(emoji.name, emoji.url)
+  %td= ":#{emoji.name}:"
+  %td
+    = link_to custom_emoji_path(emoji), method: :delete, class: 'btn btn-remove pull-right', aria: { label: _('Delete') } do
+      %span.visible-xs-block
+        Delete
+      = icon('trash', class: 'hidden-xs')
