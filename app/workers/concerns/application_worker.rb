@@ -4,6 +4,7 @@ module ApplicationWorker
   extend ActiveSupport::Concern
 
   include Sidekiq::Worker # rubocop:disable Cop/IncludeSidekiqWorker
+  include Gitlab::SidekiqVersioning::Worker
 
   included do
     set_queue

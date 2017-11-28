@@ -42,4 +42,13 @@ describe Gitlab::SidekiqConfig do
       expect(queues).to include('unknown')
     end
   end
+
+  describe '.workers_by_queue' do
+    it 'returns a hash of workers by queue' do
+      workers_by_queue = described_class.workers_by_queue
+
+      expect(workers_by_queue['post_receive']).to be(PostReceive)
+      expect(workers_by_queue['merge']).to be(MergeWorker)
+    end
+  end
 end

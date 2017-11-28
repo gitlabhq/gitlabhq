@@ -42,6 +42,10 @@ module Gitlab
       @workers ||= find_workers(Rails.root.join('app', 'workers'))
     end
 
+    def self.workers_by_queue
+      @workers_by_queue ||= workers.index_by(&:queue)
+    end
+
     def self.find_workers(root)
       concerns = root.join('concerns').to_s
 
