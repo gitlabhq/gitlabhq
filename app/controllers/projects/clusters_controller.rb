@@ -9,6 +9,7 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def index
     @clusters = Kaminari.paginate_array(@clusters).page(params[:page]).per(20)
+    @scope = params[:scope]
     @active_count = project.clusters.enabled.count
     @inactive_count = project.clusters.disabled.count
     @all_count = @active_count + @inactive_count
