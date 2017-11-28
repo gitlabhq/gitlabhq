@@ -173,6 +173,28 @@ describe API::Groups do
   end
 
   describe "GET /groups/:id" do
+    # Given a group, create one project for each visibility level
+    #
+    # group      - Group to add projects to
+    # share_with - If provided, each project will be shared with this Group
+    #
+    # Returns a Hash of visibility_level => Project pairs
+    def add_projects_to_group(group, share_with: nil)
+      projects = {
+        public:   create(:project, :public,   namespace: group),
+        internal: create(:project, :internal, namespace: group),
+        private:  create(:project, :private,  namespace: group)
+      }
+
+      if share_with
+        create(:project_group_link, project: projects[:public],   group: share_with)
+        create(:project_group_link, project: projects[:internal], group: share_with)
+        create(:project_group_link, project: projects[:private],  group: share_with)
+      end
+
+      projects
+    end
+
     context 'when unauthenticated' do
       it 'returns 404 for a private group' do
         get api("/groups/#{group2.id}")
@@ -182,6 +204,26 @@ describe API::Groups do
       it 'returns 200 for a public group' do
         get api("/groups/#{group1.id}")
         expect(response).to have_gitlab_http_status(200)
+      end
+
+      it 'returns only public projects in the group' do
+        public_group = create(:group, :public)
+        projects = add_projects_to_group(public_group)
+
+        get api("/groups/#{public_group.id}")
+
+        expect(json_response['projects'].map { |p| p['id'].to_i })
+          .to contain_exactly(projects[:public].id)
+      end
+
+      it 'returns only public projects shared with the group' do
+        public_group = create(:group, :public)
+        projects = add_projects_to_group(public_group, share_with: group1)
+
+        get api("/groups/#{group1.id}")
+
+        expect(json_response['shared_projects'].map { |p| p['id'].to_i })
+          .to contain_exactly(projects[:public].id)
       end
     end
 
@@ -221,6 +263,26 @@ describe API::Groups do
         get api("/groups/#{group2.id}", user1)
 
         expect(response).to have_gitlab_http_status(404)
+      end
+
+      it 'returns only public and internal projects in the group' do
+        public_group = create(:group, :public)
+        projects = add_projects_to_group(public_group)
+
+        get api("/groups/#{public_group.id}", user2)
+
+        expect(json_response['projects'].map { |p| p['id'].to_i })
+          .to contain_exactly(projects[:public].id, projects[:internal].id)
+      end
+
+      it 'returns only public and internal projects shared with the group' do
+        public_group = create(:group, :public)
+        projects = add_projects_to_group(public_group, share_with: group1)
+
+        get api("/groups/#{group1.id}", user2)
+
+        expect(json_response['shared_projects'].map { |p| p['id'].to_i })
+          .to contain_exactly(projects[:public].id, projects[:internal].id)
       end
     end
 
