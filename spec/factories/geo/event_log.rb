@@ -82,7 +82,7 @@ FactoryGirl.define do
     new_disk_path { project.path_with_namespace + '_new' }
     old_wiki_disk_path { project.wiki.path_with_namespace }
     new_wiki_disk_path { project.wiki.path_with_namespace + '_new' }
-    new_storage_version { Project::LATEST_STORAGE_VERSION }
+    new_storage_version { Project::HASHED_STORAGE_FEATURES[:repository] }
   end
 
   factory :geo_hashed_storage_attachments_event, class: Geo::HashedStorageAttachmentsEvent do
