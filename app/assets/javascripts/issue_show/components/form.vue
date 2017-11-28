@@ -46,6 +46,11 @@
         required: false,
         default: true,
       },
+      enableAutocomplete: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
     components: {
       lockedWarning,
@@ -89,7 +94,9 @@
       :form-state="formState"
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
-      :can-attach-file="canAttachFile" />
+      :can-attach-file="canAttachFile"
+      :enable-autocomplete="enableAutocomplete"
+    />
     <edit-actions
       :form-state="formState"
       :can-destroy="canDestroy"

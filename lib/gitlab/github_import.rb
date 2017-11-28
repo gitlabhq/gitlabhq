@@ -1,5 +1,9 @@
 module Gitlab
   module GithubImport
+    def self.refmap
+      [:heads, :tags, '+refs/pull/*/head:refs/merge-requests/*/head']
+    end
+
     def self.new_client_for(project, token: nil, parallel: true)
       token_to_use = token || project.import_data&.credentials&.fetch(:user)
 

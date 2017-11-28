@@ -255,8 +255,10 @@ module Issuable
     participants(user).include?(user)
   end
 
-  def to_hook_data(user, old_labels: [], old_assignees: [], old_total_time_spent: nil)
+  def to_hook_data(user, old_associations: {})
     changes = previous_changes
+    old_labels = old_associations.fetch(:labels, [])
+    old_assignees = old_associations.fetch(:assignees, [])
 
     if old_labels != labels
       changes[:labels] = [old_labels.map(&:hook_attrs), labels.map(&:hook_attrs)]
@@ -270,8 +272,12 @@ module Issuable
       end
     end
 
-    if old_total_time_spent != total_time_spent
-      changes[:total_time_spent] = [old_total_time_spent, total_time_spent]
+    if self.respond_to?(:total_time_spent)
+      old_total_time_spent = old_associations.fetch(:total_time_spent, nil)
+
+      if old_total_time_spent != total_time_spent
+        changes[:total_time_spent] = [old_total_time_spent, total_time_spent]
+      end
     end
 
     Gitlab::HookData::IssuableBuilder.new(self).build(user: user, changes: changes)
@@ -344,5 +350,12 @@ module Issuable
   #
   def first_contribution?
     false
+  end
+
+  ##
+  # Overriden in MergeRequest
+  #
+  def wipless_title_changed(old_title)
+    old_title != title
   end
 end

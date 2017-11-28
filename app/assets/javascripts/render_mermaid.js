@@ -14,8 +14,8 @@
 
 import Flash from './flash';
 
-$.fn.renderMermaid = function renderMermaid() {
-  if (this.length === 0) return;
+export default function renderMermaid($els) {
+  if (!$els.length) return;
 
   import(/* webpackChunkName: 'mermaid' */ 'blackst0ne-mermaid').then((mermaid) => {
     mermaid.initialize({
@@ -23,8 +23,10 @@ $.fn.renderMermaid = function renderMermaid() {
       theme: 'neutral',
     });
 
-    mermaid.init(undefined, this);
+    $els.each((i, el) => {
+      mermaid.init(undefined, el);
+    });
   }).catch((err) => {
     Flash(`Can't load mermaid module: ${err}`);
   });
-};
+}

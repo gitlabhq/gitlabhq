@@ -13,16 +13,52 @@ describe Gitlab::Metrics::MethodCall do
       expect(method_call.call_count).to eq(1)
     end
 
-    it 'observes the performance of the supplied block' do
-      expect(described_class.call_real_duration_histogram)
-        .to receive(:observe)
-              .with({ module: :Foo, method: '#bar' }, be_a_kind_of(Numeric))
+    context 'when measurement is above threshold' do
+      before do
+        allow(method_call).to receive(:above_threshold?).and_return(true)
+      end
 
-      expect(described_class.call_cpu_duration_histogram)
-        .to receive(:observe)
-              .with({ module: :Foo, method: '#bar' }, be_a_kind_of(Numeric))
+      context 'prometheus instrumentation is enabled' do
+        before do
+          Feature.get(:prometheus_metrics_method_instrumentation).enable
+        end
 
-      method_call.measure { 'foo' }
+        it 'observes the performance of the supplied block' do
+          expect(described_class.call_duration_histogram)
+            .to receive(:observe)
+                  .with({ module: :Foo, method: '#bar' }, be_a_kind_of(Numeric))
+
+          method_call.measure { 'foo' }
+        end
+      end
+
+      context 'prometheus instrumentation is disabled' do
+        before do
+          Feature.get(:prometheus_metrics_method_instrumentation).disable
+        end
+
+        it 'does not observe the performance' do
+          expect(described_class.call_duration_histogram)
+            .not_to receive(:observe)
+
+          method_call.measure { 'foo' }
+        end
+      end
+    end
+
+    context 'when measurement is below threshold' do
+      before do
+        allow(method_call).to receive(:above_threshold?).and_return(false)
+
+        Feature.get(:prometheus_metrics_method_instrumentation).enable
+      end
+
+      it 'does not observe the performance' do
+        expect(described_class.call_duration_histogram)
+          .not_to receive(:observe)
+
+        method_call.measure { 'foo' }
+      end
     end
   end
 
@@ -43,7 +79,13 @@ describe Gitlab::Metrics::MethodCall do
   end
 
   describe '#above_threshold?' do
+    before do
+      allow(Gitlab::Metrics).to receive(:method_call_threshold).and_return(100)
+    end
+
     it 'returns false when the total call time is not above the threshold' do
+      expect(method_call).to receive(:real_time).and_return(9)
+
       expect(method_call.above_threshold?).to eq(false)
     end
 
