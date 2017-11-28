@@ -9,7 +9,7 @@ module QA
         branch.name = 'awesome-branch'
       end
 
-      expect(page).to have_content(/awesome-branch/)
+      expect(page).to have_content(/You pushed to awesome-branch/)
     end
   end
 end

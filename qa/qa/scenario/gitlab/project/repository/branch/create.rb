@@ -1,5 +1,3 @@
-require 'pry'
-
 module QA
   module Scenario
     module Gitlab
@@ -11,8 +9,9 @@ module QA
                           :name
 
               def perform
-                Scenario::Gitlab::Project::Create.perform(with_repo: true) do |project|
+                Scenario::Gitlab::Project::Create.perform do |project|
                   project.name = 'awesome-project'
+                  project.with_repo = true
                 end
 
                 Page::Project::Menu.act { branches }

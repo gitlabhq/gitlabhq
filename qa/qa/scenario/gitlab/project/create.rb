@@ -5,13 +5,14 @@ module QA
     module Gitlab
       module Project
         class Create < Scenario::Template
-          attr_writer :description
+          attr_writer :description,
+                      :with_repo
 
           def name=(name)
             @name = "#{name}-#{SecureRandom.hex(8)}"
           end
 
-          def perform(with_repo: false)
+          def perform
             Scenario::Gitlab::Sandbox::Prepare.perform
 
             Page::Group::Show.perform do |page|
@@ -35,7 +36,7 @@ module QA
               page.create_new_project
             end
 
-            if with_repo
+            if @with_repo
               Git::Repository.perform do |repository|
                 repository.location = Page::Project::Show.act do
                   choose_repository_clone_http
