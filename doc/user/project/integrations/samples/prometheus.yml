@@ -6,7 +6,7 @@ metadata:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: prometheus
+  name: prometheus-config
   namespace: prometheus
 data:
   prometheus.yml: |-
@@ -93,15 +93,13 @@ spec:
       containers:
       - name: prometheus
         image: prom/prometheus:latest
-        args:
-          - '-config.file=/prometheus-data/prometheus.yml'
         ports:
         - name: prometheus
           containerPort: 9090
         volumeMounts:
-        - name: data-volume
-          mountPath: /prometheus-data
+        - name: config-volume
+          mountPath: /etc/prometheus
       volumes:
-      - name: data-volume
+      - name: config-volume
         configMap:
-          name: prometheus
+          name: prometheus-config
