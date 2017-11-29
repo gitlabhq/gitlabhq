@@ -51,16 +51,6 @@ module Projects
       params.except(:default_branch, :run_auto_devops_pipeline_explicit, :run_auto_devops_pipeline_implicit)
     end
 
-<<<<<<< HEAD
-    def changing_storage_size?
-      new_repository_storage = params[:repository_storage]
-
-      new_repository_storage && project.repository.exists? &&
-        can?(current_user, :change_repository_storage, project)
-    end
-
-=======
->>>>>>> upstream/master
     def renaming_project_with_container_registry_tags?
       new_path = params[:path]
 
