@@ -48,7 +48,7 @@
           = field.hidden_field :enabled, { class: 'js-toggle-input'}
 
           %button{ type: 'button',
-            class: "js-toggle-cluster project-feature-toggle #{'checked' unless !@cluster.enabled?} #{'disabled' unless can?(current_user, :update_cluster, @cluster)}",
+            class: "js-toggle-cluster project-feature-toggle #{'is-checked' unless !@cluster.enabled?} #{'is-disabled' unless can?(current_user, :update_cluster, @cluster)}",
             'aria-label': s_('ClusterIntegration|Toggle Cluster'),
             disabled: !can?(current_user, :update_cluster, @cluster),
             data: { 'enabled-text': 'Enabled', 'disabled-text': 'Disabled' } }

@@ -145,8 +145,8 @@ export default class Clusters {
   }
 
   toggle() {
-    this.toggleButton.classList.toggle('checked');
-    this.toggleInput.setAttribute('value', this.toggleButton.classList.contains('checked').toString());
+    this.toggleButton.classList.toggle('is-checked');
+    this.toggleInput.setAttribute('value', this.toggleButton.classList.contains('is-checked').toString());
   }
 
   hideAll() {
