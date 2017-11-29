@@ -1,11 +1,8 @@
 module Ci
   class Runner < ActiveRecord::Base
     extend Gitlab::Ci::Model
-<<<<<<< HEAD
-    prepend EE::Ci::Runner
-=======
     include Gitlab::SQL::Pattern
->>>>>>> upstream/master
+    prepend EE::Ci::Runner
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
     ONLINE_CONTACT_TIMEOUT = 1.hour
