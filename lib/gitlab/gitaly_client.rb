@@ -118,11 +118,7 @@ module Gitlab
     # end
     #
     def self.call(storage, service, rpc, request, remote_storage: nil, timeout: nil)
-<<<<<<< HEAD
-      start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-=======
       start = Gitlab::Metrics::System.monotonic_time
->>>>>>> upstream/master
       enforce_gitaly_request_limits(:call)
 
       kwargs = request_kwargs(storage, timeout, remote_storage: remote_storage)
@@ -139,14 +135,11 @@ module Gitlab
         duration)
     end
 
-<<<<<<< HEAD
-=======
     def self.current_transaction_labels
       Gitlab::Metrics::Transaction.current&.labels || {}
     end
     private_class_method :current_transaction_labels
 
->>>>>>> upstream/master
     def self.request_kwargs(storage, timeout, remote_storage: nil)
       encoded_token = Base64.strict_encode64(token(storage).to_s)
       metadata = {
