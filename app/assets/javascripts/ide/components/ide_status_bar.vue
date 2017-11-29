@@ -1,5 +1,5 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState } from 'vuex';
 import Icon from '../../vue_shared/components/icon.vue'
 
 export default {
@@ -7,9 +7,8 @@ export default {
     Icon,
   },
   computed: {
-    ...mapGetters([
-      'activeFile',
-      'activeFileEditorPosition',
+    ...mapState([
+      'selectedFile',
     ]),
   }
 };
@@ -28,16 +27,18 @@ export default {
     </div>
     <div 
       class="col-sm-2">
-      Latest commit: 123
+      <div
+        v-if="selectedFile.lastCommit && selectedFile.lastCommit.message">
+        Last commit: {{ selectedFile.lastCommit.message }}
+      </div>      
     </div>
     <div 
       class="col-sm-1 col-sm-offset-4 text-right">
-      {{ activeFile.name }}
+      {{ selectedFile.name }}
     </div>
     <div 
       class="col-sm-1 text-right">
-      {{ activeFileEditorPosition }}
-      {{ activeFile.editorRow }}:{{ activeFile.editorColumn }}
+      {{ selectedFile.editorRow }}:{{ selectedFile.editorColumn }}
     </div>
     <div 
       class="col-sm-1 text-right">
@@ -45,7 +46,7 @@ export default {
     </div>
     <div 
       class="col-sm-1 text-right">
-      {{ activeFile.fileLanguage }}
+      {{ selectedFile.fileLanguage }}
     </div>
   </div>
 </template>

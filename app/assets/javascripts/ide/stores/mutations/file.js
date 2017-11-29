@@ -6,6 +6,10 @@ export default {
     Object.assign(file, {
       active,
     });
+
+    Object.assign(state, {
+      selectedFile: file,
+    });
   },
   [types.TOGGLE_FILE_OPEN](state, file) {
     Object.assign(file, {
@@ -27,8 +31,8 @@ export default {
       binary: data.binary,
       html: data.html,
       renderError: data.render_error,
-      editorRow: 0,
-      editorColumn: 0,
+      editorRow: 1,
+      editorColumn: 1,
       fileLanguage: '',
     });
   },

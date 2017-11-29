@@ -10,7 +10,6 @@ import {
   createTemp,
   createOrMergeEntry,
 } from '../utils';
-import router from '../../ide_router';
 
 export const getTreeData = (
   { commit, state, dispatch },
@@ -24,26 +23,26 @@ export const getTreeData = (
     service.getTreeData(endpoint)
       .then((res) => {
         const pageTitle = decodeURI(normalizeHeaders(res.headers)['PAGE-TITLE']);
-  
+
         setPageTitle(pageTitle);
-  
+
         return res.json();
       })
       .then((data) => {
         if (!state.isInitialRoot) {
           commit(types.SET_ROOT, data.path === '/');
         }
-  
+
         dispatch('updateDirectoryData', { data, tree, namespace, projectId, branch });
         if (!tree) {
           // If there was no tree given one was just created
           tree = state.trees[`${namespace}/${projectId}/${branch}`];
         }
-  
+
         commit(types.SET_PARENT_TREE_URL, data.parent_tree_url);
         commit(types.SET_LAST_COMMIT_URL, { tree, url: data.last_commit_path });
         if (tree) commit(types.TOGGLE_LOADING, tree);
-  
+
         const prevLastCommitPath = tree.lastCommitPath;
         if (prevLastCommitPath !== null) {
           dispatch('getLastCommitData', tree);
@@ -152,7 +151,7 @@ export const getLastCommitData = ({ state, commit, dispatch, getters }, tree = s
 
 export const updateDirectoryData = (
   { commit, state },
-  { data, tree, namespace, projectId, branch }
+  { data, tree, namespace, projectId, branch },
 ) => {
   if (!tree) {
     const existingTree = state.trees[`${namespace}/${projectId}/${branch}`];
