@@ -20,7 +20,7 @@ describe 'geo rake tasks' do
 
       node = GeoNode.first
 
-      expect(node.schema).to eq('https')
+      expect(node.uri.scheme).to eq('https')
       expect(node.primary).to be_truthy
       expect(node.geo_node_key).to be_nil
     end

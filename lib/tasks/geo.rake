@@ -175,15 +175,7 @@ namespace :geo do
   end
 
   def set_primary_geo_node
-    params = {
-      schema: Gitlab.config.gitlab.protocol,
-      host: Gitlab.config.gitlab.host,
-      port: Gitlab.config.gitlab.port,
-      relative_url_root: Gitlab.config.gitlab.relative_url_root,
-      primary: true
-    }
-
-    node = GeoNode.new(params)
+    node = GeoNode.new(primary: true, url: GeoNode.current_node_url)
     puts "Saving primary GeoNode with URL #{node.url}".color(:green)
     node.save
 
