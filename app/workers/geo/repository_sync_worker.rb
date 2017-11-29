@@ -12,6 +12,10 @@ module Geo
       { id: project_id, job_id: job_id } if job_id
     end
 
+    def finder
+      @finder ||= ProjectRegistryFinder.new(current_node: current_node)
+    end
+
     def load_pending_resources
       resources = find_project_ids_not_synced(batch_size: db_retrieve_batch_size)
       remaining_capacity = db_retrieve_batch_size - resources.size
@@ -24,19 +28,15 @@ module Geo
     end
 
     def find_project_ids_not_synced(batch_size:)
-      healthy_shards_restriction(current_node.unsynced_projects)
+      healthy_shards_restriction(finder.find_unsynced_projects(batch_size: batch_size))
         .reorder(last_repository_updated_at: :desc)
-        .limit(batch_size)
         .pluck(:id)
     end
 
     def find_project_ids_updated_recently(batch_size:)
-      current_node.project_registries
-                  .dirty
-                  .retry_due
-                  .order(Gitlab::Database.nulls_first_order(:last_repository_synced_at, :desc))
-                  .limit(batch_size)
-                  .pluck(:project_id)
+      healthy_shards_restriction(finder.find_projects_updated_recently(batch_size: batch_size))
+        .order(Gitlab::Database.nulls_first_order(:last_repository_updated_at, :desc))
+        .pluck(:id)
     end
 
     def healthy_shards_restriction(relation)

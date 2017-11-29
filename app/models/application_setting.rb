@@ -185,6 +185,27 @@ class ApplicationSetting < ActiveRecord::Base
     end
   end
 
+  validates :gitaly_timeout_default,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+
+  validates :gitaly_timeout_medium,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :gitaly_timeout_medium,
+            numericality: { less_than_or_equal_to: :gitaly_timeout_default },
+            if: :gitaly_timeout_default
+  validates :gitaly_timeout_medium,
+            numericality: { greater_than_or_equal_to: :gitaly_timeout_fast },
+            if: :gitaly_timeout_fast
+
+  validates :gitaly_timeout_fast,
+            presence: true,
+            numericality: { only_integer: true, greater_than_or_equal_to: 0 }
+  validates :gitaly_timeout_fast,
+            numericality: { less_than_or_equal_to: :gitaly_timeout_default },
+            if: :gitaly_timeout_default
+
   SUPPORTED_KEY_TYPES.each do |type|
     validates :"#{type}_key_restriction", presence: true, key_restriction: { type: type }
   end
@@ -325,7 +346,10 @@ class ApplicationSetting < ActiveRecord::Base
       slack_app_enabled: false,
       slack_app_id: nil,
       slack_app_secret: nil,
-      slack_app_verification_token: nil
+      slack_app_verification_token: nil,
+      gitaly_timeout_fast: 10,
+      gitaly_timeout_medium: 30,
+      gitaly_timeout_default: 55
     }
   end
 

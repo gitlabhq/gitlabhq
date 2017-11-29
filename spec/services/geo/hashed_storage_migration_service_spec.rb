@@ -10,7 +10,7 @@ describe Geo::HashedStorageMigrationService do
   describe '#execute' do
     context 'project backed by legacy storage' do
       before do
-        project.update_attribute(:storage_version, Project::LATEST_STORAGE_VERSION)
+        project.update_attribute(:storage_version, Project::HASHED_STORAGE_FEATURES[:repository])
       end
 
       it 'moves the project repositories' do

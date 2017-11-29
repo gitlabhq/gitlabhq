@@ -31,19 +31,6 @@ module Gitlab
         end
       end
 
-      # Like all_refs public `Gitlab::Git::Repository` methods, this method is part
-      # of `Repository`'s interface through `method_missing`.
-      # `Repository` has its own `fetch_as_mirror` which uses `gitlab-shell` and
-      # takes some extra attributes, so we qualify this method name to prevent confusion.
-      def fetch_as_mirror_without_shell(url)
-        remote_name = "tmp-#{SecureRandom.hex}"
-        add_remote(remote_name, url)
-        set_remote_as_mirror(remote_name)
-        fetch_remote_without_shell(remote_name)
-      ensure
-        remove_remote(remote_name) if remote_name
-      end
-
       def remote_tags(remote)
         # Each line has this format: "dc872e9fa6963f8f03da6c8f6f264d0845d6b092\trefs/tags/v1.10.0\n"
         # We want to convert it to: [{ 'v1.10.0' => 'dc872e9fa6963f8f03da6c8f6f264d0845d6b092' }, ...]

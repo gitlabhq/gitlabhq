@@ -165,16 +165,13 @@ class IssuableBaseService < BaseService
     # To be overridden by subclasses
   end
 
-  def update(issuable) # rubocop:disable Metrics/AbcSize
+  def update(issuable)
     change_state(issuable)
     change_subscription(issuable)
     change_todo(issuable)
     toggle_award(issuable)
     filter_params(issuable)
-    old_labels = issuable.labels.to_a
-    old_mentioned_users = issuable.mentioned_users.to_a
-    old_assignees = issuable.assignees.to_a
-    old_total_time_spent = issuable.total_time_spent if issuable.respond_to?(:total_time_spent)
+    old_associations = associations_before_update(issuable)
 
     label_ids = process_label_ids(params, existing_label_ids: issuable.label_ids)
     params[:label_ids] = label_ids if labels_changing?(issuable.label_ids, label_ids)
@@ -195,18 +192,13 @@ class IssuableBaseService < BaseService
       if issuable.with_transaction_returning_status { issuable.save }
         # We do not touch as it will affect a update on updated_at field
         ActiveRecord::Base.no_touching do
-          Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_labels)
+          Issuable::CommonSystemNotesService.new(project, current_user).execute(issuable, old_associations[:labels])
         end
 
-        handle_changes(
-          issuable,
-          old_labels: old_labels,
-          old_mentioned_users: old_mentioned_users,
-          old_assignees: old_assignees
-        )
+        handle_changes(issuable, old_associations: old_associations)
 
         new_assignees = issuable.assignees.to_a
-        affected_assignees = (old_assignees + new_assignees) - (old_assignees & new_assignees)
+        affected_assignees = (old_associations[:assignees] + new_assignees) - (old_associations[:assignees] & new_assignees)
 
         invalidate_cache_counts(issuable, users: affected_assignees.compact)
         after_update(issuable)
@@ -214,9 +206,8 @@ class IssuableBaseService < BaseService
         execute_hooks(
           issuable,
           'update',
-          old_labels: old_labels,
-          old_assignees: old_assignees,
-          old_total_time_spent: old_total_time_spent)
+          old_associations: old_associations
+        )
 
         issuable.update_project_counter_caches if update_project_counters
       end
@@ -267,6 +258,18 @@ class IssuableBaseService < BaseService
       todo_service.new_award_emoji(issuable, current_user)
       issuable.toggle_award_emoji(award, current_user)
     end
+  end
+
+  def associations_before_update(issuable)
+    associations =
+      {
+        labels: issuable.labels.to_a,
+        mentioned_users: issuable.mentioned_users.to_a,
+        assignees: issuable.assignees.to_a
+      }
+    associations[:total_time_spent] = issuable.total_time_spent if issuable.respond_to?(:total_time_spent)
+
+    associations
   end
 
   def has_changes?(issuable, old_labels: [], old_assignees: [])

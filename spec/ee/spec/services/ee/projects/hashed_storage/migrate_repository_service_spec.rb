@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::HashedStorageMigrationService do
+describe Projects::HashedStorage::MigrateRepositoryService do
   let(:project) { create(:project, :empty_repo, :wiki_repo) }
   let(:service) { described_class.new(project) }
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
@@ -18,7 +18,7 @@ describe Projects::HashedStorageMigrationService do
       expect(event).to be_a(Geo::HashedStorageMigratedEvent)
       expect(event).to have_attributes(
         old_storage_version: nil,
-        new_storage_version: Storage::HashedProject::STORAGE_VERSION,
+        new_storage_version: ::Project::HASHED_STORAGE_FEATURES[:repository],
         old_disk_path: legacy_storage.disk_path,
         new_disk_path: hashed_storage.disk_path,
         old_wiki_disk_path: legacy_storage.disk_path + '.wiki',

@@ -10,7 +10,9 @@ module Gitlab
       def exists?
         request = Gitaly::RepositoryExistsRequest.new(repository: @gitaly_repo)
 
-        GitalyClient.call(@storage, :repository_service, :repository_exists, request).exists
+        response = GitalyClient.call(@storage, :repository_service, :repository_exists, request, timeout: GitalyClient.fast_timeout)
+
+        response.exists
       end
 
       def garbage_collect(create_bitmap)
@@ -30,7 +32,8 @@ module Gitlab
 
       def repository_size
         request = Gitaly::RepositorySizeRequest.new(repository: @gitaly_repo)
-        GitalyClient.call(@storage, :repository_service, :repository_size, request).size
+        response = GitalyClient.call(@storage, :repository_service, :repository_size, request)
+        response.size
       end
 
       def apply_gitattributes(revision)
@@ -61,7 +64,7 @@ module Gitlab
 
       def has_local_branches?
         request = Gitaly::HasLocalBranchesRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :repository_service, :has_local_branches, request)
+        response = GitalyClient.call(@storage, :repository_service, :has_local_branches, request, timeout: GitalyClient.fast_timeout)
 
         response.value
       end

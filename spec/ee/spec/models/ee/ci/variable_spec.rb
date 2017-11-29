@@ -11,4 +11,22 @@ describe Ci::Variable do
     is_expected.to validate_uniqueness_of(:key)
       .scoped_to(:project_id, :environment_scope)
   end
+
+  describe '#environment_scope=' do
+    context 'when the new environment_scope is nil' do
+      it 'strips leading and trailing whitespaces' do
+        subject.environment_scope = nil
+
+        expect(subject.environment_scope).to eq('')
+      end
+    end
+
+    context 'when the new environment_scope has leadind and trailing whitespaces' do
+      it 'strips leading and trailing whitespaces' do
+        subject.environment_scope = ' * '
+
+        expect(subject.environment_scope).to eq('*')
+      end
+    end
+  end
 end

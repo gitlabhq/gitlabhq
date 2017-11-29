@@ -7,9 +7,7 @@ describe NamespacePolicy do
   let(:admin) { create(:admin) }
   let(:namespace) { create(:namespace, owner: owner) }
 
-  let(:owner_permissions) { [:create_projects, :admin_namespace] }
-
-  let(:admin_permissions) { owner_permissions }
+  let(:owner_permissions) { [:create_projects, :admin_namespace, :read_namespace] }
 
   subject { described_class.new(current_user, namespace) }
 
@@ -29,6 +27,12 @@ describe NamespacePolicy do
     let(:current_user) { owner }
 
     it { is_expected.to be_allowed(*owner_permissions) }
+
+    context 'user who has exceeded project limit' do
+      let(:owner) { create(:user, projects_limit: 0) }
+
+      it { is_expected.to be_disallowed(:create_projects) }
+    end
   end
 
   context 'auditor' do

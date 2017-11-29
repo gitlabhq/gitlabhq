@@ -1,11 +1,5 @@
 module Geo
-  class RegistryFinder
-    attr_reader :current_node
-
-    def initialize(current_node: nil)
-      @current_node = current_node
-    end
-
+  class FileRegistryFinder < RegistryFinder
     def find_failed_objects(batch_size:)
       Geo::FileRegistry
         .failed
@@ -28,7 +22,7 @@ module Geo
       # Selective project replication adds a wrinkle to FDW queries, so
       # we fallback to the legacy version for now.
       relation =
-        if Gitlab::Geo.fdw? && !selective_sync
+        if fdw?
           fdw_find_nonreplicated_lfs_objects
         else
           legacy_find_nonreplicated_lfs_objects(except_registry_ids: except_registry_ids)
@@ -54,7 +48,7 @@ module Geo
       # Selective project replication adds a wrinkle to FDW queries, so
       # we fallback to the legacy version for now.
       relation =
-        if Gitlab::Geo.fdw? && !selective_sync
+        if fdw?
           fdw_find_nonreplicated_uploads
         else
           legacy_find_nonreplicated_uploads(except_registry_ids: except_registry_ids)
@@ -67,10 +61,6 @@ module Geo
     end
 
     protected
-
-    def selective_sync
-      current_node.restricted_project_ids
-    end
 
     #
     # FDW accessors

@@ -12,6 +12,10 @@
         type: String,
         required: true,
       },
+      updateEndpoint: {
+        type: String,
+        required: true,
+      },
       canUpdate: {
         required: true,
         type: Boolean,
@@ -111,7 +115,9 @@
           :can-update="canUpdate"
           :can-destroy="canDestroy"
           :endpoint="endpoint"
+          :update-endpoint="updateEndpoint"
           :issuable-ref="issuableRef"
+          issuable-type="epic"
           :initial-title-html="initialTitleHtml"
           :initial-title-text="initialTitleText"
           :initial-description-html="initialDescriptionHtml"

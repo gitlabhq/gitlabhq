@@ -71,6 +71,14 @@ RSpec.describe Geo::WikiSyncService do
       expect { subject.execute }.not_to raise_error
     end
 
+    it 'increases retry count when Gitlab::Git::Repository::NoRepository is raised' do
+      allow(repository).to receive(:fetch_as_mirror).with(url_to_repo, forced: true) { raise Gitlab::Git::Repository::NoRepository }
+
+      subject.execute
+
+      expect(Geo::ProjectRegistry.last.wiki_retry_count).to eq(1)
+    end
+
     context 'tracking database' do
       it 'creates a new registry if does not exists' do
         expect { subject.execute }.to change(Geo::ProjectRegistry, :count).by(1)

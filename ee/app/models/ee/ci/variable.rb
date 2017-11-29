@@ -11,6 +11,10 @@ module EE
                     message: ::Gitlab::Regex.environment_scope_regex_message }
         )
       end
+
+      def environment_scope=(new_environment_scope)
+        super(new_environment_scope.to_s.strip)
+      end
     end
   end
 end
