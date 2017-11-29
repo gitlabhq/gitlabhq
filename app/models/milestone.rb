@@ -13,6 +13,7 @@ class Milestone < ActiveRecord::Base
   include Referable
   include StripAttribute
   include Milestoneish
+  include Gitlab::SQL::Pattern
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description
@@ -73,10 +74,7 @@ class Milestone < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      t = arel_table
-      pattern = "%#{query}%"
-
-      where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
+      fuzzy_search(query, [:title, :description])
     end
 
     def filter_by_state(milestones, state)
