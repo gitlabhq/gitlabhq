@@ -11,11 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(version: 20171124070437) do
-=======
 ActiveRecord::Schema.define(version: 20171124150326) do
->>>>>>> upstream/master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -181,7 +177,6 @@ ActiveRecord::Schema.define(version: 20171124150326) do
     t.integer "gitaly_timeout_default", default: 55, null: false
     t.integer "gitaly_timeout_medium", default: 30, null: false
     t.integer "gitaly_timeout_fast", default: 10, null: false
-<<<<<<< HEAD
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -199,8 +194,6 @@ ActiveRecord::Schema.define(version: 20171124150326) do
     t.integer "group_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-=======
->>>>>>> upstream/master
   end
 
   add_index "approver_groups", ["group_id"], name: "index_approver_groups_on_group_id", using: :btree
