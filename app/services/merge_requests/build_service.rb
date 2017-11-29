@@ -140,7 +140,6 @@ module MergeRequests
         merge_request.description = closes_issue
       end
     end
-<<<<<<< HEAD
 
     def assign_title_and_description_from_single_commit
       commits = compare_commits
@@ -152,19 +151,6 @@ module MergeRequests
       merge_request.description ||= commit.description.try(:strip)
     end
 
-=======
-
-    def assign_title_and_description_from_single_commit
-      commits = compare_commits
-
-      return unless commits&.count == 1
-
-      commit = commits.first
-      merge_request.title ||= commit.title
-      merge_request.description ||= commit.description.try(:strip)
-    end
-
->>>>>>> upstream/master
     def assign_title_from_issue
       return unless issue
 
