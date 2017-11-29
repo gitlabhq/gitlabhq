@@ -77,6 +77,32 @@ module API
 
         present status, with: ::GeoNodeStatusEntity
       end
+
+      # Get project registry failures for the current Geo node
+      #
+      # Example request:
+      #   GET /geo_nodes/:id/failures/:type
+      desc 'Get project registry failures for the current Geo node' do
+        success Entities::GeoNode
+      end
+      params do
+        requires :id, type: Integer, desc: 'The ID of the node'
+        optional :type, type: String, desc: 'Type of failure (repository/wiki)'
+        use :pagination
+      end
+      get ':id/failures/:type' do
+        unless Gitlab::Geo.current_node.id == params[:id]
+          forbidden!('Geo node is not the current node.')
+        end
+
+        geo_node = GeoNode.find(params[:id])
+
+        not_found('Geo node not found') unless geo_node
+
+        project_registries = geo_node.project_registries
+
+        present project_registries, with: ::ProjectRegistryEntity
+      end
     end
   end
 end

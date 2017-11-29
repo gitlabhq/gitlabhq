@@ -86,4 +86,25 @@ describe API::GeoNodes, :geo, api: true do
       expect(response.status).to eq 403
     end
   end
+
+  describe 'GET /geo_nodes/:id/failures/:type' do
+    it 'fetches the current node failures' do
+      create(:geo_project_registry, :sync_failed)
+      create(:geo_project_registry, :sync_failed)
+
+      stub_current_geo_node(secondary)
+      expect(GeoNode).to receive(:find).and_return(secondary)
+
+      get api("/geo_nodes/#{secondary.id}/failures", admin)
+
+      expect(response.status).to eq 200
+      expect(response.body).to eq('')
+    end
+
+    it 'denies access if not admin' do
+      get api('/geo_nodes', user)
+
+      expect(response.failures).to eq 403
+    end
+  end
 end
