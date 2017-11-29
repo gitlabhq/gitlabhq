@@ -1,0 +1,5 @@
+---
+title: Prevent an information disclosure in the Groups API
+merge_request:
+author:
+type: security
