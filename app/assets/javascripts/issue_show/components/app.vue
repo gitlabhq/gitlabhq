@@ -16,6 +16,10 @@ export default {
       required: true,
       type: String,
     },
+    updateEndpoint: {
+      required: true,
+      type: String,
+    },
     canUpdate: {
       required: true,
       type: Boolean,
@@ -262,6 +266,8 @@ export default {
         :description-text="state.descriptionText"
         :updated-at="state.updatedAt"
         :task-status="state.taskStatus"
+        :issuable-type="issuableType"
+        :update-url="updateEndpoint"
       />
       <edited-component
         v-if="hasUpdated"
