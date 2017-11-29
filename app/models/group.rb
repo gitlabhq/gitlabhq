@@ -5,6 +5,7 @@ require 'carrierwave/orm/activerecord'
 class Group < Namespace
   include EE::Group
   include Gitlab::ConfigHelper
+  include AfterCommitQueue
   include AccessRequestable
   include Avatarable
   include Referable

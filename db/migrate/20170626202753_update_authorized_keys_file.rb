@@ -102,6 +102,6 @@ class UpdateAuthorizedKeysFile < ActiveRecord::Migration
 
   def update_authorized_keys_file_since(cutoff_datetime)
     job = [['UpdateAuthorizedKeysFileSince', [cutoff_datetime]]]
-    BackgroundMigrationWorker.perform_bulk(job)
+    BackgroundMigrationWorker.bulk_perform_async(job)
   end
 end
