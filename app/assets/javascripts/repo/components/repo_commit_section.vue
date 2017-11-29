@@ -20,7 +20,7 @@ export default {
       submitCommitsLoading: false,
       startNewMR: false,
       commitMessage: '',
-      collapsed: false,
+      collapsed: true,
     };
   },
   computed: {
