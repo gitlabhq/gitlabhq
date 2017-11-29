@@ -7,9 +7,17 @@ describe RemoveSystemHookFromGeoNodes, :migration do
   before do
     allow_any_instance_of(WebHookService).to receive(:execute)
 
+    node_attrs = {
+      schema: 'http',
+      host: 'localhost',
+      port: 3000
+    }
+
     create(:system_hook)
-    geo_nodes.create! attributes_for(:geo_node, :primary)
-    geo_nodes.create! attributes_for(:geo_node, system_hook_id: create(:system_hook).id)
+    hook_id = create(:system_hook).id
+
+    geo_nodes.create!(node_attrs.merge(primary: true))
+    geo_nodes.create!(node_attrs.merge(system_hook_id: hook_id, port: 3001))
   end
 
   it 'destroy all system hooks for secondary nodes' do

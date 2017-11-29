@@ -5,8 +5,9 @@ require 'spec_helper'
 describe Geo::RepositorySyncWorker, :geo, :truncate do
   include ::EE::GeoHelpers
 
-  let(:secondary) { create(:geo_node) }
-  let(:synced_group) { create(:group) }
+  let!(:primary) { create(:geo_node, :primary) }
+  let!(:secondary) { create(:geo_node) }
+  let!(:synced_group) { create(:group) }
   let!(:project_in_synced_group) { create(:project, group: synced_group) }
   let!(:unsynced_project) { create(:project) }
 

@@ -6,7 +6,7 @@
 
 %hr.clearfix
 
-= form_for [:admin, @push_rule] do |f|
+= form_for @push_rule, url: admin_push_rule_path, method: :put do |f|
   - if @push_rule.errors.any?
     .alert.alert-danger
       - @push_rule.errors.full_messages.each do |msg|

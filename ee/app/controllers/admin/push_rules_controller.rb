@@ -40,6 +40,6 @@ class Admin::PushRulesController < Admin::ApplicationController
   end
 
   def push_rule
-    @push_rule ||= PushRule.find_or_create_by(is_sample: true)
+    @push_rule ||= PushRule.find_or_initialize_by(is_sample: true)
   end
 end

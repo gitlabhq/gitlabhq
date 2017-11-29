@@ -195,33 +195,6 @@ summary {
   }
 }
 
-// Typography =================================================================
-
-.text-primary,
-.text-primary:hover {
-  color: $brand-primary;
-}
-
-.text-success,
-.text-success:hover {
-  color: $brand-success;
-}
-
-.text-danger,
-.text-danger:hover {
-  color: $brand-danger;
-}
-
-.text-warning,
-.text-warning:hover {
-  color: $brand-warning;
-}
-
-.text-info,
-.text-info:hover {
-  color: $brand-info;
-}
-
 // Prevent datetimes on tooltips to break into two lines
 .local-timeago {
   white-space: nowrap;

@@ -249,7 +249,7 @@ describe Admin::GeoNodesController, :postgresql do
       end
 
       context 'with a secondary node' do
-        let(:geo_node) { create(:geo_node, host: 'example.com', port: 80, enabled: true) }
+        let(:geo_node) { create(:geo_node, url: 'http://example.com') }
 
         context 'when succeed' do
           before do

@@ -56,9 +56,11 @@ export const slugify = str => str.trim().toLowerCase();
 export const truncate = (string, maxLength) => `${string.substr(0, (maxLength - 3))}...`;
 
 /**
- * Capitalizes first character.
+ * Capitalizes first character
  *
  * @param {String} text
- * @returns {String}
+ * @return {String}
  */
-export const capitalizeFirstCharacter = text => `${text[0].toUpperCase()}${text.slice(1)}`;
+export function capitalizeFirstCharacter(text) {
+  return `${text[0].toUpperCase()}${text.slice(1)}`;
+}

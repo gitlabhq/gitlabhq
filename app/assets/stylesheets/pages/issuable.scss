@@ -70,14 +70,13 @@
 
   .title {
     padding: 0;
-    margin-bottom: 16px;
+    margin-bottom: $gl-padding;
     border-bottom: 0;
   }
 
   .btn-edit {
     margin-left: auto;
-    // Set height to match title height
-    height: 2em;
+    height: $gl-padding * 2;
   }
 
   // Border around images in issue and MR descriptions.
@@ -292,6 +291,8 @@
     .gutter-toggle {
       margin-top: 7px;
       border-left: 1px solid $border-gray-normal;
+      padding-left: 0;
+      text-align: center;
     }
 
     .title .gutter-toggle {
