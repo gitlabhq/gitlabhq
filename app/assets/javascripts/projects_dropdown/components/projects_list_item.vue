@@ -48,6 +48,27 @@ export default {
       }
       return this.projectName;
     },
+    /**
+     * Smartly truncates project namespace by doing two things;
+     * 1. Only include Group names in path by removing project name
+     * 2. Only include first and last group names in the path
+     *    when namespace has more than 2 groups present
+     *
+     * First part (removal of project name from namespace) can be
+     * done from backend but doing so involves migration of
+     * existing project namespaces which is not wise thing to do.
+     */
+    truncatedNamespace() {
+      const namespaceArr = this.namespace.split(' / ');
+      namespaceArr.splice(-1, 1);
+      let namespace = namespaceArr.join(' / ');
+
+      if (namespaceArr.length > 2) {
+        namespace = `${namespaceArr[0]} / ... / ${namespaceArr.pop()}`;
+      }
+
+      return namespace;
+    },
   },
 };
 </script>
@@ -87,9 +108,7 @@ export default {
         <div
           class="project-namespace"
           :title="namespace"
-        >
-          {{namespace}}
-        </div>
+        >{{truncatedNamespace}}</div>
       </div>
     </a>
   </li>
