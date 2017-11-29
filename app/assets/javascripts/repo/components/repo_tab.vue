@@ -67,7 +67,7 @@ export default {
       :title="tab.url"
     >
       {{ tab.name }}
-      <fileStatusIcon
+      <file-status-icon
         :file="tab"
       />
     </div>
