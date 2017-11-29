@@ -1253,7 +1253,11 @@ module Gitlab
 
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/695
       def git_merged_branch_names(branch_names = [])
-        root_sha = find_branch(root_ref).target
+        return [] unless root_ref
+
+        root_sha = find_branch(root_ref)&.target
+
+        return [] unless root_sha
 
         git_arguments =
           %W[branch --merged #{root_sha}

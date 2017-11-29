@@ -1,0 +1,5 @@
+---
+title: "Gracefully handle case when repository's root ref does not exist"
+merge_request:
+author:
+type: fixed
