@@ -119,6 +119,19 @@ feature 'GFM autocomplete', :js do
     expect(find('#at-view-58')).to have_selector('.cur:first-of-type')
   end
 
+  it 'includes custom emojis in emoji dropdown' do
+    create(:custom_emoji, name: 'awesome_banana', namespace: project.namespace)
+
+    visit project_issue_path(project, issue)
+    wait_for_requests
+
+    page.within '.timeline-content-form' do
+      find('#note-body').native.send_keys(':awesome_banana')
+    end
+
+    expect(page).to have_selector '.atwho-view li', text: 'awesome_banana'
+  end
+
   context 'if a selected value has special characters' do
     it 'wraps the result in double quotes' do
       note = find('#note-body')
