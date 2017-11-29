@@ -70,14 +70,13 @@
 
   .title {
     padding: 0;
-    margin-bottom: 16px;
+    margin-bottom: $gl-padding;
     border-bottom: 0;
   }
 
   .btn-edit {
     margin-left: auto;
-    // Set height to match title height
-    height: 2em;
+    height: $gl-padding * 2;
   }
 
   // Border around images in issue and MR descriptions.
