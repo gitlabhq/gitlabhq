@@ -125,7 +125,7 @@
   @include transition(border-color);
 }
 
-.note-action-button .link-highlight,
+.note-action-button,
 .toolbar-btn,
 .dropdown-toggle-caret {
   @include transition(color);
