@@ -261,7 +261,7 @@ module EE
         cluster.matches?(environment) # TODO: This is the same logic with Environment Variable
       end.first&.platform_kubernetes
 
-      @deployment_platform ||= services.where(category: :deployment).reorder(nil).find_by(active: true)
+      super # Wildcard or KubernetesService
     end
 
     def secret_variables_for(ref:, environment: nil)
