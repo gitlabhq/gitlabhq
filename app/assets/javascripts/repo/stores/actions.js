@@ -9,8 +9,8 @@ export const setInitialData = ({ commit }, data) => commit(types.SET_INITIAL_DAT
 
 export const closeDiscardPopup = ({ commit }) => commit(types.TOGGLE_DISCARD_POPUP, false);
 
-export const discardAllChanges = ({ commit, getters, dispatch }) => {
-  const changedFiles = getters.changedFiles;
+export const discardAllChanges = ({ state, commit, dispatch }) => {
+  const changedFiles = state.changedFiles;
 
   changedFiles.forEach((file) => {
     commit(types.DISCARD_FILE_CHANGES, file);
@@ -25,8 +25,8 @@ export const closeAllFiles = ({ state, dispatch }) => {
   state.openFiles.forEach(file => dispatch('closeFile', { file }));
 };
 
-export const toggleEditMode = ({ state, commit, getters, dispatch }, force = false) => {
-  const changedFiles = getters.changedFiles;
+export const toggleEditMode = ({ state, commit, dispatch }, force = false) => {
+  const changedFiles = state.changedFiles;
 
   if (changedFiles.length && !force) {
     commit(types.TOGGLE_DISCARD_POPUP, true);
@@ -64,7 +64,7 @@ export const checkCommitStatus = ({ state }) => service.getBranchData(
   })
   .catch(() => flash('Error checking branch data. Please try again.'));
 
-export const commitChanges = ({ commit, state, dispatch, getters }, { payload, newMr }) =>
+export const commitChanges = ({ commit, state, dispatch }, { payload, newMr }) =>
   service.commit(state.project.id, payload)
   .then((data) => {
     const { branch } = payload;
@@ -88,7 +88,7 @@ export const commitChanges = ({ commit, state, dispatch, getters }, { payload, n
     } else {
       commit(types.SET_COMMIT_REF, data.id);
 
-      getters.changedFiles.forEach((entry) => {
+      state.changedFiles.forEach((entry) => {
         commit(types.SET_LAST_COMMIT_DATA, {
           entry,
           lastCommit,

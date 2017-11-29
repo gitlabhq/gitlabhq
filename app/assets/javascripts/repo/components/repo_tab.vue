@@ -2,6 +2,11 @@
 import { mapActions } from 'vuex';
 
 export default {
+  data() {
+    return {
+      tabMouseOver: false,
+    };
+  },
   props: {
     tab: {
       type: Object,
@@ -16,12 +21,8 @@ export default {
       }
       return `Close ${this.tab.name}`;
     },
-    changedClass() {
-      const tabChangedObj = {
-        'fa-times close-icon': !this.tab.changed && !this.tab.tempFile,
-        'fa-circle unsaved-icon': this.tab.changed || this.tab.tempFile,
-      };
-      return tabChangedObj;
+    showChangedIcon() {
+      return this.tab.changed ? !this.tabMouseOver : false;
     },
   },
 
@@ -30,6 +31,16 @@ export default {
       'setFileActive',
       'closeFile',
     ]),
+    mouseOverTab() {
+      if (this.tab.changed) {
+        this.tabMouseOver = true;
+      }
+    },
+    mouseOutTab() {
+      if (this.tab.changed) {
+        this.tabMouseOver = false;
+      }
+    },
   },
 };
 </script>
@@ -37,6 +48,8 @@ export default {
 <template>
   <li
     @click="setFileActive(tab)"
+    @mouseover="mouseOverTab"
+    @mouseout="mouseOutTab"
   >
     <button
       type="button"
@@ -46,11 +59,16 @@ export default {
       :class="{
         'modified': tab.changed,
       }"
-      :disabled="tab.changed"
     >
       <i
-        class="fa"
-        :class="changedClass"
+        v-if="!showChangedIcon"
+        class="fa fa-times close-icon"
+        aria-hidden="true"
+      >
+      </i>
+      <i
+        v-else
+        class="fa fa-circle unsaved-icon"
         aria-hidden="true"
       >
       </i>

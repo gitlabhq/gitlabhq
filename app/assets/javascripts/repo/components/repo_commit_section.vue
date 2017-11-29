@@ -20,14 +20,12 @@ export default {
       submitCommitsLoading: false,
       startNewMR: false,
       commitMessage: '',
-      collapsed: true,
+      collapsed: false,
     };
   },
   computed: {
     ...mapState([
       'currentBranch',
-    ]),
-    ...mapGetters([
       'changedFiles',
     ]),
     commitButtonDisabled() {

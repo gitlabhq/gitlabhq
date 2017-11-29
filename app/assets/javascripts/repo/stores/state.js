@@ -1,5 +1,6 @@
 export default () => ({
   canCommit: false,
+  changedFiles: [],
   currentBranch: '',
   currentBlobView: 'repo-preview',
   currentRef: '',

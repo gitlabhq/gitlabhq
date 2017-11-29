@@ -14,8 +14,6 @@ export const treeList = (state) => {
     .value();
 };
 
-export const changedFiles = state => state.openFiles.filter(file => file.changed);
-
 export const activeFile = state => state.openFiles.find(file => file.active);
 
 export const activeFileExtension = (state) => {
@@ -35,6 +33,6 @@ export const canEditFile = (state) => {
     (currentActiveFile && !currentActiveFile.renderError && !currentActiveFile.binary);
 };
 
-export const addedFiles = state => changedFiles(state).filter(f => f.tempFile);
+export const addedFiles = state => state.changedFiles.filter(f => f.tempFile);
 
-export const modifiedFiles = state => changedFiles(state).filter(f => !f.tempFile);
+export const modifiedFiles = state => state.changedFiles.filter(f => !f.tempFile);

@@ -126,6 +126,10 @@
   color: $gray-darkest;
   transform: translateY(-50%);
 
+  &:focus {
+    outline: 0;
+  }
+
   &:not(.modified):hover,
   &:not(.modified):focus {
     color: $hint-color;

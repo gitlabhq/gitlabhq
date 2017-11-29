@@ -11,10 +11,10 @@ export default {
   computed: {
     ...mapState([
       'currentBlobView',
+      'changedFiles',
     ]),
     ...mapGetters([
       'isCollapsed',
-      'changedFiles',
     ]),
   },
   components: {
