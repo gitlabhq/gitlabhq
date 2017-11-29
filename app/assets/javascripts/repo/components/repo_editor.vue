@@ -82,9 +82,11 @@ export default {
     },
     activeFileChanged(newVal) {
       const editorModel = this.monacoInstance.getModel();
+      const oldPosition = this.monacoInstance.getPosition();
 
       if (!newVal && editorModel) {
         editorModel.setValue(this.activeFile.content);
+        this.monacoInstance.setPosition(oldPosition);
       }
     },
   },
