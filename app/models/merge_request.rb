@@ -292,9 +292,9 @@ class MergeRequest < ActiveRecord::Base
     if persisted?
       merge_request_diff.commit_shas
     elsif compare_commits
-      compare_commits.reverse.map(&:sha)
+      compare_commits.to_a.reverse.map(&:sha)
     else
-      []
+      Array(diff_head_sha)
     end
   end
 
@@ -373,16 +373,28 @@ class MergeRequest < ActiveRecord::Base
   # We use these attributes to force these to the intended values.
   attr_writer :target_branch_sha, :source_branch_sha
 
+  def source_branch_ref
+    return @source_branch_sha if @source_branch_sha
+    return unless source_branch
+
+    Gitlab::Git::BRANCH_REF_PREFIX + source_branch
+  end
+
+  def target_branch_ref
+    return @target_branch_sha if @target_branch_sha
+    return unless target_branch
+
+    Gitlab::Git::BRANCH_REF_PREFIX + target_branch
+  end
+
   def source_branch_head
     return unless source_project
 
-    source_branch_ref = @source_branch_sha || source_branch
     source_project.repository.commit(source_branch_ref) if source_branch_ref
   end
 
   def target_branch_head
-    target_branch_ref = @target_branch_sha || target_branch
-    target_project.repository.commit(target_branch_ref) if target_branch_ref
+    target_project.repository.commit(target_branch_ref)
   end
 
   def branch_merge_base_commit
@@ -507,7 +519,7 @@ class MergeRequest < ActiveRecord::Base
 
   def merge_request_diff_for(diff_refs_or_sha)
     @merge_request_diffs_by_diff_refs_or_sha ||= Hash.new do |h, diff_refs_or_sha|
-      diffs = merge_request_diffs.viewable.select_without_diff
+      diffs = merge_request_diffs.viewable
       h[diff_refs_or_sha] =
         if diff_refs_or_sha.is_a?(Gitlab::Diff::DiffRefs)
           diffs.find_by_diff_refs(diff_refs_or_sha)
@@ -932,28 +944,18 @@ class MergeRequest < ActiveRecord::Base
   # Note that this could also return SHA from now dangling commits
   #
   def all_commit_shas
-    if persisted?
-      # MySQL doesn't support LIMIT in a subquery.
-      diffs_relation =
-        if Gitlab::Database.postgresql?
-          merge_request_diffs.order(id: :desc).limit(100)
-        else
-          merge_request_diffs
-        end
+    return commit_shas unless persisted?
 
-      column_shas = MergeRequestDiffCommit
-                      .where(merge_request_diff: diffs_relation)
-                      .limit(10_000)
-                      .pluck('sha')
+    diffs_relation = merge_request_diffs
 
-      serialised_shas = merge_request_diffs.where.not(st_commits: nil).flat_map(&:commit_shas)
+    # MySQL doesn't support LIMIT in a subquery.
+    diffs_relation = diffs_relation.recent if Gitlab::Database.postgresql?
 
-      (column_shas + serialised_shas).uniq
-    elsif compare_commits
-      compare_commits.to_a.reverse.map(&:id)
-    else
-      [diff_head_sha]
-    end
+    MergeRequestDiffCommit
+      .where(merge_request_diff: diffs_relation)
+      .limit(10_000)
+      .pluck('sha')
+      .uniq
   end
 
   def merge_commit

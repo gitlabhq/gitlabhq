@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20171124070437) do
+=======
+ActiveRecord::Schema.define(version: 20171124150326) do
+>>>>>>> upstream/master
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -177,6 +181,7 @@ ActiveRecord::Schema.define(version: 20171124070437) do
     t.integer "gitaly_timeout_default", default: 55, null: false
     t.integer "gitaly_timeout_medium", default: 30, null: false
     t.integer "gitaly_timeout_fast", default: 10, null: false
+<<<<<<< HEAD
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -194,6 +199,8 @@ ActiveRecord::Schema.define(version: 20171124070437) do
     t.integer "group_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+=======
+>>>>>>> upstream/master
   end
 
   add_index "approver_groups", ["group_id"], name: "index_approver_groups_on_group_id", using: :btree
@@ -1358,8 +1365,6 @@ ActiveRecord::Schema.define(version: 20171124070437) do
 
   create_table "merge_request_diffs", force: :cascade do |t|
     t.string "state"
-    t.text "st_commits"
-    t.text "st_diffs"
     t.integer "merge_request_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1369,7 +1374,7 @@ ActiveRecord::Schema.define(version: 20171124070437) do
     t.string "start_commit_sha"
   end
 
-  add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", using: :btree
+  add_index "merge_request_diffs", ["merge_request_id", "id"], name: "index_merge_request_diffs_on_merge_request_id_and_id", using: :btree
 
   create_table "merge_request_metrics", force: :cascade do |t|
     t.integer "merge_request_id", null: false
@@ -1396,8 +1401,8 @@ ActiveRecord::Schema.define(version: 20171124070437) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "milestone_id"
-    t.string "state"
-    t.string "merge_status"
+    t.string "state", default: "opened", null: false
+    t.string "merge_status", default: "unchecked", null: false
     t.integer "target_project_id", null: false
     t.integer "iid"
     t.text "description"

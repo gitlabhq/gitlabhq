@@ -34,3 +34,7 @@ export const canEditFile = (state) => {
     openedFiles.length &&
     (currentActiveFile && !currentActiveFile.renderError && !currentActiveFile.binary);
 };
+
+export const addedFiles = state => changedFiles(state).filter(f => f.tempFile);
+
+export const modifiedFiles = state => changedFiles(state).filter(f => !f.tempFile);

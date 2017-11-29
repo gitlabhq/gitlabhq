@@ -62,12 +62,15 @@ describe Gitlab::BackgroundMigration::PopulateForkNetworksRange, :migration, sch
     expect(base2_membership).not_to be_nil
   end
 
-  it 'skips links that had their source project deleted' do
-    forked_project_links.create(id: 6, forked_from_project_id: 99999, forked_to_project_id: create(:project).id)
+  it 'creates a fork network for the fork of which the source was deleted' do
+    fork = create(:project)
+    forked_project_links.create(id: 6, forked_from_project_id: 99999, forked_to_project_id: fork.id)
 
     migration.perform(5, 8)
 
     expect(fork_networks.find_by(root_project_id: 99999)).to be_nil
+    expect(fork_networks.find_by(root_project_id: fork.id)).not_to be_nil
+    expect(fork_network_members.find_by(project_id: fork.id)).not_to be_nil
   end
 
   it 'schedules a job for inserting memberships for forks-of-forks' do

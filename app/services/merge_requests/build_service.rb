@@ -22,7 +22,17 @@ module MergeRequests
 
     attr_accessor :merge_request
 
-    delegate :target_branch, :source_branch, :source_project, :target_project, :compare_commits, :wip_title, :description, :errors, to: :merge_request
+    delegate :target_branch,
+             :target_branch_ref,
+             :target_project,
+             :source_branch,
+             :source_branch_ref,
+             :source_project,
+             :compare_commits,
+             :wip_title,
+             :description,
+             :errors,
+             to: :merge_request
 
     def find_source_project
       return source_project if source_project.present? && can?(current_user, :read_project, source_project)
@@ -58,10 +68,10 @@ module MergeRequests
     def compare_branches
       compare = CompareService.new(
         source_project,
-        source_branch
+        source_branch_ref
       ).execute(
         target_project,
-        target_branch
+        target_branch_ref
       )
 
       if compare
@@ -130,6 +140,7 @@ module MergeRequests
         merge_request.description = closes_issue
       end
     end
+<<<<<<< HEAD
 
     def assign_title_and_description_from_single_commit
       commits = compare_commits
@@ -141,6 +152,19 @@ module MergeRequests
       merge_request.description ||= commit.description.try(:strip)
     end
 
+=======
+
+    def assign_title_and_description_from_single_commit
+      commits = compare_commits
+
+      return unless commits&.count == 1
+
+      commit = commits.first
+      merge_request.title ||= commit.title
+      merge_request.description ||= commit.description.try(:strip)
+    end
+
+>>>>>>> upstream/master
     def assign_title_from_issue
       return unless issue
 

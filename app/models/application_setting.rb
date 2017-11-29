@@ -343,10 +343,13 @@ class ApplicationSetting < ActiveRecord::Base
       user_default_external: false,
       polling_interval_multiplier: 1,
       usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
+<<<<<<< HEAD
       slack_app_enabled: false,
       slack_app_id: nil,
       slack_app_secret: nil,
       slack_app_verification_token: nil,
+=======
+>>>>>>> upstream/master
       gitaly_timeout_fast: 10,
       gitaly_timeout_medium: 30,
       gitaly_timeout_default: 55

@@ -58,7 +58,6 @@ module Gitlab
 
       def setup_models
         case @relation_name
-        when :merge_request_diff             then setup_st_diff_commits
         when :merge_request_diff_files       then setup_diff
         when :notes                          then setup_note
         when :project_label, :project_labels then setup_label
@@ -206,13 +205,6 @@ module Gitlab
       def parsed_relation_hash
         @parsed_relation_hash ||= Gitlab::ImportExport::AttributeCleaner.clean(relation_hash: @relation_hash,
                                                                                relation_class: relation_class)
-      end
-
-      def setup_st_diff_commits
-        @relation_hash['st_diffs'] = @relation_hash.delete('utf8_st_diffs')
-
-        HashUtil.deep_symbolize_array!(@relation_hash['st_diffs'])
-        HashUtil.deep_symbolize_array_with_date!(@relation_hash['st_commits'])
       end
 
       def setup_diff

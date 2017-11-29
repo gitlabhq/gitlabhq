@@ -121,9 +121,7 @@ module Issuable
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      title = to_fuzzy_arel(:title, query)
-
-      where(title)
+      fuzzy_search(query, [:title])
     end
 
     # Searches for records with a matching title or description.
@@ -134,10 +132,7 @@ module Issuable
     #
     # Returns an ActiveRecord::Relation.
     def full_search(query)
-      title = to_fuzzy_arel(:title, query)
-      description = to_fuzzy_arel(:description, query)
-
-      where(title&.or(description))
+      fuzzy_search(query, [:title, :description])
     end
 
     def sort(method, excluded_labels: [])
