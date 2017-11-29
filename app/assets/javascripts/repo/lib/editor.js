@@ -2,6 +2,7 @@ import DecorationsController from './decorations/controller';
 import DirtyDiffController from './diff/controller';
 import Disposable from './common/disposable';
 import ModelManager from './common/model_manager';
+import editorOptions from './editor_options';
 
 export default class Editor {
   static create(monaco) {
@@ -48,6 +49,15 @@ export default class Editor {
     this.dirtyDiffController.attachModel(model);
 
     this.currentModel = model;
+
+    this.instance.updateOptions(editorOptions.reduce((acc, obj) => {
+      Object.keys(obj).forEach((key) => {
+        Object.assign(acc, {
+          [key]: obj[key](model),
+        });
+      });
+      return acc;
+    }, {}));
 
     this.dirtyDiffController.reDecorate(model);
   }
