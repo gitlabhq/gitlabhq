@@ -1,5 +1,4 @@
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex';
 import RepoTree from './ide_repo_tree.vue';
 
 export default {
