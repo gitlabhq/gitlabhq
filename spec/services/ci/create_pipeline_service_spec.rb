@@ -19,12 +19,14 @@ describe Ci::CreatePipelineService do
       ref: ref_name,
       trigger_request: nil,
       variables_attributes: nil,
-      merge_request: nil)
+      merge_request: nil,
+      push_options: nil)
       params = { ref: ref,
                  before: '00000000',
                  after: after,
                  commits: [{ message: message }],
-                 variables_attributes: variables_attributes }
+                 variables_attributes: variables_attributes,
+                 push_options: push_options }
 
       described_class.new(project, user, params).execute(
         source, trigger_request: trigger_request, merge_request: merge_request)
@@ -354,6 +356,22 @@ describe Ci::CreatePipelineService do
         let(:ci_yaml) { 'invalid: file: fiile' }
 
         it_behaves_like 'a failed pipeline'
+      end
+    end
+
+    context 'when push options contain ci.skip' do
+      let(:push_options) do
+        ['ci.skip',
+         'another push option']
+      end
+
+      it 'creates a pipline in the skipped state' do
+        pipeline = execute_service(push_options: push_options)
+
+        # TODO: DRY these up with "skips builds creation if the commit message"
+        expect(pipeline).to be_persisted
+        expect(pipeline.builds.any?).to be false
+        expect(pipeline.status).to eq("skipped")
       end
     end
 
