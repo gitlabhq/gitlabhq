@@ -59,4 +59,38 @@ describe Gitlab::SidekiqVersioning::Worker do
       expect(subject).not_to include('dummy:v1')
     end
   end
+
+  describe '#support_job_version?' do
+    subject { worker.new }
+
+    context 'when the job is older' do
+      before do
+        subject.job_version = worker.version - 1
+      end
+
+      it 'returns true' do
+        expect(subject.support_job_version?).to be_truthy
+      end
+    end
+
+    context 'when the job is up to date' do
+      before do
+        subject.job_version = worker.version
+      end
+
+      it 'returns true' do
+        expect(subject.support_job_version?).to be_truthy
+      end
+    end
+
+    context 'when the job is newer' do
+      before do
+        subject.job_version = worker.version + 1
+      end
+
+      it 'returns false' do
+        expect(subject.support_job_version?).to be_falsey
+      end
+    end
+  end
 end

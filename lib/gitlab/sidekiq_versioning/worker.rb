@@ -5,6 +5,8 @@ module Gitlab
 
       included do
         version 0
+
+        attr_accessor :job_version
       end
 
       module ClassMethods
@@ -31,6 +33,10 @@ module Gitlab
 
           queue_versions.select { |v| v < version } << version
         end
+      end
+
+      def support_job_version?(job_version = self.job_version)
+        job_version <= self.class.version
       end
     end
   end
