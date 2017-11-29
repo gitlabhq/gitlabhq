@@ -174,6 +174,9 @@ ActiveRecord::Schema.define(version: 20171124070437) do
     t.integer "throttle_authenticated_web_period_in_seconds", default: 3600, null: false
     t.boolean "password_authentication_enabled_for_web"
     t.boolean "password_authentication_enabled_for_git", default: true
+    t.integer "gitaly_timeout_default", default: 55, null: false
+    t.integer "gitaly_timeout_medium", default: 30, null: false
+    t.integer "gitaly_timeout_fast", default: 10, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
