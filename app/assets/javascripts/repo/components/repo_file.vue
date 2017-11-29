@@ -94,7 +94,7 @@
           {{ file.lastCommit.message }}
         </a>
         <skeleton-loading-container
-          v-else
+          v-else-if="!file.tempFile"
           :small="true"
         />
       </td>
@@ -107,7 +107,7 @@
           {{ timeFormated(file.lastCommit.updatedAt) }}
         </span>
         <skeleton-loading-container
-          v-else
+          v-else-if="!file.tempFile"
           class="animation-container-right"
           :small="true"
         />

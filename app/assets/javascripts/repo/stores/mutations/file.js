@@ -35,7 +35,7 @@ export default {
     });
   },
   [types.UPDATE_FILE_CONTENT](state, { file, content }) {
-    const changed = content !== file.raw;
+    const changed = content !== file.raw || file.tempFile;
 
     Object.assign(file, {
       content,

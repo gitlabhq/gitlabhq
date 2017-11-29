@@ -91,6 +91,10 @@ export const changeFileContent = ({ state, commit }, { file, content }) => {
 export const discardFileChanges = ({ state, commit }, file) => {
   commit(types.DISCARD_FILE_CHANGES, file);
   commit(types.REMOVE_FILE_FROM_CHANGED, file);
+
+  if (file.tempFile) {
+    commit(types.TOGGLE_FILE_OPEN, file);
+  }
 };
 
 export const createTempFile = ({ state, commit, dispatch }, { tree, name, content = '', base64 = '' }) => {
@@ -111,6 +115,7 @@ export const createTempFile = ({ state, commit, dispatch }, { tree, name, conten
     file,
   });
   commit(types.TOGGLE_FILE_OPEN, file);
+  commit(types.ADD_FILE_TO_CHANGED, file);
   dispatch('setFileActive', file);
 
   if (!state.editMode && !file.base64) {
