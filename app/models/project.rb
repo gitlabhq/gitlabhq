@@ -906,10 +906,7 @@ class Project < ActiveRecord::Base
   end
 
   def deployment_platform
-    @deployment_platform ||= clusters.select do |cluster|
-      cluster.matches?(environment) # TODO: This is the same logic with Environment Variable
-    end.first&.platform_kubernetes
-
+    @deployment_platform ||= clusters.find_by(enabled: true)&.platform_kubernetes
     @deployment_platform ||= services.where(category: :deployment).reorder(nil).find_by(active: true)
   end
 
@@ -1559,10 +1556,10 @@ class Project < ActiveRecord::Base
       ProtectedTag.protected?(self, ref)
   end
 
-  def deployment_variables
-    return [] unless deployment_platform
+  def deployment_variables(environment: nil)
+    return [] unless deployment_platform(environment: environment)
 
-    deployment_platform.predefined_variables
+    deployment_platform(environment: environment).predefined_variables
   end
 
   def auto_devops_variables

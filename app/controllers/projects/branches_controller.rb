@@ -41,7 +41,7 @@ class Projects::BranchesController < Projects::ApplicationController
     branch_name = sanitize(strip_tags(params[:branch_name]))
     branch_name = Addressable::URI.unescape(branch_name)
 
-    redirect_to_autodeploy = project.empty_repo? && project.deployment_platform.present?
+    redirect_to_autodeploy = project.empty_repo? && project.deployment_platform(environment: ???).present?
 
     result = CreateBranchService.new(project, current_user)
         .execute(branch_name, ref)

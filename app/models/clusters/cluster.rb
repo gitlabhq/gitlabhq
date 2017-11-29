@@ -1,6 +1,7 @@
 module Clusters
   class Cluster < ActiveRecord::Base
     include Presentable
+    prepend Ci::HasEnvironmentScope
 
     self.table_name = 'clusters'
 
@@ -25,6 +26,7 @@ module Clusters
     accepts_nested_attributes_for :provider_gcp, update_only: true
     accepts_nested_attributes_for :platform_kubernetes, update_only: true
 
+    validates :environment_scope, uniqueness: { scope: :project_id }
     validates :name, cluster_name: true
     validate :restrict_modification, on: :update
 

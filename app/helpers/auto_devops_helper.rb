@@ -26,7 +26,7 @@ module AutoDevopsHelper
 
   def auto_devops_warning_message(project)
     missing_domain = !project.auto_devops&.has_domain?
-    missing_service = !project.deployment_platform&.active?
+    missing_service = !project.deployment_platform(environment: ???)&.active?
 
     if missing_service
       params = {

@@ -254,6 +254,16 @@ module EE
       end
     end
 
+    def deployment_platform(environment: nil)
+      return super unless environment && feature_available?(:multiple_clusters)
+
+      @deployment_platform ||= clusters.select do |cluster|
+        cluster.matches?(environment) # TODO: This is the same logic with Environment Variable
+      end.first&.platform_kubernetes
+
+      @deployment_platform ||= services.where(category: :deployment).reorder(nil).find_by(active: true)
+    end
+
     def secret_variables_for(ref:, environment: nil)
       return super.where(environment_scope: '*') unless
         environment && feature_available?(:variable_environment_scope)
