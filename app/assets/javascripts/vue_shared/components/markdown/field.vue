@@ -30,6 +30,11 @@
         required: false,
         default: true,
       },
+      enableAutocomplete: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
     data() {
       return {
@@ -97,7 +102,7 @@
       /*
         GLForm class handles all the toolbar buttons
       */
-      return new GLForm($(this.$refs['gl-form']), true);
+      return new GLForm($(this.$refs['gl-form']), this.enableAutocomplete);
     },
     beforeDestroy() {
       const glForm = $(this.$refs['gl-form']).data('gl-form');

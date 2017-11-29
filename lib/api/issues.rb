@@ -255,7 +255,9 @@ module API
 
         authorize!(:destroy_issue, issue)
 
-        destroy_conditionally!(issue)
+        destroy_conditionally!(issue) do |issue|
+          Issuable::DestroyService.new(user_project, current_user).execute(issue)
+        end
       end
 
       desc 'List merge requests closing issue'  do

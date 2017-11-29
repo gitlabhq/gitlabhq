@@ -3584,15 +3584,15 @@ jed@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/jed/-/jed-1.1.1.tgz#7a549bbd9ffe1585b0cd0a191e203055bee574b4"
 
-jquery-ujs@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/jquery-ujs/-/jquery-ujs-1.2.1.tgz#6ee75b1ef4e9ac95e7124f8d71f7d351f5548e92"
+jquery-ujs@1.2.2:
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/jquery-ujs/-/jquery-ujs-1.2.2.tgz#6a8ef1020e6b6dda385b90a4bddc128c21c56397"
   dependencies:
     jquery ">=1.8.0"
 
-"jquery@>= 1.9.1", jquery@>=1.8.0, jquery@^2.2.1:
-  version "2.2.1"
-  resolved "https://registry.yarnpkg.com/jquery/-/jquery-2.2.1.tgz#3c3e16854ad3d2ac44ac65021b17426d22ad803f"
+"jquery@>= 1.9.1", jquery@>=1.8.0, jquery@^2.2.4:
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/jquery/-/jquery-2.2.4.tgz#2c89d6889b5eac522a7eea32c14521559c6cbf02"
 
 js-base64@^2.1.9:
   version "2.1.9"
