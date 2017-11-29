@@ -9,7 +9,7 @@ describe Projects::MirrorsController do
 
     context 'when remote mirrors are disabled' do
       before do
-        stub_application_setting(remote_mirror_available: false)
+        stub_application_setting(mirror_available: false)
       end
 
       context 'when user is admin' do
@@ -162,7 +162,7 @@ describe Projects::MirrorsController do
       let(:project) { create(:project, :repository, :remote_mirror) }
 
       before do
-        stub_application_setting(remote_mirror_available: false)
+        stub_application_setting(mirror_available: false)
         sign_in(project.owner)
       end
 

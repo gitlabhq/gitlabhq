@@ -2,6 +2,6 @@
   = webpack_bundle_tag 'mirrors'
 
 - if @project.feature_available?(:repository_mirrors)
-  = render 'projects/mirrors/pull'
-  - if can?(current_user, :admin_remote_mirror, @project)
+  - if can?(current_user, :admin_mirror, @project)
+    = render 'projects/mirrors/pull'
     = render 'projects/mirrors/push'

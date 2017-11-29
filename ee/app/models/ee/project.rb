@@ -500,7 +500,7 @@ module EE
 
     def remote_mirror_available?
       remote_mirror_available_overridden ||
-        current_application_settings.remote_mirror_available
+        current_application_settings.mirror_available
     end
 
     private

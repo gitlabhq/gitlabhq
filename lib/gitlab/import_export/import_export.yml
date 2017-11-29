@@ -108,6 +108,7 @@ excluded_attributes:
     - :storage_version
     - :remote_mirror_available_overridden
     - :only_mirror_protected_branches
+    - :pull_mirror_available_overridden
   snippets:
     - :expired_at
   merge_request_diff:

@@ -41,7 +41,7 @@ module EE
           mirror_max_capacity: Settings.gitlab['mirror_max_capacity'],
           mirror_capacity_threshold: Settings.gitlab['mirror_capacity_threshold'],
           allow_group_owners_to_manage_ldap: true,
-          remote_mirror_available: true
+          mirror_available: true
         )
       end
     end

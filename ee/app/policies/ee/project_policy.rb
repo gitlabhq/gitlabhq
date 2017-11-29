@@ -26,8 +26,8 @@ module EE
       end
 
       with_scope :global
-      condition(:remote_mirror_available) do
-        ::Gitlab::CurrentSettings.current_application_settings.remote_mirror_available
+      condition(:mirror_available) do
+        ::Gitlab::CurrentSettings.current_application_settings.mirror_available
       end
 
       rule { admin }.enable :change_repository_storage
@@ -60,7 +60,7 @@ module EE
 
       rule { can?(:developer_access) }.enable :admin_board
 
-      rule { (remote_mirror_available & can?(:admin_project)) | admin }.enable :admin_remote_mirror
+      rule { (mirror_available & can?(:admin_project)) | admin }.enable :admin_mirror
 
       rule { deploy_board_disabled & ~is_development }.prevent :read_deploy_board
 

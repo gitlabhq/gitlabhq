@@ -10,7 +10,7 @@ describe ProjectPolicy do
     project.add_developer(developer)
   end
 
-  context 'admin_remote_mirror' do
+  context 'admin_mirror' do
     context 'with remote mirror setting enabled' do
       context 'with admin' do
         subject do
@@ -18,7 +18,7 @@ describe ProjectPolicy do
         end
 
         it do
-          is_expected.to be_allowed(:admin_remote_mirror)
+          is_expected.to be_allowed(:admin_mirror)
         end
       end
 
@@ -28,7 +28,7 @@ describe ProjectPolicy do
         end
 
         it do
-          is_expected.to be_allowed(:admin_remote_mirror)
+          is_expected.to be_allowed(:admin_mirror)
         end
       end
 
@@ -38,14 +38,14 @@ describe ProjectPolicy do
         end
 
         it do
-          is_expected.to be_disallowed(:admin_remote_mirror)
+          is_expected.to be_disallowed(:admin_mirror)
         end
       end
     end
 
     context 'with remote mirror setting disabled' do
       before do
-        stub_application_setting(remote_mirror_available: false)
+        stub_application_setting(mirror_available: false)
       end
 
       context 'with admin' do
@@ -54,7 +54,7 @@ describe ProjectPolicy do
         end
 
         it do
-          is_expected.to be_allowed(:admin_remote_mirror)
+          is_expected.to be_allowed(:admin_mirror)
         end
       end
 
@@ -64,7 +64,7 @@ describe ProjectPolicy do
         end
 
         it do
-          is_expected.to be_disallowed(:admin_remote_mirror)
+          is_expected.to be_disallowed(:admin_mirror)
         end
       end
     end

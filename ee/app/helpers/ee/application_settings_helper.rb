@@ -23,7 +23,7 @@ module EE
         :slack_app_secret,
         :slack_app_verification_token,
         :allow_group_owners_to_manage_ldap,
-        :remote_mirror_available
+        :mirror_available
       ]
     end
 
