@@ -70,6 +70,7 @@
 
       .line-numbers {
         cursor: pointer;
+        min-width: initial;
 
         &:hover {
           text-decoration: underline;
@@ -308,4 +309,37 @@
 
 .multi-file-table-col-name {
   width: 350px;
+}
+
+.dirty-diff {
+  // !important need to override monaco inline style
+  width: 4px !important;
+  left: 0 !important;
+
+  &-modified {
+    background-color: $blue-500;
+  }
+
+  &-added {
+    background-color: $green-600;
+  }
+
+  &-removed {
+    height: 0 !important;
+    width: 0 !important;
+    bottom: -2px;
+    border-style: solid;
+    border-width: 5px;
+    border-color: transparent transparent transparent $red-500;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100px;
+      height: 1px;
+      background-color: rgba($red-500, .5);
+    }
+  }
 }
