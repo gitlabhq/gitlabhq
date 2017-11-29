@@ -33,7 +33,7 @@ describe('Multi-file store file actions', () => {
     });
 
     it('closes open files', (done) => {
-      store.dispatch('closeFile', { file: localFile })
+      store.dispatch('closeFile', localFile)
         .then(() => {
           expect(localFile.opened).toBeFalsy();
           expect(localFile.active).toBeFalsy();
@@ -43,47 +43,21 @@ describe('Multi-file store file actions', () => {
         }).catch(done.fail);
     });
 
-    it('does not close file if has changed', (done) => {
-      localFile.changed = true;
+    it('closes file even if file has changes', (done) => {
+      store.state.changedFiles.push(localFile);
 
-      store.dispatch('closeFile', { file: localFile })
+      store.dispatch('closeFile', localFile)
+        .then(Vue.nextTick)
         .then(() => {
-          expect(localFile.opened).toBeTruthy();
-          expect(localFile.active).toBeTruthy();
-          expect(store.state.openFiles.length).toBe(1);
-
-          done();
-        }).catch(done.fail);
-    });
-
-    it('does not close file if temp file', (done) => {
-      localFile.tempFile = true;
-
-      store.dispatch('closeFile', { file: localFile })
-        .then(() => {
-          expect(localFile.opened).toBeTruthy();
-          expect(localFile.active).toBeTruthy();
-          expect(store.state.openFiles.length).toBe(1);
-
-          done();
-        }).catch(done.fail);
-    });
-
-    it('force closes a changed file', (done) => {
-      localFile.changed = true;
-
-      store.dispatch('closeFile', { file: localFile, force: true })
-        .then(() => {
-          expect(localFile.opened).toBeFalsy();
-          expect(localFile.active).toBeFalsy();
           expect(store.state.openFiles.length).toBe(0);
+          expect(store.state.changedFiles.length).toBe(1);
 
           done();
         }).catch(done.fail);
     });
 
     it('calls pushState when no open files are left', (done) => {
-      store.dispatch('closeFile', { file: localFile })
+      store.dispatch('closeFile', localFile)
         .then(() => {
           expect(history.pushState).toHaveBeenCalledWith(jasmine.anything(), '', 'parentTreeUrl');
 
@@ -97,7 +71,7 @@ describe('Multi-file store file actions', () => {
 
       expect(f.active).toBeFalsy();
 
-      store.dispatch('closeFile', { file: localFile })
+      store.dispatch('closeFile', localFile)
         .then(() => {
           expect(f.active).toBeTruthy();
 
@@ -106,7 +80,7 @@ describe('Multi-file store file actions', () => {
     });
 
     it('calls getLastCommitData', (done) => {
-      store.dispatch('closeFile', { file: localFile })
+      store.dispatch('closeFile', localFile)
         .then(() => {
           expect(getLastCommitDataSpy).toHaveBeenCalled();
 

@@ -33,18 +33,6 @@ describe('Multi-file store actions', () => {
     });
   });
 
-  describe('closeDiscardPopup', () => {
-    it('closes the discard popup', (done) => {
-      store.dispatch('closeDiscardPopup', false)
-        .then(() => {
-          expect(store.state.discardPopupOpen).toBeFalsy();
-
-          done();
-        })
-        .catch(done.fail);
-    });
-  });
-
   describe('discardAllChanges', () => {
     beforeEach(() => {
       store.state.openFiles.push(file());
@@ -89,49 +77,6 @@ describe('Multi-file store actions', () => {
         .then(Vue.nextTick)
         .then(() => {
           expect(store.state.currentBlobView).toBe('repo-preview');
-
-          done();
-        }).catch(done.fail);
-    });
-
-    it('opens discard popup if there are changed files', (done) => {
-      store.state.editMode = true;
-      store.state.openFiles.push(file());
-      store.state.openFiles[0].changed = true;
-
-      store.dispatch('toggleEditMode')
-        .then(() => {
-          expect(store.state.discardPopupOpen).toBeTruthy();
-
-          done();
-        }).catch(done.fail);
-    });
-
-    it('can force closed if there are changed files', (done) => {
-      store.state.editMode = true;
-      store.state.openFiles.push(file());
-      store.state.openFiles[0].changed = true;
-
-      store.dispatch('toggleEditMode', true)
-        .then(() => {
-          expect(store.state.discardPopupOpen).toBeFalsy();
-          expect(store.state.editMode).toBeFalsy();
-
-          done();
-        }).catch(done.fail);
-    });
-
-    it('discards file changes', (done) => {
-      const f = file();
-      store.state.editMode = true;
-      store.state.tree.push(f);
-      store.state.openFiles.push(f);
-      f.changed = true;
-
-      store.dispatch('toggleEditMode', true)
-        .then(Vue.nextTick)
-        .then(() => {
-          expect(f.changed).toBeFalsy();
 
           done();
         }).catch(done.fail);
@@ -269,15 +214,12 @@ describe('Multi-file store actions', () => {
 
       it('adds commit data to changed files', (done) => {
         const changedFile = file();
-        const f = file();
-        changedFile.changed = true;
 
-        store.state.openFiles.push(changedFile, f);
+        store.state.changedFiles.push(changedFile);
 
         store.dispatch('commitChanges', { payload, newMr: false })
           .then(() => {
             expect(changedFile.lastCommit.message).toBe('test message');
-            expect(f.lastCommit.message).not.toBe('test message');
 
             done();
           }).catch(done.fail);
