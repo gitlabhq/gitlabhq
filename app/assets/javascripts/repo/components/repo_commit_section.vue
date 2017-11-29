@@ -1,5 +1,5 @@
 <script>
-import { mapGetters, mapState, mapActions } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import tooltip from '../../vue_shared/directives/tooltip';
 import icon from '../../vue_shared/components/icon.vue';
 import PopupDialog from '../../vue_shared/components/popup_dialog.vue';

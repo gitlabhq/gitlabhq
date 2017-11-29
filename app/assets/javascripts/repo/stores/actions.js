@@ -7,8 +7,6 @@ export const redirectToUrl = (_, url) => gl.utils.visitUrl(url);
 
 export const setInitialData = ({ commit }, data) => commit(types.SET_INITIAL_DATA, data);
 
-export const closeDiscardPopup = ({ commit }) => commit(types.TOGGLE_DISCARD_POPUP, false);
-
 export const discardAllChanges = ({ state, commit, dispatch }) => {
   const changedFiles = state.changedFiles;
 
@@ -16,29 +14,18 @@ export const discardAllChanges = ({ state, commit, dispatch }) => {
     commit(types.DISCARD_FILE_CHANGES, file);
 
     if (file.tempFile) {
-      dispatch('closeFile', { file, force: true });
+      dispatch('closeFile', file);
     }
   });
 };
 
 export const closeAllFiles = ({ state, dispatch }) => {
-  state.openFiles.forEach(file => dispatch('closeFile', { file }));
+  state.openFiles.forEach(file => dispatch('closeFile', file));
 };
 
-export const toggleEditMode = ({ state, commit, dispatch }, force = false) => {
-  const changedFiles = state.changedFiles;
-
-  if (changedFiles.length && !force) {
-    commit(types.TOGGLE_DISCARD_POPUP, true);
-  } else {
-    commit(types.TOGGLE_EDIT_MODE);
-    commit(types.TOGGLE_DISCARD_POPUP, false);
-    dispatch('toggleBlobView');
-
-    if (!state.editMode) {
-      dispatch('discardAllChanges');
-    }
-  }
+export const toggleEditMode = ({ commit, dispatch }) => {
+  commit(types.TOGGLE_EDIT_MODE);
+  dispatch('toggleBlobView');
 };
 
 export const toggleBlobView = ({ commit, state }) => {

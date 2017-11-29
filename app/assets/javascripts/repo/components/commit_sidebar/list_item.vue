@@ -40,7 +40,7 @@
     </span>
     <button
       type="button"
-      class="btn btn-blank"
+      class="btn btn-blank multi-file-discard-btn"
       @click="discardFileChanges(file)"
     >
       Discard

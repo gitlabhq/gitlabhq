@@ -10,21 +10,12 @@ import {
   findIndexOfFile,
 } from '../utils';
 
-export const closeFile = ({ commit, state, dispatch }, { file, force = false }) => {
-  if ((file.changed || file.tempFile) && !force) {
-    // eslint-disable-next-line no-alert
-    if (!confirm(`'${file.name}' has changed, are you sure you want to close it?`)) return;
-  }
-
+export const closeFile = ({ commit, state, dispatch }, file) => {
   const indexOfClosedFile = findIndexOfFile(state.openFiles, file);
   const fileWasActive = file.active;
 
   commit(types.TOGGLE_FILE_OPEN, file);
   commit(types.SET_FILE_ACTIVE, { file, active: false });
-
-  if (!file.opened && (file.changed || file.tempFile)) {
-    commit(types.DISCARD_FILE_CHANGES, file);
-  }
 
   if (state.openFiles.length > 0 && fileWasActive) {
     const nextIndexToOpen = indexOfClosedFile === 0 ? 0 : indexOfClosedFile - 1;
@@ -93,13 +84,13 @@ export const changeFileContent = ({ state, commit }, { file, content }) => {
   if (file.changed && indexOfChangedFile === -1) {
     commit(types.ADD_FILE_TO_CHANGED, file);
   } else if (!file.changed && indexOfChangedFile !== -1) {
-    commit(types.REMOVE_FILE_CHANGED, file);
+    commit(types.REMOVE_FILE_FROM_CHANGED, file);
   }
 };
 
 export const discardFileChanges = ({ state, commit }, file) => {
   commit(types.DISCARD_FILE_CHANGES, file);
-  commit(types.REMOVE_FILE_CHANGED, file);
+  commit(types.REMOVE_FILE_FROM_CHANGED, file);
 };
 
 export const createTempFile = ({ state, commit, dispatch }, { tree, name, content = '', base64 = '' }) => {

@@ -80,6 +80,13 @@ export default {
         this.initMonaco();
       }
     },
+    activeFileChanged(newVal) {
+      const editorModel = this.monacoInstance.getModel();
+
+      if (!newVal && editorModel) {
+        editorModel.setValue(this.activeFile.content);
+      }
+    },
   },
   computed: {
     ...mapGetters([
@@ -88,6 +95,9 @@ export default {
     ]),
     shouldHideEditor() {
       return this.activeFile.binary && !this.activeFile.raw;
+    },
+    activeFileChanged() {
+      return this.activeFile.changed;
     },
   },
 };

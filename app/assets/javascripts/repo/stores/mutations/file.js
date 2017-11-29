@@ -54,7 +54,7 @@ export default {
   [types.ADD_FILE_TO_CHANGED](state, file) {
     state.changedFiles.push(file);
   },
-  [types.REMOVE_FILE_CHANGED](state, file) {
+  [types.REMOVE_FILE_FROM_CHANGED](state, file) {
     const indexOfChangedFile = findIndexOfFile(state.changedFiles, file);
 
     state.changedFiles.splice(indexOfChangedFile, 1);

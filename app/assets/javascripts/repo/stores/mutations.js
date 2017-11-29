@@ -27,11 +27,6 @@ export default {
       editMode: !state.editMode,
     });
   },
-  [types.TOGGLE_DISCARD_POPUP](state, discardPopupOpen) {
-    Object.assign(state, {
-      discardPopupOpen,
-    });
-  },
   [types.SET_COMMIT_REF](state, ref) {
     Object.assign(state, {
       currentRef: ref,

@@ -54,7 +54,7 @@ export default {
     <button
       type="button"
       class="multi-file-tab-close"
-      @click.stop.prevent="closeFile({ file: tab })"
+      @click.stop.prevent="closeFile(tab)"
       :aria-label="closeLabel"
       :class="{
         'modified': tab.changed,
