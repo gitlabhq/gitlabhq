@@ -3,6 +3,8 @@ module MergeRequests
     prepend EE::MergeRequests::BuildService
 
     def execute
+      @issue_iid = params.delete(:issue_iid)
+
       self.merge_request = MergeRequest.new(params)
       merge_request.compare_commits = []
       merge_request.source_project  = find_source_project
@@ -109,35 +111,12 @@ module MergeRequests
     #
     def assign_title_and_description
       assign_title_and_description_from_single_commit
-
       assign_title_from_issue
 
       merge_request.title ||= source_branch.titleize.humanize
-
       merge_request.title = wip_title if compare_commits.empty?
 
       append_closes_description
-    end
-
-    def assign_title_and_description_from_single_commit
-      commits = compare_commits
-
-      return unless commits && commits.count == 1
-
-      commit = commits.first
-      merge_request.title ||= commit.title
-      merge_request.description ||= commit.description.try(:strip)
-    end
-
-    def assign_title_from_issue
-      return unless issue
-
-      case issue
-      when Issue
-        merge_request.title ||= "Resolve \"#{issue.title}\""
-      when ExternalIssue
-        merge_request.title ||= "Resolve #{issue.title}"
-      end
     end
 
     def append_closes_description
@@ -152,16 +131,32 @@ module MergeRequests
       end
     end
 
-    def issue_iid
-      return @issue_iid if defined?(@issue_iid)
+    def assign_title_and_description_from_single_commit
+      commits = compare_commits
 
-      @issue_iid = source_branch[/\A(\d+)-/, 1]
+      return unless commits&.count == 1
+
+      commit = commits.first
+      merge_request.title ||= commit.title
+      merge_request.description ||= commit.description.try(:strip)
+    end
+
+    def assign_title_from_issue
+      return unless issue
+
+      merge_request.title =
+        case issue
+        when Issue         then "Resolve \"#{issue.title}\""
+        when ExternalIssue then "Resolve #{issue.title}"
+        end
+    end
+
+    def issue_iid
+      @issue_iid ||= source_branch.match(/\A(\d+)-/).try(:[], 1)
     end
 
     def issue
-      return @issue if defined?(@issue)
-
-      @issue = target_project.get_issue(issue_iid, current_user)
+      @issue ||= target_project.get_issue(issue_iid, current_user)
     end
   end
 end
