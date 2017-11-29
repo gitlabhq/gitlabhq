@@ -4,6 +4,8 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
   validates :project, presence: true, uniqueness: true
 
   scope :dirty, -> { where(arel_table[:resync_repository].eq(true).or(arel_table[:resync_wiki].eq(true))) }
+  scope :failed_repos, -> { where(arel_table[:repository_retry_count].gt(0)) }
+  scope :failed_wikis, -> { where(arel_table[:wiki_retry_count].gt(0)) }
 
   def self.failed
     repository_sync_failed = arel_table[:repository_retry_count].gt(0)

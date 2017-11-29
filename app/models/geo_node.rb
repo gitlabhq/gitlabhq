@@ -164,6 +164,17 @@ class GeoNode < ActiveRecord::Base
     end
   end
 
+  def project_registries_by(type: nil)
+    case type
+    when 'repository'
+      project_registries.failed_repos
+    when 'wiki'
+      project_registries.failed_repos
+    else
+      project_registries
+    end
+  end
+
   def uploads
     if restricted_project_ids
       uploads_table   = Upload.arel_table
