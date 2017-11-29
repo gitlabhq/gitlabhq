@@ -52,7 +52,7 @@ describe('RepoTab', () => {
 
     vm.$el.querySelector('.multi-file-tab-close').click();
 
-    expect(vm.closeFile).toHaveBeenCalledWith({ file: vm.tab });
+    expect(vm.closeFile).toHaveBeenCalledWith(vm.tab);
   });
 
   it('renders an fa-circle icon if tab is changed', () => {
@@ -67,20 +67,21 @@ describe('RepoTab', () => {
 
   describe('methods', () => {
     describe('closeTab', () => {
-      it('does not close tab if is changed', (done) => {
+      it('closes tab if file has changed', (done) => {
         const tab = file();
-        tab.changed = true;
         tab.opened = true;
         vm = createComponent({
           tab,
         });
         vm.$store.state.openFiles.push(tab);
+        vm.$store.state.changedFiles.push(tab);
         vm.$store.dispatch('setFileActive', tab);
 
         vm.$el.querySelector('.multi-file-tab-close').click();
 
         vm.$nextTick(() => {
-          expect(tab.opened).toBeTruthy();
+          expect(tab.opened).toBeFalsy();
+          expect(vm.$store.state.changedFiles.length).toBe(1);
 
           done();
         });

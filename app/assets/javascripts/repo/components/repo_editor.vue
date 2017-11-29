@@ -81,6 +81,8 @@ export default {
       }
     },
     activeFileChanged(newVal) {
+      if (!this.monacoInstance) return;
+
       const editorModel = this.monacoInstance.getModel();
       const oldPosition = this.monacoInstance.getPosition();
 
@@ -99,7 +101,7 @@ export default {
       return this.activeFile.binary && !this.activeFile.raw;
     },
     activeFileChanged() {
-      return this.activeFile.changed;
+      return this.activeFile && this.activeFile.changed;
     },
   },
 };
