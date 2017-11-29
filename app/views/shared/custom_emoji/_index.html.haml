@@ -31,7 +31,7 @@
 
 
 .table-responsive
-  %table.table
+  %table.table.js-custom-emoji-table
     %thead
       %tr
         %th
@@ -39,5 +39,6 @@
         %th
           = s_('CustomEmoji|Name')
         %th
-    - @custom_emoji.each do |emoji|
-      = render "shared/custom_emoji/emoji_row", emoji: emoji
+    %tbody
+      - @custom_emoji.each do |emoji|
+        = render "shared/custom_emoji/emoji_row", emoji: emoji
