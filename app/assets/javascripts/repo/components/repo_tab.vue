@@ -65,17 +65,11 @@ export default {
       class="multi-file-tab"
       :class="{active : tab.active }"
       :title="tab.url"
-<<<<<<< HEAD
-      @click.prevent.stop="setFileActive(tab)">
+    >
       {{tab.name}}
       <fileStatusIcon
         :file="tab">
       </fileStatusIcon>
     </a>
-=======
-    >
-      {{ tab.name }}
-    </div>
->>>>>>> upstream/master
   </li>
 </template>
