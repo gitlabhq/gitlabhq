@@ -72,7 +72,7 @@ router.beforeEach((to, from, next) => {
       })
       .then(() => {
         if (to.params[0]) {
-        const treeEntry = store.getters.getTreeEntry(`${to.params.namespace}/${to.params.project}/${to.params.branch}`, to.params[0]);
+          const treeEntry = store.getters.getTreeEntry(`${to.params.namespace}/${to.params.project}/${to.params.branch}`, to.params[0]);
           if (treeEntry) {
             console.log('To Selected File : ', to.params, '/', treeEntry.url);
             store.dispatch('handleTreeEntryAction', treeEntry);
@@ -83,7 +83,6 @@ router.beforeEach((to, from, next) => {
       })
       .catch((e) => {
         debugger;
-        //next(false);
       });
 
       if (!to.params[0]) {

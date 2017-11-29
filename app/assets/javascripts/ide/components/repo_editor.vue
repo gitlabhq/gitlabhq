@@ -52,13 +52,21 @@ export default {
           content: m.getValue(),
         });
       });
+
       /*
+      this.monacoInstance.revealPositionInCenter({
+        lineNumber: this.activeFile.editorRow,
+        column: this.activeFile.editorColumn,
+      });
+
+      
       this.monacoInstance.onDidChangeCursorPosition((e) => {
         this.setEditorPosition({
-          file: this.activeFile,
+          file: this.$store.state.selectedFile,
           editorRow: e.position.lineNumber,
           editorColumn: e.position.column,
         });
+
       });*/
     },
   },

@@ -12,6 +12,7 @@ export default () => ({
   loading: false,
   onTopOfBranch: false,
   openFiles: [],
+  selectedFile: null,
   path: '',
   project: {
     id: 0,
