@@ -194,10 +194,6 @@ module Gitlab
         end
       end
 
-      def empty?
-        !exists? || !has_local_branches?
-      end
-
       def has_local_branches?
         gitaly_migrate(:has_local_branches) do |is_enabled|
           if is_enabled
@@ -207,6 +203,13 @@ module Gitlab
           end
         end
       end
+
+      # Git repository can contains some hidden refs like:
+      #   /refs/notes/*
+      #   /refs/git-as-svn/*
+      #   /refs/pulls/*
+      # This refs by default not visible in project page and not cloned to client side.
+      alias_method :has_visible_content?, :has_local_branches?
 
       def has_local_branches_rugged?
         rugged.branches.each(:local).any? do |ref|
@@ -1009,7 +1012,7 @@ module Gitlab
         Gitlab::Git.check_namespace!(start_repository)
         start_repository = RemoteRepository.new(start_repository) unless start_repository.is_a?(RemoteRepository)
 
-        return yield nil if start_repository.empty_repo?
+        return yield nil if start_repository.empty?
 
         if start_repository.same_repository?(self)
           yield commit(start_branch_name)
@@ -1125,24 +1128,8 @@ module Gitlab
         Gitlab::Git::Commit.find(self, ref)
       end
 
-      # Refactoring aid; allows us to copy code from app/models/repository.rb
-      def empty_repo?
-        !exists? || !has_visible_content?
-      end
-
-      #
-      # Git repository can contains some hidden refs like:
-      #   /refs/notes/*
-      #   /refs/git-as-svn/*
-      #   /refs/pulls/*
-      # This refs by default not visible in project page and not cloned to client side.
-      #
-      # This method return true if repository contains some content visible in project page.
-      #
-      def has_visible_content?
-        return @has_visible_content if defined?(@has_visible_content)
-
-        @has_visible_content = has_local_branches?
+      def empty?
+        !has_visible_content?
       end
 
       def fetch_repository_as_mirror(repository)

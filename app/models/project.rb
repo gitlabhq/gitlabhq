@@ -232,7 +232,6 @@ class Project < ActiveRecord::Base
   delegate :members, to: :team, prefix: true
   delegate :add_user, :add_users, to: :team
   delegate :add_guest, :add_reporter, :add_developer, :add_master, to: :team
-  delegate :empty_repo?, to: :repository
 
   # Validations
   validates :creator, presence: true, on: :create
@@ -505,6 +504,10 @@ class Project < ActiveRecord::Base
 
   def has_auto_devops_implicitly_disabled?
     auto_devops&.enabled.nil? && !current_application_settings.auto_devops_enabled?
+  end
+
+  def empty_repo?
+    repository.empty?
   end
 
   def repository_storage_path
