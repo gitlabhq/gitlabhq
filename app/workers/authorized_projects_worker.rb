@@ -16,11 +16,6 @@ class AuthorizedProjectsWorker
     waiter.wait
   end
 
-  # Schedules multiple jobs to run in sidekiq without waiting for completion
-  def self.bulk_perform_async(args_list)
-    Sidekiq::Client.push_bulk('class' => self, 'queue' => sidekiq_options['queue'], 'args' => args_list)
-  end
-
   # Performs multiple jobs directly. Failed jobs will be put into sidekiq so
   # they can benefit from retries
   def self.bulk_perform_inline(args_list)
