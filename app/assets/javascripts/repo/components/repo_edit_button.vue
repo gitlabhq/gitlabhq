@@ -1,11 +1,7 @@
 <script>
 import { mapGetters, mapActions, mapState } from 'vuex';
-import popupDialog from '../../vue_shared/components/popup_dialog.vue';
 
 export default {
-  components: {
-    popupDialog,
-  },
   computed: {
     ...mapState([
       'editMode',

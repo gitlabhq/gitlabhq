@@ -99,6 +99,17 @@ describe('Multi-file store file mutations', () => {
       expect(localFile.content).toBe('testing');
       expect(localFile.changed).toBeTruthy();
     });
+
+    it('sets changed if file is a temp file', () => {
+      localFile.tempFile = true;
+
+      mutations.UPDATE_FILE_CONTENT(localState, {
+        file: localFile,
+        content: '',
+      });
+
+      expect(localFile.changed).toBeTruthy();
+    });
   });
 
   describe('DISCARD_FILE_CHANGES', () => {
@@ -126,6 +137,28 @@ describe('Multi-file store file mutations', () => {
 
       expect(localFile.tree.length).toBe(1);
       expect(localFile.tree[0].name).toBe(f.name);
+    });
+  });
+
+  describe('ADD_FILE_TO_CHANGED', () => {
+    it('adds file into changed files array', () => {
+      const f = file();
+
+      mutations.ADD_FILE_TO_CHANGED(localState, f);
+
+      expect(localState.changedFiles.length).toBe(1);
+    });
+  });
+
+  describe('REMOVE_FILE_FROM_CHANGED', () => {
+    it('removes files from changed files array', () => {
+      const f = file();
+
+      localState.changedFiles.push(f);
+
+      mutations.REMOVE_FILE_FROM_CHANGED(localState, f);
+
+      expect(localState.changedFiles.length).toBe(0);
     });
   });
 });

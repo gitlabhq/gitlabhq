@@ -65,6 +65,32 @@ describe('RepoTab', () => {
     expect(vm.$el.querySelector('.multi-file-tab-close .fa-circle')).not.toBeNull();
   });
 
+  it('changes icon on hover', (done) => {
+    const tab = file();
+    tab.changed = true;
+    vm = createComponent({
+      tab,
+    });
+
+    vm.$el.dispatchEvent(new Event('mouseover'));
+
+    Vue.nextTick()
+      .then(() => {
+        expect(vm.$el.querySelector('.unsaved-icon')).toBeNull();
+        expect(vm.$el.querySelector('.close-icon')).not.toBeNull();
+
+        vm.$el.dispatchEvent(new Event('mouseout'));
+      })
+      .then(Vue.nextTick)
+      .then(() => {
+        expect(vm.$el.querySelector('.close-icon')).toBeNull();
+        expect(vm.$el.querySelector('.unsaved-icon')).not.toBeNull();
+
+        done();
+      })
+      .catch(done.fail);
+  });
+
   describe('methods', () => {
     describe('closeTab', () => {
       it('closes tab if file has changed', (done) => {

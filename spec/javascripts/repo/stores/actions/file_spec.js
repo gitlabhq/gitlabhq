@@ -293,6 +293,94 @@ describe('Multi-file store file actions', () => {
         done();
       }).catch(done.fail);
     });
+
+    it('adds file into changedFiles array', (done) => {
+      store.dispatch('changeFileContent', {
+        file: tmpFile,
+        content: 'content',
+      })
+      .then(() => {
+        expect(store.state.changedFiles.length).toBe(1);
+
+        done();
+      }).catch(done.fail);
+    });
+
+    it('adds file once into changedFiles array', (done) => {
+      store.dispatch('changeFileContent', {
+        file: tmpFile,
+        content: 'content',
+      })
+      .then(() => store.dispatch('changeFileContent', {
+        file: tmpFile,
+        content: 'content 123',
+      }))
+      .then(() => {
+        expect(store.state.changedFiles.length).toBe(1);
+
+        done();
+      }).catch(done.fail);
+    });
+
+    it('removes file from changedFiles array if not changed', (done) => {
+      store.dispatch('changeFileContent', {
+        file: tmpFile,
+        content: 'content',
+      })
+      .then(() => store.dispatch('changeFileContent', {
+        file: tmpFile,
+        content: '',
+      }))
+      .then(() => {
+        expect(store.state.changedFiles.length).toBe(0);
+
+        done();
+      }).catch(done.fail);
+    });
+  });
+
+  describe('discardFileChanges', () => {
+    let tmpFile;
+
+    beforeEach(() => {
+      tmpFile = file();
+      tmpFile.content = 'testing';
+
+      store.state.changedFiles.push(tmpFile);
+    });
+
+    it('resets file content', (done) => {
+      store.dispatch('discardFileChanges', tmpFile)
+      .then(() => {
+        expect(tmpFile.content).not.toBe('testing');
+
+        done();
+      })
+      .catch(done.fail);
+    });
+
+    it('removes file from changedFiles array', (done) => {
+      store.dispatch('discardFileChanges', tmpFile)
+      .then(() => {
+        expect(store.state.changedFiles.length).toBe(0);
+
+        done();
+      })
+      .catch(done.fail);
+    });
+
+    it('closes temp file', (done) => {
+      tmpFile.tempFile = true;
+      tmpFile.opened = true;
+
+      store.dispatch('discardFileChanges', tmpFile)
+      .then(() => {
+        expect(tmpFile.opened).toBeFalsy();
+
+        done();
+      })
+      .catch(done.fail);
+    });
   });
 
   describe('createTempFile', () => {
@@ -323,6 +411,18 @@ describe('Multi-file store file actions', () => {
       }).then((f) => {
         expect(store.state.openFiles.length).toBe(1);
         expect(store.state.openFiles[0].name).toBe(f.name);
+
+        done();
+      }).catch(done.fail);
+    });
+
+    it('adds tmp file to changed files', (done) => {
+      store.dispatch('createTempFile', {
+        tree: store.state,
+        name: 'test',
+      }).then((f) => {
+        expect(store.state.changedFiles.length).toBe(1);
+        expect(store.state.changedFiles[0].name).toBe(f.name);
 
         done();
       }).catch(done.fail);
