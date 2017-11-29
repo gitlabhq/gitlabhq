@@ -1,5 +1,4 @@
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex';
 import BranchesTree from './ide_project_branches_tree.vue';
 
 export default {
