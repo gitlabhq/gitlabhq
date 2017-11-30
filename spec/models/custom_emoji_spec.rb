@@ -16,8 +16,7 @@ describe CustomEmoji, type: :model do
     end
 
     it 'disallows duplicate custom emoji names' do
-      ## Needed to invalidate the memoization, not needed in production
-      subject.namespace.instance_variable_set(:@custom_emoji_url_by_name, nil)
+      subject.reload
 
       new_emoji = build(:custom_emoji, name: subject.name, namespace: subject.namespace)
 
@@ -52,8 +51,9 @@ describe CustomEmoji, type: :model do
         expect(described_class.for_namespace(parent_group).count).to be 1
       end
 
-      it 'exeutees only one query' do
-        count = ActiveRecord::QueryRecorder.new { described_class.for_namespace(subgroup) }.count
+      it 'executes only one query' do
+        # We use pluck to execute the query
+        count = ActiveRecord::QueryRecorder.new { described_class.for_namespace(subgroup).pluck }.count
 
         expect(count).to be(1)
       end
