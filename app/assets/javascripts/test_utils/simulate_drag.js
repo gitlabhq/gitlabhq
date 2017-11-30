@@ -104,6 +104,12 @@ export default function simulateDrag(options) {
   if (options.ontap) options.ontap();
   window.SIMULATE_DRAG_ACTIVE = 1;
 
+  // New Sortable needs a little bit of treshhold
+  if (options.to.index < options.from.index) {
+    toRect.cy -= 20;
+  } else {
+    toRect.cy += 20;
+  }
   if (options.to.index === 0) {
     toRect.cy = firstRect.y - 50;
   } else if (isLast(options.to)) {
