@@ -14,7 +14,7 @@
   export default {
     name: 'issueNotesApp',
     props: {
-      issueData: {
+      noteableData: {
         type: Object,
         required: true,
       },
@@ -56,7 +56,7 @@
         actionToggleAward: 'toggleAward',
         scrollToNoteIfNeeded: 'scrollToNoteIfNeeded',
         setNotesData: 'setNotesData',
-        setIssueData: 'setIssueData',
+        setNoteableData: 'setNoteableData',
         setUserData: 'setUserData',
         setLastFetchedAt: 'setLastFetchedAt',
         setTargetNoteHash: 'setTargetNoteHash',
@@ -106,7 +106,7 @@
     },
     created() {
       this.setNotesData(this.notesData);
-      this.setIssueData(this.issueData);
+      this.setNoteableData(this.noteableData);
       this.setUserData(this.userData);
     },
     mounted() {

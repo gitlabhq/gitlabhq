@@ -12,7 +12,7 @@ import { isInViewport, scrollToElement } from '../../lib/utils/common_utils';
 let eTagPoll;
 
 export const setNotesData = ({ commit }, data) => commit(types.SET_NOTES_DATA, data);
-export const setIssueData = ({ commit }, data) => commit(types.SET_ISSUE_DATA, data);
+export const setNoteableData = ({ commit }, data) => commit(types.SET_NOTEABLE_DATA, data);
 export const setUserData = ({ commit }, data) => commit(types.SET_USER_DATA, data);
 export const setLastFetchedAt = ({ commit }, data) => commit(types.SET_LAST_FETCHED_AT, data);
 export const setInitialNotes = ({ commit }, data) => commit(types.SET_INITIAL_NOTES, data);

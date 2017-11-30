@@ -66,8 +66,8 @@ export default {
     Object.assign(state, { notesData: data });
   },
 
-  [types.SET_ISSUE_DATA](state, data) {
-    Object.assign(state, { issueData: data });
+  [types.SET_NOTEABLE_DATA](state, data) {
+    Object.assign(state, { noteableData: data });
   },
 
   [types.SET_USER_DATA](state, data) {
