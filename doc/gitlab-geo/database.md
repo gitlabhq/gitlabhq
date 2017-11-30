@@ -157,7 +157,7 @@ will not be able to perform all necessary configuration steps. Refer to
 
     ```bash
     # Primary interface IP address
-    ip route get 1 | awk '{print $NF; exit}'
+    ip route get 255.255.255.255 | awk '{print $NF; exit}'
     ```
 
     Depending on your network configuration, the primary and secondary may
@@ -170,7 +170,7 @@ will not be able to perform all necessary configuration steps. Refer to
 
     ```bash
     # Secondary interface IP address
-    ip route get 1 | awk '{print $NF; exit}'
+    ip route get 255.255.255.255 | awk '{print $NF; exit}'
 
     # Secondary public IP address
     curl ipinfo.io/ip
