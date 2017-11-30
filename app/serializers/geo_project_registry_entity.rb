@@ -1,4 +1,4 @@
-class ProjectRegistryEntity < Grape::Entity
+class GeoProjectRegistryEntity < Grape::Entity
   include ActionView::Helpers::NumberHelper
 
   expose :project_id

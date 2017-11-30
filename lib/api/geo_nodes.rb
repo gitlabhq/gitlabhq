@@ -101,7 +101,7 @@ module API
 
         project_registries = paginate(geo_node.filtered_project_registries(params[:type]))
 
-        present project_registries, with: ::ProjectRegistryEntity
+        present project_registries, with: ::GeoProjectRegistryEntity
       end
     end
   end

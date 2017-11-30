@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe ProjectRegistryEntity, :postgresql do
+describe GeoProjectRegistryEntity, :postgresql do
   let(:registry) { create(:geo_project_registry, :synced) }
 
   let(:entity) do
