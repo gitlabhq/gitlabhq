@@ -155,7 +155,7 @@ will not be able to perform all necessary configuration steps. Refer to
     each node.
 
     If you are using a cloud provider, you can lookup the addresses for each
-    geo node through their management console. A table of terminology is
+    Geo node through their management console. A table of terminology is
     provided below because terminology varies between vendors.
 
     | GitLab Terminology | Amazon Web Services | Google Cloud Platform |
@@ -163,7 +163,7 @@ will not be able to perform all necessary configuration steps. Refer to
     | Interface address | Private address | Internal address |
     | Public address | Public address | External address |
 
-    To lookup the address of a geo node, on the geo node execute:
+    To lookup the address of a Geo node, on the Geo node execute:
 
     ```bash
     # Interface address
@@ -181,7 +181,7 @@ will not be able to perform all necessary configuration steps. Refer to
     | `postgresql['listen_address']` | Primary's interface address |
     | `postgresql['trust_auth_cidr_addresses']` | Primary's interface address |
     | `postgresql['md5_auth_cidr_addresses']` | Secondary's public addresses |
-    
+
     The `listen_address` option opens PostgreSQL up to network connections
     with the interface corresponding to the given address. See [the PostgreSQL
     documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-connection.html)
@@ -192,10 +192,10 @@ will not be able to perform all necessary configuration steps. Refer to
     area network, or a virtual network connecting availability zones like
     Amazon's [VPC](https://aws.amazon.com/vpc/) of Google's [VPC](https://cloud.google.com/vpc/)
     you should use the secondary's interface address for `postgresql['md5_auth_cidr_addresses']`.
-    
+
     Edit `/etc/gitlab/gitlab.rb` and add the following, replacing the IP
     addresses with addresses appropriate to your network configuration:
-    
+
     ```ruby
     geo_primary_role['enable'] = true
 
@@ -216,7 +216,6 @@ will not be able to perform all necessary configuration steps. Refer to
     ```
 
     For external PostgreSQL instances, [see additional instructions][external postgresql].
-    
 
 1. Optional: If you want to add another secondary, the relevant setting would look like:
 
@@ -225,7 +224,7 @@ will not be able to perform all necessary configuration steps. Refer to
     ```
 
     You may also want to edit the `wal_keep_segments` and `max_wal_senders` to
-    match your database replication requirements. Consult the [PostgreSQL - 
+    match your database replication requirements. Consult the [PostgreSQL -
     Replication documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-replication.html)
     for more information.
 
