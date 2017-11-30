@@ -92,7 +92,7 @@ export const discardFileChanges = ({ state, commit }, file) => {
   commit(types.DISCARD_FILE_CHANGES, file);
   commit(types.REMOVE_FILE_FROM_CHANGED, file);
 
-  if (file.tempFile) {
+  if (file.tempFile && file.opened) {
     commit(types.TOGGLE_FILE_OPEN, file);
   }
 };

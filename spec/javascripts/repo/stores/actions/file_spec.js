@@ -381,6 +381,20 @@ describe('Multi-file store file actions', () => {
       })
       .catch(done.fail);
     });
+
+    it('does not re-open a closed temp file', (done) => {
+      tmpFile.tempFile = true;
+
+      expect(tmpFile.opened).toBeFalsy();
+
+      store.dispatch('discardFileChanges', tmpFile)
+      .then(() => {
+        expect(tmpFile.opened).toBeFalsy();
+
+        done();
+      })
+      .catch(done.fail);
+    });
   });
 
   describe('createTempFile', () => {
