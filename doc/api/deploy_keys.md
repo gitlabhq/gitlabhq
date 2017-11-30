@@ -135,6 +135,36 @@ Example response:
 }
 ```
 
+## Update deploy key
+
+Updates attributes of an existing deploy key for a project.
+
+```
+PUT /projects/:id/deploy_keys/:id
+```
+
+| Attribute  | Type | Required | Description |
+| ---------  | ---- | -------- | ----------- |
+| `id`       | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
+| `key_id`   | integer/string | yes | The ID of the deploy key |
+| `title`    | string  | optional | New deploy key's title |
+| `can_push` | boolean | no  | Can deploy key push to the project's repository |
+
+```bash
+curl -X PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data '{"key_id":"3", title": "My updated key", "can_push": "true"}' "https://gitlab.example.com/api/v4/projects/5/deploy_keys/3"
+```
+
+Example response:
+
+```json
+{
+   "id" : 3,
+   "title" : "My updated deploy key",
+   "can_push": "true",
+   "created_at" : "2015-08-29T12:44:31.550Z"
+}
+```
+
 ## Delete deploy key
 
 Removes a deploy key from the project. If the deploy key is used only for this project, it will be deleted from the system.
