@@ -25,7 +25,7 @@ module Projects
         return error("Could not set the default branch") unless project.change_head(params[:default_branch])
       end
 
-      if project.update_attributes(params.except(:default_branch))
+      if project.update_attributes(update_params)
         if project.previous_changes.include?('path')
           project.rename_repo
         else
@@ -41,7 +41,15 @@ module Projects
       end
     end
 
+    def run_auto_devops_pipeline?
+      params.dig(:run_auto_devops_pipeline_explicit) == 'true' || params.dig(:run_auto_devops_pipeline_implicit) == 'true'
+    end
+
     private
+
+    def update_params
+      params.except(:default_branch, :run_auto_devops_pipeline_explicit, :run_auto_devops_pipeline_implicit)
+    end
 
     def changing_storage_size?
       new_repository_storage = params[:repository_storage]

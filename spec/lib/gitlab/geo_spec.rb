@@ -149,16 +149,6 @@ describe Gitlab::Geo, :geo do
     end
   end
 
-  describe 'geo_node?' do
-    it 'returns true if a node with specific host and port exists' do
-      expect(described_class.geo_node?(host: primary_node.host, port: primary_node.port)).to be_truthy
-    end
-
-    it 'returns false if specified host and port doesnt match any existing node' do
-      expect(described_class.geo_node?(host: 'inexistent', port: 1234)).to be_falsey
-    end
-  end
-
   describe 'license_allows?' do
     it 'returns true if license has Geo addon' do
       stub_licensed_features(geo: true)

@@ -110,7 +110,7 @@ class Admin::GeoNodesController < Admin::ApplicationController
   end
 
   def has_insecure_nodes?
-    GeoNode.where(schema: 'http').any?
+    GeoNode.with_url_prefix('http://').exists?
   end
 
   def flash_now(type, message)

@@ -174,6 +174,7 @@ describe IssuablesHelper do
 
       expected_data = {
         'endpoint' => "/#{@project.full_path}/issues/#{issue.iid}",
+        'updateEndpoint' => "/#{@project.full_path}/issues/#{issue.iid}.json",
         'canUpdate' => true,
         'canDestroy' => true,
         'canAdmin' => true,
@@ -198,6 +199,7 @@ describe IssuablesHelper do
 
       expected_data = {
         'endpoint' => "/groups/#{@group.full_path}/-/epics/#{epic.iid}",
+        'updateEndpoint' => "/groups/#{@group.full_path}/-/epics/#{epic.iid}.json",
         'issueLinksEndpoint' => "/groups/#{@group.full_path}/-/epics/#{epic.iid}/issues",
         'canUpdate' => true,
         'canDestroy' => true,

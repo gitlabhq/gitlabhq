@@ -41,30 +41,35 @@ export default {
 
 <template>
   <li
-    :class="{ active : tab.active }"
     @click="setFileActive(tab)"
   >
     <button
       type="button"
-      class="close-btn"
+      class="multi-file-tab-close"
       @click.stop.prevent="closeFile({ file: tab })"
-      :aria-label="closeLabel">
+      :aria-label="closeLabel"
+      :class="{
+        'modified': tab.changed,
+      }"
+      :disabled="tab.changed"
+    >
       <i
         class="fa"
         :class="changedClass"
-        aria-hidden="true">
+        aria-hidden="true"
+      >
       </i>
     </button>
 
-    <a
-      href="#"
-      class="repo-tab"
+    <div
+      class="multi-file-tab"
+      :class="{active : tab.active }"
       :title="tab.url"
-      @click.prevent.stop="setFileActive(tab)">
-      {{tab.name}}
-      <fileStatusIcon
-        :file="tab">
-      </fileStatusIcon>
-    </a>
+    >
+      {{ tab.name }}
+      <file-status-icon
+        :file="tab"
+      />
+    </div>
   </li>
 </template>

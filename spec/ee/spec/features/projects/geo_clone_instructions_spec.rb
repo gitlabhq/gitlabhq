@@ -2,16 +2,19 @@ require 'rails_helper'
 
 feature 'Geo clone instructions', :js do
   include Devise::Test::IntegrationHelpers
+  include ::EE::GeoHelpers
 
   let(:project) { create(:project, :empty_repo) }
   let(:developer) { create(:user) }
 
   background do
-    primary = create(:geo_node, :primary, schema: 'https', host: 'primary.domain.com', port: 443)
-    primary.update_attribute(:clone_url_prefix, 'git@primary.domain.com:')
-    allow(Gitlab::Geo).to receive(:secondary?).and_return(true)
+    primary = create(:geo_node, :primary, url: 'https://primary.domain.com')
+    primary.update_columns(clone_url_prefix: 'git@primary.domain.com:')
+    secondary = create(:geo_node)
 
-    project.team << [developer, :developer]
+    stub_current_geo_node(secondary)
+
+    project.add_developer(developer)
     sign_in(developer)
   end
 

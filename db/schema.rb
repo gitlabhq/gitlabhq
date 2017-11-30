@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171124070437) do
+ActiveRecord::Schema.define(version: 20171124165823) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -959,10 +959,6 @@ ActiveRecord::Schema.define(version: 20171124070437) do
   add_index "geo_node_statuses", ["geo_node_id"], name: "index_geo_node_statuses_on_geo_node_id", unique: true, using: :btree
 
   create_table "geo_nodes", force: :cascade do |t|
-    t.string "schema"
-    t.string "host"
-    t.integer "port"
-    t.string "relative_url_root"
     t.boolean "primary"
     t.integer "geo_node_key_id"
     t.integer "oauth_application_id"
@@ -974,11 +970,12 @@ ActiveRecord::Schema.define(version: 20171124070437) do
     t.integer "files_max_capacity", default: 10, null: false
     t.integer "repos_max_capacity", default: 25, null: false
     t.string "clone_protocol", default: "http", null: false
+    t.string "url", null: false
   end
 
   add_index "geo_nodes", ["access_key"], name: "index_geo_nodes_on_access_key", using: :btree
-  add_index "geo_nodes", ["host"], name: "index_geo_nodes_on_host", using: :btree
   add_index "geo_nodes", ["primary"], name: "index_geo_nodes_on_primary", using: :btree
+  add_index "geo_nodes", ["url"], name: "index_geo_nodes_on_url", unique: true, using: :btree
 
   create_table "geo_repositories_changed_events", id: :bigserial, force: :cascade do |t|
     t.integer "geo_node_id", null: false
