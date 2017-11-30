@@ -3,6 +3,7 @@
   import Flash from '../../flash';
   import { SYSTEM_NOTE } from '../constants';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+  import noteableNote from './noteable_note.vue';
   import noteHeader from './note_header.vue';
   import noteSignedOutWidget from './note_signed_out_widget.vue';
   import noteEditedText from './note_edited_text.vue';

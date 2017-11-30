@@ -3,16 +3,16 @@
   import Flash from '../../flash';
   import store from '../stores/';
   import * as constants from '../constants';
-  import issueNote from './issue_note.vue';
-  import issueDiscussion from './issue_discussion.vue';
+  import noteableNote from './noteable_note.vue';
+  import noteableDiscussion from './noteable_discussion.vue';
   import systemNote from '../../vue_shared/components/notes/system_note.vue';
-  import issueCommentForm from './issue_comment_form.vue';
+  import commentForm from './comment_form.vue';
   import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
   import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
   export default {
-    name: 'issueNotesApp',
+    name: 'notesApp',
     props: {
       noteableData: {
         type: Object,
@@ -35,10 +35,10 @@
       };
     },
     components: {
-      issueNote,
-      issueDiscussion,
+      noteableNote,
+      noteableDiscussion,
       systemNote,
-      issueCommentForm,
+      commentForm,
       loadingIcon,
       placeholderNote,
       placeholderSystemNote,
@@ -68,10 +68,10 @@
           }
           return placeholderNote;
         } else if (note.individual_note) {
-          return note.notes[0].system ? systemNote : issueNote;
+          return note.notes[0].system ? systemNote : noteableNote;
         }
 
-        return issueDiscussion;
+        return noteableDiscussion;
       },
       getComponentData(note) {
         return note.individual_note ? note.notes[0] : note;
@@ -146,6 +146,6 @@
         />
     </ul>
 
-    <issue-comment-form />
+    <comment-form />
   </div>
 </template>
