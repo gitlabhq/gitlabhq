@@ -276,6 +276,10 @@
   resize: none;
 }
 
+.multi-file-editor-holder {
+  height: 100%;
+}
+
 .dirty-diff {
   // !important need to override monaco inline style
   width: 4px !important;
