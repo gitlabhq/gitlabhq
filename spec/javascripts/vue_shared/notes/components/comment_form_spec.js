@@ -3,7 +3,7 @@ import Autosize from 'autosize';
 import store from '~/vue_shared/notes/stores';
 import issueCommentForm from '~/vue_shared/notes/components/comment_form.vue';
 import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } from '../mock_data';
-import { keyboardDownEvent } from '../../issue_show/helpers';
+import { keyboardDownEvent } from '../../../issue_show/helpers';
 
 describe('issue_comment_form component', () => {
   let vm;

@@ -1,15 +1,15 @@
 <script>
   import { mapActions, mapGetters } from 'vuex';
   import Flash from '~/flash';
-  import { SYSTEM_NOTE } from '../constants';
   import userAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+  import { SYSTEM_NOTE } from '../constants';
   import noteHeader from './note_header.vue';
   import noteSignedOutWidget from './note_signed_out_widget.vue';
   import noteEditedText from './note_edited_text.vue';
   import noteForm from './note_form.vue';
   import noteableNote from './noteable_note.vue';
-  import placeholderNote from '~/vue_shared/notes/components/placeholder_note.vue';
-  import placeholderSystemNote from '~/vue_shared/notes/components/placeholder_system_note.vue';
+  import placeholderNote from './placeholder_note.vue';
+  import placeholderSystemNote from './placeholder_system_note.vue';
   import autosave from '../mixins/autosave';
 
   export default {

@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import issuePlaceholderNote from '~/vue_shared/notes/components/placeholder_note.vue';
 import store from '~/vue_shared/notes/stores';
-import { userDataMock } from '../../../notes/mock_data';
+import { userDataMock } from '../mock_data';
 
 describe('issue placeholder system note component', () => {
   let vm;

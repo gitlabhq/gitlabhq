@@ -1,5 +1,5 @@
 import * as actions from '~/vue_shared/notes/stores/actions';
-import testAction from '../../helpers/vuex_action_helper';
+import testAction from '../../../helpers/vuex_action_helper';
 import { discussionMock, notesDataMock, userDataMock, noteableDataMock, individualNote } from '../mock_data';
 
 describe('Actions Notes Store', () => {
