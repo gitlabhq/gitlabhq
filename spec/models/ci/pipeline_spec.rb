@@ -868,62 +868,59 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe '#set_config_source' do
-    context 'on object initialisation' do
-      context 'when pipelines does not contain needed data' do
-        let(:pipeline) do
-          Ci::Pipeline.new
+    context 'when pipelines does not contain needed data' do
+      it 'defines source to be unknown' do
+        pipeline.set_config_source
+
+        expect(pipeline).to be_unknown_source
+      end
+    end
+
+    context 'when pipeline contains all needed data' do
+      let(:pipeline) do
+        create(:ci_pipeline, project: project,
+                             sha: '1234',
+                             ref: 'master',
+                             source: :push)
+      end
+
+      context 'when the repository has a config file' do
+        before do
+          allow(project.repository).to receive(:gitlab_ci_yml_for)
+            .and_return('config')
         end
 
-        it 'defines source to be unknown' do
-          expect(pipeline).to be_unknown_source
+        it 'defines source to be from repository' do
+          pipeline.set_config_source
+
+          expect(pipeline).to be_repository_source
+        end
+
+        context 'when loading an object' do
+          let(:new_pipeline) { Ci::Pipeline.find(pipeline.id) }
+
+          it 'does not redefine the source' do
+            # force to overwrite the source
+            pipeline.unknown_source!
+
+            expect(new_pipeline).to be_unknown_source
+          end
         end
       end
 
-      context 'when pipeline contains all needed data' do
-        let(:pipeline) do
-          Ci::Pipeline.new(
-            project: project,
-            sha: '1234',
-            ref: 'master',
-            source: :push)
-        end
+      context 'when the repository does not have a config file' do
+        let(:implied_yml) { Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content }
 
-        context 'when the repository has a config file' do
+        context 'auto devops enabled' do
           before do
-            allow(project.repository).to receive(:gitlab_ci_yml_for)
-              .and_return('config')
+            stub_application_setting(auto_devops_enabled: true)
+            allow(project).to receive(:ci_config_path) { 'custom' }
           end
 
-          it 'defines source to be from repository' do
-            expect(pipeline).to be_repository_source
-          end
+          it 'defines source to be auto devops' do
+            pipeline.set_config_source
 
-          context 'when loading an object' do
-            let(:new_pipeline) { Ci::Pipeline.find(pipeline.id) }
-
-            it 'does not redefine the source' do
-              # force to overwrite the source
-              pipeline.unknown_source!
-
-              expect(new_pipeline).to be_unknown_source
-            end
-          end
-        end
-
-        context 'when the repository does not have a config file' do
-          let(:implied_yml) { Gitlab::Template::GitlabCiYmlTemplate.find('Auto-DevOps').content }
-
-          context 'auto devops enabled' do
-            before do
-              stub_application_setting(auto_devops_enabled: true)
-              allow(project).to receive(:ci_config_path) { 'custom' }
-            end
-
-            it 'defines source to be auto devops' do
-              subject
-
-              expect(pipeline).to be_auto_devops_source
-            end
+            expect(pipeline).to be_auto_devops_source
           end
         end
       end
