@@ -19,6 +19,8 @@ module Gitlab
       ].freeze
       SEARCH_CONTEXT_LINES = 3
       GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'.freeze
+      REBASE_WORKTREE_PREFIX = 'rebase'.freeze
+      SQUASH_WORKTREE_PREFIX = 'squash'.freeze
 
       NoRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
@@ -1213,7 +1215,7 @@ module Gitlab
       end
 
       def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
-        rebase_path = rebase_dir_path(rebase_id)
+        rebase_path = worktree_path(REBASE_WORKTREE_PREFIX, rebase_id)
         env = git_env_for_user(user)
 
         with_worktree(rebase_path, branch, env: env) do
@@ -1232,11 +1234,11 @@ module Gitlab
       end
 
       def rebase_in_progress?(rebase_id)
-        fresh_worktree?(rebase_dir_path(rebase_id))
+        fresh_worktree?(worktree_path(REBASE_WORKTREE_PREFIX, rebase_id))
       end
 
       def squash(user, squash_id, branch:, start_sha:, end_sha:, author:, message:)
-        squash_path = squash_dir_path(squash_id)
+        squash_path = worktree_path(SQUASH_WORKTREE_PREFIX, squash_id)
         env = git_env_for_user(user).merge(
           'GIT_AUTHOR_NAME' => author.name,
           'GIT_AUTHOR_EMAIL' => author.email
@@ -1267,7 +1269,7 @@ module Gitlab
       end
 
       def squash_in_progress?(squash_id)
-        fresh_worktree?(squash_dir_path(squash_id))
+        fresh_worktree?(worktree_path(SQUASH_WORKTREE_PREFIX, squash_id))
       end
 
       def gitaly_repository
@@ -1368,12 +1370,12 @@ module Gitlab
         end
       end
 
-      def rebase_dir_path(id)
-        File.join(path, 'gitlab-worktree', "rebase-#{id}")
-      end
+      def worktree_path(prefix, id)
+        id = id.to_s
+        raise ArgumentError, "worktree id can't be empty" unless id.present?
+        raise ArgumentError, "worktree id can't contain slashes " if id.include?("/")
 
-      def squash_dir_path(id)
-        File.join(path, 'gitlab-worktree', "squash-#{id}")
+        File.join(path, 'gitlab-worktree', "#{prefix}-#{id}")
       end
 
       def git_env_for_user(user)
