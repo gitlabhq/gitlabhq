@@ -87,14 +87,25 @@ module API
       expose :created_at
     end
 
-    class BasicProjectDetails < ProjectIdentity
-      expose :default_branch, :tag_list
+    class BasicProjectDetails < Grape::Entity
+      include ::API::ProjectsRelationBuilder
+
+      expose :default_branch
+
+      # Avoids an N+1 query: https://github.com/mbleigh/acts-as-taggable-on/issues/91#issuecomment-168273770
+      expose :tag_list do |project|
+        # project.tags.order(:name).pluck(:name) is the most suitable option
+        # to avoid loading all the ActiveRecord objects but, if we use it here
+        # it override the preloaded associations and makes a query
+        # (fixed in https://github.com/rails/rails/pull/25976).
+        project.tags.map(&:name).sort
+      end
       expose :ssh_url_to_repo, :http_url_to_repo, :web_url
       expose :avatar_url do |project, options|
         project.avatar_url(only_path: false)
       end
       expose :star_count, :forks_count
-      expose :created_at, :last_activity_at
+      expose :last_activity_at
 
       def self.preload_relation(projects_relation, options =  {})
         projects_relation.preload(:project_feature, :route)
