@@ -163,9 +163,7 @@ module API
       expose :lfs_enabled?, as: :lfs_enabled
       expose :creator_id
       expose :namespace, using: 'API::Entities::NamespaceBasic'
-      expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? } do |project, options|
-        project.fork_network_member.forked_from_project
-      end
+      expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? }
       expose :import_status
       expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] }
 
@@ -184,17 +182,15 @@ module API
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
 
       def self.preload_relation(projects_relation, options =  {})
-        relation = super(projects_relation).preload(:group)
-                                           .preload(project_group_links: :group,
-                                                    fork_network: :root_project,
-                                                    fork_network_member: [forked_from_project: [:route, namespace: :route, tags: :taggings]])
-
-        # Remove this preload once forked_project_links and forked_from_project models have been removed
-        relation.preload(forked_project_link: :forked_from_project)
+        super(projects_relation).preload(:group)
+                                .preload(project_group_links: :group,
+                                         fork_network: :root_project,
+                                         forked_project_link: :forked_from_project,
+                                         forked_from_project: [:route, :forks, namespace: :route, tags: :taggings])
       end
 
       def self.forks_counting_projects(projects_relation)
-        projects_relation + projects_relation.map(&:fork_network_member).compact.map(&:forked_from_project).compact
+        projects_relation + projects_relation.map(&:forked_from_project).compact
       end
     end
 

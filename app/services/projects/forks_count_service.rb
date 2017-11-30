@@ -10,7 +10,10 @@ module Projects
     end
 
     def self.query(project_ids)
-      ForkNetworkMember.where(forked_from_project: project_ids)
+      # We can't directly change ForkedProjectLink to ForkNetworkMember here
+      # Nowadays, when a call using v3 to projects/:id/fork is made,
+      # the relationship to ForkNetworkMember is not updated
+      ForkedProjectLink.where(forked_from_project: project_ids)
     end
   end
 end
