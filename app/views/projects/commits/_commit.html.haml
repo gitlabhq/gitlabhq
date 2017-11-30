@@ -1,5 +1,4 @@
 - ref = local_assigns.fetch(:ref)
-- render_diff = controller_name == 'commits' && @path.present? && diff_file = commit.diffs.diff_files.find { |file| file.new_path == @path }
 
 - cache_key = [project.full_path, commit.id, current_application_settings, @path.presence, current_controller?(:commits), I18n.locale]
 - cache_key.push(commit.status(ref)) if commit.status(ref)
@@ -47,7 +46,7 @@
         = link_to_browse_code(project, commit)
 
   -# Render diff for the current file only
-  - if render_diff
+  - if @render_diff.present? && diff_file = commit.diffs.diff_files.find { |file| file.new_path == @path }
     .files
       .diff-file
         = render partial: 'projects/diffs/content', locals: { commit_id: commit.id, diff_file: diff_file, force_collapsed: true }
