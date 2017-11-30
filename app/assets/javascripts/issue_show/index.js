@@ -1,9 +1,11 @@
 import Vue from 'vue';
+import initNotes from '~/vue_shared/notes';
 import eventHub from './event_hub';
 import issuableApp from './components/app.vue';
 import '../vue_shared/vue_resource_interceptor';
 
 document.addEventListener('DOMContentLoaded', () => {
+  initNotes();
   const initialDataEl = document.getElementById('js-issuable-app-initial-data');
   const initialData = JSON.parse(initialDataEl.innerHTML.replace(/&quot;/g, '"'));
 
