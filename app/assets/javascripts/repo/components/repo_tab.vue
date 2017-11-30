@@ -66,18 +66,10 @@ export default {
       :class="{active : tab.active }"
       :title="tab.url"
     >
-<<<<<<< HEAD
-      {{tab.name}}
-      <fileStatusIcon
-        :file="tab">
-      </fileStatusIcon>
-    </a>
-=======
       {{ tab.name }}
       <file-status-icon
         :file="tab"
       />
     </div>
->>>>>>> origin/master
   </li>
 </template>
