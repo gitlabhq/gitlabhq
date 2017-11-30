@@ -4,7 +4,6 @@ import service from '../../services';
 import * as types from '../mutation_types';
 import {
   findEntry,
-  pushState,
   setPageTitle,
   createTemp,
   findIndexOfFile,
@@ -25,7 +24,7 @@ export const closeFile = ({ commit, state, dispatch }, { file, force = false }) 
 
     dispatch('setFileActive', nextFileToOpen);
   } else if (!state.openFiles.length) {
-    pushState(file.parentTreeUrl);
+    this.$router.push(file.parentTreeUrl);
   }
 
   dispatch('getLastCommitData');

@@ -1,7 +1,6 @@
 import service from '../../services';
 import flash from '../../../flash';
 import * as types from '../mutation_types';
-import { pushState } from '../utils';
 
 // eslint-disable-next-line import/prefer-default-export
 export const getBranchData = (
@@ -11,7 +10,6 @@ export const getBranchData = (
   if ((typeof state.projects[`${namespace}/${projectId}`] === 'undefined' ||
         !state.projects[`${namespace}/${projectId}`].branches[branch])
         || enforce) {
-    console.log('Loading Branch ' + branch);
     service.getBranchData(`${namespace}/${projectId}`, branch)
       .then((data) => {
         commit(types.SET_BRANCH, { projectPath: `${namespace}/${projectId}`, branchName: branch, branch: data });
@@ -39,7 +37,7 @@ export const createNewBranch = ({ state, commit }, branch) => service.createBran
   const branchName = data.name;
   const url = location.href.replace(state.currentBranch, branchName);
 
-  pushState(url);
+  this.$router.push(url);
 
   commit(types.SET_CURRENT_BRANCH, branchName);
 });

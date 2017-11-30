@@ -7,7 +7,8 @@ import _ from 'underscore';
 */
 export const treeList = state => (treeId) => {
   if (state.trees[treeId]) {
-    const mapTree = arr => (!arr.tree || !arr.tree.length ? [] : _.map(arr.tree, a => [a, mapTree(a)]));
+    const mapTree = arr => (!arr.tree || !arr.tree.length ?
+                            [] : _.map(arr.tree, a => [a, mapTree(a)]));
 
     return _.chain(state.trees[treeId].tree)
       .map(arr => [arr, mapTree(arr)])
@@ -33,18 +34,13 @@ export const activeFileExtension = (state) => {
   return file ? `.${file.path.split('.').pop()}` : '';
 };
 
-export const isCollapsed = state => true; // !!state.openFiles.length;
+export const isCollapsed = () => true; // ToDo: Need to remove !!state.openFiles.length;
 
 export const canEditFile = (state) => {
   const currentActiveFile = activeFile(state);
-  const openedFiles = state.openFiles;
-
-  return true;
 
   return state.canCommit &&
-    state.onTopOfBranch &&
-    openedFiles.length &&
-    (currentActiveFile && !currentActiveFile.renderError && !currentActiveFile.binary);
+         (currentActiveFile && !currentActiveFile.renderError && !currentActiveFile.binary);
 };
 
 export const addedFiles = state => changedFiles(state).filter(f => f.tempFile);

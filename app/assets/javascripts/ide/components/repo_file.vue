@@ -1,5 +1,4 @@
 <script>
-  import { mapActions, mapGetters } from 'vuex';
   import timeAgoMixin from '../../vue_shared/mixins/timeago';
   import skeletonLoadingContainer from '../../vue_shared/components/skeleton_loading_container.vue';
 
@@ -18,7 +17,7 @@
       collapsed: {
         type: Boolean,
         default: true,
-      }
+      },
     },
     computed: {
       isSubmodule() {
@@ -49,7 +48,7 @@
     methods: {
       clickFile(row) {
         this.$router.push(`/project${row.url}`);
-      }
+      },
     },
   };
 </script>

@@ -18,9 +18,9 @@ Vue.use(VueRouter);
 /workspace/project/h5bp/html5-boilerplate/mr/123
 
 / = /workspace
-/settings
 
- */
+/settings
+*/
 
 // Unfortunately Vue Router doesn't work without at least a fake component
 // If you do only data handling
@@ -50,8 +50,6 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  console.log('BEFORE EACH : ',to);
-
   store.dispatch('getProjectData', {
     namespace: to.params.namespace,
     projectId: to.params.project,
@@ -74,7 +72,6 @@ router.beforeEach((to, from, next) => {
         if (to.params[0]) {
           const treeEntry = store.getters.getTreeEntry(`${to.params.namespace}/${to.params.project}/${to.params.branch}`, to.params[0]);
           if (treeEntry) {
-            console.log('To Selected File : ', to.params, '/', treeEntry.url);
             store.dispatch('handleTreeEntryAction', treeEntry);
           }
         } else {
@@ -82,20 +79,12 @@ router.beforeEach((to, from, next) => {
         }
       })
       .catch((e) => {
-        debugger;
+        throw e;
       });
-
-      if (!to.params[0]) {
-        // We are in the root of the tree
-        console.log('Load Branch Tree');
-      } else {
-        
-      }
     }
   })
   .catch((e) => {
-    debugger;
-    //next(false);
+    throw e;
   });
   next();
 });
