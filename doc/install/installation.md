@@ -80,7 +80,7 @@ Make sure you have the right version of Git installed
     # Install Git
     sudo apt-get install -y git-core
 
-    # Make sure Git is version 2.13.0 or higher
+    # Make sure Git is version 2.13.6 or higher
     git --version
 
 Is the system packaged Git too old? Remove it and compile from source.
@@ -121,7 +121,7 @@ The use of Ruby version managers such as [RVM], [rbenv] or [chruby] with GitLab
 in production, frequently leads to hard to diagnose problems. For example,
 GitLab Shell is called from OpenSSH, and having a version manager can prevent
 pushing and pulling over SSH. Version managers are not supported and we strongly
-advise everyone to follow the instructions below to use a system Ruby.  
+advise everyone to follow the instructions below to use a system Ruby.
 
 Linux distributions generally have older versions of Ruby available, so these
 instructions are designed to install Ruby from the official source code.
@@ -299,9 +299,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 10-0-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 10-2-stable gitlab
 
-**Note:** You can change `10-0-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `10-2-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -367,6 +367,9 @@ sudo usermod -aG redis git
 
     # Enable packfile bitmaps
     sudo -u git -H git config --global repack.writeBitmaps true
+    
+    # Enable push options
+    sudo -u git -H git config --global receive.advertisePushOptions true
 
     # Configure Redis connection settings
     sudo -u git -H cp config/resque.yml.example config/resque.yml
@@ -513,8 +516,7 @@ Check if GitLab and its environment are configured correctly:
 
 ### Compile GetText PO files
 
-    sudo -u git -H bundle exec rake gettext:pack RAILS_ENV=production
-    sudo -u git -H bundle exec rake gettext:po_to_json RAILS_ENV=production
+    sudo -u git -H bundle exec rake gettext:compile RAILS_ENV=production
 
 ### Compile Assets
 

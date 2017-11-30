@@ -9,6 +9,8 @@ $sidebar-transition-duration: .15s;
 $sidebar-breakpoint: 1024px;
 $default-transition-duration: .15s;
 $right-sidebar-transition-duration: .3s;
+$contextual-sidebar-width: 220px;
+$contextual-sidebar-collapsed-width: 50px;
 
 /*
  * Color schema
@@ -161,7 +163,7 @@ $gl-text-color: #2e2e2e;
 $gl-text-color-secondary: #707070;
 $gl-text-color-tertiary: #949494;
 $gl-text-color-quaternary: #d6d6d6;
-$gl-text-color-inverted: rgba(255, 255, 255, 1.0);
+$gl-text-color-inverted: rgba(255, 255, 255, 1);
 $gl-text-color-secondary-inverted: rgba(255, 255, 255, .85);
 $gl-text-green: $green-600;
 $gl-text-green-hover: $green-700;
@@ -233,6 +235,7 @@ $container-text-max-width: 540px;
 $gl-avatar-size: 40px;
 $error-exclamation-point: $red-500;
 $border-radius-default: 4px;
+$border-radius-small: 2px;
 $settings-icon-size: 18px;
 $provider-btn-not-active-color: $blue-500;
 $link-underline-blue: $blue-500;
@@ -358,6 +361,13 @@ $filtered-search-term-shadow-color: rgba(0, 0, 0, 0.09);
 $dropdown-hover-color: $blue-400;
 
 /*
+* Contextual Sidebar
+*/
+$link-active-background: rgba(0, 0, 0, .04);
+$link-hover-background: rgba(0, 0, 0, .06);
+$inactive-badge-background: rgba(0, 0, 0, .08);
+
+/*
 * Buttons
 */
 $btn-active-gray: #ececec;
@@ -402,7 +412,6 @@ $note-targe3-outside: #fffff0;
 $note-targe3-inside: #ffffd3;
 $note-line2-border: #ddd;
 $note-icon-gutter-width: 55px;
-
 
 /*
 * Zen
@@ -477,8 +486,8 @@ $callout-success-color: $green-700;
 /*
 * Commit Page
 */
-$commit-max-width-marker-color: rgba(0, 0, 0, 0.0);
-$commit-message-text-area-bg: rgba(0, 0, 0, 0.0);
+$commit-max-width-marker-color: rgba(0, 0, 0, 0);
+$commit-message-text-area-bg: rgba(0, 0, 0, 0);
 
 /*
 * Common
@@ -699,14 +708,6 @@ $perf-bar-bucket-color: #ccc;
 $perf-bar-bucket-box-shadow-from: rgba($white-light, .2);
 $perf-bar-bucket-box-shadow-to: rgba($black, .25);
 
-
-/*
-Project Templates Icons
-*/
-$rails: #c00;
-$node: #353535;
-$java: #70ad51;
-
 /*
 Issuable warning
 */
@@ -718,3 +719,10 @@ Image Commenting cursor
 */
 $image-comment-cursor-left-offset: 12;
 $image-comment-cursor-top-offset: 30;
+
+/*
+Popup
+*/
+$popup-triangle-size: 15px;
+$popup-triangle-border-size: 1px;
+$popup-box-shadow-color: rgba(90, 90, 90, 0.05);

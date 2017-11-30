@@ -4,24 +4,33 @@ import eventHub from '../event_hub';
 import { getParameterByName } from '../../lib/utils/common_utils';
 
 export default {
+  components: {
+    tablePagination,
+  },
   props: {
     groups: {
-      type: Object,
+      type: Array,
       required: true,
     },
     pageInfo: {
       type: Object,
       required: true,
     },
-  },
-  components: {
-    tablePagination,
+    searchEmpty: {
+      type: Boolean,
+      required: true,
+    },
+    searchEmptyMessage: {
+      type: String,
+      required: true,
+    },
   },
   methods: {
     change(page) {
       const filterGroupsParam = getParameterByName('filter_groups');
       const sortParam = getParameterByName('sort');
-      eventHub.$emit('fetchPage', page, filterGroupsParam, sortParam);
+      const archivedParam = getParameterByName('archived');
+      eventHub.$emit('fetchPage', page, filterGroupsParam, sortParam, archivedParam);
     },
   },
 };
@@ -29,10 +38,17 @@ export default {
 
 <template>
   <div class="groups-list-tree-container">
+    <div
+      v-if="searchEmpty"
+      class="has-no-search-results">
+      {{searchEmptyMessage}}
+    </div>
     <group-folder
+      v-if="!searchEmpty"
       :groups="groups"
     />
     <table-pagination
+      v-if="!searchEmpty"
       :change="change"
       :pageInfo="pageInfo"
     />

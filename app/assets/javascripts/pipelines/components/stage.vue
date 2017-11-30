@@ -13,8 +13,8 @@
  * 4. Commit widget
  */
 
-/* global Flash */
-import { borderlessStatusIconEntityMap } from '../../vue_shared/ci_status_icons';
+import Flash from '../../flash';
+import icon from '../../vue_shared/components/icon.vue';
 import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
 
@@ -45,6 +45,7 @@ export default {
 
   components: {
     loadingIcon,
+    icon,
   },
 
   updated() {
@@ -122,8 +123,8 @@ export default {
       return `ci-status-icon-${this.stage.status.group}`;
     },
 
-    svgIcon() {
-      return borderlessStatusIconEntityMap[this.stage.status.icon];
+    borderlessIcon() {
+      return `${this.stage.status.icon}_borderless`;
     },
   },
 };
@@ -145,9 +146,10 @@ export default {
       aria-expanded="false">
 
       <span
-        v-html="svgIcon"
         aria-hidden="true"
         :aria-label="stage.title">
+        <icon
+          :name="borderlessIcon"/>
       </span>
 
       <i

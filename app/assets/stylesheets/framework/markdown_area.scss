@@ -57,6 +57,7 @@
 .md-header {
   .nav-links {
     a {
+      width: 100%;
       padding-top: 0;
       line-height: 19px;
 
@@ -69,6 +70,28 @@
         padding-top: 10px;
       }
     }
+  }
+}
+
+.md-header-tab {
+  @media(max-width: $screen-xs-max) {
+    flex: 1;
+    width: 100%;
+    border-bottom: 1px solid $border-color;
+    text-align: center;
+  }
+}
+
+.md-header-toolbar {
+  margin-left: auto;
+
+  @media(max-width: $screen-xs-max) {
+    flex: none;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    padding-top: $gl-padding-top;
+    padding-bottom: $gl-padding-top;
   }
 }
 
@@ -126,27 +149,35 @@
   }
 }
 
-.toolbar-group {
-  float: left;
-  margin-right: -5px;
-  margin-left: $gl-padding;
-
-  &:first-child {
-    margin-left: 0;
-  }
-}
-
 .toolbar-btn {
   float: left;
-  padding: 0 5px;
-  color: $gl-text-color-secondary;
+  padding: 0 7px;
   background: transparent;
   border: 0;
   outline: 0;
 
+  svg {
+    width: 14px;
+    height: 14px;
+    margin-top: 3px;
+    fill: $gl-text-color-secondary;
+  }
+
   &:hover,
   &:focus {
-    color: $gl-link-color;
+    svg {
+      fill: $gl-link-color;
+    }
+  }
+}
+
+.toolbar-fullscreen-btn {
+  margin-left: $gl-padding;
+  margin-right: -5px;
+
+  @media(max-width: $screen-xs-max) {
+    margin-left: 0;
+    margin-right: 0;
   }
 }
 
@@ -173,21 +204,8 @@
   ul > li {
     white-space: nowrap;
   }
-}
 
-@media(max-width: $screen-xs-max) {
-  .atwho-view-ul {
-    width: 350px;
-  }
-
-  .atwho-view ul li {
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
-
-// TODO: fallback to global style
-.atwho-view {
+  // TODO: fallback to global style
   .atwho-view-ul {
     padding: 8px 1px;
 
@@ -218,5 +236,16 @@
         color: $gl-text-color;
       }
     }
+  }
+}
+
+@media(max-width: $screen-xs-max) {
+  .atwho-view-ul {
+    width: 350px;
+  }
+
+  .atwho-view ul li {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }

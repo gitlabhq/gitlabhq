@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Merge request issue assignment', js: true do
+feature 'Merge request issue assignment', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, :public, :repository) }
   let(:issue1) { create(:issue, project: project) }

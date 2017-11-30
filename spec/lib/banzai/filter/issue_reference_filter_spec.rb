@@ -317,6 +317,76 @@ describe Banzai::Filter::IssueReferenceFilter do
     end
   end
 
+  context 'group context' do
+    let(:group) { create(:group) }
+    let(:context) { { project: nil, group: group } }
+
+    it 'ignores shorthanded issue reference' do
+      reference = "##{issue.iid}"
+      text = "Fixed #{reference}"
+
+      expect(reference_filter(text, context).to_html).to eq(text)
+    end
+
+    it 'ignores valid references when cross-reference project uses external tracker' do
+      expect_any_instance_of(described_class).to receive(:find_object)
+        .with(project, issue.iid)
+        .and_return(nil)
+
+      reference = "#{project.full_path}##{issue.iid}"
+      text = "Issue #{reference}"
+
+      expect(reference_filter(text, context).to_html).to eq(text)
+    end
+
+    it 'links to a valid reference for complete cross-reference' do
+      reference = "#{project.full_path}##{issue.iid}"
+      doc = reference_filter("See #{reference}", context)
+
+      link = doc.css('a').first
+      expect(link.attr('href')).to eq(helper.url_for_issue(issue.iid, project))
+      expect(link.text).to include("#{project.full_path}##{issue.iid}")
+    end
+
+    it 'ignores reference for shorthand cross-reference' do
+      reference = "#{project.path}##{issue.iid}"
+      text = "See #{reference}"
+
+      expect(reference_filter(text, context).to_html).to eq(text)
+    end
+
+    it 'links to a valid reference for url cross-reference' do
+      reference = helper.url_for_issue(issue.iid, project) + "#note_123"
+
+      doc = reference_filter("See #{reference}", context)
+
+      link = doc.css('a').first
+      expect(link.attr('href')).to eq(helper.url_for_issue(issue.iid, project) + "#note_123")
+      expect(link.text).to include("#{project.full_path}##{issue.iid}")
+    end
+
+    it 'links to a valid reference for cross-reference in link href' do
+      reference = "#{helper.url_for_issue(issue.iid, project) + "#note_123"}"
+      reference_link = %{<a href="#{reference}">Reference</a>}
+
+      doc = reference_filter("See #{reference_link}", context)
+
+      link = doc.css('a').first
+      expect(link.attr('href')).to eq(helper.url_for_issue(issue.iid, project) + "#note_123")
+      expect(link.text).to include('Reference')
+    end
+
+    it 'links to a valid reference for issue reference in the link href' do
+      reference = issue.to_reference(group)
+      reference_link = %{<a href="#{reference}">Reference</a>}
+      doc = reference_filter("See #{reference_link}", context)
+
+      link = doc.css('a').first
+      expect(link.attr('href')).to eq(helper.url_for_issue(issue.iid, project))
+      expect(link.text).to include('Reference')
+    end
+  end
+
   describe '#issues_per_project' do
     context 'using an internal issue tracker' do
       it 'returns a Hash containing the issues per project' do

@@ -14,6 +14,7 @@ class Note < ActiveRecord::Base
   include ResolvableNote
   include IgnorableColumn
   include Editable
+  include Gitlab::SQL::Pattern
 
   module SpecialRole
     FIRST_TIME_CONTRIBUTOR = :first_time_contributor
@@ -69,7 +70,7 @@ class Note < ActiveRecord::Base
   delegate :title, to: :noteable, allow_nil: true
 
   validates :note, presence: true
-  validates :project, presence: true, unless: :for_personal_snippet?
+  validates :project, presence: true, if: :for_project_noteable?
 
   # Attachments are deprecated and are handled by Markdown uploader
   validates :attachment, file_size: { maximum: :max_attachment_size }
@@ -110,11 +111,12 @@ class Note < ActiveRecord::Base
     includes(:author, :noteable, :updated_by,
              project: [:project_members, { group: [:group_members] }])
   end
+  scope :with_metadata, -> { includes(:system_note_metadata) }
 
   after_initialize :ensure_discussion_id
   before_validation :nullify_blank_type, :nullify_blank_line_code
   before_validation :set_discussion_id, on: :create
-  after_save :keep_around_commit, unless: :for_personal_snippet?
+  after_save :keep_around_commit, if: :for_project_noteable?
   after_save :expire_etag_cache
   after_destroy :expire_etag_cache
 
@@ -166,10 +168,20 @@ class Note < ActiveRecord::Base
     def has_special_role?(role, note)
       note.special_role == role
     end
+
+    def search(query)
+      fuzzy_search(query, [:note])
+    end
   end
 
   def cross_reference?
-    system? && SystemNoteService.cross_reference?(note)
+    return unless system?
+
+    if force_cross_reference_regex_check?
+      matches_cross_reference_regex?
+    else
+      SystemNoteService.cross_reference?(note)
+    end
   end
 
   def diff_note?
@@ -206,6 +218,10 @@ class Note < ActiveRecord::Base
 
   def for_personal_snippet?
     noteable.is_a?(PersonalSnippet)
+  end
+
+  def for_project_noteable?
+    !for_personal_snippet?
   end
 
   def skip_project_check?
@@ -377,5 +393,11 @@ class Note < ActiveRecord::Base
 
   def set_discussion_id
     self.discussion_id ||= discussion_class.discussion_id(self)
+  end
+
+  def force_cross_reference_regex_check?
+    return unless system?
+
+    SystemNoteMetadata::TYPES_WITH_CROSS_REFERENCES.include?(system_note_metadata&.action)
   end
 end

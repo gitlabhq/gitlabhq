@@ -95,7 +95,7 @@ module Banzai
       end
 
       def call
-        return doc if project.nil?
+        return doc unless project || group
 
         ref_pattern = object_class.reference_pattern
         link_pattern = object_class.link_reference_pattern
@@ -213,7 +213,8 @@ module Banzai
       end
 
       def object_link_text(object, matches)
-        text = object.reference_link_text(context[:project])
+        parent = context[:project] || context[:group]
+        text = object.reference_link_text(parent)
 
         extras = object_link_text_extras(object, matches)
         text += " (#{extras.join(", ")})" if extras.any?
@@ -288,10 +289,14 @@ module Banzai
       end
 
       def current_project_path
+        return unless project
+
         @current_project_path ||= project.full_path
       end
 
       def current_project_namespace_path
+        return unless project
+
         @current_project_namespace_path ||= project.namespace.full_path
       end
 
@@ -306,30 +311,6 @@ module Banzai
 
       def project_refs_cache
         RequestStore[:banzai_project_refs] ||= {}
-      end
-
-      def cached_call(request_store_key, cache_key, path: [])
-        if RequestStore.active?
-          cache = RequestStore[request_store_key] ||= Hash.new do |hash, key|
-            hash[key] = Hash.new { |h, k| h[k] = {} }
-          end
-
-          cache = cache.dig(*path) if path.any?
-
-          get_or_set_cache(cache, cache_key) { yield }
-        else
-          yield
-        end
-      end
-
-      def get_or_set_cache(cache, key)
-        if cache.key?(key)
-          cache[key]
-        else
-          value = yield
-          cache[key] = value if key.present?
-          value
-        end
       end
     end
   end

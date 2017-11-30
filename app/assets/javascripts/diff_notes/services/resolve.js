@@ -1,7 +1,7 @@
-/* global Flash */
 /* global CommentsStore */
 
 import Vue from 'vue';
+import Flash from '../../flash';
 import '../../vue_shared/vue_resource_interceptor';
 
 window.gl = window.gl || {};

@@ -2,8 +2,9 @@
   .clipboard-addon {
     background-color: $white-light;
   }
+}
 
-  .alert-block {
-    margin-bottom: 20px;
-  }
+.cluster-applications-table {
+  // Wait for the Vue to kick-in and render the applications block
+  min-height: 302px;
 }

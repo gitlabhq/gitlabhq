@@ -160,8 +160,9 @@ describe Ci::RetryBuildService do
         expect(new_build).to be_created
       end
 
-      it 'does mark old build as retried' do
+      it 'does mark old build as retried in the database and on the instance' do
         expect(new_build).to be_latest
+        expect(build).to be_retried
         expect(build.reload).to be_retried
       end
     end

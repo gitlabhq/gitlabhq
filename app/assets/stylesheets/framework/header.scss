@@ -10,7 +10,7 @@
     z-index: 1000;
     margin-bottom: 0;
     min-height: $header-height;
-    border: none;
+    border: 0;
     border-bottom: 1px solid $border-color;
     position: fixed;
     top: 0;
@@ -129,7 +129,7 @@
         margin: 5px 2px 5px -8px;
         border-radius: $border-radius-default;
 
-        svg {
+        .tanuki-logo {
           @media (min-width: $screen-sm-min) {
             margin-right: 8px;
           }
@@ -161,14 +161,15 @@
     }
   }
 
-  .dropdown-bold-header {
+  li.dropdown-bold-header {
     color: $gl-text-color-secondary;
     font-size: 12px;
+    padding: 0 16px;
   }
 
   .navbar-collapse {
     flex: 0 0 auto;
-    border-top: none;
+    border-top: 0;
     padding: 0;
 
     @media (max-width: $screen-xs-max) {
@@ -234,14 +235,8 @@
           opacity: 1;
           color: $white-light;
 
-          svg {
-            fill: currentColor;
-          }
-
-          &.header-user-dropdown-toggle {
-            .header-user-avatar {
-              border-color: $white-light;
-            }
+          &.header-user-dropdown-toggle .header-user-avatar {
+            border-color: $white-light;
           }
         }
       }
@@ -270,14 +265,6 @@
           font-size: 20px;
         }
       }
-
-      &.active > a,
-      &.dropdown.open > a {
-
-        svg {
-          fill: currentColor;
-        }
-      }
     }
   }
 }
@@ -290,10 +277,6 @@
       text-decoration: none;
       outline: 0;
       color: $white-light;
-
-      svg {
-        fill: currentColor;
-      }
     }
 
     > a {
@@ -308,10 +291,6 @@
       border-radius: $border-radius-default;
       height: 32px;
       font-weight: $gl-font-weight-bold;
-
-      svg {
-        fill: currentColor;
-      }
     }
 
     &.line-separator {
@@ -402,9 +381,12 @@
 .breadcrumbs-list {
   display: -webkit-flex;
   display: flex;
-  flex-wrap: wrap;
   margin-bottom: 0;
   line-height: 16px;
+
+  @media (max-width: $screen-xs-max) {
+    flex-wrap: wrap;
+  }
 
   > li {
     display: flex;
@@ -413,24 +395,35 @@
     padding: 2px 0;
 
     &:not(:last-child) {
-      margin-right: 20px;
+      padding-right: 20px;
+
+      &:not(.dropdown) {
+        overflow: hidden;
+      }
     }
 
     > a {
       font-size: 12px;
       color: currentColor;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 0 1 auto;
     }
   }
 }
 
 .breadcrumb-item-text {
-  @include str-truncated(128px);
   text-decoration: inherit;
+
+  @media (max-width: $screen-xs-max) {
+    @include str-truncated(128px);
+  }
 }
 
 .breadcrumbs-list-angle {
   position: absolute;
-  right: -12px;
+  right: 7px;
   top: 50%;
   color: $gl-text-color-tertiary;
   transform: translateY(-50%);

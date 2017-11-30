@@ -3,25 +3,77 @@ require 'spec_helper'
 describe FileUploader do
   let(:uploader) { described_class.new(build_stubbed(:project)) }
 
-  describe '.absolute_path' do
-    it 'returns the correct absolute path by building it dynamically' do
-      project = build_stubbed(:project)
-      upload = double(model: project, path: 'secret/foo.jpg')
+  context 'legacy storage' do
+    let(:project) { build_stubbed(:project) }
 
-      dynamic_segment = project.path_with_namespace
+    describe '.absolute_path' do
+      it 'returns the correct absolute path by building it dynamically' do
+        upload = double(model: project, path: 'secret/foo.jpg')
 
-      expect(described_class.absolute_path(upload))
-        .to end_with("#{dynamic_segment}/secret/foo.jpg")
+        dynamic_segment = project.full_path
+
+        expect(described_class.absolute_path(upload))
+          .to end_with("#{dynamic_segment}/secret/foo.jpg")
+      end
+    end
+
+    describe "#store_dir" do
+      it "stores in the namespace path" do
+        uploader = described_class.new(project)
+
+        expect(uploader.store_dir).to include(project.full_path)
+        expect(uploader.store_dir).not_to include("system")
+      end
     end
   end
 
-  describe "#store_dir" do
-    it "stores in the namespace path" do
-      project = build_stubbed(:project)
-      uploader = described_class.new(project)
+  context 'hashed storage' do
+    context 'when rolled out attachments' do
+      let(:project) { build_stubbed(:project, :hashed) }
 
-      expect(uploader.store_dir).to include(project.path_with_namespace)
-      expect(uploader.store_dir).not_to include("system")
+      describe '.absolute_path' do
+        it 'returns the correct absolute path by building it dynamically' do
+          upload = double(model: project, path: 'secret/foo.jpg')
+
+          dynamic_segment = project.disk_path
+
+          expect(described_class.absolute_path(upload))
+            .to end_with("#{dynamic_segment}/secret/foo.jpg")
+        end
+      end
+
+      describe "#store_dir" do
+        it "stores in the namespace path" do
+          uploader = described_class.new(project)
+
+          expect(uploader.store_dir).to include(project.disk_path)
+          expect(uploader.store_dir).not_to include("system")
+        end
+      end
+    end
+
+    context 'when only repositories are rolled out' do
+      let(:project) { build_stubbed(:project, storage_version: Project::HASHED_STORAGE_FEATURES[:repository]) }
+
+      describe '.absolute_path' do
+        it 'returns the correct absolute path by building it dynamically' do
+          upload = double(model: project, path: 'secret/foo.jpg')
+
+          dynamic_segment = project.full_path
+
+          expect(described_class.absolute_path(upload))
+            .to end_with("#{dynamic_segment}/secret/foo.jpg")
+        end
+      end
+
+      describe "#store_dir" do
+        it "stores in the namespace path" do
+          uploader = described_class.new(project)
+
+          expect(uploader.store_dir).to include(project.full_path)
+          expect(uploader.store_dir).not_to include("system")
+        end
+      end
     end
   end
 

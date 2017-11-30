@@ -4,7 +4,7 @@ describe Gitlab::OAuth::User do
   let(:oauth_user) { described_class.new(auth_hash) }
   let(:gl_user) { oauth_user.gl_user }
   let(:uid) { 'my-uid' }
-  let(:dn) { 'uid=user1,ou=People,dc=example' }
+  let(:dn) { 'uid=user1,ou=people,dc=example' }
   let(:provider) { 'my-provider' }
   let(:auth_hash) { OmniAuth::AuthHash.new(uid: uid, provider: provider, info: info_hash) }
   let(:info_hash) do
@@ -660,6 +660,15 @@ describe Gitlab::OAuth::User do
       it "does not update the user location" do
         expect(gl_user.location).not_to eq(info_hash[:address][:country])
       end
+    end
+  end
+
+  describe '.find_by_uid_and_provider' do
+    let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
+
+    it 'normalizes extern_uid' do
+      allow(oauth_user.auth_hash).to receive(:uid).and_return('MY-UID')
+      expect(oauth_user.find_user).to eql gl_user
     end
   end
 end

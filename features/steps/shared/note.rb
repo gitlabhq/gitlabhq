@@ -14,7 +14,7 @@ module SharedNote
       find('.more-actions').click
       find('.more-actions .dropdown-menu li', match: :first)
 
-      find(".js-note-delete").click
+      accept_confirm { find(".js-note-delete").click }
     end
   end
 

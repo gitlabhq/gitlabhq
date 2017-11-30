@@ -57,10 +57,6 @@ module API
       expose :admin?, as: :is_admin
     end
 
-    class UserWithPrivateDetails < UserWithAdmin
-      expose :private_token
-    end
-
     class Email < Grape::Entity
       expose :id, :email
     end
@@ -84,16 +80,21 @@ module API
       expose :group_access, as: :group_access_level
     end
 
-    class BasicProjectDetails < Grape::Entity
-      expose :id, :description, :default_branch, :tag_list
-      expose :ssh_url_to_repo, :http_url_to_repo, :web_url
+    class ProjectIdentity < Grape::Entity
+      expose :id, :description
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
+      expose :created_at
+    end
+
+    class BasicProjectDetails < ProjectIdentity
+      expose :default_branch, :tag_list
+      expose :ssh_url_to_repo, :http_url_to_repo, :web_url
       expose :avatar_url do |project, options|
         project.avatar_url(only_path: false)
       end
       expose :star_count, :forks_count
-      expose :created_at, :last_activity_at
+      expose :last_activity_at
     end
 
     class Project < BasicProjectDetails
@@ -246,9 +247,10 @@ module API
       end
 
       expose :merged do |repo_branch, options|
-        # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37442
-        Gitlab::GitalyClient.allow_n_plus_1_calls do
-          options[:project].repository.merged_to_root_ref?(repo_branch.name)
+        if options[:merged_branch_names]
+          options[:merged_branch_names].include?(repo_branch.name)
+        else
+          options[:project].repository.merged_to_root_ref?(repo_branch)
         end
       end
 
@@ -481,6 +483,10 @@ module API
     class MergeRequest < MergeRequestBasic
       expose :subscribed do |merge_request, options|
         merge_request.subscribed?(options[:current_user], options[:project])
+      end
+
+      expose :changes_count do |merge_request, _options|
+        merge_request.merge_request_diff.real_size
       end
     end
 
@@ -766,7 +772,10 @@ module API
       expose(:default_project_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_project_visibility) }
       expose(:default_snippet_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_snippet_visibility) }
       expose(:default_group_visibility) { |setting, _options| Gitlab::VisibilityLevel.string_level(setting.default_group_visibility) }
-      expose :password_authentication_enabled, as: :signin_enabled
+
+      # support legacy names, can be removed in v5
+      expose :password_authentication_enabled_for_web, as: :password_authentication_enabled
+      expose :password_authentication_enabled_for_web, as: :signin_enabled
     end
 
     class Release < Grape::Entity
@@ -823,14 +832,22 @@ module API
       expose :id, :sha, :ref, :status
     end
 
-    class Job < Grape::Entity
+    class JobBasic < Grape::Entity
       expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
+      expose :duration
       expose :user, with: User
-      expose :artifacts_file, using: JobArtifactFile, if: -> (job, opts) { job.artifacts? }
       expose :commit, with: Commit
-      expose :runner, with: Runner
       expose :pipeline, with: PipelineBasic
+    end
+
+    class Job < JobBasic
+      expose :artifacts_file, using: JobArtifactFile, if: -> (job, opts) { job.artifacts? }
+      expose :runner, with: Runner
+    end
+
+    class JobBasicWithProject < JobBasic
+      expose :project, with: ProjectIdentity
     end
 
     class Trigger < Grape::Entity
@@ -1042,6 +1059,39 @@ module API
     class CustomAttribute < Grape::Entity
       expose :key
       expose :value
+    end
+
+    class PagesDomainCertificateExpiration < Grape::Entity
+      expose :expired?, as: :expired
+      expose :expiration
+    end
+
+    class PagesDomainCertificate < Grape::Entity
+      expose :subject
+      expose :expired?, as: :expired
+      expose :certificate
+      expose :certificate_text
+    end
+
+    class PagesDomainBasic < Grape::Entity
+      expose :domain
+      expose :url
+      expose :certificate,
+        as: :certificate_expiration,
+        if: ->(pages_domain, _) { pages_domain.certificate? },
+        using: PagesDomainCertificateExpiration do |pages_domain|
+        pages_domain
+      end
+    end
+
+    class PagesDomain < Grape::Entity
+      expose :domain
+      expose :url
+      expose :certificate,
+        if: ->(pages_domain, _) { pages_domain.certificate? },
+        using: PagesDomainCertificate do |pages_domain|
+        pages_domain
+      end
     end
   end
 end

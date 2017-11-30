@@ -7,7 +7,12 @@ module GroupsHelper
     can?(current_user, :change_share_with_group_lock, group)
   end
 
-  def group_icon(group)
+  def group_icon(group, options = {})
+    img_path = group_icon_url(group, options)
+    image_tag img_path, options
+  end
+
+  def group_icon_url(group, options = {})
     if group.is_a?(String)
       group = Group.find_by_full_path(group)
     end
@@ -89,7 +94,7 @@ module GroupsHelper
     link_to(group_path(group), class: "group-path #{'breadcrumb-item-text' unless for_dropdown} js-breadcrumb-item-text #{'hidable' if hidable}") do
       output =
         if (group.try(:avatar_url) || show_avatar) && !Rails.env.test?
-          image_tag(group_icon(group), class: "avatar-tile", width: 15, height: 15)
+          group_icon(group, class: "avatar-tile", width: 15, height: 15)
         else
           ""
         end

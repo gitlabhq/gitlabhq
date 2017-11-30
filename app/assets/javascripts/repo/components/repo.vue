@@ -1,70 +1,63 @@
 <script>
+import { mapState, mapGetters } from 'vuex';
 import RepoSidebar from './repo_sidebar.vue';
 import RepoCommitSection from './repo_commit_section.vue';
 import RepoTabs from './repo_tabs.vue';
 import RepoFileButtons from './repo_file_buttons.vue';
 import RepoPreview from './repo_preview.vue';
-import RepoMixin from '../mixins/repo_mixin';
-import PopupDialog from '../../vue_shared/components/popup_dialog.vue';
-import Store from '../stores/repo_store';
-import Helper from '../helpers/repo_helper';
-import MonacoLoaderHelper from '../helpers/monaco_loader_helper';
+import repoEditor from './repo_editor.vue';
 
 export default {
-  data: () => Store,
-  mixins: [RepoMixin],
+  computed: {
+    ...mapState([
+      'currentBlobView',
+    ]),
+    ...mapGetters([
+      'isCollapsed',
+      'changedFiles',
+    ]),
+  },
   components: {
     RepoSidebar,
     RepoTabs,
     RepoFileButtons,
-    'repo-editor': MonacoLoaderHelper.repoEditorLoader,
+    repoEditor,
     RepoCommitSection,
-    PopupDialog,
     RepoPreview,
   },
-
   mounted() {
-    Helper.getContent().catch(Helper.loadingError);
-  },
+    const returnValue = 'Are you sure you want to lose unsaved changes?';
+    window.onbeforeunload = (e) => {
+      if (!this.changedFiles.length) return undefined;
 
-  methods: {
-    toggleDialogOpen(toggle) {
-      this.dialog.open = toggle;
-    },
-
-    dialogSubmitted(status) {
-      this.toggleDialogOpen(false);
-      this.dialog.status = status;
-    },
-
-    toggleBlobView: Store.toggleBlobView,
+      Object.assign(e, {
+        returnValue,
+      });
+      return returnValue;
+    };
   },
 };
 </script>
 
 <template>
-  <div class="repository-view">
-    <div class="tree-content-holder" :class="{'tree-content-holder-mini' : isMini}">
-      <repo-sidebar/>
-      <div v-if="isMini"
-      class="panel-right"
-      :class="{'edit-mode': editMode}">
-        <repo-tabs/>
-        <component
-          :is="currentBlobView"
-          class="blob-viewer-container"/>
-        <repo-file-buttons/>
-      </div>
+  <div
+    class="multi-file"
+    :class="{
+      'is-collapsed': isCollapsed
+    }"
+  >
+    <repo-sidebar/>
+    <div
+      v-if="isCollapsed"
+      class="multi-file-edit-pane"
+    >
+      <repo-tabs />
+      <component
+        class="multi-file-edit-pane-content"
+        :is="currentBlobView"
+      />
+      <repo-file-buttons />
     </div>
-    <repo-commit-section/>
-    <popup-dialog
-      v-show="dialog.open"
-      :primary-button-label="__('Discard changes')"
-      kind="warning"
-      :title="__('Are you sure?')"
-      :text="__('Are you sure you want to discard your changes?')"
-      @toggle="toggleDialogOpen"
-      @submit="dialogSubmitted"
-    />
+    <repo-commit-section />
   </div>
 </template>

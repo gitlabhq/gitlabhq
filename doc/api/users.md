@@ -297,6 +297,7 @@ Parameters:
 - `location` (optional)         - User's location
 - `admin` (optional)            - User is admin - true or false (default)
 - `can_create_group` (optional) - User can create groups - true or false
+- `skip_reconfirmation` (optional) - Skip reconfirmation - true or false (default)
 - `external` (optional)         - Flags the user as external - true or false(default)
 - `avatar` (optional)           - Image file for user's avatar
 
@@ -410,8 +411,7 @@ GET /user
   "can_create_group": true,
   "can_create_project": true,
   "two_factor_enabled": true,
-  "external": false,
-  "private_token": "dd34asd13as"
+  "external": false
 }
 ```
 

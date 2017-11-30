@@ -17,7 +17,7 @@ feature 'Developer views empty project instructions' do
       expect_instructions_for('http')
     end
 
-    scenario 'switches to SSH', js: true do
+    scenario 'switches to SSH', :js do
       visit_project
 
       select_protocol('SSH')
@@ -37,7 +37,7 @@ feature 'Developer views empty project instructions' do
       expect_instructions_for('ssh')
     end
 
-    scenario 'switches to HTTP', js: true do
+    scenario 'switches to HTTP', :js do
       visit_project
 
       select_protocol('HTTP')

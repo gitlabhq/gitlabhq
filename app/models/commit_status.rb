@@ -14,10 +14,10 @@ class CommitStatus < ActiveRecord::Base
   delegate :sha, :short_sha, to: :pipeline
 
   validates :pipeline, presence: true, unless: :importing?
-
   validates :name, presence: true, unless: :importing?
 
   alias_attribute :author, :user
+  alias_attribute :pipeline_id, :commit_id
 
   scope :failed_but_allowed, -> do
     where(allow_failure: true, status: [:failed, :canceled])
@@ -45,6 +45,17 @@ class CommitStatus < ActiveRecord::Base
     stuck_or_timeout_failure: 3,
     runner_system_failure: 4
   }
+
+  ##
+  # We still create some CommitStatuses outside of CreatePipelineService.
+  #
+  # These are pages deployments and external statuses.
+  #
+  before_create unless: :importing? do
+    Ci::EnsureStageService.new(project, user).execute(self) do |stage|
+      self.run_after_commit { StageUpdateWorker.perform_async(stage.id) }
+    end
+  end
 
   state_machine :status do
     event :process do
@@ -93,26 +104,29 @@ class CommitStatus < ActiveRecord::Base
     end
 
     after_transition do |commit_status, transition|
+      next unless commit_status.project
       next if transition.loopback?
 
       commit_status.run_after_commit do
-        if pipeline
+        if pipeline_id
           if complete? || manual?
-            PipelineProcessWorker.perform_async(pipeline.id)
+            PipelineProcessWorker.perform_async(pipeline_id)
           else
-            PipelineUpdateWorker.perform_async(pipeline.id)
+            PipelineUpdateWorker.perform_async(pipeline_id)
           end
         end
 
-        StageUpdateWorker.perform_async(commit_status.stage_id)
-        ExpireJobCacheWorker.perform_async(commit_status.id)
+        StageUpdateWorker.perform_async(stage_id)
+        ExpireJobCacheWorker.perform_async(id)
       end
     end
 
     after_transition any => :failed do |commit_status|
+      next unless commit_status.project
+
       commit_status.run_after_commit do
         MergeRequests::AddTodoWhenBuildFailsService
-          .new(pipeline.project, nil).execute(self)
+          .new(project, nil).execute(self)
       end
     end
   end

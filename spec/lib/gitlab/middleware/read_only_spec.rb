@@ -83,15 +83,24 @@ describe Gitlab::Middleware::ReadOnly do
       expect(subject).to disallow_request
     end
 
+    it 'expects POST of new file that looks like an LFS batch url to be disallowed' do
+      expect(Rails.application.routes).to receive(:recognize_path).and_call_original
+      response = request.post('/root/gitlab-ce/new/master/app/info/lfs/objects/batch')
+
+      expect(response).to be_a_redirect
+      expect(subject).to disallow_request
+    end
+
+    it 'returns last_vistited_url for disallowed request' do
+      response = request.post('/test_request')
+
+      expect(response.location).to eq 'http://localhost/'
+    end
+
     context 'whitelisted requests' do
-      it 'expects DELETE request to logout to be allowed' do
-        response = request.delete('/users/sign_out')
-
-        expect(response).not_to be_a_redirect
-        expect(subject).not_to disallow_request
-      end
-
       it 'expects a POST internal request to be allowed' do
+        expect(Rails.application.routes).not_to receive(:recognize_path)
+
         response = request.post("/api/#{API::API.version}/internal")
 
         expect(response).not_to be_a_redirect
@@ -99,7 +108,28 @@ describe Gitlab::Middleware::ReadOnly do
       end
 
       it 'expects a POST LFS request to batch URL to be allowed' do
+        expect(Rails.application.routes).to receive(:recognize_path).and_call_original
         response = request.post('/root/rouge.git/info/lfs/objects/batch')
+
+        expect(response).not_to be_a_redirect
+        expect(subject).not_to disallow_request
+      end
+
+      it 'expects a POST request to git-upload-pack URL to be allowed' do
+        expect(Rails.application.routes).to receive(:recognize_path).and_call_original
+        response = request.post('/root/rouge.git/git-upload-pack')
+
+        expect(response).not_to be_a_redirect
+        expect(subject).not_to disallow_request
+      end
+
+      it 'expects requests to sidekiq admin to be allowed' do
+        response = request.post('/admin/sidekiq')
+
+        expect(response).not_to be_a_redirect
+        expect(subject).not_to disallow_request
+
+        response = request.get('/admin/sidekiq')
 
         expect(response).not_to be_a_redirect
         expect(subject).not_to disallow_request

@@ -1,40 +1,35 @@
 <script>
-import Store from '../stores/repo_store';
-import Helper from '../helpers/repo_helper';
-import RepoMixin from '../mixins/repo_mixin';
+import { mapGetters } from 'vuex';
 
-const RepoFileButtons = {
-  data: () => Store,
-
-  mixins: [RepoMixin],
-
+export default {
   computed: {
-
+    ...mapGetters([
+      'activeFile',
+    ]),
+    showButtons() {
+      return this.activeFile.rawPath ||
+        this.activeFile.blamePath ||
+        this.activeFile.commitsPath ||
+        this.activeFile.permalink;
+    },
     rawDownloadButtonLabel() {
-      return this.binary ? 'Download' : 'Raw';
+      return this.activeFile.binary ? 'Download' : 'Raw';
     },
-
-    canPreview() {
-      return Helper.isRenderable();
-    },
-  },
-
-  methods: {
-    rawPreviewToggle: Store.toggleRawPreview,
   },
 };
-
-export default RepoFileButtons;
 </script>
 
 <template>
-  <div id="repo-file-buttons">
+  <div
+    v-if="showButtons"
+    class="multi-file-editor-btn-group"
+  >
     <a
-      :href="activeFile.raw_path"
+      :href="activeFile.rawPath"
       target="_blank"
-      class="btn btn-default raw"
+      class="btn btn-default btn-sm raw"
       rel="noopener noreferrer">
-      {{rawDownloadButtonLabel}}
+      {{ rawDownloadButtonLabel }}
     </a>
 
     <div
@@ -42,28 +37,20 @@ export default RepoFileButtons;
       role="group"
       aria-label="File actions">
       <a
-        :href="activeFile.blame_path"
-        class="btn btn-default blame">
+        :href="activeFile.blamePath"
+        class="btn btn-default btn-sm blame">
         Blame
       </a>
       <a
-        :href="activeFile.commits_path"
-        class="btn btn-default history">
+        :href="activeFile.commitsPath"
+        class="btn btn-default btn-sm history">
         History
       </a>
       <a
         :href="activeFile.permalink"
-        class="btn btn-default permalink">
+        class="btn btn-default btn-sm permalink">
         Permalink
       </a>
     </div>
-
-    <a
-      v-if="canPreview"
-      href="#"
-      @click.prevent="rawPreviewToggle"
-      class="btn btn-default preview">
-      {{activeFileLabel}}
-    </a>
   </div>
 </template>

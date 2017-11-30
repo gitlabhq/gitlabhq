@@ -23,7 +23,7 @@ describe 'User uploads files' do
       visit(project_tree_path_root_ref)
     end
 
-    it 'uploads and commit a new file', js: true do
+    it 'uploads and commit a new file', :js do
       find('.add-to-tree').click
       click_link('Upload file')
       drop_in_dropzone(File.join(Rails.root, 'spec', 'fixtures', 'doc_sample.txt'))
@@ -54,7 +54,7 @@ describe 'User uploads files' do
       visit(project2_tree_path_root_ref)
     end
 
-    it 'uploads and commit a new file to a forked project', js: true do
+    it 'uploads and commit a new file to a forked project', :js do
       find('.add-to-tree').click
       click_link('Upload file')
 

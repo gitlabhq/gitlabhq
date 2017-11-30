@@ -48,7 +48,8 @@
     overflow-x: auto;
     font-size: 12px;
     border-radius: 0;
-    border: none;
+    border: 0;
+    padding: $grid-size;
 
     .bash {
       display: block;
@@ -57,29 +58,28 @@
 
   .top-bar {
     height: 35px;
-    display: flex;
-    justify-content: flex-end;
     background: $gray-light;
     border: 1px solid $border-color;
     color: $gl-text-color;
     position: sticky;
     position: -webkit-sticky;
     top: $header-height;
+    padding: $grid-size;
 
     &.affix {
       top: $header-height;
-    }
 
-    // with sidebar
-    &.affix.sidebar-expanded {
-      right: 306px;
-      left: 16px;
-    }
+      // with sidebar
+      &.sidebar-expanded {
+        right: 306px;
+        left: 16px;
+      }
 
-    // without sidebar
-    &.affix.sidebar-collapsed {
-      right: 16px;
-      left: 16px;
+      // without sidebar
+      &.sidebar-collapsed {
+        right: 16px;
+        left: 16px;
+      }
     }
 
     &.affix-top {
@@ -90,9 +90,6 @@
     }
 
     .truncated-info {
-      margin: 0 auto;
-      align-self: center;
-
       .truncated-info-size {
         margin: 0 5px;
       }
@@ -118,7 +115,11 @@
 
       .controllers-buttons {
         color: $gl-text-color;
-        margin: 0 10px;
+        margin: 0 $grid-size;
+
+        &:last-child {
+          margin-right: 0;
+        }
       }
 
       .btn-scroll.animate {
@@ -333,8 +334,10 @@
 
     svg {
       position: relative;
-      top: 2px;
+      top: 3px;
       margin-right: 3px;
+      width: 14px;
+      height: 14px;
     }
   }
 
@@ -348,9 +351,10 @@
 
     svg {
       position: relative;
-      top: 2px;
+      top: 3px;
       margin-right: 3px;
-      height: 13px;
+      height: 14px;
+      width: 14px;
     }
 
     a {
@@ -369,7 +373,7 @@
     .build-job {
       position: relative;
 
-      .fa-arrow-right {
+      .icon-arrow-right {
         position: absolute;
         left: 15px;
         top: 20px;
@@ -379,7 +383,7 @@
       &.active {
         font-weight: $gl-font-weight-bold;
 
-        .fa-arrow-right {
+        .icon-arrow-right {
           display: block;
         }
       }
@@ -392,8 +396,7 @@
         background-color: $row-hover;
       }
 
-      .fa-refresh {
-        font-size: 13px;
+      .icon-retry {
         margin-left: 3px;
       }
     }

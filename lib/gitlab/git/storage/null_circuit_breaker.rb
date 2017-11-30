@@ -2,15 +2,14 @@ module Gitlab
   module Git
     module Storage
       class NullCircuitBreaker
+        include CircuitBreakerSettings
+
         # These will have actual values
         attr_reader :storage,
                     :hostname
 
         # These will always have nil values
-        attr_reader :storage_path,
-                    :failure_wait_time,
-                    :failure_reset_time,
-                    :storage_timeout
+        attr_reader :storage_path
 
         def initialize(storage, hostname, error: nil)
           @storage = storage
@@ -26,8 +25,8 @@ module Gitlab
           !!@error
         end
 
-        def failure_count_threshold
-          1
+        def backing_off?
+          false
         end
 
         def last_failure
@@ -35,7 +34,7 @@ module Gitlab
         end
 
         def failure_count
-          circuit_broken? ? 1 : 0
+          circuit_broken? ? failure_count_threshold : 0
         end
 
         def failure_info

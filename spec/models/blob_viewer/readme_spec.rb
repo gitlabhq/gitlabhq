@@ -37,7 +37,7 @@ describe BlobViewer::Readme do
 
       context 'when the wiki is not empty' do
         before do
-          WikiPages::CreateService.new(project, project.owner, title: 'home', content: 'Home page').execute
+          create(:wiki_page, wiki: project.wiki, attrs: { title: 'home', content: 'Home page' })
         end
 
         it 'returns nil' do

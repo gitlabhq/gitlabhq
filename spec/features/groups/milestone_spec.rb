@@ -18,6 +18,27 @@ feature 'Group milestones', :js do
       visit new_group_milestone_path(group)
     end
 
+    it 'renders description preview' do
+      description = find('.note-textarea')
+
+      description.native.send_keys('')
+
+      click_link('Preview')
+
+      preview = find('.js-md-preview')
+
+      expect(preview).to have_content('Nothing to preview.')
+
+      click_link('Write')
+
+      description.native.send_keys(':+1: Nice')
+
+      click_link('Preview')
+
+      expect(preview).to have_css('gl-emoji')
+      expect(find('#milestone_description', visible: false)).not_to be_visible
+    end
+
     it 'creates milestone with start date' do
       fill_in 'Title', with: 'testing'
       find('#milestone_start_date').click
@@ -29,6 +50,13 @@ feature 'Group milestones', :js do
       click_button 'Create milestone'
 
       expect(find('.start_date')).to have_content(Date.today.at_beginning_of_month.strftime('%b %-d, %Y'))
+    end
+
+    it 'description input does not support autocomplete' do
+      description = find('.note-textarea')
+      description.native.send_keys('!')
+
+      expect(page).not_to have_selector('.atwho-view')
     end
   end
 

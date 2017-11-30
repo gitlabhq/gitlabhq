@@ -14,9 +14,10 @@ module Issues
     end
 
     def handle_changes(issue, options)
-      old_labels = options[:old_labels] || []
-      old_mentioned_users = options[:old_mentioned_users] || []
-      old_assignees = options[:old_assignees] || []
+      old_associations = options.fetch(:old_associations, {})
+      old_labels = old_associations.fetch(:labels, [])
+      old_mentioned_users = old_associations.fetch(:mentioned_users, [])
+      old_assignees = old_associations.fetch(:assignees, [])
 
       if has_changes?(issue, old_labels: old_labels, old_assignees: old_assignees)
         todo_service.mark_pending_todos_as_done(issue, current_user)
@@ -27,14 +28,10 @@ module Issues
         todo_service.update_issue(issue, current_user, old_mentioned_users)
       end
 
-      if issue.previous_changes.include?('milestone_id')
-        create_milestone_note(issue)
-      end
-
       if issue.assignees != old_assignees
         create_assignee_note(issue, old_assignees)
         notification_service.reassigned_issue(issue, current_user, old_assignees)
-        todo_service.reassigned_issue(issue, current_user)
+        todo_service.reassigned_issue(issue, current_user, old_assignees)
       end
 
       if issue.previous_changes.include?('confidential')

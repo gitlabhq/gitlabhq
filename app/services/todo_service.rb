@@ -31,20 +31,20 @@ class TodoService
     mark_pending_todos_as_done(issue, current_user)
   end
 
-  # When we destroy an issue we should:
+  # When we destroy an issuable we should:
   #
   #  * refresh the todos count cache for the current user
   #
-  def destroy_issue(issue, current_user)
-    destroy_issuable(issue, current_user)
+  def destroy_issuable(issuable, user)
+    user.update_todos_count_cache
   end
 
   # When we reassign an issue we should:
   #
   #  * create a pending todo for new assignee if issue is assigned
   #
-  def reassigned_issue(issue, current_user)
-    create_assignment_todo(issue, current_user)
+  def reassigned_issue(issue, current_user, old_assignees = [])
+    create_assignment_todo(issue, current_user, old_assignees)
   end
 
   # When create a merge request we should:
@@ -70,14 +70,6 @@ class TodoService
   #
   def close_merge_request(merge_request, current_user)
     mark_pending_todos_as_done(merge_request, current_user)
-  end
-
-  # When we destroy a merge request we should:
-  #
-  #  * refresh the todos count cache for the current user
-  #
-  def destroy_merge_request(merge_request, current_user)
-    destroy_issuable(merge_request, current_user)
   end
 
   # When we reassign a merge request we should:
@@ -216,6 +208,7 @@ class TodoService
   def create_todos(users, attributes)
     Array(users).map do |user|
       next if pending_todos(user, attributes).exists?
+
       todo = Todo.create(attributes.merge(user_id: user.id))
       user.update_todos_count_cache
       todo
@@ -234,10 +227,6 @@ class TodoService
     create_mention_todos(issuable.project, issuable, author, nil, skip_users)
   end
 
-  def destroy_issuable(issuable, user)
-    user.update_todos_count_cache
-  end
-
   def toggling_tasks?(issuable)
     issuable.previous_changes.include?('description') &&
       issuable.tasks? && issuable.updated_tasks.any?
@@ -254,10 +243,11 @@ class TodoService
     create_mention_todos(project, target, author, note, skip_users)
   end
 
-  def create_assignment_todo(issuable, author)
+  def create_assignment_todo(issuable, author, old_assignees = [])
     if issuable.assignees.any?
+      assignees = issuable.assignees - old_assignees
       attributes = attributes_for_todo(issuable.project, issuable, author, Todo::ASSIGNED)
-      create_todos(issuable.assignees, attributes)
+      create_todos(assignees, attributes)
     end
   end
 

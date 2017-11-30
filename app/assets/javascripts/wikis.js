@@ -1,4 +1,5 @@
 import bp from './breakpoints';
+import { slugify } from './lib/utils/text_utility';
 
 export default class Wikis {
   constructor() {
@@ -23,7 +24,7 @@ export default class Wikis {
     if (!this.newWikiForm) return;
 
     const slugInput = this.newWikiForm.querySelector('#new_wiki_path');
-    const slug = gl.text.slugify(slugInput.value);
+    const slug = slugify(slugInput.value);
 
     if (slug.length > 0) {
       const wikisPath = slugInput.getAttribute('data-wikis-path');

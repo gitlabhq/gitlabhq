@@ -57,7 +57,7 @@ GET /projects/:id/pipelines/:pipeline_id
 | `pipeline_id` | integer | yes      | The ID of a pipeline   |
 
 ```
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipeline/46"
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" "https://gitlab.example.com/api/v4/projects/1/pipelines/46"
 ```
 
 Example of response

@@ -1,5 +1,4 @@
 <script>
-  /* global Flash */
   import updateMixin from '../../mixins/update';
   import markdownField from '../../../vue_shared/components/markdown/field.vue';
 
@@ -17,6 +16,16 @@
       markdownDocsPath: {
         type: String,
         required: true,
+      },
+      canAttachFile: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
+      enableAutocomplete: {
+        type: Boolean,
+        required: false,
+        default: true,
       },
     },
     components: {
@@ -37,7 +46,10 @@
     </label>
     <markdown-field
       :markdown-preview-path="markdownPreviewPath"
-      :markdown-docs-path="markdownDocsPath">
+      :markdown-docs-path="markdownDocsPath"
+      :can-attach-file="canAttachFile"
+      :enable-autocomplete="enableAutocomplete"
+    >
       <textarea
         id="issue-description"
         class="note-textarea js-gfm-input js-autosize markdown-area"

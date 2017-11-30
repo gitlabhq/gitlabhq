@@ -1,5 +1,0 @@
----
-title: Clarify artifact download via the API only accepts branch or tag name for ref
-merge_request:
-author:
-type: other

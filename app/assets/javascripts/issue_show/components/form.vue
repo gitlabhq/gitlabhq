@@ -36,6 +36,21 @@
         type: String,
         required: true,
       },
+      showDeleteButton: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
+      canAttachFile: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
+      enableAutocomplete: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
     components: {
       lockedWarning,
@@ -78,9 +93,13 @@
     <description-field
       :form-state="formState"
       :markdown-preview-path="markdownPreviewPath"
-      :markdown-docs-path="markdownDocsPath" />
+      :markdown-docs-path="markdownDocsPath"
+      :can-attach-file="canAttachFile"
+      :enable-autocomplete="enableAutocomplete"
+    />
     <edit-actions
       :form-state="formState"
-      :can-destroy="canDestroy" />
+      :can-destroy="canDestroy"
+      :show-delete-button="showDeleteButton" />
   </form>
 </template>

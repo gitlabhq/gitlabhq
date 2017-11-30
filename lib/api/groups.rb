@@ -25,22 +25,7 @@ module API
         optional :statistics, type: Boolean, default: false, desc: 'Include project statistics'
       end
 
-      def present_groups(groups, options = {})
-        options = options.reverse_merge(
-          with: Entities::Group,
-          current_user: current_user
-        )
-
-        groups = groups.with_statistics if options[:statistics]
-        present paginate(groups), options
-      end
-    end
-
-    resource :groups do
-      desc 'Get a groups list' do
-        success Entities::Group
-      end
-      params do
+      params :group_list_params do
         use :statistics_params
         optional :skip_groups, type: Array[Integer], desc: 'Array of group ids to exclude from list'
         optional :all_available, type: Boolean, desc: 'Show all group that you have access to'
@@ -50,14 +35,47 @@ module API
         optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
         use :pagination
       end
-      get do
-        find_params = { all_available: params[:all_available], owned: params[:owned] }
+
+      def find_groups(params)
+        find_params = {
+          all_available: params[:all_available],
+          custom_attributes: params[:custom_attributes],
+          owned: params[:owned]
+        }
+        find_params[:parent] = find_group!(params[:id]) if params[:id]
+
         groups = GroupsFinder.new(current_user, find_params).execute
         groups = groups.search(params[:search]) if params[:search].present?
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
         groups = groups.reorder(params[:order_by] => params[:sort])
 
-        present_groups groups, statistics: params[:statistics] && current_user.admin?
+        groups
+      end
+
+      def present_groups(params, groups)
+        options = {
+          with: Entities::Group,
+          current_user: current_user,
+          statistics: params[:statistics] && current_user.admin?
+        }
+
+        groups = groups.with_statistics if options[:statistics]
+        present paginate(groups), options
+      end
+    end
+
+    resource :groups do
+      include CustomAttributesEndpoints
+
+      desc 'Get a groups list' do
+        success Entities::Group
+      end
+      params do
+        use :group_list_params
+      end
+      get do
+        groups = find_groups(params)
+        present_groups params, groups
       end
 
       desc 'Create a group. Available only for users who can create groups.' do
@@ -157,6 +175,17 @@ module API
         projects = reorder_projects(projects)
         entity = params[:simple] ? Entities::BasicProjectDetails : Entities::Project
         present paginate(projects), with: entity, current_user: current_user
+      end
+
+      desc 'Get a list of subgroups in this group.' do
+        success Entities::Group
+      end
+      params do
+        use :group_list_params
+      end
+      get ":id/subgroups" do
+        groups = find_groups(params)
+        present_groups params, groups
       end
 
       desc 'Transfer a project to the group namespace. Available only for admin.' do

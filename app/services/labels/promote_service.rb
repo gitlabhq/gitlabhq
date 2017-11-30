@@ -19,6 +19,7 @@ module Labels
 
         # We skipped validations during creation. Let's run them now, after deleting conflicting labels
         raise ActiveRecord::RecordInvalid.new(new_label) unless new_label.valid?
+
         new_label
       end
     end

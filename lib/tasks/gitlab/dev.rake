@@ -5,8 +5,9 @@ namespace :gitlab do
       opts =
         if ENV['CI']
           {
-            ce_repo: ENV['CI_REPOSITORY_URL'],
-            branch: ENV['CI_COMMIT_REF_NAME']
+            ce_project_url: ENV['CI_PROJECT_URL'],
+            branch: ENV['CI_COMMIT_REF_NAME'],
+            job_id: ENV['CI_JOB_ID']
           }
         else
           unless args[:branch]

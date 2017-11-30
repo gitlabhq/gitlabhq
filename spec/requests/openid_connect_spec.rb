@@ -37,7 +37,7 @@ describe 'OpenID Connect requests' do
     it 'userinfo response is unauthorized' do
       request_user_info
 
-      expect(response).to have_http_status 403
+      expect(response).to have_gitlab_http_status 403
       expect(response.body).to be_blank
     end
   end
@@ -107,6 +107,15 @@ describe 'OpenID Connect requests' do
       end
     end
 
+    # These 2 calls shouldn't actually throw, they should be handled as an
+    # unauthorized request, so we should be able to check the response.
+    #
+    # This was not possible due to an issue with Warden:
+    # https://github.com/hassox/warden/pull/162
+    #
+    # When the patch gets merged and we update Warden, these specs will need to
+    # updated to check the response instead of a raised exception.
+    # https://gitlab.com/gitlab-org/gitlab-ce/issues/40218
     context 'when user is blocked' do
       it 'returns authentication error' do
         access_grant
@@ -114,7 +123,7 @@ describe 'OpenID Connect requests' do
 
         expect do
           request_access_token
-        end.to throw_symbol :warden
+        end.to raise_error UncaughtThrowError
       end
     end
 
@@ -125,7 +134,7 @@ describe 'OpenID Connect requests' do
 
         expect do
           request_access_token
-        end.to throw_symbol :warden
+        end.to raise_error UncaughtThrowError
       end
     end
   end

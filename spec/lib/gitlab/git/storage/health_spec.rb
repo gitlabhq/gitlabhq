@@ -20,36 +20,6 @@ describe Gitlab::Git::Storage::Health, clean_gitlab_redis_shared_state: true, br
     end
   end
 
-  describe '.load_for_keys' do
-    let(:subject) do
-      results = Gitlab::Git::Storage.redis.with do |redis|
-        fake_future = double
-        allow(fake_future).to receive(:value).and_return([host1_key])
-        described_class.load_for_keys({ 'broken' => fake_future }, redis)
-      end
-
-      # Make sure the `Redis#future is loaded
-      results.inject({}) do |result, (name, info)|
-        info.each { |i| i[:failure_count] = i[:failure_count].value.to_i }
-
-        result[name] = info
-
-        result
-      end
-    end
-
-    it 'loads when there is no info in redis' do
-      expect(subject).to eq('broken' => [{ name: host1_key, failure_count: 0 }])
-    end
-
-    it 'reads the correct values for a storage from redis' do
-      set_in_redis(host1_key, 5)
-      set_in_redis(host2_key, 7)
-
-      expect(subject).to eq('broken' => [{ name: host1_key, failure_count: 5 }])
-    end
-  end
-
   describe '.for_all_storages' do
     it 'loads health status for all configured storages' do
       healths = described_class.for_all_storages

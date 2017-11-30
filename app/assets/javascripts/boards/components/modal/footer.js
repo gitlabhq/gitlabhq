@@ -1,8 +1,9 @@
 /* eslint-disable no-new */
-/* global Flash */
 
 import Vue from 'vue';
+import Flash from '../../../flash';
 import './lists_dropdown';
+import { pluralize } from '../../../lib/utils/text_utility';
 
 const ModalStore = gl.issueBoards.ModalStore;
 
@@ -21,7 +22,7 @@ gl.issueBoards.ModalFooter = Vue.extend({
     submitText() {
       const count = ModalStore.selectedCount();
 
-      return `Add ${count > 0 ? count : ''} ${gl.text.pluralize('issue', count)}`;
+      return `Add ${count > 0 ? count : ''} ${pluralize('issue', count)}`;
     },
   },
   methods: {

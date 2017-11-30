@@ -30,6 +30,7 @@ module DeclarativePolicy
 
       policy_class = class_for_class(subject.class)
       raise "no policy for #{subject.class.name}" if policy_class.nil?
+
       policy_class
     end
 
@@ -84,6 +85,7 @@ module DeclarativePolicy
 
       while subject.respond_to?(:declarative_policy_delegate)
         raise ArgumentError, "circular delegations" if seen.include?(subject.object_id)
+
         seen << subject.object_id
         subject = subject.declarative_policy_delegate
       end

@@ -1,5 +1,3 @@
-/* global Flash */
-
 import Vue from 'vue';
 import JobMediator from './job_details_mediator';
 import jobHeader from './components/header.vue';

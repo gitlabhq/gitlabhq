@@ -1,5 +1,5 @@
 module QA
-  feature 'clone code from the repository' do
+  feature 'clone code from the repository', :core do
     context 'with regular account over http' do
       given(:location) do
         Page::Project::Show.act do
@@ -9,7 +9,8 @@ module QA
       end
 
       before do
-        Page::Main::Entry.act { sign_in_using_credentials }
+        Page::Main::Entry.act { visit_login_page }
+        Page::Main::Login.act { sign_in_using_credentials }
 
         Scenario::Gitlab::Project::Create.perform do |scenario|
           scenario.name = 'project-with-code'

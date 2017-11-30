@@ -1,5 +1,9 @@
+---
+comments: false
+---
 
-## Support Boot Camp
+
+# Support Boot Camp
 
 **Goal:** Prepare new Service Engineers at GitLab
 

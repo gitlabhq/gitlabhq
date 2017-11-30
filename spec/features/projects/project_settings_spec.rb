@@ -10,7 +10,7 @@ describe 'Edit Project Settings' do
     sign_in(user)
   end
 
-  describe 'Project settings section', js: true do
+  describe 'Project settings section', :js do
     it 'shows errors for invalid project name' do
       visit edit_project_path(project)
       fill_in 'project_name_edit', with: 'foo&bar'
@@ -125,7 +125,7 @@ describe 'Edit Project Settings' do
     end
   end
 
-  describe 'Transfer project section', js: true do
+  describe 'Transfer project section', :js do
     let!(:project) { create(:project, :repository, namespace: user.namespace, name: 'gitlabhq') }
     let!(:group) { create(:group) }
 
@@ -144,7 +144,10 @@ describe 'Edit Project Settings' do
     specify 'the project is accessible via the new path' do
       transfer_project(project, group)
       new_path = namespace_project_path(group, project)
+
       visit new_path
+      wait_for_requests
+
       expect(current_path).to eq(new_path)
       expect(find('.breadcrumbs')).to have_content(project.name)
     end
@@ -153,7 +156,10 @@ describe 'Edit Project Settings' do
       old_path = project_path(project)
       transfer_project(project, group)
       new_path = namespace_project_path(group, project)
+
       visit old_path
+      wait_for_requests
+
       expect(current_path).to eq(new_path)
       expect(find('.breadcrumbs')).to have_content(project.name)
     end

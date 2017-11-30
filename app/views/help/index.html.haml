@@ -11,6 +11,7 @@
       %span= Gitlab::VERSION
       %small= link_to Gitlab::REVISION, Gitlab::COM_URL + namespace_project_commits_path('gitlab-org', 'gitlab-ce', Gitlab::REVISION)
       = version_status_badge
+
   %p.slead
     GitLab is open source software to collaborate on code.
     %br
@@ -23,11 +24,12 @@
     Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.
     %br
     Read more about GitLab at #{link_to promo_host, promo_url, target: '_blank', rel: 'noopener noreferrer'}.
+    %p= link_to 'Check the current instance configuration ', help_instance_configuration_url
   %hr
 
 .row.prepend-top-default
   .col-md-8
-    .documentation-index
+    .documentation-index.wiki
       = markdown(@help_index)
   .col-md-4
     .panel.panel-default

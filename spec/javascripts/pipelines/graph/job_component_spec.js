@@ -14,7 +14,7 @@ describe('pipeline graph job component', () => {
       group: 'success',
       details_path: '/root/ci-mock/builds/4256',
       action: {
-        icon: 'icon_action_retry',
+        icon: 'retry',
         title: 'Retry',
         path: '/root/ci-mock/builds/4256/retry',
         method: 'post',

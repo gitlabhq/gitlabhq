@@ -1,0 +1,27 @@
+- ssh_info = @instance_configuration.settings[:ssh_algorithms_hashes]
+- if ssh_info.any?
+  - content_for :table_content do
+    %li= link_to 'SSH host keys fingerprints', '#ssh-host-keys-fingerprints'
+
+  - content_for :settings_content do
+    %h2#ssh-host-keys-fingerprints
+      SSH host keys fingerprints
+
+    %p
+      Below are the fingerprints for the current instance SSH host keys.
+
+    .table-responsive
+      %table
+        %thead
+          %tr
+            %th Algorithm
+            %th MD5
+            %th SHA256
+        %tbody
+          - ssh_info.each do |algorithm|
+            %tr
+              %td= algorithm[:name]
+              %td
+                %code= instance_configuration_cell_html(algorithm[:md5])
+              %td
+                %code= instance_configuration_cell_html(algorithm[:sha256])

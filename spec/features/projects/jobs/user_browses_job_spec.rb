@@ -21,12 +21,12 @@ describe 'User browses a job', :js do
     expect(page).to have_content("Job ##{build.id}")
     expect(page).to have_css('#build-trace')
 
-    click_link('Erase')
+    accept_confirm { click_link('Erase') }
 
+    expect(page).to have_no_css('.artifacts')
     expect(build).not_to have_trace
     expect(build.artifacts_file.exists?).to be_falsy
     expect(build.artifacts_metadata.exists?).to be_falsy
-    expect(page).to have_no_css('.artifacts')
 
     page.within('.erased') do
       expect(page).to have_content('Job has been erased')

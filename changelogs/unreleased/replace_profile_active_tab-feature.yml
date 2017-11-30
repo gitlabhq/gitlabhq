@@ -1,5 +1,0 @@
----
-title: Replace the 'profile/active_tab.feature' spinach test with an rspec analog
-merge_request: 14239
-author: Vitaliy @blackst0ne Klachkov
-type: other

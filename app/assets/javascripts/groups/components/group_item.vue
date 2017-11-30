@@ -2,49 +2,28 @@
 import identicon from '../../vue_shared/components/identicon.vue';
 import eventHub from '../event_hub';
 
+import itemCaret from './item_caret.vue';
+import itemTypeIcon from './item_type_icon.vue';
+import itemStats from './item_stats.vue';
+import itemActions from './item_actions.vue';
+
 export default {
   components: {
     identicon,
+    itemCaret,
+    itemTypeIcon,
+    itemStats,
+    itemActions,
   },
   props: {
+    parentGroup: {
+      type: Object,
+      required: false,
+      default: () => ({}),
+    },
     group: {
       type: Object,
       required: true,
-    },
-    baseGroup: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
-    collection: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
-  },
-  methods: {
-    onClickRowGroup(e) {
-      e.stopPropagation();
-
-      // Skip for buttons
-      if (!(e.target.tagName === 'A') && !(e.target.tagName === 'I' && e.target.parentElement.tagName === 'A')) {
-        if (this.group.hasSubgroups) {
-          eventHub.$emit('toggleSubGroups', this.group);
-        } else {
-          window.location.href = this.group.groupPath;
-        }
-      }
-    },
-    onLeaveGroup(e) {
-      e.preventDefault();
-
-      // eslint-disable-next-line no-alert
-      if (confirm(`Are you sure you want to leave the "${this.group.fullName}" group?`)) {
-        this.leaveGroup();
-      }
-    },
-    leaveGroup() {
-      eventHub.$emit('leaveGroup', this.group, this.collection);
     },
   },
   computed: {
@@ -53,51 +32,33 @@ export default {
     },
     rowClass() {
       return {
-        'group-row': true,
         'is-open': this.group.isOpen,
-        'has-subgroups': this.group.hasSubgroups,
-        'no-description': !this.group.description,
+        'has-children': this.hasChildren,
+        'has-description': this.group.description,
+        'being-removed': this.group.isBeingRemoved,
       };
     },
-    visibilityIcon() {
-      return {
-        fa: true,
-        'fa-globe': this.group.visibility === 'public',
-        'fa-shield': this.group.visibility === 'internal',
-        'fa-lock': this.group.visibility === 'private',
-      };
-    },
-    fullPath() {
-      let fullPath = '';
-
-      if (this.group.isOrphan) {
-        // check if current group is baseGroup
-        if (Object.keys(this.baseGroup).length > 0 && this.baseGroup !== this.group) {
-          // Remove baseGroup prefix from our current group.fullName. e.g:
-          // baseGroup.fullName: `level1`
-          // group.fullName: `level1 / level2 / level3`
-          // Result: `level2 / level3`
-          const gfn = this.group.fullName;
-          const bfn = this.baseGroup.fullName;
-          const length = bfn.length;
-          const start = gfn.indexOf(bfn);
-          const extraPrefixChars = 3;
-
-          fullPath = gfn.substr(start + length + extraPrefixChars);
-        } else {
-          fullPath = this.group.fullName;
-        }
-      } else {
-        fullPath = this.group.name;
-      }
-
-      return fullPath;
-    },
-    hasGroups() {
-      return Object.keys(this.group.subGroups).length > 0;
+    hasChildren() {
+      return this.group.childrenCount > 0;
     },
     hasAvatar() {
-      return this.group.avatarUrl && this.group.avatarUrl.indexOf('/assets/no_group_avatar') === -1;
+      return this.group.avatarUrl !== null;
+    },
+    isGroup() {
+      return this.group.type === 'group';
+    },
+  },
+  methods: {
+    onClickRowGroup(e) {
+      const NO_EXPAND_CLS = 'no-expand';
+      if (!(e.target.classList.contains(NO_EXPAND_CLS) ||
+            e.target.parentElement.classList.contains(NO_EXPAND_CLS))) {
+        if (this.hasChildren) {
+          eventHub.$emit('toggleChildren', this.group);
+        } else {
+          gl.utils.visitUrl(this.group.relativePath);
+        }
+      }
     },
   },
 };
@@ -108,98 +69,36 @@ export default {
     @click.stop="onClickRowGroup"
     :id="groupDomId"
     :class="rowClass"
+    class="group-row"
     >
     <div
       class="group-row-contents">
-      <div
-        class="controls">
-        <a
-          v-if="group.canEdit"
-          class="edit-group btn"
-          :href="group.editPath">
-          <i
-            class="fa fa-cogs"
-            aria-hidden="true"
-          >
-          </i>
-        </a>
-        <a
-          @click="onLeaveGroup"
-          :href="group.leavePath"
-          class="leave-group btn"
-          title="Leave this group">
-          <i
-            class="fa fa-sign-out"
-            aria-hidden="true"
-          >
-          </i>
-        </a>
-      </div>
-      <div
-        class="stats">
-        <span
-          class="number-projects">
-          <i
-            class="fa fa-bookmark"
-            aria-hidden="true"
-          >
-          </i>
-          {{group.numberProjects}}
-        </span>
-        <span
-          class="number-users">
-          <i
-            class="fa fa-users"
-            aria-hidden="true"
-          >
-          </i>
-          {{group.numberUsers}}
-        </span>
-        <span
-          class="group-visibility">
-          <i
-            :class="visibilityIcon"
-            aria-hidden="true"
-          >
-          </i>
-        </span>
-      </div>
+      <item-actions
+        v-if="isGroup"
+        :group="group"
+        :parent-group="parentGroup"
+      />
+      <item-stats
+        :item="group"
+      />
       <div
         class="folder-toggle-wrap">
-        <span
-          class="folder-caret"
-          v-if="group.hasSubgroups">
-          <i
-            v-if="group.isOpen"
-            class="fa fa-caret-down"
-            aria-hidden="true"
-          >
-          </i>
-          <i
-            v-if="!group.isOpen"
-            class="fa fa-caret-right"
-            aria-hidden="true"
-          >
-          </i>
-        </span>
-        <span class="folder-icon">
-          <i
-            v-if="group.isOpen"
-            class="fa fa-folder-open"
-            aria-hidden="true"
-          >
-          </i>
-          <i
-            v-if="!group.isOpen"
-            class="fa fa-folder"
-            aria-hidden="true">
-          </i>
-        </span>
+        <item-caret
+          :is-group-open="group.isOpen"
+        />
+        <item-type-icon
+          :item-type="group.type"
+          :is-group-open="group.isOpen"
+        />
       </div>
       <div
-        class="avatar-container s40 hidden-xs">
+        class="avatar-container s40 hidden-xs"
+        :class="{ 'content-loading': group.isChildrenLoading }"
+      >
         <a
-          :href="group.groupPath">
+          :href="group.relativePath"
+          class="no-expand"
+        >
           <img
             v-if="hasAvatar"
             class="avatar s40"
@@ -215,19 +114,22 @@ export default {
       <div
         class="title">
         <a
-          :href="group.groupPath">{{fullPath}}</a>
-        <template v-if="group.permissions.humanGroupAccess">
-        as
-        <span class="access-type">{{group.permissions.humanGroupAccess}}</span>
-        </template>
+          :href="group.relativePath"
+          class="no-expand">{{group.fullName}}</a>
+        <span
+          v-if="group.permission"
+          class="access-type"
+        >
+          {{s__('GroupsTreeRole|as')}} {{group.permission}}
+        </span>
       </div>
       <div
         class="description">{{group.description}}</div>
     </div>
     <group-folder
-      v-if="group.isOpen && hasGroups"
-      :groups="group.subGroups"
-      :baseGroup="group"
+      v-if="group.isOpen && hasChildren"
+      :parent-group="group"
+      :groups="group.children"
     />
   </li>
 </template>

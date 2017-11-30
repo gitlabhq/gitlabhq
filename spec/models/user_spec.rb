@@ -346,7 +346,6 @@ describe User do
   describe "Respond to" do
     it { is_expected.to respond_to(:admin?) }
     it { is_expected.to respond_to(:name) }
-    it { is_expected.to respond_to(:private_token) }
     it { is_expected.to respond_to(:external?) }
   end
 
@@ -526,14 +525,6 @@ describe User do
     end
   end
 
-  describe 'authentication token' do
-    it "has authentication token" do
-      user = create(:user)
-
-      expect(user.authentication_token).not_to be_blank
-    end
-  end
-
   describe 'ensure incoming email token' do
     it 'has incoming email token' do
       user = create(:user)
@@ -651,16 +642,40 @@ describe User do
   end
 
   describe 'groups' do
+    let(:user) { create(:user) }
+    let(:group) { create(:group) }
+
     before do
-      @user = create :user
-      @group = create :group
-      @group.add_owner(@user)
+      group.add_owner(user)
     end
 
-    it { expect(@user.several_namespaces?).to be_truthy }
-    it { expect(@user.authorized_groups).to eq([@group]) }
-    it { expect(@user.owned_groups).to eq([@group]) }
-    it { expect(@user.namespaces).to match_array([@user.namespace, @group]) }
+    it { expect(user.several_namespaces?).to be_truthy }
+    it { expect(user.authorized_groups).to eq([group]) }
+    it { expect(user.owned_groups).to eq([group]) }
+    it { expect(user.namespaces).to contain_exactly(user.namespace, group) }
+    it { expect(user.manageable_namespaces).to contain_exactly(user.namespace, group) }
+
+    context 'with child groups', :nested_groups do
+      let!(:subgroup) { create(:group, parent: group) }
+
+      describe '#manageable_namespaces' do
+        it 'includes all the namespaces the user can manage' do
+          expect(user.manageable_namespaces).to contain_exactly(user.namespace, group, subgroup)
+        end
+      end
+
+      describe '#manageable_groups' do
+        it 'includes all the namespaces the user can manage' do
+          expect(user.manageable_groups).to contain_exactly(group, subgroup)
+        end
+
+        it 'does not include duplicates if a membership was added for the subgroup' do
+          subgroup.add_owner(user)
+
+          expect(user.manageable_groups).to contain_exactly(group, subgroup)
+        end
+      end
+    end
   end
 
   describe 'group multiple owners' do
@@ -797,21 +812,23 @@ describe User do
       end
 
       it "creates external user by default" do
-        user = build(:user)
+        user = create(:user)
 
         expect(user.external).to be_truthy
+        expect(user.can_create_group).to be_falsey
+        expect(user.projects_limit).to be 0
       end
 
       describe 'with default overrides' do
         it "creates a non-external user" do
-          user = build(:user, external: false)
+          user = create(:user, external: false)
 
           expect(user.external).to be_falsey
         end
       end
     end
 
-    describe '#require_ssh_key?' do
+    describe '#require_ssh_key?', :use_clean_rails_memory_store_caching do
       protocol_and_expectation = {
         'http' => false,
         'ssh' => true,
@@ -825,6 +842,12 @@ describe User do
 
           expect(user.require_ssh_key?).to eq(expected)
         end
+      end
+
+      it 'returns false when the user has 1 or more SSH keys' do
+        key = create(:personal_key)
+
+        expect(key.user.require_ssh_key?).to eq(false)
       end
     end
   end
@@ -845,6 +868,19 @@ describe User do
 
     it 'returns nil when nothing found' do
       expect(described_class.find_by_any_email('')).to be_nil
+    end
+  end
+
+  describe '.by_any_email' do
+    it 'returns an ActiveRecord::Relation' do
+      expect(described_class.by_any_email('foo@example.com'))
+        .to be_a_kind_of(ActiveRecord::Relation)
+    end
+
+    it 'returns a relation of users' do
+      user = create(:user)
+
+      expect(described_class.by_any_email(user.email)).to eq([user])
     end
   end
 
@@ -1143,16 +1179,9 @@ describe User do
     let(:user) { create(:user, :with_avatar) }
 
     context 'when avatar file is uploaded' do
-      let(:gitlab_host) { "http://#{Gitlab.config.gitlab.host}" }
-      let(:avatar_path) { "/uploads/-/system/user/avatar/#{user.id}/dk.png" }
-
       it 'shows correct avatar url' do
-        expect(user.avatar_url).to eq(avatar_path)
-        expect(user.avatar_url(only_path: false)).to eq([gitlab_host, avatar_path].join)
-
-        allow(ActionController::Base).to receive(:asset_host).and_return(gitlab_host)
-
-        expect(user.avatar_url).to eq([gitlab_host, avatar_path].join)
+        expect(user.avatar_url).to eq(user.avatar.url)
+        expect(user.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, user.avatar.url].join)
       end
     end
   end
@@ -1525,7 +1554,7 @@ describe User do
     it { is_expected.to eq([private_group]) }
   end
 
-  describe '#authorized_projects', truncate: true do
+  describe '#authorized_projects', :truncate do
     context 'with a minimum access level' do
       it 'includes projects for which the user is an owner' do
         user = create(:user)
@@ -1877,7 +1906,7 @@ describe User do
     end
   end
 
-  describe '#refresh_authorized_projects', clean_gitlab_redis_shared_state: true do
+  describe '#refresh_authorized_projects', :clean_gitlab_redis_shared_state do
     let(:project1) { create(:project) }
     let(:project2) { create(:project) }
     let(:user) { create(:user) }
@@ -2114,25 +2143,47 @@ describe User do
     end
   end
 
-  describe '#allow_password_authentication?' do
+  describe '#allow_password_authentication_for_web?' do
     context 'regular user' do
       let(:user) { build(:user) }
 
-      it 'returns true when sign-in is enabled' do
-        expect(user.allow_password_authentication?).to be_truthy
+      it 'returns true when password authentication is enabled for the web interface' do
+        expect(user.allow_password_authentication_for_web?).to be_truthy
       end
 
-      it 'returns false when sign-in is disabled' do
-        stub_application_setting(password_authentication_enabled: false)
+      it 'returns false when password authentication is disabled for the web interface' do
+        stub_application_setting(password_authentication_enabled_for_web: false)
 
-        expect(user.allow_password_authentication?).to be_falsey
+        expect(user.allow_password_authentication_for_web?).to be_falsey
       end
     end
 
     it 'returns false for ldap user' do
       user = create(:omniauth_user, provider: 'ldapmain')
 
-      expect(user.allow_password_authentication?).to be_falsey
+      expect(user.allow_password_authentication_for_web?).to be_falsey
+    end
+  end
+
+  describe '#allow_password_authentication_for_git?' do
+    context 'regular user' do
+      let(:user) { build(:user) }
+
+      it 'returns true when password authentication is enabled for Git' do
+        expect(user.allow_password_authentication_for_git?).to be_truthy
+      end
+
+      it 'returns false when password authentication is disabled Git' do
+        stub_application_setting(password_authentication_enabled_for_git: false)
+
+        expect(user.allow_password_authentication_for_git?).to be_falsey
+      end
+    end
+
+    it 'returns false for ldap user' do
+      user = create(:omniauth_user, provider: 'ldapmain')
+
+      expect(user.allow_password_authentication_for_git?).to be_falsey
     end
   end
 
@@ -2221,6 +2272,42 @@ describe User do
               user.update_attributes!(email: 'asdf@asdf.com')
             end.not_to change { user.namespace.updated_at }
           end
+        end
+      end
+    end
+  end
+
+  describe '#username_changed_hook' do
+    context 'for a new user' do
+      let(:user) { build(:user) }
+
+      it 'does not trigger system hook' do
+        expect(user).not_to receive(:system_hook_service)
+
+        user.save!
+      end
+    end
+
+    context 'for an existing user' do
+      let(:user) { create(:user, username: 'old-username') }
+
+      context 'when the username is changed' do
+        let(:new_username) { 'very-new-name' }
+
+        it 'triggers the rename system hook' do
+          system_hook_service = SystemHooksService.new
+          expect(system_hook_service).to receive(:execute_hooks_for).with(user, :rename)
+          expect(user).to receive(:system_hook_service).and_return(system_hook_service)
+
+          user.update_attributes!(username: new_username)
+        end
+      end
+
+      context 'when the username is not changed' do
+        it 'does not trigger system hook' do
+          expect(user).not_to receive(:system_hook_service)
+
+          user.update_attributes!(email: 'asdf@asdf.com')
         end
       end
     end
@@ -2316,7 +2403,8 @@ describe User do
       let(:expected) { !(password_automatically_set || ldap_user || password_authentication_disabled) }
 
       before do
-        stub_application_setting(password_authentication_enabled: !password_authentication_disabled)
+        stub_application_setting(password_authentication_enabled_for_web: !password_authentication_disabled)
+        stub_application_setting(password_authentication_enabled_for_git: !password_authentication_disabled)
       end
 
       it 'returns false unless all inputs are true' do

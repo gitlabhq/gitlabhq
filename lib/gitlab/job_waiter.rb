@@ -19,11 +19,13 @@ module Gitlab
       Gitlab::Redis::SharedState.with { |redis| redis.lpush(key, jid) }
     end
 
-    attr_reader :key, :jobs_remaining, :finished
+    attr_reader :key, :finished
+    attr_accessor :jobs_remaining
 
     # jobs_remaining - the number of jobs left to wait for
-    def initialize(jobs_remaining)
-      @key = "gitlab:job_waiter:#{SecureRandom.uuid}"
+    # key - The key of this waiter.
+    def initialize(jobs_remaining = 0, key = "gitlab:job_waiter:#{SecureRandom.uuid}")
+      @key = key
       @jobs_remaining = jobs_remaining
       @finished = []
     end

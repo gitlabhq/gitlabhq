@@ -1,3 +1,9 @@
+# frozen_string_literal: true
+# rubocop:disable Metrics/MethodLength
+# rubocop:disable Metrics/LineLength
+# rubocop:disable Metrics/AbcSize
+# rubocop:disable Style/Documentation
+
 module Gitlab
   module BackgroundMigration
     class DeserializeMergeRequestDiffsAndCommits
@@ -81,6 +87,7 @@ module Gitlab
       def single_diff_rows(merge_request_diff)
         sha_attribute = Gitlab::Database::ShaAttribute.new
         commits = YAML.load(merge_request_diff.st_commits) rescue []
+        commits ||= []
 
         commit_rows = commits.map.with_index do |commit, index|
           commit_hash = commit.to_hash.with_indifferent_access.except(:parent_ids)

@@ -2,12 +2,12 @@
 /**
  * Render environments table.
  */
-import EnvironmentTableRowComponent from './environment_item.vue';
+import environmentItem from './environment_item.vue';
 import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 
 export default {
   components: {
-    'environment-item': EnvironmentTableRowComponent,
+    environmentItem,
     loadingIcon,
   },
 
@@ -42,19 +42,19 @@ export default {
   <div class="ci-table" role="grid">
     <div class="gl-responsive-table-row table-row-header" role="row">
       <div class="table-section section-10 environments-name" role="columnheader">
-        Environment
+        {{s__("Environments|Environment")}}
       </div>
       <div class="table-section section-10 environments-deploy" role="columnheader">
-        Deployment
+        {{s__("Environments|Deployment")}}
       </div>
       <div class="table-section section-15 environments-build" role="columnheader">
-        Job
+        {{s__("Environments|Job")}}
       </div>
       <div class="table-section section-25 environments-commit" role="columnheader">
-        Commit
+        {{s__("Environments|Commit")}}
       </div>
       <div class="table-section section-10 environments-date" role="columnheader">
-        Updated
+        {{s__("Environments|Updated")}}
       </div>
     </div>
     <template
@@ -86,7 +86,7 @@ export default {
               <a
                 :href="folderUrl(model)"
                 class="btn btn-default">
-                Show all
+                {{s__("Environments|Show all")}}
               </a>
             </div>
           </div>

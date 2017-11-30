@@ -1,4 +1,8 @@
-## Additional Resources
+---
+comments: false
+---
+
+# Additional Resources
 
 1. GitLab Documentation [http://docs.gitlab.com](http://docs.gitlab.com/)
 2. GUI Clients [http://git-scm.com/downloads/guis](http://git-scm.com/downloads/guis)

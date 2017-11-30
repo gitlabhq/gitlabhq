@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Search bar', js: true do
+describe 'Search bar', :js do
   include FilteredSearchHelpers
 
   let!(:project) { create(:project) }

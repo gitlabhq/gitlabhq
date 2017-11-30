@@ -1,5 +1,0 @@
----
-title: Expose last pipeline details in API response when getting a single commit
-merge_request: 13521
-author: Mehdi Lahmam (@mehlah)
-type: added

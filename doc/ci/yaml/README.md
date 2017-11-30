@@ -95,6 +95,12 @@ be an array or a multi-line string.
 `after_script` is used to define the command that will be run after for all
 jobs. This has to be an array or a multi-line string.
 
+> **Note:**
+The `before_script` and the main `script` are concatenated and run in a single context/container.
+The `after_script` is run separately, so depending on the executor, changes done
+outside of the working tree might not be visible, e.g. software installed in the
+`before_script`.
+
 ### stages
 
 `stages` is used to define stages that can be used by jobs.
@@ -118,7 +124,7 @@ stages:
 1. First, all jobs of `build` are executed in parallel.
 1. If all jobs of `build` succeed, the `test` jobs are executed in parallel.
 1. If all jobs of `test` succeed, the `deploy` jobs are executed in parallel.
-1. If all jobs of `deploy` succeed, the commit is marked as `success`.
+1. If all jobs of `deploy` succeed, the commit is marked as `passed`.
 1. If any of the previous jobs fails, the commit is marked as `failed` and no
    jobs of further stage are executed.
 

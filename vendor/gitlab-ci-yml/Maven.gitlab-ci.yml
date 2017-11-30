@@ -7,8 +7,8 @@
 # This template will build and test your projects as well as create the documentation.
 #
 # * Caches downloaded dependencies and plugins between invocation.
-# * Does only verify merge requests but deploy built artifacts of the
-#   master branch.
+# * Verify but don't deploy merge requests.
+# * Deploy built artifacts from master branch only.
 # * Shows how to use multiple jobs in test stage for verifying functionality
 #   with multiple JDKs.
 # * Uses site:stage to collect the documentation for multi-module projects.
@@ -20,7 +20,7 @@ variables:
   MAVEN_OPTS: "-Dmaven.repo.local=.m2/repository -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=WARN -Dorg.slf4j.simpleLogger.showDateTime=true -Djava.awt.headless=true"
   # As of Maven 3.3.0 instead of this you may define these options in `.mvn/maven.config` so the same config is used
   # when running from the command line.
-  # `installAtEnd` and `deployAtEnd`are only effective with recent version of the corresponding plugins.
+  # `installAtEnd` and `deployAtEnd` are only effective with recent version of the corresponding plugins.
   MAVEN_CLI_OPTS: "--batch-mode --errors --fail-at-end --show-version -DinstallAtEnd=true -DdeployAtEnd=true"
 
 # Cache downloaded dependencies and plugins between builds.
@@ -100,4 +100,3 @@ pages:
     - public
   only:
     - master
-

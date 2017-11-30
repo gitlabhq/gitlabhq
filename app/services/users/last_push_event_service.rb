@@ -16,8 +16,8 @@ module Users
         user_cache_key
       ]
 
-      if event.project.forked?
-        keys << project_cache_key(event.project.forked_from_project)
+      if forked_from = event.project.forked_from_project
+        keys << project_cache_key(forked_from)
       end
 
       keys.each { |key| set_key(key, event.id) }

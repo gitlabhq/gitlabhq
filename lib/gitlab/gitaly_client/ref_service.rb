@@ -46,7 +46,8 @@ module Gitlab
           commit_id: commit_id,
           prefix: ref_prefix
         )
-        encode!(GitalyClient.call(@storage, :ref_service, :find_ref_name, request).name.dup)
+        response = GitalyClient.call(@storage, :ref_service, :find_ref_name, request, timeout: GitalyClient.medium_timeout)
+        encode!(response.name.dup)
       end
 
       def count_tag_names
@@ -55,14 +56,6 @@ module Gitlab
 
       def count_branch_names
         branch_names.count
-      end
-
-      # TODO implement a more efficient RPC for this https://gitlab.com/gitlab-org/gitaly/issues/616
-      def has_local_branches?
-        request = Gitaly::FindAllBranchNamesRequest.new(repository: @gitaly_repo)
-        response = GitalyClient.call(@storage, :ref_service, :find_all_branch_names, request).first
-
-        response&.names.present?
       end
 
       def local_branches(sort_by: nil)
@@ -134,6 +127,15 @@ module Gitlab
         GitalyClient.call(@repository.storage, :ref_service, :delete_branch, request)
       end
 
+      def delete_refs(except_with_prefixes:)
+        request = Gitaly::DeleteRefsRequest.new(
+          repository: @gitaly_repo,
+          except_with_prefix: except_with_prefixes
+        )
+
+        GitalyClient.call(@repository.storage, :ref_service, :delete_refs, request)
+      end
+
       private
 
       def consume_refs_response(response)
@@ -145,6 +147,7 @@ module Gitlab
 
         enum_value = Gitaly::FindLocalBranchesRequest::SortBy.resolve(sort_by.upcase.to_sym)
         raise ArgumentError, "Invalid sort_by key `#{sort_by}`" unless enum_value
+
         enum_value
       end
 

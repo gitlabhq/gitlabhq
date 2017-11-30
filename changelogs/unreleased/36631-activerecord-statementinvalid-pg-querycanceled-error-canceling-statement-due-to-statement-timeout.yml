@@ -1,6 +1,0 @@
----
-title: Reschedule merge request diff background migrations to catch failures from
-  9.5 run
-merge_request:
-author:
-type: fixed

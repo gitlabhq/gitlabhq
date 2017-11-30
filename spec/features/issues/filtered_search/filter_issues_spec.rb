@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Filter issues', js: true do
+describe 'Filter issues', :js do
   include FilteredSearchHelpers
 
   let(:project) { create(:project) }
@@ -139,7 +139,7 @@ describe 'Filter issues', js: true do
         input_filtered_search('label:none')
 
         expect_tokens([label_token('none', false)])
-        expect_issues_list_count(8)
+        expect_issues_list_count(4)
         expect_filtered_search_input_empty
       end
 

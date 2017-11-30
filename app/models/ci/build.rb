@@ -104,6 +104,7 @@ module Ci
       end
 
       before_transition any => [:failed] do |build|
+        next unless build.project
         next if build.retries_max.zero?
 
         if build.retries_count < build.retries_max
@@ -192,6 +193,10 @@ module Ci
       project.build_timeout
     end
 
+    def triggered_by?(current_user)
+      user == current_user
+    end
+
     # A slugified version of the build ref, suitable for inclusion in URLs and
     # domain names. Rules:
     #
@@ -239,7 +244,7 @@ module Ci
 
       @merge_request ||=
         begin
-          merge_requests = MergeRequest.includes(:merge_request_diff)
+          merge_requests = MergeRequest.includes(:latest_merge_request_diff)
             .where(source_branch: ref,
                    source_project: pipeline.project)
             .reorder(iid: :desc)
@@ -313,6 +318,7 @@ module Ci
 
     def execute_hooks
       return unless project
+
       build_data = Gitlab::DataBuilder::Build.build(self)
       project.execute_hooks(build_data.dup, :job_hooks)
       project.execute_services(build_data.dup, :job_hooks)

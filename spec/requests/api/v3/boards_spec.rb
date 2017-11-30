@@ -38,7 +38,7 @@ describe API::V3::Boards do
       it "returns authentication error" do
         get v3_api(base_url)
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -46,7 +46,7 @@ describe API::V3::Boards do
       it "returns the project issue board" do
         get v3_api(base_url, user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.length).to eq(1)
         expect(json_response.first['id']).to eq(board.id)
@@ -63,7 +63,7 @@ describe API::V3::Boards do
     it 'returns issue board lists' do
       get v3_api(base_url, user)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response).to be_an Array
       expect(json_response.length).to eq(2)
       expect(json_response.first['label']['name']).to eq(dev_label.title)
@@ -72,7 +72,7 @@ describe API::V3::Boards do
     it 'returns 404 if board not found' do
       get v3_api("/projects/#{project.id}/boards/22343/lists", user)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
   end
 
@@ -82,19 +82,19 @@ describe API::V3::Boards do
     it "rejects a non member from deleting a list" do
       delete v3_api("#{base_url}/#{dev_list.id}", non_member)
 
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
     end
 
     it "rejects a user with guest role from deleting a list" do
       delete v3_api("#{base_url}/#{dev_list.id}", guest)
 
-      expect(response).to have_http_status(403)
+      expect(response).to have_gitlab_http_status(403)
     end
 
     it "returns 404 error if list id not found" do
       delete v3_api("#{base_url}/44444", user)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
     end
 
     context "when the user is project owner" do
@@ -107,7 +107,7 @@ describe API::V3::Boards do
       it "deletes the list if an admin requests it" do
         delete v3_api("#{base_url}/#{dev_list.id}", owner)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
     end
   end

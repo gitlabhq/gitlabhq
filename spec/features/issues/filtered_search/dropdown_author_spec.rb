@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe 'Dropdown author', js: true do
+describe 'Dropdown author', :js do
   include FilteredSearchHelpers
 
   let!(:project) { create(:project) }
@@ -51,9 +51,11 @@ describe 'Dropdown author', js: true do
     end
 
     it 'should show loading indicator when opened' do
-      filtered_search.set('author:')
+      slow_requests do
+        filtered_search.set('author:')
 
-      expect(page).to have_css('#js-dropdown-author .filter-dropdown-loading', visible: true)
+        expect(page).to have_css('#js-dropdown-author .filter-dropdown-loading', visible: true)
+      end
     end
 
     it 'should hide loading indicator when loaded' do

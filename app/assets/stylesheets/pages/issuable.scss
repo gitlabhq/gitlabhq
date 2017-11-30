@@ -6,28 +6,20 @@
 }
 
 .issuable-warning-icon {
-  color: $orange-600;
   background-color: $orange-100;
   border-radius: $border-radius-default;
-  padding: 5px;
   margin: 0 $btn-side-margin 0 0;
   width: $issuable-warning-size;
   height: $issuable-warning-size;
   text-align: center;
 
+  .icon {
+    fill: $orange-600;
+    vertical-align: text-bottom;
+  }
+
   &:first-of-type {
     margin-right: $issuable-warning-icon-margin;
-  }
-}
-
-.sidebar-item-icon {
-  border-radius: $border-radius-default;
-  padding: 5px;
-  margin: 0 3px 0 -4px;
-
-  &.is-active {
-    color: $orange-600;
-    background-color: $orange-50;
   }
 }
 
@@ -72,10 +64,19 @@
     }
   }
 
+  .title-container {
+    display: flex;
+  }
+
   .title {
     padding: 0;
-    margin-bottom: 16px;
-    border-bottom: none;
+    margin-bottom: $gl-padding;
+    border-bottom: 0;
+  }
+
+  .btn-edit {
+    margin-left: auto;
+    height: $gl-padding * 2;
   }
 
   // Border around images in issue and MR descriptions.
@@ -117,7 +118,16 @@
 }
 
 .right-sidebar {
-  a,
+  position: absolute;
+  top: $header-height;
+  bottom: 0;
+  right: 0;
+  transition: width $right-sidebar-transition-duration;
+  background: $gray-light;
+  z-index: 200;
+  overflow: hidden;
+
+  a:not(.btn-retry),
   .btn-link {
     color: inherit;
   }
@@ -145,7 +155,7 @@
     }
 
     &:last-child {
-      border: none;
+      border: 0;
     }
 
     span {
@@ -218,17 +228,6 @@
   .btn-clipboard:hover {
     color: $gl-text-color;
   }
-}
-
-.right-sidebar {
-  position: absolute;
-  top: $header-height;
-  bottom: 0;
-  right: 0;
-  transition: width $right-sidebar-transition-duration;
-  background: $gray-light;
-  z-index: 200;
-  overflow: hidden;
 
   .issuable-sidebar {
     width: calc(100% + 100px);
@@ -276,8 +275,13 @@
       font-weight: $gl-font-weight-normal;
     }
 
-    .no-value {
+    .no-value,
+    .btn-secondary-hover-link {
       color: $gl-text-color-secondary;
+    }
+
+    .btn-secondary-hover-link:hover {
+      color: $gl-link-color;
     }
 
     .sidebar-collapsed-icon {
@@ -287,6 +291,8 @@
     .gutter-toggle {
       margin-top: 7px;
       border-left: 1px solid $border-gray-normal;
+      padding-left: 0;
+      text-align: center;
     }
 
     .title .gutter-toggle {
@@ -330,7 +336,7 @@
     .block {
       width: $gutter_collapsed_width - 2px;
       padding: 15px 0 0;
-      border-bottom: none;
+      border-bottom: 0;
       overflow: hidden;
     }
 
@@ -359,7 +365,7 @@
         fill: $issuable-sidebar-color;
       }
 
-      &:hover,
+      &:hover:not(.disabled),
       &:hover .todo-undone {
         color: $gl-text-color;
 
@@ -391,7 +397,7 @@
       }
 
       .btn-clipboard {
-        border: none;
+        border: 0;
         color: $issuable-sidebar-color;
 
         &:hover {
@@ -459,7 +465,7 @@
     }
   }
 
-  a {
+  a:not(.btn-retry) {
     &:hover {
       color: $md-link-color;
       text-decoration: none;
@@ -532,7 +538,9 @@
 }
 
 .participants-list {
-  margin: -5px;
+  display: flex;
+  flex-wrap: wrap;
+  margin: -7px;
 }
 
 
@@ -543,7 +551,7 @@
 
 .participants-author {
   display: inline-block;
-  padding: 5px;
+  padding: 7px;
 
   &:nth-of-type(7n) {
     padding-right: 0;
@@ -603,6 +611,8 @@
   float: none;
   display: inline-block;
   margin-top: 0;
+  height: auto;
+  align-self: center;
 
   @media (max-width: $screen-xs-max) {
     position: absolute;
@@ -616,6 +626,8 @@
   padding-left: 45px;
   padding-right: 45px;
   line-height: 35px;
+  display: flex;
+  flex-grow: 1;
 
   @media (min-width: $screen-sm-min) {
     float: left;
@@ -627,11 +639,12 @@
 .issuable-actions {
   @include new-style-dropdown;
 
-  padding-top: 10px;
+  align-self: center;
+  flex-shrink: 0;
+  flex: 0 0 auto;
 
   @media (min-width: $screen-sm-min) {
     float: right;
-    padding-top: 0;
   }
 }
 
@@ -645,8 +658,9 @@
 
 .issuable-meta {
   display: inline-block;
-  line-height: 18px;
   font-size: 14px;
+  line-height: 24px;
+  align-self: center;
 }
 
 .js-issuable-selector-wrap {
@@ -890,5 +904,23 @@
 
   .dropdown-toggle > .icon {
     margin: 0 3px;
+  }
+}
+
+.right-sidebar-collapsed {
+  .sidebar-grouped-item {
+    .sidebar-collapsed-icon {
+      margin-bottom: 0;
+    }
+
+    .sidebar-collapsed-divider {
+      line-height: 5px;
+      font-size: 12px;
+      color: $theme-gray-700;
+
+      + .sidebar-collapsed-icon {
+        padding-top: 0;
+      }
+    }
   }
 }

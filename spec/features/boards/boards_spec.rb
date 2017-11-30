@@ -1,7 +1,8 @@
 require 'rails_helper'
 
-describe 'Issue Boards', js: true do
+describe 'Issue Boards', :js do
   include DragTo
+  include MobileHelpers
 
   let(:group) { create(:group, :nested) }
   let(:project) { create(:project, :public, namespace: group) }
@@ -13,7 +14,7 @@ describe 'Issue Boards', js: true do
     project.team << [user, :master]
     project.team << [user2, :master]
 
-    page.driver.set_cookie('sidebar_collapsed', 'true')
+    set_cookie('sidebar_collapsed', 'true')
 
     sign_in(user)
   end
@@ -135,7 +136,7 @@ describe 'Issue Boards', js: true do
 
     it 'allows user to delete board' do
       page.within(find('.board:nth-child(2)')) do
-        find('.board-delete').click
+        accept_confirm { find('.board-delete').click }
       end
 
       wait_for_requests
@@ -150,7 +151,7 @@ describe 'Issue Boards', js: true do
       find('.dropdown-menu-close').click
 
       page.within(find('.board:nth-child(2)')) do
-        find('.board-delete').click
+        accept_confirm { find('.board-delete').click }
       end
 
       wait_for_requests
@@ -171,12 +172,14 @@ describe 'Issue Boards', js: true do
         expect(page).to have_selector('.card', count: 20)
         expect(page).to have_content('Showing 20 of 58 issues')
 
+        find('.board .board-list')
         evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
         wait_for_requests
 
         expect(page).to have_selector('.card', count: 40)
         expect(page).to have_content('Showing 40 of 58 issues')
 
+        find('.board .board-list')
         evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
         wait_for_requests
 
@@ -377,7 +380,7 @@ describe 'Issue Boards', js: true do
       end
 
       it 'filters by milestone' do
-        set_filter("milestone", "\"#{milestone.title}\"")
+        set_filter("milestone", "\"#{milestone.title}")
         click_filter_link(milestone.title)
         submit_filter
 
@@ -398,7 +401,7 @@ describe 'Issue Boards', js: true do
       end
 
       it 'filters by label with space after reload' do
-        set_filter("label", "\"#{accepting.title}\"")
+        set_filter("label", "\"#{accepting.title}")
         click_filter_link(accepting.title)
         submit_filter
 
@@ -449,11 +452,13 @@ describe 'Issue Boards', js: true do
           expect(page).to have_selector('.card', count: 20)
           expect(page).to have_content('Showing 20 of 51 issues')
 
+          find('.board .board-list')
           evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
 
           expect(page).to have_selector('.card', count: 40)
           expect(page).to have_content('Showing 40 of 51 issues')
 
+          find('.board .board-list')
           evaluate_script("document.querySelectorAll('.board .board-list')[1].scrollTop = document.querySelectorAll('.board .board-list')[1].scrollHeight")
 
           expect(page).to have_selector('.card', count: 51)
@@ -517,7 +522,7 @@ describe 'Issue Boards', js: true do
     end
 
     it 'allows user to use keyboard shortcuts' do
-      find('.boards-list').native.send_keys('i')
+      find('body').native.send_keys('i')
       expect(page).to have_content('New Issue')
     end
   end
@@ -534,7 +539,7 @@ describe 'Issue Boards', js: true do
     end
 
     it 'does not show create new list' do
-      expect(page).not_to have_selector('.js-new-board-list')
+      expect(page).not_to have_button('.js-new-board-list')
     end
 
     it 'does not allow dragging' do
@@ -559,6 +564,9 @@ describe 'Issue Boards', js: true do
   end
 
   def drag(selector: '.board-list', list_from_index: 0, from_index: 0, to_index: 0, list_to_index: 0)
+    # ensure there is enough horizontal space for four boards
+    resize_window(2000, 800)
+
     drag_to(selector: selector,
             scrollable: '#board-app',
             list_from_index: list_from_index,

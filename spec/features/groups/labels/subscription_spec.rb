@@ -11,7 +11,7 @@ feature 'Labels subscription' do
       gitlab_sign_in user
     end
 
-    scenario 'users can subscribe/unsubscribe to group labels', js: true do
+    scenario 'users can subscribe/unsubscribe to group labels', :js do
       visit group_labels_path(group)
 
       expect(page).to have_content('feature')

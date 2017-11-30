@@ -16,6 +16,7 @@ Peek.into Peek::Views::Redis
 Peek.into Peek::Views::Sidekiq
 Peek.into Peek::Views::Rblineprof
 Peek.into Peek::Views::GC
+Peek.into Peek::Views::Gitaly
 
 # rubocop:disable Style/ClassAndModuleCamelCase
 class PEEK_DB_CLIENT

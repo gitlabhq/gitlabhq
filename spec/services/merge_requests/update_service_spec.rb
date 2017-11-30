@@ -65,7 +65,7 @@ describe MergeRequests::UpdateService, :mailer do
         end
       end
 
-      it 'mathces base expectations' do
+      it 'matches base expectations' do
         expect(@merge_request).to be_valid
         expect(@merge_request.title).to eq('New title')
         expect(@merge_request.assignee).to eq(user2)
@@ -79,7 +79,16 @@ describe MergeRequests::UpdateService, :mailer do
 
       it 'executes hooks with update action' do
         expect(service).to have_received(:execute_hooks)
-                               .with(@merge_request, 'update')
+          .with(
+            @merge_request,
+            'update',
+            old_associations: {
+              labels: [],
+              mentioned_users: [user2],
+              assignees: [user3],
+              total_time_spent: 0
+            }
+          )
       end
 
       it 'sends email to user2 about assign of new merge request and email to user3 about merge request unassignment' do
@@ -126,10 +135,10 @@ describe MergeRequests::UpdateService, :mailer do
       end
 
       it 'creates system note about discussion lock' do
-        note = find_note('locked this issue')
+        note = find_note('locked this merge request')
 
         expect(note).not_to be_nil
-        expect(note.note).to eq 'locked this issue'
+        expect(note.note).to eq 'locked this merge request'
       end
 
       context 'when not including source branch removal options' do

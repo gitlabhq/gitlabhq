@@ -79,6 +79,43 @@ describe MergeRequest do
     end
   end
 
+  describe '.set_latest_merge_request_diff_ids!' do
+    def create_merge_request_with_diffs(source_branch, diffs: 2)
+      params = {
+        target_project: project,
+        target_branch: 'master',
+        source_project: project,
+        source_branch: source_branch
+      }
+
+      create(:merge_request, params).tap do |mr|
+        diffs.times { mr.merge_request_diffs.create }
+      end
+    end
+
+    let(:project) { create(:project) }
+
+    it 'sets IDs for merge requests, whether they are already set or not' do
+      merge_requests = [
+        create_merge_request_with_diffs('feature'),
+        create_merge_request_with_diffs('feature-conflict'),
+        create_merge_request_with_diffs('wip', diffs: 0),
+        create_merge_request_with_diffs('csv')
+      ]
+
+      merge_requests.take(2).each do |merge_request|
+        merge_request.update_column(:latest_merge_request_diff_id, nil)
+      end
+
+      expected = merge_requests.map do |merge_request|
+        merge_request.merge_request_diffs.maximum(:id)
+      end
+
+      expect { project.merge_requests.set_latest_merge_request_diff_ids! }
+        .to change { merge_requests.map { |mr| mr.reload.latest_merge_request_diff_id } }.to(expected)
+    end
+  end
+
   describe '#target_branch_sha' do
     let(:project) { create(:project, :repository) }
 
@@ -86,7 +123,7 @@ describe MergeRequest do
 
     context 'when the target branch does not exist' do
       before do
-        project.repository.raw_repository.delete_branch(subject.target_branch)
+        project.repository.rm_branch(subject.author, subject.target_branch)
       end
 
       it 'returns nil' do
@@ -222,7 +259,7 @@ describe MergeRequest do
   end
 
   describe '#source_branch_sha' do
-    let(:last_branch_commit) { subject.source_project.repository.commit(subject.source_branch) }
+    let(:last_branch_commit) { subject.source_project.repository.commit(Gitlab::Git::BRANCH_REF_PREFIX + subject.source_branch) }
 
     context 'with diffs' do
       subject { create(:merge_request, :with_diffs) }
@@ -235,6 +272,21 @@ describe MergeRequest do
       subject { create(:merge_request, :without_diffs) }
       it 'returns the sha of the source branch last commit' do
         expect(subject.source_branch_sha).to eq(last_branch_commit.sha)
+      end
+
+      context 'when there is a tag name matching the branch name' do
+        let(:tag_name) { subject.source_branch }
+
+        it 'returns the sha of the source branch last commit' do
+          subject.source_project.repository.add_tag(subject.author,
+                                                    tag_name,
+                                                    subject.target_branch_sha,
+                                                    'Add a tag')
+
+          expect(subject.source_branch_sha).to eq(last_branch_commit.sha)
+
+          subject.source_project.repository.rm_tag(subject.author, tag_name)
+        end
       end
     end
 
@@ -660,27 +712,15 @@ describe MergeRequest do
     end
   end
 
-  describe "#hook_attrs" do
-    let(:attrs_hash) { subject.hook_attrs }
+  describe '#hook_attrs' do
+    it 'delegates to Gitlab::HookData::MergeRequestBuilder#build' do
+      builder = double
 
-    [:source, :target].each do |key|
-      describe "#{key} key" do
-        include_examples 'project hook data', project_key: key do
-          let(:data)    { attrs_hash }
-          let(:project) { subject.send("#{key}_project") }
-        end
-      end
-    end
+      expect(Gitlab::HookData::MergeRequestBuilder)
+        .to receive(:new).with(subject).and_return(builder)
+      expect(builder).to receive(:build)
 
-    it "has all the required keys" do
-      expect(attrs_hash).to include(:source)
-      expect(attrs_hash).to include(:target)
-      expect(attrs_hash).to include(:last_commit)
-      expect(attrs_hash).to include(:work_in_progress)
-      expect(attrs_hash).to include(:total_time_spent)
-      expect(attrs_hash).to include(:human_time_estimate)
-      expect(attrs_hash).to include(:human_total_time_spent)
-      expect(attrs_hash).to include('time_estimate')
+      subject.hook_attrs
     end
   end
 
@@ -908,7 +948,7 @@ describe MergeRequest do
 
       context 'with a completely different branch' do
         before do
-          subject.update(target_branch: 'v1.0.0')
+          subject.update(target_branch: 'csv')
         end
 
         it_behaves_like 'returning all SHA'
@@ -916,7 +956,7 @@ describe MergeRequest do
 
       context 'with a branch having no difference' do
         before do
-          subject.update(target_branch: 'v1.1.0')
+          subject.update(target_branch: 'branch-merged')
           subject.reload # make sure commits were not cached
         end
 
@@ -1400,7 +1440,7 @@ describe MergeRequest do
 
     context 'when the target branch does not exist' do
       before do
-        subject.project.repository.raw_repository.delete_branch(subject.target_branch)
+        subject.project.repository.rm_branch(subject.author, subject.target_branch)
       end
 
       it 'returns nil' do
@@ -1472,10 +1512,36 @@ describe MergeRequest do
   end
 
   describe '#merge_ongoing?' do
-    it 'returns true when merge_id is present and MR is not merged' do
-      merge_request = build_stubbed(:merge_request, state: :open, merge_jid: 'foo')
+    it 'returns true when the merge request is locked' do
+      merge_request = build_stubbed(:merge_request, state: :locked)
 
       expect(merge_request.merge_ongoing?).to be(true)
+    end
+
+    it 'returns true when merge_id, MR is not merged and it has no running job' do
+      merge_request = build_stubbed(:merge_request, state: :open, merge_jid: 'foo')
+      allow(Gitlab::SidekiqStatus).to receive(:running?).with('foo') { true }
+
+      expect(merge_request.merge_ongoing?).to be(true)
+    end
+
+    it 'returns false when merge_jid is nil' do
+      merge_request = build_stubbed(:merge_request, state: :open, merge_jid: nil)
+
+      expect(merge_request.merge_ongoing?).to be(false)
+    end
+
+    it 'returns false if MR is merged' do
+      merge_request = build_stubbed(:merge_request, state: :merged, merge_jid: 'foo')
+
+      expect(merge_request.merge_ongoing?).to be(false)
+    end
+
+    it 'returns false if there is no merge job running' do
+      merge_request = build_stubbed(:merge_request, state: :open, merge_jid: 'foo')
+      allow(Gitlab::SidekiqStatus).to receive(:running?).with('foo') { false }
+
+      expect(merge_request.merge_ongoing?).to be(false)
     end
   end
 
@@ -1741,39 +1807,12 @@ describe MergeRequest do
     end
   end
 
-  describe '#fetch_ref' do
-    it 'sets "ref_fetched" flag to true' do
-      subject.update!(ref_fetched: nil)
+  describe '#fetch_ref!' do
+    it 'fetches the ref correctly' do
+      expect { subject.target_project.repository.delete_refs(subject.ref_path) }.not_to raise_error
 
-      subject.fetch_ref
-
-      expect(subject.reload.ref_fetched).to be_truthy
-    end
-  end
-
-  describe '#ref_fetched?' do
-    it 'does not perform git operation when value is cached' do
-      subject.ref_fetched = true
-
-      expect_any_instance_of(Repository).not_to receive(:ref_exists?)
-      expect(subject.ref_fetched?).to be_truthy
-    end
-
-    it 'caches the value when ref exists but value is not cached' do
-      subject.update!(ref_fetched: nil)
-      allow_any_instance_of(Repository).to receive(:ref_exists?)
-        .and_return(true)
-
-      expect(subject.ref_fetched?).to be_truthy
-      expect(subject.reload.ref_fetched).to be_truthy
-    end
-
-    it 'returns false when ref does not exist' do
-      subject.update!(ref_fetched: nil)
-      allow_any_instance_of(Repository).to receive(:ref_exists?)
-        .and_return(false)
-
-      expect(subject.ref_fetched?).to be_falsey
+      subject.fetch_ref!
+      expect(subject.target_project.repository.ref_exists?(subject.ref_path)).to be_truthy
     end
   end
 
@@ -1783,18 +1822,6 @@ describe MergeRequest do
 
       expect { subject.destroy }
         .to change { project.open_merge_requests_count }.from(1).to(0)
-    end
-  end
-
-  describe '#update_project_counter_caches?' do
-    it 'returns true when the state changes' do
-      subject.state = 'closed'
-
-      expect(subject.update_project_counter_caches?).to eq(true)
-    end
-
-    it 'returns false when the state did not change' do
-      expect(subject.update_project_counter_caches?).to eq(false)
     end
   end
 end

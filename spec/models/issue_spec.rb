@@ -700,18 +700,14 @@ describe Issue do
   end
 
   describe '#hook_attrs' do
-    let(:attrs_hash) { subject.hook_attrs }
+    it 'delegates to Gitlab::HookData::IssueBuilder#build' do
+      builder = double
 
-    it 'includes time tracking attrs' do
-      expect(attrs_hash).to include(:total_time_spent)
-      expect(attrs_hash).to include(:human_time_estimate)
-      expect(attrs_hash).to include(:human_total_time_spent)
-      expect(attrs_hash).to include('time_estimate')
-    end
+      expect(Gitlab::HookData::IssueBuilder)
+        .to receive(:new).with(subject).and_return(builder)
+      expect(builder).to receive(:build)
 
-    it 'includes assignee_ids and deprecated assignee_id' do
-      expect(attrs_hash).to include(:assignee_id)
-      expect(attrs_hash).to include(:assignee_ids)
+      subject.hook_attrs
     end
   end
 
@@ -767,24 +763,6 @@ describe Issue do
       create(:issue, confidential: true)
 
       expect(described_class.public_only).to eq([public_issue])
-    end
-  end
-
-  describe '#update_project_counter_caches?' do
-    it 'returns true when the state changes' do
-      subject.state = 'closed'
-
-      expect(subject.update_project_counter_caches?).to eq(true)
-    end
-
-    it 'returns true when the confidential flag changes' do
-      subject.confidential = true
-
-      expect(subject.update_project_counter_caches?).to eq(true)
-    end
-
-    it 'returns false when the state or confidential flag did not change' do
-      expect(subject.update_project_counter_caches?).to eq(false)
     end
   end
 end

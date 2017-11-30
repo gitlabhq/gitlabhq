@@ -25,7 +25,7 @@ The following table depicts the various user permission levels in a project.
 | Create confidential issue             | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | View confidential issues              | (✓) [^2] | ✓          | ✓           | ✓        | ✓      |
 | Leave comments                        | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
-| Lock comments                         |         |            |             | ✓        | ✓      |
+| Lock discussions (issues and merge requests) |  |            |             | ✓        | ✓      |
 | See a list of jobs                    | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | See a job   log                       | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | Download and browse job artifacts     | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
@@ -54,7 +54,7 @@ The following table depicts the various user permission levels in a project.
 | Create or update commit status        |         |            | ✓           | ✓        | ✓      |
 | Update a container registry           |         |            | ✓           | ✓        | ✓      |
 | Remove a container registry image     |         |            | ✓           | ✓        | ✓      |
-| Create new milestones                 |         |            |             | ✓        | ✓      |
+| Create/edit/delete project milestones |         |            | ✓           | ✓        | ✓      |
 | Add new team members                  |         |            |             | ✓        | ✓      |
 | Push to protected branches            |         |            |             | ✓        | ✓      |
 | Enable/disable branch protection      |         |            |             | ✓        | ✓      |
@@ -76,6 +76,7 @@ The following table depicts the various user permission levels in a project.
 | Force push to protected branches [^4] |         |            |             |          |        |
 | Remove protected branches [^4]        |         |            |             |          |        |
 | Remove pages                          |         |            |             |          | ✓      |
+| Manage clusters                       |         |            |             | ✓        | ✓      |
 
 ## Project features permissions
 
@@ -143,6 +144,7 @@ group.
 | Manage group members    |       |          |           |        | ✓     |
 | Remove group            |       |          |           |        | ✓     |
 | Manage group labels     |       | ✓        | ✓         | ✓      | ✓     |
+| Create/edit/delete group milestones | |    | ✓         | ✓      | ✓     |
 
 ### Subgroup permissions
 
@@ -195,6 +197,7 @@ instance and project. In addition, all admins can use the admin interface under
 |---------------------------------------|-----------------|-------------|----------|--------|
 | See commits and jobs                  | ✓               | ✓           | ✓        | ✓      |
 | Retry or cancel job                   |                 | ✓           | ✓        | ✓      |
+| Erase job artifacts and trace         |                 | ✓ [^7]      | ✓        | ✓      |
 | Remove project                        |                 |             | ✓        | ✓      |
 | Create project                        |                 |             | ✓        | ✓      |
 | Change project configuration          |                 |             | ✓        | ✓      |
@@ -259,5 +262,6 @@ only.
 [^4]: Not allowed for Guest, Reporter, Developer, Master, or Owner
 [^5]: Only if user is not external one.
 [^6]: Only if user is a member of the project.
+[^7]: Only if the build was triggered by the user
 [ce-18994]: https://gitlab.com/gitlab-org/gitlab-ce/issues/18994
 [new-mod]: project/new_ci_build_permissions_model.md

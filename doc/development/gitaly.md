@@ -52,8 +52,8 @@ rm -rf tmp/tests/gitaly
 
 ## `TooManyInvocationsError` errors
 
-During development and testing, you may experience `Gitlab::GitalyClient::TooManyInvocationsError` failures. 
-The `GitalyClient` will attempt to block against potential n+1 issues by raising this error 
+During development and testing, you may experience `Gitlab::GitalyClient::TooManyInvocationsError` failures.
+The `GitalyClient` will attempt to block against potential n+1 issues by raising this error
 when Gitaly is called more than 30 times in a single Rails request or Sidekiq execution.
 
 As a temporary measure, export `GITALY_DISABLE_REQUEST_LIMITS=1` to suppress the error. This will disable the n+1 detection
@@ -64,7 +64,7 @@ Please raise an issue in the GitLab CE or EE repositories to report the issue. I
 `TooManyInvocationsError`. Also include any known failing tests if possible.
 
 Isolate the source of the n+1 problem. This will normally be a loop that results in Gitaly being called for each
-element in an array. If you are unable to isolate the problem, please contact a member 
+element in an array. If you are unable to isolate the problem, please contact a member
 of the [Gitaly Team](https://gitlab.com/groups/gl-gitaly/group_members) for assistance.
 
 Once the source has been found, wrap it in an `allow_n_plus_1_calls` block, as follows:
@@ -78,6 +78,24 @@ end
 ```
 
 Once the code is wrapped in this block, this code-path will be excluded from n+1 detection.
+
+## Request counts
+
+Commits and other git data, is now fetched through Gitaly. These fetches can,
+much like with a database, be batched. This improves performance for the client
+and for Gitaly itself and therefore for the users too. To keep performance stable
+and guard performance regressions, Gitaly calls can be counted and the call count
+can be tested against. This requires the `:request_store` flag to be set.
+
+```ruby
+describe 'Gitaly Request count tests' do
+  context 'when the request store is activated', :request_store do
+    it 'correctly counts the gitaly requests made' do
+      expect { subject }.to change { Gitlab::GitalyClient.get_request_count }.by(10)
+    end
+  end
+end
+```
 
 ---
 

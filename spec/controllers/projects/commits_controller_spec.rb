@@ -10,9 +10,36 @@ describe Projects::CommitsController do
   end
 
   describe "GET show" do
-    context "when the ref name ends in .atom" do
-      render_views
+    render_views
 
+    context 'with file path' do
+      before do
+        get(:show,
+            namespace_id: project.namespace,
+            project_id: project,
+            id: id)
+      end
+
+      context "valid branch, valid file" do
+        let(:id) { 'master/README.md' }
+
+        it { is_expected.to respond_with(:success) }
+      end
+
+      context "valid branch, invalid file" do
+        let(:id) { 'master/invalid-path.rb' }
+
+        it { is_expected.to respond_with(:not_found) }
+      end
+
+      context "invalid branch, valid file" do
+        let(:id) { 'invalid-branch/README.md' }
+
+        it { is_expected.to respond_with(:not_found) }
+      end
+    end
+
+    context "when the ref name ends in .atom" do
       context "when the ref does not exist with the suffix" do
         it "renders as atom" do
           get(:show,

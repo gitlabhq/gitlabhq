@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # Rake tasks
 
 - [Backup restore](backup_restore.md)

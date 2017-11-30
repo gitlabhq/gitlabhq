@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Project show page', feature: true do
+describe 'Project show page', :feature do
   context 'when project pending delete' do
     let(:project) { create(:project, :empty_repo, pending_delete: true) }
 

@@ -61,9 +61,9 @@ module Gitlab
       def import_wiki
         return if project.wiki.repository_exists?
 
-        path_with_namespace = "#{project.full_path}.wiki"
+        disk_path = project.wiki.disk_path
         import_url = project.import_url.sub(/\.git\z/, ".git/wiki")
-        gitlab_shell.import_repository(project.repository_storage_path, path_with_namespace, import_url)
+        gitlab_shell.import_repository(project.repository_storage_path, disk_path, import_url)
       rescue StandardError => e
         errors << { type: :wiki, errors: e.message }
       end
@@ -241,7 +241,7 @@ module Gitlab
       end
 
       def generate_line_code(pr_comment)
-        Gitlab::Diff::LineCode.generate(pr_comment.file_path, pr_comment.new_pos, pr_comment.old_pos)
+        Gitlab::Git.diff_line_code(pr_comment.file_path, pr_comment.new_pos, pr_comment.old_pos)
       end
 
       def pull_request_comment_attributes(comment)

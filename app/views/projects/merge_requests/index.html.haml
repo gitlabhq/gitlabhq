@@ -13,8 +13,6 @@
 
 - if @project.merge_requests.exists?
   %div{ class: container_class }
-    - if show_auto_devops_callout?(@project)
-      = render 'shared/auto_devops_callout'
     .top-area
       = render 'shared/issuable/nav', type: :merge_requests
       .nav-controls

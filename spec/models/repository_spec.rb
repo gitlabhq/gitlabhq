@@ -40,7 +40,7 @@ describe Repository do
     it { is_expected.not_to include('feature') }
     it { is_expected.not_to include('fix') }
 
-    describe 'when storage is broken', broken_storage: true  do
+    describe 'when storage is broken', :broken_storage  do
       it 'should raise a storage error' do
         expect_to_raise_storage_error do
           broken_repository.branch_names_contains(sample_commit.id)
@@ -158,7 +158,7 @@ describe Repository do
 
       it { is_expected.to eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8') }
 
-      describe 'when storage is broken', broken_storage: true  do
+      describe 'when storage is broken', :broken_storage  do
         it 'should raise a storage error' do
           expect_to_raise_storage_error do
             broken_repository.last_commit_id_for_path(sample_commit.id, '.gitignore')
@@ -171,7 +171,7 @@ describe Repository do
       it_behaves_like 'getting last commit for path'
     end
 
-    context 'when Gitaly feature last_commit_for_path is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly feature last_commit_for_path is disabled', :skip_gitaly_mock do
       it_behaves_like 'getting last commit for path'
     end
   end
@@ -192,7 +192,7 @@ describe Repository do
         is_expected.to eq('c1acaa5')
       end
 
-      describe 'when storage is broken', broken_storage: true  do
+      describe 'when storage is broken', :broken_storage  do
         it 'should raise a storage error' do
           expect_to_raise_storage_error do
             broken_repository.last_commit_for_path(sample_commit.id, '.gitignore').id
@@ -205,7 +205,7 @@ describe Repository do
       it_behaves_like 'getting last commit ID for path'
     end
 
-    context 'when Gitaly feature last_commit_for_path is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly feature last_commit_for_path is disabled', :skip_gitaly_mock do
       it_behaves_like 'getting last commit ID for path'
     end
   end
@@ -255,11 +255,11 @@ describe Repository do
       it_behaves_like 'finding commits by message'
     end
 
-    context 'when Gitaly commits_by_message feature is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly commits_by_message feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'finding commits by message'
     end
 
-    describe 'when storage is broken', broken_storage: true  do
+    describe 'when storage is broken', :broken_storage  do
       it 'should raise a storage error' do
         expect_to_raise_storage_error { broken_repository.find_commits_by_message('s') }
       end
@@ -589,7 +589,7 @@ describe Repository do
       expect(results).to match_array([])
     end
 
-    describe 'when storage is broken', broken_storage: true  do
+    describe 'when storage is broken', :broken_storage  do
       it 'should raise a storage error' do
         expect_to_raise_storage_error do
           broken_repository.search_files_by_content('feature', 'master')
@@ -626,7 +626,7 @@ describe Repository do
       expect(results).to match_array([])
     end
 
-    describe 'when storage is broken', broken_storage: true  do
+    describe 'when storage is broken', :broken_storage  do
       it 'should raise a storage error' do
         expect_to_raise_storage_error { broken_repository.search_files_by_name('files', 'master') }
       end
@@ -638,7 +638,7 @@ describe Repository do
     # before the actual test call
     set(:broken_repository) { create(:project, :broken_storage).repository }
 
-    describe 'when storage is broken', broken_storage: true  do
+    describe 'when storage is broken', :broken_storage  do
       it 'should raise a storage error' do
         expect_to_raise_storage_error do
           broken_repository.fetch_ref(broken_repository, source_ref: '1', target_ref: '2')
@@ -848,7 +848,7 @@ describe Repository do
       end
     end
 
-    context 'with Gitaly disabled', skip_gitaly_mock: true do
+    context 'with Gitaly disabled', :skip_gitaly_mock do
       context 'when pre hooks were successful' do
         it 'runs without errors' do
           hook = double(trigger: [true, nil])
@@ -1101,7 +1101,7 @@ describe Repository do
       expect(repository.exists?).to eq(false)
     end
 
-    context 'with broken storage', broken_storage: true do
+    context 'with broken storage', :broken_storage do
       it 'should raise a storage error' do
         expect_to_raise_storage_error { broken_repository.exists? }
       end
@@ -1113,7 +1113,7 @@ describe Repository do
       it_behaves_like 'repo exists check'
     end
 
-    context 'when repository_exists is enabled', skip_gitaly_mock: true do
+    context 'when repository_exists is enabled', :skip_gitaly_mock do
       it_behaves_like 'repo exists check'
     end
   end
@@ -1145,6 +1145,31 @@ describe Repository do
         # Second call hits the cache
         expect(repository.has_visible_content?).to eq(false)
       end
+    end
+  end
+
+  describe '#branch_exists?' do
+    it 'uses branch_names' do
+      allow(repository).to receive(:branch_names).and_return(['foobar'])
+
+      expect(repository.branch_exists?('foobar')).to eq(true)
+      expect(repository.branch_exists?('master')).to eq(false)
+    end
+  end
+
+  describe '#branch_names', :use_clean_rails_memory_store_caching do
+    let(:fake_branch_names) { ['foobar'] }
+
+    it 'gets cached across Repository instances' do
+      allow(repository.raw_repository).to receive(:branch_names).once.and_return(fake_branch_names)
+
+      expect(repository.branch_names).to eq(fake_branch_names)
+
+      fresh_repository = Project.find(project.id).repository
+      expect(fresh_repository.object_id).not_to eq(repository.object_id)
+
+      expect(fresh_repository.raw_repository).not_to receive(:branch_names)
+      expect(fresh_repository.branch_names).to eq(fake_branch_names)
     end
   end
 
@@ -1286,21 +1311,31 @@ describe Repository do
 
     let(:message) { 'Test \r\n\r\n message' }
 
-    it 'merges the code and returns the commit id' do
-      expect(merge_commit).to be_present
-      expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
+    shared_examples '#merge' do
+      it 'merges the code and returns the commit id' do
+        expect(merge_commit).to be_present
+        expect(repository.blob_at(merge_commit.id, 'files/ruby/feature.rb')).to be_present
+      end
+
+      it 'sets the `in_progress_merge_commit_sha` flag for the given merge request' do
+        merge_commit_id = merge(repository, user, merge_request, message)
+
+        expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
+      end
+
+      it 'removes carriage returns from commit message' do
+        merge_commit_id = merge(repository, user, merge_request, message)
+
+        expect(repository.commit(merge_commit_id).message).to eq(message.delete("\r"))
+      end
     end
 
-    it 'sets the `in_progress_merge_commit_sha` flag for the given merge request' do
-      merge_commit_id = merge(repository, user, merge_request, message)
-
-      expect(merge_request.in_progress_merge_commit_sha).to eq(merge_commit_id)
+    context 'with gitaly' do
+      it_behaves_like '#merge'
     end
 
-    it 'removes carriage returns from commit message' do
-      merge_commit_id = merge(repository, user, merge_request, message)
-
-      expect(repository.commit(merge_commit_id).message).to eq(message.delete("\r"))
+    context 'without gitaly', :skip_gitaly_mock do
+      it_behaves_like '#merge'
     end
 
     def merge(repository, user, merge_request, message)
@@ -1509,7 +1544,9 @@ describe Repository do
         :gitignore,
         :koding,
         :gitlab_ci,
-        :avatar
+        :avatar,
+        :issue_template,
+        :merge_request_template
       ])
 
       repository.after_change_head
@@ -1676,7 +1713,7 @@ describe Repository do
       it_behaves_like 'adding tag'
     end
 
-    context 'when Gitaly operation_user_add_tag feature is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly operation_user_add_tag feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'adding tag'
 
       it 'passes commit SHA to pre-receive and update hooks and tag SHA to post-receive hook' do
@@ -1735,7 +1772,7 @@ describe Repository do
       end
     end
 
-    context 'with gitaly disabled', skip_gitaly_mock: true do
+    context 'with gitaly disabled', :skip_gitaly_mock do
       it_behaves_like "user deleting a branch"
 
       let(:old_rev) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' } # git rev-parse feature
@@ -1794,7 +1831,7 @@ describe Repository do
       it_behaves_like 'removing tag'
     end
 
-    context 'when Gitaly operation_user_delete_tag feature is disabled', skip_gitaly_mock: true do
+    context 'when Gitaly operation_user_delete_tag feature is disabled', :skip_gitaly_mock do
       it_behaves_like 'removing tag'
     end
   end
@@ -2098,19 +2135,41 @@ describe Repository do
   end
 
   describe '#cache_method_output', :use_clean_rails_memory_store_caching do
+    let(:fallback) { 10 }
+
     context 'with a non-existing repository' do
-      let(:value) do
-        repository.cache_method_output(:cats, fallback: 10) do
-          raise Rugged::ReferenceError
+      let(:project) { create(:project) } # No repository
+
+      subject do
+        repository.cache_method_output(:cats, fallback: fallback) do
+          repository.cats_call_stub
         end
       end
 
-      it 'returns a fallback value' do
-        expect(value).to eq(10)
+      it 'returns the fallback value' do
+        expect(subject).to eq(fallback)
+      end
+
+      it 'avoids calling the original method' do
+        expect(repository).not_to receive(:cats_call_stub)
+
+        subject
+      end
+    end
+
+    context 'with a method throwing a non-existing-repository error' do
+      subject do
+        repository.cache_method_output(:cats, fallback: fallback) do
+          raise Gitlab::Git::Repository::NoRepository
+        end
+      end
+
+      it 'returns the fallback value' do
+        expect(subject).to eq(fallback)
       end
 
       it 'does not cache the data' do
-        value
+        subject
 
         expect(repository.instance_variable_defined?(:@cats)).to eq(false)
         expect(repository.send(:cache).exist?(:cats)).to eq(false)
@@ -2223,6 +2282,46 @@ describe Repository do
         expect(repository.ancestor?(nil, commit.id)).to eq(false)
         expect(repository.ancestor?(ancestor.id, nil)).to eq(false)
         expect(repository.ancestor?(nil, nil)).to eq(false)
+      end
+    end
+  end
+
+  describe 'commit cache' do
+    set(:project) { create(:project, :repository) }
+
+    it 'caches based on SHA' do
+      # Gets the commit oid, and warms the cache
+      oid = project.commit.id
+
+      expect(Gitlab::Git::Commit).not_to receive(:find).once
+
+      project.commit_by(oid: oid)
+    end
+
+    it 'caches nil values' do
+      expect(Gitlab::Git::Commit).to receive(:find).once
+
+      project.commit_by(oid: '1' * 40)
+      project.commit_by(oid: '1' * 40)
+    end
+  end
+
+  describe '#raw_repository' do
+    subject { repository.raw_repository }
+
+    it 'returns a Gitlab::Git::Repository representation of the repository' do
+      expect(subject).to be_a(Gitlab::Git::Repository)
+      expect(subject.relative_path).to eq(project.disk_path + '.git')
+      expect(subject.gl_repository).to eq("project-#{project.id}")
+    end
+
+    context 'with a wiki repository' do
+      let(:repository) { project.wiki.repository }
+
+      it 'creates a Gitlab::Git::Repository with the proper attributes' do
+        expect(subject).to be_a(Gitlab::Git::Repository)
+        expect(subject.relative_path).to eq(project.disk_path + '.wiki.git')
+        expect(subject.gl_repository).to eq("wiki-#{project.id}")
       end
     end
   end

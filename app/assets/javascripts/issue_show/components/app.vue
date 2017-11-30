@@ -1,5 +1,4 @@
 <script>
-/* global Flash */
 import Visibility from 'visibilityjs';
 import Poll from '../../lib/utils/poll';
 import eventHub from '../event_hub';
@@ -17,6 +16,10 @@ export default {
       required: true,
       type: String,
     },
+    updateEndpoint: {
+      required: true,
+      type: String,
+    },
     canUpdate: {
       required: true,
       type: Boolean,
@@ -24,6 +27,21 @@ export default {
     canDestroy: {
       required: true,
       type: Boolean,
+    },
+    showInlineEditButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    showDeleteButton: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+    enableAutocomplete: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
     issuableRef: {
       type: String,
@@ -87,6 +105,16 @@ export default {
     projectNamespace: {
       type: String,
       required: true,
+    },
+    issuableType: {
+      type: String,
+      required: false,
+      default: 'issue',
+    },
+    canAttachFile: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
   data() {
@@ -153,21 +181,21 @@ export default {
         })
         .catch(() => {
           eventHub.$emit('close.form');
-          return new Flash('Error updating issue');
+          window.Flash(`Error updating ${this.issuableType}`);
         });
     },
     deleteIssuable() {
       this.service.deleteIssuable()
         .then(res => res.json())
         .then((data) => {
-          // Stop the poll so we don't get 404's with the issue not existing
+          // Stop the poll so we don't get 404's with the issuable not existing
           this.poll.stop();
 
           gl.utils.visitUrl(data.web_url);
         })
         .catch(() => {
           eventHub.$emit('close.form');
-          return new Flash('Error deleting issue');
+          window.Flash(`Error deleting ${this.issuableType}`);
         });
     },
   },
@@ -219,24 +247,34 @@ export default {
       :markdown-preview-path="markdownPreviewPath"
       :project-path="projectPath"
       :project-namespace="projectNamespace"
+      :show-delete-button="showDeleteButton"
+      :can-attach-file="canAttachFile"
+      :enable-autocomplete="enableAutocomplete"
     />
     <div v-else>
       <title-component
         :issuable-ref="issuableRef"
+        :can-update="canUpdate"
         :title-html="state.titleHtml"
-        :title-text="state.titleText" />
+        :title-text="state.titleText"
+        :show-inline-edit-button="showInlineEditButton"
+      />
       <description-component
         v-if="state.descriptionHtml"
         :can-update="canUpdate"
         :description-html="state.descriptionHtml"
         :description-text="state.descriptionText"
         :updated-at="state.updatedAt"
-        :task-status="state.taskStatus" />
+        :task-status="state.taskStatus"
+        :issuable-type="issuableType"
+        :update-url="updateEndpoint"
+      />
       <edited-component
         v-if="hasUpdated"
         :updated-at="state.updatedAt"
         :updated-by-name="state.updatedByName"
-        :updated-by-path="state.updatedByPath" />
+        :updated-by-path="state.updatedByPath"
+      />
     </div>
   </div>
 </template>

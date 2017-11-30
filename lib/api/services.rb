@@ -313,13 +313,13 @@ module API
           desc: 'The base URL to the JIRA instance API. Web URL value will be used if not set. E.g., https://jira-api.example.com'
         },
         {
-          required: false,
+          required: true,
           name: :username,
           type: String,
           desc: 'The username of the user created to be used with GitLab/JIRA'
         },
         {
-          required: false,
+          required: true,
           name: :password,
           type: String,
           desc: 'The password of the user created to be used with GitLab/JIRA'
@@ -372,6 +372,26 @@ module API
           name: :token,
           type: String,
           desc: 'The Slack token'
+        }
+      ],
+      'packagist' => [
+        {
+          required: true,
+          name: :username,
+          type: String,
+          desc: 'The username'
+        },
+        {
+          required: true,
+          name: :token,
+          type: String,
+          desc: 'The Packagist API token'
+        },
+        {
+          required: false,
+          name: :server,
+          type: String,
+          desc: 'The server'
         }
       ],
       'pipelines-email' => [
@@ -502,6 +522,12 @@ module API
           name: :webhook,
           type: String,
           desc: 'The Mattermost webhook. e.g. http://mattermost_host/hooks/...'
+        },
+        {
+          required: false,
+          name: :username,
+          type: String,
+          desc: 'The username to use to post the message'
         }
       ],
       'teamcity' => [
@@ -551,6 +577,7 @@ module API
       KubernetesService,
       MattermostSlashCommandsService,
       SlackSlashCommandsService,
+      PackagistService,
       PipelinesEmailService,
       PivotaltrackerService,
       PrometheusService,

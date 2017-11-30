@@ -13,7 +13,7 @@ feature 'Issue Sidebar' do
     sign_in(user)
   end
 
-  context 'assignee', js: true do
+  context 'assignee', :js do
     let(:user2) { create(:user) }
     let(:issue2) { create(:issue, project: project, author: user2) }
 
@@ -82,7 +82,7 @@ feature 'Issue Sidebar' do
       visit_issue(project, issue)
     end
 
-    context 'sidebar', js: true do
+    context 'sidebar', :js do
       it 'changes size when the screen size is smaller' do
         sidebar_selector = 'aside.right-sidebar.right-sidebar-collapsed'
         # Resize the window
@@ -101,7 +101,7 @@ feature 'Issue Sidebar' do
       end
     end
 
-    context 'editing issue labels', js: true do
+    context 'editing issue labels', :js do
       before do
         page.within('.block.labels') do
           find('.edit-link').click
@@ -114,7 +114,7 @@ feature 'Issue Sidebar' do
         end
       end
 
-      context 'creating a new label', js: true do
+      context 'creating a new label', :js do
         before do
           page.within('.block.labels') do
             click_link 'Create new'
@@ -130,8 +130,8 @@ feature 'Issue Sidebar' do
         it 'adds new label' do
           page.within('.block.labels') do
             fill_in 'new_label_name', with: 'wontfix'
-            page.find('.suggest-colors a', match: :first).trigger('click')
-            page.find('button', text: 'Create').trigger('click')
+            page.find('.suggest-colors a', match: :first).click
+            page.find('button', text: 'Create').click
 
             page.within('.dropdown-page-one') do
               expect(page).to have_content 'wontfix'
@@ -142,8 +142,8 @@ feature 'Issue Sidebar' do
         it 'shows error message if label title is taken' do
           page.within('.block.labels') do
             fill_in 'new_label_name', with: label.title
-            page.find('.suggest-colors a', match: :first).trigger('click')
-            page.find('button', text: 'Create').trigger('click')
+            page.find('.suggest-colors a', match: :first).click
+            page.find('button', text: 'Create').click
 
             page.within('.dropdown-page-two') do
               expect(page).to have_content 'Title has already been taken'
@@ -170,7 +170,7 @@ feature 'Issue Sidebar' do
   end
 
   def open_issue_sidebar
-    find('aside.right-sidebar.right-sidebar-collapsed .js-sidebar-toggle').trigger('click')
+    find('aside.right-sidebar.right-sidebar-collapsed .js-sidebar-toggle').click
     find('aside.right-sidebar.right-sidebar-expanded')
   end
 end

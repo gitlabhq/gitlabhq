@@ -4,33 +4,19 @@ module MergeRequests
       SystemNoteService.change_status(merge_request, merge_request.target_project, current_user, state, nil)
     end
 
-    def create_title_change_note(issuable, old_title)
-      removed_wip = MergeRequest.work_in_progress?(old_title) && !issuable.work_in_progress?
-      added_wip = !MergeRequest.work_in_progress?(old_title) && issuable.work_in_progress?
-      changed_title = MergeRequest.wipless_title(old_title) != issuable.wipless_title
-
-      if removed_wip
-        SystemNoteService.remove_merge_request_wip(issuable, issuable.project, current_user)
-      elsif added_wip
-        SystemNoteService.add_merge_request_wip(issuable, issuable.project, current_user)
-      end
-
-      super if changed_title
-    end
-
-    def hook_data(merge_request, action, oldrev = nil)
-      hook_data = merge_request.to_hook_data(current_user)
-      hook_data[:object_attributes][:url] = Gitlab::UrlBuilder.build(merge_request)
+    def hook_data(merge_request, action, old_rev: nil, old_associations: {})
+      hook_data = merge_request.to_hook_data(current_user, old_associations: old_associations)
       hook_data[:object_attributes][:action] = action
-      if oldrev && !Gitlab::Git.blank_ref?(oldrev)
-        hook_data[:object_attributes][:oldrev] = oldrev
+      if old_rev && !Gitlab::Git.blank_ref?(old_rev)
+        hook_data[:object_attributes][:oldrev] = old_rev
       end
+
       hook_data
     end
 
-    def execute_hooks(merge_request, action = 'open', oldrev = nil)
+    def execute_hooks(merge_request, action = 'open', old_rev: nil, old_associations: {})
       if merge_request.project
-        merge_data = hook_data(merge_request, action, oldrev)
+        merge_data = hook_data(merge_request, action, old_rev: old_rev, old_associations: old_associations)
         merge_request.project.execute_hooks(merge_data, :merge_request_hooks)
         merge_request.project.execute_services(merge_data, :merge_request_hooks)
       end

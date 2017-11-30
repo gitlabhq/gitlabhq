@@ -261,7 +261,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
       it_should_behave_like '.where'
     end
 
-    describe '.where without gitaly', skip_gitaly_mock: true do
+    describe '.where without gitaly', :skip_gitaly_mock do
       it_should_behave_like '.where'
     end
 
@@ -336,7 +336,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
         it_behaves_like 'finding all commits'
       end
 
-      context 'when Gitaly find_all_commits feature is disabled', skip_gitaly_mock: true do
+      context 'when Gitaly find_all_commits feature is disabled', :skip_gitaly_mock do
         it_behaves_like 'finding all commits'
 
         context 'while applying a sort order based on the `order` option' do
@@ -405,7 +405,7 @@ describe Gitlab::Git::Commit, seed_helper: true do
     it_should_behave_like '#stats'
   end
 
-  describe '#stats with gitaly disabled', skip_gitaly_mock: true do
+  describe '#stats with gitaly disabled', :skip_gitaly_mock do
     it_should_behave_like '#stats'
   end
 

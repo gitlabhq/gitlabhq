@@ -1,3 +1,7 @@
+---
+comments: false
+---
+
 # GitLab basics
 
 Step-by-step guides on the basics of working with Git and GitLab.

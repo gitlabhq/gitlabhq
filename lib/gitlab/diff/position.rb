@@ -94,7 +94,9 @@ module Gitlab
       end
 
       def diff_file(repository)
-        @diff_file ||= begin
+        return @diff_file if defined?(@diff_file)
+
+        @diff_file = begin
           if RequestStore.active?
             key = {
               project_id: repository.project.id,
@@ -122,8 +124,9 @@ module Gitlab
 
       def find_diff_file(repository)
         return unless diff_refs.complete?
+        return unless comparison = diff_refs.compare_in(repository.project)
 
-        diff_refs.compare_in(repository.project).diffs(paths: paths, expanded: true).diff_files.first
+        comparison.diffs(paths: paths, expanded: true).diff_files.first
       end
 
       def get_formatter_class(type)

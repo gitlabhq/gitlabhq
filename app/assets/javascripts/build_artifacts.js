@@ -1,30 +1,30 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, prefer-arrow-callback, no-unused-vars, no-return-assign, max-len */
+/* eslint-disable func-names, prefer-arrow-callback, no-return-assign */
 import { visitUrl } from './lib/utils/url_utility';
 import { convertPermissionToBoolean } from './lib/utils/common_utils';
 
-window.BuildArtifacts = (function() {
-  function BuildArtifacts() {
+export default class BuildArtifacts {
+  constructor() {
     this.disablePropagation();
     this.setupEntryClick();
     this.setupTooltips();
   }
-
-  BuildArtifacts.prototype.disablePropagation = function() {
-    $('.top-block').on('click', '.download', function(e) {
+  // eslint-disable-next-line class-methods-use-this
+  disablePropagation() {
+    $('.top-block').on('click', '.download', function (e) {
       return e.stopPropagation();
     });
-    return $('.tree-holder').on('click', 'tr[data-link] a', function(e) {
+    return $('.tree-holder').on('click', 'tr[data-link] a', function (e) {
       return e.stopImmediatePropagation();
     });
-  };
-
-  BuildArtifacts.prototype.setupEntryClick = function() {
-    return $('.tree-holder').on('click', 'tr[data-link]', function(e) {
+  }
+  // eslint-disable-next-line class-methods-use-this
+  setupEntryClick() {
+    return $('.tree-holder').on('click', 'tr[data-link]', function () {
       visitUrl(this.dataset.link, convertPermissionToBoolean(this.dataset.externalLink));
     });
-  };
-
-  BuildArtifacts.prototype.setupTooltips = function() {
+  }
+  // eslint-disable-next-line class-methods-use-this
+  setupTooltips() {
     $('.js-artifact-tree-tooltip').tooltip({
       placement: 'bottom',
       // Stop the tooltip from hiding when we stop hovering the element directly
@@ -41,7 +41,5 @@ window.BuildArtifacts = (function() {
       .on('mouseleave', (e) => {
         $(e.currentTarget).find('.js-artifact-tree-tooltip').tooltip('hide');
       });
-  };
-
-  return BuildArtifacts;
-})();
+  }
+}

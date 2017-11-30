@@ -17,7 +17,7 @@ describe API::V3::Tags do
       it 'returns the repository tags' do
         get v3_api("/projects/#{project.id}/repository/tags", current_user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(tag_name)
       end
@@ -40,7 +40,7 @@ describe API::V3::Tags do
       it "returns an array of project tags" do
         get v3_api("/projects/#{project.id}/repository/tags", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(tag_name)
       end
@@ -55,7 +55,7 @@ describe API::V3::Tags do
       it "returns an array of project tags with release info" do
         get v3_api("/projects/#{project.id}/repository/tags", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_an Array
         expect(json_response.first['name']).to eq(tag_name)
         expect(json_response.first['message']).to eq('Version 1.1.0')
@@ -75,13 +75,13 @@ describe API::V3::Tags do
       it 'deletes an existing tag' do
         delete v3_api("/projects/#{project.id}/repository/tags/#{tag_name}", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response['tag_name']).to eq(tag_name)
       end
 
       it 'raises 404 if the tag does not exist' do
         delete v3_api("/projects/#{project.id}/repository/tags/foobar", user)
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end

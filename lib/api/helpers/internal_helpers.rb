@@ -2,8 +2,8 @@ module API
   module Helpers
     module InternalHelpers
       SSH_GITALY_FEATURES = {
-        'git-receive-pack' => :ssh_receive_pack,
-        'git-upload-pack' => :ssh_upload_pack
+        'git-receive-pack' => [:ssh_receive_pack, Gitlab::GitalyClient::MigrationStatus::OPT_IN],
+        'git-upload-pack' => [:ssh_upload_pack, Gitlab::GitalyClient::MigrationStatus::OPT_OUT]
       }.freeze
 
       def wiki?
@@ -34,6 +34,18 @@ module API
         JSON.parse(params[:env])
       rescue JSON::ParserError
         {}
+      end
+
+      def fix_git_env_repository_paths(env, repository_path)
+        if obj_dir_relative = env['GIT_OBJECT_DIRECTORY_RELATIVE'].presence
+          env['GIT_OBJECT_DIRECTORY'] = File.join(repository_path, obj_dir_relative)
+        end
+
+        if alt_obj_dirs_relative = env['GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE'].presence
+          env['GIT_ALTERNATE_OBJECT_DIRECTORIES'] = alt_obj_dirs_relative.map { |dir| File.join(repository_path, dir) }
+        end
+
+        env
       end
 
       def log_user_activity(actor)
@@ -90,8 +102,8 @@ module API
 
       # Return the Gitaly Address if it is enabled
       def gitaly_payload(action)
-        feature = SSH_GITALY_FEATURES[action]
-        return unless feature && Gitlab::GitalyClient.feature_enabled?(feature)
+        feature, status = SSH_GITALY_FEATURES[action]
+        return unless feature && Gitlab::GitalyClient.feature_enabled?(feature, status: status)
 
         {
           repository: repository.gitaly_repository,

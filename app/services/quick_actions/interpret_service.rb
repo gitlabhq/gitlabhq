@@ -381,7 +381,7 @@ module QuickActions
     end
 
     desc 'Add or substract spent time'
-    explanation do |time_spent|
+    explanation do |time_spent, time_spent_date|
       if time_spent
         if time_spent > 0
           verb = 'Adds'
@@ -394,16 +394,20 @@ module QuickActions
         "#{verb} #{Gitlab::TimeTrackingFormatter.output(value)} spent time."
       end
     end
-    params '<1h 30m | -1h 30m>'
+    params '<time(1h30m | -1h30m)> <date(YYYY-MM-DD)>'
     condition do
       current_user.can?(:"admin_#{issuable.to_ability_name}", issuable)
     end
-    parse_params do |raw_duration|
-      Gitlab::TimeTrackingFormatter.parse(raw_duration)
+    parse_params do |raw_time_date|
+      Gitlab::QuickActions::SpendTimeAndDateSeparator.new(raw_time_date).execute
     end
-    command :spend do |time_spent|
+    command :spend do |time_spent, time_spent_date|
       if time_spent
-        @updates[:spend_time] = { duration: time_spent, user: current_user }
+        @updates[:spend_time] = {
+          duration: time_spent,
+          user: current_user,
+          spent_at: time_spent_date
+        }
       end
     end
 
@@ -458,7 +462,7 @@ module QuickActions
       target_branch_param.strip
     end
     command :target_branch do |branch_name|
-      @updates[:target_branch] = branch_name if project.repository.branch_names.include?(branch_name)
+      @updates[:target_branch] = branch_name if project.repository.branch_exists?(branch_name)
     end
 
     desc 'Move issue from one column of the board to another'

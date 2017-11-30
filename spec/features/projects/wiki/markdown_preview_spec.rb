@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Projects > Wiki > User previews markdown changes', js: true do
+feature 'Projects > Wiki > User previews markdown changes', :js do
   let(:user) { create(:user) }
   let(:project) { create(:project, namespace: user.namespace) }
   let(:wiki_content) do
@@ -14,18 +14,17 @@ feature 'Projects > Wiki > User previews markdown changes', js: true do
 
   background do
     project.team << [user, :master]
-    WikiPages::CreateService.new(project, user, title: 'home', content: 'Home page').execute
 
     sign_in(user)
 
     visit project_path(project)
-    find('.shortcuts-wiki').trigger('click')
+    find('.shortcuts-wiki').click
   end
 
   context "while creating a new wiki page" do
     context "when there are no spaces or hyphens in the page name" do
       it "rewrites relative links as expected" do
-        find('.add-new-wiki').trigger('click')
+        find('.add-new-wiki').click
         page.within '#modal-new-wiki' do
           fill_in :new_wiki_path, with: 'a/b/c/d'
           click_button 'Create page'
@@ -92,7 +91,7 @@ feature 'Projects > Wiki > User previews markdown changes', js: true do
 
   context "while editing a wiki page" do
     def create_wiki_page(path)
-      find('.add-new-wiki').trigger('click')
+      find('.add-new-wiki').click
 
       page.within '#modal-new-wiki' do
         fill_in :new_wiki_path, with: path

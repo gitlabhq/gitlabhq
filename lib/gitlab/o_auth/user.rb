@@ -157,7 +157,7 @@ module Gitlab
       end
 
       def find_by_uid_and_provider
-        identity = Identity.find_by(provider: auth_hash.provider, extern_uid: auth_hash.uid)
+        identity = Identity.with_extern_uid(auth_hash.provider, auth_hash.uid).take
         identity && identity.user
       end
 
@@ -179,7 +179,7 @@ module Gitlab
         valid_username = ::Namespace.clean_path(username)
 
         uniquify = Uniquify.new
-        valid_username = uniquify.string(valid_username) { |s| !DynamicPathValidator.valid_user_path?(s) }
+        valid_username = uniquify.string(valid_username) { |s| !UserPathValidator.valid_path?(s) }
 
         name = auth_hash.name
         name = valid_username if name.strip.empty?

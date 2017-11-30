@@ -121,7 +121,7 @@ Google Cloud.
 
 ## Enabling Auto DevOps
 
-NOTE: **Note:**
+**Note:**
 If you haven't done already, read the [prerequisites](#prerequisites) to make
 full use of Auto DevOps. If this is your fist time, we recommend you follow the
 [quick start guide](#quick-start).
@@ -129,9 +129,13 @@ full use of Auto DevOps. If this is your fist time, we recommend you follow the
 1. Go to your project's **Settings > CI/CD > General pipelines settings** and
    find the Auto DevOps section
 1. Select "Enable Auto DevOps"
+1. After selecting an option to enable Auto DevOps, a checkbox will appear below
+   so you can immediately run a pipeline on the default branch
 1. Optionally, but recommended, add in the [base domain](#auto-devops-base-domain)
    that will be used by Kubernetes to deploy your application
 1. Hit **Save changes** for the changes to take effect
+
+![Project AutoDevops settings section](img/auto_devops_settings.png)
 
 Now that it's enabled, there are a few more steps depending on whether your project
 has a `.gitlab-ci.yml` or not:
@@ -143,6 +147,12 @@ has a `.gitlab-ci.yml` or not:
 - **For projects with a `.gitlab-ci.yml` present:**
   All you need to do is remove your existing `.gitlab-ci.yml`, and you can even
   do that in a branch to test Auto DevOps before committing to `master`.
+
+NOTE: **Note:**
+If you are a GitLab Administrator, you can enable Auto DevOps instance wide
+in **Admin Area > Settings > Continuous Integration and Deployment**. Doing that,
+all the projects that haven't explicitly set an option will have Auto DevOps
+enabled by default.
 
 ## Stages of Auto DevOps
 
@@ -315,7 +325,7 @@ Auto DevOps uses [Helm](https://helm.sh/) to deploy your application to Kubernet
 You can override the Helm chart used by bundling up a chart into your project
 repo or by specifying a project variable:
 
-- **Bundled chart** - If your project has a `./charts` directory with a `Chart.yaml`
+- **Bundled chart** - If your project has a `./chart` directory with a `Chart.yaml`
   file in it, Auto DevOps will detect the chart and use it instead of the [default
   one](https://gitlab.com/charts/charts.gitlab.io/tree/master/charts/auto-deploy-app).
   This can be a great way to control exactly how your application is deployed.
@@ -517,7 +527,7 @@ Feature.get(:auto_devops_banner_disabled).enable
 Or through the HTTP API with an admin access token:
 
 ```sh
-curl --data "value=true" --header "PRIVATE-TOKEN: private_token" https://gitlab.example.com/api/v4/features/auto_devops_banner_disabled
+curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https://gitlab.example.com/api/v4/features/auto_devops_banner_disabled
 ```
 
 [ce-37115]: https://gitlab.com/gitlab-org/gitlab-ce/issues/37115

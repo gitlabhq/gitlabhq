@@ -39,6 +39,18 @@ describe Gitlab::SidekiqStatus do
     end
   end
 
+  describe '.running?', :clean_gitlab_redis_shared_state do
+    it 'returns true if job is running' do
+      described_class.set('123')
+
+      expect(described_class.running?('123')).to be(true)
+    end
+
+    it 'returns false if job is not found' do
+      expect(described_class.running?('123')).to be(false)
+    end
+  end
+
   describe '.num_running', :clean_gitlab_redis_shared_state do
     it 'returns 0 if all jobs have been completed' do
       expect(described_class.num_running(%w(123))).to eq(0)

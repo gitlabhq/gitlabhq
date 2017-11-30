@@ -37,7 +37,7 @@ module Banzai
 
       objects.each_with_index do |object, index|
         redacted_data = redacted[index]
-        object.__send__("redacted_#{attribute}_html=", redacted_data[:document].to_html.html_safe) # rubocop:disable GitlabSecurity/PublicSend
+        object.__send__("redacted_#{attribute}_html=", redacted_data[:document].to_html(save_options).html_safe) # rubocop:disable GitlabSecurity/PublicSend
         object.user_visible_reference_count = redacted_data[:visible_reference_count] if object.respond_to?(:user_visible_reference_count)
       end
     end
@@ -82,6 +82,12 @@ module Banzai
         project: project,
         skip_redaction: true
       )
+    end
+
+    def save_options
+      return {} unless base_context[:xhtml]
+
+      { save_with: Nokogiri::XML::Node::SaveOptions::AS_XHTML }
     end
   end
 end

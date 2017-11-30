@@ -78,7 +78,7 @@ describe Projects::LabelsController do
       it 'creates labels' do
         post :generate, namespace_id: personal_project.namespace.to_param, project_id: personal_project
 
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
       end
     end
 
@@ -86,7 +86,7 @@ describe Projects::LabelsController do
       it 'creates labels' do
         post :generate, namespace_id: project.namespace.to_param, project_id: project
 
-        expect(response).to have_http_status(302)
+        expect(response).to have_gitlab_http_status(302)
       end
     end
   end
@@ -97,7 +97,7 @@ describe Projects::LabelsController do
 
       toggle_subscription(label)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
 
     it 'allows user to toggle subscription on group labels' do
@@ -105,7 +105,7 @@ describe Projects::LabelsController do
 
       toggle_subscription(group_label)
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
 
     def toggle_subscription(label)
@@ -121,7 +121,7 @@ describe Projects::LabelsController do
       it 'denies access' do
         post :promote, namespace_id: project.namespace.to_param, project_id: project, id: label_1.to_param
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -170,7 +170,7 @@ describe Projects::LabelsController do
             it 'does not redirect' do
               get :index, namespace_id: project.namespace, project_id: project.to_param
 
-              expect(response).not_to have_http_status(301)
+              expect(response).not_to have_gitlab_http_status(301)
             end
           end
 
@@ -203,13 +203,13 @@ describe Projects::LabelsController do
       it 'does not 404' do
         post :generate, namespace_id: project.namespace, project_id: project
 
-        expect(response).not_to have_http_status(404)
+        expect(response).not_to have_gitlab_http_status(404)
       end
 
       it 'does not redirect to the correct casing' do
         post :generate, namespace_id: project.namespace, project_id: project
 
-        expect(response).not_to have_http_status(301)
+        expect(response).not_to have_gitlab_http_status(301)
       end
     end
 
@@ -219,7 +219,7 @@ describe Projects::LabelsController do
       it 'returns not found' do
         post :generate, namespace_id: project.namespace, project_id: project.to_param + 'old'
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end

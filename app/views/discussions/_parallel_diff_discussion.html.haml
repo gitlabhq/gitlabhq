@@ -4,7 +4,7 @@
     %td.notes_line.old
     %td.notes_content.parallel.old
       .content{ class: ('hide' unless discussions_left.any?(&:expanded?)) }
-        = render partial: "discussions/notes", collection: discussions_left, as: :discussion, line_type: 'old'
+        = render partial: "discussions/notes", collection: discussions_left, as: :discussion, line_type: 'old', locals: { disable_collapse_class: true }
   - else
     %td.notes_line.old= ("")
     %td.notes_content.parallel.old
@@ -14,7 +14,7 @@
     %td.notes_line.new
     %td.notes_content.parallel.new
       .content{ class: ('hide' unless discussions_right.any?(&:expanded?)) }
-        = render partial: "discussions/notes", collection: discussions_right, as: :discussion, line_type: 'new'
+        = render partial: "discussions/notes", collection: discussions_right, as: :discussion, line_type: 'new', locals: { disable_collapse_class: true }
   - else
     %td.notes_line.new= ("")
     %td.notes_content.parallel.new

@@ -2425,13 +2425,6 @@ const metricsGroupsAPIResponse = {
 
 export default metricsGroupsAPIResponse;
 
-const responseMockData = {
-  'GET': {
-    '/root/hello-prometheus/environments/30/additional_metrics.json': metricsGroupsAPIResponse,
-    'http://test.host/frontend-fixtures/environments-project/environments/1/additional_metrics.json': metricsGroupsAPIResponse, // TODO: MAke sure this works in the monitoring_bundle_spec
-  },
-};
-
 export const deploymentData = [
   {
     id: 111,
@@ -8319,12 +8312,4 @@ export function convertDatesMultipleSeries(multipleSeries) {
     convertedMultiple[index].queries[0].result = convertedResult;
   });
   return convertedMultiple;
-}
-
-export function MonitorMockInterceptor(request, next) {
-  const body = responseMockData[request.method.toUpperCase()][request.url];
-
-  next(request.respondWith(JSON.stringify(body), {
-    status: 200,
-  }));
 }

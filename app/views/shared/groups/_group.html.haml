@@ -9,9 +9,9 @@
     .controls.hidden-xs
       - if can?(current_user, :admin_group, group)
         = link_to edit_group_path(group), class: "btn" do
-          = icon('cogs')
+          = sprite_icon('settings')
 
-      = link_to leave_group_group_members_path(group), data: { confirm: leave_confirmation_message(group) }, method: :delete, class: "btn", title: 'Leave this group' do
+      = link_to leave_group_group_members_path(group), data: { confirm: leave_confirmation_message(group) }, method: :delete, class: "btn", title: s_("GroupsTree|Leave this group") do
         = icon('sign-out')
 
   .stats
@@ -28,7 +28,7 @@
 
   .avatar-container.s40
     = link_to group do
-      = image_tag group_icon(group), class: "avatar s40 hidden-xs"
+      = group_icon(group, class: "avatar s40 hidden-xs")
   .title
     = link_to group_name, group, class: 'group-name'
 

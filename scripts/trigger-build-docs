@@ -27,14 +27,7 @@ def docs_branch
   # Prefix the remote branch with 'preview-' in order to avoid
   # name conflicts in the rare case the branch name already
   # exists in the docs repo and truncate to max length.
-  "preview-#{ENV["CI_COMMIT_REF_SLUG"]}"[0...max]
-end
-
-#
-# Dummy way to find out in which repo we are, CE or EE
-#
-def ee?
-  File.exist?('CHANGELOG-EE.md')
+  "#{slug}-#{ENV["CI_COMMIT_REF_SLUG"]}"[0...max]
 end
 
 #
@@ -56,14 +49,34 @@ def remove_remote_branch
 end
 
 #
+# Define suffix in review app URL based on project
+#
+def slug
+  case ENV["CI_PROJECT_NAME"]
+  when 'gitlab-ce'
+    'ce'
+  when 'gitlab-ee'
+    'ee'
+  when 'gitlab-runner'
+    'runner'
+  when 'omnibus-gitlab'
+    'omnibus'
+  end
+end
+
+#
+# Overriding vars in https://gitlab.com/gitlab-com/gitlab-docs/blob/master/.gitlab-ci.yml
+#
+def param_name
+  "BRANCH_#{slug.upcase}"
+end
+
+#
 # Trigger a pipeline in gitlab-docs
 #
 def trigger_pipeline
-  # Overriding vars in https://gitlab.com/gitlab-com/gitlab-docs/blob/master/.gitlab-ci.yml
-  param_name = ee? ? 'BRANCH_EE' : 'BRANCH_CE'
-
   # The review app URL
-  app_url = "http://#{docs_branch}.#{ENV["DOCS_REVIEW_APPS_DOMAIN"]}/#{ee? ? 'ee' : 'ce'}"
+  app_url = "http://#{docs_branch}.#{ENV["DOCS_REVIEW_APPS_DOMAIN"]}/#{slug}"
 
   # Create the pipeline
   puts "=> Triggering a pipeline..."

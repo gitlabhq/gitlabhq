@@ -21,7 +21,7 @@ describe 'User deletes files' do
       visit(project_tree_path_root_ref)
     end
 
-    it 'deletes the file', js: true do
+    it 'deletes the file', :js do
       click_link('.gitignore')
 
       expect(page).to have_content('.gitignore')
@@ -41,7 +41,7 @@ describe 'User deletes files' do
       visit(project2_tree_path_root_ref)
     end
 
-    it 'deletes the file in a forked project', js: true do
+    it 'deletes the file in a forked project', :js do
       click_link('.gitignore')
 
       expect(page).to have_content('.gitignore')

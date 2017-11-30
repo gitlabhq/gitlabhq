@@ -87,9 +87,25 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects, :tr
       subject.move_project_folders(project, 'known-parent/the-path', 'known-parent/the-path0')
     end
 
+    it 'does not move the repositories when hashed storage is enabled' do
+      project.update!(storage_version: Project::HASHED_STORAGE_FEATURES[:repository])
+
+      expect(subject).not_to receive(:move_repository)
+
+      subject.move_project_folders(project, 'known-parent/the-path', 'known-parent/the-path0')
+    end
+
     it 'moves uploads' do
       expect(subject).to receive(:move_uploads)
                            .with('known-parent/the-path', 'known-parent/the-path0')
+
+      subject.move_project_folders(project, 'known-parent/the-path', 'known-parent/the-path0')
+    end
+
+    it 'does not move uploads when hashed storage is enabled for attachments' do
+      project.update!(storage_version: Project::HASHED_STORAGE_FEATURES[:attachments])
+
+      expect(subject).not_to receive(:move_uploads)
 
       subject.move_project_folders(project, 'known-parent/the-path', 'known-parent/the-path0')
     end
@@ -115,7 +131,7 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects, :tr
     end
   end
 
-  describe '#revert_renames', redis: true do
+  describe '#revert_renames', :redis do
     it 'renames the routes back to the previous values' do
       subject.rename_project(project)
 

@@ -29,6 +29,7 @@ module Gitlab
                                      #{config.root}/app/models/project_services
                                      #{config.root}/app/workers/concerns
                                      #{config.root}/app/services/concerns
+                                     #{config.root}/app/serializers/concerns
                                      #{config.root}/app/finders/concerns])
 
     config.generators.templates.push("#{config.root}/generator_templates")
@@ -112,7 +113,7 @@ module Gitlab
 
     config.action_view.sanitized_allowed_protocols = %w(smb)
 
-    config.middleware.insert_before Warden::Manager, Rack::Attack
+    config.middleware.insert_after Warden::Manager, Rack::Attack
 
     # Allow access to GitLab API from other domains
     config.middleware.insert_before Warden::Manager, Rack::Cors do

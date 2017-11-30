@@ -113,12 +113,14 @@ class Settings < Settingslogic
       URI.parse(url_without_path).host
     end
 
-    # Random cron time every Sunday to load balance usage pings
-    def cron_random_weekly_time
+    # Runs every minute in a random ten-minute period on Sundays, to balance the
+    # load on the server receiving these pings. The usage ping is safe to run
+    # multiple times because of a 24 hour exclusive lock.
+    def cron_for_usage_ping
       hour = rand(24)
-      minute = rand(60)
+      minute = rand(6)
 
-      "#{minute} #{hour} * * 0"
+      "#{minute}0-#{minute}9 #{hour} * * 0"
     end
   end
 end
@@ -254,7 +256,7 @@ rescue ArgumentError # no user configured
 end
 Settings.gitlab['time_zone'] ||= nil
 Settings.gitlab['signup_enabled'] ||= true if Settings.gitlab['signup_enabled'].nil?
-Settings.gitlab['password_authentication_enabled'] ||= true if Settings.gitlab['password_authentication_enabled'].nil?
+Settings.gitlab['signin_enabled'] ||= true if Settings.gitlab['signin_enabled'].nil?
 Settings.gitlab['restricted_visibility_levels'] = Settings.__send__(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
 Settings.gitlab['issue_closing_pattern'] = '((?:[Cc]los(?:e[sd]?|ing)|[Ff]ix(?:e[sd]|ing)?|[Rr]esolv(?:e[sd]?|ing)|[Ii]mplement(?:s|ed|ing)?)(:?) +(?:(?:issues? +)?%{issue_ref}(?:(?:, *| +and +)?)|([A-Z][A-Z0-9_]+-\d+))+)' if Settings.gitlab['issue_closing_pattern'].nil?
@@ -398,7 +400,7 @@ Settings.cron_jobs['stuck_import_jobs_worker'] ||= Settingslogic.new({})
 Settings.cron_jobs['stuck_import_jobs_worker']['cron'] ||= '15 * * * *'
 Settings.cron_jobs['stuck_import_jobs_worker']['job_class'] = 'StuckImportJobsWorker'
 Settings.cron_jobs['gitlab_usage_ping_worker'] ||= Settingslogic.new({})
-Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.__send__(:cron_random_weekly_time)
+Settings.cron_jobs['gitlab_usage_ping_worker']['cron'] ||= Settings.__send__(:cron_for_usage_ping)
 Settings.cron_jobs['gitlab_usage_ping_worker']['job_class'] = 'GitlabUsagePingWorker'
 
 Settings.cron_jobs['schedule_update_user_activity_worker'] ||= Settingslogic.new({})
@@ -427,7 +429,7 @@ Settings.gitlab_shell['ssh_port']     ||= 22
 Settings.gitlab_shell['ssh_user']     ||= Settings.gitlab.user
 Settings.gitlab_shell['owner_group']  ||= Settings.gitlab.user
 Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.__send__(:build_gitlab_shell_ssh_path_prefix)
-Settings.gitlab_shell['git_timeout'] ||= 800
+Settings.gitlab_shell['git_timeout'] ||= 10800
 
 #
 # Workhorse
@@ -453,17 +455,6 @@ Settings.repositories.storages.each do |key, storage|
 
   # Expand relative paths
   storage['path'] = Settings.absolute(storage['path'])
-  # Set failure defaults
-  storage['failure_count_threshold'] ||= 10
-  storage['failure_wait_time'] ||= 30
-  storage['failure_reset_time'] ||= 1800
-  storage['storage_timeout'] ||= 5
-  # Set turn strings into numbers
-  storage['failure_count_threshold'] = storage['failure_count_threshold'].to_i
-  storage['failure_wait_time'] = storage['failure_wait_time'].to_i
-  storage['failure_reset_time'] = storage['failure_reset_time'].to_i
-  # We might want to have a timeout shorter than 1 second.
-  storage['storage_timeout'] = storage['storage_timeout'].to_f
 
   Settings.repositories.storages[key] = storage
 end
@@ -544,6 +535,7 @@ Settings.webpack.dev_server['port']    ||= 3808
 Settings['monitoring'] ||= Settingslogic.new({})
 Settings.monitoring['ip_whitelist'] ||= ['127.0.0.1/8']
 Settings.monitoring['unicorn_sampler_interval'] ||= 10
+Settings.monitoring['ruby_sampler_interval'] ||= 60
 Settings.monitoring['sidekiq_exporter'] ||= Settingslogic.new({})
 Settings.monitoring.sidekiq_exporter['enabled'] ||= false
 Settings.monitoring.sidekiq_exporter['address'] ||= 'localhost'

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-feature 'Widget Deployments Header', js: true do
+feature 'Widget Deployments Header', :js do
   describe 'when deployed to an environment' do
     given(:user) { create(:user) }
     given(:project) { merge_request.target_project }
@@ -42,7 +42,7 @@ feature 'Widget Deployments Header', js: true do
       end
 
       scenario 'does start build when stop button clicked' do
-        click_button('Stop environment')
+        accept_confirm { click_button('Stop environment') }
 
         expect(page).to have_content('close_app')
       end

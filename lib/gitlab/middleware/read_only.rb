@@ -12,6 +12,7 @@ module Gitlab
 
       def call(env)
         @env = env
+        @route_hash = nil
 
         if disallowed_request? && Gitlab::Database.read_only?
           Rails.logger.debug('GitLab ReadOnly: preventing possible non read-only operation')
@@ -57,7 +58,7 @@ module Gitlab
       end
 
       def last_visited_url
-        @env['HTTP_REFERER'] || rack_session['user_return_to'] || Rails.application.routes.url_helpers.root_url
+        @env['HTTP_REFERER'] || rack_session['user_return_to'] || Gitlab::Routing.url_helpers.root_url
       end
 
       def route_hash
@@ -65,11 +66,7 @@ module Gitlab
       end
 
       def whitelisted_routes
-        logout_route || grack_route || @whitelisted.any? { |path| request.path.include?(path) } || lfs_route || sidekiq_route
-      end
-
-      def logout_route
-        route_hash[:controller] == 'sessions' && route_hash[:action] == 'destroy'
+        grack_route || @whitelisted.any? { |path| request.path.include?(path) } || lfs_route || sidekiq_route
       end
 
       def sidekiq_route
@@ -77,11 +74,17 @@ module Gitlab
       end
 
       def grack_route
-        request.path.end_with?('.git/git-upload-pack')
+        # Calling route_hash may be expensive. Only do it if we think there's a possible match
+        return false unless request.path.end_with?('.git/git-upload-pack')
+
+        route_hash[:controller] == 'projects/git_http' && route_hash[:action] == 'git_upload_pack'
       end
 
       def lfs_route
-        request.path.end_with?('/info/lfs/objects/batch')
+        # Calling route_hash may be expensive. Only do it if we think there's a possible match
+        return false unless request.path.end_with?('/info/lfs/objects/batch')
+
+        route_hash[:controller] == 'projects/lfs_api' && route_hash[:action] == 'batch'
       end
     end
   end

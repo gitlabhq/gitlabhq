@@ -11,7 +11,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects, requirements: { id: %r{[^/]+} } do
+      resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
         desc 'Get a project repository commits' do
           success ::API::Entities::Commit
         end
@@ -72,7 +72,7 @@ module API
         params do
           requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
         end
-        get ":id/repository/commits/:sha" do
+        get ":id/repository/commits/:sha", requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
           commit = user_project.commit(params[:sha])
 
           not_found! "Commit" unless commit
@@ -86,7 +86,7 @@ module API
         params do
           requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
         end
-        get ":id/repository/commits/:sha/diff" do
+        get ":id/repository/commits/:sha/diff", requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
           commit = user_project.commit(params[:sha])
 
           not_found! "Commit" unless commit
@@ -102,11 +102,11 @@ module API
           use :pagination
           requires :sha, type: String, desc: 'A commit sha, or the name of a branch or tag'
         end
-        get ':id/repository/commits/:sha/comments' do
+        get ':id/repository/commits/:sha/comments', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
           commit = user_project.commit(params[:sha])
 
           not_found! 'Commit' unless commit
-          notes = Note.where(commit_id: commit.id).order(:created_at)
+          notes = commit.notes.order(:created_at)
 
           present paginate(notes), with: ::API::Entities::CommitNote
         end
@@ -119,7 +119,7 @@ module API
           requires :sha, type: String, desc: 'A commit sha to be cherry picked'
           requires :branch, type: String, desc: 'The name of the branch'
         end
-        post ':id/repository/commits/:sha/cherry_pick' do
+        post ':id/repository/commits/:sha/cherry_pick', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
           authorize! :push_code, user_project
 
           commit = user_project.commit(params[:sha])
@@ -156,7 +156,7 @@ module API
             requires :line_type, type: String, values: %w(new old), default: 'new', desc: 'The type of the line'
           end
         end
-        post ':id/repository/commits/:sha/comments' do
+        post ':id/repository/commits/:sha/comments', requirements: API::COMMIT_ENDPOINT_REQUIREMENTS do
           commit = user_project.commit(params[:sha])
           not_found! 'Commit' unless commit
 
@@ -169,11 +169,13 @@ module API
           if params[:path]
             commit.raw_diffs(limits: false).each do |diff|
               next unless diff.new_path == params[:path]
+
               lines = Gitlab::Diff::Parser.new.parse(diff.diff.each_line)
 
               lines.each do |line|
                 next unless line.new_pos == params[:line] && line.type == params[:line_type]
-                break opts[:line_code] = Gitlab::Diff::LineCode.generate(diff.new_path, line.new_pos, line.old_pos)
+
+                break opts[:line_code] = Gitlab::Git.diff_line_code(diff.new_path, line.new_pos, line.old_pos)
               end
 
               break if opts[:line_code]

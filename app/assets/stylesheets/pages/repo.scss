@@ -1,17 +1,3 @@
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity $sidebar-transition-duration;
-}
-
-.monaco-loader {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: $black-transparent;
-}
-
 .modal.popup-dialog {
   display: block;
   background-color: $black-transparent;
@@ -49,319 +35,276 @@
   }
 }
 
-.repository-view {
-  border: 1px solid $border-color;
-  border-radius: $border-radius-default;
-  color: $almost-black;
+.multi-file {
+  display: flex;
+  height: calc(100vh - 145px);
+  border-top: 1px solid $white-dark;
+  border-bottom: 1px solid $white-dark;
 
-  .code.white pre .hll {
-    background-color: $well-light-border !important;
-  }
-
-  .tree-content-holder {
-    display: flex;
-    min-height: 300px;
-  }
-
-  .tree-content-holder-mini {
-    height: 100vh;
-  }
-
-  .panel-right {
-    display: flex;
-    flex-direction: column;
-    width: 80%;
-    height: 100%;
-
-    .monaco-editor.vs {
-      .current-line {
-        border: none;
-        background: $well-light-border;
-      }
-
-      .line-numbers {
-        cursor: pointer;
-
-        &:hover {
-          text-decoration: underline;
-        }
-      }
-
-      .cursor {
-        display: none !important;
-      }
-    }
-
-    .blob-no-preview {
-      .vertical-center {
-        justify-content: center;
-        width: 100%;
-      }
-    }
-
-    &.edit-mode {
-      .blob-viewer-container {
-        overflow: hidden;
-      }
-
-      .monaco-editor.vs {
-        .cursor {
-          background: $black;
-          border-color: $black;
-          display: block !important;
-        }
-      }
-    }
-
-    .blob-viewer-container {
-      flex: 1;
-      overflow: auto;
-
-      > div,
-      .file-content:not(.wiki) {
-        display: flex;
-      }
-
-      > div,
-      .file-content,
-      .blob-viewer,
-      .line-number,
-      .blob-content,
-      .code {
-        min-height: 100%;
-        width: 100%;
-      }
-
-      .line-numbers {
-        min-width: 44px;
-      }
-
-      .blob-content {
-        flex: 1;
-        overflow-x: auto;
-      }
-    }
-
-    #tabs {
-      flex-shrink: 0;
-      display: flex;
-      width: 100%;
-      padding-left: 0;
-      margin-bottom: 0;
-      white-space: nowrap;
-      overflow-y: hidden;
-      overflow-x: auto;
-
-      li {
-        animation: swipeRightAppear ease-in 0.1s;
-        animation-iteration-count: 1;
-        transform-origin: 0% 50%;
-        list-style-type: none;
-        background: $gray-normal;
-        display: inline-block;
-        padding: #{$gl-padding / 2} $gl-padding;
-        border-right: 1px solid $white-dark;
-        border-bottom: 1px solid $white-dark;
-        white-space: nowrap;
-        cursor: pointer;
-
-        &.remove {
-          animation: swipeRightDissapear ease-in 0.1s;
-          animation-iteration-count: 1;
-          transform-origin: 0% 50%;
-
-          a {
-            width: 0;
-          }
-        }
-
-        &.active {
-          background: $white-light;
-          border-bottom: none;
-        }
-
-        a {
-          @include str-truncated(100px);
-          color: $black;
-          vertical-align: middle;
-          text-decoration: none;
-          margin-right: 12px;
-
-          &.close {
-            width: auto;
-            font-size: 15px;
-            opacity: 1;
-            margin-right: -6px;
-          }
-        }
-
-        .close-icon:hover {
-          color: $hint-color;
-        }
-
-        .close-icon,
-        .unsaved-icon {
-          float: right;
-          margin-top: 3px;
-          margin-left: 15px;
-          color: $gray-darkest;
-        }
-
-        .unsaved-icon {
-          color: $brand-success;
-        }
-
-        &.tabs-divider {
-          width: 100%;
-          background-color: $white-light;
-          border-right: none;
-          border-top-right-radius: 2px;
-        }
-      }
-    }
-
-    #repo-file-buttons {
-      background-color: $white-light;
-      border-bottom: 1px solid $white-normal;
-      padding: 5px 10px;
-      position: relative;
-      border-top: 1px solid $white-normal;
-    }
-
-    #binary-viewer {
-      height: 80vh;
-      overflow: auto;
-      margin: 0;
-
-      .blob-viewer {
-        padding-top: 20px;
-        padding-left: 20px;
-      }
-
-      .binary-unknown {
-        text-align: center;
-        padding-top: 100px;
-        background: $gray-light;
-        height: 100%;
-        font-size: 17px;
-
-        span {
-          display: block;
-        }
-      }
+  &.is-collapsed {
+    .ide-file-list {
+      max-width: 250px;
     }
   }
+}
 
-  #commit-area {
-    background: $gray-light;
-    padding: 20px;
+.ide-file-list {
+  flex: 1;
+  overflow: scroll;
 
-    .help-block {
-      padding-top: 7px;
-      margin-top: 0;
-    }
+  .file {
+    cursor: pointer;
   }
 
-  #view-toggler {
-    height: 41px;
+  a {
+    color: $gl-text-color;
+  }
+
+  th {
+    position: sticky;
+    top: 0;
+  }
+}
+
+.multi-file-table-name,
+.multi-file-table-col-commit-message {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 0;
+}
+
+.multi-file-table-name {
+  width: 350px;
+}
+
+.multi-file-table-col-commit-message {
+  width: 50%;
+}
+
+.multi-file-edit-pane {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  border-left: 1px solid $white-dark;
+  overflow: hidden;
+}
+
+.multi-file-tabs {
+  display: flex;
+  overflow: scroll;
+  background-color: $white-normal;
+  box-shadow: inset 0 -1px $white-dark;
+
+  > li {
     position: relative;
-    display: block;
-    border-bottom: 1px solid $white-normal;
-    background: $white-light;
-    margin-top: -5px;
+  }
+}
+
+.multi-file-tab {
+  @include str-truncated(150px);
+  padding: ($gl-padding / 2) ($gl-padding + 12) ($gl-padding / 2) $gl-padding;
+  background-color: $gray-normal;
+  border-right: 1px solid $white-dark;
+  border-bottom: 1px solid $white-dark;
+  cursor: pointer;
+
+  &.active {
+    background-color: $white-light;
+    border-bottom-color: $white-light;
+  }
+}
+
+.multi-file-tab-close {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  padding: 0;
+  background: none;
+  border: 0;
+  font-size: $gl-font-size;
+  color: $gray-darkest;
+  transform: translateY(-50%);
+
+  &:not(.modified):hover,
+  &:not(.modified):focus {
+    color: $hint-color;
   }
 
-  #binary-viewer {
-    img {
-      max-width: 100%;
-    }
+  &.modified {
+    color: $indigo-700;
   }
+}
 
-  #sidebar {
-    flex: 1;
+.multi-file-edit-pane-content {
+  flex: 1;
+  height: 0;
+}
+
+.multi-file-editor-btn-group {
+  padding: $grid-size;
+  border-top: 1px solid $white-dark;
+}
+
+// Not great, but this is to deal with our current output
+.multi-file-preview-holder {
+  height: 100%;
+  overflow: scroll;
+
+  .blob-viewer {
     height: 100%;
+  }
 
-    &.sidebar-mini {
-      width: 20%;
-      border-right: 1px solid $white-normal;
-      overflow: auto;
+  .file-content.code {
+    display: flex;
+
+    i {
+      margin-left: -10px;
     }
+  }
 
-    table {
-      margin-bottom: 0;
-    }
+  .line-numbers {
+    min-width: 50px;
+  }
 
-    tr {
-      animation: fadein 0.5s;
-      cursor: pointer;
+  .file-content,
+  .line-numbers,
+  .blob-content,
+  .code {
+    min-height: 100%;
+  }
+}
 
-      &.repo-file-options td {
-        padding: 0;
-        border-top: none;
-        background: $gray-light;
-        width: 100%;
-        display: inline-block;
+.multi-file-commit-panel {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 290px;
+  padding: $gl-padding;
+  background-color: $gray-light;
+  border-left: 1px solid $white-dark;
 
-        &:first-child {
-          border-top-left-radius: 2px;
-        }
+  &.is-collapsed {
+    width: 60px;
+    padding: 0;
+  }
+}
 
-        .title {
-          display: inline-block;
-          font-size: 10px;
-          text-transform: uppercase;
-          font-weight: $gl-font-weight-bold;
-          color: $gray-darkest;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          vertical-align: middle;
-          padding: 2px 16px;
-        }
-      }
+.multi-file-commit-panel-section {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
 
-      .file-icon {
-        margin-right: 5px;
-      }
+.multi-file-commit-panel-header {
+  display: flex;
+  align-items: center;
+  padding: 0 0 12px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid $white-dark;
 
-      td {
-        white-space: nowrap;
-      }
-    }
+  &.is-collapsed {
+    border-bottom: 1px solid $white-dark;
 
-    a {
-      @include str-truncated(250px);
-      color: $almost-black;
-      display: inline-block;
-      vertical-align: middle;
+    svg {
+      margin-left: auto;
+      margin-right: auto;
     }
   }
 }
 
-.render-error {
-  min-height: calc(100vh - 62px);
+.multi-file-commit-panel-collapse-btn {
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-left: auto;
+  font-size: 20px;
 
-  p {
-    width: 100%;
+  &.is-collapsed {
+    margin-right: auto;
   }
 }
 
-@keyframes swipeRightAppear {
-  0% {
-    transform: scaleX(0.00);
-  }
+.multi-file-commit-list {
+  flex: 1;
+  overflow: scroll;
+}
 
-  100% {
-    transform: scaleX(1.00);
+.multi-file-commit-list-item {
+  display: flex;
+  align-items: center;
+}
+
+.multi-file-addition {
+  fill: $green-500;
+}
+
+.multi-file-modified {
+  fill: $orange-500;
+}
+
+.multi-file-commit-list-collapsed {
+  display: flex;
+  flex-direction: column;
+
+  > svg {
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
-@keyframes swipeRightDissapear {
-  0% {
-    transform: scaleX(1.00);
+.multi-file-commit-list-path {
+  @include str-truncated(100%);
+}
+
+.multi-file-commit-form {
+  padding-top: 12px;
+  border-top: 1px solid $white-dark;
+}
+
+.multi-file-commit-fieldset {
+  display: flex;
+  align-items: center;
+  padding-bottom: 12px;
+
+  .btn {
+    flex: 1;
+  }
+}
+
+.multi-file-commit-message.form-control {
+  height: 80px;
+  resize: none;
+}
+
+.dirty-diff {
+  // !important need to override monaco inline style
+  width: 4px !important;
+  left: 0 !important;
+
+  &-modified {
+    background-color: $blue-500;
   }
 
-  100% {
-    transform: scaleX(0.00);
+  &-added {
+    background-color: $green-600;
+  }
+
+  &-removed {
+    height: 0 !important;
+    width: 0 !important;
+    bottom: -2px;
+    border-style: solid;
+    border-width: 5px;
+    border-color: transparent transparent transparent $red-500;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100px;
+      height: 1px;
+      background-color: rgba($red-500, .5);
+    }
   }
 }

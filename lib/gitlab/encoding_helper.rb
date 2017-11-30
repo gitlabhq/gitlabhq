@@ -14,9 +14,13 @@ module Gitlab
     ENCODING_CONFIDENCE_THRESHOLD = 50
 
     def encode!(message)
-      return nil unless message.respond_to? :force_encoding
+      return nil unless message.respond_to?(:force_encoding)
+      return message if message.encoding == Encoding::UTF_8 && message.valid_encoding?
 
-      # if message is utf-8 encoding, just return it
+      if message.respond_to?(:frozen?) && message.frozen?
+        message = message.dup
+      end
+
       message.force_encoding("UTF-8")
       return message if message.valid_encoding?
 
@@ -50,6 +54,9 @@ module Gitlab
     end
 
     def encode_utf8(message)
+      return nil unless message.is_a?(String)
+      return message if message.encoding == Encoding::UTF_8 && message.valid_encoding?
+
       detect = CharlockHolmes::EncodingDetector.detect(message)
       if detect && detect[:encoding]
         begin

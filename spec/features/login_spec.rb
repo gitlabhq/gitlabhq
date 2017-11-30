@@ -197,7 +197,7 @@ feature 'Login' do
             expect(page).to have_content('The global settings require you to enable Two-Factor Authentication for your account. You need to do this before ')
           end
 
-          it 'allows skipping two-factor configuration', js: true do
+          it 'allows skipping two-factor configuration', :js do
             expect(current_path).to eq profile_two_factor_auth_path
 
             click_link 'Configure it later'
@@ -215,7 +215,7 @@ feature 'Login' do
             )
           end
 
-          it 'disallows skipping two-factor configuration', js: true do
+          it 'disallows skipping two-factor configuration', :js do
             expect(current_path).to eq profile_two_factor_auth_path
             expect(page).not_to have_link('Configure it later')
           end
@@ -260,7 +260,7 @@ feature 'Login' do
               'before ')
           end
 
-          it 'allows skipping two-factor configuration', js: true do
+          it 'allows skipping two-factor configuration', :js do
             expect(current_path).to eq profile_two_factor_auth_path
 
             click_link 'Configure it later'
@@ -279,7 +279,7 @@ feature 'Login' do
             )
           end
 
-          it 'disallows skipping two-factor configuration', js: true do
+          it 'disallows skipping two-factor configuration', :js do
             expect(current_path).to eq profile_two_factor_auth_path
             expect(page).not_to have_link('Configure it later')
           end

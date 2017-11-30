@@ -48,7 +48,9 @@ module Gitlab
             deploy_keys: DeployKey.count,
             deployments: Deployment.count,
             environments: ::Environment.count,
-            gcp_clusters: ::Gcp::Cluster.count,
+            clusters: ::Clusters::Cluster.count,
+            clusters_enabled: ::Clusters::Cluster.enabled.count,
+            clusters_disabled: ::Clusters::Cluster.disabled.count,
             in_review_folder: ::Environment.in_review_folder.count,
             groups: Group.count,
             issues: Issue.count,
@@ -77,7 +79,7 @@ module Gitlab
 
       def features_usage_data_ce
         {
-          signup: current_application_settings.signup_enabled?,
+          signup: current_application_settings.allow_signup?,
           ldap: Gitlab.config.ldap.enabled,
           gravatar: current_application_settings.gravatar_enabled?,
           omniauth: Gitlab.config.omniauth.enabled,

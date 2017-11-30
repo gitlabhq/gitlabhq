@@ -2,12 +2,12 @@
 
 import Vue from 'vue';
 
-class BoardService {
+export default class BoardService {
   constructor ({ boardsEndpoint, listsEndpoint, bulkUpdatePath, boardId }) {
     this.boards = Vue.resource(`${boardsEndpoint}{/id}.json`, {}, {
       issues: {
         method: 'GET',
-        url: `${gon.relative_url_root}/boards/${boardId}/issues.json`,
+        url: `${gon.relative_url_root}/-/boards/${boardId}/issues.json`,
       }
     });
     this.lists = Vue.resource(`${listsEndpoint}{/id}`, {}, {
@@ -16,7 +16,7 @@ class BoardService {
         url: `${listsEndpoint}/generate.json`
       }
     });
-    this.issue = Vue.resource(`${gon.relative_url_root}/boards/${boardId}/issues{/id}`, {});
+    this.issue = Vue.resource(`${gon.relative_url_root}/-/boards/${boardId}/issues{/id}`, {});
     this.issues = Vue.resource(`${listsEndpoint}{/id}/issues`, {}, {
       bulkUpdate: {
         method: 'POST',
@@ -87,6 +87,14 @@ class BoardService {
     };
 
     return this.issues.bulkUpdate(data);
+  }
+
+  static getIssueInfo(endpoint) {
+    return Vue.http.get(endpoint);
+  }
+
+  static toggleIssueSubscription(endpoint) {
+    return Vue.http.post(endpoint);
   }
 }
 

@@ -66,6 +66,10 @@ module Gitlab
           end
         end
       end
+
+      def diff_line_code(file_path, new_line_position, old_line_position)
+        "#{Digest::SHA1.hexdigest(file_path)}_#{old_line_position}_#{new_line_position}"
+      end
     end
   end
 end

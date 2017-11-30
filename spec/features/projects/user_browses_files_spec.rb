@@ -76,7 +76,7 @@ describe 'User browses files' do
       expect(page).to have_content('LICENSE')
     end
 
-    it 'shows files from a repository with apostroph in its name', js: true do
+    it 'shows files from a repository with apostroph in its name', :js do
       first('.js-project-refs-dropdown').click
 
       page.within('.project-refs-form') do
@@ -91,7 +91,7 @@ describe 'User browses files' do
       expect(page).not_to have_content('Loading commit data...')
     end
 
-    it 'shows the code with a leading dot in the directory', js: true do
+    it 'shows the code with a leading dot in the directory', :js do
       first('.js-project-refs-dropdown').click
 
       page.within('.project-refs-form') do
@@ -117,7 +117,7 @@ describe 'User browses files' do
       click_link('.gitignore')
     end
 
-    it 'shows a file content', js: true do
+    it 'shows a file content', :js do
       wait_for_requests
       expect(page).to have_content('*.rbc')
     end
@@ -168,17 +168,18 @@ describe 'User browses files' do
       visit(tree_path_root_ref)
     end
 
-    it 'shows a preview of a file content', js: true do
+    it 'shows a preview of a file content', :js do
       find('.add-to-tree').click
       click_link('Upload file')
       drop_in_dropzone(File.join(Rails.root, 'spec', 'fixtures', 'logo_sample.svg'))
 
       page.within('#modal-upload-blob') do
         fill_in(:commit_message, with: 'New commit message')
+        fill_in(:branch_name, with: 'new_branch_name', visible: true)
+        click_button('Upload file')
       end
 
-      fill_in(:branch_name, with: 'new_branch_name', visible: true)
-      click_button('Upload file')
+      wait_for_all_requests
 
       visit(project_blob_path(project, 'new_branch_name/logo_sample.svg'))
 

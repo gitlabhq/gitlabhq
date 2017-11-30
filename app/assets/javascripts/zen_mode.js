@@ -11,8 +11,6 @@ import Dropzone from 'dropzone';
 import 'mousetrap';
 import 'mousetrap/plugins/pause/mousetrap-pause';
 
-window.Dropzone = Dropzone;
-
 //
 // ### Events
 //
@@ -73,7 +71,7 @@ export default class ZenMode {
     this.active_textarea = this.active_backdrop.find('textarea');
     // Prevent a user-resized textarea from persisting to fullscreen
     this.active_textarea.removeAttr('style');
-    return this.active_textarea.focus();
+    this.active_textarea.focus();
   }
 
   exit() {
@@ -83,7 +81,11 @@ export default class ZenMode {
       this.scrollTo(this.active_textarea);
       this.active_textarea = null;
       this.active_backdrop = null;
-      return Dropzone.forElement('.div-dropzone').enable();
+
+      const $dropzone = $('.div-dropzone');
+      if ($dropzone && !$dropzone.hasClass('js-invalid-dropzone')) {
+        Dropzone.forElement('.div-dropzone').enable();
+      }
     }
   }
 

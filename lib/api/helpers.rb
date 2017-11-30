@@ -3,8 +3,6 @@ module API
     include Gitlab::Utils
     include Helpers::Pagination
 
-    UnauthorizedError = Class.new(StandardError)
-
     SUDO_HEADER = "HTTP_SUDO".freeze
     SUDO_PARAM = :sudo
 
@@ -43,11 +41,17 @@ module API
 
       sudo!
 
+      validate_access_token!(scopes: scopes_registered_for_endpoint) unless sudo?
+
       @current_user
     end
 
     def sudo?
       initial_current_user != current_user
+    end
+
+    def user_namespace
+      @user_namespace ||= find_namespace!(params[:id])
     end
 
     def user_group
@@ -112,6 +116,24 @@ module API
       end
     end
 
+    def find_namespace(id)
+      if id.to_s =~ /^\d+$/
+        Namespace.find_by(id: id)
+      else
+        Namespace.find_by_full_path(id)
+      end
+    end
+
+    def find_namespace!(id)
+      namespace = find_namespace(id)
+
+      if can?(current_user, :read_namespace, namespace)
+        namespace
+      else
+        not_found!('Namespace')
+      end
+    end
+
     def find_project_label(id)
       label = available_labels.find_by_id(id) || available_labels.find_by_title(id)
       label || not_found!('Label')
@@ -155,6 +177,11 @@ module API
       end
     end
 
+    def authenticated_with_full_private_access!
+      authenticate!
+      forbidden! unless current_user.full_private_access?
+    end
+
     def authenticated_as_admin!
       authenticate!
       forbidden! unless current_user.admin?
@@ -184,6 +211,14 @@ module API
       unless env['HTTP_GITLAB_WORKHORSE'].present?
         forbidden!('Request should be executed via GitLab Workhorse')
       end
+    end
+
+    def require_pages_enabled!
+      not_found! unless user_project.pages_available?
+    end
+
+    def require_pages_config_enabled!
+      not_found! unless Gitlab.config.pages.enabled
     end
 
     def can?(object, action, subject = :global)
@@ -324,6 +359,7 @@ module API
       finder_params[:archived] = params[:archived]
       finder_params[:search] = params[:search] if params[:search]
       finder_params[:user] = params.delete(:user) if params[:user]
+      finder_params[:custom_attributes] = params[:custom_attributes] if params[:custom_attributes]
       finder_params
     end
 
@@ -379,67 +415,35 @@ module API
 
     private
 
-    def private_token
-      params[APIGuard::PRIVATE_TOKEN_PARAM] || env[APIGuard::PRIVATE_TOKEN_HEADER]
-    end
-
-    def warden
-      env['warden']
-    end
-
-    # Check if the request is GET/HEAD, or if CSRF token is valid.
-    def verified_request?
-      Gitlab::RequestForgeryProtection.verified?(env)
-    end
-
-    # Check the Rails session for valid authentication details
-    def find_user_from_warden
-      warden.try(:authenticate) if verified_request?
-    end
-
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user)
 
       begin
-        @initial_current_user = Gitlab::Auth::UniqueIpsLimiter.limit_user! { find_current_user }
-      rescue APIGuard::UnauthorizedError, UnauthorizedError
+        @initial_current_user = Gitlab::Auth::UniqueIpsLimiter.limit_user! { find_current_user! }
+      rescue Gitlab::Auth::UnauthorizedError
         unauthorized!
       end
     end
 
-    def find_current_user
-      user =
-        find_user_by_private_token(scopes: scopes_registered_for_endpoint) ||
-        doorkeeper_guard(scopes: scopes_registered_for_endpoint) ||
-        find_user_from_warden
-
-      return nil unless user
-
-      raise UnauthorizedError unless Gitlab::UserAccess.new(user).allowed? && user.can?(:access_api)
-
-      user
-    end
-
     def sudo!
       return unless sudo_identifier
-      return unless initial_current_user
+
+      unauthorized! unless initial_current_user
 
       unless initial_current_user.admin?
         forbidden!('Must be admin to use sudo')
       end
 
-      # Only private tokens should be used for the SUDO feature
-      unless private_token == initial_current_user.private_token
-        forbidden!('Private token must be specified in order to use sudo')
+      unless access_token
+        forbidden!('Must be authenticated using an OAuth or Personal Access Token to use sudo')
       end
+
+      validate_access_token!(scopes: [:sudo])
 
       sudoed_user = find_user(sudo_identifier)
+      not_found!("User with ID or username '#{sudo_identifier}'") unless sudoed_user
 
-      if sudoed_user
-        @current_user = sudoed_user
-      else
-        not_found!("No user id or username for: #{sudo_identifier}")
-      end
+      @current_user = sudoed_user
     end
 
     def sudo_identifier
@@ -478,23 +482,6 @@ module API
       return true unless exception.respond_to?(:status)
 
       exception.status == 500
-    end
-
-    # An array of scopes that were registered (using `allow_access_with_scope`)
-    # for the current endpoint class. It also returns scopes registered on
-    # `API::API`, since these are meant to apply to all API routes.
-    def scopes_registered_for_endpoint
-      @scopes_registered_for_endpoint ||=
-        begin
-          endpoint_classes = [options[:for].presence, ::API::API].compact
-          endpoint_classes.reduce([]) do |memo, endpoint|
-            if endpoint.respond_to?(:allowed_scopes)
-              memo.concat(endpoint.allowed_scopes)
-            else
-              memo
-            end
-          end
-        end
     end
   end
 end

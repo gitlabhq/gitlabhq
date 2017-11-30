@@ -3,22 +3,18 @@ module Gitlab
     module Util
       class << self
         def repository(repository_storage, relative_path, gl_repository)
+          git_object_directory = Gitlab::Git::Env['GIT_OBJECT_DIRECTORY_RELATIVE'].presence ||
+            Gitlab::Git::Env['GIT_OBJECT_DIRECTORY'].presence
+          git_alternate_object_directories =
+            Array.wrap(Gitlab::Git::Env['GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE']).presence ||
+            Array.wrap(Gitlab::Git::Env['GIT_ALTERNATE_OBJECT_DIRECTORIES']).flat_map { |d| d.split(File::PATH_SEPARATOR) }
+
           Gitaly::Repository.new(
             storage_name: repository_storage,
             relative_path: relative_path,
             gl_repository: gl_repository,
-            git_object_directory: Gitlab::Git::Env['GIT_OBJECT_DIRECTORY'].to_s,
-            git_alternate_object_directories: Array.wrap(Gitlab::Git::Env['GIT_ALTERNATE_OBJECT_DIRECTORIES'])
-          )
-        end
-
-        def gitaly_user(gitlab_user)
-          return unless gitlab_user
-
-          Gitaly::User.new(
-            gl_id: Gitlab::GlId.gl_id(gitlab_user),
-            name: GitalyClient.encode(gitlab_user.name),
-            email: GitalyClient.encode(gitlab_user.email)
+            git_object_directory: git_object_directory.to_s,
+            git_alternate_object_directories: git_alternate_object_directories
           )
         end
 

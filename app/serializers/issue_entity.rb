@@ -1,7 +1,8 @@
 class IssueEntity < IssuableEntity
-  include RequestAwareEntity
+  include TimeTrackableEntity
 
-  expose :branch_name
+  expose :state
+  expose :deleted_at
   expose :confidential
   expose :discussion_locked
   expose :assignees, using: API::Entities::UserBasic

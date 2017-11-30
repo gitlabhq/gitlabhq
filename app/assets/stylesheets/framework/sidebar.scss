@@ -9,7 +9,7 @@
     &.container-blank {
       background: none;
       padding: 0;
-      border: none;
+      border: 0;
     }
   }
 }
@@ -43,10 +43,12 @@
   }
 
   .sidebar-collapsed-icon {
-    cursor: pointer;
-
     .btn {
       background-color: $gray-light;
+    }
+
+    &:not(.disabled) {
+      cursor: pointer;
     }
   }
 }
@@ -54,6 +56,10 @@
 .right-sidebar-expanded {
   padding-right: 0;
   z-index: 300;
+
+  .btn-sidebar-action {
+    display: inline-flex;
+  }
 
   @media (min-width: $screen-sm-min) and (max-width: $screen-sm-max) {
     &:not(.wiki-sidebar):not(.build-sidebar):not(.issuable-bulk-update-sidebar) .content-wrapper {
@@ -111,7 +117,7 @@
     }
 
     .block:last-of-type {
-      border: none;
+      border: 0;
     }
   }
 
@@ -135,4 +141,19 @@
 
 .issuable-sidebar {
   @include new-style-dropdown;
+}
+
+.pikaday-container {
+  .pika-single {
+    margin-top: 2px;
+    width: 250px;
+  }
+
+  .dropdown-menu-toggle {
+    line-height: 20px;
+  }
+}
+
+.sidebar-collapsed-icon .sidebar-collapsed-value {
+  font-size: 12px;
 }

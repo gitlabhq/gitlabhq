@@ -53,12 +53,13 @@ describe 'Profile > Password' do
     context 'Regular user' do
       let(:user) { create(:user) }
 
-      it 'renders 200 when sign-in is disabled' do
-        stub_application_setting(password_authentication_enabled: false)
+      it 'renders 404 when password authentication is disabled for the web interface and Git' do
+        stub_application_setting(password_authentication_enabled_for_web: false)
+        stub_application_setting(password_authentication_enabled_for_git: false)
 
         visit edit_profile_password_path
 
-        expect(page).to have_http_status(200)
+        expect(page).to have_gitlab_http_status(404)
       end
     end
 
@@ -68,7 +69,7 @@ describe 'Profile > Password' do
       it 'renders 404' do
         visit edit_profile_password_path
 
-        expect(page).to have_http_status(404)
+        expect(page).to have_gitlab_http_status(404)
       end
     end
   end

@@ -84,14 +84,14 @@ describe Gitlab::GitalyClient::RefService do
     end
   end
 
-  describe '#find_ref_name', seed_helper: true do
+  describe '#find_ref_name', :seed_helper do
     subject { client.find_ref_name(SeedRepo::Commit::ID, 'refs/heads/master') }
 
     it { is_expected.to be_utf8 }
     it { is_expected.to eq('refs/heads/master') }
   end
 
-  describe '#ref_exists?', seed_helper: true do
+  describe '#ref_exists?', :seed_helper do
     it 'finds the master branch ref' do
       expect(client.ref_exists?('refs/heads/master')).to eq(true)
     end
@@ -102,6 +102,19 @@ describe Gitlab::GitalyClient::RefService do
 
     it 'raises an argument error if the ref name parameter does not start with refs/' do
       expect { client.ref_exists?('reXXXXX') }.to raise_error(ArgumentError)
+    end
+  end
+
+  describe '#delete_refs' do
+    let(:prefixes) { %w(refs/heads refs/keep-around) }
+
+    it 'sends a delete_refs message' do
+      expect_any_instance_of(Gitaly::RefService::Stub)
+        .to receive(:delete_refs)
+        .with(gitaly_request_with_params(except_with_prefix: prefixes), kind_of(Hash))
+        .and_return(double('delete_refs_response'))
+
+      client.delete_refs(except_with_prefixes: prefixes)
     end
   end
 end

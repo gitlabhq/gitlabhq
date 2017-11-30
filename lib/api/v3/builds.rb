@@ -8,7 +8,7 @@ module API
       params do
         requires :id, type: String, desc: 'The ID of a project'
       end
-      resource :projects do
+      resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
         helpers do
           params :optional_scope do
             optional :scope, types: [String, Array[String]], desc: 'The scope of builds to show',
@@ -169,7 +169,7 @@ module API
           authorize_update_builds!
 
           build = get_build!(params[:build_id])
-          authorize!(:update_build, build)
+          authorize!(:erase_build, build)
           return forbidden!('Build is not erasable!') unless build.erasable?
 
           build.erase(erased_by: current_user)

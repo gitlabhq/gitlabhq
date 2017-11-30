@@ -2,7 +2,7 @@ module Gitlab
   module Saml
     class AuthHash < Gitlab::OAuth::AuthHash
       def groups
-        get_raw(Gitlab::Saml::Config.groups)
+        Array.wrap(get_raw(Gitlab::Saml::Config.groups))
       end
 
       private

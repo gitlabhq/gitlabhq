@@ -62,7 +62,7 @@ describe Projects::BranchesController do
         let(:branch) { "feature%2Ftest" }
         let(:ref) { "<script>alert('ref');</script>" }
         it { is_expected.to render_template('new') }
-        it { project.repository.branch_names.include?('feature/test') }
+        it { project.repository.branch_exists?('feature/test') }
       end
     end
 
@@ -113,22 +113,38 @@ describe Projects::BranchesController do
           expect(response).to redirect_to project_tree_path(project, branch)
         end
 
-        it 'redirects to autodeploy setup page' do
-          result = { status: :success, branch: double(name: branch) }
+        shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+          it 'redirects to autodeploy setup page' do
+            result = { status: :success, branch: double(name: branch) }
 
-          project.services << build(:kubernetes_service)
+            expect_any_instance_of(CreateBranchService).to receive(:execute).and_return(result)
+            expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
 
-          expect_any_instance_of(CreateBranchService).to receive(:execute).and_return(result)
-          expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
+            post :create,
+              namespace_id: project.namespace.to_param,
+              project_id: project.to_param,
+              branch_name: branch,
+              issue_iid: issue.iid
 
-          post :create,
-            namespace_id: project.namespace.to_param,
-            project_id: project.to_param,
-            branch_name: branch,
-            issue_iid: issue.iid
+            expect(response.location).to include(project_new_blob_path(project, branch))
+            expect(response).to have_gitlab_http_status(302)
+          end
+        end
 
-          expect(response.location).to include(project_new_blob_path(project, branch))
-          expect(response).to have_http_status(302)
+        context 'when user configured kubernetes from Integration > Kubernetes' do
+          before do
+            project.services << build(:kubernetes_service)
+          end
+
+          it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+        end
+
+        context 'when user configured kubernetes from CI/CD > Clusters' do
+          before do
+            create(:cluster, :provided_by_gcp, projects: [project])
+          end
+
+          it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
         end
       end
 
@@ -161,7 +177,7 @@ describe Projects::BranchesController do
       it 'returns a successful 200 response' do
         create_branch name: 'my-branch', ref: 'master'
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
 
       it 'returns the created branch' do
@@ -175,7 +191,7 @@ describe Projects::BranchesController do
       it 'returns an unprocessable entity 422 response' do
         create_branch name: "<script>alert('merge');</script>", ref: "<script>alert('ref');</script>"
 
-        expect(response).to have_http_status(422)
+        expect(response).to have_gitlab_http_status(422)
       end
     end
 
@@ -202,7 +218,7 @@ describe Projects::BranchesController do
            namespace_id: project.namespace,
            project_id: project
 
-      expect(response).to have_http_status(303)
+      expect(response).to have_gitlab_http_status(303)
     end
   end
 
@@ -226,28 +242,28 @@ describe Projects::BranchesController do
       context "valid branch name, valid source" do
         let(:branch) { "feature" }
 
-        it { expect(response).to have_http_status(200) }
+        it { expect(response).to have_gitlab_http_status(200) }
         it { expect(response.body).to be_blank }
       end
 
       context "valid branch name with unencoded slashes" do
         let(:branch) { "improve/awesome" }
 
-        it { expect(response).to have_http_status(200) }
+        it { expect(response).to have_gitlab_http_status(200) }
         it { expect(response.body).to be_blank }
       end
 
       context "valid branch name with encoded slashes" do
         let(:branch) { "improve%2Fawesome" }
 
-        it { expect(response).to have_http_status(200) }
+        it { expect(response).to have_gitlab_http_status(200) }
         it { expect(response.body).to be_blank }
       end
 
       context "invalid branch name, valid ref" do
         let(:branch) { "no-branch" }
 
-        it { expect(response).to have_http_status(404) }
+        it { expect(response).to have_gitlab_http_status(404) }
         it { expect(response.body).to be_blank }
       end
     end
@@ -263,7 +279,7 @@ describe Projects::BranchesController do
           expect(json_response).to eql("message" => 'Branch was removed')
         end
 
-        it { expect(response).to have_http_status(200) }
+        it { expect(response).to have_gitlab_http_status(200) }
       end
 
       context 'valid branch name with unencoded slashes' do
@@ -273,7 +289,7 @@ describe Projects::BranchesController do
           expect(json_response).to eql('message' => 'Branch was removed')
         end
 
-        it { expect(response).to have_http_status(200) }
+        it { expect(response).to have_gitlab_http_status(200) }
       end
 
       context "valid branch name with encoded slashes" do
@@ -283,7 +299,7 @@ describe Projects::BranchesController do
           expect(json_response).to eql('message' => 'Branch was removed')
         end
 
-        it { expect(response).to have_http_status(200) }
+        it { expect(response).to have_gitlab_http_status(200) }
       end
 
       context 'invalid branch name, valid ref' do
@@ -293,7 +309,7 @@ describe Projects::BranchesController do
           expect(json_response).to eql('message' => 'No such branch')
         end
 
-        it { expect(response).to have_http_status(404) }
+        it { expect(response).to have_gitlab_http_status(404) }
       end
     end
 
@@ -341,7 +357,7 @@ describe Projects::BranchesController do
       it 'responds with status 404' do
         destroy_all_merged
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
   end
@@ -379,7 +395,7 @@ describe Projects::BranchesController do
             project_id: project,
             format: :html
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
     end
   end

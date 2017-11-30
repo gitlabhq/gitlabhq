@@ -118,7 +118,8 @@ describe RegistrationsController do
 
     context 'user does not require password confirmation' do
       before do
-        stub_application_setting(password_authentication_enabled: false)
+        stub_application_setting(password_authentication_enabled_for_web: false)
+        stub_application_setting(password_authentication_enabled_for_git: false)
       end
 
       it 'fails if username confirmation is not provided' do

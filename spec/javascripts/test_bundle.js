@@ -11,6 +11,12 @@ const isHeadlessChrome = /\bHeadlessChrome\//.test(navigator.userAgent);
 Vue.config.devtools = !isHeadlessChrome;
 Vue.config.productionTip = false;
 
+let hasVueWarnings = false;
+Vue.config.warnHandler = (msg, vm, trace) => {
+  hasVueWarnings = true;
+  fail(`${msg}${trace}`);
+};
+
 Vue.use(VueResource);
 
 // enable test fixtures
@@ -34,11 +40,6 @@ window.addEventListener('unhandledrejection', (event) => {
   console.error(event.reason.stack || event.reason);
 });
 
-const checkUnhandledPromiseRejections = (done) => {
-  expect(hasUnhandledPromiseRejections).toBe(false);
-  done();
-};
-
 // HACK: Chrome 59 disconnects if there are too many synchronous tests in a row
 // because it appears to lock up the thread that communicates to Karma's socket
 // This async beforeEach gets called on every spec and releases the JS thread long
@@ -46,17 +47,6 @@ const checkUnhandledPromiseRejections = (done) => {
 // The downside is that it creates a minor performance penalty in the time it takes
 // to run our unit tests.
 beforeEach(done => done());
-
-beforeAll(() => {
-  const origError = console.error;
-  spyOn(console, 'error').and.callFake((message) => {
-    if (/^\[Vue warn\]/.test(message)) {
-      fail(message);
-    } else {
-      origError(message);
-    }
-  });
-});
 
 const builtinVueHttpInterceptors = Vue.http.interceptors.slice();
 
@@ -80,8 +70,22 @@ testsContext.keys().forEach(function (path) {
   }
 });
 
-it('has no unhandled Promise rejections', (done) => {
-  setTimeout(checkUnhandledPromiseRejections(done), 1000);
+describe('test errors', () => {
+  beforeAll((done) => {
+    if (hasUnhandledPromiseRejections || hasVueWarnings) {
+      setTimeout(done, 1000);
+    } else {
+      done();
+    }
+  });
+
+  it('has no unhandled Promise rejections', () => {
+    expect(hasUnhandledPromiseRejections).toBe(false);
+  });
+
+  it('has no Vue warnings', () => {
+    expect(hasVueWarnings).toBe(false);
+  });
 });
 
 // if we're generating coverage reports, make sure to include all files so

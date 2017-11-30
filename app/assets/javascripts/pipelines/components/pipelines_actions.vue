@@ -1,6 +1,4 @@
 <script>
-  /* global Flash */
-  import '~/flash';
   import playIconSvg from 'icons/_icon_play.svg';
   import eventHub from '../event_hub';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';

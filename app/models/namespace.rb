@@ -9,6 +9,7 @@ class Namespace < ActiveRecord::Base
   include Routable
   include AfterCommitQueue
   include Storage::LegacyNamespace
+  include Gitlab::SQL::Pattern
 
   # Prevent users from creating unreasonably deep level of nesting.
   # The number 20 was taken based on maximum nesting level of
@@ -36,7 +37,7 @@ class Namespace < ActiveRecord::Base
   validates :path,
     presence: true,
     length: { maximum: 255 },
-    dynamic_path: true
+    namespace_path: true
 
   validate :nesting_level_allowed
 
@@ -86,10 +87,7 @@ class Namespace < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation
     def search(query)
-      t = arel_table
-      pattern = "%#{query}%"
-
-      where(t[:name].matches(pattern).or(t[:path].matches(pattern)))
+      fuzzy_search(query, [:name, :path])
     end
 
     def clean_path(path)
@@ -160,6 +158,13 @@ class Namespace < ActiveRecord::Base
     Gitlab::GroupHierarchy
       .new(self.class.where(id: parent_id))
       .base_and_ancestors
+  end
+
+  # returns all ancestors upto but excluding the the given namespace
+  # when no namespace is given, all ancestors upto the top are returned
+  def ancestors_upto(top = nil)
+    Gitlab::GroupHierarchy.new(self.class.where(id: id))
+      .ancestors(upto: top)
   end
 
   def self_and_ancestors

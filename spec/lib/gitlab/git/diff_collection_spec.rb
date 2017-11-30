@@ -487,6 +487,7 @@ describe Gitlab::Git::DiffCollection, seed_helper: true do
 
       loop do
         break if @count.zero?
+
         # It is critical to decrement before yielding. We may never reach the lines after 'yield'.
         @count -= 1
         yield @value

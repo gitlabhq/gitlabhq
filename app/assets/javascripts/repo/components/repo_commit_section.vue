@@ -1,58 +1,92 @@
 <script>
-/* global Flash */
-import Store from '../stores/repo_store';
-import RepoMixin from '../mixins/repo_mixin';
-import Service from '../services/repo_service';
+import { mapGetters, mapState, mapActions } from 'vuex';
+import tooltip from '../../vue_shared/directives/tooltip';
+import icon from '../../vue_shared/components/icon.vue';
+import PopupDialog from '../../vue_shared/components/popup_dialog.vue';
+import commitFilesList from './commit_sidebar/list.vue';
 
 export default {
-  data: () => Store,
-
-  mixins: [RepoMixin],
-
+  components: {
+    PopupDialog,
+    icon,
+    commitFilesList,
+  },
+  directives: {
+    tooltip,
+  },
+  data() {
+    return {
+      showNewBranchDialog: false,
+      submitCommitsLoading: false,
+      startNewMR: false,
+      commitMessage: '',
+      collapsed: true,
+    };
+  },
   computed: {
-    showCommitable() {
-      return this.isCommitable && this.changedFiles.length;
+    ...mapState([
+      'currentBranch',
+    ]),
+    ...mapGetters([
+      'changedFiles',
+    ]),
+    commitButtonDisabled() {
+      return this.commitMessage === '' || this.submitCommitsLoading || !this.changedFiles.length;
     },
-
-    branchPaths() {
-      return this.changedFiles.map(f => f.path);
-    },
-
-    cantCommitYet() {
-      return !this.commitMessage || this.submitCommitsLoading;
-    },
-
-    filePluralize() {
-      return this.changedFiles.length > 1 ? 'files' : 'file';
+    commitMessageCount() {
+      return this.commitMessage.length;
     },
   },
-
   methods: {
-    makeCommit() {
-      // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
-      const commitMessage = this.commitMessage;
-      const actions = this.changedFiles.map(f => ({
-        action: 'update',
-        file_path: f.path,
-        content: f.newContent,
-      }));
-      const payload = {
-        branch: Store.currentBranch,
-        commit_message: commitMessage,
-        actions,
-      };
-      Store.submitCommitsLoading = true;
-      Service.commitFiles(payload)
-        .then(this.resetCommitState)
-        .catch(() => Flash('An error occurred while committing your changes'));
-    },
+    ...mapActions([
+      'checkCommitStatus',
+      'commitChanges',
+      'getTreeData',
+    ]),
+    makeCommit(newBranch = false) {
+      const createNewBranch = newBranch || this.startNewMR;
 
-    resetCommitState() {
-      this.submitCommitsLoading = false;
-      this.changedFiles = [];
-      this.commitMessage = '';
-      this.editMode = false;
-      window.scrollTo(0, 0);
+      const payload = {
+        branch: createNewBranch ? `${this.currentBranch}-${new Date().getTime().toString()}` : this.currentBranch,
+        commit_message: this.commitMessage,
+        actions: this.changedFiles.map(f => ({
+          action: f.tempFile ? 'create' : 'update',
+          file_path: f.path,
+          content: f.content,
+          encoding: f.base64 ? 'base64' : 'text',
+        })),
+        start_branch: createNewBranch ? this.currentBranch : undefined,
+      };
+
+      this.showNewBranchDialog = false;
+      this.submitCommitsLoading = true;
+
+      this.commitChanges({ payload, newMr: this.startNewMR })
+        .then(() => {
+          this.submitCommitsLoading = false;
+          this.getTreeData();
+        })
+        .catch(() => {
+          this.submitCommitsLoading = false;
+        });
+    },
+    tryCommit() {
+      this.submitCommitsLoading = true;
+
+      this.checkCommitStatus()
+        .then((branchChanged) => {
+          if (branchChanged) {
+            this.showNewBranchDialog = true;
+          } else {
+            this.makeCommit();
+          }
+        })
+        .catch(() => {
+          this.submitCommitsLoading = false;
+        });
+    },
+    toggleCollapsed() {
+      this.collapsed = !this.collapsed;
     },
   },
 };
@@ -60,73 +94,85 @@ export default {
 
 <template>
 <div
-  v-if="showCommitable"
-  id="commit-area">
+  class="multi-file-commit-panel"
+  :class="{
+    'is-collapsed': collapsed,
+  }"
+>
+  <popup-dialog
+    v-if="showNewBranchDialog"
+    :primary-button-label="__('Create new branch')"
+    kind="primary"
+    :title="__('Branch has changed')"
+    :text="__('This branch has changed since you started editing. Would you like to create a new branch?')"
+    @toggle="showNewBranchDialog = false"
+    @submit="makeCommit(true)"
+  />
+  <button
+    v-if="collapsed"
+    type="button"
+    class="btn btn-transparent multi-file-commit-panel-collapse-btn is-collapsed prepend-top-10 append-bottom-10"
+    @click="toggleCollapsed"
+  >
+    <i
+      aria-hidden="true"
+      class="fa fa-angle-double-left"
+    >
+    </i>
+  </button>
+  <commit-files-list
+    title="Staged"
+    :file-list="changedFiles"
+    :collapsed="collapsed"
+    @toggleCollapsed="toggleCollapsed"
+  />
   <form
-    class="form-horizontal"
-    @submit.prevent="makeCommit">
-    <fieldset>
-      <div class="form-group">
-        <label class="col-md-4 control-label staged-files">
-          Staged files ({{changedFiles.length}})
-        </label>
-        <div class="col-md-6">
-          <ul class="list-unstyled changed-files">
-            <li
-              v-for="branchPath in branchPaths"
-              :key="branchPath">
-              <span class="help-block">
-                {{branchPath}}
-              </span>
-            </li>
-          </ul>
-        </div>
+    class="form-horizontal multi-file-commit-form"
+    @submit.prevent="tryCommit"
+    v-if="!collapsed"
+  >
+    <div class="multi-file-commit-fieldset">
+      <textarea
+        class="form-control multi-file-commit-message"
+        name="commit-message"
+        v-model="commitMessage"
+        placeholder="Commit message"
+      >
+      </textarea>
+    </div>
+    <div class="multi-file-commit-fieldset">
+      <label
+        v-tooltip
+        title="Create a new merge request with these changes"
+        data-container="body"
+        data-placement="top"
+      >
+        <input
+          type="checkbox"
+          v-model="startNewMR"
+        />
+        Merge Request
+      </label>
+      <button
+        type="submit"
+        :disabled="commitButtonDisabled"
+        class="btn btn-default btn-sm append-right-10 prepend-left-10"
+      >
+        <i
+          v-if="submitCommitsLoading"
+          class="js-commit-loading-icon fa fa-spinner fa-spin"
+          aria-hidden="true"
+          aria-label="loading"
+        >
+        </i>
+        Commit
+      </button>
+      <div
+        class="multi-file-commit-message-count"
+      >
+        {{ commitMessageCount }}
       </div>
-      <div class="form-group">
-        <label
-          class="col-md-4 control-label"
-          for="commit-message">
-          Commit message
-        </label>
-        <div class="col-md-6">
-          <textarea
-            id="commit-message"
-            class="form-control"
-            name="commit-message"
-            v-model="commitMessage">
-          </textarea>
-        </div>
-      </div>
-      <div class="form-group target-branch">
-        <label
-          class="col-md-4 control-label"
-          for="target-branch">
-          Target branch
-        </label>
-        <div class="col-md-6">
-          <span class="help-block">
-            {{currentBranch}}
-          </span>
-        </div>
-      </div>
-      <div class="col-md-offset-4 col-md-6">
-        <button
-          ref="submitCommit"
-          type="submit"
-          :disabled="cantCommitYet"
-          class="btn btn-success">
-          <i
-            v-if="submitCommitsLoading"
-            class="fa fa-spinner fa-spin"
-            aria-hidden="true"
-            aria-label="loading">
-          </i>
-          <span class="commit-summary">
-            Commit {{changedFiles.length}} {{filePluralize}}
-          </span>
-        </button>
-      </div>
-    </fieldset>
+    </div>
   </form>
 </div>
 </template>

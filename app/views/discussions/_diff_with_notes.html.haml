@@ -24,4 +24,4 @@
     = render partial: "projects/diffs/#{partial}", locals: { diff_file: diff_file, position: discussion.position.to_json, click_to_comment: false }
 
     .note-container
-      = render partial: "discussions/notes", locals: { discussion: discussion, show_toggle: false, show_image_comment_badge: true, disable_collapse: true }
+      = render partial: "discussions/notes", locals: { discussion: discussion, show_toggle: false, show_image_comment_badge: true, disable_collapse_class: true }

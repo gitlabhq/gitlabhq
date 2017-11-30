@@ -1,7 +1,9 @@
 <script>
-  /* global Flash */
+  import Flash from '../../../flash';
+  import GLForm from '../../../gl_form';
   import markdownHeader from './header.vue';
   import markdownToolbar from './toolbar.vue';
+  import icon from '../icon.vue';
 
   export default {
     props: {
@@ -23,6 +25,16 @@
         type: String,
         required: false,
       },
+      canAttachFile: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
+      enableAutocomplete: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
     data() {
       return {
@@ -36,6 +48,7 @@
     components: {
       markdownHeader,
       markdownToolbar,
+      icon,
     },
     computed: {
       shouldShowReferencedUsers() {
@@ -44,8 +57,10 @@
       },
     },
     methods: {
-      toggleMarkdownPreview() {
-        this.previewMarkdown = !this.previewMarkdown;
+      showPreviewTab() {
+        if (this.previewMarkdown) return;
+
+        this.previewMarkdown = true;
 
         /*
           Can't use `$refs` as the component is technically in the parent component
@@ -53,20 +68,22 @@
         */
         const text = this.$slots.textarea[0].elm.value;
 
-        if (!this.previewMarkdown) {
-          this.markdownPreview = '';
-        } else if (text) {
+        if (text) {
           this.markdownPreviewLoading = true;
           this.$http.post(this.markdownPreviewPath, { text })
             .then(resp => resp.json())
-            .then((data) => {
-              this.renderMarkdown(data);
-            })
+            .then(data => this.renderMarkdown(data))
             .catch(() => new Flash('Error loading markdown preview'));
         } else {
           this.renderMarkdown();
         }
       },
+
+      showWriteTab() {
+        this.markdownPreview = '';
+        this.previewMarkdown = false;
+      },
+
       renderMarkdown(data = {}) {
         this.markdownPreviewLoading = false;
         this.markdownPreview = data.body || 'Nothing to preview.';
@@ -85,7 +102,7 @@
       /*
         GLForm class handles all the toolbar buttons
       */
-      return new gl.GLForm($(this.$refs['gl-form']), true);
+      return new GLForm($(this.$refs['gl-form']), this.enableAutocomplete);
     },
     beforeDestroy() {
       const glForm = $(this.$refs['gl-form']).data('gl-form');
@@ -103,7 +120,8 @@
     ref="gl-form">
     <markdown-header
       :preview-markdown="previewMarkdown"
-      @toggle-markdown="toggleMarkdownPreview" />
+      @preview-markdown="showPreviewTab"
+      @write-markdown="showWriteTab" />
     <div
       class="md-write-holder"
       v-show="!previewMarkdown">
@@ -113,14 +131,15 @@
           class="zen-control zen-control-leave js-zen-leave"
           href="#"
           aria-label="Enter zen mode">
-          <i
-            class="fa fa-compress"
-            aria-hidden="true">
-          </i>
+          <icon
+            name="screen-normal"
+            :size="32">
+          </icon>
         </a>
         <markdown-toolbar
           :markdown-docs-path="markdownDocsPath"
           :quick-actions-docs-path="quickActionsDocsPath"
+          :can-attach-file="canAttachFile"
           />
       </div>
     </div>

@@ -14,10 +14,11 @@ module Issuable
   include StripAttribute
   include Awardable
   include Taskable
-  include TimeTrackable
   include Importable
   include Editable
   include AfterCommitQueue
+  include Sortable
+  include CreatedAtFilterable
 
   # This object is used to gather issuable meta data for displaying
   # upvotes, downvotes, notes and closing merge requests count for issues and merge requests
@@ -95,8 +96,6 @@ module Issuable
 
     strip_attributes :title
 
-    acts_as_paranoid
-
     after_save :record_metrics, unless: :imported?
 
     # We want to use optimistic lock for cases when only title or description are involved
@@ -123,9 +122,7 @@ module Issuable
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      title = to_fuzzy_arel(:title, query)
-
-      where(title)
+      fuzzy_search(query, [:title])
     end
 
     # Searches for records with a matching title or description.
@@ -136,10 +133,7 @@ module Issuable
     #
     # Returns an ActiveRecord::Relation.
     def full_search(query)
-      title = to_fuzzy_arel(:title, query)
-      description = to_fuzzy_arel(:description, query)
-
-      where(title&.or(description))
+      fuzzy_search(query, [:title, :description])
     end
 
     def sort(method, excluded_labels: [])
@@ -256,23 +250,32 @@ module Issuable
     participants(user).include?(user)
   end
 
-  def to_hook_data(user)
-    hook_data = {
-      object_kind: self.class.name.underscore,
-      user: user.hook_attrs,
-      project: project.hook_attrs,
-      object_attributes: hook_attrs,
-      labels: labels.map(&:hook_attrs),
-      # DEPRECATED
-      repository: project.hook_attrs.slice(:name, :url, :description, :homepage)
-    }
-    if self.is_a?(Issue)
-      hook_data[:assignees] = assignees.map(&:hook_attrs) if assignees.any?
-    else
-      hook_data[:assignee] = assignee.hook_attrs if assignee
+  def to_hook_data(user, old_associations: {})
+    changes = previous_changes
+    old_labels = old_associations.fetch(:labels, [])
+    old_assignees = old_associations.fetch(:assignees, [])
+
+    if old_labels != labels
+      changes[:labels] = [old_labels.map(&:hook_attrs), labels.map(&:hook_attrs)]
     end
 
-    hook_data
+    if old_assignees != assignees
+      if self.is_a?(Issue)
+        changes[:assignees] = [old_assignees.map(&:hook_attrs), assignees.map(&:hook_attrs)]
+      else
+        changes[:assignee] = [old_assignees&.first&.hook_attrs, assignee&.hook_attrs]
+      end
+    end
+
+    if self.respond_to?(:total_time_spent)
+      old_total_time_spent = old_associations.fetch(:total_time_spent, nil)
+
+      if old_total_time_spent != total_time_spent
+        changes[:total_time_spent] = [old_total_time_spent, total_time_spent]
+      end
+    end
+
+    Gitlab::HookData::IssuableBuilder.new(self).build(user: user, changes: changes)
   end
 
   def labels_array
@@ -342,5 +345,12 @@ module Issuable
   #
   def first_contribution?
     false
+  end
+
+  ##
+  # Overriden in MergeRequest
+  #
+  def wipless_title_changed(old_title)
+    old_title != title
   end
 end

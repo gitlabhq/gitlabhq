@@ -39,14 +39,23 @@ class StuckCiJobsWorker
   def drop_stuck(status, timeout)
     search(status, timeout) do |build|
       return unless build.stuck?
+
       drop_build :stuck, build, status, timeout
     end
   end
 
   def search(status, timeout)
-    builds = Ci::Build.where(status: status).where('ci_builds.updated_at < ?', timeout.ago)
-    builds.joins(:project).merge(Project.without_deleted).includes(:tags, :runner, project: :namespace).find_each(batch_size: 50).each do |build|
-      yield(build)
+    loop do
+      jobs = Ci::Build.where(status: status)
+        .where('ci_builds.updated_at < ?', timeout.ago)
+        .includes(:tags, :runner, project: :namespace)
+        .limit(100)
+        .to_a
+      break if jobs.empty?
+
+      jobs.each do |job|
+        yield(job)
+      end
     end
   end
 

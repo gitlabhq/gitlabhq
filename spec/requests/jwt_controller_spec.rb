@@ -13,12 +13,12 @@ describe JwtController do
   context 'existing service' do
     subject! { get '/jwt/auth', parameters }
 
-    it { expect(response).to have_http_status(200) }
+    it { expect(response).to have_gitlab_http_status(200) }
 
     context 'returning custom http code' do
       let(:service) { double(execute: { http_status: 505 }) }
 
-      it { expect(response).to have_http_status(505) }
+      it { expect(response).to have_gitlab_http_status(505) }
     end
   end
 
@@ -41,7 +41,7 @@ describe JwtController do
 
         subject! { get '/jwt/auth', parameters, headers }
 
-        it { expect(response).to have_http_status(401) }
+        it { expect(response).to have_gitlab_http_status(401) }
       end
 
       context 'using personal access tokens' do
@@ -56,7 +56,7 @@ describe JwtController do
         subject! { get '/jwt/auth', parameters, headers }
 
         it 'authenticates correctly' do
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
           expect(service_class).to have_received(:new).with(nil, user, parameters)
         end
       end
@@ -75,7 +75,7 @@ describe JwtController do
 
         context 'without personal token' do
           it 'rejects the authorization attempt' do
-            expect(response).to have_http_status(401)
+            expect(response).to have_gitlab_http_status(401)
             expect(response.body).to include('You must use a personal access token with \'api\' scope for Git over HTTP')
           end
         end
@@ -85,7 +85,7 @@ describe JwtController do
           let(:headers) { { authorization: credentials(user.username, access_token.token) } }
 
           it 'accepts the authorization attempt' do
-            expect(response).to have_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
           end
         end
       end
@@ -98,17 +98,17 @@ describe JwtController do
         it 'rejects the authorization attempt' do
           get '/jwt/auth', parameters, headers
 
-          expect(response).to have_http_status(401)
+          expect(response).to have_gitlab_http_status(401)
           expect(response.body).not_to include('You must use a personal access token with \'api\' scope for Git over HTTP')
         end
       end
 
       context 'when internal auth is disabled' do
         it 'rejects the authorization attempt with personal access token message' do
-          allow_any_instance_of(ApplicationSetting).to receive(:password_authentication_enabled?) { false }
+          allow_any_instance_of(ApplicationSetting).to receive(:password_authentication_enabled_for_git?) { false }
           get '/jwt/auth', parameters, headers
 
-          expect(response).to have_http_status(401)
+          expect(response).to have_gitlab_http_status(401)
           expect(response.body).to include('You must use a personal access token with \'api\' scope for Git over HTTP')
         end
       end
@@ -119,7 +119,7 @@ describe JwtController do
     it 'accepts the authorization attempt' do
       get '/jwt/auth', parameters
 
-      expect(response).to have_http_status(200)
+      expect(response).to have_gitlab_http_status(200)
     end
 
     it 'allows read access' do
@@ -132,7 +132,7 @@ describe JwtController do
   context 'unknown service' do
     subject! { get '/jwt/auth', service: 'unknown' }
 
-    it { expect(response).to have_http_status(404) }
+    it { expect(response).to have_gitlab_http_status(404) }
   end
 
   def credentials(login, password)

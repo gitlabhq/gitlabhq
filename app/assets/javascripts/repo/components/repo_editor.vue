@@ -1,121 +1,89 @@
 <script>
 /* global monaco */
-import Store from '../stores/repo_store';
-import Service from '../services/repo_service';
-import Helper from '../helpers/repo_helper';
+import { mapGetters, mapActions } from 'vuex';
+import flash from '../../flash';
+import monacoLoader from '../monaco_loader';
+import Editor from '../lib/editor';
 
-const RepoEditor = {
-  data: () => Store,
+export default {
+  beforeDestroy() {
+    this.editor.dispose();
+  },
+  mounted() {
+    if (this.editor && monaco) {
+      this.initMonaco();
+    } else {
+      monacoLoader(['vs/editor/editor.main'], () => {
+        this.editor = Editor.create(monaco);
 
-  destroyed() {
-    if (Helper.monacoInstance) {
-      Helper.monacoInstance.destroy();
+        this.initMonaco();
+      });
     }
   },
-
-  mounted() {
-    Service.getRaw(this.activeFile.raw_path)
-      .then((rawResponse) => {
-        Store.blobRaw = rawResponse.data;
-        Store.activeFile.plain = rawResponse.data;
-
-        const monacoInstance = Helper.monaco.editor.create(this.$el, {
-          model: null,
-          readOnly: false,
-          contextmenu: false,
-        });
-
-        Helper.monacoInstance = monacoInstance;
-
-        this.addMonacoEvents();
-
-        this.setupEditor();
-      })
-      .catch(Helper.loadingError);
-  },
-
   methods: {
+    ...mapActions([
+      'getRawFileData',
+      'changeFileContent',
+    ]),
+    initMonaco() {
+      if (this.shouldHideEditor) return;
+
+      this.editor.clearEditor();
+
+      this.getRawFileData(this.activeFile)
+        .then(() => {
+          this.editor.createInstance(this.$refs.editor);
+        })
+        .then(() => this.setupEditor())
+        .catch(() => flash('Error setting up monaco. Please try again.'));
+    },
     setupEditor() {
-      this.showHide();
+      if (!this.activeFile) return;
 
-      Helper.setMonacoModelFromLanguage();
-    },
+      const model = this.editor.createModel(this.activeFile);
 
-    showHide() {
-      if (!this.openedFiles.length || (this.binary && !this.activeFile.raw)) {
-        this.$el.style.display = 'none';
-      } else {
-        this.$el.style.display = 'inline-block';
-      }
-    },
-
-    addMonacoEvents() {
-      Helper.monacoInstance.onMouseUp(this.onMonacoEditorMouseUp);
-      Helper.monacoInstance.onKeyUp(this.onMonacoEditorKeysPressed.bind(this));
-    },
-
-    onMonacoEditorKeysPressed() {
-      Store.setActiveFileContents(Helper.monacoInstance.getValue());
-    },
-
-    onMonacoEditorMouseUp(e) {
-      if (!e.target.position) return;
-      const lineNumber = e.target.position.lineNumber;
-      if (e.target.element.classList.contains('line-numbers')) {
-        location.hash = `L${lineNumber}`;
-        Store.setActiveLine(lineNumber);
-      }
+      this.editor.attachModel(model);
+      model.onChange((m) => {
+        this.changeFileContent({
+          file: this.activeFile,
+          content: m.getValue(),
+        });
+      });
     },
   },
-
   watch: {
-    dialog: {
-      handler(obj) {
-        const newObj = obj;
-        if (newObj.status) {
-          newObj.status = false;
-          this.openedFiles = this.openedFiles.map((file) => {
-            const f = file;
-            if (f.active) {
-              this.blobRaw = f.plain;
-            }
-            f.changed = false;
-            delete f.newContent;
-
-            return f;
-          });
-          this.editMode = false;
-          Store.toggleBlobView();
-        }
-      },
-      deep: true,
-    },
-
-    blobRaw() {
-      if (Helper.monacoInstance && !this.isTree) {
-        this.setupEditor();
-      }
-    },
-
-    activeLine() {
-      if (Helper.monacoInstance) {
-        Helper.monacoInstance.setPosition({
-          lineNumber: this.activeLine,
-          column: 1,
-        });
+    activeFile(oldVal, newVal) {
+      if (newVal && !newVal.active) {
+        this.initMonaco();
       }
     },
   },
   computed: {
+    ...mapGetters([
+      'activeFile',
+      'activeFileExtension',
+    ]),
     shouldHideEditor() {
-      return !this.openedFiles.length || (this.binary && !this.activeFile.raw);
+      return this.activeFile.binary && !this.activeFile.raw;
     },
   },
 };
-
-export default RepoEditor;
 </script>
 
 <template>
-<div id="ide" v-if='!shouldHideEditor'></div>
+  <div
+    id="ide"
+    class="blob-viewer-container blob-editor-container"
+  >
+    <div
+      v-show="shouldHideEditor"
+      v-html="activeFile.html"
+    >
+    </div>
+    <div
+      v-show="!shouldHideEditor"
+      ref="editor"
+    >
+    </div>
+  </div>
 </template>

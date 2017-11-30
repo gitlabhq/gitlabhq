@@ -1,5 +1,5 @@
-- disable_collapse = local_assigns.fetch(:disable_collapse, false)
-- collapsed_class = 'collapsed' if discussion.resolved? && !disable_collapse
+- disable_collapse_class = local_assigns.fetch(:disable_collapse_class, false)
+- collapsed_class = 'collapsed' if discussion.resolved? && !disable_collapse_class
 - badge_counter = discussion_counter + 1 if local_assigns[:discussion_counter]
 - show_toggle = local_assigns.fetch(:show_toggle, true)
 - show_image_comment_badge = local_assigns.fetch(:show_image_comment_badge, false)

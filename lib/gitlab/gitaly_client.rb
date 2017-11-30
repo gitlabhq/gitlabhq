@@ -31,7 +31,38 @@ module Gitlab
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
 
     MUTEX = Mutex.new
-    private_constant :MUTEX
+    METRICS_MUTEX = Mutex.new
+    private_constant :MUTEX, :METRICS_MUTEX
+
+    class << self
+      attr_accessor :query_time
+    end
+
+    self.query_time = 0
+
+    def self.migrate_histogram
+      @migrate_histogram ||=
+        METRICS_MUTEX.synchronize do
+          # If a thread was blocked on the mutex, the value was set already
+          return @migrate_histogram if @migrate_histogram
+
+          Gitlab::Metrics.histogram(:gitaly_migrate_call_duration_seconds,
+                                    "Gitaly migration call execution timings",
+                                    gitaly_enabled: nil, feature: nil)
+        end
+    end
+
+    def self.gitaly_call_histogram
+      @gitaly_call_histogram ||=
+        METRICS_MUTEX.synchronize do
+          # If a thread was blocked on the mutex, the value was set already
+          return @gitaly_call_histogram if @gitaly_call_histogram
+
+          Gitlab::Metrics.histogram(:gitaly_controller_action_duration_seconds,
+                                    "Gitaly endpoint histogram by controller and action combination",
+                                    Gitlab::Metrics::Transaction::BASE_LABELS.merge(gitaly_service: nil, rpc: nil))
+        end
+    end
 
     def self.stub(name, storage)
       MUTEX.synchronize do
@@ -68,17 +99,48 @@ module Gitlab
       address
     end
 
-    # All Gitaly RPC call sites should use GitalyClient.call. This method
-    # makes sure that per-request authentication headers are set.
-    def self.call(storage, service, rpc, request)
-      enforce_gitaly_request_limits(:call)
-
-      metadata = request_metadata(storage)
-      metadata = yield(metadata) if block_given?
-      stub(service, storage).__send__(rpc, request, metadata) # rubocop:disable GitlabSecurity/PublicSend
+    def self.address_metadata(storage)
+      Base64.strict_encode64(JSON.dump({ storage => { 'address' => address(storage), 'token' => token(storage) } }))
     end
 
-    def self.request_metadata(storage)
+    # All Gitaly RPC call sites should use GitalyClient.call. This method
+    # makes sure that per-request authentication headers are set.
+    #
+    # This method optionally takes a block which receives the keyword
+    # arguments hash 'kwargs' that will be passed to gRPC. This allows the
+    # caller to modify or augment the keyword arguments. The block must
+    # return a hash.
+    #
+    # For example:
+    #
+    # GitalyClient.call(storage, service, rpc, request) do |kwargs|
+    #   kwargs.merge(deadline: Time.now + 10)
+    # end
+    #
+    def self.call(storage, service, rpc, request, remote_storage: nil, timeout: nil)
+      start = Gitlab::Metrics::System.monotonic_time
+      enforce_gitaly_request_limits(:call)
+
+      kwargs = request_kwargs(storage, timeout, remote_storage: remote_storage)
+      kwargs = yield(kwargs) if block_given?
+
+      stub(service, storage).__send__(rpc, request, kwargs) # rubocop:disable GitlabSecurity/PublicSend
+    ensure
+      duration = Gitlab::Metrics::System.monotonic_time - start
+
+      # Keep track, seperately, for the performance bar
+      self.query_time += duration
+      gitaly_call_histogram.observe(
+        current_transaction_labels.merge(gitaly_service: service.to_s, rpc: rpc.to_s),
+        duration)
+    end
+
+    def self.current_transaction_labels
+      Gitlab::Metrics::Transaction.current&.labels || {}
+    end
+    private_class_method :current_transaction_labels
+
+    def self.request_kwargs(storage, timeout, remote_storage: nil)
       encoded_token = Base64.strict_encode64(token(storage).to_s)
       metadata = {
         'authorization' => "Bearer #{encoded_token}",
@@ -88,8 +150,24 @@ module Gitlab
       feature_stack = Thread.current[:gitaly_feature_stack]
       feature = feature_stack && feature_stack[0]
       metadata['call_site'] = feature.to_s if feature
+      metadata['gitaly-servers'] = address_metadata(remote_storage) if remote_storage
 
-      { metadata: metadata }
+      result = { metadata: metadata }
+
+      # nil timeout indicates that we should use the default
+      timeout = default_timeout if timeout.nil?
+
+      return result unless timeout > 0
+
+      # Do not use `Time.now` for deadline calculation, since it
+      # will be affected by Timecop in some tests, but grpc's c-core
+      # uses system time instead of timecop's time, so tests will fail
+      # `Time.at(Process.clock_gettime(Process::CLOCK_REALTIME))` will
+      # circumvent timecop
+      deadline = Time.at(Process.clock_gettime(Process::CLOCK_REALTIME)) + timeout
+      result[:deadline] = deadline
+
+      result
     end
 
     def self.token(storage)
@@ -150,8 +228,11 @@ module Gitlab
           feature_stack = Thread.current[:gitaly_feature_stack] ||= []
           feature_stack.unshift(feature)
           begin
+            start = Gitlab::Metrics::System.monotonic_time
             yield is_enabled
           ensure
+            total_time = Gitlab::Metrics::System.monotonic_time - start
+            migrate_histogram.observe({ gitaly_enabled: is_enabled, feature: feature }, total_time)
             feature_stack.shift
             Thread.current[:gitaly_feature_stack] = nil if feature_stack.empty?
           end
@@ -258,6 +339,26 @@ module Gitlab
     def self.encode_repeated(a)
       Google::Protobuf::RepeatedField.new(:bytes, a.map { |s| self.encode(s) } )
     end
+
+    # The default timeout on all Gitaly calls
+    def self.default_timeout
+      return 0 if Sidekiq.server?
+
+      timeout(:gitaly_timeout_default)
+    end
+
+    def self.fast_timeout
+      timeout(:gitaly_timeout_fast)
+    end
+
+    def self.medium_timeout
+      timeout(:gitaly_timeout_medium)
+    end
+
+    def self.timeout(timeout_name)
+      Gitlab::CurrentSettings.current_application_settings[timeout_name]
+    end
+    private_class_method :timeout
 
     # Count a stack. Used for n+1 detection
     def self.count_stack

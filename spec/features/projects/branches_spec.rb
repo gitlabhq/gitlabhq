@@ -46,7 +46,7 @@ describe 'Branches' do
     end
 
     describe 'Find branches' do
-      it 'shows filtered branches', js: true do
+      it 'shows filtered branches', :js do
         visit project_branches_path(project)
 
         fill_in 'branch-search', with: 'fix'
@@ -58,7 +58,7 @@ describe 'Branches' do
     end
 
     describe 'Delete unprotected branch' do
-      it 'removes branch after confirmation', js: true do
+      it 'removes branch after confirmation', :js do
         visit project_branches_path(project)
 
         fill_in 'branch-search', with: 'fix'
@@ -67,7 +67,7 @@ describe 'Branches' do
 
         expect(page).to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 1)
-        find('.js-branch-fix .btn-remove').trigger(:click)
+        accept_confirm { find('.js-branch-fix .btn-remove').click }
 
         expect(page).not_to have_content('fix')
         expect(find('.all-branches')).to have_selector('li', count: 0)

@@ -303,10 +303,10 @@ GitLab.com or http://docs.gitlab.com. Make sure this is discussed with the
 Documentation team beforehand.
 
 If you indeed need to change a document's location, do NOT remove the old
-document, but rather put a text in it that points to the new location, like:
+document, but rather replace all of its contents with a new line:
 
 ```
-This document was moved to [path/to/new_doc.md](path/to/new_doc.md).
+This document was moved to [another location](path/to/new_doc.md).
 ```
 
 where `path/to/new_doc.md` is the relative path to the root directory `doc/`.
@@ -320,7 +320,7 @@ For example, if you were to move `doc/workflow/lfs/lfs_administration.md` to
 1. Replace the contents of `doc/workflow/lfs/lfs_administration.md` with:
 
     ```
-    This document was moved to [administration/lfs.md](../../administration/lfs.md).
+    This document was moved to [another location](../../administration/lfs.md).
     ```
 
 1. Find and replace any occurrences of the old location with the new one.
@@ -459,11 +459,11 @@ Rendered example:
 ### cURL commands
 
 - Use `https://gitlab.example.com/api/v4/` as an endpoint.
-- Wherever needed use this private token: `9koXpg98eAheJpvBs5tK`.
+- Wherever needed use this personal access token: `9koXpg98eAheJpvBs5tK`.
 - Always put the request first. `GET` is the default so you don't have to
   include it.
 - Use double quotes to the URL when it includes additional parameters.
-- Prefer to use examples using the private token and don't pass data of
+- Prefer to use examples using the personal access token and don't pass data of
   username and password.
 
 | Methods | Description |

@@ -9,13 +9,13 @@ Parameters:
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `skip_groups` | array of integers | no | Skip the group IDs passes |
-| `all_available` | boolean | no | Show all the groups you have access to |
-| `search` | string | no | Return list of authorized groups matching the search criteria |
+| `skip_groups` | array of integers | no | Skip the group IDs passed |
+| `all_available` | boolean | no | Show all the groups you have access to (defaults to `false` for authenticated users) |
+| `search` | string | no | Return the list of authorized groups matching the search criteria |
 | `order_by` | string | no | Order groups by `name` or `path`. Default is `name` |
 | `sort` | string | no | Order groups in `asc` or `desc` order. Default is `asc` |
 | `statistics` | boolean | no | Include group statistics (admins only) |
-| `owned` | boolean | no | Limit by groups owned by the current user |
+| `owned` | boolean | no | Limit to groups owned by the current user |
 
 ```
 GET /groups
@@ -40,7 +40,88 @@ GET /groups
 ]
 ```
 
+When adding the parameter `statistics=true` and the authenticated user is an admin, additional group statistics are returned.
+
+```
+GET /groups?statistics=true
+```
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Foobar Group",
+    "path": "foo-bar",
+    "description": "An interesting group",
+    "visibility": "public",
+    "lfs_enabled": true,
+    "avatar_url": "http://localhost:3000/uploads/group/avatar/1/foo.jpg",
+    "web_url": "http://localhost:3000/groups/foo-bar",
+    "request_access_enabled": false,
+    "full_name": "Foobar Group",
+    "full_path": "foo-bar",
+    "parent_id": null,
+    "statistics": {
+      "storage_size" : 212,
+      "repository_size" : 33,
+      "lfs_objects_size" : 123,
+      "job_artifacts_size" : 57
+
+    }
+  }
+]
+```
+
 You can search for groups by name or path, see below.
+
+You can filter by [custom attributes](custom_attributes.md) with:
+
+```
+GET /groups?custom_attributes[key]=value&custom_attributes[other_key]=other_value
+```
+
+## List a groups's subgroups
+
+> [Introduced][ce-15142] in GitLab 10.3.
+
+Get a list of visible direct subgroups in this group.
+When accessed without authentication, only public groups are returned.
+
+Parameters:
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the group](README.md#namespaced-path-encoding) of the parent group |
+| `skip_groups` | array of integers | no | Skip the group IDs passed |
+| `all_available` | boolean | no | Show all the groups you have access to (defaults to `false` for authenticated users) |
+| `search` | string | no | Return the list of authorized groups matching the search criteria |
+| `order_by` | string | no | Order groups by `name` or `path`. Default is `name` |
+| `sort` | string | no | Order groups in `asc` or `desc` order. Default is `asc` |
+| `statistics` | boolean | no | Include group statistics (admins only) |
+| `owned` | boolean | no | Limit to groups owned by the current user |
+
+```
+GET /groups/:id/subgroups
+```
+
+```json
+[
+  {
+    "id": 1,
+    "name": "Foobar Group",
+    "path": "foo-bar",
+    "description": "An interesting group",
+    "visibility": "public",
+    "lfs_enabled": true,
+    "avatar_url": "http://gitlab.example.com/uploads/group/avatar/1/foo.jpg",
+    "web_url": "http://gitlab.example.com/groups/foo-bar",
+    "request_access_enabled": false,
+    "full_name": "Foobar Group",
+    "full_path": "foo-bar",
+    "parent_id": 123
+  }
+]
+```
 
 ## List a group's projects
 
@@ -434,3 +515,5 @@ And to switch pages add:
 ```
 /groups?per_page=100&page=2
 ```
+
+[ce-15142]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15142

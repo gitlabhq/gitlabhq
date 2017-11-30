@@ -1,3 +1,8 @@
+##
+# NOTE:
+# We'll move this class to Clusters::Platforms::Kubernetes, which contains exactly the same logic.
+# After we've migrated data, we'll remove KubernetesService. This would happen in a few months.
+# If you're modyfiyng this class, please note that you should update the same change in Clusters::Platforms::Kubernetes.
 class KubernetesService < DeploymentService
   include Gitlab::CurrentSettings
   include Gitlab::Kubernetes
@@ -136,6 +141,10 @@ class KubernetesService < DeploymentService
     { pods: read_pods }
   end
 
+  def kubeclient
+    @kubeclient ||= build_kubeclient!
+  end
+
   TEMPLATE_PLACEHOLDER = 'Kubernetes namespace'.freeze
 
   private
@@ -153,7 +162,10 @@ class KubernetesService < DeploymentService
   end
 
   def default_namespace
-    "#{project.path}-#{project.id}" if project.present?
+    return unless project
+
+    slug = "#{project.path}-#{project.id}".downcase
+    slug.gsub(/[^-a-z0-9]/, '-').gsub(/^-+/, '')
   end
 
   def build_kubeclient!(api_path: 'api', api_version: 'v1')
@@ -175,6 +187,7 @@ class KubernetesService < DeploymentService
     kubeclient.get_pods(namespace: actual_namespace).as_json
   rescue KubeException => err
     raise err unless err.error_code == 404
+
     []
   end
 

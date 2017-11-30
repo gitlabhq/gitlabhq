@@ -14,7 +14,7 @@ describe API::Events do
       it 'returns authentication error' do
         get api('/events')
 
-        expect(response).to have_http_status(401)
+        expect(response).to have_gitlab_http_status(401)
       end
     end
 
@@ -22,7 +22,7 @@ describe API::Events do
       it 'returns users events' do
         get api('/events?action=closed&target_type=issue&after=2016-12-1&before=2016-12-31', user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
@@ -35,7 +35,7 @@ describe API::Events do
       it 'returns no events' do
         get api("/users/#{user.id}/events", other_user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response).to be_empty
       end
     end
@@ -44,7 +44,7 @@ describe API::Events do
       it 'accepts a username' do
         get api("/users/#{user.username}/events", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
@@ -53,7 +53,7 @@ describe API::Events do
       it 'returns the events' do
         get api("/users/#{user.id}/events", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
@@ -72,7 +72,7 @@ describe API::Events do
         end
 
         it 'responds with HTTP 200 OK' do
-          expect(response).to have_http_status(200)
+          expect(response).to have_gitlab_http_status(200)
         end
 
         it 'includes the push payload as a Hash' do
@@ -120,7 +120,7 @@ describe API::Events do
     it 'returns a 404 error if not found' do
       get api('/users/42/events', user)
 
-      expect(response).to have_http_status(404)
+      expect(response).to have_gitlab_http_status(404)
       expect(json_response['message']).to eq('404 User Not Found')
     end
   end
@@ -130,7 +130,7 @@ describe API::Events do
       it 'returns 404 for private project' do
         get api("/projects/#{private_project.id}/events")
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
 
       it 'returns 200 status for a public project' do
@@ -138,7 +138,7 @@ describe API::Events do
 
         get api("/projects/#{public_project.id}/events")
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
       end
     end
 
@@ -146,7 +146,7 @@ describe API::Events do
       it 'returns 404' do
         get api("/projects/#{private_project.id}/events", non_member)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 
@@ -154,7 +154,7 @@ describe API::Events do
       it 'returns project events' do
         get api("/projects/#{private_project.id}/events?action=closed&target_type=issue&after=2016-12-1&before=2016-12-31", user)
 
-        expect(response).to have_http_status(200)
+        expect(response).to have_gitlab_http_status(200)
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(json_response.size).to eq(1)
@@ -163,7 +163,7 @@ describe API::Events do
       it 'returns 404 if project does not exist' do
         get api("/projects/1234/events", user)
 
-        expect(response).to have_http_status(404)
+        expect(response).to have_gitlab_http_status(404)
       end
     end
 

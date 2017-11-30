@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-feature 'Issue markdown toolbar', js: true do
+feature 'Issue markdown toolbar', :js do
   let(:project) { create(:project, :public) }
   let(:issue)   { create(:issue, project: project) }
   let(:user)    { create(:user) }
@@ -16,6 +16,7 @@ feature 'Issue markdown toolbar', js: true do
     find('#note-body').native.send_key(:enter)
     find('#note-body').native.send_keys('bold')
 
+    find('.js-main-target-form #note-body')
     page.evaluate_script('document.querySelectorAll(".js-main-target-form #note-body")[0].setSelectionRange(4, 9)')
 
     first('.toolbar-btn').click
@@ -28,6 +29,7 @@ feature 'Issue markdown toolbar', js: true do
     find('#note-body').native.send_key(:enter)
     find('#note-body').native.send_keys('underline')
 
+    find('.js-main-target-form #note-body')
     page.evaluate_script('document.querySelectorAll(".js-main-target-form #note-body")[0].setSelectionRange(4, 50)')
 
     find('.toolbar-btn:nth-child(2)').click

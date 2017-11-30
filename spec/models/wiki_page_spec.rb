@@ -373,7 +373,7 @@ describe WikiPage do
     end
 
     it 'returns commit sha' do
-      expect(@page.last_commit_sha).to eq @page.commit.sha
+      expect(@page.last_commit_sha).to eq @page.last_version.sha
     end
 
     it 'is changed after page updated' do
@@ -402,7 +402,7 @@ describe WikiPage do
 
   def destroy_page(title)
     page = wiki.wiki.page(title: title)
-    wiki.delete_page(page, commit_details)
+    wiki.delete_page(page, "test commit")
   end
 
   def get_slugs(page_or_dir)

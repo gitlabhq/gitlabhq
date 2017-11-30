@@ -4,9 +4,9 @@ describe Gitlab::ProjectTemplate do
   describe '.all' do
     it 'returns a all templates' do
       expected = [
-        described_class.new('rails', 'Ruby on Rails'),
-        described_class.new('spring', 'Spring'),
-        described_class.new('express', 'NodeJS Express')
+        described_class.new('rails', 'Ruby on Rails', 'Includes an MVC structure, .gitignore, Gemfile, and more great stuff', 'https://gitlab.com/gitlab-org/project-templates/rails'),
+        described_class.new('spring', 'Spring', 'Includes an MVC structure, .gitignore, Gemfile, and more great stuff', 'https://gitlab.com/gitlab-org/project-templates/spring'),
+        described_class.new('express', 'NodeJS Express', 'Includes an MVC structure, .gitignore, Gemfile, and more great stuff', 'https://gitlab.com/gitlab-org/project-templates/express')
       ]
 
       expect(described_class.all).to be_an(Array)
@@ -31,7 +31,7 @@ describe Gitlab::ProjectTemplate do
   end
 
   describe 'instance methods' do
-    subject { described_class.new('phoenix', 'Phoenix Framework') }
+    subject { described_class.new('phoenix', 'Phoenix Framework', 'Phoenix description', 'link-to-template') }
 
     it { is_expected.to respond_to(:logo, :file, :archive_path) }
   end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Copy as GFM', js: true do
+describe 'Copy as GFM', :js do
   include MarkupHelper
   include RepoHelpers
   include ActionView::Helpers::JavaScriptHelper
@@ -664,7 +664,7 @@ describe 'Copy as GFM', js: true do
   def html_to_gfm(html, transformer = 'transformGFMSelection', target: nil)
     js = <<-JS.strip_heredoc
       (function(html) {
-        var transformer = window.gl.CopyAsGFM[#{transformer.inspect}];
+        var transformer = window.CopyAsGFM[#{transformer.inspect}];
 
         var node = document.createElement('div');
         $(html).each(function() { node.appendChild(this) });
@@ -678,7 +678,7 @@ describe 'Copy as GFM', js: true do
         node = transformer(node, target);
         if (!node) return null;
 
-        return window.gl.CopyAsGFM.nodeToGFM(node);
+        return window.CopyAsGFM.nodeToGFM(node);
       })("#{escape_javascript(html)}")
     JS
     page.evaluate_script(js)

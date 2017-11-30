@@ -39,7 +39,7 @@ feature 'list of badges' do
     end
   end
 
-  scenario 'user changes current ref of build status badge', js: true do
+  scenario 'user changes current ref of build status badge', :js do
     page.within('.pipeline-status') do
       first('.js-project-refs-dropdown').click
 

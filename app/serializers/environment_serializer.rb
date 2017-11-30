@@ -1,4 +1,6 @@
 class EnvironmentSerializer < BaseSerializer
+  include WithPagination
+
   Item = Struct.new(:name, :size, :latest)
 
   entity EnvironmentEntity
@@ -7,16 +9,8 @@ class EnvironmentSerializer < BaseSerializer
     tap { @itemize = true }
   end
 
-  def with_pagination(request, response)
-    tap { @paginator = Gitlab::Serializer::Pagination.new(request, response) }
-  end
-
   def itemized?
     @itemize
-  end
-
-  def paginated?
-    @paginator.present?
   end
 
   def represent(resource, opts = {})
@@ -27,8 +21,6 @@ class EnvironmentSerializer < BaseSerializer
           latest: super(item.latest, opts) }
       end
     else
-      resource = @paginator.paginate(resource) if paginated?
-
       super(resource, opts)
     end
   end

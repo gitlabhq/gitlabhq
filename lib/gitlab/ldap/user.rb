@@ -9,10 +9,8 @@ module Gitlab
     class User < Gitlab::OAuth::User
       class << self
         def find_by_uid_and_provider(uid, provider)
-          # LDAP distinguished name is case-insensitive
-          identity = ::Identity
-            .where(provider: provider)
-            .iwhere(extern_uid: uid).last
+          identity = ::Identity.with_extern_uid(provider, uid).take
+
           identity && identity.user
         end
       end

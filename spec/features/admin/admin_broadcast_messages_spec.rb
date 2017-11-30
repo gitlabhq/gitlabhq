@@ -40,7 +40,7 @@ feature 'Admin Broadcast Messages' do
     expect(page).not_to have_content 'Migration to new server'
   end
 
-  scenario 'Live preview a customized broadcast message', js: true do
+  scenario 'Live preview a customized broadcast message', :js do
     fill_in 'broadcast_message_message', with: "Live **Markdown** previews. :tada:"
 
     page.within('.broadcast-message-preview') do

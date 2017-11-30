@@ -1,5 +1,0 @@
----
-title: Fix the filesystem shard health check to check all configured shards
-merge_request: 14341
-author:
-type: fixed

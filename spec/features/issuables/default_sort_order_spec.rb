@@ -26,7 +26,7 @@ describe 'Projects > Issuables > Default sort order' do
       MergeRequest.all
     end
 
-    context 'in the "merge requests" tab', js: true do
+    context 'in the "merge requests" tab', :js do
       let(:issuable_type) { :merge_request }
 
       it 'is "last created"' do
@@ -37,7 +37,7 @@ describe 'Projects > Issuables > Default sort order' do
       end
     end
 
-    context 'in the "merge requests / open" tab', js: true do
+    context 'in the "merge requests / open" tab', :js do
       let(:issuable_type) { :merge_request }
 
       it 'is "created date"' do
@@ -49,7 +49,7 @@ describe 'Projects > Issuables > Default sort order' do
       end
     end
 
-    context 'in the "merge requests / merged" tab', js: true do
+    context 'in the "merge requests / merged" tab', :js do
       let(:issuable_type) { :merged_merge_request }
 
       it 'is "last updated"' do
@@ -61,7 +61,7 @@ describe 'Projects > Issuables > Default sort order' do
       end
     end
 
-    context 'in the "merge requests / closed" tab', js: true do
+    context 'in the "merge requests / closed" tab', :js do
       let(:issuable_type) { :closed_merge_request }
 
       it 'is "last updated"' do
@@ -73,7 +73,7 @@ describe 'Projects > Issuables > Default sort order' do
       end
     end
 
-    context 'in the "merge requests / all" tab', js: true do
+    context 'in the "merge requests / all" tab', :js do
       let(:issuable_type) { :merge_request }
 
       it 'is "created date"' do
@@ -102,7 +102,7 @@ describe 'Projects > Issuables > Default sort order' do
       Issue.all
     end
 
-    context 'in the "issues" tab', js: true do
+    context 'in the "issues" tab', :js do
       let(:issuable_type) { :issue }
 
       it 'is "created date"' do
@@ -114,7 +114,7 @@ describe 'Projects > Issuables > Default sort order' do
       end
     end
 
-    context 'in the "issues / open" tab', js: true do
+    context 'in the "issues / open" tab', :js do
       let(:issuable_type) { :issue }
 
       it 'is "created date"' do
@@ -126,7 +126,7 @@ describe 'Projects > Issuables > Default sort order' do
       end
     end
 
-    context 'in the "issues / closed" tab', js: true do
+    context 'in the "issues / closed" tab', :js do
       let(:issuable_type) { :closed_issue }
 
       it 'is "last updated"' do
@@ -138,7 +138,7 @@ describe 'Projects > Issuables > Default sort order' do
       end
     end
 
-    context 'in the "issues / all" tab', js: true do
+    context 'in the "issues / all" tab', :js do
       let(:issuable_type) { :issue }
 
       it 'is "created date"' do
