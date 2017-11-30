@@ -1,9 +1,9 @@
 <script>
+  import TaskList from '~/task_list';
   import noteEditedText from './note_edited_text.vue';
   import noteAwardsList from './note_awards_list.vue';
   import noteAttachment from './note_attachment.vue';
   import noteForm from './note_form.vue';
-  import TaskList from '~/task_list';
   import autosave from '../mixins/autosave';
 
   export default {

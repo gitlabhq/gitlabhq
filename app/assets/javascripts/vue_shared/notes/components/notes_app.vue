@@ -1,15 +1,15 @@
 <script>
   import { mapGetters, mapActions } from 'vuex';
   import Flash from '~/flash';
-  import store from '../stores/';
-  import * as constants from '../constants';
-  import noteableNote from './noteable_note.vue';
-  import noteableDiscussion from './noteable_discussion.vue';
   import systemNote from '~/vue_shared/notes/components/system_note.vue';
-  import commentForm from './comment_form.vue';
   import placeholderNote from '~/vue_shared/notes/components/placeholder_note.vue';
   import placeholderSystemNote from '~/vue_shared/notes/components/placeholder_system_note.vue';
   import loadingIcon from '~/vue_shared/components/loading_icon.vue';
+  import noteableDiscussion from './noteable_discussion.vue';
+  import store from '../stores/';
+  import * as constants from '../constants';
+  import noteableNote from './noteable_note.vue';
+  import commentForm from './comment_form.vue';
 
   export default {
     name: 'notesApp',

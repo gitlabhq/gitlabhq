@@ -5,13 +5,13 @@
   import Flash from '~/flash';
   import Autosave from '~/autosave';
   import TaskList from '~/task_list';
-  import * as constants from '../constants';
-  import eventHub from '../event_hub';
-  import issueWarning from '~/vue_shared/components/issue/issue_warning.vue';
-  import noteSignedOutWidget from './note_signed_out_widget.vue';
-  import discussionLockedWidget from './discussion_locked_widget.vue';
   import markdownField from '~/vue_shared/components/markdown/field.vue';
   import userAvatarLink from '~/vue_shared/components/user_avatar/user_avatar_link.vue';
+  import issueWarning from '~/vue_shared/components/issue/issue_warning.vue';
+  import * as constants from '../constants';
+  import eventHub from '../event_hub';
+  import noteSignedOutWidget from './note_signed_out_widget.vue';
+  import discussionLockedWidget from './discussion_locked_widget.vue';
   import issuableStateMixin from '../mixins/issuable_state';
 
   export default {
