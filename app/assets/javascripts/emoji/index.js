@@ -74,11 +74,8 @@ export function glEmojiTag(inputName, options) {
     fallbackImageSrc: null,
     ...options,
   };
-  let name = inputName;
-  let emojiInfo = {};
-  if (!opts.custom) {
-    ({ name, ...emojiInfo } = getEmojiInfo(inputName));
-  }
+  const emojiInfo = opts.custom ? {} : getEmojiInfo(inputName);
+  const name = opts.custom ? inputName : emojiInfo.name;
 
   const fallbackImageSrc = opts.fallbackImageSrc || emojiFallbackImageSrc(name);
   const fallbackSpriteClass = `emoji-${name}`;

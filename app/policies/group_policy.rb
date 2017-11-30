@@ -34,6 +34,8 @@ class GroupPolicy < BasePolicy
   rule { admin }             .enable :read_group
   rule { has_projects }      .enable :read_group
 
+  rule { has_access }.enable :read_namespace
+
   rule { developer }.enable :admin_milestones
   rule { reporter }.enable :admin_label
 

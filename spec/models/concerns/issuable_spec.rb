@@ -283,7 +283,7 @@ describe Issuable do
             'labels' => [[labels[0].hook_attrs], [labels[1].hook_attrs]]
           ))
 
-        issue.to_hook_data(user, old_labels: [labels[0]])
+        issue.to_hook_data(user, old_associations: { labels: [labels[0]] })
       end
     end
 
@@ -302,7 +302,7 @@ describe Issuable do
             'total_time_spent' => [1, 2]
           ))
 
-        issue.to_hook_data(user, old_total_time_spent: 1)
+        issue.to_hook_data(user, old_associations: { total_time_spent: 1 })
       end
     end
 
@@ -322,7 +322,7 @@ describe Issuable do
             'assignees' => [[user.hook_attrs], [user.hook_attrs, user2.hook_attrs]]
           ))
 
-        issue.to_hook_data(user, old_assignees: [user])
+        issue.to_hook_data(user, old_associations: { assignees: [user] })
       end
     end
 
@@ -345,7 +345,7 @@ describe Issuable do
             'assignee' => [user.hook_attrs, user2.hook_attrs]
           ))
 
-        merge_request.to_hook_data(user, old_assignees: [user])
+        merge_request.to_hook_data(user, old_associations: { assignees: [user] })
       end
     end
   end

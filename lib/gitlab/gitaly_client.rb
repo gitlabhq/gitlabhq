@@ -31,14 +31,38 @@ module Gitlab
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
 
     MUTEX = Mutex.new
-    private_constant :MUTEX
+    METRICS_MUTEX = Mutex.new
+    private_constant :MUTEX, :METRICS_MUTEX
 
     class << self
-      attr_accessor :query_time, :migrate_histogram
+      attr_accessor :query_time
     end
 
     self.query_time = 0
-    self.migrate_histogram = Gitlab::Metrics.histogram(:gitaly_migrate_call_duration, "Gitaly migration call execution timings")
+
+    def self.migrate_histogram
+      @migrate_histogram ||=
+        METRICS_MUTEX.synchronize do
+          # If a thread was blocked on the mutex, the value was set already
+          return @migrate_histogram if @migrate_histogram
+
+          Gitlab::Metrics.histogram(:gitaly_migrate_call_duration_seconds,
+                                    "Gitaly migration call execution timings",
+                                    gitaly_enabled: nil, feature: nil)
+        end
+    end
+
+    def self.gitaly_call_histogram
+      @gitaly_call_histogram ||=
+        METRICS_MUTEX.synchronize do
+          # If a thread was blocked on the mutex, the value was set already
+          return @gitaly_call_histogram if @gitaly_call_histogram
+
+          Gitlab::Metrics.histogram(:gitaly_controller_action_duration_seconds,
+                                    "Gitaly endpoint histogram by controller and action combination",
+                                    Gitlab::Metrics::Transaction::BASE_LABELS.merge(gitaly_service: nil, rpc: nil))
+        end
+    end
 
     def self.stub(name, storage)
       MUTEX.synchronize do
@@ -94,7 +118,7 @@ module Gitlab
     # end
     #
     def self.call(storage, service, rpc, request, remote_storage: nil)
-      start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      start = Gitlab::Metrics::System.monotonic_time
       enforce_gitaly_request_limits(:call)
 
       kwargs = request_kwargs(storage, remote_storage: remote_storage)
@@ -102,8 +126,19 @@ module Gitlab
 
       stub(service, storage).__send__(rpc, request, kwargs) # rubocop:disable GitlabSecurity/PublicSend
     ensure
-      self.query_time += Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
+      duration = Gitlab::Metrics::System.monotonic_time - start
+
+      # Keep track, seperately, for the performance bar
+      self.query_time += duration
+      gitaly_call_histogram.observe(
+        current_transaction_labels.merge(gitaly_service: service.to_s, rpc: rpc.to_s),
+        duration)
     end
+
+    def self.current_transaction_labels
+      Gitlab::Metrics::Transaction.current&.labels || {}
+    end
+    private_class_method :current_transaction_labels
 
     def self.request_kwargs(storage, remote_storage: nil)
       encoded_token = Base64.strict_encode64(token(storage).to_s)
@@ -178,10 +213,10 @@ module Gitlab
           feature_stack = Thread.current[:gitaly_feature_stack] ||= []
           feature_stack.unshift(feature)
           begin
-            start = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+            start = Gitlab::Metrics::System.monotonic_time
             yield is_enabled
           ensure
-            total_time = Process.clock_gettime(Process::CLOCK_MONOTONIC) - start
+            total_time = Gitlab::Metrics::System.monotonic_time - start
             migrate_histogram.observe({ gitaly_enabled: is_enabled, feature: feature }, total_time)
             feature_stack.shift
             Thread.current[:gitaly_feature_stack] = nil if feature_stack.empty?

@@ -9,16 +9,16 @@
 = form_for(url, html: { class: 'gl-show-field-errors prepend-top-default' }) do |f|
   = form_errors(@new_custom_emoji)
 
-  = f.label _('Add a new custom emoji')
+  = f.label s_('CustomEmoji|Add a new custom emoji')
 
   .form-group
     = f.label :name
-    = f.text_field :name, class: 'form-control append-bottom-10', placeholder: _('emoji-name')
+    = f.text_field :name, class: 'form-control append-bottom-10', placeholder: s_('CustomEmoji|emoji_name')
 
   .form-group
     = f.label :file, s_('CustomEmoji|Image')
     .prepend-top-5.append-bottom-10
-      %a.btn.js-browse-file-button{ data: { id: 'custom-emoji-image' } }
+      %a.btn.js-browse-file-button{ role: 'button', data: { id: 'custom-emoji-image' } }
         = _('Browse file...')
       %span.file_name.prepend-left-default.js-browse-file-name{ data: { id: 'custom-emoji-image' } }
         = _('No file chosen')
@@ -27,11 +27,10 @@
       = s_('CustomEmoji|We recommend your emoji image be at least 64x64px. The maximum file size allowed is 128Kb.')
 
   .form-group
-    = f.submit s_('CustomEmoji|Add new emoji'), class: 'btn btn-create'
-
+    = f.submit s_('CustomEmoji|Add new emoji'), class: 'btn btn-success'
 
 .table-responsive
-  %table.table
+  %table.table.js-custom-emoji-table
     %thead
       %tr
         %th
@@ -39,10 +38,6 @@
         %th
           = s_('CustomEmoji|Name')
         %th
-    - @custom_emoji.each do |emoji|
-      %tr
-        %td= custom_emoji_icon(emoji.name, emoji.url)
-        %td= ":#{emoji.name}:"
-        %td
-          = link_to custom_emoji_path(emoji), method: :delete, class: 'btn btn-remove pull-right', aria: { label: _('Delete') } do
-            = icon('trash', class: 'hidden-xs')
+    %tbody
+      - @custom_emoji.each do |emoji|
+        = render "shared/custom_emoji/emoji_row", emoji: emoji

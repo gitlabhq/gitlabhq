@@ -22,6 +22,11 @@
         required: false,
         default: true,
       },
+      enableAutocomplete: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
     components: {
       markdownField,
@@ -42,7 +47,9 @@
     <markdown-field
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
-      :can-attach-file="canAttachFile">
+      :can-attach-file="canAttachFile"
+      :enable-autocomplete="enableAutocomplete"
+    >
       <textarea
         id="issue-description"
         class="note-textarea js-gfm-input js-autosize markdown-area"

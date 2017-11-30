@@ -73,7 +73,7 @@
             = link_to profile_emails_path do
               %strong.fly-out-top-item-name
                 #{ _('Emails') }
-      - unless current_user.ldap_user?
+      - if current_user.allow_password_authentication?
         = nav_link(controller: :passwords) do
           = link_to edit_profile_password_path do
             .nav-icon-container
@@ -150,6 +150,6 @@
           = nav_link(path: 'profiles#custom_emoji', html_options: { class: "fly-out-top-item" } ) do
             = link_to profile_custom_emoji_index_path do
               %strong.fly-out-top-item-name
-                #{ _('Custom emoji') }
+                #{ _('Custom Emoji') }
 
     = render 'shared/sidebar_toggle_button'
