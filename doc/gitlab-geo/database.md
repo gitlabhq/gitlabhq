@@ -173,7 +173,7 @@ will not be able to perform all necessary configuration steps. Refer to
     ip route get 1 | awk '{print $NF; exit}'
 
     # Secondary public IP address
-    dig +short myip.opendns.com @resolver1.opendns.com
+    curl ipinfo.io/ip
     ```
     
     Edit `/etc/gitlab/gitlab.rb` and add the following, replacing the secondary
