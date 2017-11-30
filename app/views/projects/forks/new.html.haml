@@ -14,22 +14,7 @@
         %h5.prepend-top-0.append-bottom-0.prepend-left-default.append-right-default
           Click to fork the project
         - @namespaces.each do |namespace|
-          - avatar = namespace_icon(namespace, 100)
-          - can_create_project = current_user.can?(:create_projects, namespace)
-          - forked_project = namespace.find_fork_of(@project)
-          - fork_path = forked_project ? project_path(forked_project) : project_forks_path(@project, namespace_key: namespace.id)
-          .bordered-box.fork-thumbnail.text-center.prepend-left-default.append-right-default.prepend-top-default.append-bottom-default{ class: [("disabled" unless can_create_project), ("forked" if forked_project)] }
-            = link_to fork_path,
-                method: "POST",
-                class: [("js-fork-thumbnail" unless forked_project), ("disabled has-tooltip" unless can_create_project)],
-                title: (_('You have reached your project limit') unless can_create_project) do
-              - if /no_((\w*)_)*avatar/.match(avatar)
-                = project_identicon(namespace, class: "avatar s100 identicon")
-              - else
-                .avatar-container.s100
-                  = image_tag(avatar, class: "avatar s100")
-              %h5.prepend-top-default
-                = namespace.human_name
+          = render 'fork_button', namespace: namespace
     - else
       %strong
         No available namespaces to fork the project.

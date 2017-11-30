@@ -133,8 +133,6 @@ methods:
     - :type
   services:
     - :type
-  merge_request_diff:
-    - :utf8_st_diffs
   merge_request_diff_files:
     - :utf8_diff
   merge_requests:

@@ -116,4 +116,31 @@ describe('Multi-file store getters', () => {
       expect(getters.canEditFile(localState)).toBeFalsy();
     });
   });
+
+  describe('modifiedFiles', () => {
+    it('returns a list of modified files', () => {
+      localState.openFiles.push(file());
+      localState.openFiles.push(file('changed'));
+      localState.openFiles[1].changed = true;
+
+      const modifiedFiles = getters.modifiedFiles(localState);
+
+      expect(modifiedFiles.length).toBe(1);
+      expect(modifiedFiles[0].name).toBe('changed');
+    });
+  });
+
+  describe('addedFiles', () => {
+    it('returns a list of added files', () => {
+      localState.openFiles.push(file());
+      localState.openFiles.push(file('added'));
+      localState.openFiles[1].changed = true;
+      localState.openFiles[1].tempFile = true;
+
+      const modifiedFiles = getters.addedFiles(localState);
+
+      expect(modifiedFiles.length).toBe(1);
+      expect(modifiedFiles[0].name).toBe('added');
+    });
+  });
 });

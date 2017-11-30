@@ -31,11 +31,11 @@ module Mentionable
   #
   # By default this will be the class name and the result of calling
   # `to_reference` on the object.
-  def gfm_reference(from_project = nil)
+  def gfm_reference(from = nil)
     # "MergeRequest" > "merge_request" > "Merge request" > "merge request"
     friendly_name = self.class.to_s.underscore.humanize.downcase
 
-    "#{friendly_name} #{to_reference(from_project)}"
+    "#{friendly_name} #{to_reference(from)}"
   end
 
   # The GFM reference to this Mentionable, which shouldn't be included in its #references.

@@ -1,0 +1,6 @@
+---
+title: Drastically improve project search performance by no longer searching namespace
+  name
+merge_request:
+author:
+type: performance

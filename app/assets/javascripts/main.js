@@ -69,7 +69,6 @@ import './project_import';
 import './projects_dropdown';
 import './projects_list';
 import './syntax_highlight';
-import './render_math';
 import './render_gfm';
 import './right_sidebar';
 import './search';
@@ -302,6 +301,8 @@ $(function () {
   const flashContainer = document.querySelector('.flash-container');
 
   if (flashContainer && flashContainer.children.length) {
-    removeFlashClickListener(flashContainer.children[0]);
+    flashContainer.querySelectorAll('.flash-alert, .flash-notice, .flash-success').forEach((flashEl) => {
+      removeFlashClickListener(flashEl);
+    });
   }
 });

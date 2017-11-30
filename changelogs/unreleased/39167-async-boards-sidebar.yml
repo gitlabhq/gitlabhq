@@ -1,5 +1,0 @@
----
-title: Update Issue Boards to fetch the notification subscription status asynchronously
-merge_request:
-author:
-type: performance

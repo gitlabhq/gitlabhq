@@ -5,6 +5,8 @@ class MergeRequest < ActiveRecord::Base
   include Referable
   include IgnorableColumn
   include TimeTrackable
+  include ManualInverseAssociation
+  include EachBatch
 
   ignore_column :locked_at,
                 :ref_fetched
@@ -14,8 +16,27 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :merge_user, class_name: "User"
 
   has_many :merge_request_diffs
+
   has_one :merge_request_diff,
     -> { order('merge_request_diffs.id DESC') }, inverse_of: :merge_request
+
+  belongs_to :latest_merge_request_diff, class_name: 'MergeRequestDiff'
+  manual_inverse_association :latest_merge_request_diff, :merge_request
+
+  # This is the same as latest_merge_request_diff unless:
+  # 1. There are arguments - in which case we might be trying to force-reload.
+  # 2. This association is already loaded.
+  # 3. The latest diff does not exist.
+  #
+  # The second one in particular is important - MergeRequestDiff#merge_request
+  # is the inverse of MergeRequest#merge_request_diff, which means it may not be
+  # the latest diff, because we could have loaded any diff from this particular
+  # MR. If we haven't already loaded a diff, then it's fine to load the latest.
+  def merge_request_diff(*args)
+    fallback = latest_merge_request_diff if args.empty? && !association(:merge_request_diff).loaded?
+
+    fallback || super
+  end
 
   belongs_to :head_pipeline, foreign_key: "head_pipeline_id", class_name: "Ci::Pipeline"
 
@@ -31,7 +52,6 @@ class MergeRequest < ActiveRecord::Base
 
   after_create :ensure_merge_request_diff, unless: :importing?
   after_update :reload_diff_if_branch_changed
-  after_commit :update_project_counter_caches, on: :destroy
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -167,6 +187,22 @@ class MergeRequest < ActiveRecord::Base
     where("merge_requests.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
   end
 
+  # This is used after project import, to reset the IDs to the correct
+  # values. It is not intended to be called without having already scoped the
+  # relation.
+  def self.set_latest_merge_request_diff_ids!
+    update = '
+      latest_merge_request_diff_id = (
+        SELECT MAX(id)
+        FROM merge_request_diffs
+        WHERE merge_requests.id = merge_request_diffs.merge_request_id
+      )'.squish
+
+    self.each_batch do |batch|
+      batch.update_all(update)
+    end
+  end
+
   WIP_REGEX = /\A\s*(\[WIP\]\s*|WIP:\s*|WIP\s+)+\s*/i.freeze
 
   def self.work_in_progress?(title)
@@ -179,6 +215,12 @@ class MergeRequest < ActiveRecord::Base
 
   def self.wip_title(title)
     work_in_progress?(title) ? title : "WIP: #{title}"
+  end
+
+  # Verifies if title has changed not taking into account WIP prefix
+  # for merge requests.
+  def wipless_title_changed(old_title)
+    self.class.wipless_title(old_title) != self.wipless_title
   end
 
   def hook_attrs
@@ -241,9 +283,9 @@ class MergeRequest < ActiveRecord::Base
     if persisted?
       merge_request_diff.commit_shas
     elsif compare_commits
-      compare_commits.reverse.map(&:sha)
+      compare_commits.to_a.reverse.map(&:sha)
     else
-      []
+      Array(diff_head_sha)
     end
   end
 
@@ -322,16 +364,28 @@ class MergeRequest < ActiveRecord::Base
   # We use these attributes to force these to the intended values.
   attr_writer :target_branch_sha, :source_branch_sha
 
+  def source_branch_ref
+    return @source_branch_sha if @source_branch_sha
+    return unless source_branch
+
+    Gitlab::Git::BRANCH_REF_PREFIX + source_branch
+  end
+
+  def target_branch_ref
+    return @target_branch_sha if @target_branch_sha
+    return unless target_branch
+
+    Gitlab::Git::BRANCH_REF_PREFIX + target_branch
+  end
+
   def source_branch_head
     return unless source_project
 
-    source_branch_ref = @source_branch_sha || source_branch
     source_project.repository.commit(source_branch_ref) if source_branch_ref
   end
 
   def target_branch_head
-    target_branch_ref = @target_branch_sha || target_branch
-    target_project.repository.commit(target_branch_ref) if target_branch_ref
+    target_project.repository.commit(target_branch_ref)
   end
 
   def branch_merge_base_commit
@@ -440,7 +494,7 @@ class MergeRequest < ActiveRecord::Base
 
   def merge_request_diff_for(diff_refs_or_sha)
     @merge_request_diffs_by_diff_refs_or_sha ||= Hash.new do |h, diff_refs_or_sha|
-      diffs = merge_request_diffs.viewable.select_without_diff
+      diffs = merge_request_diffs.viewable
       h[diff_refs_or_sha] =
         if diff_refs_or_sha.is_a?(Gitlab::Diff::DiffRefs)
           diffs.find_by_diff_refs(diff_refs_or_sha)
@@ -864,28 +918,18 @@ class MergeRequest < ActiveRecord::Base
   # Note that this could also return SHA from now dangling commits
   #
   def all_commit_shas
-    if persisted?
-      # MySQL doesn't support LIMIT in a subquery.
-      diffs_relation =
-        if Gitlab::Database.postgresql?
-          merge_request_diffs.order(id: :desc).limit(100)
-        else
-          merge_request_diffs
-        end
+    return commit_shas unless persisted?
 
-      column_shas = MergeRequestDiffCommit
-                      .where(merge_request_diff: diffs_relation)
-                      .limit(10_000)
-                      .pluck('sha')
+    diffs_relation = merge_request_diffs
 
-      serialised_shas = merge_request_diffs.where.not(st_commits: nil).flat_map(&:commit_shas)
+    # MySQL doesn't support LIMIT in a subquery.
+    diffs_relation = diffs_relation.recent if Gitlab::Database.postgresql?
 
-      (column_shas + serialised_shas).uniq
-    elsif compare_commits
-      compare_commits.to_a.reverse.map(&:id)
-    else
-      [diff_head_sha]
-    end
+    MergeRequestDiffCommit
+      .where(merge_request_diff: diffs_relation)
+      .limit(10_000)
+      .pluck('sha')
+      .uniq
   end
 
   def merge_commit

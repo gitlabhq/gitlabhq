@@ -1,0 +1,5 @@
+---
+title: Optimise StuckCiJobsWorker using cheap SQL query outside, and expensive inside
+merge_request:
+author:
+type: performance

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171121144800) do
+ActiveRecord::Schema.define(version: 20171124150326) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -129,7 +129,6 @@ ActiveRecord::Schema.define(version: 20171121144800) do
     t.boolean "prometheus_metrics_enabled", default: false, null: false
     t.boolean "help_page_hide_commercial_content", default: false
     t.string "help_page_support_url"
-    t.boolean "password_authentication_enabled"
     t.integer "performance_bar_allowed_group_id"
     t.boolean "hashed_storage_enabled", default: false, null: false
     t.boolean "project_export_enabled", default: true, null: false
@@ -149,6 +148,11 @@ ActiveRecord::Schema.define(version: 20171121144800) do
     t.boolean "throttle_authenticated_web_enabled", default: false, null: false
     t.integer "throttle_authenticated_web_requests_per_period", default: 7200, null: false
     t.integer "throttle_authenticated_web_period_in_seconds", default: 3600, null: false
+    t.boolean "password_authentication_enabled_for_web"
+    t.boolean "password_authentication_enabled_for_git", default: true
+    t.integer "gitaly_timeout_default", default: 55, null: false
+    t.integer "gitaly_timeout_medium", default: 30, null: false
+    t.integer "gitaly_timeout_fast", default: 10, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -523,6 +527,7 @@ ActiveRecord::Schema.define(version: 20171121144800) do
     t.datetime_with_timezone "updated_at", null: false
     t.boolean "enabled", default: true
     t.string "name", null: false
+    t.string "environment_scope", default: "*", null: false
   end
 
   add_index "clusters", ["enabled"], name: "index_clusters_on_enabled", using: :btree
@@ -1009,8 +1014,6 @@ ActiveRecord::Schema.define(version: 20171121144800) do
 
   create_table "merge_request_diffs", force: :cascade do |t|
     t.string "state"
-    t.text "st_commits"
-    t.text "st_diffs"
     t.integer "merge_request_id", null: false
     t.datetime "created_at"
     t.datetime "updated_at"
@@ -1020,7 +1023,7 @@ ActiveRecord::Schema.define(version: 20171121144800) do
     t.string "start_commit_sha"
   end
 
-  add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", using: :btree
+  add_index "merge_request_diffs", ["merge_request_id", "id"], name: "index_merge_request_diffs_on_merge_request_id_and_id", using: :btree
 
   create_table "merge_request_metrics", force: :cascade do |t|
     t.integer "merge_request_id", null: false
@@ -1047,8 +1050,8 @@ ActiveRecord::Schema.define(version: 20171121144800) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "milestone_id"
-    t.string "state"
-    t.string "merge_status"
+    t.string "state", default: "opened", null: false
+    t.string "merge_status", default: "unchecked", null: false
     t.integer "target_project_id", null: false
     t.integer "iid"
     t.text "description"

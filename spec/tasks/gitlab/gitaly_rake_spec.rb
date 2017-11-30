@@ -112,6 +112,7 @@ describe 'gitlab:gitaly namespace rake task' do
         expected_output = <<~TOML
           # Gitaly storage configuration generated from #{Gitlab.config.source} on #{Time.current.to_s(:long)}
           # This is in TOML format suitable for use in Gitaly's config.toml file.
+          bin_dir = "tmp/tests/gitaly"
           socket_path = "/path/to/my.socket"
           [gitlab-shell]
           dir = "#{Gitlab.config.gitlab_shell.path}"

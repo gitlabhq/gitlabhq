@@ -17,6 +17,7 @@ class CommitStatus < ActiveRecord::Base
   validates :name, presence: true, unless: :importing?
 
   alias_attribute :author, :user
+  alias_attribute :pipeline_id, :commit_id
 
   scope :failed_but_allowed, -> do
     where(allow_failure: true, status: [:failed, :canceled])
@@ -103,26 +104,29 @@ class CommitStatus < ActiveRecord::Base
     end
 
     after_transition do |commit_status, transition|
+      next unless commit_status.project
       next if transition.loopback?
 
       commit_status.run_after_commit do
-        if pipeline
+        if pipeline_id
           if complete? || manual?
-            PipelineProcessWorker.perform_async(pipeline.id)
+            PipelineProcessWorker.perform_async(pipeline_id)
           else
-            PipelineUpdateWorker.perform_async(pipeline.id)
+            PipelineUpdateWorker.perform_async(pipeline_id)
           end
         end
 
-        StageUpdateWorker.perform_async(commit_status.stage_id)
-        ExpireJobCacheWorker.perform_async(commit_status.id)
+        StageUpdateWorker.perform_async(stage_id)
+        ExpireJobCacheWorker.perform_async(id)
       end
     end
 
     after_transition any => :failed do |commit_status|
+      next unless commit_status.project
+
       commit_status.run_after_commit do
         MergeRequests::AddTodoWhenBuildFailsService
-          .new(pipeline.project, nil).execute(self)
+          .new(project, nil).execute(self)
       end
     end
   end

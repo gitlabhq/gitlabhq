@@ -1,0 +1,5 @@
+---
+title: Add the option to automatically run a pipeline after updating AutoDevOps settings
+merge_request: 15380
+author:
+type: changed

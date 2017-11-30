@@ -1046,9 +1046,15 @@ module Gitlab
       end
 
       def with_repo_tmp_commit(start_repository, start_branch_name, sha)
+        source_ref = start_branch_name
+
+        unless Gitlab::Git.branch_ref?(source_ref)
+          source_ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{source_ref}"
+        end
+
         tmp_ref = fetch_ref(
           start_repository,
-          source_ref: "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
+          source_ref: source_ref,
           target_ref: "refs/tmp/#{SecureRandom.hex}"
         )
 
@@ -1058,12 +1064,11 @@ module Gitlab
       end
 
       def fetch_source_branch!(source_repository, source_branch, local_ref)
-        with_repo_branch_commit(source_repository, source_branch) do |commit|
-          if commit
-            write_ref(local_ref, commit.sha)
-            true
+        Gitlab::GitalyClient.migrate(:fetch_source_branch) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.fetch_source_branch(source_repository, source_branch, local_ref)
           else
-            false
+            rugged_fetch_source_branch(source_repository, source_branch, local_ref)
           end
         end
       end
@@ -1151,10 +1156,12 @@ module Gitlab
         @has_visible_content = has_local_branches?
       end
 
-      def fetch(remote = 'origin')
-        args = %W(#{Gitlab.config.git.bin_path} fetch #{remote})
-
-        popen(args, @path).last.zero?
+      # Like all public `Gitlab::Git::Repository` methods, this method is part
+      # of `Repository`'s interface through `method_missing`.
+      # `Repository` has its own `fetch_remote` which uses `gitlab-shell` and
+      # takes some extra attributes, so we qualify this method name to prevent confusion.
+      def fetch_remote_without_shell(remote = 'origin')
+        run_git(['fetch', remote]).last.zero?
       end
 
       def blob_at(sha, path)
@@ -1216,6 +1223,17 @@ module Gitlab
 
       private
 
+      def rugged_fetch_source_branch(source_repository, source_branch, local_ref)
+        with_repo_branch_commit(source_repository, source_branch) do |commit|
+          if commit
+            write_ref(local_ref, commit.sha)
+            true
+          else
+            false
+          end
+        end
+      end
+
       # Gitaly note: JV: Trying to get rid of the 'filter' option so we can implement this with 'git'.
       def branches_filter(filter: nil, sort_by: nil)
         # n+1: https://gitlab.com/gitlab-org/gitlab-ce/issues/37464
@@ -1233,11 +1251,21 @@ module Gitlab
         sort_branches(branches, sort_by)
       end
 
+      # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/695
       def git_merged_branch_names(branch_names = [])
-        lines = run_git(['branch', '--merged', root_ref] + branch_names)
-          .first.lines
+        root_sha = find_branch(root_ref).target
 
-        lines.map(&:strip)
+        git_arguments =
+          %W[branch --merged #{root_sha}
+             --format=%(refname:short)\ %(objectname)] + branch_names
+
+        lines = run_git(git_arguments).first.lines
+
+        lines.each_with_object([]) do |line, branches|
+          name, sha = line.strip.split(' ', 2)
+
+          branches << name if sha != root_sha
+        end
       end
 
       def log_using_shell?(options)

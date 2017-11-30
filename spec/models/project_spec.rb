@@ -1254,24 +1254,6 @@ describe Project do
       expect(described_class.search(project.path.upcase)).to eq([project])
     end
 
-    it 'returns projects with a matching namespace name' do
-      expect(described_class.search(project.namespace.name)).to eq([project])
-    end
-
-    it 'returns projects with a partially matching namespace name' do
-      expect(described_class.search(project.namespace.name[0..2])).to eq([project])
-    end
-
-    it 'returns projects with a matching namespace name regardless of the casing' do
-      expect(described_class.search(project.namespace.name.upcase)).to eq([project])
-    end
-
-    it 'returns projects when eager loading namespaces' do
-      relation = described_class.all.includes(:namespace)
-
-      expect(relation.search(project.namespace.name)).to eq([project])
-    end
-
     describe 'with pending_delete project' do
       let(:pending_delete_project) { create(:project, pending_delete: true) }
 

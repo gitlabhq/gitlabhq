@@ -45,25 +45,12 @@ module Gitlab
         def import_repository
           project.ensure_repository
 
-          configure_repository_remote
-
-          project.repository.fetch_remote('github', forced: true)
+          refmap = Gitlab::GithubImport.refmap
+          project.repository.fetch_as_mirror(project.import_url, refmap: refmap, forced: true, remote_name: 'github')
 
           true
         rescue Gitlab::Git::Repository::NoRepository, Gitlab::Shell::Error => e
           fail_import("Failed to import the repository: #{e.message}")
-        end
-
-        def configure_repository_remote
-          return if project.repository.remote_exists?('github')
-
-          project.repository.add_remote('github', project.import_url)
-          project.repository.set_import_remote_as_mirror('github')
-
-          project.repository.add_remote_fetch_config(
-            'github',
-            '+refs/pull/*/head:refs/merge-requests/*/head'
-          )
         end
 
         def import_wiki_repository

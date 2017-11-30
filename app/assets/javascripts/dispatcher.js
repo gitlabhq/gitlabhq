@@ -317,7 +317,6 @@ import ProjectVariables from './project_variables';
           break;
         case 'projects:merge_requests:show':
           new Diff();
-          shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
 
           initIssuableSidebar();
@@ -327,6 +326,8 @@ import ProjectVariables from './project_variables';
           window.mergeRequest = new MergeRequest({
             action: mrShowNode.dataset.mrAction,
           });
+
+          shortcut_handler = new ShortcutsIssuable(true);
           break;
         case 'dashboard:activity':
           new gl.Activities();
@@ -382,6 +383,7 @@ import ProjectVariables from './project_variables';
           projectImport();
           break;
         case 'projects:pipelines:new':
+        case 'projects:pipelines:create':
           new NewBranchForm($('.js-new-pipeline-form'));
           break;
         case 'projects:pipelines:builds':
@@ -520,6 +522,13 @@ import ProjectVariables from './project_variables';
         case 'projects:settings:ci_cd:show':
           // Initialize expandable settings panels
           initSettingsPanels();
+
+          import(/* webpackChunkName: "ci-cd-settings" */ './projects/ci_cd_settings_bundle')
+            .then(ciCdSettings => ciCdSettings.default())
+            .catch((err) => {
+              Flash(s__('ProjectSettings|Problem setting up the CI/CD settings JavaScript'));
+              throw err;
+            });
         case 'groups:settings:ci_cd:show':
           new ProjectVariables();
           break;
