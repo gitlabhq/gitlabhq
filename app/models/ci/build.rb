@@ -19,8 +19,8 @@ module Ci
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
 
     has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-    has_one :artifacts_archive, -> () { where(file_type: Ci::JobArtifact.file_types[:archive]) }, class_name: 'Ci::JobArtifact', foreign_key: :job_id
-    has_one :artifacts_metadata, -> () { where(file_type: Ci::JobArtifact.file_types[:metadata]) }, class_name: 'Ci::JobArtifact', foreign_key: :job_id
+    has_one :job_archive, -> () { where(file_type: Ci::JobArtifact.file_types[:archive]) }, class_name: 'Ci::JobArtifact', foreign_key: :job_id
+    has_one :job_metadata, -> () { where(file_type: Ci::JobArtifact.file_types[:metadata]) }, class_name: 'Ci::JobArtifact', foreign_key: :job_id
 
     # The "environment" field for builds is a String, and is the unexpanded name
     def persisted_environment

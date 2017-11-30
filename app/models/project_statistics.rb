@@ -39,9 +39,6 @@ class ProjectStatistics < ActiveRecord::Base
   end
 
   def update_build_artifacts_size
-    # REMARK:
-    # We perform dual calculation as we run SQL query: sum does not instantiate AR model.
-    # The Ci::Build#artifacts_size returns sum of ci_builds.artifacts_size and ci_job_artifacts.file_size
     self.build_artifacts_size =
       project.builds.sum(:artifacts_size) +
       Ci::JobArtifact.artifacts_size_for(self)
