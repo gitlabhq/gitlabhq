@@ -1,5 +1,16 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.2.3 (2017-11-30)
+
+### Fixed (5 changes)
+
+- Fix viewing default push rules on a Geo secondary. !3559
+- Disable autocomplete for epics.
+- Fix epic fullscreen editing.
+- Fix tasklist for epics.
+- Fix Geo wiki sync error not increasing retry count.
+
+
 ## 10.2.2 (2017-11-23)
 
 ### Fixed (6 changes)

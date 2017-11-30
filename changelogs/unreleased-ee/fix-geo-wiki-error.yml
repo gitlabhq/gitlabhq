@@ -1,5 +1,0 @@
----
-title: Fix Geo wiki sync error not increasing retry count
-merge_request:
-author:
-type: fixed
