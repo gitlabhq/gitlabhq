@@ -89,8 +89,8 @@ module API
         options = options.reverse_merge(
           with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
           statistics: params[:statistics],
-          project_members: nil,
-          group_members: nil,
+          project_members: project_members,
+          group_members: group_members,
           current_user: current_user
         )
         options[:with] = Entities::BasicProjectDetails if params[:simple]
