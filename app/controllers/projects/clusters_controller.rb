@@ -8,11 +8,8 @@ class Projects::ClustersController < Projects::ApplicationController
   STATUS_POLLING_INTERVAL = 10_000
 
   def index
-    @scope = params[:scope] || 'all'
-    @clusters = ClustersFinder.new(project, current_user, @scope).execute.page(params[:page])
-    @active_count = ClustersFinder.new(project, current_user, :active).execute.count
-    @inactive_count = ClustersFinder.new(project, current_user, :inactive).execute.count
-    @all_count = @active_count + @inactive_count
+    clusters = ClustersFinder.new(project, current_user, :all).execute
+    @clusters = clusters.page(params[:page]).per(20)
   end
 
   def new
