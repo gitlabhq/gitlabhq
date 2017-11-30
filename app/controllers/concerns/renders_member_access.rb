@@ -14,7 +14,7 @@ module RendersMemberAccess
   private
 
   def preload_max_member_access_for_collection(klass, collection)
-    return if collection.blank?
+    return if !current_user || collection.blank?
 
     method_name = "max_member_access_for_#{klass.name.underscore}_ids"
 
