@@ -91,7 +91,6 @@ module API
       include ::API::ProjectsRelationBuilder
 
       expose :default_branch
-
       # Avoids an N+1 query: https://github.com/mbleigh/acts-as-taggable-on/issues/91#issuecomment-168273770
       expose :tag_list do |project|
         # project.tags.order(:name).pluck(:name) is the most suitable option
