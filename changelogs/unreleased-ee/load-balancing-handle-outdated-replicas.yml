@@ -1,0 +1,5 @@
+---
+title: Handle outdated replicas in the DB load balancer
+merge_request:
+author:
+type: added
