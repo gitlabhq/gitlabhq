@@ -5,7 +5,7 @@
   .col-sm-4
     = render 'sidebar'
   .col-sm-8
-    - if @project.kubernetes_service&.active?
+    - if @project.deployment_platform&.active?
       %h4.prepend-top-0= s_('ClusterIntegration|Cluster management')
 
       %p= s_('ClusterIntegration|A cluster has been set up on this project through the Kubernetes integration page')
