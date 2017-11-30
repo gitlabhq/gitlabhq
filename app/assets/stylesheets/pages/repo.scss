@@ -46,33 +46,13 @@
       max-width: 250px;
     }
   }
-<<<<<<< HEAD
-}
-
-.ide-file-list {
-  flex: 1;
-  overflow: scroll;
-
-  .file {
-    cursor: pointer;
-=======
 
   .file-status-icon {
     width: 10px;
     height: 10px;
->>>>>>> origin/master
   }
 }
 
-<<<<<<< HEAD
-  a {
-    color: $gl-text-color;
-  }
-
-  th {
-    position: sticky;
-    top: 0;
-=======
 .ide-file-list {
   flex: 1;
   overflow: scroll;
@@ -83,99 +63,8 @@
 
   a {
     color: $gl-text-color;
->>>>>>> origin/master
-  }
-}
-
-<<<<<<< HEAD
-.multi-file-table-name,
-.multi-file-table-col-commit-message {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 0;
-}
-
-.multi-file-table-name {
-  width: 350px;
-}
-
-.multi-file-table-col-commit-message {
-  width: 50%;
-}
-
-.multi-file-edit-pane {
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-  border-left: 1px solid $white-dark;
-  overflow: hidden;
-}
-
-.multi-file-tabs {
-  display: flex;
-  overflow: scroll;
-  background-color: $white-normal;
-  box-shadow: inset 0 -1px $white-dark;
-
-  > li {
-    position: relative;
-  }
-}
-
-.multi-file-tab {
-  @include str-truncated(150px);
-  padding: ($gl-padding / 2) ($gl-padding + 12) ($gl-padding / 2) $gl-padding;
-  background-color: $gray-normal;
-  border-right: 1px solid $white-dark;
-  border-bottom: 1px solid $white-dark;
-  cursor: pointer;
-
-  &.active {
-    background-color: $white-light;
-    border-bottom-color: $white-light;
-  }
-}
-
-.multi-file-tab-close {
-  position: absolute;
-  right: 8px;
-  top: 50%;
-  padding: 0;
-  background: none;
-  border: 0;
-  font-size: $gl-font-size;
-  color: $gray-darkest;
-  transform: translateY(-50%);
-
-  &:not(.modified):hover,
-  &:not(.modified):focus {
-    color: $hint-color;
   }
 
-  &.modified {
-    color: $indigo-700;
-  }
-}
-
-.multi-file-edit-pane-content {
-  flex: 1;
-  height: 0;
-}
-
-.multi-file-editor-btn-group {
-  padding: $grid-size;
-  border-top: 1px solid $white-dark;
-}
-
-// Not great, but this is to deal with our current output
-.multi-file-preview-holder {
-  height: 100%;
-  overflow: scroll;
-
-  .blob-viewer {
-    height: 100%;
-=======
   th {
     position: sticky;
     top: 0;
@@ -249,15 +138,9 @@
 
   &.modified {
     color: $indigo-700;
->>>>>>> origin/master
   }
 }
 
-<<<<<<< HEAD
-  .file-content.code {
-    display: flex;
-
-=======
 .multi-file-edit-pane-content {
   flex: 1;
   height: 0;
@@ -280,7 +163,6 @@
   .file-content.code {
     display: flex;
 
->>>>>>> origin/master
     i {
       margin-left: -10px;
     }
@@ -385,7 +267,6 @@
 .multi-file-commit-list-path {
   @include str-truncated(100%);
 }
-<<<<<<< HEAD
 
 .multi-file-commit-form {
   padding-top: 12px;
@@ -397,19 +278,6 @@
   align-items: center;
   padding-bottom: 12px;
 
-=======
-
-.multi-file-commit-form {
-  padding-top: 12px;
-  border-top: 1px solid $white-dark;
-}
-
-.multi-file-commit-fieldset {
-  display: flex;
-  align-items: center;
-  padding-bottom: 12px;
-
->>>>>>> origin/master
   .btn {
     flex: 1;
   }
