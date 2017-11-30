@@ -4,7 +4,7 @@
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
   import noteHeader from './note_header.vue';
   import noteActions from './note_actions.vue';
-  import issueNoteBody from './issue_note_body.vue';
+  import noteBody from './note_body.vue';
   import eventHub from '../event_hub';
 
   export default {
@@ -25,7 +25,7 @@
       userAvatarLink,
       noteHeader,
       noteActions,
-      issueNoteBody,
+      noteBody,
     },
     computed: {
       ...mapGetters([
@@ -173,7 +173,7 @@
             @handleDelete="deleteHandler"
             />
         </div>
-        <issue-note-body
+        <note-body
           :note="note"
           :can-edit="note.current_user.can_edit"
           :is-editing="isEditing"
