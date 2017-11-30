@@ -599,11 +599,12 @@ ActiveRecord::Schema.define(version: 20171121144800) do
     t.integer "namespace_id", null: false
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
-    t.string "name", null: false
+    t.string "name", limit: 36, null: false
     t.string "file", null: false
   end
 
   add_index "custom_emoji", ["namespace_id"], name: "index_custom_emoji_on_namespace_id", using: :btree
+  add_index "custom_emoji", ["namespace_id"], name: "index_on_custom_emoji_lower_name", using: :btree
 
   create_table "deploy_keys_projects", force: :cascade do |t|
     t.integer "deploy_key_id", null: false
