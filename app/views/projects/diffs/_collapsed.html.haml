@@ -1,6 +1,6 @@
 - diff_file = viewer.diff_file
-- id = commit_id ? commit_id : params[:id]
-- url = url_for(params.merge(id: id, controller: :commit, action: :diff_for_path, old_path: diff_file.old_path, new_path: diff_file.new_path, file_identifier: diff_file.file_identifier))
+- params.merge!(id: commit_id, controller: :commit) if commit_id.present?
+- url = url_for(params.merge(action: :diff_for_path, old_path: diff_file.old_path, new_path: diff_file.new_path, file_identifier: diff_file.file_identifier))
 
 .nothing-here-block.diff-collapsed{ data: { diff_for_path: url } }
   This diff is collapsed.
