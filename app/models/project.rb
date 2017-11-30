@@ -20,6 +20,9 @@ class Project < ActiveRecord::Base
   include GroupDescendant
   include Gitlab::SQL::Pattern
 
+  # EE specific modules
+  prepend EE::Project
+
   extend Gitlab::ConfigHelper
   extend Gitlab::CurrentSettings
 
@@ -100,6 +103,7 @@ class Project < ActiveRecord::Base
   # Project services
   has_one :campfire_service
   has_one :drone_ci_service
+  has_one :gitlab_slack_application_service
   has_one :emails_on_push_service
   has_one :pipelines_email_service
   has_one :irker_service
@@ -390,10 +394,6 @@ class Project < ActiveRecord::Base
       transition [:scheduled, :started] => :failed
     end
 
-    event :import_retry do
-      transition failed: :started
-    end
-
     state :scheduled
     state :started
     state :finished
@@ -480,6 +480,14 @@ class Project < ActiveRecord::Base
   def ancestors_upto(top = nil)
     Gitlab::GroupHierarchy.new(Group.where(id: namespace_id))
       .base_and_ancestors(upto: top)
+  end
+
+  def root_namespace
+    if namespace.has_parent?
+      namespace.root_ancestor
+    else
+      namespace
+    end
   end
 
   def lfs_enabled?
@@ -617,6 +625,8 @@ class Project < ActiveRecord::Base
     else
       super
     end
+  rescue
+    super
   end
 
   def valid_import_url?
@@ -1040,6 +1050,7 @@ class Project < ActiveRecord::Base
 
   # Expires various caches before a project is renamed.
   def expire_caches_before_rename(old_path)
+    # TODO: if we start using UUIDs for cache, we don't need to do this HACK anymore
     repo = Repository.new(old_path, self)
     wiki = Repository.new("#{old_path}.wiki", self)
 
@@ -1617,10 +1628,6 @@ class Project < ActiveRecord::Base
 
   def multiple_issue_boards_available?(user)
     feature_available?(:multiple_issue_boards, user)
-  end
-
-  def issue_board_milestone_available?(user = nil)
-    feature_available?(:issue_board_milestone, user)
   end
 
   def full_path_was

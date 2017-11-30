@@ -5,6 +5,8 @@ module Clusters
       include Gitlab::Kubernetes
       include ReactiveCaching
 
+      prepend EE::KubernetesService
+
       self.table_name = 'cluster_platforms_kubernetes'
       self.reactive_cache_key = ->(kubernetes) { [kubernetes.class.model_name.singular, kubernetes.id] }
 
