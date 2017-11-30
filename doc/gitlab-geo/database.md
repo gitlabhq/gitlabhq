@@ -80,6 +80,7 @@ will not be able to perform all necessary configuration steps. Refer to
     else.
 
 1. Set up TLS support for the PostgreSQL primary server
+
     > **Warning**: Only skip this step if you **know** that PostgreSQL traffic
     > between the primary and secondary will be secured through some other
     > means, e.g., a known-safe physical network path or a site-to-site VPN that
@@ -153,31 +154,42 @@ will not be able to perform all necessary configuration steps. Refer to
     connect to the primary's database. For this reason, we need the IP address
     of each node.
 
-    To lookup the interface IP address of the primary, on the primary execute:
+    If you are use a cloud provider, you can lookup the IP addresses for each
+    geo node through their management console. A table of terminology is
+    provided below because terminology varies between vendors.
+
+    | GitLab Terminology | Amazon Web Services | Google Cloud Platform |
+    |-----|-----|-----|-----|
+    | Interface address | Private address | Internal address |
+    | Public address | Public address | External address |
+
+    To lookup the IP address of a geo node, on the geo node execute:
 
     ```bash
-    # Primary interface IP address
-    ip route get 255.255.255.255 | awk '{print $NF; exit}'
-    ```
-
-    Depending on your network configuration, the primary and secondary may
-    connect over the public internet, a local area network, or a virtual
-    network connecting availability zones like Amazon's [Virtual Private
-    Cloud](https://aws.amazon.com/vpc/). If you are using a local or virtual
-    network use the interface IP address, otherwise use the public IP address.
-
-    To lookup addresses, on the secondary execute:
-
-    ```bash
-    # Secondary interface IP address
+    # Interface IP address
     ip route get 255.255.255.255 | awk '{print $NF; exit}'
 
-    # Secondary public IP address
+    # Public IP address
     curl ipinfo.io/ip
     ```
+
+    In most instances, the following addresses will be used to configure
+    GitLab Geo:
+
+    | Configuration | Address |
+    |-----|-----|
+    | `postgresql['listen_address']` | Primary's interface address |
+    | `postgresql['trust_auth_cidr_addresses']` | Primary's interface address |
+    | `postgresql['md5_auth_cidr_addresses']` | Secondary's public addresses |
+
+    Depending on your network configuration, the suggested addresses may not
+    be correct. For example, if your primary and secondary connect over a local
+    area network, or a virtual network connecting availability zones like
+    Amazon's [Virtual Private Cloud](https://aws.amazon.com/vpc/) you should
+    use the secondary's interface address for `postgresql['md5_auth_cidr_addresses']`.
     
-    Edit `/etc/gitlab/gitlab.rb` and add the following, replacing the secondary
-    IP addresses with address appropriate to your network configuration:
+    Edit `/etc/gitlab/gitlab.rb` and add the following, replacing the IP
+    addresses with addresses appropriate to your network configuration:
     
     ```ruby
     geo_primary_role['enable'] = true
@@ -188,8 +200,7 @@ will not be able to perform all necessary configuration steps. Refer to
     postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','1.2.3.4/32']
 
     # Secondary IP addresses
-    # - local/virtual networks: replace '5.6.7.8' with the secondary interface IP address
-    # - otherwise: replace '5.6.7.8' with the secondary public IP address
+    # - replace '5.6.7.8' with the secondary public IP address
     postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
 
     # Replication settings
@@ -209,7 +220,7 @@ will not be able to perform all necessary configuration steps. Refer to
 1. Optional: If you want to add another secondary, the relevant setting would look like:
 
     ```ruby
-    postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32','11.22.33.44/32']
+    postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32','9.10.11.12/32']
     ```
 
     You may also want to edit the `wal_keep_segments` and `max_wal_senders` to
