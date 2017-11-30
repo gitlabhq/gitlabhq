@@ -14,6 +14,7 @@ class Note < ActiveRecord::Base
   include ResolvableNote
   include IgnorableColumn
   include Editable
+  include Gitlab::SQL::Pattern
 
   module SpecialRole
     FIRST_TIME_CONTRIBUTOR = :first_time_contributor
@@ -166,6 +167,10 @@ class Note < ActiveRecord::Base
 
     def has_special_role?(role, note)
       note.special_role == role
+    end
+
+    def search(query)
+      fuzzy_search(query, [:note])
     end
   end
 

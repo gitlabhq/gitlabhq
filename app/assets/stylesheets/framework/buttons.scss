@@ -88,17 +88,6 @@
     border-color: $border-dark;
     color: $color;
   }
-
-  svg {
-
-    path {
-      fill: $color;
-    }
-
-    use {
-      stroke: $color;
-    }
-  }
 }
 
 @mixin btn-green {
@@ -140,6 +129,13 @@
   &.btn-xs {
     margin-left: $btn-xs-side-margin;
   }
+}
+
+@mixin btn-svg {
+  height: $gl-padding;
+  width: $gl-padding;
+  top: 0;
+  vertical-align: text-top;
 }
 
 .btn {
@@ -439,4 +435,8 @@
     color: $gl-link-color;
     text-decoration: none;
   }
+}
+
+.btn-svg svg {
+  @include btn-svg;
 }
