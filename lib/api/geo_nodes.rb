@@ -87,10 +87,10 @@ module API
       end
       params do
         requires :id, type: Integer, desc: 'The ID of the node'
-        optional :type, type: String, desc: 'Type of failure (repository/wiki)'
+        optional :type, type: String, values: %w[wiki repository], desc: 'Type of failure (repository/wiki)'
         use :pagination
       end
-      get ':id/failures/:type' do
+      get ':id/failures' do
         unless Gitlab::Geo.current_node.id == params[:id]
           forbidden!('Geo node is not the current node.')
         end
@@ -99,7 +99,7 @@ module API
 
         not_found('Geo node not found') unless geo_node
 
-        project_registries = geo_node.project_registries
+        project_registries = paginate(geo_node.filtered_project_registries(params[:type]))
 
         present project_registries, with: ::ProjectRegistryEntity
       end
