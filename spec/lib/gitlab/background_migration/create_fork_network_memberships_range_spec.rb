@@ -2,19 +2,20 @@ require 'spec_helper'
 
 describe Gitlab::BackgroundMigration::CreateForkNetworkMembershipsRange, :migration, schema: 20170929131201 do
   let(:migration) { described_class.new }
+  let(:projects) { table(:projects) }
 
-  let(:base1) { create(:project) }
-  let(:base1_fork1) { create(:project) }
-  let(:base1_fork2) { create(:project) }
+  let(:base1) { projects.create }
+  let(:base1_fork1) { projects.create }
+  let(:base1_fork2) { projects.create }
 
-  let(:base2) { create(:project) }
-  let(:base2_fork1) { create(:project) }
-  let(:base2_fork2) { create(:project) }
+  let(:base2) { projects.create }
+  let(:base2_fork1) { projects.create }
+  let(:base2_fork2) { projects.create }
 
-  let(:fork_of_fork) { create(:project) }
-  let(:fork_of_fork2) { create(:project) }
-  let(:second_level_fork) { create(:project) }
-  let(:third_level_fork) { create(:project) }
+  let(:fork_of_fork) { projects.create }
+  let(:fork_of_fork2) { projects.create }
+  let(:second_level_fork) { projects.create }
+  let(:third_level_fork) { projects.create }
 
   let(:fork_network1) { fork_networks.find_by(root_project_id: base1.id) }
   let(:fork_network2) { fork_networks.find_by(root_project_id: base2.id) }
@@ -97,7 +98,7 @@ describe Gitlab::BackgroundMigration::CreateForkNetworkMembershipsRange, :migrat
   end
 
   it 'does not miss members for forks of forks for which the root was deleted' do
-    forked_project_links.create(id: 9, forked_from_project_id: base1_fork1.id, forked_to_project_id: create(:project).id)
+    forked_project_links.create(id: 9, forked_from_project_id: base1_fork1.id, forked_to_project_id: projects.create.id)
     base1.destroy
 
     expect(migration.missing_members?(7, 10)).to be_falsy
@@ -105,8 +106,8 @@ describe Gitlab::BackgroundMigration::CreateForkNetworkMembershipsRange, :migrat
 
   context 'with more forks' do
     before do
-      forked_project_links.create(id: 9, forked_from_project_id: fork_of_fork.id, forked_to_project_id: create(:project).id)
-      forked_project_links.create(id: 10, forked_from_project_id: fork_of_fork.id, forked_to_project_id: create(:project).id)
+      forked_project_links.create(id: 9, forked_from_project_id: fork_of_fork.id, forked_to_project_id: projects.create.id)
+      forked_project_links.create(id: 10, forked_from_project_id: fork_of_fork.id, forked_to_project_id: projects.create.id)
     end
 
     it 'only processes a single batch of links at a time' do
