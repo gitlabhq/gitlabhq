@@ -735,8 +735,8 @@ describe('Filtered Search Visual Tokens', () => {
       const { tokenValueContainer, tokenValueElement } = findElements(authorToken);
 
       subject.updateUserTokenAppearance(tokenValueContainer, tokenValueElement, 'none')
-      .then(done)
-      .catch(done.fail);
+        .then(done)
+        .catch(done.fail);
     });
 
     it('ignores error if UsersCache throws', (done) => {
@@ -750,11 +750,11 @@ describe('Filtered Search Visual Tokens', () => {
       };
 
       subject.updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue)
-      .then(() => {
-        expect(window.Flash.calls.count()).toBe(0);
-      })
-      .then(done)
-      .catch(done.fail);
+        .then(() => {
+          expect(window.Flash.calls.count()).toBe(0);
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('does nothing if user cannot be found', (done) => {
@@ -766,11 +766,11 @@ describe('Filtered Search Visual Tokens', () => {
       };
 
       subject.updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue)
-      .then(() => {
-        expect(tokenValueElement.innerText).toBe(tokenValue);
-      })
-      .then(done)
-      .catch(done.fail);
+        .then(() => {
+          expect(tokenValueElement.innerText).toBe(tokenValue);
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('replaces author token with avatar and display name', (done) => {
@@ -786,15 +786,15 @@ describe('Filtered Search Visual Tokens', () => {
       };
 
       subject.updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue)
-      .then(() => {
-        expect(tokenValueContainer.dataset.originalValue).toBe(tokenValue);
-        expect(tokenValueElement.innerText.trim()).toBe(dummyUser.name);
-        const avatar = tokenValueElement.querySelector('img.avatar');
-        expect(avatar.src).toBe(dummyUser.avatar_url);
-        expect(avatar.alt).toBe('');
-      })
-      .then(done)
-      .catch(done.fail);
+        .then(() => {
+          expect(tokenValueContainer.dataset.originalValue).toBe(tokenValue);
+          expect(tokenValueElement.innerText.trim()).toBe(dummyUser.name);
+          const avatar = tokenValueElement.querySelector('img.avatar');
+          expect(avatar.src).toBe(dummyUser.avatar_url);
+          expect(avatar.alt).toBe('');
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('escapes user name when creating token', (done) => {
@@ -810,13 +810,13 @@ describe('Filtered Search Visual Tokens', () => {
       };
 
       subject.updateUserTokenAppearance(tokenValueContainer, tokenValueElement, tokenValue)
-      .then(() => {
-        expect(tokenValueElement.innerText.trim()).toBe(dummyUser.name);
-        tokenValueElement.querySelector('.avatar').remove();
-        expect(tokenValueElement.innerHTML.trim()).toBe(_.escape(dummyUser.name));
-      })
-      .then(done)
-      .catch(done.fail);
+        .then(() => {
+          expect(tokenValueElement.innerText.trim()).toBe(dummyUser.name);
+          tokenValueElement.querySelector('.avatar').remove();
+          expect(tokenValueElement.innerHTML.trim()).toBe(_.escape(dummyUser.name));
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 

@@ -97,7 +97,7 @@ describe('Board card', () => {
     const triggerEvent = (eventName, el = vm.$el) => {
       const event = document.createEvent('MouseEvents');
       event.initMouseEvent(eventName, true, true, window, 1, 0, 0, 0, 0, false, false,
-                           false, false, 0, null);
+        false, false, 0, null);
 
       el.dispatchEvent(event);
     };

@@ -92,7 +92,9 @@ export default {
      * Render Graph based on provided median and metrics values
      */
     renderGraph(median, metrics) {
-      const { pathD, pathViewBox, dotX, dotY } = this.getGraphPlotValues(median, metrics);
+      const {
+        pathD, pathViewBox, dotX, dotY,
+      } = this.getGraphPlotValues(median, metrics);
 
       // Set props and update graph on UI.
       this.pathD = `M ${pathD}`;

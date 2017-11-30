@@ -68,7 +68,9 @@ export default class Diff {
     const link = file.data('blob-diff-path');
     const view = file.data('view');
 
-    const params = { since, to, bottom, offset, unfold, view };
+    const params = {
+      since, to, bottom, offset, unfold, view,
+    };
     $.get(link, params, response => $target.parent().replaceWith(response));
   }
 

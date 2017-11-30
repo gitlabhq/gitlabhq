@@ -3,7 +3,9 @@
 import Vue from 'vue';
 
 export default class BoardService {
-  constructor ({ boardsEndpoint, listsEndpoint, bulkUpdatePath, boardId }) {
+  constructor ({
+    boardsEndpoint, listsEndpoint, bulkUpdatePath, boardId
+  }) {
     this.boards = Vue.resource(`${boardsEndpoint}{/id}.json`, {}, {
       issues: {
         method: 'GET',

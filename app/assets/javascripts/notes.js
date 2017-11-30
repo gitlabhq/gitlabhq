@@ -1337,7 +1337,9 @@ export default class Notes {
    * Once comment is _actually_ posted on server, we will have final element
    * in response that we will show in place of this temporary element.
    */
-  createPlaceholderNote({ formContent, uniqueId, isDiscussionNote, currentUsername, currentUserFullname, currentUserAvatar }) {
+  createPlaceholderNote({
+    formContent, uniqueId, isDiscussionNote, currentUsername, currentUserFullname, currentUserAvatar
+  }) {
     const discussionClass = isDiscussionNote ? 'discussion' : '';
     const $tempNote = $(
       `<li id="${uniqueId}" class="note being-posted fade-in-half timeline-entry">
@@ -1419,7 +1421,9 @@ export default class Notes {
     const isMainForm = $form.hasClass('js-main-target-form');
     const isDiscussionForm = $form.hasClass('js-discussion-note-form');
     const isDiscussionResolve = $submitBtn.hasClass('js-comment-resolve-button');
-    const { formData, formContent, formAction, formContentOriginal } = this.getFormData($form);
+    const {
+      formData, formContent, formAction, formContentOriginal
+    } = this.getFormData($form);
     let noteUniqueId;
     let systemNoteUniqueId;
     let hasQuickActions = false;
@@ -1522,7 +1526,9 @@ export default class Notes {
             // Add image badge, avatar badge and toggle discussion badge for new image diffs
             const notePosition = $form.find('#note_position').val();
             if ($diffFile.length > 0 && notePosition.length > 0) {
-              const { x, y, width, height } = JSON.parse(notePosition);
+              const {
+                x, y, width, height
+              } = JSON.parse(notePosition);
               const addBadgeEvent = new CustomEvent('addBadge.imageDiff', {
                 detail: {
                   x,

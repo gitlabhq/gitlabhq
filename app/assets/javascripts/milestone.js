@@ -39,11 +39,11 @@ export default class Milestone {
         url: endpoint,
         dataType: 'JSON',
       })
-      .fail(() => new Flash('Error loading milestone tab'))
-      .done((data) => {
-        $(tabElId).html(data.html);
-        $target.addClass('is-loaded');
-      });
+        .fail(() => new Flash('Error loading milestone tab'))
+        .done((data) => {
+          $(tabElId).html(data.html);
+          $target.addClass('is-loaded');
+        });
     }
   }
 }

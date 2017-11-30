@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const pipelineTableViewEl = document.querySelector('#commit-pipeline-table-view');
 
   if (pipelineTableViewEl) {
-      // Update MR and Commits tabs
+    // Update MR and Commits tabs
     pipelineTableViewEl.addEventListener('update-pipelines-count', (event) => {
       if (event.detail.pipelines &&
         event.detail.pipelines.count &&

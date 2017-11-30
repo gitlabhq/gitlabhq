@@ -142,7 +142,9 @@ describe('MemoryUsage', () => {
     describe('computeGraphData', () => {
       it('should populate sparkline graph', () => {
         vm.computeGraphData(metrics, deployment_time);
-        const { hasMetrics, memoryMetrics, deploymentTime, memoryFrom, memoryTo } = vm;
+        const {
+          hasMetrics, memoryMetrics, deploymentTime, memoryFrom, memoryTo,
+        } = vm;
 
         expect(hasMetrics).toBeTruthy();
         expect(memoryMetrics.length > 0).toBeTruthy();

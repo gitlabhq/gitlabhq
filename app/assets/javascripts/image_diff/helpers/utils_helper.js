@@ -4,7 +4,9 @@ import ReplacedImageDiff from '../replaced_image_diff';
 import ImageFile from '../../commit/image_file';
 
 export function resizeCoordinatesToImageElement(imageEl, meta) {
-  const { x, y, width, height } = meta;
+  const {
+    x, y, width, height,
+  } = meta;
 
   const imageWidth = imageEl.width;
   const imageHeight = imageEl.height;

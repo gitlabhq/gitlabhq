@@ -112,15 +112,15 @@ export default class BlobViewer {
     this.toggleCopyButtonState();
 
     BlobViewer.loadViewer(newViewer)
-    .then((viewer) => {
-      $(viewer).renderGFM();
+      .then((viewer) => {
+        $(viewer).renderGFM();
 
-      this.$fileHolder.trigger('highlight:line');
-      handleLocationHash();
+        this.$fileHolder.trigger('highlight:line');
+        handleLocationHash();
 
-      this.toggleCopyButtonState();
-    })
-    .catch(() => new Flash('Error loading viewer'));
+        this.toggleCopyButtonState();
+      })
+      .catch(() => new Flash('Error loading viewer'));
   }
 
   static loadViewer(viewerParam) {
@@ -139,13 +139,13 @@ export default class BlobViewer {
         url,
         dataType: 'JSON',
       })
-      .fail(reject)
-      .done((data) => {
-        viewer.innerHTML = data.html;
-        viewer.setAttribute('data-loaded', 'true');
+        .fail(reject)
+        .done((data) => {
+          viewer.innerHTML = data.html;
+          viewer.setAttribute('data-loaded', 'true');
 
-        resolve(viewer);
-      });
+          resolve(viewer);
+        });
     });
   }
 }

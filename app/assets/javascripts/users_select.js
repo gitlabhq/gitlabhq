@@ -234,7 +234,9 @@ function UsersSelect(currentUser, els, options = {}) {
               })
               .map((input) => {
                 const userId = parseInt(input.value, 10);
-                const { avatarUrl, avatar_url, name, username } = input.dataset;
+                const {
+                  avatarUrl, avatar_url, name, username
+                } = input.dataset;
                 return {
                   avatar_url: avatarUrl || avatar_url,
                   id: userId,
@@ -384,7 +386,7 @@ function UsersSelect(currentUser, els, options = {}) {
           if ($dropdown.hasClass('js-multiselect')) {
             const isActive = $el.hasClass('is-active');
             const previouslySelected = $dropdown.closest('.selectbox')
-                .find("input[name='" + ($dropdown.data('field-name')) + "'][value!=0]");
+              .find("input[name='" + ($dropdown.data('field-name')) + "'][value!=0]");
 
             // Enables support for limiting the number of users selected
             // Automatically removes the first on the list if more users are selected

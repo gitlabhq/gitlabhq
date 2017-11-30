@@ -3,7 +3,9 @@ import eventHub from './event_hub';
 import { getParameterByName } from '../lib/utils/common_utils';
 
 export default class GroupFilterableList extends FilterableList {
-  constructor({ form, filter, holder, filterEndpoint, pagePath, dropdownSel, filterInputField }) {
+  constructor({
+    form, filter, holder, filterEndpoint, pagePath, dropdownSel, filterInputField,
+  }) {
     super(form, filter, holder, filterInputField);
     this.form = form;
     this.filterEndpoint = filterEndpoint;

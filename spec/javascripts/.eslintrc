@@ -28,6 +28,7 @@
     "jasmine/no-spec-dupes": [1, "branch"],
     "jasmine/new-line-before-expect": 0,
     "jasmine/new-line-between-declarations": 0,
+    "jasmine/prefer-toHaveBeenCalledWith": 0,
     "no-console": 0,
     "prefer-arrow-callback": 0
   }

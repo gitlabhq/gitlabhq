@@ -29,7 +29,9 @@ function initTimeTrackingComponent(opts) {
 describe('Issuable Time Tracker', function() {
   describe('Initialization', function() {
     beforeEach(function() {
-      initTimeTrackingComponent.call(this, { timeEstimate: 100000, timeSpent: 5000, timeEstimateHumanReadable: '2h 46m', timeSpentHumanReadable: '1h 23m' });
+      initTimeTrackingComponent.call(this, {
+        timeEstimate: 100000, timeSpent: 5000, timeEstimateHumanReadable: '2h 46m', timeSpentHumanReadable: '1h 23m',
+      });
     });
 
     it('should return something defined', function() {
@@ -54,7 +56,9 @@ describe('Issuable Time Tracker', function() {
     describe('Panes', function() {
       describe('Comparison pane', function() {
         beforeEach(function() {
-          initTimeTrackingComponent.call(this, { timeEstimate: 100000, timeSpent: 5000, timeEstimateHumanReadable: '', timeSpentHumanReadable: '' });
+          initTimeTrackingComponent.call(this, {
+            timeEstimate: 100000, timeSpent: 5000, timeEstimateHumanReadable: '', timeSpentHumanReadable: '',
+          });
         });
 
         it('should show the "Comparison" pane when timeEstimate and time_spent are truthy', function(done) {
@@ -98,7 +102,9 @@ describe('Issuable Time Tracker', function() {
 
       describe("Estimate only pane", function() {
         beforeEach(function() {
-          initTimeTrackingComponent.call(this, { timeEstimate: 100000, timeSpent: 0, timeEstimateHumanReadable: '2h 46m', timeSpentHumanReadable: '' });
+          initTimeTrackingComponent.call(this, {
+            timeEstimate: 100000, timeSpent: 0, timeEstimateHumanReadable: '2h 46m', timeSpentHumanReadable: '',
+          });
         });
 
         it('should display the human readable version of time estimated', function(done) {
@@ -114,7 +120,9 @@ describe('Issuable Time Tracker', function() {
 
       describe('Spent only pane', function() {
         beforeEach(function() {
-          initTimeTrackingComponent.call(this, { timeEstimate: 0, timeSpent: 5000, timeEstimateHumanReadable: '2h 46m', timeSpentHumanReadable: '1h 23m' });
+          initTimeTrackingComponent.call(this, {
+            timeEstimate: 0, timeSpent: 5000, timeEstimateHumanReadable: '2h 46m', timeSpentHumanReadable: '1h 23m',
+          });
         });
 
         it('should display the human readable version of time spent', function(done) {
@@ -130,7 +138,9 @@ describe('Issuable Time Tracker', function() {
 
       describe('No time tracking pane', function() {
         beforeEach(function() {
-          initTimeTrackingComponent.call(this, { timeEstimate: 0, timeSpent: 0, timeEstimateHumanReadable: '', timeSpentHumanReadable: '' });
+          initTimeTrackingComponent.call(this, {
+            timeEstimate: 0, timeSpent: 0, timeEstimateHumanReadable: '', timeSpentHumanReadable: '',
+          });
         });
 
         it('should only show the "No time tracking" pane when both timeEstimate and time_spent are falsey', function(done) {

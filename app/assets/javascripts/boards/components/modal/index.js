@@ -89,28 +89,28 @@ gl.issueBoards.IssuesModal = Vue.extend({
         page: this.page,
         per: this.perPage,
       }))
-      .then(resp => resp.json())
-      .then((data) => {
-        if (clearIssues) {
-          this.issues = [];
-        }
+        .then(resp => resp.json())
+        .then((data) => {
+          if (clearIssues) {
+            this.issues = [];
+          }
 
-        data.issues.forEach((issueObj) => {
-          const issue = new ListIssue(issueObj);
-          const foundSelectedIssue = ModalStore.findSelectedIssue(issue);
-          issue.selected = !!foundSelectedIssue;
+          data.issues.forEach((issueObj) => {
+            const issue = new ListIssue(issueObj);
+            const foundSelectedIssue = ModalStore.findSelectedIssue(issue);
+            issue.selected = !!foundSelectedIssue;
 
-          this.issues.push(issue);
-        });
+            this.issues.push(issue);
+          });
 
-        this.loadingNewPage = false;
+          this.loadingNewPage = false;
 
-        if (!this.issuesCount) {
-          this.issuesCount = data.size;
-        }
-      }).catch(() => {
+          if (!this.issuesCount) {
+            this.issuesCount = data.size;
+          }
+        }).catch(() => {
         // TODO: handle request error
-      });
+        });
     },
   },
   computed: {

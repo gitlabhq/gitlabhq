@@ -88,7 +88,9 @@ export const pushState = (url) => {
   history.pushState({ url }, '', url);
 };
 
-export const createTemp = ({ name, path, type, level, changed, content, base64 }) => {
+export const createTemp = ({
+  name, path, type, level, changed, content, base64,
+}) => {
   const treePath = path ? `${path}/${name}` : name;
 
   return decorateData({
@@ -107,7 +109,9 @@ export const createTemp = ({ name, path, type, level, changed, content, base64 }
   });
 };
 
-export const createOrMergeEntry = ({ tree, entry, type, parentTreeUrl, level }) => {
+export const createOrMergeEntry = ({
+  tree, entry, type, parentTreeUrl, level,
+}) => {
   const found = findEntry(tree, type, entry.name);
 
   if (found) {

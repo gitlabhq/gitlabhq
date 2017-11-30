@@ -145,7 +145,7 @@ const gfmRules = {
       return `\`\`\`${lang}\n${text}\n\`\`\``;
     },
     'pre > code'(el, text) {
-       // Don't wrap code blocks in ``
+      // Don't wrap code blocks in ``
       return text;
     },
   },

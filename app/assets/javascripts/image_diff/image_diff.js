@@ -81,7 +81,9 @@ export default class ImageDiff {
   }
 
   addBadge(event) {
-    const { x, y, width, height, noteId, discussionId } = event.detail;
+    const {
+      x, y, width, height, noteId, discussionId,
+    } = event.detail;
     const badgeText = this.imageBadges.length + 1;
     const imageBadge = new ImageBadge({
       actual: {

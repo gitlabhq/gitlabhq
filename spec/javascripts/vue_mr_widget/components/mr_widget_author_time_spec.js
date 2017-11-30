@@ -23,7 +23,9 @@ const createComponent = () => {
 describe('MRWidgetAuthorTime', () => {
   describe('props', () => {
     it('should have props', () => {
-      const { actionText, author, dateTitle, dateReadable } = authorTimeComponent.props;
+      const {
+        actionText, author, dateTitle, dateReadable,
+      } = authorTimeComponent.props;
       const ActionTextClass = actionText.type;
       const DateTitleClass = dateTitle.type;
       const DateReadableClass = dateReadable.type;

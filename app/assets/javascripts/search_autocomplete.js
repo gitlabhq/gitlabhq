@@ -18,7 +18,9 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
   };
 
   class SearchAutocomplete {
-    constructor({ wrap, optsEl, autocompletePath, projectId, projectRef } = {}) {
+    constructor({
+      wrap, optsEl, autocompletePath, projectId, projectRef
+    } = {}) {
       this.bindEventContext();
       this.wrap = wrap || $('.search');
       this.optsEl = optsEl || this.wrap.find('.search-autocomplete-opts');

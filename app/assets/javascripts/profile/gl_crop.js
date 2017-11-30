@@ -8,8 +8,10 @@ import _ from 'underscore';
   const FILENAMEREGEX = /^.*[\\\/]/;
 
   class GitLabCrop {
-    constructor(input, { filename, previewImage, modalCrop, pickImageEl, uploadImageBtn, modalCropImg,
-        exportWidth = 200, exportHeight = 200, cropBoxWidth = 200, cropBoxHeight = 200 } = {}) {
+    constructor(input, {
+      filename, previewImage, modalCrop, pickImageEl, uploadImageBtn, modalCropImg,
+      exportWidth = 200, exportHeight = 200, cropBoxWidth = 200, cropBoxHeight = 200
+    } = {}) {
       this.onUploadImageBtnClick = this.onUploadImageBtnClick.bind(this);
       this.onModalHide = this.onModalHide.bind(this);
       this.onModalShow = this.onModalShow.bind(this);

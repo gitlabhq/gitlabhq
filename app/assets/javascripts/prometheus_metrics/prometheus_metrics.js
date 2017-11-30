@@ -100,15 +100,15 @@ export default class PrometheusMetrics {
         })
         .fail(stop);
     })
-    .then((res) => {
-      if (res && res.data && res.data.length) {
-        this.populateActiveMetrics(res.data);
-      } else {
+      .then((res) => {
+        if (res && res.data && res.data.length) {
+          this.populateActiveMetrics(res.data);
+        } else {
+          this.showMonitoringMetricsPanelState(PANEL_STATE.EMPTY);
+        }
+      })
+      .catch(() => {
         this.showMonitoringMetricsPanelState(PANEL_STATE.EMPTY);
-      }
-    })
-    .catch(() => {
-      this.showMonitoringMetricsPanelState(PANEL_STATE.EMPTY);
-    });
+      });
   }
 }

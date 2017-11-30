@@ -2,7 +2,9 @@ import * as badgeHelper from '~/image_diff/helpers/badge_helper';
 import * as mockData from '../mock_data';
 
 describe('badge helper', () => {
-  const { coordinate, noteId, badgeText, badgeNumber } = mockData;
+  const {
+    coordinate, noteId, badgeText, badgeNumber,
+  } = mockData;
   let containerEl;
   let buttonEl;
 

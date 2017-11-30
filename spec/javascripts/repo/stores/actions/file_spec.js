@@ -313,11 +313,11 @@ describe('Multi-file store file actions', () => {
         file: tmpFile,
         content: 'content',
       })
-      .then(() => {
-        expect(tmpFile.content).toBe('content');
+        .then(() => {
+          expect(tmpFile.content).toBe('content');
 
-        done();
-      }).catch(done.fail);
+          done();
+        }).catch(done.fail);
     });
   });
 

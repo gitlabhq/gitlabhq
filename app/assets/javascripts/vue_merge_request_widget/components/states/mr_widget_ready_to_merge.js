@@ -39,7 +39,9 @@ export default {
       return this.useCommitMessageWithDescription ? withoutDesc : withDesc;
     },
     status() {
-      const { pipeline, isPipelineActive, isPipelineFailed, hasCI, ciStatus } = this.mr;
+      const {
+        pipeline, isPipelineActive, isPipelineFailed, hasCI, ciStatus,
+      } = this.mr;
 
       if (hasCI && !ciStatus) {
         return 'failed';

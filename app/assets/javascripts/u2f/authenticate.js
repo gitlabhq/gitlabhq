@@ -104,5 +104,4 @@ export default class U2FAuthenticate {
     this.container[0].classList.add('hidden');
     this.fallbackUI.classList.remove('hidden');
   }
-
 }

@@ -21,8 +21,10 @@ export default {
   },
   computed: {
     canRemoveSourceBranch() {
-      const { shouldRemoveSourceBranch, canRemoveSourceBranch,
-        mergeUserId, currentUserId } = this.mr;
+      const {
+        shouldRemoveSourceBranch, canRemoveSourceBranch,
+        mergeUserId, currentUserId,
+      } = this.mr;
 
       return !shouldRemoveSourceBranch && canRemoveSourceBranch && mergeUserId === currentUserId;
     },

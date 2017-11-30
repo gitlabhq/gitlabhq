@@ -1,7 +1,9 @@
 export function setPositionDataAttribute(el, options) {
   // Update position data attribute so that the
   // new comment form can use this data for ajax request
-  const { x, y, width, height } = options;
+  const {
+    x, y, width, height,
+  } = options;
   const position = el.dataset.position;
   const positionObject = Object.assign({}, JSON.parse(position), {
     x,

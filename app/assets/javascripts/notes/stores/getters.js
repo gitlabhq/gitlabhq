@@ -23,9 +23,9 @@ const isLastNote = (note, state) => !note.system &&
   note.author.id === state.userData.id;
 
 export const getCurrentUserLastNote = state => _.flatten(
-    reverseNotes(state.notes)
+  reverseNotes(state.notes)
     .map(note => reverseNotes(note.notes)),
-  ).find(el => isLastNote(el, state));
+).find(el => isLastNote(el, state));
 
 export const getDiscussionLastNote = state => discussion => reverseNotes(discussion.notes)
   .find(el => isLastNote(el, state));

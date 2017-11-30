@@ -2,7 +2,6 @@
 
 (() => {
   class GLTerminal {
-
     constructor(options) {
       this.options = options || {};
 
@@ -54,7 +53,6 @@
     handleSocketFailure() {
       this.terminal.write('\r\nConnection failure');
     }
-
   }
 
   window.gl = window.gl || {};

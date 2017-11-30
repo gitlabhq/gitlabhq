@@ -64,35 +64,35 @@ describe('Issuable output', () => {
   it('should render a title/description/edited and update title/description/edited on update', (done) => {
     let editedText;
     Vue.nextTick()
-    .then(() => {
-      editedText = vm.$el.querySelector('.edited-text');
-    })
-    .then(() => {
-      expect(document.querySelector('title').innerText).toContain('this is a title (#1)');
-      expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>this is a title</p>');
-      expect(vm.$el.querySelector('.wiki').innerHTML).toContain('<p>this is a description!</p>');
-      expect(vm.$el.querySelector('.js-task-list-field').value).toContain('this is a description');
-      expect(formatText(editedText.innerText)).toMatch(/Edited[\s\S]+?by Some User/);
-      expect(editedText.querySelector('.author_link').href).toMatch(/\/some_user$/);
-      expect(editedText.querySelector('time')).toBeTruthy();
-    })
-    .then(() => {
-      requestData = issueShowData.secondRequest;
-      vm.poll.makeRequest();
-    })
-    .then(() => new Promise(resolve => setTimeout(resolve)))
-    .then(() => {
-      expect(document.querySelector('title').innerText).toContain('2 (#1)');
-      expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>2</p>');
-      expect(vm.$el.querySelector('.wiki').innerHTML).toContain('<p>42</p>');
-      expect(vm.$el.querySelector('.js-task-list-field').value).toContain('42');
-      expect(vm.$el.querySelector('.edited-text')).toBeTruthy();
-      expect(formatText(vm.$el.querySelector('.edited-text').innerText)).toMatch(/Edited[\s\S]+?by Other User/);
-      expect(editedText.querySelector('.author_link').href).toMatch(/\/other_user$/);
-      expect(editedText.querySelector('time')).toBeTruthy();
-    })
-    .then(done)
-    .catch(done.fail);
+      .then(() => {
+        editedText = vm.$el.querySelector('.edited-text');
+      })
+      .then(() => {
+        expect(document.querySelector('title').innerText).toContain('this is a title (#1)');
+        expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>this is a title</p>');
+        expect(vm.$el.querySelector('.wiki').innerHTML).toContain('<p>this is a description!</p>');
+        expect(vm.$el.querySelector('.js-task-list-field').value).toContain('this is a description');
+        expect(formatText(editedText.innerText)).toMatch(/Edited[\s\S]+?by Some User/);
+        expect(editedText.querySelector('.author_link').href).toMatch(/\/some_user$/);
+        expect(editedText.querySelector('time')).toBeTruthy();
+      })
+      .then(() => {
+        requestData = issueShowData.secondRequest;
+        vm.poll.makeRequest();
+      })
+      .then(() => new Promise(resolve => setTimeout(resolve)))
+      .then(() => {
+        expect(document.querySelector('title').innerText).toContain('2 (#1)');
+        expect(vm.$el.querySelector('.title').innerHTML).toContain('<p>2</p>');
+        expect(vm.$el.querySelector('.wiki').innerHTML).toContain('<p>42</p>');
+        expect(vm.$el.querySelector('.js-task-list-field').value).toContain('42');
+        expect(vm.$el.querySelector('.edited-text')).toBeTruthy();
+        expect(formatText(vm.$el.querySelector('.edited-text').innerText)).toMatch(/Edited[\s\S]+?by Other User/);
+        expect(editedText.querySelector('.author_link').href).toMatch(/\/other_user$/);
+        expect(editedText.querySelector('time')).toBeTruthy();
+      })
+      .then(done)
+      .catch(done.fail);
   });
 
   it('shows actions if permissions are correct', (done) => {

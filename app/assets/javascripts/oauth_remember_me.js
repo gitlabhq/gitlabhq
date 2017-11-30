@@ -3,7 +3,7 @@
  *
  * Toggling this checkbox adds/removes a `remember_me` parameter to the
  * login buttons' href, which is passed on to the omniauth callback.
- **/
+ * */
 
 export default class OAuthRememberMe {
   constructor(opts = {}) {

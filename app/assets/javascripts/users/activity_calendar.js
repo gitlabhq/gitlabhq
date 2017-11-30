@@ -104,9 +104,9 @@ export default class ActivityCalendar {
     const width = ((group + 1) * this.daySizeWithSpace) + this.getExtraWidthPadding(group);
     return d3.select(container)
       .append('svg')
-        .attr('width', width)
-        .attr('height', 167)
-        .attr('class', 'contrib-calendar');
+      .attr('width', width)
+      .attr('height', 167)
+      .attr('class', 'contrib-calendar');
   }
 
   renderDays() {
@@ -128,20 +128,20 @@ export default class ActivityCalendar {
         return `translate(${(this.daySizeWithSpace * i) + 1 + this.daySizeWithSpace}, 18)`;
       })
       .selectAll('rect')
-        .data(stamp => stamp)
-        .enter()
-        .append('rect')
-          .attr('x', '0')
-          .attr('y', stamp => this.daySizeWithSpace * stamp.day)
-          .attr('width', this.daySize)
-          .attr('height', this.daySize)
-          .attr('fill', stamp => (
-            stamp.count !== 0 ? this.color(Math.min(stamp.count, 40)) : '#ededed'
-          ))
-          .attr('title', stamp => formatTooltipText(stamp))
-          .attr('class', 'user-contrib-cell js-tooltip')
-          .attr('data-container', 'body')
-          .on('click', this.clickDay);
+      .data(stamp => stamp)
+      .enter()
+      .append('rect')
+      .attr('x', '0')
+      .attr('y', stamp => this.daySizeWithSpace * stamp.day)
+      .attr('width', this.daySize)
+      .attr('height', this.daySize)
+      .attr('fill', stamp => (
+        stamp.count !== 0 ? this.color(Math.min(stamp.count, 40)) : '#ededed'
+      ))
+      .attr('title', stamp => formatTooltipText(stamp))
+      .attr('class', 'user-contrib-cell js-tooltip')
+      .attr('data-container', 'body')
+      .on('click', this.clickDay);
   }
 
   renderDayTitles() {
@@ -159,27 +159,27 @@ export default class ActivityCalendar {
     ];
     this.svg.append('g')
       .selectAll('text')
-        .data(days)
-        .enter()
-        .append('text')
-          .attr('text-anchor', 'middle')
-          .attr('x', 8)
-          .attr('y', day => day.y)
-          .text(day => day.text)
-          .attr('class', 'user-contrib-text');
+      .data(days)
+      .enter()
+      .append('text')
+      .attr('text-anchor', 'middle')
+      .attr('x', 8)
+      .attr('y', day => day.y)
+      .text(day => day.text)
+      .attr('class', 'user-contrib-text');
   }
 
   renderMonths() {
     this.svg.append('g')
       .attr('direction', 'ltr')
       .selectAll('text')
-        .data(this.months)
-        .enter()
-        .append('text')
-          .attr('x', date => date.x)
-          .attr('y', 10)
-          .attr('class', 'user-contrib-text')
-          .text(date => this.monthNames[date.month]);
+      .data(this.months)
+      .enter()
+      .append('text')
+      .attr('x', date => date.x)
+      .attr('y', 10)
+      .attr('class', 'user-contrib-text')
+      .text(date => this.monthNames[date.month]);
   }
 
   renderKey() {
@@ -189,17 +189,17 @@ export default class ActivityCalendar {
     this.svg.append('g')
       .attr('transform', `translate(18, ${(this.daySizeWithSpace * 8) + 16})`)
       .selectAll('rect')
-        .data(keyColors)
-        .enter()
-        .append('rect')
-          .attr('width', this.daySize)
-          .attr('height', this.daySize)
-          .attr('x', (color, i) => this.daySizeWithSpace * i)
-          .attr('y', 0)
-          .attr('fill', color => color)
-          .attr('class', 'js-tooltip')
-          .attr('title', (color, i) => keyValues[i])
-          .attr('data-container', 'body');
+      .data(keyColors)
+      .enter()
+      .append('rect')
+      .attr('width', this.daySize)
+      .attr('height', this.daySize)
+      .attr('x', (color, i) => this.daySizeWithSpace * i)
+      .attr('y', 0)
+      .attr('fill', color => color)
+      .attr('class', 'js-tooltip')
+      .attr('title', (color, i) => keyValues[i])
+      .attr('data-container', 'body');
   }
 
   initColor() {

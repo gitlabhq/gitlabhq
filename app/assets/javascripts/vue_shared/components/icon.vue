@@ -61,16 +61,17 @@
         default: null,
       },
     },
+  },
 
-    computed: {
-      spriteHref() {
-        return `${gon.sprite_icons}#${this.name}`;
-      },
-      iconSizeClass() {
-        return this.size ? `s${this.size}` : '';
-      },
+  computed: {
+    spriteHref() {
+      return `${gon.sprite_icons}#${this.name}`;
     },
-  };
+    iconSizeClass() {
+      return this.size ? `s${this.size}` : '';
+    },
+  },
+};
 </script>
 
 <template>

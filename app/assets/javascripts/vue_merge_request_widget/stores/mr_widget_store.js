@@ -2,7 +2,6 @@ import Timeago from 'timeago.js';
 import { getStateKey } from '../dependencies';
 
 export default class MergeRequestStore {
-
   constructor(data) {
     this.sha = data.diff_head_sha;
     this.gitlabLogo = data.gitlabLogo;
@@ -157,5 +156,4 @@ export default class MergeRequestStore {
 
     return timeagoInstance.format(MergeRequestStore.getEventUpdatedAtDate(event));
   }
-
 }

@@ -26,22 +26,22 @@ GitLabDropdownInput = (function() {
     })(this));
 
     this.input
-    .on('keydown', function (e) {
-      var keyCode = e.which;
-      if (keyCode === 13 && !options.elIsInput) {
-        e.preventDefault();
-      }
-    })
-    .on('input', function(e) {
-      var val = e.currentTarget.value || _this.options.inputFieldName;
-      val = val.split(' ').join('-') // replaces space with dash
-        .replace(/[^a-zA-Z0-9 -]/g, '').toLowerCase() // replace non alphanumeric
-        .replace(/(-)\1+/g, '-'); // replace repeated dashes
-      _this.cb(_this.options.fieldName, val, {}, true);
-      _this.input.closest('.dropdown')
-        .find('.dropdown-toggle-text')
-        .text(val);
-    });
+      .on('keydown', function (e) {
+        var keyCode = e.which;
+        if (keyCode === 13 && !options.elIsInput) {
+          e.preventDefault();
+        }
+      })
+      .on('input', function(e) {
+        var val = e.currentTarget.value || _this.options.inputFieldName;
+        val = val.split(' ').join('-') // replaces space with dash
+          .replace(/[^a-zA-Z0-9 -]/g, '').toLowerCase() // replace non alphanumeric
+          .replace(/(-)\1+/g, '-'); // replace repeated dashes
+        _this.cb(_this.options.fieldName, val, {}, true);
+        _this.input.closest('.dropdown')
+          .find('.dropdown-toggle-text')
+          .text(val);
+      });
   }
 
   GitLabDropdownInput.prototype.onInput = function(cb) {

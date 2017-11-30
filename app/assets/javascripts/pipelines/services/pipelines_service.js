@@ -5,7 +5,6 @@ import VueResource from 'vue-resource';
 Vue.use(VueResource);
 
 export default class PipelinesService {
-
   /**
   * Commits and merge request endpoints need to be requested with `.json`.
   *

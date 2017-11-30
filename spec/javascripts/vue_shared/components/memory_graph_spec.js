@@ -34,7 +34,9 @@ describe('MemoryGraph', () => {
 
   describe('props', () => {
     it('should have props with defaults', (done) => {
-      const { metrics, deploymentTime, width, height } = memoryGraphComponent.props;
+      const {
+        metrics, deploymentTime, width, height,
+      } = memoryGraphComponent.props;
 
       Vue.nextTick(() => {
         const typeClassMatcher = (propItem, expectedType) => {
@@ -111,7 +113,9 @@ describe('MemoryGraph', () => {
     });
 
     it('should render graph when renderGraph is called internally', (done) => {
-      const { pathD, pathViewBox, dotX, dotY } = vm.getGraphPlotValues(mockMedian, mockMetrics);
+      const {
+        pathD, pathViewBox, dotX, dotY,
+      } = vm.getGraphPlotValues(mockMedian, mockMetrics);
       vm.height = defaultHeight;
       vm.width = defaultWidth;
       vm.pathD = `M ${pathD}`;

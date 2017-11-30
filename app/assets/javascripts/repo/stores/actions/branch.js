@@ -10,11 +10,11 @@ export const createNewBranch = ({ state, commit }, branch) => service.createBran
     ref: state.currentBranch,
   },
 ).then(res => res.json())
-.then((data) => {
-  const branchName = data.name;
-  const url = location.href.replace(state.currentBranch, branchName);
+  .then((data) => {
+    const branchName = data.name;
+    const url = location.href.replace(state.currentBranch, branchName);
 
-  pushState(url);
+    pushState(url);
 
-  commit(types.SET_CURRENT_BRANCH, branchName);
-});
+    commit(types.SET_CURRENT_BRANCH, branchName);
+  });

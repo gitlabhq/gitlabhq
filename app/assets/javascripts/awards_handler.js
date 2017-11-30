@@ -186,7 +186,7 @@ class AwardsHandler {
               resolve();
             });
           }),
-      ),
+        ),
       Promise.resolve(),
     );
 
@@ -212,8 +212,8 @@ class AwardsHandler {
           <li class="emoji-menu-list-item">
             <button class="emoji-menu-btn text-center js-emoji-btn" type="button">
               ${this.emoji.glEmojiTag(emojiName, {
-                sprite: true,
-              })}
+    sprite: true,
+  })}
             </button>
           </li>
         `).join('\n')}

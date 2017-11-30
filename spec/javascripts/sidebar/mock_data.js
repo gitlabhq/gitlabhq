@@ -1,4 +1,4 @@
-/* eslint-disable quote-props*/
+/* eslint-disable quote-props */
 
 const RESPONSE_MAP = {
   'GET': {

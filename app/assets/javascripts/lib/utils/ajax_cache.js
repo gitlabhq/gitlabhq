@@ -21,22 +21,22 @@ class AjaxCache extends Cache {
       pendingRequest = new Promise((resolve, reject) => {
         // jQuery 2 is not Promises/A+ compatible (missing catch)
         $.ajax(endpoint) // eslint-disable-line promise/catch-or-return
-        .then(data => resolve(data),
-          (jqXHR, textStatus, errorThrown) => {
-            const error = new Error(`${endpoint}: ${errorThrown}`);
-            error.textStatus = textStatus;
-            reject(error);
-          },
-        );
+          .then(data => resolve(data),
+            (jqXHR, textStatus, errorThrown) => {
+              const error = new Error(`${endpoint}: ${errorThrown}`);
+              error.textStatus = textStatus;
+              reject(error);
+            },
+          );
       })
-      .then((data) => {
-        this.internalStorage[endpoint] = data;
-        delete this.pendingRequests[endpoint];
-      })
-      .catch((error) => {
-        delete this.pendingRequests[endpoint];
-        throw error;
-      });
+        .then((data) => {
+          this.internalStorage[endpoint] = data;
+          delete this.pendingRequests[endpoint];
+        })
+        .catch((error) => {
+          delete this.pendingRequests[endpoint];
+          throw error;
+        });
 
       this.pendingRequests[endpoint] = pendingRequest;
     }

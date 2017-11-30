@@ -3,7 +3,9 @@ import _ from 'underscore';
 import Flash from './flash';
 
 export default {
-  init({ container, form, issues, prefixId } = {}) {
+  init({
+    container, form, issues, prefixId
+  } = {}) {
     this.prefixId = prefixId || 'issue_';
     this.form = form || this.getElement('.bulk-update');
     this.$labelDropdown = this.form.find('.js-label-select');

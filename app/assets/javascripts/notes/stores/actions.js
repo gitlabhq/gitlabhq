@@ -204,7 +204,9 @@ export const fetchData = ({ commit, state, getters }) => {
     .catch(() => Flash('Something went wrong while fetching latest comments.'));
 };
 
-export const toggleAward = ({ commit, state, getters, dispatch }, { awardName, noteId }) => {
+export const toggleAward = ({
+  commit, state, getters, dispatch,
+}, { awardName, noteId }) => {
   commit(types.TOGGLE_AWARD, { awardName, note: getters.notesById[noteId] });
 };
 

@@ -154,12 +154,12 @@ describe('Multi-file store actions', () => {
 
     it('sets preview mode view if not in edit mode', (done) => {
       store.dispatch('toggleBlobView')
-      .then(() => {
-        expect(store.state.currentBlobView).toBe('repo-preview');
+        .then(() => {
+          expect(store.state.currentBlobView).toBe('repo-preview');
 
-        done();
-      })
-      .catch(done.fail);
+          done();
+        })
+        .catch(done.fail);
     });
   });
 
@@ -368,14 +368,14 @@ describe('Multi-file store actions', () => {
         name: 'test',
         type: 'tree',
       })
-      .then(() => {
-        expect(store.state.tree.length).toBe(1);
-        expect(store.state.tree[0].tempFile).toBeTruthy();
-        expect(store.state.tree[0].type).toBe('tree');
+        .then(() => {
+          expect(store.state.tree.length).toBe(1);
+          expect(store.state.tree[0].tempFile).toBeTruthy();
+          expect(store.state.tree[0].type).toBe('tree');
 
-        done();
-      })
-      .catch(done.fail);
+          done();
+        })
+        .catch(done.fail);
     });
 
     it('creates temp file', (done) => {
@@ -383,14 +383,14 @@ describe('Multi-file store actions', () => {
         name: 'test',
         type: 'blob',
       })
-      .then(() => {
-        expect(store.state.tree.length).toBe(1);
-        expect(store.state.tree[0].tempFile).toBeTruthy();
-        expect(store.state.tree[0].type).toBe('blob');
+        .then(() => {
+          expect(store.state.tree.length).toBe(1);
+          expect(store.state.tree[0].tempFile).toBeTruthy();
+          expect(store.state.tree[0].type).toBe('blob');
 
-        done();
-      })
-      .catch(done.fail);
+          done();
+        })
+        .catch(done.fail);
     });
   });
 

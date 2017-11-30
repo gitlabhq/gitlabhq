@@ -204,13 +204,13 @@ const Api = {
     return new Promise((resolve, reject) => {
       // jQuery 2 is not Promises/A+ compatible (missing catch)
       $.ajax(options) // eslint-disable-line promise/catch-or-return
-      .then(data => resolve(data),
-        (jqXHR, textStatus, errorThrown) => {
-          const error = new Error(`${options.url}: ${errorThrown}`);
-          error.textStatus = textStatus;
-          reject(error);
-        },
-      );
+        .then(data => resolve(data),
+          (jqXHR, textStatus, errorThrown) => {
+            const error = new Error(`${options.url}: ${errorThrown}`);
+            error.textStatus = textStatus;
+            reject(error);
+          },
+        );
     });
   },
 };

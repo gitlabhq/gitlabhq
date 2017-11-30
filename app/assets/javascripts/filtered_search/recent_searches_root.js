@@ -57,7 +57,6 @@ class RecentSearchesRoot {
       this.vm.$destroy();
     }
   }
-
 }
 
 export default RecentSearchesRoot;

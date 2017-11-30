@@ -35,6 +35,7 @@
     "no-underscore-dangle": ["error", { "allow": ["__"]}],
     "function-paren-newline": 0,
     "jasmine/new-line-before-expect": 0,
-    "jasmine/new-line-between-declarations": 0
+    "jasmine/new-line-between-declarations": 0,
+    "jasmine/prefer-toHaveBeenCalledWith": 0
   }
 }

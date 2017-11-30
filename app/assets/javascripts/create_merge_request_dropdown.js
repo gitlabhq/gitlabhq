@@ -79,26 +79,26 @@ export default class CreateMergeRequestDropdown {
       url: this.canCreatePath,
       beforeSend: () => this.setUnavailableButtonState(),
     })
-    .done((data) => {
-      this.setUnavailableButtonState(false);
+      .done((data) => {
+        this.setUnavailableButtonState(false);
 
-      if (data.can_create_branch) {
-        this.available();
-        this.enable();
+        if (data.can_create_branch) {
+          this.available();
+          this.enable();
 
-        if (!this.droplabInitialized) {
-          this.droplabInitialized = true;
-          this.initDroplab();
-          this.bindEvents();
+          if (!this.droplabInitialized) {
+            this.droplabInitialized = true;
+            this.initDroplab();
+            this.bindEvents();
+          }
+        } else if (data.has_related_branch) {
+          this.hide();
         }
-      } else if (data.has_related_branch) {
-        this.hide();
-      }
-    }).fail(() => {
-      this.unavailable();
-      this.disable();
-      new Flash('Failed to check if a new branch can be created.');
-    });
+      }).fail(() => {
+        this.unavailable();
+        this.disable();
+        new Flash('Failed to check if a new branch can be created.');
+      });
   }
 
   createBranch() {

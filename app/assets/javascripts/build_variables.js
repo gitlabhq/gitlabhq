@@ -1,4 +1,4 @@
-/* eslint-disable func-names*/
+/* eslint-disable func-names */
 
 export default function handleRevealVariables() {
   $('.js-reveal-variables')

@@ -26,7 +26,9 @@ export const closeAllFiles = ({ state, dispatch }) => {
   state.openFiles.forEach(file => dispatch('closeFile', { file }));
 };
 
-export const toggleEditMode = ({ state, commit, getters, dispatch }, force = false) => {
+export const toggleEditMode = ({
+  state, commit, getters, dispatch,
+}, force = false) => {
   const changedFiles = getters.changedFiles;
 
   if (changedFiles.length && !force) {
@@ -65,47 +67,51 @@ export const checkCommitStatus = ({ state }) => service.getBranchData(
   })
   .catch(() => flash('Error checking branch data. Please try again.'));
 
-export const commitChanges = ({ commit, state, dispatch, getters }, { payload, newMr }) =>
+export const commitChanges = ({
+  commit, state, dispatch, getters,
+}, { payload, newMr }) =>
   service.commit(state.project.id, payload)
-  .then((data) => {
-    const { branch } = payload;
-    if (!data.short_id) {
-      flash(data.message);
-      return;
-    }
+    .then((data) => {
+      const { branch } = payload;
+      if (!data.short_id) {
+        flash(data.message);
+        return;
+      }
 
-    const lastCommit = {
-      commit_path: `${state.project.url}/commit/${data.id}`,
-      commit: {
-        message: data.message,
-        authored_date: data.committed_date,
-      },
-    };
+      const lastCommit = {
+        commit_path: `${state.project.url}/commit/${data.id}`,
+        commit: {
+          message: data.message,
+          authored_date: data.committed_date,
+        },
+      };
 
-    flash(`Your changes have been committed. Commit ${data.short_id} with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`, 'notice');
+      flash(`Your changes have been committed. Commit ${data.short_id} with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`, 'notice');
 
-    if (newMr) {
-      dispatch('redirectToUrl', `${state.endpoints.newMergeRequestUrl}${branch}`);
-    } else {
-      commit(types.SET_COMMIT_REF, data.id);
+      if (newMr) {
+        dispatch('redirectToUrl', `${state.endpoints.newMergeRequestUrl}${branch}`);
+      } else {
+        commit(types.SET_COMMIT_REF, data.id);
 
-      getters.changedFiles.forEach((entry) => {
-        commit(types.SET_LAST_COMMIT_DATA, {
-          entry,
-          lastCommit,
+        getters.changedFiles.forEach((entry) => {
+          commit(types.SET_LAST_COMMIT_DATA, {
+            entry,
+            lastCommit,
+          });
         });
-      });
 
-      dispatch('discardAllChanges');
-      dispatch('closeAllFiles');
-      dispatch('toggleEditMode');
+        dispatch('discardAllChanges');
+        dispatch('closeAllFiles');
+        dispatch('toggleEditMode');
 
-      window.scrollTo(0, 0);
-    }
-  })
-  .catch(() => flash('Error committing changes. Please try again.'));
+        window.scrollTo(0, 0);
+      }
+    })
+    .catch(() => flash('Error committing changes. Please try again.'));
 
-export const createTempEntry = ({ state, dispatch }, { name, type, content = '', base64 = false }) => {
+export const createTempEntry = ({ state, dispatch }, {
+  name, type, content = '', base64 = false,
+}) => {
   if (type === 'tree') {
     dispatch('createTempTree', name);
   } else if (type === 'blob') {

@@ -43,22 +43,24 @@ export default {
     },
   },
   methods: {
-    fetchGroups({ parentId, page, filterGroupsBy, sortBy, archived, updatePagination }) {
+    fetchGroups({
+      parentId, page, filterGroupsBy, sortBy, archived, updatePagination,
+    }) {
       return this.service.getGroups(parentId, page, filterGroupsBy, sortBy, archived)
-                .then((res) => {
-                  if (updatePagination) {
-                    this.updatePagination(res.headers);
-                  }
+        .then((res) => {
+          if (updatePagination) {
+            this.updatePagination(res.headers);
+          }
 
-                  return res;
-                })
-                .then(res => res.json())
-                .catch(() => {
-                  this.isLoading = false;
-                  $.scrollTo(0);
+          return res;
+        })
+        .then(res => res.json())
+        .catch(() => {
+          this.isLoading = false;
+          $.scrollTo(0);
 
-                  Flash(COMMON_STR.FAILURE);
-                });
+          Flash(COMMON_STR.FAILURE);
+        });
     },
     fetchAllGroups() {
       const page = getParameterByName('page') || null;

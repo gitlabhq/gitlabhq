@@ -1,7 +1,9 @@
 /* eslint-disable class-methods-use-this, no-unused-vars */
 
 export default class TemplateSelector {
-  constructor({ dropdown, data, pattern, wrapper, editor, $input } = {}) {
+  constructor({
+    dropdown, data, pattern, wrapper, editor, $input,
+  } = {}) {
     this.pattern = pattern;
     this.editor = editor;
     this.dropdown = dropdown;

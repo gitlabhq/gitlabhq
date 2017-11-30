@@ -46,40 +46,40 @@ export default class Issue {
         type: 'PUT',
         url: url
       })
-      .fail(() => new Flash(issueFailMessage))
-      .done((data) => {
-        const isClosedBadge = $('div.status-box-closed');
-        const isOpenBadge = $('div.status-box-open');
-        const projectIssuesCounter = $('.issue_counter');
+        .fail(() => new Flash(issueFailMessage))
+        .done((data) => {
+          const isClosedBadge = $('div.status-box-closed');
+          const isOpenBadge = $('div.status-box-open');
+          const projectIssuesCounter = $('.issue_counter');
 
-        if ('id' in data) {
-          const isClosed = $button.hasClass('btn-close');
-          isClosedBadge.toggleClass('hidden', !isClosed);
-          isOpenBadge.toggleClass('hidden', isClosed);
+          if ('id' in data) {
+            const isClosed = $button.hasClass('btn-close');
+            isClosedBadge.toggleClass('hidden', !isClosed);
+            isOpenBadge.toggleClass('hidden', isClosed);
 
-          $(document).trigger('issuable:change', isClosed);
-          this.toggleCloseReopenButton(isClosed);
+            $(document).trigger('issuable:change', isClosed);
+            this.toggleCloseReopenButton(isClosed);
 
-          let numProjectIssues = Number(projectIssuesCounter.first().text().trim().replace(/[^\d]/, ''));
-          numProjectIssues = isClosed ? numProjectIssues - 1 : numProjectIssues + 1;
-          projectIssuesCounter.text(addDelimiter(numProjectIssues));
+            let numProjectIssues = Number(projectIssuesCounter.first().text().trim().replace(/[^\d]/, ''));
+            numProjectIssues = isClosed ? numProjectIssues - 1 : numProjectIssues + 1;
+            projectIssuesCounter.text(addDelimiter(numProjectIssues));
 
-          if (this.createMergeRequestDropdown) {
-            if (isClosed) {
-              this.createMergeRequestDropdown.unavailable();
-              this.createMergeRequestDropdown.disable();
-            } else {
+            if (this.createMergeRequestDropdown) {
+              if (isClosed) {
+                this.createMergeRequestDropdown.unavailable();
+                this.createMergeRequestDropdown.disable();
+              } else {
               // We should check in case a branch was created in another tab
-              this.createMergeRequestDropdown.checkAbilityToCreateBranch();
+                this.createMergeRequestDropdown.checkAbilityToCreateBranch();
+              }
             }
+          } else {
+            new Flash(issueFailMessage);
           }
-        } else {
-          new Flash(issueFailMessage);
-        }
-      })
-      .then(() => {
-        this.disableCloseReopenButton($button, false);
-      });
+        })
+        .then(() => {
+          this.disableCloseReopenButton($button, false);
+        });
     });
   }
 

@@ -5,14 +5,14 @@ function simulateEvent(el, type, options = {}) {
   if (/^mouse/.test(type)) {
     event = el.ownerDocument.createEvent('MouseEvents');
     event.initMouseEvent(type, true, true, el.ownerDocument.defaultView,
-    options.button, options.screenX, options.screenY, options.clientX, options.clientY,
-    options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, options.button, el);
+      options.button, options.screenX, options.screenY, options.clientX, options.clientY,
+      options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, options.button, el);
   } else {
     event = el.ownerDocument.createEvent('CustomEvent');
 
     event.initCustomEvent(type, true, true, el.ownerDocument.defaultView,
-    options.button, options.screenX, options.screenY, options.clientX, options.clientY,
-    options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, options.button, el);
+      options.button, options.screenX, options.screenY, options.clientX, options.clientY,
+      options.ctrlKey, options.altKey, options.shiftKey, options.metaKey, options.button, el);
 
     event.dataTransfer = {
       data: {},

@@ -31,7 +31,9 @@ export const closeFile = ({ commit, state, dispatch }, { file, force = false }) 
   dispatch('getLastCommitData');
 };
 
-export const setFileActive = ({ commit, state, getters, dispatch }, file) => {
+export const setFileActive = ({
+  commit, state, getters, dispatch,
+}, file) => {
   const currentActiveFile = getters.activeFile;
 
   if (file.active) return;
@@ -82,7 +84,9 @@ export const changeFileContent = ({ commit }, { file, content }) => {
   commit(types.UPDATE_FILE_CONTENT, { file, content });
 };
 
-export const createTempFile = ({ state, commit, dispatch }, { tree, name, content = '', base64 = '' }) => {
+export const createTempFile = ({ state, commit, dispatch }, {
+  tree, name, content = '', base64 = '',
+}) => {
   const file = createTemp({
     name: name.replace(`${state.path}/`, ''),
     path: tree.path,

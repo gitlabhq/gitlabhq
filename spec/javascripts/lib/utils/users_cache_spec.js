@@ -96,12 +96,12 @@ describe('UsersCache', () => {
       };
 
       UsersCache.retrieve(dummyUsername)
-      .then((user) => {
-        expect(user).toBe(dummyUser);
-        expect(UsersCache.internalStorage[dummyUsername]).toBe(dummyUser);
-      })
-      .then(done)
-      .catch(done.fail);
+        .then((user) => {
+          expect(user).toBe(dummyUser);
+          expect(UsersCache.internalStorage[dummyUsername]).toBe(dummyUser);
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('returns undefined if Ajax call fails and cache is empty', (done) => {
@@ -113,12 +113,12 @@ describe('UsersCache', () => {
       };
 
       UsersCache.retrieve(dummyUsername)
-      .then(user => fail(`Received unexpected user: ${JSON.stringify(user)}`))
-      .catch((error) => {
-        expect(error).toBe(dummyError);
-      })
-      .then(done)
-      .catch(done.fail);
+        .then(user => fail(`Received unexpected user: ${JSON.stringify(user)}`))
+        .catch((error) => {
+          expect(error).toBe(dummyError);
+        })
+        .then(done)
+        .catch(done.fail);
     });
 
     it('makes no Ajax call if matching data exists', (done) => {
@@ -126,11 +126,11 @@ describe('UsersCache', () => {
       apiSpy = () => fail(new Error('expected no Ajax call!'));
 
       UsersCache.retrieve(dummyUsername)
-      .then((user) => {
-        expect(user).toBe(dummyUser);
-      })
-      .then(done)
-      .catch(done.fail);
+        .then((user) => {
+          expect(user).toBe(dummyUser);
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 });

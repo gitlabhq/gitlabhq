@@ -106,11 +106,11 @@ function generateUnicodeSupportMap(testMap) {
     const isTestSatisfied = [].concat(testEntry).reduce((isSatisfied) => {
       // Sample along the vertical-middle for a couple of characters
       const imageData = ctx.getImageData(
-          0,
-          (readIndex * fontSize) + (fontSize / 2),
-          2 * fontSize,
-          1,
-        ).data;
+        0,
+        (readIndex * fontSize) + (fontSize / 2),
+        2 * fontSize,
+        1,
+      ).data;
 
       let isValidEmoji = false;
       for (let currentPixel = 0; currentPixel < 64; currentPixel += 1) {

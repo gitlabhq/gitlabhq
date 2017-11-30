@@ -102,12 +102,12 @@ describe('AjaxCache', () => {
       };
 
       AjaxCache.retrieve(dummyEndpoint)
-      .then((data) => {
-        expect(data).toBe(dummyResponse);
-        expect(AjaxCache.internalStorage[dummyEndpoint]).toBe(dummyResponse);
-      })
-      .then(done)
-      .catch(fail);
+        .then((data) => {
+          expect(data).toBe(dummyResponse);
+          expect(AjaxCache.internalStorage[dummyEndpoint]).toBe(dummyResponse);
+        })
+        .then(done)
+        .catch(fail);
     });
 
     it('makes no Ajax call if request is pending', () => {
@@ -122,12 +122,12 @@ describe('AjaxCache', () => {
       const unexpectedResponse = data => fail(`Did not expect response: ${data}`);
 
       AjaxCache.retrieve(dummyEndpoint)
-      .then(unexpectedResponse)
-      .catch(fail);
+        .then(unexpectedResponse)
+        .catch(fail);
 
       AjaxCache.retrieve(dummyEndpoint)
-      .then(unexpectedResponse)
-      .catch(fail);
+        .then(unexpectedResponse)
+        .catch(fail);
 
       expect($.ajax.calls.count()).toBe(1);
     });
@@ -143,13 +143,13 @@ describe('AjaxCache', () => {
       };
 
       AjaxCache.retrieve(dummyEndpoint)
-      .then(data => fail(`Received unexpected data: ${JSON.stringify(data)}`))
-      .catch((error) => {
-        expect(error.message).toBe(`${dummyEndpoint}: ${dummyErrorMessage}`);
-        expect(error.textStatus).toBe(dummyStatusText);
-        done();
-      })
-      .catch(fail);
+        .then(data => fail(`Received unexpected data: ${JSON.stringify(data)}`))
+        .catch((error) => {
+          expect(error.message).toBe(`${dummyEndpoint}: ${dummyErrorMessage}`);
+          expect(error.textStatus).toBe(dummyStatusText);
+          done();
+        })
+        .catch(fail);
     });
 
     it('makes no Ajax call if matching data exists', (done) => {
@@ -157,11 +157,11 @@ describe('AjaxCache', () => {
       ajaxSpy = () => fail(new Error('expected no Ajax call!'));
 
       AjaxCache.retrieve(dummyEndpoint)
-      .then((data) => {
-        expect(data).toBe(dummyResponse);
-      })
-      .then(done)
-      .catch(fail);
+        .then((data) => {
+          expect(data).toBe(dummyResponse);
+        })
+        .then(done)
+        .catch(fail);
     });
 
     it('makes Ajax call even if matching data exists when forceRequest parameter is provided', (done) => {

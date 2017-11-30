@@ -120,7 +120,7 @@ describe('Pipelines stage component', () => {
         setTimeout(() => {
           expect(
             component.$el.querySelector('.js-builds-dropdown-container ul').textContent.trim(),
-            ).toEqual('this is the updated content');
+          ).toEqual('this is the updated content');
           done();
         });
       });

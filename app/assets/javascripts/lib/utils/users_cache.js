@@ -21,7 +21,7 @@ class UsersCache extends Cache {
         this.internalStorage[username] = user;
         return user;
       });
-      // missing catch is intentional, error handling depends on use case
+    // missing catch is intentional, error handling depends on use case
   }
 }
 

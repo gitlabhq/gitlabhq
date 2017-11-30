@@ -37,7 +37,7 @@ const IGNORE_URLS = [
   /extensions\//i,
   /^chrome:\/\//i,
   // Other plugins
-  /127\.0\.0\.1:4001\/isrunning/i,  // Cacaoweb
+  /127\.0\.0\.1:4001\/isrunning/i, // Cacaoweb
   /webappstoolbarba\.texthelp\.com\//i,
   /metrics\.itunes\.apple\.com\.edgesuite\.net\//i,
 ];

@@ -46,7 +46,7 @@
 
         if (this.isOpen) {
           this.fetchList({ repo: this.repo })
-          .catch(() => this.showError(errorMessagesTypes.FETCH_REGISTRY));
+            .catch(() => this.showError(errorMessagesTypes.FETCH_REGISTRY));
         }
       },
 
