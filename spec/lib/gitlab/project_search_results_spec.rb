@@ -70,6 +70,15 @@ describe Gitlab::ProjectSearchResults do
 
       subject { described_class.parse_search_result(search_result) }
 
+      it 'can correctly parse filenames including ":"' do
+        special_char_result = "\nmaster:testdata/project::function1.yaml-1----\nmaster:testdata/project::function1.yaml:2:test: data1\n"
+
+        blob = described_class.parse_search_result(special_char_result)
+
+        expect(blob.ref).to eq('master')
+        expect(blob.filename).to eq('testdata/project::function1.yaml')
+      end
+
       it "returns a valid FoundBlob" do
         is_expected.to be_an Gitlab::SearchResults::FoundBlob
         expect(subject.id).to be_nil
