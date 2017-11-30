@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import issueNotesApp from '~/notes/components/issue_notes_app.vue';
-import service from '~/notes/services/issue_notes_service';
+import service from '~/notes/services/notes_service';
 import * as mockData from '../mock_data';
 
 describe('issue_note_app', () => {
@@ -24,7 +24,7 @@ describe('issue_note_app', () => {
 
     mountComponent = (data) => {
       const props = data || {
-        issueData: mockData.issueDataMock,
+        noteableData: mockData.noteableDataMock,
         notesData: mockData.notesDataMock,
         userData: mockData.userDataMock,
       };
@@ -60,7 +60,7 @@ describe('issue_note_app', () => {
     });
 
     it('should set issue data', () => {
-      expect(vm.$store.state.issueData).toEqual(mockData.issueDataMock);
+      expect(vm.$store.state.noteableData).toEqual(mockData.noteableDataMock);
     });
 
     it('should set user data', () => {
