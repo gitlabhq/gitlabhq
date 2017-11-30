@@ -2,6 +2,25 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.2.3 (2017-11-30)
+
+### Fixed (7 changes)
+
+- Fix hashed storage for Import/Export uploads. !15482
+- Ensure that rake gitlab:cleanup:repos task does not mess with hashed repositories. !15520
+- Ensure that rake gitlab:cleanup:dirs task does not mess with hashed repositories. !15600
+- Fix WIP system note not being created.
+- Fix link text from group context.
+- Fix defaults for MR states and merge statuses.
+- Fix pulling and pushing using a personal access token with the sudo scope.
+
+### Performance (3 changes)
+
+- Drastically improve project search performance by no longer searching namespace name.
+- Reuse authors when rendering event Atom feeds.
+- Optimise StuckCiJobsWorker using cheap SQL query outside, and expensive inside.
+
+
 ## 10.2.2 (2017-11-23)
 
 ### Fixed (5 changes)
