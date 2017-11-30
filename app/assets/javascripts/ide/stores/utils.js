@@ -78,14 +78,11 @@ export const decorateData = (entity) => {
 export const findEntry = (state, type, name) => state.tree.find(
   f => f.type === type && f.name === name,
 );
+
 export const findIndexOfFile = (state, file) => state.findIndex(f => f.path === file.path);
 
 export const setPageTitle = (title) => {
   document.title = title;
-};
-
-export const pushState = (url) => {
-  // history.pushState({ url }, '', url);
 };
 
 export const createTemp = ({ name, path, type, level, changed, content, base64 }) => {

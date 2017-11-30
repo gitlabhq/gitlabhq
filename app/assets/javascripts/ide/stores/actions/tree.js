@@ -3,7 +3,6 @@ import flash from '../../../flash';
 import service from '../../services';
 import * as types from '../mutation_types';
 import {
-  pushState,
   setPageTitle,
   findEntry,
   createTemp,
@@ -33,20 +32,16 @@ export const getTreeData = (
         }
 
         dispatch('updateDirectoryData', { data, tree, namespace, projectId, branch });
-        if (!tree) {
-          // If there was no tree given one was just created
-          tree = state.trees[`${namespace}/${projectId}/${branch}`];
-        }
+        const selectedTree = tree || state.trees[`${namespace}/${projectId}/${branch}`];
 
         commit(types.SET_PARENT_TREE_URL, data.parent_tree_url);
-        commit(types.SET_LAST_COMMIT_URL, { tree, url: data.last_commit_path });
-        if (tree) commit(types.TOGGLE_LOADING, tree);
+        commit(types.SET_LAST_COMMIT_URL, { tree: selectedTree, url: data.last_commit_path });
+        if (tree) commit(types.TOGGLE_LOADING, selectedTree);
 
-        const prevLastCommitPath = tree.lastCommitPath;
+        const prevLastCommitPath = selectedTree.lastCommitPath;
         if (prevLastCommitPath !== null) {
-          dispatch('getLastCommitData', tree);
+          dispatch('getLastCommitData', selectedTree);
         }
-        console.log('Loaded Tree');
         resolve(data);
       })
       .catch((e) => {
@@ -61,8 +56,6 @@ export const toggleTreeOpen = ({ commit, dispatch }, { endpoint, tree }) => {
   if (tree.opened) {
     // send empty data to clear the tree
     const data = { trees: [], blobs: [], submodules: [] };
-
-    pushState(tree.parentTreeUrl);
 
     dispatch('updateDirectoryData', { data, tree });
   } else {
@@ -156,14 +149,14 @@ export const updateDirectoryData = (
     const existingTree = state.trees[`${namespace}/${projectId}/${branch}`];
     if (!existingTree) {
       commit(types.CREATE_TREE, { treePath: `${namespace}/${projectId}/${branch}` });
-      tree = state.trees[`${namespace}/${projectId}/${branch}`];
     }
   }
 
-  const level = tree.level !== undefined ? tree.level + 1 : 0;
+  const selectedTree = tree || state.trees[`${namespace}/${projectId}/${branch}`];
+  const level = selectedTree.level !== undefined ? selectedTree.level + 1 : 0;
   const parentTreeUrl = data.parent_tree_url ? `${data.parent_tree_url}${data.path}` : state.endpoints.rootUrl;
   const createEntry = (entry, type) => createOrMergeEntry({
-    tree,
+    tree: selectedTree,
     entry,
     level,
     type,
@@ -176,5 +169,5 @@ export const updateDirectoryData = (
     ...data.blobs.map(b => createEntry(b, 'blob')),
   ];
 
-  commit(types.SET_DIRECTORY_DATA, { tree, data: formattedData });
+  commit(types.SET_DIRECTORY_DATA, { tree: selectedTree, data: formattedData });
 };

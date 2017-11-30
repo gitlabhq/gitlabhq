@@ -8,7 +8,6 @@ export const getProjectData = (
   { namespace, projectId, enforce = false } = {},
 ) => new Promise((resolve, reject) => {
   if (!state.projects[`${namespace}/${projectId}`] || enforce) {
-    console.log('Loading project exists ' + projectId);
     service.getProjectData(namespace, projectId)
     .then(res => res.data)
     .then((data) => {

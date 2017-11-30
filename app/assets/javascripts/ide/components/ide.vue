@@ -1,3 +1,5 @@
+/* global Sidebar */
+
 <script>
 import { mapState, mapGetters } from 'vuex';
 import IdeSidebar from './ide_side_bar.vue';

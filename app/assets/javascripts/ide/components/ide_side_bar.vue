@@ -1,5 +1,5 @@
 <script>
-import { mapState, mapGetters, mapActions } from 'vuex';
+import { mapState } from 'vuex';
 import ProjectTree from './ide_project_tree.vue';
 
 export default {
