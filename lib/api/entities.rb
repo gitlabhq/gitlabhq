@@ -87,7 +87,7 @@ module API
       expose :created_at
     end
 
-    class BasicProjectDetails < Grape::Entity
+    class BasicProjectDetails < ProjectIdentity
       include ::API::ProjectsRelationBuilder
 
       expose :default_branch
