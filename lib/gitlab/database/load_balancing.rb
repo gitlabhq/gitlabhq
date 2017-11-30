@@ -24,15 +24,30 @@ module Gitlab
                             [].freeze
                           end
 
+      # Returns a Hash containing the load balancing configuration.
+      def self.configuration
+        ActiveRecord::Base.configurations[Rails.env]['load_balancing'] || {}
+      end
+
+      # Returns the maximum replica lag size in bytes.
+      def self.max_replication_difference
+        (configuration['max_replication_difference'] || 8.megabytes).to_i
+      end
+
+      # Returns the maximum lag time for a replica.
+      def self.max_replication_lag_time
+        (configuration['max_replication_lag_time'] || 60.0).to_f
+      end
+
+      # Returns the interval (in seconds) to use for checking the status of a
+      # replica.
+      def self.replica_check_interval
+        (configuration['replica_check_interval'] || 60).to_f
+      end
+
       # Returns the additional hosts to use for load balancing.
       def self.hosts
-        hash = ActiveRecord::Base.configurations[Rails.env]['load_balancing']
-
-        if hash
-          hash['hosts'] || []
-        else
-          []
-        end
+        configuration['hosts'] || []
       end
 
       def self.log(level, message)

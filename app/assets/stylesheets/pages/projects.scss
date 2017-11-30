@@ -403,6 +403,18 @@
       }
     }
   }
+
+  .clone-dropdown-btn {
+    background-color: $white-light;
+  }
+
+  .clone-options-dropdown {
+    min-width: 240px;
+
+    .dropdown-menu-inner-content {
+      min-width: 320px;
+    }
+  }
 }
 
 .project-repo-buttons {

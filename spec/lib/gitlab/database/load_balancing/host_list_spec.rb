@@ -2,13 +2,16 @@ require 'spec_helper'
 
 describe Gitlab::Database::LoadBalancing::HostList do
   before do
-    allow(Gitlab::Database).to receive(:create_connection_pool)
+    allow(Gitlab::Database)
+      .to receive(:create_connection_pool)
       .and_return(ActiveRecord::Base.connection_pool)
   end
 
+  let(:load_balancer) { double(:load_balancer) }
+
   let(:host_list) do
     hosts = Array.new(2) do
-      Gitlab::Database::LoadBalancing::Host.new('localhost')
+      Gitlab::Database::LoadBalancing::Host.new('localhost', load_balancer)
     end
 
     described_class.new(hosts)

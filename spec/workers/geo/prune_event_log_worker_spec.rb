@@ -4,7 +4,7 @@ describe Geo::PruneEventLogWorker, :geo do
   include ::EE::GeoHelpers
 
   subject(:worker) { described_class.new }
-  set(:primary) { create(:geo_node, :primary, host: 'primary-geo-node') }
+  set(:primary) { create(:geo_node, :primary) }
   set(:secondary) { create(:geo_node) }
 
   before do

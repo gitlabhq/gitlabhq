@@ -1,62 +1,97 @@
 .ci-status-icon-success,
 .ci-status-icon-passed {
+<<<<<<< HEAD
   &,
   &:hover,
   &:focus {
     color: $green-500;
+=======
+  svg {
+    fill: $green-500;
+>>>>>>> origin/master
   }
 }
 
 .ci-status-icon-failed {
+<<<<<<< HEAD
   &,
   &:hover,
   &:focus {
     color: $gl-danger;
+=======
+  svg {
+    fill: $gl-danger;
+>>>>>>> origin/master
   }
 }
 
 .ci-status-icon-pending,
 .ci-status-icon-failed_with_warnings,
 .ci-status-icon-success_with_warnings {
+<<<<<<< HEAD
   &,
   &:hover,
   &:focus {
     color: $orange-500;
+=======
+  svg {
+    fill: $orange-500;
+>>>>>>> origin/master
   }
 }
 
 .ci-status-icon-running {
+<<<<<<< HEAD
   &,
   &:hover,
   &:focus {
     color: $blue-400;
+=======
+  svg {
+    fill: $blue-400;
+>>>>>>> origin/master
   }
 }
 
 .ci-status-icon-canceled,
 .ci-status-icon-disabled,
 .ci-status-icon-not-found {
+<<<<<<< HEAD
   &,
   &:hover,
   &:focus {
     color: $gl-text-color;
+=======
+  svg {
+    fill: $gl-text-color;
+>>>>>>> origin/master
   }
 }
 
 .ci-status-icon-created,
 .ci-status-icon-skipped {
+<<<<<<< HEAD
   &,
   &:hover,
   &:focus {
     color: $gray-darkest;
+=======
+  svg {
+    fill: $gray-darkest;
+>>>>>>> origin/master
   }
 }
 
 .ci-status-icon-manual {
+<<<<<<< HEAD
   &,
   &:hover,
   &:focus {
     color: $gl-text-color;
+=======
+  svg {
+    fill: $gl-text-color;
+>>>>>>> origin/master
   }
 }
 
