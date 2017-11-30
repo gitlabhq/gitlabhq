@@ -98,13 +98,13 @@ describe API::GeoNodes, :geo, api: true do
       get api("/geo_nodes/#{secondary.id}/failures", admin)
 
       expect(response.status).to eq 200
-      expect(response.body).to eq('')
+      expect(response).to match_response_schema('geo_project_registry')
     end
 
     it 'denies access if not admin' do
-      get api('/geo_nodes', user)
+      get api("/geo_nodes/#{secondary.id}/failures", user)
 
-      expect(response.failures).to eq 403
+      expect(response.status).to eq 403
     end
   end
 end
