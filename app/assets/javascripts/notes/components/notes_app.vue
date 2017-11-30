@@ -86,7 +86,7 @@
           .then(() => this.checkLocationHash())
           .catch(() => {
             this.isLoading = false;
-            Flash('Something went wrong while fetching issue comments. Please try again.');
+            Flash('Something went wrong while fetching comments. Please try again.');
           });
       },
       initPolling() {
