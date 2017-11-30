@@ -51,7 +51,7 @@ describe EnvironmentEntity do
   context 'with deployment service ready' do
     before do
       stub_licensed_features(deploy_board: true)
-      allow(environment).to receive(:deployment_service_ready?).and_return(true)
+      allow(environment).to receive(:has_terminals?).and_return(true)
       allow(environment).to receive(:rollout_status).and_return(kube_deployment_rollout_status)
     end
 
@@ -63,7 +63,7 @@ describe EnvironmentEntity do
   context 'when license does not has the GitLab_DeployBoard add-on' do
     before do
       stub_licensed_features(deploy_board: false)
-      allow(environment).to receive(:deployment_service_ready?).and_return(true)
+      allow(environment).to receive(:has_terminals?).and_return(true)
     end
 
     it 'does not expose rollout_status' do
