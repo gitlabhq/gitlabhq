@@ -1,6 +1,4 @@
 class GeoProjectRegistryEntity < Grape::Entity
-  include ActionView::Helpers::NumberHelper
-
   expose :project_id
   expose :last_repository_synced_at
   expose :last_repository_successful_sync_at

@@ -22,7 +22,7 @@ module Geo
         fetch_geo_mirror(project.repository)
       end
 
-      update_registry(finished_at: DateTime.now)
+      update_registry(finished_at: DateTime.now, last_repository_sync_failure: nil)
       log_info('Finished repository sync',
                update_delay_s: update_delay_in_seconds,
                download_time_s: download_time_in_seconds)
