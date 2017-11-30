@@ -16,7 +16,7 @@
       - @clusters.each do |cluster|
         = render "cluster", cluster: cluster
     = paginate @clusters, theme: "gitlab"
-  - elsif @scope == :all
+  - elsif @scope == 'all'
     = render "empty_state"
   - else
     = render "tabs"
