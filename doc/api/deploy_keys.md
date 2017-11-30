@@ -151,7 +151,7 @@ PUT /projects/:id/deploy_keys/:id
 | `can_push` | boolean | no  | Can deploy key push to the project's repository |
 
 ```bash
-curl -X PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data '{"key_id":"3", title": "My updated key", "can_push": "true"}' "https://gitlab.example.com/api/v4/projects/5/deploy_keys/3"
+curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data '{"key_id":"3", "title": "My updated key", "can_push": "true"}' "https://gitlab.example.com/api/v4/projects/5/deploy_keys/3"
 ```
 
 Example response:
