@@ -261,6 +261,29 @@ describe ProjectsController do
         expect(response).to redirect_to(namespace_project_path)
       end
     end
+
+    context 'when the project is forked and has a repository', :request_store do
+      let(:public_project) { create(:project, :public, :repository) }
+
+      render_views
+
+      before do
+        # View the project as a user that does not have any rights
+        sign_in(create(:user))
+
+        fork_project(public_project)
+      end
+
+      it 'does not increase the number of queries when the project is forked' do
+        # When a project is part of a fork network, we check if the `current_user`
+        # has a fork in their own namespace. We query this several times. Caching
+        # the result in the RequestStore brings the number of queries for this
+        # request down from 64 to 59.
+
+        expect { get(:show, namespace_id: public_project.namespace, id: public_project) }
+          .not_to exceed_query_limit(59)
+      end
+    end
   end
 
   describe "#update" do
