@@ -10,71 +10,71 @@ describe('Multi-file editor library diff calculator', () => {
 
     describe('modified', () => {
       it('', () => {
-        const diff = computeDiff('123', '1234');
+        const diff = computeDiff('123', '1234')[0];
 
-        expect(diff[0].added).toBeTruthy();
-        expect(diff[0].modified).toBeTruthy();
-        expect(diff[0].removed).toBeUndefined();
+        expect(diff.added).toBeTruthy();
+        expect(diff.modified).toBeTruthy();
+        expect(diff.removed).toBeUndefined();
       });
 
       it('', () => {
-        const diff = computeDiff('123\n123\n123', '123\n1234\n123');
+        const diff = computeDiff('123\n123\n123', '123\n1234\n123')[0];
 
-        expect(diff[0].added).toBeTruthy();
-        expect(diff[0].modified).toBeTruthy();
-        expect(diff[0].removed).toBeUndefined();
-        expect(diff[0].lineNumber).toBe(2);
+        expect(diff.added).toBeTruthy();
+        expect(diff.modified).toBeTruthy();
+        expect(diff.removed).toBeUndefined();
+        expect(diff.lineNumber).toBe(2);
       });
     });
 
     describe('added', () => {
       it('', () => {
-        const diff = computeDiff('123', '123\n123');
+        const diff = computeDiff('123', '123\n123')[0];
 
-        expect(diff[0].added).toBeTruthy();
-        expect(diff[0].modified).toBeUndefined();
-        expect(diff[0].removed).toBeUndefined();
+        expect(diff.added).toBeTruthy();
+        expect(diff.modified).toBeUndefined();
+        expect(diff.removed).toBeUndefined();
       });
 
       it('', () => {
-        const diff = computeDiff('123\n123\n123', '123\n123\n1234\n123');
+        const diff = computeDiff('123\n123\n123', '123\n123\n1234\n123')[0];
 
-        expect(diff[0].added).toBeTruthy();
-        expect(diff[0].modified).toBeUndefined();
-        expect(diff[0].removed).toBeUndefined();
-        expect(diff[0].lineNumber).toBe(3);
+        expect(diff.added).toBeTruthy();
+        expect(diff.modified).toBeUndefined();
+        expect(diff.removed).toBeUndefined();
+        expect(diff.lineNumber).toBe(3);
       });
     });
 
     describe('removed', () => {
       it('', () => {
-        const diff = computeDiff('123', '');
+        const diff = computeDiff('123', '')[0];
 
-        expect(diff[0].added).toBeUndefined();
-        expect(diff[0].modified).toBeUndefined();
-        expect(diff[0].removed).toBeTruthy();
+        expect(diff.added).toBeUndefined();
+        expect(diff.modified).toBeUndefined();
+        expect(diff.removed).toBeTruthy();
       });
 
       it('', () => {
-        const diff = computeDiff('123\n123\n123', '123\n123');
+        const diff = computeDiff('123\n123\n123', '123\n123')[0];
 
-        expect(diff[0].added).toBeUndefined();
-        expect(diff[0].modified).toBeTruthy();
-        expect(diff[0].removed).toBeTruthy();
-        expect(diff[0].lineNumber).toBe(2);
+        expect(diff.added).toBeUndefined();
+        expect(diff.modified).toBeTruthy();
+        expect(diff.removed).toBeTruthy();
+        expect(diff.lineNumber).toBe(2);
       });
     });
 
     it('includes line number of change', () => {
-      const diff = computeDiff('123', '');
+      const diff = computeDiff('123', '')[0];
 
-      expect(diff[0].lineNumber).toBe(1);
+      expect(diff.lineNumber).toBe(1);
     });
 
     it('includes end line number of change', () => {
-      const diff = computeDiff('123', '');
+      const diff = computeDiff('123', '')[0];
 
-      expect(diff[0].endLineNumber).toBe(1);
+      expect(diff.endLineNumber).toBe(1);
     });
   });
 });
