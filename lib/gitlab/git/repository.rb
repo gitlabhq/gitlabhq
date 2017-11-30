@@ -1212,20 +1212,20 @@ module Gitlab
         raise GitError.new("Could not fsck repository:\n#{output}") unless status.zero?
       end
 
-      def rebase(user, rebase_id, source_branch:, source_branch_sha:, target_repository:, target_branch:)
+      def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
         rebase_path = rebase_dir_path(rebase_id)
         env = git_env_for_user(user)
 
-        with_worktree(rebase_path, source_branch, env: env) do
+        with_worktree(rebase_path, branch, env: env) do
           run_git!(
-            %W(pull --rebase #{target_repository.path} #{target_branch}),
+            %W(pull --rebase #{remote_repository.path} #{remote_branch}),
             chdir: rebase_path, env: env
           )
 
           rebase_sha = run_git!(%w(rev-parse HEAD), chdir: rebase_path, env: env).strip
 
           Gitlab::Git::OperationService.new(user, self)
-            .update_branch(source_branch, rebase_sha, source_branch_sha)
+            .update_branch(branch, rebase_sha, branch_sha)
 
           rebase_sha
         end
@@ -1235,7 +1235,7 @@ module Gitlab
         fresh_worktree?(rebase_dir_path(rebase_id))
       end
 
-      def squash(user, squash_id, target_branch:, start_sha:, end_sha:, author:, message:)
+      def squash(user, squash_id, branch:, start_sha:, end_sha:, author:, message:)
         squash_path = squash_dir_path(squash_id)
         env = git_env_for_user(user).merge(
           'GIT_AUTHOR_NAME' => author.name,
@@ -1246,7 +1246,7 @@ module Gitlab
           %W(diff --name-only --diff-filter=a --binary #{diff_range})
         ).chomp
 
-        with_worktree(squash_path, target_branch, sparse_checkout_files: diff_files, env: env) do
+        with_worktree(squash_path, branch, sparse_checkout_files: diff_files, env: env) do
           # Apply diff of the `diff_range` to the worktree
           diff = run_git!(%W(diff --binary #{diff_range}))
           run_git!(%w(apply --index), chdir: squash_path, env: env) do |stdin|

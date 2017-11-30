@@ -22,12 +22,7 @@ module MergeRequests
         return error('Squash task canceled: another squash is already in progress.')
       end
 
-      squash_sha = repository.squash(current_user, merge_request.id,
-        target_branch: merge_request.target_branch,
-        start_sha: merge_request.diff_start_sha,
-        end_sha: merge_request.diff_head_sha,
-        author: merge_request.author,
-        message: merge_request.title)
+      squash_sha = repository.squash(current_user, merge_request)
 
       success(squash_sha: squash_sha)
     rescue => e

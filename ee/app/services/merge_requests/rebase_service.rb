@@ -16,11 +16,7 @@ module MergeRequests
         return false
       end
 
-      rebase_sha = repository.rebase(current_user, merge_request.id,
-        source_branch: merge_request.source_branch,
-        source_branch_sha: merge_request.source_branch_sha,
-        target_repository: target_project.repository.raw,
-        target_branch: merge_request.target_branch)
+      rebase_sha = repository.rebase(current_user, merge_request)
 
       merge_request.update_attributes(rebase_commit_sha: rebase_sha)
 
