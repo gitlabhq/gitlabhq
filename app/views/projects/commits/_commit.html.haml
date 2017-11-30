@@ -44,3 +44,9 @@
         = link_to commit.short_id, project_commit_path(project, commit), class: "commit-sha btn btn-transparent"
         = clipboard_button(text: commit.id, title: _("Copy commit SHA to clipboard"))
         = link_to_browse_code(project, commit)
+
+  -# Render diff for the current file only
+  - if @path.present? && diff_file = commit.diffs.diff_files.find { |file| file.new_path == @path }
+    .files
+      .diff-file
+        = render partial: 'projects/diffs/content', locals: { commit_id: commit.id, diff_file: diff_file, force_collapsed: true }

@@ -4,6 +4,7 @@
 /* global Pager */
 
 import { pluralize } from './lib/utils/text_utility';
+import SingleFileDiff from './single_file_diff';
 
 export default (function () {
   const CommitsList = {};
@@ -18,6 +19,14 @@ export default (function () {
         location.href = $(this).attr('url');
         e.stopPropagation();
         return false;
+      }
+    });
+
+    const $diffFile = $('.files .diff-file');
+
+    $diffFile.each((index, file) => {
+      if (!$.data(file, 'singleFileDiff')) {
+        $.data(file, 'singleFileDiff', new SingleFileDiff(file));
       }
     });
 
