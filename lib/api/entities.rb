@@ -96,7 +96,7 @@ module API
       expose :star_count, :forks_count
       expose :created_at, :last_activity_at
 
-      def self.preload_relation(projects_relation)
+      def self.preload_relation(projects_relation, options =  {})
         projects_relation.preload(:project_feature, :route)
                          .preload(namespace: [:route, :owner],
                                   tags: :taggings)
@@ -134,18 +134,6 @@ module API
         expose :members do |project|
           expose_url(api_v4_projects_members_path(id: project.id))
         end
-
-        def self.preload_relation(projects_relation)
-          super(projects_relation).preload(:group)
-                                  .preload(project_group_links: :group,
-                                           fork_network: :root_project,
-                                           forked_project_link: :forked_from_project,
-                                           forked_from_project: [:route, :forks, namespace: :route, tags: :taggings])
-        end
-
-        def self.forks_counting_projects(projects_relation)
-          projects_relation + projects_relation.map(&:forked_from_project).compact
-        end
       end
 
       expose :archived?, as: :archived
@@ -165,7 +153,9 @@ module API
       expose :lfs_enabled?, as: :lfs_enabled
       expose :creator_id
       expose :namespace, using: 'API::Entities::NamespaceBasic'
-      expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? }
+      expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? } do |project, options|
+        project.fork_network_member.forked_from_project
+      end
       expose :import_status
       expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] }
 
@@ -182,6 +172,20 @@ module API
       expose :printing_merge_request_link_enabled
 
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
+
+      def self.preload_relation(projects_relation, options =  {})
+        relation = super(projects_relation).preload(:group)
+                                           .preload(project_group_links: :group,
+                                                    fork_network: :root_project,
+                                                    fork_network_member: [forked_from_project: [:route, namespace: :route, tags: :taggings]])
+
+        # Remove this preload once forked_project_links and forked_from_project models have been removed
+        relation.preload(forked_project_link: :forked_from_project)
+      end
+
+      def self.forks_counting_projects(projects_relation)
+        projects_relation + projects_relation.map(&:fork_network_member).compact.map(&:forked_from_project).compact
+      end
     end
 
     class ProjectStatistics < Grape::Entity
@@ -653,16 +657,10 @@ module API
     class MemberAccess < Grape::Entity
       expose :access_level
       expose :notification_level do |member, options|
-        notification = member_notification_setting(member)
-        ::NotificationSetting.levels[notification.level] if notification
-      end
-
-      private
-
-      def member_notification_setting(member)
-        member.user.notification_settings.select do |notification|
-          notification.source_id == member.source_id && notification.source_type == member.source_type
-        end.last
+        # binding.pry if member.id == 5
+        if member.notification_setting
+          ::NotificationSetting.levels[member.notification_setting.level]
+        end
       end
     end
 
@@ -705,24 +703,35 @@ module API
       expose :permissions do
         expose :project_access, using: Entities::ProjectAccess do |project, options|
           if options.key?(:project_members)
-            (options[:project_members] || []).select { |member| member.source_id == project.id }.last
-          elsif project.project_members.any?
-            # This is not the bet option to search in a CollectionProxy, but if
-            # we use find_by we will perform another query, even if the association
-            # is loaded
-            project.project_members.select { |project_member| project_member.user_id == options[:current_user].id }.last
+            (options[:project_members] || []).find { |member| member.source_id == project.id }
+          else
+            project.project_member(options[:current_user])
           end
         end
 
         expose :group_access, using: Entities::GroupAccess do |project, options|
           if project.group
             if options.key?(:group_members)
-              (options[:group_members] || []).select { |member| member.source_id == project.namespace_id }.last
-            elsif project.group.group_members.any?
-              project.group.group_members.select { |group_member| group_member.user_id == options[:current_user].id }.last
+              (options[:group_members] || []).find { |member| member.source_id == project.namespace_id }
+            else
+              project.group.group_member(options[:current_user])
             end
           end
         end
+      end
+
+      def self.preload_relation(projects_relation, options = {})
+        relation = super(projects_relation, options)
+
+        unless options.key?(:group_members)
+          relation = relation.preload(group: [group_members: [:source, user: [notification_settings: :source]]])
+        end
+
+        unless options.key?(:project_members)
+          relation = relation.preload(project_members: [:source, user: [notification_settings: :source]])
+        end
+
+        relation
       end
     end
 

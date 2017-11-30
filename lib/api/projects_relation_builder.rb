@@ -3,13 +3,13 @@ module API
     extend ActiveSupport::Concern
 
     module ClassMethods
-      def prepare_relation(relation)
-        relation = preload_relation(relation)
-        execute_batch_counting(relation)
-        relation
+      def prepare_relation(projects_relation, options = {})
+        projects_relation = preload_relation(projects_relation, options)
+        execute_batch_counting(projects_relation)
+        projects_relation
       end
 
-      def preload_relation(relation)
+      def preload_relation(projects_relation, options =  {})
         raise NotImplementedError, 'self.preload_relation method must be defined and return a relation'
       end
 

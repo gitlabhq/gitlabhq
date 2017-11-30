@@ -82,20 +82,20 @@ module API
         projects = paginate(projects)
 
         if current_user
-          project_members = current_user.project_members
-          group_members = current_user.group_members
+          project_members = current_user.project_members.preload(:source, user: [notification_settings: :source])
+          group_members = current_user.group_members.preload(:source, user: [notification_settings: :source])
         end
 
         options = options.reverse_merge(
           with: current_user ? Entities::ProjectWithAccess : Entities::BasicProjectDetails,
           statistics: params[:statistics],
-          project_members: project_members,
-          group_members: group_members,
+          project_members: nil,
+          group_members: nil,
           current_user: current_user
         )
         options[:with] = Entities::BasicProjectDetails if params[:simple]
 
-        present options[:with].prepare_relation(projects), options
+        present options[:with].prepare_relation(projects, options), options
       end
     end
 

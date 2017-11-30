@@ -7,8 +7,6 @@ module Projects
     # all caches.
     VERSION = 1
 
-    attr_accessor :project
-
     def initialize(project)
       @project = project
     end

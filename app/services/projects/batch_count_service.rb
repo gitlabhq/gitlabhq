@@ -4,28 +4,19 @@ module Projects
       @projects = projects
     end
 
-    def count
-      @projects.map do |project|
-        [project.id, current_count_service(project).count]
-      end.to_h
-    end
-
     def refresh_cache
       @projects.each do |project|
-        unless current_count_service(project).count_stored?
-          current_count_service(project).refresh_cache { global_count[project.id].to_i }
+        service = count_service.new(project)
+        unless service.count_stored?
+          service.refresh_cache { global_count[project.id].to_i }
         end
       end
     end
 
-    def current_count_service(project)
-      if defined? @service
-        @service.project = project
-      else
-        @service = count_service.new(project)
-      end
+    def project_ids
+      return @projects if @projects.is_a?(ActiveRecord::Relation)
 
-      @service
+      @projects.map(&:id)
     end
 
     def global_count(project)
