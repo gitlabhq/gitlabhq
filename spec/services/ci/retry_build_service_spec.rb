@@ -17,7 +17,7 @@ describe Ci::RetryBuildService do
     %i[id status user token coverage trace runner artifacts_expire_at
        artifacts_file artifacts_metadata artifacts_size created_at
        updated_at started_at finished_at queued_at erased_by
-       erased_at auto_canceled_by job_artifacts job_archive job_metadata].freeze
+       erased_at auto_canceled_by job_artifacts artifacts_archive artifacts_metadata].freeze
 
   IGNORE_ACCESSORS =
     %i[type lock_version target_url base_tags trace_sections
