@@ -1311,7 +1311,6 @@ module Gitlab
       end
 
       def with_worktree(worktree_path, branch, sparse_checkout_files: nil, env:)
-        worktree_git_path = File.join(path, 'worktrees', File.basename(worktree_path))
         base_args = %w(worktree add --detach)
 
         # Note that we _don't_ want to test for `.present?` here: If the caller
@@ -1321,6 +1320,7 @@ module Gitlab
         if sparse_checkout_files
           # Create worktree without checking out
           run_git!(base_args + ['--no-checkout', worktree_path], env: env)
+          worktree_git_path = run_git!(%w(rev-parse --git-dir), chdir: worktree_path)
 
           configure_sparse_checkout(worktree_git_path, sparse_checkout_files)
 
@@ -1334,7 +1334,7 @@ module Gitlab
         yield
       ensure
         FileUtils.rm_rf(worktree_path) if File.exist?(worktree_path)
-        FileUtils.rm_rf(worktree_git_path) if File.exist?(worktree_git_path)
+        FileUtils.rm_rf(worktree_git_path) if worktree_git_path && File.exist?(worktree_git_path)
       end
 
       def clean_stuck_worktree(path)
