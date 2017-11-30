@@ -14,22 +14,20 @@ FactoryGirl.define do
     end
 
     trait :archive do
-      after(:create) do |artifact, _|
-        artifact.update!(
-          file_type: :archive,
-          file: fixture_file_upload(
+      file_type :archive
+
+      after(:build) do |artifact, _|
+        artifact.file = fixture_file_upload(
             Rails.root.join('spec/fixtures/ci_build_artifacts.zip'), 'application/zip')
-        )
       end
     end
 
     trait :metadata do
-      after(:create) do |artifact, _|
-        artifact.update!(
-          file_type: :metadata,
-          file: fixture_file_upload(
-            Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'), 'application/x-gzip')
-        )
+      file_type :metadata
+
+      after(:build) do |artifact, _|
+        artifact.file = fixture_file_upload(
+          Rails.root.join('spec/fixtures/ci_build_artifacts_metadata.gz'), 'application/x-gzip')
       end
     end
   end
