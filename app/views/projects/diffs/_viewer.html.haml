@@ -1,3 +1,4 @@
+- commit_id = commit_id ? commit_id : params[:id]
 - force_collapsed = local_assigns.fetch(:force_collapsed) if local_assigns.has_key?(:force_collapsed)
 - hidden = local_assigns.fetch(:hidden, false)
 
