@@ -13,6 +13,7 @@ module EE
 
       before_validation :mark_remote_mirrors_for_removal
 
+      before_save :set_override_pull_mirror_available, unless: -> { ::Gitlab::CurrentSettings.current_application_settings.mirror_available }
       after_save :create_mirror_data, if: ->(project) { project.mirror? && project.mirror_changed? }
       after_save :destroy_mirror_data, if: ->(project) { !project.mirror? && project.mirror_changed? }
 
@@ -91,7 +92,7 @@ module EE
     end
 
     def mirror
-      super && feature_available?(:repository_mirrors)
+      super && feature_available?(:repository_mirrors) && pull_mirror_available?
     end
     alias_method :mirror?, :mirror
 
@@ -503,7 +504,17 @@ module EE
         current_application_settings.mirror_available
     end
 
+    def pull_mirror_available?
+      pull_mirror_available_overridden ||
+        current_application_settings.mirror_available
+    end
+
     private
+
+    def set_override_pull_mirror_available
+      self.pull_mirror_available_overridden = read_attribute(:mirror)
+      true
+    end
 
     def licensed_feature_available?(feature)
       @licensed_feature_available ||= Hash.new do |h, feature|

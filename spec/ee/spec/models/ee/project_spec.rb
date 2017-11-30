@@ -1040,12 +1040,12 @@ describe Project do
     end
   end
 
-  describe '#mirror_available?' do
+  describe '#remote_mirror_available?' do
     let(:project) { create(:project) }
 
     context 'when remote mirror global setting is enabled' do
       it 'returns true' do
-        expect(project.mirror_available?).to be(true)
+        expect(project.remote_mirror_available?).to be(true)
       end
     end
 
@@ -1057,11 +1057,37 @@ describe Project do
       it 'returns true when overridden' do
         project.remote_mirror_available_overridden = true
 
-        expect(project.mirror_available?).to be(true)
+        expect(project.remote_mirror_available?).to be(true)
       end
 
       it 'returns false when not overridden' do
-        expect(project.mirror_available?).to be(false)
+        expect(project.remote_mirror_available?).to be(false)
+      end
+    end
+  end
+
+  describe '#pull_mirror_available?' do
+    let(:project) { create(:project) }
+
+    context 'when mirror global setting is enabled' do
+      it 'returns true' do
+        expect(project.pull_mirror_available?).to be(true)
+      end
+    end
+
+    context 'when mirror global setting is disabled' do
+      before do
+        stub_application_setting(mirror_available: false)
+      end
+
+      it 'returns true when overridden' do
+        project.pull_mirror_available_overridden = true
+
+        expect(project.pull_mirror_available?).to be(true)
+      end
+
+      it 'returns false when not overridden' do
+        expect(project.pull_mirror_available?).to be(false)
       end
     end
   end

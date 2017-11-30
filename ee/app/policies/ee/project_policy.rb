@@ -10,6 +10,9 @@ module EE
       condition(:related_issues_disabled) { !@subject.feature_available?(:related_issues) }
 
       with_scope :subject
+      condition(:repository_mirrors_enabled) { @subject.feature_available?(:repository_mirrors) }
+
+      with_scope :subject
       condition(:deploy_board_disabled) { !@subject.feature_available?(:deploy_board) }
 
       with_scope :global
@@ -26,7 +29,7 @@ module EE
       end
 
       with_scope :global
-      condition(:mirror_available) do
+      condition(:mirror_available, score: 0) do
         ::Gitlab::CurrentSettings.current_application_settings.mirror_available
       end
 
@@ -60,7 +63,7 @@ module EE
 
       rule { can?(:developer_access) }.enable :admin_board
 
-      rule { (mirror_available & can?(:admin_project)) | admin }.enable :admin_mirror
+      rule { repository_mirrors_enabled & ((mirror_available & can?(:admin_project)) | admin) }.enable :admin_mirror
 
       rule { deploy_board_disabled & ~is_development }.prevent :read_deploy_board
 

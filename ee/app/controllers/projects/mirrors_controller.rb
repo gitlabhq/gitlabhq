@@ -2,8 +2,7 @@ class Projects::MirrorsController < Projects::ApplicationController
   include RepositorySettingsRedirect
   include SafeMirrorParams
   # Authorize
-  before_action :authorize_admin_mirror
-  before_action :authorize_admin_project!
+  before_action :authorize_admin_mirror!
   before_action :remote_mirror, only: [:update]
   before_action :check_repository_mirrors_available!
 
@@ -91,7 +90,7 @@ class Projects::MirrorsController < Projects::ApplicationController
         regenerate_ssh_private_key
       ],
 
-      remote_mirror_attributes: %i[
+      remote_mirrors_attributes: %i[
         url
         id
         enabled

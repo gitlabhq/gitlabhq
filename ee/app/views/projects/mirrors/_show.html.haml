@@ -1,7 +1,6 @@
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag 'mirrors'
 
-- if @project.feature_available?(:repository_mirrors)
-  - if can?(current_user, :admin_mirror, @project)
-    = render 'projects/mirrors/pull'
-    = render 'projects/mirrors/push'
+- if can?(current_user, :admin_mirror, @project)
+  = render 'projects/mirrors/pull'
+  = render 'projects/mirrors/push'
