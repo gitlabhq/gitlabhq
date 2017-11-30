@@ -101,6 +101,60 @@ describe API::GeoNodes, :geo, api: true do
       expect(response).to match_response_schema('geo_project_registry')
     end
 
+    it 'does not show any registry when there is no failure' do
+      create(:geo_project_registry, :synced)
+
+      stub_current_geo_node(secondary)
+      expect(GeoNode).to receive(:find).and_return(secondary)
+
+      get api("/geo_nodes/#{secondary.id}/failures", admin)
+
+      expect(response.status).to eq 200
+      expect(json_response.count).to be_zero
+    end
+
+    context 'wiki type' do
+      it 'only shows wiki failures' do
+        create(:geo_project_registry, :wiki_sync_failed)
+        create(:geo_project_registry, :repository_sync_failed)
+
+        stub_current_geo_node(secondary)
+        expect(GeoNode).to receive(:find).and_return(secondary)
+
+        get api("/geo_nodes/#{secondary.id}/failures?type=wiki", admin)
+
+        expect(response.status).to eq 200
+        expect(json_response.count).to eq(1)
+        expect(json_response.first['wiki_retry_count']).to be > 0
+      end
+    end
+
+    context 'repository type' do
+      it 'only shows repository failures' do
+        create(:geo_project_registry, :wiki_sync_failed)
+        create(:geo_project_registry, :repository_sync_failed)
+
+        stub_current_geo_node(secondary)
+        expect(GeoNode).to receive(:find).and_return(secondary)
+
+        get api("/geo_nodes/#{secondary.id}/failures?type=repository", admin)
+
+        expect(response.status).to eq 200
+        expect(json_response.count).to eq(1)
+        expect(json_response.first['repository_retry_count']).to be > 0
+      end
+    end
+
+    context 'nonexistent type' do
+      it 'returns a bad request' do
+        create(:geo_project_registry, :repository_sync_failed)
+
+        get api("/geo_nodes/#{secondary.id}/failures?type=nonexistent", admin)
+
+        expect(response.status).to eq 400
+      end
+    end
+
     it 'denies access if not admin' do
       get api("/geo_nodes/#{secondary.id}/failures", user)
 
