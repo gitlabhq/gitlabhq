@@ -16,6 +16,10 @@ export default {
       return Promise.resolve(file.content);
     }
 
+    if (file.raw) {
+      return Promise.resolve(file.raw);
+    }
+
     return Vue.http.get(file.rawPath, { params: { format: 'json' } })
       .then(res => res.text());
   },
