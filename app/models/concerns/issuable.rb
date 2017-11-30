@@ -341,4 +341,11 @@ module Issuable
   def first_contribution?
     false
   end
+
+  ##
+  # Overriden in MergeRequest
+  #
+  def wipless_title_changed(old_title)
+    old_title != title
+  end
 end

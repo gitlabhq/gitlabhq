@@ -36,7 +36,10 @@ export default function dropzoneInput(form) {
   $formDropzone.append(divHover);
   $formDropzone.find('.div-dropzone-hover').append(iconPaperclip);
 
-  if (!uploadsPath) return;
+  if (!uploadsPath) {
+    $formDropzone.addClass('js-invalid-dropzone');
+    return;
+  }
 
   const dropzone = $formDropzone.dropzone({
     url: uploadsPath,

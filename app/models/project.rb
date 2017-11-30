@@ -18,6 +18,7 @@ class Project < ActiveRecord::Base
   include SelectForProjectAuthorization
   include Routable
   include GroupDescendant
+  include Gitlab::SQL::Pattern
 
   extend Gitlab::ConfigHelper
   extend Gitlab::CurrentSettings
@@ -424,32 +425,17 @@ class Project < ActiveRecord::Base
     #
     # query - The search query as a String.
     def search(query)
-      ptable  = arel_table
-      ntable  = Namespace.arel_table
-      pattern = "%#{query}%"
+      pattern = to_pattern(query)
 
-      # unscoping unnecessary conditions that'll be applied
-      # when executing `where("projects.id IN (#{union.to_sql})")`
-      projects = unscoped.select(:id).where(
-        ptable[:path].matches(pattern)
-          .or(ptable[:name].matches(pattern))
-          .or(ptable[:description].matches(pattern))
+      where(
+        arel_table[:path].matches(pattern)
+          .or(arel_table[:name].matches(pattern))
+          .or(arel_table[:description].matches(pattern))
       )
-
-      namespaces = unscoped.select(:id)
-        .joins(:namespace)
-        .where(ntable[:name].matches(pattern))
-
-      union = Gitlab::SQL::Union.new([projects, namespaces])
-
-      where("projects.id IN (#{union.to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
     end
 
     def search_by_title(query)
-      pattern = "%#{query}%"
-      table   = Project.arel_table
-
-      non_archived.where(table[:name].matches(pattern))
+      non_archived.where(arel_table[:name].matches(to_pattern(query)))
     end
 
     def visibility_levels
@@ -764,10 +750,10 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def to_human_reference(from_project = nil)
-    if cross_namespace_reference?(from_project)
+  def to_human_reference(from = nil)
+    if cross_namespace_reference?(from)
       name_with_namespace
-    elsif cross_project_reference?(from_project)
+    elsif cross_project_reference?(from)
       name
     end
   end

@@ -213,7 +213,8 @@ module Banzai
       end
 
       def object_link_text(object, matches)
-        text = object.reference_link_text(context[:project])
+        parent = context[:project] || context[:group]
+        text = object.reference_link_text(parent)
 
         extras = object_link_text_extras(object, matches)
         text += " (#{extras.join(", ")})" if extras.any?

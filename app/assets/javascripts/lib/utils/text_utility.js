@@ -195,3 +195,12 @@ gl.text.dasherize = function(str) {
 gl.text.slugify = function(str) {
   return str.trim().toLowerCase().latinise();
 };
+/**
+ * Capitalizes first character
+ *
+ * @param {String} text
+ * @return {String}
+ */
+export function capitalizeFirstCharacter(text) {
+  return `${text[0].toUpperCase()}${text.slice(1)}`;
+}

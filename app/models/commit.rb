@@ -109,12 +109,12 @@ class Commit
     @link_reference_pattern ||= super("commit", /(?<commit>#{COMMIT_SHA_PATTERN})/)
   end
 
-  def to_reference(from_project = nil, full: false)
-    commit_reference(from_project, id, full: full)
+  def to_reference(from = nil, full: false)
+    commit_reference(from, id, full: full)
   end
 
-  def reference_link_text(from_project = nil, full: false)
-    commit_reference(from_project, short_id, full: full)
+  def reference_link_text(from = nil, full: false)
+    commit_reference(from, short_id, full: full)
   end
 
   def diff_line_count
@@ -381,8 +381,8 @@ class Commit
 
   private
 
-  def commit_reference(from_project, referable_commit_id, full: false)
-    reference = project.to_reference(from_project, full: full)
+  def commit_reference(from, referable_commit_id, full: false)
+    reference = project.to_reference(from, full: full)
 
     if reference.present?
       "#{reference}#{self.class.reference_prefix}#{referable_commit_id}"

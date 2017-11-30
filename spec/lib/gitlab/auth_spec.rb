@@ -207,7 +207,7 @@ describe Gitlab::Auth do
       end
 
       it 'limits abilities based on scope' do
-        personal_access_token = create(:personal_access_token, scopes: ['read_user'])
+        personal_access_token = create(:personal_access_token, scopes: %w[read_user sudo])
 
         expect(gl_auth).to receive(:rate_limit!).with('ip', success: true, login: '')
         expect(gl_auth.find_for_git_client('', personal_access_token.token, project: nil, ip: 'ip')).to eq(Gitlab::Auth::Result.new(personal_access_token.user, nil, :personal_access_token, []))
