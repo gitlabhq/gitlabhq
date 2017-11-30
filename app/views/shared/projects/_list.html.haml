@@ -12,7 +12,6 @@
 .js-projects-list-holder
   - if any_projects?(projects)
     - load_pipeline_status(projects)
-    - user&.max_member_access_for_project_ids(projects.map(&:id))
 
     %ul.projects-list
       - projects.each_with_index do |project, i|
