@@ -149,9 +149,9 @@ will not be able to perform all necessary configuration steps. Refer to
 1. Configure PostgreSQL to listen on network interfaces
 
     For security reasons, PostgreSQL does not listen on any network interfaces
-    by default. However, GitLab Geo requires the primary and secondary nodes to
-    be able to communicate over a common network. For this reason, we need the
-    IP address of each node.
+    by default. However, GitLab Geo requires the secondary to be able to
+    connect to the primary's database. For this reason, we need the IP address
+    of each node.
 
     To lookup the interface IP address of the primary, on the primary execute:
 
