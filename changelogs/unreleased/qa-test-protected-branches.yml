@@ -1,0 +1,5 @@
+---
+title: Added gitlab-qa test for protecting a branch using the UI.
+merge_request: 15626
+author:
+type: added
