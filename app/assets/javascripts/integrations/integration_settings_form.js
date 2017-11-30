@@ -100,24 +100,24 @@ export default class IntegrationSettingsForm {
       url: this.testEndPoint,
       data: formData,
     })
-    .done((res) => {
-      if (res.error) {
-        new Flash(`${res.message} ${res.service_response}`, 'alert', document, {
-          title: 'Save anyway',
-          clickHandler: (e) => {
-            e.preventDefault();
-            this.$form.submit();
-          },
-        });
-      } else {
-        this.$form.submit();
-      }
-    })
-    .fail(() => {
-      new Flash('Something went wrong on our end.');
-    })
-    .always(() => {
-      this.toggleSubmitBtnState(false);
-    });
+      .done((res) => {
+        if (res.error) {
+          new Flash(`${res.message} ${res.service_response}`, 'alert', document, {
+            title: 'Save anyway',
+            clickHandler: (e) => {
+              e.preventDefault();
+              this.$form.submit();
+            },
+          });
+        } else {
+          this.$form.submit();
+        }
+      })
+      .fail(() => {
+        new Flash('Something went wrong on our end.');
+      })
+      .always(() => {
+        this.toggleSubmitBtnState(false);
+      });
   }
 }
