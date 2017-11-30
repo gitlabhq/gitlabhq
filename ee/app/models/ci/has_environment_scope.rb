@@ -3,7 +3,7 @@ module Ci
     extend ActiveSupport::Concern
 
     class << self
-      def filter_by_environment_scope(base_query, environment_name)
+      def filter_by(base_query, environment_name)
         where = <<~SQL
           environment_scope IN (:wildcard, :environment_name) OR
             :environment_name LIKE
