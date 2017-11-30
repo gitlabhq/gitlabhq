@@ -26,7 +26,7 @@ connect to secondary database servers (which are read-only too).
 In many databases documentation you will see "primary" being referenced as "master"
 and "secondary" as either "slave" or "standby" server (read-only).
 
-Since GitLab 9.4: We recommend using [PostgreSQL replication
+We recommend using [PostgreSQL replication
 slots](https://medium.com/@tk512/replication-slots-in-postgresql-b4b03d277c75)
 to ensure the primary retains all the data necessary for the secondaries to
 recover. See below for more details.
@@ -151,10 +151,10 @@ will not be able to perform all necessary configuration steps. Refer to
 
     For security reasons, PostgreSQL does not listen on any network interfaces
     by default. However, GitLab Geo requires the secondary to be able to
-    connect to the primary's database. For this reason, we need the IP address
-    of each node.
+    connect to the primary's database. For this reason, we need the address of
+    each node.
 
-    If you are using a cloud provider, you can lookup the IP addresses for each
+    If you are using a cloud provider, you can lookup the addresses for each
     geo node through their management console. A table of terminology is
     provided below because terminology varies between vendors.
 
@@ -163,13 +163,13 @@ will not be able to perform all necessary configuration steps. Refer to
     | Interface address | Private address | Internal address |
     | Public address | Public address | External address |
 
-    To lookup the IP address of a geo node, on the geo node execute:
+    To lookup the address of a geo node, on the geo node execute:
 
     ```bash
-    # Interface IP address
+    # Interface address
     ip route get 255.255.255.255 | awk '{print $NF; exit}'
 
-    # Public IP address
+    # Public address
     curl ipinfo.io/ip
     ```
 
@@ -181,6 +181,11 @@ will not be able to perform all necessary configuration steps. Refer to
     | `postgresql['listen_address']` | Primary's interface address |
     | `postgresql['trust_auth_cidr_addresses']` | Primary's interface address |
     | `postgresql['md5_auth_cidr_addresses']` | Secondary's public addresses |
+    
+    The `listen_address` option opens PostgreSQL up to network connections
+    with the interface corresponding to the given address. See [the PostgreSQL
+    documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-connection.html)
+    for more details.
 
     Depending on your network configuration, the suggested addresses may not
     be correct. If your primary and secondary connect over a local
@@ -194,17 +199,17 @@ will not be able to perform all necessary configuration steps. Refer to
     ```ruby
     geo_primary_role['enable'] = true
 
-    # Primary IP address
-    # - replace '1.2.3.4' with the primary interface IP address
+    # Primary address
+    # - replace '1.2.3.4' with the primary interface address
     postgresql['listen_address'] = '1.2.3.4'
     postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','1.2.3.4/32']
 
-    # Secondary IP addresses
-    # - replace '5.6.7.8' with the secondary public IP address
+    # Secondary addresses
+    # - replace '5.6.7.8' with the secondary public address
     postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
 
     # Replication settings
-    # Since 9.4: Set this to be the number of Geo secondary nodes you have
+    # - set this to be the number of Geo secondary nodes you have
     postgresql['max_replication_slots'] = 1
     # postgresql['max_wal_senders'] = 10
     # postgresql['wal_keep_segments'] = 10
@@ -212,10 +217,6 @@ will not be able to perform all necessary configuration steps. Refer to
 
     For external PostgreSQL instances, [see additional instructions][external postgresql].
     
-    The `listen_address` option opens PostgreSQL up to network connections
-    with the interface corresponding to the given IP. See [the PostgreSQL
-    documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-connection.html)
-    for more details.
 
 1. Optional: If you want to add another secondary, the relevant setting would look like:
 
