@@ -9,33 +9,24 @@ export const timeFormat = d3.time('%-I:%M%p');
 export const dateFormatWithName = d3.time('%a, %b %-d');
 export const bisectDate = d3.bisector(d => d.time).left;
 
-const formatMillisecond = d3.time('.%L');
-const formatSecond = d3.time(':%S');
-const formatMinute = d3.time('%-I:%M');
-const formatHour = d3.time('%-I %p');
-const formatDay = d3.time('%a %d');
-const formatWeek = d3.time('%b %d');
-const formatMonth = d3.time('%B');
-const formatYear = d3.time('%Y');
-
 export function timeScaleFormat(date) {
   let formatFunction;
   if (d3.timeSecond(date) < date) {
-    formatFunction = formatMillisecond;
+    formatFunction = d3.time('.%L');
   } else if (d3.timeMinute(date) < date) {
-    formatFunction = formatSecond;
+    formatFunction = d3.time(':%S');
   } else if (d3.timeHour(date) < date) {
-    formatFunction = formatMinute;
+    formatFunction = d3.time('%-I:%M');
   } else if (d3.timeDay(date) < date) {
-    formatFunction = formatHour;
+    formatFunction = d3.time('%-I %p');
   } else if (d3.timeWeek(date) < date) {
-    formatFunction = formatDay;
+    formatFunction = d3.time('%a %d');
   } else if (d3.timeMonth(date) < date) {
-    formatFunction = formatWeek;
+    formatFunction = d3.time('%b %d');
   } else if (d3.timeYear(date) < date) {
-    formatFunction = formatMonth;
+    formatFunction = d3.time('%B');
   } else {
-    formatFunction = formatYear;
+    formatFunction = d3.time('%Y');
   }
   return formatFunction(date);
 }
