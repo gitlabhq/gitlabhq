@@ -163,7 +163,7 @@ Starting a project from a template needs this project to be exported. On a
 up to date master branch with run:
 
 ```
-gdk run db
+gdk run
 # In a new terminal window
 bundle exec rake gitlab:update_project_templates
 git checkout -b update-project-templates

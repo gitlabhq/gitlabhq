@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 describe MergeRequestDiff do
+  let(:diff_with_commits) { create(:merge_request).merge_request_diff }
+
   describe 'create new record' do
-    subject { create(:merge_request).merge_request_diff }
+    subject { diff_with_commits }
 
     it { expect(subject).to be_valid }
     it { expect(subject).to be_persisted }
@@ -23,57 +25,41 @@ describe MergeRequestDiff do
   end
 
   describe '#diffs' do
-    let(:mr) { create(:merge_request, :with_diffs) }
-    let(:mr_diff) { mr.merge_request_diff }
-
     context 'when the :ignore_whitespace_change option is set' do
       it 'creates a new compare object instead of loading from the DB' do
-        expect(mr_diff).not_to receive(:load_diffs)
-        expect(mr_diff.compare).to receive(:diffs).and_call_original
+        expect(diff_with_commits).not_to receive(:load_diffs)
+        expect(diff_with_commits.compare).to receive(:diffs).and_call_original
 
-        mr_diff.raw_diffs(ignore_whitespace_change: true)
+        diff_with_commits.raw_diffs(ignore_whitespace_change: true)
       end
     end
 
     context 'when the raw diffs are empty' do
       before do
-        MergeRequestDiffFile.delete_all(merge_request_diff_id: mr_diff.id)
+        MergeRequestDiffFile.delete_all(merge_request_diff_id: diff_with_commits.id)
       end
 
       it 'returns an empty DiffCollection' do
-        expect(mr_diff.raw_diffs).to be_a(Gitlab::Git::DiffCollection)
-        expect(mr_diff.raw_diffs).to be_empty
-      end
-    end
-
-    context 'when the raw diffs have invalid content' do
-      before do
-        MergeRequestDiffFile.delete_all(merge_request_diff_id: mr_diff.id)
-        mr_diff.update_attributes(st_diffs: ["--broken-diff"])
-      end
-
-      it 'returns an empty DiffCollection' do
-        expect(mr_diff.raw_diffs.to_a).to be_empty
-        expect(mr_diff.raw_diffs).to be_a(Gitlab::Git::DiffCollection)
-        expect(mr_diff.raw_diffs).to be_empty
+        expect(diff_with_commits.raw_diffs).to be_a(Gitlab::Git::DiffCollection)
+        expect(diff_with_commits.raw_diffs).to be_empty
       end
     end
 
     context 'when the raw diffs exist' do
       it 'returns the diffs' do
-        expect(mr_diff.raw_diffs).to be_a(Gitlab::Git::DiffCollection)
-        expect(mr_diff.raw_diffs).not_to be_empty
+        expect(diff_with_commits.raw_diffs).to be_a(Gitlab::Git::DiffCollection)
+        expect(diff_with_commits.raw_diffs).not_to be_empty
       end
 
       context 'when the :paths option is set' do
-        let(:diffs) { mr_diff.raw_diffs(paths: ['files/ruby/popen.rb', 'files/ruby/popen.rb']) }
+        let(:diffs) { diff_with_commits.raw_diffs(paths: ['files/ruby/popen.rb', 'files/ruby/popen.rb']) }
 
         it 'only returns diffs that match the (old path, new path) given' do
           expect(diffs.map(&:new_path)).to contain_exactly('files/ruby/popen.rb')
         end
 
         it 'uses the diffs from the DB' do
-          expect(mr_diff).to receive(:load_diffs)
+          expect(diff_with_commits).to receive(:load_diffs)
 
           diffs
         end
@@ -117,51 +103,29 @@ describe MergeRequestDiff do
   end
 
   describe '#commit_shas' do
-    it 'returns all commits SHA using serialized commits' do
-      subject.st_commits = [
-        { id: 'sha1' },
-        { id: 'sha2' }
-      ]
-
-      expect(subject.commit_shas).to eq(%w(sha1 sha2))
+    it 'returns all commit SHAs using commits from the DB' do
+      expect(diff_with_commits.commit_shas).not_to be_empty
+      expect(diff_with_commits.commit_shas).to all(match(/\h{40}/))
     end
   end
 
   describe '#compare_with' do
-    subject { create(:merge_request, source_branch: 'fix').merge_request_diff }
-
     it 'delegates compare to the service' do
       expect(CompareService).to receive(:new).and_call_original
 
-      subject.compare_with(nil)
+      diff_with_commits.compare_with(nil)
     end
 
     it 'uses git diff A..B approach by default' do
-      diffs = subject.compare_with('0b4bc9a49b562e85de7cc9e834518ea6828729b9').diffs
+      diffs = diff_with_commits.compare_with('0b4bc9a49b562e85de7cc9e834518ea6828729b9').diffs
 
-      expect(diffs.size).to eq(3)
+      expect(diffs.size).to eq(21)
     end
   end
 
   describe '#commits_count' do
     it 'returns number of commits using serialized commits' do
-      subject.st_commits = [
-        { id: 'sha1' },
-        { id: 'sha2' }
-      ]
-
-      expect(subject.commits_count).to eq 2
-    end
-  end
-
-  describe '#utf8_st_diffs' do
-    it 'does not raise error when a hash value is in binary' do
-      subject.st_diffs = [
-        { diff: "\0" },
-        { diff: "\x05\x00\x68\x65\x6c\x6c\x6f" }
-      ]
-
-      expect { subject.utf8_st_diffs }.not_to raise_error
+      expect(diff_with_commits.commits_count).to eq(29)
     end
   end
 end

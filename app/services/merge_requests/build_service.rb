@@ -22,7 +22,17 @@ module MergeRequests
 
     attr_accessor :merge_request
 
-    delegate :target_branch, :source_branch, :source_project, :target_project, :compare_commits, :wip_title, :description, :errors, to: :merge_request
+    delegate :target_branch,
+             :target_branch_ref,
+             :target_project,
+             :source_branch,
+             :source_branch_ref,
+             :source_project,
+             :compare_commits,
+             :wip_title,
+             :description,
+             :errors,
+             to: :merge_request
 
     def find_source_project
       return source_project if source_project.present? && can?(current_user, :read_project, source_project)
@@ -58,10 +68,10 @@ module MergeRequests
     def compare_branches
       compare = CompareService.new(
         source_project,
-        source_branch
+        source_branch_ref
       ).execute(
         target_project,
-        target_branch
+        target_branch_ref
       )
 
       if compare

@@ -424,6 +424,7 @@ import initGroupAnalytics from './init_group_analytics';
           projectImport();
           break;
         case 'projects:pipelines:new':
+        case 'projects:pipelines:create':
           new NewBranchForm($('.js-new-pipeline-form'));
           break;
         case 'projects:pipelines:builds':

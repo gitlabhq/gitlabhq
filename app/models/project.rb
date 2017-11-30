@@ -425,17 +425,11 @@ class Project < ActiveRecord::Base
     #
     # query - The search query as a String.
     def search(query)
-      pattern = to_pattern(query)
-
-      where(
-        arel_table[:path].matches(pattern)
-          .or(arel_table[:name].matches(pattern))
-          .or(arel_table[:description].matches(pattern))
-      )
+      fuzzy_search(query, [:path, :name, :description])
     end
 
     def search_by_title(query)
-      non_archived.where(arel_table[:name].matches(to_pattern(query)))
+      non_archived.fuzzy_search(query, [:name])
     end
 
     def visibility_levels

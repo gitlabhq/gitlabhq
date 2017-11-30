@@ -1771,9 +1771,9 @@ describe Gitlab::Diff::PositionTracer do
 
     describe "merge of target branch" do
       let(:merge_commit) do
-        update_file_again_commit
+        second_create_file_commit
 
-        merge_request = create(:merge_request, source_branch: second_create_file_commit.sha, target_branch: branch_name, source_project: project)
+        merge_request = create(:merge_request, source_branch: second_branch_name, target_branch: branch_name, source_project: project)
 
         repository.merge(current_user, merge_request.diff_head_sha, merge_request, "Merge branches")
 
