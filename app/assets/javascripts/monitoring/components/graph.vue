@@ -10,7 +10,7 @@
   import MonitoringMixin from '../mixins/monitoring_mixins';
   import eventHub from '../event_hub';
   import measurements from '../utils/measurements';
-  import { bisectDate } from '../utils/date_time_formatters';
+  import { bisectDate, timeScaleFormat } from '../utils/date_time_formatters';
   import createTimeSeries from '../utils/multiple_time_series';
   import bp from '../../breakpoints';
 
@@ -171,7 +171,8 @@
         axisYScale.domain([0, d3.max(allValues.map(d => d.value))]);
 
         const xAxis = d3.axisBottom()
-          .scale(axisXScale);
+          .scale(axisXScale)
+          .tickFormat(timeScaleFormat);
 
         const yAxis = d3.axisLeft()
           .scale(axisYScale)
