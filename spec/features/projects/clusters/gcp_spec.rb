@@ -133,6 +133,7 @@ feature 'Gcp Cluster', :js do
 
     it 'user sees a login page' do
       expect(page).to have_css('.signin-with-google')
+      expect(page).to have_link('Google account')
     end
   end
 end
