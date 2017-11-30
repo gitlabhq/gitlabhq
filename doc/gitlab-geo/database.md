@@ -246,9 +246,9 @@ will not be able to perform all necessary configuration steps. Refer to
 
     [Reconfigure GitLab][reconfigure GitLab] again. It should complete cleanly.
 
-1. Since 9.4: Restart your primary PostgreSQL server to ensure the
-   replication slot changes take effect (`sudo gitlab-ctl restart postgresql`
-   for Omnibus-provided PostgreSQL).
+1. Restart your primary PostgreSQL server to ensure the replication slot
+   changes take effect (`sudo gitlab-ctl restart postgresql` for
+   Omnibus-provided PostgreSQL).
 
 1. Now that the PostgreSQL server is set up to accept remote connections, run
    `netstat -plnt` to make sure that PostgreSQL is listening on port `5432` to
