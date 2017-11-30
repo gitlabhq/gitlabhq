@@ -8,6 +8,7 @@ class NamespacePolicy < BasePolicy
   rule { owner | admin }.policy do
     enable :create_projects
     enable :admin_namespace
+    enable :read_namespace
   end
 
   rule { personal_project & ~can_create_personal_project }.prevent :create_projects

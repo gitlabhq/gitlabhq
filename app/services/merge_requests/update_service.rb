@@ -22,8 +22,9 @@ module MergeRequests
     end
 
     def handle_changes(merge_request, options)
-      old_labels = options[:old_labels] || []
-      old_mentioned_users = options[:old_mentioned_users] || []
+      old_associations = options.fetch(:old_associations, {})
+      old_labels = old_associations.fetch(:labels, [])
+      old_mentioned_users = old_associations.fetch(:mentioned_users, [])
 
       if has_changes?(merge_request, old_labels: old_labels)
         todo_service.mark_pending_todos_as_done(merge_request, current_user)

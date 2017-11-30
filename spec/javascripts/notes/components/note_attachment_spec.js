@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import issueNoteAttachment from '~/notes/components/issue_note_attachment.vue';
+import noteAttachment from '~/notes/components/note_attachment.vue';
 
 describe('issue note attachment', () => {
   it('should render properly', () => {
@@ -11,7 +11,7 @@ describe('issue note attachment', () => {
       },
     };
 
-    const Component = Vue.extend(issueNoteAttachment);
+    const Component = Vue.extend(noteAttachment);
     const vm = new Component({
       propsData: props,
     }).$mount();

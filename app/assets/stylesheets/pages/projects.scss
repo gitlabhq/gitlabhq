@@ -291,14 +291,7 @@
     }
 
     svg {
-
-      path {
-        fill: $layout-link-gray;
-      }
-
-      use {
-        stroke: $layout-link-gray;
-      }
+      fill: $layout-link-gray;
     }
 
     .fa-caret-down {
@@ -884,10 +877,6 @@ pre.light-well {
 
   h3 {
     font-size: $gl-font-size;
-  }
-
-  a {
-    color: $gl-text-color;
   }
 
   .avatar-container,

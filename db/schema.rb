@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171121144800) do
+ActiveRecord::Schema.define(version: 20171124132536) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -150,6 +150,9 @@ ActiveRecord::Schema.define(version: 20171121144800) do
     t.integer "throttle_authenticated_web_period_in_seconds", default: 3600, null: false
     t.boolean "password_authentication_enabled_for_web"
     t.boolean "password_authentication_enabled_for_git", default: true
+    t.integer "gitaly_timeout_default", default: 55, null: false
+    t.integer "gitaly_timeout_medium", default: 30, null: false
+    t.integer "gitaly_timeout_fast", default: 10, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -1049,8 +1052,8 @@ ActiveRecord::Schema.define(version: 20171121144800) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "milestone_id"
-    t.string "state"
-    t.string "merge_status"
+    t.string "state", default: "opened", null: false
+    t.string "merge_status", default: "unchecked", null: false
     t.integer "target_project_id", null: false
     t.integer "iid"
     t.text "description"

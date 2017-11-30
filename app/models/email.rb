@@ -1,5 +1,6 @@
 class Email < ActiveRecord::Base
   include Sortable
+  include Gitlab::SQL::Pattern
 
   belongs_to :user
 

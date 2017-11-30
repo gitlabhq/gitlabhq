@@ -104,6 +104,7 @@ module Ci
       end
 
       before_transition any => [:failed] do |build|
+        next unless build.project
         next if build.retries_max.zero?
 
         if build.retries_count < build.retries_max

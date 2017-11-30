@@ -1046,9 +1046,15 @@ module Gitlab
       end
 
       def with_repo_tmp_commit(start_repository, start_branch_name, sha)
+        source_ref = start_branch_name
+
+        unless Gitlab::Git.branch_ref?(source_ref)
+          source_ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{source_ref}"
+        end
+
         tmp_ref = fetch_ref(
           start_repository,
-          source_ref: "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
+          source_ref: source_ref,
           target_ref: "refs/tmp/#{SecureRandom.hex}"
         )
 

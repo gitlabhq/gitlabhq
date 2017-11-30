@@ -5,7 +5,7 @@
 - In 9.2, the feature was [renamed to Pipeline Schedule][ce-10853].
 - Cron notation is parsed by [Rufus-Scheduler](https://github.com/jmettraux/rufus-scheduler).
 
-Pipeline schedules can be used to run pipelines only once, or for example every
+Pipeline schedules can be used to run a pipeline at specific intervals, for example every
 month on the 22nd for a certain branch.
 
 ## Using Pipeline schedules
