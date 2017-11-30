@@ -23,7 +23,7 @@ describe ExpireBuildInstanceArtifactsWorker do
         end
 
         it 'does remove the job artifact record' do
-          expect(build.reload.job_archive).to be_nil
+          expect(build.reload.job_artifacts_archive).to be_nil
         end
       end
     end
@@ -42,7 +42,7 @@ describe ExpireBuildInstanceArtifactsWorker do
       end
 
       it 'does not remove the job artifact record' do
-        expect(build.reload.job_archive).not_to be_nil
+        expect(build.reload.job_artifacts_archive).not_to be_nil
       end
     end
 
@@ -58,7 +58,7 @@ describe ExpireBuildInstanceArtifactsWorker do
       end
 
       it 'does not remove the job artifact record' do
-        expect(build.reload.job_archive).not_to be_nil
+        expect(build.reload.job_artifacts_archive).not_to be_nil
       end
     end
 

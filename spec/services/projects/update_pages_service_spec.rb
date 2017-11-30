@@ -155,7 +155,7 @@ describe Projects::UpdatePagesService do
       end
 
       it 'fails for empty file fails' do
-        build.job_archive.update_attributes(file: empty_file)
+        build.job_artifacts_archive.update_attributes(file: empty_file)
 
         expect(execute).not_to eq(:success)
       end
