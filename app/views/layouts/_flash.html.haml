@@ -1,6 +1,8 @@
 .flash-container.flash-container-page
   -# We currently only support `alert`, `notice`, `success`
   - flash.each do |key, value|
-    %div{ class: "flash-#{key}" }
-      %div{ class: (container_class) }
-        %span= value
+    -# Don't show a flash message if the message is nil
+    - if value
+      %div{ class: "flash-#{key}" }
+        %div{ class: (container_class) }
+          %span= value

@@ -92,6 +92,7 @@ describe('Multi-file editor library', () => {
 
       expect(instance.dirtyDiffController.reDecorate).toHaveBeenCalledWith(model);
     });
+<<<<<<< HEAD
 
     describe('updateOptions', () => {
       it('defaults readOnly to false', () => {
@@ -120,6 +121,8 @@ describe('Multi-file editor library', () => {
         });
       });
     });
+=======
+>>>>>>> upstream/master
   });
 
   describe('clearEditor', () => {

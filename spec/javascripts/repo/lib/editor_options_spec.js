@@ -4,8 +4,11 @@ describe('Multi-file editor library editor options', () => {
   it('returns an array', () => {
     expect(editorOptions).toEqual(jasmine.any(Array));
   });
+<<<<<<< HEAD
 
   it('contains readOnly option', () => {
     expect(editorOptions[0].readOnly).toBeDefined();
   });
+=======
+>>>>>>> upstream/master
 });

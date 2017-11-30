@@ -60,6 +60,7 @@ module ButtonHelper
     protocol = gitlab_config.protocol.upcase
     dropdown_description = http_dropdown_description(protocol)
     append_url = project.http_url_to_repo if append_link
+<<<<<<< HEAD
     geo_url = geo_primary_http_url_to_repo(project) if Gitlab::Geo.secondary?
 
     dropdown_item_with_description(protocol, dropdown_description, href: append_url, geo_url: geo_url)
@@ -107,6 +108,35 @@ module ButtonHelper
         container: 'body',
         title: 'Get a Kerberos token for your<br>account with kinit.'
       }
+=======
+
+    dropdown_item_with_description(protocol, dropdown_description, href: append_url)
+  end
+
+  def http_dropdown_description(protocol)
+    if current_user.try(:require_password_creation_for_git?)
+      _("Set a password on your account to pull or push via %{protocol}.") % { protocol: protocol }
+    else
+      _("Create a personal access token on your account to pull or push via %{protocol}.") % { protocol: protocol }
+    end
+  end
+
+  def ssh_clone_button(project, append_link: true)
+    dropdown_description = _("You won't be able to pull or push project code via SSH until you add an SSH key to your profile") if current_user.try(:require_ssh_key?)
+    append_url = project.ssh_url_to_repo if append_link
+
+    dropdown_item_with_description('SSH', dropdown_description, href: append_url)
+  end
+
+  def dropdown_item_with_description(title, description, href: nil)
+    button_content = content_tag(:strong, title, class: 'dropdown-menu-inner-title')
+    button_content << content_tag(:span, description, class: 'dropdown-menu-inner-content') if description
+
+    content_tag (href ? :a : :span),
+      button_content,
+      class: "#{title.downcase}-selector",
+      href: (href if href)
+>>>>>>> upstream/master
   end
 
   def geo_button(modal_target: nil)

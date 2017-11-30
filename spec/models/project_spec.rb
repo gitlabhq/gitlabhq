@@ -2365,12 +2365,25 @@ describe Project do
     end
 
     context 'when project has a deployment service' do
-      let(:project) { create(:kubernetes_project) }
+      shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+        it 'returns variables from this service' do
+          expect(project.deployment_variables).to include(
+            { key: 'KUBE_TOKEN', value: project.deployment_platform.token, public: false }
+          )
+        end
+      end
 
-      it 'returns variables from this service' do
-        expect(project.deployment_variables).to include(
-          { key: 'KUBE_TOKEN', value: project.kubernetes_service.token, public: false }
-        )
+      context 'when user configured kubernetes from Integration > Kubernetes' do
+        let(:project) { create(:kubernetes_project) }
+
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+      end
+
+      context 'when user configured kubernetes from CI/CD > Clusters' do
+        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+        let(:project) { cluster.project }
+
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
     end
   end
@@ -3457,6 +3470,7 @@ describe Project do
     end
   end
 
+<<<<<<< HEAD
   describe '#root_namespace' do
     let(:project) { build(:project, namespace: parent) }
 
@@ -3477,6 +3491,24 @@ describe Project do
       it 'returns current namespace' do
         is_expected.to eq(parent)
       end
+=======
+  describe '#deployment_platform' do
+    subject { project.deployment_platform }
+
+    let(:project) { create(:project) }
+
+    context 'when user configured kubernetes from Integration > Kubernetes' do
+      let!(:kubernetes_service) { create(:kubernetes_service, project: project) }
+
+      it { is_expected.to eq(kubernetes_service) }
+    end
+
+    context 'when user configured kubernetes from CI/CD > Clusters' do
+      let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+      let(:platform_kubernetes) { cluster.platform_kubernetes }
+
+      it { is_expected.to eq(platform_kubernetes) }
+>>>>>>> upstream/master
     end
   end
 end

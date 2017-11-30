@@ -906,12 +906,10 @@ class Project < ActiveRecord::Base
     @ci_service ||= ci_services.reorder(nil).find_by(active: true)
   end
 
-  def deployment_services
-    services.where(category: :deployment)
-  end
-
-  def deployment_service
-    @deployment_service ||= deployment_services.reorder(nil).find_by(active: true)
+  # TODO: This will be extended for multiple enviroment clusters
+  def deployment_platform
+    @deployment_platform ||= clusters.find_by(enabled: true)&.platform_kubernetes
+    @deployment_platform ||= services.where(category: :deployment).reorder(nil).find_by(active: true)
   end
 
   def monitoring_services
@@ -1557,9 +1555,9 @@ class Project < ActiveRecord::Base
   end
 
   def deployment_variables
-    return [] unless deployment_service
+    return [] unless deployment_platform
 
-    deployment_service.predefined_variables
+    deployment_platform.predefined_variables
   end
 
   def auto_devops_variables
