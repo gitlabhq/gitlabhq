@@ -7,12 +7,8 @@ class Projects::ClustersController < Projects::ApplicationController
   before_action :authorize_admin_cluster!, only: [:destroy]
 
   def index
-    @scope = params[:scope] || 'all'
-    clusters = ClustersFinder.new(project, current_user, @scope).execute
+    clusters = ClustersFinder.new(project, current_user, :all).execute
     @clusters = clusters.page(params[:page]).per(20)
-    @active_count = project.clusters.enabled.count
-    @inactive_count = project.clusters.disabled.count
-    @all_count = @active_count + @inactive_count
   end
 
   def login

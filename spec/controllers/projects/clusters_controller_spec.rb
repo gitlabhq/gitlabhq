@@ -29,13 +29,6 @@ describe Projects::ClustersController do
           expect(assigns(:clusters)).to match_array(clusters)
         end
 
-        it 'assigns counters to correct values' do
-          go
-
-          expect(assigns(:active_count)).to eq(project.clusters.enabled.count)
-          expect(assigns(:inactive_count)).to eq(project.clusters.disabled.count)
-        end
-
         it 'properly paginates' do
           PAGE_LIMIT = 20
           project.clusters = create_list(:cluster, PAGE_LIMIT + 1, :provided_by_gcp, projects: [project])
@@ -44,22 +37,6 @@ describe Projects::ClustersController do
           expect(assigns(:clusters).count).to eq(20)
           get :index, namespace_id: project.namespace.to_param, project_id: project, page: 2
           expect(assigns(:clusters).count).to eq(1)
-        end
-
-        context 'when only enabled clusters are requested' do
-          it 'returns only enabled clusters' do
-            get :index, namespace_id: project.namespace.to_param, project_id: project, scope: 'active'
-            clusters = assigns(:clusters)
-            expect(clusters.all? { |cluster| cluster.enabled == true }).to eq(true)
-          end
-        end
-
-        context 'when only disabled clusters are requested' do
-          it 'returns only disabled clusters' do
-            get :index, namespace_id: project.namespace.to_param, project_id: project, scope: 'inactive'
-            clusters = assigns(:clusters)
-            expect(clusters.all? { |cluster| cluster.enabled == false }).to eq(true)
-          end
         end
       end
 
@@ -72,13 +49,6 @@ describe Projects::ClustersController do
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template(:index)
           expect(assigns(:clusters)).to eq([])
-        end
-
-        it 'assigns counters to zero' do
-          go
-
-          expect(assigns(:active_count)).to eq(0)
-          expect(assigns(:inactive_count)).to eq(0)
         end
       end
     end
