@@ -154,7 +154,7 @@ will not be able to perform all necessary configuration steps. Refer to
     connect to the primary's database. For this reason, we need the IP address
     of each node.
 
-    If you are use a cloud provider, you can lookup the IP addresses for each
+    If you are using a cloud provider, you can lookup the IP addresses for each
     geo node through their management console. A table of terminology is
     provided below because terminology varies between vendors.
 
@@ -173,8 +173,8 @@ will not be able to perform all necessary configuration steps. Refer to
     curl ipinfo.io/ip
     ```
 
-    In most instances, the following addresses will be used to configure
-    GitLab Geo:
+    In most cases, the following addresses will be used to configure GitLab
+    Geo:
 
     | Configuration | Address |
     |-----|-----|
@@ -183,10 +183,10 @@ will not be able to perform all necessary configuration steps. Refer to
     | `postgresql['md5_auth_cidr_addresses']` | Secondary's public addresses |
 
     Depending on your network configuration, the suggested addresses may not
-    be correct. For example, if your primary and secondary connect over a local
+    be correct. If your primary and secondary connect over a local
     area network, or a virtual network connecting availability zones like
-    Amazon's [Virtual Private Cloud](https://aws.amazon.com/vpc/) you should
-    use the secondary's interface address for `postgresql['md5_auth_cidr_addresses']`.
+    Amazon's [VPC](https://aws.amazon.com/vpc/) of Google's [VPC](https://cloud.google.com/vpc/)
+    you should use the secondary's interface address for `postgresql['md5_auth_cidr_addresses']`.
     
     Edit `/etc/gitlab/gitlab.rb` and add the following, replacing the IP
     addresses with addresses appropriate to your network configuration:
