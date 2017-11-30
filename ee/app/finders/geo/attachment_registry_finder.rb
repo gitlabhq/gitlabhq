@@ -1,6 +1,6 @@
 module Geo
   class AttachmentRegistryFinder < RegistryFinder
-    def find_synced_attachments(batch_size: nil)
+    def find_synced_attachments
       relation =
         if Gitlab::Geo.fdw?
           fdw_find_synced_attachments
@@ -8,14 +8,10 @@ module Geo
           legacy_find_synced_attachments
         end
 
-      if batch_size
-        relation.limit(batch_size)
-      else
-        relation
-      end
+      relation
     end
 
-    def find_failed_attachments(batch_size: nil)
+    def find_failed_attachments
       relation =
         if Gitlab::Geo.fdw?
           fdw_find_failed_attachments
@@ -23,11 +19,7 @@ module Geo
           legacy_find_failed_attachments
         end
 
-      if batch_size
-        relation.limit(batch_size)
-      else
-        relation
-      end
+      relation
     end
 
     private
