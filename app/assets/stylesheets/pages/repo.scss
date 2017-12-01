@@ -173,13 +173,44 @@
   flex-direction: column;
   height: 100%;
   width: 290px;
-  padding: $gl-padding;
+  padding: 0;
   background-color: $gray-light;
   border-left: 1px solid $white-dark;
 
+  .multi-file-commit-panel-inner-scroll {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    overflow: auto;
+    border-bottom: solid 1px $gray-normal;
+    margin-bottom: 1px;
+  }
+
   &.is-collapsed {
     width: 60px;
-    padding: 0;
+
+    .multi-file-commit-list {
+      padding-top: $gl-padding;
+      overflow: hidden;
+    }
+
+    .multi-file-context-bar-icon {
+      align-items: center;
+
+      svg {
+        float: none;
+        margin: 0;
+      }
+    }
+  }
+}
+
+.multi-file-context-bar-icon {
+  padding: 10px;
+
+  svg {
+    margin-right: 10px;
+    float: left;
   }
 }
 
@@ -192,7 +223,6 @@
 .multi-file-commit-panel-header {
   display: flex;
   align-items: center;
-  padding: 0 0 12px;
   margin-bottom: 12px;
   border-bottom: 1px solid $white-dark;
 
@@ -207,10 +237,8 @@
 }
 
 .multi-file-commit-panel-collapse-btn {
-  padding-top: 0;
-  padding-bottom: 0;
-  margin-left: auto;
-  font-size: 20px;
+  padding-top: 10px;
+  width: 100%;
 
   &.is-collapsed {
     margin-right: auto;
@@ -220,6 +248,7 @@
 .multi-file-commit-list {
   flex: 1;
   overflow: scroll;
+  padding: $gl-padding;
 }
 
 .multi-file-commit-list-item {
