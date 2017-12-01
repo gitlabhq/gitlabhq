@@ -2914,6 +2914,7 @@ describe Project do
   end
 
   describe '#remove_exports' do
+    let(:legacy_project) { create(:project, :legacy_storage, :with_export) }
     let(:project) { create(:project, :with_export) }
 
     it 'removes the exports directory for the project' do
@@ -2926,15 +2927,29 @@ describe Project do
       expect(File.exist?(project.export_path)).to be_falsy
     end
 
-    it 'is a no-op when there is no namespace' do
-      export_path = project.export_path
-      project.update_column(:namespace_id, nil)
+    it 'is a no-op on legacy projects when there is no namespace' do
+      export_path = legacy_project.export_path
+
+      legacy_project.update_column(:namespace_id, nil)
 
       expect(FileUtils).not_to receive(:rm_rf).with(export_path)
 
-      project.remove_exports
+      legacy_project.remove_exports
 
       expect(File.exist?(export_path)).to be_truthy
+    end
+
+    it 'runs on hashed storage projects when there is no namespace' do
+      export_path = project.export_path
+
+      project.update_column(:namespace_id, nil)
+
+      allow(FileUtils).to receive(:rm_rf).and_call_original
+      expect(FileUtils).to receive(:rm_rf).with(export_path).and_call_original
+
+      project.remove_exports
+
+      expect(File.exist?(export_path)).to be_falsy
     end
 
     it 'is run when the project is destroyed' do
@@ -2955,7 +2970,7 @@ describe Project do
   end
 
   context 'legacy storage' do
-    let(:project) { create(:project, :repository) }
+    let(:project) { create(:project, :repository, :legacy_storage) }
     let(:gitlab_shell) { Gitlab::Shell.new }
     let(:project_storage) { project.send(:storage) }
 
@@ -3129,6 +3144,8 @@ describe Project do
     let(:project) { create(:project, :repository, skip_disk_validation: true) }
     let(:gitlab_shell) { Gitlab::Shell.new }
     let(:hash) { Digest::SHA2.hexdigest(project.id.to_s) }
+    let(:hashed_prefix) { File.join('@hashed', hash[0..1], hash[2..3]) }
+    let(:hashed_path) { File.join(hashed_prefix, hash) }
 
     before do
       stub_application_setting(hashed_storage_enabled: true)
@@ -3154,14 +3171,12 @@ describe Project do
 
     describe '#base_dir' do
       it 'returns base_dir based on hash of project id' do
-        expect(project.base_dir).to eq("@hashed/#{hash[0..1]}/#{hash[2..3]}")
+        expect(project.base_dir).to eq(hashed_prefix)
       end
     end
 
     describe '#disk_path' do
       it 'returns disk_path based on hash of project id' do
-        hashed_path = "@hashed/#{hash[0..1]}/#{hash[2..3]}/#{hash}"
-
         expect(project.disk_path).to eq(hashed_path)
       end
     end
@@ -3170,7 +3185,7 @@ describe Project do
       it 'delegates to gitlab_shell to ensure namespace is created' do
         allow(project).to receive(:gitlab_shell).and_return(gitlab_shell)
 
-        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, "@hashed/#{hash[0..1]}/#{hash[2..3]}")
+        expect(gitlab_shell).to receive(:add_namespace).with(project.repository_storage_path, hashed_prefix)
 
         project.ensure_storage_path_exists
       end

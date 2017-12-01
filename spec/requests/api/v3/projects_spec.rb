@@ -401,7 +401,7 @@ describe API::V3::Projects do
       post v3_api('/projects', user), project
 
       project.each_pair do |k, v|
-        next if %i[has_external_issue_tracker issues_enabled merge_requests_enabled wiki_enabled].include?(k)
+        next if %i[storage_version has_external_issue_tracker issues_enabled merge_requests_enabled wiki_enabled].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
       end
@@ -545,7 +545,7 @@ describe API::V3::Projects do
 
       expect(response).to have_gitlab_http_status(201)
       project.each_pair do |k, v|
-        next if %i[has_external_issue_tracker path].include?(k)
+        next if %i[storage_version has_external_issue_tracker path].include?(k)
 
         expect(json_response[k.to_s]).to eq(v)
       end
