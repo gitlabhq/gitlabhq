@@ -149,9 +149,9 @@ GET /geo_nodes/:id/failures
 
 | Attribute | Type | Required | Description |
 | --------- | ---- | -------- | ----------- |
-| `type` | string | no | Type of failure (repository/wiki) |
+| `type` | string | no | Type of failure (`repository`/`wiki`) |
 
-This function takes pagination parameters `page` and `per_page` to limit the list of failures.
+This endpoint uses [Pagination](README.md#pagination).
 
 ```bash
 curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/geo_nodes/2/failures

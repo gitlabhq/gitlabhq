@@ -11,7 +11,7 @@ module Geo
 
     def fetch_project_repository(redownload)
       log_info('Trying to fetch project repository')
-      update_registry(started_at: DateTime.now)
+      update_registry!(started_at: DateTime.now)
 
       if redownload
         log_info('Redownloading repository')
@@ -22,19 +22,17 @@ module Geo
         fetch_geo_mirror(project.repository)
       end
 
-      update_registry(finished_at: DateTime.now, last_repository_sync_failure: nil)
+      update_registry!(finished_at: DateTime.now, attrs: { last_repository_sync_failure: nil })
       log_info('Finished repository sync',
                update_delay_s: update_delay_in_seconds,
                download_time_s: download_time_in_seconds)
     rescue Gitlab::Shell::Error,
            Gitlab::Git::RepositoryMirroring::RemoteError,
            Geo::EmptyCloneUrlPrefixError => e
-      fail_registry('Error syncing repository', e)
+      fail_registry!('Error syncing repository', e)
     rescue Gitlab::Git::Repository::NoRepository => e
-      fail_registry('Invalid repository', e)
-
       log_info('Setting force_to_redownload flag')
-      registry.update(force_to_redownload_repository: true)
+      fail_registry!('Invalid repository', e, force_to_redownload_repository: true)
 
       log_info('Expiring caches')
       project.repository.after_create
@@ -53,13 +51,6 @@ module Geo
 
     def repository
       project.repository
-    end
-
-    def fail_registry(message, error)
-      log_error(message, error)
-
-      registry.update!(last_repository_sync_failure: "#{message}: #{error.message}",
-                       repository_retry_count: retry_count + 1)
     end
 
     def retry_count
