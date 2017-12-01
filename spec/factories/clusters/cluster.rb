@@ -35,5 +35,9 @@ FactoryGirl.define do
         create(:cluster_provider_gcp, :creating)
       end
     end
+
+    trait :disabled do
+      enabled false
+    end
   end
 end

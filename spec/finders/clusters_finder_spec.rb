@@ -5,29 +5,27 @@ describe ClustersFinder do
   set(:user) { create(:user) }
 
   describe '#execute' do
-    before do
-      create_list(:cluster, 2, :provided_by_gcp, projects: [project])
-      project.clusters.last.enabled = false
-    end
+    let(:enabled_cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+    let(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, projects: [project]) }
 
     subject { described_class.new(project, user, scope).execute }
 
     context 'when scope is all' do
       let(:scope) { :all }
 
-      it { is_expected.to eq(project.clusters) }
+      it { is_expected.to match_array([enabled_cluster, disabled_cluster]) }
     end
 
-    context 'when scope is enabled' do
+    context 'when scope is active' do
       let(:scope) { :active }
 
-      it { is_expected.to eq(project.clusters.enabled) }
+      it { is_expected.to match_array([enabled_cluster]) }
     end
 
-    context 'when scope is disabled' do
+    context 'when scope is inactive' do
       let(:scope) { :inactive }
 
-      it { is_expected.to eq(project.clusters.disabled) }
+      it { is_expected.to match_array([disabled_cluster]) }
     end
   end
 end

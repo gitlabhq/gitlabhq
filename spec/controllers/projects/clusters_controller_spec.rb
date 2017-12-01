@@ -15,15 +15,15 @@ describe Projects::ClustersController do
 
       context 'when project has one or more clusters' do
         let(:project) { create(:project) }
-        let(:clusters) { create_list(:cluster, 2, :provided_by_gcp, projects: [project]) }
-        let(:inactive_cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+        let(:enabled_cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+        let(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, projects: [project]) }
 
         it 'lists available clusters' do
           go
 
           expect(response).to have_gitlab_http_status(:ok)
           expect(response).to render_template(:index)
-          expect(assigns(:clusters)).to match_array(clusters)
+          expect(assigns(:clusters)).to match_array([enabled_cluster, disabled_cluster])
         end
 
         it 'assigns counters to correct values' do
