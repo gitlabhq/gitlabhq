@@ -2,13 +2,14 @@
   import commitIconSvg from 'icons/_icon_commit.svg';
   import userAvatarLink from './user_avatar/user_avatar_link.vue';
   import tooltip from '../directives/tooltip';
+  import Icon from '../../vue_shared/components/icon.vue';
 
   export default {
     props: {
       /**
        * Indicates the existance of a tag.
        * Used to render the correct icon, if true will render `fa-tag` icon,
-       * if false will render `fa-code-fork` icon.
+       * if false will render a svg sprite fork icon
        */
       tag: {
         type: Boolean,
@@ -107,6 +108,7 @@
     },
     components: {
       userAvatarLink,
+      Icon,
     },
     created() {
       this.commitIconSvg = commitIconSvg;
@@ -123,11 +125,10 @@
           class="fa fa-tag"
           aria-hidden="true">
         </i>
-        <i
+        <icon
           v-if="!tag"
-          class="fa fa-code-fork"
-          aria-hidden="true">
-        </i>
+          name="fork">
+        </icon>
       </div>
 
       <a
