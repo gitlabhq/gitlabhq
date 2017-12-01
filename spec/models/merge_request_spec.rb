@@ -838,6 +838,14 @@ describe MergeRequest do
 
         expect(subject.head_pipeline).to be_nil
       end
+
+      context 'when the source project does not exist' do
+        it 'returns nil' do
+          allow(subject).to receive(:source_project).and_return(nil)
+
+          expect(subject.head_pipeline).to be_nil
+        end
+      end
     end
 
     describe '#actual_head_pipeline' do
@@ -854,6 +862,12 @@ describe MergeRequest do
 
         expect(subject.actual_head_pipeline).to eq(subject.head_pipeline)
         expect(subject.actual_head_pipeline).to eq(pipeline)
+      end
+
+      it 'returns nil when source project does not exist' do
+        allow(subject).to receive(:source_project).and_return(nil)
+
+        expect(subject.actual_head_pipeline).to be_nil
       end
     end
   end
