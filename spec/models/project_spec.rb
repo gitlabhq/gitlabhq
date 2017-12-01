@@ -3470,7 +3470,6 @@ describe Project do
     end
   end
 
-<<<<<<< HEAD
   describe '#root_namespace' do
     let(:project) { build(:project, namespace: parent) }
 
@@ -3491,7 +3490,9 @@ describe Project do
       it 'returns current namespace' do
         is_expected.to eq(parent)
       end
-=======
+    end
+  end
+
   describe '#deployment_platform' do
     subject { project.deployment_platform }
 
@@ -3508,7 +3509,6 @@ describe Project do
       let(:platform_kubernetes) { cluster.platform_kubernetes }
 
       it { is_expected.to eq(platform_kubernetes) }
->>>>>>> upstream/master
     end
   end
 end
