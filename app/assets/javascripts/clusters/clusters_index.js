@@ -29,7 +29,7 @@ const toggleValue = (button) => {
  *
  * When the user clicks the toggle button for each cluster, it:
  * - toggles the button
- * - shows a loding and disabled state
+ * - shows a loading and disabled state
  * - Makes a put request to the given endpoint
  * Once we receive the response, either:
  * 1) Show updated status in case of successfull response
@@ -39,11 +39,12 @@ export default function setClusterTableToggles() {
   document.querySelectorAll('.js-toggle-cluster-list')
     .forEach(button => button.addEventListener('click', (e) => {
       const toggleButton = e.currentTarget;
-      const value = toggleButton.classList.contains('checked').toString();
       const endpoint = toggleButton.getAttribute('data-endpoint');
 
       toggleValue(toggleButton);
       toggleLoadingButton(toggleButton);
+
+      const value = toggleButton.classList.contains('is-checked');
 
       ClustersService.updateCluster(endpoint, { cluster: { enabled: value } })
         .then(() => {
