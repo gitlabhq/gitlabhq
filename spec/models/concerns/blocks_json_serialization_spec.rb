@@ -7,11 +7,11 @@ describe BlocksJsonSerialization do
 
   it 'blocks as_json' do
     expect { DummyModel.new.to_json }
-      .to raise_error(SecurityError, "JSON serialization has been disabled on DummyModel")
+      .to raise_error(described_class::JsonSerializationError, /DummyModel/)
   end
 
   it 'blocks to_json' do
     expect { DummyModel.new.to_json }
-      .to raise_error(SecurityError, "JSON serialization has been disabled on DummyModel")
+      .to raise_error(described_class::JsonSerializationError, /DummyModel/)
   end
 end
