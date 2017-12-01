@@ -72,8 +72,8 @@ module EE
             kerberos_identity ||= ::Identity.new(provider: :kerberos, user: user)
             kerberos_identity.extern_uid = ldap_user.kerberos_principal
             unless kerberos_identity.save
-              ::Rails.logger.error "#{self.class.name}: failed to add Kerberos principal #{principal} to #{user.name} (#{user.id})\n"\
-                "error messages: #{new_identity.errors.messages}"
+              ::Rails.logger.error "#{self.class.name}: failed to add Kerberos principal #{ldap_user.kerberos_principal} to #{user.name} (#{user.id})\n"\
+                "error messages: #{kerberos_identity.errors.messages}"
             end
           end
 
