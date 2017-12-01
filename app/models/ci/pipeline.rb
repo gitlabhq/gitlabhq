@@ -377,7 +377,7 @@ module Ci
     end
 
     def has_kubernetes_active?
-      project.deployment_platform(environment: ???)&.active?
+      project.deployment_platform&.active?
     end
 
     def has_stage_seeds?
