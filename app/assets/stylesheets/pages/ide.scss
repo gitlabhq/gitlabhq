@@ -1,4 +1,4 @@
-.modal.popup-dialog {
+/*.modal.popup-dialog {
   display: block;
   background-color: $black-transparent;
   z-index: 2100;
@@ -40,13 +40,14 @@
   height: calc(100vh - #{$header-height});
   margin-top: $header-height;
   color: $almost-black;
+  border-top: 1px solid $white-dark;
+  border-bottom: 1px solid $white-dark;
 
   .code.white pre .hll {
     background-color: $well-light-border !important;
   }
 
   .ide-content-holder {
-    display: -webkit-flex;
     display: flex;
     flex: 1;
     height: 100vh;
@@ -56,10 +57,16 @@
     height: 100vh;
   }
 
+  .multi-file-table-name,
+  .multi-file-table-col-commit-message {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 0;
+  }
+
   .panel-right {
-    display: -webkit-flex;
     display: flex;
-    -webkit-flex-direction: column;
     flex-direction: column;
     margin-top: 0;
     padding-bottom: 0;
@@ -333,6 +340,7 @@
 .multi-file-table-col-name {
   width: 350px;
 }
+*/
 
 .ide-loading {
   padding-top: 200px;

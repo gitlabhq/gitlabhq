@@ -129,7 +129,7 @@ export default {
   <form
     class="form-horizontal multi-file-commit-form"
     @submit.prevent="tryCommit"
-    v-if="!collapsed"
+    v-if="!collapsed && changedFiles.length"
   >
     <div class="multi-file-commit-fieldset">
       <textarea

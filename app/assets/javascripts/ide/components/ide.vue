@@ -4,7 +4,6 @@
 import { mapState, mapGetters } from 'vuex';
 import IdeSidebar from './ide_side_bar.vue';
 import IdeContextbar from './ide_context_bar.vue';
-
 import RepoTabs from './repo_tabs.vue';
 import RepoFileButtons from './repo_file_buttons.vue';
 import IdeStatusBar from './ide_status_bar.vue';
@@ -46,25 +45,32 @@ export default {
 </script>
 
 <template>
-  <div class="ide-view page-gutter page-with-contextual-sidebar page-with-sidebar right-sidebar-collapsed">
+  <div 
+    class="multi-file ide-view page-gutter page-with-contextual-sidebar page-with-sidebar right-sidebar-collapsed"
+  >
     <ide-sidebar/>
     <div class="panel-right content-wrapper page-with-new-nav">
       <div class="content" id="content-body">
         <ide-contextbar/>
-        <template
-          v-if="activeFile">
-          <repo-tabs/>
-          <component
-            :is="currentBlobView"
-          />
-          <repo-file-buttons/>
-          <ide-status-bar/>
-        </template>
-        <template
-          v-else>
-          <br/><br/><br/><br/><br/>
-          <h4 class="muted text-center">Welcome to the GitLab IDE</h4>
-        </template>
+        <div
+          class="multi-file-edit-pane"
+        >
+          <template
+            v-if="activeFile">
+            <repo-tabs/>
+            <component
+              class="multi-file-edit-pane-content"
+              :is="currentBlobView"
+            />
+            <repo-file-buttons/>
+            <ide-status-bar/>
+          </template>
+          <template
+            v-else>
+            <br/><br/><br/><br/><br/>
+            <h4 class="muted text-center">Welcome to the GitLab IDE</h4>
+          </template>
+        </div>
       </div>
     </div>
   </div>

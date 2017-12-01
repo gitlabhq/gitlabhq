@@ -35,26 +35,13 @@ export default {
 </script>
 
 <template>
-<div id="sidebar">
+<div>
   <div class="ide-file-list">
     <table class="table">
       <thead>
         <tr>
-          <th
-            v-if="isCollapsed"
-          >
+          <th>
           </th>
-          <template v-else>
-            <th class="name multi-file-table-name">
-              Name
-            </th>
-            <th class="hidden-sm hidden-xs last-commit">
-              Last commit
-            </th>
-            <th class="hidden-xs last-update text-right">
-              Last update
-            </th>
-          </template>
         </tr>
       </thead>
       <tbody

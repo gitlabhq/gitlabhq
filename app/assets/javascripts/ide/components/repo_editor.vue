@@ -102,6 +102,7 @@ export default {
     <div
       v-show="!shouldHideEditor"
       ref="editor"
+      class="multi-file-editor-holder"
     >
     </div>
   </div>

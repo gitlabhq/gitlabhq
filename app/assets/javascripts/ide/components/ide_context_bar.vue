@@ -26,7 +26,7 @@ export default {
         </a>
       </div>
       
-      <repo-commit-section v-if="changedFiles.length" />
+      <repo-commit-section />
     </div>
   </aside>
 </template>

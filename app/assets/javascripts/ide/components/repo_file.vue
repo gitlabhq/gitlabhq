@@ -87,7 +87,7 @@
       </template>
     </td>
 
-    <template v-if="!isCollapsed && !isSubmodule">
+    <template v-if="false == true">
       <td class="multi-file-table-col-commit-message hidden-sm hidden-xs">
         <a
           v-if="file.lastCommit.message"
