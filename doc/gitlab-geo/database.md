@@ -213,6 +213,10 @@ will not be able to perform all necessary configuration steps. Refer to
     postgresql['max_replication_slots'] = 1
     # postgresql['max_wal_senders'] = 10
     # postgresql['wal_keep_segments'] = 10
+
+    # Disable automatic database migrations for now
+    # (until PostgreSQL is restarted and listening on the interface address)
+    gitlab_rails['auto_migrate'] = false
     ```
 
     For external PostgreSQL instances, [see additional instructions][external postgresql].
@@ -228,27 +232,30 @@ will not be able to perform all necessary configuration steps. Refer to
     Replication documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-replication.html)
     for more information.
 
-1. Save the file and [reconfigure GitLab][] for the database listen changes to
-   take effect.
+1. Save the file and [reconfigure GitLab][] for the database listen changes and
+   the replication slot changes to be applied.
 
-    **This step will fail.** This is caused by
-    [Omnibus#2797](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2797).
-
-    Restart PostgreSQL:
+    Restart PostgreSQL for its changes to take effect:
 
     ```bash
     gitlab-ctl restart postgresql
     ```
 
-    [Reconfigure GitLab][reconfigure GitLab] again. It should complete cleanly.
+1. Reenable migrations
 
-1. Restart your primary PostgreSQL server to ensure the replication slot
-   changes take effect (`sudo gitlab-ctl restart postgresql` for
-   Omnibus-provided PostgreSQL).
+    Edit `/etc/gitlab/gitlab.rb` and **delete** the following lines:
+
+    ```ruby
+    # Disable automatic database migrations for now
+    # (until PostgreSQL is restarted and listening on the interface address)
+    gitlab_rails['auto_migrate'] = false
+    ```
+
+    Save the file and [reconfigure GitLab][].
 
 1. Now that the PostgreSQL server is set up to accept remote connections, run
    `netstat -plnt` to make sure that PostgreSQL is listening on port `5432` to
-   the server's public IP.
+   the server's interface address.
 
 1. Verify that clock synchronization is enabled.
 
