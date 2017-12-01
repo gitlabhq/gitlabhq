@@ -38,12 +38,6 @@ export default {
 <div>
   <div class="ide-file-list">
     <table class="table">
-      <thead>
-        <tr>
-          <th>
-          </th>
-        </tr>
-      </thead>
       <tbody
         v-if="treeId">
         <repo-previous-directory

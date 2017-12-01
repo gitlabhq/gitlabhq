@@ -22,9 +22,11 @@
   }
 }
 
-.multi-file {
+.ide-view {
   display: flex;
-  height: calc(100vh - 145px);
+  height: calc(100vh - #{$header-height});
+  margin-top: $header-height;
+  color: $almost-black;
   border-top: 1px solid $white-dark;
   border-bottom: 1px solid $white-dark;
 
@@ -37,7 +39,6 @@
 
 .ide-file-list {
   flex: 1;
-  overflow: scroll;
 
   .file {
     cursor: pointer;
@@ -59,6 +60,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   max-width: 0;
+  padding: 6px 12px;
 }
 
 .multi-file-table-name {
@@ -79,7 +81,7 @@
 
 .multi-file-tabs {
   display: flex;
-  overflow: scroll;
+  overflow: hidden;
   background-color: $white-normal;
   box-shadow: inset 0 -1px $white-dark;
 
@@ -126,6 +128,10 @@
 .multi-file-edit-pane-content {
   flex: 1;
   height: 0;
+}
+
+.multi-file-editor-holder {
+  height: 100%;
 }
 
 .multi-file-editor-btn-group {
@@ -293,5 +299,22 @@
       height: 1px;
       background-color: rgba($red-500, .5);
     }
+  }
+}
+
+
+.nav-sidebar {
+  .toggle-sidebar-button {
+    padding: 8px 16px;
+  }
+
+  .projects-sidebar {
+    overflow-y: scroll;
+    overflow-x: auto;
+    position: absolute;
+    right: 1px;
+    top: 0;
+    bottom: 38px;
+    left: 0;
   }
 }

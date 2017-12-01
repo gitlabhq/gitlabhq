@@ -1,32 +1,64 @@
 <script>
 import { mapGetters } from 'vuex';
 import RepoCommitSection from './repo_commit_section.vue';
+import icon from '../../vue_shared/components/icon.vue';
 
 export default {
+  components: {
+    RepoCommitSection,
+    icon,
+  },
+  data() {
+    return {
+      collapsed: true,
+    };
+  },
   computed: {
     ...mapGetters([
       'changedFiles',
     ]),
+    currentIcon() {
+      return this.collapsed ? 'angle-double-left' : 'angle-double-right';
+    }
   },
-  components: {
-    RepoCommitSection,
+  methods: {
+    toggleCollapsed() {
+      this.collapsed = !this.collapsed;
+    },
   },
 };
 </script>
 
 <template>
-  <aside aria-live="polite" class="js-issuable-sidebar js-right-sidebar right-sidebar right-sidebar-collapsed" data-signed-in="">
-    <div class="issuable-sidebar" data-endpoint="/h5bp/html5-boilerplate/issues/11.json">
-      <div class="block issuable-sidebar-header">
-        <span class="issuable-header-text hide-collapsed pull-left">
-          IDE
-        </span>
-        <a aria-label="Toggle sidebar" class="gutter-toggle pull-right js-sidebar-toggle" href="#" role="button">
-          <i aria-hidden="true" data-hidden="true" class="fa fa-angle-double-left"></i>
-        </a>
+  <div
+    class="multi-file-commit-panel"
+    :class="{
+      'is-collapsed': collapsed,
+    }"
+  >
+    <div class="multi-file-commit-panel-section">
+      <header
+        class="multi-file-commit-panel-header"
+        :class="{
+          'is-collapsed': collapsed,
+          }"
+        >
+        <button
+          type="button"
+          class="btn btn-transparent multi-file-commit-panel-collapse-btn"
+          @click="toggleCollapsed"
+        >
+          <icon
+            :name="currentIcon"
+            :size="18"
+          />
+        </button>
+      </header>
+      <div>
       </div>
-      
-      <repo-commit-section />
+      <repo-commit-section 
+        :collapsed="collapsed"
+        class=""/>
     </div>
-  </aside>
+  </div>
 </template>

@@ -46,33 +46,29 @@ export default {
 
 <template>
   <div 
-    class="multi-file ide-view page-gutter page-with-contextual-sidebar page-with-sidebar right-sidebar-collapsed"
+    class="ide-view page-gutter page-with-contextual-sidebar page-with-sidebar right-sidebar-collapsed"
   >
     <ide-sidebar/>
-    <div class="panel-right content-wrapper page-with-new-nav">
-      <div class="content" id="content-body">
-        <ide-contextbar/>
-        <div
-          class="multi-file-edit-pane"
-        >
-          <template
-            v-if="activeFile">
-            <repo-tabs/>
-            <component
-              class="multi-file-edit-pane-content"
-              :is="currentBlobView"
-            />
-            <repo-file-buttons/>
-            <ide-status-bar/>
-          </template>
-          <template
-            v-else>
-            <br/><br/><br/><br/><br/>
-            <h4 class="muted text-center">Welcome to the GitLab IDE</h4>
-          </template>
-        </div>
-      </div>
+    <div
+      class="multi-file-edit-pane"
+    >
+      <template
+        v-if="activeFile">
+        <repo-tabs/>
+        <component
+          class="multi-file-edit-pane-content"
+          :is="currentBlobView"
+        />
+        <repo-file-buttons/>
+        <ide-status-bar/>
+      </template>
+      <template
+        v-else>
+        <br/><br/><br/><br/><br/>
+        <h4 class="muted text-center">Welcome to the GitLab IDE</h4>
+      </template>
     </div>
+    <ide-contextbar/>
   </div>
     
 </template>
