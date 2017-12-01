@@ -140,7 +140,8 @@ describe Projects::CommitController do
       it 'prepare diff notes in the context of the merge request' do
         go(id: commit.id, merge_request_iid: merge_request.iid)
 
-        expect(assigns(:new_diff_note_attrs)).to eq({ noteable_type: 'MergeRequest',
+        expect(assigns(:new_diff_note_attrs)).to eq({
+                                                      noteable_type: 'MergeRequest',
                                                       noteable_id: merge_request.id,
                                                       commit_id: commit.id
                                                     })

@@ -46,21 +46,21 @@
           .nav-links.scrolling-tabs
             %ul.merge-request-tabs
               %li.notes-tab
-                = tab_link_for :show, force_link: @commit.present? do
+                = tab_link_for @merge_request, :show, force_link: @commit.present? do
                   Discussion
                   %span.badge= @merge_request.related_notes.user.count
               - if @merge_request.source_project
                 %li.commits-tab
-                  = tab_link_for :commits do
+                  = tab_link_for @merge_request, :commits do
                     Commits
                     %span.badge= @commits_count
               - if @pipelines.any?
                 %li.pipelines-tab
-                  = tab_link_for :pipelines do
+                  = tab_link_for @merge_request, :pipelines do
                     Pipelines
                     %span.badge.js-pipelines-mr-count= @pipelines.size
               %li.diffs-tab
-                = tab_link_for :diffs do
+                = tab_link_for @merge_request, :diffs do
                   Changes
                   %span.badge= @merge_request.diff_size
         #resolve-count-app.line-resolve-all-container.prepend-top-10{ "v-cloak" => true }
