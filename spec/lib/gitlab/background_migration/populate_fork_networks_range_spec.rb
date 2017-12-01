@@ -63,14 +63,9 @@ describe Gitlab::BackgroundMigration::PopulateForkNetworksRange, :migration, sch
     expect(base2_membership).not_to be_nil
   end
 
-<<<<<<< HEAD
   it 'creates a fork network for the fork of which the source was deleted' do
-    fork = create(:project)
+    fork = projects.create
     forked_project_links.create(id: 6, forked_from_project_id: 99999, forked_to_project_id: fork.id)
-=======
-  it 'skips links that had their source project deleted' do
-    forked_project_links.create(id: 6, forked_from_project_id: 99999, forked_to_project_id: projects.create.id)
->>>>>>> Create models directly in migration specs
 
     migration.perform(5, 8)
 

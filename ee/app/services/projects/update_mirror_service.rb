@@ -102,7 +102,7 @@ module Projects
     end
 
     def skip_branch?(name)
-      project.only_mirror_protected_branches && !ProtectedBranch.protected?(project,name)
+      project.only_mirror_protected_branches && !ProtectedBranch.protected?(project, name)
     end
   end
 end

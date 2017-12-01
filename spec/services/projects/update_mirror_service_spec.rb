@@ -74,7 +74,7 @@ describe Projects::UpdateMirrorService do
           expect(project.repository.branch_names).to include(new_protected_branch_name)
         end
 
-        it 'does not create a unprotected branch' do
+        it 'does not create an unprotected branch' do
           stub_fetch_mirror(project)
 
           described_class.new(project, project.owner).execute
