@@ -13,7 +13,7 @@
     .table-mobile-header{ role: "rowheader" }
     .table-mobile-content
       %button{ type: "button",
-        class: "js-toggle-cluster-list project-feature-toggle #{'is-checked' unless !cluster.enabled?} #{'is-disabled' unless can?(current_user, :update_cluster, cluster) && cluster.provider_gcp&.created?}",
+        class: "js-toggle-cluster-list project-feature-toggle #{'is-checked' if cluster.enabled?} #{'is-disabled' if can_toggle_cluster?(cluster)}",
         "aria-label": s_("ClusterIntegration|Toggle Cluster"),
         disabled: !can?(current_user, :update_cluster, cluster),
         data: { "enabled-text": s_("ClusterIntegration|Active"),
