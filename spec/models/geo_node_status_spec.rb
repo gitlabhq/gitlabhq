@@ -1,16 +1,18 @@
 require 'spec_helper'
 
-describe GeoNodeStatus, :geo do
+# Disable transactions via :truncate method because a foreign table
+# can't see changes inside a transaction of a different connection.
+describe GeoNodeStatus, :geo, :truncate do
   include ::EE::GeoHelpers
 
-  set(:primary)  { create(:geo_node, :primary) }
-  set(:secondary) { create(:geo_node) }
+  let!(:primary)  { create(:geo_node, :primary) }
+  let!(:secondary) { create(:geo_node) }
 
-  set(:group)     { create(:group) }
-  set(:project_1) { create(:project, group: group) }
-  set(:project_2) { create(:project, group: group) }
-  set(:project_3) { create(:project) }
-  set(:project_4) { create(:project) }
+  let!(:group)     { create(:group) }
+  let!(:project_1) { create(:project, group: group) }
+  let!(:project_2) { create(:project, group: group) }
+  let!(:project_3) { create(:project) }
+  let!(:project_4) { create(:project) }
 
   subject { described_class.current_node_status }
 
@@ -60,6 +62,7 @@ describe GeoNodeStatus, :geo do
       create(:geo_file_registry, :avatar, file_id: uploads[2], success: false)
 
       expect(subject.attachments_synced_count).to eq(2)
+
     end
 
     it 'does not count synced files that were replaced' do
@@ -96,13 +99,13 @@ describe GeoNodeStatus, :geo do
   describe '#attachments_failed_count' do
     it 'counts failed avatars, attachment, personal snippets and files' do
       # These two should be ignored
-      create(:geo_file_registry, :lfs, success: false)
-      create(:geo_file_registry)
+      create(:geo_file_registry, :lfs, :with_file, success: false)
+      create(:geo_file_registry, :with_file)
 
-      create(:geo_file_registry, file_type: :personal_file, success: false)
-      create(:geo_file_registry, file_type: :attachment, success: false)
-      create(:geo_file_registry, :avatar, success: false)
-      create(:geo_file_registry, success: false)
+      create(:geo_file_registry, :with_file, file_type: :personal_file, success: false)
+      create(:geo_file_registry, :with_file, file_type: :attachment, success: false)
+      create(:geo_file_registry, :avatar, :with_file, success: false)
+      create(:geo_file_registry, :with_file, success: false)
 
       expect(subject.attachments_failed_count).to eq(4)
     end

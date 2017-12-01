@@ -27,7 +27,6 @@ class GeoNodeStatus < ActiveRecord::Base
 
   def self.current_node_status
     current_node = Gitlab::Geo.current_node
-
     return unless current_node
 
     status = current_node.find_or_build_status
@@ -77,8 +76,10 @@ class GeoNodeStatus < ActiveRecord::Base
       self.repositories_failed_count = geo_node.project_registries.failed.count
       self.lfs_objects_synced_count = geo_node.lfs_objects_synced_count
       self.lfs_objects_failed_count = geo_node.lfs_objects_failed_count
-      self.attachments_synced_count = geo_node.attachments_synced_count
-      self.attachments_failed_count = geo_node.attachments_failed_count
+
+      attachments_finder = Geo::AttachmentRegistryFinder.new(current_node: geo_node)
+      self.attachments_synced_count = attachments_finder.find_synced_attachments.count
+      self.attachments_failed_count = attachments_finder.find_failed_attachments.count
     end
 
     self

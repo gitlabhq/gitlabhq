@@ -205,21 +205,6 @@ class GeoNode < ActiveRecord::Base
     Geo::FileRegistry.lfs_objects.failed.count
   end
 
-  def attachments_synced_count
-    return unless secondary?
-
-    upload_ids = uploads.pluck(:id)
-    synced_ids = Geo::FileRegistry.attachments.synced.pluck(:file_id)
-
-    (synced_ids & upload_ids).length
-  end
-
-  def attachments_failed_count
-    return unless secondary?
-
-    Geo::FileRegistry.attachments.failed.count
-  end
-
   def find_or_build_status
     status || build_status
   end
