@@ -16,10 +16,7 @@ describe Projects::ClustersController do
       context 'when project has one or more clusters' do
         let(:project) { create(:project) }
         let(:clusters) { create_list(:cluster, 2, :provided_by_gcp, projects: [project]) }
-
-        before do
-          clusters.last.enabled = false
-        end
+        let(:inactive_cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
         it 'lists available clusters' do
           go
@@ -56,16 +53,16 @@ describe Projects::ClustersController do
         context 'when only enabled clusters are requested' do
           it 'returns only enabled clusters' do
             get :index, namespace_id: project.namespace, project_id: project, scope: 'active'
-            clusters = assigns(:clusters)
-            expect(clusters.all? { |cluster| cluster.enabled == true }).to eq(true)
+            view_clusters = assigns(:clusters)
+            expect(view_clusters.all? { |cluster| cluster.enabled == true }).to eq(true)
           end
         end
 
         context 'when only disabled clusters are requested' do
           it 'returns only disabled clusters' do
             get :index, namespace_id: project.namespace, project_id: project, scope: 'inactive'
-            clusters = assigns(:clusters)
-            expect(clusters.all? { |cluster| cluster.enabled == false }).to eq(true)
+            view_clusters = assigns(:clusters)
+            expect(view_clusters.all? { |cluster| cluster.enabled == false }).to eq(true)
           end
         end
       end
