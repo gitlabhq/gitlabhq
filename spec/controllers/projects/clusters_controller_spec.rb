@@ -384,31 +384,61 @@ describe Projects::ClustersController do
         sign_in(user)
       end
 
-      context 'when update enabled' do
-        let(:params) do
-          {
-            cluster: { enabled: false }
-          }
+      context 'when format is json' do
+        context 'when update enabled' do
+          let(:params) do
+            {
+              cluster: { enabled: false }
+            }
+          end
+
+          it "updates and redirects back to show page" do
+            go_json
+
+            cluster.reload
+            expect(response).to have_http_status(:no_content)
+          end
+
+          context 'when cluster is being created' do
+            let(:cluster) { create(:cluster, :project, :providing_by_gcp) }
+
+            it "rejects changes" do
+              go_json
+
+              # head bad_request
+              expect(response).to have_http_status(:bad_request)
+            end
+          end
         end
+      end
 
-        it "updates and redirects back to show page" do
-          go
+      context 'when format is html' do
+        context 'when update enabled' do
+          let(:params) do
+            {
+              cluster: { enabled: false }
+            }
+          end
 
-          cluster.reload
-          expect(response).to redirect_to(project_cluster_path(project, project.cluster))
-          expect(flash[:notice]).to eq('Cluster was successfully updated.')
-          expect(cluster.enabled).to be_falsey
-        end
-
-        context 'when cluster is being created' do
-          let(:cluster) { create(:cluster, :project, :providing_by_gcp) }
-
-          it "rejects changes" do
+          it "updates and redirects back to show page" do
             go
 
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to render_template(:show)
-            expect(cluster.enabled).to be_truthy
+            cluster.reload
+            expect(response).to redirect_to(project_cluster_path(project, project.cluster))
+            expect(flash[:notice]).to eq('Cluster was successfully updated.')
+            expect(cluster.enabled).to be_falsey
+          end
+
+          context 'when cluster is being created' do
+            let(:cluster) { create(:cluster, :project, :providing_by_gcp) }
+
+            it "rejects changes" do
+              go
+
+              expect(response).to have_gitlab_http_status(:ok)
+              expect(response).to render_template(:show)
+              expect(cluster.enabled).to be_truthy
+            end
           end
         end
       end
@@ -435,6 +465,13 @@ describe Projects::ClustersController do
       put :update, params.merge(namespace_id: project.namespace,
                                 project_id: project,
                                 id: cluster)
+    end
+
+    def go_json
+      put :update, params.merge(namespace_id: project.namespace,
+                                project_id: project,
+                                id: cluster,
+                                format: :json)
     end
   end
 
