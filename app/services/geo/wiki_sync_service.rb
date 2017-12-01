@@ -21,7 +21,7 @@ module Geo
         fetch_geo_mirror(project.wiki.repository)
       end
 
-      update_registry!(finished_at: DateTime.now, attrs: { last_wiki_sync_failure: nil})
+      update_registry!(finished_at: DateTime.now, attrs: { last_wiki_sync_failure: nil })
 
       log_info('Finished wiki sync',
                update_delay_s: update_delay_in_seconds,

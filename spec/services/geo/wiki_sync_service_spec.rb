@@ -44,6 +44,12 @@ RSpec.describe Geo::WikiSyncService do
       subject.execute
     end
 
+    it 'voids the failure message when it succeeds after an error' do
+      registry = create(:geo_project_registry, project: project, last_wiki_sync_failure: 'error')
+
+      expect { subject.execute }.to change { registry.reload.last_wiki_sync_failure}.to(nil)
+    end
+
     it 'does not fetch wiki repository if cannot obtain a lease' do
       allow(lease).to receive(:try_obtain) { false }
 

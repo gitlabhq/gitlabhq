@@ -52,6 +52,12 @@ describe Geo::RepositorySyncService do
       subject.execute
     end
 
+    it 'voids the failure message when it succeeds after an error' do
+      registry = create(:geo_project_registry, project: project, last_repository_sync_failure: 'error')
+
+      expect { subject.execute }.to change { registry.reload.last_repository_sync_failure}.to(nil)
+    end
+
     it 'returns the lease when sync fail' do
       allow(repository).to receive(:fetch_as_mirror).with(url_to_repo, forced: true) { raise Gitlab::Shell::Error }
 
