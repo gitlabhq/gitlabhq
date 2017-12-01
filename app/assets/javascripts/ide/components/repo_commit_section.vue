@@ -108,11 +108,10 @@ export default {
     @toggle="showNewBranchDialog = false"
     @submit="makeCommit(true)"
   />
-  <div>
+  <div class="multi-file-context-bar-icon text-center">
     <icon
       name="list-bulleted"
       :size="18"
-      css-classes="append-right-default"
     />
     <template v-if="!collapsed">
       Staged

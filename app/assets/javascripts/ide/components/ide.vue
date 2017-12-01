@@ -46,7 +46,7 @@ export default {
 
 <template>
   <div 
-    class="ide-view page-gutter page-with-contextual-sidebar page-with-sidebar right-sidebar-collapsed"
+    class="ide-view"
   >
     <ide-sidebar/>
     <div
