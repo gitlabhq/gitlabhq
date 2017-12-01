@@ -39,8 +39,8 @@ describe Gitlab::Gfm::UploadsRewriter do
       it 'copies files' do
         expect(new_files).to all(exist)
         expect(old_paths).not_to match_array new_paths
-        expect(old_paths).to all(include(old_project.full_path))
-        expect(new_paths).to all(include(new_project.full_path))
+        expect(old_paths).to all(include(old_project.disk_path))
+        expect(new_paths).to all(include(new_project.disk_path))
       end
 
       it 'does not remove old files' do

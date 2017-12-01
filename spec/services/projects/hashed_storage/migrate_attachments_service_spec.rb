@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::HashedStorage::MigrateAttachmentsService do
   subject(:service) { described_class.new(project) }
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :legacy_storage) }
   let(:legacy_storage) { Storage::LegacyProject.new(project) }
   let(:hashed_storage) { Storage::HashedProject.new(project) }
 

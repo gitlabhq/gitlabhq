@@ -81,8 +81,10 @@ FactoryBot.define do
       archived true
     end
 
-    trait :hashed do
-      storage_version Project::LATEST_STORAGE_VERSION
+    storage_version Project::LATEST_STORAGE_VERSION
+
+    trait :legacy_storage do
+      storage_version nil
     end
 
     trait :access_requestable do

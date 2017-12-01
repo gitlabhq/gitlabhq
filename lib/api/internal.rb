@@ -13,7 +13,7 @@ module API
       #   key_id - ssh key id for Git over SSH
       #   user_id - user id for Git over HTTP
       #   protocol - Git access protocol being used, e.g. HTTP or SSH
-      #   project - project path with namespace
+      #   project - project full_path (not path on disk)
       #   action - git action (git-upload-pack or git-receive-pack)
       #   changes - changes as "oldrev newrev ref", see Gitlab::ChangesList
       post "/allowed" do
