@@ -18,14 +18,14 @@ describe API::GeoNodes, :geo, api: true do
     it 'retrieves the Geo nodes if admin is logged in' do
       get api("/geo_nodes", admin)
 
-      expect(response.status).to eq 200
+      expect(response).to have_gitlab_http_status(200)
       expect(response).to match_response_schema('geo_nodes')
     end
 
     it 'denies access if not admin' do
       get api('/geo_nodes', user)
 
-      expect(response.status).to eq 403
+      expect(response).to have_gitlab_http_status(403)
     end
   end
 
@@ -33,14 +33,14 @@ describe API::GeoNodes, :geo, api: true do
     it 'retrieves the Geo nodes if admin is logged in' do
       get api("/geo_nodes/#{primary.id}", admin)
 
-      expect(response.status).to eq 200
+      expect(response).to have_gitlab_http_status(200)
       expect(response).to match_response_schema('geo_node')
     end
 
     it 'denies access if not admin' do
       get api('/geo_nodes', user)
 
-      expect(response.status).to eq 403
+      expect(response).to have_gitlab_http_status(403)
     end
   end
 
@@ -48,14 +48,14 @@ describe API::GeoNodes, :geo, api: true do
     it 'retrieves the Geo nodes status if admin is logged in' do
       get api("/geo_nodes/status", admin)
 
-      expect(response.status).to eq 200
+      expect(response).to have_gitlab_http_status(200)
       expect(response).to match_response_schema('geo_node_statuses')
     end
 
     it 'denies access if not admin' do
       get api('/geo_nodes', user)
 
-      expect(response.status).to eq 403
+      expect(response).to have_gitlab_http_status(403)
     end
   end
 
@@ -65,7 +65,7 @@ describe API::GeoNodes, :geo, api: true do
       expect(GeoNodeStatus).not_to receive(:current_node_status)
       get api("/geo_nodes/#{secondary.id}/status", admin)
 
-      expect(response.status).to eq 200
+      expect(response).to have_gitlab_http_status(200)
       expect(response).to match_response_schema('geo_node_status')
     end
 
@@ -76,14 +76,14 @@ describe API::GeoNodes, :geo, api: true do
 
       get api("/geo_nodes/#{secondary.id}/status", admin)
 
-      expect(response.status).to eq 200
+      expect(response).to have_gitlab_http_status(200)
       expect(response).to match_response_schema('geo_node_status')
     end
 
     it 'denies access if not admin' do
       get api('/geo_nodes', user)
 
-      expect(response.status).to eq 403
+      expect(response).to have_gitlab_http_status(403)
     end
   end
 
@@ -93,11 +93,11 @@ describe API::GeoNodes, :geo, api: true do
       create(:geo_project_registry, :sync_failed)
 
       stub_current_geo_node(secondary)
-      expect(GeoNode).to receive(:find).and_return(secondary)
+      expect(Gitlab::Geo).to receive(:current_node).and_return(secondary)
 
       get api("/geo_nodes/#{secondary.id}/failures", admin)
 
-      expect(response.status).to eq 200
+      expect(response).to have_gitlab_http_status(200)
       expect(response).to match_response_schema('geo_project_registry')
     end
 
@@ -105,11 +105,11 @@ describe API::GeoNodes, :geo, api: true do
       create(:geo_project_registry, :synced)
 
       stub_current_geo_node(secondary)
-      expect(GeoNode).to receive(:find).and_return(secondary)
+      expect(Gitlab::Geo).to receive(:current_node).and_return(secondary)
 
       get api("/geo_nodes/#{secondary.id}/failures", admin)
 
-      expect(response.status).to eq 200
+      expect(response).to have_gitlab_http_status(200)
       expect(json_response.count).to be_zero
     end
 
@@ -119,11 +119,11 @@ describe API::GeoNodes, :geo, api: true do
         create(:geo_project_registry, :repository_sync_failed)
 
         stub_current_geo_node(secondary)
-        expect(GeoNode).to receive(:find).and_return(secondary)
+        expect(Gitlab::Geo).to receive(:current_node).and_return(secondary)
 
         get api("/geo_nodes/#{secondary.id}/failures?type=wiki", admin)
 
-        expect(response.status).to eq 200
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response.count).to eq(1)
         expect(json_response.first['wiki_retry_count']).to be > 0
       end
@@ -135,11 +135,11 @@ describe API::GeoNodes, :geo, api: true do
         create(:geo_project_registry, :repository_sync_failed)
 
         stub_current_geo_node(secondary)
-        expect(GeoNode).to receive(:find).and_return(secondary)
+        expect(Gitlab::Geo).to receive(:current_node).and_return(secondary)
 
         get api("/geo_nodes/#{secondary.id}/failures?type=repository", admin)
 
-        expect(response.status).to eq 200
+        expect(response).to have_gitlab_http_status(200)
         expect(json_response.count).to eq(1)
         expect(json_response.first['repository_retry_count']).to be > 0
       end
@@ -151,14 +151,14 @@ describe API::GeoNodes, :geo, api: true do
 
         get api("/geo_nodes/#{secondary.id}/failures?type=nonexistent", admin)
 
-        expect(response.status).to eq 400
+        expect(response).to have_gitlab_http_status(400)
       end
     end
 
     it 'denies access if not admin' do
       get api("/geo_nodes/#{secondary.id}/failures", user)
 
-      expect(response.status).to eq 403
+      expect(response).to have_gitlab_http_status(403)
     end
   end
 end
