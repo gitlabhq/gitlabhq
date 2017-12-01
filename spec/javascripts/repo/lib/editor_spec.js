@@ -92,37 +92,6 @@ describe('Multi-file editor library', () => {
 
       expect(instance.dirtyDiffController.reDecorate).toHaveBeenCalledWith(model);
     });
-<<<<<<< HEAD
-
-    describe('updateOptions', () => {
-      it('defaults readOnly to false', () => {
-        spyOn(instance.instance, 'updateOptions');
-
-        instance.attachModel(model);
-
-        expect(instance.instance.updateOptions).toHaveBeenCalledWith({
-          readOnly: false,
-        });
-      });
-
-      it('puts editor into readOnly mode when file is locked', () => {
-        spyOn(instance.instance, 'updateOptions');
-
-        Object.assign(model.file, {
-          file_lock: {
-            name: 'test',
-          },
-        });
-
-        instance.attachModel(model);
-
-        expect(instance.instance.updateOptions).toHaveBeenCalledWith({
-          readOnly: true,
-        });
-      });
-    });
-=======
->>>>>>> upstream/master
   });
 
   describe('clearEditor', () => {
