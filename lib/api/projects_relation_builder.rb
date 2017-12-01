@@ -10,7 +10,7 @@ module API
       end
 
       def preload_relation(projects_relation, options =  {})
-        raise NotImplementedError, 'self.preload_relation method must be defined and return a relation'
+        projects_relation
       end
 
       def forks_counting_projects(projects_relation)
