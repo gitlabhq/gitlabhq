@@ -148,7 +148,7 @@ class MergeRequest < ActiveRecord::Base
   # Use this method whenever you need to make sure the head_pipeline is synced with the
   # branch head commit, for example checking if a merge request can be merged.
   # For more information check: https://gitlab.com/gitlab-org/gitlab-ce/issues/40004
-  def current_head_pipeline
+  def actual_head_pipeline
     head_pipeline&.sha == diff_head_sha ? head_pipeline : nil
   end
 
@@ -831,7 +831,7 @@ class MergeRequest < ActiveRecord::Base
     return true unless project.only_allow_merge_if_pipeline_succeeds?
     return true unless head_pipeline
 
-    current_head_pipeline&.success? || current_head_pipeline&.skipped?
+    actual_head_pipeline&.success? || actual_head_pipeline&.skipped?
   end
 
   def environments_for(current_user)
@@ -1005,7 +1005,7 @@ class MergeRequest < ActiveRecord::Base
     return true if autocomplete_precheck
 
     return false unless mergeable?(skip_ci_check: true)
-    return false if current_head_pipeline && !(current_head_pipeline.success? || current_head_pipeline.active?)
+    return false if actual_head_pipeline && !(actual_head_pipeline.success? || actual_head_pipeline.active?)
     return false if last_diff_sha != diff_head_sha
 
     true

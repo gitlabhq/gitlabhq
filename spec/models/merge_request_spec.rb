@@ -840,20 +840,20 @@ describe MergeRequest do
       end
     end
 
-    describe '#current_head_pipeline' do
+    describe '#actual_head_pipeline' do
       it 'returns nil for MR with old pipeline' do
         pipeline = create(:ci_empty_pipeline, sha: 'notlatestsha')
         subject.update_attribute(:head_pipeline_id, pipeline.id)
 
-        expect(subject.current_head_pipeline).to be_nil
+        expect(subject.actual_head_pipeline).to be_nil
       end
 
       it 'returns the pipeline for MR with recent pipeline' do
         pipeline = create(:ci_empty_pipeline, sha: 'lastsha')
         subject.update_attribute(:head_pipeline_id, pipeline.id)
 
-        expect(subject.current_head_pipeline).to eq(subject.head_pipeline)
-        expect(subject.current_head_pipeline).to eq(pipeline)
+        expect(subject.actual_head_pipeline).to eq(subject.head_pipeline)
+        expect(subject.actual_head_pipeline).to eq(pipeline)
       end
     end
   end
