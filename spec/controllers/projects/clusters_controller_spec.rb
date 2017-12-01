@@ -33,20 +33,19 @@ describe Projects::ClustersController do
           expect(assigns(:inactive_count)).to eq(project.clusters.disabled.count)
         end
 
-        context 'properly paginates' do
+        context 'when page is specified' do
+          let(:last_page) { project.clusters.page.total_pages }
+
           before do
-            PAGE_LIMIT = 20
-            project.clusters = create_list(:cluster, PAGE_LIMIT + 1, :provided_by_gcp, projects: [project])
+            Clusters::Cluster.paginates_per(1)
+            create_list(:cluster, 2, :provided_by_gcp, projects: [project])
+            get :index, namespace_id: project.namespace, project_id: project, page: last_page
           end
 
-          it 'shows the first page' do
-            go
-            expect(assigns(:clusters).count).to eq(PAGE_LIMIT)
-          end
-
-          it 'shows the second page' do
-            get :index, namespace_id: project.namespace, project_id: project, page: 2
-            expect(assigns(:clusters).count).to eq(1)
+          it 'redirects to the page' do
+            binding.pry
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(assigns(:clusters).current_page).to eq(last_page)
           end
         end
 
