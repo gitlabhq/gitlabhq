@@ -12,6 +12,6 @@
           - else
             viewing an old version of the diff
       .pull-right
-        = link_to diffs_project_merge_request_path(@project, @merge_request), class: 'btn btn-sm' do
+        = link_to diffs_project_merge_request_path(@merge_request.project, @merge_request), class: 'btn btn-sm' do
           Show latest version
           = "of the diff" if @commit

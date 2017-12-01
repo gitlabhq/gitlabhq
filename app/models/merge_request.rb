@@ -927,10 +927,12 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def all_commits
-    diffs_relation = merge_request_diffs
-
     # MySQL doesn't support LIMIT in a subquery.
-    diffs_relation = diffs_relation.recent if Gitlab::Database.postgresql?
+    diffs_relation = if Gitlab::Database.postgresql?
+                       merge_request_diffs.recent
+                     else
+                       merge_request_diffs
+                     end
 
     MergeRequestDiffCommit
       .where(merge_request_diff: diffs_relation)
@@ -942,6 +944,7 @@ class MergeRequest < ActiveRecord::Base
   def all_commit_shas
     @all_commit_shas ||= begin
       return commit_shas unless persisted?
+
       all_commits.pluck(:sha).uniq
     end
   end
