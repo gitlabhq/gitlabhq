@@ -22,12 +22,9 @@ You must make the changes in the exact specific order:
 1. Take down your primary node (or make sure it will not go up during this
    process or you may lose data)
 1. Wait for any database replication to finish
-1. Promote the Postgres in your secondary node as primary
 1. Modify the `gitlab.rb` for both nodes to reflect their new statuses
 1. Log-in to your secondary node with a user with `sudo` permission
-1. Run `sudo gitlab-rake geo:set_secondary_as_primary`
-1. Rsync everything in `/var/opt/gitlab/gitlab-rails/uploads` and
-   `/var/opt/gitlab/gitlab-rails/shared` from your old node to the new one.
+1. Run `sudo gitlab-ctl promote-to-primary-node`
 
 To bring your old primary node back into use as a working secondary, you need to
 run `gitlab-ctl reconfigure` against the node and then follow the
