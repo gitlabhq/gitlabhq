@@ -120,26 +120,10 @@ class GeoNode < ActiveRecord::Base
     end
   end
 
-  def projects_include?(project_id)
-    return true if restricted_project_ids.nil?
-
-    restricted_project_ids.include?(project_id)
-  end
-
-  def restricted_project_ids
-    return unless namespaces.presence
-
-    relations = namespaces.map { |namespace| namespace.all_projects.select(:id) }
-
-    Project.unscoped
-       .from("(#{Gitlab::SQL::Union.new(relations).to_sql}) #{Project.table_name}")
-       .pluck(:id)
-  end
-
   def lfs_objects
     relation =
-      if restricted_project_ids
-        LfsObject.joins(:projects).where(projects: { id: restricted_project_ids })
+      if selective_sync?
+        LfsObject.joins(:projects).where(projects: { id: projects })
       else
         LfsObject.all
       end
@@ -148,16 +132,25 @@ class GeoNode < ActiveRecord::Base
   end
 
   def projects
-    if restricted_project_ids
-      Project.where(id: restricted_project_ids)
+    if selective_sync?
+      relations = namespaces.map { |namespace| namespace.all_projects.select(:id) }
+
+      Project.unscoped.
+        from("(#{Gitlab::SQL::Union.new(relations).to_sql}) #{Project.table_name}")
     else
       Project.all
     end
   end
 
+  def projects_include?(project_id)
+    return true unless selective_sync?
+
+    projects.where(id: project_id).exists?
+  end
+
   def project_registries
-    if restricted_project_ids
-      Geo::ProjectRegistry.where(project_id: restricted_project_ids)
+    if selective_sync?
+      Geo::ProjectRegistry.where(project_id: projects.pluck(:id))
     else
       Geo::ProjectRegistry.all
     end
@@ -174,11 +167,15 @@ class GeoNode < ActiveRecord::Base
     end
   end
 
+  def selective_sync?
+    namespaces.present?
+  end
+
   def uploads
-    if restricted_project_ids
+    if selective_sync?
       uploads_table   = Upload.arel_table
       group_uploads   = uploads_table[:model_type].eq('Namespace').and(uploads_table[:model_id].in(Gitlab::Geo.current_node.namespace_ids))
-      project_uploads = uploads_table[:model_type].eq('Project').and(uploads_table[:model_id].in(restricted_project_ids))
+      project_uploads = uploads_table[:model_type].eq('Project').and(uploads_table[:model_id].in(projects.pluck(:id)))
       other_uploads   = uploads_table[:model_type].not_in(%w[Namespace Project])
 
       Upload.where(group_uploads.or(project_uploads).or(other_uploads))
@@ -192,7 +189,7 @@ class GeoNode < ActiveRecord::Base
 
     relation = Geo::FileRegistry.lfs_objects.synced
 
-    if restricted_project_ids
+    if selective_sync?
       relation = relation.where(file_id: lfs_objects.pluck(:id))
     end
 

@@ -27,10 +27,10 @@ module Geo
     def uploads
       upload_model = Gitlab::Geo.fdw? ? Geo::Fdw::Upload : Upload
 
-      if selective_sync
+      if selective_sync?
         upload_table    = upload_model.arel_table
         group_uploads   = upload_table[:model_type].eq('Namespace').and(upload_table[:model_id].in(current_node.namespace_ids))
-        project_uploads = upload_table[:model_type].eq('Project').and(upload_table[:model_id].in(current_node.restricted_project_ids))
+        project_uploads = upload_table[:model_type].eq('Project').and(upload_table[:model_id].in(current_node.projects.pluck(:id)))
         other_uploads   = upload_table[:model_type].not_in(%w[Namespace Project])
 
         upload_model.where(group_uploads.or(project_uploads).or(other_uploads))

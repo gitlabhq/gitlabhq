@@ -268,26 +268,34 @@ describe GeoNode, type: :model do
     end
   end
 
-  describe '#restricted_project_ids' do
-    context 'without namespace restriction' do
-      it 'returns nil' do
-        expect(node.restricted_project_ids).to be_nil
-      end
+  describe '#projects' do
+    let(:group_1) { create(:group) }
+    let(:group_2) { create(:group) }
+    let(:nested_group_1) { create(:group, parent: group_1) }
+    let!(:project_1) { create(:project, group: group_1) }
+    let!(:project_2) { create(:project, group: nested_group_1) }
+    let!(:project_3) { create(:project, group: group_2) }
+
+    it 'returns all projects without selective sync' do
+      expect(node.projects).to match_array([project_1, project_2, project_3])
     end
 
-    context 'with namespace restrictions' do
-      it 'returns an array with unique project ids that belong to the namespaces' do
-        group_1 = create(:group)
-        group_2 = create(:group)
-        nested_group_1 = create(:group, parent: group_1)
-        project_1 = create(:project, group: group_1)
-        project_2 = create(:project, group: nested_group_1)
-        project_3 = create(:project, group: group_2)
+    it 'returns projects that belong to the namespaces with selective sync' do
+      node.update_attribute(:namespaces, [group_1, nested_group_1])
 
-        node.update_attribute(:namespaces, [group_1, group_2, nested_group_1])
+      expect(node.projects).to match_array([project_1, project_2])
+    end
+  end
 
-        expect(node.restricted_project_ids).to match_array([project_1.id, project_2.id, project_3.id])
-      end
+  describe '#selective_sync?' do
+    it 'returns true when Geo node has namespace restrictions' do
+      node.update_attribute(:namespaces, [create(:group)])
+
+      expect(node.selective_sync?).to be true
+    end
+
+    it 'returns false when Geo node does not have namespace restrictions' do
+      expect(node.selective_sync?).to be false
     end
   end
 
