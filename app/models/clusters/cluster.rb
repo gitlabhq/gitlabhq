@@ -26,8 +26,8 @@ module Clusters
     accepts_nested_attributes_for :provider_gcp, update_only: true
     accepts_nested_attributes_for :platform_kubernetes, update_only: true
 
-    validates :environment_scope, uniqueness: { scope: :project_id }
     validates :name, cluster_name: true
+    validate :unique_environment_scope
     validate :restrict_modification, on: :update
 
     delegate :status, to: :provider, allow_nil: true
@@ -92,6 +92,15 @@ module Clusters
     end
 
     private
+
+    def unique_environment_scope
+      if project.clusters.where(environment_scope: environment_scope).any?
+        errors.add(:base, "cannot add duplicated environment scope")
+        return false
+      end
+
+      true
+    end
 
     def restrict_modification
       if provider&.on_creation?
