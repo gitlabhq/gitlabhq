@@ -239,13 +239,13 @@ describe Clusters::Platforms::Kubernetes, :use_clean_rails_memory_store_caching 
       it { is_expected.to be_nil }
     end
 
-    context 'when kubernetes responds with valid pods' do
+    context 'when kubernetes responds with valid pods and deployments' do
       before do
         stub_kubeclient_pods
         stub_kubeclient_deployments
       end
 
-      it { is_expected.to eq(pods: [kube_pod]) }
+      it { is_expected.to eq(pods: [kube_pod], deployments: [kube_deployment]) }
     end
 
     context 'when kubernetes responds with 500s' do
