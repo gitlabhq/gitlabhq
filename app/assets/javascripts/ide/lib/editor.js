@@ -32,6 +32,9 @@ export default class Editor {
           readOnly: false,
           contextmenu: true,
           scrollBeyondLastLine: false,
+          minimap: {
+            enabled: false,
+          },
         }),
         this.dirtyDiffController = new DirtyDiffController(
           this.modelManager, this.decorationsController,
