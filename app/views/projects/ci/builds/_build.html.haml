@@ -22,7 +22,7 @@
     - if ref
       - if job.ref
         .icon-container
-          = job.tag? ? icon('tag') : icon('code-fork')
+          = job.tag? ? icon('tag') : sprite_icon('fork', css_class: 'sprite')
         = link_to job.ref, project_ref_path(job.project, job.ref), class: "ref-name"
       - else
         .light none

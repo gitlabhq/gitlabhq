@@ -1,6 +1,6 @@
 import tooltip from '../../vue_shared/directives/tooltip';
 import { pluralize } from '../../lib/utils/text_utility';
-import { spriteIcon } from '../../lib/utils/common_utils';
+import Icon from '../../vue_shared/components/icon.vue';
 
 export default {
   name: 'MRWidgetHeader',
@@ -9,6 +9,9 @@ export default {
   },
   directives: {
     tooltip,
+  },
+  components: {
+    Icon,
   },
   computed: {
     shouldShowCommitsBehindText() {
@@ -25,9 +28,6 @@ export default {
         text: this.mr.sourceBranch,
         gfm: `\`${this.mr.sourceBranch}\``,
       });
-    },
-    downloadIcon() {
-      return spriteIcon('download');
     },
   },
   methods: {
@@ -85,9 +85,9 @@ export default {
             data-toggle="dropdown"
             aria-label="Download as"
             role="button">
-            <i
-              v-html="downloadIcon">
-            </i>
+            <icon
+              name="download">
+            </icon>
             <i
               class="fa fa-caret-down"
               aria-hidden="true">
