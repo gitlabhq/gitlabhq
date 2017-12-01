@@ -36,14 +36,21 @@ describe Projects::ClustersController do
           expect(assigns(:inactive_count)).to eq(project.clusters.disabled.count)
         end
 
-        it 'properly paginates' do
-          PAGE_LIMIT = 20
-          project.clusters = create_list(:cluster, PAGE_LIMIT + 1, :provided_by_gcp, projects: [project])
-          go
+        context 'properly paginates' do
+          before do
+            PAGE_LIMIT = 20
+            project.clusters = create_list(:cluster, PAGE_LIMIT + 1, :provided_by_gcp, projects: [project])
+          end
 
-          expect(assigns(:clusters).count).to eq(20)
-          get :index, namespace_id: project.namespace, project_id: project, page: 2
-          expect(assigns(:clusters).count).to eq(1)
+          it 'shows the first page' do
+            go
+            expect(assigns(:clusters).count).to eq(PAGE_LIMIT)
+          end
+
+          it 'shows the second page' do
+            get :index, namespace_id: project.namespace, project_id: project, page: 2
+            expect(assigns(:clusters).count).to eq(1)
+          end
         end
 
         context 'when only enabled clusters are requested' do
