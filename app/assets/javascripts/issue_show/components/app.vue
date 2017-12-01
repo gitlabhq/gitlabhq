@@ -155,9 +155,22 @@ export default {
     closeForm() {
       this.showForm = false;
     },
+
+    checkForSpam(data) {
+      if (!data.recaptcha_html) return data;
+
+      this.formState.recaptchaHTML = data.recaptcha_html;
+
+      const spamError = new Error(data.error_message);
+      spamError.name = 'SpamError';
+
+      throw spamError;
+    },
+
     updateIssuable() {
       this.service.updateIssuable(this.store.formState)
         .then(res => res.json())
+        .then(data => this.checkForSpam(data))
         .then((data) => {
           if (location.pathname !== data.web_url) {
             gl.utils.visitUrl(data.web_url);
@@ -170,9 +183,11 @@ export default {
           this.store.updateState(data);
           eventHub.$emit('close.form');
         })
-        .catch(() => {
-          eventHub.$emit('close.form');
-          window.Flash(`Error updating ${this.issuableType}`);
+        .catch((error) => {
+          if (error.name !== 'SpamError') eventHub.$emit('close.form');
+
+          const errorMessage = error.message || `Error updating ${this.issuableType}`;
+          window.Flash(errorMessage);
         });
     },
     deleteIssuable() {
