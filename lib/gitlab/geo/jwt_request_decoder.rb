@@ -1,10 +1,10 @@
 module Gitlab
   module Geo
-    include LogHelpers
-
     InvalidDecryptionKeyError = Class.new(StandardError)
 
     class JwtRequestDecoder
+      include LogHelpers
+
       IAT_LEEWAY = 60.seconds.to_i
 
       def self.geo_auth_attempt?(header)
