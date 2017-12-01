@@ -1427,3 +1427,15 @@ Read more in the [Branches](branches.md) documentation.
 ## Project members
 
 Read more in the [Project members](members.md) documentation.
+
+## Start the pull mirroring process for a Project
+
+> Introduced in GitLab 10.3. **Note:** Available in [GitLab Enterprise Edition Starter](https://about.gitlab.com/gitlab-ee).
+
+```
+POST /projects/:id/mirror/pull
+```
+
+| Attribute | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |

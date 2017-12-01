@@ -17,7 +17,7 @@ describe Geo::BaseSyncService do
   end
 
   describe '#primary_ssh_path_prefix' do
-    let!(:primary_node) { create(:geo_node, :primary, host: 'primary-geo-node') }
+    let!(:primary_node) { create(:geo_node, :primary) }
 
     it 'raises exception when clone_url_prefix is nil' do
       allow_any_instance_of(GeoNode).to receive(:clone_url_prefix) { nil }

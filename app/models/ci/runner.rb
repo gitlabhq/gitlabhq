@@ -1,6 +1,7 @@
 module Ci
   class Runner < ActiveRecord::Base
     extend Gitlab::Ci::Model
+    include Gitlab::SQL::Pattern
     prepend EE::Ci::Runner
 
     RUNNER_QUEUE_EXPIRY_TIME = 60.minutes
@@ -60,10 +61,7 @@ module Ci
     #
     # Returns an ActiveRecord::Relation.
     def self.search(query)
-      t = arel_table
-      pattern = "%#{query}%"
-
-      where(t[:token].matches(pattern).or(t[:description].matches(pattern)))
+      fuzzy_search(query, [:token, :description])
     end
 
     def self.contact_time_deadline

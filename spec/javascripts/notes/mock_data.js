@@ -18,7 +18,7 @@ export const userDataMock = {
   username: 'root',
 };
 
-export const issueDataMock = {
+export const noteableDataMock = {
   assignees: [],
   author_id: 1,
   branch_name: null,

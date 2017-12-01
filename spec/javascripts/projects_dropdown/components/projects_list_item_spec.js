@@ -50,6 +50,18 @@ describe('ProjectsListItemComponent', () => {
         expect(vm.highlightedProjectName).toBe(mockProject.name);
       });
     });
+
+    describe('truncatedNamespace', () => {
+      it('should truncate project name from namespace string', () => {
+        vm.namespace = 'platform / nokia-3310';
+        expect(vm.truncatedNamespace).toBe('platform');
+      });
+
+      it('should truncate namespace string from the middle if it includes more than two groups in path', () => {
+        vm.namespace = 'platform / hardware / broadcom / Wifi Group / Mobile Chipset / nokia-3310';
+        expect(vm.truncatedNamespace).toBe('platform / ... / Mobile Chipset');
+      });
+    });
   });
 
   describe('template', () => {

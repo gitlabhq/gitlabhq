@@ -2,7 +2,7 @@
 import Vue from 'vue';
 import store from '~/notes/stores';
 import noteBody from '~/notes/components/issue_note_body.vue';
-import { issueDataMock, notesDataMock, note } from '../mock_data';
+import { noteableDataMock, notesDataMock, note } from '../mock_data';
 
 describe('issue_note_body component', () => {
   let vm;
@@ -10,7 +10,7 @@ describe('issue_note_body component', () => {
   beforeEach(() => {
     const Component = Vue.extend(noteBody);
 
-    store.dispatch('setIssueData', issueDataMock);
+    store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
 
     vm = new Component({

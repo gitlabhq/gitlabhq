@@ -2,8 +2,7 @@ class Projects::MirrorsController < Projects::ApplicationController
   include RepositorySettingsRedirect
   include SafeMirrorParams
   # Authorize
-  before_action :authorize_admin_project!, except: [:update_now]
-  before_action :authorize_push_code!, only: [:update_now]
+  before_action :authorize_admin_project!
   before_action :remote_mirror, only: [:update]
   before_action :check_repository_mirrors_available!
 

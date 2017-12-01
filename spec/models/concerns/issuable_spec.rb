@@ -67,6 +67,7 @@ describe Issuable do
 
   describe ".search" do
     let!(:searchable_issue) { create(:issue, title: "Searchable awesome issue") }
+    let!(:searchable_issue2) { create(:issue, title: 'Aw') }
 
     it 'returns issues with a matching title' do
       expect(issuable_class.search(searchable_issue.title))
@@ -86,8 +87,8 @@ describe Issuable do
       expect(issuable_class.search('searchable issue')).to eq([searchable_issue])
     end
 
-    it 'returns all issues with a query shorter than 3 chars' do
-      expect(issuable_class.search('zz')).to eq(issuable_class.all)
+    it 'returns issues with a matching title for a query shorter than 3 chars' do
+      expect(issuable_class.search(searchable_issue2.title.downcase)).to eq([searchable_issue2])
     end
   end
 
@@ -95,6 +96,7 @@ describe Issuable do
     let!(:searchable_issue) do
       create(:issue, title: "Searchable awesome issue", description: 'Many cute kittens')
     end
+    let!(:searchable_issue2) { create(:issue, title: "Aw", description: "Cu") }
 
     it 'returns issues with a matching title' do
       expect(issuable_class.full_search(searchable_issue.title))
@@ -133,8 +135,8 @@ describe Issuable do
       expect(issuable_class.full_search('many kittens')).to eq([searchable_issue])
     end
 
-    it 'returns all issues with a query shorter than 3 chars' do
-      expect(issuable_class.search('zz')).to eq(issuable_class.all)
+    it 'returns issues with a matching description for a query shorter than 3 chars' do
+      expect(issuable_class.full_search(searchable_issue2.description.downcase)).to eq([searchable_issue2])
     end
   end
 

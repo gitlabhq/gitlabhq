@@ -229,6 +229,8 @@ module EE
     end
 
     def force_import_job!
+      return if scheduled_mirror? || updating_mirror?
+
       mirror_data = self.mirror_data
 
       mirror_data.set_next_execution_to_now

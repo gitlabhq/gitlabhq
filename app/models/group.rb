@@ -68,20 +68,6 @@ class Group < Namespace
       Gitlab::Database.postgresql?
     end
 
-    # Searches for groups matching the given query.
-    #
-    # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
-    #
-    # query - The search query as a String
-    #
-    # Returns an ActiveRecord::Relation.
-    def search(query)
-      table   = Namespace.arel_table
-      pattern = "%#{query}%"
-
-      where(table[:name].matches(pattern).or(table[:path].matches(pattern)))
-    end
-
     def sort(method)
       if method == 'storage_size_desc'
         # storage_size is a virtual column so we need to

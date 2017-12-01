@@ -7,7 +7,7 @@ work for on-premises installations where you can configure the
 with Slack on making this configurable for all GitLab installations, but there's
 no ETA.
 It was first introduced in GitLab 9.4 and distributed to Slack App Directory in
-GitLab 10.2 (with availability toward the end of November 2017).
+GitLab 10.2.
 
 Slack provides a native application which you can enable via your project's
 integrations on GitLab.com.
@@ -15,11 +15,8 @@ integrations on GitLab.com.
 ## Slack App Directory 
 
 The simplest way to enable the GitLab Slack application for your workspace is to
-install the GitLab application from
+install the [GitLab application](https://slack-platform.slack.com/apps/A676ADMV5-gitlab) from
 the [Slack App Directory](https://slack.com/apps).
-
-> This will be available toward the end of November 2017, and the docs will be updated here
-when it is ready.
 
 Clicking install will take you to the
 [GitLab Slack application landing page](https://gitlab.com/profile/slack/edit)

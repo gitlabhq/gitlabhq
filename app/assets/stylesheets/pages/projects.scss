@@ -299,14 +299,7 @@
     }
 
     svg {
-
-      path {
-        fill: $layout-link-gray;
-      }
-
-      use {
-        stroke: $layout-link-gray;
-      }
+      fill: $layout-link-gray;
     }
 
     .fa-caret-down {
@@ -408,6 +401,18 @@
       &:hover {
         background: $white-light;
       }
+    }
+  }
+
+  .clone-dropdown-btn {
+    background-color: $white-light;
+  }
+
+  .clone-options-dropdown {
+    min-width: 240px;
+
+    .dropdown-menu-inner-content {
+      min-width: 320px;
     }
   }
 }
@@ -891,10 +896,6 @@ pre.light-well {
 
   h3 {
     font-size: $gl-font-size;
-  }
-
-  a {
-    color: $gl-text-color;
   }
 
   .avatar-container,

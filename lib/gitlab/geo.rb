@@ -18,11 +18,7 @@ module Gitlab
     FDW_SCHEMA = 'gitlab_secondary'.freeze
 
     def self.current_node
-      self.cache_value(:geo_node_current) do
-        GeoNode.find_by(host: Gitlab.config.gitlab.host,
-                        port: Gitlab.config.gitlab.port,
-                        relative_url_root: Gitlab.config.gitlab.relative_url_root)
-      end
+      self.cache_value(:geo_node_current) { GeoNode.current_node }
     end
 
     def self.primary_node
@@ -70,10 +66,6 @@ module Gitlab
 
     def self.license_allows?
       ::License.feature_available?(:geo)
-    end
-
-    def self.geo_node?(host:, port:)
-      GeoNode.where(host: host, port: port).exists?
     end
 
     def self.fdw?

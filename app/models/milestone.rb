@@ -14,6 +14,7 @@ class Milestone < ActiveRecord::Base
   include StripAttribute
   include Elastic::MilestonesSearch
   include Milestoneish
+  include Gitlab::SQL::Pattern
 
   include ::EE::Milestone
 
@@ -77,10 +78,7 @@ class Milestone < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      t = arel_table
-      pattern = "%#{query}%"
-
-      where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
+      fuzzy_search(query, [:title, :description])
     end
 
     def filter_by_state(milestones, state)

@@ -32,7 +32,6 @@ describe EE::GitlabRoutingHelper do
     context 'HTTP' do
       before do
         allow(helper).to receive(:default_clone_protocol).and_return('http')
-        primary.update!(schema: 'http')
       end
 
       context 'project' do
@@ -51,7 +50,7 @@ describe EE::GitlabRoutingHelper do
     context 'HTTPS' do
       before do
         allow(helper).to receive(:default_clone_protocol).and_return('https')
-        primary.update!(schema: 'https')
+        primary.update!(url: 'https://localhost:123/relative')
       end
 
       context 'project' do

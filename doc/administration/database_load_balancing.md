@@ -156,6 +156,40 @@ log entries easier. For example:
 [DB-LB] Host 10.123.2.7 came back online
 ```
 
+## Handling Stale Reads
+
+> [Introduced][ee-3526] in [GitLab Enterprise Edition Premium][eep] 10.3.
+
+To prevent reading from an outdated secondary the load balancer will check if it
+is in sync with the primary. If the data is determined to be recent enough the
+secondary can be used, otherwise it will be ignored. To reduce the overhead of
+these checks we only perform these checks at certain intervals.
+
+There are three configuration options that influence this behaviour:
+
+| Option                       | Description                                                                                                    | Default    |
+|------------------------------|----------------------------------------------------------------------------------------------------------------|------------|
+| `max_replication_difference` | The amount of data (in bytes) a secondary is allowed to lag behind when it hasn't replicated data for a while. | 8 MB       |
+| `max_replication_lag_time`   | The maximum number of seconds a secondary is allowed to lag behind before we stop using it.                    | 60 seconds |
+| `replica_check_interval`     | The minimum number of seconds we have to wait before checking the status of a secondary.                       | 60 seconds |
+
+The defaults should be sufficient for most users. Should you want to change them
+you can specify them in `config/database.yml` like so:
+
+```yaml
+production:
+  username: gitlab
+  database: gitlab
+  encoding: unicode
+  load_balancing:
+    hosts:
+      - host1.example.com
+      - host2.example.com
+    max_replication_difference: 16777216 # 16 MB
+    max_replication_lag_time: 30
+    replica_check_interval: 30
+```
+
 [hot-standby]: https://www.postgresql.org/docs/9.6/static/hot-standby.html
 [ee-1283]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/1283
 [eep]: https://about.gitlab.com/gitlab-ee/
@@ -163,3 +197,4 @@ log entries easier. For example:
 [restart gitlab]: restart_gitlab.md#installations-from-source "How to restart GitLab"
 [wikipedia]: https://en.wikipedia.org/wiki/Load_balancing_(computing)
 [db-req]: ../install/requirements.md#database
+[ee-3526]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3526
