@@ -14,13 +14,18 @@ export default {
   directives: {
     tooltip,
   },
+  props: {
+    collapsed: {
+      type: Boolean,
+      required: true,
+    },
+  },
   data() {
     return {
       showNewBranchDialog: false,
       submitCommitsLoading: false,
       startNewMR: false,
       commitMessage: '',
-      collapsed: true,
     };
   },
   computed: {
@@ -93,13 +98,8 @@ export default {
 </script>
 
 <template>
-<div
-  class="multi-file-commit-panel"
-  :class="{
-    'is-collapsed': collapsed,
-  }"
->
-  <popup-dialog
+<div class="multi-file-commit-panel-section">
+  <popup-di1og
     v-if="showNewBranchDialog"
     :primary-button-label="__('Create new branch')"
     kind="primary"
@@ -108,18 +108,16 @@ export default {
     @toggle="showNewBranchDialog = false"
     @submit="makeCommit(true)"
   />
-  <button
-    v-if="collapsed"
-    type="button"
-    class="btn btn-transparent multi-file-commit-panel-collapse-btn is-collapsed prepend-top-10 append-bottom-10"
-    @click="toggleCollapsed"
-  >
-    <i
-      aria-hidden="true"
-      class="fa fa-angle-double-left"
-    >
-    </i>
-  </button>
+  <div>
+    <icon
+      name="list-bulleted"
+      :size="18"
+      css-classes="append-right-default"
+    />
+    <template v-if="!collapsed">
+      Staged
+    </template>
+  </div>
   <commit-files-list
     title="Staged"
     :file-list="changedFiles"
