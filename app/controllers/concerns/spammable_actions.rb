@@ -33,7 +33,16 @@ module SpammableActions
         flash[:alert] = 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
       end
 
-      render :verify
+
+      respond_to do |format|
+        format.html do
+          render :verify
+        end
+
+        format.json do
+          render json: { html: render_to_string(:verify, formats: :html) }
+        end
+      end
     else
       yield
     end
