@@ -71,6 +71,34 @@ describe Boards::Issues::ListService, services: true do
 
           expect(issues).to match_array([opened_issue2, list1_issue2, reopened_issue1, opened_issue1])
         end
+
+        context 'when milestone is predefined' do
+          let(:params) { { board_id: board.id, id: backlog.id } }
+
+          context 'as upcoming' do
+            before do
+              board.update(milestone_id: Milestone::Upcoming.id)
+            end
+
+            it 'returns open issue for backlog without board label' do
+              issues = described_class.new(group, user, params).execute
+
+              expect(issues).to match_array([opened_issue2, reopened_issue1, opened_issue1])
+            end
+          end
+
+          context 'as started' do
+            before do
+              board.update(milestone_id: Milestone::Started.id)
+            end
+
+            it 'returns open issue for backlog without board label' do
+              issues = described_class.new(group, user, params).execute
+
+              expect(issues).to match_array([opened_issue2, reopened_issue1, opened_issue1])
+            end
+          end
+        end
       end
     end
 
