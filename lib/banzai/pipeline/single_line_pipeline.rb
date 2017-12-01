@@ -10,13 +10,14 @@ module Banzai
           Filter::AutolinkFilter,
           Filter::ExternalLinkFilter,
 
+          Filter::EpicReferenceFilter,
           Filter::UserReferenceFilter,
           Filter::IssueReferenceFilter,
           Filter::ExternalIssueReferenceFilter,
           Filter::MergeRequestReferenceFilter,
           Filter::SnippetReferenceFilter,
           Filter::CommitRangeReferenceFilter,
-          Filter::CommitReferenceFilter,
+          Filter::CommitReferenceFilter
         ]
       end
     end
