@@ -29,10 +29,8 @@ module SpammableActions
     elsif render_recaptcha?
       ensure_spam_config_loaded!
 
-      error_message = 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
-
       if params[:recaptcha_verification]
-        flash[:alert] = error_message
+        flash[:alert] = 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
       end
 
 
@@ -42,9 +40,9 @@ module SpammableActions
         end
 
         format.json do
-          recaptcha_html = render_to_string('shared/_recaptcha_fields', formats: :html, locals: { spammable: spammable })
+          recaptcha_html = render_to_string(partial: 'shared/recaptcha_fields', formats: :html, locals: { spammable: spammable })
 
-          render json: { recaptcha_html: recaptcha_html, error_message: error_message }
+          render json: { recaptcha_html: recaptcha_html }
         end
       end
     else

@@ -8,6 +8,7 @@ import titleComponent from './title.vue';
 import descriptionComponent from './description.vue';
 import editedComponent from './edited.vue';
 import formComponent from './form.vue';
+import PopupDialog from '../../vue_shared/components/popup_dialog.vue';
 import '../../lib/utils/url_utility';
 
 export default {
@@ -123,7 +124,9 @@ export default {
     return {
       store,
       state: store.state,
+      recaptchaHTML: '',
       showForm: false,
+      showRecaptcha: false,
     };
   },
   computed: {
@@ -139,6 +142,7 @@ export default {
     titleComponent,
     editedComponent,
     formComponent,
+    PopupDialog,
   },
   methods: {
     openForm() {
@@ -156,10 +160,19 @@ export default {
       this.showForm = false;
     },
 
+    closeRecaptcha() {
+      this.showRecaptcha = false;
+    },
+
+    submitRecaptcha() {
+      console.log('submitRecaptcha!');
+      this.closeRecaptcha();
+    },
+
     checkForSpam(data) {
       if (!data.recaptcha_html) return data;
 
-      this.formState.recaptchaHTML = data.recaptcha_html;
+      this.recaptchaHTML = data.recaptcha_html;
 
       const spamError = new Error(data.error_message);
       spamError.name = 'SpamError';
@@ -184,10 +197,13 @@ export default {
           eventHub.$emit('close.form');
         })
         .catch((error) => {
-          if (error.name !== 'SpamError') eventHub.$emit('close.form');
+          if (error.name === 'SpamError') {
+            this.showRecaptcha = true;
+            return;
+          }
 
-          const errorMessage = error.message || `Error updating ${this.issuableType}`;
-          window.Flash(errorMessage);
+          eventHub.$emit('close.form');
+          window.Flash(`Error updating ${this.issuableType}`);
         });
     },
     deleteIssuable() {
@@ -243,9 +259,9 @@ export default {
 </script>
 
 <template>
-  <div>
+<div>
+  <div v-if="canUpdate && showForm">
     <form-component
-      v-if="canUpdate && showForm"
       :form-state="formState"
       :can-destroy="canDestroy"
       :issuable-templates="issuableTemplates"
@@ -256,28 +272,40 @@ export default {
       :show-delete-button="showDeleteButton"
       :can-attach-file="canAttachFile"
     />
-    <div v-else>
-      <title-component
-        :issuable-ref="issuableRef"
-        :can-update="canUpdate"
-        :title-html="state.titleHtml"
-        :title-text="state.titleText"
-        :show-inline-edit-button="showInlineEditButton"
-      />
-      <description-component
-        v-if="state.descriptionHtml"
-        :can-update="canUpdate"
-        :description-html="state.descriptionHtml"
-        :description-text="state.descriptionText"
-        :updated-at="state.updatedAt"
-        :task-status="state.taskStatus"
-      />
-      <edited-component
-        v-if="hasUpdated"
-        :updated-at="state.updatedAt"
-        :updated-by-name="state.updatedByName"
-        :updated-by-path="state.updatedByPath"
-      />
-    </div>
+    <popup-dialog
+      v-show="showRecaptcha"
+      kind="warning"
+      :primary-button-label="__('Submit')"
+      :title="__('Please solve the reCAPTCHA.')"
+      :text="__('testtest')"
+      @toggle="closeRecaptcha"
+      @submit="submitRecaptcha"
+    >
+      <div slot="body" v-html="recaptchaHTML"></div>
+    </popup-dialog>
   </div>
+  <div v-else>
+    <title-component
+      :issuable-ref="issuableRef"
+      :can-update="canUpdate"
+      :title-html="state.titleHtml"
+      :title-text="state.titleText"
+      :show-inline-edit-button="showInlineEditButton"
+    />
+    <description-component
+      v-if="state.descriptionHtml"
+      :can-update="canUpdate"
+      :description-html="state.descriptionHtml"
+      :description-text="state.descriptionText"
+      :updated-at="state.updatedAt"
+      :task-status="state.taskStatus"
+    />
+    <edited-component
+      v-if="hasUpdated"
+      :updated-at="state.updatedAt"
+      :updated-by-name="state.updatedByName"
+      :updated-by-path="state.updatedByPath"
+    />
+  </div>
+</div>
 </template>

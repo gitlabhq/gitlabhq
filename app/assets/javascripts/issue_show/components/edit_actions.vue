@@ -50,7 +50,6 @@
 
 <template>
   <div class="prepend-top-default append-bottom-default clearfix">
-    <div v-html="formState.recaptchaHTML"></div>
     <button
       class="btn btn-save pull-left"
       :class="{ disabled: formState.updateLoading || !isSubmitEnabled }"

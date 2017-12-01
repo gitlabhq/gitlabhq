@@ -5,7 +5,7 @@
     = hidden_field(resource_name, field, value: value)
   = hidden_field_tag(:spam_log_id, spammable.spam_log.id)
   = hidden_field_tag(:recaptcha_verification, true)
-  = recaptcha_tags options: { script: false }
+  = recaptcha_tags
 
   -# Yields a block with given extra params.
     = yield
