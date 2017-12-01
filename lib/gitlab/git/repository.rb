@@ -1222,6 +1222,8 @@ module Gitlab
       end
 
       def git_merged_branch_names(branch_names = [])
+        return [] unless root_ref
+
         lines = run_git(['branch', '--merged', root_ref] + branch_names)
           .first.lines
 
