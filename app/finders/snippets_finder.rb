@@ -13,16 +13,16 @@
 # params are optional
 class SnippetsFinder < UnionFinder
   include Gitlab::Allowable
-  attr_accessor :current_user, :params
+  attr_accessor :current_user, :params, :project
 
   def initialize(current_user, params = {})
     @current_user = current_user
     @params = params
+    @project = params[:project]
   end
 
   def execute
     items = init_collection
-    items = by_authorization(items)
     items = by_author(items)
     items = by_visibility(items)
 
@@ -32,26 +32,39 @@ class SnippetsFinder < UnionFinder
   private
 
   def init_collection
-    if params[:project].present?
-      if can?(current_user, :read_project_snippet, params[:project])
-        params[:project].snippets
-      else
-        Snippet.none
-      end
+    if project.present?
+      authorized_snippets_from_project
     else
-      Snippet.where(visible_snippets)
+      authorized_snippets
     end
   end
 
-  def visible_snippets
-    table[:project_id]
-      .in(feature_available_projects)
-      .or(not_project_related)
+  def authorized_snippets_from_project
+    if can?(current_user, :read_project_snippet, project)
+      if project.team.member?(current_user)
+        project.snippets
+      else
+        project.snippets.public_to_user(current_user)
+      end
+    else
+      Snippet.none
+    end
+  end
+
+  def authorized_snippets
+    snippets = Snippet.where(feature_available_projects.or(not_project_related))
+
+    segments = []
+    segments << from_authorized_projects(snippets) if current_user
+    segments << snippets.public_to_user(current_user)
+    find_union(segments, Snippet)
   end
 
   def feature_available_projects
-    projects = Project.with_feature_available_for_user(:snippets, current_user).select(:id)
-    Arel::Nodes::SqlLiteral.new(projects.to_sql)
+    projects = Project.public_or_visible_to_user(current_user)
+      .with_feature_available_for_user(:snippets, current_user).select(:id)
+    arel_query = Arel::Nodes::SqlLiteral.new(projects.to_sql)
+    table[:project_id].in(arel_query)
   end
 
   def not_project_related
@@ -62,42 +75,12 @@ class SnippetsFinder < UnionFinder
     Snippet.arel_table
   end
 
-  def by_authorization(items)
-    segments = []
-    segments << snippets_from_authorized_projects(items) if current_user && !params[:project].present?
-    segments << authorized_snippets_to_user(items)
-    find_union(segments, Snippet)
-  end
-
-  def snippets_from_authorized_projects(items)
-    items.where(
+  def from_authorized_projects(snippets)
+    snippets.where(
       'author_id = :author_id
        OR project_id IN (:project_ids)',
        author_id: current_user.id,
        project_ids: current_user.authorized_projects.select(:id))
-  end
-
-  def authorized_snippets_to_user(items)
-    if params[:project].present? && project_member?
-      items
-    else
-      items.where(snippets_from_public_projects).public_to_user(current_user)
-    end
-  end
-
-  def project_member?
-    params[:project].team.member?(current_user)
-  end
-
-  def snippets_from_public_projects
-    table[:project_id]
-      .in(projects_public_to_user)
-      .or(not_project_related)
-  end
-
-  def projects_public_to_user
-    projects = Project.public_to_user(current_user).select(:id)
-    Arel::Nodes::SqlLiteral.new(projects.to_sql)
   end
 
   def by_visibility(items)
