@@ -1,3 +1,6 @@
+# Service class for getting and caching the number of elements of several projects
+# Warning: do not user this service with a really large set of projects
+# because the service use maps to retrieve the project ids.
 module Projects
   class BatchCountService
     def initialize(projects)
@@ -14,8 +17,6 @@ module Projects
     end
 
     def project_ids
-      return @projects if @projects.is_a?(ActiveRecord::Relation)
-
       @projects.map(&:id)
     end
 
