@@ -24,7 +24,7 @@ describe Gitlab::SidekiqCluster::CLI do
         it 'starts Sidekiq workers for all queues on sidekiq_queues.yml except the ones on argv' do
           expect(Gitlab::SidekiqConfig).to receive(:config_queues).and_return(['baz'])
           expect(Gitlab::SidekiqCluster).to receive(:start)
-                                              .with([['baz']], 'test', Dir.pwd)
+                                              .with([['baz']], 'test', Dir.pwd, dryrun: false)
                                               .and_return([])
           expect(cli).to receive(:write_pid)
           expect(cli).to receive(:trap_signals)

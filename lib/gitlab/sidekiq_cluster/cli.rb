@@ -15,6 +15,7 @@ module Gitlab
         @processes = []
         @logger = Logger.new(log_output)
         @rails_path = Dir.pwd
+        @dryrun = false
 
         # Use a log format similar to Sidekiq to make parsing/grepping easier.
         @logger.formatter = proc do |level, date, program, message|
@@ -39,7 +40,9 @@ module Gitlab
 
         @logger.info("Starting cluster with #{queue_groups.length} processes")
 
-        @processes = SidekiqCluster.start(queue_groups, @environment, @rails_path)
+        @processes = SidekiqCluster.start(queue_groups, @environment, @rails_path, dryrun: @dryrun)
+
+        return if @dryrun
 
         write_pid
         trap_signals
@@ -104,6 +107,10 @@ module Gitlab
 
           opt.on('-i', '--interval INT', 'The number of seconds to wait between worker checks') do |int|
             @interval = int.to_i
+          end
+
+          opt.on('-d', '--dryrun', 'Print commands that would be run without this flag, and quit') do |int|
+            @dryrun = true
           end
         end
       end
