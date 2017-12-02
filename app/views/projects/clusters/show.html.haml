@@ -49,9 +49,9 @@
 
           %button{ type: 'button',
             class: "js-toggle-cluster project-feature-toggle #{'is-checked' unless !@cluster.enabled?} #{'is-disabled' unless can?(current_user, :update_cluster, @cluster)}",
-            'aria-label': s_('ClusterIntegration|Toggle Cluster'),
+            "aria-label": s_("ClusterIntegration|Toggle Cluster"),
             disabled: !can?(current_user, :update_cluster, @cluster),
-            data: { 'enabled-text': 'Enabled', 'disabled-text': 'Disabled' } }
+            data: { "enabled-text": s_("ClusterIntegration|Active"), "disabled-text": s_("ClusterIntegration|Inactive"), } }
 
         - if can?(current_user, :update_cluster, @cluster)
           .form-group

@@ -1,7 +1,6 @@
 import Flash from '../flash';
 import { s__ } from '../locale';
 import ClustersService from './services/clusters_service';
-
 /**
  * Toggles loading and disabled classes.
  * @param {HTMLElement} button
