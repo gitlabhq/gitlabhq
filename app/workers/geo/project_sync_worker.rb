@@ -2,7 +2,7 @@ module Geo
   class ProjectSyncWorker
     include Sidekiq::Worker
 
-    sidekiq_options queue: :geo, retry: 3, dead: false
+    sidekiq_options queue: :geo_project_sync, retry: 3, dead: false
 
     sidekiq_retry_in { |count| 30 * count }
 
