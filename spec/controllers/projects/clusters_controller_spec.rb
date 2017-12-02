@@ -43,7 +43,6 @@ describe Projects::ClustersController do
           end
 
           it 'redirects to the page' do
-            binding.pry
             expect(response).to have_gitlab_http_status(:ok)
             expect(assigns(:clusters).current_page).to eq(last_page)
           end
