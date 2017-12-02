@@ -40,7 +40,8 @@ module SpammableActions
         end
 
         format.json do
-          recaptcha_html = render_to_string(partial: 'shared/recaptcha_fields', formats: :html, locals: { spammable: spammable })
+          locals = { spammable: spammable, script: false, has_submit: false }
+          recaptcha_html = render_to_string(partial: 'shared/recaptcha_form', formats: :html, locals: locals)
 
           render json: { recaptcha_html: recaptcha_html }
         end

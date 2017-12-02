@@ -11,6 +11,8 @@ import formComponent from './form.vue';
 import PopupDialog from '../../vue_shared/components/popup_dialog.vue';
 import '../../lib/utils/url_utility';
 
+const recaptchaScriptID = 'gl-recaptcha-script';
+
 export default {
   props: {
     endpoint: {
@@ -127,6 +129,7 @@ export default {
       recaptchaHTML: '',
       showForm: false,
       showRecaptcha: false,
+      recaptchaScript: {},
     };
   },
   computed: {
@@ -160,8 +163,34 @@ export default {
       this.showForm = false;
     },
 
+    appendRecaptchaScript() {
+      const script = document.createElement('script');
+      script.id = recaptchaScriptID;
+      script.src = 'https://www.google.com/recaptcha/api.js';
+      script.async = true;
+      script.defer = true;
+
+      this.recaptchaScript = script;
+
+      document.body.appendChild(script);
+    },
+
+    removeRecaptchaScript() {
+      this.recaptchaScript.remove();
+    },
+
+    openRecaptcha() {
+      if (!this.showRecaptcha) {
+        this.showRecaptcha = true;
+        this.appendRecaptchaScript();
+      }
+    },
+
     closeRecaptcha() {
-      this.showRecaptcha = false;
+      if (this.showRecaptcha) {
+        this.showRecaptcha = false;
+        this.removeRecaptchaScript();
+      }
     },
 
     submitRecaptcha() {
@@ -197,10 +226,7 @@ export default {
           eventHub.$emit('close.form');
         })
         .catch((error) => {
-          if (error.name === 'SpamError') {
-            this.showRecaptcha = true;
-            return;
-          }
+          if (error.name === 'SpamError') return this.openRecaptcha();
 
           eventHub.$emit('close.form');
           window.Flash(`Error updating ${this.issuableType}`);

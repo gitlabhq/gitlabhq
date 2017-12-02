@@ -7,8 +7,4 @@
 %p
   #{"We detected potential spam in the #{humanized_resource_name}. Please solve the reCAPTCHA to proceed."}
 
-= form_for form do |f|
-  = render 'shared/recaptcha_fields', spammable: spammable
-
-  .row-content-block.footer-block
-    = f.submit "Submit #{humanized_resource_name}", class: 'btn btn-create'
+= render 'shared/recaptcha_form', spammable: spammable
