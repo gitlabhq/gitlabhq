@@ -194,8 +194,7 @@ export default {
     },
 
     submitRecaptcha() {
-      console.log('submitRecaptcha!');
-      this.closeRecaptcha();
+      this.$refs.recaptcha.querySelector('.js-recaptcha-form').submit();
     },
 
     checkForSpam(data) {
@@ -301,13 +300,19 @@ export default {
     <popup-dialog
       v-show="showRecaptcha"
       kind="warning"
+      class="recaptcha-modal"
       :primary-button-label="__('Submit')"
-      :title="__('Please solve the reCAPTCHA.')"
+      :title="__('Please solve the reCAPTCHA')"
       :text="__('testtest')"
       @toggle="closeRecaptcha"
       @submit="submitRecaptcha"
     >
-      <div slot="body" v-html="recaptchaHTML"></div>
+      <div
+        class="text-center"
+        slot="body"
+        ref="recaptcha"
+        v-html="recaptchaHTML"
+      ></div>
     </popup-dialog>
   </div>
   <div v-else>
