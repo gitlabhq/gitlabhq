@@ -143,7 +143,7 @@ module Ci
       end
 
       before_transition any => [:running] do |build|
-        build.validates_dependencies!
+        build.validates_dependencies! if Feature.enabled?('ci_validates_dependencies')
       end
     end
 
@@ -485,20 +485,8 @@ module Ci
     end
 
     def validates_dependencies!
-      return unless Feature.enabled?('ci_validates_dependencies')
-
-      dependencies.tap do |deps|
-        # When `dependencies` keyword is given and depended jobs are skipped by `only` keyword
-        if options[:dependencies]&.any? && deps.empty?
-          raise MissingDependenciesError
-        end
-
-        # When artifacts of depended jobs have not existsed
-        deps.each do |dep|
-          if dep.options[:artifacts]&.any? && !dep.artifacts?
-            raise MissingDependenciesError
-          end
-        end
+      dependencies.each do |dependency|
+        raise MissingDependenciesError unless dependency.valid_dependency?
       end
     end
 
@@ -611,6 +599,14 @@ module Ci
       if previous_changes.include?('artifacts_size')
         update_project_statistics
       end
+    end
+
+    def valid_dependency?
+      return false unless complete?
+      return false if artifacts_expired?
+      return false if erased?
+
+      true
     end
   end
 end
