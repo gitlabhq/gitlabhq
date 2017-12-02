@@ -8,7 +8,7 @@
     .top-area.adjust
       .nav-text
         = s_("ClusterIntegration|Control your environments separately by adding multiple clusters to your project")
-      .pull-right.nav-bar-right
+      .nav-controls
         = link_to s_("ClusterIntegration|Add cluster"), new_project_cluster_path(@project), class: "btn btn-success disabled has-tooltip js-add-cluster", title: s_("ClusterIntegration|Multiple clusters are available in GitLab Entreprise Edition Premium and Ultimate")
     .ci-table.js-clusters-list
       .gl-responsive-table-row.table-row-header{ role: "row" }
