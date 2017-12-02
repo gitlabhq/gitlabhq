@@ -490,6 +490,14 @@ module Ci
       end
     end
 
+    def valid_dependency?
+      return false unless complete?
+      return false if artifacts_expired?
+      return false if erased?
+
+      true
+    end
+
     def hide_secrets(trace)
       return unless trace
 
@@ -599,14 +607,6 @@ module Ci
       if previous_changes.include?('artifacts_size')
         update_project_statistics
       end
-    end
-
-    def valid_dependency?
-      return false unless complete?
-      return false if artifacts_expired?
-      return false if erased?
-
-      true
     end
   end
 end

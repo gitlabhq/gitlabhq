@@ -1869,6 +1869,10 @@ describe Ci::Build do
   end
 
   describe 'state transition: any => [:running]' do
+    before do
+      stub_feature_flags(ci_validates_dependencies: true)
+    end
+
     let(:build) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 1, options: options) }
 
     context 'when "dependencies" keyword is not defined' do
@@ -1887,13 +1891,14 @@ describe Ci::Build do
       let(:options) { { dependencies: ['test'] } }
 
       context 'when a depended job exists' do
-        let!(:pre_stage_job) { create(:ci_build, pipeline: pipeline, name: 'test', stage_idx: 0) }
+        let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
         it { expect { build.run! }.not_to raise_error }
 
         context 'when "artifacts" keyword is specified on depended job' do
           let!(:pre_stage_job) do
             create(:ci_build,
+                   :success,
                    :artifacts,
                    pipeline: pipeline,
                    name: 'test',
