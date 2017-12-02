@@ -2,7 +2,7 @@ require 'spec_helper'
 
 # Disable transactions via :truncate method because a foreign table
 # can't see changes inside a transaction of a different connection.
-describe Geo::RepositoryShardSyncWorker, :geo, :truncate do
+describe Geo::RepositorySyncWorker, :geo, :truncate do
   include ::EE::GeoHelpers
 
   let!(:primary) { create(:geo_node, :primary) }
@@ -11,7 +11,7 @@ describe Geo::RepositoryShardSyncWorker, :geo, :truncate do
   let!(:project_in_synced_group) { create(:project, group: synced_group) }
   let!(:unsynced_project) { create(:project) }
 
-  subject { described_class.new(Gitlab.config.repositories.storages.keys.first) }
+  subject { described_class.new }
 
   before do
     stub_current_geo_node(secondary)
