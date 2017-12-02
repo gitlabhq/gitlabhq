@@ -54,6 +54,8 @@ class GeoNode < ActiveRecord::Base
     end
 
     def current_node
+      return unless column_names.include?('url')
+
       GeoNode.find_by(url: current_node_url)
     end
   end
