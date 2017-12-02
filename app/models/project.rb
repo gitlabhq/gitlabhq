@@ -1560,7 +1560,7 @@ class Project < ActiveRecord::Base
   def export_path
     return nil unless namespace.present? || hashed_storage?(:repository)
 
-    File.join(Gitlab::ImportExport.storage_path, disk_path)
+    Gitlab::ImportExport::Shared.new(self).archive_path
   end
 
   def export_project_path
@@ -1578,8 +1578,7 @@ class Project < ActiveRecord::Base
   end
 
   def export_in_progress?
-    shared = Gitlab::ImportExport::Shared.new(relative_path: File.join(disk_path, 'work'))
-    File.directory?(shared.export_path)
+    Gitlab::ImportExport::Shared.new(self).active_export_count > 0
   end
 
   def remove_exports
