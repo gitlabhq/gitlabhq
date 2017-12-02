@@ -140,11 +140,11 @@ Example response:
 }
 ```
 
-## Retrieve project sync failures ocurred on a specific node (only available for the current node)
+## Retrieve project sync failures ocurred on the current node
 
 
 ```
-GET /geo_nodes/:id/failures
+GET /geo_nodes/failures
 ```
 
 | Attribute | Type | Required | Description |
@@ -154,7 +154,7 @@ GET /geo_nodes/:id/failures
 This endpoint uses [Pagination](README.md#pagination).
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/geo_nodes/2/failures
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/geo_nodes/failures
 ```
 
 Example response:

@@ -87,7 +87,7 @@ describe API::GeoNodes, :geo, api: true do
     end
   end
 
-  describe 'GET /geo_nodes/:id/failures/:type' do
+  describe 'GET /geo_nodes/failures/:type' do
     it 'fetches the current node failures' do
       create(:geo_project_registry, :sync_failed)
       create(:geo_project_registry, :sync_failed)
@@ -95,7 +95,7 @@ describe API::GeoNodes, :geo, api: true do
       stub_current_geo_node(secondary)
       expect(Gitlab::Geo).to receive(:current_node).and_return(secondary)
 
-      get api("/geo_nodes/#{secondary.id}/failures", admin)
+      get api("/geo_nodes/failures", admin)
 
       expect(response).to have_gitlab_http_status(200)
       expect(response).to match_response_schema('geo_project_registry')
@@ -107,7 +107,7 @@ describe API::GeoNodes, :geo, api: true do
       stub_current_geo_node(secondary)
       expect(Gitlab::Geo).to receive(:current_node).and_return(secondary)
 
-      get api("/geo_nodes/#{secondary.id}/failures", admin)
+      get api("/geo_nodes/failures", admin)
 
       expect(response).to have_gitlab_http_status(200)
       expect(json_response.count).to be_zero
@@ -121,7 +121,7 @@ describe API::GeoNodes, :geo, api: true do
         stub_current_geo_node(secondary)
         expect(Gitlab::Geo).to receive(:current_node).and_return(secondary)
 
-        get api("/geo_nodes/#{secondary.id}/failures?type=wiki", admin)
+        get api("/geo_nodes/failures?type=wiki", admin)
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response.count).to eq(1)
@@ -137,7 +137,7 @@ describe API::GeoNodes, :geo, api: true do
         stub_current_geo_node(secondary)
         expect(Gitlab::Geo).to receive(:current_node).and_return(secondary)
 
-        get api("/geo_nodes/#{secondary.id}/failures?type=repository", admin)
+        get api("/geo_nodes/failures?type=repository", admin)
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response.count).to eq(1)
@@ -149,14 +149,14 @@ describe API::GeoNodes, :geo, api: true do
       it 'returns a bad request' do
         create(:geo_project_registry, :repository_sync_failed)
 
-        get api("/geo_nodes/#{secondary.id}/failures?type=nonexistent", admin)
+        get api("/geo_nodes/failures?type=nonexistent", admin)
 
         expect(response).to have_gitlab_http_status(400)
       end
     end
 
     it 'denies access if not admin' do
-      get api("/geo_nodes/#{secondary.id}/failures", user)
+      get api("/geo_nodes/failures", user)
 
       expect(response).to have_gitlab_http_status(403)
     end
