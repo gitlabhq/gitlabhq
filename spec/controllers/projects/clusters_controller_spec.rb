@@ -242,31 +242,42 @@ describe Projects::ClustersController do
       end
 
       context 'when format is json' do
-        context 'when update enabled' do
-          let(:params) do
-            {
-              cluster: {
-                enabled: false,
-                name: 'my-new-cluster-name',
-                platform_kubernetes_attributes: {
-                  namespace: 'my-namespace'
+        context 'when changing parameters' do
+          context 'when valid parameters are used' do
+            let(:params) do
+              {
+                cluster: {
+                  enabled: false,
+                  name: 'my-new-cluster-name',
+                  platform_kubernetes_attributes: {
+                    namespace: 'my-namespace'
+                  }
                 }
               }
-            }
+            end
+
+            it "updates and redirects back to show page" do
+              go_json
+
+              cluster.reload
+              expect(response).to have_http_status(:no_content)
+              expect(cluster.enabled).to be_falsey
+              expect(cluster.name).to eq('my-new-cluster-name')
+              expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
+            end
           end
 
-          it "updates and redirects back to show page" do
-            go_json
-
-            cluster.reload
-            expect(response).to have_http_status(:no_content)
-            expect(cluster.enabled).to be_falsey
-            expect(cluster.name).to eq('my-new-cluster-name')
-            expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
-          end
-
-          context 'when cluster is being created' do
-            let(:cluster) { create(:cluster, :project, :providing_by_gcp) }
+          context 'when invalid parameters are used' do
+            let(:params) do
+              {
+                cluster: {
+                  enabled: false,
+                  platform_kubernetes_attributes: {
+                    namespace: 'my invalid namespace #@'
+                  }
+                }
+              }
+            end
 
             it "rejects changes" do
               go_json
@@ -281,7 +292,13 @@ describe Projects::ClustersController do
         context 'when update enabled' do
           let(:params) do
             {
-              cluster: { enabled: false }
+              cluster: {
+                enabled: false,
+                name: 'my-new-cluster-name',
+                platform_kubernetes_attributes: {
+                  namespace: 'my-namespace'
+                }
+              }
             }
           end
 
@@ -294,18 +311,6 @@ describe Projects::ClustersController do
             expect(cluster.enabled).to be_falsey
             expect(cluster.name).to eq('my-new-cluster-name')
             expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
-          end
-
-          context 'when cluster is being created' do
-            let(:cluster) { create(:cluster, :project, :providing_by_gcp) }
-
-            it "rejects changes" do
-              go
-
-              expect(response).to have_gitlab_http_status(:ok)
-              expect(response).to render_template(:show)
-              expect(cluster.enabled).to be_truthy
-            end
           end
         end
       end
