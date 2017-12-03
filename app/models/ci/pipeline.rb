@@ -24,12 +24,12 @@ module Ci
 
     has_many :pending_builds, -> { pending }, foreign_key: :commit_id, class_name: 'Ci::Build'
     has_many :retryable_builds, -> { latest.failed_or_canceled.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
-    has_many :cancelable_statuses, -> { cancelable }, foreign_key: :commit_id, class_name: 'CommitStatus'
+    has_many :cancelable_jobs, -> { cancelable }, foreign_key: :commit_id, class_name: 'Ci::Job'
     has_many :manual_actions, -> { latest.manual_actions.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
     has_many :artifacts, -> { latest.with_artifacts_not_expired.includes(:project) }, foreign_key: :commit_id, class_name: 'Ci::Build'
 
     has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
-    has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
+    has_many :auto_canceled_jobs, class_name: 'Ci::Job', foreign_key: 'auto_canceled_by_id'
 
     delegate :id, to: :project, prefix: true
     delegate :full_path, to: :project, prefix: true
@@ -308,7 +308,7 @@ module Ci
     end
 
     def cancelable?
-      cancelable_statuses.any?
+      cancelable_jobs.any?
     end
 
     def auto_canceled?
@@ -316,7 +316,7 @@ module Ci
     end
 
     def cancel_running
-      retry_optimistic_lock(cancelable_statuses) do |cancelable|
+      retry_optimistic_lock(cancelable_jobs) do |cancelable|
         cancelable.find_each do |job|
           yield(job) if block_given?
           job.cancel

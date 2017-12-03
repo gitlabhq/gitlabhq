@@ -110,7 +110,7 @@ pipelines:
 - auto_canceled_jobs
 - pending_builds
 - retryable_builds
-- cancelable_statuses
+- cancelable_jobs
 - manual_actions
 - artifacts
 - pipeline_schedule

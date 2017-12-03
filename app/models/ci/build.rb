@@ -1,5 +1,5 @@
 module Ci
-  class Build < CommitStatus
+  class Build < Job
     prepend ArtifactMigratable
     include TokenAuthenticatable
     include AfterCommitQueue

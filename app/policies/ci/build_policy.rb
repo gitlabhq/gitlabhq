@@ -1,5 +1,5 @@
 module Ci
-  class BuildPolicy < CommitStatusPolicy
+  class BuildPolicy < JobPolicy
     condition(:protected_ref) do
       access = ::Gitlab::UserAccess.new(@user, project: @subject.project)
 

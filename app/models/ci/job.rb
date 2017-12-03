@@ -48,7 +48,7 @@ class Ci::Job < ActiveRecord::Base
   }
 
   ##
-  # We still create some CommitStatuses outside of CreatePipelineService.
+  # We still create some Ci::Job outside of CreatePipelineService.
   #
   # These are pages deployments and external statuses.
   #
