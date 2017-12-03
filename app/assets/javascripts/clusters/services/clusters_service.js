@@ -17,4 +17,8 @@ export default class ClusterService {
   installApplication(appId) {
     return axios.post(this.appInstallEndpointMap[appId]);
   }
+
+  static updateCluster(endpoint, data) {
+    return axios.put(endpoint, data);
+  }
 }
