@@ -94,6 +94,18 @@ feature 'Gcp Cluster', :js do
           expect(page).to have_content('Cluster was successfully updated.')
         end
       end
+      
+      context 'when user changes cluster parameters' do
+        before do
+          fill_in 'cluster_platform_kubernetes_attributes_namespace', with: 'my-namespace'
+          click_button 'Save changes'
+        end
+  
+        it 'user sees the successful message' do
+          expect(page).to have_content('Cluster was successfully updated.')
+          expect(cluster.reload.platform_kubernetes.namespace).to eq('my-namespace')
+        end
+      end
 
       context 'when user destroy the cluster' do
         before do

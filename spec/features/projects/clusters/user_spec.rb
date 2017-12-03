@@ -52,7 +52,6 @@ feature 'User Cluster', :js do
 
     it 'user sees a cluster details page' do
       expect(page).to have_button('Save')
-      expect(page.find(:css, '.cluster-name').value).to eq(cluster.name)
     end
 
     context 'when user disables the cluster' do
@@ -67,15 +66,17 @@ feature 'User Cluster', :js do
       end
     end
 
-    context 'when user changes cluster name' do
+    context 'when user changes cluster parameters' do
       before do
         fill_in 'cluster_name', with: 'my-dev-cluster'
-        click_button 'Save'
+        fill_in 'cluster_platform_kubernetes_attributes_namespace', with: 'my-namespace'
+        click_button 'Save changes'
       end
 
       it 'user sees the successful message' do
         expect(page).to have_content('Cluster was successfully updated.')
         expect(cluster.reload.name).to eq('my-dev-cluster')
+        expect(cluster.reload.platform_kubernetes.namespace).to eq('my-namespace')
       end
     end
 

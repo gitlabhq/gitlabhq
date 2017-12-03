@@ -151,6 +151,12 @@ describe Projects::ClustersController do
           expect(cluster.enabled).to be_falsey
         end
 
+        it "does not change cluster name" do
+          go
+
+          expect(cluster.name).to eq('test-cluster')
+        end
+
         context 'when cluster is being created' do
           let(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
 
