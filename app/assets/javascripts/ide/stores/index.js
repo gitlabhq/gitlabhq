@@ -4,7 +4,6 @@ import state from './state';
 import * as actions from './actions';
 import * as getters from './getters';
 import mutations from './mutations';
-// import ideStorage from './ide_storage';
 
 Vue.use(Vuex);
 
@@ -13,5 +12,4 @@ export default new Vuex.Store({
   actions,
   mutations,
   getters,
-  // plugins: [ideStorage()],
 });
