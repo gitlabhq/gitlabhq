@@ -985,15 +985,6 @@ describe API::Runner do
               it_behaves_like 'successful artifacts upload'
             end
 
-            context 'when updates artifact' do
-              before do
-                upload_artifacts(file_upload2, headers_with_token)
-                upload_artifacts(file_upload, headers_with_token)
-              end
-
-              it_behaves_like 'successful artifacts upload'
-            end
-
             context 'when using runners token' do
               it 'responds with forbidden' do
                 upload_artifacts(file_upload, headers.merge(API::Helpers::Runner::JOB_TOKEN_HEADER => job.project.runners_token))
