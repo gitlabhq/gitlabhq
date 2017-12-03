@@ -55,7 +55,7 @@ describe Ci::JobArtifact do
 
     it 'when assigning invalid duration' do
       expect { artifact.expire_in = '7 elephants' }.to raise_error(ChronicDuration::DurationParseError)
-      
+
       is_expected.to be_nil
     end
 
