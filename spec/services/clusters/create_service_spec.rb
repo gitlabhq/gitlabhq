@@ -83,7 +83,7 @@ describe Clusters::CreateService do
 
       it 'does not create a cluster' do
         expect(ClusterProvisionWorker).not_to receive(:perform_async)
-        expect { result }.to change { Clusters::Cluster.count }.by(0)
+        expect { result }.to raise_error(Exception).and change { Clusters::Cluster.count }.by(0)
       end
     end
   end
