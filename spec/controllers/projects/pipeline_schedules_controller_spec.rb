@@ -96,7 +96,7 @@ describe Projects::PipelineSchedulesController do
         end
       end
 
-      context 'when variables_attributes has two variables and duplicted' do
+      context 'when variables_attributes has two variables and duplicated' do
         let(:schedule) do
           basic_param.merge({
             variables_attributes: [{ key: 'AAA', value: 'AAA123' }, { key: 'AAA', value: 'BBB123' }]
@@ -361,6 +361,30 @@ describe Projects::PipelineSchedulesController do
 
     def go
       post :take_ownership, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+    end
+  end
+
+  describe 'POST #run' do
+    set(:user) { create(:user) }
+
+    context 'when a developer makes the request' do
+      before do
+        project.add_developer(user)
+        sign_in(user)
+      end
+
+      it 'executes a new pipeline' do
+        expect(RunPipelineScheduleWorker).to receive(:perform_async).with(pipeline_schedule.id, user.id).and_return('job-123')
+
+        go
+
+        expect(flash[:notice]).to eq 'Successfully scheduled pipeline to run immediately'
+        expect(response).to have_gitlab_http_status(302)
+      end
+    end
+
+    def go
+      post :run, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
     end
   end
 

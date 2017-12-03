@@ -1,9 +1,10 @@
 class Projects::PipelineSchedulesController < Projects::ApplicationController
   before_action :schedule, except: [:index, :new, :create]
 
+  before_action :authorize_create_pipeline!, only: [:run]
   before_action :authorize_read_pipeline_schedule!
   before_action :authorize_create_pipeline_schedule!, only: [:new, :create]
-  before_action :authorize_update_pipeline_schedule!, except: [:index, :new, :create]
+  before_action :authorize_update_pipeline_schedule!, except: [:index, :new, :create, :run]
   before_action :authorize_admin_pipeline_schedule!, only: [:destroy]
 
   def index
@@ -38,6 +39,19 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
     else
       render :edit
     end
+  end
+
+  def run
+    job_id = RunPipelineScheduleWorker.perform_async(schedule.id, current_user.id)
+
+    flash[:notice] =
+      if job_id
+        'Successfully scheduled pipeline to run immediately'
+      else
+        'Unable to schedule a pipeline to run immediately'
+      end
+
+    redirect_to pipeline_schedules_path(@project)
   end
 
   def take_ownership
