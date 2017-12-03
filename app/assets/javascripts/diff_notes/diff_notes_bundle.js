@@ -11,7 +11,7 @@ import './components/comment_resolve_btn.vue';
 import './components/jump_to_discussion.vue';
 import './components/resolve_btn.vue';
 import './components/resolve_count';
-import './components/resolve_discussion_btn';
+import './components/resolve_discussion_btn.vue';
 import './components/diff_note_avatars';
 import './components/new_issue_for_discussion';
 
