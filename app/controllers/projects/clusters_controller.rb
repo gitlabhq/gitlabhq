@@ -61,15 +61,25 @@ class Projects::ClustersController < Projects::ApplicationController
   end
 
   def update_params
-    params.require(:cluster).permit(
-      :enabled,
-      :name,
-      platform_kubernetes_attributes: [
-        :namespace,
-        :api_url,
-        :token,
-        :ca_cert
-      ])
+    if cluster.managed?
+      params.require(:cluster).permit(
+        :enabled,
+        platform_kubernetes_attributes: [
+          :namespace
+        ]
+      )
+    else
+      params.require(:cluster).permit(
+        :enabled,
+        :name,
+        platform_kubernetes_attributes: [
+          :api_url,
+          :token,
+          :ca_cert,
+          :namespace
+        ] 
+      )
+    end
   end
 
   def authorize_update_cluster!
