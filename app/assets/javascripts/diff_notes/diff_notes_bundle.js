@@ -9,7 +9,7 @@ import './services/resolve';
 import './mixins/discussion';
 import './components/comment_resolve_btn';
 import './components/jump_to_discussion';
-import './components/resolve_btn';
+import './components/resolve_btn.vue';
 import './components/resolve_count';
 import './components/resolve_discussion_btn';
 import './components/diff_note_avatars';
