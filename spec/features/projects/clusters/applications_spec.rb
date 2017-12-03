@@ -3,8 +3,8 @@ require 'spec_helper'
 feature 'Clusters Applications', :js do
   include GoogleApi::CloudPlatformHelpers
 
-  set(:project) { create(:project) }
-  set(:user) { create(:user) }
+  let(:project) { create(:project) }
+  let(:user) { create(:user) }
 
   before do
     project.add_master(user)
