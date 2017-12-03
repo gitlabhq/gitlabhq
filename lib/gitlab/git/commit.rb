@@ -4,12 +4,12 @@ module Gitlab
     class Commit
       include Gitlab::EncodingHelper
 
-      attr_accessor :raw_commit, :head
+      attr_accessor :raw_commit, :head, :paths
 
       SERIALIZE_KEYS = [
         :id, :message, :parent_ids,
         :authored_date, :author_name, :author_email,
-        :committed_date, :committer_name, :committer_email, :paths
+        :committed_date, :committer_name, :committer_email
       ].freeze
 
       attr_accessor *SERIALIZE_KEYS # rubocop:disable Lint/AmbiguousOperator
