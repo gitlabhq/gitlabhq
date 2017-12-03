@@ -122,12 +122,11 @@ feature 'Clusters', :js do
 
         context 'with sucessfull request' do
           it 'user sees updated cluster' do
-            cluster_enabled = cluster.enabled
-            page.find('.js-toggle-cluster-list').click
+            expect do
+              page.find('.js-toggle-cluster-list').click
+              wait_for_requests
+            end.to change { cluster.enabled }
 
-            wait_for_requests
-
-            expect(cluster.enabled).to eq(!cluster.enabled)
             expect(page).not_to have_selector('.is-checked')
           end
         end
