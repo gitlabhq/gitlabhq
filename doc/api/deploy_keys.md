@@ -147,8 +147,8 @@ PUT /projects/:id/deploy_keys/:id
 | ---------  | ---- | -------- | ----------- |
 | `id`       | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) owned by the authenticated user |
 | `key_id`   | integer/string | yes | The ID of the deploy key |
-| `title`    | string  | optional | New deploy key's title |
-| `can_push` | boolean | no  | Can deploy key push to the project's repository |
+| `title`    | string  | optional | The title of the deploy key |
+| `can_push` | boolean | no  | Whether the deploy key will have write permissions to the repository |
 
 ```bash
 curl --request PUT --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" --header "Content-Type: application/json" --data '{"key_id":"3", "title": "My updated key", "can_push": "true"}' "https://gitlab.example.com/api/v4/projects/5/deploy_keys/3"
