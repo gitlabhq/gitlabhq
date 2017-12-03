@@ -44,8 +44,10 @@
         = clipboard_button(text: commit.id, title: _("Copy commit SHA to clipboard"))
         = link_to_browse_code(project, commit)
 
-  -# Render diff for the current file only
-  - if @render_diff.present? && diff_file = commit.diffs.diff_files.find { |file| file.new_path == @path }
+  -# Render the `Click to expand it` link for diffs.
+  - if @path.present? && diff_file = commit.diffs.diff_files.find { |file| file.new_path == @path }
     .files
       .diff-file
         = render partial: 'projects/diffs/content', locals: { commit_id: commit.id, diff_file: diff_file, force_collapsed: true }
+
+= commit.paths

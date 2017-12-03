@@ -428,7 +428,8 @@ module Gitlab
           skip_merges: false,
           disable_walk: false,
           after: nil,
-          before: nil
+          before: nil,
+          with_change_summary: false
         }
 
         options = default_options.merge(options)
@@ -436,10 +437,22 @@ module Gitlab
         options[:offset] ||= 0
 
         gitaly_migrate(:find_commits) do |is_enabled|
-          if is_enabled
+          # gitaly does not support loading changed files summary from `git log` yet.
+          if is_enabled && !options[:with_change_summary]
             gitaly_commit_client.find_commits(options)
           else
-            raw_log(options).map { |c| Commit.decorate(self, c) }
+            log = raw_log(options)
+
+            # If `raw_log` returned [commits, paths]
+            # then decorate commits with paths
+            if log.size == 2
+              commits = log.first
+              paths   = log.last
+
+              commits.map { |commit| Commit.decorate(self, commit, paths: paths[commit.oid]) }
+            else
+              log.map { |commit| Commit.decorate(self, commit) }
+            end
           end
         end
       end
@@ -1273,7 +1286,8 @@ module Gitlab
           options[:disable_walk] ||
           options[:skip_merges] ||
           options[:after] ||
-          options[:before]
+          options[:before] ||
+          options[:with_change_summary]
       end
 
       def log_by_walk(sha, options)
@@ -1293,6 +1307,7 @@ module Gitlab
         limit = options[:limit].to_i
         offset = options[:offset].to_i
         use_follow_flag = options[:follow] && options[:path].present?
+        load_change_summary = use_follow_flag && options[:with_change_summary]
 
         # We will perform the offset in Ruby because --follow doesn't play well with --skip.
         # See: https://gitlab.com/gitlab-org/gitlab-ce/issues/3574#note_3040520
@@ -1301,12 +1316,19 @@ module Gitlab
 
         cmd = %W[#{Gitlab.config.git.bin_path} --git-dir=#{path} log]
         cmd << "--max-count=#{limit}"
-        cmd << '--format=%H'
         cmd << "--skip=#{offset}" unless offset_in_ruby
         cmd << '--follow' if use_follow_flag
         cmd << '--no-merges' if options[:skip_merges]
         cmd << "--after=#{options[:after].iso8601}" if options[:after]
         cmd << "--before=#{options[:before].iso8601}" if options[:before]
+
+        if load_change_summary
+          cmd << '--format=<--->%H' # use a custom separator `<--->` to properly parse the output later.
+          cmd << '--name-status'
+        else
+          cmd << '--format=%H'
+        end
+
         cmd << sha
 
         # :path can be a string or an array of strings
@@ -1318,7 +1340,38 @@ module Gitlab
         raw_output = IO.popen(cmd) { |io| io.read }
         lines = offset_in_ruby ? raw_output.lines.drop(offset) : raw_output.lines
 
-        lines.map! { |c| Rugged::Commit.new(rugged, c.strip) }
+        if load_change_summary
+          log_result_with_change_summary(raw_output)
+        else
+          lines.map { |line| Rugged::Commit.new(rugged, line.strip) }
+        end
+      end
+
+      # Parses `git log` result with changed files summary.
+      # Output example:
+      #
+      # <--->5ce2929901f323f37802e15a6a897b50d96f57c0\"\n\nR100\tFILE-X\tFILE-1\n\"
+      # <--->4c145fef2394eb9a03fa0589ebe18bf7ea457ecf\"\n\nM\tFILE-X\n\"
+      # <--->a4288052acde45b99682fab74ff06155eeca2147\"\n\nR100\tFILE-2\tFILE-X\n\"
+      # <--->a8c636364fe6acc13b739a65dfda4f474fa273a3\"\n\nC100\tfoo/bar/.gitkeep\tFILE-2\n\"
+      def log_result_with_change_summary(output)
+        commits = []
+        paths = {}
+
+        output.strip.split('<--->').each do |line|
+          next if line.empty?
+
+          line = line.split(/\n\n[a-zA-Z0-9]*\s+/)
+          sha  = line.first
+
+          line = line.last.split(/\s+/)
+          paths[sha] = { old_path: line.first, new_path: line.last }
+
+          commit = Rugged::Commit.new(rugged, sha)
+          commits << commit
+        end
+
+        [commits, paths]
       end
 
       # We are trying to deprecate this method because it does a lot of work

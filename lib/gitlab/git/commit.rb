@@ -9,7 +9,7 @@ module Gitlab
       SERIALIZE_KEYS = [
         :id, :message, :parent_ids,
         :authored_date, :author_name, :author_email,
-        :committed_date, :committer_name, :committer_email
+        :committed_date, :committer_name, :committer_email, :paths
       ].freeze
 
       attr_accessor *SERIALIZE_KEYS # rubocop:disable Lint/AmbiguousOperator
@@ -194,8 +194,8 @@ module Gitlab
           Gitlab::GitalyClient::CommitService.new(repo).find_all_commits(options)
         end
 
-        def decorate(repository, commit, ref = nil)
-          Gitlab::Git::Commit.new(repository, commit, ref)
+        def decorate(repository, commit, ref = nil, paths: {})
+          Gitlab::Git::Commit.new(repository, commit, ref, paths: paths)
         end
 
         # Returns the `Rugged` sorting type constant for one or more given
@@ -223,14 +223,14 @@ module Gitlab
         end
       end
 
-      def initialize(repository, raw_commit, head = nil)
+      def initialize(repository, raw_commit, head = nil, paths: nil)
         raise "Nil as raw commit passed" unless raw_commit
 
         case raw_commit
         when Hash
           init_from_hash(raw_commit)
         when Rugged::Commit
-          init_from_rugged(raw_commit)
+          init_from_rugged(raw_commit, paths: paths)
         when Gitaly::GitCommit
           init_from_gitaly(raw_commit)
         else
@@ -428,7 +428,7 @@ module Gitlab
         end
       end
 
-      def init_from_rugged(commit)
+      def init_from_rugged(commit, paths: {})
         author = commit.author
         committer = commit.committer
 
@@ -442,6 +442,7 @@ module Gitlab
         @committer_name = committer[:name]
         @committer_email = committer[:email]
         @parent_ids = commit.parents.map(&:oid)
+        @paths = paths
       end
 
       def init_from_gitaly(commit)

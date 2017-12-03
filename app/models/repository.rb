@@ -117,7 +117,7 @@ class Repository
     @commit_cache[oid] = find_commit(oid)
   end
 
-  def commits(ref, path: nil, limit: nil, offset: nil, skip_merges: false, after: nil, before: nil)
+  def commits(ref, path: nil, limit: nil, offset: nil, skip_merges: false, after: nil, before: nil, with_change_summary: false)
     options = {
       repo: raw_repository,
       ref: ref,
@@ -129,6 +129,9 @@ class Repository
       follow: Array(path).length == 1,
       skip_merges: skip_merges
     }
+
+    # Load changed files data only when `follows` is true.
+    options[:with_change_summary] = true if options[:follow] && with_change_summary
 
     commits = Gitlab::Git::Commit.where(options)
     commits = Commit.decorate(commits, @project) if commits.present?
