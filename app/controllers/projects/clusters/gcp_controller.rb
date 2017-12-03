@@ -50,14 +50,6 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
       )
   end
 
-  def update_params
-    params.require(:cluster).permit(
-      :enabled,
-      platform_kubernetes_attributes: [
-        :namespace
-      ])
-  end
-
   def authorize_google_api
     unless GoogleApi::CloudPlatform::Client.new(token_in_session, nil)
                                            .validate_token(expires_at_in_session)

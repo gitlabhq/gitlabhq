@@ -77,7 +77,7 @@ class Projects::ClustersController < Projects::ApplicationController
           :token,
           :ca_cert,
           :namespace
-        ] 
+        ]
       )
     end
   end

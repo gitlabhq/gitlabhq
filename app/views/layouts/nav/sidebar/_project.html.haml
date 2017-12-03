@@ -146,7 +146,7 @@
                   = number_with_delimiter(@project.open_merge_requests_count)
 
       - if project_nav_tab? :pipelines
-        = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :environments, :artifacts, :clusters]) do
+        = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :environments, :artifacts, :clusters, :user, :gcp]) do
           = link_to project_pipelines_path(@project), class: 'shortcuts-pipelines' do
             .nav-icon-container
               = sprite_icon('pipeline')
@@ -154,7 +154,7 @@
               CI / CD
 
           %ul.sidebar-sub-level-items
-            = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :environments, :artifacts, :clusters, :kubernetes, :gcp], html_options: { class: "fly-out-top-item" } ) do
+            = nav_link(controller: [:pipelines, :builds, :jobs, :pipeline_schedules, :environments, :artifacts, :clusters, :user, :gcp], html_options: { class: "fly-out-top-item" } ) do
               = link_to project_pipelines_path(@project) do
                 %strong.fly-out-top-item-name
                   #{ _('CI / CD') }
@@ -184,7 +184,7 @@
                     Environments
 
             - if project_nav_tab? :clusters
-              = nav_link(controller: [:clusters, :kubernetes, :gcp]) do
+              = nav_link(controller: [:clusters, :user, :gcp]) do
                 = link_to project_clusters_path(@project), title: 'Cluster', class: 'shortcuts-cluster' do
                   %span
                     Cluster
