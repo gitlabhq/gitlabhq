@@ -7,7 +7,7 @@ import './models/note';
 import './stores/comments';
 import './services/resolve';
 import './mixins/discussion';
-import './components/comment_resolve_btn';
+import './components/comment_resolve_btn.vue';
 import './components/jump_to_discussion';
 import './components/resolve_btn.vue';
 import './components/resolve_count';
