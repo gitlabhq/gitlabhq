@@ -21,11 +21,10 @@ feature 'User Cluster', :js do
 
     context 'when user filled form with valid parameters' do
       before do
-        fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
         fill_in 'cluster_platform_kubernetes_attributes_api_url', with: 'http://example.com'
         fill_in 'cluster_platform_kubernetes_attributes_token', with: 'my-token'
         fill_in 'cluster_name', with: 'dev-cluster'
-        click_button 'Create cluster'
+        click_button 'Add cluster'
       end
 
       it 'user sees a cluster details page and creation status' do
@@ -35,7 +34,7 @@ feature 'User Cluster', :js do
 
     context 'when user filled form with invalid parameters' do
       before do
-        click_button 'Create cluster'
+        click_button 'Add cluster'
       end
 
       it 'user sees a validation error' do
@@ -76,7 +75,7 @@ feature 'User Cluster', :js do
 
       it 'user sees the successful message' do
         expect(page).to have_content('Cluster was successfully updated.')
-        expect(cluster.reload.cluster_name).to eq('my-dev-cluster')
+        expect(cluster.reload.name).to eq('my-dev-cluster')
       end
     end
 
@@ -89,7 +88,7 @@ feature 'User Cluster', :js do
 
       it 'user sees creation form with the successful message' do
         expect(page).to have_content('Cluster integration was successfully removed.')
-        expect(page).to have_link('Create on GKE')
+        expect(page).to have_link('Add an existing cluster')
       end
     end
   end

@@ -13,48 +13,12 @@
   cluster_status_reason: @cluster.status_reason,
   help_path: help_page_path('user/project/clusters/index.md', anchor: 'installing-applications') } }
 
-
   .js-cluster-application-notice
     .flash-container
 
   %section.settings.no-animate.expanded
-    %h4= s_('ClusterIntegration|Enable cluster integration')
-    .settings-content
-
-      .hidden.js-cluster-error.alert.alert-danger.alert-block.append-bottom-10{ role: 'alert' }
-        = s_('ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine')
-        %p.js-error-reason
-
-      .hidden.js-cluster-creating.alert.alert-info.alert-block.append-bottom-10{ role: 'alert' }
-        = s_('ClusterIntegration|Cluster is being created on Google Container Engine...')
-
-      .hidden.js-cluster-success.alert.alert-success.alert-block.append-bottom-10{ role: 'alert' }
-        = s_('ClusterIntegration|Cluster was successfully created on Google Container Engine. Refresh the page to see cluster\'s details')
-
-      %p
-        - if @cluster.enabled?
-          - if can?(current_user, :update_cluster, @cluster)
-            = s_('ClusterIntegration|Cluster integration is enabled for this project. Disabling this integration will not affect your cluster, it will only temporarily turn off GitLab\'s connection to it.')
-          - else
-            = s_('ClusterIntegration|Cluster integration is enabled for this project.')
-        - else
-          = s_('ClusterIntegration|Cluster integration is disabled for this project.')
-
-    = form_for @cluster, url: namespace_project_cluster_path(@project.namespace, @project, @cluster), as: :cluster do |field|
-      = form_errors(@cluster)
-      .form-group.append-bottom-20
-        %label.append-bottom-10
-          = field.hidden_field :enabled, { class: 'js-toggle-input'}
-
-          %button{ type: 'button',
-            class: "js-toggle-cluster project-feature-toggle #{'checked' unless !@cluster.enabled?} #{'disabled' unless can?(current_user, :update_cluster, @cluster)}",
-            'aria-label': s_('ClusterIntegration|Toggle Cluster'),
-            disabled: !can?(current_user, :update_cluster, @cluster),
-            data: { 'enabled-text': 'Enabled', 'disabled-text': 'Disabled' } }
-
-        - if can?(current_user, :update_cluster, @cluster)
-          .form-group
-            = field.submit _('Save'), class: 'btn btn-success'
+    = render 'banner'
+    = render 'enabled'
 
   .cluster-applications-table#js-cluster-applications
 
