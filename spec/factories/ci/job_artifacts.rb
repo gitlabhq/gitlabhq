@@ -14,7 +14,7 @@ FactoryGirl.define do
 
       after(:build) do |artifact, _|
         artifact.file = fixture_file_upload(
-            Rails.root.join('spec/fixtures/ci_build_artifacts.zip'), 'application/zip')
+          Rails.root.join('spec/fixtures/ci_build_artifacts.zip'), 'application/zip')
       end
     end
 
