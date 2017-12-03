@@ -147,14 +147,10 @@
   &.is-active {
     fill: $orange-600;
   }
-}
 
-.sidebar-collapsed-icon .sidebar-item-icon {
-  margin: 0;
-}
-
-.sidebar-item-value .sidebar-item-icon {
-  fill: $theme-gray-700;
+  .sidebar-collapsed-icon & {
+    margin: 0;
+  }
 }
 
 .sidebar-item-warning-message {
