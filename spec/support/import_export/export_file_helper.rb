@@ -15,7 +15,7 @@ module ExportFileHelper
     label = create(:label, project: project)
     milestone = create(:milestone, project: project)
     merge_request = create(:merge_request, source_project: project, milestone: milestone)
-    commit_status = create(:commit_status, project: project)
+    job = create(:ci_job, project: project)
 
     create(:label_link, label: label, target: issue)
 
@@ -23,7 +23,7 @@ module ExportFileHelper
                          project: project,
                          sha: merge_request.diff_head_sha,
                          ref: merge_request.source_branch,
-                         statuses: [commit_status])
+                         jobs: [job])
 
     create(:ci_build, pipeline: ci_pipeline, project: project)
     create(:milestone, project: project)

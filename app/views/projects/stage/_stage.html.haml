@@ -6,8 +6,8 @@
         = ci_icon_for_status(stage.status)
       &nbsp;
       = stage.name.titleize
-= render stage.statuses.latest_ordered, stage: false, ref: false, pipeline_link: false, allow_retry: true
-= render stage.statuses.retried_ordered, stage: false, ref: false, pipeline_link: false, retried: true
+= render stage.jobs.latest_ordered, stage: false, ref: false, pipeline_link: false, allow_retry: true
+= render stage.jobs.retried_ordered, stage: false, ref: false, pipeline_link: false, retried: true
 %tr
   %td{ colspan: 10 }
     &nbsp;

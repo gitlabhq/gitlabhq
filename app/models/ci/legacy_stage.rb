@@ -16,7 +16,7 @@ module Ci
     end
 
     def groups
-      @groups ||= statuses.ordered.latest
+      @groups ||= jobs.ordered.latest
         .sort_by(&:sortable_name).group_by(&:group_name)
         .map do |group_name, grouped_statuses|
           Ci::Group.new(self, name: group_name, jobs: grouped_statuses)
@@ -28,11 +28,11 @@ module Ci
     end
 
     def statuses_count
-      @statuses_count ||= statuses.count
+      @statuses_count ||= jobs.count
     end
 
     def status
-      @status ||= statuses.latest.status
+      @status ||= jobs.latest.status
     end
 
     def detailed_status(current_user)
@@ -41,8 +41,8 @@ module Ci
         .fabricate!
     end
 
-    def statuses
-      @statuses ||= pipeline.statuses.where(stage: name)
+    def jobs
+      @jobs ||= pipeline.jobs.where(stage: name)
     end
 
     def builds
@@ -57,7 +57,7 @@ module Ci
       if @warnings.is_a?(Integer)
         @warnings > 0
       else
-        statuses.latest.failed_but_allowed.any?
+        jobs.latest.failed_but_allowed.any?
       end
     end
   end

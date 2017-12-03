@@ -4,7 +4,7 @@ module Gitlab
       OVERRIDES = { snippets: :project_snippets,
                     pipelines: 'Ci::Pipeline',
                     stages: 'Ci::Stage',
-                    statuses: 'commit_status',
+                    jobs: 'job',
                     triggers: 'Ci::Trigger',
                     pipeline_schedules: 'Ci::PipelineSchedule',
                     builds: 'Ci::Build',
@@ -23,7 +23,7 @@ module Gitlab
 
       PROJECT_REFERENCES = %w[project_id source_project_id target_project_id].freeze
 
-      BUILD_MODELS = %w[Ci::Build commit_status].freeze
+      BUILD_MODELS = %w[Ci::Build job].freeze
 
       IMPORTED_OBJECT_MAX_RETRIES = 5.freeze
 

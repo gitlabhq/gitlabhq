@@ -6,12 +6,12 @@ describe Ci::Stage, :models do
   describe 'associations' do
     before do
       create(:ci_build, stage_id: stage.id)
-      create(:commit_status, stage_id: stage.id)
+      create(:ci_job, stage_id: stage.id)
     end
 
-    describe '#statuses' do
-      it 'returns all commit statuses' do
-        expect(stage.statuses.count).to be 2
+    describe '#jobs' do
+      it 'returns all commit jobs' do
+        expect(stage.jobs.count).to be 2
       end
     end
 

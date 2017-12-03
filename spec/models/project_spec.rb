@@ -55,7 +55,7 @@ describe Project do
     it { is_expected.to have_one(:last_event).class_name('Event') }
     it { is_expected.to have_one(:forked_from_project).through(:forked_project_link) }
     it { is_expected.to have_one(:auto_devops).class_name('ProjectAutoDevops') }
-    it { is_expected.to have_many(:commit_statuses) }
+    it { is_expected.to have_many(:jobs) }
     it { is_expected.to have_many(:pipelines) }
     it { is_expected.to have_many(:builds) }
     it { is_expected.to have_many(:build_trace_section_names)}

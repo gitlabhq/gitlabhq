@@ -19,7 +19,7 @@ module Ci
     end
 
     def status
-      @status ||= commit_statuses.status
+      @status ||= jobs.status
     end
 
     def detailed_status(current_user)
@@ -33,8 +33,8 @@ module Ci
 
     private
 
-    def commit_statuses
-      @commit_statuses ||= CommitStatus.where(id: jobs.map(&:id))
+    def jobs
+      @jobs ||= Ci::Job.where(id: jobs.map(&:id))
     end
   end
 end

@@ -52,7 +52,7 @@ project_tree:
       - events:
         - :push_event_payload
     - stages:
-      - :statuses
+      - :jobs
   - :auto_devops
   - :triggers
   - :pipeline_schedules
@@ -120,7 +120,7 @@ excluded_attributes:
     - :latest_merge_request_diff_id
   award_emoji:
     - :awardable_id
-  statuses:
+  jobs:
     - :trace
     - :token
     - :when
@@ -134,7 +134,7 @@ methods:
     - :type
   label:
     - :type
-  statuses:
+  jobs:
     - :type
   services:
     - :type

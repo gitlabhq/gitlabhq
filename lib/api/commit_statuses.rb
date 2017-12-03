@@ -27,12 +27,12 @@ module API
         not_found!('Commit') unless user_project.commit(params[:sha])
 
         pipelines = user_project.pipelines.where(sha: params[:sha])
-        statuses = ::CommitStatus.where(pipeline: pipelines)
-        statuses = statuses.latest unless to_boolean(params[:all])
-        statuses = statuses.where(ref: params[:ref]) if params[:ref].present?
-        statuses = statuses.where(stage: params[:stage]) if params[:stage].present?
-        statuses = statuses.where(name: params[:name]) if params[:name].present?
-        present paginate(statuses), with: Entities::CommitStatus
+        jobs = Ci::Job.where(pipeline: pipelines)
+        jobs = jobs.latest unless to_boolean(params[:all])
+        jobs = jobs.where(ref: params[:ref]) if params[:ref].present?
+        jobs = jobs.where(stage: params[:stage]) if params[:stage].present?
+        jobs = jobs.where(name: params[:name]) if params[:name].present?
+        present paginate(jobs), with: Entities::CommitStatus
       end
 
       desc 'Post status to a commit' do

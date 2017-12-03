@@ -6,12 +6,13 @@ describe HasStatus do
 
     shared_examples 'build status summary' do
       context 'all successful' do
-        let!(:statuses) { Array.new(2) { create(type, status: :success) } }
+        let!(:jobs) { Array.new(2) { create(type, status: :success) } }
+
         it { is_expected.to eq 'success' }
       end
 
       context 'at least one failed' do
-        let!(:statuses) do
+        let!(:jobs) do
           [create(type, status: :success), create(type, status: :failed)]
         end
 
@@ -19,7 +20,7 @@ describe HasStatus do
       end
 
       context 'at least one running' do
-        let!(:statuses) do
+        let!(:jobs) do
           [create(type, status: :success), create(type, status: :running)]
         end
 
@@ -27,7 +28,7 @@ describe HasStatus do
       end
 
       context 'at least one pending' do
-        let!(:statuses) do
+        let!(:jobs) do
           [create(type, status: :success), create(type, status: :pending)]
         end
 
@@ -35,7 +36,7 @@ describe HasStatus do
       end
 
       context 'success and failed but allowed to fail' do
-        let!(:statuses) do
+        let!(:jobs) do
           [create(type, status: :success),
            create(type, status: :failed, allow_failure: true)]
         end
@@ -44,7 +45,7 @@ describe HasStatus do
       end
 
       context 'one failed but allowed to fail' do
-        let!(:statuses) do
+        let!(:jobs) do
           [create(type, status: :failed, allow_failure: true)]
         end
 
@@ -52,7 +53,7 @@ describe HasStatus do
       end
 
       context 'success and canceled' do
-        let!(:statuses) do
+        let!(:jobs) do
           [create(type, status: :success), create(type, status: :canceled)]
         end
 
@@ -60,7 +61,7 @@ describe HasStatus do
       end
 
       context 'one failed and one canceled' do
-        let!(:statuses) do
+        let!(:jobs) do
           [create(type, status: :failed), create(type, status: :canceled)]
         end
 
@@ -68,7 +69,7 @@ describe HasStatus do
       end
 
       context 'one failed but allowed to fail and one canceled' do
-        let!(:statuses) do
+        let!(:jobs) do
           [create(type, status: :failed, allow_failure: true),
            create(type, status: :canceled)]
         end
@@ -77,7 +78,7 @@ describe HasStatus do
       end
 
       context 'one running one canceled' do
-        let!(:statuses) do
+        let!(:jobs) do
           [create(type, status: :running), create(type, status: :canceled)]
         end
 
@@ -85,7 +86,7 @@ describe HasStatus do
       end
 
       context 'all canceled' do
-        let!(:statuses) do
+        let!(:jobs) do
           [create(type, status: :canceled), create(type, status: :canceled)]
         end
 
@@ -93,7 +94,7 @@ describe HasStatus do
       end
 
       context 'success and canceled but allowed to fail' do
-        let!(:statuses) do
+        let!(:jobs) do
           [create(type, status: :success),
            create(type, status: :canceled, allow_failure: true)]
         end
@@ -102,7 +103,7 @@ describe HasStatus do
       end
 
       context 'one finished and second running but allowed to fail' do
-        let!(:statuses) do
+        let!(:jobs) do
           [create(type, status: :success),
            create(type, status: :running, allow_failure: true)]
         end
@@ -111,7 +112,7 @@ describe HasStatus do
       end
 
       context 'when one status finished and second is still created' do
-        let!(:statuses) do
+        let!(:jobs) do
           [create(type, status: :success), create(type, status: :created)]
         end
 
@@ -119,7 +120,7 @@ describe HasStatus do
       end
 
       context 'when there is a manual status before created status' do
-        let!(:statuses) do
+        let!(:jobs) do
           [create(type, status: :success),
            create(type, status: :manual, allow_failure: false),
            create(type, status: :created)]
@@ -129,7 +130,7 @@ describe HasStatus do
       end
 
       context 'when one status is a blocking manual action' do
-        let!(:statuses) do
+        let!(:jobs) do
           [create(type, status: :failed),
            create(type, status: :manual, allow_failure: false)]
         end
@@ -138,7 +139,7 @@ describe HasStatus do
       end
 
       context 'when one status is a non-blocking manual action' do
-        let!(:statuses) do
+        let!(:jobs) do
           [create(type, status: :failed),
            create(type, status: :manual, allow_failure: true)]
         end
@@ -147,13 +148,13 @@ describe HasStatus do
       end
     end
 
-    context 'ci build statuses' do
+    context 'ci build jobs' do
       let(:type) { :ci_build }
 
       it_behaves_like 'build status summary'
     end
 
-    context 'generic commit statuses' do
+    context 'generic commit jobs' do
       let(:type) { :generic_commit_status }
 
       it_behaves_like 'build status summary'
@@ -194,7 +195,7 @@ describe HasStatus do
     end
   end
 
-  context 'for scope with more statuses' do
+  context 'for scope with more jobs' do
     shared_examples 'containing the job' do |status|
       %i[ci_build generic_commit_status].each do |type|
         context "when it's #{status} #{type} job" do

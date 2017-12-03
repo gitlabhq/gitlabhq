@@ -38,72 +38,72 @@ describe MergeRequests::AddTodoWhenBuildFailsService do
 
   describe '#execute' do
     context 'commit status with ref' do
-      let(:commit_status) do
+      let(:job) do
         create(:generic_commit_status, ref: ref, pipeline: pipeline)
       end
 
       it 'notifies the todo service' do
         expect(todo_service).to receive(:merge_request_build_failed).with(merge_request)
-        service.execute(commit_status)
+        service.execute(job)
       end
     end
 
     context 'commit status with non-HEAD ref' do
-      let(:commit_status) { create(:generic_commit_status, ref: ref) }
+      let(:job) { create(:generic_commit_status, ref: ref) }
 
       it 'does not notify the todo service' do
         expect(todo_service).not_to receive(:merge_request_build_failed)
-        service.execute(commit_status)
+        service.execute(job)
       end
     end
 
     context 'commit status without ref' do
-      let(:commit_status) { create(:generic_commit_status) }
+      let(:job) { create(:generic_commit_status) }
 
       it 'does not notify the todo service' do
         expect(todo_service).not_to receive(:merge_request_build_failed)
-        service.execute(commit_status)
+        service.execute(job)
       end
     end
 
     context 'when commit status is a build allowed to fail' do
-      let(:commit_status) do
+      let(:job) do
         create(:ci_build, :allowed_to_fail, ref: ref, pipeline: pipeline)
       end
 
       it 'does not create todo' do
         expect(todo_service).not_to receive(:merge_request_build_failed)
 
-        service.execute(commit_status)
+        service.execute(job)
       end
     end
   end
 
   describe '#close' do
     context 'commit status with ref' do
-      let(:commit_status) { create(:generic_commit_status, ref: merge_request.source_branch, pipeline: pipeline) }
+      let(:job) { create(:generic_commit_status, ref: merge_request.source_branch, pipeline: pipeline) }
 
       it 'notifies the todo service' do
         expect(todo_service).to receive(:merge_request_build_retried).with(merge_request)
-        service.close(commit_status)
+        service.close(job)
       end
     end
 
     context 'commit status with non-HEAD ref' do
-      let(:commit_status) { create(:generic_commit_status, ref: merge_request.source_branch) }
+      let(:job) { create(:generic_commit_status, ref: merge_request.source_branch) }
 
       it 'does not notify the todo service' do
         expect(todo_service).not_to receive(:merge_request_build_retried)
-        service.close(commit_status)
+        service.close(job)
       end
     end
 
     context 'commit status without ref' do
-      let(:commit_status) { create(:generic_commit_status) }
+      let(:job) { create(:generic_commit_status) }
 
       it 'does not notify the todo service' do
         expect(todo_service).not_to receive(:merge_request_build_retried)
-        service.close(commit_status)
+        service.close(job)
       end
     end
   end

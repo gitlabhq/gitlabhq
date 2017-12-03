@@ -42,7 +42,7 @@ describe CleanStagesStatusesMigration, :migration, :sidekiq, :redis do
       stages.create!(status: nil, name: 'test')
     end
 
-    it 'migrates statuses sequentially in batches' do
+    it 'migrates jobs sequentially in batches' do
       migrate!
 
       expect(migration).to have_received(:perform).once

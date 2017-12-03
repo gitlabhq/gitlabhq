@@ -21,7 +21,7 @@ describe Ci::RetryPipelineService, '#execute' do
       end
 
       it 'does not retry jobs that has already been retried' do
-        expect(statuses.first).to be_retried
+        expect(jobs.first).to be_retried
         expect { service.execute(pipeline) }
           .to change { CommitStatus.count }.by(1)
       end
@@ -83,7 +83,7 @@ describe Ci::RetryPipelineService, '#execute' do
       it 'creates a new job for report job in this case' do
         service.execute(pipeline)
 
-        expect(statuses.where(name: 'report 1').first).to be_retried
+        expect(jobs.where(name: 'report 1').first).to be_retried
       end
     end
 
@@ -264,12 +264,12 @@ describe Ci::RetryPipelineService, '#execute' do
     end
   end
 
-  def statuses
-    pipeline.reload.statuses
+  def jobs
+    pipeline.reload.jobs
   end
 
   def build(name)
-    statuses.latest.find_by(name: name)
+    jobs.latest.find_by(name: name)
   end
 
   def create_build(name, status, stage_num, **opts)

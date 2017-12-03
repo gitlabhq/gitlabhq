@@ -26,7 +26,7 @@ describe Gitlab::Ci::Status::Stage::Factory do
       context "when core status is #{core_status}" do
         before do
           create(:ci_build, pipeline: pipeline, stage: 'test', status: core_status)
-          create(:commit_status, pipeline: pipeline, stage: 'test', status: core_status)
+          create(:ci_job, pipeline: pipeline, stage: 'test', status: core_status)
           create(:ci_build, pipeline: pipeline, stage: 'build', status: :failed)
         end
 

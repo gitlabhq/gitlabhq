@@ -11,7 +11,7 @@ module API
       helpers do
         params :optional_scope do
           optional :scope, types: [String, Array[String]], desc: 'The scope of builds to show',
-                           values: ::CommitStatus::AVAILABLE_STATUSES,
+                           values: ::Ci::Job::AVAILABLE_STATUSES,
                            coerce_with: ->(scope) {
                              case scope
                              when String
@@ -170,7 +170,7 @@ module API
       def filter_builds(builds, scope)
         return builds if scope.nil? || scope.empty?
 
-        available_statuses = ::CommitStatus::AVAILABLE_STATUSES
+        available_statuses = ::Ci::Job::AVAILABLE_STATUSES
 
         unknown = scope - available_statuses
         render_api_error!('Scope contains invalid value(s)', 400) unless unknown.empty?

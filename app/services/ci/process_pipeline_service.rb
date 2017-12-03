@@ -80,16 +80,16 @@ module Ci
     # this updates only when there are data that needs to be updated, there are two groups with no retried flag
     def update_retried
       # find the latest builds for each name
-      latest_statuses = pipeline.statuses.latest
+      latest_jobs = pipeline.jobs.latest
         .group(:name)
         .having('count(*) > 1')
         .pluck('max(id)', 'name')
 
       # mark builds that are retried
-      pipeline.statuses.latest
-        .where(name: latest_statuses.map(&:second))
-        .where.not(id: latest_statuses.map(&:first))
-        .update_all(retried: true) if latest_statuses.any?
+      pipeline.jobs.latest
+        .where(name: latest_jobs.map(&:second))
+        .where.not(id: latest_jobs.map(&:first))
+        .update_all(retried: true) if latest_jobs.any?
     end
   end
 end

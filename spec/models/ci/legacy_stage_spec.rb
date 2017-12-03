@@ -16,15 +16,15 @@ describe Ci::LegacyStage do
     it { is_expected.to delegate_method(:project).to(:pipeline) }
   end
 
-  describe '#statuses' do
+  describe '#jobs' do
     let!(:stage_build) { create_job(:ci_build) }
-    let!(:commit_status) { create_job(:commit_status) }
+    let!(:ci_job) { create_job(:ci_job) }
     let!(:other_build) { create_job(:ci_build, stage: 'other stage') }
 
-    subject { stage.statuses }
+    subject { stage.jobs }
 
-    it "returns only matching statuses" do
-      is_expected.to contain_exactly(stage_build, commit_status)
+    it "returns only matching jobs" do
+      is_expected.to contain_exactly(stage_build, ci_job)
     end
   end
 
@@ -33,7 +33,7 @@ describe Ci::LegacyStage do
       create_job(:ci_build, name: 'rspec 0 2')
       create_job(:ci_build, name: 'rspec 0 1')
       create_job(:ci_build, name: 'spinach 0 1')
-      create_job(:commit_status, name: 'aaaaa')
+      create_job(:ci_job, name: 'aaaaa')
     end
 
     it 'returns an array of three groups' do
@@ -42,7 +42,7 @@ describe Ci::LegacyStage do
       expect(stage.groups.size).to eq 3
     end
 
-    it 'returns groups with correctly ordered statuses' do
+    it 'returns groups with correctly ordered jobs' do
       expect(stage.groups.first.jobs.map(&:name))
         .to eq ['aaaaa']
       expect(stage.groups.second.jobs.map(&:name))
@@ -76,14 +76,14 @@ describe Ci::LegacyStage do
 
     subject { stage.statuses_count }
 
-    it "counts statuses only from current stage" do
+    it "counts jobs only from current stage" do
       is_expected.to eq(1)
     end
   end
 
   describe '#builds' do
     let!(:stage_build) { create_job(:ci_build) }
-    let!(:commit_status) { create_job(:commit_status) }
+    let!(:job) { create_job(:ci_job) }
 
     subject { stage.builds }
 
@@ -217,7 +217,7 @@ describe Ci::LegacyStage do
           let(:stage) { build(:ci_stage, warnings: 2) }
 
           it 'returns true using memoized value' do
-            expect(stage).not_to receive(:statuses)
+            expect(stage).not_to receive(:jobs)
             expect(stage).to have_warnings
           end
         end
@@ -226,7 +226,7 @@ describe Ci::LegacyStage do
           let(:stage) { build(:ci_stage, warnings: 0) }
 
           it 'returns false using memoized value' do
-            expect(stage).not_to receive(:statuses)
+            expect(stage).not_to receive(:jobs)
             expect(stage).not_to have_warnings
           end
         end
@@ -234,21 +234,21 @@ describe Ci::LegacyStage do
         context 'when number of warnings is not a valid value' do
           let(:stage) { build(:ci_stage, warnings: true) }
 
-          it 'calculates statuses using database queries' do
-            expect(stage).to receive(:statuses).and_call_original
+          it 'calculates jobs using database queries' do
+            expect(stage).to receive(:jobs).and_call_original
             expect(stage).not_to have_warnings
           end
         end
       end
 
-      context 'when calculating warnings from statuses' do
+      context 'when calculating warnings from jobs' do
         before do
           create(:ci_build, :failed, :allowed_to_fail,
                  stage: stage_name, pipeline: pipeline)
         end
 
-        it 'has warnings calculated from statuses' do
-          expect(stage).to receive(:statuses).and_call_original
+        it 'has warnings calculated from jobs' do
+          expect(stage).to receive(:jobs).and_call_original
           expect(stage).to have_warnings
         end
       end
@@ -260,8 +260,8 @@ describe Ci::LegacyStage do
                                     pipeline: pipeline)
       end
 
-      it 'does not have warnings calculated from statuses' do
-        expect(stage).to receive(:statuses).and_call_original
+      it 'does not have warnings calculated from jobs' do
+        expect(stage).to receive(:jobs).and_call_original
         expect(stage).not_to have_warnings
       end
     end

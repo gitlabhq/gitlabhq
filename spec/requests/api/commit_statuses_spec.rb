@@ -8,8 +8,8 @@ describe API::CommitStatuses do
   let(:developer) { create_user(:developer) }
   let(:sha) { commit.id }
 
-  let(:commit_status) do
-    create(:commit_status, status: :pending, pipeline: pipeline)
+  let(:job) do
+    create(:ci_job, status: :pending, pipeline: pipeline)
   end
 
   describe "GET /projects/:id/repository/commits/:sha/statuses" do
@@ -22,16 +22,16 @@ describe API::CommitStatuses do
       context "reporter user" do
         let(:statuses_id) { json_response.map { |status| status['id'] } }
 
-        def create_status(commit, opts = {})
-          create(:commit_status, { pipeline: commit, ref: commit.ref }.merge(opts))
+        def create_job(commit, opts = {})
+          create(:ci_job, { pipeline: commit, ref: commit.ref }.merge(opts))
         end
 
-        let!(:status1) { create_status(master, status: 'running', retried: true) }
-        let!(:status2) { create_status(master, name: 'coverage', status: 'pending', retried: true) }
-        let!(:status3) { create_status(develop, status: 'running', allow_failure: true) }
-        let!(:status4) { create_status(master, name: 'coverage', status: 'success') }
-        let!(:status5) { create_status(develop, name: 'coverage', status: 'success') }
-        let!(:status6) { create_status(master, status: 'success') }
+        let!(:status1) { create_job(master, status: 'running', retried: true) }
+        let!(:status2) { create_job(master, name: 'coverage', status: 'pending', retried: true) }
+        let!(:status3) { create_job(develop, status: 'running', allow_failure: true) }
+        let!(:status4) { create_job(master, name: 'coverage', status: 'success') }
+        let!(:status5) { create_job(develop, name: 'coverage', status: 'success') }
+        let!(:status6) { create_job(master, status: 'success') }
 
         context 'latest commit statuses' do
           before do

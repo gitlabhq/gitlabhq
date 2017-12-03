@@ -1,4 +1,4 @@
-class GenericCommitStatus < CommitStatus
+class GenericCommitStatus < Ci::Job
   before_validation :set_default_values
 
   validates :target_url, addressable_url: true,

@@ -87,7 +87,7 @@ class Projects::PipelinesController < Projects::ApplicationController
   end
 
   def failures
-    if @pipeline.statuses.latest.failed.present?
+    if @pipeline.jobs.latest.failed.present?
       render_show
     else
       redirect_to pipeline_path(@pipeline)

@@ -13,7 +13,7 @@ describe Ci::Pipeline, :mailer do
   it { is_expected.to belong_to(:auto_canceled_by) }
   it { is_expected.to belong_to(:pipeline_schedule) }
 
-  it { is_expected.to have_many(:statuses) }
+  it { is_expected.to have_many(:jobs) }
   it { is_expected.to have_many(:trigger_requests) }
   it { is_expected.to have_many(:variables) }
   it { is_expected.to have_many(:builds) }
@@ -218,25 +218,25 @@ describe Ci::Pipeline, :mailer do
 
   describe 'pipeline stages' do
     before do
-      create(:commit_status, pipeline: pipeline,
+      create(:ci_job, pipeline: pipeline,
                              stage: 'build',
                              name: 'linux',
                              stage_idx: 0,
                              status: 'success')
 
-      create(:commit_status, pipeline: pipeline,
+      create(:ci_job, pipeline: pipeline,
                              stage: 'build',
                              name: 'mac',
                              stage_idx: 0,
                              status: 'failed')
 
-      create(:commit_status, pipeline: pipeline,
+      create(:ci_job, pipeline: pipeline,
                              stage: 'deploy',
                              name: 'staging',
                              stage_idx: 2,
                              status: 'running')
 
-      create(:commit_status, pipeline: pipeline,
+      create(:ci_job, pipeline: pipeline,
                              stage: 'test',
                              name: 'rspec',
                              stage_idx: 1,
@@ -271,20 +271,20 @@ describe Ci::Pipeline, :mailer do
         end
       end
 
-      context 'stages with statuses' do
-        let(:statuses) do
+      context 'stages with jobs' do
+        let(:jobs) do
           subject.map { |stage| [stage.name, stage.status] }
         end
 
-        it 'returns list of stages with correct statuses' do
-          expect(statuses).to eq([%w(build failed),
-                                  %w(test success),
-                                  %w(deploy running)])
+        it 'returns list of stages with correct jobs' do
+          expect(jobs).to eq([%w(build failed),
+                              %w(test success),
+                              %w(deploy running)])
         end
 
-        context 'when commit status is retried' do
+        context 'when job is retried' do
           before do
-            create(:commit_status, pipeline: pipeline,
+            create(:ci_job, pipeline: pipeline,
                                    stage: 'build',
                                    name: 'mac',
                                    stage_idx: 0,
@@ -294,7 +294,7 @@ describe Ci::Pipeline, :mailer do
           end
 
           it 'ignores the previous state' do
-            expect(statuses).to eq([%w(build success),
+            expect(jobs).to eq([%w(build success),
                                     %w(test success),
                                     %w(deploy running)])
           end
@@ -303,18 +303,18 @@ describe Ci::Pipeline, :mailer do
 
       context 'when there is a stage with warnings' do
         before do
-          create(:commit_status, pipeline: pipeline,
-                                 stage: 'deploy',
-                                 name: 'prod:2',
-                                 stage_idx: 2,
-                                 status: 'failed',
-                                 allow_failure: true)
+          create(:ci_job, pipeline: pipeline,
+                          stage: 'deploy',
+                          name: 'prod:2',
+                          stage_idx: 2,
+                          status: 'failed',
+                          allow_failure: true)
         end
 
         it 'populates stage with correct number of warnings' do
           deploy_stage = pipeline.legacy_stages.third
 
-          expect(deploy_stage).not_to receive(:statuses)
+          expect(deploy_stage).not_to receive(:jobs)
           expect(deploy_stage).to have_warnings
         end
       end
@@ -338,17 +338,17 @@ describe Ci::Pipeline, :mailer do
 
     context 'with status in stage' do
       before do
-        create(:commit_status, pipeline: pipeline, stage: 'test')
+        create(:ci_job, pipeline: pipeline, stage: 'test')
       end
 
       it { expect(subject).to be_a Ci::LegacyStage }
       it { expect(subject.name).to eq 'test' }
-      it { expect(subject.statuses).not_to be_empty }
+      it { expect(subject.jobs).not_to be_empty }
     end
 
     context 'without status in stage' do
       before do
-        create(:commit_status, pipeline: pipeline, stage: 'build')
+        create(:ci_job, pipeline: pipeline, stage: 'build')
       end
 
       it 'return stage object' do
@@ -1158,7 +1158,7 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe '#cancel_running' do
-    let(:latest_status) { pipeline.statuses.pluck(:status) }
+    let(:latest_status) { pipeline.jobs.pluck(:status) }
 
     context 'when there is a running external job and a regular job' do
       before do
@@ -1201,7 +1201,7 @@ describe Ci::Pipeline, :mailer do
   end
 
   describe '#retry_failed' do
-    let(:latest_status) { pipeline.statuses.latest.pluck(:status) }
+    let(:latest_status) { pipeline.jobs.latest.pluck(:status) }
 
     before do
       stub_not_protect_default_branch

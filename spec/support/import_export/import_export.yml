@@ -5,7 +5,7 @@ project_tree:
   - merge_requests:
     - :merge_request_diff
     - :merge_request_test
-  - commit_statuses:
+  - jobs:
     - :commit
   - project_members:
     - :user

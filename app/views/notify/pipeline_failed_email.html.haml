@@ -107,7 +107,7 @@
           - else
             %td{ style: "font-family:'Menlo','Liberation Mono','Consolas','DejaVu Sans Mono','Ubuntu Mono','Courier New','andale mono','lucida console',monospace;font-size:14px;line-height:1.4;vertical-align:baseline;padding:0 5px;" }
               API
-- failed = @pipeline.statuses.latest.failed
+- failed = @pipeline.jobs.latest.failed
 %tr
   %td{ colspan: 2, style: "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;color:#333333;font-size:15px;font-weight:300;line-height:1.4;padding:15px 5px;text-align:center;" }
     had

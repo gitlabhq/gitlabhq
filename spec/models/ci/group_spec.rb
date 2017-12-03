@@ -15,7 +15,7 @@ describe Ci::Group do
   it { is_expected.to respond_to(:status) }
 
   describe '#size' do
-    it 'returns the number of statuses in the group' do
+    it 'returns the number of jobs in the group' do
       expect(subject.size).to eq(1)
     end
   end

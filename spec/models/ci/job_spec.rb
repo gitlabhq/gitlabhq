@@ -1,16 +1,16 @@
 require 'spec_helper'
 
-describe CommitStatus do
+describe Ci::Job do
   set(:project) { create(:project, :repository) }
 
   set(:pipeline) do
     create(:ci_pipeline, project: project, sha: project.commit.id)
   end
 
-  let(:commit_status) { create_status(stage: 'test') }
+  let(:ci_job) { create_job(stage: 'test') }
 
-  def create_status(**opts)
-    create(:commit_status, pipeline: pipeline, **opts)
+  def create_job(**opts)
+    create(:ci_job, pipeline: pipeline, **opts)
   end
 
   it { is_expected.to belong_to(:pipeline) }
@@ -30,31 +30,31 @@ describe CommitStatus do
   it { is_expected.to respond_to :pending? }
 
   describe '#author' do
-    subject { commit_status.author }
+    subject { job.author }
 
     before do
-      commit_status.author = User.new
+      job.author = User.new
     end
 
-    it { is_expected.to eq(commit_status.user) }
+    it { is_expected.to eq(job.user) }
   end
 
   describe 'status state machine' do
-    let!(:commit_status) { create(:commit_status, :running, project: project) }
+    let!(:job) { create(:ci_job, :running, project: project) }
 
     it 'invalidates the cache after a transition' do
-      expect(ExpireJobCacheWorker).to receive(:perform_async).with(commit_status.id)
+      expect(ExpireJobCacheWorker).to receive(:perform_async).with(job.id)
 
-      commit_status.success!
+      job.success!
     end
   end
 
   describe '#started?' do
-    subject { commit_status.started? }
+    subject { job.started? }
 
     context 'without started_at' do
       before do
-        commit_status.started_at = nil
+        job.started_at = nil
       end
 
       it { is_expected.to be_falsey }
@@ -63,7 +63,7 @@ describe CommitStatus do
     %w[running success failed].each do |status|
       context "if commit status is #{status}" do
         before do
-          commit_status.status = status
+          job.status = status
         end
 
         it { is_expected.to be_truthy }
@@ -73,7 +73,7 @@ describe CommitStatus do
     %w[pending canceled].each do |status|
       context "if commit status is #{status}" do
         before do
-          commit_status.status = status
+          job.status = status
         end
 
         it { is_expected.to be_falsey }
@@ -82,12 +82,12 @@ describe CommitStatus do
   end
 
   describe '#active?' do
-    subject { commit_status.active? }
+    subject { job.active? }
 
     %w[pending running].each do |state|
-      context "if commit_status.status is #{state}" do
+      context "if job.status is #{state}" do
         before do
-          commit_status.status = state
+          job.status = state
         end
 
         it { is_expected.to be_truthy }
@@ -95,9 +95,9 @@ describe CommitStatus do
     end
 
     %w[success failed canceled].each do |state|
-      context "if commit_status.status is #{state}" do
+      context "if job.status is #{state}" do
         before do
-          commit_status.status = state
+          job.status = state
         end
 
         it { is_expected.to be_falsey }
@@ -106,12 +106,12 @@ describe CommitStatus do
   end
 
   describe '#complete?' do
-    subject { commit_status.complete? }
+    subject { job.complete? }
 
     %w[success failed canceled].each do |state|
-      context "if commit_status.status is #{state}" do
+      context "if job.status is #{state}" do
         before do
-          commit_status.status = state
+          job.status = state
         end
 
         it { is_expected.to be_truthy }
@@ -119,9 +119,9 @@ describe CommitStatus do
     end
 
     %w[pending running].each do |state|
-      context "if commit_status.status is #{state}" do
+      context "if job.status is #{state}" do
         before do
-          commit_status.status = state
+          job.status = state
         end
 
         it { is_expected.to be_falsey }
@@ -130,16 +130,16 @@ describe CommitStatus do
   end
 
   describe '#auto_canceled?' do
-    subject { commit_status.auto_canceled? }
+    subject { job.auto_canceled? }
 
     context 'when it is canceled' do
       before do
-        commit_status.update(status: 'canceled')
+        job.update(status: 'canceled')
       end
 
       context 'when there is auto_canceled_by' do
         before do
-          commit_status.update(auto_canceled_by: create(:ci_empty_pipeline))
+          job.update(auto_canceled_by: create(:ci_empty_pipeline))
         end
 
         it 'is auto canceled' do
@@ -156,14 +156,14 @@ describe CommitStatus do
   end
 
   describe '#duration' do
-    subject { commit_status.duration }
+    subject { job.duration }
 
     it { is_expected.to eq(120.0) }
 
     context 'if the building process has not started yet' do
       before do
-        commit_status.started_at = nil
-        commit_status.finished_at = nil
+        job.started_at = nil
+        job.finished_at = nil
       end
 
       it { is_expected.to be_nil }
@@ -171,8 +171,8 @@ describe CommitStatus do
 
     context 'if the building process has started' do
       before do
-        commit_status.started_at = Time.now - 1.minute
-        commit_status.finished_at = nil
+        job.started_at = Time.now - 1.minute
+        job.finished_at = nil
       end
 
       it { is_expected.to be_a(Float) }
@@ -183,113 +183,113 @@ describe CommitStatus do
   describe '.latest' do
     subject { described_class.latest.order(:id) }
 
-    let(:statuses) do
-      [create_status(name: 'aa', ref: 'bb', status: 'running', retried: true),
-       create_status(name: 'cc', ref: 'cc', status: 'pending', retried: true),
-       create_status(name: 'aa', ref: 'cc', status: 'success', retried: true),
-       create_status(name: 'cc', ref: 'bb', status: 'success'),
-       create_status(name: 'aa', ref: 'bb', status: 'success')]
+    let(:jobs) do
+      [create_job(name: 'aa', ref: 'bb', status: 'running', retried: true),
+       create_job(name: 'cc', ref: 'cc', status: 'pending', retried: true),
+       create_job(name: 'aa', ref: 'cc', status: 'success', retried: true),
+       create_job(name: 'cc', ref: 'bb', status: 'success'),
+       create_job(name: 'aa', ref: 'bb', status: 'success')]
     end
 
-    it 'returns unique statuses' do
-      is_expected.to eq(statuses.values_at(3, 4))
+    it 'returns unique jobs' do
+      is_expected.to eq(jobs.values_at(3, 4))
     end
   end
 
   describe '.retried' do
     subject { described_class.retried.order(:id) }
 
-    let(:statuses) do
-      [create_status(name: 'aa', ref: 'bb', status: 'running', retried: true),
-       create_status(name: 'cc', ref: 'cc', status: 'pending', retried: true),
-       create_status(name: 'aa', ref: 'cc', status: 'success', retried: true),
-       create_status(name: 'cc', ref: 'bb', status: 'success'),
-       create_status(name: 'aa', ref: 'bb', status: 'success')]
+    let(:jobs) do
+      [create_job(name: 'aa', ref: 'bb', status: 'running', retried: true),
+       create_job(name: 'cc', ref: 'cc', status: 'pending', retried: true),
+       create_job(name: 'aa', ref: 'cc', status: 'success', retried: true),
+       create_job(name: 'cc', ref: 'bb', status: 'success'),
+       create_job(name: 'aa', ref: 'bb', status: 'success')]
     end
 
-    it 'returns unique statuses' do
-      is_expected.to contain_exactly(*statuses.values_at(0, 1, 2))
+    it 'returns unique jobs' do
+      is_expected.to contain_exactly(*jobs.values_at(0, 1, 2))
     end
   end
 
   describe '.running_or_pending' do
     subject { described_class.running_or_pending.order(:id) }
 
-    let(:statuses) do
-      [create_status(name: 'aa', ref: 'bb', status: 'running'),
-       create_status(name: 'cc', ref: 'cc', status: 'pending'),
-       create_status(name: 'aa', ref: nil, status: 'success'),
-       create_status(name: 'dd', ref: nil, status: 'failed'),
-       create_status(name: 'ee', ref: nil, status: 'canceled')]
+    let(:jobs) do
+      [create_job(name: 'aa', ref: 'bb', status: 'running'),
+       create_job(name: 'cc', ref: 'cc', status: 'pending'),
+       create_job(name: 'aa', ref: nil, status: 'success'),
+       create_job(name: 'dd', ref: nil, status: 'failed'),
+       create_job(name: 'ee', ref: nil, status: 'canceled')]
     end
 
-    it 'returns statuses that are running or pending' do
-      is_expected.to contain_exactly(*statuses.values_at(0, 1))
+    it 'returns jobs that are running or pending' do
+      is_expected.to contain_exactly(*jobs.values_at(0, 1))
     end
   end
 
   describe '.after_stage' do
     subject { described_class.after_stage(0) }
 
-    let(:statuses) do
-      [create_status(name: 'aa', stage_idx: 0),
-       create_status(name: 'cc', stage_idx: 1),
-       create_status(name: 'aa', stage_idx: 2)]
+    let(:jobs) do
+      [create_job(name: 'aa', stage_idx: 0),
+       create_job(name: 'cc', stage_idx: 1),
+       create_job(name: 'aa', stage_idx: 2)]
     end
 
-    it 'returns statuses from second and third stage' do
-      is_expected.to eq(statuses.values_at(1, 2))
+    it 'returns jobs from second and third stage' do
+      is_expected.to eq(jobs.values_at(1, 2))
     end
   end
 
   describe '.exclude_ignored' do
     subject { described_class.exclude_ignored.order(:id) }
 
-    let(:statuses) do
-      [create_status(when: 'manual', status: 'skipped'),
-       create_status(when: 'manual', status: 'success'),
-       create_status(when: 'manual', status: 'failed'),
-       create_status(when: 'on_failure', status: 'skipped'),
-       create_status(when: 'on_failure', status: 'success'),
-       create_status(when: 'on_failure', status: 'failed'),
-       create_status(allow_failure: true, status: 'success'),
-       create_status(allow_failure: true, status: 'failed'),
-       create_status(allow_failure: false, status: 'success'),
-       create_status(allow_failure: false, status: 'failed'),
-       create_status(allow_failure: true, status: 'manual'),
-       create_status(allow_failure: false, status: 'manual')]
+    let(:jobs) do
+      [create_job(when: 'manual', status: 'skipped'),
+       create_job(when: 'manual', status: 'success'),
+       create_job(when: 'manual', status: 'failed'),
+       create_job(when: 'on_failure', status: 'skipped'),
+       create_job(when: 'on_failure', status: 'success'),
+       create_job(when: 'on_failure', status: 'failed'),
+       create_job(allow_failure: true, status: 'success'),
+       create_job(allow_failure: true, status: 'failed'),
+       create_job(allow_failure: false, status: 'success'),
+       create_job(allow_failure: false, status: 'failed'),
+       create_job(allow_failure: true, status: 'manual'),
+       create_job(allow_failure: false, status: 'manual')]
     end
 
-    it 'returns statuses without what we want to ignore' do
-      is_expected.to eq(statuses.values_at(0, 1, 2, 3, 4, 5, 6, 8, 9, 11))
+    it 'returns jobs without what we want to ignore' do
+      is_expected.to eq(jobs.values_at(0, 1, 2, 3, 4, 5, 6, 8, 9, 11))
     end
   end
 
   describe '.failed_but_allowed' do
     subject { described_class.failed_but_allowed.order(:id) }
 
-    let(:statuses) do
-      [create_status(allow_failure: true, status: 'success'),
-       create_status(allow_failure: true, status: 'failed'),
-       create_status(allow_failure: false, status: 'success'),
-       create_status(allow_failure: false, status: 'failed'),
-       create_status(allow_failure: true, status: 'canceled'),
-       create_status(allow_failure: false, status: 'canceled'),
-       create_status(allow_failure: true, status: 'manual'),
-       create_status(allow_failure: false, status: 'manual')]
+    let(:jobs) do
+      [create_job(allow_failure: true, status: 'success'),
+       create_job(allow_failure: true, status: 'failed'),
+       create_job(allow_failure: false, status: 'success'),
+       create_job(allow_failure: false, status: 'failed'),
+       create_job(allow_failure: true, status: 'canceled'),
+       create_job(allow_failure: false, status: 'canceled'),
+       create_job(allow_failure: true, status: 'manual'),
+       create_job(allow_failure: false, status: 'manual')]
     end
 
-    it 'returns statuses without what we want to ignore' do
-      is_expected.to eq(statuses.values_at(1, 4))
+    it 'returns jobs without what we want to ignore' do
+      is_expected.to eq(jobs.values_at(1, 4))
     end
   end
 
   describe '.status' do
-    context 'when there are multiple statuses present' do
+    context 'when there are multiple jobs present' do
       before do
-        create_status(status: 'running')
-        create_status(status: 'success')
-        create_status(allow_failure: true, status: 'failed')
+        create_job(status: 'running')
+        create_job(status: 'success')
+        create_job(allow_failure: true, status: 'failed')
       end
 
       it 'returns a correct compound status' do
@@ -297,9 +297,9 @@ describe CommitStatus do
       end
     end
 
-    context 'when there are only allowed to fail commit statuses present' do
+    context 'when there are only allowed to fail commit jobs present' do
       before do
-        create_status(allow_failure: true, status: 'failed')
+        create_job(allow_failure: true, status: 'failed')
       end
 
       it 'returns status that indicates success' do
@@ -307,10 +307,10 @@ describe CommitStatus do
       end
     end
 
-    context 'when using a scope to select latest statuses' do
+    context 'when using a scope to select latest jobs' do
       before do
-        create_status(name: 'test', retried: true, status: 'failed')
-        create_status(allow_failure: true, name: 'test', status: 'failed')
+        create_job(name: 'test', retried: true, status: 'failed')
+        create_job(allow_failure: true, name: 'test', status: 'failed')
       end
 
       it 'returns status according to the scope' do
@@ -320,7 +320,7 @@ describe CommitStatus do
   end
 
   describe '#before_sha' do
-    subject { commit_status.before_sha }
+    subject { job.before_sha }
 
     context 'when no before_sha is set for pipeline' do
       before do
@@ -347,12 +347,12 @@ describe CommitStatus do
 
   describe '#commit' do
     it 'returns commit pipeline has been created for' do
-      expect(commit_status.commit).to eq project.commit
+      expect(job.commit).to eq project.commit
     end
   end
 
   describe '#group_name' do
-    subject { commit_status.group_name }
+    subject { job.group_name }
 
     tests = {
       'rspec:windows' => 'rspec:windows',
@@ -375,7 +375,7 @@ describe CommitStatus do
 
     tests.each do |name, group_name|
       it "'#{name}' puts in '#{group_name}'" do
-        commit_status.name = name
+        job.name = name
 
         is_expected.to eq(group_name)
       end
@@ -386,7 +386,7 @@ describe CommitStatus do
     let(:user) { create(:user) }
 
     it 'returns a detailed status' do
-      expect(commit_status.detailed_status(user))
+      expect(job.detailed_status(user))
         .to be_a Gitlab::Ci::Status::Success
     end
   end
@@ -404,22 +404,22 @@ describe CommitStatus do
 
     tests.each do |name, sortable_name|
       it "'#{name}' sorts as '#{sortable_name}'" do
-        commit_status.name = name
-        expect(commit_status.sortable_name).to eq(sortable_name)
+        job.name = name
+        expect(job.sortable_name).to eq(sortable_name)
       end
     end
   end
 
   describe '#locking_enabled?' do
     before do
-      commit_status.lock_version = 100
+      job.lock_version = 100
     end
 
-    subject { commit_status.locking_enabled? }
+    subject { job.locking_enabled? }
 
     context "when changing status" do
       before do
-        commit_status.status = "running"
+        job.status = "running"
       end
 
       it "lock" do
@@ -427,13 +427,13 @@ describe CommitStatus do
       end
 
       it "raise exception when trying to update" do
-        expect { commit_status.save }.to raise_error(ActiveRecord::StaleObjectError)
+        expect { job.save }.to raise_error(ActiveRecord::StaleObjectError)
       end
     end
 
     context "when changing description" do
       before do
-        commit_status.description = "test"
+        job.description = "test"
       end
 
       it "do not lock" do
@@ -441,17 +441,17 @@ describe CommitStatus do
       end
 
       it "save correctly" do
-        expect(commit_status.save).to be true
+        expect(job.save).to be true
       end
     end
   end
 
   describe 'set failure_reason when drop' do
-    let(:commit_status) { create(:commit_status, :created) }
+    let(:job) { create(:job, :created) }
 
     subject do
-      commit_status.drop!(reason)
-      commit_status
+      job.drop!(reason)
+      job
     end
 
     context 'when failure_reason is nil' do
@@ -473,31 +473,31 @@ describe CommitStatus do
         create(:ci_stage_entity, project: project, pipeline: pipeline)
       end
 
-      let(:commit_status) do
-        create(:commit_status, stage_id: stage.id, name: 'rspec', stage: 'test')
+      let(:job) do
+        create(:job, stage_id: stage.id, name: 'rspec', stage: 'test')
       end
 
       it 'does not create a new stage' do
-        expect { commit_status }.not_to change { Ci::Stage.count }
-        expect(commit_status.stage_id).to eq stage.id
+        expect { job }.not_to change { Ci::Stage.count }
+        expect(job.stage_id).to eq stage.id
       end
     end
 
     context 'when commit status does not have a stage_id assigned' do
-      let(:commit_status) do
-        create(:commit_status, name: 'rspec', stage: 'test', status: :success)
+      let(:job) do
+        create(:job, name: 'rspec', stage: 'test', status: :success)
       end
 
       let(:stage) { Ci::Stage.first }
 
       it 'creates a new stage' do
-        expect { commit_status }.to change { Ci::Stage.count }.by(1)
+        expect { job }.to change { Ci::Stage.count }.by(1)
 
         expect(stage.name).to eq 'test'
-        expect(stage.project).to eq commit_status.project
-        expect(stage.pipeline).to eq commit_status.pipeline
-        expect(stage.status).to eq commit_status.status
-        expect(commit_status.stage_id).to eq stage.id
+        expect(stage.project).to eq job.project
+        expect(stage.pipeline).to eq job.pipeline
+        expect(stage.status).to eq job.status
+        expect(job.stage_id).to eq stage.id
       end
     end
 
@@ -508,8 +508,8 @@ describe CommitStatus do
                                  name: 'test')
       end
 
-      let(:commit_status) do
-        create(:commit_status, project: project,
+      let(:job) do
+        create(:job, project: project,
                                pipeline: pipeline,
                                name: 'rspec',
                                stage: 'test',
@@ -517,21 +517,21 @@ describe CommitStatus do
       end
 
       it 'uses existing stage' do
-        expect { commit_status }.not_to change { Ci::Stage.count }
+        expect { job }.not_to change { Ci::Stage.count }
 
-        expect(commit_status.stage_id).to eq stage.id
-        expect(stage.reload.status).to eq commit_status.status
+        expect(job.stage_id).to eq stage.id
+        expect(stage.reload.status).to eq job.status
       end
     end
 
     context 'when commit status is being imported' do
-      let(:commit_status) do
-        create(:commit_status, name: 'rspec', stage: 'test', importing: true)
+      let(:job) do
+        create(:job, name: 'rspec', stage: 'test', importing: true)
       end
 
       it 'does not create a new stage' do
-        expect { commit_status }.not_to change { Ci::Stage.count }
-        expect(commit_status.stage_id).not_to be_present
+        expect { job }.not_to change { Ci::Stage.count }
+        expect(job.stage_id).not_to be_present
       end
     end
   end

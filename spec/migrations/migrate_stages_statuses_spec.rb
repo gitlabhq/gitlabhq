@@ -33,7 +33,7 @@ describe MigrateStagesStatuses, :sidekiq, :migration do
     stages.create!(id: 3, pipeline_id: 2, project_id: 2, name: 'test', status: nil)
   end
 
-  it 'correctly migrates stages statuses' do
+  it 'correctly migrates stages jobs' do
     Sidekiq::Testing.inline! do
       expect(stages.where(status: nil).count).to eq 3
 

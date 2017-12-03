@@ -35,6 +35,6 @@ class Projects::MergeRequests::ApplicationController < Projects::ApplicationCont
   def set_pipeline_variables
     @pipelines = @merge_request.all_pipelines
     @pipeline = @merge_request.head_pipeline
-    @statuses_count = @pipeline.present? ? @pipeline.statuses.relevant.count : 0
+    @statuses_count = @pipeline.present? ? @pipeline.jobs.relevant.count : 0
   end
 end

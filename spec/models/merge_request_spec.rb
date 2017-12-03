@@ -1395,7 +1395,7 @@ describe MergeRequest do
 
       context 'and a failed pipeline is associated' do
         before do
-          pipeline.statuses << create(:commit_status, status: 'failed', project: project)
+          pipeline.jobs << create(:ci_job, status: 'failed', project: project)
           allow(subject).to receive(:head_pipeline) { pipeline }
         end
 

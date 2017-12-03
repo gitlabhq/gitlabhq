@@ -5,7 +5,7 @@ class ExpireJobCacheWorker
   queue_namespace :pipeline_cache
 
   def perform(job_id)
-    job = CommitStatus.joins(:pipeline, :project).find_by(id: job_id)
+    job = Ci::Job.joins(:pipeline, :project).find_by(id: job_id)
     return unless job
 
     pipeline = job.pipeline

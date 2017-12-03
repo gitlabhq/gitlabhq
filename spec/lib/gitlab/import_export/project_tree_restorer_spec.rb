@@ -174,12 +174,12 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
           expect(@project.triggers.size).to eq(1)
         end
 
-        it 'has the correct number of pipelines and statuses' do
+        it 'has the correct number of pipelines and jobs' do
           expect(@project.pipelines.size).to eq(5)
 
           @project.pipelines.zip([2, 2, 2, 2, 2])
             .each do |(pipeline, expected_status_size)|
-              expect(pipeline.statuses.size).to eq(expected_status_size)
+              expect(pipeline.jobs.size).to eq(expected_status_size)
             end
         end
       end

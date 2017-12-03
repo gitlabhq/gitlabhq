@@ -1,4 +1,4 @@
-- grouped_statuses = @stage.statuses.latest_ordered.group_by(&:status)
+- grouped_statuses = @stage.jobs.latest_ordered.group_by(&:status)
 - HasStatus::ORDERED_STATUSES.each do |ordered_status|
   - grouped_statuses.fetch(ordered_status, []).each do |status|
     %li
