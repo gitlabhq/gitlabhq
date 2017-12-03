@@ -89,11 +89,11 @@ describe Projects::Clusters::GcpController do
           stub_google_api_expired_token
         end
 
-        it { expect(go).to redirect_to(gcp_login_namespace_project_clusters_path(project.namespace, project)) }
+        it { expect(go).to redirect_to(gcp_login_project_clusters_path(project)) }
       end
 
       context 'when access token is not stored in session' do
-        it { expect(go).to redirect_to(gcp_login_namespace_project_clusters_path(project.namespace, project)) }
+        it { expect(go).to redirect_to(gcp_login_project_clusters_path(project)) }
       end
     end
 
@@ -156,13 +156,13 @@ describe Projects::Clusters::GcpController do
         end
 
         it 'redirects to login page' do
-          expect(go).to redirect_to(gcp_login_namespace_project_clusters_path(project.namespace, project))
+          expect(go).to redirect_to(gcp_login_project_clusters_path(project))
         end
       end
 
       context 'when access token is not stored in session' do
         it 'redirects to login page' do
-          expect(go).to redirect_to(gcp_login_namespace_project_clusters_path(project.namespace, project))
+          expect(go).to redirect_to(gcp_login_project_clusters_path(project))
         end
       end
     end

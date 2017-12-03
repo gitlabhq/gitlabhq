@@ -58,7 +58,7 @@ describe Projects::Clusters::UserController do
         project.add_master(user)
         sign_in(user)
       end
-    
+ 
       context 'when creates a cluster' do
         it 'creates a new cluster' do
           expect(ClusterProvisionWorker).to receive(:perform_async)

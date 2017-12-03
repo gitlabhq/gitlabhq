@@ -177,7 +177,7 @@ describe Projects::ClustersController do
       context 'when changing parameters' do
         let(:params) do
           {
-            cluster: { 
+            cluster: {
               enabled: false,
               name: 'my-new-cluster-name',
               platform_kubernetes_attributes: {
@@ -230,10 +230,9 @@ describe Projects::ClustersController do
     end
 
     def go
-      put :update, params.merge(
-                     namespace_id: project.namespace,
-                     project_id: project,
-                     id: cluster)
+      put :update, params.merge(namespace_id: project.namespace,
+        project_id: project,
+        id: cluster)
     end
   end
 

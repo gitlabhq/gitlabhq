@@ -18,7 +18,7 @@ feature 'Clusters Applications', :js do
 
     context 'when cluster is being created' do
       let(:cluster) { create(:cluster, :providing_by_gcp, projects: [project])}
-    
+ 
       scenario 'user is unable to install applications' do
         page.within('.js-cluster-application-row-helm') do
           expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')
@@ -29,7 +29,7 @@ feature 'Clusters Applications', :js do
 
     context 'when cluster is created' do
       let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project])}
-    
+
       scenario 'user can install applications' do
         page.within('.js-cluster-application-row-helm') do
           expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to be_nil
@@ -40,7 +40,7 @@ feature 'Clusters Applications', :js do
       context 'when user installs Helm' do
         before do
           allow(ClusterInstallAppWorker).to receive(:perform_async).and_return(nil)
-  
+
           page.within('.js-cluster-application-row-helm') do
             page.find(:css, '.js-cluster-application-install-button').click
           end
