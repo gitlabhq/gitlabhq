@@ -17,7 +17,7 @@ module Clusters
     # we force autosave to happen when we save `Cluster` model
     has_one :provider_gcp, class_name: 'Clusters::Providers::Gcp', autosave: true
 
-    has_one :platform_kubernetes, class_name: 'Clusters::Platforms::Kubernetes'
+    has_one :platform_kubernetes, class_name: 'Clusters::Platforms::Kubernetes', autosave: true
 
     has_one :application_helm, class_name: 'Clusters::Applications::Helm'
     has_one :application_ingress, class_name: 'Clusters::Applications::Ingress'
@@ -27,8 +27,6 @@ module Clusters
 
     validates :name, cluster_name: true
     validate :restrict_modification, on: :update
-
-    validates_associated :provider_gcp, :platform_kubernetes
 
     delegate :status, to: :provider, allow_nil: true
     delegate :status_reason, to: :provider, allow_nil: true
@@ -92,6 +90,11 @@ module Clusters
     def restrict_modification
       if provider&.on_creation?
         errors.add(:base, "cannot modify during creation")
+        return false
+      end
+
+      if managed? && name_changed?
+        errors.add(:base, "cannot modify cluster name")
         return false
       end
 

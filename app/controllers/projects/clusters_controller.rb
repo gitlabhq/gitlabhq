@@ -1,5 +1,5 @@
 class Projects::ClustersController < Projects::ApplicationController
-  before_action :cluster, except: [:login, :index, :new]
+  before_action :cluster, except: [:index, :new]
   before_action :authorize_read_cluster!
   before_action :authorize_create_cluster!, only: [:new]
   before_action :authorize_update_cluster!, only: [:update]
@@ -11,6 +11,9 @@ class Projects::ClustersController < Projects::ApplicationController
     else
       redirect_to new_project_cluster_path(project)
     end
+  end
+
+  def new
   end
 
   def status
@@ -60,6 +63,7 @@ class Projects::ClustersController < Projects::ApplicationController
   def update_params
     params.require(:cluster).permit(
       :enabled,
+      :name,
       platform_kubernetes_attributes: [
         :namespace,
         :api_url,

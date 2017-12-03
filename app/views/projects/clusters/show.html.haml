@@ -69,7 +69,7 @@
       - if @cluster.managed?
         = render 'projects/clusters/gcp/show'
       - else
-        = render 'projects/clusters/kubernetes/show'
+        = render 'projects/clusters/user/show'
 
   %section.settings.no-animate#js-cluster-advanced-settings{ class: ('expanded' if expanded) }
     .settings-header

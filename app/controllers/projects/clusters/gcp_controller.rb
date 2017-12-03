@@ -2,8 +2,6 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
   before_action :authorize_read_cluster!
   before_action :authorize_google_api, except: [:login]
   before_action :authorize_create_cluster!, only: [:new, :create]
-  before_action :authorize_update_cluster!, only: [:update]
-  before_action :authorize_admin_cluster!, only: [:destroy]
 
   def login
     begin
@@ -50,6 +48,14 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
         provider_type: :gcp,
         platform_type: :kubernetes
       )
+  end
+
+  def update_params
+    params.require(:cluster).permit(
+      :enabled,
+      platform_kubernetes_attributes: [
+        :namespace
+      ])
   end
 
   def authorize_google_api

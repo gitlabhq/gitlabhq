@@ -186,10 +186,12 @@ constraints(ProjectUrlConstrainer.new) do
       resources :clusters, except: [:edit, :create] do
         collection do
           scope :providers do
-            resource :user, only: [:new, :create], controller: 'clusters/user'
-            resource :gcp, only: [:new, :create], controller: 'clusters/gcp' do
-              get :login
-            end
+            get '/user/new', to: 'clusters/user#new'
+            post '/user', to: 'clusters/user#create'
+
+            get '/gcp/new', to: 'clusters/gcp#new'
+            get '/gcp/login', to: 'clusters/gcp#login'
+            post '/gcp', to: 'clusters/gcp#create'
           end
         end
 
