@@ -18,11 +18,11 @@ describe Projects::ClustersController do
       context 'when project has a cluster' do
         let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
-        it { expect(go).to redirect_to(project_cluster_path(project, project.cluster)) }
+        it { expect(go).to redirect_to(namespace_project_cluster_path(project.namespace, project, project.cluster)) }
       end
 
       context 'when project does not have a cluster' do
-        it { expect(go).to redirect_to(new_project_cluster_path(project)) }
+        it { expect(go).to redirect_to(new_namespace_project_cluster_path(project.namespace, project)) }
       end
     end
 
@@ -146,7 +146,7 @@ describe Projects::ClustersController do
           go
 
           cluster.reload
-          expect(response).to redirect_to(project_cluster_path(project, project.cluster))
+          expect(response).to redirect_to(namespace_project_cluster_path(project.namespace, project, project.cluster))
           expect(flash[:notice]).to eq('Cluster was successfully updated.')
           expect(cluster.enabled).to be_falsey
         end
@@ -197,7 +197,7 @@ describe Projects::ClustersController do
           go
 
           cluster.reload
-          expect(response).to redirect_to(project_cluster_path(project, project.cluster))
+          expect(response).to redirect_to(namespace_project_cluster_path(project.namespace, project, project.cluster))
           expect(flash[:notice]).to eq('Cluster was successfully updated.')
           expect(cluster.enabled).to be_falsey
           expect(cluster.name).to eq('my-new-cluster-name')
@@ -261,7 +261,7 @@ describe Projects::ClustersController do
               .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
               .and change { Clusters::Providers::Gcp.count }.by(-1)
 
-            expect(response).to redirect_to(project_clusters_path(project))
+            expect(response).to redirect_to(namespace_project_clusters_path(project.namespace, project))
             expect(flash[:notice]).to eq('Cluster integration was successfully removed.')
           end
         end
@@ -274,7 +274,7 @@ describe Projects::ClustersController do
               .to change { Clusters::Cluster.count }.by(-1)
               .and change { Clusters::Providers::Gcp.count }.by(-1)
 
-            expect(response).to redirect_to(project_clusters_path(project))
+            expect(response).to redirect_to(namespace_project_clusters_path(project.namespace, project))
             expect(flash[:notice]).to eq('Cluster integration was successfully removed.')
           end
         end
@@ -290,7 +290,7 @@ describe Projects::ClustersController do
               .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
               .and change { Clusters::Providers::Gcp.count }.by(0)
 
-            expect(response).to redirect_to(project_clusters_path(project))
+            expect(response).to redirect_to(namespace_project_clusters_path(project.namespace, project))
             expect(flash[:notice]).to eq('Cluster integration was successfully removed.')
           end
         end
