@@ -33,7 +33,7 @@ class Projects::Clusters::KubernetesController < Projects::ApplicationController
         :ca_cert
       ]).merge(
         provider_type: :user,
-        platform_type: :kubernetes,
+        platform_type: :kubernetes
       )
   end
 end

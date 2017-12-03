@@ -31,7 +31,6 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
     if @cluster.persisted?
       redirect_to project_cluster_path(project, @cluster)
     else
-      puts "NOT PERSISTED"
       render :new
     end
   end
@@ -49,7 +48,7 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
         :machine_type
       ]).merge(
         provider_type: :gcp,
-        platform_type: :kubernetes,
+        platform_type: :kubernetes
       )
   end
 
