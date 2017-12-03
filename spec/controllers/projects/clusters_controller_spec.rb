@@ -16,14 +16,12 @@ describe Projects::ClustersController do
       end
 
       context 'when project has a cluster' do
-        let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+        let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
         it { expect(go).to redirect_to(project_cluster_path(project, project.cluster)) }
       end
 
       context 'when project does not have a cluster' do
-        let(:cluster) { create(:cluster, :provided_by_gcp) }
-
         it { expect(go).to redirect_to(new_project_cluster_path(project)) }
       end
     end
@@ -124,41 +122,44 @@ describe Projects::ClustersController do
   describe 'PUT update' do
     context 'Managed' do
       let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+      let(:user) { create(:user) }
 
-      describe 'functionality' do
-        let(:user) { create(:user) }
+      before do
+        project.add_master(user)
+        sign_in(user)
+      end
 
-        before do
-          project.add_master(user)
-          sign_in(user)
+      context 'when changing parameters' do
+        let(:params) do
+          {
+            cluster: {
+              enabled: false,
+              name: 'my-new-cluster-name',
+              platform_kubernetes_attributes: {
+                namespace: 'my-namespace'
+              }
+            }
+          }
         end
 
-        context 'when update enabled' do
-          let(:params) do
-            {
-              cluster: { enabled: false }
-            }
-          end
+        it "updates and redirects back to show page" do
+          go
 
-          it "updates and redirects back to show page" do
+          cluster.reload
+          expect(response).to redirect_to(project_cluster_path(project, project.cluster))
+          expect(flash[:notice]).to eq('Cluster was successfully updated.')
+          expect(cluster.enabled).to be_falsey
+        end
+
+        context 'when cluster is being created' do
+          let(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
+
+          it "rejects changes" do
             go
 
-            cluster.reload
-            expect(response).to redirect_to(project_cluster_path(project, project.cluster))
-            expect(flash[:notice]).to eq('Cluster was successfully updated.')
-            expect(cluster.enabled).to be_falsey
-          end
-
-          context 'when cluster is being created' do
-            let(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
-
-            it "rejects changes" do
-              go
-
-              expect(response).to have_gitlab_http_status(:ok)
-              expect(response).to render_template(:show)
-              expect(cluster.enabled).to be_truthy
-            end
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(response).to render_template(:show)
+            expect(cluster.enabled).to be_truthy
           end
         end
       end
@@ -166,7 +167,7 @@ describe Projects::ClustersController do
 
     context 'User' do
       let(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
-       let(:user) { create(:user) }
+      let(:user) { create(:user) }
 
       before do
         project.add_master(user)
@@ -177,10 +178,11 @@ describe Projects::ClustersController do
         let(:params) do
           {
             cluster: { 
-              enabled: false, name: 'my-new-cluster-name',
-              platform_kubernetes_attributes: [
+              enabled: false,
+              name: 'my-new-cluster-name',
+              platform_kubernetes_attributes: {
                 namespace: 'my-namespace'
-              ]
+              }
             }
           }
         end
@@ -211,10 +213,10 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
+      set(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
+
       let(:params) do
-        {
-          cluster: { enabled: false }
-        }
+        { cluster: { enabled: false } }
       end
 
       it { expect { go }.to be_allowed_for(:admin) }
@@ -228,15 +230,14 @@ describe Projects::ClustersController do
     end
 
     def go
-      put :update, params.merge(namespace_id: project.namespace,
-                                project_id: project,
-                                id: cluster)
+      put :update, params.merge(
+                     namespace_id: project.namespace,
+                     project_id: project,
+                     id: cluster)
     end
   end
 
-  describe 'delete update' do
-    let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
-
+  describe 'DELETE destroy' do
     describe 'functionality' do
       let(:user) { create(:user) }
 
@@ -245,45 +246,55 @@ describe Projects::ClustersController do
         sign_in(user)
       end
 
-      it "destroys and redirects back to clusters list" do
-        expect { go }
-          .to change { Clusters::Cluster.count }.by(-1)
-          .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
-          .and change { Clusters::Providers::Gcp.count }.by(-1)
+      context 'GCP' do
+        context 'when cluster is created' do
+          let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
-        expect(response).to redirect_to(project_clusters_path(project))
-        expect(flash[:notice]).to eq('Cluster integration was successfully removed.')
-      end
+          it "destroys and redirects back to clusters list" do
+            expect { go }
+              .to change { Clusters::Cluster.count }.by(-1)
+              .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
+              .and change { Clusters::Providers::Gcp.count }.by(-1)
 
-      context 'when cluster is being created' do
-        let(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
+            expect(response).to redirect_to(project_clusters_path(project))
+            expect(flash[:notice]).to eq('Cluster integration was successfully removed.')
+          end
+        end
 
-        it "destroys and redirects back to clusters list" do
-          expect { go }
-            .to change { Clusters::Cluster.count }.by(-1)
-            .and change { Clusters::Providers::Gcp.count }.by(-1)
+        context 'when cluster is being created' do
+          let!(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
 
-          expect(response).to redirect_to(project_clusters_path(project))
-          expect(flash[:notice]).to eq('Cluster integration was successfully removed.')
+          it "destroys and redirects back to clusters list" do
+            expect { go }
+              .to change { Clusters::Cluster.count }.by(-1)
+              .and change { Clusters::Providers::Gcp.count }.by(-1)
+
+            expect(response).to redirect_to(project_clusters_path(project))
+            expect(flash[:notice]).to eq('Cluster integration was successfully removed.')
+          end
         end
       end
 
-      context 'when provider is user' do
-        let(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
+      context 'User' do
+        context 'when provider is user' do
+          let!(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
 
-        it "destroys and redirects back to clusters list" do
-          expect { go }
-            .to change { Clusters::Cluster.count }.by(-1)
-            .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
-            .and change { Clusters::Providers::Gcp.count }.by(0)
+          it "destroys and redirects back to clusters list" do
+            expect { go }
+              .to change { Clusters::Cluster.count }.by(-1)
+              .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
+              .and change { Clusters::Providers::Gcp.count }.by(0)
 
-          expect(response).to redirect_to(project_clusters_path(project))
-          expect(flash[:notice]).to eq('Cluster integration was successfully removed.')
+            expect(response).to redirect_to(project_clusters_path(project))
+            expect(flash[:notice]).to eq('Cluster integration was successfully removed.')
+          end
         end
       end
     end
 
     describe 'security' do
+      set(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
       it { expect { go }.to be_allowed_for(:master).of(project) }
