@@ -476,6 +476,7 @@ ActiveRecord::Schema.define(version: 20171130145523) do
     t.integer "source"
     t.boolean "protected"
     t.integer "failure_reason"
+    t.integer "config_source"
   end
 
   add_index "ci_pipelines", ["auto_canceled_by_id"], name: "index_ci_pipelines_on_auto_canceled_by_id", using: :btree
