@@ -14,6 +14,12 @@ describe Projects::BoardsController do
       expect { list_boards }.to change(project.boards, :count).by(1)
     end
 
+    it 'sets boards_endpoint instance variable to a boards path' do
+      list_boards
+
+      expect(assigns(:boards_endpoint)).to eq project_boards_path(project)
+    end
+
     context 'when format is HTML' do
       it 'renders template' do
         list_boards
