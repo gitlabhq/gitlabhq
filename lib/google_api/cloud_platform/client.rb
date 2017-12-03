@@ -82,6 +82,10 @@ module GoogleApi
       def token_life_time(expires_at)
         DateTime.strptime(expires_at, '%s').to_time.utc - Time.now.utc
       end
+
+      def user_agent_header
+        { 'User-Agent': "GitLab/#{Gitlab::VERSION.match('(\d+\.\d+)').captures.first} (GPN:GitLab;)" }
+      end
     end
   end
 end
