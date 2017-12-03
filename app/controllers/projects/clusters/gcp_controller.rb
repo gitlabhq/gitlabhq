@@ -5,7 +5,7 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
 
   def login
     begin
-      state = generate_session_key_redirect(new_namespace_project_gcp_url.to_s)
+      state = generate_session_key_redirect(gcp_new_namespace_project_clusters_path.to_s)
 
       @authorize_url = GoogleApi::CloudPlatform::Client.new(
         nil, callback_google_api_auth_url,
