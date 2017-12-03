@@ -8,7 +8,7 @@ import './stores/comments';
 import './services/resolve';
 import './mixins/discussion';
 import './components/comment_resolve_btn.vue';
-import './components/jump_to_discussion';
+import './components/jump_to_discussion.vue';
 import './components/resolve_btn.vue';
 import './components/resolve_count';
 import './components/resolve_discussion_btn';
