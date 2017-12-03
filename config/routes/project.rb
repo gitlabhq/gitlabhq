@@ -185,12 +185,12 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :clusters, except: [:edit, :create] do
         collection do
-          get '/platforms/kubernetes/new', to: 'clusters/kubernetes#new'
-          post '/platforms/kubernetes', to: 'clusters/kubernetes#create'
-
-          get '/providers/gcp/new', to: 'clusters/gcp#new'
-          get '/providers/gcp/login', to: 'clusters/gcp#login'
-          post '/providers/gcp', to: 'clusters/gcp#create'
+          scope :providers do
+            resource :user, only: [:new, :create], controller: 'clusters/user'
+            resource :gcp, only: [:new, :create], controller: 'clusters/gcp' do
+              get :login
+            end
+          end
         end
 
         member do

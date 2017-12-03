@@ -3,7 +3,7 @@
   - link_to_help_page = link_to(s_('ClusterIntegration|help page'), help_page_path('user/project/clusters/index'), target: '_blank', rel: 'noopener noreferrer')
   = s_('ClusterIntegration|Read our %{link_to_help_page} on cluster integration.').html_safe % { link_to_help_page: link_to_help_page}
 
-= form_for @cluster, html: { class: 'prepend-top-20' }, url: providers_gcp_namespace_project_clusters_path(@project.namespace, @project), as: :cluster do |field|
+= form_for @cluster, html: { class: 'prepend-top-20' }, url: namespace_project_gcp_path(@project.namespace, @project), as: :cluster do |field|
   = form_errors(@cluster)
   .form-group
     = field.label :name, s_('ClusterIntegration|Cluster name')

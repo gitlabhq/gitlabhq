@@ -1,4 +1,4 @@
-class Projects::Clusters::KubernetesController < Projects::ApplicationController
+class Projects::Clusters::UserController < Projects::ApplicationController
   before_action :authorize_read_cluster!
   before_action :authorize_create_cluster!, only: [:new, :create]
 
