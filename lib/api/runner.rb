@@ -222,11 +222,12 @@ module API
         bad_request!('Missing artifacts file!') unless artifacts
         file_to_large! unless artifacts.size < max_artifacts_size
 
-        job.job_artifacts.build(project: job.project, file_type: :archive, file: artifacts)
-        job.job_artifacts.build(project: job.project, file_type: :metadata, file: metadata)
-
-        job.artifacts_expire_in = params['expire_in'] ||
+        expire_in = params['expire_in'] ||
           Gitlab::CurrentSettings.current_application_settings.default_artifacts_expire_in
+
+        job.build_job_artifacts_archive(project: job.project, file_type: :archive, file: artifacts, expire_in: expire_in)
+        job.build_job_artifacts_metadata(project: job.project, file_type: :metadata, file: metadata, expire_in: expire_in) if metadata
+        job.artifacts_expire_in = expire_in
 
         if job.save
           present job, with: Entities::JobRequest::Response
