@@ -8,7 +8,7 @@ feature 'Clusters Applications', :js do
 
   before do
     project.add_master(user)
-    gitlab_sign_in(user)
+    sign_in(user)
   end
 
   describe 'Installing applications' do

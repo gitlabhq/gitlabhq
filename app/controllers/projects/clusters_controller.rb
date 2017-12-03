@@ -5,6 +5,8 @@ class Projects::ClustersController < Projects::ApplicationController
   before_action :authorize_update_cluster!, only: [:update]
   before_action :authorize_admin_cluster!, only: [:destroy]
 
+  STATUS_POLLING_INTERVAL = 10_000
+
   def index
     if project.cluster
       redirect_to project_cluster_path(project, project.cluster)
