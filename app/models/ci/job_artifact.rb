@@ -21,5 +21,16 @@ module Ci
     def set_size
       self.size = file.size
     end
+
+    def expire_in
+      expire_at - Time.now if expire_at
+    end
+
+    def expire_in=(value)
+      self.expire_at =
+        if value
+          ChronicDuration.parse(value)&.seconds&.from_now
+        end
+    end
   end
 end

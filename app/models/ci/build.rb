@@ -19,8 +19,8 @@ module Ci
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
 
     has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
-    has_one :job_artifacts_archive, -> () { where(file_type: Ci::JobArtifact.file_types[:archive]) }, class_name: 'Ci::JobArtifact', foreign_key: :job_id
-    has_one :job_artifacts_metadata, -> () { where(file_type: Ci::JobArtifact.file_types[:metadata]) }, class_name: 'Ci::JobArtifact', foreign_key: :job_id
+    has_one :job_artifacts_archive, -> { where(file_type: Ci::JobArtifact.file_types[:archive]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
+    has_one :job_artifacts_metadata, -> { where(file_type: Ci::JobArtifact.file_types[:metadata]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
 
     # The "environment" field for builds is a String, and is the unexpanded name
     def persisted_environment
@@ -41,7 +41,7 @@ module Ci
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
     scope :with_artifacts, ->() do
-      where('(artifacts_file IS NOT NULL AND artifacts_file <> ?) OR EXISTS (?)', '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id'))
+      where('(artifacts_file IS NOT NULL AND artifacts_file <> ?) OR EXISTS (?)', '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.build_id'))
     end
     scope :with_artifacts_not_expired, ->() { with_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
@@ -396,6 +396,7 @@ module Ci
 
     def keep_artifacts!
       self.update(artifacts_expire_at: nil)
+      self.job_artifacts.update_all(expire_at: nil)
     end
 
     def coverage_regex

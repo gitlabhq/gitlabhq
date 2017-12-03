@@ -1027,10 +1027,22 @@ describe Ci::Build do
   describe '#keep_artifacts!' do
     let(:build) { create(:ci_build, artifacts_expire_at: Time.now + 7.days) }
 
+    subject { build.keep_artifacts! }
+
     it 'to reset expire_at' do
-      build.keep_artifacts!
+      subject
 
       expect(build.artifacts_expire_at).to be_nil
+    end
+
+    context 'when having artifacts files' do
+      let!(:artifact) { create(:ci_job_artifact, job: build, expire_in: '7 days') }
+
+      it 'to reset dependent objects' do
+        subject
+
+        expect(artifact.reload.expire_at).to be_nil
+      end
     end
   end
 
