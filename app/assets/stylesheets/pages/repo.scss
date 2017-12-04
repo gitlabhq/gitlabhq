@@ -148,8 +148,19 @@
 }
 
 .multi-file-editor-btn-group {
-  padding: $grid-size;
+  padding: 3px 0;
   border-top: 1px solid $white-dark;
+  border-bottom: 1px solid $white-dark;
+  background: $white-light;
+}
+
+.ide-status-bar {
+  padding-bottom: 3px;
+  background: $white-light;
+
+  svg {
+    vertical-align: middle;
+  }
 }
 
 // Not great, but this is to deal with our current output
@@ -260,7 +271,7 @@
 
 .multi-file-commit-list {
   flex: 1;
-  overflow: scroll;
+  overflow: auto;
   padding: $gl-padding;
 }
 
@@ -292,7 +303,7 @@
 }
 
 .multi-file-commit-form {
-  padding-top: 12px;
+  padding: $gl-padding;
   border-top: 1px solid $white-dark;
 }
 

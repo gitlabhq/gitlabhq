@@ -125,7 +125,7 @@ const Api = {
   commitMultiple(id, data) {
     // see https://docs.gitlab.com/ce/api/commits.html#create-a-commit-with-multiple-files-and-actions
     const url = Api.buildUrl(Api.commitPath)
-      .replace(':id', id);
+      .replace(':id', encodeURIComponent(id));
     return this.wrapAjaxCall({
       url,
       type: 'POST',

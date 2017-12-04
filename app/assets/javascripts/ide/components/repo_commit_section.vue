@@ -52,7 +52,7 @@ export default {
       const createNewBranch = newBranch || this.startNewMR;
 
       const payload = {
-        branch: createNewBranch ? `${this.currentBranch}-${new Date().getTime().toString()}` : this.currentBranch,
+        branch: createNewBranch ? `${this.currentBranchId}-${new Date().getTime().toString()}` : this.currentBranchId,
         commit_message: this.commitMessage,
         actions: this.changedFiles.map(f => ({
           action: f.tempFile ? 'create' : 'update',
@@ -60,7 +60,7 @@ export default {
           content: f.content,
           encoding: f.base64 ? 'base64' : 'text',
         })),
-        start_branch: createNewBranch ? this.currentBranch : undefined,
+        start_branch: createNewBranch ? this.currentBranchId : undefined,
       };
 
       this.showNewBranchDialog = false;
@@ -99,7 +99,7 @@ export default {
 
 <template>
 <div class="multi-file-commit-panel-section">
-  <popup-di1og
+  <popup-dialog
     v-if="showNewBranchDialog"
     :primary-button-label="__('Create new branch')"
     kind="primary"

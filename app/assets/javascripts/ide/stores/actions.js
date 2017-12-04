@@ -50,11 +50,13 @@ export const toggleBlobView = ({ commit, state }) => {
 };
 
 export const checkCommitStatus = ({ state }) => service.getBranchData(
-  state.project.id,
-  state.currentBranch,
+  state.currentProjectId,
+  state.currentBranchId,
 )
   .then((data) => {
     const { id } = data.commit;
+
+    debugger;
 
     if (state.currentRef !== id) {
       return true;
@@ -64,8 +66,19 @@ export const checkCommitStatus = ({ state }) => service.getBranchData(
   })
   .catch(() => flash('Error checking branch data. Please try again.'));
 
+export const getBranchReference = ({ state }, { projectId, branchId }) => service.getBranchData(
+  projectId,
+  branchId,
+)
+  .then((data) => {
+    const { id } = data.commit;
+
+    return id;
+  })
+  .catch(() => flash('Error checking branch data. Please try again.'));
+
 export const commitChanges = ({ commit, state, dispatch, getters }, { payload, newMr }) =>
-  service.commit(state.project.id, payload)
+  service.commit(state.currentProjectId, payload)
   .then((data) => {
     const { branch } = payload;
     if (!data.short_id) {

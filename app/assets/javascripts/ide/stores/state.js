@@ -1,6 +1,7 @@
 export default () => ({
   canCommit: false,
-  currentBranch: '',
+  currentProjectId: '',
+  currentBranchId: '',
   currentBlobView: 'repo-editor',
   currentRef: '',
   discardPopupOpen: false,

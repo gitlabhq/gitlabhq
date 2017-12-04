@@ -2,6 +2,8 @@ export const dataStructure = () => ({
   id: '',
   key: '',
   type: '',
+  projectId: '',
+  branchId: '',
   name: '',
   url: '',
   path: '',
@@ -36,6 +38,8 @@ export const dataStructure = () => ({
 export const decorateData = (entity) => {
   const {
     id,
+    projectId,
+    branchId,
     type,
     url,
     name,
@@ -56,6 +60,8 @@ export const decorateData = (entity) => {
   return {
     ...dataStructure(),
     id,
+    projectId,
+    branchId,
     key: `${name}-${type}-${id}`,
     type,
     name,
@@ -104,7 +110,13 @@ export const createTemp = ({ name, path, type, level, changed, content, base64 }
   });
 };
 
-export const createOrMergeEntry = ({ tree, entry, type, parentTreeUrl, level }) => {
+export const createOrMergeEntry = ({ tree,
+                                     projectId,
+                                     branchId,
+                                     entry,
+                                     type,
+                                     parentTreeUrl,
+                                     level }) => {
   const found = findEntry(tree, type, entry.name);
 
   if (found) {
@@ -117,6 +129,8 @@ export const createOrMergeEntry = ({ tree, entry, type, parentTreeUrl, level }) 
 
   return decorateData({
     ...entry,
+    projectId,
+    branchId,
     type,
     parentTreeUrl,
     level,

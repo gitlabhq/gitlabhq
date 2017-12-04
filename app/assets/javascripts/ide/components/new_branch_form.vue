@@ -15,7 +15,7 @@
     },
     computed: {
       ...mapState([
-        'currentBranch',
+        'currentBranchId',
       ]),
       btnDisabled() {
         return this.loading || this.branchName === '';
@@ -44,7 +44,7 @@
             this.branchName = '';
 
             if (this.dropdownText) {
-              this.dropdownText.textContent = this.currentBranch;
+              this.dropdownText.textContent = this.currentBranchId;
             }
 
             this.toggleDropdown();
@@ -74,7 +74,7 @@
     </div>
     <p>
       Create from:
-      <code>{{ currentBranch }}</code>
+      <code>{{ currentBranchId }}</code>
     </p>
     <input
       class="form-control js-new-branch-name"

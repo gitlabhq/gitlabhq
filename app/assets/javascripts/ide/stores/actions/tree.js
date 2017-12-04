@@ -157,6 +157,8 @@ export const updateDirectoryData = (
   const parentTreeUrl = data.parent_tree_url ? `${data.parent_tree_url}${data.path}` : state.endpoints.rootUrl;
   const createEntry = (entry, type) => createOrMergeEntry({
     tree: selectedTree,
+    projectId: `${namespace}/${projectId}`,
+    branchId: branch,
     entry,
     level,
     type,

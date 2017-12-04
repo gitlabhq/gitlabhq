@@ -29,13 +29,13 @@ export const createNewBranch = ({ state, commit }, branch) => service.createBran
   state.project.id,
   {
     branch,
-    ref: state.currentBranch,
+    ref: state.currentBranchId,
   },
 )
 .then(res => res.json())
 .then((data) => {
   const branchName = data.name;
-  const url = location.href.replace(state.currentBranch, branchName);
+  const url = location.href.replace(state.currentBranchId, branchName);
 
   this.$router.push(url);
 
