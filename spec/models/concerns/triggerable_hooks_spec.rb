@@ -4,7 +4,7 @@ RSpec.describe TriggerableHooks do
   before do
     class TestableHook < WebHook
       include TriggerableHooks
-      triggerable_hooks only: [:push_hooks]
+      triggerable_hooks [:push_hooks]
     end
   end
 

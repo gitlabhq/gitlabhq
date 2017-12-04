@@ -1,7 +1,7 @@
 class SystemHook < WebHook
   include TriggerableHooks
 
-  triggerable_hooks only: [
+  triggerable_hooks [
     :repository_update_hooks,
     :push_hooks,
     :tag_push_hooks,

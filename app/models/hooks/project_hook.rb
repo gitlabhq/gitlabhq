@@ -1,7 +1,7 @@
 class ProjectHook < WebHook
   include TriggerableHooks
 
-  triggerable_hooks only: [
+  triggerable_hooks [
     :push_hooks,
     :tag_push_hooks,
     :issue_hooks,
