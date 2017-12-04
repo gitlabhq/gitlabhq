@@ -5,6 +5,7 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
   include TrackUntrackedUploadsHelpers
 
   let(:untracked_files_for_uploads) { table(:untracked_files_for_uploads) }
+  let(:uploads) { table(:uploads) }
 
   matcher :be_scheduled_migration do
     match do |migration|
@@ -33,7 +34,6 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
     let!(:user2) { create(:user, :with_avatar) }
     let!(:project1) { create(:project, :with_avatar) }
     let!(:project2) { create(:project, :with_avatar) }
-    let(:uploads) { table(:uploads) }
 
     before do
       UploadService.new(project1, uploaded_file, FileUploader).execute # Markdown upload
@@ -88,6 +88,14 @@ describe TrackUntrackedUploads, :migration, :sidekiq do
       migrate!
 
       expect(table_exists?(:untracked_files_for_uploads)).to be_falsey
+    end
+  end
+
+  context 'without any uploads ever' do
+    it 'does not add any upload records' do
+      expect do
+        migrate!
+      end.not_to change { uploads.count }.from(0)
     end
   end
 end
