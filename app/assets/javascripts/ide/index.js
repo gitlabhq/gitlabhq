@@ -29,11 +29,6 @@ function initIde(el) {
       const data = el.dataset;
 
       this.setInitialData({
-        project: {
-          id: data.projectId,
-          name: data.projectName,
-          url: data.projectUrl,
-        },
         endpoints: {
           rootEndpoint: data.url,
           newMergeRequestUrl: data.newMergeRequestUrl,

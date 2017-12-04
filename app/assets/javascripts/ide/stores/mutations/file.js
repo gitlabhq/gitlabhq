@@ -31,9 +31,6 @@ export default {
       binary: data.binary,
       html: data.html,
       renderError: data.render_error,
-      editorRow: 1,
-      editorColumn: 1,
-      fileLanguage: '',
     });
   },
   [types.SET_FILE_RAW_DATA](state, { file, raw }) {
@@ -49,12 +46,17 @@ export default {
       changed,
     });
   },
-  [types.UPDATE_FILE_LANGUAGE](state, { file, fileLanguage }) {
+  [types.SET_FILE_LANGUAGE](state, { file, fileLanguage }) {
     Object.assign(file, {
       fileLanguage,
     });
   },
-  [types.UPDATE_FILE_POSITION](state, { file, editorRow, editorColumn }) {
+  [types.SET_FILE_EOL](state, { file, EOL }) {
+    Object.assign(file, {
+      EOL,
+    });
+  },
+  [types.SET_FILE_POSITION](state, { file, editorRow, editorColumn }) {
     Object.assign(file, {
       editorRow,
       editorColumn,

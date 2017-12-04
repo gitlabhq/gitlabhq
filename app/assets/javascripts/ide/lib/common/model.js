@@ -28,6 +28,14 @@ export default class Model {
     return this.model.uri.toString();
   }
 
+  get language() {
+    return this.model.getModeId();
+  }
+
+  get EOL() {
+    return encodeURI(this.model.getEOL()) === '%0A' ? 'LF' : 'CRLF';
+  }
+
   get path() {
     return this.file.path;
   }
@@ -45,6 +53,14 @@ export default class Model {
       this.path,
       this.disposable.add(
         this.model.onDidChangeContent(e => cb(this.model, e)),
+      ),
+    );
+  }
+
+  onLanguageChange(cb) {
+    this.events.set(
+      this.disposable.add(
+        this.model.onDidChangeLanguage(e => cb(this.model, e)),
       ),
     );
   }

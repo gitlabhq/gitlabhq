@@ -5,6 +5,12 @@ import tooltip from '../../vue_shared/directives/tooltip';
 import timeAgoMixin from '../../vue_shared/mixins/timeago';
 
 export default {
+  props: {
+    file: {
+      type: Object,
+      required: true,
+    },
+  },
   components: {
     Icon,
   },
@@ -36,11 +42,11 @@ export default {
     <div 
       class="col-sm-4">
       <div
-        v-tooltip
-        :title="selectedFile.lastCommit.message"
         v-if="selectedFile.lastCommit && selectedFile.lastCommit.id">
         Last commit:
         <a
+          v-tooltip
+          :title="selectedFile.lastCommit.message"
           :href="selectedFile.lastCommit.url">
           {{ timeFormated(selectedFile.lastCommit.updatedAt) }} by 
           {{ selectedFile.lastCommit.author }}
@@ -48,12 +54,16 @@ export default {
       </div>      
     </div>
     <div 
-      class="col-sm-1 col-sm-offset-2 text-right">
+      class="col-sm-1 col-sm-offset-1 text-right">
       {{ selectedFile.name }}
     </div>
     <div 
       class="col-sm-1 text-right">
-      {{ selectedFile.editorRow }}:{{ selectedFile.editorColumn }}
+      {{ selectedFile.EOL }}
+    </div>
+    <div 
+      class="col-sm-1 text-right">
+      {{ file.editorRow }}:{{ file.editorColumn }}
     </div>
     <div 
       class="col-sm-1 text-right">

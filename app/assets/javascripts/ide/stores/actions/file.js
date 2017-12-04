@@ -83,11 +83,15 @@ export const changeFileContent = ({ commit }, { file, content }) => {
 };
 
 export const setFileLanguage = ({ commit }, { file, fileLanguage }) => {
-  commit(types.UPDATE_FILE_LANGUAGE, { file, fileLanguage });
+  commit(types.SET_FILE_LANGUAGE, { file, fileLanguage });
+};
+
+export const setFileEOL = ({ commit }, { file, EOL }) => {
+  commit(types.SET_FILE_EOL, { file, EOL });
 };
 
 export const setEditorPosition = ({ commit }, { file, editorRow, editorColumn }) => {
-  commit(types.UPDATE_FILE_POSITION, { file, editorRow, editorColumn });
+  commit(types.SET_FILE_POSITION, { file, editorRow, editorColumn });
 };
 
 export const createTempFile = ({ state, commit, dispatch }, { tree, name, content = '', base64 = '' }) => {
