@@ -11,6 +11,10 @@ module Projects
       @project = project
     end
 
+    def relation_for_count
+      self.class.query(@project.id)
+    end
+
     def cache_key_name
       raise(
         NotImplementedError,
