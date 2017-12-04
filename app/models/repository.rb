@@ -507,9 +507,10 @@ class Repository
       # (via Rails.cache). A false negative from 'exists?' has a severe impact
       # on user experience. By using a shorter expiry time we limit the impact
       # of such a fault.
-      Gitlab::Redis::Cache.with { |redis| redis.set(exists_cache_key, [@exists].to_json, ex: EXISTS_CACHE_TTL) }
+      encoded_value = @exists ? '1' : '0'
+      Gitlab::Redis::Cache.with { |redis| redis.set(exists_cache_key, encoded_value, ex: EXISTS_CACHE_TTL) }
     else
-      @exists = JSON.parse(redis_value).first
+      @exists = redis_value == '1'
     end
 
     @exists
