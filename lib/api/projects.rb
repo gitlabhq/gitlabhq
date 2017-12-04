@@ -79,11 +79,11 @@ module API
         projects = projects.with_statistics if params[:statistics]
         projects = projects.with_issues_enabled if params[:with_issues_enabled]
         projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
+        projects = paginate(projects)
 
         if current_user
-          projects = projects.includes(:route, :taggings, namespace: :route)
-          project_members = current_user.project_members
-          group_members = current_user.group_members
+          project_members = current_user.project_members.preload(:source, user: [notification_settings: :source])
+          group_members = current_user.group_members.preload(:source, user: [notification_settings: :source])
         end
 
         options = options.reverse_merge(
@@ -95,7 +95,7 @@ module API
         )
         options[:with] = Entities::BasicProjectDetails if params[:simple]
 
-        present paginate(projects), options
+        present options[:with].prepare_relation(projects, options), options
       end
     end
 
