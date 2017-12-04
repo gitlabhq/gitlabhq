@@ -7,7 +7,7 @@ module Geo
     end
 
     def schedule_job(object_db_id, object_type)
-      job_id = GeoFileDownloadWorker.perform_async(object_type, object_db_id)
+      job_id = FileDownloadWorker.perform_async(object_type, object_db_id)
 
       { id: object_db_id, type: object_type, job_id: job_id } if job_id
     end
