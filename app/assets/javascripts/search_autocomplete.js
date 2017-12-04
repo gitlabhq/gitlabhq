@@ -281,6 +281,8 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
 
     // Avoid falsy value to be returned
     onSearchInputClick(e) {
+      $('.dropdown.open .dropdown-toggle').dropdown('toggle');
+      this.dropdown.dropdown('toggle');
       return e.stopImmediatePropagation();
     }
 
@@ -305,6 +307,7 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
     onSearchInputBlur(e) {
       this.isFocused = false;
       this.wrap.removeClass('search-active');
+      $('.search-input-wrap').removeClass('open');
       // If input is blank then restore state
       if (this.searchInput.val() === '') {
         return this.restoreOriginalState();
