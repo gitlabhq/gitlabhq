@@ -43,20 +43,19 @@ module Geo
     # FDW accessors
     #
 
-    def fdw_table
-      Geo::Fdw::Upload.table_name
-    end
-
     def fdw_find_synced_attachments
-      uploads.joins("INNER JOIN file_registry ON file_registry.file_id = #{fdw_table}.id")
-        .merge(Geo::FileRegistry.attachments)
-        .merge(Geo::FileRegistry.synced)
+      fdw_find_attachments.merge(Geo::FileRegistry.synced)
     end
 
     def fdw_find_failed_attachments
+      fdw_find_attachments.merge(Geo::FileRegistry.failed)
+    end
+
+    def fdw_find_attachments
+      fdw_table = Geo::Fdw::Upload.table_name
+
       uploads.joins("INNER JOIN file_registry ON file_registry.file_id = #{fdw_table}.id")
         .merge(Geo::FileRegistry.attachments)
-        .merge(Geo::FileRegistry.failed)
     end
 
     #
@@ -78,7 +77,7 @@ module Geo
         INNER JOIN
         (VALUES #{registry_file_ids.map { |id| "(#{id})" }.join(',')})
         file_registry(file_id)
-        ON uploads.id = file_registry.file_id
+        ON #{Upload.table_name}.id = file_registry.file_id
       SQL
 
       joined_relation
