@@ -44,8 +44,6 @@ import './commits';
 import './compare';
 import './compare_autocomplete';
 import './confirm_danger_modal';
-import './diff';
-import './files_comment_button';
 import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
 import './gl_field_error';
