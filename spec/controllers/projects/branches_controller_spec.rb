@@ -130,13 +130,6 @@ describe Projects::BranchesController do
             expect(response).to have_gitlab_http_status(302)
           end
         end
-<<<<<<< HEAD
-
-        context 'when user configured kubernetes from Integration > Kubernetes' do
-          before do
-            project.services << build(:kubernetes_service)
-          end
-=======
 
         context 'when user configured kubernetes from Integration > Kubernetes' do
           before do
@@ -158,17 +151,18 @@ describe Projects::BranchesController do
           result = { status: :success, branch: double(name: branch) }
 
           create(:cluster, :provided_by_gcp, projects: [project])
->>>>>>> origin/master
 
-          it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
-        end
+          expect_any_instance_of(CreateBranchService).to receive(:execute).and_return(result)
+          expect(SystemNoteService).to receive(:new_issue_branch).and_return(true)
 
-        context 'when user configured kubernetes from CI/CD > Clusters' do
-          before do
-            create(:cluster, :provided_by_gcp, projects: [project])
-          end
+          post :create,
+            namespace_id: project.namespace.to_param,
+            project_id: project.to_param,
+            branch_name: branch,
+            issue_iid: issue.iid
 
-          it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+          expect(response.location).to include(project_new_blob_path(project, branch))
+          expect(response).to have_gitlab_http_status(302)
         end
       end
 
