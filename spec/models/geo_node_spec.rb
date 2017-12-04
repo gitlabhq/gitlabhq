@@ -298,40 +298,4 @@ describe GeoNode, type: :model do
       expect(node.selective_sync?).to be false
     end
   end
-
-  describe '#lfs_objects_synced_count' do
-    context 'primary node' do
-      subject { primary_node }
-
-      it 'returns nil' do
-        expect(subject.lfs_objects_synced_count).to be_nil
-      end
-    end
-
-    context 'secondary node' do
-      subject { node }
-
-      it 'returns a value' do
-        expect(subject.lfs_objects_synced_count).to eq(0)
-      end
-    end
-  end
-
-  describe '#lfs_objects_failed_count' do
-    context 'primary node' do
-      subject { primary_node }
-
-      it 'returns nil' do
-        expect(subject.lfs_objects_failed_count).to be_nil
-      end
-    end
-
-    context 'secondary node' do
-      subject { node }
-
-      it 'returns a value' do
-        expect(subject.lfs_objects_failed_count).to eq(0)
-      end
-    end
-  end
 end

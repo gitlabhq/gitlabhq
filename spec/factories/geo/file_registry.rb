@@ -15,7 +15,7 @@ FactoryGirl.define do
     trait :with_file do
       after(:build, :stub) do |registry, _|
         file =
-          if registry.file_type == :lfs
+          if registry.file_type.to_sym == :lfs
             create(:lfs_object)
           else
             create(:upload)

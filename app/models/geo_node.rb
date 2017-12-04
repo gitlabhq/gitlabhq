@@ -183,24 +183,6 @@ class GeoNode < ActiveRecord::Base
     end
   end
 
-  def lfs_objects_synced_count
-    return unless secondary?
-
-    relation = Geo::FileRegistry.lfs_objects.synced
-
-    if selective_sync?
-      relation = relation.where(file_id: lfs_objects.pluck(:id))
-    end
-
-    relation.count
-  end
-
-  def lfs_objects_failed_count
-    return unless secondary?
-
-    Geo::FileRegistry.lfs_objects.failed.count
-  end
-
   def find_or_build_status
     status || build_status
   end

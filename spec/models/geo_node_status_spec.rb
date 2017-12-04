@@ -162,9 +162,9 @@ describe GeoNodeStatus, :geo, :truncate do
       create(:geo_file_registry, success: false)
       create(:geo_file_registry, :avatar, success: false)
       create(:geo_file_registry, file_type: :attachment, success: false)
-      create(:geo_file_registry, :lfs)
+      create(:geo_file_registry, :lfs, :with_file)
 
-      create(:geo_file_registry, :lfs, success: false)
+      create(:geo_file_registry, :lfs, :with_file, success: false)
 
       expect(subject.lfs_objects_failed_count).to eq(1)
     end
