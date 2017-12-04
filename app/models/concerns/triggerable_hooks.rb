@@ -18,7 +18,8 @@ module TriggerableHooks
     attr_reader :triggerable_hooks
 
     def hooks_for(trigger)
-      return none unless self::TRIGGERS.keys.include?(trigger)
+      callable_scopes = self::TRIGGERS.keys + [:all]
+      return none unless callable_scopes.include?(trigger)
 
       public_send(trigger) # rubocop:disable GitlabSecurity/PublicSend
     end

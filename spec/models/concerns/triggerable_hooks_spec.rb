@@ -26,9 +26,17 @@ RSpec.describe TriggerableHooks do
 
     context 'the model does not have the required trigger scope' do
       it 'returns an empty relation' do
-        TestableHook.create!(url: 'http://example.com', push_events: true)
+        TestableHook.create!(url: 'http://example.com')
 
         expect(TestableHook.hooks_for(:tag_push_hooks)).to eq []
+      end
+    end
+
+    context 'the stock scope ".all" is accepted' do
+      it 'returns the record' do
+        hook = TestableHook.create!(url: 'http://example.com')
+
+        expect(TestableHook.hooks_for(:all)).to eq [hook]
       end
     end
   end
