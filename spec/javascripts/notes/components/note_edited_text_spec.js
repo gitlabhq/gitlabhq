@@ -1,12 +1,12 @@
 import Vue from 'vue';
-import issueNoteEditedText from '~/notes/components/issue_note_edited_text.vue';
+import noteEditedText from '~/notes/components/note_edited_text.vue';
 
-describe('issue_note_edited_text', () => {
+describe('note_edited_text', () => {
   let vm;
   let props;
 
   beforeEach(() => {
-    const Component = Vue.extend(issueNoteEditedText);
+    const Component = Vue.extend(noteEditedText);
     props = {
       actionText: 'Edited',
       className: 'foo-bar',
