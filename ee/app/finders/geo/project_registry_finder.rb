@@ -1,5 +1,27 @@
 module Geo
   class ProjectRegistryFinder < RegistryFinder
+    def count_synced_projects
+      relation =
+        if selective_sync?
+          legacy_find_synced_projects
+        else
+          find_synced_projects_registries
+        end
+
+      relation.count
+    end
+
+    def count_failed_projects
+      relation =
+        if selective_sync?
+          legacy_find_failed_projects
+        else
+          find_failed_projects_registries
+        end
+
+      relation.count
+    end
+
     def find_unsynced_projects(batch_size:)
       relation =
         if fdw?
@@ -24,13 +46,21 @@ module Geo
 
     protected
 
-    def fdw_table
-      Geo::Fdw::Project.table_name
+    def find_synced_projects_registries
+      Geo::ProjectRegistry.synced
+    end
+
+    def find_failed_projects_registries
+      Geo::ProjectRegistry.failed
     end
 
     #
     # FDW accessors
     #
+
+    def fdw_table
+      Geo::Fdw::Project.table_name
+    end
 
     # @return [ActiveRecord::Relation<Geo::Fdw::Project>]
     def fdw_find_unsynced_projects
@@ -66,14 +96,27 @@ module Geo
 
     # @return [ActiveRecord::Relation<Project>] list of projects updated recently
     def legacy_find_projects_updated_recently
-      registry_project_ids = current_node.project_registries.dirty.retry_due.pluck(:project_id)
+      legacy_find_projects(current_node.project_registries.dirty.retry_due.pluck(:project_id))
+    end
+
+    # @return [ActiveRecord::Relation<Project>] list of synced projects
+    def legacy_find_synced_projects
+      legacy_find_projects(Geo::ProjectRegistry.synced.pluck(:project_id))
+    end
+
+    # @return [ActiveRecord::Relation<Project>] list of projects that sync has failed
+    def legacy_find_failed_projects
+      legacy_find_projects(Geo::ProjectRegistry.failed.pluck(:project_id))
+    end
+
+    def legacy_find_projects(registry_project_ids)
       return Project.none if registry_project_ids.empty?
 
       joined_relation = current_node.projects.joins(<<~SQL)
         INNER JOIN
         (VALUES #{registry_project_ids.map { |id| "(#{id})" }.join(',')})
         project_registry(project_id)
-        ON projects.id = project_registry.project_id
+        ON #{Project.table_name}.id = project_registry.project_id
       SQL
 
       joined_relation

@@ -8,6 +8,7 @@ describe Geo::ProjectRegistryFinder, :geo, :truncate do
   let(:secondary) { create(:geo_node) }
   let(:synced_group) { create(:group) }
   let!(:project_not_synced) { create(:project) }
+  let(:project_synced) { create(:project) }
   let(:project_repository_dirty) { create(:project) }
   let(:project_wiki_dirty) { create(:project) }
 
@@ -15,6 +16,86 @@ describe Geo::ProjectRegistryFinder, :geo, :truncate do
 
   before do
     stub_current_geo_node(secondary)
+  end
+
+  describe '#count_synced_projects' do
+    it 'delegates to #find_synced_projects_registries' do
+      expect(subject).to receive(:find_synced_projects_registries).and_call_original
+
+      subject.count_synced_projects
+    end
+
+    it 'counts projects that has been synced' do
+      create(:geo_project_registry, :sync_failed)
+      create(:geo_project_registry, :synced, project: project_synced)
+      create(:geo_project_registry, :synced, :repository_dirty, project: project_repository_dirty)
+      create(:geo_project_registry, :synced, :wiki_dirty, project: project_wiki_dirty)
+
+      expect(subject.count_synced_projects).to eq 1
+    end
+
+    context 'with selective sync' do
+      before do
+        secondary.update_attribute(:namespaces, [synced_group])
+      end
+
+      it 'delegates to #legacy_find_synced_projects' do
+        expect(subject).to receive(:legacy_find_synced_projects).and_call_original
+
+        subject.count_synced_projects
+      end
+
+      it 'counts projects that has been synced' do
+        project_1_in_synced_group = create(:project, group: synced_group)
+        project_2_in_synced_group = create(:project, group: synced_group)
+
+        create(:geo_project_registry, :synced, project: project_synced)
+        create(:geo_project_registry, :synced, project: project_1_in_synced_group)
+        create(:geo_project_registry, :sync_failed, project: project_2_in_synced_group)
+
+        expect(subject.count_synced_projects).to eq 1
+      end
+    end
+  end
+
+  describe '#count_failed_projects' do
+    it 'delegates to #find_failed_projects_registries' do
+      expect(subject).to receive(:find_failed_projects_registries).and_call_original
+
+      subject.count_failed_projects
+    end
+
+    it 'counts projects that sync has failed' do
+      create(:geo_project_registry, :synced)
+      create(:geo_project_registry, :sync_failed, project: project_synced)
+      create(:geo_project_registry, :repository_sync_failed, project: project_repository_dirty)
+      create(:geo_project_registry, :wiki_sync_failed, project: project_wiki_dirty)
+
+      expect(subject.count_failed_projects).to eq 3
+    end
+
+    context 'with selective sync' do
+      before do
+        secondary.update_attribute(:namespaces, [synced_group])
+      end
+
+      it 'delegates to #legacy_find_failed_projects' do
+        expect(subject).to receive(:legacy_find_failed_projects).and_call_original
+
+        subject.count_failed_projects
+      end
+
+      it 'counts projects that sync has failed' do
+        project_1_in_synced_group = create(:project, group: synced_group)
+        project_2_in_synced_group = create(:project, group: synced_group)
+
+        create(:geo_project_registry, :sync_failed, project: project_synced)
+        create(:geo_project_registry, :repository_sync_failed, project: project_1_in_synced_group)
+        create(:geo_project_registry, :synced, project: project_2_in_synced_group)
+
+        expect(subject.count_failed_projects).to eq 1
+      end
+    end
   end
 
   context 'FDW' do

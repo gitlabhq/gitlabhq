@@ -72,14 +72,10 @@ class GeoNodeStatus < ActiveRecord::Base
       self.db_replication_lag_seconds = Gitlab::Geo::HealthCheck.db_replication_lag_seconds
       self.cursor_last_event_id = Geo::EventLogState.last_processed&.event_id
       self.cursor_last_event_date = Geo::EventLog.find_by(id: self.cursor_last_event_id)&.created_at
-      self.repositories_synced_count = geo_node.project_registries.synced.count
-      self.repositories_failed_count = geo_node.project_registries.failed.count
-
-      lfs_objects_finder = Geo::LfsObjectRegistryFinder.new(current_node: geo_node)
+      self.repositories_synced_count = projects_finder.count_synced_projects
+      self.repositories_failed_count = projects_finder.count_failed_projects
       self.lfs_objects_synced_count = lfs_objects_finder.count_synced_lfs_objects
       self.lfs_objects_failed_count = lfs_objects_finder.count_failed_lfs_objects
-
-      attachments_finder = Geo::AttachmentRegistryFinder.new(current_node: geo_node)
       self.attachments_synced_count = attachments_finder.find_synced_attachments.count
       self.attachments_failed_count = attachments_finder.find_failed_attachments.count
     end
@@ -138,6 +134,18 @@ class GeoNodeStatus < ActiveRecord::Base
   end
 
   private
+
+  def attachments_finder
+    @attachments_finder ||= Geo::AttachmentRegistryFinder.new(current_node: geo_node)
+  end
+
+  def lfs_objects_finder
+    @lfs_objects_finder ||= Geo::LfsObjectRegistryFinder.new(current_node: geo_node)
+  end
+
+  def projects_finder
+    @projects_finder ||= Geo::ProjectRegistryFinder.new(current_node: geo_node)
+  end
 
   def sync_percentage(total, synced)
     return 0 if !total.present? || total.zero?
