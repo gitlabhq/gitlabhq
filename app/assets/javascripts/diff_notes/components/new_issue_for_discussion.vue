@@ -46,7 +46,7 @@
       data-container-"body"
       class="new-issue-for-discussion btn btn-default discussion-create-issue-btn has-tooltip"
     >
-      <icon name="mr_issue">
+      <icon name="mr_issue" />
     </a>
   </div>
 </template>
