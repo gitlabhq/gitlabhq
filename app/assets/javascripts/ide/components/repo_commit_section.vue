@@ -69,7 +69,12 @@ export default {
       this.commitChanges({ payload, newMr: this.startNewMR })
         .then(() => {
           this.submitCommitsLoading = false;
-          this.getTreeData();
+          store.dispatch('getTreeData', {
+              projectId: this.currentProjectId,
+              branch: this.currentBranchId,
+              endpoint: `/${this.currentProjectId}/tree/${to.params.branch}`,
+            });
+
         })
         .catch(() => {
           this.submitCommitsLoading = false;

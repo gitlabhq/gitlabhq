@@ -11,10 +11,10 @@ import {
 
 export const getTreeData = (
   { commit, state, dispatch },
-  { endpoint = state.endpoints.rootEndpoint, tree = null, namespace, projectId, branch } = {},
+  { endpoint = state.endpoints.rootEndpoint, tree = null, projectId, branch } = {},
 ) => new Promise((resolve, reject) => {
   // We already have the base tree so we resolve immediately
-  if (!tree && state.trees[`${namespace}/${projectId}/${branch}`]) {
+  if (!tree && state.trees[`${projectId}/${branch}`]) {
     resolve();
   } else {
     if (tree) commit(types.TOGGLE_LOADING, tree);
@@ -31,8 +31,8 @@ export const getTreeData = (
           commit(types.SET_ROOT, data.path === '/');
         }
 
-        dispatch('updateDirectoryData', { data, tree, namespace, projectId, branch });
-        const selectedTree = tree || state.trees[`${namespace}/${projectId}/${branch}`];
+        dispatch('updateDirectoryData', { data, tree, projectId, branch });
+        const selectedTree = tree || state.trees[`${projectId}/${branch}`];
 
         commit(types.SET_PARENT_TREE_URL, data.parent_tree_url);
         commit(types.SET_LAST_COMMIT_URL, { tree: selectedTree, url: data.last_commit_path });
@@ -143,21 +143,21 @@ export const getLastCommitData = ({ state, commit, dispatch, getters }, tree = s
 
 export const updateDirectoryData = (
   { commit, state },
-  { data, tree, namespace, projectId, branch },
+  { data, tree, projectId, branch },
 ) => {
   if (!tree) {
-    const existingTree = state.trees[`${namespace}/${projectId}/${branch}`];
+    const existingTree = state.trees[`${projectId}/${branch}`];
     if (!existingTree) {
-      commit(types.CREATE_TREE, { treePath: `${namespace}/${projectId}/${branch}` });
+      commit(types.CREATE_TREE, { treePath: `${projectId}/${branch}` });
     }
   }
 
-  const selectedTree = tree || state.trees[`${namespace}/${projectId}/${branch}`];
+  const selectedTree = tree || state.trees[`${projectId}/${branch}`];
   const level = selectedTree.level !== undefined ? selectedTree.level + 1 : 0;
   const parentTreeUrl = data.parent_tree_url ? `${data.parent_tree_url}${data.path}` : state.endpoints.rootUrl;
   const createEntry = (entry, type) => createOrMergeEntry({
     tree: selectedTree,
-    projectId: `${namespace}/${projectId}`,
+    projectId: `${projectId}`,
     branchId: branch,
     entry,
     level,

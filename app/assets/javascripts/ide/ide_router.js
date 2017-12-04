@@ -55,18 +55,18 @@ router.beforeEach((to, from, next) => {
     projectId: to.params.project,
   })
   .then(() => {
+    const fullProjectId = `${to.params.namespace}/${to.params.project}`;
+
     if (to.params.branch) {
       store.dispatch('getBranchData', {
-        namespace: to.params.namespace,
-        projectId: to.params.project,
-        branch: to.params.branch,
+        projectId: fullProjectId,
+        branchId: to.params.branch,
       });
 
       store.dispatch('getTreeData', {
-        namespace: to.params.namespace,
-        projectId: to.params.project,
+        projectId: fullProjectId,
         branch: to.params.branch,
-        endpoint: `/${to.params.namespace}/${to.params.project}/tree/${to.params.branch}`,
+        endpoint: `/${fullProjectId}/tree/${to.params.branch}`,
       })
       .then(() => {
         if (to.params[0]) {

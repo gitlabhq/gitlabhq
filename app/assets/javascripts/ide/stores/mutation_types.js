@@ -12,6 +12,7 @@ export const TOGGLE_PROJECT_OPEN = 'TOGGLE_PROJECT_OPEN';
 
 // Branch Mutation Types
 export const SET_BRANCH = 'SET_BRANCH';
+export const SET_BRANCH_WORKING_REFERENCE = 'SET_BRANCH_WORKING_REFERENCE';
 export const TOGGLE_BRANCH_OPEN = 'TOGGLE_BRANCH_OPEN';
 
 // Tree mutation types
@@ -39,3 +40,4 @@ export const TOGGLE_EDIT_MODE = 'TOGGLE_EDIT_MODE';
 export const TOGGLE_DISCARD_POPUP = 'TOGGLE_DISCARD_POPUP';
 
 export const SET_CURRENT_BRANCH = 'SET_CURRENT_BRANCH';
+

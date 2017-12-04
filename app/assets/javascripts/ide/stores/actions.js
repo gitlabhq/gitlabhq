@@ -55,25 +55,13 @@ export const checkCommitStatus = ({ state }) => service.getBranchData(
 )
   .then((data) => {
     const { id } = data.commit;
+    const selectedBranch = state.projects[state.currentProjectId].branches[state.currentBranchId];
 
-    debugger;
-
-    if (state.currentRef !== id) {
+    if (selectedBranch.workingReference !== id) {
       return true;
     }
 
     return false;
-  })
-  .catch(() => flash('Error checking branch data. Please try again.'));
-
-export const getBranchReference = ({ state }, { projectId, branchId }) => service.getBranchData(
-  projectId,
-  branchId,
-)
-  .then((data) => {
-    const { id } = data.commit;
-
-    return id;
   })
   .catch(() => flash('Error checking branch data. Please try again.'));
 

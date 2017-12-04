@@ -9,9 +9,9 @@ export default {
   [types.SET_BRANCH](state, { projectPath, branchName, branch }) {
     // Add client side properties
     Object.assign(branch, {
-      tree: [],
       treeId: `${projectPath}/${branchName}`,
       active: true,
+      workingReference: '',
     });
 
     Object.assign(state.projects[projectPath], {
@@ -23,5 +23,10 @@ export default {
     Object.assign(state.projects, Object.assign({}, state.projects, {
       [projectPath]: state.projects[projectPath],
     }));
+  },
+  [types.SET_BRANCH_WORKING_REFERENCE](state, { projectId, branchId, reference }) {
+    Object.assign(state.projects[projectId].branches[branchId], {
+      workingReference: reference,
+    });
   },
 };

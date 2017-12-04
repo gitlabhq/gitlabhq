@@ -23,7 +23,7 @@ export default {
         name="branch"
         :size="12">
       </icon>
-      {{ selectedFile.branch }}
+      {{ selectedFile.branchId }}
     </div>
     <div 
       class="col-sm-3">
