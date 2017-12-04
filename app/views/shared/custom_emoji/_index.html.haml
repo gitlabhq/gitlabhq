@@ -18,11 +18,11 @@
   .form-group
     = f.label :file, s_('CustomEmoji|Image')
     .prepend-top-5.append-bottom-10
-      %a.btn.js-browse-file-button{ role: 'button', data: { id: 'custom-emoji-image' } }
-        = _('Browse file...')
-      %span.file_name.prepend-left-default.js-browse-file-name{ data: { id: 'custom-emoji-image' } }
+      %a.btn.js-choose-file-button{ role: 'button', data: { id: 'custom-emoji-image' } }
+        = _('Choose file...')
+      %span.file_name.prepend-left-default.js-choose-file-name{ data: { id: 'custom-emoji-image' } }
         = _('No file chosen')
-      = f.file_field :file, accept: 'image/*', class: 'js-browse-file-input hidden', data: { id: 'custom-emoji-image' }
+      = f.file_field :file, accept: 'image/*', class: 'js-choose-file-input hidden', data: { id: 'custom-emoji-image' }
     .help-block
       = s_('CustomEmoji|We recommend your emoji image be at least 64x64px. The maximum file size allowed is 128Kb.')
 

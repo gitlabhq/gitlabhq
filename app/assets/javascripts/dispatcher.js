@@ -20,7 +20,7 @@ import groupsSelect from './groups_select';
 import NamespaceSelect from './namespace_select';
 import NewCommitForm from './new_commit_form';
 import Project from './project';
-import setupBrowseFile from './behaviors/browse_file';
+import setupChooseFile from './behaviors/choose_file';
 /* global MergeRequest */
 /* global Compare */
 /* global CompareAutocomplete */
@@ -512,7 +512,7 @@ import ProjectVariables from './project_variables';
         case 'profiles:custom_emoji:create':
         case 'groups:settings:custom_emoji:index':
         case 'groups:settings:custom_emoji:create':
-          setupBrowseFile();
+          setupChooseFile();
           break;
         case 'help:index':
           VersionCheckImage.bindErrorEvent($('img.js-version-status-badge'));
@@ -612,7 +612,7 @@ import ProjectVariables from './project_variables';
           break;
         case 'projects':
           new Project();
-          setupBrowseFile();
+          setupChooseFile();
           switch (path[1]) {
             case 'compare':
               new CompareAutocomplete();

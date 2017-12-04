@@ -36,7 +36,7 @@ describe 'Custom Emoji settings', :js do
       attach_file(:custom_emoji_file, emoji_file, visible: false)
 
       # Ensure the JS still works
-      expect(page).to have_selector '.js-browse-file-name', text: 'banana_sample.gif'
+      expect(page).to have_selector '.js-choose-file-name', text: 'banana_sample.gif'
 
       click_button 'Add new emoji'
 
