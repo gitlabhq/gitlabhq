@@ -52,12 +52,7 @@ class SnippetsFinder < UnionFinder
   end
 
   def authorized_snippets
-    snippets = Snippet.where(feature_available_projects.or(not_project_related))
-
-    segments = []
-    segments << from_authorized_projects(snippets) if current_user
-    segments << snippets.public_to_user(current_user)
-    find_union(segments, Snippet)
+    Snippet.where(feature_available_projects.or(not_project_related)).public_or_visible_to_user(current_user)
   end
 
   def feature_available_projects
