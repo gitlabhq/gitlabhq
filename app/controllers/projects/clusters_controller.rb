@@ -59,7 +59,8 @@ class Projects::ClustersController < Projects::ApplicationController
   private
 
   def cluster
-    @cluster ||= project.clusters.find(params[:id]).present(current_user: current_user) || render_404
+    @cluster ||= project.clusters.find_by!(id: params[:id])
+                                 .present(current_user: current_user)
   end
 
   def update_params
