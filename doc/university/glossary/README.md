@@ -175,7 +175,7 @@ A [feature](https://docs.gitlab.com/ce/user/project/container_registry.html) of 
 
 ### EC2 Instance
 
-### ElasticSearch
+### Elasticsearch
 
 Elasticsearch is a flexible, scalable and powerful search service. When [enabled](https://gitlab.com/help/integration/elasticsearch.md), it helps keep GitLab's search fast when dealing with a huge amount of data.
 

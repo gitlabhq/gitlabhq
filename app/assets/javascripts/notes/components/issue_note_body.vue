@@ -1,7 +1,7 @@
 <script>
-  import issueNoteEditedText from './issue_note_edited_text.vue';
-  import issueNoteAwardsList from './issue_note_awards_list.vue';
-  import issueNoteAttachment from './issue_note_attachment.vue';
+  import noteEditedText from './note_edited_text.vue';
+  import noteAwardsList from './note_awards_list.vue';
+  import noteAttachment from './note_attachment.vue';
   import issueNoteForm from './issue_note_form.vue';
   import TaskList from '../../task_list';
   import autosave from '../mixins/autosave';
@@ -26,9 +26,9 @@
       autosave,
     ],
     components: {
-      issueNoteEditedText,
-      issueNoteAwardsList,
-      issueNoteAttachment,
+      noteEditedText,
+      noteAwardsList,
+      noteAttachment,
       issueNoteForm,
     },
     computed: {
@@ -101,20 +101,20 @@
       v-model="note.note"
       :data-update-url="note.path"
       class="hidden js-task-list-field"></textarea>
-    <issue-note-edited-text
+    <note-edited-text
       v-if="note.last_edited_at"
       :edited-at="note.last_edited_at"
       :edited-by="note.last_edited_by"
       action-text="Edited"
       />
-    <issue-note-awards-list
+    <note-awards-list
       v-if="note.award_emoji.length"
       :note-id="note.id"
       :note-author-id="note.author.id"
       :awards="note.award_emoji"
       :toggle-award-path="note.toggle_award_path"
       />
-    <issue-note-attachment
+    <note-attachment
       v-if="note.attachment"
       :attachment="note.attachment"
       />

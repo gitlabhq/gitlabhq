@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-02 14:42+0100\n"
-"PO-Revision-Date: 2017-11-05 14:39-0500\n"
+"PO-Revision-Date: 2017-11-17 07:55-0500\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Russian\n"
 "Language: ru_RU\n"
@@ -188,7 +188,7 @@ msgid "Auto Review Apps and Auto Deploy need the %{kubernetes} to work correctly
 msgstr "Приложения для автоматического ревью и автоматического развёртывания требуют указания %{kubernetes} для корректной работы."
 
 msgid "AutoDevOps|Auto DevOps (Beta)"
-msgstr ""
+msgstr "Auto DevOps (бета)"
 
 msgid "AutoDevOps|Auto DevOps documentation"
 msgstr ""

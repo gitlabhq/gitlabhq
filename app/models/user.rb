@@ -487,7 +487,11 @@ class User < ActiveRecord::Base
   end
 
   def two_factor_u2f_enabled?
-    u2f_registrations.exists?
+    if u2f_registrations.loaded?
+      u2f_registrations.any?
+    else
+      u2f_registrations.exists?
+    end
   end
 
   def namespace_uniq
@@ -998,7 +1002,11 @@ class User < ActiveRecord::Base
   end
 
   def notification_settings_for(source)
-    notification_settings.find_or_initialize_by(source: source)
+    if notification_settings.loaded?
+      notification_settings.find { |notification| notification.source == source }
+    else
+      notification_settings.find_or_initialize_by(source: source)
+    end
   end
 
   # Lazy load global notification setting

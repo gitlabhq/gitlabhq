@@ -200,18 +200,18 @@ describe Gitlab::Shell do
     describe '#fork_repository' do
       it 'returns true when the command succeeds' do
         expect(Gitlab::Popen).to receive(:popen)
-          .with([projects_path, 'fork-project', 'current/storage', 'project/path.git', 'new/storage', 'new-namespace'],
+          .with([projects_path, 'fork-repository', 'current/storage', 'project/path.git', 'new/storage', 'fork/path.git'],
                 nil, popen_vars).and_return([nil, 0])
 
-        expect(gitlab_shell.fork_repository('current/storage', 'project/path', 'new/storage', 'new-namespace')).to be true
+        expect(gitlab_shell.fork_repository('current/storage', 'project/path', 'new/storage', 'fork/path')).to be true
       end
 
       it 'return false when the command fails' do
         expect(Gitlab::Popen).to receive(:popen)
-          .with([projects_path, 'fork-project', 'current/storage', 'project/path.git', 'new/storage', 'new-namespace'],
+          .with([projects_path, 'fork-repository', 'current/storage', 'project/path.git', 'new/storage', 'fork/path.git'],
                 nil, popen_vars).and_return(["error", 1])
 
-        expect(gitlab_shell.fork_repository('current/storage', 'project/path', 'new/storage', 'new-namespace')).to be false
+        expect(gitlab_shell.fork_repository('current/storage', 'project/path', 'new/storage', 'fork/path')).to be false
       end
     end
 

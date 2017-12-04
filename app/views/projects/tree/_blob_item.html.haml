@@ -2,8 +2,8 @@
   %td.tree-item-file-name
     = tree_icon(type, blob_item.mode, blob_item.name)
     - file_name = blob_item.name
-    = link_to project_blob_path(@project, tree_join(@id || @commit.id, blob_item.name)), title: file_name do
-      %span.str-truncated= file_name
+    = link_to project_blob_path(@project, tree_join(@id || @commit.id, blob_item.name)), class: 'str-truncated', title: file_name do
+      %span= file_name
   %td.hidden-xs.tree-commit
   %td.tree-time-ago.cgray.text-right
     = render 'projects/tree/spinner'
