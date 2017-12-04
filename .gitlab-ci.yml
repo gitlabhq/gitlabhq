@@ -123,8 +123,8 @@ stages:
   <<: *use-pg
 
 .rspec-geo-pg-9-6: &rspec-metadata-pg-geo
+  <<: *rspec-metadata
   <<: *use-pg-9-6
-  <<: *except-docs
   stage: test
   script:
     - export NO_KNAPSACK=1
