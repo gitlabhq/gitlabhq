@@ -455,6 +455,12 @@ ul.indent-list {
   }
 }
 
+.namespace-title {
+  .tooltip-inner {
+    max-width: 350px;
+  }
+}
+
 ul.group-list-tree {
   li.group-row {
     &.has-description {

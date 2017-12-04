@@ -98,6 +98,12 @@ module NotificationRecipientService
         self << [target.participants(user), :participating]
       end
 
+      def add_mentions(user, target:)
+        return unless target.respond_to?(:mentioned_users)
+
+        self << [target.mentioned_users(user), :mention]
+      end
+
       # Get project/group users with CUSTOM notification level
       def add_custom_notifications
         user_ids = []
@@ -227,6 +233,11 @@ module NotificationRecipientService
         add_subscribed_users
 
         if [:new_issue, :new_merge_request].include?(custom_action)
+          # These will all be participants as well, but adding with the :mention
+          # type ensures that users with the mention notification level will
+          # receive them, too.
+          add_mentions(current_user, target: target)
+
           add_labels_subscribers
         end
       end
@@ -263,7 +274,7 @@ module NotificationRecipientService
       def build!
         # Add all users participating in the thread (author, assignee, comment authors)
         add_participants(note.author)
-        self << [note.mentioned_users, :mention]
+        add_mentions(note.author, target: note)
 
         unless note.for_personal_snippet?
           # Merge project watchers

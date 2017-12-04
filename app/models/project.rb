@@ -239,8 +239,8 @@ class Project < ActiveRecord::Base
   validates :creator, presence: true, on: :create
   validates :description, length: { maximum: 2000 }, allow_blank: true
   validates :ci_config_path,
-    format: { without: /\.{2}/,
-              message: 'cannot include directory traversal.' },
+    format: { without: /(\.{2}|\A\/)/,
+              message: 'cannot include leading slash or directory traversal.' },
     length: { maximum: 255 },
     allow_blank: true
   validates :name,
@@ -606,7 +606,7 @@ class Project < ActiveRecord::Base
 
   def ci_config_path=(value)
     # Strip all leading slashes so that //foo -> foo
-    super(value&.sub(%r{\A/+}, '')&.delete("\0"))
+    super(value&.delete("\0"))
   end
 
   def import_url=(value)
