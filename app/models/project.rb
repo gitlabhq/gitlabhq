@@ -60,6 +60,7 @@ class Project < ActiveRecord::Base
   default_value_for :wiki_enabled, gitlab_config_features.wiki
   default_value_for :snippets_enabled, gitlab_config_features.snippets
   default_value_for :only_allow_merge_if_all_discussions_are_resolved, false
+  default_value_for :only_mirror_protected_branches, true
 
   add_authentication_token_field :runners_token
   before_save :ensure_runners_token

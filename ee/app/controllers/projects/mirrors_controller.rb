@@ -84,6 +84,7 @@ class Projects::MirrorsController < Projects::ApplicationController
       :username_only_import_url,
       :mirror_user_id,
       :mirror_trigger_builds,
+      :only_mirror_protected_branches,
 
       import_data_attributes: %i[
         id

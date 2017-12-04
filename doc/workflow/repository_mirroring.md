@@ -84,6 +84,14 @@ this branch to prevent any changes from being lost.
 
 ![Diverged branch](repository_mirroring/repository_mirroring_diverged_branch.png)
 
+### Pull only protected branches
+
+>[Introduced][ee-3326] in Gitlab Enterprise Edition 10.3.
+
+You can choose to only pull the protected branches from your remote repository to GitLab.
+
+To use this option go to your project's repository settings page under pull mirror.
+
 ### Hard failure
 
 >[Introduced][ee-3117] in GitLab Enterprise Edition 10.2.

@@ -1,7 +1,9 @@
 require 'spec_helper'
 
 describe Projects::UpdateMirrorService do
-  let(:project) { create(:project, :repository, :mirror, import_url: Project::UNKNOWN_IMPORT_URL) }
+  let(:project) do
+    create(:project, :repository, :mirror, import_url: Project::UNKNOWN_IMPORT_URL, only_mirror_protected_branches: false)
+  end
 
   describe "#execute" do
     context 'unlicensed' do
@@ -53,6 +55,55 @@ describe Projects::UpdateMirrorService do
     end
 
     describe "updating branches" do
+      context 'when mirror only protected branches option is set' do
+        let(:new_protected_branch_name) { 'new-branch' }
+        let(:protected_branch_name) { 'existing-branch' }
+
+        before do
+          project.update_attributes(only_mirror_protected_branches: true)
+        end
+
+        it 'creates a new protected branch' do
+          create(:protected_branch, project: project, name: new_protected_branch_name)
+          project.reload
+
+          stub_fetch_mirror(project)
+
+          described_class.new(project, project.owner).execute
+
+          expect(project.repository.branch_names).to include(new_protected_branch_name)
+        end
+
+        it 'does not create an unprotected branch' do
+          stub_fetch_mirror(project)
+
+          described_class.new(project, project.owner).execute
+
+          expect(project.repository.branch_names).not_to include(new_protected_branch_name)
+        end
+
+        it 'updates existing protected branches' do
+          create(:protected_branch, project: project, name: protected_branch_name)
+          project.reload
+
+          stub_fetch_mirror(project)
+
+          described_class.new(project, project.owner).execute
+
+          expect(project.repository.find_branch(protected_branch_name).dereferenced_target)
+            .to eq(project.repository.find_branch('master').dereferenced_target)
+        end
+
+        it "does not update unprotected branches" do
+          stub_fetch_mirror(project)
+
+          described_class.new(project, project.owner).execute
+
+          expect(project.repository.find_branch(protected_branch_name).dereferenced_target)
+            .not_to eq(project.repository.find_branch('master').dereferenced_target)
+        end
+      end
+
       it "creates new branches" do
         stub_fetch_mirror(project)
 

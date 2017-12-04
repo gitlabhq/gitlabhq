@@ -107,6 +107,7 @@ excluded_attributes:
     - :mirror_trigger_builds
     - :storage_version
     - :remote_mirror_available_overridden
+    - :only_mirror_protected_branches
   snippets:
     - :expired_at
   merge_request_diff:

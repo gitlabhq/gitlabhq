@@ -40,6 +40,14 @@
           This user will be the author of all events in the activity feed that are the result of an update,
           like new branches being created or new commits being pushed to existing branches.
           You can only assign yourself to be the mirror user.
+
+      .form-group
+        = f.check_box :only_mirror_protected_branches, class: 'pull-left'
+        .prepend-left-20
+          = f.label :only_mirror_protected_branches, class: 'label-light'
+          = link_to icon('question-circle'), help_page_path('user/project/protected_branches')
+
       - if @project.builds_enabled?
         = render "shared/mirror_trigger_builds_setting", f: f
+
       = f.submit 'Save changes', class: 'btn btn-create', name: 'update_remote_mirror'
