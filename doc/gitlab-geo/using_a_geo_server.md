@@ -1,3 +1,5 @@
+[//]: # (Please update EE::GitLab::GeoGitAccess::GEO_SERVER_DOCS_URL if this file is moved)
+
 # Using a Geo Server
 
 After you set up the [database replication and configure the GitLab Geo nodes][req],

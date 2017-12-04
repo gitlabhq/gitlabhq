@@ -10,7 +10,7 @@ describe Gitlab::GitAccess do
   let(:redirected_path) { nil }
 
   let(:access) { described_class.new(actor, project, protocol, authentication_abilities: authentication_abilities, redirected_path: redirected_path) }
-  let(:push_access_check) { access.check('git-receive-pack', '_any') }
+  subject { access.check('git-receive-pack', '_any') }
 
   context "when in a read-only GitLab instance" do
     before do
@@ -21,7 +21,7 @@ describe Gitlab::GitAccess do
     it 'denies push access' do
       project.add_master(user)
 
-      expect { push_access_check }.to raise_unauthorized("You can't push code to a read-only GitLab instance.")
+      expect { subject }.to raise_unauthorized("You can't push code to a read-only GitLab instance.")
     end
 
     it 'denies push access with primary present' do
@@ -33,7 +33,7 @@ describe Gitlab::GitAccess do
 
       project.add_master(user)
 
-      expect { push_access_check }.to raise_unauthorized(error_message)
+      expect { subject }.to raise_unauthorized(error_message)
     end
   end
 

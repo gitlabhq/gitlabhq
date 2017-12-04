@@ -1,7 +1,7 @@
 module EE
   module Gitlab
     module GitAccess
-      GEO_SERVER_DOCS_URL = 'https://docs.gitlab.com/ee/gitlab-geo/using_a_geo_server.html'.freeze
+      prepend GeoGitAccess
 
       def check(cmd, changes)
         raise NotImplementedError.new unless defined?(super)
@@ -64,17 +64,6 @@ module EE
 
       def geo?
         geo_node_key? || actor == :geo
-      end
-
-      def push_to_read_only_message
-        message = super
-
-        if ::Gitlab::Geo.primary_node
-          primary_url = ActionController::Base.helpers.link_to('primary node', ::Gitlab::Geo.primary_node.url)
-          message += " Please use the Primary node URL: #{primary_url.html_safe}. Documentation: #{GEO_SERVER_DOCS_URL}"
-        end
-
-        message
       end
     end
   end
