@@ -4,6 +4,7 @@ export default class MergeRequestStore extends CEMergeRequestStore {
   constructor(data) {
     super(data);
     this.initCodeclimate(data);
+    this.initPerformanceReport(data);
     this.initSecurityReport(data);
   }
 
@@ -57,6 +58,21 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     };
   }
 
+  initPerformanceReport(data) {
+    this.performance = data.performance;
+
+    // use mock data (see mr_widget_service.js)
+    this.performance = {
+      head_path: '/performance_head',
+      base_path: '/performance_base',
+    };
+
+    this.performanceMetrics = {
+      improved: [],
+      degraded: [],
+    };
+  }
+
   initSecurityReport(data) {
     this.sast = data.sast;
     this.securityReport = [];
@@ -79,6 +95,25 @@ export default class MergeRequestStore extends CEMergeRequestStore {
       parsedHeadIssues,
     );
   }
+
+  comparePerformanceMetrics(headMetrics, baseMetrics) {
+    // eslint-disable-next-line
+    console.log(headMetrics, baseMetrics);
+
+    this.performanceMetrics.improved = [
+      {
+        name: 'Overall Score: 55',
+        path: '/foo/bar',
+      },
+    ];
+    this.performanceMetrics.degraded = [
+      {
+        name: 'Overall Score: 54',
+        path: '/foo/bar/bin',
+      },
+    ];
+  }
+
   /**
    * In order to reuse the same component we need
    * to set both codequality and security issues to have the same data structure:

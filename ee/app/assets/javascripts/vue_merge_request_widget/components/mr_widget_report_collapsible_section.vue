@@ -7,7 +7,7 @@ export default {
   name: 'MRWidgetCodeQuality',
 
   props: {
-    // security | codequality
+    // security | codequality | performance
     type: {
       type: String,
       required: true,

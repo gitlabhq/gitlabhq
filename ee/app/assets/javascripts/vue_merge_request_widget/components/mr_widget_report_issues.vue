@@ -8,7 +8,7 @@
         type: Array,
         required: true,
       },
-      // security || codequality
+      // security || codequality || performance
       type: {
         type: String,
         required: true,

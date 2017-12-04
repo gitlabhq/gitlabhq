@@ -36,6 +36,10 @@ export default class MRWidgetService extends CEWidgetService {
   }
 
   fetchReport(endpoint) { // eslint-disable-line
+    if (endpoint === '/performance_head' || endpoint === '/performance_base') {
+      return Promise.resolve([]);
+    }
+
     return Vue.http.get(endpoint).then(res => res.json());
   }
 }
