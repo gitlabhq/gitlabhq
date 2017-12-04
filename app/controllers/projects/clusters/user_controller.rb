@@ -11,7 +11,7 @@ class Projects::Clusters::UserController < Projects::ApplicationController
   def create
     @cluster = ::Clusters::CreateService
       .new(project, current_user, create_params)
-      .execute(nil)
+      .execute
 
     if @cluster.persisted?
       redirect_to project_cluster_path(project, @cluster)
