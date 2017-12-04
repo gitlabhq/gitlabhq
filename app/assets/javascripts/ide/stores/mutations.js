@@ -46,8 +46,10 @@ export default {
   },
   [types.SET_LAST_COMMIT_DATA](state, { entry, lastCommit }) {
     Object.assign(entry.lastCommit, {
+      id: lastCommit.commit.id,
       url: lastCommit.commit_path,
       message: lastCommit.commit.message,
+      author: lastCommit.commit.author_name,
       updatedAt: lastCommit.commit.authored_date,
     });
   },
