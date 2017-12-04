@@ -45,9 +45,12 @@
         = link_to_browse_code(project, commit)
 
   -# Render the `Click to expand it` link for diffs.
-  - if @path.present? && diff_file = commit.diffs.diff_files.find { |file| file.new_path == @path }
+  - if @path.present? && commit.paths
     .files
       .diff-file
-        = render partial: 'projects/diffs/content', locals: { commit_id: commit.id, diff_file: diff_file, force_collapsed: true }
+        .diff-content
+          .diff-viewer
+            - new_path = commit.paths[:new_path]
+            - old_path = commit.paths[:old_path]
 
-= commit.paths
+            = render partial: 'projects/diffs/collapsed', locals: { commit: commit, new_path: new_path, old_path: old_path }
