@@ -25,5 +25,12 @@ module Projects
     def cache_key
       ['projects', 'count_service', VERSION, @project.id, cache_key_name]
     end
+
+    def self.query(project_ids)
+      raise(
+        NotImplementedError,
+        '"query" must be implemented and return an ActiveRecord::Relation'
+      )
+    end
   end
 end
