@@ -445,7 +445,9 @@ module Gitlab
 
             # If `raw_log` returned [commits, paths]
             # then decorate commits with paths
-            if log.size == 2
+            # Type checks are required because raw_log always returns array
+            # so checking for array size is not enough.
+            if log.size == 2 && log.first.is_a?(Array) && log.last.is_a?(Hash)
               commits = log.first
               paths   = log.last
 
