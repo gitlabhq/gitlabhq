@@ -15,11 +15,6 @@ export default () => ({
   openFiles: [],
   selectedFile: null,
   path: '',
-  project: {
-    id: 0,
-    name: '',
-    url: '',
-  },
   parentTreeUrl: '',
   trees: {},
   projects: {},
