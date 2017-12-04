@@ -29,9 +29,11 @@ feature 'User Cluster', :js do
 
       it 'user sees a cluster details page' do
         expect(page).to have_content('Enable cluster integration')
-        expect(page).to have_content('dev-cluster')
-        expect(page).to have_content('http://example.com')
-        expect(page).to have_content('my-token')
+        expect(page.find_field('cluster[name]').value).to eq('dev-cluster')
+        expect(page.find_field('cluster[platform_kubernetes_attributes][api_url]').value)
+          .to have_content('http://example.com')
+        expect(page.find_field('cluster[platform_kubernetes_attributes][token]').value)
+          .to have_content('my-token')
       end
     end
 
