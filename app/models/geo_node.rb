@@ -135,8 +135,7 @@ class GeoNode < ActiveRecord::Base
     if selective_sync?
       relations = namespaces.map { |namespace| namespace.all_projects.select(:id) }
 
-      Project.unscoped
-        .from("(#{Gitlab::SQL::Union.new(relations).to_sql}) #{Project.table_name}")
+      Project.where("id IN (#{Gitlab::SQL::Union.new(relations).to_sql})")
     else
       Project.all
     end
