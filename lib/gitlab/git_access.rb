@@ -10,6 +10,17 @@ module Gitlab
     NotFoundError = Class.new(StandardError)
     ProjectMovedError = Class.new(NotFoundError)
 
+    def self.push_to_read_only_message
+      message = "You can't push code to a read-only GitLab instance."
+
+      if Gitlab::Geo.primary_node
+        primary_url = ActionController::Base.helpers.link_to('primary node', Gitlab::Geo.primary_node.url)
+        message += "Please use the Primary node #{primary_url.html_safe}. See the documentation for more information: #{GEO_SERVER_DOCS_URL}"
+      end
+
+      message
+    end
+
     ERROR_MESSAGES = {
       upload: 'You are not allowed to upload code for this project.',
       download: 'You are not allowed to download code from this project.',
@@ -22,9 +33,10 @@ module Gitlab
       upload_pack_disabled_over_http: 'Pulling over HTTP is not allowed.',
       receive_pack_disabled_over_http: 'Pushing over HTTP is not allowed.',
       read_only: 'The repository is temporarily read-only. Please try again later.',
-      cannot_push_to_read_only: "You can't push code to a read-only GitLab instance."
+      cannot_push_to_read_only: push_to_read_only_message
     }.freeze
 
+    GEO_SERVER_DOCS_URL = 'https://docs.gitlab.com/ee/gitlab-geo/using_a_geo_server.html'
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }.freeze
     PUSH_COMMANDS = %w{ git-receive-pack }.freeze
     ALL_COMMANDS = DOWNLOAD_COMMANDS + PUSH_COMMANDS
