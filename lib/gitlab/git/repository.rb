@@ -505,7 +505,7 @@ module Gitlab
 
       # Counts the amount of commits between `from` and `to`.
       def count_commits_between(from, to)
-        Commit.between(self, from, to).size
+        count_commits(ref: "#{from}..#{to}")
       end
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
@@ -1046,9 +1046,15 @@ module Gitlab
       end
 
       def with_repo_tmp_commit(start_repository, start_branch_name, sha)
+        source_ref = start_branch_name
+
+        unless Gitlab::Git.branch_ref?(source_ref)
+          source_ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{source_ref}"
+        end
+
         tmp_ref = fetch_ref(
           start_repository,
-          source_ref: "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
+          source_ref: source_ref,
           target_ref: "refs/tmp/#{SecureRandom.hex}"
         )
 
@@ -1247,7 +1253,11 @@ module Gitlab
 
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/695
       def git_merged_branch_names(branch_names = [])
-        root_sha = find_branch(root_ref).target
+        return [] unless root_ref
+
+        root_sha = find_branch(root_ref)&.target
+
+        return [] unless root_sha
 
         git_arguments =
           %W[branch --merged #{root_sha}

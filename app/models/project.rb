@@ -234,8 +234,8 @@ class Project < ActiveRecord::Base
   validates :creator, presence: true, on: :create
   validates :description, length: { maximum: 2000 }, allow_blank: true
   validates :ci_config_path,
-    format: { without: /\.{2}/,
-              message: 'cannot include directory traversal.' },
+    format: { without: /(\.{2}|\A\/)/,
+              message: 'cannot include leading slash or directory traversal.' },
     length: { maximum: 255 },
     allow_blank: true
   validates :name,
@@ -273,8 +273,9 @@ class Project < ActiveRecord::Base
   scope :pending_delete, -> { where(pending_delete: true) }
   scope :without_deleted, -> { where(pending_delete: false) }
 
-  scope :with_hashed_storage, -> { where('storage_version >= 1') }
-  scope :with_legacy_storage, -> { where(storage_version: [nil, 0]) }
+  scope :with_storage_feature, ->(feature) { where('storage_version >= :version', version: HASHED_STORAGE_FEATURES[feature]) }
+  scope :without_storage_feature, ->(feature) { where('storage_version < :version OR storage_version IS NULL', version: HASHED_STORAGE_FEATURES[feature]) }
+  scope :with_unmigrated_storage, -> { where('storage_version < :version OR storage_version IS NULL', version: LATEST_STORAGE_VERSION) }
 
   scope :sorted_by_activity, -> { reorder(last_activity_at: :desc) }
   scope :sorted_by_stars, -> { reorder('projects.star_count DESC') }
@@ -425,17 +426,11 @@ class Project < ActiveRecord::Base
     #
     # query - The search query as a String.
     def search(query)
-      pattern = to_pattern(query)
-
-      where(
-        arel_table[:path].matches(pattern)
-          .or(arel_table[:name].matches(pattern))
-          .or(arel_table[:description].matches(pattern))
-      )
+      fuzzy_search(query, [:path, :name, :description])
     end
 
     def search_by_title(query)
-      non_archived.where(arel_table[:name].matches(to_pattern(query)))
+      non_archived.fuzzy_search(query, [:name])
     end
 
     def visibility_levels
@@ -604,7 +599,7 @@ class Project < ActiveRecord::Base
 
   def ci_config_path=(value)
     # Strip all leading slashes so that //foo -> foo
-    super(value&.sub(%r{\A/+}, '')&.delete("\0"))
+    super(value&.delete("\0"))
   end
 
   def import_url=(value)
@@ -902,12 +897,10 @@ class Project < ActiveRecord::Base
     @ci_service ||= ci_services.reorder(nil).find_by(active: true)
   end
 
-  def deployment_services
-    services.where(category: :deployment)
-  end
-
-  def deployment_service
-    @deployment_service ||= deployment_services.reorder(nil).find_by(active: true)
+  # TODO: This will be extended for multiple enviroment clusters
+  def deployment_platform
+    @deployment_platform ||= clusters.find_by(enabled: true)&.platform_kubernetes
+    @deployment_platform ||= services.where(category: :deployment).reorder(nil).find_by(active: true)
   end
 
   def monitoring_services
@@ -1552,9 +1545,9 @@ class Project < ActiveRecord::Base
   end
 
   def deployment_variables
-    return [] unless deployment_service
+    return [] unless deployment_platform
 
-    deployment_service.predefined_variables
+    deployment_platform.predefined_variables
   end
 
   def auto_devops_variables

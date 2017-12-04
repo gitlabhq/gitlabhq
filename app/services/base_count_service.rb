@@ -9,7 +9,7 @@ class BaseCountService
   end
 
   def count
-    Rails.cache.fetch(cache_key, raw: raw?) { uncached_count }.to_i
+    Rails.cache.fetch(cache_key, cache_options) { uncached_count }.to_i
   end
 
   def refresh_cache
@@ -30,5 +30,11 @@ class BaseCountService
 
   def cache_key
     raise NotImplementedError, 'cache_key must be implemented and return a String'
+  end
+
+  # subclasses can override to add any specific options, such as
+  #   super.merge({ expires_in: 5.minutes })
+  def cache_options
+    { raw: raw? }
   end
 end

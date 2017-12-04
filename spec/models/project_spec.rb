@@ -138,6 +138,7 @@ describe Project do
     it { is_expected.to validate_length_of(:ci_config_path).is_at_most(255) }
     it { is_expected.to allow_value('').for(:ci_config_path) }
     it { is_expected.not_to allow_value('test/../foo').for(:ci_config_path) }
+    it { is_expected.not_to allow_value('/test/foo').for(:ci_config_path) }
 
     it { is_expected.to validate_presence_of(:creator) }
 
@@ -1548,8 +1549,8 @@ describe Project do
       expect(project.ci_config_path).to eq('foo/.gitlab_ci.yml')
     end
 
-    it 'sets a string but removes all leading slashes and null characters' do
-      project.update!(ci_config_path: "///f\0oo/\0/.gitlab_ci.yml")
+    it 'sets a string but removes all null characters' do
+      project.update!(ci_config_path: "f\0oo/\0/.gitlab_ci.yml")
 
       expect(project.ci_config_path).to eq('foo//.gitlab_ci.yml')
     end
@@ -2002,12 +2003,25 @@ describe Project do
     end
 
     context 'when project has a deployment service' do
-      let(:project) { create(:kubernetes_project) }
+      shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+        it 'returns variables from this service' do
+          expect(project.deployment_variables).to include(
+            { key: 'KUBE_TOKEN', value: project.deployment_platform.token, public: false }
+          )
+        end
+      end
 
-      it 'returns variables from this service' do
-        expect(project.deployment_variables).to include(
-          { key: 'KUBE_TOKEN', value: project.kubernetes_service.token, public: false }
-        )
+      context 'when user configured kubernetes from Integration > Kubernetes' do
+        let(:project) { create(:kubernetes_project) }
+
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+      end
+
+      context 'when user configured kubernetes from CI/CD > Clusters' do
+        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+        let(:project) { cluster.project }
+
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
     end
   end
@@ -3081,6 +3095,25 @@ describe Project do
       project = create(:project)
 
       expect(project.wiki_repository_exists?).to eq(false)
+    end
+  end
+
+  describe '#deployment_platform' do
+    subject { project.deployment_platform }
+
+    let(:project) { create(:project) }
+
+    context 'when user configured kubernetes from Integration > Kubernetes' do
+      let!(:kubernetes_service) { create(:kubernetes_service, project: project) }
+
+      it { is_expected.to eq(kubernetes_service) }
+    end
+
+    context 'when user configured kubernetes from CI/CD > Clusters' do
+      let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+      let(:platform_kubernetes) { cluster.platform_kubernetes }
+
+      it { is_expected.to eq(platform_kubernetes) }
     end
   end
 end

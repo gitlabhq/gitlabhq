@@ -259,7 +259,7 @@ describe MergeRequest do
   end
 
   describe '#source_branch_sha' do
-    let(:last_branch_commit) { subject.source_project.repository.commit(subject.source_branch) }
+    let(:last_branch_commit) { subject.source_project.repository.commit(Gitlab::Git::BRANCH_REF_PREFIX + subject.source_branch) }
 
     context 'with diffs' do
       subject { create(:merge_request, :with_diffs) }
@@ -272,6 +272,21 @@ describe MergeRequest do
       subject { create(:merge_request, :without_diffs) }
       it 'returns the sha of the source branch last commit' do
         expect(subject.source_branch_sha).to eq(last_branch_commit.sha)
+      end
+
+      context 'when there is a tag name matching the branch name' do
+        let(:tag_name) { subject.source_branch }
+
+        it 'returns the sha of the source branch last commit' do
+          subject.source_project.repository.add_tag(subject.author,
+                                                    tag_name,
+                                                    subject.target_branch_sha,
+                                                    'Add a tag')
+
+          expect(subject.source_branch_sha).to eq(last_branch_commit.sha)
+
+          subject.source_project.repository.rm_tag(subject.author, tag_name)
+        end
       end
     end
 
@@ -933,7 +948,7 @@ describe MergeRequest do
 
       context 'with a completely different branch' do
         before do
-          subject.update(target_branch: 'v1.0.0')
+          subject.update(target_branch: 'csv')
         end
 
         it_behaves_like 'returning all SHA'
@@ -941,7 +956,7 @@ describe MergeRequest do
 
       context 'with a branch having no difference' do
         before do
-          subject.update(target_branch: 'v1.1.0')
+          subject.update(target_branch: 'branch-merged')
           subject.reload # make sure commits were not cached
         end
 

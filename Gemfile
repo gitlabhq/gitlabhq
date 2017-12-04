@@ -111,7 +111,7 @@ gem 'google-api-client', '~> 0.13.6'
 gem 'unf', '~> 0.1.4'
 
 # Seed data
-gem 'seed-fu', '~> 2.3.5'
+gem 'seed-fu', '2.3.6' # Upgrade to > 2.3.7 once https://github.com/mbleigh/seed-fu/issues/123 is solved
 
 # Markdown and HTML processing
 gem 'html-pipeline', '~> 1.11.0'
@@ -283,7 +283,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.7.0.beta37'
+  gem 'prometheus-client-mmap', '~> 0.7.0.beta39'
   gem 'raindrops', '~> 0.18'
 end
 

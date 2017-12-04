@@ -41,7 +41,7 @@
     ],
     computed: {
       ...mapGetters([
-        'getIssueData',
+        'getNoteableData',
       ]),
       discussion() {
         return this.note.notes[0];
@@ -50,10 +50,10 @@
         return this.discussion.author;
       },
       canReply() {
-        return this.getIssueData.current_user.can_create_note;
+        return this.getNoteableData.current_user.can_create_note;
       },
       newNotePath() {
-        return this.getIssueData.create_note_path;
+        return this.getNoteableData.create_note_path;
       },
       lastUpdatedBy() {
         const { notes } = this.note;

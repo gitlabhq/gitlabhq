@@ -138,11 +138,11 @@ class Environment < ActiveRecord::Base
   end
 
   def has_terminals?
-    project.deployment_service.present? && available? && last_deployment.present?
+    project.deployment_platform.present? && available? && last_deployment.present?
   end
 
   def terminals
-    project.deployment_service.terminals(self) if has_terminals?
+    project.deployment_platform.terminals(self) if has_terminals?
   end
 
   def has_metrics?

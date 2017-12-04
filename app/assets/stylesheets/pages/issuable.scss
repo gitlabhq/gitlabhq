@@ -70,14 +70,13 @@
 
   .title {
     padding: 0;
-    margin-bottom: 16px;
+    margin-bottom: $gl-padding;
     border-bottom: 0;
   }
 
   .btn-edit {
     margin-left: auto;
-    // Set height to match title height
-    height: 2em;
+    height: $gl-padding * 2;
   }
 
   // Border around images in issue and MR descriptions.
@@ -276,8 +275,13 @@
       font-weight: $gl-font-weight-normal;
     }
 
-    .no-value {
+    .no-value,
+    .btn-secondary-hover-link {
       color: $gl-text-color-secondary;
+    }
+
+    .btn-secondary-hover-link:hover {
+      color: $gl-link-color;
     }
 
     .sidebar-collapsed-icon {
@@ -287,6 +291,8 @@
     .gutter-toggle {
       margin-top: 7px;
       border-left: 1px solid $border-gray-normal;
+      padding-left: 0;
+      text-align: center;
     }
 
     .title .gutter-toggle {
@@ -359,7 +365,7 @@
         fill: $issuable-sidebar-color;
       }
 
-      &:hover,
+      &:hover:not(.disabled),
       &:hover .todo-undone {
         color: $gl-text-color;
 
@@ -898,5 +904,23 @@
 
   .dropdown-toggle > .icon {
     margin: 0 3px;
+  }
+}
+
+.right-sidebar-collapsed {
+  .sidebar-grouped-item {
+    .sidebar-collapsed-icon {
+      margin-bottom: 0;
+    }
+
+    .sidebar-collapsed-divider {
+      line-height: 5px;
+      font-size: 12px;
+      color: $theme-gray-700;
+
+      + .sidebar-collapsed-icon {
+        padding-top: 0;
+      }
+    }
   }
 }

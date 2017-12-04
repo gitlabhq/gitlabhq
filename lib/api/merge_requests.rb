@@ -167,7 +167,9 @@ module API
 
         authorize!(:destroy_merge_request, merge_request)
 
-        destroy_conditionally!(merge_request)
+        destroy_conditionally!(merge_request) do |merge_request|
+          Issuable::DestroyService.new(user_project, current_user).execute(merge_request)
+        end
       end
 
       params do
