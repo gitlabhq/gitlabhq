@@ -1,4 +1,5 @@
 <script>
+import tooltip from '../../vue_shared/directives/tooltip';
 import identicon from '../../vue_shared/components/identicon.vue';
 import eventHub from '../event_hub';
 
@@ -8,6 +9,9 @@ import itemStats from './item_stats.vue';
 import itemActions from './item_actions.vue';
 
 export default {
+  directives: {
+    tooltip,
+  },
   components: {
     identicon,
     itemCaret,
@@ -112,10 +116,16 @@ export default {
         </a>
       </div>
       <div
-        class="title">
+        class="title namespace-title">
         <a
+          v-tooltip
           :href="group.relativePath"
-          class="no-expand">{{group.fullName}}</a>
+          :title="group.fullName"
+          class="no-expand"
+          data-placement="top"
+        >
+          {{group.name}}
+        </a>
         <span
           v-if="group.permission"
           class="access-type"

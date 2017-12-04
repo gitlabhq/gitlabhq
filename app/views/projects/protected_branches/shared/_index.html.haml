@@ -16,7 +16,7 @@
         %li prevent pushes from everybody except Masters
         %li prevent <strong>anyone</strong> from force pushing to the branch
         %li prevent <strong>anyone</strong> from deleting the branch
-      %p Read more about #{link_to "protected branches", help_page_path("user/project/protected_branches"), class: "underlined-link"} and #{link_to "project permissions", help_page_path("user/permissions"), class: "underlined-link"}.
+      %p Read more about #{link_to "protected branches", help_page_path("user/project/protected_branches")} and #{link_to "project permissions", help_page_path("user/permissions")}.
 
     - if can? current_user, :admin_project, @project
       = content_for :create_protected_branch
