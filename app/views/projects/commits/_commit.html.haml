@@ -47,7 +47,7 @@
   -# Render the `Click to expand it` link for diffs.
   - if @path.present? && commit.paths
     .files
-      .diff-file
+      .diff-file.file-holder
         .diff-content
           .diff-viewer
             - new_path = commit.paths[:new_path]
