@@ -147,14 +147,6 @@ class GeoNode < ActiveRecord::Base
     projects.where(id: project_id).exists?
   end
 
-  def project_registries
-    if selective_sync?
-      Geo::ProjectRegistry.where(project_id: projects.pluck(:id))
-    else
-      Geo::ProjectRegistry.all
-    end
-  end
-
   def filtered_project_registries(type = nil)
     case type
     when 'repository'

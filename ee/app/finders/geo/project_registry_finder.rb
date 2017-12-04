@@ -81,7 +81,7 @@ module Geo
 
     # @return [ActiveRecord::Relation<Project>] list of unsynced projects
     def legacy_find_unsynced_projects
-      registry_project_ids = current_node.project_registries.pluck(:project_id)
+      registry_project_ids = Geo::ProjectRegistry.pluck(:project_id)
       return current_node.projects if registry_project_ids.empty?
 
       joined_relation = current_node.projects.joins(<<~SQL)
@@ -96,7 +96,7 @@ module Geo
 
     # @return [ActiveRecord::Relation<Project>] list of projects updated recently
     def legacy_find_projects_updated_recently
-      legacy_find_projects(current_node.project_registries.dirty.retry_due.pluck(:project_id))
+      legacy_find_projects(Geo::ProjectRegistry.dirty.retry_due.pluck(:project_id))
     end
 
     # @return [ActiveRecord::Relation<Project>] list of synced projects
