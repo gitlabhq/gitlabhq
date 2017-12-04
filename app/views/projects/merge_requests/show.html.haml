@@ -88,8 +88,9 @@
                 quick_actions_docs_path: help_page_path('user/project/quick_actions'),
                 notes_path: notes_url,
                 last_fetched_at: Time.now.to_i,
-                issue_data: serialize_issuable(@merge_request),
+                noteable_data: serialize_issuable(@merge_request),
                 current_user_data: UserSerializer.new.represent(current_user).to_json} }
+                -# TODO: handle logged out user. currently eturns "null"
 
               - else
                 = render "projects/merge_requests/discussion"

@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
   data() {
     const notesDataset = document.getElementById('js-vue-mr-discussions').dataset;
     return {
-      issueData: JSON.parse(notesDataset.issueData),
+      noteableData: JSON.parse(notesDataset.noteableData),
       currentUserData: JSON.parse(notesDataset.currentUserData),
       notesData: {
         lastFetchedAt: notesDataset.lastFetchedAt,
@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
   render(createElement) {
     return createElement('issue-notes-app', {
       props: {
-        issueData: this.issueData,
+        noteableData: this.noteableData,
         notesData: this.notesData,
         userData: this.currentUserData,
       },
