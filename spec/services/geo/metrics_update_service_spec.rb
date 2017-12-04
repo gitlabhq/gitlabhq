@@ -3,6 +3,10 @@ require 'spec_helper'
 describe Geo::MetricsUpdateService, :geo do
   include ::EE::GeoHelpers
 
+  set(:primary) { create(:geo_node, :primary) }
+  set(:secondary) { create(:geo_node) }
+  set(:another_secondary) { create(:geo_node) }
+
   subject { described_class.new }
 
   let(:event_date) { Time.now.utc }
@@ -38,11 +42,19 @@ describe Geo::MetricsUpdateService, :geo do
       allow(Geo::NodeStatusFetchService).to receive(:get).and_return(request)
     end
 
-    context 'when node is the primary' do
-      set(:primary) { create(:geo_node, :primary) }
-      set(:secondary) { create(:geo_node) }
-      set(:another_secondary) { create(:geo_node) }
+    context 'when current node is nil' do
+      before do
+        stub_current_geo_node(nil)
+      end
 
+      it 'skips fetching the status' do
+        expect(Geo::NodeStatusFetchService).to receive(:get).never
+
+        subject.execute
+      end
+    end
+
+    context 'when node is the primary' do
       before do
         stub_current_geo_node(primary)
       end
@@ -75,8 +87,6 @@ describe Geo::MetricsUpdateService, :geo do
     end
 
     context 'when node is a secondary' do
-      set(:secondary) { create(:geo_node) }
-
       subject { described_class.new }
 
       before do
