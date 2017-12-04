@@ -57,7 +57,7 @@ module Gitlab
       ActionController::Base.helpers.content_tag('gl-emoji', emoji_info['moji'], title: emoji_info['description'], data: data)
     end
 
-    def gl_custom_emoji_tag(name, image_source)
+    def custom_emoji_tag(name, image_source)
       data = {
         name: name
       }
