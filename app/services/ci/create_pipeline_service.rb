@@ -11,25 +11,7 @@ module Ci
                 Gitlab::Ci::Pipeline::Chain::Create,
                 EE::Gitlab::Ci::Pipeline::Chain::Limit::Activity].freeze
 
-<<<<<<< HEAD
     def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, mirror_update: false, &block)
-      @pipeline = Ci::Pipeline.new(
-        source: source,
-        project: project,
-        ref: ref,
-        sha: sha,
-        before_sha: before_sha,
-        tag: tag_exists?,
-        trigger_requests: Array(trigger_request),
-        user: current_user,
-        pipeline_schedule: schedule,
-        protected: project.protected_for?(ref)
-      )
-
-      # VALIDATE mirror_update!
-      command = OpenStruct.new(ignore_skip_ci: ignore_skip_ci,
-=======
-    def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, &block)
       @pipeline = Ci::Pipeline.new
 
       command = OpenStruct.new(source: source,
@@ -40,7 +22,6 @@ module Ci
                                trigger_request: trigger_request,
                                schedule: schedule,
                                ignore_skip_ci: ignore_skip_ci,
->>>>>>> upstream/master
                                save_incompleted: save_on_errors,
                                allow_mirror_update: mirror_update,
                                seeds_block: block,
