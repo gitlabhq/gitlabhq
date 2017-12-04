@@ -420,7 +420,7 @@ describe Environment do
       end
 
       it 'returns the rollout status from the deployment service' do
-        expect(project.deployment_service)
+        expect(project.deployment_platform)
           .to receive(:rollout_status).with(environment)
           .and_return(:fake_rollout_status)
 
