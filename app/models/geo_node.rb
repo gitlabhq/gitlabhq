@@ -135,7 +135,7 @@ class GeoNode < ActiveRecord::Base
     if selective_sync?
       relations = namespaces.map { |namespace| namespace.all_projects.select(:id) }
 
-      Project.where("id IN (#{Gitlab::SQL::Union.new(relations).to_sql})")
+      Project.where("id IN (#{Gitlab::SQL::Union.new(relations).to_sql})") # rubocop:disable GitlabSecurity/SqlInjection
     else
       Project.all
     end
