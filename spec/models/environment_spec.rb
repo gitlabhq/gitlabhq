@@ -322,20 +322,33 @@ describe Environment do
     end
   end
 
-  describe '#deployment_service_ready?' do
-    subject { environment.deployment_service_ready? }
+  describe '#has_terminals?' do
+    subject { environment.has_terminals? }
 
     context 'when the enviroment is available' do
       context 'with a deployment service' do
-        let(:project) { create(:kubernetes_project) }
+        shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+          context 'and a deployment' do
+            let!(:deployment) { create(:deployment, environment: environment) }
+            it { is_expected.to be_truthy }
+          end
 
-        context 'and a deployment' do
-          let!(:deployment) { create(:deployment, environment: environment) }
-          it { is_expected.to be_truthy }
+          context 'but no deployments' do
+            it { is_expected.to be_falsy }
+          end
         end
 
-        context 'but no deployments' do
-          it { is_expected.to be_falsy }
+        context 'when user configured kubernetes from Integration > Kubernetes' do
+          let(:project) { create(:kubernetes_project) }
+
+          it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+        end
+
+        context 'when user configured kubernetes from CI/CD > Clusters' do
+          let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+          let(:project) { cluster.project }
+
+          it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
         end
       end
 
@@ -356,26 +369,40 @@ describe Environment do
   end
 
   describe '#terminals' do
-    let(:project) { create(:kubernetes_project) }
     subject { environment.terminals }
 
     context 'when the environment has terminals' do
       before do
-        allow(environment).to receive(:deployment_service_ready?).and_return(true)
+        allow(environment).to receive(:has_terminals?).and_return(true)
       end
 
-      it 'returns the terminals from the deployment service' do
-        expect(project.deployment_service)
-          .to receive(:terminals).with(environment)
-          .and_return(:fake_terminals)
+      shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+        it 'returns the terminals from the deployment service' do
+          expect(project.deployment_platform)
+            .to receive(:terminals).with(environment)
+            .and_return(:fake_terminals)
 
-        is_expected.to eq(:fake_terminals)
+          is_expected.to eq(:fake_terminals)
+        end
+      end
+
+      context 'when user configured kubernetes from Integration > Kubernetes' do
+        let(:project) { create(:kubernetes_project) }
+
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+      end
+
+      context 'when user configured kubernetes from CI/CD > Clusters' do
+        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+        let(:project) { cluster.project }
+
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
     end
 
     context 'when the environment does not have terminals' do
       before do
-        allow(environment).to receive(:deployment_service_ready?).and_return(false)
+        allow(environment).to receive(:has_terminals?).and_return(false)
       end
 
       it { is_expected.to be_nil }
@@ -383,30 +410,43 @@ describe Environment do
   end
 
   describe '#rollout_status' do
-    let(:project) { create(:kubernetes_project) }
+    shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+      subject { environment.rollout_status }
 
-    subject { environment.rollout_status }
+      context 'when the environment has rollout status' do
+        before do
+          allow(environment).to receive(:has_terminals?).and_return(true)
+        end
 
-    context 'when the environment has rollout status' do
-      before do
-        allow(environment).to receive(:deployment_service_ready?).and_return(true)
+        it 'returns the rollout status from the deployment service' do
+          expect(project.deployment_platform)
+            .to receive(:rollout_status).with(environment)
+            .and_return(:fake_rollout_status)
+
+          is_expected.to eq(:fake_rollout_status)
+        end
       end
 
-      it 'returns the rollout status from the deployment service' do
-        expect(project.deployment_service)
-          .to receive(:rollout_status).with(environment)
-          .and_return(:fake_rollout_status)
+      context 'when the environment does not have rollout status' do
+        before do
+          allow(environment).to receive(:has_terminals?).and_return(false)
+        end
 
-        is_expected.to eq(:fake_rollout_status)
+        it { is_expected.to eq(nil) }
       end
     end
 
-    context 'when the environment does not have rollout status' do
-      before do
-        allow(environment).to receive(:deployment_service_ready?).and_return(false)
-      end
+    context 'when user configured kubernetes from Integration > Kubernetes' do
+      let(:project) { create(:kubernetes_project) }
 
-      it { is_expected.to eq(nil) }
+      it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+    end
+
+    context 'when user configured kubernetes from CI/CD > Clusters' do
+      let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+      let(:project) { cluster.project }
+
+      it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
     end
   end
 
