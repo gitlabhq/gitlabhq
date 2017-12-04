@@ -102,13 +102,17 @@ export default class MergeRequestStore extends CEMergeRequestStore {
 
     this.performanceMetrics.improved = [
       {
-        name: 'Overall Score: 55',
+        name: 'Overall Score',
+        score: 50,
+        delta: 0,
         path: '/foo/bar',
       },
     ];
     this.performanceMetrics.degraded = [
       {
-        name: 'Overall Score: 54',
+        name: 'Overall Score',
+        score: 53,
+        delta: -1,
         path: '/foo/bar/bin',
       },
     ];

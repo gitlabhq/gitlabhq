@@ -32,6 +32,9 @@
       isTypeQuality() {
         return this.type === 'codequality';
       },
+      isTypePerformance() {
+        return this.type === 'performance';
+      },
       isTypeSecurity() {
         return this.type === 'security';
       },
@@ -55,7 +58,11 @@
       <template v-if="isStatusSuccess && isTypeQuality">Fixed:</template>
       <template v-if="isTypeSecurity && issue.priority">{{issue.priority}}:</template>
 
-      {{issue.name}}
+      {{issue.name}}<template v-if="issue.score">: {{issue.score}}</template>
+
+      <template v-if="isTypePerformance && issue.delta != null">
+        ({{issue.delta >= 0 ? '+' : ''}}{{issue.delta}})
+      </template>
 
       <template v-if="issue.path">
         in
