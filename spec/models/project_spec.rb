@@ -1717,8 +1717,7 @@ describe Project do
         expect(RepositoryForkWorker).to receive(:perform_async).with(
           project.id,
           forked_from_project.repository_storage_path,
-          forked_from_project.disk_path,
-          project.namespace.full_path).and_return(import_jid)
+          forked_from_project.disk_path).and_return(import_jid)
 
         expect(project.add_import_job).to eq(import_jid)
       end
