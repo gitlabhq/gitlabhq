@@ -19,6 +19,8 @@ special searches:
 | GitLab Enterprise Edition 8.4 - 8.17  | Elasticsearch 2.4 with [Delete By Query Plugin](https://www.elastic.co/guide/en/elasticsearch/plugins/2.4/plugins-delete-by-query.html) installed |
 | GitLab Enterprise Edition 9.0+        | Elasticsearch 5.1 - 5.5 |
 
+Elasticsearch 6.0+ is not supported currently. [We will support 6.0+ in the future.](https://gitlab.com/gitlab-org/gitlab-ee/issues/4218)
+
 ## Installing Elasticsearch
 
 Elasticsearch is _not_ included in the Omnibus packages. You will have to
