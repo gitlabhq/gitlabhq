@@ -18,7 +18,7 @@ feature 'Clusters Applications', :js do
 
     context 'when cluster is being created' do
       let(:cluster) { create(:cluster, :providing_by_gcp, projects: [project])}
- 
+
       scenario 'user is unable to install applications' do
         page.within('.js-cluster-application-row-helm') do
           expect(page.find(:css, '.js-cluster-application-install-button')['disabled']).to eq('true')

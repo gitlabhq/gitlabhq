@@ -89,18 +89,18 @@ feature 'Gcp Cluster', :js do
           page.find(:css, '.js-toggle-cluster').click
           click_button 'Save'
         end
-  
+
         it 'user sees the successful message' do
           expect(page).to have_content('Cluster was successfully updated.')
         end
       end
-      
+
       context 'when user changes cluster parameters' do
         before do
           fill_in 'cluster_platform_kubernetes_attributes_namespace', with: 'my-namespace'
           click_button 'Save changes'
         end
-  
+
         it 'user sees the successful message' do
           expect(page).to have_content('Cluster was successfully updated.')
           expect(cluster.reload.platform_kubernetes.namespace).to eq('my-namespace')
@@ -113,7 +113,7 @@ feature 'Gcp Cluster', :js do
             click_link 'Remove integration'
           end
         end
-  
+
         it 'user sees creation form with the successful message' do
           expect(page).to have_content('Cluster integration was successfully removed.')
           expect(page).to have_link('Create on GKE')
