@@ -84,7 +84,9 @@ module GoogleApi
       end
 
       def user_agent_header
-        { 'User-Agent': "GitLab/#{Gitlab::VERSION.match('(\d+\.\d+)').captures.first} (GPN:GitLab;)" }
+        options = Google::Apis::RequestOptions.new
+        options.header = { 'User-Agent': "GitLab/#{Gitlab::VERSION.match('(\d+\.\d+)').captures.first} (GPN:GitLab;)" }
+        options
       end
     end
   end

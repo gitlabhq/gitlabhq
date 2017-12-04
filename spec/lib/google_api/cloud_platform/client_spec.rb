@@ -129,9 +129,14 @@ describe GoogleApi::CloudPlatform::Client do
   describe '#user_agent_header' do
     subject { client.instance_eval { user_agent_header } }
 
-    it 'returns the correct major and minor GitLab version ' do
+    it 'returns a RequestOptions object' do
+      expect(subject).to be_instance_of(Google::Apis::RequestOptions)
+    end
+
+    it 'has the correct GitLab version in User-Agent header' do
       stub_const('Gitlab::VERSION', '10.3.0-pre')
-      expect(subject).to eq({ 'User-Agent': 'GitLab/10.3 (GPN:GitLab;)' })
+
+      expect(subject.header).to eq({ 'User-Agent': 'GitLab/10.3 (GPN:GitLab;)' })
     end
   end
 end
