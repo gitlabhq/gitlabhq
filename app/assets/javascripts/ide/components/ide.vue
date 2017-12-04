@@ -67,10 +67,9 @@ export default {
       <template
         v-else>
         <br/><br/><br/><br/><br/>
-        <h4 class="muted text-center">Welcome to the GitLab IDE</h4>
+        <h4 class="clgray text-center">Welcome to the GitLab IDE</h4>
       </template>
     </div>
     <ide-contextbar/>
   </div>
-    
 </template>

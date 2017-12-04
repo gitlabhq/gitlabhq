@@ -1,9 +1,11 @@
 <script>
 import RepoTree from './ide_repo_tree.vue';
+import Icon from '../../vue_shared/components/icon.vue';
 
 export default {
   components: {
     RepoTree,
+    Icon,
   },
   props: {
     branch: {
@@ -15,11 +17,13 @@ export default {
 </script>
 
 <template>
-  <div>
+  <div class="branch-container">
     <div class="branch-header">
-      <strong class="clgray">
-        {{ branch.name }}
-      </strong>
+      <icon
+        name="branch"
+        :size="12">
+      </icon>
+      {{ branch.name }}
     </div>
     <div>
       <repo-tree

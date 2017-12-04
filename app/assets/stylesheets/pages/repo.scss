@@ -55,6 +55,17 @@
 
   .file {
     cursor: pointer;
+
+    &.file-open {
+      background: $white-dark;
+    }
+
+    i.unsaved-icon {
+      color: $indigo-700;
+      float:right;
+      font-size: smaller;
+      line-height: 20px;
+    }
   }
 
   a {
@@ -227,6 +238,32 @@
       }
     }
   }
+
+  .branch-container {
+    border-left: 4px solid $indigo-700;
+    margin-bottom: 2px;
+
+    .branch-header {
+      background: $white-dark;
+      padding: 8px 16px;
+      color: $indigo-700;
+      font-weight: $gl-font-weight-bold;
+
+      svg {
+        vertical-align: middle;
+      }
+    }
+  }
+
+  .left-collapse-btn {
+    background: $gray-light;
+    text-align: left;
+    border-top: 1px solid $white-dark;
+
+    svg {
+      vertical-align: middle;
+    }
+  }
 }
 
 .multi-file-context-bar-icon {
@@ -355,19 +392,8 @@
   }
 }
 
-
-.nav-sidebar {
-  .toggle-sidebar-button {
-    padding: 8px 16px;
-  }
-
-  .projects-sidebar {
-    overflow-y: scroll;
-    overflow-x: auto;
-    position: absolute;
-    right: 1px;
-    top: 0;
-    bottom: 38px;
-    left: 0;
-  }
+.ide-loading {
+  padding-top: 200px;
+  text-align: center;
+  font-size: 140%;
 }
