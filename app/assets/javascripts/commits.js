@@ -4,7 +4,7 @@
 /* global Pager */
 
 import { pluralize } from './lib/utils/text_utility';
-import SingleFileDiff from './single_file_diff';
+import Diff from './diff';
 
 export default (function () {
   const CommitsList = {};
@@ -22,13 +22,7 @@ export default (function () {
       }
     });
 
-    const $diffFile = $('.files .diff-file');
-
-    $diffFile.each((index, file) => {
-      if (!$.data(file, 'singleFileDiff')) {
-        $.data(file, 'singleFileDiff', new SingleFileDiff(file));
-      }
-    });
+    new Diff();
 
     Pager.init(parseInt(limit, 10), false, false, this.processCommits);
 
