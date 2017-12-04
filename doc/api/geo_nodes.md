@@ -160,7 +160,8 @@ curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/a
 Example response:
 
 ```json
-{
+[
+  {
     "project_id": 3,
     "last_repository_synced_at": "2017-10-31 14:25:55 UTC",
     "last_repository_successful_sync_at": "2017-10-31 14:26:04 UTC",
@@ -170,5 +171,6 @@ Example response:
     "wiki_retry_count": 1,
     "last_repository_sync_failure": null,
     "last_wiki_sync_failure": "Error syncing Wiki repository"
-}
+  }
+]
 ```
