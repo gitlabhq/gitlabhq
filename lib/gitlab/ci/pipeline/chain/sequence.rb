@@ -5,20 +5,19 @@ module Gitlab
         class Sequence
           def initialize(pipeline, command, sequence)
             @pipeline = pipeline
+            @command = command
+            @sequence = sequence
             @completed = []
-
-            @sequence = sequence.map do |chain|
-              chain.new(pipeline, command)
-            end
           end
 
           def build!
-            @sequence.each do |step|
-              step.perform!
+            @sequence.each do |chain|
+              step = chain.new(@pipeline, @command)
 
+              step.perform!
               break if step.break?
 
-              @completed << step
+              @completed.push(step)
             end
 
             @pipeline.tap do
