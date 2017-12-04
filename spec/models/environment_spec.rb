@@ -386,17 +386,6 @@ describe Environment do
         end
       end
 
-<<<<<<< HEAD
-      shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
-        it 'returns the terminals from the deployment service' do
-          expect(project.deployment_platform)
-            .to receive(:terminals).with(environment)
-            .and_return(:fake_terminals)
-
-          is_expected.to eq(:fake_terminals)
-        end
-      end
-
       context 'when user configured kubernetes from Integration > Kubernetes' do
         let(:project) { create(:kubernetes_project) }
 
@@ -408,19 +397,6 @@ describe Environment do
         let(:project) { cluster.project }
 
         it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
-=======
-      context 'when user configured kubernetes from Integration > Kubernetes' do
-        let(:project) { create(:kubernetes_project) }
-
-        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
-      end
-
-      context 'when user configured kubernetes from CI/CD > Clusters' do
-        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
-        let(:project) { cluster.project }
-
-        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
->>>>>>> origin/master
       end
     end
 
@@ -451,17 +427,10 @@ describe Environment do
         end
       end
 
-<<<<<<< HEAD
-      it 'returns the rollout status from the deployment service' do
-        expect(project.deployment_platform)
-          .to receive(:rollout_status).with(environment)
-          .and_return(:fake_rollout_status)
-=======
       context 'when the environment does not have rollout status' do
         before do
           allow(environment).to receive(:has_terminals?).and_return(false)
         end
->>>>>>> origin/master
 
         it { is_expected.to eq(nil) }
       end
