@@ -80,11 +80,11 @@ export default {
       } else if (improved.length || degraded.length) {
         text.push('Performance metrics');
 
-        if (degraded.length) {
+        if (improved.length) {
           text.push(n__(
             ' improved on %d point',
             ' improved on %d points',
-            degraded.length,
+            improved.length,
           ));
         }
 
@@ -92,11 +92,11 @@ export default {
           text.push(' and');
         }
 
-        if (improved.length) {
+        if (degraded.length) {
           text.push(n__(
             ' degraded on %d point',
             ' degraded on %d points',
-            improved.length,
+            degraded.length,
           ));
         }
       }
