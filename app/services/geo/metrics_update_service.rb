@@ -23,7 +23,7 @@ module Geo
     end
 
     def fetch_geo_node_metrics(node)
-      return unless node.enabled?
+      return unless node&.enabled?
       return unless Gitlab::Geo.primary? || Gitlab::Metrics.prometheus_metrics_enabled?
 
       status = node_status(node)
