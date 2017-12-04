@@ -45,7 +45,7 @@
         return !this.isCollapsed && this.isSubmodule ? 3 : 1;
       },
       openedClass() {
-        return this.file.opened ? 'file-open' : '';
+        return this.file.type === 'blob' && this.file.opened ? 'file-open' : '';
       },
       changedClass() {
         const tabChangedObj = {
