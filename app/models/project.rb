@@ -567,8 +567,7 @@ class Project < ActiveRecord::Base
       if forked?
         RepositoryForkWorker.perform_async(id,
                                            forked_from_project.repository_storage_path,
-                                           forked_from_project.full_path,
-                                           self.namespace.full_path)
+                                           forked_from_project.disk_path)
       else
         RepositoryImportWorker.perform_async(self.id)
       end
