@@ -8,7 +8,7 @@ describe Ci::CreatePipelineService do
   let(:ref_name) { 'refs/heads/master' }
 
   before do
-    stub_ci_pipeline_to_return_yaml_file
+    stub_repository_ci_yaml_file(sha: anything)
   end
 
   describe '#execute' do
@@ -44,6 +44,7 @@ describe Ci::CreatePipelineService do
         expect(pipeline).to eq(project.pipelines.last)
         expect(pipeline).to have_attributes(user: user)
         expect(pipeline).to have_attributes(status: 'pending')
+        expect(pipeline.repository_source?).to be true
         expect(pipeline.builds.first).to be_kind_of(Ci::Build)
       end
 

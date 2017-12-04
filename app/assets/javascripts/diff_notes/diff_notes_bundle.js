@@ -7,13 +7,13 @@ import './models/note';
 import './stores/comments';
 import './services/resolve';
 import './mixins/discussion';
-import './components/comment_resolve_btn';
-import './components/jump_to_discussion';
-import './components/resolve_btn';
+import './components/comment_resolve_btn.vue';
+import './components/jump_to_discussion.vue';
+import './components/resolve_btn.vue';
 import './components/resolve_count';
-import './components/resolve_discussion_btn';
+import './components/resolve_discussion_btn.vue';
 import './components/diff_note_avatars';
-import './components/new_issue_for_discussion';
+import './components/new_issue_for_discussion.vue';
 
 $(() => {
   const projectPath = document.querySelector('.merge-request').dataset.projectPath;

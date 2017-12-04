@@ -2,27 +2,24 @@ module Ci
   class CreatePipelineService < BaseService
     attr_reader :pipeline
 
-    SEQUENCE = [Gitlab::Ci::Pipeline::Chain::Validate::Abilities,
+    SEQUENCE = [Gitlab::Ci::Pipeline::Chain::Build,
+                Gitlab::Ci::Pipeline::Chain::Validate::Abilities,
                 Gitlab::Ci::Pipeline::Chain::Validate::Repository,
                 Gitlab::Ci::Pipeline::Chain::Validate::Config,
                 Gitlab::Ci::Pipeline::Chain::Skip,
                 Gitlab::Ci::Pipeline::Chain::Create].freeze
 
     def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, &block)
-      @pipeline = Ci::Pipeline.new(
-        source: source,
-        project: project,
-        ref: ref,
-        sha: sha,
-        before_sha: before_sha,
-        tag: tag_exists?,
-        trigger_requests: Array(trigger_request),
-        user: current_user,
-        pipeline_schedule: schedule,
-        protected: project.protected_for?(ref)
-      )
+      @pipeline = Ci::Pipeline.new
 
-      command = OpenStruct.new(ignore_skip_ci: ignore_skip_ci,
+      command = OpenStruct.new(source: source,
+                               origin_ref: params[:ref],
+                               checkout_sha: params[:checkout_sha],
+                               after_sha: params[:after],
+                               before_sha: params[:before],
+                               trigger_request: trigger_request,
+                               schedule: schedule,
+                               ignore_skip_ci: ignore_skip_ci,
                                save_incompleted: save_on_errors,
                                seeds_block: block,
                                project: project,
@@ -45,14 +42,6 @@ module Ci
 
     private
 
-    def commit
-      @commit ||= project.commit(origin_sha || origin_ref)
-    end
-
-    def sha
-      commit.try(:id)
-    end
-
     def update_merge_requests_head_pipeline
       return unless pipeline.latest?
 
@@ -74,26 +63,6 @@ module Ci
         .where.not(id: pipeline.id)
         .where.not(sha: project.repository.sha_from_ref(pipeline.ref))
         .created_or_pending
-    end
-
-    def before_sha
-      params[:checkout_sha] || params[:before] || Gitlab::Git::BLANK_SHA
-    end
-
-    def origin_sha
-      params[:checkout_sha] || params[:after]
-    end
-
-    def origin_ref
-      params[:ref]
-    end
-
-    def tag_exists?
-      project.repository.tag_exists?(ref)
-    end
-
-    def ref
-      @ref ||= Gitlab::Git.ref_name(origin_ref)
     end
 
     def pipeline_created_counter
