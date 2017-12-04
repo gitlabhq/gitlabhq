@@ -44,6 +44,9 @@ export const setFileActive = ({ commit, state, getters, dispatch }, file) => {
 
   // reset hash for line highlighting
   location.hash = '';
+
+  commit(types.SET_CURRENT_PROJECT, file.projectId);
+  commit(types.SET_CURRENT_BRANCH, file.branchId);
 };
 
 export const getFileData = ({ state, commit, dispatch }, file) => {

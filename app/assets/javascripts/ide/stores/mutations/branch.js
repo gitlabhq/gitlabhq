@@ -1,9 +1,9 @@
 import * as types from '../mutation_types';
 
 export default {
-  [types.SET_CURRENT_BRANCH](state, currentBranch) {
+  [types.SET_CURRENT_BRANCH](state, currentBranchId) {
     Object.assign(state, {
-      currentBranch,
+      currentBranchId,
     });
   },
   [types.SET_BRANCH](state, { projectPath, branchName, branch }) {

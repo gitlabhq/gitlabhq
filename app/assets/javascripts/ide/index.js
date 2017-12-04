@@ -43,7 +43,6 @@ function initIde(el) {
         onTopOfBranch: convertPermissionToBoolean(data.onTopOfBranch),
         currentRef: data.ref,
         path: data.currentPath,
-        currentBranch: data.currentBranch,
         isRoot: convertPermissionToBoolean(data.root),
         isInitialRoot: convertPermissionToBoolean(data.root),
       });

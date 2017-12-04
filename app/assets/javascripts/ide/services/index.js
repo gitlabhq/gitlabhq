@@ -26,8 +26,8 @@ export default {
   getProjectData(namespace, project) {
     return Api.project(`${namespace}/${project}`);
   },
-  getBranchData(projectId, currentBranch) {
-    return Api.branchSingle(projectId, currentBranch);
+  getBranchData(projectId, currentBranchId) {
+    return Api.branchSingle(projectId, currentBranchId);
   },
   createBranch(projectId, payload) {
     const url = Api.buildUrl(Api.createBranchPath).replace(':id', projectId);

@@ -7,6 +7,7 @@ export const SET_LAST_COMMIT_DATA = 'SET_LAST_COMMIT_DATA';
 
 // Project Mutation Types
 export const SET_PROJECT = 'SET_PROJECT';
+export const SET_CURRENT_PROJECT = 'SET_CURRENT_PROJECT';
 export const TOGGLE_PROJECT_OPEN = 'TOGGLE_PROJECT_OPEN';
 
 // Branch Mutation Types
