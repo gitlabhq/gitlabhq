@@ -1118,9 +1118,11 @@ module Gitlab
       end
 
       # Refactoring aid; allows us to copy code from app/models/repository.rb
-      def run_git(args, env: {})
+      def run_git(args, env: {}, nice: false)
+        cmd = [Gitlab.config.git.bin_path, *args]
+        cmd.unshift("nice") if nice
         circuit_breaker.perform do
-          popen([Gitlab.config.git.bin_path, *args], path, env)
+          popen(cmd, path, env)
         end
       end
 
@@ -1185,6 +1187,12 @@ module Gitlab
 
           create_commit(commit_params)
         end
+      end
+
+      def fsck
+        output, status = run_git(%W[--git-dir=#{path} fsck], nice: true)
+
+        raise GitError.new("Could not fsck repository:\n#{output}") unless status.zero?
       end
 
       def gitaly_repository
