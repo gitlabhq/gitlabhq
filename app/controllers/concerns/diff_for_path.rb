@@ -24,8 +24,7 @@ module DiffForPath
 
   def find_diff_file_by_paths(diffs)
     diffs.diff_files.find do |diff|
-      diff.old_path == params[:old_path] &&
-      diff.new_path == params[:new_path]
+      diff.old_path == params[:old_path] && diff.new_path == params[:new_path]
     end
   end
 end
