@@ -255,7 +255,7 @@ describe Projects::ClustersController do
           it 'creates a new cluster' do
             expect(ClusterProvisionWorker).to receive(:perform_async)
             expect { go }.to change { Clusters::Cluster.count }
-            expect(response).to redirect_to(project_cluster_path(project, project.cluster))
+            expect(response).to redirect_to(project_cluster_path(project, project.clusters.last))
           end
         end
       end
@@ -422,7 +422,7 @@ describe Projects::ClustersController do
             go
 
             cluster.reload
-            expect(response).to redirect_to(project_cluster_path(project, project.cluster))
+            expect(response).to redirect_to(project_cluster_path(project, cluster))
             expect(flash[:notice]).to eq('Cluster was successfully updated.')
             expect(cluster.enabled).to be_falsey
           end
