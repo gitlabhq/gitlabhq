@@ -21,7 +21,7 @@ class Projects::ClustersController < Projects::ApplicationController
   def status
     respond_to do |format|
       format.json do
-        Gitlab::PollingInterval.set_header(response, interval: 10_000)
+        Gitlab::PollingInterval.set_header(response, interval: STATUS_POLLING_INTERVAL)
 
         render json: ClusterSerializer
           .new(project: @project, current_user: @current_user)
