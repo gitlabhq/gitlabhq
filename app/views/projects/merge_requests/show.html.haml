@@ -1,4 +1,5 @@
 - @content_class = "limit-container-width" unless fluid_layout
+- has_vue_discussions_cookie = cookies[:vue_mr_discussions] == 'true'
 - add_to_breadcrumbs "Merge Requests", project_merge_requests_path(@project)
 - breadcrumb_title @merge_request.to_reference
 - page_title "#{@merge_request.title} (#{@merge_request.to_reference})", "Merge Requests"
@@ -6,7 +7,10 @@
 - page_card_attributes @merge_request.card_attributes
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag('common_vue')
-  = webpack_bundle_tag('diff_notes')
+  - if has_vue_discussions_cookie
+    = webpack_bundle_tag('mr_notes')
+  - else
+    = webpack_bundle_tag('diff_notes')
 
 .merge-request{ data: { mr_action: j(params[:tab].presence || 'show'), url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project) } }
   = render "projects/merge_requests/mr_title"
@@ -76,7 +80,19 @@
         .row
           %section.col-md-12
             .issuable-discussion
-              = render "projects/merge_requests/discussion"
+              - if has_vue_discussions_cookie
+                #js-vue-mr-discussions{ data: { discussions_path: discussions_project_merge_request_path(@project, @merge_request, format: :json),
+                register_path: new_session_path(:user, redirect_to_referer: 'yes', anchor: 'register-pane'),
+                new_session_path: new_session_path(:user, redirect_to_referer: 'yes'),
+                markdown_docs_path: help_page_path('user/markdown'),
+                quick_actions_docs_path: help_page_path('user/project/quick_actions'),
+                notes_path: notes_url,
+                last_fetched_at: Time.now.to_i,
+                issue_data: serialize_issuable(@merge_request),
+                current_user_data: UserSerializer.new.represent(current_user).to_json} }
+
+              - else
+                = render "projects/merge_requests/discussion"
 
       #commits.commits.tab-pane
         -# This tab is always loaded via AJAX

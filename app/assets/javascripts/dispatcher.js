@@ -321,11 +321,13 @@ import Activities from './activities';
           new GLForm($('.release-form'), true);
           break;
         case 'projects:merge_requests:show':
-          new Diff();
           new ZenMode();
 
           initIssuableSidebar();
-          initNotes();
+          if (document.querySelector('.js-old-notes')) {
+            new Diff();
+            initNotes();
+          }
 
           const mrShowNode = document.querySelector('.merge-request');
           window.mergeRequest = new MergeRequest({

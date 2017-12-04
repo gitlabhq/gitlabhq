@@ -92,6 +92,14 @@ class MergeRequestWidgetEntity < IssuableEntity
     expose :can_cherry_pick_on_current_merge_request do |merge_request|
       presenter(merge_request).can_cherry_pick_on_current_merge_request?
     end
+
+    expose :can_create_note do |issue|
+      can?(request.current_user, :create_note, issue.project)
+    end
+
+    expose :can_update do |issue|
+      can?(request.current_user, :update_issue, issue)
+    end
   end
 
   # Paths
