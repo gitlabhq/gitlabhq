@@ -241,6 +241,20 @@ level of members in group.
 
 Learn more about [Member Lock](https://docs.gitlab.com/ee/user/group/index.html#member-lock-ees-eep).
 
+
+#### Custom emoji
+
+> [Introduced][ce-14609] in GitLab 10.3.
+
+Custom emoji can be used in titles, descriptions, and comments for issues,
+merge requests, and project snippets.
+
+Any image(including animated gifs) are supported.
+
+See the [custom emoji section in the markdown docs](../markdown#custom-emoji) for usage.
+
+![Custom emoji settings](img/custom_emoji_settings.png)
+
 ### Advanced settings
 
 - **Projects**: view all projects within that group, add members to each project,
@@ -254,3 +268,4 @@ for the group (GitLab admins only, available in [GitLab Enterprise Edition Start
 [permissions]: ../permissions.md#permissions
 [ee]: https://about.gitlab.com/products/
 [reserved]:  ../reserved_names.md
+[ce-14609]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14609

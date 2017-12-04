@@ -227,6 +227,12 @@ If you are new to this, don't be :fearful:. You can easily join the emoji :famil
 
 Consult the [Emoji Cheat Sheet](http://emoji.codes) for a list of all supported emoji codes. :thumbsup:
 
+#### Custom emoji
+
+GitLab also supports custom emoji that are configured at the group/profile level.
+
+The syntax for a custom emoji is the same as a normal emoji `:dancing_banana:`.
+
 ### Special GitLab References
 
 GFM recognizes special references.
@@ -373,11 +379,11 @@ This also works for the asciidoctor `:stem: latexmath`. For details see the [asc
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#mermaid
 
-It is possible to generate diagrams and flowcharts from text using [Mermaid][mermaid]. 
+It is possible to generate diagrams and flowcharts from text using [Mermaid][mermaid].
 
-In order to generate a diagram or flowchart, you should write your text inside the `mermaid` block. 
+In order to generate a diagram or flowchart, you should write your text inside the `mermaid` block.
 
-Example: 
+Example:
 
     ```mermaid
     graph TD;
