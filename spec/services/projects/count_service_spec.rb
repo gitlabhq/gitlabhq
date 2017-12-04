@@ -6,10 +6,6 @@ describe Projects::CountService do
 
   describe '.query' do
     it 'raises NotImplementedError' do
-<<<<<<< HEAD
-      expect { service.relation_for_count }.to raise_error(NotImplementedError)
-=======
->>>>>>> upstream/master
       expect { described_class.query(project.id) }.to raise_error(NotImplementedError)
     end
   end
