@@ -5,14 +5,15 @@ import * as types from '../mutation_types';
 // eslint-disable-next-line import/prefer-default-export
 export const getBranchData = (
   { commit, state, dispatch },
-  { namespace, projectId, branch, enforce = false } = {},
+  { projectId, branchId, enforce = false } = {},
 ) => new Promise((resolve, reject) => {
-  if ((typeof state.projects[`${namespace}/${projectId}`] === 'undefined' ||
-        !state.projects[`${namespace}/${projectId}`].branches[branch])
+  if ((typeof state.projects[`${projectId}`] === 'undefined' ||
+        !state.projects[`${projectId}`].branches[branchId])
         || enforce) {
-    service.getBranchData(`${namespace}/${projectId}`, branch)
+    service.getBranchData(`${projectId}`, branchId)
       .then((data) => {
-        commit(types.SET_BRANCH, { projectPath: `${namespace}/${projectId}`, branchName: branch, branch: data });
+        commit(types.SET_BRANCH, { projectPath: `${projectId}`, branchName: branchId, branch: data });
+        dispatch('setBranchReference', { projectId, branchId });
         resolve(data);
       })
       .catch(() => {
@@ -20,9 +21,20 @@ export const getBranchData = (
         reject(new Error('Branch not loaded'));
       });
   } else {
-    resolve(state.projects[`${namespace}/${projectId}`].branches[branch]);
+    resolve(state.projects[`${projectId}`].branches[branchId]);
   }
 });
+
+export const setBranchReference = ({ commit, state }, { projectId, branchId }) =>
+  service.getBranchData(
+    projectId,
+    branchId,
+  )
+  .then((data) => {
+    const { id } = data.commit;
+    commit(types.SET_BRANCH_WORKING_REFERENCE, { projectId, branchId, reference: id });
+  })
+  .catch(() => flash('Error checking branch data. Please try again.'));
 
 // eslint-disable-next-line import/prefer-default-export
 export const createNewBranch = ({ state, commit }, branch) => service.createBranch(
