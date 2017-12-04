@@ -330,9 +330,7 @@ ActiveRecord::Schema.define(version: 20171130145523) do
     t.string "file"
   end
 
-  add_index "ci_job_artifacts", ["file_type"], name: "index_ci_job_artifacts_on_file_type", using: :btree
   add_index "ci_job_artifacts", ["job_id", "file_type"], name: "index_ci_job_artifacts_on_job_id_and_file_type", unique: true, using: :btree
-  add_index "ci_job_artifacts", ["job_id"], name: "index_ci_job_artifacts_on_job_id", using: :btree
   add_index "ci_job_artifacts", ["project_id"], name: "index_ci_job_artifacts_on_project_id", using: :btree
 
   create_table "ci_pipeline_schedule_variables", force: :cascade do |t|
