@@ -91,6 +91,21 @@ This occurs when PostgreSQL does not have a replication slot for the
 secondary by that name. You may want to rerun the [replication
 process](database.md) on the secondary.
 
+#### How do I fix the message, "Command exceeded allowed execution time" when setting up replication?
+
+This may happen while [initiating the replication process](database.md#step-4-initiate-the-replication-process) on the Geo secondary, and indicates that your
+initial dataset is too large to be replicated in the default timeout (30 minutes).
+
+Re-run `gitlab-ctl replicate-geo-database`, but include a larger value for
+`--backup-timeout`:
+
+```bash
+sudo gitlab-ctl replicate-geo-database --host=primary.geo.example.com --slot-name=secondary_geo_example_com --backup-timeout=21600
+```
+
+This will give the initial replication up to six hours to complete, rather than
+the default thirty minutes. Adjust as required for your installation.
+
 #### How do I fix the message, "PANIC: could not write to file 'pg_xlog/xlogtemp.123': No space left on device"
 
 Determine if you have any unused replication slots in the primary database.  This can cause large amounts of log data to build up in `pg_xlog`.
@@ -136,3 +151,4 @@ sudo gitlab-ctl reconfigure
 
 This will increase the timeout to three hours (10800 seconds). Choose a time
 long enough to accomodate a full clone of your largest repositories.
+

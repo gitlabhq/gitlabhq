@@ -414,6 +414,10 @@ data before running `pg_basebackup`.
 
     If PostgreSQL is listening on a non-standard port, add `--port=` as well.
 
+    If your database is too large to be transferred in 30 minutes, you will need
+    to increase the timeout, e.g., `--backup-timeout=3600` if you expect the
+    initial replication to take under an hour.
+
     If you have to connect to a specific IP address, rather than the FQDN of the
     primary, to reach your PostgreSQL server, then you should pass
     `--sslmode=verify-ca` as well. This should **only** be the case if you have
