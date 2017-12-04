@@ -13,7 +13,7 @@ import './components/resolve_btn.vue';
 import './components/resolve_count';
 import './components/resolve_discussion_btn.vue';
 import './components/diff_note_avatars';
-import './components/new_issue_for_discussion';
+import './components/new_issue_for_discussion.vue';
 
 $(() => {
   const projectPath = document.querySelector('.merge-request').dataset.projectPath;
