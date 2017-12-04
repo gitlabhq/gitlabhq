@@ -53,17 +53,28 @@ secondary if ever promoted to a primary:
     sudo -u git -H rm ~git/.ssh/id_rsa ~git/.ssh/id_rsa.pub
     ```
 
+### Hashed Storage
+
+>**Warning**
+Hashed storage is in **Alpha**. It is considered experimental and not
+production-ready. See [Hashed
+Storage](../administration/repository_storage_types.md) for more detail.
+
+If you previously enabled Hashed Storage and migrated all your existing
+projects to Hashed Storage, disabling hashed storage will not migrate projects
+to their previous project based storage path. As such, once enabled and
+migrated we recommend leaving Hashed Storage enabled.
+
 ## Upgrading to GitLab 10.1
+
+>**Warning**
+Hashed storage is in **Alpha**. It is considered experimental and not
+production-ready. See [Hashed
+Storage](../administration/repository_storage_types.md) for more detail.
 
 [Hashed storage](../administration/repository_storage_types.md) was introduced
 in GitLab 10.0, and a [migration path](../administration/raketasks/storage.md)
 for existing repositories was added in GitLab 10.1.
-
-After upgrading to GitLab 10.1, we recommend that you
-[enable hashed storage for all new projects](#step-5-enabling-hashed-storage-from-gitlab-100),
-then [migrate existing projects to hashed storage](../administration/raketasks/storage.md).
-This will significantly reduce the amount of synchronization required between
-nodes in the event of project or group renames.
 
 ## Upgrading to GitLab 10.0
 

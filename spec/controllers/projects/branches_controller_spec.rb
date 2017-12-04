@@ -130,11 +130,35 @@ describe Projects::BranchesController do
             expect(response).to have_gitlab_http_status(302)
           end
         end
+<<<<<<< HEAD
 
         context 'when user configured kubernetes from Integration > Kubernetes' do
           before do
             project.services << build(:kubernetes_service)
           end
+=======
+
+        context 'when user configured kubernetes from Integration > Kubernetes' do
+          before do
+            project.services << build(:kubernetes_service)
+          end
+
+          it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+        end
+
+        context 'when user configured kubernetes from CI/CD > Clusters' do
+          before do
+            create(:cluster, :provided_by_gcp, projects: [project])
+          end
+
+          it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+        end
+
+        it 'redirects to autodeploy setup page' do
+          result = { status: :success, branch: double(name: branch) }
+
+          create(:cluster, :provided_by_gcp, projects: [project])
+>>>>>>> origin/master
 
           it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
         end

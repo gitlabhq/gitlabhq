@@ -43,9 +43,13 @@ AuthorizedKeysCommand /opt/gitlab-shell/authorized_keys %u %k
 AuthorizedKeysCommandUser git
 ```
 
-Reload the sshd service:
+Reload OpenSSH:
 
-```
+```bash
+# Debian or Ubuntu installations
+sudo service ssh reload
+
+# CentOS installations
 sudo service sshd reload
 ```
 

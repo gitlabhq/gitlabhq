@@ -34,7 +34,7 @@ describe Projects::EnvironmentsController do
 
     context 'when requesting JSON response for folders' do
       before do
-        allow_any_instance_of(Environment).to receive(:deployment_service_ready?).and_return(true)
+        allow_any_instance_of(Environment).to receive(:has_terminals?).and_return(true)
         allow_any_instance_of(Environment).to receive(:rollout_status).and_return(kube_deployment_rollout_status)
 
         create(:environment, project: project,

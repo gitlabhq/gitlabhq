@@ -5,6 +5,11 @@ module Clusters
       include Gitlab::Kubernetes
       include ReactiveCaching
 
+<<<<<<< HEAD
+=======
+      prepend EE::KubernetesService
+
+>>>>>>> origin/master
       self.table_name = 'cluster_platforms_kubernetes'
       self.reactive_cache_key = ->(kubernetes) { [kubernetes.class.model_name.singular, kubernetes.id] }
 
@@ -85,6 +90,7 @@ module Clusters
       # network access
       def calculate_reactive_cache
         return unless enabled? && project && !project.pending_delete?
+<<<<<<< HEAD
 
         # We may want to cache extra things in the future
         { pods: read_pods }
@@ -96,12 +102,26 @@ module Clusters
 
       private
 
+=======
+
+        # We may want to cache extra things in the future
+        { pods: read_pods }
+      end
+
+      def kubeclient
+        @kubeclient ||= build_kubeclient!
+      end
+
+      private
+
+>>>>>>> origin/master
       def kubeconfig
         to_kubeconfig(
           url: api_url,
           namespace: actual_namespace,
           token: token,
           ca_pem: ca_pem)
+<<<<<<< HEAD
       end
 
       def default_namespace
@@ -170,6 +190,76 @@ module Clusters
         }
       end
 
+=======
+      end
+
+      def default_namespace
+        return unless project
+
+        slug = "#{project.path}-#{project.id}".downcase
+        slug.gsub(/[^-a-z0-9]/, '-').gsub(/^-+/, '')
+      end
+
+      def build_kubeclient!(api_path: 'api', api_version: 'v1')
+        raise "Incomplete settings" unless api_url && actual_namespace
+
+        unless (username && password) || token
+          raise "Either username/password or token is required to access API"
+        end
+
+        ::Kubeclient::Client.new(
+          join_api_url(api_path),
+          api_version,
+          auth_options: kubeclient_auth_options,
+          ssl_options: kubeclient_ssl_options,
+          http_proxy_uri: ENV['http_proxy']
+        )
+      end
+
+      # Returns a hash of all pods in the namespace
+      def read_pods
+        kubeclient = build_kubeclient!
+
+        kubeclient.get_pods(namespace: actual_namespace).as_json
+      rescue KubeException => err
+        raise err unless err.error_code == 404
+
+        []
+      end
+
+      def kubeclient_ssl_options
+        opts = { verify_ssl: OpenSSL::SSL::VERIFY_PEER }
+
+        if ca_pem.present?
+          opts[:cert_store] = OpenSSL::X509::Store.new
+          opts[:cert_store].add_cert(OpenSSL::X509::Certificate.new(ca_pem))
+        end
+
+        opts
+      end
+
+      def kubeclient_auth_options
+        { bearer_token: token }
+      end
+
+      def join_api_url(api_path)
+        url = URI.parse(api_url)
+        prefix = url.path.sub(%r{/+\z}, '')
+
+        url.path = [prefix, api_path].join("/")
+
+        url.to_s
+      end
+
+      def terminal_auth
+        {
+          token: token,
+          ca_pem: ca_pem,
+          max_session_time: current_application_settings.terminal_max_session_time
+        }
+      end
+
+>>>>>>> origin/master
       def enforce_namespace_to_lower_case
         self.namespace = self.namespace&.downcase
       end

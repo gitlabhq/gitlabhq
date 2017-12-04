@@ -26,7 +26,7 @@ connect to secondary database servers (which are read-only too).
 In many databases documentation you will see "primary" being referenced as "master"
 and "secondary" as either "slave" or "standby" server (read-only).
 
-Since GitLab 9.4: We recommend using [PostgreSQL replication
+We recommend using [PostgreSQL replication
 slots](https://medium.com/@tk512/replication-slots-in-postgresql-b4b03d277c75)
 to ensure the primary retains all the data necessary for the secondaries to
 recover. See below for more details.
@@ -80,6 +80,7 @@ will not be able to perform all necessary configuration steps. Refer to
     else.
 
 1. Set up TLS support for the PostgreSQL primary server
+
     > **Warning**: Only skip this step if you **know** that PostgreSQL traffic
     > between the primary and secondary will be secured through some other
     > means, e.g., a known-safe physical network path or a site-to-site VPN that
@@ -146,104 +147,115 @@ will not be able to perform all necessary configuration steps. Refer to
     postgresql['ssl'] = 'on'
     ```
 
-1. Configure PostgreSQL to listen on an external network interface
+1. Configure PostgreSQL to listen on network interfaces
 
-    Edit `/etc/gitlab/gitlab.rb` and add the following. Note that GitLab 9.1 added
-    the `geo_primary_role` configuration variable:
+    For security reasons, PostgreSQL does not listen on any network interfaces
+    by default. However, GitLab Geo requires the secondary to be able to
+    connect to the primary's database. For this reason, we need the address of
+    each node.
+
+    If you are using a cloud provider, you can lookup the addresses for each
+    Geo node through their management console. A table of terminology is
+    provided below because terminology varies between vendors.
+
+    | GitLab Terminology | Amazon Web Services | Google Cloud Platform |
+    |-----|-----|-----|-----|
+    | Interface address | Private address | Internal address |
+    | Public address | Public address | External address |
+
+    To lookup the address of a Geo node, on the Geo node execute:
+
+    ```bash
+    # Interface address
+    ip route get 255.255.255.255 | awk '{print $NF; exit}'
+
+    # Public address
+    curl ipinfo.io/ip
+    ```
+
+    In most cases, the following addresses will be used to configure GitLab
+    Geo:
+
+    | Configuration | Address |
+    |-----|-----|
+    | `postgresql['listen_address']` | Primary's interface address |
+    | `postgresql['trust_auth_cidr_addresses']` | Primary's interface address |
+    | `postgresql['md5_auth_cidr_addresses']` | Secondary's public addresses |
+
+    The `listen_address` option opens PostgreSQL up to network connections
+    with the interface corresponding to the given address. See [the PostgreSQL
+    documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-connection.html)
+    for more details.
+
+    Depending on your network configuration, the suggested addresses may not
+    be correct. If your primary and secondary connect over a local
+    area network, or a virtual network connecting availability zones like
+    Amazon's [VPC](https://aws.amazon.com/vpc/) of Google's [VPC](https://cloud.google.com/vpc/)
+    you should use the secondary's interface address for `postgresql['md5_auth_cidr_addresses']`.
+
+    Edit `/etc/gitlab/gitlab.rb` and add the following, replacing the IP
+    addresses with addresses appropriate to your network configuration:
 
     ```ruby
     geo_primary_role['enable'] = true
+
+    # Primary address
+    # - replace '1.2.3.4' with the primary interface address
     postgresql['listen_address'] = '1.2.3.4'
     postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','1.2.3.4/32']
+
+    # Secondary addresses
+    # - replace '5.6.7.8' with the secondary public address
     postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
-    # New for 9.4: Set this to be the number of Geo secondary nodes you have
+
+    # Replication settings
+    # - set this to be the number of Geo secondary nodes you have
     postgresql['max_replication_slots'] = 1
     # postgresql['max_wal_senders'] = 10
     # postgresql['wal_keep_segments'] = 10
+
+    # Disable automatic database migrations for now
+    # (until PostgreSQL is restarted and listening on the interface address)
+    gitlab_rails['auto_migrate'] = false
     ```
 
     For external PostgreSQL instances, [see additional instructions][external postgresql].
 
-    Where `1.2.3.4` is the IP address of the primary server, and `5.6.7.8`
-    is the IP address of the secondary one.
-
-    For security reasons, PostgreSQL by default only listens on the local
-    interface (e.g. 127.0.0.1). However, GitLab Geo needs to communicate
-    between the primary and secondary nodes over a common network, such as a
-    corporate LAN or the public Internet. For this reason, we need to
-    configure PostgreSQL to listen on more interfaces.
-
-    The `listen_address` option opens PostgreSQL up to external connections
-    with the interface corresponding to the given IP. See [the PostgreSQL
-    documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-connection.html)
-    for more details.
-
-    Note that if you are running GitLab Geo with a cloud provider (e.g. Amazon
-    Web Services), the internal interface IP (as provided by `ifconfig`) may
-    be different from the public IP address. For example, suppose you have a
-    nodes with the following configuration:
-
-    |Node Type|Internal IP|External IP|
-    |---------|-----------|-----------|
-    |Primary|10.1.5.3|54.193.124.100|
-    |Secondary|10.1.10.5|54.193.100.155|
-
-    If you are running two nodes in different cloud availability zones, you
-    may need to double check that the nodes can communicate over the internal
-    IP addresses. For example, servers on Amazon Web Services in the same
-    [Virtual Private Cloud (VPC)](https://aws.amazon.com/vpc/) can do
-    this. Google Compute Engine also offers an [internal network]
-    (https://cloud.google.com/compute/docs/networking) that supports
-    cross-availability zone networking.
-
-    For the above example, the following configuration uses the internal IPs
-    to replicate the database from the primary to the secondary:
-
-    ```ruby
-    # Example configuration using internal IPs for a cloud configuration
-    geo_primary_role['enable'] = true
-    postgresql['listen_address'] = '10.1.5.3'
-    postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','10.1.5.3/32']
-    postgresql['md5_auth_cidr_addresses'] = ['10.1.10.5/32']
-    postgresql['max_replication_slots'] = 1 # Number of Geo secondary nodes
-    # postgresql['max_wal_senders'] = 10
-    # postgresql['wal_keep_segments'] = 10
-    ```
-
-    If you prefer that your nodes communicate over the public Internet, you
-    may choose the IP addresses from the "External IP" column above.
-
 1. Optional: If you want to add another secondary, the relevant setting would look like:
 
     ```ruby
-    postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32','11.22.33.44/32']
+    postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32','9.10.11.12/32']
     ```
 
     You may also want to edit the `wal_keep_segments` and `max_wal_senders` to
-    match your database replication requirements. Consult the [PostgreSQL - Replication documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-replication.html)
+    match your database replication requirements. Consult the [PostgreSQL -
+    Replication documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-replication.html)
     for more information.
 
-1. Save the file and [reconfigure GitLab][] for the database listen changes to
-   take effect.
+1. Save the file and [reconfigure GitLab][] for the database listen changes and
+   the replication slot changes to be applied.
 
-    **This step will fail.** This is caused by
-    [Omnibus#2797](https://gitlab.com/gitlab-org/omnibus-gitlab/issues/2797).
-
-    Restart PostgreSQL:
+    Restart PostgreSQL for its changes to take effect:
 
     ```bash
     gitlab-ctl restart postgresql
     ```
 
-    [Reconfigure GitLab][reconfigure GitLab] again. It should complete cleanly.
+1. Reenable migrations
 
-1. New for 9.4: Restart your primary PostgreSQL server to ensure the
-   replication slot changes take effect (`sudo gitlab-ctl restart postgresql`
-   for Omnibus-provided PostgreSQL).
+    Edit `/etc/gitlab/gitlab.rb` and **delete** the following lines:
+
+    ```ruby
+    # Disable automatic database migrations for now
+    # (until PostgreSQL is restarted and listening on the interface address)
+    gitlab_rails['auto_migrate'] = false
+    ```
+
+    Save the file and [reconfigure GitLab][].
 
 1. Now that the PostgreSQL server is set up to accept remote connections, run
    `netstat -plnt` to make sure that PostgreSQL is listening on port `5432` to
-   the server's public IP.
+   the server's interface address.
 
 1. Verify that clock synchronization is enabled.
 

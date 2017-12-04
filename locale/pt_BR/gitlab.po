@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-02 14:42+0100\n"
-"PO-Revision-Date: 2017-11-04 13:27-0400\n"
+"PO-Revision-Date: 2017-11-18 12:51-0500\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt_BR\n"
@@ -361,10 +361,10 @@ msgid "Browse Directory"
 msgstr "Navegar no Diretório"
 
 msgid "Browse File"
-msgstr "Pesquisar Arquivo"
+msgstr "Acessar arquivo"
 
 msgid "Browse Files"
-msgstr "Pesquisar Arquivos"
+msgstr "Acessar arquivos"
 
 msgid "Browse files"
 msgstr "Navegar pelos arquivos"
@@ -1367,7 +1367,7 @@ msgid "Number of access attempts"
 msgstr "Número de tentativas de acesso"
 
 msgid "Number of failures before backing off"
-msgstr ""
+msgstr "Número de falhas antes de reverter"
 
 msgid "OfSearchInADropdown|Filter"
 msgstr "Filtrar"
@@ -1968,7 +1968,7 @@ msgid "The Advanced Global Search in GitLab is a powerful search service that sa
 msgstr "A pesquisa global avançado no GitLab é um serviço poderoso de pesquisa que poupa seu tempo. Ao invés de criar código duplicado e perder seu tempo, você pode agora pesquisar por código de outros times que podem ajudar no seu próprio projeto."
 
 msgid "The circuitbreaker backoff threshold should be lower than the failure count threshold"
-msgstr ""
+msgstr "O limite do recuso do circuitbreaker deve ser inferior ao limite de contagem de falhas"
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr "A etapa de codificação mostra o tempo desde a entrega do primeiro commit até a criação do merge request. Os dados serão automaticamente adicionados aqui desde o momento de criação do merge request."

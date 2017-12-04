@@ -146,7 +146,7 @@ class Environment < ActiveRecord::Base
   end
 
   def rollout_status
-    project.deployment_platform.rollout_status(self) if deployment_service_ready?
+    project.deployment_service.rollout_status(self) if deployment_service_ready?
   end
 
   def has_metrics?
