@@ -251,7 +251,7 @@ merge requests, and project snippets.
 
 Any image(including animated gifs) are supported.
 
-See the [custom emoji section in the markdown docs](../markdown#custom-emoji) for usage.
+See the [custom emoji section](../markdown.md#custom-emoji) in the markdown docs for usage.
 
 ![Custom emoji settings](img/custom_emoji_settings.png)
 
