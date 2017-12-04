@@ -22,6 +22,11 @@ export default class Editor {
       this.modelManager = new ModelManager(this.monaco),
       this.decorationsController = new DecorationsController(this),
     );
+
+    const debouncedUpdate = _.debounce(() => {
+      this.updateDimensions();
+    }, 200);
+    window.addEventListener('resize', debouncedUpdate, false);
   }
 
   createInstance(domElement) {
@@ -73,10 +78,32 @@ export default class Editor {
 
   dispose() {
     this.disposable.dispose();
+    window.removeEventListener('resize', this.updateDimensions.bind(this));
 
     // dispose main monaco instance
     if (this.instance) {
       this.instance = null;
     }
+  }
+
+  updateDimensions() {
+    this.instance.layout();
+  }
+
+  setPosition({ lineNumber, column }) {
+    this.instance.revealPositionInCenter({
+      lineNumber,
+      column,
+    });
+    this.instance.setPosition({
+      lineNumber,
+      column,
+    });
+  }
+
+  onPositionChange(cb) {
+    this.disposable.add(
+      this.instance.onDidChangeCursorPosition(e => cb(this.instance, e)),
+    );
   }
 }

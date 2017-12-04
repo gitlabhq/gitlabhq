@@ -14,6 +14,7 @@ export default {
   computed: {
     ...mapState([
       'currentBlobView',
+      'selectedFile',
     ]),
     ...mapGetters([
       'isCollapsed',
@@ -60,7 +61,8 @@ export default {
           :is="currentBlobView"
         />
         <repo-file-buttons/>
-        <ide-status-bar/>
+        <ide-status-bar
+          :file="selectedFile"/>
       </template>
       <template
         v-else>

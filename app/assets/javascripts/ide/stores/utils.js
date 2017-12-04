@@ -33,6 +33,10 @@ export const dataStructure = () => ({
   parentTreeUrl: '',
   renderError: false,
   base64: false,
+  editorRow: 1,
+  editorColumn: 1,
+  fileLanguage: '',
+  EOL: '',
 });
 
 export const decorateData = (entity) => {

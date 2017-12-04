@@ -26,6 +26,7 @@ export default {
       'changeFileContent',
       'setFileLanguage',
       'setEditorPosition',
+      'setFileEOL',
     ]),
     initMonaco() {
       if (this.shouldHideEditor) return;
@@ -40,7 +41,10 @@ export default {
         .catch(() => flash('Error setting up monaco. Please try again.'));
     },
     setupEditor() {
-      if (!this.activeFile) return;
+      if (!this.activeFile) {
+        alert('NO ACTIVE FILE ');
+        return;
+      }
 
       const model = this.editor.createModel(this.activeFile);
 
@@ -53,21 +57,38 @@ export default {
         });
       });
 
-      /*
-      this.monacoInstance.revealPositionInCenter({
-        lineNumber: this.activeFile.editorRow,
-        column: this.activeFile.editorColumn,
-      });
-
-      
-      this.monacoInstance.onDidChangeCursorPosition((e) => {
+      // Handle Cursor Position
+      this.editor.onPositionChange((instance, e) => {
         this.setEditorPosition({
           file: this.$store.state.selectedFile,
           editorRow: e.position.lineNumber,
           editorColumn: e.position.column,
         });
+      });      
 
-      });*/
+      this.editor.setPosition({
+        lineNumber: this.activeFile.editorRow,
+        column: this.activeFile.editorColumn,
+      });
+
+      // Handle File Language
+      model.onLanguageChange((m, e) => {
+        this.setFileLanguage({
+          file: this.$store.state.selectedFile,
+          fileLanguage: e.newLanguage,
+        });
+      });
+
+      this.setFileLanguage({
+        file: this.$store.state.selectedFile,
+        fileLanguage: model.language,
+      });
+
+      // Get File EOL
+      this.setFileEOL({
+        file: this.$store.state.selectedFile,
+        EOL: model.EOL,
+      });
     },
   },
   watch: {
