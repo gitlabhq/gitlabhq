@@ -487,7 +487,11 @@ class User < ActiveRecord::Base
   end
 
   def two_factor_u2f_enabled?
-    u2f_registrations.exists?
+    if u2f_registrations.loaded?
+      u2f_registrations.any?
+    else
+      u2f_registrations.exists?
+    end
   end
 
   def namespace_uniq
