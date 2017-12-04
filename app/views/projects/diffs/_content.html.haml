@@ -1,5 +1,2 @@
-- commit_id = local_assigns.fetch(:commit_id) if local_assigns.has_key?(:commit_id)
-- force_collapsed = local_assigns.fetch(:force_collapsed) if local_assigns.has_key?(:force_collapsed)
-
 .diff-content
-  = render 'projects/diffs/viewer', viewer: diff_file.rich_viewer || diff_file.simple_viewer, force_collapsed: force_collapsed, commit_id: commit_id
+  = render 'projects/diffs/viewer', viewer: diff_file.rich_viewer || diff_file.simple_viewer

@@ -1,12 +1,10 @@
-- commit_id = commit_id || nil
-- force_collapsed = local_assigns.fetch(:force_collapsed) if local_assigns.has_key?(:force_collapsed)
 - hidden = local_assigns.fetch(:hidden, false)
 
 .diff-viewer{ data: { type: viewer.type }, class: ('hidden' if hidden) }
   - if viewer.render_error
     = render 'projects/diffs/render_error', viewer: viewer
-  - elsif force_collapsed || viewer.collapsed?
-    = render 'projects/diffs/collapsed', viewer: viewer, commit_id: commit_id
+  - elsif viewer.collapsed?
+    = render 'projects/diffs/collapsed', viewer: viewer
   - else
     - viewer.prepare!
 
