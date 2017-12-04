@@ -35,11 +35,11 @@
 
 <template>
   <div>
-    <ul class="breadcrumb repo-breadcrumb">
+    <ul class="breadcrumb repo-breadcrumb repo-new-btn">
       <li class="dropdown">
         <button
           type="button"
-          class="btn btn-default dropdown-toggle add-to-tree"
+          class="btn btn-sm btn-default dropdown-toggle add-to-tree"
           data-toggle="dropdown"
           aria-label="Create new file or directory"
         >
@@ -52,7 +52,7 @@
             css-classes="pull-left"
           />
         </button>
-        <ul class="dropdown-menu">
+        <ul class="dropdown-menu dropdown-menu-right">
           <li>
             <a
               href="#"

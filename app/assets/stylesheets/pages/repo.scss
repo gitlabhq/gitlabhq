@@ -44,7 +44,7 @@
     cursor: pointer;
 
     &.file-open {
-      background: $white-dark;
+      background: $white-normal;
     }
 
     i.unsaved-icon {
@@ -232,12 +232,21 @@
 
     .branch-header {
       background: $white-dark;
-      padding: 8px 16px;
-      color: $indigo-700;
-      font-weight: $gl-font-weight-bold;
+      display: flex;
 
-      svg {
-        vertical-align: middle;
+      .branch-header-title {
+        flex: 1;
+        padding: 8px 16px;
+        color: $indigo-700;
+        font-weight: $gl-font-weight-bold;
+  
+        svg {
+          vertical-align: middle;
+        }
+      }
+
+      .branch-header-btns {
+        padding-right: 4px;
       }
     }
   }
@@ -383,4 +392,11 @@
   padding-top: 200px;
   text-align: center;
   font-size: 140%;
+}
+
+.repo-new-btn {
+  .dropdown-menu {
+    left: auto;
+    right: 0;
+  }
 }
