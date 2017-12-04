@@ -62,7 +62,6 @@ describe GeoNodeStatus, :geo, :truncate do
       create(:geo_file_registry, :avatar, file_id: uploads[2], success: false)
 
       expect(subject.attachments_synced_count).to eq(2)
-
     end
 
     it 'does not count synced files that were replaced' do
