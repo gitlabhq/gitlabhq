@@ -22,7 +22,7 @@ Among numerous use cases for exporting issues for CSV, we can name a few:
 - Make a snapshot of issues for offline analysis or to communicate with other teams who may not be in GitLab
 - Create diagrams, graphs, and charts from the CSV data
 - Present the data in any other format for auditing or sharing reasons
-- Import the issues elsewhere
+- Import the issues elsewhere to a system outside of GitLab
 - Long-term issues' data analysis with multiple snapshots created along the time
 - Use the long-term data to gather relevant feedback given in the issues, and improve your product based on real metrics
 
