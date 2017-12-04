@@ -64,7 +64,44 @@ module API
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
         groups = groups.reorder(params[:order_by] => params[:sort])
 
+<<<<<<< HEAD
         present_groups groups, statistics: params[:statistics] && current_user.admin?
+=======
+        groups
+      end
+
+      def find_group_projects(params)
+        group = find_group!(params[:id])
+        projects = GroupProjectsFinder.new(group: group, current_user: current_user, params: project_finder_params).execute
+        projects = reorder_projects(projects)
+        paginate(projects)
+      end
+
+      def present_groups(params, groups)
+        options = {
+          with: Entities::Group,
+          current_user: current_user,
+          statistics: params[:statistics] && current_user.admin?
+        }
+
+        groups = groups.with_statistics if options[:statistics]
+        present paginate(groups), options
+      end
+    end
+
+    resource :groups do
+      include CustomAttributesEndpoints
+
+      desc 'Get a groups list' do
+        success Entities::Group
+      end
+      params do
+        use :group_list_params
+      end
+      get do
+        groups = find_groups(params)
+        present_groups params, groups
+>>>>>>> 65b7a7a063... Merge branch 'sh-optimize-groups-api' into 'master'
       end
 
       desc 'Create a group. Available only for users who can create groups.' do
@@ -159,11 +196,10 @@ module API
         use :pagination
       end
       get ":id/projects" do
-        group = find_group!(params[:id])
-        projects = GroupProjectsFinder.new(group: group, current_user: current_user, params: project_finder_params).execute
-        projects = reorder_projects(projects)
+        projects = find_group_projects(params)
         entity = params[:simple] ? Entities::BasicProjectDetails : Entities::Project
-        present paginate(projects), with: entity, current_user: current_user
+
+        present entity.prepare_relation(projects), with: entity, current_user: current_user
       end
 
       desc 'Transfer a project to the group namespace. Available only for admin.' do
