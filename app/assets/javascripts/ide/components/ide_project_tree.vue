@@ -1,9 +1,11 @@
 <script>
 import BranchesTree from './ide_project_branches_tree.vue';
+import projectAvatarImage from '../../vue_shared/components/project_avatar/project_avatar_image.vue';
 
 export default {
   components: {
     BranchesTree,
+    projectAvatarImage,
   },
   props: {
     project: {
@@ -17,9 +19,17 @@ export default {
 <template>
   <div class="projects-sidebar">
     <div class="context-header">
-      <a title="Html5 Boilerplate" href="/h5bp/html5-boilerplate">
+      <a 
+        :title="project.name" 
+        :href="project.path">
         <div class="avatar-container s40 project-avatar">
-          <img alt="Html5 Boilerplate" class="avatar s40 avatar-tile js-lazy-loaded" src="/uploads/-/system/project/avatar/8/hodor.jpg">
+          <project-avatar-image
+            class="avatar-container project-avatar"
+            :link-href="project.path"
+            :img-src="project.avatar_url"
+            :img-alt="project.name"
+            :img-size="40"
+            />
         </div>
         <div class="sidebar-context-title">
           {{ project.name }}

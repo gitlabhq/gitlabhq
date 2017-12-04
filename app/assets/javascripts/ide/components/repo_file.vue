@@ -44,6 +44,15 @@
       submoduleColSpan() {
         return !this.isCollapsed && this.isSubmodule ? 3 : 1;
       },
+      openedClass() {
+        return this.file.opened ? 'file-open' : '';
+      },
+      changedClass() {
+        const tabChangedObj = {
+          'fa-circle unsaved-icon': this.file.changed || this.file.tempFile,
+        };
+        return tabChangedObj;
+      },
     },
     methods: {
       clickFile(row) {
@@ -56,6 +65,7 @@
 <template>
   <tr
     class="file"
+    :class="openedClass"
     @click.prevent="clickFile(file)">
     <td
       class="multi-file-table-name"
@@ -74,6 +84,12 @@
       >
         {{ file.name }}
       </a>
+      <i
+        class="fa"
+        :class="changedClass"
+        aria-hidden="true"
+      >
+      </i>
       <template v-if="isSubmodule && file.id">
         @
         <span class="commit-sha">
