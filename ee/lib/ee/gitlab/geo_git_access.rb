@@ -18,7 +18,13 @@ module EE
         message
       end
 
-      alias_method :current_user, :user
+      def current_user
+        user
+      end
+
+      def gitlab_config
+        ::Gitlab.config.gitlab
+      end
     end
   end
 end
