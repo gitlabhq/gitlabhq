@@ -14,5 +14,5 @@
       = link_to project_clusters_path(@project), class: "js-all-tab" do
         = s_("ClusterIntegration|All")
         %span.badge= @all_count
-  .pull-right.nav-bar-right
-    = link_to s_("ClusterIntegration|Add cluster"), new_project_cluster_path(@project), class: "btn btn-success disabled has-tooltip js-add-cluster", title: s_("ClusterIntegration|Multiple clusters are available in GitLab Entreprise Edition Premium and Ultimate")
+  .nav-controls
+    = link_to s_("ClusterIntegration|Add cluster"), new_project_cluster_path(@project), class: "btn btn-success btn-add-cluster disabled has-tooltip js-add-cluster", title: s_("ClusterIntegration|Multiple clusters are available in GitLab Entreprise Edition Premium and Ultimate")
