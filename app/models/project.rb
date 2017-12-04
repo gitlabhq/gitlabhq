@@ -1124,7 +1124,11 @@ class Project < ActiveRecord::Base
   end
 
   def project_member(user)
-    project_members.find_by(user_id: user)
+    if project_members.loaded?
+      project_members.find { |member| member.user_id == user.id }
+    else
+      project_members.find_by(user_id: user)
+    end
   end
 
   def default_branch
