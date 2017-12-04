@@ -92,7 +92,7 @@ module Gitlab
       end
 
       def build_find_command(search_dir)
-        cmd = %W[find #{search_dir}
+        cmd = %W[find -L #{search_dir}
                  -type f
                  ! ( -path #{EXCLUDED_HASHED_UPLOADS_PATH} -prune )
                  ! ( -path #{EXCLUDED_TMP_UPLOADS_PATH} -prune )
