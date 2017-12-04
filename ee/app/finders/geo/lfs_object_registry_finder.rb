@@ -1,65 +1,36 @@
 module Geo
   class LfsObjectRegistryFinder < RegistryFinder
-    def find_synced_lfs_objects
+    def count_synced_lfs_objects
       relation =
-        if fdw?
-          fdw_find_synced_lfs_objects
-        else
+        if selective_sync?
           legacy_find_synced_lfs_objects
+        else
+          find_synced_lfs_objects_registries
         end
 
-      relation
+      relation.count
     end
 
-    def find_failed_lfs_objects
+    def count_failed_lfs_objects
       relation =
-        if fdw?
-          fdw_find_failed_lfs_objects
-        else
+        if selective_sync?
           legacy_find_failed_lfs_objects
+        else
+          find_failed_lfs_objects_registries
         end
 
-      relation
+      relation.count
     end
 
     private
 
-    def lfs_objects
-      lfs_object_model = fdw? ? Geo::Fdw::LfsObject : LfsObject
-
-      relation =
-        if selective_sync?
-          lfs_object_model.joins(:projects).where(projects: { id: current_node.projects })
-        else
-          lfs_object_model.all
-        end
-
-      relation.with_files_stored_locally
+    def find_synced_lfs_objects_registries
+      Geo::FileRegistry.lfs_objects.synced
     end
 
-    #
-    # FDW accessors
-    #
-
-    def fdw_table
-      Geo::Fdw::LfsObject.table_name
+    def find_failed_lfs_objects_registries
+      Geo::FileRegistry.lfs_objects.failed
     end
-
-    def fdw_find_synced_lfs_objects
-      lfs_objects.joins("INNER JOIN file_registry ON file_registry.file_id = #{fdw_table}.id")
-        .merge(Geo::FileRegistry.lfs_objects)
-        .merge(Geo::FileRegistry.synced)
-    end
-
-    def fdw_find_failed_lfs_objects
-      lfs_objects.joins("INNER JOIN file_registry ON file_registry.file_id = #{fdw_table}.id")
-        .merge(Geo::FileRegistry.lfs_objects)
-        .merge(Geo::FileRegistry.failed)
-    end
-
-    #
-    # Legacy accessors (non FDW)
-    #
 
     def legacy_find_synced_lfs_objects
       legacy_find_lfs_objects(Geo::FileRegistry.lfs_objects.synced.pluck(:file_id))
@@ -71,6 +42,10 @@ module Geo
 
     def legacy_find_lfs_objects(registry_file_ids)
       return LfsObject.none if registry_file_ids.empty?
+
+      lfs_objects = LfsObject.joins(:projects)
+        .where(projects: { id: current_node.projects })
+        .with_files_stored_locally
 
       joined_relation = lfs_objects.joins(<<~SQL)
         INNER JOIN

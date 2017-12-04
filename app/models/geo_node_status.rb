@@ -76,8 +76,8 @@ class GeoNodeStatus < ActiveRecord::Base
       self.repositories_failed_count = geo_node.project_registries.failed.count
 
       lfs_objects_finder = Geo::LfsObjectRegistryFinder.new(current_node: geo_node)
-      self.lfs_objects_synced_count = lfs_objects_finder.find_synced_lfs_objects.count
-      self.lfs_objects_failed_count = lfs_objects_finder.find_failed_lfs_objects.count
+      self.lfs_objects_synced_count = lfs_objects_finder.count_synced_lfs_objects
+      self.lfs_objects_failed_count = lfs_objects_finder.count_failed_lfs_objects
 
       attachments_finder = Geo::AttachmentRegistryFinder.new(current_node: geo_node)
       self.attachments_synced_count = attachments_finder.find_synced_attachments.count
