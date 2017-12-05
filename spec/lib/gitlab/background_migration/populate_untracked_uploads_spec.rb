@@ -46,7 +46,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
 
     it 'adds untracked files to the uploads table' do
       expect do
-        subject.perform(1, 1000)
+        subject.perform(1, untracked_files_for_uploads.last.id)
       end.to change { uploads.count }.from(4).to(8)
 
       expect(user2.uploads.count).to eq(1)
@@ -58,12 +58,12 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
       expect(subject).to receive(:drop_temp_table_if_finished) # Don't drop the table so we can look at it
 
       expect do
-        subject.perform(1, 1000)
+        subject.perform(1, untracked_files_for_uploads.last.id)
       end.to change { untracked_files_for_uploads.count }.from(8).to(0)
     end
 
     it 'does not create duplicate uploads of already tracked files' do
-      subject.perform(1, 1000)
+      subject.perform(1, untracked_files_for_uploads.last.id)
 
       expect(user1.uploads.count).to eq(1)
       expect(project1.uploads.count).to eq(2)
@@ -140,7 +140,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
 
       it 'creates an Upload record' do
         expect do
-          subject.perform(1, 1000)
+          subject.perform(1, untracked_files_for_uploads.last.id)
         end.to change { model.reload.uploads.count }.from(0).to(1)
 
         expect(model.uploads.first.attributes).to include(expected_upload_attrs)
@@ -206,7 +206,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
 
       it 'creates an Upload record' do
         expect do
-          subject.perform(1, 1000)
+          subject.perform(1, untracked_files_for_uploads.last.id)
         end.to change { model.reload.uploads.count }.from(0).to(1)
 
         expect(model.uploads.first.attributes).to include(@expected_upload_attrs)
