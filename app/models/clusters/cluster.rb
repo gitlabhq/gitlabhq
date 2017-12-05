@@ -94,7 +94,7 @@ module Clusters
     private
 
     def unique_environment_scope
-      if project.clusters.where(environment_scope: environment_scope).any?
+      if project.clusters.where(environment_scope: environment_scope).exists?
         errors.add(:base, "cannot add duplicated environment scope")
         return false
       end
