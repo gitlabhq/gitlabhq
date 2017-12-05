@@ -64,7 +64,9 @@ describe Projects::Clusters::UserController do
           expect(ClusterProvisionWorker).to receive(:perform_async)
           expect { go }.to change { Clusters::Cluster.count }
             .and change { Clusters::Platforms::Kubernetes.count }
-          expect(response).to redirect_to(project_cluster_path(project, project.cluster))
+          expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
+          expect(project.clusters.first).to be_user
+          expect(project.clusters.first).to be_kubernetes
         end
       end
     end
