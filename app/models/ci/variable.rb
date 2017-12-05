@@ -3,7 +3,7 @@ module Ci
     extend Gitlab::Ci::Model
     include HasVariable
     include Presentable
-    prepend Ci::HasEnvironmentScope
+    prepend HasEnvironmentScope
 
     belongs_to :project
 

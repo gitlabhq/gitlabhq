@@ -257,9 +257,8 @@ module EE
     def deployment_platform(environment: nil)
       return super unless environment && feature_available?(:multiple_clusters)
 
-      @deployment_platform ||= Ci::HasEnvironmentScope
-        .filter_by(clusters.enabled, environment.name)
-        .last&.platform_kubernetes
+      @deployment_platform ||= clusters.enabled.on_environment(environment.name)
+                                               .last&.platform_kubernetes
 
       super # Wildcard or KubernetesService
     end
@@ -268,7 +267,7 @@ module EE
       return super.where(environment_scope: '*') unless
         environment && feature_available?(:variable_environment_scope)
 
-      Ci::HasEnvironmentScope.filter_by(super, environment.name)
+      super.on_environment(environment.name)
     end
 
     def execute_hooks(data, hooks_scope = :push_hooks)
