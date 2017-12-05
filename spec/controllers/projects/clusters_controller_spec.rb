@@ -120,7 +120,7 @@ describe Projects::ClustersController do
   end
 
   describe 'PUT update' do
-    context 'Managed' do
+    context 'when cluster is provided by GCP' do
       let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
       let(:user) { create(:user) }
 
@@ -171,7 +171,7 @@ describe Projects::ClustersController do
       end
     end
 
-    context 'User' do
+    context 'when cluster is provided by user' do
       let(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
       let(:user) { create(:user) }
 
@@ -203,23 +203,11 @@ describe Projects::ClustersController do
           expect(cluster.name).to eq('my-new-cluster-name')
           expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
         end
-
-        context 'when cluster is being created' do
-          let(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
-
-          it "rejects changes" do
-            go
-
-            expect(response).to have_gitlab_http_status(:ok)
-            expect(response).to render_template(:show)
-            expect(cluster.enabled).to be_truthy
-          end
-        end
       end
     end
 
     describe 'security' do
-      set(:cluster) { create(:cluster, :providing_by_gcp, projects: [project]) }
+      set(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
       let(:params) do
         { cluster: { enabled: false } }
@@ -251,7 +239,7 @@ describe Projects::ClustersController do
         sign_in(user)
       end
 
-      context 'GCP' do
+      context 'when cluster is provided by GCP' do
         context 'when cluster is created' do
           let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
@@ -280,19 +268,17 @@ describe Projects::ClustersController do
         end
       end
 
-      context 'User' do
-        context 'when provider is user' do
-          let!(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
+      context 'when cluster is provided by user' do
+        let!(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
 
-          it "destroys and redirects back to clusters list" do
-            expect { go }
-              .to change { Clusters::Cluster.count }.by(-1)
-              .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
-              .and change { Clusters::Providers::Gcp.count }.by(0)
+        it "destroys and redirects back to clusters list" do
+          expect { go }
+            .to change { Clusters::Cluster.count }.by(-1)
+            .and change { Clusters::Platforms::Kubernetes.count }.by(-1)
+            .and change { Clusters::Providers::Gcp.count }.by(0)
 
-            expect(response).to redirect_to(project_clusters_path(project))
-            expect(flash[:notice]).to eq('Cluster integration was successfully removed.')
-          end
+          expect(response).to redirect_to(project_clusters_path(project))
+          expect(flash[:notice]).to eq('Cluster integration was successfully removed.')
         end
       end
     end
