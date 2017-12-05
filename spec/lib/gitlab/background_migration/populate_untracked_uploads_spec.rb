@@ -119,6 +119,26 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
 
       expect(table_exists?(:untracked_files_for_uploads)).to be_falsey
     end
+
+    it 'does not block a whole batch because of one bad path' do
+      untracked_files_for_uploads.create!(path: "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/#{project2.full_path}/._7d37bf4c747916390e596744117d5d1a")
+      expect(untracked_files_for_uploads.count).to eq(9)
+      expect(uploads.count).to eq(4)
+
+      subject.perform(1, untracked_files_for_uploads.last.id)
+
+      expect(untracked_files_for_uploads.count).to eq(1)
+      expect(uploads.count).to eq(8)
+    end
+
+    it 'an unparseable path is shown in error output' do
+      bad_path = "#{Gitlab::BackgroundMigration::PrepareUntrackedUploads::RELATIVE_UPLOAD_DIR}/#{project2.full_path}/._7d37bf4c747916390e596744117d5d1a"
+      untracked_files_for_uploads.create!(path: bad_path)
+
+      expect(Rails.logger).to receive(:error).with(/Error parsing path "#{bad_path}":/)
+
+      subject.perform(1, untracked_files_for_uploads.last.id)
+    end
   end
 
   context 'with no untracked files' do

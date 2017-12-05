@@ -57,7 +57,7 @@ module Gitlab
         ].freeze
 
         def to_h
-          {
+          @upload_hash ||= {
             path: upload_path,
             uploader: uploader,
             model_type: model_type,
@@ -156,8 +156,8 @@ module Gitlab
         return unless migrate?
 
         files = UntrackedFile.where(id: start_id..end_id)
-        insert_uploads_if_needed(files)
-        files.delete_all
+        processed_files = insert_uploads_if_needed(files)
+        processed_files.delete_all
 
         drop_temp_table_if_finished
       end
@@ -169,9 +169,30 @@ module Gitlab
       end
 
       def insert_uploads_if_needed(files)
-        filtered_files = filter_existing_uploads(files)
+        filtered_files, error_files = filter_error_files(files)
+        filtered_files = filter_existing_uploads(filtered_files)
         filtered_files = filter_deleted_models(filtered_files)
         insert(filtered_files)
+
+        processed_files = files.where.not(id: error_files.map(&:id))
+        processed_files
+      end
+
+      def filter_error_files(files)
+        files.partition do |file|
+          begin
+            file.to_h
+            true
+          rescue => e
+            msg = <<~MSG
+              Error parsing path "#{file.path}":
+                #{e.message}
+                #{e.backtrace.join("\n  ")}
+            MSG
+            Rails.logger.error(msg)
+            false
+          end
+        end
       end
 
       def filter_existing_uploads(files)
