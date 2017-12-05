@@ -5,7 +5,7 @@ describe Gitlab::GitAccess do
 
   let(:actor) { user }
   let(:project) { create(:project, :repository) }
-  let(:protocol) { 'ssh' }
+  let(:protocol) { 'web' }
   let(:authentication_abilities) { %i[read_project download_code push_code] }
   let(:redirected_path) { nil }
 
@@ -30,6 +30,7 @@ describe Gitlab::GitAccess do
 
       primary_node = create(:geo_node, :primary, url: 'https://localhost:3000/gitlab')
       allow(Gitlab::Geo).to receive(:primary).and_return(primary_node)
+      allow(Gitlab::Geo).to receive(:secondary_with_primary?).and_return(true)
 
       project.add_master(user)
 

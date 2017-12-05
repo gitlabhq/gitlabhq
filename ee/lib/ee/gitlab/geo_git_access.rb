@@ -10,12 +10,20 @@ module EE
       def push_to_read_only_message
         message = super
 
-        if ::Gitlab::Geo.primary_node
-          clone_url = geo_primary_default_url_to_repo(project_or_wiki)
-          message += " Please use the Primary node URL: #{clone_url}. Documentation: #{GEO_SERVER_DOCS_URL}"
+        if ::Gitlab::Geo.secondary_with_primary?
+          message += " Please use the Primary node URL: #{geo_primary_url_to_repo}. Documentation: #{GEO_SERVER_DOCS_URL}"
         end
 
         message
+      end
+
+      def geo_primary_url_to_repo
+        case protocol
+        when 'ssh'
+          geo_primary_ssh_url_to_repo(project_or_wiki)
+        else
+          geo_primary_http_url_to_repo(project_or_wiki)
+        end
       end
 
       def current_user

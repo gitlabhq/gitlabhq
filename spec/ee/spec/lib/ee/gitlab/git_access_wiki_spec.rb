@@ -34,6 +34,7 @@ describe Gitlab::GitAccessWiki do
 
       primary_node = create(:geo_node, :primary, url: 'https://localhost:3000/gitlab')
       allow(Gitlab::Geo).to receive(:primary).and_return(primary_node)
+      allow(Gitlab::Geo).to receive(:secondary_with_primary?).and_return(true)
 
       project.add_master(user)
 
