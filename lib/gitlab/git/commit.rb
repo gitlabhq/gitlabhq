@@ -4,7 +4,7 @@ module Gitlab
     class Commit
       include Gitlab::EncodingHelper
 
-      attr_accessor :raw_commit, :head, :paths
+      attr_accessor :raw_commit, :head, :change_summary
 
       SERIALIZE_KEYS = [
         :id, :message, :parent_ids,
@@ -194,8 +194,8 @@ module Gitlab
           Gitlab::GitalyClient::CommitService.new(repo).find_all_commits(options)
         end
 
-        def decorate(repository, commit, ref = nil, paths: {})
-          Gitlab::Git::Commit.new(repository, commit, ref, paths: paths)
+        def decorate(repository, commit, ref = nil, change_summary: nil)
+          Gitlab::Git::Commit.new(repository, commit, ref, change_summary: change_summary)
         end
 
         # Returns the `Rugged` sorting type constant for one or more given
@@ -223,14 +223,14 @@ module Gitlab
         end
       end
 
-      def initialize(repository, raw_commit, head = nil, paths: nil)
+      def initialize(repository, raw_commit, head = nil, change_summary: nil)
         raise "Nil as raw commit passed" unless raw_commit
 
         case raw_commit
         when Hash
           init_from_hash(raw_commit)
         when Rugged::Commit
-          init_from_rugged(raw_commit, paths: paths)
+          init_from_rugged(raw_commit)
         when Gitaly::GitCommit
           init_from_gitaly(raw_commit)
         else
@@ -239,6 +239,7 @@ module Gitlab
 
         @repository = repository
         @head = head
+        @change_summary = change_summary
       end
 
       def sha
@@ -428,7 +429,7 @@ module Gitlab
         end
       end
 
-      def init_from_rugged(commit, paths: {})
+      def init_from_rugged(commit)
         author = commit.author
         committer = commit.committer
 
@@ -442,7 +443,6 @@ module Gitlab
         @committer_name = committer[:name]
         @committer_email = committer[:email]
         @parent_ids = commit.parents.map(&:oid)
-        @paths = paths
       end
 
       def init_from_gitaly(commit)

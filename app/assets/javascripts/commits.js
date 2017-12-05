@@ -22,8 +22,6 @@ export default (function () {
       }
     });
 
-    new Diff();
-
     Pager.init(parseInt(limit, 10), false, false, this.processCommits);
 
     this.content = $('#commits-list');

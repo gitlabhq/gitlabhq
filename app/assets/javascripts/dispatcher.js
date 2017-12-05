@@ -356,6 +356,7 @@ import ProjectVariables from './project_variables';
           break;
         case 'projects:commits:show':
           CommitsList.init(document.querySelector('.js-project-commits-show').dataset.commitsLimit);
+          new Diff();
           shortcut_handler = new ShortcutsNavigation();
           GpgBadges.fetch();
           break;

@@ -441,20 +441,7 @@ module Gitlab
           if is_enabled && !options[:with_change_summary]
             gitaly_commit_client.find_commits(options)
           else
-            log = raw_log(options)
-
-            # If `raw_log` returned [commits, paths]
-            # then decorate commits with paths
-            # Type checks are required because raw_log always returns array
-            # so checking for array size is not enough.
-            if log.size == 2 && log.first.is_a?(Array) && log.last.is_a?(Hash)
-              commits = log.first
-              paths   = log.last
-
-              commits.map { |commit| Commit.decorate(self, commit, paths: paths[commit.oid]) }
-            else
-              log.map { |commit| Commit.decorate(self, commit) }
-            end
+            raw_log(options)
           end
         end
       end
@@ -1299,7 +1286,9 @@ module Gitlab
           limit: options[:limit],
           offset: options[:offset]
         }
-        Rugged::Walker.walk(rugged, walk_options).to_a
+
+        commits = Rugged::Walker.walk(rugged, walk_options).to_a
+        commits.map { |commit| Commit.decorate(self, commit) }
       end
 
       # Gitaly note: JV: although #log_by_shell shells out to Git I think the
@@ -1318,19 +1307,13 @@ module Gitlab
 
         cmd = %W[#{Gitlab.config.git.bin_path} --git-dir=#{path} log]
         cmd << "--max-count=#{limit}"
+        cmd << '--format=%H'
         cmd << "--skip=#{offset}" unless offset_in_ruby
         cmd << '--follow' if use_follow_flag
+        cmd << '--name-status' if load_change_summary
         cmd << '--no-merges' if options[:skip_merges]
         cmd << "--after=#{options[:after].iso8601}" if options[:after]
         cmd << "--before=#{options[:before].iso8601}" if options[:before]
-
-        if load_change_summary
-          cmd << '--format=<--->%H' # use a custom separator `<--->` to properly parse the output later.
-          cmd << '--name-status'
-        else
-          cmd << '--format=%H'
-        end
-
         cmd << sha
 
         # :path can be a string or an array of strings
@@ -1342,38 +1325,79 @@ module Gitlab
         raw_output = IO.popen(cmd) { |io| io.read }
         lines = offset_in_ruby ? raw_output.lines.drop(offset) : raw_output.lines
 
-        if load_change_summary
-          log_result_with_change_summary(raw_output)
+        parse_log_by_shell_output(lines, load_change_summary)
+      end
+
+      # Parse the output of `git log` (see `log_by_shell` method above).
+      # Example of `lines` content when `with_change_summary` is true:
+      #
+      # 3c6a4d63636ba41dad0ce63cf536761fc3b5ef64
+      #
+      # M       app/controllers/projects/merge_requests/creations_controller.rb
+      # M       app/models/merge_request.rb
+      # M       app/services/compare_service.rb
+      # M       app/services/merge_requests/build_service.rb
+      # 078ba6a2d677abeea7b4bf4090fd0577e94b6ff5
+      #
+      # M       app/assets/javascripts/lib/utils/common_utils.js
+      # 631801674f0cc6b0ccf7ba7dc8ad621d21e62105
+      #
+      # M       app/views/events/_event.atom.builder
+      def parse_log_by_shell_output(lines, with_change_summary)
+        commits = []
+        change_summary = {}
+
+        # By default `lines` are just a list of commit SHAs.
+        # If `with_change_summary` is true, it means that `lines` are SHAs + changed files summary.
+        if with_change_summary
+          lines.each_with_index do |line, index|
+            next if line == "\n" # do nothing with "\n". It's just a separator.
+
+            # If the next line is "\n" then the current line is SHA.
+            if lines[index + 1] == "\n"
+              sha = line.chomp("\n")
+
+              commits << sha
+              change_summary[sha] = []
+
+            # If the next line is NOT "\n" then the current line is a summary item.
+            else
+              type, old_path, new_path = line.chomp("\n").split("\t")
+
+              # If there's only old_path, it means that a file was just added,
+              # Both `old_path` and `new_path` in this case should be the same.
+              new_path = old_path if old_path && !new_path
+
+              summary = {
+                file_identifier: file_identifier(new_path, type),
+                paths: { old_path: old_path, new_path: new_path },
+                type: type
+              }
+
+              change_summary[commits.last] << summary
+            end
+          end
         else
-          lines.map { |line| Rugged::Commit.new(rugged, line.strip) }
+          # If `with_change_summary` is false then `lines` are an array of SHAs.
+          commits = lines
+        end
+
+        # `commits` is an array of strings (SHAs).
+        commits.map do |commit|
+          summary = change_summary[commit]
+          commit = Rugged::Commit.new(rugged, commit)
+
+          Commit.decorate(self, commit, nil, change_summary: summary)
         end
       end
 
-      # Parses `git log` result with changed files summary.
-      # Output example:
-      #
-      # <--->5ce2929901f323f37802e15a6a897b50d96f57c0\"\n\nR100\tFILE-X\tFILE-1\n\"
-      # <--->4c145fef2394eb9a03fa0589ebe18bf7ea457ecf\"\n\nM\tFILE-X\n\"
-      # <--->a4288052acde45b99682fab74ff06155eeca2147\"\n\nR100\tFILE-2\tFILE-X\n\"
-      # <--->a8c636364fe6acc13b739a65dfda4f474fa273a3\"\n\nC100\tfoo/bar/.gitkeep\tFILE-2\n\"
-      def log_result_with_change_summary(output)
-        commits = []
-        paths = {}
+      # Generate file identifier similar to Gitlab::Diff::File::file_identifier
+      def file_identifier(path, type)
+        new_file     = type.starts_with?('A', 'C', 'T')
+        deleted_file = type.starts_with?('D')
+        renamed_file = type.starts_with?('R')
 
-        output.strip.split('<--->').each do |line|
-          next if line.empty?
-
-          line = line.split(/\n\n[a-zA-Z0-9]*\s+/)
-          sha  = line.first
-
-          line = line.last.split(/\s+/)
-          paths[sha] = { old_path: line.first, new_path: line.last }
-
-          commit = Rugged::Commit.new(rugged, sha)
-          commits << commit
-        end
-
-        [commits, paths]
+        [path, new_file, deleted_file, renamed_file] * '-'
       end
 
       # We are trying to deprecate this method because it does a lot of work

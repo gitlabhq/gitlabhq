@@ -4,8 +4,8 @@
   - diff_file = viewer.diff_file
   - url_params.merge!(old_path: diff_file.old_path, new_path: diff_file.new_path, file_identifier: diff_file.file_identifier)
 
-- if defined?(commit) && defined?(old_path) && defined?(new_path)
-  - url_params.merge!(controller: :commit, id: commit.id, new_path: new_path, old_path: old_path)
+- if defined?(commit) && defined?(old_path) && defined?(new_path) && defined?(:file_identifier)
+  - url_params.merge!(controller: :commit, id: commit.id, new_path: new_path, old_path: old_path, file_identifier: file_identifier)
 
 .nothing-here-block.diff-collapsed{ data: { diff_for_path: url_for(url_params) } }
   This diff is collapsed.

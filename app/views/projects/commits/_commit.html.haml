@@ -1,58 +1,57 @@
 - ref = local_assigns.fetch(:ref)
-- render_diffs_link = @path.present? && commit.paths
+- render_diffs_link = @path.present? && commit.change_summary
 
 - cache_key = [project.full_path, commit.id, current_application_settings, @path.presence, current_controller?(:commits), I18n.locale]
 - cache_key.push(commit.status(ref)) if commit.status(ref)
 
 = cache(cache_key, expires_in: 1.day) do
-  = gl_haml_tag_if render_diffs_link, :div, 'info-well' do
-    = gl_haml_tag_if render_diffs_link, :div, 'well-segment' do
-      %li.commit.flex-row.js-toggle-container{ id: "commit-#{commit.short_id}" }
-        .avatar-cell.hidden-xs
-          = author_avatar(commit, size: 36)
+  %li.commit.flex-row.js-toggle-container{ id: "commit-#{commit.short_id}" }
+    .avatar-cell.hidden-xs
+      = author_avatar(commit, size: 36)
 
-        .commit-detail
-          .commit-content
-            = link_to_markdown_field(commit, :title, project_commit_path(project, commit.id), class: "commit-row-message item-title")
-            %span.commit-row-message.visible-xs-inline
-              &middot;
-              = commit.short_id
-            - if commit.status(ref)
-              .visible-xs-inline
-                = render_commit_status(commit, ref: ref)
-            - if commit.description?
-              %button.text-expander.hidden-xs.js-toggle-button{ type: "button" } ...
+    .commit-detail
+      .commit-content
+        = link_to_markdown_field(commit, :title, project_commit_path(project, commit.id), class: "commit-row-message item-title")
+        %span.commit-row-message.visible-xs-inline
+          &middot;
+          = commit.short_id
+        - if commit.status(ref)
+          .visible-xs-inline
+            = render_commit_status(commit, ref: ref)
+        - if commit.description?
+          %button.text-expander.hidden-xs.js-toggle-button{ type: "button" } ...
 
-            - if commit.description?
-              %pre.commit-row-description.js-toggle-content
-                = preserve(markdown_field(commit, :description))
+        - if commit.description?
+          %pre.commit-row-description.js-toggle-content
+            = preserve(markdown_field(commit, :description))
 
-            .commiter
-              - commit_author_link = commit_author_link(commit, avatar: false, size: 24)
-              - commit_timeago = time_ago_with_tooltip(commit.committed_date, placement: 'bottom')
-              - commit_text =  _('%{commit_author_link} committed %{commit_timeago}') % { commit_author_link: commit_author_link, commit_timeago: commit_timeago }
-              #{ commit_text.html_safe }
+        .commiter
+          - commit_author_link = commit_author_link(commit, avatar: false, size: 24)
+          - commit_timeago = time_ago_with_tooltip(commit.committed_date, placement: 'bottom')
+          - commit_text =  _('%{commit_author_link} committed %{commit_timeago}') % { commit_author_link: commit_author_link, commit_timeago: commit_timeago }
+          #{ commit_text.html_safe }
 
-          .commit-actions.hidden-xs
-            - if request.xhr?
-              = render partial: 'projects/commit/signature', object: commit.signature
-            - else
-              = render partial: 'projects/commit/ajax_signature', locals: { commit: commit }
+      .commit-actions.hidden-xs
+        - if request.xhr?
+          = render partial: 'projects/commit/signature', object: commit.signature
+        - else
+          = render partial: 'projects/commit/ajax_signature', locals: { commit: commit }
 
-            - if commit.status(ref)
-              = render_commit_status(commit, ref: ref)
+        - if commit.status(ref)
+          = render_commit_status(commit, ref: ref)
 
-            = link_to commit.short_id, project_commit_path(project, commit), class: "commit-sha btn btn-transparent"
-            = clipboard_button(text: commit.id, title: _("Copy commit SHA to clipboard"))
-            = link_to_browse_code(project, commit)
+        = link_to commit.short_id, project_commit_path(project, commit), class: "commit-sha btn btn-transparent"
+        = clipboard_button(text: commit.id, title: _("Copy commit SHA to clipboard"))
+        = link_to_browse_code(project, commit)
 
-    -# Render the `Click to expand it` link for diffs.
-    - if render_diffs_link
-      .files
-        .diff-file.file-holder.file-holder-no-border{ data: diff_file_html_data(project, @path, commit.id) }
-          .diff-content
-            .diff-viewer
-              - new_path = commit.paths[:new_path]
-              - old_path = commit.paths[:old_path]
+  -# Render the `Click to expand it` link for diffs.
+  - if render_diffs_link
+    .files
+      .diff-file.file-holder.file-holder-no-border{ data: diff_file_html_data(project, @path, commit.id) }
+        .diff-content
+          .diff-viewer
+            - file_identifier = commit.change_summary.first[:file_identifier]
+            - old_path = commit.change_summary.first[:paths][:old_path]
+            - new_path = commit.change_summary.first[:paths][:new_path]
 
-              = render partial: 'projects/diffs/collapsed', locals: { commit: commit, new_path: new_path, old_path: old_path }
+            = render partial: 'projects/diffs/collapsed', locals: { commit: commit, file_identifier: file_identifier, new_path: new_path, old_path: old_path }
