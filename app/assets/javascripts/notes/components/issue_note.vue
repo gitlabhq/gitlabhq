@@ -2,6 +2,7 @@
   /* global Flash */
 
   import { mapGetters, mapActions } from 'vuex';
+  import { escape } from 'underscore';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
   import issueNoteHeader from './issue_note_header.vue';
   import issueNoteActions from './issue_note_actions.vue';
@@ -86,7 +87,7 @@
         };
         this.isRequesting = true;
         this.oldContent = this.note.note_html;
-        this.note.note_html = noteText;
+        this.note.note_html = escape(noteText);
 
         this.updateNote(data)
           .then(() => {
