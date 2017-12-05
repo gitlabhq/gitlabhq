@@ -145,17 +145,6 @@ class GeoNode < ActiveRecord::Base
     projects.where(id: project_id).exists?
   end
 
-  def filtered_project_registries(type = nil)
-    case type
-    when 'repository'
-      project_registries.failed_repos
-    when 'wiki'
-      project_registries.failed_wikis
-    else
-      project_registries.failed
-    end
-  end
-
   def selective_sync?
     namespaces.exists?
   end

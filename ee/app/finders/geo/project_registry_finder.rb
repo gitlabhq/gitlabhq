@@ -22,6 +22,17 @@ module Geo
       relation.count
     end
 
+    def find_failed_project_registries(type = nil)
+      relation =
+        if selective_sync?
+          legacy_find_failed_project_registries(type)
+        else
+          find_failed_projects_registries(type)
+        end
+
+      relation
+    end
+
     def find_unsynced_projects(batch_size:)
       relation =
         if fdw?
@@ -50,8 +61,15 @@ module Geo
       Geo::ProjectRegistry.synced
     end
 
-    def find_failed_projects_registries
-      Geo::ProjectRegistry.failed
+    def find_failed_projects_registries(type = nil)
+      case type
+      when 'repository'
+        Geo::ProjectRegistry.failed_repos
+      when 'wiki'
+        Geo::ProjectRegistry.failed_wikis
+      else
+        Geo::ProjectRegistry.failed
+      end
     end
 
     #
@@ -117,6 +135,20 @@ module Geo
         (VALUES #{registry_project_ids.map { |id| "(#{id})" }.join(',')})
         project_registry(project_id)
         ON #{Project.table_name}.id = project_registry.project_id
+      SQL
+
+      joined_relation
+    end
+
+    def legacy_find_failed_project_registries(type)
+      project_registries = find_failed_projects_registries(type)
+      return Geo::ProjectRegistry.none if project_registries.empty?
+
+      joined_relation = project_registries.joins(<<~SQL)
+        INNER JOIN
+        (VALUES #{current_node.projects.pluck(:id).map { |id| "(#{id})" }.join(',')})
+        projects(project_id)
+        ON #{Geo::ProjectRegistry.table_name}.id = projects.project_id
       SQL
 
       joined_relation
