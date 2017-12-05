@@ -36,8 +36,54 @@ export default class MRWidgetService extends CEWidgetService {
   }
 
   fetchReport(endpoint) { // eslint-disable-line
-    if (endpoint === '/performance_head' || endpoint === '/performance_base') {
-      return Promise.resolve([]);
+    if (endpoint === '/performance_head') {
+      return new Promise((resolve) => {
+        setTimeout(resolve, 1000, [
+          {
+            subject: '/some/path',
+            metrics: [
+              {
+                name: 'Sitespeed Score',
+                value: 85,
+              },
+            ],
+          },
+          {
+            subject: '/some/other/path',
+            metrics: [
+              {
+                name: 'Sitespeed Score',
+                value: 80,
+              },
+            ],
+          },
+        ]);
+      });
+    }
+
+    if (endpoint === '/performance_base') {
+      return new Promise((resolve) => {
+        setTimeout(resolve, 1000, [
+          {
+            subject: '/some/path',
+            metrics: [
+              {
+                name: 'Sitespeed Score',
+                value: 84,
+              },
+            ],
+          },
+          {
+            subject: '/some/other/path',
+            metrics: [
+              {
+                name: 'Sitespeed Score',
+                value: 80,
+              },
+            ],
+          },
+        ]);
+      });
     }
 
     return Vue.http.get(endpoint).then(res => res.json());

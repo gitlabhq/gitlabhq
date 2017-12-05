@@ -97,25 +97,42 @@ export default class MergeRequestStore extends CEMergeRequestStore {
   }
 
   comparePerformanceMetrics(headMetrics, baseMetrics) {
-    // eslint-disable-next-line
-    console.log(headMetrics, baseMetrics);
+    const headMetricsIndexed = MergeRequestStore.normalizePerformanceMetrics(headMetrics);
+    const baseMetricsIndexed = MergeRequestStore.normalizePerformanceMetrics(baseMetrics);
 
-    this.performanceMetrics.improved = [
-      {
-        name: 'Overall Score',
-        score: 50,
-        delta: 0,
-        path: '/foo/bar',
-      },
-    ];
-    this.performanceMetrics.degraded = [
-      {
-        name: 'Overall Score',
-        score: 53,
-        delta: -1,
-        path: '/foo/bar/bin',
-      },
-    ];
+    const improved = [];
+    const degraded = [];
+
+    Object.keys(headMetricsIndexed).forEach((subject) => {
+      const subjectMetrics = headMetricsIndexed[subject];
+      Object.keys(subjectMetrics).forEach((metric) => {
+        const headMetricData = subjectMetrics[metric];
+
+        if (baseMetricsIndexed[subject] && baseMetricsIndexed[subject][metric]) {
+          const baseMetricData = baseMetricsIndexed[subject][metric];
+          const metricData = {
+            name: metric,
+            path: subject,
+            score: headMetricData.value,
+            delta: headMetricData.value - baseMetricData.value,
+          };
+
+          if (headMetricData.value >= baseMetricData.value) {
+            improved.push(metricData);
+          } else {
+            degraded.push(metricData);
+          }
+        } else {
+          improved.push({
+            name: metric,
+            path: subject,
+            score: headMetricData.value,
+          });
+        }
+      });
+    });
+
+    this.performanceMetrics = { improved, degraded };
   }
 
   /**
@@ -174,5 +191,19 @@ export default class MergeRequestStore extends CEMergeRequestStore {
 
   static filterByFingerprint(firstArray, secondArray) {
     return firstArray.filter(item => !secondArray.find(el => el.fingerprint === item.fingerprint));
+  }
+
+  // normalize performance metrics by indexing on performance subject and metric name
+  static normalizePerformanceMetrics(performanceData) {
+    const indexedSubjects = {};
+    performanceData.forEach(({ subject, metrics }) => {
+      const indexedMetrics = {};
+      metrics.forEach(({ name, ...data }) => {
+        indexedMetrics[name] = data;
+      });
+      indexedSubjects[subject] = indexedMetrics;
+    });
+
+    return indexedSubjects;
   }
 }
