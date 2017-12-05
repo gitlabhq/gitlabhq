@@ -3,10 +3,14 @@ require 'spec_helper'
 describe Gitlab::GitalyClient::ConflictsService do
   let(:project) { create(:project, :repository) }
   let(:target_project) { create(:project, :repository) }
-  let(:repository) { project.repository }
-  let(:gitaly_repositoy) { repository.gitaly_repository }
-  let(:target_repository) { target_project.repository }
+  let(:source_repository) { project.repository.raw }
+  let(:target_repository) { target_project.repository.raw }
   let(:target_gitaly_repository) { target_repository.gitaly_repository }
+  let(:our_commit_oid) { 'f00' }
+  let(:their_commit_oid) { 'f44' }
+  let(:client) do
+    described_class.new(target_repository, our_commit_oid, their_commit_oid)
+  end
 
   describe '#list_conflict_files' do
     let(:request) do
@@ -15,8 +19,6 @@ describe Gitlab::GitalyClient::ConflictsService do
         their_commit_oid: their_commit_oid
       )
     end
-    let(:our_commit_oid) { 'f00' }
-    let(:their_commit_oid) { 'f44' }
     let(:our_path) { 'our/path' }
     let(:their_path) { 'their/path' }
     let(:our_mode) { 0744 }
@@ -31,9 +33,8 @@ describe Gitlab::GitalyClient::ConflictsService do
       ]
     end
     let(:file) { subject[0] }
-    let(:client) { described_class.new(target_repository) }
 
-    subject { client.list_conflict_files(our_commit_oid, their_commit_oid) }
+    subject { client.list_conflict_files }
 
     it 'sends an RPC request' do
       expect_any_instance_of(Gitaly::ConflictsService::Stub).to receive(:list_conflict_files)
@@ -53,6 +54,34 @@ describe Gitlab::GitalyClient::ConflictsService do
       expect(file.our_mode).to be(our_mode)
       expect(file.repository).to eq(target_repository)
       expect(file.commit_oid).to eq(our_commit_oid)
+    end
+  end
+
+  describe '#resolve_conflicts' do
+    let(:user) { create(:user) }
+    let(:files) do
+      [{ old_path: 'some/path', new_path: 'some/path', content: '' }]
+    end
+    let(:source_branch) { 'master' }
+    let(:target_branch) { 'feature' }
+    let(:commit_message) { 'Solving conflicts' }
+
+    subject do
+      client.resolve_conflicts(source_repository, user, files, source_branch, target_branch, commit_message)
+    end
+
+    it 'sends an RPC request' do
+      expect_any_instance_of(Gitaly::ConflictsService::Stub).to receive(:resolve_conflicts)
+        .with(kind_of(Enumerator), kind_of(Hash)).and_return(double(resolution_error: ""))
+
+      subject
+    end
+
+    it 'raises a relevant exception if resolution_error is present' do
+      expect_any_instance_of(Gitaly::ConflictsService::Stub).to receive(:resolve_conflicts)
+        .with(kind_of(Enumerator), kind_of(Hash)).and_return(double(resolution_error: "something happened"))
+
+      expect { subject }.to raise_error(Gitlab::Git::Conflict::Resolver::ResolutionError)
     end
   end
 end
