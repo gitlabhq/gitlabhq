@@ -58,7 +58,7 @@
       <template v-if="isStatusSuccess && isTypeQuality">Fixed:</template>
       <template v-if="isTypeSecurity && issue.priority">{{issue.priority}}:</template>
 
-      {{issue.name}}<template v-if="issue.score">: {{issue.score}}</template>
+      {{issue.name}}<template v-if="issue.score">: <strong>{{issue.score}}</strong></template>
 
       <template v-if="isTypePerformance && issue.delta != null">
         ({{issue.delta >= 0 ? '+' : ''}}{{issue.delta}})
