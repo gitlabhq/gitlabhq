@@ -29,7 +29,7 @@ module Clusters
     end
 
     def can_create_cluster?
-      return project.clusters.empty?
+      project.clusters.empty?
     end
   end
 end
