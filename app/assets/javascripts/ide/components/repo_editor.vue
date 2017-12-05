@@ -116,7 +116,7 @@ export default {
     class="blob-viewer-container blob-editor-container"
   >
     <div
-      v-show="shouldHideEditor"
+      v-if="shouldHideEditor"
       v-html="activeFile.html"
     >
     </div>
