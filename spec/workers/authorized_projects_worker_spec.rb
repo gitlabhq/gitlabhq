@@ -65,7 +65,6 @@ describe AuthorizedProjectsWorker do
       args_list = build_args_list(project.owner.id)
       push_bulk_args = {
         'class' => described_class,
-        'queue' => described_class.sidekiq_options['queue'],
         'args' => args_list
       }
 

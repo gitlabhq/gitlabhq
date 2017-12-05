@@ -1,5 +1,5 @@
 class CreatePipelineWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
   include PipelineQueue
 
   enqueue_in group: :creation
