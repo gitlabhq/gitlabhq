@@ -1,0 +1,5 @@
+---
+title: Correct lock/confidential collapsed sidebar icon color for active state
+merge_request: 15702
+author:
+type: fixed
