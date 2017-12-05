@@ -395,6 +395,7 @@ describe('common_utils', () => {
       const favicon = document.createElement('link');
       favicon.setAttribute('id', 'favicon');
       favicon.setAttribute('href', 'default/favicon');
+      favicon.setAttribute('data-default-href', 'default/favicon');
       document.body.appendChild(favicon);
     });
 
@@ -413,7 +414,7 @@ describe('common_utils', () => {
     beforeEach(() => {
       const favicon = document.createElement('link');
       favicon.setAttribute('id', 'favicon');
-      favicon.setAttribute('href', 'default/favicon');
+      favicon.setAttribute('data-original-href', 'default/favicon');
       document.body.appendChild(favicon);
     });
 
@@ -421,7 +422,9 @@ describe('common_utils', () => {
       document.body.removeChild(document.getElementById('favicon'));
     });
 
-    it('should reset page favicon to tanuki', () => {
+    it('should reset page favicon to the default icon', () => {
+      const favicon = document.getElementById('favicon');
+      favicon.setAttribute('href', 'new/favicon');
       commonUtils.resetFavicon();
       expect(document.getElementById('favicon').getAttribute('href')).toEqual('default/favicon');
     });
@@ -434,6 +437,8 @@ describe('common_utils', () => {
     beforeEach(() => {
       const favicon = document.createElement('link');
       favicon.setAttribute('id', 'favicon');
+      favicon.setAttribute('href', 'null');
+      favicon.setAttribute('data-original-href', faviconDataUrl);
       document.body.appendChild(favicon);
       mock = new MockAdapter(axios);
     });
@@ -449,7 +454,7 @@ describe('common_utils', () => {
       commonUtils.setCiStatusFavicon(BUILD_URL)
         .then(() => {
           const favicon = document.getElementById('favicon');
-          expect(favicon.getAttribute('href')).toEqual('null');
+          expect(favicon.getAttribute('href')).toEqual(faviconDataUrl);
           done();
         })
         // Error is already caught in catch() block of setCiStatusFavicon,

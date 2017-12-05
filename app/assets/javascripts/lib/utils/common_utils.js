@@ -393,8 +393,9 @@ export const setFavicon = (faviconPath) => {
 
 export const resetFavicon = () => {
   const faviconEl = document.getElementById('favicon');
-  const originalFavicon = faviconEl ? faviconEl.getAttribute('href') : null;
+
   if (faviconEl) {
+    const originalFavicon = faviconEl.getAttribute('data-default-href');
     faviconEl.setAttribute('href', originalFavicon);
   }
 };
