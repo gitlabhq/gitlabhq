@@ -17,9 +17,8 @@ describe Projects::ClustersController do
 
       context 'when project has one or more clusters' do
         let(:project) { create(:project) }
-        let(:enabled_cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
-        let(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, projects: [project]) }
-
+        let!(:enabled_cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+        let!(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, projects: [project]) }
         it 'lists available clusters' do
           go
 
@@ -31,8 +30,8 @@ describe Projects::ClustersController do
         it 'assigns counters to correct values' do
           go
 
-          expect(assigns(:active_count)).to eq(project.clusters.enabled.count)
-          expect(assigns(:inactive_count)).to eq(project.clusters.disabled.count)
+          expect(assigns(:active_count)).to eq(1)
+          expect(assigns(:inactive_count)).to eq(1)
         end
 
         context 'when page is specified' do

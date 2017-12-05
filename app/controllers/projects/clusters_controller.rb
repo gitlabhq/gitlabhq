@@ -9,10 +9,9 @@ class Projects::ClustersController < Projects::ApplicationController
 
   def index
     @scope = params[:scope] || 'all'
-    clusters = ClustersFinder.new(project, current_user, @scope).execute
-    @clusters = clusters.page(params[:page])
-    @active_count = project.clusters.enabled.count
-    @inactive_count = project.clusters.disabled.count
+    @clusters = ClustersFinder.new(project, current_user, @scope).execute.page(params[:page])
+    @active_count = ClustersFinder.new(project, current_user, :active).execute.count
+    @inactive_count = ClustersFinder.new(project, current_user, :inactive).execute.count
     @all_count = @active_count + @inactive_count
   end
 
