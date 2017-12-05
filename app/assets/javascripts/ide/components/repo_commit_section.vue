@@ -30,7 +30,7 @@ export default {
   },
   computed: {
     ...mapState([
-      'currentBranch',
+      'currentBranchId',
     ]),
     ...mapGetters([
       'changedFiles',
@@ -74,7 +74,6 @@ export default {
               branch: this.currentBranchId,
               endpoint: `/${this.currentProjectId}/tree/${to.params.branch}`,
             });
-
         })
         .catch(() => {
           this.submitCommitsLoading = false;
