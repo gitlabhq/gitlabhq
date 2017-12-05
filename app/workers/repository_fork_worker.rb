@@ -4,7 +4,10 @@ class RepositoryForkWorker
   include ProjectStartImport
   include ProjectImportOptions
 
-  def perform(project_id, forked_from_repository_storage_path, source_disk_path)
+  version 1
+
+  # target_namespace is only here for backward compatibility with version 0
+  def perform(project_id, forked_from_repository_storage_path, source_disk_path, target_namespace = nil)
     project = Project.find(project_id)
 
     return unless start_fork(project)

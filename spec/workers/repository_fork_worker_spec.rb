@@ -7,17 +7,19 @@ describe RepositoryForkWorker do
     end
   end
 
-  describe "#perform" do
+  shared_examples '#perform' do
     let(:project) { create(:project, :repository) }
     let(:fork_project) { create(:project, :repository, :import_scheduled, forked_from_project: project) }
     let(:shell) { Gitlab::Shell.new }
 
     before do
       allow(subject).to receive(:gitlab_shell).and_return(shell)
+
+      subject.job_version = job_version
     end
 
-    def perform!
-      subject.perform(fork_project.id, '/test/path', project.disk_path)
+    it 'supports the version' do
+      expect(subject.support_job_version?).to be_truthy
     end
 
     def expect_fork_repository
@@ -37,14 +39,14 @@ describe RepositoryForkWorker do
 
         expect_fork_repository.and_return(true)
 
-        perform!
+        subject.perform(*args)
       end
     end
 
     it "creates a new repository from a fork" do
       expect_fork_repository.and_return(true)
 
-      perform!
+      subject.perform(*args)
     end
 
     it 'flushes various caches' do
@@ -56,7 +58,7 @@ describe RepositoryForkWorker do
       expect_any_instance_of(Repository).to receive(:expire_exists_cache)
         .and_call_original
 
-      perform!
+      subject.perform(*args)
     end
 
     it "handles bad fork" do
@@ -64,7 +66,21 @@ describe RepositoryForkWorker do
 
       expect_fork_repository.and_return(false)
 
-      expect { perform! }.to raise_error(StandardError, error_message)
+      expect { subject.perform(*args) }.to raise_error(StandardError, error_message)
     end
+  end
+
+  context 'job with version 0' do
+    let(:job_version) { 0 }
+    let(:args) { [fork_project.id, '/test/path', project.disk_path, project.namespace.full_path] }
+
+    it_behaves_like '#perform'
+  end
+
+  context 'job with version 1' do
+    let(:job_version) { 1 }
+    let(:args) { [fork_project.id, '/test/path', project.disk_path] }
+
+    it_behaves_like '#perform'
   end
 end
