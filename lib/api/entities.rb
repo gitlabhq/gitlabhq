@@ -16,9 +16,12 @@ module API
 
     class UserBasic < UserSafe
       expose :state
+
       expose :avatar_url do |user, options|
         user.avatar_url(only_path: false)
       end
+
+      expose :avatar_path, if: ->(user, options) { options.fetch(:only_path, false) && user.avatar_path }
 
       expose :web_url do |user, options|
         Gitlab::Routing.url_helpers.user_url(user)
