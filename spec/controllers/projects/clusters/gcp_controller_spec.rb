@@ -16,7 +16,7 @@ describe Projects::Clusters::GcpController do
       end
 
       context 'when omniauth has been configured' do
-        let(:key) { 'secere-key' }
+        let(:key) { 'secret-key' }
 
         let(:session_key_for_redirect_uri) do
           GoogleApi::CloudPlatform::Client.session_key_for_redirect_uri(key)
