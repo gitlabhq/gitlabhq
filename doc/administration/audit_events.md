@@ -29,7 +29,7 @@ it happened.
 
 There are two kinds of events logged:
 
-- Events scoped to the group or project, used by group / project Owners
+- Events scoped to the group or project, used by group / project owners
   to loop up who made what change
 - Events scoped to the whole GitLab instance, used by the Compliance team to
   perform formal audits
@@ -49,6 +49,9 @@ From there, you can see the following actions:
 - Removed user from group
 - Project added to group and with which visibility level
 - Project removed from group
+- [Group shared with project](../user/project/members/share_project_with_groups.md)
+  and with which [permissions]
+- Removal of a previously shared group with a project
 
 ### Project events
 
@@ -75,7 +78,9 @@ the entire instance of your GitLab server, making it easy to understand who
 changed what and when for audit purposes.
 
 To view the server-wide admin log, visit **Admin Area > Monitoring > Audit Log**.
-The following user actions are recorded:
+
+In addition to the group and project events, the following user actions are also
+recorded:
 
 - Failed Logins
 - Sign-in events and the authentication type (standard, LDAP, OmniAuth, etc.)
