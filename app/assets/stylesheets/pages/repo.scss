@@ -199,7 +199,7 @@
   overflow: scroll;
 
   .blob-viewer {
-    height: 100%;
+    height: calc(100vh - 140px);
   }
 
   .file-content.code {
@@ -207,13 +207,6 @@
 
     i {
       margin-left: -10px;
-    }
-  }
-
-  .file-content.blob-no-preview {
-    a {
-      margin-left: auto;
-      margin-right: auto;
     }
   }
 
@@ -226,6 +219,13 @@
   .blob-content,
   .code {
     min-height: 100%;
+  }
+}
+
+.file-content.blob-no-preview {
+  a {
+    margin-left: auto;
+    margin-right: auto;
   }
 }
 
