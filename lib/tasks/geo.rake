@@ -1,9 +1,12 @@
 require 'gitlab/geo'
 require 'gitlab/geo/database_tasks'
+require 'gitlab/geo/geo_tasks'
 
 task spec: ['geo:db:test:prepare']
 
 namespace :geo do
+  GEO_LICENSE_ERROR_TEXT = 'GitLab Geo is not supported with this license. Please contact sales@gitlab.com.'.freeze
+
   namespace :db do |ns|
     desc 'Drops the Geo tracking database from config/database_geo.yml for the current RAILS_ENV.'
     task :drop do
@@ -145,15 +148,15 @@ namespace :geo do
 
   desc 'Make this node the Geo primary'
   task set_primary_node: :environment do
-    abort 'GitLab Geo is not supported with this license. Please contact sales@gitlab.com.' unless Gitlab::Geo.license_allows?
+    abort GEO_LICENSE_ERROR_TEXT unless Gitlab::Geo.license_allows?
     abort 'GitLab Geo primary node already present' if Gitlab::Geo.primary_node.present?
 
-    set_primary_geo_node
+    Gitlab::Geo::GeoTasks.set_primary_geo_node
   end
 
   desc 'Make this secondary node the primary'
   task set_secondary_as_primary: :environment do
-    abort 'GitLab Geo is not supported with this license. Please contact sales@gitlab.com.' unless Gitlab::Geo.license_allows?
+    abort GEO_LICENSE_ERROR_TEXT unless Gitlab::Geo.license_allows?
 
     ActiveRecord::Base.transaction do
       primary_node = Gitlab::Geo.primary_node
@@ -174,11 +177,14 @@ namespace :geo do
     end
   end
 
-  def set_primary_geo_node
-    node = GeoNode.new(primary: true, url: GeoNode.current_node_url)
-    puts "Saving primary GeoNode with URL #{node.url}".color(:green)
-    node.save
-
-    puts "Error saving GeoNode:\n#{node.errors.full_messages.join("\n")}".color(:red) unless node.persisted?
+  desc 'Refresh Foreign Tables definition in Geo Secondary node'
+  task :refresh_foreign_tables do
+    if Gitlab::Geo::GeoTasks.foreign_server_configured?
+      print "\nRefreshing foreign tables for FDW: #{Gitlab::Geo::FDW_SCHEMA} ... "
+      Gitlab::Geo::GeoTasks.refresh_foreign_tables!
+      puts 'Done!'
+    else
+      puts "Warning: Cannot refresh foreign tables, there is no foreign server configured."
+    end
   end
 end
