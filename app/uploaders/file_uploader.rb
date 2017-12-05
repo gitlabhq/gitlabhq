@@ -31,10 +31,17 @@ class FileUploader < GitlabUploader
   # Returns a String without a trailing slash
   def self.dynamic_path_segment(project)
     if project.hashed_storage?(:attachments)
-      File.join(CarrierWave.root, base_dir, project.disk_path)
+      dynamic_path_builder(project.disk_path)
     else
-      File.join(CarrierWave.root, base_dir, project.full_path)
+      dynamic_path_builder(project.full_path)
     end
+  end
+
+  # Auxiliary method to build dynamic path segment when not using a project model
+  #
+  # Prefer to use the `.dynamic_path_segment` as it includes Hashed Storage specific logic
+  def self.dynamic_path_builder(path)
+    File.join(CarrierWave.root, base_dir, path)
   end
 
   attr_accessor :model

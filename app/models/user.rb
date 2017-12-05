@@ -313,9 +313,6 @@ class User < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      table   = arel_table
-      pattern = User.to_pattern(query)
-
       order = <<~SQL
         CASE
           WHEN users.name = %{query} THEN 0
@@ -325,11 +322,8 @@ class User < ActiveRecord::Base
         END
       SQL
 
-      where(
-        table[:name].matches(pattern)
-          .or(table[:email].matches(pattern))
-          .or(table[:username].matches(pattern))
-      ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
+      fuzzy_search(query, [:name, :email, :username])
+        .reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
     end
 
     # searches user by given pattern
@@ -337,16 +331,16 @@ class User < ActiveRecord::Base
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
 
     def search_with_secondary_emails(query)
-      table = arel_table
       email_table = Email.arel_table
-      pattern = "%#{query}%"
-      matched_by_emails_user_ids = email_table.project(email_table[:user_id]).where(email_table[:email].matches(pattern))
+      matched_by_emails_user_ids = email_table
+        .project(email_table[:user_id])
+        .where(Email.fuzzy_arel_match(:email, query))
 
       where(
-        table[:name].matches(pattern)
-          .or(table[:email].matches(pattern))
-          .or(table[:username].matches(pattern))
-          .or(table[:id].in(matched_by_emails_user_ids))
+        fuzzy_arel_match(:name, query)
+          .or(fuzzy_arel_match(:email, query))
+          .or(fuzzy_arel_match(:username, query))
+          .or(arel_table[:id].in(matched_by_emails_user_ids))
       )
     end
 
@@ -493,7 +487,11 @@ class User < ActiveRecord::Base
   end
 
   def two_factor_u2f_enabled?
-    u2f_registrations.exists?
+    if u2f_registrations.loaded?
+      u2f_registrations.any?
+    else
+      u2f_registrations.exists?
+    end
   end
 
   def namespace_uniq
@@ -1004,7 +1002,11 @@ class User < ActiveRecord::Base
   end
 
   def notification_settings_for(source)
-    notification_settings.find_or_initialize_by(source: source)
+    if notification_settings.loaded?
+      notification_settings.find { |notification| notification.source == source }
+    else
+      notification_settings.find_or_initialize_by(source: source)
+    end
   end
 
   # Lazy load global notification setting

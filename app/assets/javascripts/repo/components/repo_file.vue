@@ -55,7 +55,7 @@
     class="file"
     @click.prevent="clickedTreeRow(file)">
     <td
-      class="multi-file-table-col-name"
+      class="multi-file-table-name"
       :colspan="submoduleColSpan"
     >
       <i
@@ -85,12 +85,11 @@
     </td>
 
     <template v-if="!isCollapsed && !isSubmodule">
-      <td class="hidden-sm hidden-xs">
+      <td class="multi-file-table-col-commit-message hidden-sm hidden-xs">
         <a
           v-if="file.lastCommit.message"
           @click.stop
           :href="file.lastCommit.url"
-          class="commit-message"
         >
           {{ file.lastCommit.message }}
         </a>

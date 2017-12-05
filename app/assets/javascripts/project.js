@@ -17,13 +17,14 @@ export default class Project {
     $('a', $cloneOptions).on('click', (e) => {
       const $this = $(e.currentTarget);
       const url = $this.attr('href');
+      const activeText = $this.find('.dropdown-menu-inner-title').text();
 
       e.preventDefault();
 
       $('.is-active', $cloneOptions).not($this).removeClass('is-active');
       $this.toggleClass('is-active');
       $projectCloneField.val(url);
-      $cloneBtnText.text($this.text());
+      $cloneBtnText.text(activeText);
 
       return $('.clone').text(url);
     });

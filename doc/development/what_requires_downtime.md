@@ -37,7 +37,7 @@ when using the migration helper method
 `Gitlab::Database::MigrationHelpers#add_column_with_default`. This method works
 similar to `add_column` except it updates existing rows in batches without
 blocking access to the table being modified. See ["Adding Columns With Default
-Values"](migration_style_guide.html#adding-columns-with-default-values) for more
+Values"](migration_style_guide.md#adding-columns-with-default-values) for more
 information on how to use this method.
 
 ## Dropping Columns

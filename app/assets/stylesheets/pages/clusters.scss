@@ -9,6 +9,12 @@
   min-height: 302px;
 }
 
+.clusters-dropdown-menu {
+  max-width: 100%;
+}
+
+@include new-style-dropdown('.clusters-dropdown ');
+
 .clusters-container {
   .nav-bar-right {
     padding: $gl-padding-top $gl-padding;
@@ -16,5 +22,9 @@
 
   .empty-state .svg-content img {
     width: 145px;
+  }
+
+  .top-area .nav-controls > .btn.btn-add-cluster {
+    margin-right: 0;
   }
 }

@@ -15,6 +15,7 @@ module Gitlab
       Failing = Class.new(Inaccessible)
 
       REDIS_KEY_PREFIX = 'storage_accessible:'.freeze
+      REDIS_KNOWN_KEYS = "#{REDIS_KEY_PREFIX}known_keys_set".freeze
 
       def self.redis
         Gitlab::Redis::SharedState

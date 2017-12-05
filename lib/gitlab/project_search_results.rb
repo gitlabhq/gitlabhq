@@ -47,8 +47,11 @@ module Gitlab
       startline = 0
 
       result.each_line.each_with_index do |line, index|
-        if line =~ /^.*:.*:\d+:/
-          ref, filename, startline = line.split(':')
+        matches = line.match(/^(?<ref>[^:]*):(?<filename>.*):(?<startline>\d+):/)
+        if matches
+          ref = matches[:ref]
+          filename = matches[:filename]
+          startline = matches[:startline]
           startline = startline.to_i - index
           extname = Regexp.escape(File.extname(filename))
           basename = filename.sub(/#{extname}$/, '')

@@ -18,6 +18,8 @@ module Gitlab
         GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE
       ].freeze
       SEARCH_CONTEXT_LINES = 3
+      REBASE_WORKTREE_PREFIX = 'rebase'.freeze
+      SQUASH_WORKTREE_PREFIX = 'squash'.freeze
 
       NoRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
@@ -505,7 +507,7 @@ module Gitlab
 
       # Counts the amount of commits between `from` and `to`.
       def count_commits_between(from, to)
-        Commit.between(self, from, to).size
+        count_commits(ref: "#{from}..#{to}")
       end
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
@@ -809,42 +811,22 @@ module Gitlab
       end
 
       def cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
-        OperationService.new(user, self).with_branch(
-          branch_name,
-          start_branch_name: start_branch_name,
-          start_repository: start_repository
-        ) do |start_commit|
+        gitaly_migrate(:cherry_pick) do |is_enabled|
+          args = {
+            user: user,
+            commit: commit,
+            branch_name: branch_name,
+            message: message,
+            start_branch_name: start_branch_name,
+            start_repository: start_repository
+          }
 
-          Gitlab::Git.check_namespace!(commit, start_repository)
-
-          cherry_pick_tree_id = check_cherry_pick_content(commit, start_commit.sha)
-          raise CreateTreeError unless cherry_pick_tree_id
-
-          committer = user_to_committer(user)
-
-          create_commit(message: message,
-                        author: {
-                            email: commit.author_email,
-                            name: commit.author_name,
-                            time: commit.authored_date
-                        },
-                        committer: committer,
-                        tree: cherry_pick_tree_id,
-                        parents: [start_commit.sha])
+          if is_enabled
+            gitaly_operations_client.user_cherry_pick(args)
+          else
+            rugged_cherry_pick(args)
+          end
         end
-      end
-
-      def check_cherry_pick_content(target_commit, source_sha)
-        args = [target_commit.sha, source_sha]
-        args << 1 if target_commit.merge_commit?
-
-        cherry_pick_index = rugged.cherrypick_commit(*args)
-        return false if cherry_pick_index.conflicts?
-
-        tree_id = cherry_pick_index.write_tree(rugged)
-        return false unless diff_exists?(source_sha, tree_id)
-
-        tree_id
       end
 
       def diff_exists?(sha1, sha2)
@@ -1046,9 +1028,15 @@ module Gitlab
       end
 
       def with_repo_tmp_commit(start_repository, start_branch_name, sha)
+        source_ref = start_branch_name
+
+        unless Gitlab::Git.branch_ref?(source_ref)
+          source_ref = "#{Gitlab::Git::BRANCH_REF_PREFIX}#{source_ref}"
+        end
+
         tmp_ref = fetch_ref(
           start_repository,
-          source_ref: "#{Gitlab::Git::BRANCH_REF_PREFIX}#{start_branch_name}",
+          source_ref: source_ref,
           target_ref: "refs/tmp/#{SecureRandom.hex}"
         )
 
@@ -1084,13 +1072,8 @@ module Gitlab
         raise ArgumentError, "invalid ref_path #{ref_path.inspect}" if ref_path.include?(' ')
         raise ArgumentError, "invalid ref #{ref.inspect}" if ref.include?("\x00")
 
-        command = [Gitlab.config.git.bin_path] + %w[update-ref --stdin -z]
         input = "update #{ref_path}\x00#{ref}\x00\x00"
-        output, status = circuit_breaker.perform do
-          popen(command, path) { |stdin| stdin.write(input) }
-        end
-
-        raise GitError, output unless status.zero?
+        run_git!(%w[update-ref --stdin -z]) { |stdin| stdin.write(input) }
       end
 
       def fetch_ref(source_repository, source_ref:, target_ref:)
@@ -1112,10 +1095,20 @@ module Gitlab
       end
 
       # Refactoring aid; allows us to copy code from app/models/repository.rb
-      def run_git(args, env: {})
+      def run_git(args, chdir: path, env: {}, nice: false, &block)
+        cmd = [Gitlab.config.git.bin_path, *args]
+        cmd.unshift("nice") if nice
         circuit_breaker.perform do
-          popen([Gitlab.config.git.bin_path, *args], path, env)
+          popen(cmd, chdir, env, &block)
         end
+      end
+
+      def run_git!(args, chdir: path, env: {}, nice: false, &block)
+        output, status = run_git(args, chdir: chdir, env: env, nice: nice, &block)
+
+        raise GitError, output unless status.zero?
+
+        output
       end
 
       # Refactoring aid; allows us to copy code from app/models/repository.rb
@@ -1181,6 +1174,70 @@ module Gitlab
         end
       end
 
+      def fsck
+        output, status = run_git(%W[--git-dir=#{path} fsck], nice: true)
+
+        raise GitError.new("Could not fsck repository:\n#{output}") unless status.zero?
+      end
+
+      def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
+        rebase_path = worktree_path(REBASE_WORKTREE_PREFIX, rebase_id)
+        env = git_env_for_user(user)
+
+        with_worktree(rebase_path, branch, env: env) do
+          run_git!(
+            %W(pull --rebase #{remote_repository.path} #{remote_branch}),
+            chdir: rebase_path, env: env
+          )
+
+          rebase_sha = run_git!(%w(rev-parse HEAD), chdir: rebase_path, env: env).strip
+
+          Gitlab::Git::OperationService.new(user, self)
+            .update_branch(branch, rebase_sha, branch_sha)
+
+          rebase_sha
+        end
+      end
+
+      def rebase_in_progress?(rebase_id)
+        fresh_worktree?(worktree_path(REBASE_WORKTREE_PREFIX, rebase_id))
+      end
+
+      def squash(user, squash_id, branch:, start_sha:, end_sha:, author:, message:)
+        squash_path = worktree_path(SQUASH_WORKTREE_PREFIX, squash_id)
+        env = git_env_for_user(user).merge(
+          'GIT_AUTHOR_NAME' => author.name,
+          'GIT_AUTHOR_EMAIL' => author.email
+        )
+        diff_range = "#{start_sha}...#{end_sha}"
+        diff_files = run_git!(
+          %W(diff --name-only --diff-filter=a --binary #{diff_range})
+        ).chomp
+
+        with_worktree(squash_path, branch, sparse_checkout_files: diff_files, env: env) do
+          # Apply diff of the `diff_range` to the worktree
+          diff = run_git!(%W(diff --binary #{diff_range}))
+          run_git!(%w(apply --index), chdir: squash_path, env: env) do |stdin|
+            stdin.write(diff)
+          end
+
+          # Commit the `diff_range` diff
+          run_git!(%W(commit --no-verify --message #{message}), chdir: squash_path, env: env)
+
+          # Return the squash sha. May print a warning for ambiguous refs, but
+          # we can ignore that with `--quiet` and just take the SHA, if present.
+          # HEAD here always refers to the current HEAD commit, even if there is
+          # another ref called HEAD.
+          run_git!(
+            %w(rev-parse --quiet --verify HEAD), chdir: squash_path, env: env
+          ).chomp
+        end
+      end
+
+      def squash_in_progress?(squash_id)
+        fresh_worktree?(worktree_path(SQUASH_WORKTREE_PREFIX, squash_id))
+      end
+
       def gitaly_repository
         Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
       end
@@ -1217,6 +1274,57 @@ module Gitlab
 
       private
 
+      def fresh_worktree?(path)
+        File.exist?(path) && !clean_stuck_worktree(path)
+      end
+
+      def with_worktree(worktree_path, branch, sparse_checkout_files: nil, env:)
+        base_args = %w(worktree add --detach)
+
+        # Note that we _don't_ want to test for `.present?` here: If the caller
+        # passes an non nil empty value it means it still wants sparse checkout
+        # but just isn't interested in any file, perhaps because it wants to
+        # checkout files in by a changeset but that changeset only adds files.
+        if sparse_checkout_files
+          # Create worktree without checking out
+          run_git!(base_args + ['--no-checkout', worktree_path], env: env)
+          worktree_git_path = run_git!(%w(rev-parse --git-dir), chdir: worktree_path)
+
+          configure_sparse_checkout(worktree_git_path, sparse_checkout_files)
+
+          # After sparse checkout configuration, checkout `branch` in worktree
+          run_git!(%W(checkout --detach #{branch}), chdir: worktree_path, env: env)
+        else
+          # Create worktree and checkout `branch` in it
+          run_git!(base_args + [worktree_path, branch], env: env)
+        end
+
+        yield
+      ensure
+        FileUtils.rm_rf(worktree_path) if File.exist?(worktree_path)
+        FileUtils.rm_rf(worktree_git_path) if worktree_git_path && File.exist?(worktree_git_path)
+      end
+
+      def clean_stuck_worktree(path)
+        return false unless File.mtime(path) < 15.minutes.ago
+
+        FileUtils.rm_rf(path)
+        true
+      end
+
+      # Adding a worktree means checking out the repository. For large repos,
+      # this can be very expensive, so set up sparse checkout for the worktree
+      # to only check out the files we're interested in.
+      def configure_sparse_checkout(worktree_git_path, files)
+        run_git!(%w(config core.sparseCheckout true))
+
+        return if files.empty?
+
+        worktree_info_path = File.join(worktree_git_path, 'info')
+        FileUtils.mkdir_p(worktree_info_path)
+        File.write(File.join(worktree_info_path, 'sparse-checkout'), files)
+      end
+
       def rugged_fetch_source_branch(source_repository, source_branch, local_ref)
         with_repo_branch_commit(source_repository, source_branch) do |commit|
           if commit
@@ -1226,6 +1334,24 @@ module Gitlab
             false
           end
         end
+      end
+
+      def worktree_path(prefix, id)
+        id = id.to_s
+        raise ArgumentError, "worktree id can't be empty" unless id.present?
+        raise ArgumentError, "worktree id can't contain slashes " if id.include?("/")
+
+        File.join(path, 'gitlab-worktree', "#{prefix}-#{id}")
+      end
+
+      def git_env_for_user(user)
+        {
+          'GIT_COMMITTER_NAME' => user.name,
+          'GIT_COMMITTER_EMAIL' => user.email,
+          'GL_ID' => Gitlab::GlId.gl_id(user),
+          'GL_PROTOCOL' => Gitlab::Git::Hook::GL_PROTOCOL,
+          'GL_REPOSITORY' => gl_repository
+        }
       end
 
       # Gitaly note: JV: Trying to get rid of the 'filter' option so we can implement this with 'git'.
@@ -1247,7 +1373,11 @@ module Gitlab
 
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/695
       def git_merged_branch_names(branch_names = [])
-        root_sha = find_branch(root_ref).target
+        return [] unless root_ref
+
+        root_sha = find_branch(root_ref)&.target
+
+        return [] unless root_sha
 
         git_arguments =
           %W[branch --merged #{root_sha}
@@ -1653,6 +1783,45 @@ module Gitlab
         find_branch(branch_name)
       rescue Rugged::ReferenceError => ex
         raise InvalidRef, ex
+      end
+
+      def rugged_cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
+        OperationService.new(user, self).with_branch(
+          branch_name,
+          start_branch_name: start_branch_name,
+          start_repository: start_repository
+        ) do |start_commit|
+
+          Gitlab::Git.check_namespace!(commit, start_repository)
+
+          cherry_pick_tree_id = check_cherry_pick_content(commit, start_commit.sha)
+          raise CreateTreeError unless cherry_pick_tree_id
+
+          committer = user_to_committer(user)
+
+          create_commit(message: message,
+                        author: {
+                            email: commit.author_email,
+                            name: commit.author_name,
+                            time: commit.authored_date
+                        },
+                        committer: committer,
+                        tree: cherry_pick_tree_id,
+                        parents: [start_commit.sha])
+        end
+      end
+
+      def check_cherry_pick_content(target_commit, source_sha)
+        args = [target_commit.sha, source_sha]
+        args << 1 if target_commit.merge_commit?
+
+        cherry_pick_index = rugged.cherrypick_commit(*args)
+        return false if cherry_pick_index.conflicts?
+
+        tree_id = cherry_pick_index.write_tree(rugged)
+        return false unless diff_exists?(source_sha, tree_id)
+
+        tree_id
       end
 
       def local_fetch_ref(source_path, source_ref:, target_ref:)

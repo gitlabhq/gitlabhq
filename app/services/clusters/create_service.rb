@@ -2,10 +2,10 @@ module Clusters
   class CreateService < BaseService
     attr_reader :access_token
 
-    def execute(access_token)
+    def execute(access_token = nil)
       @access_token = access_token
 
-      return unless can_create_cluster?
+      raise ArgumentError.new('Instance does not support multiple clusters') unless can_create_cluster?
 
       create_cluster.tap do |cluster|
         ClusterProvisionWorker.perform_async(cluster.id) if cluster.persisted?
@@ -29,7 +29,7 @@ module Clusters
     end
 
     def can_create_cluster?
-      return project.clusters.empty?
+      project.clusters.empty?
     end
   end
 end

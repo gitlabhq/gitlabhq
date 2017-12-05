@@ -190,7 +190,7 @@ export const insertText = (target, text) => {
   target.selectionStart = target.selectionEnd = selectionStart + insertedText.length;
 
   // Trigger autosave
-  $(target).trigger('input');
+  target.dispatchEvent(new Event('input'));
 
   // Trigger autosize
   const event = document.createEvent('Event');

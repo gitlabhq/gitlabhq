@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-02 14:42+0100\n"
-"PO-Revision-Date: 2017-11-05 08:38-0500\n"
+"PO-Revision-Date: 2017-11-21 16:43-0500\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Ukrainian\n"
 "Language: uk_UA\n"
@@ -18,9 +18,9 @@ msgstr ""
 
 msgid "%d commit"
 msgid_plural "%d commits"
-msgstr[0] "%d комміт"
-msgstr[1] "%d комміта"
-msgstr[2] "%d коммітів"
+msgstr[0] "%d коміт"
+msgstr[1] "%d коміта"
+msgstr[2] "%d комітів"
 
 msgid "%d layer"
 msgid_plural "%d layers"
@@ -30,21 +30,21 @@ msgstr[2] "%d шарів"
 
 msgid "%s additional commit has been omitted to prevent performance issues."
 msgid_plural "%s additional commits have been omitted to prevent performance issues."
-msgstr[0] "%s доданий Комміт був виключений для запобігання проблем з продуктивністю."
-msgstr[1] "%s доданих коммітів були виключені для запобігання проблем з продуктивністю."
-msgstr[2] "%s доданих коммітів були виключені для запобігання проблем з продуктивністю."
+msgstr[0] "%s доданий коміт був виключений для запобігання проблем із швидкодією."
+msgstr[1] "%s доданих коміта були виключені для запобігання проблем із швидкодією."
+msgstr[2] "%s доданих комітів були виключені для запобігання проблем із швидкодією."
 
 msgid "%{commit_author_link} committed %{commit_timeago}"
-msgstr "%{commit_author_link} комміт %{commit_timeago}"
+msgstr "%{commit_author_link} закомітив %{commit_timeago}"
 
 msgid "%{count} participant"
 msgid_plural "%{count} participants"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%{count} участник"
+msgstr[1] "%{count} участника"
+msgstr[2] "%{count} участників"
 
 msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
-msgstr "на %{number_commits_behind} коммітів позаду %{default_branch}, на %{number_commits_ahead} коммітів попереду"
+msgstr "на %{number_commits_behind} комітів позаду %{default_branch}, на %{number_commits_ahead} комітів попереду"
 
 msgid "%{number_of_failures} of %{maximum_failures} failures. GitLab will allow access on the next attempt."
 msgstr "%{number_of_failures} від %{maximum_failures} невдач. GitLab надасть доступ на наступну спробу."
@@ -68,7 +68,7 @@ msgid "+ %{moreCount} more"
 msgstr "+ ще %{moreCount}"
 
 msgid "- show less"
-msgstr ""
+msgstr "- показати менше"
 
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
@@ -122,7 +122,7 @@ msgid "Add License"
 msgstr "Додати ліцензію"
 
 msgid "Add an SSH key to your profile to pull or push via SSH."
-msgstr "Додати SSH ключа в свій профіль, щоб мати можливість завантажити чи надіслати зміни через SSH."
+msgstr "Додайте SSH ключ в свій профіль, щоб мати можливість завантажити чи надіслати зміни через SSH."
 
 msgid "Add new directory"
 msgstr "Додати новий каталог"
@@ -266,7 +266,7 @@ msgstr[1] "Гілки"
 msgstr[2] "Гілок"
 
 msgid "Branch <strong>%{branch_name}</strong> was created. To set up auto deploy, choose a GitLab CI Yaml template and commit your changes. %{link_to_autodeploy_doc}"
-msgstr "Гілка <strong>%{branch_name}</strong> створена. Для настройки автоматичного розгортання виберіть GitLab CI Yaml-шаблон і закоммітьте зміни. %{link_to_autodeploy_doc}"
+msgstr "Гілка <strong>%{branch_name}</strong> створена. Для настройки автоматичного розгортання виберіть GitLab CI Yaml-шаблон і закомітьте зміни. %{link_to_autodeploy_doc}"
 
 msgid "Branch has changed"
 msgstr "Гілка змінилась"
@@ -281,7 +281,7 @@ msgid "Branches"
 msgstr "Гілки"
 
 msgid "Branches|Cant find HEAD commit for this branch"
-msgstr "Не можу знайти HEAD-комміт для цієї гілки"
+msgstr "Не можу знайти HEAD-коміт для цієї гілки"
 
 msgid "Branches|Compare"
 msgstr "Порівняти"
@@ -326,7 +326,7 @@ msgid "Branches|Only a project master or owner can delete a protected branch"
 msgstr "Тільки керівник або власник проекту може видалити захищену гілку"
 
 msgid "Branches|Protected branches can be managed in %{project_settings_link}"
-msgstr "Управляти захищеними гілками можливо в %{project_settings_link}"
+msgstr "Керувати захищеними гілками можливо в %{project_settings_link}"
 
 msgid "Branches|Sort by"
 msgstr "Сортувати за"
@@ -359,7 +359,7 @@ msgid "Branches|merged"
 msgstr "злита"
 
 msgid "Branches|project settings"
-msgstr "Настройки проекту"
+msgstr "Налаштуваннях проекту"
 
 msgid "Branches|protected"
 msgstr "захищені"
@@ -419,7 +419,7 @@ msgid "Chat"
 msgstr "Чат"
 
 msgid "Cherry-pick this commit"
-msgstr "Cherry-pick в цьому комміті"
+msgstr "Cherry-pick в цьому коміті"
 
 msgid "Cherry-pick this merge request"
 msgstr "Cherry-pick в цьому запиті на злиття"
@@ -627,42 +627,42 @@ msgstr "Коментарі"
 
 msgid "Commit"
 msgid_plural "Commits"
-msgstr[0] "Комміт"
-msgstr[1] "Комміта"
-msgstr[2] "Коммітів"
+msgstr[0] "Коміт"
+msgstr[1] "Коміта"
+msgstr[2] "Комітів"
 
 msgid "Commit %d file"
 msgid_plural "Commit %d files"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Закомітити %d файл"
+msgstr[1] "Закомітити %d файли"
+msgstr[2] "Закомітити %d файлів"
 
 msgid "Commit Message"
-msgstr "Повідомлення для комміту"
+msgstr "Коміт-повідомелння"
 
 msgid "Commit duration in minutes for last 30 commits"
-msgstr "Тривалість останніх 30 коммітів у хвилинах"
+msgstr "Тривалість останніх 30 комітів у хвилинах"
 
 msgid "Commit message"
-msgstr "Комміт повідомлення"
+msgstr "Коміт-повідомлення"
 
 msgid "CommitBoxTitle|Commit"
-msgstr "Комміт"
+msgstr "Коміт"
 
 msgid "CommitMessage|Add %{file_name}"
-msgstr "Додати %{file_name}"
+msgstr "Додавання %{file_name}"
 
 msgid "Commits"
-msgstr "Комміти"
+msgstr "Коміти"
 
 msgid "Commits feed"
-msgstr "Канал коммітів"
+msgstr "Канал комітів"
 
 msgid "Commits|History"
 msgstr "Історія"
 
 msgid "Committed by"
-msgstr "Комміт від"
+msgstr "Коміт від"
 
 msgid "Compare"
 msgstr "Порівняти"
@@ -938,7 +938,7 @@ msgid "Files"
 msgstr "Файли"
 
 msgid "Filter by commit message"
-msgstr "Фільтрувати повідомлення коммітів"
+msgstr "Фільтрувати за коміт-повідомленням"
 
 msgid "Find by path"
 msgstr "Пошук по шляху"
@@ -1169,7 +1169,7 @@ msgid "Last Pipeline"
 msgstr "Останній Конвеєр"
 
 msgid "Last commit"
-msgstr "Останній комміт"
+msgstr "Останній коміт"
 
 msgid "Last edited %{date}"
 msgstr "Останні зміни %{date}"
@@ -1379,10 +1379,10 @@ msgid "Notifications"
 msgstr "Сповіщення"
 
 msgid "Number of access attempts"
-msgstr ""
+msgstr "Кількість спроб доступу"
 
 msgid "Number of failures before backing off"
-msgstr ""
+msgstr "Кількість помилок до призупинення"
 
 msgid "OfSearchInADropdown|Filter"
 msgstr "Фільтр"
@@ -1628,7 +1628,7 @@ msgid "ProjectSettings|Contact an admin to change this setting."
 msgstr "Зверніться до адміністратора, щоб змінити це налаштування."
 
 msgid "ProjectSettings|Only signed commits can be pushed to this repository."
-msgstr "Тільки підписані комміти можуть бути надіслані в цей репозиторій."
+msgstr "Тільки підписані коміти можуть бути надіслані в цей репозиторій."
 
 msgid "ProjectSettings|This setting is applied on the server level and can be overridden by an admin."
 msgstr "Цей параметр застосовується на рівні сервера та може бути перевизначений адміністратором."
@@ -1640,7 +1640,7 @@ msgid "ProjectSettings|This setting will be applied to all projects unless overr
 msgstr "Цей параметр буде застосовано до всіх проектів, якщо адміністратор не змінить його."
 
 msgid "ProjectSettings|Users can only push commits to this repository that were committed with one of their own verified emails."
-msgstr ""
+msgstr "Користувачі можуть виконувати push в цей репозиторій лише тих комітів, які містять одну із підтверджених адрес електронної пошти."
 
 msgid "Projects"
 msgstr "Проекти"
@@ -1679,7 +1679,7 @@ msgid "Push events"
 msgstr "Push-події"
 
 msgid "PushRule|Committer restriction"
-msgstr ""
+msgstr "Обмеження для коміттера"
 
 msgid "Read more"
 msgstr "Докладніше"
@@ -1697,7 +1697,7 @@ msgid "Registry"
 msgstr "Реєстр"
 
 msgid "Related Commits"
-msgstr "Пов'язані Комміти"
+msgstr "Пов'язані Коміти"
 
 msgid "Related Deployed Jobs"
 msgstr "Пов’язані розгорнуті задачі (Jobs)"
@@ -1730,13 +1730,13 @@ msgid "Reset git storage health information"
 msgstr "Скиньте інформацію про працездатність сховища git"
 
 msgid "Reset health check access token"
-msgstr "Скиньте токен доступу для перевірки перевірки працездатності"
+msgstr "Оновити токен доступу для перевірки працездатності"
 
 msgid "Reset runners registration token"
 msgstr "Скинути реєстраційний токен runner-ів"
 
 msgid "Revert this commit"
-msgstr "Скасувати цей комміт"
+msgstr "Скасувати цей коміт"
 
 msgid "Revert this merge request"
 msgstr "Скасувати цей запит на злиття"
@@ -1946,7 +1946,7 @@ msgid "Starred projects"
 msgstr "Відмічені проекти"
 
 msgid "Start a %{new_merge_request} with these changes"
-msgstr "Почати %{new_merge_request} з цих змін"
+msgstr "Почати %{new_merge_request} з цими змінами"
 
 msgid "Start the Runner!"
 msgstr "Запустіть Runner!"
@@ -1985,10 +1985,10 @@ msgid "The Advanced Global Search in GitLab is a powerful search service that sa
 msgstr "Розширений глобальний пошук в GitLab - це потужний інструмент який заощаджує ваш час. Замість дублювання коду і витрати часу, ви можете шукати код всередині інших команд, який може допомогти у вашому проекті."
 
 msgid "The circuitbreaker backoff threshold should be lower than the failure count threshold"
-msgstr ""
+msgstr "Поріг призупинення circuitbreaker має бути нижчий за поріг повного відключення"
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
-msgstr "На стадії написання коду, показує час першого комміту до створення запиту на об'єднання. Дані будуть автоматично додані після створення вашого першого запиту на об'єднання."
+msgstr "На стадії написання коду, показує час першого коміту до створення запиту на об'єднання. Дані будуть автоматично додані після створення вашого першого запиту на об'єднання."
 
 msgid "The collection of events added to the data gathered for that stage."
 msgstr "Колекція подій додана до даних, зібраних для цього етапу."
@@ -2000,10 +2000,10 @@ msgid "The issue stage shows the time it takes from creating an issue to assigni
 msgstr "Етап випуску показує, скільки часу потрібно від створення проблеми до присвоєння випуску, або додавання проблеми в вашу дошку проблем. Почніть створювати проблеми, щоб переглядати дані для цього етапу."
 
 msgid "The number of attempts GitLab will make to access a storage."
-msgstr ""
+msgstr "Кількість спроб, які зробить GitLab для отримання доступу до сховища даних."
 
 msgid "The number of failures after which GitLab will start temporarily disabling access to a storage shard on a host"
-msgstr ""
+msgstr "Кількість невдач, після чого GitLab почне тимчасово блокувати доступ до сховища на хості"
 
 msgid "The number of failures of after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
 msgstr "Кількість збоїв після якої Gitlab повністю заблокує доступ до сховища данних. Лічильник кількості збоїв може бути скинутий в інтерфейсі адміністратора (%{link_to_health_page}), або через %{api_documentation_link}."
@@ -2015,7 +2015,7 @@ msgid "The pipelines schedule runs pipelines in the future, repeatedly, for spec
 msgstr "Розклад конвеєрів запускає в майбутньому конвеєри, для певних гілок або тегів. Заплановані конвеєри успадковують обмеження на доступ до проекту на основі пов'язаного з ними користувача."
 
 msgid "The planning stage shows the time from the previous step to pushing your first commit. This time will be added automatically once you push your first commit."
-msgstr "На етапі планування відображається час від попереднього кроку до першого комміту. Додається автоматично, як тільки відправится перший комміт."
+msgstr "На етапі планування відображається час від попереднього кроку до першого коміту. Додається автоматично, як тільки відправится перший коміт."
 
 msgid "The production stage shows the total time it takes between creating an issue and deploying the code to production. The data will be automatically added once you have completed the full idea to production cycle."
 msgstr "Стадія ПРОДакшин показує загальний час між створенням проблеми та розгортанням коду у ПРОДакшині. Дані будуть автоматично додані після завершення повної ідеї до ПРОДакшин циклу."
@@ -2090,10 +2090,10 @@ msgid "Timeago|%s days ago"
 msgstr "%s днів тому"
 
 msgid "Timeago|%s days remaining"
-msgstr "%s днів, що залишилися"
+msgstr "залишилося %s днів"
 
 msgid "Timeago|%s hours remaining"
-msgstr "%s годин, що залишилися"
+msgstr "залишилося %s годин"
 
 msgid "Timeago|%s minutes ago"
 msgstr "%s хвилин тому"
@@ -2105,7 +2105,7 @@ msgid "Timeago|%s months ago"
 msgstr "%s місяці(в) тому"
 
 msgid "Timeago|%s months remaining"
-msgstr "%s місяці(в), що залишилися"
+msgstr "залишилося %s місяці(в)"
 
 msgid "Timeago|%s seconds remaining"
 msgstr "%s секунд, що залишаються"
@@ -2120,7 +2120,7 @@ msgid "Timeago|%s years ago"
 msgstr "%s років тому"
 
 msgid "Timeago|%s years remaining"
-msgstr "%s роки, що залишилися"
+msgstr "залишилося %s роки"
 
 msgid "Timeago|1 day remaining"
 msgstr "Залишився 1 день"
@@ -2228,7 +2228,7 @@ msgid "Total Time"
 msgstr "Загальний час"
 
 msgid "Total test time for all commits/merges"
-msgstr "Загальний час, щоб перевірити всі фіксації/злиття"
+msgstr "Загальний час, щоб перевірити всі коміти/злиття"
 
 msgid "Track activity with Contribution Analytics."
 msgstr "Відстежувати активність за допомогою Аналітики контриб’юторів."
@@ -2489,7 +2489,7 @@ msgid "Your projects"
 msgstr "Ваші проекти"
 
 msgid "commit"
-msgstr "комміт"
+msgstr "коміт"
 
 msgid "day"
 msgid_plural "days"

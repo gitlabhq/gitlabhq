@@ -1,7 +1,6 @@
 import Flash from '../flash';
 import { s__ } from '../locale';
 import ClustersService from './services/clusters_service';
-
 /**
  * Toggles loading and disabled classes.
  * @param {HTMLElement} button
@@ -29,7 +28,7 @@ const toggleValue = (button) => {
  *
  * When the user clicks the toggle button for each cluster, it:
  * - toggles the button
- * - shows a loading and disabled state
+ * - shows a loading and disables button
  * - Makes a put request to the given endpoint
  * Once we receive the response, either:
  * 1) Show updated status in case of successfull response

@@ -4,7 +4,8 @@
   %body.ui_charcoal.login-page.application.navless{ data: { page: body_data_page } }
     .page-wrap
       = render "layouts/header/empty"
-      = render "layouts/broadcast"
+      .login-page-broadcast
+        = render "layouts/broadcast"
       .container.navless-container
         .content
           = render "layouts/flash"

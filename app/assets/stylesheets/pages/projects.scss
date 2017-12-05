@@ -204,14 +204,7 @@
     }
 
     svg {
-
-      path {
-        fill: $layout-link-gray;
-      }
-
-      use {
-        stroke: $layout-link-gray;
-      }
+      fill: $layout-link-gray;
     }
 
     .fa-caret-down {
@@ -313,6 +306,18 @@
       &:hover {
         background: $white-light;
       }
+    }
+  }
+
+  .clone-dropdown-btn {
+    background-color: $white-light;
+  }
+
+  .clone-options-dropdown {
+    min-width: 240px;
+
+    .dropdown-menu-inner-content {
+      min-width: 320px;
     }
   }
 }
@@ -719,6 +724,7 @@ a.deploy-project-label {
         &:hover,
         &:focus {
           color: $gl-text-color;
+          text-decoration: underline;
         }
       }
     }
@@ -797,10 +803,6 @@ pre.light-well {
 
   h3 {
     font-size: $gl-font-size;
-  }
-
-  a {
-    color: $gl-text-color;
   }
 
   .avatar-container,
@@ -1120,4 +1122,9 @@ pre.light-well {
     margin: 32px 0;
     border-color: $border-color;
   }
+}
+
+.issuable-footer {
+  padding-top: $gl-padding;
+  padding-bottom: 37px;
 }

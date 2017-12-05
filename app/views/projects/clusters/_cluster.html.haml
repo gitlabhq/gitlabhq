@@ -8,14 +8,14 @@
     .table-mobile-content= cluster.environment_scope
   .table-section.section-30
     .table-mobile-header{ role: "rowheader" }= s_("ClusterIntegration|Project namespace")
-    .table-mobile-content= cluster.platform_kubernetes&.namespace
+    .table-mobile-content= cluster.platform_kubernetes&.actual_namespace
   .table-section.section-10
     .table-mobile-header{ role: "rowheader" }
     .table-mobile-content
       %button{ type: "button",
-        class: "js-toggle-cluster-list project-feature-toggle #{'is-checked' unless !cluster.enabled?} #{'is-disabled' unless can?(current_user, :update_cluster, cluster) && cluster.provider_gcp&.created?}",
+        class: "js-toggle-cluster-list project-feature-toggle #{'is-checked' if cluster.enabled?} #{'is-disabled' if !can_toggle_cluster?(cluster)}",
         "aria-label": s_("ClusterIntegration|Toggle Cluster"),
-        disabled: !can?(current_user, :update_cluster, cluster),
+        disabled: !can_toggle_cluster?(cluster),
         data: { "enabled-text": s_("ClusterIntegration|Active"),
           "disabled-text": s_("ClusterIntegration|Inactive"),
           endpoint: namespace_project_cluster_path(@project.namespace, @project, cluster, format: :json) } }

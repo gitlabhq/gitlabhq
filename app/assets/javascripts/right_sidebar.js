@@ -15,7 +15,7 @@ import Cookies from 'js-cookie';
 
     Sidebar.prototype.removeListeners = function () {
       this.sidebar.off('click', '.sidebar-collapsed-icon');
-      $('.dropdown').off('hidden.gl.dropdown');
+      this.sidebar.off('hidden.gl.dropdown');
       $('.dropdown').off('loading.gl.dropdown');
       $('.dropdown').off('loaded.gl.dropdown');
       $(document).off('click', '.js-sidebar-toggle');
@@ -25,7 +25,7 @@ import Cookies from 'js-cookie';
       const $document = $(document);
 
       this.sidebar.on('click', '.sidebar-collapsed-icon', this, this.sidebarCollapseClicked);
-      $('.dropdown').on('hidden.gl.dropdown', this, this.onSidebarDropdownHidden);
+      this.sidebar.on('hidden.gl.dropdown', this, this.onSidebarDropdownHidden);
       $('.dropdown').on('loading.gl.dropdown', this.sidebarDropdownLoading);
       $('.dropdown').on('loaded.gl.dropdown', this.sidebarDropdownLoaded);
 
@@ -180,7 +180,7 @@ import Cookies from 'js-cookie';
       var $block, sidebar;
       sidebar = e.data;
       e.preventDefault();
-      $block = $(this).closest('.block');
+      $block = $(e.target).closest('.block');
       return sidebar.sidebarDropdownHidden($block);
     };
 
