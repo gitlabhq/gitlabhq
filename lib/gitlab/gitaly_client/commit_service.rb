@@ -169,6 +169,15 @@ module Gitlab
         consume_commits_response(response)
       end
 
+      def list_commits_by_oid(oids)
+        request = Gitaly::ListCommitsByOidRequest.new(repository: @gitaly_repo, oid: oids)
+
+        response = GitalyClient.call(@repository.storage, :commit_service, :list_commits_by_oid, request, timeout: GitalyClient.medium_timeout)
+        consume_commits_response(response)
+      rescue GRPC::Unknown # If no repository is found, happens mainly during testing
+        []
+      end
+
       def commits_by_message(query, revision: '', path: '', limit: 1000, offset: 0)
         request = Gitaly::CommitsByMessageRequest.new(
           repository: @gitaly_repo,
