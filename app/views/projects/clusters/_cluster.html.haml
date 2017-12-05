@@ -13,9 +13,9 @@
     .table-mobile-header{ role: "rowheader" }
     .table-mobile-content
       %button{ type: "button",
-        class: "js-toggle-cluster-list project-feature-toggle #{'is-checked' if cluster.enabled?} #{'is-disabled' if !can_toggle_cluster?(cluster)}",
+        class: "js-toggle-cluster-list project-feature-toggle #{'is-checked' if cluster.enabled?} #{'is-disabled' if !cluster.can_toggle_cluster?}",
         "aria-label": s_("ClusterIntegration|Toggle Cluster"),
-        disabled: !can_toggle_cluster?(cluster),
+        disabled: !cluster.can_toggle_cluster?,
         data: { "enabled-text": s_("ClusterIntegration|Active"),
           "disabled-text": s_("ClusterIntegration|Inactive"),
           endpoint: namespace_project_cluster_path(@project.namespace, @project, cluster, format: :json) } }

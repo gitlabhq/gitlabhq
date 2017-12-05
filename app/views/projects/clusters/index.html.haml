@@ -20,5 +20,5 @@
           = s_("ClusterIntegration|Project namespace")
         .table-section.section-10{ role: "rowheader" }
       - @clusters.each do |cluster|
-        = render "cluster", cluster: cluster
+        = render "cluster", cluster: cluster.present(current_user: current_user)
     = paginate @clusters, theme: "gitlab"
