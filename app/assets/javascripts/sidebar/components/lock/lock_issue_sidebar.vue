@@ -23,11 +23,6 @@ export default {
         return mediatorObject.service && mediatorObject.service.update && mediatorObject.store;
       },
     },
-
-    issuableType: {
-      required: true,
-      type: String,
-    },
   },
 
   mixins: [
@@ -59,7 +54,7 @@ export default {
         discussion_locked: locked,
       })
       .then(() => location.reload())
-      .catch(() => Flash(this.__(`Something went wrong trying to change the locked state of this ${this.issuableDisplayName(this.issuableType)}`)));
+      .catch(() => Flash(this.__(`Something went wrong trying to change the locked state of this ${this.issuableDisplayName}`)));
     },
   },
 };
@@ -77,7 +72,7 @@ export default {
     </div>
 
     <div class="title hide-collapsed">
-      Lock {{issuableDisplayName(issuableType) }}
+      Lock {{ issuableDisplayName }}
       <button
         v-if="isEditable"
         class="pull-right lock-edit btn btn-blank"

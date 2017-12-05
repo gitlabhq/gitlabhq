@@ -113,7 +113,13 @@ module MarkupHelper
     text = wiki_page.content
     return '' unless text.present?
 
-    context = { pipeline: :wiki, project: @project, project_wiki: @project_wiki, page_slug: wiki_page.slug }
+    context = {
+      pipeline: :wiki,
+      project: @project,
+      project_wiki: @project_wiki,
+      page_slug: wiki_page.slug,
+      issuable_state_filter_enabled: true
+    }
 
     html =
       case wiki_page.format

@@ -97,11 +97,6 @@ module Clusters
         return false
       end
 
-      if managed? && name_changed?
-        errors.add(:base, "cannot modify cluster name")
-        return false
-      end
-
       true
     end
   end

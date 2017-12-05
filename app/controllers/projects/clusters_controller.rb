@@ -22,7 +22,7 @@ class Projects::ClustersController < Projects::ApplicationController
   def status
     respond_to do |format|
       format.json do
-        Gitlab::PollingInterval.set_header(response, interval: 10_000)
+        Gitlab::PollingInterval.set_header(response, interval: STATUS_POLLING_INTERVAL)
 
         render json: ClusterSerializer
           .new(project: @project, current_user: @current_user)
@@ -70,7 +70,8 @@ class Projects::ClustersController < Projects::ApplicationController
   private
 
   def cluster
-    @cluster ||= project.clusters.find_by(id: params[:id])&.present(current_user: current_user) || render_404
+    @cluster ||= project.clusters.find(params[:id])
+                                 .present(current_user: current_user)
   end
 
   def create_params

@@ -22,14 +22,19 @@ feature 'User Cluster', :js do
 
     context 'when user filled form with valid parameters' do
       before do
+        fill_in 'cluster_name', with: 'dev-cluster'
         fill_in 'cluster_platform_kubernetes_attributes_api_url', with: 'http://example.com'
         fill_in 'cluster_platform_kubernetes_attributes_token', with: 'my-token'
-        fill_in 'cluster_name', with: 'dev-cluster'
         click_button 'Add cluster'
       end
 
-      it 'user sees a cluster details page and creation status' do
-        expect(page).to have_content('Cluster was successfully created on Google Container Engine')
+      it 'user sees a cluster details page' do
+        expect(page).to have_content('Enable cluster integration')
+        expect(page.find_field('cluster[name]').value).to eq('dev-cluster')
+        expect(page.find_field('cluster[platform_kubernetes_attributes][api_url]').value)
+          .to have_content('http://example.com')
+        expect(page.find_field('cluster[platform_kubernetes_attributes][token]').value)
+          .to have_content('my-token')
       end
     end
 
