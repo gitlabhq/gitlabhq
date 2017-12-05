@@ -25,7 +25,7 @@ module EE
         end
       end
 
-      expose :performance, if: -> (mr, _) { mr.has_performance_data? } do
+      expose :performance, if: -> (mr, _) { expose_performance_data?(mr) } do
         expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.head_performance_artifact) } do |merge_request|
           raw_project_build_artifacts_url(merge_request.source_project,
                                           merge_request.head_performance_artifact,
@@ -58,6 +58,11 @@ module EE
       mr.project.feature_available?(:sast) &&
         mr.has_sast_data? &&
         can?(current_user, :read_build, mr.sast_artifact)
+    end
+
+    def expose_performance_data?(mr)
+      mr.project.feature_available?(:merge_request_performance_metrics) &&
+        mr.has_performance_data?
     end
   end
 end
