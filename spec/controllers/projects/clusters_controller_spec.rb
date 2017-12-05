@@ -38,7 +38,7 @@ describe Projects::ClustersController do
           let(:last_page) { project.clusters.page.total_pages }
 
           before do
-            Clusters::Cluster.paginates_per(1)
+            allow(Clusters::Cluster).to receive(:paginates_per).and_return(1)
             create_list(:cluster, 2, :provided_by_gcp, projects: [project])
             get :index, namespace_id: project.namespace, project_id: project, page: last_page
           end
