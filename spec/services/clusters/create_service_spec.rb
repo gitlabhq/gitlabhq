@@ -66,7 +66,6 @@ describe Clusters::CreateService do
       end
     end
 
-
     context 'when project has no clusters' do
       context 'when correct params' do
         include_context 'valid params'
