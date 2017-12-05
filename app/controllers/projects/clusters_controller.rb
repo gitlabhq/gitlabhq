@@ -46,7 +46,7 @@ class Projects::ClustersController < Projects::ApplicationController
         end
         format.html do
           flash[:notice] = "Cluster was successfully updated."
-          redirect_to project_cluster_path(project, project.cluster)
+          redirect_to project_cluster_path(project, cluster)
         end
       end
     else
