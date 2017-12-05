@@ -1,9 +1,5 @@
 - type = local_assigns.fetch(:type, :issues)
 - page_context_word = type.to_s.humanize(capitalize: false)
-<<<<<<< HEAD
-- issuables = @issues || @merge_requests || @epics
-=======
->>>>>>> upstream/master
 
 %ul.nav-links.issues-state-filters
   - if type != :epics
