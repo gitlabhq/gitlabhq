@@ -35,10 +35,6 @@ feature 'Clusters', :js do
       expect(page).to have_selector('.gl-responsive-table-row', count: 2)
     end
 
-    it 'user sees a disabled add cluster button ' do
-      expect(page).to have_selector('.js-add-cluster.disabled')
-    end
-
     it 'user sees navigation tabs' do
       expect(page.find('.js-active-tab').text).to include('Active')
       expect(page.find('.js-active-tab .badge').text).to include('1')
