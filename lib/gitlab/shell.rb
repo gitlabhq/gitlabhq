@@ -144,7 +144,6 @@ module Gitlab
                                  storage, "#{path}.git", "#{new_path}.git"])
     end
 
-<<<<<<< HEAD
     # Move repository storage
     #
     # current_storage - project's current storage path
@@ -159,8 +158,6 @@ module Gitlab
                                    current_storage, "#{path}.git", new_storage])
     end
 
-=======
->>>>>>> upstream/master
     # Fork repository to new path
     # forked_from_storage - forked-from project's storage path
     # forked_from_disk_path - project disk path
