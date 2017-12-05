@@ -72,7 +72,7 @@ describe Projects::ClustersController do
           go
 
           expect(response).to have_gitlab_http_status(:ok)
-          expect(response).to render_template(:index)
+          expect(response).to render_partial(:index)
           expect(assigns(:clusters)).to eq([])
         end
 
