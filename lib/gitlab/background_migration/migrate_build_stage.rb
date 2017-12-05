@@ -8,7 +8,7 @@ module Gitlab
       def perform(id)
         Ci::Build.find_by(id: id).try do |build|
           Stage.new(build).tap do |stage|
-            return if stage.exists?
+            break if stage.exists?
 
             stage.ensure!
             stage.migrate_reference!
@@ -16,8 +16,6 @@ module Gitlab
           end
         end
       end
-
-      private
 
       class Ci::Stage < ActiveRecord::Base
         self.table_name = 'ci_stages'
