@@ -1,5 +1,6 @@
 class JobArtifactUploader < ObjectStoreUploader
   storage_options Gitlab.config.artifacts
+  after :store, :schedule_migration_to_object_storage
 
   def self.local_store_path
     Gitlab.config.artifacts.path

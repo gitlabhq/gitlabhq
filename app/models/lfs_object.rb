@@ -1,5 +1,6 @@
 class LfsObject < ActiveRecord::Base
   prepend EE::LfsObject
+  include AfterCommitQueue
 
   has_many :lfs_objects_projects, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
   has_many :projects, through: :lfs_objects_projects

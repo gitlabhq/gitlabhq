@@ -1085,6 +1085,8 @@ describe API::Runner do
             let(:stored_artifacts_size) { job.reload.artifacts_size }
 
             before do
+              stub_artifacts_object_storage(enabled: false)
+
               post(api("/jobs/#{job.id}/artifacts"), post_data, headers_with_token)
             end
 
@@ -1154,13 +1156,6 @@ describe API::Runner do
 
         context 'when job has artifacts' do
           let(:job) { create(:ci_build) }
-          let(:store) { JobArtifactUploader::LOCAL_STORE }
-
-          before do
-            create(:ci_job_artifact, :archive, file_store: store, job: job)
-
-            download_artifact
-          end
 
           context 'when using job token' do
             context 'when artifacts are stored locally' do
@@ -1170,6 +1165,11 @@ describe API::Runner do
               end
 
               it 'download artifacts' do
+                stub_artifacts_object_storage(enabled: false)
+                create(:ci_job_artifact, :archive, job: job)
+
+                download_artifact
+
                 expect(response).to have_gitlab_http_status(200)
                 expect(response.headers).to include download_headers
               end
@@ -1180,6 +1180,10 @@ describe API::Runner do
               let!(:job) { create(:ci_build) }
 
               it 'download artifacts' do
+                create(:ci_job_artifact, :archive, :remote_store, job: job)
+
+                download_artifact
+
                 expect(response).to have_gitlab_http_status(302)
               end
             end
@@ -1189,6 +1193,8 @@ describe API::Runner do
             let(:token) { job.project.runners_token }
 
             it 'responds with forbidden' do
+              download_artifact
+
               expect(response).to have_gitlab_http_status(403)
             end
           end

@@ -116,9 +116,14 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
     end
   end
 
-  def schedule_migration_to_object_storage(new_file)
+  def schedule_migration_to_object_storage(*args)
     if self.class.object_store_enabled? && licensed? && file_storage?
-      ObjectStorageUploadWorker.perform_async(self.class.name, model.class.name, mounted_as, model.id)
+      uploader = self
+      mount_field = mounted_as
+
+      model.run_after_commit do
+        ObjectStorageUploadWorker.perform_async(uploader.class.name, self.class.name, mount_field, id)
+      end
     end
   end
 
