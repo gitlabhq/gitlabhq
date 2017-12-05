@@ -17,6 +17,7 @@ class CreateJobArtifacts < ActiveRecord::Migration
       t.string :file
 
       t.foreign_key :ci_builds, column: :job_id, on_delete: :cascade
+      t.index [:job_id, :file_type], unique: true
     end
   end
 end
