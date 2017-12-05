@@ -79,7 +79,7 @@
       #notes.notes.tab-pane.voting_notes
         .row
           %section.col-md-12
-            .issuable-discussion
+            .issuable-discussion.js-vue-notes-event
               - if has_vue_discussions_cookie
                 #js-vue-mr-discussions{ data: { discussions_path: discussions_project_merge_request_path(@project, @merge_request, format: :json),
                 register_path: new_session_path(:user, redirect_to_referer: 'yes', anchor: 'register-pane'),

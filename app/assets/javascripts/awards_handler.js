@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import _ from 'underscore';
 import Cookies from 'js-cookie';
-import { isInIssuePage, updateTooltipTitle } from './lib/utils/common_utils';
+import { isInNoteablePage, updateTooltipTitle } from './lib/utils/common_utils';
 import Flash from './flash';
 
 const animationEndEventString = 'animationend webkitAnimationEnd MSAnimationEnd oAnimationEnd';
@@ -241,7 +241,7 @@ class AwardsHandler {
   addAward(votesBlock, awardUrl, emoji, checkMutuality, callback) {
     const isMainAwardsBlock = votesBlock.closest('.js-issue-note-awards').length;
 
-    if (isInIssuePage() && !isMainAwardsBlock) {
+    if (isInNoteablePage() && !isMainAwardsBlock) {
       const id = votesBlock.attr('id').replace('note_', '');
 
       this.hideMenuElement($('.emoji-menu'));
@@ -294,7 +294,7 @@ class AwardsHandler {
   }
 
   getVotesBlock() {
-    if (isInIssuePage()) {
+    if (isInNoteablePage()) {
       const $el = $('.js-add-award.is-active').closest('.note.timeline-entry');
 
       if ($el.length) {
