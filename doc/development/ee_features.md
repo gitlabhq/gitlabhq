@@ -380,3 +380,9 @@ to avoid conflicts during CE to EE merge.
   }
 }
 ```
+
+## gitlab-svgs
+
+Conflicts in `app/assets/images/icons.json` or `app/assets/images/icons.svg` can
+be resolved simply by regenerating those assets with
+[`yarn run svg`](https://gitlab.com/gitlab-org/gitlab-svgs).

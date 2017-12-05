@@ -16,7 +16,7 @@ comments: false
 - [GitLab core team & GitLab Inc. contribution process](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/PROCESS.md)
 - [Generate a changelog entry with `bin/changelog`](changelog.md)
 - [Code review guidelines](code_review.md) for reviewing code and having code reviewed.
-- [Limit conflicts with EE when developing on CE](limit_ee_conflicts.md)
+- [Automatic CE->EE merge](automatic_ce_ee_merge.md)
 
 ## UX and frontend guides
 
