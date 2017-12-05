@@ -18,12 +18,9 @@ module Gitlab
         GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE
       ].freeze
       SEARCH_CONTEXT_LINES = 3
-<<<<<<< HEAD
       GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'.freeze
-=======
       REBASE_WORKTREE_PREFIX = 'rebase'.freeze
       SQUASH_WORKTREE_PREFIX = 'squash'.freeze
->>>>>>> upstream/master
 
       NoRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
