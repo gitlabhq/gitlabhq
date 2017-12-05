@@ -29,6 +29,8 @@ class Projects::PipelinesController < Projects::ApplicationController
     @pipelines_count = PipelinesFinder
       .new(project).execute.count
 
+    @pipelines.map(&:commit) # List commits for batch loading
+
     respond_to do |format|
       format.html
       format.json do
