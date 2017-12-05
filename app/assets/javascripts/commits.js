@@ -4,7 +4,6 @@
 /* global Pager */
 
 import { pluralize } from './lib/utils/text_utility';
-import Diff from './diff';
 
 export default (function () {
   const CommitsList = {};
