@@ -1,11 +1,31 @@
 <script>
-  import { mapActions } from 'vuex';
+  import { mapActions, mapState } from 'vuex';
 
   export default {
     props: {
+      projectId: {
+        type: String,
+        required: true,
+      },
+      branchId: {
+        type: String,
+        required: true,
+      },
+      parent: {
+        type: Object,
+        required: false,
+      },
       path: {
         type: String,
         required: true,
+      },
+    },
+    computed: {
+      ...mapState([
+        'trees',
+      ]),
+      fileId() {
+        return `file-upload-${encodeURIComponent(this.projectId)}-${this.branchId}-${encodeURIComponent(this.path)}`;
       },
     },
     methods: {
@@ -22,6 +42,9 @@
 
         this.createTempEntry({
           name,
+          projectId: this.projectId,
+          branchId: this.branchId,
+          parent: this.parent || this.trees[`${this.projectId}/${this.branchId}`],
           type: 'blob',
           content: result,
           base64: !isText,
@@ -59,7 +82,7 @@
   >
     {{ __('Upload file') }}
     <input
-      id="file-upload"
+      :id="fileId"
       type="file"
       class="hidden"
       ref="fileUpload"

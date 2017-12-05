@@ -17,9 +17,11 @@ export const dataStructure = () => ({
   changed: false,
   lastCommitPath: '',
   lastCommit: {
+    id: '',
     url: '',
     message: '',
     updatedAt: '',
+    author: '',
   },
   tree_url: '',
   blamePath: '',
@@ -85,7 +87,7 @@ export const decorateData = (entity) => {
   };
 };
 
-export const findEntry = (state, type, name) => state.tree.find(
+export const findEntry = (tree, type, name) => tree.find(
   f => f.type === type && f.name === name,
 );
 
@@ -95,11 +97,15 @@ export const setPageTitle = (title) => {
   document.title = title;
 };
 
-export const createTemp = ({ name, path, type, level, changed, content, base64 }) => {
+export const createTemp = ({
+  projectId, branchId, name, path, type, level, changed, content, base64, url,
+}) => {
   const treePath = path ? `${path}/${name}` : name;
 
   return decorateData({
     id: new Date().getTime().toString(),
+    projectId,
+    branchId,
     name,
     type,
     tempFile: true,
@@ -111,6 +117,7 @@ export const createTemp = ({ name, path, type, level, changed, content, base64 }
     level,
     base64,
     renderError: base64,
+    url,
   });
 };
 
@@ -121,7 +128,7 @@ export const createOrMergeEntry = ({ tree,
                                      type,
                                      parentTreeUrl,
                                      level }) => {
-  const found = findEntry(tree, type, entry.name);
+  const found = findEntry(tree.tree || tree, type, entry.name);
 
   if (found) {
     return Object.assign({}, found, {

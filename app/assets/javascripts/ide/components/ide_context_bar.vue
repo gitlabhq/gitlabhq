@@ -36,7 +36,10 @@ export default {
       'is-collapsed': collapsed,
     }"
   >
-    <div class="multi-file-commit-panel-section">
+    <div 
+      class="multi-file-commit-panel-section"
+      @click="toggleCollapsed"
+    >
       <header
         class="multi-file-commit-panel-header"
         :class="{

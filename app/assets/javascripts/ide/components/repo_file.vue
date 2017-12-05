@@ -1,6 +1,7 @@
 <script>
   import timeAgoMixin from '../../vue_shared/mixins/timeago';
   import skeletonLoadingContainer from '../../vue_shared/components/skeleton_loading_container.vue';
+  import newDropdown from './new_dropdown/index.vue';
 
   export default {
     mixins: [
@@ -8,6 +9,7 @@
     ],
     components: {
       skeletonLoadingContainer,
+      newDropdown,
     },
     props: {
       file: {
@@ -22,6 +24,9 @@
     computed: {
       isSubmodule() {
         return this.file.type === 'submodule';
+      },
+      isTree() {
+        return this.file.type === 'tree';
       },
       fileIcon() {
         return {
@@ -84,6 +89,12 @@
       >
         {{ file.name }}
       </a>
+      <new-dropdown
+        v-if="isTree"
+        :projectId="file.projectId"
+        :branch="file.branchId"
+        :path="file.path"
+        :parent="file"/>
       <i
         class="fa"
         :class="changedClass"
