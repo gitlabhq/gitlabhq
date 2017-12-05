@@ -50,6 +50,10 @@ module Gitlab
       postgresql? && version.to_f >= 9.3
     end
 
+    def self.replication_slots_supported?
+      postgresql? && version.to_f >= 9.4
+    end
+
     def self.nulls_last_order(field, direction = 'ASC')
       order = "#{field} #{direction}"
 
