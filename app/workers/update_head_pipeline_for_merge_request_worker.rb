@@ -1,5 +1,5 @@
 class UpdateHeadPipelineForMergeRequestWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
 
   sidekiq_options queue: 'pipeline_default'
 
