@@ -60,13 +60,6 @@ export default class MergeRequestStore extends CEMergeRequestStore {
 
   initPerformanceReport(data) {
     this.performance = data.performance;
-
-    // use mock data (see mr_widget_service.js)
-    this.performance = {
-      head_path: '/performance_head',
-      base_path: '/performance_base',
-    };
-
     this.performanceMetrics = {
       improved: [],
       degraded: [],

@@ -308,6 +308,57 @@ export const parsedBaseIssues = [
   },
 ];
 
+export const headPerformance = [
+  {
+    subject: '/some/path',
+    metrics: [
+      {
+        name: 'Sitespeed Score',
+        value: 85,
+      },
+    ],
+  },
+  {
+    subject: '/some/other/path',
+    metrics: [
+      {
+        name: 'Sitespeed Score',
+        value: 79,
+      },
+    ],
+  },
+  {
+    subject: '/yet/another/path',
+    metrics: [
+      {
+        name: 'Sitespeed Score',
+        value: 80,
+      },
+    ],
+  },
+];
+
+export const basePerformance = [
+  {
+    subject: '/some/path',
+    metrics: [
+      {
+        name: 'Sitespeed Score',
+        value: 84,
+      },
+    ],
+  },
+  {
+    subject: '/some/other/path',
+    metrics: [
+      {
+        name: 'Sitespeed Score',
+        value: 80,
+      },
+    ],
+  },
+];
+
 export const codequalityParsedIssues = [
   {
     name: 'Insecure Dependency',
