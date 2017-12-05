@@ -5,6 +5,24 @@
   import icon from '../../../vue_shared/components/icon.vue';
 
   export default {
+    props: {
+      projectId: {
+        type: String,
+        required: true,
+      },
+      branch: {
+        type: String,
+        required: true,
+      },
+      path: {
+        type: String,
+        required: true,
+      },
+      parent: {
+        type: Object,
+        required: false,
+      },
+    },
     components: {
       icon,
       newModal,
@@ -16,11 +34,6 @@
         modalType: '',
       };
     },
-    computed: {
-      ...mapState([
-        'path',
-      ]),
-    },
     methods: {
       createNewItem(type) {
         this.modalType = type;
@@ -30,59 +43,68 @@
         this.openModal = !this.openModal;
       },
     },
+    computed: {
+      ...mapState([
+        'trees',
+      ]),
+    }
   };
 </script>
 
 <template>
-  <div>
-    <ul class="breadcrumb repo-breadcrumb repo-new-btn">
-      <li class="dropdown">
-        <button
-          type="button"
-          class="btn btn-sm btn-default dropdown-toggle add-to-tree"
-          data-toggle="dropdown"
-          aria-label="Create new file or directory"
-        >
-          <icon
-            name="plus"
-            css-classes="pull-left"
+  <div class="repo-new-btn">
+    <div class="dropdown">
+      <button
+        type="button"
+        class="btn btn-sm btn-default dropdown-toggle add-to-tree"
+        data-toggle="dropdown"
+        aria-label="Create new file or directory"
+      >
+        <icon
+          name="plus"
+          css-classes="pull-left"
+        />
+        <icon
+          name="arrow-down"
+          css-classes="pull-left"
+        />
+      </button>
+      <ul class="dropdown-menu dropdown-menu-right">
+        <li>
+          <a
+            href="#"
+            role="button"
+            @click.prevent="createNewItem('blob')"
+          >
+            {{ __('New file') }}
+          </a>
+        </li>
+        <li>
+          <upload
+            :projectId="projectId"
+            :branchId="branch"
+            :path="path"
+            :parent="parent"
           />
-          <icon
-            name="arrow-down"
-            css-classes="pull-left"
-          />
-        </button>
-        <ul class="dropdown-menu dropdown-menu-right">
-          <li>
-            <a
-              href="#"
-              role="button"
-              @click.prevent="createNewItem('blob')"
-            >
-              {{ __('New file') }}
-            </a>
-          </li>
-          <li>
-            <upload
-              :path="path"
-            />
-          </li>
-          <li>
-            <a
-              href="#"
-              role="button"
-              @click.prevent="createNewItem('tree')"
-            >
-              {{ __('New directory') }}
-            </a>
-          </li>
-        </ul>
-      </li>
-    </ul>
+        </li>
+        <li>
+          <a
+            href="#"
+            role="button"
+            @click.prevent="createNewItem('tree')"
+          >
+            {{ __('New directory') }}
+          </a>
+        </li>
+      </ul>
+    </div>
     <new-modal
       v-if="openModal"
       :type="modalType"
+      :projectId="projectId"
+      :branchId="branch"
       :path="path"
+      :parent="parent"
       @toggle="toggleModalOpen"
     />
   </div>

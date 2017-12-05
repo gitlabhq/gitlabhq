@@ -2,6 +2,7 @@ import { normalizeHeaders } from '../../../lib/utils/common_utils';
 import flash from '../../../flash';
 import service from '../../services';
 import * as types from '../mutation_types';
+import router from '../../ide_router';
 import {
   findEntry,
   setPageTitle,
@@ -24,7 +25,7 @@ export const closeFile = ({ commit, state, dispatch }, { file, force = false }) 
 
     dispatch('setFileActive', nextFileToOpen);
   } else if (!state.openFiles.length) {
-    this.$router.push(file.parentTreeUrl);
+    router.push(`/project/${file.projectId}/tree/${file.branchId}/`);
   }
 
   dispatch('getLastCommitData');
@@ -94,21 +95,25 @@ export const setEditorPosition = ({ commit }, { file, editorRow, editorColumn })
   commit(types.SET_FILE_POSITION, { file, editorRow, editorColumn });
 };
 
-export const createTempFile = ({ state, commit, dispatch }, { tree, name, content = '', base64 = '' }) => {
+export const createTempFile = ({ state, commit, dispatch }, { projectId, branchId, parent, name, content = '', base64 = '' }) => {
+  const path = parent.path !== undefined ? parent.path : '';
   const file = createTemp({
-    name: name.replace(`${state.path}/`, ''),
-    path: tree.path,
+    projectId,
+    branchId,
+    name: name.replace(`${path}/`, ''),
+    path,
     type: 'blob',
-    level: tree.level !== undefined ? tree.level + 1 : 0,
+    level: parent.level !== undefined ? parent.level + 1 : 0,
     changed: true,
     content,
     base64,
+    url: `/${projectId}/blob/${branchId}/${path}${path ? '/' : ''}${name}`,
   });
 
-  if (findEntry(tree, 'blob', file.name)) return flash(`The name "${file.name}" is already taken in this directory.`);
+  if (findEntry(parent.tree, 'blob', file.name)) return flash(`The name "${file.name}" is already taken in this directory.`);
 
   commit(types.CREATE_TMP_FILE, {
-    parent: tree,
+    parent,
     file,
   });
   commit(types.TOGGLE_FILE_OPEN, file);

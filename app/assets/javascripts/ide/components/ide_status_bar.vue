@@ -54,7 +54,7 @@ export default {
       </div>      
     </div>
     <div 
-      class="col-sm-1 col-sm-offset-1 text-right">
+      class="col-sm-2 text-right">
       {{ selectedFile.name }}
     </div>
     <div 

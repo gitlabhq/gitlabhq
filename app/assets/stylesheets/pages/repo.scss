@@ -47,11 +47,32 @@
       background: $white-normal;
     }
 
+    .repo-file-name {
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
     i.unsaved-icon {
       color: $indigo-700;
-      float:right;
+      float: right;
       font-size: smaller;
       line-height: 20px;
+    }
+
+    .repo-new-btn {
+      display: none;
+      margin-top: -4px;
+      margin-bottom: -4px;
+    }
+
+    &:hover {
+      .repo-new-btn {
+        display: block;
+      }
+
+      .unsaved-icon {
+        display: none;
+      }
     }
   }
 
@@ -67,9 +88,7 @@
 
 .multi-file-table-name,
 .multi-file-table-col-commit-message {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  overflow: visible;
   max-width: 0;
   padding: 6px 12px;
 }
@@ -178,6 +197,13 @@
     }
   }
 
+  .file-content.blob-no-preview {
+    a {
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+
   .line-numbers {
     min-width: 50px;
   }
@@ -246,7 +272,7 @@
       }
 
       .branch-header-btns {
-        padding-right: 4px;
+        padding: 6px 16px;
       }
     }
   }
@@ -395,8 +421,16 @@
 }
 
 .repo-new-btn {
+  float: right;
+
   .dropdown-menu {
     left: auto;
     right: 0;
+
+    label {
+      font-weight: $gl-font-weight-normal;
+      padding: 5px 8px;
+      margin-bottom: 0;
+    }
   }
 }

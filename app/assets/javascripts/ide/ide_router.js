@@ -74,8 +74,6 @@ router.beforeEach((to, from, next) => {
           if (treeEntry) {
             store.dispatch('handleTreeEntryAction', treeEntry);
           }
-        } else {
-          throw (new Error(`Tree entry for ${to.params[0]} doesn't exist`));
         }
       })
       .catch((e) => {

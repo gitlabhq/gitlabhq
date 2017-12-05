@@ -58,9 +58,9 @@ export const toggleTreeOpen = ({ commit, dispatch }, { endpoint, tree }) => {
     // send empty data to clear the tree
     const data = { trees: [], blobs: [], submodules: [] };
 
-    dispatch('updateDirectoryData', { data, tree });
+    dispatch('updateDirectoryData', { data, tree, projectId: tree.projectId, branchId: tree.branchId });
   } else {
-    dispatch('getTreeData', { endpoint, tree });
+    dispatch('getTreeData', { endpoint, tree, projectId: tree.projectId, branch: tree.branchId });
   }
 
   commit(types.TOGGLE_TREE_OPEN, tree);
@@ -82,38 +82,42 @@ export const handleTreeEntryAction = ({ commit, dispatch }, row) => {
   }
 };
 
-export const createTempTree = ({ state, commit, dispatch }, name) => {
-  let tree = state;
+export const createTempTree = ({ state, commit, dispatch }, { projectId, branchId, parent, name }) => {
+  let selectedTree = state;
   const dirNames = name.replace(new RegExp(`^${state.path}/`), '').split('/');
 
   dirNames.forEach((dirName) => {
-    const foundEntry = findEntry(tree, 'tree', dirName);
+    const foundEntry = findEntry(parent.tree, 'tree', dirName);
 
     if (!foundEntry) {
       const tmpEntry = createTemp({
+        projectId,
+        branchId,
         name: dirName,
-        path: tree.path,
+        path: parent.path !== undefined ? parent.path : '',
         type: 'tree',
-        level: tree.level !== undefined ? tree.level + 1 : 0,
+        level: parent.level !== undefined ? parent.level + 1 : 0,
       });
 
       commit(types.CREATE_TMP_TREE, {
-        parent: tree,
+        parent,
         tmpEntry,
       });
       commit(types.TOGGLE_TREE_OPEN, tmpEntry);
 
-      tree = tmpEntry;
+      selectedTree = tmpEntry;
     } else {
-      tree = foundEntry;
+      selectedTree = foundEntry;
     }
   });
 
-  if (tree.tempFile) {
-    dispatch('createTempFile', {
-      tree,
+  if (selectedTree.tempFile) {
+    /* dispatch('createTempFile', {
+      projectId,
+      branchId,
+      tree: selectedTree,
       name: '.gitkeep',
-    });
+    }); */
   }
 };
 
@@ -130,7 +134,7 @@ export const getLastCommitData = ({ state, commit, dispatch, getters }, tree = s
     })
     .then((data) => {
       data.forEach((lastCommit) => {
-        const entry = findEntry(tree, lastCommit.type, lastCommit.file_name);
+        const entry = findEntry(tree.tree, lastCommit.type, lastCommit.file_name);
 
         if (entry) {
           commit(types.SET_LAST_COMMIT_DATA, { entry, lastCommit });

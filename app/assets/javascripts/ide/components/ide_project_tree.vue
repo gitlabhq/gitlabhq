@@ -21,7 +21,7 @@ export default {
     <div class="context-header">
       <a 
         :title="project.name" 
-        :href="project.path">
+        :href="project.web_url">
         <div class="avatar-container s40 project-avatar">
           <project-avatar-image
             class="avatar-container project-avatar"
@@ -40,6 +40,7 @@ export default {
       <branches-tree
         v-for="(branch, index) in project.branches"
         :key="branch.name"
+        :projectId="project.path_with_namespace"
         :branch="branch"/>
     </div>
   </div>

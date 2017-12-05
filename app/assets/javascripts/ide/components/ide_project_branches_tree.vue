@@ -10,6 +10,10 @@ export default {
     newDropdown
   },
   props: {
+    projectId: {
+      type: String,
+      required: true,
+    },
     branch: {
       type: Object,
       required: true,
@@ -29,7 +33,10 @@ export default {
         {{ branch.name }}
       </div>
       <div class="branch-header-btns">
-        <new-dropdown/>
+        <new-dropdown
+          :projectId="projectId"
+          :branch="branch.name"
+          path=""/>
       </div>
     </div>
     <div>
