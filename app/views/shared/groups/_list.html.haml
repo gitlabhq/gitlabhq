@@ -1,5 +1,5 @@
 - if groups.any?
-  - user = local_assigns.fetch(:user, current_user)
+  - user = local_assigns[:user]
 
   %ul.content-list
     - groups.each_with_index do |group, i|
