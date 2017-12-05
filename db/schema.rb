@@ -36,6 +36,8 @@ ActiveRecord::Schema.define(version: 20171124150326) do
     t.datetime_with_timezone "updated_at", null: false
     t.text "description_html"
     t.integer "cached_markdown_version"
+    t.text "new_project_guidelines"
+    t.text "new_project_guidelines_html"
   end
 
   create_table "application_settings", force: :cascade do |t|

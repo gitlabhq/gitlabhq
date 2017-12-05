@@ -189,6 +189,7 @@ have access to GitLab administration tools and settings.
 - [Issue closing pattern](administration/issue_closing_pattern.md): Customize how to close an issue from commit messages.
 - [Libravatar](customization/libravatar.md): Use Libravatar instead of Gravatar for user avatars.
 - [Welcome message](customization/welcome_message.md): Add a custom welcome message to the sign-in page.
+- [New project page](customization/new_project_page.md): Customize the new project page.
 
 ### Admin tools
 
