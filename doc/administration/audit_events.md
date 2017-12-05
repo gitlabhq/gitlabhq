@@ -1,3 +1,7 @@
+---
+last_updated: 2017-12-05
+---
+
 # Audit Events
 
 > Introduced in [GitLab Enterprise Edition Premium][ee].
