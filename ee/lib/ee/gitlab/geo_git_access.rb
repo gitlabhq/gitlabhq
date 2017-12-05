@@ -11,7 +11,7 @@ module EE
         message = super
 
         if ::Gitlab::Geo.primary_node
-          clone_url = geo_primary_default_url_to_repo(@project)
+          clone_url = geo_primary_default_url_to_repo(project_or_wiki)
           message += " Please use the Primary node URL: #{clone_url}. Documentation: #{GEO_SERVER_DOCS_URL}"
         end
 
@@ -20,6 +20,10 @@ module EE
 
       def current_user
         user
+      end
+
+      def project_or_wiki
+        self.class.name == 'Gitlab::GitAccessWiki' ? @project.wiki : @project
       end
 
       def gitlab_config
