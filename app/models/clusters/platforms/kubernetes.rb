@@ -36,12 +36,15 @@ module Clusters
       validates :api_url, url: true, presence: true
       validates :token, presence: true
 
+      validate :prevent_modification, on: :update
+
       after_save :clear_reactive_cache!
 
       alias_attribute :ca_pem, :ca_cert
 
       delegate :project, to: :cluster, allow_nil: true
       delegate :enabled?, to: :cluster, allow_nil: true
+      delegate :managed?, to: :cluster, allow_nil: true
 
       alias_method :active?, :enabled?
 
@@ -174,6 +177,17 @@ module Clusters
 
       def enforce_namespace_to_lower_case
         self.namespace = self.namespace&.downcase
+      end
+
+      def prevent_modification
+        return unless managed?
+
+        if api_url_changed? || token_changed? || ca_pem_changed?
+          errors.add(:base, "cannot modify managed cluster")
+          return false
+        end
+
+        true
       end
     end
   end

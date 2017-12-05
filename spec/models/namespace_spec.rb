@@ -543,6 +543,7 @@ describe Namespace do
     end
   end
 
+<<<<<<< HEAD
   describe '#share_with_group_lock with subgroups', :nested_groups do
     context 'when creating a subgroup' do
       let(:subgroup) { create(:group, parent: root_group )}
@@ -656,6 +657,9 @@ describe Namespace do
   end
 
   describe '#has_forks_of?' do
+=======
+  describe '#find_fork_of?' do
+>>>>>>> upstream/master
     let(:project) { create(:project, :public) }
     let!(:forked_project) { fork_project(project, namespace.owner, namespace: namespace) }
 
@@ -673,6 +677,14 @@ describe Namespace do
       other_fork = fork_project(forked_project, other_namespace.owner, namespace: other_namespace)
 
       expect(other_namespace.find_fork_of(project)).to eq(other_fork)
+    end
+
+    context 'with request store enabled', :request_store do
+      it 'only queries once' do
+        expect(project.fork_network).to receive(:find_forks_in).once.and_call_original
+
+        2.times { namespace.find_fork_of(project) }
+      end
     end
   end
 

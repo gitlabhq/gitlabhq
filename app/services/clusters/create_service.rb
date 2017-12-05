@@ -2,7 +2,7 @@ module Clusters
   class CreateService < BaseService
     attr_reader :access_token
 
-    def execute(access_token)
+    def execute(access_token = nil)
       @access_token = access_token
 
       create_cluster.tap do |cluster|
