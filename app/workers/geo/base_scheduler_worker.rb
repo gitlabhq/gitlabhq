@@ -1,6 +1,6 @@
 module Geo
   class BaseSchedulerWorker
-    include Sidekiq::Worker
+    include ApplicationWorker
     include CronjobQueue
     include ExclusiveLeaseGuard
 

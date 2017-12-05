@@ -1,6 +1,5 @@
 class ExportCsvWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   def perform(current_user_id, project_id, params)
     @current_user = User.find(current_user_id)

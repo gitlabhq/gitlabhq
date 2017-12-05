@@ -52,7 +52,7 @@ module Geo
         to_remove
       end
 
-      Sidekiq::Client.push_bulk('class' => Geo::FileRemovalWorker, 'args' => paths_to_remove)
+      Geo::FileRemovalWorker.bulk_perform_async(paths_to_remove)
     end
 
     def mark_for_resync!

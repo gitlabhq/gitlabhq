@@ -1,5 +1,5 @@
 class RebaseWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
 
   sidekiq_options queue: :merge
 

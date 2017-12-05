@@ -1,8 +1,7 @@
 class RepositoryImportWorker
   ImportError = Class.new(StandardError)
 
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
   include ExceptionBacktrace
   include ProjectStartImport
 

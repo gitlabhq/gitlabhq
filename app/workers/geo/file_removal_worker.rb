@@ -1,9 +1,8 @@
 module Geo
   class FileRemovalWorker
-    include Sidekiq::Worker
+    include ApplicationWorker
     include Gitlab::Geo::LogHelpers
-
-    sidekiq_options queue: :geo
+    include GeoQueue
 
     def perform(file_path)
       remove_file!(file_path)
