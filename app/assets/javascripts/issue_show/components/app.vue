@@ -8,7 +8,7 @@ import titleComponent from './title.vue';
 import descriptionComponent from './description.vue';
 import editedComponent from './edited.vue';
 import formComponent from './form.vue';
-import PopupDialog from '../../vue_shared/components/popup_dialog.vue';
+import PopupDialog from '~/vue_shared/components/popup_dialog.vue';
 import '../../lib/utils/url_utility';
 
 const recaptchaScriptID = 'gl-recaptcha-script';
@@ -303,7 +303,6 @@ export default {
       class="recaptcha-modal"
       :primary-button-label="__('Submit')"
       :title="__('Please solve the reCAPTCHA')"
-      :text="__('testtest')"
       @toggle="closeRecaptcha"
       @submit="submitRecaptcha"
     >
