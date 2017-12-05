@@ -39,6 +39,11 @@ export default {
       required: false,
       default: () => [],
     },
+    neutralIssues: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
   },
 
   components: {
@@ -129,6 +134,14 @@ export default {
         :type="type"
         status="success"
         :issues="resolvedIssues"
+        />
+
+      <issues-block
+        class="js-mr-code-non-issues"
+        v-if="neutralIssues.length"
+        :type="type"
+        status="neutral"
+        :issues="neutralIssues"
         />
 
       <issues-block

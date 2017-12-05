@@ -53,6 +53,15 @@ export default class MRWidgetService extends CEWidgetService {
             metrics: [
               {
                 name: 'Sitespeed Score',
+                value: 79,
+              },
+            ],
+          },
+          {
+            subject: '/yet/another/path',
+            metrics: [
+              {
+                name: 'Sitespeed Score',
                 value: 80,
               },
             ],

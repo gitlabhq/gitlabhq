@@ -21,13 +21,16 @@
     },
     computed: {
       icon() {
-        return this.isStatusFailed ? spriteIcon('cut') : spriteIcon('plus');
+        return this.isStatusSuccess ? spriteIcon('plus') : spriteIcon('cut');
       },
       isStatusFailed() {
         return this.status === 'failed';
       },
       isStatusSuccess() {
         return this.status === 'success';
+      },
+      isStatusNeutral() {
+        return this.status === 'neutral';
       },
       isTypeQuality() {
         return this.type === 'codequality';
@@ -46,7 +49,8 @@
     <li
       :class="{
         failed: isStatusFailed,
-        success: isStatusSuccess
+        success: isStatusSuccess,
+        neutral: isStatusNeutral
       }
       "v-for="issue in issues">
 

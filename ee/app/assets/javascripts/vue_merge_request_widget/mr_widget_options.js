@@ -248,6 +248,7 @@ export default {
         :success-text="performanceText"
         :unresolvedIssues="mr.performanceMetrics.degraded"
         :resolvedIssues="mr.performanceMetrics.improved"
+        :neutralIssues="mr.performanceMetrics.neutral"
         />
       <collapsible-section
         class="js-sast-widget"
