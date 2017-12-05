@@ -64,6 +64,7 @@ describe GroupMemberPresenter do
     context 'when user cannot update_group_member' do
       before do
         allow(presenter).to receive(:can?).with(user, :update_group_member, presenter).and_return(false)
+        allow(presenter).to receive(:can?).with(user, :override_group_member, presenter).and_return(false)
       end
 
       it { expect(presenter.can_update?).to eq(false) }
@@ -105,6 +106,7 @@ describe GroupMemberPresenter do
       context 'when user cannot update_group_member' do
         before do
           allow(presenter).to receive(:can?).with(user, :update_group_member, presenter).and_return(false)
+          allow(presenter).to receive(:can?).with(user, :override_group_member, presenter).and_return(false)
         end
 
         it { expect(presenter.can_approve?).to eq(false) }

@@ -1,9 +1,11 @@
 class MemberPresenter < Gitlab::View::Presenter::Delegated
-  include Gitlab::Allowable
-
   prepend EE::MemberPresenter
 
   presents :member
+
+  def access_level_roles
+    member.class.access_level_roles
+  end
 
   def can_resend_invite?
     invite? &&
@@ -12,10 +14,6 @@ class MemberPresenter < Gitlab::View::Presenter::Delegated
 
   def can_update?
     can?(current_user, update_member_permission, member)
-  end
-
-  def cannot_update?
-    !can_update?
   end
 
   def can_remove?
