@@ -53,14 +53,14 @@ describe Projects::ClustersController do
         context 'when only enabled clusters are requested' do
           it 'returns only enabled clusters' do
             get :index, namespace_id: project.namespace, project_id: project, scope: 'active'
-            expect(assigns(:clusters)).to all(&:enabled)
+            expect(assigns(:clusters)).to all(have_attributes(enabled: true))
           end
         end
 
         context 'when only disabled clusters are requested' do
           it 'returns only disabled clusters' do
             get :index, namespace_id: project.namespace, project_id: project, scope: 'inactive'
-            expect(assigns(:clusters)).to all { |cluster| !cluster.enabled }
+            expect(assigns(:clusters)).to all(have_attributes(enabled: false))
           end
         end
       end
