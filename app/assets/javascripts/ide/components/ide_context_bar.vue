@@ -37,9 +37,7 @@ export default {
     }"
   >
     <div 
-      class="multi-file-commit-panel-section"
-      @click="toggleCollapsed"
-    >
+      class="multi-file-commit-panel-section">
       <header
         class="multi-file-commit-panel-header"
         :class="{
