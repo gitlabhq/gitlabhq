@@ -144,7 +144,7 @@ Example response:
 
 
 ```
-GET /geo_nodes/failures
+GET /geo_nodes/current/failures
 ```
 
 | Attribute | Type | Required | Description |
@@ -154,7 +154,7 @@ GET /geo_nodes/failures
 This endpoint uses [Pagination](README.md#pagination).
 
 ```bash
-curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/geo_nodes/failures
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/geo_nodes/current/failures
 ```
 
 Example response:

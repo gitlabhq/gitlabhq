@@ -36,7 +36,7 @@ module API
       # Get project registry failures for the current Geo node
       #
       # Example request:
-      #   GET /geo_nodes/failures
+      #   GET /geo_nodes/current/failures
       desc 'Get project registry failures for the current Geo node' do
         success ::GeoProjectRegistryEntity
       end
@@ -44,7 +44,7 @@ module API
         optional :type, type: String, values: %w[wiki repository], desc: 'Type of failure (repository/wiki)'
         use :pagination
       end
-      get '/failures' do
+      get '/current/failures' do
         geo_node = Gitlab::Geo.current_node
 
         not_found('Geo node not found') unless geo_node
