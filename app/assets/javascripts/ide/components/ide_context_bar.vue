@@ -19,7 +19,7 @@ export default {
     ]),
     currentIcon() {
       return this.collapsed ? 'angle-double-left' : 'angle-double-right';
-    }
+    },
   },
   methods: {
     toggleCollapsed() {

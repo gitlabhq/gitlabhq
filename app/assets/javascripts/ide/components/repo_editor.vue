@@ -41,10 +41,7 @@ export default {
         .catch(() => flash('Error setting up monaco. Please try again.'));
     },
     setupEditor() {
-      if (!this.activeFile) {
-        alert('NO ACTIVE FILE ');
-        return;
-      }
+      if (!this.activeFile) return;
 
       const model = this.editor.createModel(this.activeFile);
 
@@ -64,7 +61,7 @@ export default {
           editorRow: e.position.lineNumber,
           editorColumn: e.position.column,
         });
-      });      
+      });
 
       this.editor.setPosition({
         lineNumber: this.activeFile.editorRow,

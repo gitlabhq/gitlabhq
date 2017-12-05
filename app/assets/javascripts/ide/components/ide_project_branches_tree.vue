@@ -7,7 +7,7 @@ export default {
   components: {
     RepoTree,
     Icon,
-    newDropdown
+    newDropdown,
   },
   props: {
     projectId: {

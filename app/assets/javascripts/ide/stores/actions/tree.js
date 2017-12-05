@@ -82,7 +82,10 @@ export const handleTreeEntryAction = ({ commit, dispatch }, row) => {
   }
 };
 
-export const createTempTree = ({ state, commit, dispatch }, { projectId, branchId, parent, name }) => {
+export const createTempTree = (
+  { state, commit, dispatch },
+  { projectId, branchId, parent, name },
+) => {
   let selectedTree = state;
   const dirNames = name.replace(new RegExp(`^${state.path}/`), '').split('/');
 

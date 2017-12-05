@@ -47,7 +47,7 @@
       ...mapState([
         'trees',
       ]),
-    }
+    },
   };
 </script>
 
