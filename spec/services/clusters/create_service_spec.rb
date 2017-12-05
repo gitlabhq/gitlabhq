@@ -82,12 +82,41 @@ describe Clusters::CreateService do
     end
 
     context 'when project has a cluster' do
-      include_context 'valid params'
       let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
-      it 'does not create a cluster' do
-        expect(ClusterProvisionWorker).not_to receive(:perform_async)
-        expect { subject }.to raise_error(ArgumentError).and change { Clusters::Cluster.count }.by(0)
+      before do
+        allow(project).to receive(:feature_available?).and_call_original
+      end
+
+      context 'when license has multiple clusters feature' do
+        before do
+          allow(project).to receive(:feature_available?).with(:multiple_clusters).and_return(true)
+        end
+
+        context 'when correct params' do
+          include_context 'valid params'
+
+          include_examples 'create cluster'
+        end
+
+        context 'when invalid params' do
+          include_context 'invalid params'
+
+          include_examples 'error'
+        end
+      end
+
+      context 'when license does not have multiple clusters feature' do
+        include_context 'valid params'
+
+        before do
+          allow(project).to receive(:feature_available?).with(:multiple_clusters).and_return(false)
+        end
+
+        it 'does not create a cluster' do
+          expect(ClusterProvisionWorker).not_to receive(:perform_async)
+          expect { subject }.to raise_error(ArgumentError).and change { Clusters::Cluster.count }.by(0)
+        end
       end
     end
   end
