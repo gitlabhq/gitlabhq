@@ -9,11 +9,12 @@ describe 'Issue Boards', :js do
   let!(:milestone)   { create(:milestone, project: project) }
   let!(:development) { create(:label, project: project, name: 'Development') }
   let!(:stretch)     { create(:label, project: project, name: 'Stretch') }
-  let!(:issue1)      { create(:labeled_issue, project: project, assignees: [user], milestone: milestone, labels: [development], relative_position: 2) }
+  let!(:issue1)      { create(:labeled_issue, project: project, assignees: [user], milestone: milestone, labels: [development], weight: 3, relative_position: 2) }
   let!(:issue2)      { create(:labeled_issue, project: project, labels: [development, stretch], relative_position: 1) }
   let(:board)        { create(:board, project: project) }
   let!(:list)        { create(:list, board: board, label: development, position: 0) }
-  let(:card) { find('.board:nth-child(2)').first('.card') }
+  let(:card1) { find('.board:nth-child(2)').find('.card:nth-child(2)') }
+  let(:card2) { find('.board:nth-child(2)').find('.card:nth-child(1)') }
 
   around do |example|
     Timecop.freeze { example.run }
@@ -33,7 +34,7 @@ describe 'Issue Boards', :js do
 
   context 'assignee' do
     it 'updates the issues assignee' do
-      click_card(card)
+      click_card(card2)
 
       page.within('.assignee') do
         click_link 'Edit'
@@ -49,11 +50,11 @@ describe 'Issue Boards', :js do
         expect(page).to have_content(user.name)
       end
 
-      expect(card).to have_selector('.avatar')
+      expect(card2).to have_selector('.avatar')
     end
 
     it 'adds multiple assignees' do
-      click_card(card)
+      click_card(card2)
 
       page.within('.assignee') do
         click_link 'Edit'
@@ -69,7 +70,7 @@ describe 'Issue Boards', :js do
         expect(page).to have_content(user2.name)
       end
 
-      expect(card.all('.avatar').length).to eq(2)
+      expect(card2.all('.avatar').length).to eq(2)
     end
 
     it 'removes the assignee' do
@@ -96,7 +97,7 @@ describe 'Issue Boards', :js do
     end
 
     it 'assignees to current user' do
-      click_card(card)
+      click_card(card2)
 
       page.within(find('.assignee')) do
         expect(page).to have_content('No assignee')
@@ -108,11 +109,11 @@ describe 'Issue Boards', :js do
         expect(page).to have_content(user.name)
       end
 
-      expect(card).to have_selector('.avatar')
+      expect(card2).to have_selector('.avatar')
     end
 
     it 'updates assignee dropdown' do
-      click_card(card)
+      click_card(card2)
 
       page.within('.assignee') do
         click_link 'Edit'
@@ -136,6 +137,69 @@ describe 'Issue Boards', :js do
         click_link 'Edit'
 
         expect(find('.dropdown-menu')).to have_selector('.is-active')
+      end
+    end
+  end
+
+  context 'weight' do
+    it 'displays weight async' do
+      click_card(card1)
+      wait_for_requests
+
+      expect(find('.js-weight-weight-label').text).to have_content(issue1.weight)
+    end
+
+    it 'updates weight in sidebar to 1' do
+      click_card(card1)
+      wait_for_requests
+
+      page.within '.weight' do
+        click_link 'Edit'
+        click_link '1'
+
+        page.within '.value' do
+          expect(page).to have_content '1'
+        end
+      end
+
+      # Ensure the request was sent and things are persisted
+      visit project_board_path(project, board)
+      wait_for_requests
+
+      click_card(card1)
+      wait_for_requests
+
+      page.within '.weight' do
+        page.within '.value' do
+          expect(page).to have_content '1'
+        end
+      end
+    end
+
+    it 'updates weight in sidebar to no weight' do
+      click_card(card1)
+      wait_for_requests
+
+      page.within '.weight' do
+        click_link 'Edit'
+        click_link 'No Weight'
+
+        page.within '.value' do
+          expect(page).to have_content 'None'
+        end
+      end
+
+      # Ensure the request was sent and things are persisted
+      visit project_board_path(project, board)
+      wait_for_requests
+
+      click_card(card1)
+      wait_for_requests
+
+      page.within '.weight' do
+        page.within '.value' do
+          expect(page).to have_content 'None'
+        end
       end
     end
   end

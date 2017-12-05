@@ -20,6 +20,10 @@ class ListIssue {
     this.position = obj.relative_position || Infinity;
     this.isFetching = {
       subscriptions: true,
+      weight: true,
+    };
+    this.isLoading = {
+      weight: false,
     };
     this.sidebarInfoEndpoint = obj.issue_sidebar_endpoint;
     this.toggleSubscriptionEndpoint = obj.toggle_subscription_endpoint;
@@ -92,6 +96,10 @@ class ListIssue {
 
   setFetchingState(key, value) {
     this.isFetching[key] = value;
+  }
+
+  setLoadingState(key, value) {
+    this.isLoading[key] = value;
   }
 
   update (url) {

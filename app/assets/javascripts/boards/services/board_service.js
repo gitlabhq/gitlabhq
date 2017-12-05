@@ -122,6 +122,14 @@ export default class BoardService {
     return Vue.http.get(endpoint);
   }
 
+  static updateWeight(endpoint, weight = null) {
+    return Vue.http.put(endpoint, {
+      'issue[weight]': weight,
+    }, {
+      emulateJSON: true,
+    });
+  }
+
   static toggleIssueSubscription(endpoint) {
     return Vue.http.post(endpoint);
   }

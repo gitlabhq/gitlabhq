@@ -367,7 +367,9 @@ module IssuablesHelper
       editable: can_edit_issuable,
       currentUser: current_user.as_json(only: [:username, :id, :name], methods: :avatar_url),
       rootPath: root_path,
-      fullPath: @project.full_path
+      fullPath: @project.full_path,
+      weightOptions: Issue.weight_options,
+      weightNoneValue: Issue::WEIGHT_NONE
     }
   end
 

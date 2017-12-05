@@ -15,7 +15,8 @@
     "assignees": {
       "type": "array",
       "items": { "$ref": "../public_api/v4/user/basic.json" }
-    }
+    },
+    "weight": { "type": ["integer", "null"] }
   },
   "additionalProperties": false
 }
