@@ -33,6 +33,27 @@ module API
         present paginate(status), with: GeoNodeStatusEntity
       end
 
+      # Get project registry failures for the current Geo node
+      #
+      # Example request:
+      #   GET /geo_nodes/current/failures
+      desc 'Get project registry failures for the current Geo node' do
+        success ::GeoProjectRegistryEntity
+      end
+      params do
+        optional :type, type: String, values: %w[wiki repository], desc: 'Type of failure (repository/wiki)'
+        use :pagination
+      end
+      get '/current/failures' do
+        geo_node = Gitlab::Geo.current_node
+
+        not_found('Geo node not found') unless geo_node
+
+        project_registries = paginate(geo_node.filtered_project_registries(params[:type]))
+
+        present project_registries, with: ::GeoProjectRegistryEntity
+      end
+
       # Get all Geo node information
       #
       # Example request:

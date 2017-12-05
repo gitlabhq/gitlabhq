@@ -1,0 +1,26 @@
+{
+  "type": "array",
+  "required" : [
+    "project_id",
+    "last_repository_synced_at",
+    "last_repository_successful_sync_at",
+    "last_wiki_synced_at",
+    "last_wiki_successful_sync_at",
+    "repository_retry_count",
+    "wiki_retry_count",
+    "last_repository_sync_failure",
+    "last_wiki_sync_failure"
+  ],
+  "properties" : {
+    "project_id": { "type": "integer" },
+    "last_repository_synced_at": { "type": ["string"] },
+    "last_repository_successful_sync_at": { "type": ["string"] },
+    "last_wiki_synced_at": { "type": ["string"] },
+    "last_wiki_successful_sync_at": { "type": ["string"] },
+    "repository_retry_count": { "type": "integer" },
+    "wiki_retry_count": { "type": "integer" },
+    "last_repository_sync_failure": { "type": ["string"] },
+    "last_wiki_sync_failure": { "type": ["string"] }
+  },
+  "additionalProperties": false
+}

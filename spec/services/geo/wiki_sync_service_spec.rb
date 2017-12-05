@@ -44,6 +44,12 @@ RSpec.describe Geo::WikiSyncService do
       subject.execute
     end
 
+    it 'voids the failure message when it succeeds after an error' do
+      registry = create(:geo_project_registry, project: project, last_wiki_sync_failure: 'error')
+
+      expect { subject.execute }.to change { registry.reload.last_wiki_sync_failure}.to(nil)
+    end
+
     it 'does not fetch wiki repository if cannot obtain a lease' do
       allow(lease).to receive(:try_obtain) { false }
 
@@ -117,7 +123,7 @@ RSpec.describe Geo::WikiSyncService do
         let(:registry) { Geo::ProjectRegistry.find_by(project_id: project.id) }
 
         before do
-          allow(repository).to receive(:fetch_as_mirror).with(url_to_repo, forced: true) { raise Gitlab::Shell::Error }
+          allow(repository).to receive(:fetch_as_mirror).with(url_to_repo, forced: true) { raise Gitlab::Shell::Error, 'shell error' }
 
           subject.execute
         end
@@ -128,6 +134,10 @@ RSpec.describe Geo::WikiSyncService do
 
         it 'resets last_wiki_successful_sync_at' do
           expect(registry.last_wiki_successful_sync_at).to be_nil
+        end
+
+        it 'sets last_wiki_sync_failure' do
+          expect(registry.last_wiki_sync_failure).to eq('Error syncing wiki repository: shell error')
         end
       end
     end

@@ -127,12 +127,10 @@ module Geo
       @registry ||= Geo::ProjectRegistry.find_or_initialize_by(project_id: project.id)
     end
 
-    def update_registry(started_at: nil, finished_at: nil)
+    def update_registry!(started_at: nil, finished_at: nil, attrs: {})
       return unless started_at || finished_at
 
       log_info("Updating #{type} sync information")
-
-      attrs = {}
 
       if started_at
         attrs["last_#{type}_synced_at"] = started_at
@@ -146,6 +144,15 @@ module Geo
         attrs["#{type}_retry_count"] = nil
         attrs["#{type}_retry_at"] = nil
       end
+
+      registry.update!(attrs)
+    end
+
+    def fail_registry!(message, error, attrs = {})
+      log_error(message, error)
+
+      attrs["last_#{type}_sync_failure"] = "#{message}: #{error.message}"
+      attrs["#{type}_retry_count"] = retry_count + 1
 
       registry.update!(attrs)
     end
