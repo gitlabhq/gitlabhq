@@ -157,7 +157,7 @@ class GeoNode < ActiveRecord::Base
   end
 
   def selective_sync?
-    namespaces.present?
+    namespaces.exists?
   end
 
   def uploads
