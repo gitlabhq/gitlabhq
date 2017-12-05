@@ -261,6 +261,7 @@ RSpec.shared_examples 'snippet visibility' do
       {
         unauthenticated: nil,
         external: external,
+        non_member: create(:user),
         author: author
       }
     end
@@ -269,14 +270,17 @@ RSpec.shared_examples 'snippet visibility' do
       [
         [:public,   :unauthenticated, true],
         [:public,   :external,        true],
+        [:public,   :non_member,      true],
         [:public,   :author,          true],
 
         [:internal, :unauthenticated, false],
         [:internal, :external,        false],
+        [:internal, :non_member,      true],
         [:internal, :author,          true],
 
         [:private,  :unauthenticated, false],
         [:private,  :external,        false],
+        [:private,  :non_member,      false],
         [:private,  :author,          true]
       ]
     end

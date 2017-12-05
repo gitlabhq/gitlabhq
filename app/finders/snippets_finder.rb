@@ -70,14 +70,6 @@ class SnippetsFinder < UnionFinder
     Snippet.arel_table
   end
 
-  def from_authorized_projects(snippets)
-    snippets.where(
-      'author_id = :author_id
-       OR project_id IN (:project_ids)',
-       author_id: current_user.id,
-       project_ids: current_user.authorized_projects.select(:id))
-  end
-
   def by_visibility(items)
     visibility = params[:visibility] || visibility_from_scope
 
