@@ -28,7 +28,7 @@ describe('Clusters', () => {
 
       expect(
         cluster.toggleButton.classList,
-      ).not.toContain('checked');
+      ).not.toContain('is-checked');
 
       expect(
         cluster.toggleInput.getAttribute('value'),

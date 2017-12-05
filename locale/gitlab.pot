@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-11-02 14:42+0100\n"
-"PO-Revision-Date: 2017-11-02 14:42+0100\n"
+"POT-Creation-Date: 2017-12-02 15:22+0000\n"
+"PO-Revision-Date: 2017-12-02 15:22+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -130,6 +130,12 @@ msgid "Advanced settings"
 msgstr ""
 
 msgid "All"
+msgstr ""
+
+msgid "An error occurred when toggling the notification subscription"
+msgstr ""
+
+msgid "An error occurred while fetching sidebar data"
 msgstr ""
 
 msgid "An error occurred. Please try again."
@@ -253,6 +259,9 @@ msgid "BillingPlans|paid annually at %{price_per_year}"
 msgstr ""
 
 msgid "BillingPlans|per user"
+msgstr ""
+
+msgid "Available"
 msgstr ""
 
 msgid "Branch"
@@ -488,7 +497,34 @@ msgstr ""
 msgid "Cluster"
 msgstr ""
 
-msgid "ClusterIntegration|This account must have permissions to create a cluster in the %{link_to_container_project} specified below"
+msgid "ClusterIntegration|%{appList} was successfully installed on your cluster"
+msgstr ""
+
+msgid "ClusterIntegration|%{boldNotice} This will add some extra resources like a load balancer, which incur additional costs. See %{pricingLink}"
+msgstr ""
+
+msgid "ClusterIntegration|A cluster has been set up on this project through the Kubernetes integration page"
+msgstr ""
+
+msgid "ClusterIntegration|Active"
+msgstr ""
+
+msgid "ClusterIntegration|Add an existing cluster"
+msgstr ""
+
+msgid "ClusterIntegration|Add cluster"
+msgstr ""
+
+msgid "ClusterIntegration|All"
+msgstr ""
+
+msgid "ClusterIntegration|Applications"
+msgstr ""
+
+msgid "ClusterIntegration|Choose how to set up cluster integration"
+msgstr ""
+
+msgid "ClusterIntegration|Cluster"
 msgstr ""
 
 msgid "ClusterIntegration|Cluster details"
@@ -509,13 +545,22 @@ msgstr ""
 msgid "ClusterIntegration|Cluster is being created on Google Container Engine..."
 msgstr ""
 
+msgid "ClusterIntegration|Cluster management"
+msgstr ""
+
 msgid "ClusterIntegration|Cluster name"
 msgstr ""
 
 msgid "ClusterIntegration|Cluster was successfully created on Google Container Engine"
 msgstr ""
 
+msgid "ClusterIntegration|Clusters allow you to use review apps, deploy your applications, run your pipelines, and much more in an easy way. %{link_to_help_page}"
+msgstr ""
+
 msgid "ClusterIntegration|Copy cluster name"
+msgstr ""
+
+msgid "ClusterIntegration|Create a new cluster on Google Container Engine right from GitLab"
 msgstr ""
 
 msgid "ClusterIntegration|Create cluster"
@@ -524,7 +569,22 @@ msgstr ""
 msgid "ClusterIntegration|Create new cluster on Google Container Engine"
 msgstr ""
 
+msgid "ClusterIntegration|Create on GKE"
+msgstr ""
+
 msgid "ClusterIntegration|Enable cluster integration"
+msgstr ""
+
+msgid "ClusterIntegration|Enter the details for an existing Kubernetes cluster"
+msgstr ""
+
+msgid "ClusterIntegration|Environment pattern"
+msgstr ""
+
+msgid "ClusterIntegration|GKE pricing"
+msgstr ""
+
+msgid "ClusterIntegration|GitLab Runner"
 msgstr ""
 
 msgid "ClusterIntegration|Google Cloud Platform project ID"
@@ -536,7 +596,34 @@ msgstr ""
 msgid "ClusterIntegration|Google Container Engine project"
 msgstr ""
 
+msgid "ClusterIntegration|Helm Tiller"
+msgstr ""
+
+msgid "ClusterIntegration|Inactive"
+msgstr ""
+
+msgid "ClusterIntegration|Ingress"
+msgstr ""
+
+msgid "ClusterIntegration|Install"
+msgstr ""
+
+msgid "ClusterIntegration|Install applications on your cluster. Read more about %{helpLink}"
+msgstr ""
+
+msgid "ClusterIntegration|Installed"
+msgstr ""
+
+msgid "ClusterIntegration|Installing"
+msgstr ""
+
+msgid "ClusterIntegration|Integrate cluster automation"
+msgstr ""
+
 msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
+msgstr ""
+
+msgid "ClusterIntegration|Learn more about Clusters"
 msgstr ""
 
 msgid "ClusterIntegration|Machine type"
@@ -548,7 +635,16 @@ msgstr ""
 msgid "ClusterIntegration|Manage Cluster integration on your GitLab project"
 msgstr ""
 
+msgid "ClusterIntegration|Manage Kubernetes integration"
+msgstr ""
+
 msgid "ClusterIntegration|Manage your cluster by visiting %{link_gke}"
+msgstr ""
+
+msgid "ClusterIntegration|Multiple clusters are available in GitLab Entreprise Edition Premium and Ultimate"
+msgstr ""
+
+msgid "ClusterIntegration|Note:"
 msgstr ""
 
 msgid "ClusterIntegration|Number of nodes"
@@ -557,7 +653,13 @@ msgstr ""
 msgid "ClusterIntegration|Please make sure that your Google account meets the following requirements:"
 msgstr ""
 
-msgid "ClusterIntegration|Project namespace (optional, unique)"
+msgid "ClusterIntegration|Problem setting up the cluster"
+msgstr ""
+
+msgid "ClusterIntegration|Problem setting up the clusters list"
+msgstr ""
+
+msgid "ClusterIntegration|Project namespace"
 msgstr ""
 
 msgid "ClusterIntegration|Read our %{link_to_help_page} on cluster integration."
@@ -570,6 +672,9 @@ msgid "ClusterIntegration|Remove integration"
 msgstr ""
 
 msgid "ClusterIntegration|Removing cluster integration will remove the cluster configuration you have added to this project. It will not delete your cluster on Google Container Engine."
+msgstr ""
+
+msgid "ClusterIntegration|Request to begin installing failed"
 msgstr ""
 
 msgid "ClusterIntegration|See and edit the details for your cluster"
@@ -588,6 +693,15 @@ msgid "ClusterIntegration|Something went wrong on our end."
 msgstr ""
 
 msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine"
+msgstr ""
+
+msgid "ClusterIntegration|Something went wrong while installing %{title}"
+msgstr ""
+
+msgid "ClusterIntegration|There are no clusters to show"
+msgstr ""
+
+msgid "ClusterIntegration|This account must have permissions to create a cluster in the %{link_to_container_project} specified below"
 msgstr ""
 
 msgid "ClusterIntegration|Toggle Cluster"
@@ -609,6 +723,9 @@ msgid "ClusterIntegration|cluster"
 msgstr ""
 
 msgid "ClusterIntegration|help page"
+msgstr ""
+
+msgid "ClusterIntegration|installing applications"
 msgstr ""
 
 msgid "ClusterIntegration|meets the requirements"
@@ -718,6 +835,15 @@ msgid "Control the maximum concurrency of repository backfill for this secondary
 msgstr ""
 
 msgid "Copy SSH public key to clipboard"
+msgstr ""
+
+msgid "ContributorsPage|Building repository graph."
+msgstr ""
+
+msgid "ContributorsPage|Commits to %{branch_name}, excluding merge commits. Limited to 6,000 commits."
+msgstr ""
+
+msgid "ContributorsPage|Please wait a moment, this page will automatically refresh when ready."
 msgstr ""
 
 msgid "Copy URL to clipboard"
@@ -882,6 +1008,60 @@ msgid "Edit Pipeline Schedule %{id}"
 msgstr ""
 
 msgid "Emails"
+msgstr ""
+
+msgid "Environments|An error occurred while fetching the environments."
+msgstr ""
+
+msgid "Environments|An error occurred while making the request."
+msgstr ""
+
+msgid "Environments|Commit"
+msgstr ""
+
+msgid "Environments|Deployment"
+msgstr ""
+
+msgid "Environments|Environment"
+msgstr ""
+
+msgid "Environments|Environments"
+msgstr ""
+
+msgid "Environments|Environments are places where code gets deployed, such as staging or production."
+msgstr ""
+
+msgid "Environments|Job"
+msgstr ""
+
+msgid "Environments|New environment"
+msgstr ""
+
+msgid "Environments|No deployments yet"
+msgstr ""
+
+msgid "Environments|Open"
+msgstr ""
+
+msgid "Environments|Re-deploy"
+msgstr ""
+
+msgid "Environments|Read more about environments"
+msgstr ""
+
+msgid "Environments|Rollback"
+msgstr ""
+
+msgid "Environments|Show all"
+msgstr ""
+
+msgid "Environments|Updated"
+msgstr ""
+
+msgid "Environments|You don't have any environments right now."
+msgstr ""
+
+msgid "Error occurred when toggling the notification subscription"
 msgstr ""
 
 msgid "EventFilterBy|Filter by all"
@@ -1299,6 +1479,9 @@ msgstr ""
 msgid "No schedules"
 msgstr ""
 
+msgid "No time spent"
+msgstr ""
+
 msgid "None"
 msgstr ""
 
@@ -1653,6 +1836,39 @@ msgstr ""
 msgid "ProjectsDropdown|This feature requires browser localStorage support"
 msgstr ""
 
+msgid "PrometheusService|By default, Prometheus listens on ‘http://localhost:9090’. It’s not recommended to change the default address and port as this might affect or conflict with other services running on the GitLab server."
+msgstr ""
+
+msgid "PrometheusService|Finding and configuring metrics..."
+msgstr ""
+
+msgid "PrometheusService|Metrics"
+msgstr ""
+
+msgid "PrometheusService|Metrics are automatically configured and monitored based on a library of metrics from popular exporters."
+msgstr ""
+
+msgid "PrometheusService|Missing environment variable"
+msgstr ""
+
+msgid "PrometheusService|Monitored"
+msgstr ""
+
+msgid "PrometheusService|More information"
+msgstr ""
+
+msgid "PrometheusService|No metrics are being monitored. To start monitoring, deploy to an environment."
+msgstr ""
+
+msgid "PrometheusService|Prometheus API Base URL, like http://prometheus.example.com/"
+msgstr ""
+
+msgid "PrometheusService|Prometheus monitoring"
+msgstr ""
+
+msgid "PrometheusService|View environments"
+msgstr ""
+
 msgid "Public - The group and any public projects can be viewed without any authentication."
 msgstr ""
 
@@ -1937,6 +2153,9 @@ msgstr ""
 msgid "Start the Runner!"
 msgstr ""
 
+msgid "Stopped"
+msgstr ""
+
 msgid "Subgroups"
 msgstr ""
 
@@ -1955,6 +2174,75 @@ msgstr[0] ""
 msgstr[1] ""
 
 msgid "Tags"
+msgstr ""
+
+msgid "TagsPage|Browse commits"
+msgstr ""
+
+msgid "TagsPage|Browse files"
+msgstr ""
+
+msgid "TagsPage|Can't find HEAD commit for this tag"
+msgstr ""
+
+msgid "TagsPage|Cancel"
+msgstr ""
+
+msgid "TagsPage|Create tag"
+msgstr ""
+
+msgid "TagsPage|Delete tag"
+msgstr ""
+
+msgid "TagsPage|Deleting the %{tag_name} tag cannot be undone. Are you sure?"
+msgstr ""
+
+msgid "TagsPage|Edit release notes"
+msgstr ""
+
+msgid "TagsPage|Existing branch name, tag, or commit SHA"
+msgstr ""
+
+msgid "TagsPage|Filter by tag name"
+msgstr ""
+
+msgid "TagsPage|New Tag"
+msgstr ""
+
+msgid "TagsPage|New tag"
+msgstr ""
+
+msgid "TagsPage|Optionally, add a message to the tag."
+msgstr ""
+
+msgid "TagsPage|Optionally, add release notes to the tag. They will be stored in the GitLab database and displayed on the tags page."
+msgstr ""
+
+msgid "TagsPage|Release notes"
+msgstr ""
+
+msgid "TagsPage|Repository has no tags yet."
+msgstr ""
+
+msgid "TagsPage|Sort by"
+msgstr ""
+
+msgid "TagsPage|Tags"
+msgstr ""
+
+msgid "TagsPage|Tags give the ability to mark specific points in history as being important"
+msgstr ""
+
+msgid "TagsPage|This tag has no release notes."
+msgstr ""
+
+msgid "TagsPage|Use git tag command to add a new one:"
+msgstr ""
+
+msgid "TagsPage|Write your release notes or drag files here..."
+msgstr ""
+
+msgid "TagsPage|protected"
 msgstr ""
 
 msgid "Target Branch"
@@ -2208,6 +2496,9 @@ msgid "Time|s"
 msgstr ""
 
 msgid "Total Time"
+msgstr ""
+
+msgid "Total issue time spent"
 msgstr ""
 
 msgid "Total test time for all commits/merges"
