@@ -143,13 +143,30 @@
   border-radius: $border-radius-default;
   margin: 0 3px 0 -4px;
   vertical-align: middle;
+  fill: $issuable-sidebar-color;
 
-  &.is-active {
-    fill: $orange-600;
+  &:hover:not(.disabled) {
+    fill: $gl-text-color;
   }
 
   .sidebar-collapsed-icon & {
     margin: 0;
+
+    &.is-active {
+      fill: $orange-600;
+
+      &:hover:not(.disabled) {
+        fill: $orange-700;
+      }
+    }
+  }
+
+  &.is-active {
+    fill: $orange-600;
+
+    &:hover:not(.disabled) {
+      fill: $orange-700;
+    }
   }
 }
 
