@@ -166,6 +166,20 @@ describe Ci::Build do
       context 'artifacts archive does not exist' do
         let(:build) { create(:ci_build) }
 
+        context 'is not expired' do
+          it { is_expected.to be_truthy }
+        end
+      end
+    end
+
+    context 'when legacy artifacts are used' do
+      let(:build) { create(:ci_build, :legacy_artifacts) }
+
+      subject { build.artifacts? }
+
+      context 'artifacts archive does not exist' do
+        let(:build) { create(:ci_build) }
+
         it { is_expected.to be_falsy }
       end
 
@@ -190,7 +204,7 @@ describe Ci::Build do
   
     context 'artifacts metadata does not exist' do
       before do
-        build.update_attributes(artifacts_metadata: nil)
+        build.update_attributes(legacy_artifacts_metadata: nil)
       end
 
       it { is_expected.to be_falsy }

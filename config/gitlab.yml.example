@@ -672,6 +672,7 @@ test:
         aws_secret_access_key: AWS_SECRET_ACCESS_KEY
         region: eu-central-1
   artifacts:
+    path: tmp/tests/artifacts
     enabled: true
     # The location where build artifacts are stored (default: shared/artifacts).
     # path: shared/artifacts

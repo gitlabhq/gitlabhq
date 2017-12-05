@@ -1151,12 +1151,15 @@ describe API::Runner do
       describe 'GET /api/v4/jobs/:id/artifacts' do
         let(:token) { job.token }
 
-        before do
-          download_artifact
-        end
-
         context 'when job has artifacts' do
-          let(:job) { create(:ci_build, :artifacts) }
+          let(:job) { create(:ci_build) }
+          let(:store) { JobArtifactUploader::LOCAL_STORE }
+
+          before do
+            create(:ci_job_artifact, :archive, file_store: store, job: job)
+
+            download_artifact
+          end
 
           context 'when using job token' do
             context 'when artifacts are stored locally' do
@@ -1172,7 +1175,8 @@ describe API::Runner do
             end
 
             context 'when artifacts are stored remotely' do
-              let(:job) { create(:ci_build, :artifacts, :remote_store) }
+              let(:store) { JobArtifactUploader::REMOTE_STORE }
+              let!(:job) { create(:ci_build) }
 
               it 'download artifacts' do
                 expect(response).to have_http_status(302)
@@ -1191,12 +1195,16 @@ describe API::Runner do
 
         context 'when job does not has artifacts' do
           it 'responds with not found' do
+            download_artifact
+
             expect(response).to have_gitlab_http_status(404)
           end
         end
 
         def download_artifact(params = {}, request_headers = headers)
           params = params.merge(token: token)
+          job.reload
+
           get api("/jobs/#{job.id}/artifacts"), params, request_headers
         end
       end

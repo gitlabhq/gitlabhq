@@ -7,12 +7,12 @@ class LfsObjectUploader < ObjectStoreUploader
   end
 
   def filename
-    subject.oid[4..-1]
+    model.oid[4..-1]
   end
 
   private
 
   def default_path
-    "#{subject.oid[0, 2]}/#{subject.oid[2, 2]}"
+    "#{model.oid[0, 2]}/#{model.oid[2, 2]}"
   end
 end

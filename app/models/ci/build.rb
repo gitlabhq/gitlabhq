@@ -45,7 +45,7 @@ module Ci
     end
     scope :with_artifacts_not_expired, ->() { with_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
-    scope :with_artifacts_stored_locally, ->() { with_artifacts.where(artifacts_file_store: [nil, ArtifactUploader::LOCAL_STORE]) }
+    scope :with_artifacts_stored_locally, ->() { with_artifacts.where(artifacts_file_store: [nil, LegacyArtifactUploader::LOCAL_STORE]) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
     scope :ref_protected, -> { where(protected: true) }
@@ -361,20 +361,8 @@ module Ci
       project.running_or_pending_build_count(force: true)
     end
 
-    def artifacts?
-      !artifacts_expired? && artifacts_file.exists?
-    end
-
     def browsable_artifacts?
       artifacts_metadata?
-    end
-
-    def downloadable_single_artifacts_file?
-      artifacts_metadata? && artifacts_file.file_storage?
-    end
-
-    def artifacts_metadata?
-      artifacts? && artifacts_metadata.exists?
     end
 
     def artifacts_metadata_entry(path, **options)

@@ -4,33 +4,110 @@ require 'carrierwave/storage/fog'
 describe ObjectStoreUploader do
   let(:uploader_class) { Class.new(described_class) }
   let(:object) { double }
-  let(:uploader) { uploader_class.new(object, :artifacts_file) }
+  let(:uploader) { uploader_class.new(object, :file) }
+
+  before do
+    allow(object.class).to receive(:uploader_option).with(:file, :mount_on) { nil }
+  end
 
   describe '#object_store' do
     it "calls artifacts_file_store on object" do
-      expect(object).to receive(:artifacts_file_store)
+      expect(object).to receive(:file_store)
 
       uploader.object_store
+    end
+
+    context 'when store is null' do
+      before do
+        expect(object).to receive(:file_store).twice.and_return(nil)
+      end
+
+      it "returns LOCAL_STORE" do
+        expect(uploader.real_object_store).to be_nil
+        expect(uploader.object_store).to eq(described_class::LOCAL_STORE)
+      end
+    end
+
+    context 'when value is set' do
+      before do
+        expect(object).to receive(:file_store).twice.and_return(described_class::REMOTE_STORE)
+      end
+
+      it "returns given value" do
+        expect(uploader.real_object_store).not_to be_nil
+        expect(uploader.object_store).to eq(described_class::REMOTE_STORE)
+      end
     end
   end
 
   describe '#object_store=' do
     it "calls artifacts_file_store= on object" do
-      expect(object).to receive(:artifacts_file_store=).with(described_class::REMOTE_STORE)
+      expect(object).to receive(:file_store=).with(described_class::REMOTE_STORE)
 
       uploader.object_store = described_class::REMOTE_STORE
     end
   end
 
-  context 'when using ArtifactsUploader' do
-    let(:job) { create(:ci_build, :artifacts, artifacts_file_store: store) }
-    let(:uploader) { job.artifacts_file }
+  describe '#file_storage?' do
+    context 'when file storage is used' do
+      before do
+        expect(object).to receive(:file_store).and_return(described_class::LOCAL_STORE)
+      end
+
+      it { expect(uploader).to be_file_storage }
+    end
+
+    context 'when is remote storage' do
+      before do
+        uploader_class.storage_options double(
+          object_store: double(enabled: true))
+        expect(object).to receive(:file_store).and_return(described_class::REMOTE_STORE)
+      end
+
+      it { expect(uploader).not_to be_file_storage }
+    end
+  end
+
+  describe '#file_cache_storage?' do
+    context 'when file storage is used' do
+      before do
+        uploader_class.cache_storage(:file)
+      end
+
+      it { expect(uploader).to be_file_cache_storage }
+    end
+
+    context 'when is remote storage' do
+      before do
+        uploader_class.cache_storage(:fog)
+      end
+
+      it { expect(uploader).not_to be_file_cache_storage }
+    end
+  end
+
+  context 'when using JobArtifactsUploader' do
+    let(:artifact) { create(:ci_job_artifact, :archive, file_store: store) }
+    let(:uploader) { artifact.file }
 
     context 'checking described_class' do
       let(:store) { described_class::LOCAL_STORE }
 
       it "uploader is of a described_class" do
         expect(uploader).to be_a(described_class)
+      end
+
+      it 'moves files locally' do
+        expect(uploader.move_to_store).to be(true)
+        expect(uploader.move_to_cache).to be(true)
+      end
+    end
+
+    context 'when store is null' do
+      let(:store) { nil }
+
+      it "sets the store to LOCAL_STORE" do
+        expect(artifact.file_store).to eq(described_class::LOCAL_STORE)
       end
     end
 
@@ -57,8 +134,8 @@ describe ObjectStoreUploader do
     end
 
     describe '#migrate!' do
-      let(:job) { create(:ci_build, :artifacts, artifacts_file_store: store) }
-      let(:uploader) { job.artifacts_file }
+      let(:artifact) { create(:ci_job_artifact, :archive, file_store: store) }
+      let(:uploader) { artifact.file }
       let(:store) { described_class::LOCAL_STORE }
       
       subject { uploader.migrate!(new_store) }
@@ -141,7 +218,7 @@ describe ObjectStoreUploader do
 
           context 'when subject save fails' do
             before do
-              expect(job).to receive(:save!).and_raise(RuntimeError, "exception")
+              expect(artifact).to receive(:save!).and_raise(RuntimeError, "exception")
             end
 
             it "does catch an error" do
@@ -199,7 +276,7 @@ describe ObjectStoreUploader do
 
     context 'when using local storage' do
       before do
-        expect(object).to receive(:artifacts_file_store) { described_class::LOCAL_STORE }
+        expect(object).to receive(:file_store) { described_class::LOCAL_STORE }
       end
 
       it "does not raise an error" do
@@ -211,7 +288,7 @@ describe ObjectStoreUploader do
       before do
         uploader_class.storage_options double(
           object_store: double(enabled: true))
-        expect(object).to receive(:artifacts_file_store) { described_class::REMOTE_STORE }
+        expect(object).to receive(:file_store) { described_class::REMOTE_STORE }
       end
 
       context 'feature is not available' do

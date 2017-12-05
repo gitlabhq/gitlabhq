@@ -215,10 +215,13 @@ describe API::V3::Builds do
       end
 
       context 'when artifacts are stored remotely' do
-        let(:build) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline) }
+        let(:build) { create(:ci_build, pipeline: pipeline) }
+        let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: build) }
 
         it 'returns location redirect' do
-          expect(response).to have_http_status(302)
+          get v3_api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user)
+
+          expect(response).to have_gitlab_http_status(302)
         end
       end
 
@@ -309,7 +312,14 @@ describe API::V3::Builds do
         end
 
         context 'when artifacts are stored remotely' do
-          let(:build) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline) }
+          let(:build) { create(:ci_build, pipeline: pipeline) }
+          let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: build) }
+
+          before do
+            build.reload
+
+            get v3_api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user)
+          end
 
           it 'returns location redirect' do
             expect(response).to have_http_status(302)

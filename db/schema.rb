@@ -326,6 +326,7 @@ ActiveRecord::Schema.define(version: 20171205190711) do
     t.integer "project_id", null: false
     t.integer "job_id", null: false
     t.integer "file_type", null: false
+    t.integer "file_store"
     t.integer "size", limit: 8
     t.datetime_with_timezone "created_at", null: false
     t.datetime_with_timezone "updated_at", null: false
