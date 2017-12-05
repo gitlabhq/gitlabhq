@@ -3,7 +3,7 @@ require 'spec_helper'
 describe API::V3::Builds do
   set(:user) { create(:user) }
   let(:api_user) { user }
-  let!(:project) { create(:project, :repository, creator: user, public_builds: false) }
+  set(:project) { create(:project, :repository, creator: user, public_builds: false) }
   let!(:developer) { create(:project_member, :developer, user: user, project: project) }
   let(:reporter) { create(:project_member, :reporter, project: project) }
   let(:guest) { create(:project_member, :guest, project: project) }
@@ -215,9 +215,12 @@ describe API::V3::Builds do
       end
 
       context 'when artifacts are stored remotely' do
-        let(:build) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline) }
+        let(:build) { create(:ci_build, pipeline: pipeline) }
+        let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: build) }
 
         it 'returns location redirect' do
+          get v3_api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user)
+
           expect(response).to have_gitlab_http_status(302)
         end
       end
@@ -309,7 +312,14 @@ describe API::V3::Builds do
         end
 
         context 'when artifacts are stored remotely' do
-          let(:build) { create(:ci_build, :artifacts, :remote_store, pipeline: pipeline) }
+          let(:build) { create(:ci_build, pipeline: pipeline) }
+          let!(:artifact) { create(:ci_job_artifact, :archive, :remote_store, job: build) }
+
+          before do
+            build.reload
+
+            get v3_api("/projects/#{project.id}/builds/#{build.id}/artifacts", api_user)
+          end
 
           it 'returns location redirect' do
             expect(response).to have_gitlab_http_status(302)

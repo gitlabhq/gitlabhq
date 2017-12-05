@@ -42,8 +42,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def raw
-    path = Gitlab::Ci::Build::Artifacts::Path
-      .new(params[:path])
+    path = Gitlab::Ci::Build::Artifacts::Path.new(params[:path])
 
     send_artifacts_entry(build, path)
   end
@@ -72,7 +71,7 @@ class Projects::ArtifactsController < Projects::ApplicationController
   end
 
   def validate_artifacts!
-    render_404 unless build && build.artifacts?
+    render_404 unless build&.artifacts?
   end
 
   def build

@@ -1,9 +1,9 @@
 require 'rails_helper'
 
-describe ArtifactUploader do
+describe LegacyArtifactUploader do
   let(:store) { described_class::LOCAL_STORE }
   let(:job) { create(:ci_build, artifacts_file_store: store) }
-  let(:uploader) { described_class.new(job, :artifacts_file) }
+  let(:uploader) { described_class.new(job, :legacy_artifacts_file) }
   let(:local_path) { Gitlab.config.artifacts.path }
 
   describe '.local_store_path' do
@@ -66,11 +66,23 @@ describe ArtifactUploader do
     subject { uploader.filename }
 
     it { is_expected.to be_nil }
+  end
 
-    context 'with artifacts' do
-      let(:job) { create(:ci_build, :artifacts) }
-
-      it { is_expected.not_to be_nil }
+  context 'file is stored in valid path' do
+    let(:file) do
+      fixture_file_upload(
+        Rails.root.join('spec/fixtures/ci_build_artifacts.zip'), 'application/zip')
     end
+
+    before do
+      uploader.store!(file)
+    end
+
+    subject { uploader.file.path }
+
+    it { is_expected.to start_with(local_path) }
+    it { is_expected.to include("/#{job.created_at.utc.strftime('%Y_%m')}/") }
+    it { is_expected.to include("/#{job.project_id}/") }
+    it { is_expected.to end_with("ci_build_artifacts.zip") }
   end
 end

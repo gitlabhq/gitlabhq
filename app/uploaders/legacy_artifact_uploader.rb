@@ -1,4 +1,4 @@
-class ArtifactUploader < ObjectStoreUploader
+class LegacyArtifactUploader < ObjectStoreUploader
   storage_options Gitlab.config.artifacts
 
   def self.local_store_path
@@ -12,6 +12,6 @@ class ArtifactUploader < ObjectStoreUploader
   private
 
   def default_path
-    File.join(subject.created_at.utc.strftime('%Y_%m'), subject.project_id.to_s, subject.id.to_s)
+    File.join(model.created_at.utc.strftime('%Y_%m'), model.project_id.to_s, model.id.to_s)
   end
 end

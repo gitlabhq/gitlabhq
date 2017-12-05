@@ -38,13 +38,6 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
     end
   end
 
-  attr_reader :subject, :field
-
-  def initialize(subject, field)
-    @subject = subject
-    @field = field
-  end
-
   def file_storage?
     storage.is_a?(CarrierWave::Storage::File)
   end
@@ -54,7 +47,7 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
   end
 
   def real_object_store
-    subject.public_send(:"#{field}_store") # rubocop:disable GitlabSecurity/PublicSend
+    model.public_send(store_serialization_column) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def object_store
@@ -63,7 +56,7 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
 
   def object_store=(value)
     @storage = nil
-    subject.public_send(:"#{field}_store=", value) # rubocop:disable GitlabSecurity/PublicSend
+    model.public_send(:"#{store_serialization_column}=", value) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def store_dir
@@ -111,7 +104,7 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
         # since we change storage store the new storage
         # in case of failure delete new file
         begin
-          subject.save!
+          model.save!
         rescue => e
           new_file.delete
           self.object_store = old_store
@@ -125,7 +118,7 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
 
   def schedule_migration_to_object_storage(new_file)
     if self.class.object_store_enabled? && licensed? && file_storage?
-      ObjectStorageUploadWorker.perform_async(self.class.name, subject.class.name, field, subject.id)
+      ObjectStorageUploadWorker.perform_async(self.class.name, model.class.name, mounted_as, model.id)
     end
   end
 
@@ -192,6 +185,14 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
 
   def default_path
     raise NotImplementedError
+  end
+
+  def serialization_column
+    model.class.uploader_option(mounted_as, :mount_on) || mounted_as
+  end
+
+  def store_serialization_column
+    :"#{serialization_column}_store"
   end
 
   def storage
