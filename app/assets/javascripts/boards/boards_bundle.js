@@ -89,12 +89,14 @@ $(() => {
       eventHub.$on('newDetailIssue', this.updateDetailIssue);
       eventHub.$on('clearDetailIssue', this.clearDetailIssue);
       sidebarEventHub.$on('toggleSubscription', this.toggleSubscription);
+      sidebarEventHub.$on('updateWeight', this.updateWeight);
     },
     beforeDestroy() {
       eventHub.$off('updateTokens', this.updateTokens);
       eventHub.$off('newDetailIssue', this.updateDetailIssue);
       eventHub.$off('clearDetailIssue', this.clearDetailIssue);
       sidebarEventHub.$off('toggleSubscription', this.toggleSubscription);
+      sidebarEventHub.$off('updateWeight', this.updateWeight);
     },
     mounted () {
       this.filterManager = new FilteredSearchBoards(Store.filter, true, Store.cantEdit);
@@ -131,16 +133,20 @@ $(() => {
         const sidebarInfoEndpoint = newIssue.sidebarInfoEndpoint;
         if (sidebarInfoEndpoint && newIssue.subscribed === undefined) {
           newIssue.setFetchingState('subscriptions', true);
+          newIssue.setFetchingState('weight', true);
           BoardService.getIssueInfo(sidebarInfoEndpoint)
             .then(res => res.json())
             .then((data) => {
               newIssue.setFetchingState('subscriptions', false);
+              newIssue.setFetchingState('weight', false);
               newIssue.updateData({
                 subscribed: data.subscribed,
+                weight: data.weight,
               });
             })
             .catch(() => {
               newIssue.setFetchingState('subscriptions', false);
+              newIssue.setFetchingState('weight', false);
               Flash(__('An error occurred while fetching sidebar data'));
             });
         }
@@ -164,6 +170,24 @@ $(() => {
             .catch(() => {
               issue.setFetchingState('subscriptions', false);
               Flash(__('An error occurred when toggling the notification subscription'));
+            });
+        }
+      },
+      updateWeight(newWeight, id) {
+        const issue = Store.detail.issue;
+        if (issue.id === id && issue.sidebarInfoEndpoint) {
+          issue.setLoadingState('weight', true);
+          BoardService.updateWeight(issue.sidebarInfoEndpoint, newWeight)
+            .then(res => res.json())
+            .then((data) => {
+              issue.setLoadingState('weight', false);
+              issue.updateData({
+                weight: data.weight,
+              });
+            })
+            .catch(() => {
+              issue.setLoadingState('weight', false);
+              Flash(__('An error occurred when updating the issue weight'));
             });
         }
       }

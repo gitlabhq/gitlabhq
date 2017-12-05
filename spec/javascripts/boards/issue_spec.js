@@ -146,6 +146,12 @@ describe('Issue model', () => {
     expect(issue.isFetching.subscriptions).toBe(false);
   });
 
+  it('sets loading state', () => {
+    issue.setLoadingState('foo', true);
+
+    expect(issue.isLoading.foo).toBe(true);
+  });
+
   describe('update', () => {
     it('passes assignee ids when there are assignees', (done) => {
       spyOn(Vue.http, 'patch').and.callFake((url, data) => {

@@ -3,6 +3,7 @@
 /* global Sidebar */
 
 import Vue from 'vue';
+import weight from 'ee/sidebar/components/weight/weight.vue';
 import Flash from '../../flash';
 import eventHub from '../../sidebar/event_hub';
 import assigneeTitle from '../../sidebar/components/assignees/assignee_title';
@@ -124,5 +125,6 @@ gl.issueBoards.BoardSidebar = Vue.extend({
     assignees,
     removeBtn: gl.issueBoards.RemoveIssueBtn,
     subscriptions,
+    weight,
   },
 });
