@@ -20,11 +20,19 @@ export const getGroupSlug = () => {
   return null;
 };
 
-export const isInIssuePage = () => {
-  const page = getPagePath(1);
-  const action = getPagePath(2);
+export const checkPageAndAction = (page, action) => {
+  const pagePath = getPagePath(1);
+  const actionPath = getPagePath(2);
 
-  return page === 'issues' && action === 'show';
+  return pagePath === page && actionPath === action;
+};
+
+export const isInIssuePage = () => checkPageAndAction('issues', 'show');
+
+export const isInNoteablePage = () => {
+  const isInMRPage = checkPageAndAction('merge_requests', 'show');
+
+  return isInIssuePage() || isInMRPage;
 };
 
 export const ajaxGet = url => $.ajax({
