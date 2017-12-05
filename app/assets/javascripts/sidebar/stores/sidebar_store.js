@@ -15,6 +15,7 @@ export default class SidebarStore {
         participants: true,
         subscriptions: true,
       };
+      this.isLoading = {};
       this.autocompleteProjects = [];
       this.moveToProjectId = 0;
       this.isLockDialogOpen = false;
@@ -53,6 +54,10 @@ export default class SidebarStore {
 
   setFetchingState(key, value) {
     this.isFetching[key] = value;
+  }
+
+  setLoadingState(key, value) {
+    this.isLoading[key] = value;
   }
 
   addAssignee(assignee) {

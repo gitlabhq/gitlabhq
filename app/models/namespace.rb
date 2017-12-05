@@ -139,7 +139,17 @@ class Namespace < ActiveRecord::Base
   def find_fork_of(project)
     return nil unless project.fork_network
 
-    project.fork_network.find_forks_in(projects).first
+    if RequestStore.active?
+      forks_in_namespace = RequestStore.fetch("namespaces:#{id}:forked_projects") do
+        Hash.new do |found_forks, project|
+          found_forks[project] = project.fork_network.find_forks_in(projects).first
+        end
+      end
+
+      forks_in_namespace[project]
+    else
+      project.fork_network.find_forks_in(projects).first
+    end
   end
 
   def lfs_enabled?
