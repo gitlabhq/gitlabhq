@@ -3,6 +3,7 @@
 import Vue from 'vue';
 import Flash from '../flash';
 import initIssuableSidebar from '../init_issuable_sidebar';
+import syntaxHighlight from '../syntax_highlight';
 import './merge_conflict_store';
 import './merge_conflict_service';
 import './mixins/line_conflict_utils';
@@ -53,7 +54,7 @@ $(() => {
           mergeConflictsStore.setLoadingState(false);
 
           this.$nextTick(() => {
-            $('.js-syntax-highlight').syntaxHighlight();
+            syntaxHighlight($('.js-syntax-highlight'));
           });
         });
     },
