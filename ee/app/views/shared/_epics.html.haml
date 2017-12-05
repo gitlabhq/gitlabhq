@@ -1,5 +1,5 @@
 .top-area
-  = render 'shared/issuable/nav', type: :epics
+  = render 'shared/issuable/epic_nav', type: :epics
   .nav-controls
     - if can?(current_user, :create_epic, @group)
       - content_for :page_specific_javascripts do
