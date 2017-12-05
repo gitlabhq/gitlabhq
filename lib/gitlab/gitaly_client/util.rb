@@ -18,6 +18,12 @@ module Gitlab
           )
         end
 
+        def git_repository(gitaly_repository)
+          Gitlab::Git::Repository.new(gitaly_repository.storage_name,
+                                      gitaly_repository.relative_path,
+                                      gitaly_repository.gl_repository)
+        end
+
         def gitlab_tag_from_gitaly_tag(repository, gitaly_tag)
           if gitaly_tag.target_commit.present?
             commit = Gitlab::Git::Commit.decorate(repository, gitaly_tag.target_commit)

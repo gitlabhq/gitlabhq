@@ -13,12 +13,18 @@ module Gitlab
 
         def conflicts
           @conflicts ||= begin
-            target_index = @target_repository.rugged.merge_commits(@our_commit_oid, @their_commit_oid)
-
-            # We don't need to do `with_repo_branch_commit` here, because the target
-            # project always fetches source refs when creating merge request diffs.
-            conflict_files(@target_repository, target_index)
+            @target_repository.gitaly_migrate(:conflicts_list_conflict_files) do |is_enabled|
+              if is_enabled
+                @target_repository.gitaly_conflicts_client.list_conflict_files(@our_commit_oid, @their_commit_oid)
+              else
+                rugged_list_conflict_files
+              end
+            end
           end
+        rescue GRPC::FailedPrecondition => e
+          raise Gitlab::Git::Conflict::Resolver::ConflictSideMissing.new(e.message)
+        rescue Rugged::OdbError, GRPC::BadStatus => e
+          raise Gitlab::Git::CommandError.new(e)
         end
 
         def resolve_conflicts(source_repository, user, files, source_branch:, target_branch:, commit_message:)
@@ -83,6 +89,14 @@ module Gitlab
           oid = repository.rugged.write(new_file, :blob)
           index.add(path: our_path, oid: oid, mode: file.our_mode)
           index.conflict_remove(our_path)
+        end
+
+        def rugged_list_conflict_files
+          target_index = @target_repository.rugged.merge_commits(@our_commit_oid, @their_commit_oid)
+
+          # We don't need to do `with_repo_branch_commit` here, because the target
+          # project always fetches source refs when creating merge request diffs.
+          conflict_files(@target_repository, target_index)
         end
       end
     end

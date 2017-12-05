@@ -1294,6 +1294,10 @@ module Gitlab
         @gitaly_remote_client ||= Gitlab::GitalyClient::RemoteService.new(self)
       end
 
+      def gitaly_conflicts_client
+        @gitaly_conflicts_client ||= Gitlab::GitalyClient::ConflictsService.new(self)
+      end
+
       def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)
         Gitlab::GitalyClient.migrate(method, status: status, &block)
       rescue GRPC::NotFound => e
