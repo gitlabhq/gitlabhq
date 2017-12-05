@@ -855,8 +855,13 @@ describe Gitlab::Database::MigrationHelpers do
   describe 'sidekiq migration helpers', :sidekiq, :redis do
     let(:worker) do
       Class.new do
-        include Sidekiq::Worker
-        sidekiq_options queue: 'test'
+        def self.name
+          'TestWorker'
+        end
+
+        include ApplicationWorker
+
+        version 3
       end
     end
 
@@ -881,7 +886,7 @@ describe Gitlab::Database::MigrationHelpers do
       end
     end
 
-    describe '#migrate_sidekiq_queue' do
+    describe '#sidekiq_queue_migrate' do
       it 'migrates jobs from one sidekiq queue to another' do
         Sidekiq::Testing.disable! do
           worker.perform_async('Something', [1])
@@ -894,6 +899,40 @@ describe Gitlab::Database::MigrationHelpers do
 
           expect(model.sidekiq_queue_length('test')).to eq 0
           expect(model.sidekiq_queue_length('new_test')).to eq 2
+        end
+      end
+    end
+
+    describe '#sidekiq_migrate_old_queues' do
+      it 'migrates jobs from old queues into the versionless one' do
+        Sidekiq::Testing.disable! do
+          worker.perform_async('Something', [1])
+
+          worker.sidekiq_options queue: 'test:v1'
+          worker.perform_async('Something', [2])
+
+          worker.sidekiq_options queue: 'test:v2'
+          worker.perform_async('Something', [3])
+
+          worker.sidekiq_options queue: 'test:v3'
+          worker.perform_async('Something', [4])
+
+          worker.sidekiq_options queue: 'test:v4'
+          worker.perform_async('Something', [1])
+
+          expect(model.sidekiq_queue_length('test')).to eq 1
+          expect(model.sidekiq_queue_length('test:v1')).to eq 1
+          expect(model.sidekiq_queue_length('test:v2')).to eq 1
+          expect(model.sidekiq_queue_length('test:v3')).to eq 1
+          expect(model.sidekiq_queue_length('test:v4')).to eq 1
+
+          model.sidekiq_migrate_old_queues('test', new_version: 3)
+
+          expect(model.sidekiq_queue_length('test')).to eq 3
+          expect(model.sidekiq_queue_length('test:v1')).to eq 0
+          expect(model.sidekiq_queue_length('test:v2')).to eq 0
+          expect(model.sidekiq_queue_length('test:v3')).to eq 1
+          expect(model.sidekiq_queue_length('test:v4')).to eq 1
         end
       end
     end

@@ -628,11 +628,24 @@ module Gitlab
       rescue ArgumentError
       end
 
+      def sidekiq_migrate_old_queues(queue, new_version:)
+        queue_versions = SidekiqVersioning.queue_versions(queue)
+        supported_versions = queue_versions.select { |v| v < new_version }
+
+        supported_versions.each do |version|
+          sidekiq_queue_migrate("#{queue}:v#{version}", to: queue)
+        end
+      end
+
       def sidekiq_queue_migrate(queue_from, to:)
-        while sidekiq_queue_length(queue_from) > 0
-          Sidekiq.redis do |conn|
+        Sidekiq.redis do |conn|
+          conn.sadd('queues', to)
+
+          while sidekiq_queue_length(queue_from) > 0
             conn.rpoplpush "queue:#{queue_from}", "queue:#{to}"
           end
+
+          conn.srem('queues', queue_from)
         end
       end
 
