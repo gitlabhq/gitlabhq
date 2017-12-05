@@ -72,8 +72,8 @@ class GeoNodeStatus < ActiveRecord::Base
       self.db_replication_lag_seconds = Gitlab::Geo::HealthCheck.db_replication_lag_seconds
       self.cursor_last_event_id = Geo::EventLogState.last_processed&.event_id
       self.cursor_last_event_date = Geo::EventLog.find_by(id: self.cursor_last_event_id)&.created_at
-      self.repositories_synced_count = projects_finder.count_synced_projects
-      self.repositories_failed_count = projects_finder.count_failed_projects
+      self.repositories_synced_count = projects_finder.count_synced_project_registries
+      self.repositories_failed_count = projects_finder.count_failed_project_registries
       self.lfs_objects_synced_count = lfs_objects_finder.count_synced_lfs_objects
       self.lfs_objects_failed_count = lfs_objects_finder.count_failed_lfs_objects
       self.attachments_synced_count = attachments_finder.find_synced_attachments.count
