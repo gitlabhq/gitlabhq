@@ -36,6 +36,20 @@ describe('Clusters', () => {
     });
   });
 
+  describe('showToken', () => {
+    it('should update tye field type', () => {
+      cluster.showTokenButton.click();
+      expect(
+        cluster.tokenField.getAttribute('type'),
+      ).toEqual('text');
+
+      cluster.showTokenButton.click();
+      expect(
+        cluster.tokenField.getAttribute('type'),
+      ).toEqual('password');
+    });
+  });
+
   describe('checkForNewInstalls', () => {
     const INITIAL_APP_MAP = {
       helm: { status: null, title: 'Helm Tiller' },
@@ -113,7 +127,7 @@ describe('Clusters', () => {
     });
 
     describe('when cluster is created', () => {
-      it('should show the success container', () => {
+      it('should show the success container and fresh the page', () => {
         cluster.updateContainer(null, 'created');
 
         expect(
