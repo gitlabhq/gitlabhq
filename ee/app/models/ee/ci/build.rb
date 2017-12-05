@@ -9,6 +9,7 @@ module EE
 
       included do
         scope :codequality, ->() { where(name: %w[codequality codeclimate]) }
+        scope :performance, ->() { where(name: %w[performance deploy]) }
         scope :sast, ->() { where(name: 'sast') }
 
         after_save :stick_build_if_status_changed
@@ -27,6 +28,11 @@ module EE
 
       def has_codeclimate_json?
         options.dig(:artifacts, :paths) == ['codeclimate.json'] &&
+          artifacts_metadata?
+      end
+
+      def has_performance_json?
+        options.dig(:artifacts, :paths) == ['performance.json'] &&
           artifacts_metadata?
       end
 
