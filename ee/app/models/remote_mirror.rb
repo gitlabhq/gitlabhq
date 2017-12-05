@@ -1,7 +1,8 @@
 class RemoteMirror < ActiveRecord::Base
   include AfterCommitQueue
 
-  BACKOFF_DELAY = 5.minutes
+  PROTECTED_BACKOFF_DELAY   = 1.minute
+  UNPROTECTED_BACKOFF_DELAY = 5.minutes
 
   attr_encrypted :credentials,
                  key: Gitlab::Application.secrets.db_key_base,
@@ -84,7 +85,11 @@ class RemoteMirror < ActiveRecord::Base
     return unless enabled?
     return if Gitlab::Geo.secondary?
 
-    RepositoryUpdateRemoteMirrorWorker.perform_in(BACKOFF_DELAY, self.id, Time.now)
+    if recently_scheduled?
+      RepositoryUpdateRemoteMirrorWorker.perform_in(backoff_delay, self.id, Time.now)
+    else
+      RepositoryUpdateRemoteMirrorWorker.perform_async(self.id, Time.now)
+    end
   end
 
   def enabled
@@ -138,6 +143,20 @@ class RemoteMirror < ActiveRecord::Base
   end
 
   private
+
+  def recently_scheduled?
+    return false unless self.last_update_started_at
+
+    self.last_update_started_at >= Time.now - backoff_delay
+  end
+
+  def backoff_delay
+    if self.only_protected_branches
+      PROTECTED_BACKOFF_DELAY
+    else
+      UNPROTECTED_BACKOFF_DELAY
+    end
+  end
 
   def url_availability
     return unless project

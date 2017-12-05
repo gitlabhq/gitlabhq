@@ -227,7 +227,8 @@ mirror to the repository in GitLab, you are advised not to push commits directly
 to the mirrored repository. Instead, all changes will end up in the mirrored repository
 whenever commits are pushed to GitLab, or when a [forced update](#forcing-an-update) is initiated.
 
-Pushes into GitLab are automatically pushed to the remote mirror 5 minutes after they come in.
+Pushes into GitLab are automatically pushed to the remote mirror at least once every 5 minutes 
+after they come in or 1 minute if **push only protected branches** is enabled.
 
 In case of a diverged branch, you will see an error indicated at the
 **Mirror repository** settings.
