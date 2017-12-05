@@ -271,7 +271,7 @@ export const discussionMock = {
   individual_note: false,
 };
 
-export const loggedOutIssueData = {
+export const loggedOutnoteableData = {
   "id": 98,
   "iid": 26,
   "author_id": 1,

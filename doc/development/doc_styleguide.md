@@ -170,12 +170,6 @@ You can combine one or more of the following:
     = link_to 'Help page', help_page_path('user/permissions'),  class: 'btn btn-info'
     ```
 
-1. **Underlining a link.**
-
-    ```haml
-    = link_to 'Help page', help_page_path('user/permissions'), class: 'underlined-link'
-    ```
-
 1. **Using links inline of some text.**
 
     ```haml

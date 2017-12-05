@@ -263,7 +263,7 @@ class Repository
   end
 
   def diverging_commit_counts(branch)
-    root_ref_hash = raw_repository.rev_parse_target(root_ref).oid
+    root_ref_hash = raw_repository.commit(root_ref).id
     cache.fetch(:"diverging_commit_counts_#{branch.name}") do
       # Rugged seems to throw a `ReferenceError` when given branch_names rather
       # than SHA-1 hashes

@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Autosize from 'autosize';
 import store from '~/notes/stores';
 import issueCommentForm from '~/notes/components/issue_comment_form.vue';
-import { loggedOutIssueData, notesDataMock, userDataMock, noteableDataMock } from '../mock_data';
+import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } from '../mock_data';
 import { keyboardDownEvent } from '../../issue_show/helpers';
 
 describe('issue_comment_form component', () => {
@@ -190,7 +190,7 @@ describe('issue_comment_form component', () => {
   describe('user is not logged in', () => {
     beforeEach(() => {
       store.dispatch('setUserData', null);
-      store.dispatch('setNoteableData', loggedOutIssueData);
+      store.dispatch('setNoteableData', loggedOutnoteableData);
       store.dispatch('setNotesData', notesDataMock);
 
       vm = mountComponent();

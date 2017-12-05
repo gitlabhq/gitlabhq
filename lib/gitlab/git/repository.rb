@@ -1119,9 +1119,11 @@ module Gitlab
       end
 
       # Refactoring aid; allows us to copy code from app/models/repository.rb
-      def run_git(args, env: {})
+      def run_git(args, env: {}, nice: false)
+        cmd = [Gitlab.config.git.bin_path, *args]
+        cmd.unshift("nice") if nice
         circuit_breaker.perform do
-          popen([Gitlab.config.git.bin_path, *args], path, env)
+          popen(cmd, path, env)
         end
       end
 
@@ -1201,6 +1203,12 @@ module Gitlab
         end
       end
 
+      def fsck
+        output, status = run_git(%W[--git-dir=#{path} fsck], nice: true)
+
+        raise GitError.new("Could not fsck repository:\n#{output}") unless status.zero?
+      end
+
       def gitaly_repository
         Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
       end
@@ -1267,7 +1275,11 @@ module Gitlab
 
       # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/695
       def git_merged_branch_names(branch_names = [])
-        root_sha = find_branch(root_ref).target
+        return [] unless root_ref
+
+        root_sha = find_branch(root_ref)&.target
+
+        return [] unless root_sha
 
         git_arguments =
           %W[branch --merged #{root_sha}
