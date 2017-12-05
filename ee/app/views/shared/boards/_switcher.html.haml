@@ -2,25 +2,26 @@
 - milestone_filter_opts = { format: :json }
 - milestone_filter_opts = milestone_filter_opts.merge(only_group_milestones: true) if board.group_board?
 
-%boards-selector{ "inline-template" => true,
+%boards-selector.js-boards-selector{ "inline-template" => true,
   ":current-board" => current_board_json,
   "milestone-path" => milestones_filter_path(milestone_filter_opts) }
-  %span.boards-selector-wrapper
+  %span.boards-selector-wrapper.js-boards-selector-wrapper
     .dropdown
-      %button.dropdown-menu-toggle{ "v-on:click" => "loadBoards",
+      %button.dropdown-menu-toggle.js-dropdown-toggle{ "v-on:click" => "loadBoards",
         data: { toggle: "dropdown" } }
         {{ board.name }}
         = icon("chevron-down")
       .dropdown-menu{ ":class" => "{ 'is-loading': loading }" }
-        .dropdown-content
-          %ul{ "v-if" => "!loading" }
-            %li{ "v-for" => "board in boards" }
+        .dropdown-content-faded-mask.js-scroll-fade{ ":class" => "scrollFadeClass" }
+          %ul.dropdown-list.js-dropdown-list{ "v-if" => "!loading", "v-on:scroll.passive" => "throttledSetScrollFade", ref: "content" }
+            %li.dropdown-item.js-dropdown-item{ "v-for" => "board in boards" }
               %a{ ":href" => "'#{board_base_url}/' + board.id" }
                 {{ board.name }}
             - if !multiple_boards_available? && current_board_parent.boards.size > 1
               %li
                 .small.unclickable
                   Some of your boards are hidden, activate a license to see them again.
+
         .dropdown-loading{ "v-if" => "loading" }
           = icon("spin spinner")
 

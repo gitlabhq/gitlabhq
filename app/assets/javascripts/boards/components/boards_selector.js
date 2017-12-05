@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import { throttle } from 'underscore';
 import BoardForm from './board_form.vue';
 
 (() => {
@@ -10,6 +11,7 @@ import BoardForm from './board_form.vue';
   Store.createNewListDropdownData();
 
   gl.issueBoards.BoardsSelector = Vue.extend({
+    name: 'boards-selector',
     components: {
       BoardForm,
     },
@@ -22,13 +24,22 @@ import BoardForm from './board_form.vue';
         type: String,
         required: true,
       },
+      throttleDuration: {
+        type: Number,
+        default: 200,
+      },
     },
     data() {
       return {
         open: false,
         loading: true,
+        hasScrollFade: false,
+        scrollFadeInitialized: false,
         boards: [],
         state: Store.state,
+        throttledSetScrollFade: throttle(this.setScrollFade, this.throttleDuration),
+        contentClientHeight: 0,
+        maxPosition: 0,
       };
     },
     watch: {
@@ -60,6 +71,11 @@ import BoardForm from './board_form.vue';
       showDelete() {
         return this.boards.length > 1;
       },
+      scrollFadeClass() {
+        return {
+          'fade-out': !this.hasScrollFade,
+        };
+      },
     },
     methods: {
       showPage(page) {
@@ -81,10 +97,31 @@ import BoardForm from './board_form.vue';
               this.loading = false;
               this.boards = json;
             })
+            .then(() => this.$nextTick()) // Wait for boards list in DOM
+            .then(this.setScrollFade)
             .catch(() => {
               this.loading = false;
             });
         }
+      },
+      isScrolledUp() {
+        const { content } = this.$refs;
+        const currentPosition = this.contentClientHeight + content.scrollTop;
+
+        return content && currentPosition < this.maxPosition;
+      },
+      initScrollFade() {
+        this.scrollFadeInitialized = true;
+
+        const { content } = this.$refs;
+
+        this.contentClientHeight = content.clientHeight;
+        this.maxPosition = content.scrollHeight;
+      },
+      setScrollFade() {
+        if (!this.scrollFadeInitialized) this.initScrollFade();
+
+        this.hasScrollFade = this.isScrolledUp();
       },
     },
     created() {
