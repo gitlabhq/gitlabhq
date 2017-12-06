@@ -28,5 +28,9 @@ FactoryGirl.define do
       provider_type :gcp
       provider_gcp factory: [:cluster_provider_gcp, :creating]
     end
+
+    trait :disabled do
+      enabled false
+    end
   end
 end

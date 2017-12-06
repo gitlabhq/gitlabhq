@@ -189,7 +189,6 @@ class Project < ActiveRecord::Base
   has_one :statistics, class_name: 'ProjectStatistics'
 
   has_one :cluster_project, class_name: 'Clusters::Project'
-  has_one :cluster, through: :cluster_project, class_name: 'Clusters::Cluster'
   has_many :clusters, through: :cluster_project, class_name: 'Clusters::Cluster'
 
   # Container repositories need to remove data from the container registry,

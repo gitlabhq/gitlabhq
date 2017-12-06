@@ -16,6 +16,7 @@ feature 'User Cluster', :js do
     before do
       visit project_clusters_path(project)
 
+      click_link 'Add cluster'
       click_link 'Add an existing cluster'
     end
 
@@ -94,7 +95,7 @@ feature 'User Cluster', :js do
 
       it 'user sees creation form with the successful message' do
         expect(page).to have_content('Cluster integration was successfully removed.')
-        expect(page).to have_link('Add an existing cluster')
+        expect(page).to have_link('Add cluster')
       end
     end
   end

@@ -143,9 +143,9 @@ describe Projects::Clusters::GcpController do
             expect(ClusterProvisionWorker).to receive(:perform_async)
             expect { go }.to change { Clusters::Cluster.count }
               .and change { Clusters::Providers::Gcp.count }
-            expect(response).to redirect_to(project_cluster_path(project, project.cluster))
-            expect(project.cluster).to be_gcp
-            expect(project.cluster).to be_kubernetes
+            expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
+            expect(project.clusters.first).to be_gcp
+            expect(project.clusters.first).to be_kubernetes
           end
         end
       end

@@ -187,7 +187,7 @@
               = nav_link(controller: [:clusters, :user, :gcp]) do
                 = link_to project_clusters_path(@project), title: 'Cluster', class: 'shortcuts-cluster' do
                   %span
-                    Cluster
+                    Clusters
 
             - if @project.feature_available?(:builds, current_user) && !@project.empty_repo?
               = nav_link(path: 'pipelines#charts') do
