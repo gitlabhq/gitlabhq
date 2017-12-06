@@ -8,7 +8,7 @@ module Banzai
     #
     class UploadLinkFilter < HTML::Pipeline::Filter
       def call
-        return doc unless project
+        return doc unless project || group
 
         doc.xpath('descendant-or-self::a[starts-with(@href, "/uploads/")]').each do |el|
           process_link_attr el.attribute('href')
@@ -28,15 +28,29 @@ module Banzai
       end
 
       def build_url(uri)
-        if Gitlab::Geo.secondary?
-          File.join(Gitlab::Geo.primary_node.url, project.full_path, uri)
+        base_path = if Gitlab::Geo.secondary?
+                      Gitlab::Geo.primary_node.url
+                    else
+                      Gitlab.config.gitlab.url
+                    end
+
+        if group
+          urls = Gitlab::Routing.url_helpers
+          # we need to get last 2 parts of the uri which are secret and filename
+          uri_parts = uri.split(File::SEPARATOR)
+          file_path = urls.show_group_uploads_path(group, uri_parts[-2], uri_parts[-1])
+          File.join(base_path, file_path)
         else
-          File.join(Gitlab.config.gitlab.url, project.full_path, uri)
+          File.join(base_path, project.full_path, uri)
         end
       end
 
       def project
         context[:project]
+      end
+
+      def group
+        context[:group]
       end
 
       # Ensure that a :project key exists in context
