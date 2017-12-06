@@ -2,9 +2,9 @@ import Vue from 'vue';
 import { mapActions } from 'vuex';
 import { convertPermissionToBoolean } from '../lib/utils/common_utils';
 import Ide from './components/ide.vue';
-import RepoEditButton from './components/repo_edit_button.vue';
-import newBranchForm from './components/new_branch_form.vue';
-import newDropdown from './components/new_dropdown/index.vue';
+// import RepoEditButton from './components/repo_edit_button.vue';
+// import newBranchForm from './components/new_branch_form.vue';
+
 import store from './stores';
 import router from './ide_router';
 import Translate from '../vue_shared/translate';

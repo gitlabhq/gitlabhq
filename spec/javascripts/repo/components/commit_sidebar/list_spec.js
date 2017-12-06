@@ -13,8 +13,11 @@ describe('Multi-file editor commit sidebar list', () => {
     vm = createComponentWithStore(Component, store, {
       title: 'Staged',
       fileList: [],
-      collapsed: false,
-    }).$mount();
+    });
+
+    vm.$store.state.rightBarCollapsed = false;
+
+    vm.$mount();
   });
 
   afterEach(() => {
@@ -43,30 +46,14 @@ describe('Multi-file editor commit sidebar list', () => {
 
   describe('collapsed', () => {
     beforeEach((done) => {
-      vm.collapsed = true;
+      vm.$store.state.rightBarCollapsed = true;
 
       Vue.nextTick(done);
-    });
-
-    it('adds collapsed class', () => {
-      expect(vm.$el.querySelector('.is-collapsed')).not.toBeNull();
     });
 
     it('hides list', () => {
       expect(vm.$el.querySelector('.list-unstyled')).toBeNull();
       expect(vm.$el.querySelector('.help-block')).toBeNull();
     });
-
-    it('hides collapse button', () => {
-      expect(vm.$el.querySelector('.multi-file-commit-panel-collapse-btn')).toBeNull();
-    });
-  });
-
-  it('clicking toggle collapse button emits toggle event', () => {
-    spyOn(vm, '$emit');
-
-    vm.$el.querySelector('.multi-file-commit-panel-collapse-btn').click();
-
-    expect(vm.$emit).toHaveBeenCalledWith('toggleCollapsed');
   });
 });

@@ -63,13 +63,13 @@ router.beforeEach((to, from, next) => {
     })
     .then(() => {
       const fullProjectId = `${to.params.namespace}/${to.params.project}`;
-  
+
       if (to.params.branch) {
         store.dispatch('getBranchData', {
           projectId: fullProjectId,
           branchId: to.params.branch,
         });
-  
+
         store.dispatch('getTreeData', {
           projectId: fullProjectId,
           branch: to.params.branch,

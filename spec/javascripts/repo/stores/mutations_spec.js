@@ -65,11 +65,11 @@ describe('Multi-file store mutations', () => {
     it('toggles editMode', () => {
       mutations.TOGGLE_EDIT_MODE(localState);
 
-      expect(localState.editMode).toBeTruthy();
+      expect(localState.editMode).toBeFalsy();
 
       mutations.TOGGLE_EDIT_MODE(localState);
 
-      expect(localState.editMode).toBeFalsy();
+      expect(localState.editMode).toBeTruthy();
     });
   });
 

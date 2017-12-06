@@ -141,7 +141,6 @@ describe('Multi-file store actions', () => {
 
   describe('toggleBlobView', () => {
     it('sets edit mode view if in edit mode', (done) => {
-
       store.dispatch('toggleBlobView')
         .then(() => {
           expect(store.state.currentBlobView).toBe('repo-editor');

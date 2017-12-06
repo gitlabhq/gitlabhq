@@ -9,16 +9,6 @@ describe('Multi-file store utils', () => {
     });
   });
 
-  describe('pushState', () => {
-    it('calls history.pushState', () => {
-      spyOn(history, 'pushState');
-
-      utils.pushState('test');
-
-      expect(history.pushState).toHaveBeenCalledWith({ url: 'test' }, '', 'test');
-    });
-  });
-
   describe('createTemp', () => {
     it('creates temp tree', () => {
       const tmp = utils.createTemp({
