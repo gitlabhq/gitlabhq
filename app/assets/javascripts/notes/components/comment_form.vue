@@ -189,7 +189,6 @@
           this.$refs.markdownField.previewMarkdown = false;
         }
 
-        // reset autostave
         this.autosave.reset();
       },
       setNoteType(type) {
@@ -208,7 +207,11 @@
       },
       initAutoSave() {
         if (this.isLoggedIn) {
-          this.autosave = new Autosave($(this.$refs.textarea), ['Note', 'Issue', this.getNoteableData.id], 'issue');
+          this.autosave = new Autosave(
+            $(this.$refs.textarea),
+            ['Note', 'Issue', this.getNoteableData.id],
+            'issue'
+          );
         }
       },
       initTaskList() {

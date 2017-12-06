@@ -8,18 +8,15 @@
         default: false,
         required: false,
       },
-
       isConfidential: {
         type: Boolean,
         default: false,
         required: false,
       },
     },
-
     components: {
       Icon,
     },
-
     computed: {
       warningIcon() {
         if (this.isConfidential) return 'eye-slash';
@@ -27,7 +24,6 @@
 
         return '';
       },
-
       isLockedAndConfidential() {
         return this.isConfidential && this.isLocked;
       },
@@ -37,11 +33,11 @@
 <template>
   <div class="issuable-note-warning">
     <icon
-        :name="warningIcon"
-        :size="16"
-        class="icon inline"
-        aria-hidden="true"
-        v-if="!isLockedAndConfidential">
+      :name="warningIcon"
+      :size="16"
+      class="icon inline"
+      aria-hidden="true"
+      v-if="!isLockedAndConfidential">
     </icon>
 
     <span v-if="isLockedAndConfidential">
