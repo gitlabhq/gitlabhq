@@ -2,9 +2,11 @@
   import { mapState } from 'vuex';
   import newModal from './modal.vue';
   import upload from './upload.vue';
+  import icon from '../../../vue_shared/components/icon.vue';
 
   export default {
     components: {
+      icon,
       newModal,
       upload,
     },
@@ -41,11 +43,14 @@
           data-toggle="dropdown"
           aria-label="Create new file or directory"
         >
-          <i
-            class="fa fa-plus"
-            aria-hidden="true"
-          >
-          </i>
+          <icon
+            name="plus"
+            css-classes="pull-left"
+          />
+          <icon
+            name="arrow-down"
+            css-classes="pull-left"
+          />
         </button>
         <ul class="dropdown-menu">
           <li>
