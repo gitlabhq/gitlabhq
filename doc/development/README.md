@@ -17,6 +17,7 @@ comments: false
 - [Generate a changelog entry with `bin/changelog`](changelog.md)
 - [Code review guidelines](code_review.md) for reviewing code and having code reviewed.
 - [Automatic CE->EE merge](automatic_ce_ee_merge.md)
+- [Guidelines for implementing Enterprise Edition features](ee_features.md)
 
 ## UX and frontend guides
 
