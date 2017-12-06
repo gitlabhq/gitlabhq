@@ -437,11 +437,11 @@ module Gitlab
         options[:offset] ||= 0
 
         gitaly_migrate(:find_commits) do |is_enabled|
-          # gitaly does not support loading changed files summary from `git log` yet.
+          # Gitaly does not support loading changed files summary from `git log` yet.
           if is_enabled && !options[:with_change_summary]
-            gitaly_commit_client.find_commits(options)
+           gitaly_commit_client.find_commits(options)
           else
-            raw_log(options)
+           raw_log(options)
           end
         end
       end
@@ -1379,7 +1379,7 @@ module Gitlab
           end
         else
           # If `with_change_summary` is false then `lines` are an array of SHAs.
-          commits = lines
+          commits = lines.map { |line| line.chomp("\n") }
         end
 
         # `commits` is an array of strings (SHAs).
