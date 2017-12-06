@@ -58,7 +58,6 @@ describe MigrateGcpClustersToNewClustersArchitectures, :migration do
       expect(cluster.platform_type).to eq('kubernetes')
 
       expect(cluster.project_ids).to include(project.id)
-      expect(project.clusters).to include(cluster)
 
       expect(cluster.provider_gcp.cluster).to eq(cluster)
       expect(cluster.provider_gcp.status).to eq(status)
@@ -135,7 +134,6 @@ describe MigrateGcpClustersToNewClustersArchitectures, :migration do
       expect(cluster.platform_type).to eq('kubernetes')
 
       expect(cluster.project_ids).to include(project.id)
-      expect(project.clusters).to include(cluster)
 
       expect(cluster.provider_gcp.cluster).to eq(cluster)
       expect(cluster.provider_gcp.status).to eq(status)
