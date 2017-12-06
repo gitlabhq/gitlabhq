@@ -8,10 +8,8 @@ import titleComponent from './title.vue';
 import descriptionComponent from './description.vue';
 import editedComponent from './edited.vue';
 import formComponent from './form.vue';
-import PopupDialog from '~/vue_shared/components/popup_dialog.vue';
+import RecaptchaDialog from '~/vue_shared/components/recaptcha_dialog.vue';
 import '../../lib/utils/url_utility';
-
-const recaptchaScriptID = 'gl-recaptcha-script';
 
 export default {
   props: {
@@ -129,7 +127,6 @@ export default {
       recaptchaHTML: '',
       showForm: false,
       showRecaptcha: false,
-      recaptchaScript: {},
     };
   },
   computed: {
@@ -145,7 +142,7 @@ export default {
     titleComponent,
     editedComponent,
     formComponent,
-    PopupDialog,
+    RecaptchaDialog,
   },
   methods: {
     openForm() {
@@ -163,38 +160,12 @@ export default {
       this.showForm = false;
     },
 
-    appendRecaptchaScript() {
-      const script = document.createElement('script');
-      script.id = recaptchaScriptID;
-      script.src = 'https://www.google.com/recaptcha/api.js';
-      script.async = true;
-      script.defer = true;
-
-      this.recaptchaScript = script;
-
-      document.body.appendChild(script);
-    },
-
-    removeRecaptchaScript() {
-      this.recaptchaScript.remove();
-    },
-
     openRecaptcha() {
-      if (!this.showRecaptcha) {
-        this.showRecaptcha = true;
-        this.appendRecaptchaScript();
-      }
+      this.showRecaptcha = true;
     },
 
     closeRecaptcha() {
-      if (this.showRecaptcha) {
-        this.showRecaptcha = false;
-        this.removeRecaptchaScript();
-      }
-    },
-
-    submitRecaptcha() {
-      this.$refs.recaptcha.querySelector('.js-recaptcha-form').submit();
+      this.showRecaptcha = false;
     },
 
     checkForSpam(data) {
@@ -297,22 +268,11 @@ export default {
       :show-delete-button="showDeleteButton"
       :can-attach-file="canAttachFile"
     />
-    <popup-dialog
+    <recaptcha-dialog
       v-show="showRecaptcha"
-      kind="warning"
-      class="recaptcha-modal"
-      :primary-button-label="__('Submit')"
-      :title="__('Please solve the reCAPTCHA')"
-      @toggle="closeRecaptcha"
-      @submit="submitRecaptcha"
-    >
-      <div
-        class="text-center"
-        slot="body"
-        ref="recaptcha"
-        v-html="recaptchaHTML"
-      ></div>
-    </popup-dialog>
+      :html="recaptchaHTML"
+      @close="closeRecaptcha"
+    />
   </div>
   <div v-else>
     <title-component

@@ -38,7 +38,8 @@ export default {
     },
     primaryButtonLabel: {
       type: String,
-      required: true,
+      required: false,
+      default: '',
     },
     submitDisabled: {
       type: Boolean,
@@ -113,6 +114,7 @@ export default {
             {{ closeButtonLabel }}
           </button>
           <button
+            v-if="primaryButtonLabel"
             type="button"
             class="btn pull-right"
             :disabled="submitDisabled"
