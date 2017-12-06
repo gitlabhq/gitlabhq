@@ -33,6 +33,10 @@ export default class ContextualSidebar {
     });
 
     $(window).on('resize', () => _.debounce(this.render(), 100));
+
+    $(window).on('beforeunload', () => {
+      this.fadeSidebar();
+    });
   }
 
   static setCollapsedCookie(value) {
@@ -40,6 +44,11 @@ export default class ContextualSidebar {
       return;
     }
     Cookies.set('sidebar_collapsed', value, { expires: 365 * 10 });
+  }
+
+  fadeSidebar() {
+    this.$sidebar.addClass('fade-out');
+    this.$page.addClass('remove-sidebar');
   }
 
   toggleSidebarNav(show) {

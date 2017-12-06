@@ -1,4 +1,6 @@
 .page-with-contextual-sidebar {
+  transition: padding-left $page-unload-transition;
+
   @media (min-width: $screen-md-min) {
     padding-left: $contextual-sidebar-collapsed-width;
   }
@@ -15,6 +17,10 @@
 
   .issues-bulk-update.right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
     padding: 10px 0 15px;
+  }
+
+  &.remove-sidebar {
+    padding-left: 0;
   }
 }
 
@@ -73,6 +79,7 @@
   background-color: $gray-light;
   box-shadow: inset -2px 0 0 $border-color;
   transform: translate3d(0, 0, 0);
+  transition: opacity $page-unload-transition, left $page-unload-transition;
 
   &:not(.sidebar-icons-only) {
     @media (min-width: $screen-sm-min) and (max-width: $screen-md-max) {
@@ -159,6 +166,11 @@
   svg {
     height: 16px;
     width: 16px;
+  }
+
+  &.fade-out {
+    opacity: 0;
+    left: (-$contextual-sidebar-width);
   }
 }
 
