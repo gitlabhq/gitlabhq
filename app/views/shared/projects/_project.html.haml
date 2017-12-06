@@ -32,6 +32,7 @@
               = project.name
 
         - if access&.nonzero?
+          -# haml-lint:disable UnnecessaryStringOutput
           = ' ' # prevent haml from eating the space between elements
           %span.user-access-role= Gitlab::Access.human_access(access)
 
