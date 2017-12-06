@@ -8,6 +8,7 @@ describe Geo::AttachmentRegistryFinder, :geo, :truncate do
   let(:secondary) { create(:geo_node) }
 
   let(:synced_group) { create(:group) }
+  let(:synced_subgroup) { create(:group, parent: synced_group) }
   let(:unsynced_group) { create(:group) }
   let(:synced_project) { create(:project, group: synced_group) }
   let(:unsynced_project) { create(:project, group: unsynced_group) }
@@ -18,6 +19,7 @@ describe Geo::AttachmentRegistryFinder, :geo, :truncate do
   let(:upload_4) { create(:upload, model: unsynced_project) }
   let(:upload_5) { create(:upload, model: synced_project) }
   let(:upload_6) { create(:upload, :personal_snippet) }
+  let(:upload_7) { create(:upload, model: synced_subgroup) }
   let(:lfs_object) { create(:lfs_object) }
 
   subject { described_class.new(current_node: secondary) }
@@ -43,11 +45,12 @@ describe Geo::AttachmentRegistryFinder, :geo, :truncate do
         create(:geo_file_registry, :avatar, file_id: upload_2.id)
         create(:geo_file_registry, :avatar, file_id: upload_3.id, success: false)
         create(:geo_file_registry, :avatar, file_id: upload_6.id)
+        create(:geo_file_registry, :avatar, file_id: upload_7.id)
         create(:geo_file_registry, :lfs, file_id: lfs_object.id)
 
         synced_attachments = subject.find_synced_attachments
 
-        expect(synced_attachments.pluck(:id)).to match_array([upload_1.id, upload_2.id, upload_6.id])
+        expect(synced_attachments.pluck(:id)).to match_array([upload_1.id, upload_2.id, upload_6.id, upload_7.id])
       end
 
       context 'with selective sync' do
@@ -58,13 +61,14 @@ describe Geo::AttachmentRegistryFinder, :geo, :truncate do
           create(:geo_file_registry, :avatar, file_id: upload_4.id)
           create(:geo_file_registry, :avatar, file_id: upload_5.id, success: false)
           create(:geo_file_registry, :avatar, file_id: upload_6.id)
+          create(:geo_file_registry, :avatar, file_id: upload_7.id)
           create(:geo_file_registry, :lfs, file_id: lfs_object.id)
 
           secondary.update_attribute(:namespaces, [synced_group])
 
           synced_attachments = subject.find_synced_attachments
 
-          expect(synced_attachments.pluck(:id)).to match_array([upload_1.id, upload_3.id, upload_6.id])
+          expect(synced_attachments.pluck(:id)).to match_array([upload_1.id, upload_3.id, upload_6.id, upload_7.id])
         end
       end
     end
@@ -81,11 +85,12 @@ describe Geo::AttachmentRegistryFinder, :geo, :truncate do
         create(:geo_file_registry, :avatar, file_id: upload_2.id)
         create(:geo_file_registry, :avatar, file_id: upload_3.id, success: false)
         create(:geo_file_registry, :avatar, file_id: upload_6.id, success: false)
+        create(:geo_file_registry, :avatar, file_id: upload_7.id, success: false)
         create(:geo_file_registry, :lfs, file_id: lfs_object.id, success: false)
 
         failed_attachments = subject.find_failed_attachments
 
-        expect(failed_attachments.pluck(:id)).to match_array([upload_3.id, upload_6.id])
+        expect(failed_attachments.pluck(:id)).to match_array([upload_3.id, upload_6.id, upload_7.id])
       end
 
       context 'with selective sync' do
@@ -96,13 +101,14 @@ describe Geo::AttachmentRegistryFinder, :geo, :truncate do
           create(:geo_file_registry, :avatar, file_id: upload_4.id)
           create(:geo_file_registry, :avatar, file_id: upload_5.id)
           create(:geo_file_registry, :avatar, file_id: upload_6.id, success: false)
+          create(:geo_file_registry, :avatar, file_id: upload_7.id, success: false)
           create(:geo_file_registry, :lfs, file_id: lfs_object.id, success: false)
 
           secondary.update_attribute(:namespaces, [synced_group])
 
           failed_attachments = subject.find_failed_attachments
 
-          expect(failed_attachments.pluck(:id)).to match_array([upload_1.id, upload_3.id, upload_6.id])
+          expect(failed_attachments.pluck(:id)).to match_array([upload_1.id, upload_3.id, upload_6.id, upload_7.id])
         end
       end
     end
@@ -125,11 +131,12 @@ describe Geo::AttachmentRegistryFinder, :geo, :truncate do
         create(:geo_file_registry, :avatar, file_id: upload_2.id)
         create(:geo_file_registry, :avatar, file_id: upload_3.id, success: false)
         create(:geo_file_registry, :avatar, file_id: upload_6.id)
+        create(:geo_file_registry, :avatar, file_id: upload_7.id)
         create(:geo_file_registry, :lfs, file_id: lfs_object.id)
 
         synced_attachments = subject.find_synced_attachments
 
-        expect(synced_attachments).to match_array([upload_1, upload_2, upload_6])
+        expect(synced_attachments).to match_array([upload_1, upload_2, upload_6, upload_7])
       end
 
       context 'with selective sync' do
@@ -140,13 +147,14 @@ describe Geo::AttachmentRegistryFinder, :geo, :truncate do
           create(:geo_file_registry, :avatar, file_id: upload_4.id)
           create(:geo_file_registry, :avatar, file_id: upload_5.id, success: false)
           create(:geo_file_registry, :avatar, file_id: upload_6.id)
+          create(:geo_file_registry, :avatar, file_id: upload_7.id)
           create(:geo_file_registry, :lfs, file_id: lfs_object.id)
 
           secondary.update_attribute(:namespaces, [synced_group])
 
           synced_attachments = subject.find_synced_attachments
 
-          expect(synced_attachments).to match_array([upload_1, upload_3, upload_6])
+          expect(synced_attachments).to match_array([upload_1, upload_3, upload_6, upload_7])
         end
       end
     end
@@ -163,11 +171,12 @@ describe Geo::AttachmentRegistryFinder, :geo, :truncate do
         create(:geo_file_registry, :avatar, file_id: upload_2.id)
         create(:geo_file_registry, :avatar, file_id: upload_3.id, success: false)
         create(:geo_file_registry, :avatar, file_id: upload_6.id, success: false)
+        create(:geo_file_registry, :avatar, file_id: upload_7.id, success: false)
         create(:geo_file_registry, :lfs, file_id: lfs_object.id, success: false)
 
         failed_attachments = subject.find_failed_attachments
 
-        expect(failed_attachments).to match_array([upload_3, upload_6])
+        expect(failed_attachments).to match_array([upload_3, upload_6, upload_7])
       end
 
       context 'with selective sync' do
@@ -178,13 +187,14 @@ describe Geo::AttachmentRegistryFinder, :geo, :truncate do
           create(:geo_file_registry, :avatar, file_id: upload_4.id)
           create(:geo_file_registry, :avatar, file_id: upload_5.id)
           create(:geo_file_registry, :avatar, file_id: upload_6.id, success: false)
+          create(:geo_file_registry, :avatar, file_id: upload_7.id, success: false)
           create(:geo_file_registry, :lfs, file_id: lfs_object.id, success: false)
 
           secondary.update_attribute(:namespaces, [synced_group])
 
           failed_attachments = subject.find_failed_attachments
 
-          expect(failed_attachments).to match_array([upload_1, upload_3, upload_6])
+          expect(failed_attachments).to match_array([upload_1, upload_3, upload_6, upload_7])
         end
       end
     end

@@ -152,7 +152,7 @@ class GeoNode < ActiveRecord::Base
   def uploads
     if selective_sync?
       uploads_table   = Upload.arel_table
-      group_uploads   = uploads_table[:model_type].eq('Namespace').and(uploads_table[:model_id].in(Gitlab::Geo.current_node.namespace_ids))
+      group_uploads   = uploads_table[:model_type].eq('Namespace').and(uploads_table[:model_id].in(Gitlab::GroupHierarchy.new(namespaces).base_and_descendants.pluck(:id)))
       project_uploads = uploads_table[:model_type].eq('Project').and(uploads_table[:model_id].in(projects.pluck(:id)))
       other_uploads   = uploads_table[:model_type].not_in(%w[Namespace Project])
 

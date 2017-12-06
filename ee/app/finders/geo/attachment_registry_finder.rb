@@ -29,7 +29,7 @@ module Geo
 
       if selective_sync?
         upload_table    = upload_model.arel_table
-        group_uploads   = upload_table[:model_type].eq('Namespace').and(upload_table[:model_id].in(current_node.namespace_ids))
+        group_uploads   = upload_table[:model_type].eq('Namespace').and(upload_table[:model_id].in(Gitlab::GroupHierarchy.new(current_node.namespaces).base_and_descendants.pluck(:id)))
         project_uploads = upload_table[:model_type].eq('Project').and(upload_table[:model_id].in(current_node.projects.pluck(:id)))
         other_uploads   = upload_table[:model_type].not_in(%w[Namespace Project])
 
