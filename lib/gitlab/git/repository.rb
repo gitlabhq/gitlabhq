@@ -1391,13 +1391,18 @@ module Gitlab
         end
       end
 
-      # Generate file identifier similar to Gitlab::Diff::File::file_identifier
+      # Generate file identifier similar to Gitlab::Diff::File::file_identifier.
+      # A - Added.
+      # C - Copied.
+      # D - Deleted.
+      # R - Renamed.
+      # T - Type changed.
       def file_identifier(path, type)
         new_file     = type.starts_with?('A', 'C', 'T')
         deleted_file = type.starts_with?('D')
         renamed_file = type.starts_with?('R')
 
-        [path, new_file, deleted_file, renamed_file] * '-'
+        [path, new_file, deleted_file, renamed_file].join('-')
       end
 
       # We are trying to deprecate this method because it does a lot of work
