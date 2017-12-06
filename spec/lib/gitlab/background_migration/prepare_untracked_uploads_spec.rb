@@ -18,6 +18,8 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
   end
 
   before do
+    DatabaseCleaner.clean
+
     drop_temp_table_if_exists
   end
 

@@ -9,7 +9,10 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :sidekiq do
   let!(:uploads) { described_class::Upload }
 
   before do
+    DatabaseCleaner.clean
+    drop_temp_table_if_exists
     ensure_temporary_tracking_table_exists
+    uploads.delete_all
   end
 
   after(:all) do
