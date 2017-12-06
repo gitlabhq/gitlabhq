@@ -10,6 +10,7 @@ export default class ContextualSidebar {
 
   initDomElements() {
     this.$page = $('.page-with-sidebar');
+    this.$pageContent = $('.page-with-sidebar .content-wrapper')
     this.$sidebar = $('.nav-sidebar');
     this.$innerScroll = $('.nav-sidebar-inner-scroll', this.$sidebar);
     this.$overlay = $('.mobile-overlay');
@@ -49,6 +50,7 @@ export default class ContextualSidebar {
   fadeSidebar() {
     this.$sidebar.addClass('fade-out');
     this.$page.addClass('remove-sidebar');
+    this.$pageContent.addClass('fade-out');
   }
 
   toggleSidebarNav(show) {

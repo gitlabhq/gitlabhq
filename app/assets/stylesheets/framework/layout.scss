@@ -107,6 +107,11 @@ body {
 
 .page-with-sidebar > .content-wrapper {
   min-height: calc(100vh - #{$header-height});
+  transition: opacity 800ms;
+
+  &.fade-out {
+    opacity: 0;
+  }
 }
 
 .with-performance-bar .page-with-sidebar {
