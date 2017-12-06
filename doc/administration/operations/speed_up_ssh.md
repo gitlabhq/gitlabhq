@@ -19,6 +19,12 @@ those included with CentOS 6 as of September 2017. If you want to use this
 feature for CentOS 6, follow [the instructions on how to build and install a custom OpenSSH package]
 (#compiling-a-custom-version-of-openssh-for-centos-6) before continuing.
 
+Create the directory `/opt/gitlab-shell` first:
+
+```bash
+sudo mkdir -p /opt/gitlab-shell
+```
+
 Create this file at `/opt/gitlab-shell/authorized_keys`:
 
 ```

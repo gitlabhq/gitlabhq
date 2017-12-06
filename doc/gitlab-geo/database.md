@@ -315,10 +315,11 @@ primary before the database is replicated.
     # Certificate and key currently used by GitLab
     mkdir -p ~gitlab-psql/.postgresql
     ln -s /opt/gitlab/embedded/ssl/certs/cacert.pem ~gitlab-psql/.postgresql/root.crt
-
-
+    ```
+    
+    ```bash
     # Self-signed certificate and key
-    install -o gitlab-psql -g gitlab-psql -m 0400 -T server.crt ~gitlab-psql/.postgresql/root.crt
+    install -o gitlab-psql -g gitlab-psql -m 0400 -T server.crt -D ~gitlab-psql/.postgresql/root.crt
     ```
 
     PostgreSQL will now only recognize that exact certificate when verifying TLS
@@ -330,8 +331,9 @@ primary before the database is replicated.
     ```
     # Certificate and key currently used by GitLab, and connecting by FQDN
     sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h primary.geo.example.com -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-full" -W
-
-
+    ```
+    
+    ```
     # Self-signed certificate and key, or connecting by IP address
     sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h 1.2.3.4 -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W
     ```
@@ -407,7 +409,9 @@ data before running `pg_basebackup`.
     ```
     # Certificate and key currently used by GitLab, and connecting by FQDN
     gitlab-ctl replicate-geo-database --host=primary.geo.example.com --slot-name=secondary_example
-
+    ```
+    
+    ```
     # Self-signed certificate and key, or connecting by IP
     gitlab-ctl replicate-geo-database --host=1.2.3.4 --slot-name=secondary_example --sslmode=verify-ca
     ```
