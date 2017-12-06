@@ -4,6 +4,8 @@ export const SET_COMMIT_REF = 'SET_COMMIT_REF';
 export const SET_PARENT_TREE_URL = 'SET_PARENT_TREE_URL';
 export const SET_ROOT = 'SET_ROOT';
 export const SET_LAST_COMMIT_DATA = 'SET_LAST_COMMIT_DATA';
+export const SET_LEFT_BAR_COLLAPSED = 'SET_LEFT_BAR_COLLAPSED';
+export const SET_RIGHT_BAR_COLLAPSED = 'SET_RIGHT_BAR_COLLAPSED';
 
 // Project Mutation Types
 export const SET_PROJECT = 'SET_PROJECT';

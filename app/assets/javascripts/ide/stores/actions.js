@@ -50,6 +50,14 @@ export const toggleBlobView = ({ commit, state }) => {
   }
 };
 
+export const setLeftBarCollapsedStatus = ({ commit, state }, collapsed) => {
+  commit(types.SET_LEFT_BAR_COLLAPSED, collapsed);
+};
+
+export const setRightBarCollapsedStatus = ({ commit, state }, collapsed) => {
+  commit(types.SET_RIGHT_BAR_COLLAPSED, collapsed);
+};
+
 export const checkCommitStatus = ({ state }) => service.getBranchData(
   state.currentProjectId,
   state.currentBranchId,
