@@ -1,6 +1,6 @@
 import tooltip from '../../vue_shared/directives/tooltip';
 import { pluralize } from '../../lib/utils/text_utility';
-import Icon from '../../vue_shared/components/icon.vue';
+import icon from '../../vue_shared/components/icon.vue';
 
 export default {
   name: 'MRWidgetHeader',
@@ -11,7 +11,7 @@ export default {
     tooltip,
   },
   components: {
-    Icon,
+    icon,
   },
   computed: {
     shouldShowCommitsBehindText() {

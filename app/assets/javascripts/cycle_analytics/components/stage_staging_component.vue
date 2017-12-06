@@ -3,6 +3,7 @@
   import iconBranch from '../svg/icon_branch.svg';
   import limitWarning from './limit_warning_component.vue';
   import totalTime from './total_time_component.vue';
+  import icon from '../../vue_shared/components/icon.vue';
 
   export default {
     props: {
@@ -13,6 +14,7 @@
       userAvatarImage,
       totalTime,
       limitWarning,
+      icon,
     },
     computed: {
       iconBranch() {
@@ -37,7 +39,10 @@
           <user-avatar-image :img-src="build.author.avatarUrl"/>
           <h5 class="item-title">
             <a :href="build.url" class="pipeline-id">#{{ build.id }}</a>
-            <i class="fa fa-code-fork"></i>
+            <icon
+              name="fork"
+              :size="16">
+            </icon>
             <a :href="build.branch.url" class="ref-name">{{ build.branch.name }}</a>
             <span class="icon-branch" v-html="iconBranch"></span>
             <a :href="build.commitUrl" class="commit-sha">{{ build.shortSha }}</a>

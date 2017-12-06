@@ -1,6 +1,6 @@
 <script>
   import tooltip from '../../vue_shared/directives/tooltip';
-  import Icon from '../../vue_shared/components/icon.vue';
+  import icon from '../../vue_shared/components/icon.vue';
 
   export default {
     props: {
@@ -13,7 +13,7 @@
       tooltip,
     },
     components: {
-      Icon,
+      icon,
     },
   };
 </script>

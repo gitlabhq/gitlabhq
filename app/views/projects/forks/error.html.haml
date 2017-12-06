@@ -2,7 +2,7 @@
 - if @forked_project && !@forked_project.saved?
   .alert.alert-danger.alert-block
     %h4
-      %i.fa.fa-code-fork
+      = sprite_icon('fork', size: 16)
       Fork Error!
     %p
       You tried to fork
@@ -21,5 +21,4 @@
 
     %p
       = link_to new_project_fork_path(@project), title: "Fork", class: "btn" do
-        %i.fa.fa-code-fork
         Try to fork again
