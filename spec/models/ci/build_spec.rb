@@ -151,13 +151,10 @@ describe Ci::Build do
           let!(:build) { create(:ci_build, :artifacts, :expired) }
 
           it { is_expected.to be_falsy }
-<<<<<<< HEAD
-=======
         end
 
         context 'is not expired' do
           it { is_expected.to be_truthy }
->>>>>>> upstream/master
         end
       end
     end
