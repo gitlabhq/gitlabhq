@@ -4,7 +4,7 @@ import store from '~/ide/stores';
 import service from '~/ide/services';
 import { resetStore, file } from '../helpers';
 
-fdescribe('Multi-file store actions', () => {
+describe('Multi-file store actions', () => {
   afterEach(() => {
     resetStore(store);
   });

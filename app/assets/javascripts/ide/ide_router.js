@@ -56,42 +56,45 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  store.dispatch('getProjectData', {
-    namespace: to.params.namespace,
-    projectId: to.params.project,
-  })
-  .then(() => {
-    const fullProjectId = `${to.params.namespace}/${to.params.project}`;
-
-    if (to.params.branch) {
-      store.dispatch('getBranchData', {
-        projectId: fullProjectId,
-        branchId: to.params.branch,
-      });
-
-      store.dispatch('getTreeData', {
-        projectId: fullProjectId,
-        branch: to.params.branch,
-        endpoint: `/tree/${to.params.branch}`,
-      })
-      .then(() => {
-        if (to.params[0]) {
-          const treeEntry = getTreeEntry(store, `${to.params.namespace}/${to.params.project}/${to.params.branch}`, to.params[0]);
-          if (treeEntry) {
-            store.dispatch('handleTreeEntryAction', treeEntry);
+  if (to.params.namespace && to.params.project) {
+    store.dispatch('getProjectData', {
+      namespace: to.params.namespace,
+      projectId: to.params.project,
+    })
+    .then(() => {
+      const fullProjectId = `${to.params.namespace}/${to.params.project}`;
+  
+      if (to.params.branch) {
+        store.dispatch('getBranchData', {
+          projectId: fullProjectId,
+          branchId: to.params.branch,
+        });
+  
+        store.dispatch('getTreeData', {
+          projectId: fullProjectId,
+          branch: to.params.branch,
+          endpoint: `/tree/${to.params.branch}`,
+        })
+        .then(() => {
+          if (to.params[0]) {
+            const treeEntry = getTreeEntry(store, `${to.params.namespace}/${to.params.project}/${to.params.branch}`, to.params[0]);
+            if (treeEntry) {
+              store.dispatch('handleTreeEntryAction', treeEntry);
+            }
           }
-        }
-      })
-      .catch((e) => {
-        flash('Error while loading the branch files. Please try again.');
-        throw e;
-      });
-    }
-  })
-  .catch((e) => {
-    flash('Error while loading the project data. Please try again.');
-    throw e;
-  });
+        })
+        .catch((e) => {
+          flash('Error while loading the branch files. Please try again.');
+          throw e;
+        });
+      }
+    })
+    .catch((e) => {
+      flash('Error while loading the project data. Please try again.');
+      throw e;
+    });
+  }
+
   next();
 });
 

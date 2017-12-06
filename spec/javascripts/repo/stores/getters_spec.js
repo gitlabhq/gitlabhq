@@ -11,15 +11,22 @@ describe('Multi-file store getters', () => {
 
   describe('treeList', () => {
     it('returns flat tree list', () => {
-      localState.tree.push(file('1'));
-      localState.tree[0].tree.push(file('2'));
-      localState.tree[0].tree[0].tree.push(file('3'));
+      localState.trees = [];
+      localState.trees['abcproject/mybranch'] = {
+        tree: [],
+      };
+      const baseTree = localState.trees['abcproject/mybranch'].tree;
+      baseTree.push(file('1'));
+      baseTree[0].tree.push(file('2'));
+      baseTree[0].tree[0].tree.push(file('3'));
+
+      console.log('B : ', baseTree);
 
       const treeList = getters.treeList(localState);
 
       expect(treeList.length).toBe(3);
-      expect(treeList[1].name).toBe(localState.tree[0].tree[0].name);
-      expect(treeList[2].name).toBe(localState.tree[0].tree[0].tree[0].name);
+      expect(treeList[1].name).toBe(baseTree[0].tree[0].name);
+      expect(treeList[2].name).toBe(baseTree[0].tree[0].tree[0].name);
     });
   });
 
