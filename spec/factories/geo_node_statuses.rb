@@ -2,6 +2,7 @@ FactoryGirl.define do
   factory :geo_node_status do
     sequence(:id)
     geo_node
+    version { Gitlab::VERSION }
 
     trait :healthy do
       health nil

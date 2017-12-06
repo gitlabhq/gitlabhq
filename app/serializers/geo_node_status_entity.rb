@@ -39,6 +39,8 @@ class GeoNodeStatusEntity < Grape::Entity
 
   expose :last_successful_status_check_timestamp
 
+  expose :version
+
   expose :namespaces, using: NamespaceEntity
 
   def namespaces

@@ -27,7 +27,6 @@ class GeoNodeStatus < ActiveRecord::Base
 
   def self.current_node_status
     current_node = Gitlab::Geo.current_node
-
     return unless current_node
 
     status = current_node.find_or_build_status
@@ -68,6 +67,7 @@ class GeoNodeStatus < ActiveRecord::Base
     self.lfs_objects_count = geo_node.lfs_objects.count
     self.attachments_count = geo_node.uploads.count
     self.last_successful_status_check_at = Time.now
+    self.version = Gitlab::VERSION
 
     if Gitlab::Geo.secondary?
       self.db_replication_lag_seconds = Gitlab::Geo::HealthCheck.db_replication_lag_seconds

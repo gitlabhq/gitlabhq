@@ -19,7 +19,8 @@
     "last_event_timestamp",
     "cursor_last_event_id",
     "cursor_last_event_timestamp",
-    "namespaces"
+    "namespaces",
+    "version"
   ],
   "properties" : {
     "geo_node_id": { "type": "integer" },
@@ -44,7 +45,8 @@
     "cursor_last_event_id": { "type": ["integer", "null"] },
     "cursor_last_event_timestamp": { "type": ["integer", "null"] },
     "last_successful_status_check_timestamp": { "type": ["integer", "null"] },
-    "namespaces": { "type": "array" }
+    "namespaces": { "type": "array" },
+    "version": { "type": ["string"] }
   },
   "additionalProperties": false
 }
