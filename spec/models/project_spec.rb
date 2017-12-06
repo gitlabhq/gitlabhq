@@ -489,7 +489,6 @@ describe Project do
     end
   end
 
-<<<<<<< HEAD
   describe "#kerberos_url_to_repo" do
     let(:project) { create(:project, path: "somewhere") }
 
@@ -498,10 +497,7 @@ describe Project do
     end
   end
 
-  describe "#new_issue_address" do
-=======
   describe "#new_issuable_address" do
->>>>>>> upstream/master
     let(:project) { create(:project, path: "somewhere") }
     let(:user) { create(:user) }
 
