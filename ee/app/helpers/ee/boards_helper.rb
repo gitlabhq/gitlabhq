@@ -8,7 +8,7 @@ module EE
       show_feature_promotion = (@project && show_promotions? &&
                                 (!@project.feature_available?(:multiple_issue_boards) ||
                                  !@project.feature_available?(:scoped_issue_board) ||
-                                 !@project.feature_available?(:issue_board_focus_mode))).to_s
+                                 !@project.feature_available?(:issue_board_focus_mode)))
 
       data = {
         board_milestone_title: board.milestone&.name,
@@ -17,7 +17,7 @@ module EE
         label_ids: board.label_ids,
         labels: board.labels.to_json(only: [:id, :title, :color, :text_color] ),
         board_weight: board.weight,
-        focus_mode_available: parent.feature_available?(:issue_board_focus_mode).to_s,
+        focus_mode_available: parent.feature_available?(:issue_board_focus_mode),
         show_promotion: show_feature_promotion
       }
 

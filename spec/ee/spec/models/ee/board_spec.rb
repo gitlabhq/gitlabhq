@@ -61,4 +61,49 @@ describe Board do
       expect(board.milestone).to be_nil
     end
   end
+
+  describe '#scoped?' do
+    before do
+      stub_licensed_features(scoped_issue_board: true)
+    end
+
+    it 'returns true when milestone is not nil AND is not "Any milestone"' do
+      milestone = create(:milestone)
+      board = create(:board, milestone: milestone, weight: nil, labels: [], assignee: nil)
+
+      expect(board).to be_scoped
+    end
+
+    it 'returns true when weight is not nil AND is not "Any weight"' do
+      board = create(:board, milestone: nil, weight: 2, labels: [], assignee: nil)
+
+      expect(board).to be_scoped
+    end
+
+    it 'returns true when any label exists' do
+      board = create(:board, milestone: nil, weight: nil, assignee: nil)
+      board.labels.create!(title: 'foo')
+
+      expect(board).to be_scoped
+    end
+
+    it 'returns true when assignee is present' do
+      user = create(:user)
+      board = create(:board, milestone: nil, weight: nil, labels: [], assignee: user)
+
+      expect(board).to be_scoped
+    end
+
+    it 'returns false when feature is not available' do
+      stub_licensed_features(scoped_issue_board: false)
+
+      expect(board).not_to be_scoped
+    end
+
+    it 'returns false when board is not scoped' do
+      board = create(:board, milestone_id: -1, weight: -1, labels: [], assignee: nil)
+
+      expect(board).not_to be_scoped
+    end
+  end
 end
