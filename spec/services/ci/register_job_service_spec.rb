@@ -277,6 +277,10 @@ module Ci
       end
 
       context 'when "dependencies" keyword is specified' do
+        before do
+          stub_feature_flags(ci_validates_dependencies: true)
+        end
+
         let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: job_name, stage_idx: 0) }
 
         let!(:pending_job) do
@@ -311,7 +315,7 @@ module Ci
 
             context 'when artifacts of depended job has not existsed' do
               before do
-                pre_stage_job.erase_artifacts!
+                pre_stage_job.erase
               end
 
               it 'does not pick the build and drops the build' do
@@ -320,16 +324,6 @@ module Ci
                 expect(pending_job).to be_missing_dependency_failure
               end
             end
-          end
-        end
-
-        context 'when depended jobs do not exist' do
-          let(:job_name) { 'robocop' }
-
-          it 'does not pick the build and drops the build' do
-            expect(picked_job).to be_nil
-            expect(pending_job.reload).to be_failed
-            expect(pending_job).to be_missing_dependency_failure
           end
         end
       end
