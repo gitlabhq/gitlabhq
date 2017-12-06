@@ -707,7 +707,7 @@ describe Project do
     let(:project) { create(:project) }
 
     context 'when environment is specified' do
-      let(:environment) { create(:environment, name: 'review/name') }
+      let(:environment) { create(:environment, project: project, name: 'review/name') }
       let!(:default_cluster) { create(:cluster, :provided_by_user, projects: [project], environment_scope: '*') }
       let!(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
 
