@@ -195,6 +195,28 @@ describe MergeRequest do
     end
   end
 
+  describe '#base_performance_artifact' do
+    before do
+      allow(subject.base_pipeline).to receive(:performance_artifact)
+        .and_return(1)
+    end
+
+    it 'delegates to merge request diff' do
+      expect(subject.base_performance_artifact).to eq(1)
+    end
+  end
+
+  describe '#head_performance_artifact' do
+    before do
+      allow(subject.head_pipeline).to receive(:performance_artifact)
+        .and_return(1)
+    end
+
+    it 'delegates to merge request diff' do
+      expect(subject.head_performance_artifact).to eq(1)
+    end
+  end
+
   describe '#has_codeclimate_data?' do
     context 'with codeclimate artifact' do
       before do
