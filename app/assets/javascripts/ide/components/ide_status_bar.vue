@@ -1,6 +1,6 @@
 <script>
 import { mapState } from 'vuex';
-import Icon from '../../vue_shared/components/icon.vue';
+import icon from '../../vue_shared/components/icon.vue';
 import tooltip from '../../vue_shared/directives/tooltip';
 import timeAgoMixin from '../../vue_shared/mixins/timeago';
 
@@ -12,7 +12,7 @@ export default {
     },
   },
   components: {
-    Icon,
+    icon,
   },
   directives: {
     tooltip,
@@ -31,16 +31,14 @@ export default {
 <template>
   <div
     class="ide-status-bar">
-    <div 
-      class="col-sm-3">
+    <div>
       <icon
         name="branch"
         :size="12">
       </icon>
       {{ selectedFile.branchId }}
     </div>
-    <div 
-      class="col-sm-4">
+    <div>
       <div
         v-if="selectedFile.lastCommit && selectedFile.lastCommit.id">
         Last commit:
@@ -53,20 +51,20 @@ export default {
         </a>
       </div>      
     </div>
-    <div 
-      class="col-sm-2 text-right">
+    <div
+      class="text-right">
       {{ selectedFile.name }}
     </div>
     <div 
-      class="col-sm-1 text-right">
-      {{ selectedFile.EOL }}
+      class="text-right">
+      {{ selectedFile.eol }}
     </div>
     <div 
-      class="col-sm-1 text-right">
+      class="text-right">
       {{ file.editorRow }}:{{ file.editorColumn }}
     </div>
     <div 
-      class="col-sm-1 text-right">
+      class="text-right">
       {{ selectedFile.fileLanguage }}
     </div>
   </div>

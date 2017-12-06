@@ -1,11 +1,11 @@
 <script>
 import { mapGetters } from 'vuex';
-import RepoCommitSection from './repo_commit_section.vue';
+import repoCommitSection from './repo_commit_section.vue';
 import icon from '../../vue_shared/components/icon.vue';
 
 export default {
   components: {
-    RepoCommitSection,
+    repoCommitSection,
     icon,
   },
   data() {

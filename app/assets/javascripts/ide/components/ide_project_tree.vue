@@ -1,10 +1,10 @@
 <script>
-import BranchesTree from './ide_project_branches_tree.vue';
+import branchesTree from './ide_project_branches_tree.vue';
 import projectAvatarImage from '../../vue_shared/components/project_avatar/project_avatar_image.vue';
 
 export default {
   components: {
-    BranchesTree,
+    branchesTree,
     projectAvatarImage,
   },
   props: {
@@ -40,7 +40,7 @@ export default {
       <branches-tree
         v-for="(branch, index) in project.branches"
         :key="branch.name"
-        :projectId="project.path_with_namespace"
+        :project-id="project.path_with_namespace"
         :branch="branch"/>
     </div>
   </div>

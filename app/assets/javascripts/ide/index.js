@@ -104,7 +104,3 @@ initNewDropdown(newDropdownHolder);
 
 const contextualSidebar = new ContextualSidebar();
 contextualSidebar.bindEvents();
-
-/* global Sidebar */
-// eslint-disable-next-line no-new
-new Sidebar();

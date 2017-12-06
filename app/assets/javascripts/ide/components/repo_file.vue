@@ -20,6 +20,10 @@
         type: Boolean,
         default: true,
       },
+      showExtraColumns: {
+        type: Boolean,
+        default: false,
+      },
     },
     computed: {
       isSubmodule() {
@@ -27,16 +31,6 @@
       },
       isTree() {
         return this.file.type === 'tree';
-      },
-      fileIcon() {
-        return {
-          'fa-spinner fa-spin': this.file.loading,
-          [this.file.icon]: !this.file.loading,
-          'fa-folder-open': !this.file.loading && this.file.opened,
-        };
-      },
-      fileUrl() {
-        return this.file.url;
       },
       levelIndentation() {
         return {
@@ -53,10 +47,9 @@
         return this.file.type === 'blob' && this.file.opened ? 'file-open' : '';
       },
       changedClass() {
-        const tabChangedObj = {
+        return {
           'fa-circle unsaved-icon': this.file.changed || this.file.tempFile,
         };
-        return tabChangedObj;
       },
     },
     methods: {
@@ -91,7 +84,7 @@
       </a>
       <new-dropdown
         v-if="isTree"
-        :projectId="file.projectId"
+        :project-id="file.projectId"
         :branch="file.branchId"
         :path="file.path"
         :parent="file"/>
@@ -114,7 +107,7 @@
       </template>
     </td>
 
-    <template v-if="false == true">
+    <template v-if="showExtraColumns">
       <td class="multi-file-table-col-commit-message hidden-sm hidden-xs">
         <a
           v-if="file.lastCommit.message"

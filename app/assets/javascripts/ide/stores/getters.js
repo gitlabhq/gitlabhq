@@ -18,13 +18,6 @@ export const treeList = state => (treeId) => {
   return [];
 };
 
-export const getTree = state => (namespace, projectId, branch) => state.trees[`${namespace}/${projectId}/${branch}`];
-
-export const getTreeEntry = (state, getters) => (treeId, path) => {
-  const fileList = getters.treeList(treeId);
-  return fileList.find(file => file.path === path);
-};
-
 export const changedFiles = state => state.openFiles.filter(file => file.changed);
 
 export const activeFile = state => state.openFiles.find(file => file.active) || null;

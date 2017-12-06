@@ -4,12 +4,12 @@
 - page_title 'IDE'
 
 - content_for :page_specific_javascripts do
-  = webpack_bundle_tag 'blob'
   = webpack_bundle_tag 'common_vue'
   = webpack_bundle_tag 'ide'
 
-#ide
-  #content-body.content
-    .ide-loading.clgray
-      .text-center= icon('spinner spin', class: 'js-source-loading')
-      IDE Loading ... 
+.ide-flash-container.flash-container
+
+#ide.ide-loading
+  .text-center
+    = icon('spinner spin 2x', 'aria-hidden' => 'true', 'aria-label' => 'Loading content…')
+    %h2.clgray IDE Loading ...

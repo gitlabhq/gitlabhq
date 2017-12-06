@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import axios from '~/lib/utils/axios_utils';
+import axios from './lib/utils/axios_utils';
 
 const Api = {
   groupsPath: '/api/:version/groups.json',

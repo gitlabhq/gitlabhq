@@ -42,7 +42,7 @@ module BlobHelper
   end
 
   def ide_edit_path(project = @project, ref = @ref, path = @path, options = {})
-    ide_path + '/project' + edit_path(project, ref, path, options)
+    "#{ide_path}/project#{edit_path(project, ref, path, options)}"
   end
 
   def ide_blob_link(project = @project, ref = @ref, path = @path, options = {})
@@ -52,13 +52,13 @@ module BlobHelper
 
       return unless blob && blob.readable_text?
 
-      common_classes = "btn js-edit-blob #{options[:extra_class]}"
+      common_classes = "btn js-edit-ide #{options[:extra_class]}"
 
       if !on_top_of_branch?(project, ref)
-        button_tag 'Multi edit', class: "#{common_classes} disabled has-tooltip", title: "You can only edit files when you are on a branch", data: { container: 'body' }
+        button_tag 'Multi Edit <span class="label label-primary">Beta</span>', class: "#{common_classes} disabled has-tooltip", title: "You can only edit files when you are on a branch", data: { container: 'body' }
       # This condition applies to anonymous or users who can edit directly
       elsif !current_user || (current_user && can_modify_blob?(blob, project, ref))
-        link_to 'Multi Edit <span class="lable">Beta</span>', ide_edit_path(project, ref, path, options), class: "#{common_classes} btn-sm"
+        link_to 'Multi Edit <span class="label label-primary">Beta</span>'.html_safe, ide_edit_path(project, ref, path, options), class: "#{common_classes} btn-sm"
       elsif current_user && can?(current_user, :fork_project, project)
         continue_params = {
           to: ide_edit_path(project, ref, path, options),
@@ -67,8 +67,8 @@ module BlobHelper
         }
         fork_path = project_forks_path(project, namespace_key: current_user.namespace.id, continue: continue_params)
 
-        button_tag 'Multi Edit A',
-          class: "#{common_classes} js-edit-blob-link-fork-toggler",
+        button_tag 'Multi Edit <span class="label label-primary">Beta</span>',
+          class: "#{common_classes}",
           data: { action: 'edit', fork_path: fork_path }
       end
     end

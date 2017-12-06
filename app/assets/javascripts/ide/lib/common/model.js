@@ -32,7 +32,7 @@ export default class Model {
     return this.model.getModeId();
   }
 
-  get EOL() {
+  get eol() {
     return encodeURI(this.model.getEOL()) === '%0A' ? 'LF' : 'CRLF';
   }
 

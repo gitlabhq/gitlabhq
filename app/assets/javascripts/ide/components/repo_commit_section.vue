@@ -30,6 +30,7 @@ export default {
   },
   computed: {
     ...mapState([
+      'currentProjectId',
       'currentBranchId',
     ]),
     ...mapGetters([
@@ -72,7 +73,7 @@ export default {
           this.$store.dispatch('getTreeData', {
             projectId: this.currentProjectId,
             branch: this.currentBranchId,
-            endpoint: `/${this.currentProjectId}/tree/${this.currentBranchId}`,
+            endpoint: `/tree/${this.currentBranchId}`,
           });
         })
         .catch(() => {

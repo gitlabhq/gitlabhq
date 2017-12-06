@@ -2,12 +2,11 @@ import service from '../../services';
 import flash from '../../../flash';
 import * as types from '../mutation_types';
 
-// eslint-disable-next-line import/prefer-default-export
 export const getProjectData = (
   { commit, state, dispatch },
-  { namespace, projectId, enforce = false } = {},
+  { namespace, projectId, force = false } = {},
 ) => new Promise((resolve, reject) => {
-  if (!state.projects[`${namespace}/${projectId}`] || enforce) {
+  if (!state.projects[`${namespace}/${projectId}`] || force) {
     service.getProjectData(namespace, projectId)
     .then(res => res.data)
     .then((data) => {

@@ -13,7 +13,6 @@
       },
       parent: {
         type: Object,
-        required: false,
       },
       path: {
         type: String,
@@ -24,9 +23,6 @@
       ...mapState([
         'trees',
       ]),
-      fileId() {
-        return `file-upload-${encodeURIComponent(this.projectId)}-${this.branchId}-${encodeURIComponent(this.path)}`;
-      },
     },
     methods: {
       ...mapActions([
@@ -82,7 +78,6 @@
   >
     {{ __('Upload file') }}
     <input
-      :id="fileId"
       type="file"
       class="hidden"
       ref="fileUpload"

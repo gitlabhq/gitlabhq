@@ -51,9 +51,9 @@ export default {
       fileLanguage,
     });
   },
-  [types.SET_FILE_EOL](state, { file, EOL }) {
+  [types.SET_FILE_EOL](state, { file, eol }) {
     Object.assign(file, {
-      EOL,
+      eol,
     });
   },
   [types.SET_FILE_POSITION](state, { file, editorRow, editorColumn }) {

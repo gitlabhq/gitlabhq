@@ -24,35 +24,33 @@ export default {
     v-if="showButtons"
     class="multi-file-editor-btn-group"
   >
-    <div class="col-sm-12">
-      <a
-        :href="activeFile.rawPath"
-        target="_blank"
-        class="btn btn-default btn-sm raw"
-        rel="noopener noreferrer">
-        {{ rawDownloadButtonLabel }}
-      </a>
+    <a
+      :href="activeFile.rawPath"
+      target="_blank"
+      class="btn btn-default btn-sm raw"
+      rel="noopener noreferrer">
+      {{ rawDownloadButtonLabel }}
+    </a>
 
-      <div
-        class="btn-group"
-        role="group"
-        aria-label="File actions">
-        <a
-          :href="activeFile.blamePath"
-          class="btn btn-default btn-sm blame">
-          Blame
-        </a>
-        <a
-          :href="activeFile.commitsPath"
-          class="btn btn-default btn-sm history">
-          History
-        </a>
-        <a
-          :href="activeFile.permalink"
-          class="btn btn-default btn-sm permalink">
-          Permalink
-        </a>
-      </div>
+    <div
+      class="btn-group"
+      role="group"
+      aria-label="File actions">
+      <a
+        :href="activeFile.blamePath"
+        class="btn btn-default btn-sm blame">
+        Blame
+      </a>
+      <a
+        :href="activeFile.commitsPath"
+        class="btn btn-default btn-sm history">
+        History
+      </a>
+      <a
+        :href="activeFile.permalink"
+        class="btn btn-default btn-sm permalink">
+        Permalink
+      </a>
     </div>
   </div>
 </template>

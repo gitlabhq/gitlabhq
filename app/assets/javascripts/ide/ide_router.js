@@ -1,6 +1,10 @@
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import store from './stores';
+import flash from '../flash';
+import {
+  getTreeEntry,
+} from './stores/utils';
 
 Vue.use(VueRouter);
 
@@ -24,25 +28,27 @@ Vue.use(VueRouter);
 
 // Unfortunately Vue Router doesn't work without at least a fake component
 // If you do only data handling
-const FooRouterComponent = {
-  template: '<div>foo</div>',
+const EmptyRouterComponent = {
+  render(createElement) {
+    return createElement('div');
+  },
 };
 
 const router = new VueRouter({
   mode: 'history',
-  base: '/-/ide/',
+  base: `${gon.relative_url_root}/-/ide/`,
   routes: [
     {
       path: '/project/:namespace/:project',
-      component: FooRouterComponent,
+      component: EmptyRouterComponent,
       children: [
         {
           path: ':targetmode/:branch/*',
-          component: FooRouterComponent,
+          component: EmptyRouterComponent,
         },
         {
           path: 'mr/:mrid',
-          component: FooRouterComponent,
+          component: EmptyRouterComponent,
         },
       ],
     },
@@ -66,22 +72,24 @@ router.beforeEach((to, from, next) => {
       store.dispatch('getTreeData', {
         projectId: fullProjectId,
         branch: to.params.branch,
-        endpoint: `/${fullProjectId}/tree/${to.params.branch}`,
+        endpoint: `/tree/${to.params.branch}`,
       })
       .then(() => {
         if (to.params[0]) {
-          const treeEntry = store.getters.getTreeEntry(`${to.params.namespace}/${to.params.project}/${to.params.branch}`, to.params[0]);
+          const treeEntry = getTreeEntry(store, `${to.params.namespace}/${to.params.project}/${to.params.branch}`, to.params[0]);
           if (treeEntry) {
             store.dispatch('handleTreeEntryAction', treeEntry);
           }
         }
       })
       .catch((e) => {
+        flash('Error while loading the branch files. Please try again.');
         throw e;
       });
     }
   })
   .catch((e) => {
+    flash('Error while loading the project data. Please try again.');
     throw e;
   });
   next();

@@ -15,7 +15,6 @@
       },
       parent: {
         type: Object,
-        required: false,
       },
       type: {
         type: String,

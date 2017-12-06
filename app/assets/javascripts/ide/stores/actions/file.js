@@ -87,16 +87,19 @@ export const setFileLanguage = ({ commit }, { file, fileLanguage }) => {
   commit(types.SET_FILE_LANGUAGE, { file, fileLanguage });
 };
 
-export const setFileEOL = ({ commit }, { file, EOL }) => {
-  commit(types.SET_FILE_EOL, { file, EOL });
+export const setFileEOL = ({ commit }, { file, eol }) => {
+  commit(types.SET_FILE_EOL, { file, eol });
 };
 
-export const setEditorPosition = ({ commit }, { file, editorRow, editorColumn }) => {
-  commit(types.SET_FILE_POSITION, { file, editorRow, editorColumn });
+export const setEditorPosition = ({ state, commit }, { editorRow, editorColumn }) => {
+  commit(types.SET_FILE_POSITION, { file: state.selectedFile, editorRow, editorColumn });
 };
 
 export const createTempFile = ({ state, commit, dispatch }, { projectId, branchId, parent, name, content = '', base64 = '' }) => {
   const path = parent.path !== undefined ? parent.path : '';
+  const selectedProject = state.projects[projectId];
+  // We need to do the replacement otherwise the web_url + file.url duplicate
+  const newUrl = `${selectedProject.web_url}/blob/${branchId}/${path}${path ? '/' : ''}${name}`;
   const file = createTemp({
     projectId,
     branchId,
@@ -107,7 +110,7 @@ export const createTempFile = ({ state, commit, dispatch }, { projectId, branchI
     changed: true,
     content,
     base64,
-    url: `/${projectId}/blob/${branchId}/${path}${path ? '/' : ''}${name}`,
+    url: newUrl,
   });
 
   if (findEntry(parent.tree, 'blob', file.name)) return flash(`The name "${file.name}" is already taken in this directory.`);

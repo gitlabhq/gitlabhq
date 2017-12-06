@@ -57,7 +57,6 @@ export default {
       // Handle Cursor Position
       this.editor.onPositionChange((instance, e) => {
         this.setEditorPosition({
-          file: this.$store.state.selectedFile,
           editorRow: e.position.lineNumber,
           editorColumn: e.position.column,
         });
@@ -81,10 +80,10 @@ export default {
         fileLanguage: model.language,
       });
 
-      // Get File EOL
+      // Get File eol
       this.setFileEOL({
         file: this.$store.state.selectedFile,
-        EOL: model.EOL,
+        eol: model.eol,
       });
     },
   },

@@ -38,7 +38,7 @@ export const dataStructure = () => ({
   editorRow: 1,
   editorColumn: 1,
   fileLanguage: '',
-  EOL: '',
+  eol: '',
 });
 
 export const decorateData = (entity) => {
@@ -85,6 +85,13 @@ export const decorateData = (entity) => {
     content,
     base64,
   };
+};
+
+export const getTree = state => (namespace, projectId, branch) => state.trees[`${namespace}/${projectId}/${branch}`];
+
+export const getTreeEntry = (store, treeId, path) => {
+  const fileList = store.getters.treeList(treeId);
+  return fileList.find(file => file.path === path);
 };
 
 export const findEntry = (tree, type, name) => tree.find(

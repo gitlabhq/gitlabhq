@@ -1,14 +1,12 @@
-/* global Sidebar */
-
 <script>
 import { mapState, mapGetters } from 'vuex';
-import IdeSidebar from './ide_side_bar.vue';
-import IdeContextbar from './ide_context_bar.vue';
-import RepoTabs from './repo_tabs.vue';
-import RepoFileButtons from './repo_file_buttons.vue';
-import IdeStatusBar from './ide_status_bar.vue';
-import RepoPreview from './repo_preview.vue';
-import RepoEditor from './repo_editor.vue';
+import ideSidebar from './ide_side_bar.vue';
+import ideContextbar from './ide_context_bar.vue';
+import repoTabs from './repo_tabs.vue';
+import repoFileButtons from './repo_file_buttons.vue';
+import ideStatusBar from './ide_status_bar.vue';
+import repoPreview from './repo_preview.vue';
+import repoEditor from './repo_editor.vue';
 
 export default {
   computed: {
@@ -23,16 +21,16 @@ export default {
     ]),
   },
   components: {
-    IdeSidebar,
-    IdeContextbar,
-    RepoTabs,
-    RepoFileButtons,
-    IdeStatusBar,
-    RepoEditor,
-    RepoPreview,
+    ideSidebar,
+    ideContextbar,
+    repoTabs,
+    repoFileButtons,
+    ideStatusBar,
+    repoEditor,
+    repoPreview,
   },
   mounted() {
-    /* const returnValue = 'Are you sure you want to lose unsaved changes?';
+    const returnValue = 'Are you sure you want to lose unsaved changes?';
     window.onbeforeunload = (e) => {
       if (!this.changedFiles.length) return undefined;
 
@@ -40,7 +38,7 @@ export default {
         returnValue,
       });
       return returnValue;
-    }; */
+    };
   },
 };
 </script>
@@ -66,8 +64,9 @@ export default {
       </template>
       <template
         v-else>
-        <br/><br/><br/><br/><br/>
-        <h4 class="clgray text-center">Welcome to the GitLab IDE</h4>
+        <div class="ide-empty-state">
+          <h2 class="clgray">Welcome to the GitLab IDE</h2>
+        </div>
       </template>
     </div>
     <ide-contextbar/>

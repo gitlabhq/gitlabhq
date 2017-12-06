@@ -1,12 +1,12 @@
 <script>
-import RepoTree from './ide_repo_tree.vue';
-import Icon from '../../vue_shared/components/icon.vue';
+import repoTree from './ide_repo_tree.vue';
+import icon from '../../vue_shared/components/icon.vue';
 import newDropdown from './new_dropdown/index.vue';
 
 export default {
   components: {
-    RepoTree,
-    Icon,
+    repoTree,
+    icon,
     newDropdown,
   },
   props: {
@@ -34,7 +34,7 @@ export default {
       </div>
       <div class="branch-header-btns">
         <new-dropdown
-          :projectId="projectId"
+          :project-id="projectId"
           :branch="branch.name"
           path=""/>
       </div>

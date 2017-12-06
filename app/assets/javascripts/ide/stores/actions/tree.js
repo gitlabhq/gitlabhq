@@ -12,14 +12,17 @@ import {
 
 export const getTreeData = (
   { commit, state, dispatch },
-  { endpoint = state.endpoints.rootEndpoint, tree = null, projectId, branch } = {},
+  { endpoint, tree = null, projectId, branch } = {},
 ) => new Promise((resolve, reject) => {
   // We already have the base tree so we resolve immediately
   if (!tree && state.trees[`${projectId}/${branch}`]) {
     resolve();
   } else {
     if (tree) commit(types.TOGGLE_LOADING, tree);
-    service.getTreeData(endpoint)
+    const selectedProject = state.projects[projectId];
+    // We need to do the replacement otherwise the web_url + file.url duplicate
+    const completeEndpoint = selectedProject.web_url + (endpoint).replace(projectId, '');
+    service.getTreeData(completeEndpoint)
       .then((res) => {
         const pageTitle = decodeURI(normalizeHeaders(res.headers)['PAGE-TITLE']);
 

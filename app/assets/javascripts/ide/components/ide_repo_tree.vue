@@ -30,6 +30,12 @@ export default {
       'treeList',
       'isCollapsed',
     ]),
+    hasPreviousDirectory() {
+      return !this.isRoot && this.treeList(this.treeId).length;
+    },
+    showLoading() {
+      return (!this.treeId || !this.treeList(this.treeId).length) && this.loading;
+    },
   },
 };
 </script>
@@ -41,10 +47,10 @@ export default {
       <tbody
         v-if="treeId">
         <repo-previous-directory
-          v-if="!isRoot && treeList(treeId).length"
+          v-if="hasPreviousDirectory"
         />
         <repo-loading-file
-          v-if="(!treeId || !treeList(treeId).length) && loading"
+          v-if="showLoading"
           v-for="n in 5"
           :key="n"
         />

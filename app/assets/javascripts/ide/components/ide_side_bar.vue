@@ -1,11 +1,11 @@
 <script>
 import { mapState } from 'vuex';
-import ProjectTree from './ide_project_tree.vue';
+import projectTree from './ide_project_tree.vue';
 import icon from '../../vue_shared/components/icon.vue';
 
 export default {
   components: {
-    ProjectTree,
+    projectTree,
     icon,
   },
   data() {

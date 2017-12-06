@@ -23,10 +23,10 @@ export default class Editor {
       this.decorationsController = new DecorationsController(this),
     );
 
-    const debouncedUpdate = _.debounce(() => {
+    this.debouncedUpdate = _.debounce(() => {
       this.updateDimensions();
     }, 200);
-    window.addEventListener('resize', debouncedUpdate, false);
+    window.addEventListener('resize', this.debouncedUpdate, false);
   }
 
   createInstance(domElement) {
@@ -78,7 +78,7 @@ export default class Editor {
 
   dispose() {
     this.disposable.dispose();
-    window.removeEventListener('resize', this.updateDimensions.bind(this));
+    window.removeEventListener('resize', this.debouncedUpdate);
 
     // dispose main monaco instance
     if (this.instance) {

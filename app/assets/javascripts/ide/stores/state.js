@@ -18,4 +18,6 @@ export default () => ({
   parentTreeUrl: '',
   trees: {},
   projects: {},
+  leftBarCollapsed: false,
+  rightBarCollapsed: false,
 });

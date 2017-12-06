@@ -20,7 +20,6 @@
       },
       parent: {
         type: Object,
-        required: false,
       },
     },
     components: {
@@ -43,16 +42,11 @@
         this.openModal = !this.openModal;
       },
     },
-    computed: {
-      ...mapState([
-        'trees',
-      ]),
-    },
   };
 </script>
 
 <template>
-  <div class="repo-new-btn">
+  <div class="repo-new-btn pull-right">
     <div class="dropdown">
       <button
         type="button"
@@ -81,8 +75,8 @@
         </li>
         <li>
           <upload
-            :projectId="projectId"
-            :branchId="branch"
+            :project-id="projectId"
+            :branch-id="branch"
             :path="path"
             :parent="parent"
           />
@@ -101,8 +95,8 @@
     <new-modal
       v-if="openModal"
       :type="modalType"
-      :projectId="projectId"
-      :branchId="branch"
+      :project-id="projectId"
+      :branch-id="branch"
       :path="path"
       :parent="parent"
       @toggle="toggleModalOpen"
