@@ -5,7 +5,6 @@ Enterprise Edition (look for the [`CE Upstream` merge requests]).
 
 This merge is done automatically in a
 [scheduled pipeline](https://gitlab.com/gitlab-org/release-tools/-/jobs/43201679).
-
 If a merge is already in progress, the job [doesn't create a new one](https://gitlab.com/gitlab-org/release-tools/-/jobs/43157687).
 
 **If you are pinged in a `CE Upstream` merge request to resolve a conflict,
@@ -16,10 +15,12 @@ It's ok to resolve more conflicts than the one that you are asked to resolve. In
 that case, it's a good habit to ask for a double-check on your resolution by
 someone who is familiar with the code you touched.
 
-### Always merge EE merge request before their CE counterpart
+[`CE Upstream` merge requests]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests?label_name%5B%5D=CE+upstream
+
+### Always merge EE merge requests before their CE counterparts
 
 **In order to avoid conflicts in the CE->EE merge, you should always merge the
-EE version of your CE merge request (if present).**
+EE version of your CE merge request first, if present.**
 
 The rationale for this is that as CE->EE merges are done automatically every few
 hours, it can happen that:
@@ -30,26 +31,27 @@ hours, it can happen that:
   merged yet
 1. The automatic merge bot will ping someone to resolve the conflict **that are
   already resolved in the EE merge request that isn't merged yet**
-1. That's a waste of time, and that's why you should merge EE merge request
-  before their CE counterpart
+
+That's a waste of time, and that's why you should merge EE merge request before
+their CE counterpart.
 
 ## Avoiding CE->EE merge conflicts beforehand
 
 To avoid the conflicts beforehand, check out the
-[Guidelines for implementing Enterprise Edition feature](ee_features.md).
+[Guidelines for implementing Enterprise Edition features](ee_features.md).
 
 In any case, the CI `ee_compat_check` job will tell you if you need to open an
 EE version of your CE merge request.
 
 ### Conflicts detection in CE merge requests
 
-For each commit (except on `master`), the `rake ee_compat_check` CI job tries to
+For each commit (except on `master`), the `ee_compat_check` CI job tries to
 detect if the current branch's changes will conflict during the CE->EE merge.
 
 The job reports what files are conflicting and how to setup a merge request
 against EE.
 
-#### How the job works?
+#### How the job works
 
 1. Generates the diff between your branch and current CE `master`
 1. Tries to apply it to current EE `master`
@@ -69,9 +71,9 @@ Notes:
 
 - This task is not a silver-bullet, its current goal is to bring awareness to
   developers that their work needs to be ported to EE.
-- Community contributors shouldn't submit merge requests against EE, but
-  reviewers should take actions by either creating such EE merge request or
-  asking a GitLab developer to do it **before the merge request is merged**.
+- Community contributors shouldn't be required to submit merge requests against
+  EE, but reviewers should take actions by either creating such EE merge request
+  or asking a GitLab developer to do it **before the merge request is merged**.
 - If you branch is too far behind `master`, the job will fail. In that case you
   should rebase your branch upon latest `master`.
 - Code reviews for merge requests often consist of multiple iterations of
@@ -82,7 +84,7 @@ Notes:
   This helps to identify significant conflicts sooner, but also reduces the
   number of times you have to resolve conflicts.
 - Please remember to
-  [always have you EE merge request merged before the CE one](#always-merge-ee-merge-request-before-their-ce-counterpart).
+  [always have your EE merge request merged before the CE version](#always-merge-ee-merge-requests-before-their-ce-counterparts).
 - You can use [`git rerere`](https://git-scm.com/blog/2010/03/08/rerere.html)
   to avoid resolving the same conflicts multiple times.
 

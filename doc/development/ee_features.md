@@ -1,4 +1,4 @@
-# Guidelines for implementing Enterprise Edition feature
+# Guidelines for implementing Enterprise Edition features
 
 - **Write the code and the tests.**: As with any code, EE features should have
   good test coverage to prevent regressions.

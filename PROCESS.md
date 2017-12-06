@@ -131,7 +131,7 @@ request, even if there are no conflicts. This is to reduce the size of the
 subsequent EE merge, as we often merge a lot to CE on the release date. For more
 information, see
 [Automatic CE->EE merge][automatic_ce_ee_merge] and
-[Guidelines for implementing Enterprise Edition feature][ee_features].
+[Guidelines for implementing Enterprise Edition features][ee_features].
 
 ### After the 7th
 
