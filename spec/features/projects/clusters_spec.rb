@@ -30,10 +30,6 @@ feature 'Clusters', :js do
       visit project_clusters_path(project)
     end
 
-    it 'user sees a disabled add cluster button ' do
-      expect(page).to have_selector('.js-add-cluster.disabled')
-    end
-
     it 'user sees a table with one cluster' do
       # One is the header row, the other the cluster row
       expect(page).to have_selector('.gl-responsive-table-row', count: 2)
