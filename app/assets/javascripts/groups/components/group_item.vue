@@ -123,9 +123,11 @@ export default {
           :title="group.fullName"
           class="no-expand"
           data-placement="top"
-        >
-          {{group.name}}
-        </a>
+        >{{
+          // ending bracket must be by closing tag to prevent
+          // link hover text-decoration from over-extending
+          group.name
+        }}</a>
         <span
           v-if="group.permission"
           class="user-access-role"
