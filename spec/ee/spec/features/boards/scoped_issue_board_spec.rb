@@ -53,6 +53,12 @@ describe 'Scoped issue boards', :js do
           expect(find('.tokens-container')).to have_content("")
           expect(page).to have_selector('.card', count: 3)
         end
+
+        it 'displays dot highlight and tooltip' do
+          create_board_milestone(milestone.title)
+
+          expect_dot_highlight('Edit board')
+        end
       end
 
       context 'labels' do
@@ -101,6 +107,12 @@ describe 'Scoped issue boards', :js do
             end
           end
         end
+
+        it 'displays dot highlight and tooltip' do
+          create_board_label(label_1.title)
+
+          expect_dot_highlight('Edit board')
+        end
       end
 
       context 'assignee' do
@@ -126,6 +138,12 @@ describe 'Scoped issue boards', :js do
           expect(page).not_to have_css('.js-visual-token')
           expect(page).to have_selector('.card', count: 3)
         end
+
+        it 'displays dot highlight and tooltip' do
+          create_board_assignee(user.name)
+
+          expect_dot_highlight('Edit board')
+        end
       end
 
       context 'weight' do
@@ -150,6 +168,12 @@ describe 'Scoped issue boards', :js do
           create_board_weight('Any Weight')
 
           expect(page).to have_selector('.card', count: 4)
+        end
+
+        it 'displays dot highlight and tooltip' do
+          create_board_weight(1)
+
+          expect_dot_highlight('Edit board')
         end
       end
     end
@@ -381,6 +405,10 @@ describe 'Scoped issue boards', :js do
         expect(page).not_to have_button('Cancel')
       end
     end
+
+    it 'does not display dot highlight and tooltip' do
+      expect_no_dot_highlight('View scope')
+    end
   end
 
   context 'with scoped_issue_boards feature disabled' do
@@ -392,6 +420,10 @@ describe 'Scoped issue boards', :js do
 
       visit project_boards_path(project)
       wait_for_requests
+    end
+
+    it 'does not display dot highlight and tooltip' do
+      expect_no_dot_highlight('Edit board')
     end
 
     it "doesn't show the input when creating a board" do
@@ -410,6 +442,20 @@ describe 'Scoped issue boards', :js do
     it "doesn't show the button to edit scope" do
       expect(page).not_to have_button('View Scope')
     end
+  end
+
+  def expect_dot_highlight(button_title)
+    button = first('.filter-dropdown-container .btn.btn-inverted')
+    expect(button.text).to include(button_title)
+    expect(button[:class]).to include('dot-highlight')
+    expect(button['data-original-title']).to include('This board\'s scope is reduced')
+  end
+
+  def expect_no_dot_highlight(button_title)
+    button = first('.filter-dropdown-container .btn.btn-inverted')
+    expect(button.text).to include(button_title)
+    expect(button[:class]).not_to include('dot-highlight')
+    expect(button['data-original-title']).not_to include('This board\'s scope is reduced')
   end
 
   # Create board helper methods
