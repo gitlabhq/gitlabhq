@@ -171,7 +171,7 @@ describe Issuable do
 
     it "returns false when record has been updated" do
       allow(issue).to receive(:today?).and_return(true)
-      issue.touch
+      issue.update_attribute(:updated_at, 1.hour.ago)
       expect(issue.new?).to be_falsey
     end
   end
