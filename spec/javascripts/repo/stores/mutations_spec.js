@@ -85,14 +85,6 @@ describe('Multi-file store mutations', () => {
     });
   });
 
-  describe('SET_COMMIT_REF', () => {
-    it('sets currentRef', () => {
-      mutations.SET_COMMIT_REF(localState, '123');
-
-      expect(localState.currentRef).toBe('123');
-    });
-  });
-
   describe('SET_ROOT', () => {
     it('sets isRoot & initialRoot', () => {
       mutations.SET_ROOT(localState, true);

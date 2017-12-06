@@ -33,11 +33,6 @@ export default {
       discardPopupOpen,
     });
   },
-  [types.SET_COMMIT_REF](state, ref) {
-    Object.assign(state, {
-      currentRef: ref,
-    });
-  },
   [types.SET_ROOT](state, isRoot) {
     Object.assign(state, {
       isRoot,

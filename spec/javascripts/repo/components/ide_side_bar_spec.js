@@ -1,15 +1,15 @@
 import Vue from 'vue';
 import store from '~/ide/stores';
-import repoSidebar from '~/ide/components/repo_sidebar.vue';
+import ideSidebar from '~/ide/components/ide_side_bar.vue';
 import { file, resetStore } from '../helpers';
 
-describe('RepoSidebar', () => {
+describe('IdeSidebar', () => {
   let vm;
 
   beforeEach(() => {
-    const RepoSidebar = Vue.extend(repoSidebar);
+    const IdeSidebar = Vue.extend(ideSidebar);
 
-    vm = new RepoSidebar({
+    vm = new IdeSidebar({
       store,
     });
 

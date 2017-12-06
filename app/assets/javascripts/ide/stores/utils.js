@@ -91,7 +91,7 @@ export const getTree = state => (namespace, projectId, branch) => state.trees[`$
 
 export const getTreeEntry = (store, treeId, path) => {
   const fileList = store.getters.treeList(treeId);
-  return fileList.find(file => file.path === path);
+  return fileList ? fileList.find(file => file.path === path) : null;
 };
 
 export const findEntry = (tree, type, name) => tree.find(

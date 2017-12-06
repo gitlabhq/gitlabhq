@@ -83,8 +83,9 @@ export const commitChanges = ({ commit, state, dispatch, getters }, { payload, n
       return;
     }
 
+    const selectedProject = state.projects[state.currentProjectId];
     const lastCommit = {
-      commit_path: `${state.project.url}/commit/${data.id}`,
+      commit_path: `${selectedProject.web_url}/commit/${data.id}`,
       commit: {
         message: data.message,
         authored_date: data.committed_date,
@@ -96,7 +97,7 @@ export const commitChanges = ({ commit, state, dispatch, getters }, { payload, n
     if (newMr) {
       dispatch('redirectToUrl', `${state.endpoints.newMergeRequestUrl}${branch}`);
     } else {
-      commit(types.SET_COMMIT_REF, data.id);
+      // commit(types.SET_COMMIT_REF, data.id);
 
       getters.changedFiles.forEach((entry) => {
         commit(types.SET_LAST_COMMIT_DATA, {
@@ -107,7 +108,6 @@ export const commitChanges = ({ commit, state, dispatch, getters }, { payload, n
 
       dispatch('discardAllChanges');
       dispatch('closeAllFiles');
-      dispatch('toggleEditMode');
 
       window.scrollTo(0, 0);
     }

@@ -36,7 +36,6 @@ function initIde(el) {
         },
         canCommit: convertPermissionToBoolean(data.canCommit),
         onTopOfBranch: convertPermissionToBoolean(data.onTopOfBranch),
-        currentRef: data.ref,
         path: data.currentPath,
         isRoot: convertPermissionToBoolean(data.root),
         isInitialRoot: convertPermissionToBoolean(data.root),
@@ -48,6 +47,7 @@ function initIde(el) {
   });
 }
 
+/*
 function initIdeEditButton(el) {
   return new Vue({
     el,
@@ -90,17 +90,18 @@ function initNewBranchForm() {
     },
   });
 }
+*/
 
 const ide = document.getElementById('ide');
-const editButton = document.querySelector('.editable-mode');
-const newDropdownHolder = document.querySelector('.js-new-dropdown');
+// const editButton = document.querySelector('.editable-mode');
+// const newDropdownHolder = document.querySelector('.js-new-dropdown');
 
 Vue.use(Translate);
 
 initIde(ide);
-initIdeEditButton(editButton);
-initNewBranchForm();
-initNewDropdown(newDropdownHolder);
+// initIdeEditButton(editButton);
+// initNewBranchForm();
+// initNewDropdown(newDropdownHolder);
 
 const contextualSidebar = new ContextualSidebar();
 contextualSidebar.bindEvents();

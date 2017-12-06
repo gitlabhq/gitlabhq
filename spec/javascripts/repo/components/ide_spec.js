@@ -1,14 +1,14 @@
 import Vue from 'vue';
 import store from '~/ide/stores';
-import repo from '~/ide/components/repo.vue';
+import ide from '~/ide/components/ide.vue';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import { file, resetStore } from '../helpers';
 
-describe('repo component', () => {
+describe('ide component', () => {
   let vm;
 
   beforeEach(() => {
-    const Component = Vue.extend(repo);
+    const Component = Vue.extend(ide);
 
     vm = createComponentWithStore(Component, store).$mount();
   });
