@@ -35,7 +35,7 @@ module Spammable
   end
 
   def spam?
-    return true
+    # return true
     @spam
   end
 

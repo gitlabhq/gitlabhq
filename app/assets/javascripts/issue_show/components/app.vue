@@ -8,8 +8,8 @@ import titleComponent from './title.vue';
 import descriptionComponent from './description.vue';
 import editedComponent from './edited.vue';
 import formComponent from './form.vue';
-import RecaptchaDialog from '~/vue_shared/components/recaptcha_dialog.vue';
 import '../../lib/utils/url_utility';
+import RecaptchaDialogImplementor from '../../vue_shared/mixins/recaptcha_dialog_implementor';
 
 export default {
   props: {
@@ -124,9 +124,7 @@ export default {
     return {
       store,
       state: store.state,
-      recaptchaHTML: '',
       showForm: false,
-      showRecaptcha: false,
     };
   },
   computed: {
@@ -142,8 +140,12 @@ export default {
     titleComponent,
     editedComponent,
     formComponent,
-    RecaptchaDialog,
   },
+
+  mixins: [
+    RecaptchaDialogImplementor,
+  ],
+
   methods: {
     openForm() {
       if (!this.showForm) {
@@ -158,25 +160,6 @@ export default {
     },
     closeForm() {
       this.showForm = false;
-    },
-
-    openRecaptcha() {
-      this.showRecaptcha = true;
-    },
-
-    closeRecaptcha() {
-      this.showRecaptcha = false;
-    },
-
-    checkForSpam(data) {
-      if (!data.recaptcha_html) return data;
-
-      this.recaptchaHTML = data.recaptcha_html;
-
-      const spamError = new Error(data.error_message);
-      spamError.name = 'SpamError';
-
-      throw spamError;
     },
 
     updateIssuable() {
@@ -200,8 +183,19 @@ export default {
 
           eventHub.$emit('close.form');
           window.Flash(`Error updating ${this.issuableType}`);
+
+          return undefined;
         });
     },
+
+    closeRecaptchaDialog() {
+      this.store.setFormState({
+        updateLoading: false,
+      });
+
+      this.closeRecaptcha();
+    },
+
     deleteIssuable() {
       this.service.deleteIssuable()
         .then(res => res.json())
@@ -268,10 +262,11 @@ export default {
       :show-delete-button="showDeleteButton"
       :can-attach-file="canAttachFile"
     />
+
     <recaptcha-dialog
       v-show="showRecaptcha"
       :html="recaptchaHTML"
-      @close="closeRecaptcha"
+      @close="closeRecaptchaDialog"
     />
   </div>
   <div v-else>

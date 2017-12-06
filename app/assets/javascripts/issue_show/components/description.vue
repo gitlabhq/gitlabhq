@@ -1,9 +1,14 @@
 <script>
   import animateMixin from '../mixins/animate';
   import TaskList from '../../task_list';
+  import RecaptchaDialogImplementor from '../../vue_shared/mixins/recaptcha_dialog_implementor';
 
   export default {
-    mixins: [animateMixin],
+    mixins: [
+      animateMixin,
+      RecaptchaDialogImplementor,
+    ],
+
     props: {
       canUpdate: {
         type: Boolean,
@@ -41,6 +46,7 @@
         this.updateTaskStatusText();
       },
     },
+
     methods: {
       renderGFM() {
         $(this.$refs['gfm-content']).renderGFM();
@@ -51,9 +57,19 @@
             dataType: 'issue',
             fieldName: 'description',
             selector: '.detail-page-description',
+            onSuccess: this.taskListUpdateSuccess.bind(this),
           });
         }
       },
+
+      taskListUpdateSuccess(data) {
+        try {
+          this.checkForSpam(data);
+        } catch (error) {
+          if (error.name === 'SpamError') this.openRecaptcha();
+        }
+      },
+
       updateTaskStatusText() {
         const taskRegexMatches = this.taskStatus.match(/(\d+) of ((?!0)\d+)/);
         const $issuableHeader = $('.issuable-meta');
@@ -97,5 +113,11 @@
       v-if="descriptionText"
       v-model="descriptionText">
     </textarea>
+
+    <recaptcha-dialog
+      v-show="showRecaptcha"
+      :html="recaptchaHTML"
+      @close="closeRecaptcha"
+    />
   </div>
 </template>
