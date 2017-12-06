@@ -27,10 +27,7 @@ With GitLab merge requests, you can:
 - [Resolve merge conflicts from the UI](#resolve-conflicts)
 - Enable [fast-forward merge requests](#fast-forward-merge-requests)
 - Enable [semi-linear history merge requests](#semi-linear-history-merge-requests) as another security layer to guarantee the pipeline is passing in the target branch
-<<<<<<< HEAD
-=======
 - [Create new merge requests by email](#create_by_email)
->>>>>>> upstream/master
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
