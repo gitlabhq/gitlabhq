@@ -51,8 +51,6 @@ module Ci
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
     scope :ref_protected, -> { where(protected: true) }
 
-<<<<<<< HEAD
-=======
     scope :matches_tag_ids, -> (tag_ids) do
       matcher = ::ActsAsTaggableOn::Tagging
         .where(taggable_type: CommitStatus)
@@ -72,7 +70,6 @@ module Ci
       where("EXISTS (?)", matcher)
     end
 
->>>>>>> upstream/master
     mount_uploader :legacy_artifacts_file, LegacyArtifactUploader, mount_on: :artifacts_file
     mount_uploader :legacy_artifacts_metadata, LegacyArtifactUploader, mount_on: :artifacts_metadata
 
@@ -361,13 +358,10 @@ module Ci
       project.running_or_pending_build_count(force: true)
     end
 
-<<<<<<< HEAD
     def browsable_artifacts?
       artifacts_metadata?
     end
 
-=======
->>>>>>> upstream/master
     def artifacts_metadata_entry(path, **options)
       artifacts_metadata.use_file do |metadata_path|
         metadata = Gitlab::Ci::Build::Artifacts::Metadata.new(
