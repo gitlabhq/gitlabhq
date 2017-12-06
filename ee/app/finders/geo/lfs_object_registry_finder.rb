@@ -33,11 +33,11 @@ module Geo
     end
 
     def legacy_find_synced_lfs_objects
-      legacy_find_lfs_objects(Geo::FileRegistry.lfs_objects.synced.pluck(:file_id))
+      legacy_find_lfs_objects(find_synced_lfs_objects_registries.pluck(:file_id))
     end
 
     def legacy_find_failed_lfs_objects
-      legacy_find_lfs_objects(Geo::FileRegistry.lfs_objects.failed.pluck(:file_id))
+      legacy_find_lfs_objects(find_failed_lfs_objects_registries.pluck(:file_id))
     end
 
     def legacy_find_lfs_objects(registry_file_ids)
