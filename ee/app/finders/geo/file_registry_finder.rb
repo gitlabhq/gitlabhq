@@ -105,7 +105,7 @@ module Geo
       registry_ids = legacy_pluck_registry_ids(file_types: Geo::FileService::DEFAULT_OBJECT_TYPES, except_registry_ids: except_registry_ids)
 
       legacy_filter_registry_ids(
-        current_node.uploads,
+        attachments_finder.uploads,
         registry_ids,
         Upload.table_name
       )
@@ -131,6 +131,10 @@ module Geo
     def legacy_pluck_registry_ids(file_types:, except_registry_ids:)
       ids = Geo::FileRegistry.where(file_type: file_types).pluck(:file_id)
       (ids + except_registry_ids).uniq
+    end
+
+    def attachments_finder
+      @attachments_finder ||= AttachmentRegistryFinder.new(current_node: current_node)
     end
   end
 end

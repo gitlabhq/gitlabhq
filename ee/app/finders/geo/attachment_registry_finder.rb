@@ -22,8 +22,6 @@ module Geo
       relation
     end
 
-    private
-
     def uploads
       if selective_sync?
         Upload.where(group_uploads.or(project_uploads).or(other_uploads))
@@ -31,6 +29,8 @@ module Geo
         Upload.all
       end
     end
+
+    private
 
     def group_uploads
       namespace_ids = Gitlab::GroupHierarchy.new(current_node.namespaces).base_and_descendants.select(:id)

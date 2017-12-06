@@ -65,7 +65,7 @@ class GeoNodeStatus < ActiveRecord::Base
     self.last_event_date = latest_event&.created_at
     self.repositories_count = geo_node.projects.count
     self.lfs_objects_count = geo_node.lfs_objects.count
-    self.attachments_count = geo_node.uploads.count
+    self.attachments_count = attachments_finder.uploads.count
     self.last_successful_status_check_at = Time.now
 
     if Gitlab::Geo.secondary?
