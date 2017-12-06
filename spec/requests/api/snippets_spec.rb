@@ -32,6 +32,27 @@ describe API::Snippets do
       expect(json_response).to be_an Array
       expect(json_response.size).to eq(0)
     end
+
+    it 'returns 404 for non-authenticated' do
+      create(:personal_snippet, :internal)
+
+      get api("/snippets/")
+
+      expect(response).to have_gitlab_http_status(401)
+    end
+
+    it 'does not return snippets related to a project with disable feature visibility' do
+      project = create(:project)
+      create(:project_member, project: project, user: user)
+      public_snippet = create(:personal_snippet, :public, author: user, project: project)
+      project.project_feature.update_attribute(:snippets_access_level, 0)
+
+      get api("/snippets/", user)
+
+      json_response.each do |snippet|
+        expect(snippet["id"]).not_to eq(public_snippet.id)
+      end
+    end
   end
 
   describe 'GET /snippets/public' do

@@ -119,7 +119,6 @@ class ProjectPolicy < BasePolicy
     enable :create_note
     enable :upload_file
     enable :read_cycle_analytics
-    enable :read_project_snippet
   end
 
   rule { can?(:reporter_access) }.policy do

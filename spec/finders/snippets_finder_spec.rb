@@ -1,57 +1,8 @@
 require 'spec_helper'
 
 describe SnippetsFinder do
-  let(:user) { create :user }
-  let(:user1) { create :user }
-  let(:group) { create :group, :public }
-
-  let(:project1) { create(:project, :public,  group: group) }
-  let(:project2) { create(:project, :private, group: group) }
-
-  context 'all snippets visible to a user' do
-    let!(:snippet1) { create(:personal_snippet, :private) }
-    let!(:snippet2) { create(:personal_snippet, :internal) }
-    let!(:snippet3) { create(:personal_snippet, :public) }
-    let!(:project_snippet1) { create(:project_snippet, :private) }
-    let!(:project_snippet2) { create(:project_snippet, :internal) }
-    let!(:project_snippet3) { create(:project_snippet, :public) }
-
-    it "returns all private and internal snippets" do
-      snippets = described_class.new(user, scope: :all).execute
-      expect(snippets).to include(snippet2, snippet3, project_snippet2, project_snippet3)
-      expect(snippets).not_to include(snippet1, project_snippet1)
-    end
-
-    it "returns all public snippets" do
-      snippets = described_class.new(nil, scope: :all).execute
-      expect(snippets).to include(snippet3, project_snippet3)
-      expect(snippets).not_to include(snippet1, snippet2, project_snippet1, project_snippet2)
-    end
-
-    it "returns all public and internal snippets for normal user" do
-      snippets = described_class.new(user).execute
-
-      expect(snippets).to include(snippet2, snippet3, project_snippet2, project_snippet3)
-      expect(snippets).not_to include(snippet1, project_snippet1)
-    end
-
-    it "returns all public snippets for non authorized user" do
-      snippets = described_class.new(nil).execute
-
-      expect(snippets).to include(snippet3, project_snippet3)
-      expect(snippets).not_to include(snippet1, snippet2, project_snippet1, project_snippet2)
-    end
-
-    it "returns all public and authored snippets for external user" do
-      external_user = create(:user, :external)
-      authored_snippet = create(:personal_snippet, :internal, author: external_user)
-
-      snippets = described_class.new(external_user).execute
-
-      expect(snippets).to include(snippet3, project_snippet3, authored_snippet)
-      expect(snippets).not_to include(snippet1, snippet2, project_snippet1, project_snippet2)
-    end
-  end
+  include Gitlab::Allowable
+  using RSpec::Parameterized::TableSyntax
 
   context 'filter by visibility' do
     let!(:snippet1) { create(:personal_snippet, :private) }
@@ -67,6 +18,7 @@ describe SnippetsFinder do
   end
 
   context 'filter by scope' do
+    let(:user) { create :user }
     let!(:snippet1) { create(:personal_snippet, :private, author: user) }
     let!(:snippet2) { create(:personal_snippet, :internal, author: user) }
     let!(:snippet3) { create(:personal_snippet, :public, author: user) }
@@ -84,7 +36,7 @@ describe SnippetsFinder do
       expect(snippets).not_to include(snippet2, snippet3)
     end
 
-    it "returns all snippets for 'are_interna;' scope" do
+    it "returns all snippets for 'are_internal' scope" do
       snippets = described_class.new(user, scope: :are_internal).execute
 
       expect(snippets).to include(snippet2)
@@ -100,6 +52,8 @@ describe SnippetsFinder do
   end
 
   context 'filter by author' do
+    let(:user) { create :user }
+    let(:user1) { create :user }
     let!(:snippet1) { create(:personal_snippet, :private, author: user) }
     let!(:snippet2) { create(:personal_snippet, :internal, author: user) }
     let!(:snippet3) { create(:personal_snippet, :public, author: user) }
@@ -147,6 +101,10 @@ describe SnippetsFinder do
   end
 
   context 'filter by project' do
+    let(:user) { create :user }
+    let(:group) { create :group, :public }
+    let(:project1) { create(:project, :public,  group: group) }
+
     before do
       @snippet1 = create(:project_snippet, :private,  project: project1)
       @snippet2 = create(:project_snippet, :internal, project: project1)
@@ -202,5 +160,10 @@ describe SnippetsFinder do
 
       expect(snippets).to include(@snippet1)
     end
+  end
+
+  describe "#execute" do
+    # Snippet visibility scenarios are included in more details in spec/support/snippet_visibility.rb
+    include_examples 'snippet visibility', described_class
   end
 end
