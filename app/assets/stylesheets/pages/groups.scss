@@ -219,7 +219,7 @@
   font-size: 12px;
   line-height: 20px;
   margin: -5px 3px;
-  padding: 0 7px;
+  padding: 0 $label-padding;
   border: 1px solid $border-color;
   border-radius: $label-border-radius;
   font-weight: $gl-font-weight-normal;
