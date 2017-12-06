@@ -1050,13 +1050,9 @@ module API
         expose :type, :url, :username, :password
       end
 
-      class ArtifactFile < Grape::Entity
-        expose :filename, :size
-      end
-
       class Dependency < Grape::Entity
         expose :id, :name, :token
-        expose :artifacts_file, using: ArtifactFile, if: ->(job, _) { job.artifacts? }
+        expose :artifacts_file, using: JobArtifactFile, if: ->(job, _) { job.artifacts? }
       end
 
       class Response < Grape::Entity

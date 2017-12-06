@@ -1,5 +1,5 @@
 class BuildTraceSectionsWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
   include PipelineQueue
 
   def perform(build_id)

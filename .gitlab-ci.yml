@@ -586,6 +586,7 @@ codequality:
     paths: [codeclimate.json]
 
 qa:internal:
+  <<: *except-docs
   stage: test
   variables:
     SETUP_DB: "false"

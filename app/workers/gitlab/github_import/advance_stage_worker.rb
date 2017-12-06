@@ -7,7 +7,7 @@ module Gitlab
     # been completed this worker will advance the import process to the next
     # stage.
     class AdvanceStageWorker
-      include Sidekiq::Worker
+      include ApplicationWorker
 
       sidekiq_options queue: 'github_importer_advance_stage', dead: false
 
