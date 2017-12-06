@@ -1,7 +1,7 @@
 class Projects::PipelineSchedulesController < Projects::ApplicationController
   before_action :schedule, except: [:index, :new, :create]
 
-  before_action :authorize_create_pipeline!, only: [:play]
+  before_action :authorize_play_pipeline_schedule!, only: [:play]
   before_action :authorize_read_pipeline_schedule!
   before_action :authorize_create_pipeline_schedule!, only: [:new, :create]
   before_action :authorize_update_pipeline_schedule!, except: [:index, :new, :create, :play]
@@ -82,6 +82,10 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
     params.require(:schedule)
       .permit(:description, :cron, :cron_timezone, :ref, :active,
         variables_attributes: [:id, :key, :value, :_destroy] )
+  end
+
+  def authorize_play_pipeline_schedule!
+    return access_denied! unless can?(current_user, :play_pipeline_schedule, schedule)
   end
 
   def authorize_update_pipeline_schedule!

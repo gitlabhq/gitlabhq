@@ -3,8 +3,8 @@ require 'spec_helper'
 describe Projects::PipelineSchedulesController do
   include AccessMatchersForController
 
-  set(:project) { create(:project, :public) }
-  let!(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
+  set(:project) { create(:project, :public, :repository) }
+  set(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
 
   describe 'GET #index' do
     let(:scope) { nil }
@@ -366,25 +366,36 @@ describe Projects::PipelineSchedulesController do
 
   describe 'POST #play' do
     set(:user) { create(:user) }
+    let(:ref) { 'master' }
 
     context 'when a developer makes the request' do
       before do
         project.add_developer(user)
+
         sign_in(user)
       end
 
       it 'executes a new pipeline' do
         expect(RunPipelineScheduleWorker).to receive(:perform_async).with(pipeline_schedule.id, user.id).and_return('job-123')
 
-        go
+        post :play, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
 
         expect(flash[:notice]).to eq 'Successfully scheduled pipeline to run immediately'
         expect(response).to have_gitlab_http_status(302)
       end
     end
 
-    def go
-      post :play, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+    context 'when a developer attempts to schedule a protected ref' do
+      it 'does not allow pipeline to be executed' do
+        create(:protected_branch, project: project, name: ref)
+        protected_schedule = create(:ci_pipeline_schedule, project: project, ref: ref)
+
+        expect(RunPipelineScheduleWorker).not_to receive(:perform_async)
+
+        post :play, namespace_id: project.namespace.to_param, project_id: project, id: protected_schedule.id
+
+        expect(response).to have_gitlab_http_status(404)
+      end
     end
   end
 
