@@ -271,7 +271,7 @@ class ProjectsController < Projects::ApplicationController
       return render 'projects/no_repo' unless @project.repository_exists?
       render 'projects/empty' if @project.empty_repo?
     else
-      if @project.wiki_enabled?
+      if can?(current_user, :read_wiki, @project)
         @project_wiki = @project.wiki
         @wiki_home = @project_wiki.find_page('home', params[:version_id])
       elsif @project.feature_available?(:issues, current_user)
