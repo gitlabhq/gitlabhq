@@ -20,13 +20,9 @@ module Gitlab
     end
 
     def self.workers
-<<<<<<< HEAD
       @workers ||=
         find_workers(Rails.root.join('app', 'workers')) +
         find_workers(Rails.root.join('ee', 'app', 'workers'))
-=======
-      @workers ||= find_workers(Rails.root.join('app', 'workers'))
->>>>>>> upstream/master
     end
 
     def self.default_queues
