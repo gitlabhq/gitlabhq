@@ -191,8 +191,6 @@ import '~/lib/utils/common_utils';
       // browsers will not trigger default behavior (form submit, in this
       // example) on JavaScript-created keypresses.
       expect(submitSpy).not.toHaveBeenTriggered();
-      // Does a worse job at capturing the intent of the test, but works.
-      expect(enterKeyEvent.isDefaultPrevented()).toBe(true);
     });
   });
 }).call(window);
