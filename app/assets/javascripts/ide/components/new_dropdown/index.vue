@@ -1,5 +1,4 @@
 <script>
-  import { mapState } from 'vuex';
   import newModal from './modal.vue';
   import upload from './upload.vue';
   import icon from '../../../vue_shared/components/icon.vue';

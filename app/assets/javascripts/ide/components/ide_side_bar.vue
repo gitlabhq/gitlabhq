@@ -16,7 +16,7 @@ export default {
     ]),
     currentIcon() {
       return this.leftBarCollapsed ? 'angle-double-right' : 'angle-double-left';
-    }, 
+    },
   },
   methods: {
     ...mapActions([

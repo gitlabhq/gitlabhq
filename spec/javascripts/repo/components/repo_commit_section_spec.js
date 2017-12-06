@@ -1,8 +1,8 @@
 import Vue from 'vue';
 import * as urlUtils from '~/lib/utils/url_utility';
-import store from '~/repo/stores';
-import service from '~/repo/services';
-import repoCommitSection from '~/repo/components/repo_commit_section.vue';
+import store from '~/ide/stores';
+import service from '~/ide/services';
+import repoCommitSection from '~/ide/components/repo_commit_section.vue';
 import getSetTimeoutPromise from '../../helpers/set_timeout_promise_helper';
 import { file, resetStore } from '../helpers';
 

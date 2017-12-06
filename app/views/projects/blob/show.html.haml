@@ -11,7 +11,7 @@
 %div{ class: container_class }
   #tree-holder.tree-holder
     = render 'blob', blob: @blob
-  
+
     - if can_modify_blob?(@blob)
       = render 'projects/blob/remove'
 

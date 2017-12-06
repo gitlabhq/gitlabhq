@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import * as urlUtils from '~/lib/utils/url_utility';
-import store from '~/repo/stores';
-import service from '~/repo/services';
+import store from '~/ide/stores';
+import service from '~/ide/services';
 import { file, resetStore } from '../../helpers';
 
 describe('Multi-file store tree actions', () => {

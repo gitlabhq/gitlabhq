@@ -2,6 +2,7 @@ import service from '../../services';
 import flash from '../../../flash';
 import * as types from '../mutation_types';
 
+// eslint-disable-next-line import/prefer-default-export
 export const getProjectData = (
   { commit, state, dispatch },
   { namespace, projectId, force = false } = {},

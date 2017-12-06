@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from '~/repo/stores';
-import repo from '~/repo/components/repo.vue';
+import store from '~/ide/stores';
+import repo from '~/ide/components/repo.vue';
 import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
 import { file, resetStore } from '../helpers';
 

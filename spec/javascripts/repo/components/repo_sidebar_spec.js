@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from '~/repo/stores';
-import repoSidebar from '~/repo/components/repo_sidebar.vue';
+import store from '~/ide/stores';
+import repoSidebar from '~/ide/components/repo_sidebar.vue';
 import { file, resetStore } from '../helpers';
 
 describe('RepoSidebar', () => {

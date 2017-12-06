@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from '~/repo/stores';
-import service from '~/repo/services';
+import store from '~/ide/stores';
+import service from '~/ide/services';
 import { file, resetStore } from '../../helpers';
 
 describe('Multi-file store file actions', () => {

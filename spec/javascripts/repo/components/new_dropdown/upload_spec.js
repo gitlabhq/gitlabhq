@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import upload from '~/repo/components/new_dropdown/upload.vue';
-import store from '~/repo/stores';
+import upload from '~/ide/components/new_dropdown/upload.vue';
+import store from '~/ide/stores';
 import { createComponentWithStore } from '../../../helpers/vue_mount_component_helper';
 import { resetStore } from '../../helpers';
 

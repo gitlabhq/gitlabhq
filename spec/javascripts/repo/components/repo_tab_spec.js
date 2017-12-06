@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from '~/repo/stores';
-import repoTab from '~/repo/components/repo_tab.vue';
+import store from '~/ide/stores';
+import repoTab from '~/ide/components/repo_tab.vue';
 import { file, resetStore } from '../helpers';
 
 describe('RepoTab', () => {

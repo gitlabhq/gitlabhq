@@ -1,4 +1,4 @@
-import * as utils from '~/repo/stores/utils';
+import * as utils from '~/ide/stores/utils';
 
 describe('Multi-file store utils', () => {
   describe('setPageTitle', () => {

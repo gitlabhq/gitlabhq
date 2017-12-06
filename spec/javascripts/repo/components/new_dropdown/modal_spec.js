@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from '~/repo/stores';
-import modal from '~/repo/components/new_dropdown/modal.vue';
+import store from '~/ide/stores';
+import modal from '~/ide/components/new_dropdown/modal.vue';
 import { createComponentWithStore } from '../../../helpers/vue_mount_component_helper';
 import { file, resetStore } from '../../helpers';
 
