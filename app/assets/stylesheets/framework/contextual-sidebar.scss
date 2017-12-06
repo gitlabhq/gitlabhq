@@ -72,14 +72,13 @@
   position: fixed;
   z-index: 400;
   width: $contextual-sidebar-width;
-  transition: left $sidebar-transition-duration;
+  transition: left $sidebar-transition-duration, opacity $page-unload-transition;
   top: $header-height;
   bottom: 0;
   left: 0;
   background-color: $gray-light;
   box-shadow: inset -2px 0 0 $border-color;
   transform: translate3d(0, 0, 0);
-  transition: opacity $page-unload-transition, left $page-unload-transition;
 
   &:not(.sidebar-icons-only) {
     @media (min-width: $screen-sm-min) and (max-width: $screen-md-max) {
