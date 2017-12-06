@@ -10,6 +10,7 @@ describe MergeRequests::RebaseService do
            target_branch: 'master')
   end
   let(:project) { merge_request.project }
+  let(:repository) { project.repository.raw }
 
   subject(:service) { described_class.new(project, user, {}) }
 
@@ -37,7 +38,7 @@ describe MergeRequests::RebaseService do
 
     context 'when unexpected error occurs' do
       before do
-        allow(service).to receive(:run_git_command).and_raise('Something went wrong')
+        allow(repository).to receive(:run_git!).and_raise('Something went wrong')
       end
 
       it 'saves the error message' do
@@ -54,7 +55,7 @@ describe MergeRequests::RebaseService do
 
     context 'with git command failure' do
       before do
-        allow(service).to receive(:popen).and_return(['Something went wrong', 1])
+        allow(repository).to receive(:run_git!).and_raise(Gitlab::Git::Repository::GitError, 'Something went wrong')
       end
 
       it 'saves the error message' do
@@ -96,12 +97,9 @@ describe MergeRequests::RebaseService do
 
       context 'git commands' do
         it 'sets GL_REPOSITORY env variable when calling git commands' do
-          expect_any_instance_of(described_class)
-            .to receive(:run_git_command).exactly(3).with(
-              anything,
-              anything,
-              hash_including('GL_REPOSITORY'),
-              anything)
+          expect(repository).to receive(:popen).exactly(3)
+            .with(anything, anything, hash_including('GL_REPOSITORY'))
+            .and_return(['', 0])
 
           service.execute(merge_request)
         end
