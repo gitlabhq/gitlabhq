@@ -39,10 +39,6 @@ module Gitlab
           pipeline.stages.create!(stage).tap do |stage|
             builds_attributes = builds.map do |attributes|
               attributes.merge(stage_id: stage.id)
-
-              if attributes.fetch(:stage_id).nil?
-                invalid_builds_counter.increment(node: hostname)
-              end
             end
 
             pipeline.builds.create!(builds_attributes).each do |build|
@@ -55,15 +51,6 @@ module Gitlab
 
         def protected_ref?
           @protected_ref ||= project.protected_for?(pipeline.ref)
-        end
-
-        def invalid_builds_counter
-          @counter ||= Gitlab::Metrics.counter(:invalid_builds_counter,
-                                               'Builds without stage assigned counter')
-        end
-
-        def hostname
-          @hostname ||= Socket.gethostname
         end
       end
     end
