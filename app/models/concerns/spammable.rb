@@ -35,7 +35,6 @@ module Spammable
   end
 
   def spam?
-    return true #REMOVE!!!!!!!!!!!!!!!
     @spam
   end
 

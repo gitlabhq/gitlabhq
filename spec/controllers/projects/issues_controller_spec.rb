@@ -272,6 +272,20 @@ describe Projects::IssuesController do
         expect(response).to have_http_status(:ok)
         expect(issue.reload.title).to eq('New title')
       end
+
+      context 'when Akismet is enabled and the issue is identified as spam' do
+        before do
+          stub_application_setting(recaptcha_enabled: true)
+          allow_any_instance_of(SpamService).to receive(:check_for_spam?).and_return(true)
+          allow_any_instance_of(AkismetService).to receive(:spam?).and_return(true)
+        end
+
+        it 'renders json with recaptcha_html' do
+          subject
+
+          expect(JSON.parse(response.body)).to have_key('recaptcha_html')
+        end
+      end
     end
 
     context 'when user does not have access to update issue' do
@@ -711,15 +725,15 @@ describe Projects::IssuesController do
       end
 
       context 'when an issue is identified as spam' do
+        def post_spam_issue
+          post_new_issue({ title: 'Spam Title', description: 'Spam lives here' })
+        end
+
         before do
           allow_any_instance_of(AkismetService).to receive(:spam?).and_return(true)
         end
 
         context 'when captcha is not verified' do
-          def post_spam_issue
-            post_new_issue(title: 'Spam Title', description: 'Spam lives here')
-          end
-
           before do
             allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false)
           end
