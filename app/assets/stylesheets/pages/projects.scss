@@ -1182,7 +1182,11 @@ a.allowed-to-push {
   }
 }
 
-<<<<<<< HEAD
+.issuable-footer {
+  padding-top: $gl-padding;
+  padding-bottom: 37px;
+}
+
 /* EE-specific styles */
 .project-mirror-settings {
   .fingerprint-verified {
@@ -1254,9 +1258,4 @@ a.allowed-to-push {
     display: flex;
     justify-content: center;
   }
-=======
-.issuable-footer {
-  padding-top: $gl-padding;
-  padding-bottom: 37px;
->>>>>>> upstream/master
 }
