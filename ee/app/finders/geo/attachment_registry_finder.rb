@@ -2,7 +2,7 @@ module Geo
   class AttachmentRegistryFinder < RegistryFinder
     def find_synced_attachments
       relation =
-        if Gitlab::Geo.fdw?
+        if fdw?
           fdw_find_synced_attachments
         else
           legacy_find_synced_attachments
@@ -13,7 +13,7 @@ module Geo
 
     def find_failed_attachments
       relation =
-        if Gitlab::Geo.fdw?
+        if fdw?
           fdw_find_failed_attachments
         else
           legacy_find_failed_attachments
@@ -25,18 +25,33 @@ module Geo
     private
 
     def uploads
-      upload_model = Gitlab::Geo.fdw? ? Geo::Fdw::Upload : Upload
-
       if selective_sync?
-        upload_table    = upload_model.arel_table
-        group_uploads   = upload_table[:model_type].eq('Namespace').and(upload_table[:model_id].in(Gitlab::GroupHierarchy.new(current_node.namespaces).base_and_descendants.pluck(:id)))
-        project_uploads = upload_table[:model_type].eq('Project').and(upload_table[:model_id].in(current_node.projects.pluck(:id)))
-        other_uploads   = upload_table[:model_type].not_in(%w[Namespace Project])
-
-        upload_model.where(group_uploads.or(project_uploads).or(other_uploads))
+        Upload.where(group_uploads.or(project_uploads).or(other_uploads))
       else
-        upload_model.all
+        Upload.all
       end
+    end
+
+    def group_uploads
+      namespace_ids = Gitlab::GroupHierarchy.new(current_node.namespaces).base_and_descendants.select(:id)
+      arel_namespace_ids = Arel::Nodes::SqlLiteral.new(namespace_ids.to_sql)
+
+      upload_table[:model_type].eq('Namespace').and(upload_table[:model_id].in(arel_namespace_ids))
+    end
+
+    def project_uploads
+      project_ids = current_node.projects.select(:id)
+      arel_project_ids = Arel::Nodes::SqlLiteral.new(project_ids.to_sql)
+
+      upload_table[:model_type].eq('Project').and(upload_table[:model_id].in(arel_project_ids))
+    end
+
+    def other_uploads
+      upload_table[:model_type].not_in(%w[Namespace Project])
+    end
+
+    def upload_table
+      Upload.arel_table
     end
 
     #
@@ -54,7 +69,7 @@ module Geo
     def fdw_find_attachments
       fdw_table = Geo::Fdw::Upload.table_name
 
-      uploads.joins("INNER JOIN file_registry ON file_registry.file_id = #{fdw_table}.id")
+      Geo::Fdw::Upload.joins("INNER JOIN file_registry ON file_registry.file_id = #{fdw_table}.id")
         .merge(Geo::FileRegistry.attachments)
     end
 
