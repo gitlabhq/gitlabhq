@@ -782,7 +782,7 @@ describe Project do
       end
 
       context 'when environment scope has _' do
-        let!(:cluster) { create(:cluster, projects: [project]) }
+        let!(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
 
         before do
           stub_licensed_features(multiple_clusters: true)
@@ -807,7 +807,7 @@ describe Project do
       # it doesn't break in case some data sneaked in somehow as we're
       # not checking this integrity in database level.
       context 'when environment scope has %' do
-        let!(:cluster) { create(:cluster, projects: [project]) }
+        let!(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
 
         before do
           stub_licensed_features(multiple_clusters: true)
