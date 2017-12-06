@@ -235,21 +235,5 @@ describe Geo::RepositorySyncService do
         expect(registry.repository_retry_at).to be_nil
       end
     end
-
-    context 'secondary replicates over SSH' do
-      set(:ssh_secondary) { create(:geo_node, :ssh) }
-
-      let(:url_to_repo) { "#{primary.clone_url_prefix}/#{project.full_path}.git" }
-
-      before do
-        stub_current_geo_node(ssh_secondary)
-      end
-
-      it 'fetches wiki repository over SSH' do
-        expect(repository).to receive(:fetch_as_mirror).with(url_to_repo, forced: true).once
-
-        subject.execute
-      end
-    end
   end
 end

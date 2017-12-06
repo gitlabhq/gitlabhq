@@ -8,11 +8,6 @@ FactoryGirl.define do
       uri.to_s
     end
 
-    trait :ssh do
-      clone_protocol 'ssh'
-      association :geo_node_key
-    end
-
     trait :primary do
       primary true
       url do

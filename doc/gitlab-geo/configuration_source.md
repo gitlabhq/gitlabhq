@@ -123,7 +123,15 @@ cp primary.geo.example.com.crt /usr/local/share/ca-certificates
 update-ca-certificates
 ```
 
-### Step 4. Managing the secondary GitLab node
+### Step 4. Enable Git access over HTTP/HTTPS
+
+GitLab Geo synchronizes repositories over HTTP/HTTPS, and so requires this clone
+method to be enabled. Navigate to **Admin Area ➔ Settings**
+(`/admin/application_settings`) on the primary node, and set
+`Enabled Git access protocols` to `Both SSH and HTTP(S)` or `Only HTTP(S)`.
+
+
+### Step 5. Managing the secondary GitLab node
 
 You can monitor the status of the syncing process on a secondary node
 by visiting the primary node's **Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`)
@@ -172,10 +180,6 @@ Point your users to the ["Using a Geo Server" guide](using_a_geo_server.md).
 ## Selective replication
 
 Read [Selective replication](configuration.md#selective-replication).
-
-## Replicating wikis and repositories over SSH
-
-Read [Replicating wikis and repositories over SSH](configuration.md#replicating-wikis-and-repositories-over-ssh).
 
 ## Troubleshooting
 

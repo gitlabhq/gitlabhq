@@ -41,16 +41,6 @@ describe SystemCheck::App::GitUserDefaultSSHConfigCheck do
 
       it { is_expected.to eq(expected_result) }
     end
-
-    it 'skips Geo secondaries with SSH' do
-      stub_user
-      stub_home_dir
-      node = create(:geo_node, :ssh)
-
-      stub_current_geo_node(node)
-
-      is_expected.to be_truthy
-    end
   end
 
   describe '#check?' do

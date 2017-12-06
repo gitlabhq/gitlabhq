@@ -6,8 +6,7 @@ RSpec.describe Geo::MetricsUpdateWorker, :geo do
   subject { described_class.new }
 
   describe '#perform' do
-    let(:geo_node_key) { create(:geo_node_key) }
-    let(:secondary) { create(:geo_node, geo_node_key: geo_node_key) }
+    let(:secondary) { create(:geo_node) }
 
     before do
       stub_current_geo_node(secondary)

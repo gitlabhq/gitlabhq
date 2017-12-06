@@ -27,8 +27,7 @@ module Geo
                update_delay_s: update_delay_in_seconds,
                download_time_s: download_time_in_seconds)
     rescue Gitlab::Shell::Error,
-           Gitlab::Git::RepositoryMirroring::RemoteError,
-           Geo::EmptyCloneUrlPrefixError => e
+           Gitlab::Git::RepositoryMirroring::RemoteError => e
       fail_registry!('Error syncing repository', e)
     rescue Gitlab::Git::Repository::NoRepository => e
       log_info('Setting force_to_redownload flag')

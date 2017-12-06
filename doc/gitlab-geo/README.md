@@ -38,9 +38,8 @@ and the replicated read-only ones as **secondaries**.
 
 Keep in mind that:
 
-- Secondaries talk to primary to get user data for logins (API), to
-  clone/pull from repositories (SSH) and to retrieve LFS Objects and Attachments
-  (HTTPS + JWT).
+- Secondaries talk to the primary to get user data for logins (API) and to
+  replicate repositories, LFS Objects and Attachments (HTTPS + JWT).
 - Since GitLab Enterprise Edition Premium 10.0, the primary no longer talks to
   secondaries to notify for changes (API).
 
@@ -62,7 +61,7 @@ The following diagram illustrates the underlying architecture of GitLab Geo:
 [Source diagram](https://docs.google.com/drawings/d/1Abw0P_H0Ew1-2Lj_xPDRWP87clGIke-1fil7_KQqrtE/edit)
 
 In this diagram, there is one Geo primary node and one secondary. The
-secondary clones repositories via git over SSH. Attachments, LFS objects, and
+secondary clones repositories via git over HTTPS. Attachments, LFS objects, and
 other files are downloaded via HTTPS using the GitLab API to authenticate,
 with a special endpoint protected by JWT.
 

@@ -57,8 +57,7 @@ module API
           gl_repository: gl_repository,
           gl_username: user&.username,
           repository_path: repository_path,
-          gitaly: gitaly_payload(params[:action]),
-          geo_node: actor.is_a?(GeoNodeKey)
+          gitaly: gitaly_payload(params[:action])
         }
       end
 

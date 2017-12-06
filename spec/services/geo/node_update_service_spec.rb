@@ -7,17 +7,14 @@ describe Geo::NodeUpdateService do
   let(:geo_node_with_restrictions) { create(:geo_node, namespace_ids: [groups.first.id]) }
 
   describe '#execute' do
-    it 'updates the node without changing the key' do
-      ssh_node = create(:geo_node, :ssh)
-      original_fingerprint = ssh_node.geo_node_key.fingerprint
-      params = { url: 'http://example.com', geo_node_key_attributes: attributes_for(:key) }
-      service = described_class.new(ssh_node, params)
+    it 'updates the node' do
+      params = { url: 'http://example.com' }
+      service = described_class.new(geo_node, params)
 
       service.execute
 
-      ssh_node.reload
-      expect(ssh_node.url.chomp('/')).to eq(params[:url])
-      expect(ssh_node.geo_node_key.fingerprint).to eq(original_fingerprint)
+      geo_node.reload
+      expect(geo_node.url.chomp('/')).to eq(params[:url])
     end
 
     it 'returns true when update succeeds' do

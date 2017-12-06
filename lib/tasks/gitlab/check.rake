@@ -462,6 +462,7 @@ namespace :gitlab do
         SystemCheck::Geo::GeoDatabaseConfiguredCheck,
         SystemCheck::Geo::DatabaseReplicationCheck,
         SystemCheck::Geo::HttpConnectionCheck,
+        SystemCheck::Geo::HTTPCloneEnabledCheck,
         SystemCheck::Geo::ClocksSynchronizationCheck,
         SystemCheck::App::GitUserDefaultSSHConfigCheck
       ]

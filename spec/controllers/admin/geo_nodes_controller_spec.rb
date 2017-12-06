@@ -110,7 +110,7 @@ describe Admin::GeoNodesController, :postgresql do
   end
 
   describe '#create' do
-    let(:geo_node_attributes) { { url: 'http://example.com', geo_node_key_attributes: { key: SSHKeygen.generate } } }
+    let(:geo_node_attributes) { { url: 'http://example.com' } }
 
     def go
       post :create, geo_node: geo_node_attributes
@@ -139,16 +139,9 @@ describe Admin::GeoNodesController, :postgresql do
   end
 
   describe '#update' do
-    let(:geo_node_attributes) do
-      {
-        url: 'http://example.com',
-        clone_protocol: 'ssh',
-        geo_node_key_attributes: attributes_for(:key)
-      }
-    end
+    let(:geo_node_attributes) { { url: 'http://example.com' } }
 
-    let(:geo_node) { create(:geo_node, :ssh) }
-    let!(:original_fingerprint) { geo_node.geo_node_key.fingerprint }
+    let(:geo_node) { create(:geo_node) }
 
     def go
       post :update, id: geo_node, geo_node: geo_node_attributes
@@ -168,25 +161,11 @@ describe Admin::GeoNodesController, :postgresql do
         allow(Gitlab::Geo).to receive(:license_allows?).and_return(true)
       end
 
-      it 'updates the node without changing the key' do
+      it 'updates the node' do
         go
 
         geo_node.reload
         expect(geo_node.url.chomp('/')).to eq(geo_node_attributes[:url])
-        expect(geo_node.geo_node_key.fingerprint).to eq(original_fingerprint)
-      end
-
-      context 'changing clone protocol' do
-        let(:geo_node_attributes) { { clone_protocol: 'http' } }
-
-        it 'changes the protocol without removing the key' do
-          go
-
-          geo_node.reload
-
-          expect(geo_node.clone_protocol).to eq('http')
-          expect(geo_node.geo_node_key.fingerprint).to eq(original_fingerprint)
-        end
       end
 
       it 'delegates the update of the Geo node to Geo::NodeUpdateService' do

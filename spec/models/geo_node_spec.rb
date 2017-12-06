@@ -15,30 +15,18 @@ describe GeoNode, type: :model do
   let(:api_version) { API::API.version }
 
   context 'associations' do
-    it { is_expected.to belong_to(:geo_node_key).dependent(:destroy) }
     it { is_expected.to belong_to(:oauth_application).dependent(:destroy) }
 
     it { is_expected.to have_many(:geo_node_namespace_links) }
     it { is_expected.to have_many(:namespaces).through(:geo_node_namespace_links) }
   end
 
-  context 'validations' do
-    let(:ssh_node) { build(:geo_node, :ssh) }
-
-    it { expect(ssh_node).to validate_presence_of(:geo_node_key) }
-    it { expect(new_node).not_to validate_presence_of(:geo_node_key) }
-    it { expect(new_primary_node).not_to validate_presence_of(:geo_node_key) }
-  end
-
   context 'default values' do
-    let(:gitlab_host) { 'gitlabhost' }
-
     where(:attribute, :value) do
       :url                | Gitlab::Routing.url_helpers.root_url
       :primary            | false
       :repos_max_capacity | 25
       :files_max_capacity | 10
-      :clone_protocol     | 'http'
     end
 
     with_them do
@@ -57,33 +45,7 @@ describe GeoNode, type: :model do
   end
 
   context 'dependent models and attributes for GeoNode' do
-    let(:geo_node_key_attributes) { FactoryGirl.build(:geo_node_key).attributes }
-
-    context 'on initialize' do
-      it 'initializes a corresponding key' do
-        expect(empty_node.geo_node_key).to be_present
-      end
-
-      it 'is valid when required attributes are present' do
-        new_node.clone_protocol = 'ssh'
-        new_node.geo_node_key_attributes = geo_node_key_attributes
-        expect(new_node).to be_valid
-      end
-    end
-
     context 'on create' do
-      context 'SSH node' do
-        let(:ssh_node) { create(:geo_node, :ssh) }
-
-        it 'saves a corresponding key' do
-          expect(ssh_node.geo_node_key).to be_persisted
-        end
-      end
-
-      it 'does not save a key' do
-        expect(node.geo_node_key).to be_nil
-      end
-
       it 'saves a corresponding oauth application if it is a secondary node' do
         expect(node.oauth_application).to be_persisted
       end
@@ -94,7 +56,7 @@ describe GeoNode, type: :model do
         end
 
         it 'persists current clone_url_prefix' do
-          expect(primary_node.clone_url_prefix).to be_present
+          expect(primary_node.clone_url_prefix).to eq(Gitlab.config.gitlab_shell.ssh_path_prefix)
         end
       end
     end
@@ -144,10 +106,6 @@ describe GeoNode, type: :model do
     end
 
     context 'when required fields are not filled' do
-      it 'returns an initialized Geo node key' do
-        expect(empty_node.geo_node_key).not_to be_nil
-      end
-
       it 'returns an URI object' do
         expect(empty_node.uri).to be_a URI
       end
@@ -401,45 +359,6 @@ describe GeoNode, type: :model do
 
       it 'returns a value' do
         expect(subject.attachments_failed_count).to eq(0)
-      end
-    end
-  end
-
-  describe '#geo_node_key' do
-    context 'primary node' do
-      it 'cannot be set' do
-        node = new_primary_node
-
-        expect(node.geo_node_key).to be_nil
-
-        node.geo_node_key = build(:geo_node_key)
-        expect(node).to be_valid
-
-        node.save!
-
-        expect(node.geo_node_key(true)).to be_nil
-      end
-    end
-
-    context 'secondary node' do
-      it 'is not set for HTTP' do
-        node = build(:geo_node, url: 'http://example.com/')
-
-        expect(node.geo_node_key).to be_present
-
-        node.save!
-
-        expect(node.geo_node_key).to be_nil
-      end
-
-      it 'is automatically set for SSH' do
-        node = build(:geo_node, :ssh, url: 'http://example.com/')
-
-        expect(node.geo_node_key).to be_present
-
-        node.save!
-
-        expect(node.geo_node_key.title).to eq('Geo node: http://example.com/')
       end
     end
   end

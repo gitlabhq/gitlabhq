@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171124165823) do
+ActiveRecord::Schema.define(version: 20171124182517) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -977,7 +977,6 @@ ActiveRecord::Schema.define(version: 20171124165823) do
 
   create_table "geo_nodes", force: :cascade do |t|
     t.boolean "primary"
-    t.integer "geo_node_key_id"
     t.integer "oauth_application_id"
     t.boolean "enabled", default: true, null: false
     t.string "access_key"
@@ -986,7 +985,6 @@ ActiveRecord::Schema.define(version: 20171124165823) do
     t.string "clone_url_prefix"
     t.integer "files_max_capacity", default: 10, null: false
     t.integer "repos_max_capacity", default: 25, null: false
-    t.string "clone_protocol", default: "http", null: false
     t.string "url", null: false
   end
 

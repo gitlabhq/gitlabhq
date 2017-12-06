@@ -6,7 +6,6 @@ module Geo
       @geo_node = geo_node
       @old_namespace_ids = geo_node.namespace_ids
       @params = params.dup
-      @params.delete(:geo_node_key_attributes)
       @params[:namespace_ids] = @params[:namespace_ids].to_s.split(',')
     end
 
