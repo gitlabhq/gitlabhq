@@ -142,7 +142,7 @@ tests. If it doesn't, the whole test suite will run (including docs).
 ---
 
 When you submit a merge request to GitLab Community Edition (CE), there is an
-additional job called `rake ee_compat_check` that runs against Enterprise
+additional job called `ee_compat_check` that runs against Enterprise
 Edition (EE) and checks if your changes can apply cleanly to the EE codebase.
 If that job fails, read the instructions in the job log for what to do next.
 Contributors do not need to submit their changes to EE, GitLab Inc. employees
