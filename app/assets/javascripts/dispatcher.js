@@ -30,7 +30,7 @@ import projectImport from './project_import';
 import Labels from './labels';
 import LabelManager from './label_manager';
 /* global Sidebar */
-
+import IssuableTemplateSelectors from './templates/issuable_template_selectors';
 import Flash from './flash';
 import CommitsList from './commits';
 import Issue from './issue';
@@ -264,7 +264,7 @@ import ProjectVariables from './project_variables';
           new IssuableForm($('.issue-form'));
           new LabelsSelect();
           new MilestoneSelect();
-          new gl.IssuableTemplateSelectors();
+          new IssuableTemplateSelectors();
           break;
         case 'projects:merge_requests:creations:new':
           const mrNewCompareNode = document.querySelector('.js-merge-request-new-compare');
@@ -288,7 +288,7 @@ import ProjectVariables from './project_variables';
           new IssuableForm($('.merge-request-form'));
           new LabelsSelect();
           new MilestoneSelect();
-          new gl.IssuableTemplateSelectors();
+          new IssuableTemplateSelectors();
           new AutoWidthDropdownSelect($('.js-target-branch-select')).init();
           break;
         case 'projects:tags:new':
