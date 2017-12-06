@@ -5,6 +5,9 @@ module QA
     module Gitlab
       module Repository
         class Push < Scenario::Template
+          PAGE_REGEX_CHECK =
+            %r{\/#{Runtime::Namespace.sandbox_name}\/qa-test[^\/]+\/{1}[^\/]+\z}.freeze
+
           attr_writer :file_name,
                       :file_content,
                       :commit_message,
@@ -20,6 +23,10 @@ module QA
           def perform
             Git::Repository.perform do |repository|
               repository.location = Page::Project::Show.act do
+                unless PAGE_REGEX_CHECK.match(current_path)
+                  raise "To perform this scenario the current page should be project show."
+                end
+
                 choose_repository_clone_http
                 repository_location
               end
