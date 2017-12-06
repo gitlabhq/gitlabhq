@@ -34,6 +34,7 @@ import LabelManager from './label_manager';
 /* global WeightSelect */
 /* global AdminEmailSelect */
 
+import IssuableTemplateSelectors from './templates/issuable_template_selectors';
 import Flash from './flash';
 import CommitsList from './commits';
 import Issue from './issue';
@@ -294,7 +295,7 @@ import initGroupAnalytics from './init_group_analytics';
           new LabelsSelect();
           new MilestoneSelect();
           new WeightSelect();
-          new gl.IssuableTemplateSelectors();
+          new IssuableTemplateSelectors();
           break;
         case 'projects:merge_requests:creations:new':
           const mrNewCompareNode = document.querySelector('.js-merge-request-new-compare');
@@ -319,7 +320,7 @@ import initGroupAnalytics from './init_group_analytics';
           new IssuableForm($('.merge-request-form'));
           new LabelsSelect();
           new MilestoneSelect();
-          new gl.IssuableTemplateSelectors();
+          new IssuableTemplateSelectors();
           new AutoWidthDropdownSelect($('.js-target-branch-select')).init();
           break;
         case 'projects:tags:new':

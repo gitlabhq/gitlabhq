@@ -1,7 +1,7 @@
 import ImageBadge from '../image_badge';
 import ImageDiff from '../image_diff';
 import ReplacedImageDiff from '../replaced_image_diff';
-import '../../commit/image_file';
+import ImageFile from '../../commit/image_file';
 
 export function resizeCoordinatesToImageElement(imageEl, meta) {
   const { x, y, width, height } = meta;
@@ -81,7 +81,7 @@ export function initImageDiff(fileEl, canCreateNote, renderCommentBadge) {
 
   // ImageFile needs to be invoked before initImageDiff so that badges
   // can mount to the correct location
-  new gl.ImageFile(fileEl); // eslint-disable-line no-new
+  new ImageFile(fileEl); // eslint-disable-line no-new
 
   if (fileEl.querySelector('.diff-file .js-single-image')) {
     diff = new ImageDiff(fileEl, options);
