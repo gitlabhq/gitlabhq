@@ -11,14 +11,13 @@
   import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
   import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
   import autosave from '../mixins/autosave';
+  import noteable from '../mixins/noteable';
 
   export default {
-    props: {
-      note: {
-        type: Object,
-        required: true,
-      },
-    },
+    mixins: [
+      autosave,
+      noteable,
+    ],
     data() {
       return {
         isReplying: false,
@@ -34,9 +33,6 @@
       placeholderNote,
       placeholderSystemNote,
     },
-    mixins: [
-      autosave,
-    ],
     computed: {
       ...mapGetters([
         'getNoteableData',
@@ -114,7 +110,7 @@
           flashContainer: this.$el,
           data: {
             in_reply_to_discussion_id: this.note.reply_id,
-            target_type: 'issue',
+            target_type: this.noteableType,
             target_id: this.discussion.noteable_id,
             note: { note: noteText },
           },

@@ -7,14 +7,12 @@
   import noteActions from './note_actions.vue';
   import noteBody from './note_body.vue';
   import eventHub from '../event_hub';
+  import noteable from '../mixins/noteable';
 
   export default {
-    props: {
-      note: {
-        type: Object,
-        required: true,
-      },
-    },
+    mixins: [
+      noteable,
+    ],
     data() {
       return {
         isEditing: false,
@@ -79,7 +77,7 @@
         const data = {
           endpoint: this.note.path,
           note: {
-            target_type: 'issue',
+            target_type: this.noteableType,
             target_id: this.note.noteable_id,
             note: { note: noteText },
           },
