@@ -1007,7 +1007,7 @@ describe Repository do
 
       it 'runs without errors' do
         # old_rev is an ancestor of new_rev
-        expect(repository.rugged.merge_base(old_rev, new_rev)).to eq(old_rev)
+        expect(repository.merge_base(old_rev, new_rev)).to eq(old_rev)
 
         # old_rev is not a direct ancestor (parent) of new_rev
         expect(repository.rugged.lookup(new_rev).parent_ids).not_to include(old_rev)
@@ -1029,7 +1029,7 @@ describe Repository do
 
       it 'raises an exception' do
         # The 'master' branch is NOT an ancestor of new_rev.
-        expect(repository.rugged.merge_base(old_rev, new_rev)).not_to eq(old_rev)
+        expect(repository.merge_base(old_rev, new_rev)).not_to eq(old_rev)
 
         # Updating 'master' to new_rev would lose the commits on 'master' that
         # are not contained in new_rev. This should not be allowed.
