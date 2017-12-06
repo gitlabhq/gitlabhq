@@ -1,9 +1,6 @@
 class PostReceive
   include ApplicationWorker
-<<<<<<< HEAD
   prepend EE::PostReceive
-=======
->>>>>>> upstream/master
 
   def perform(gl_repository, identifier, changes)
     project, is_wiki = Gitlab::GlRepository.parse(gl_repository)
