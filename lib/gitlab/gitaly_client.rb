@@ -336,6 +336,12 @@ module Gitlab
       s.dup.force_encoding(Encoding::ASCII_8BIT)
     end
 
+    def self.binary_stringio(s)
+      io = StringIO.new(s || '')
+      io.set_encoding(Encoding::ASCII_8BIT)
+      io
+    end
+
     def self.encode_repeated(a)
       Google::Protobuf::RepeatedField.new(:bytes, a.map { |s| self.encode(s) } )
     end
