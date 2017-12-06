@@ -231,19 +231,17 @@ class Note < ActiveRecord::Base
   end
 
   def commit
-    project.commit(commit_id) if commit_id.present?
+    @commit ||= project.commit(commit_id) if commit_id.present?
   end
 
   # override to return commits, which are not active record
   def noteable
-    if for_commit?
-      @commit ||= commit
-    else
-      super
-    end
-  # Temp fix to prevent app crash
-  # if note commit id doesn't exist
+    return commit if for_commit?
+
+    super
   rescue
+    # Temp fix to prevent app crash
+    # if note commit id doesn't exist
     nil
   end
 
