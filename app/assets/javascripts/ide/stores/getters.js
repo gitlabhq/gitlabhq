@@ -27,8 +27,6 @@ export const activeFileExtension = (state) => {
   return file ? `.${file.path.split('.').pop()}` : '';
 };
 
-export const isCollapsed = () => true; // ToDo: Need to remove !!state.openFiles.length;
-
 export const canEditFile = (state) => {
   const currentActiveFile = activeFile(state);
 

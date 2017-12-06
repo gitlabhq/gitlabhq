@@ -28,7 +28,6 @@ export default {
     }),
     ...mapGetters([
       'treeList',
-      'isCollapsed',
     ]),
     hasPreviousDirectory() {
       return !this.isRoot && this.treeList(this.treeId).length;

@@ -55,7 +55,7 @@ module BlobHelper
       common_classes = "btn js-edit-ide #{options[:extra_class]}"
 
       if !on_top_of_branch?(project, ref)
-        button_tag 'Multi Edit <span class="label label-primary">Beta</span>', class: "#{common_classes} disabled has-tooltip", title: "You can only edit files when you are on a branch", data: { container: 'body' }
+        button_tag 'Multi Edit <span class="label label-primary">Beta</span>'.html_safe, class: "#{common_classes} disabled has-tooltip", title: "You can only edit files when you are on a branch", data: { container: 'body' }
       # This condition applies to anonymous or users who can edit directly
       elsif !current_user || (current_user && can_modify_blob?(blob, project, ref))
         link_to 'Multi Edit <span class="label label-primary">Beta</span>'.html_safe, ide_edit_path(project, ref, path, options), class: "#{common_classes} btn-sm"
@@ -67,7 +67,7 @@ module BlobHelper
         }
         fork_path = project_forks_path(project, namespace_key: current_user.namespace.id, continue: continue_params)
 
-        button_tag 'Multi Edit <span class="label label-primary">Beta</span>',
+        button_tag 'Multi Edit <span class="label label-primary">Beta</span>'.html_safe,
           class: "#{common_classes}",
           data: { action: 'edit', fork_path: fork_path }
       end

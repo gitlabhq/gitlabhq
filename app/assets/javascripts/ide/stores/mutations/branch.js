@@ -19,10 +19,6 @@ export default {
         [branchName]: branch,
       },
     });
-
-    Object.assign(state.projects, Object.assign({}, state.projects, {
-      [projectPath]: state.projects[projectPath],
-    }));
   },
   [types.SET_BRANCH_WORKING_REFERENCE](state, { projectId, branchId, reference }) {
     Object.assign(state.projects[projectId].branches[branchId], {

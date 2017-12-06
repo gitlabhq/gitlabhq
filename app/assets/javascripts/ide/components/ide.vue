@@ -15,7 +15,6 @@ export default {
       'selectedFile',
     ]),
     ...mapGetters([
-      'isCollapsed',
       'changedFiles',
       'activeFile',
     ]),

@@ -5,12 +5,10 @@
     computed: {
       ...mapState([
         'parentTreeUrl',
-      ]),
-      ...mapGetters([
-        'isCollapsed',
+        'leftBarCollapsed',
       ]),
       colSpanCondition() {
-        return this.isCollapsed ? undefined : 3;
+        return this.leftBarCollapsed ? undefined : 3;
       },
     },
     methods: {

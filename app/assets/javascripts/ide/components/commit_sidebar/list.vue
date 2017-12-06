@@ -1,4 +1,5 @@
 <script>
+  import { mapState } from 'vuex';
   import icon from '../../../vue_shared/components/icon.vue';
   import listItem from './list_item.vue';
   import listCollapsed from './list_collapsed.vue';
@@ -18,23 +19,27 @@
         type: Array,
         required: true,
       },
-      collapsed: {
-        type: Boolean,
-        required: true,
-      },
+    },
+    computed: {
+      ...mapState([
+        'currentProjectId',
+        'currentBranchId',
+        'rightBarCollapsed',
+      ]),
     },
     methods: {
       toggleCollapsed() {
         this.$emit('toggleCollapsed');
       },
     },
+
   };
 </script>
 
 <template>
   <div class="multi-file-commit-list">
     <list-collapsed
-      v-if="collapsed"
+      v-if="rightBarCollapsed"
     />
     <template v-else>
       <ul

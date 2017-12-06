@@ -19,5 +19,5 @@ export default () => ({
   trees: {},
   projects: {},
   leftBarCollapsed: false,
-  rightBarCollapsed: false,
+  rightBarCollapsed: true,
 });

@@ -1,4 +1,5 @@
 <script>
+  import { mapState } from 'vuex';
   import timeAgoMixin from '../../vue_shared/mixins/timeago';
   import skeletonLoadingContainer from '../../vue_shared/components/skeleton_loading_container.vue';
   import newDropdown from './new_dropdown/index.vue';
@@ -26,6 +27,16 @@
       },
     },
     computed: {
+      ...mapState([
+        'leftBarCollapsed',
+      ]),
+      fileIcon() {
+        return {
+          'fa-spinner fa-spin': this.file.loading,
+          [this.file.icon]: !this.file.loading,
+          'fa-folder-open': !this.file.loading && this.file.opened,
+        };
+      },
       isSubmodule() {
         return this.file.type === 'submodule';
       },
@@ -41,7 +52,7 @@
         return this.file.id.substr(0, 8);
       },
       submoduleColSpan() {
-        return !this.isCollapsed && this.isSubmodule ? 3 : 1;
+        return !this.leftBarCollapsed && this.isSubmodule ? 3 : 1;
       },
       openedClass() {
         return this.file.type === 'blob' && this.file.opened ? 'file-open' : '';

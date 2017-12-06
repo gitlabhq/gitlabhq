@@ -1,5 +1,5 @@
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapState, mapActions } from 'vuex';
 import repoCommitSection from './repo_commit_section.vue';
 import icon from '../../vue_shared/components/icon.vue';
 
@@ -8,22 +8,23 @@ export default {
     repoCommitSection,
     icon,
   },
-  data() {
-    return {
-      collapsed: true,
-    };
-  },
   computed: {
+    ...mapState([
+      'rightBarCollapsed',
+    ]),
     ...mapGetters([
       'changedFiles',
     ]),
     currentIcon() {
-      return this.collapsed ? 'angle-double-left' : 'angle-double-right';
+      return this.rightBarCollapsed ? 'angle-double-left' : 'angle-double-right';
     },
   },
   methods: {
+    ...mapActions([
+      'setRightBarCollapsedStatus',
+    ]),
     toggleCollapsed() {
-      this.collapsed = !this.collapsed;
+      this.setRightBarCollapsedStatus(!this.rightBarCollapsed);
     },
   },
 };
@@ -33,7 +34,7 @@ export default {
   <div
     class="multi-file-commit-panel"
     :class="{
-      'is-collapsed': collapsed,
+      'is-collapsed': rightBarCollapsed,
     }"
   >
     <div 
@@ -41,7 +42,7 @@ export default {
       <header
         class="multi-file-commit-panel-header"
         :class="{
-          'is-collapsed': collapsed,
+          'is-collapsed': rightBarCollapsed,
           }"
         >
         <button
@@ -58,7 +59,6 @@ export default {
       <div>
       </div>
       <repo-commit-section 
-        :collapsed="collapsed"
         class=""/>
     </div>
   </div>

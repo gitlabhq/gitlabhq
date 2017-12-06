@@ -1,5 +1,5 @@
 <script>
-  import { mapGetters } from 'vuex';
+  import { mapState } from 'vuex';
   import skeletonLoadingContainer from '../../vue_shared/components/skeleton_loading_container.vue';
 
   export default {
@@ -7,8 +7,8 @@
       skeletonLoadingContainer,
     },
     computed: {
-      ...mapGetters([
-        'isCollapsed',
+      ...mapState([
+        'leftBarCollapsed',
       ]),
     },
   };
@@ -24,7 +24,7 @@
         :small="true"
       />
     </td>
-    <template v-if="!isCollapsed">
+    <template v-if="!leftBarCollapsed">
       <td
         class="hidden-sm hidden-xs">
         <skeleton-loading-container

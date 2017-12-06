@@ -14,12 +14,6 @@ export default {
   directives: {
     tooltip,
   },
-  props: {
-    collapsed: {
-      type: Boolean,
-      required: true,
-    },
-  },
   data() {
     return {
       showNewBranchModal: false,
@@ -32,6 +26,7 @@ export default {
     ...mapState([
       'currentProjectId',
       'currentBranchId',
+      'rightBarCollapsed',
     ]),
     ...mapGetters([
       'changedFiles',
@@ -48,6 +43,7 @@ export default {
       'checkCommitStatus',
       'commitChanges',
       'getTreeData',
+      'setRightBarCollapsedStatus',
     ]),
     makeCommit(newBranch = false) {
       const createNewBranch = newBranch || this.startNewMR;
@@ -96,7 +92,7 @@ export default {
         });
     },
     toggleCollapsed() {
-      this.collapsed = !this.collapsed;
+      this.setRightBarCollapsedStatus(!this.rightBarCollapsed);
     },
   },
 };
@@ -118,20 +114,20 @@ export default {
       name="list-bulleted"
       :size="18"
     />
-    <template v-if="!collapsed">
+    <template v-if="!rightBarCollapsed">
       Staged
     </template>
   </div>
   <commit-files-list
     title="Staged"
     :file-list="changedFiles"
-    :collapsed="collapsed"
+    :collapsed="rightBarCollapsed"
     @toggleCollapsed="toggleCollapsed"
   />
   <form
     class="form-horizontal multi-file-commit-form"
     @submit.prevent="tryCommit"
-    v-if="!collapsed && changedFiles.length"
+    v-if="!rightBarCollapsed && changedFiles.length"
   >
     <div class="multi-file-commit-fieldset">
       <textarea

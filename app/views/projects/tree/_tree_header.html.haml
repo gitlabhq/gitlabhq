@@ -6,7 +6,7 @@
 
 .tree-controls
   - if show_new_repo?
-    = link_to 'Multi edit', ide_edit_path(@project, @id), class: 'btn'
+    = link_to 'Multi Edit <span class="label label-primary">Beta</span>'.html_safe, ide_edit_path(@project, @id), class: 'btn'
 
   = link_to s_('Commits|History'), project_commits_path(@project, @id), class: 'btn'
 

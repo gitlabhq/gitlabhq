@@ -1,5 +1,5 @@
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import projectTree from './ide_project_tree.vue';
 import icon from '../../vue_shared/components/icon.vue';
 
@@ -8,23 +8,22 @@ export default {
     projectTree,
     icon,
   },
-  data() {
-    return {
-      collapsed: false,
-    };
-  },
   computed: {
     ...mapState([
       'loading',
       'projects',
+      'leftBarCollapsed',
     ]),
     currentIcon() {
-      return this.collapsed ? 'angle-double-right' : 'angle-double-left';
+      return this.leftBarCollapsed ? 'angle-double-right' : 'angle-double-left';
     }, 
   },
   methods: {
+    ...mapActions([
+      'setLeftBarCollapsedStatus',
+    ]),
     toggleCollapsed() {
-      this.collapsed = !this.collapsed;
+      this.setLeftBarCollapsedStatus(!this.leftBarCollapsed);
     },
   },
 };
@@ -34,7 +33,7 @@ export default {
 <div
     class="multi-file-commit-panel"
     :class="{
-      'is-collapsed': collapsed,
+      'is-collapsed': leftBarCollapsed,
     }"
   >
   <div class="multi-file-commit-panel-inner-scroll">
@@ -53,7 +52,7 @@ export default {
       :size="18"
     />
     <span
-      v-if="!collapsed"
+      v-if="!leftBarCollapsed"
       class="collapse-text"
     >Collapse sidebar</span>
   </button>
