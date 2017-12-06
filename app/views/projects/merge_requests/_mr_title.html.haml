@@ -4,22 +4,22 @@
   .alert.alert-danger
     %p The source project of this merge request has been removed.
 
-.clearfix.detail-page-header
-  .issuable-header
+.detail-page-header
+  .detail-page-header-body
     .issuable-status-box.status-box{ class: status_box_class(@merge_request) }
       = icon(@merge_request.state_icon_name, class: "hidden-sm hidden-md hidden-lg")
       %span.hidden-xs
         = @merge_request.state_human_name
-
-    %a.btn.btn-default.pull-right.visible-xs-block.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
-      = icon('angle-double-left')
 
     .issuable-meta
       - if @merge_request.discussion_locked?
         = icon('lock', class: 'issuable-warning-icon')
       = issuable_meta(@merge_request, @project, "Merge request")
 
-  .issuable-actions.js-issuable-actions
+    %a.btn.btn-default.pull-right.visible-xs-block.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
+      = icon('angle-double-left')
+
+  .detail-page-header-actions.js-issuable-actions
     .clearfix.issue-btn-group.dropdown
       %button.btn.btn-default.pull-left.hidden-md.hidden-lg{ type: "button", data: { toggle: "dropdown" } }
         Options
