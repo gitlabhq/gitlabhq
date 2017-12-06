@@ -55,22 +55,11 @@ module Boards
       def without_board_labels(issues)
         return issues unless board_label_ids.any?
 
-<<<<<<< HEAD
-        label_links = LabelLink.where("label_links.target_type = 'Issue' AND label_links.target_id = issues.id")
-                               .where(label_id: board_label_ids)
-
-        if board.milestone.present?
-          label_links = label_links.where("issues.milestone_id = ?", board.milestone_id)
-        end
-
-        issues.where.not(label_links.limit(1).arel.exists)
-=======
         issues.where.not(issues_label_links.limit(1).arel.exists)
       end
 
       def issues_label_links
         LabelLink.where("label_links.target_type = 'Issue' AND label_links.target_id = issues.id").where(label_id: board_label_ids)
->>>>>>> upstream/master
       end
 
       def with_list_label(issues)
