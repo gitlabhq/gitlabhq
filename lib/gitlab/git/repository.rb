@@ -439,9 +439,9 @@ module Gitlab
         gitaly_migrate(:find_commits) do |is_enabled|
           # Gitaly does not support loading changed files summary from `git log` yet.
           if is_enabled && !options[:with_change_summary]
-           gitaly_commit_client.find_commits(options)
+            gitaly_commit_client.find_commits(options)
           else
-           raw_log(options)
+            raw_log(options)
           end
         end
       end
