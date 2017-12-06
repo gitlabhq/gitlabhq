@@ -118,6 +118,7 @@
             flashContainer: this.$el,
             data: {
               note: {
+                // TODO: this should be passed, not a constant
                 noteable_type: constants.NOTEABLE_TYPE,
                 noteable_id: this.getNoteableData.id,
                 note: this.note,
