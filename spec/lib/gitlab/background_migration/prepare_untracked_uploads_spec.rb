@@ -1,9 +1,9 @@
 require 'spec_helper'
 
-describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :sidekiq, schema: 20171103140253 do
+describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :sidekiq do
   include TrackUntrackedUploadsHelpers
 
-  let!(:untracked_files_for_uploads) { table(:untracked_files_for_uploads) }
+  let!(:untracked_files_for_uploads) { described_class::UntrackedFile }
 
   matcher :be_scheduled_migration do |*expected|
     match do |migration|
@@ -35,7 +35,7 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :side
   it 'ensures the untracked_files_for_uploads table exists' do
     expect do
       described_class.new.perform
-    end.to change { table_exists?(:untracked_files_for_uploads) }.from(false).to(true)
+    end.to change { ActiveRecord::Base.connection.table_exists?(:untracked_files_for_uploads) }.from(false).to(true)
   end
 
   it 'has a path field long enough for really long paths' do
@@ -63,7 +63,7 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :side
     end
 
     context 'when files were uploaded before and after hashed storage was enabled' do
-      let!(:appearance) { create(:appearance, logo: uploaded_file, header_logo: uploaded_file) }
+      let!(:appearance) { create_or_update_appearance(logo: uploaded_file, header_logo: uploaded_file) }
       let!(:user) { create(:user, :with_avatar) }
       let!(:project1) { create(:project, :with_avatar) }
       let(:project2) { create(:project) } # instantiate after enabling hashed_storage
@@ -151,7 +151,7 @@ describe Gitlab::BackgroundMigration::PrepareUntrackedUploads, :migration, :side
     end
 
     context 'when files were uploaded before and after hashed storage was enabled' do
-      let!(:appearance) { create(:appearance, logo: uploaded_file, header_logo: uploaded_file) }
+      let!(:appearance) { create_or_update_appearance(logo: uploaded_file, header_logo: uploaded_file) }
       let!(:user) { create(:user, :with_avatar) }
       let!(:project1) { create(:project, :with_avatar) }
       let(:project2) { create(:project) } # instantiate after enabling hashed_storage

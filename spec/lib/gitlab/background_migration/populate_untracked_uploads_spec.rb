@@ -1,13 +1,12 @@
 require 'spec_helper'
-require Rails.root.join('db', 'post_migrate', '20171103140253_track_untracked_uploads')
 
-describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sidekiq, schema: 20171103140253 do
+describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :sidekiq do
   include TrackUntrackedUploadsHelpers
 
   subject { described_class.new }
 
-  let!(:untracked_files_for_uploads) { table(:untracked_files_for_uploads) }
-  let!(:uploads) { table(:uploads) }
+  let!(:untracked_files_for_uploads) { described_class::UntrackedFile }
+  let!(:uploads) { described_class::Upload }
 
   before do
     ensure_temporary_tracking_table_exists
@@ -18,7 +17,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
   end
 
   context 'with untracked files and tracked files in untracked_files_for_uploads' do
-    let!(:appearance) { create(:appearance, logo: uploaded_file, header_logo: uploaded_file) }
+    let!(:appearance) { create_or_update_appearance(logo: uploaded_file, header_logo: uploaded_file) }
     let!(:user1) { create(:user, :with_avatar) }
     let!(:user2) { create(:user, :with_avatar) }
     let!(:project1) { create(:project, :with_avatar) }
@@ -111,13 +110,13 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
     it 'does not drop the temporary tracking table after processing the batch, if there are still untracked rows' do
       subject.perform(1, untracked_files_for_uploads.last.id - 1)
 
-      expect(table_exists?(:untracked_files_for_uploads)).to be_truthy
+      expect(ActiveRecord::Base.connection.table_exists?(:untracked_files_for_uploads)).to be_truthy
     end
 
     it 'drops the temporary tracking table after processing the batch, if there are no untracked rows left' do
       subject.perform(1, untracked_files_for_uploads.last.id)
 
-      expect(table_exists?(:untracked_files_for_uploads)).to be_falsey
+      expect(ActiveRecord::Base.connection.table_exists?(:untracked_files_for_uploads)).to be_falsey
     end
 
     it 'does not block a whole batch because of one bad path' do
@@ -168,13 +167,13 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :migration, :sid
     end
 
     context 'for an appearance logo file path' do
-      let(:model) { create(:appearance, logo: uploaded_file) }
+      let(:model) { create_or_update_appearance(logo: uploaded_file) }
 
       it_behaves_like 'non_markdown_file'
     end
 
     context 'for an appearance header_logo file path' do
-      let(:model) { create(:appearance, header_logo: uploaded_file) }
+      let(:model) { create_or_update_appearance(header_logo: uploaded_file) }
 
       it_behaves_like 'non_markdown_file'
     end
@@ -459,7 +458,7 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads::UntrackedFile do
 
   describe '#file_size' do
     context 'for an appearance logo file path' do
-      let(:appearance) { create(:appearance, logo: uploaded_file) }
+      let(:appearance) { create_or_update_appearance(logo: uploaded_file) }
       let(:untracked_file) { described_class.create!(path: appearance.uploads.first.path) }
 
       it 'returns the file size' do

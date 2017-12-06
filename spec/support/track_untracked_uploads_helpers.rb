@@ -11,4 +11,10 @@ module TrackUntrackedUploadsHelpers
   def drop_temp_table_if_exists
     ActiveRecord::Base.connection.drop_table(:untracked_files_for_uploads) if ActiveRecord::Base.connection.table_exists?(:untracked_files_for_uploads)
   end
+
+  def create_or_update_appearance(attrs)
+    a = Appearance.first_or_initialize(title: 'foo', description: 'bar')
+    a.update!(attrs)
+    a
+  end
 end
