@@ -5,13 +5,10 @@ FactoryGirl.define do
     job factory: :ci_build
     file_type :archive
 
-<<<<<<< HEAD
     trait :remote_store do
       file_store JobArtifactUploader::REMOTE_STORE
     end
 
-=======
->>>>>>> upstream/master
     after :build do |artifact|
       artifact.project ||= artifact.job.project
     end
