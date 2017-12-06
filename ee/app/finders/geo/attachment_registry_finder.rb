@@ -1,5 +1,17 @@
 module Geo
   class AttachmentRegistryFinder < RegistryFinder
+    def count_attachments
+      uploads.count
+    end
+
+    def count_synced_attachments
+      find_synced_attachments.count
+    end
+
+    def count_failed_attachments
+      find_failed_attachments.count
+    end
+
     def find_synced_attachments
       relation =
         if use_legacy_queries?

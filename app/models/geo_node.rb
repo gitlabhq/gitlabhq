@@ -120,17 +120,6 @@ class GeoNode < ActiveRecord::Base
     end
   end
 
-  def lfs_objects
-    relation =
-      if selective_sync?
-        LfsObject.joins(:projects).where(projects: { id: projects })
-      else
-        LfsObject.all
-      end
-
-    relation.with_files_stored_locally
-  end
-
   def projects
     if selective_sync?
       Project.where(namespace_id: Gitlab::GroupHierarchy.new(namespaces).base_and_descendants.select(:id))

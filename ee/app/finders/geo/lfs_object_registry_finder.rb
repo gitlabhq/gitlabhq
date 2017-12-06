@@ -1,5 +1,9 @@
 module Geo
   class LfsObjectRegistryFinder < RegistryFinder
+    def count_lfs_objects
+      lfs_objects.count
+    end
+
     def count_synced_lfs_objects
       relation =
         if selective_sync?
@@ -20,6 +24,17 @@ module Geo
         end
 
       relation.count
+    end
+
+    def lfs_objects
+      relation =
+        if selective_sync?
+          LfsObject.joins(:projects).where(projects: { id: current_node.projects })
+        else
+          LfsObject.all
+        end
+
+      relation.with_files_stored_locally
     end
 
     private

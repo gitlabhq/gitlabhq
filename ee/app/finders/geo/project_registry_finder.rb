@@ -1,5 +1,9 @@
 module Geo
   class ProjectRegistryFinder < RegistryFinder
+    def count_projects
+      current_node.projects.count
+    end
+
     def count_synced_project_registries
       relation =
         if selective_sync?

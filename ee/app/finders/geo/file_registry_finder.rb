@@ -95,7 +95,7 @@ module Geo
       registry_ids = legacy_pluck_registry_ids(file_types: :lfs, except_registry_ids: except_registry_ids)
 
       legacy_filter_registry_ids(
-        current_node.lfs_objects,
+        lfs_objects_finder.lfs_objects,
         registry_ids,
         LfsObject.table_name
       )
@@ -135,6 +135,10 @@ module Geo
 
     def attachments_finder
       @attachments_finder ||= AttachmentRegistryFinder.new(current_node: current_node)
+    end
+
+    def lfs_objects_finder
+      @lfs_objects_finder ||= LfsObjectRegistryFinder.new(current_node: current_node)
     end
   end
 end

@@ -63,9 +63,9 @@ class GeoNodeStatus < ActiveRecord::Base
     latest_event = Geo::EventLog.latest_event
     self.last_event_id = latest_event&.id
     self.last_event_date = latest_event&.created_at
-    self.repositories_count = geo_node.projects.count
-    self.lfs_objects_count = geo_node.lfs_objects.count
-    self.attachments_count = attachments_finder.uploads.count
+    self.repositories_count = projects_finder.count_projects
+    self.lfs_objects_count = lfs_objects_finder.count_lfs_objects
+    self.attachments_count = attachments_finder.count_attachments
     self.last_successful_status_check_at = Time.now
 
     if Gitlab::Geo.secondary?
@@ -76,8 +76,8 @@ class GeoNodeStatus < ActiveRecord::Base
       self.repositories_failed_count = projects_finder.count_failed_project_registries
       self.lfs_objects_synced_count = lfs_objects_finder.count_synced_lfs_objects
       self.lfs_objects_failed_count = lfs_objects_finder.count_failed_lfs_objects
-      self.attachments_synced_count = attachments_finder.find_synced_attachments.count
-      self.attachments_failed_count = attachments_finder.find_failed_attachments.count
+      self.attachments_synced_count = attachments_finder.count_synced_attachments
+      self.attachments_failed_count = attachments_finder.count_failed_attachments
     end
 
     self
