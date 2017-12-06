@@ -35,8 +35,24 @@ feature 'Clusters', :js do
       expect(page).to have_selector('.gl-responsive-table-row', count: 2)
     end
 
-    it 'user sees a disabled add cluster button ' do
-      expect(page).to have_selector('.js-add-cluster.disabled')
+    context 'when license has multiple clusters feature' do
+      before do
+        allow_any_instance_of(EE::Project).to receive(:feature_available?).with(:multiple_clusters).and_return(true)
+      end
+
+      it 'user sees a add cluster button ' do
+        expect(page).to have_selector('.js-add-cluster')
+      end
+    end
+
+    context 'when license does not have multiple clusters feature' do
+      before do
+        allow_any_instance_of(EE::Project).to receive(:feature_available?).with(:multiple_clusters).and_return(false)
+      end
+
+      it 'user sees a disabled add cluster button ' do
+        expect(page).to have_selector('.js-add-cluster.disabled')
+      end
     end
 
     it 'user sees navigation tabs' do
