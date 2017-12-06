@@ -8,7 +8,6 @@ export default class TaskList {
     this.fieldName = options.fieldName;
     this.onSuccess = options.onSuccess || (() => {});
     this.onError = function showFlash(response) {
-      console.log('onERROR', response);
       let errorMessages = '';
 
       if (response.responseJSON) {
