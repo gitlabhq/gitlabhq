@@ -29,14 +29,25 @@
               .node-badge.current-node Current node
             - if node.primary?
               .node-badge.primary-node Primary
-              %span.help-block Primary node
+              %p
+                %span.help-block Primary node
+              %p
+                %span.help-block
+                  Gitlab version:
+                  %strong.node-info= Gitlab::VERSION
             - else
               = status_loading_icon
               %table.geo-node-status.js-geo-node-status.hidden
+                %tr
+                  %td
+                    .help-block
+                      GitLab Version:
+                  %td
+                    .node-info.prepend-top-10.prepend-left-5.js-gitlab-version
                 - if node.enabled?
                   %tr
                     %td
-                      .help-block
+                      .help-block.prepend-top-10
                         Health Status:
                     %td
                       .health-status.prepend-top-10.prepend-left-5.js-health-status

@@ -29,6 +29,7 @@ class GeoNodeStatus {
     this.$lastEventSeen = $('.js-last-event-seen', this.$status);
     this.$lastCursorEvent = $('.js-last-cursor-event', this.$status);
     this.$health = $('.js-health-message', this.$status.parent());
+    this.$version = $('.js-gitlab-version', this.$status);
     this.endpoint = this.$el.data('status-url');
     this.$advancedStatus = $('.js-advanced-geo-node-status-toggler', this.$status.parent());
     this.$advancedStatus.on('click', GeoNodeStatus.toggleShowAdvancedStatus.bind(this));
@@ -182,6 +183,7 @@ class GeoNodeStatus {
       healthStatus: status.health_status,
       healthMessage: status.health,
     });
+    this.$version.text(status.version);
 
       // Replication lag can be nil if the secondary isn't actually streaming
     if (status.db_replication_lag_seconds !== null && status.db_replication_lag_seconds >= 0) {
