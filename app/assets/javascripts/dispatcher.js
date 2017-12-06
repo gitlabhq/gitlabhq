@@ -31,12 +31,9 @@ import projectImport from './project_import';
 import Labels from './labels';
 import LabelManager from './label_manager';
 /* global Sidebar */
-<<<<<<< HEAD
 /* global WeightSelect */
 /* global AdminEmailSelect */
 
-=======
->>>>>>> upstream/master
 import IssuableTemplateSelectors from './templates/issuable_template_selectors';
 import Flash from './flash';
 import CommitsList from './commits';
@@ -297,10 +294,7 @@ import initGroupAnalytics from './init_group_analytics';
           new IssuableForm($('.issue-form'));
           new LabelsSelect();
           new MilestoneSelect();
-<<<<<<< HEAD
           new WeightSelect();
-=======
->>>>>>> upstream/master
           new IssuableTemplateSelectors();
           break;
         case 'projects:merge_requests:creations:new':
