@@ -325,12 +325,12 @@ describe Projects::MergeRequestsController do
       end
 
       context 'when the pipeline succeeds is passed' do
-        def merge_when_pipeline_succeeds
-          post :merge, base_params.merge(sha: merge_request.diff_head_sha, merge_when_pipeline_succeeds: '1')
+        let!(:head_pipeline) do
+          create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch, head_pipeline_of: merge_request)
         end
 
-        before do
-          create(:ci_empty_pipeline, project: project, sha: merge_request.diff_head_sha, ref: merge_request.source_branch, head_pipeline_of: merge_request)
+        def merge_when_pipeline_succeeds
+          post :merge, base_params.merge(sha: merge_request.diff_head_sha, merge_when_pipeline_succeeds: '1')
         end
 
         it 'returns :merge_when_pipeline_succeeds' do
@@ -353,6 +353,18 @@ describe Projects::MergeRequestsController do
         context 'when project.only_allow_merge_if_pipeline_succeeds? is true' do
           before do
             project.update_column(:only_allow_merge_if_pipeline_succeeds, true)
+          end
+
+          context 'and head pipeline is not the current one' do
+            before do
+              head_pipeline.update(sha: 'not_current_sha')
+            end
+
+            it 'returns :failed' do
+              merge_when_pipeline_succeeds
+
+              expect(json_response).to eq('status' => 'failed')
+            end
           end
 
           it 'returns :merge_when_pipeline_succeeds' do

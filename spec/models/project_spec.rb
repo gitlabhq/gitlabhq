@@ -79,7 +79,7 @@ describe Project do
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
     it { is_expected.to have_many(:pipeline_schedules) }
     it { is_expected.to have_many(:members_and_requesters) }
-    it { is_expected.to have_one(:cluster) }
+    it { is_expected.to have_many(:clusters) }
     it { is_expected.to have_many(:custom_attributes).class_name('ProjectCustomAttribute') }
 
     context 'after initialized' do
@@ -489,6 +489,7 @@ describe Project do
     end
   end
 
+<<<<<<< HEAD
   describe "#kerberos_url_to_repo" do
     let(:project) { create(:project, path: "somewhere") }
 
@@ -498,6 +499,9 @@ describe Project do
   end
 
   describe "#new_issue_address" do
+=======
+  describe "#new_issuable_address" do
+>>>>>>> upstream/master
     let(:project) { create(:project, path: "somewhere") }
     let(:user) { create(:user) }
 
@@ -509,7 +513,13 @@ describe Project do
       it 'returns the address to create a new issue' do
         address = "p+#{project.full_path}+#{user.incoming_email_token}@gl.ab"
 
-        expect(project.new_issue_address(user)).to eq(address)
+        expect(project.new_issuable_address(user, 'issue')).to eq(address)
+      end
+
+      it 'returns the address to create a new merge request' do
+        address = "p+#{project.full_path}+merge-request+#{user.incoming_email_token}@gl.ab"
+
+        expect(project.new_issuable_address(user, 'merge_request')).to eq(address)
       end
     end
 
@@ -519,7 +529,11 @@ describe Project do
       end
 
       it 'returns nil' do
-        expect(project.new_issue_address(user)).to be_nil
+        expect(project.new_issuable_address(user, 'issue')).to be_nil
+      end
+
+      it 'returns nil' do
+        expect(project.new_issuable_address(user, 'merge_request')).to be_nil
       end
     end
   end

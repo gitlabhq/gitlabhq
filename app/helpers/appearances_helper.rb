@@ -1,6 +1,10 @@
 module AppearancesHelper
   def brand_title
+<<<<<<< HEAD
     brand_item&.title.presence || 'GitLab Enterprise Edition'
+=======
+    brand_item&.title.presence || 'GitLab Community Edition'
+>>>>>>> upstream/master
   end
 
   def brand_image

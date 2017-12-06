@@ -55,6 +55,10 @@ module Clusters
       end
     end
 
+    def created?
+      status_name == :created
+    end
+
     def applications
       [
         application_helm || build_application_helm,

@@ -5,6 +5,8 @@ module Clusters
     def execute(access_token = nil)
       @access_token = access_token
 
+      raise ArgumentError.new('Instance does not support multiple clusters') unless can_create_cluster?
+
       create_cluster.tap do |cluster|
         ClusterProvisionWorker.perform_async(cluster.id) if cluster.persisted?
       end
@@ -24,6 +26,10 @@ module Clusters
       end
 
       @cluster_params = params.merge(user: current_user, projects: [project])
+    end
+
+    def can_create_cluster?
+      project.clusters.empty?
     end
   end
 end

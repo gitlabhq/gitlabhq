@@ -57,7 +57,12 @@ describe MigrateGcpClustersToNewClustersArchitectures, :migration do
       expect(cluster.provider_type).to eq('gcp')
       expect(cluster.platform_type).to eq('kubernetes')
 
+<<<<<<< HEAD
       expect(cluster.project_ids).to include(project.id)
+=======
+      expect(cluster.project).to eq(project)
+      expect(project.clusters).to include(cluster)
+>>>>>>> upstream/master
 
       expect(cluster.provider_gcp.cluster).to eq(cluster)
       expect(cluster.provider_gcp.status).to eq(status)
@@ -133,7 +138,12 @@ describe MigrateGcpClustersToNewClustersArchitectures, :migration do
       expect(cluster.provider_type).to eq('gcp')
       expect(cluster.platform_type).to eq('kubernetes')
 
+<<<<<<< HEAD
       expect(cluster.project_ids).to include(project.id)
+=======
+      expect(cluster.project).to eq(project)
+      expect(project.clusters).to include(cluster)
+>>>>>>> upstream/master
 
       expect(cluster.provider_gcp.cluster).to eq(cluster)
       expect(cluster.provider_gcp.status).to eq(status)

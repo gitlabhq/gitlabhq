@@ -1,8 +1,12 @@
 require 'rails_helper'
 
 describe LegacyArtifactUploader do
+<<<<<<< HEAD
   let(:store) { described_class::LOCAL_STORE }
   let(:job) { create(:ci_build, artifacts_file_store: store) }
+=======
+  let(:job) { create(:ci_build) }
+>>>>>>> upstream/master
   let(:uploader) { described_class.new(job, :legacy_artifacts_file) }
   let(:local_path) { Gitlab.config.artifacts.path }
 
@@ -32,6 +36,7 @@ describe LegacyArtifactUploader do
       it { is_expected.to start_with(local_path) }
       it { is_expected.to end_with(path) }
     end
+<<<<<<< HEAD
 
     context 'when using remote storage' do
       let(:store) { described_class::REMOTE_STORE }
@@ -42,6 +47,8 @@ describe LegacyArtifactUploader do
 
       it { is_expected.to eq(path) }
     end
+=======
+>>>>>>> upstream/master
   end
 
   describe '#cache_dir' do

@@ -8,6 +8,7 @@ describe Gitlab::SidekiqConfig do
       expect(workers).to include(PostReceive)
       expect(workers).to include(MergeWorker)
     end
+<<<<<<< HEAD
 
     it 'includes EE workers' do
       workers = described_class.workers
@@ -15,6 +16,8 @@ describe Gitlab::SidekiqConfig do
       expect(workers).to include(RepositoryUpdateMirrorWorker)
       expect(workers).to include(LdapGroupSyncWorker)
     end
+=======
+>>>>>>> upstream/master
   end
 
   describe '.worker_queues' do
@@ -27,6 +30,7 @@ describe Gitlab::SidekiqConfig do
       expect(queues).to include('mailers')
       expect(queues).to include('default')
     end
+<<<<<<< HEAD
 
     it 'includes EE queues' do
       queues = described_class.worker_queues
@@ -34,5 +38,7 @@ describe Gitlab::SidekiqConfig do
       expect(queues).to include('repository_update_mirror')
       expect(queues).to include('ldap_group_sync')
     end
+=======
+>>>>>>> upstream/master
   end
 end

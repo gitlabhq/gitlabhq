@@ -80,6 +80,20 @@ describe MergeRequests::RefreshService do
       end
     end
 
+    context 'when pipeline exists for the source branch' do
+      let!(:pipeline) { create(:ci_empty_pipeline, ref: @merge_request.source_branch, project: @project, sha: @commits.first.sha)}
+
+      subject { service.new(@project, @user).execute(@oldrev, @newrev, 'refs/heads/master') }
+
+      it 'updates the head_pipeline_id for @merge_request' do
+        expect { subject }.to change { @merge_request.reload.head_pipeline_id }.from(nil).to(pipeline.id)
+      end
+
+      it 'does not update the head_pipeline_id for @fork_merge_request' do
+        expect { subject }.not_to change { @fork_merge_request.reload.head_pipeline_id }
+      end
+    end
+
     context 'push to origin repo source branch when an MR was reopened' do
       let(:refresh_service) { service.new(@project, @user) }
 

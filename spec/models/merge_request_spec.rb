@@ -1036,20 +1036,47 @@ describe MergeRequest do
     end
   end
 
-  describe '#head_pipeline' do
-    describe 'when the source project exists' do
-      it 'returns the latest pipeline' do
-        pipeline = create(:ci_empty_pipeline, project: subject.source_project, ref: 'master', status: 'running', sha: "123abc", head_pipeline_of: subject)
+  context 'head pipeline' do
+    before do
+      allow(subject).to receive(:diff_head_sha).and_return('lastsha')
+    end
 
-        expect(subject.head_pipeline).to eq(pipeline)
+    describe '#head_pipeline' do
+      it 'returns nil for MR without head_pipeline_id' do
+        subject.update_attribute(:head_pipeline_id, nil)
+
+        expect(subject.head_pipeline).to be_nil
+      end
+
+      context 'when the source project does not exist' do
+        it 'returns nil' do
+          allow(subject).to receive(:source_project).and_return(nil)
+
+          expect(subject.head_pipeline).to be_nil
+        end
       end
     end
 
-    describe 'when the source project does not exist' do
-      it 'returns nil' do
+    describe '#actual_head_pipeline' do
+      it 'returns nil for MR with old pipeline' do
+        pipeline = create(:ci_empty_pipeline, sha: 'notlatestsha')
+        subject.update_attribute(:head_pipeline_id, pipeline.id)
+
+        expect(subject.actual_head_pipeline).to be_nil
+      end
+
+      it 'returns the pipeline for MR with recent pipeline' do
+        pipeline = create(:ci_empty_pipeline, sha: 'lastsha')
+        subject.update_attribute(:head_pipeline_id, pipeline.id)
+
+        expect(subject.actual_head_pipeline).to eq(subject.head_pipeline)
+        expect(subject.actual_head_pipeline).to eq(pipeline)
+      end
+
+      it 'returns nil when source project does not exist' do
         allow(subject).to receive(:source_project).and_return(nil)
 
-        expect(subject.head_pipeline).to be_nil
+        expect(subject.actual_head_pipeline).to be_nil
       end
     end
   end
@@ -1408,7 +1435,7 @@ describe MergeRequest do
     context 'when it is only allowed to merge when build is green' do
       context 'and a failed pipeline is associated' do
         before do
-          pipeline.update(status: 'failed')
+          pipeline.update(status: 'failed', sha: subject.diff_head_sha)
           allow(subject).to receive(:head_pipeline) { pipeline }
         end
 
@@ -1417,7 +1444,7 @@ describe MergeRequest do
 
       context 'and a successful pipeline is associated' do
         before do
-          pipeline.update(status: 'success')
+          pipeline.update(status: 'success', sha: subject.diff_head_sha)
           allow(subject).to receive(:head_pipeline) { pipeline }
         end
 
@@ -1426,7 +1453,7 @@ describe MergeRequest do
 
       context 'and a skipped pipeline is associated' do
         before do
-          pipeline.update(status: 'skipped')
+          pipeline.update(status: 'skipped', sha: subject.diff_head_sha)
           allow(subject).to receive(:head_pipeline) { pipeline }
         end
 

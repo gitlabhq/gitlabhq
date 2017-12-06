@@ -15,14 +15,72 @@ describe Projects::ClustersController do
         sign_in(user)
       end
 
-      context 'when project has a cluster' do
-        let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+      context 'when project has one or more clusters' do
+        let(:project) { create(:project) }
+        let!(:enabled_cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+        let!(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, projects: [project]) }
+        it 'lists available clusters' do
+          go
 
-        it { expect(go).to redirect_to(project_cluster_path(project, project.cluster)) }
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template(:index)
+          expect(assigns(:clusters)).to match_array([enabled_cluster, disabled_cluster])
+        end
+
+        it 'assigns counters to correct values' do
+          go
+
+          expect(assigns(:active_count)).to eq(1)
+          expect(assigns(:inactive_count)).to eq(1)
+        end
+
+        context 'when page is specified' do
+          let(:last_page) { project.clusters.page.total_pages }
+
+          before do
+            allow(Clusters::Cluster).to receive(:paginates_per).and_return(1)
+            create_list(:cluster, 2, :provided_by_gcp, projects: [project])
+            get :index, namespace_id: project.namespace, project_id: project, page: last_page
+          end
+
+          it 'redirects to the page' do
+            expect(response).to have_gitlab_http_status(:ok)
+            expect(assigns(:clusters).current_page).to eq(last_page)
+          end
+        end
+
+        context 'when only enabled clusters are requested' do
+          it 'returns only enabled clusters' do
+            get :index, namespace_id: project.namespace, project_id: project, scope: 'active'
+            expect(assigns(:clusters)).to all(have_attributes(enabled: true))
+          end
+        end
+
+        context 'when only disabled clusters are requested' do
+          it 'returns only disabled clusters' do
+            get :index, namespace_id: project.namespace, project_id: project, scope: 'inactive'
+            expect(assigns(:clusters)).to all(have_attributes(enabled: false))
+          end
+        end
       end
 
       context 'when project does not have a cluster' do
-        it { expect(go).to redirect_to(new_project_cluster_path(project)) }
+        let(:project) { create(:project) }
+
+        it 'returns an empty state page' do
+          go
+
+          expect(response).to have_gitlab_http_status(:ok)
+          expect(response).to render_template(:index, partial: :empty_state)
+          expect(assigns(:clusters)).to eq([])
+        end
+
+        it 'assigns counters to zero' do
+          go
+
+          expect(assigns(:active_count)).to eq(0)
+          expect(assigns(:inactive_count)).to eq(0)
+        end
       end
     end
 
@@ -146,7 +204,7 @@ describe Projects::ClustersController do
           go
 
           cluster.reload
-          expect(response).to redirect_to(project_cluster_path(project, project.cluster))
+          expect(response).to redirect_to(project_cluster_path(project, cluster))
           expect(flash[:notice]).to eq('Cluster was successfully updated.')
           expect(cluster.enabled).to be_falsey
         end
@@ -180,28 +238,77 @@ describe Projects::ClustersController do
         sign_in(user)
       end
 
-      context 'when changing parameters' do
-        let(:params) do
-          {
-            cluster: {
-              enabled: false,
-              name: 'my-new-cluster-name',
-              platform_kubernetes_attributes: {
-                namespace: 'my-namespace'
+      context 'when format is json' do
+        context 'when changing parameters' do
+          context 'when valid parameters are used' do
+            let(:params) do
+              {
+                cluster: {
+                  enabled: false,
+                  name: 'my-new-cluster-name',
+                  platform_kubernetes_attributes: {
+                    namespace: 'my-namespace'
+                  }
+                }
+              }
+            end
+
+            it "updates and redirects back to show page" do
+              go_json
+
+              cluster.reload
+              expect(response).to have_http_status(:no_content)
+              expect(cluster.enabled).to be_falsey
+              expect(cluster.name).to eq('my-new-cluster-name')
+              expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
+            end
+          end
+
+          context 'when invalid parameters are used' do
+            let(:params) do
+              {
+                cluster: {
+                  enabled: false,
+                  platform_kubernetes_attributes: {
+                    namespace: 'my invalid namespace #@'
+                  }
+                }
+              }
+            end
+
+            it "rejects changes" do
+              go_json
+
+              expect(response).to have_http_status(:bad_request)
+            end
+          end
+        end
+      end
+
+      context 'when format is html' do
+        context 'when update enabled' do
+          let(:params) do
+            {
+              cluster: {
+                enabled: false,
+                name: 'my-new-cluster-name',
+                platform_kubernetes_attributes: {
+                  namespace: 'my-namespace'
+                }
               }
             }
-          }
-        end
+          end
 
-        it "updates and redirects back to show page" do
-          go
+          it "updates and redirects back to show page" do
+            go
 
-          cluster.reload
-          expect(response).to redirect_to(project_cluster_path(project, project.cluster))
-          expect(flash[:notice]).to eq('Cluster was successfully updated.')
-          expect(cluster.enabled).to be_falsey
-          expect(cluster.name).to eq('my-new-cluster-name')
-          expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
+            cluster.reload
+            expect(response).to redirect_to(project_cluster_path(project, cluster))
+            expect(flash[:notice]).to eq('Cluster was successfully updated.')
+            expect(cluster.enabled).to be_falsey
+            expect(cluster.name).to eq('my-new-cluster-name')
+            expect(cluster.platform_kubernetes.namespace).to eq('my-namespace')
+          end
         end
       end
     end
@@ -227,6 +334,13 @@ describe Projects::ClustersController do
       put :update, params.merge(namespace_id: project.namespace,
                                 project_id: project,
                                 id: cluster)
+    end
+
+    def go_json
+      put :update, params.merge(namespace_id: project.namespace,
+                                project_id: project,
+                                id: cluster,
+                                format: :json)
     end
   end
 

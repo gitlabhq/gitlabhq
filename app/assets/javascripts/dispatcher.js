@@ -31,9 +31,12 @@ import projectImport from './project_import';
 import Labels from './labels';
 import LabelManager from './label_manager';
 /* global Sidebar */
+<<<<<<< HEAD
 /* global WeightSelect */
 /* global AdminEmailSelect */
 
+=======
+>>>>>>> upstream/master
 import IssuableTemplateSelectors from './templates/issuable_template_selectors';
 import Flash from './flash';
 import CommitsList from './commits';
@@ -294,7 +297,10 @@ import initGroupAnalytics from './init_group_analytics';
           new IssuableForm($('.issue-form'));
           new LabelsSelect();
           new MilestoneSelect();
+<<<<<<< HEAD
           new WeightSelect();
+=======
+>>>>>>> upstream/master
           new IssuableTemplateSelectors();
           break;
         case 'projects:merge_requests:creations:new':
@@ -330,18 +336,21 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'projects:snippets:show':
           initNotes();
+          new ZenMode();
           break;
         case 'projects:snippets:new':
         case 'projects:snippets:edit':
         case 'projects:snippets:create':
         case 'projects:snippets:update':
           new GLForm($('.snippet-form'), true);
+          new ZenMode();
           break;
         case 'snippets:new':
         case 'snippets:edit':
         case 'snippets:create':
         case 'snippets:update':
           new GLForm($('.snippet-form'), false);
+          new ZenMode();
           break;
         case 'projects:releases:edit':
           new ZenMode();
@@ -609,6 +618,7 @@ import initGroupAnalytics from './init_group_analytics';
           new LineHighlighter();
           new BlobViewer();
           initNotes();
+          new ZenMode();
           break;
         case 'import:fogbugz:new_user_map':
           new UsersSelect();
@@ -621,7 +631,15 @@ import initGroupAnalytics from './init_group_analytics';
           import(/* webpackChunkName: "clusters" */ './clusters/clusters_bundle')
             .then(cluster => new cluster.default()) // eslint-disable-line new-cap
             .catch((err) => {
-              Flash(s__('ClusterIntegration|Problem setting up the cluster JavaScript'));
+              Flash(s__('ClusterIntegration|Problem setting up the cluster'));
+              throw err;
+            });
+          break;
+        case 'projects:clusters:index':
+          import(/* webpackChunkName: "clusters_index" */ './clusters/clusters_index')
+            .then(clusterIndex => clusterIndex.default())
+            .catch((err) => {
+              Flash(s__('ClusterIntegration|Problem setting up the clusters list'));
               throw err;
             });
           break;

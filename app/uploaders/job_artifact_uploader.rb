@@ -1,5 +1,10 @@
+<<<<<<< HEAD
 class JobArtifactUploader < ObjectStoreUploader
   storage_options Gitlab.config.artifacts
+=======
+class JobArtifactUploader < GitlabUploader
+  storage :file
+>>>>>>> upstream/master
 
   def self.local_store_path
     Gitlab.config.artifacts.path
@@ -15,8 +20,29 @@ class JobArtifactUploader < ObjectStoreUploader
     model.size
   end
 
+<<<<<<< HEAD
   private
 
+=======
+  def store_dir
+    default_local_path
+  end
+
+  def cache_dir
+    File.join(self.class.local_store_path, 'tmp/cache')
+  end
+
+  def work_dir
+    File.join(self.class.local_store_path, 'tmp/work')
+  end
+
+  private
+
+  def default_local_path
+    File.join(self.class.local_store_path, default_path)
+  end
+
+>>>>>>> upstream/master
   def default_path
     creation_date = model.created_at.utc.strftime('%Y_%m_%d')
 
