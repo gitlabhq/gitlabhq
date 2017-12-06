@@ -2,6 +2,7 @@
 import axios from '~/lib/utils/axios_utils';
 import * as commonUtils from '~/lib/utils/common_utils';
 import MockAdapter from 'axios-mock-adapter';
+import { faviconDataUrl, overlayDataUrl, faviconWithOverlayDataUrl } from './mock_data';
 
 describe('common_utils', () => {
   describe('parseUrl', () => {
@@ -430,6 +431,35 @@ describe('common_utils', () => {
     });
   });
 
+  describe('createOverlayIcon', () => {
+    it('should return the favicon with the overlay', (done) => {
+      commonUtils.createOverlayIcon(faviconDataUrl, overlayDataUrl).then((url) => {
+        expect(url).toEqual(faviconWithOverlayDataUrl);
+        done();
+      });
+    });
+  });
+
+  describe('setFaviconOverlay', () => {
+    beforeEach(() => {
+      const favicon = document.createElement('link');
+      favicon.setAttribute('id', 'favicon');
+      favicon.setAttribute('data-original-href', faviconDataUrl);
+      document.body.appendChild(favicon);
+    });
+
+    afterEach(() => {
+      document.body.removeChild(document.getElementById('favicon'));
+    });
+
+    it('should set page favicon to provided favicon overlay', (done) => {
+      commonUtils.setFaviconOverlay(overlayDataUrl).then(() => {
+        expect(document.getElementById('favicon').getAttribute('href')).toEqual(faviconWithOverlayDataUrl);
+        done();
+      });
+    });
+  });
+
   describe('setCiStatusFavicon', () => {
     const BUILD_URL = `${gl.TEST_HOST}/frontend-fixtures/builds-project/-/jobs/1/status.json`;
     let mock;
@@ -463,16 +493,14 @@ describe('common_utils', () => {
     });
 
     it('should set page favicon to CI status favicon based on provided status', (done) => {
-      const FAVICON_PATH = '//icon_status_success';
-
       mock.onGet(BUILD_URL).reply(200, {
-        favicon: FAVICON_PATH,
+        favicon: overlayDataUrl,
       });
 
       commonUtils.setCiStatusFavicon(BUILD_URL)
         .then(() => {
           const favicon = document.getElementById('favicon');
-          expect(favicon.getAttribute('href')).toEqual(FAVICON_PATH);
+          expect(favicon.getAttribute('href')).toEqual(faviconWithOverlayDataUrl);
           done();
         })
         .catch(done.fail);

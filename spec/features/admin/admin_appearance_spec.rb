@@ -76,38 +76,19 @@ feature 'Admin Appearance' do
     expect(page).not_to have_css(header_logo_selector)
   end
 
-  scenario 'Favicon' do
+  scenario 'Favicon', :js do
     sign_in(create(:admin))
     visit admin_appearances_path
 
     attach_file(:appearance_favicon, logo_fixture)
     click_button 'Save'
 
-    expect(page).to have_css('//img[data-src$="/default_dk.ico"]')
-    expect(page).to have_css('//img[data-src$="/status_canceled_dk.ico"]')
-    expect(page).to have_css('//img[data-src$="/status_created_dk.ico"]')
-    expect(page).to have_css('//img[data-src$="/status_failed_dk.ico"]')
-    expect(page).to have_css('//img[data-src$="/status_manual_dk.ico"]')
-    expect(page).to have_css('//img[data-src$="/status_not_found_dk.ico"]')
-    expect(page).to have_css('//img[data-src$="/status_pending_dk.ico"]')
-    expect(page).to have_css('//img[data-src$="/status_running_dk.ico"]')
-    expect(page).to have_css('//img[data-src$="/status_skipped_dk.ico"]')
-    expect(page).to have_css('//img[data-src$="/status_success_dk.ico"]')
-    expect(page).to have_css('//img[data-src$="/status_warning_dk.ico"]')
+    # 11 = 1 original + 10 overlay variations
+    expect(page).to have_css('.appearance-light-logo-preview', count: 11)
 
     click_link 'Remove favicon'
 
-    expect(page).not_to have_css('//img[data-src$="/default_dk.ico"]')
-    expect(page).not_to have_css('//img[data-src$="/status_canceled_dk.ico"]')
-    expect(page).not_to have_css('//img[data-src$="/status_created_dk.ico"]')
-    expect(page).not_to have_css('//img[data-src$="/status_failed_dk.ico"]')
-    expect(page).not_to have_css('//img[data-src$="/status_manual_dk.ico"]')
-    expect(page).not_to have_css('//img[data-src$="/status_not_found_dk.ico"]')
-    expect(page).not_to have_css('//img[data-src$="/status_pending_dk.ico"]')
-    expect(page).not_to have_css('//img[data-src$="/status_running_dk.ico"]')
-    expect(page).not_to have_css('//img[data-src$="/status_skipped_dk.ico"]')
-    expect(page).not_to have_css('//img[data-src$="/status_success_dk.ico"]')
-    expect(page).not_to have_css('//img[data-src$="/status_warning_dk.ico"]')
+    expect(page).not_to have_css('.appearance-light-logo-preview')
 
     # allowed file types
     attach_file(:appearance_favicon, Rails.root.join('spec', 'fixtures', 'sanitized.svg'))

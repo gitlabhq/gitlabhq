@@ -7,7 +7,7 @@ class StatusEntity < Grape::Entity
   expose :details_path
 
   expose :favicon do |status|
-    Gitlab::Favicon.status(status.favicon)
+    Gitlab::Favicon.status_overlay(status.favicon)
   end
 
   expose :action, if: -> (status, _) { status.has_action? } do

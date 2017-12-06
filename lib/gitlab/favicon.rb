@@ -9,18 +9,27 @@ module Gitlab
         'favicon.ico'
       end
 
-      def status(status_name)
-        if appearance_favicon.exists?
-          custom_favicon_url(appearance_favicon.public_send("#{status_name}").url) # rubocop:disable GitlabSecurity/PublicSend
-        else
-          path = File.join(
-            'ci_favicons',
-            Rails.env.development? ? 'dev' : '',
-            Gitlab::Utils.to_boolean(ENV['CANARY']) ? 'canary' : '',
-            "#{status_name}.ico"
-          )
+      def status_overlay(status_name)
+        path = File.join(
+          'ci_favicons',
+          'overlays',
+          "#{status_name}.png"
+        )
 
-          ActionController::Base.helpers.image_path(path)
+        ActionController::Base.helpers.image_path(path)
+      end
+
+      def available_status_overlays
+        available_status_names.map do |status_name|
+          status_overlay(status_name)
+        end
+      end
+
+      def available_status_names
+        @available_status_names ||= begin
+          Dir.glob(Rails.root.join('app', 'assets', 'images', 'ci_favicons', 'overlays', "*.png"))
+            .map { |file| File.basename(file, '.png') }
+            .sort
         end
       end
 
