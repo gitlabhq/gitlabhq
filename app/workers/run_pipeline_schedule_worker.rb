@@ -5,8 +5,10 @@ class RunPipelineScheduleWorker
   enqueue_in group: :creation
 
   def perform(schedule_id, user_id)
-    schedule = Ci::PipelineSchedule.find(schedule_id)
-    user = User.find(user_id)
+    schedule = Ci::PipelineSchedule.find_by(id: schedule_id)
+    user = User.find_by(id: user_id)
+
+    return unless schedule && user
 
     run_pipeline_schedule(schedule, user)
   end

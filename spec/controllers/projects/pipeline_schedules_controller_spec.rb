@@ -364,7 +364,7 @@ describe Projects::PipelineSchedulesController do
     end
   end
 
-  describe 'POST #run' do
+  describe 'POST #play' do
     set(:user) { create(:user) }
 
     context 'when a developer makes the request' do
@@ -384,7 +384,7 @@ describe Projects::PipelineSchedulesController do
     end
 
     def go
-      post :run, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+      post :play, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
     end
   end
 

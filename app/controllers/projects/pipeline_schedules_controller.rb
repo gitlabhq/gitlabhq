@@ -1,10 +1,10 @@
 class Projects::PipelineSchedulesController < Projects::ApplicationController
   before_action :schedule, except: [:index, :new, :create]
 
-  before_action :authorize_create_pipeline!, only: [:run]
+  before_action :authorize_create_pipeline!, only: [:play]
   before_action :authorize_read_pipeline_schedule!
   before_action :authorize_create_pipeline_schedule!, only: [:new, :create]
-  before_action :authorize_update_pipeline_schedule!, except: [:index, :new, :create, :run]
+  before_action :authorize_update_pipeline_schedule!, except: [:index, :new, :create, :play]
   before_action :authorize_admin_pipeline_schedule!, only: [:destroy]
 
   def index
@@ -41,7 +41,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
     end
   end
 
-  def run
+  def play
     job_id = RunPipelineScheduleWorker.perform_async(schedule.id, current_user.id)
 
     flash[:notice] =

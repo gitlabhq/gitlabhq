@@ -182,9 +182,9 @@ module GitlabRoutingHelper
     edit_project_pipeline_schedule_path(project, schedule)
   end
 
-  def run_pipeline_schedule_path(schedule, *args)
+  def play_pipeline_schedule_path(schedule, *args)
     project = schedule.project
-    run_project_pipeline_schedule_path(project, schedule, *args)
+    play_project_pipeline_schedule_path(project, schedule, *args)
   end
 
   def take_ownership_pipeline_schedule_path(schedule, *args)
