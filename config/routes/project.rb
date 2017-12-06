@@ -183,10 +183,16 @@ constraints(ProjectUrlConstrainer.new) do
         end
       end
 
-      resources :clusters, except: [:edit] do
+      resources :clusters, except: [:edit, :create] do
         collection do
-          get :login
-          get '/providers/gcp/new', action: :new_gcp
+          scope :providers do
+            get '/user/new', to: 'clusters/user#new'
+            post '/user', to: 'clusters/user#create'
+
+            get '/gcp/new', to: 'clusters/gcp#new'
+            get '/gcp/login', to: 'clusters/gcp#login'
+            post '/gcp', to: 'clusters/gcp#create'
+          end
         end
 
         member do
@@ -429,7 +435,7 @@ constraints(ProjectUrlConstrainer.new) do
         get :download_export
         get :activity
         get :refs
-        put :new_issue_address
+        put :new_issuable_address
       end
     end
   end

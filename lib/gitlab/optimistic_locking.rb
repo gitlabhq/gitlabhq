@@ -11,6 +11,7 @@ module Gitlab
         rescue ActiveRecord::StaleObjectError
           retries -= 1
           raise unless retries >= 0
+
           subject.reload
         end
       end

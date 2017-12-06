@@ -1,5 +1,0 @@
----
-title: Change 'Sign Out' route from a DELETE to a GET
-merge_request: 39708
-author: Joe Marty
-type: changed

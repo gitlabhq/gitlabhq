@@ -13,6 +13,7 @@ class Milestone < ActiveRecord::Base
   include Referable
   include StripAttribute
   include Milestoneish
+  include Gitlab::SQL::Pattern
 
   cache_markdown_field :title, pipeline: :single_line
   cache_markdown_field :description
@@ -73,10 +74,7 @@ class Milestone < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      t = arel_table
-      pattern = "%#{query}%"
-
-      where(t[:title].matches(pattern).or(t[:description].matches(pattern)))
+      fuzzy_search(query, [:title, :description])
     end
 
     def filter_by_state(milestones, state)
@@ -162,18 +160,18 @@ class Milestone < ActiveRecord::Base
   #   Milestone.first.to_reference(cross_namespace_project)  # => "gitlab-org/gitlab-ce%1"
   #   Milestone.first.to_reference(same_namespace_project)   # => "gitlab-ce%1"
   #
-  def to_reference(from_project = nil, format: :name, full: false)
+  def to_reference(from = nil, format: :name, full: false)
     format_reference = milestone_format_reference(format)
     reference = "#{self.class.reference_prefix}#{format_reference}"
 
     if project
-      "#{project.to_reference(from_project, full: full)}#{reference}"
+      "#{project.to_reference(from, full: full)}#{reference}"
     else
       reference
     end
   end
 
-  def reference_link_text(from_project = nil)
+  def reference_link_text(from = nil)
     self.title
   end
 
@@ -256,7 +254,7 @@ class Milestone < ActiveRecord::Base
 
   def start_date_should_be_less_than_due_date
     if due_date <= start_date
-      errors.add(:start_date, "Can't be greater than due date")
+      errors.add(:due_date, "must be greater than start date")
     end
   end
 

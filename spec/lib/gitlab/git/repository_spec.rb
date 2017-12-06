@@ -588,12 +588,12 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe '#fetch_mirror' do
+  describe '#fetch_as_mirror_without_shell' do
     let(:new_repository) do
       Gitlab::Git::Repository.new('default', 'my_project.git', '')
     end
 
-    subject { new_repository.fetch_mirror(repository.path) }
+    subject { new_repository.fetch_as_mirror_without_shell(repository.path) }
 
     before do
       Gitlab::Shell.new.add_repository('default', 'my_project')
@@ -629,16 +629,29 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#remote_tags' do
+    let(:remote_name) { 'upstream' }
     let(:target_commit_id) { SeedRepo::Commit::ID }
+    let(:user) { create(:user) }
+    let(:tag_name) { 'v0.0.1' }
+    let(:tag_message) { 'My tag' }
+    let(:remote_repository) do
+      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
+    end
 
-    subject { repository.remote_tags('upstream') }
+    subject { repository.remote_tags(remote_name) }
+
+    before do
+      repository.add_remote(remote_name, remote_repository.path)
+      remote_repository.add_tag(tag_name, user: user, target: target_commit_id)
+    end
+
+    after do
+      ensure_seeds
+    end
 
     it 'gets the remote tags' do
-      expect(repository).to receive(:list_remote_tags).with('upstream')
-        .and_return(["#{target_commit_id}\trefs/tags/v0.0.1\n"])
-
       expect(subject.first).to be_an_instance_of(Gitlab::Git::Tag)
-      expect(subject.first.name).to eq('v0.0.1')
+      expect(subject.first.name).to eq(tag_name)
       expect(subject.first.dereferenced_target.id).to eq(target_commit_id)
     end
   end
@@ -1197,13 +1210,32 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
     end
 
+    context 'when no root ref is available' do
+      it 'returns empty list' do
+        project = create(:project, :empty_repo)
+
+        names = project.repository.merged_branch_names(%w[feature])
+
+        expect(names).to be_empty
+      end
+    end
+
     context 'when no branch names are specified' do
-      it 'returns all merged branch names' do
+      before do
+        repository.create_branch('identical', 'master')
+      end
+
+      after do
+        ensure_seeds
+      end
+
+      it 'returns all merged branch names except for identical one' do
         names = repository.merged_branch_names
 
         expect(names).to include('merge-test')
         expect(names).to include('fix-mode')
         expect(names).not_to include('feature')
+        expect(names).not_to include('identical')
       end
     end
   end
@@ -1630,15 +1662,15 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe '#fetch' do
+  describe '#fetch_remote_without_shell' do
     let(:git_path) { Gitlab.config.git.bin_path }
     let(:remote_name) { 'my_remote' }
 
-    subject { repository.fetch(remote_name) }
+    subject { repository.fetch_remote_without_shell(remote_name) }
 
     it 'fetches the remote and returns true if the command was successful' do
       expect(repository).to receive(:popen)
-        .with(%W(#{git_path} fetch #{remote_name}), repository.path)
+        .with(%W(#{git_path} fetch #{remote_name}), repository.path, {})
         .and_return(['', 0])
 
       expect(subject).to be(true)
@@ -1755,18 +1787,29 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe '#fetch' do
-    let(:git_path) { Gitlab.config.git.bin_path }
-    let(:remote_name) { 'my_remote' }
+  describe '#delete_all_refs_except' do
+    let(:repository) do
+      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
+    end
 
-    subject { repository.fetch(remote_name) }
+    before do
+      repository.write_ref("refs/delete/a", "0b4bc9a49b562e85de7cc9e834518ea6828729b9")
+      repository.write_ref("refs/also-delete/b", "12d65c8dd2b2676fa3ac47d955accc085a37a9c1")
+      repository.write_ref("refs/keep/c", "6473c90867124755509e100d0d35ebdc85a0b6ae")
+      repository.write_ref("refs/also-keep/d", "0b4bc9a49b562e85de7cc9e834518ea6828729b9")
+    end
 
-    it 'fetches the remote and returns true if the command was successful' do
-      expect(repository).to receive(:popen)
-        .with(%W(#{git_path} fetch #{remote_name}), repository.path)
-        .and_return(['', 0])
+    after do
+      ensure_seeds
+    end
 
-      expect(subject).to be(true)
+    it 'deletes all refs except those with the specified prefixes' do
+      repository.delete_all_refs_except(%w(refs/keep refs/also-keep refs/heads))
+      expect(repository.ref_exists?("refs/delete/a")).to be(false)
+      expect(repository.ref_exists?("refs/also-delete/b")).to be(false)
+      expect(repository.ref_exists?("refs/keep/c")).to be(true)
+      expect(repository.ref_exists?("refs/also-keep/d")).to be(true)
+      expect(repository.ref_exists?("refs/heads/master")).to be(true)
     end
   end
 

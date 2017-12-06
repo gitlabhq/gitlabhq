@@ -50,6 +50,10 @@ module API
       initial_current_user != current_user
     end
 
+    def user_namespace
+      @user_namespace ||= find_namespace!(params[:id])
+    end
+
     def user_group
       @group ||= find_group!(params[:id])
     end
@@ -109,6 +113,24 @@ module API
         group
       else
         not_found!('Group')
+      end
+    end
+
+    def find_namespace(id)
+      if id.to_s =~ /^\d+$/
+        Namespace.find_by(id: id)
+      else
+        Namespace.find_by_full_path(id)
+      end
+    end
+
+    def find_namespace!(id)
+      namespace = find_namespace(id)
+
+      if can?(current_user, :read_namespace, namespace)
+        namespace
+      else
+        not_found!('Namespace')
       end
     end
 
@@ -398,7 +420,7 @@ module API
 
       begin
         @initial_current_user = Gitlab::Auth::UniqueIpsLimiter.limit_user! { find_current_user! }
-      rescue APIGuard::UnauthorizedError
+      rescue Gitlab::Auth::UnauthorizedError
         unauthorized!
       end
     end

@@ -11,7 +11,7 @@ describe('Sprite Icon Component', function () {
 
       icon = mountComponent(IconComponent, {
         name: 'test',
-        size: 99,
+        size: 32,
         cssClasses: 'extraclasses',
       });
     });
@@ -34,12 +34,18 @@ describe('Sprite Icon Component', function () {
     });
 
     it('should properly compute iconSizeClass', function () {
-      expect(icon.iconSizeClass).toBe('s99');
+      expect(icon.iconSizeClass).toBe('s32');
+    });
+
+    it('forbids invalid size prop', () => {
+      expect(icon.$options.props.size.validator(NaN)).toBeFalsy();
+      expect(icon.$options.props.size.validator(0)).toBeFalsy();
+      expect(icon.$options.props.size.validator(9001)).toBeFalsy();
     });
 
     it('should properly render img css', function () {
       const classList = icon.$el.classList;
-      const containsSizeClass = classList.contains('s99');
+      const containsSizeClass = classList.contains('s32');
       const containsCustomClass = classList.contains('extraclasses');
       expect(containsSizeClass).toBe(true);
       expect(containsCustomClass).toBe(true);

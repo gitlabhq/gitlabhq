@@ -2,6 +2,7 @@
 /* global Flash */
 import editForm from './edit_form.vue';
 import issuableMixin from '../../../vue_shared/mixins/issuable';
+import Icon from '../../../vue_shared/components/icon.vue';
 
 export default {
   props: {
@@ -22,11 +23,6 @@ export default {
         return mediatorObject.service && mediatorObject.service.update && mediatorObject.store;
       },
     },
-
-    issuableType: {
-      required: true,
-      type: String,
-    },
   },
 
   mixins: [
@@ -35,11 +31,12 @@ export default {
 
   components: {
     editForm,
+    Icon,
   },
 
   computed: {
-    lockIconClass() {
-      return this.isLocked ? 'fa-lock' : 'fa-unlock';
+    lockIcon() {
+      return this.isLocked ? 'lock' : 'lock-open';
     },
 
     isLockDialogOpen() {
@@ -57,7 +54,7 @@ export default {
         discussion_locked: locked,
       })
       .then(() => location.reload())
-      .catch(() => Flash(this.__(`Something went wrong trying to change the locked state of this ${this.issuableDisplayName(this.issuableType)}`)));
+      .catch(() => Flash(this.__(`Something went wrong trying to change the locked state of this ${this.issuableDisplayName}`)));
     },
   },
 };
@@ -66,15 +63,16 @@ export default {
 <template>
   <div class="block issuable-sidebar-item lock">
     <div class="sidebar-collapsed-icon">
-      <i
-        class="fa"
-        :class="lockIconClass"
+      <icon
+        :name="lockIcon"
+        :size="16"
         aria-hidden="true"
-      ></i>
+        class="sidebar-item-icon is-active">
+      </icon>
     </div>
 
     <div class="title hide-collapsed">
-      Lock {{issuableDisplayName(issuableType) }}
+      Lock {{ issuableDisplayName }}
       <button
         v-if="isEditable"
         class="pull-right lock-edit btn btn-blank"
@@ -98,10 +96,12 @@ export default {
         v-if="isLocked"
         class="value sidebar-item-value"
       >
-        <i
+        <icon
+          name="lock"
+          :size="16"
           aria-hidden="true"
-          class="fa fa-lock sidebar-item-icon is-active"
-        ></i>
+          class="sidebar-item-icon inline is-active">
+        </icon>
         {{ __('Locked') }}
       </div>
 
@@ -109,10 +109,12 @@ export default {
         v-else
         class="no-value sidebar-item-value hide-collapsed"
       >
-        <i
+        <icon
+          name="lock-open"
+          :size="16"
           aria-hidden="true"
-          class="fa fa-unlock sidebar-item-icon"
-        ></i>
+          class="sidebar-item-icon inline">
+        </icon>
         {{ __('Unlocked') }}
       </div>
     </div>

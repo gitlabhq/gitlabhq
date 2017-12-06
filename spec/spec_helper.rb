@@ -50,6 +50,7 @@ RSpec.configure do |config|
   config.include SearchHelpers, type: :feature
   config.include CookieHelper, :js
   config.include InputHelper, :js
+  config.include SelectionHelper, :js
   config.include InspectRequests, :js
   config.include WaitForRequests, :js
   config.include LiveDebugger, :js
@@ -206,3 +207,6 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
+
+# Prevent Rugged from picking up local developer gitconfig.
+Rugged::Settings['search_path_global'] = Rails.root.join('tmp/tests').to_s

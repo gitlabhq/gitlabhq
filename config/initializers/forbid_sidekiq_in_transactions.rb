@@ -13,20 +13,19 @@ module Sidekiq
 
     module ClassMethods
       module NoSchedulingFromTransactions
-        NESTING = ::Rails.env.test? ? 1 : 0
-
         %i(perform_async perform_at perform_in).each do |name|
           define_method(name) do |*args|
-            return super(*args) if Sidekiq::Worker.skip_transaction_check
-            return super(*args) unless ActiveRecord::Base.connection.open_transactions > NESTING
+            if !Sidekiq::Worker.skip_transaction_check && AfterCommitQueue.inside_transaction?
+              raise <<-MSG.strip_heredoc
+                `#{self}.#{name}` cannot be called inside a transaction as this can lead to
+                race conditions when the worker runs before the transaction is committed and
+                tries to access a model that has not been saved yet.
 
-            raise <<-MSG.strip_heredoc
-              `#{self}.#{name}` cannot be called inside a transaction as this can lead to
-              race conditions when the worker runs before the transaction is committed and
-              tries to access a model that has not been saved yet.
+                Use an `after_commit` hook, or include `AfterCommitQueue` and use a `run_after_commit` block instead.
+              MSG
+            end
 
-              Use an `after_commit` hook, or include `AfterCommitQueue` and use a `run_after_commit` block instead.
-            MSG
+            super(*args)
           end
         end
       end

@@ -220,6 +220,15 @@ module Gitlab
       # column - The name of the column to update.
       # value - The value for the column.
       #
+      # The `value` argument is typically a literal. To perform a computed
+      # update, an Arel literal can be used instead:
+      #
+      #     update_value = Arel.sql('bar * baz')
+      #
+      #     update_column_in_batches(:projects, :foo, update_value) do |table, query|
+      #       query.where(table[:some_column].eq('hello'))
+      #     end
+      #
       # Rubocop's Metrics/AbcSize metric is disabled for this method as Rubocop
       # determines this method to be too complex while there's no way to make it
       # less "complex" without introducing extra methods (which actually will
@@ -694,14 +703,14 @@ into similar problems in the future (e.g. when new tables are created).
             # We push multiple jobs at a time to reduce the time spent in
             # Sidekiq/Redis operations. We're using this buffer based approach so we
             # don't need to run additional queries for every range.
-            BackgroundMigrationWorker.perform_bulk(jobs)
+            BackgroundMigrationWorker.bulk_perform_async(jobs)
             jobs.clear
           end
 
           jobs << [job_class_name, [start_id, end_id]]
         end
 
-        BackgroundMigrationWorker.perform_bulk(jobs) unless jobs.empty?
+        BackgroundMigrationWorker.bulk_perform_async(jobs) unless jobs.empty?
       end
 
       # Queues background migration jobs for an entire table, batched by ID range.

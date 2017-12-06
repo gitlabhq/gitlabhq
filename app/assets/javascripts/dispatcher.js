@@ -1,12 +1,12 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-arrow-callback, wrap-iife, no-shadow, consistent-return, one-var, one-var-declaration-per-line, camelcase, default-case, no-new, quotes, no-duplicate-case, no-case-declarations, no-fallthrough, max-len */
 import { s__ } from './locale';
-/* global ProjectSelect */
+import projectSelect from './project_select';
 import IssuableIndex from './issuable_index';
-/* global Milestone */
+import Milestone from './milestone';
 import IssuableForm from './issuable_form';
 import LabelsSelect from './labels_select';
 /* global MilestoneSelect */
-/* global NewBranchForm */
+import NewBranchForm from './new_branch_form';
 /* global NotificationsForm */
 /* global NotificationsDropdown */
 import groupAvatar from './group_avatar';
@@ -18,16 +18,14 @@ import groupsSelect from './groups_select';
 /* global Search */
 /* global Admin */
 import NamespaceSelect from './namespace_select';
-/* global NewCommitForm */
-/* global NewBranchForm */
+import NewCommitForm from './new_commit_form';
 import Project from './project';
 import projectAvatar from './project_avatar';
 /* global MergeRequest */
 /* global Compare */
 /* global CompareAutocomplete */
 /* global ProjectFindFile */
-/* global ProjectNew */
-/* global ProjectShow */
+import ProjectNew from './project_new';
 import projectImport from './project_import';
 import Labels from './labels';
 import LabelManager from './label_manager';
@@ -91,6 +89,8 @@ import Members from './members';
 import memberExpirationDate from './member_expiration_date';
 import DueDateSelectors from './due_date_select';
 import Diff from './diff';
+import ProjectLabelSubscription from './project_label_subscription';
+import ProjectVariables from './project_variables';
 
 (function() {
   var Dispatcher;
@@ -187,7 +187,7 @@ import Diff from './diff';
           initIssuableSidebar();
           break;
         case 'dashboard:milestones:index':
-          new ProjectSelect();
+          projectSelect();
           break;
         case 'projects:milestones:show':
         case 'groups:milestones:show':
@@ -197,7 +197,7 @@ import Diff from './diff';
           break;
         case 'dashboard:issues':
         case 'dashboard:merge_requests':
-          new ProjectSelect();
+          projectSelect();
           initLegacyFilters();
           break;
         case 'groups:issues':
@@ -206,7 +206,7 @@ import Diff from './diff';
             const filteredSearchManager = new gl.FilteredSearchManager(page === 'groups:issues' ? 'issues' : 'merge_requests');
             filteredSearchManager.setup();
           }
-          new ProjectSelect();
+          projectSelect();
           break;
         case 'dashboard:todos:index':
           new Todos();
@@ -298,18 +298,21 @@ import Diff from './diff';
           break;
         case 'projects:snippets:show':
           initNotes();
+          new ZenMode();
           break;
         case 'projects:snippets:new':
         case 'projects:snippets:edit':
         case 'projects:snippets:create':
         case 'projects:snippets:update':
           new GLForm($('.snippet-form'), true);
+          new ZenMode();
           break;
         case 'snippets:new':
         case 'snippets:edit':
         case 'snippets:create':
         case 'snippets:update':
           new GLForm($('.snippet-form'), false);
+          new ZenMode();
           break;
         case 'projects:releases:edit':
           new ZenMode();
@@ -317,7 +320,6 @@ import Diff from './diff';
           break;
         case 'projects:merge_requests:show':
           new Diff();
-          shortcut_handler = new ShortcutsIssuable(true);
           new ZenMode();
 
           initIssuableSidebar();
@@ -327,6 +329,8 @@ import Diff from './diff';
           window.mergeRequest = new MergeRequest({
             action: mrShowNode.dataset.mrAction,
           });
+
+          shortcut_handler = new ShortcutsIssuable(true);
           break;
         case 'dashboard:activity':
           new gl.Activities();
@@ -339,7 +343,8 @@ import Diff from './diff';
             container: '.js-commit-pipeline-graph',
           }).bindEvents();
           initNotes();
-          initChangesDropdown();
+          const stickyBarPaddingTop = 16;
+          initChangesDropdown(document.querySelector('.navbar-gitlab').offsetHeight - stickyBarPaddingTop);
           $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
         case 'projects:commit:pipelines':
@@ -381,6 +386,7 @@ import Diff from './diff';
           projectImport();
           break;
         case 'projects:pipelines:new':
+        case 'projects:pipelines:create':
           new NewBranchForm($('.js-new-pipeline-form'));
           break;
         case 'projects:pipelines:builds':
@@ -484,7 +490,7 @@ import Diff from './diff';
             if ($el.find('.dropdown-group-label').length) {
               new GroupLabelSubscription($el);
             } else {
-              new gl.ProjectLabelSubscription($el);
+              new ProjectLabelSubscription($el);
             }
           });
           break;
@@ -519,8 +525,15 @@ import Diff from './diff';
         case 'projects:settings:ci_cd:show':
           // Initialize expandable settings panels
           initSettingsPanels();
+
+          import(/* webpackChunkName: "ci-cd-settings" */ './projects/ci_cd_settings_bundle')
+            .then(ciCdSettings => ciCdSettings.default())
+            .catch((err) => {
+              Flash(s__('ProjectSettings|Problem setting up the CI/CD settings JavaScript'));
+              throw err;
+            });
         case 'groups:settings:ci_cd:show':
-          new gl.ProjectVariables();
+          new ProjectVariables();
           break;
         case 'ci:lints:create':
         case 'ci:lints:show':
@@ -536,6 +549,7 @@ import Diff from './diff';
           new LineHighlighter();
           new BlobViewer();
           initNotes();
+          new ZenMode();
           break;
         case 'import:fogbugz:new_user_map':
           new UsersSelect();
@@ -548,7 +562,15 @@ import Diff from './diff';
           import(/* webpackChunkName: "clusters" */ './clusters/clusters_bundle')
             .then(cluster => new cluster.default()) // eslint-disable-line new-cap
             .catch((err) => {
-              Flash(s__('ClusterIntegration|Problem setting up the cluster JavaScript'));
+              Flash(s__('ClusterIntegration|Problem setting up the cluster'));
+              throw err;
+            });
+          break;
+        case 'projects:clusters:index':
+          import(/* webpackChunkName: "clusters_index" */ './clusters/clusters_index')
+            .then(clusterIndex => clusterIndex.default())
+            .catch((err) => {
+              Flash(s__('ClusterIntegration|Problem setting up the clusters list'));
               throw err;
             });
           break;
@@ -623,7 +645,6 @@ import Diff from './diff';
             case 'show':
               new Star();
               new ProjectNew();
-              new ProjectShow();
               new NotificationsDropdown();
               break;
             case 'wikis':

@@ -190,7 +190,7 @@ export const insertText = (target, text) => {
   target.selectionStart = target.selectionEnd = selectionStart + insertedText.length;
 
   // Trigger autosave
-  $(target).trigger('input');
+  target.dispatchEvent(new Event('input'));
 
   // Trigger autosize
   const event = document.createEvent('Event');
@@ -268,46 +268,6 @@ export const parseIntPagination = paginationInformation => ({
   nextPage: parseInt(paginationInformation['X-NEXT-PAGE'], 10),
   previousPage: parseInt(paginationInformation['X-PREV-PAGE'], 10),
 });
-
-/**
- * Updates the search parameter of a URL given the parameter and value provided.
- *
- * If no search params are present we'll add it.
- * If param for page is already present, we'll update it
- * If there are params but not for the given one, we'll add it at the end.
- * Returns the new search parameters.
- *
- * @param {String} param
- * @param {Number|String|Undefined|Null} value
- * @return {String}
- */
-export const setParamInURL = (param, value) => {
-  let search;
-  const locationSearch = window.location.search;
-
-  if (locationSearch.length) {
-    const parameters = locationSearch.substring(1, locationSearch.length)
-      .split('&')
-      .reduce((acc, element) => {
-        const val = element.split('=');
-        // eslint-disable-next-line no-param-reassign
-        acc[val[0]] = decodeURIComponent(val[1]);
-        return acc;
-      }, {});
-
-    parameters[param] = value;
-
-    const toString = Object.keys(parameters)
-      .map(val => `${val}=${encodeURIComponent(parameters[val])}`)
-      .join('&');
-
-    search = `?${toString}`;
-  } else {
-    search = `?${param}=${value}`;
-  }
-
-  return search;
-};
 
 /**
  * Given a string of query parameters creates an object.

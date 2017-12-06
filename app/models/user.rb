@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
   include Gitlab::ConfigHelper
   include Gitlab::CurrentSettings
   include Gitlab::SQL::Pattern
+  include AfterCommitQueue
   include Avatarable
   include Referable
   include Sortable
@@ -170,6 +171,7 @@ class User < ActiveRecord::Base
   after_save :ensure_namespace_correct
   after_update :username_changed_hook, if: :username_changed?
   after_destroy :post_destroy_hook
+  after_destroy :remove_key_cache
   after_commit :update_emails_with_primary_email, on: :update, if: -> { previous_changes.key?('email') }
   after_commit :update_invalid_gpg_signatures, on: :update, if: -> { previous_changes.key?('email') }
 
@@ -268,8 +270,7 @@ class User < ActiveRecord::Base
     end
 
     def for_github_id(id)
-      joins(:identities)
-        .where(identities: { provider: :github, extern_uid: id.to_s })
+      joins(:identities).merge(Identity.with_extern_uid(:github, id))
     end
 
     # Find a User by their primary email or any associated secondary email
@@ -313,9 +314,6 @@ class User < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      table   = arel_table
-      pattern = User.to_pattern(query)
-
       order = <<~SQL
         CASE
           WHEN users.name = %{query} THEN 0
@@ -325,11 +323,8 @@ class User < ActiveRecord::Base
         END
       SQL
 
-      where(
-        table[:name].matches(pattern)
-          .or(table[:email].matches(pattern))
-          .or(table[:username].matches(pattern))
-      ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
+      fuzzy_search(query, [:name, :email, :username])
+        .reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
     end
 
     # searches user by given pattern
@@ -337,16 +332,16 @@ class User < ActiveRecord::Base
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
 
     def search_with_secondary_emails(query)
-      table = arel_table
       email_table = Email.arel_table
-      pattern = "%#{query}%"
-      matched_by_emails_user_ids = email_table.project(email_table[:user_id]).where(email_table[:email].matches(pattern))
+      matched_by_emails_user_ids = email_table
+        .project(email_table[:user_id])
+        .where(Email.fuzzy_arel_match(:email, query))
 
       where(
-        table[:name].matches(pattern)
-          .or(table[:email].matches(pattern))
-          .or(table[:username].matches(pattern))
-          .or(table[:id].in(matched_by_emails_user_ids))
+        fuzzy_arel_match(:name, query)
+          .or(fuzzy_arel_match(:email, query))
+          .or(fuzzy_arel_match(:username, query))
+          .or(arel_table[:id].in(matched_by_emails_user_ids))
       )
     end
 
@@ -437,12 +432,16 @@ class User < ActiveRecord::Base
     username
   end
 
-  def to_reference(_from_project = nil, target_project: nil, full: nil)
+  def to_reference(_from = nil, target_project: nil, full: nil)
     "#{self.class.reference_prefix}#{username}"
   end
 
   def skip_confirmation=(bool)
     skip_confirmation! if bool
+  end
+
+  def skip_reconfirmation=(bool)
+    skip_reconfirmation! if bool
   end
 
   def generate_reset_token
@@ -489,7 +488,11 @@ class User < ActiveRecord::Base
   end
 
   def two_factor_u2f_enabled?
-    u2f_registrations.exists?
+    if u2f_registrations.loaded?
+      u2f_registrations.any?
+    else
+      u2f_registrations.exists?
+    end
   end
 
   def namespace_uniq
@@ -624,21 +627,39 @@ class User < ActiveRecord::Base
   end
 
   def require_ssh_key?
-    keys.count == 0 && Gitlab::ProtocolAccess.allowed?('ssh')
+    count = Users::KeysCountService.new(self).count
+
+    count.zero? && Gitlab::ProtocolAccess.allowed?('ssh')
   end
 
-  def require_password_creation?
-    password_automatically_set? && allow_password_authentication?
+  def require_password_creation_for_web?
+    allow_password_authentication_for_web? && password_automatically_set?
+  end
+
+  def require_password_creation_for_git?
+    allow_password_authentication_for_git? && password_automatically_set?
   end
 
   def require_personal_access_token_creation_for_git_auth?
-    return false if current_application_settings.password_authentication_enabled? || ldap_user?
+    return false if allow_password_authentication_for_git? || ldap_user?
 
     PersonalAccessTokensFinder.new(user: self, impersonation: false, state: 'active').execute.none?
   end
 
+  def require_extra_setup_for_git_auth?
+    require_password_creation_for_git? || require_personal_access_token_creation_for_git_auth?
+  end
+
   def allow_password_authentication?
-    !ldap_user? && current_application_settings.password_authentication_enabled?
+    allow_password_authentication_for_web? || allow_password_authentication_for_git?
+  end
+
+  def allow_password_authentication_for_web?
+    current_application_settings.password_authentication_enabled_for_web? && !ldap_user?
+  end
+
+  def allow_password_authentication_for_git?
+    current_application_settings.password_authentication_enabled_for_git? && !ldap_user?
   end
 
   def can_change_username?
@@ -883,7 +904,12 @@ class User < ActiveRecord::Base
 
   def post_destroy_hook
     log_info("User \"#{name}\" (#{email})  was removed")
+
     system_hook_service.execute_hooks_for(self, :destroy)
+  end
+
+  def remove_key_cache
+    Users::KeysCountService.new(self).delete_cache
   end
 
   def delete_async(deleted_by:, params: {})
@@ -978,7 +1004,11 @@ class User < ActiveRecord::Base
   end
 
   def notification_settings_for(source)
-    notification_settings.find_or_initialize_by(source: source)
+    if notification_settings.loaded?
+      notification_settings.find { |notification| notification.source == source }
+    else
+      notification_settings.find_or_initialize_by(source: source)
+    end
   end
 
   # Lazy load global notification setting
@@ -1119,6 +1149,7 @@ class User < ActiveRecord::Base
   # override, from Devise::Validatable
   def password_required?
     return false if internal?
+
     super
   end
 
@@ -1136,6 +1167,7 @@ class User < ActiveRecord::Base
   # Added according to https://github.com/plataformatec/devise/blob/7df57d5081f9884849ca15e4fde179ef164a575f/README.md#activejob-integration
   def send_devise_notification(notification, *args)
     return true unless can?(:receive_notifications)
+
     devise_mailer.__send__(notification, self, *args).deliver_later # rubocop:disable GitlabSecurity/PublicSend
   end
 

@@ -17,6 +17,16 @@
         type: String,
         required: true,
       },
+      canAttachFile: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
+      enableAutocomplete: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
     components: {
       markdownField,
@@ -36,7 +46,10 @@
     </label>
     <markdown-field
       :markdown-preview-path="markdownPreviewPath"
-      :markdown-docs-path="markdownDocsPath">
+      :markdown-docs-path="markdownDocsPath"
+      :can-attach-file="canAttachFile"
+      :enable-autocomplete="enableAutocomplete"
+    >
       <textarea
         id="issue-description"
         class="note-textarea js-gfm-input js-autosize markdown-area"

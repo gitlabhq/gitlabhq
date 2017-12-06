@@ -101,8 +101,7 @@ module Gitlab
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
     def import_repository(storage, name, url)
-      # Timeout should be less than 900 ideally, to prevent the memory killer
-      # to silently kill the process without knowing we are timing out here.
+      # The timeout ensures the subprocess won't hang forever
       cmd = [gitlab_shell_projects_path, 'import-project',
              storage, "#{name}.git", url, "#{Gitlab.config.gitlab_shell.git_timeout}"]
       gitlab_shell_fast_execute_raise_error(cmd)
@@ -144,20 +143,27 @@ module Gitlab
                                  storage, "#{path}.git", "#{new_path}.git"])
     end
 
-    # Fork repository to new namespace
+    # Fork repository to new path
     # forked_from_storage - forked-from project's storage path
-    # path - project path with namespace
+    # forked_from_disk_path - project disk path
     # forked_to_storage - forked-to project's storage path
-    # fork_namespace - namespace for forked project
+    # forked_to_disk_path - forked project disk path
     #
     # Ex.
-    #  fork_repository("/path/to/forked_from/storage", "gitlab/gitlab-ci", "/path/to/forked_to/storage", "randx")
+    #  fork_repository("/path/to/forked_from/storage", "gitlab/gitlab-ci", "/path/to/forked_to/storage", "new-namespace/gitlab-ci")
     #
     # Gitaly note: JV: not easy to migrate because this involves two Gitaly servers, not one.
-    def fork_repository(forked_from_storage, path, forked_to_storage, fork_namespace)
-      gitlab_shell_fast_execute([gitlab_shell_projects_path, 'fork-project',
-                                 forked_from_storage, "#{path}.git", forked_to_storage,
-                                 fork_namespace])
+    def fork_repository(forked_from_storage, forked_from_disk_path, forked_to_storage, forked_to_disk_path)
+      gitlab_shell_fast_execute(
+        [
+          gitlab_shell_projects_path,
+          'fork-repository',
+          forked_from_storage,
+          "#{forked_from_disk_path}.git",
+          forked_to_storage,
+          "#{forked_to_disk_path}.git"
+        ]
+      )
     end
 
     # Remove repository from file system
@@ -368,6 +374,7 @@ module Gitlab
       output, status = gitlab_shell_fast_execute_helper(cmd, vars)
 
       raise Error, output unless status.zero?
+
       true
     end
 

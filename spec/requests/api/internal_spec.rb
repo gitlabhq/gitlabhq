@@ -269,9 +269,8 @@ describe API::Internal do
       end
 
       context "git pull" do
-        context "gitaly disabled" do
+        context "gitaly disabled", :disable_gitaly do
           it "has the correct payload" do
-            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:ssh_upload_pack).and_return(false)
             pull(key, project)
 
             expect(response).to have_gitlab_http_status(200)
@@ -285,7 +284,6 @@ describe API::Internal do
 
         context "gitaly enabled" do
           it "has the correct payload" do
-            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:ssh_upload_pack).and_return(true)
             pull(key, project)
 
             expect(response).to have_gitlab_http_status(200)
@@ -304,9 +302,8 @@ describe API::Internal do
       end
 
       context "git push" do
-        context "gitaly disabled" do
+        context "gitaly disabled", :disable_gitaly do
           it "has the correct payload" do
-            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:ssh_receive_pack).and_return(false)
             push(key, project)
 
             expect(response).to have_gitlab_http_status(200)
@@ -320,7 +317,6 @@ describe API::Internal do
 
         context "gitaly enabled" do
           it "has the correct payload" do
-            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:ssh_receive_pack).and_return(true)
             push(key, project)
 
             expect(response).to have_gitlab_http_status(200)

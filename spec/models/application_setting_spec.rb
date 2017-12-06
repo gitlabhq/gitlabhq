@@ -219,6 +219,65 @@ describe ApplicationSetting do
         expect(subject).to be_valid
       end
     end
+
+    context 'gitaly timeouts' do
+      [:gitaly_timeout_default, :gitaly_timeout_medium, :gitaly_timeout_fast].each do |timeout_name|
+        it do
+          is_expected.to validate_presence_of(timeout_name)
+          is_expected.to validate_numericality_of(timeout_name).only_integer
+            .is_greater_than_or_equal_to(0)
+        end
+      end
+
+      [:gitaly_timeout_medium, :gitaly_timeout_fast].each do |timeout_name|
+        it "validates that #{timeout_name} is lower than timeout_default" do
+          subject[:gitaly_timeout_default] = 50
+          subject[timeout_name] = 100
+
+          expect(subject).to be_invalid
+        end
+      end
+
+      it 'accepts all timeouts equal' do
+        subject.gitaly_timeout_default = 0
+        subject.gitaly_timeout_medium = 0
+        subject.gitaly_timeout_fast = 0
+
+        expect(subject).to be_valid
+      end
+
+      it 'accepts timeouts in descending order' do
+        subject.gitaly_timeout_default = 50
+        subject.gitaly_timeout_medium = 30
+        subject.gitaly_timeout_fast = 20
+
+        expect(subject).to be_valid
+      end
+
+      it 'rejects timeouts in ascending order' do
+        subject.gitaly_timeout_default = 20
+        subject.gitaly_timeout_medium = 30
+        subject.gitaly_timeout_fast = 50
+
+        expect(subject).to be_invalid
+      end
+
+      it 'rejects medium timeout larger than default' do
+        subject.gitaly_timeout_default = 30
+        subject.gitaly_timeout_medium = 50
+        subject.gitaly_timeout_fast = 20
+
+        expect(subject).to be_invalid
+      end
+
+      it 'rejects medium timeout smaller than fast' do
+        subject.gitaly_timeout_default = 30
+        subject.gitaly_timeout_medium = 15
+        subject.gitaly_timeout_fast = 20
+
+        expect(subject).to be_invalid
+      end
+    end
   end
 
   describe '.current' do
@@ -562,6 +621,24 @@ describe ApplicationSetting do
 
     it 'returns forbidden for unrecognised type' do
       expect(setting.key_restriction_for(:foo)).to eq(described_class::FORBIDDEN_KEY_VALUE)
+    end
+  end
+
+  describe '#allow_signup?' do
+    it 'returns true' do
+      expect(setting.allow_signup?).to be_truthy
+    end
+
+    it 'returns false if signup is disabled' do
+      allow(setting).to receive(:signup_enabled?).and_return(false)
+
+      expect(setting.allow_signup?).to be_falsey
+    end
+
+    it 'returns false if password authentication is disabled for the web interface' do
+      allow(setting).to receive(:password_authentication_enabled_for_web?).and_return(false)
+
+      expect(setting.allow_signup?).to be_falsey
     end
   end
 end

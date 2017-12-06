@@ -97,6 +97,7 @@ module TreeHelper
         part_path = part if part_path.empty?
 
         next if parts.count > max_links && !parts.last(2).include?(part)
+
         yield(part, part_path)
       end
     end

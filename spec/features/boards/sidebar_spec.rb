@@ -331,11 +331,29 @@ describe 'Issue Boards', :js do
   context 'subscription' do
     it 'changes issue subscription' do
       click_card(card)
+      wait_for_requests
 
-      page.within('.subscription') do
+      page.within('.subscriptions') do
         click_button 'Subscribe'
         wait_for_requests
-        expect(page).to have_content("Unsubscribe")
+
+        expect(page).to have_content('Unsubscribe')
+      end
+    end
+
+    it 'has "Unsubscribe" button when already subscribed' do
+      create(:subscription, user: user, project: project, subscribable: issue2, subscribed: true)
+      visit project_board_path(project, board)
+      wait_for_requests
+
+      click_card(card)
+      wait_for_requests
+
+      page.within('.subscriptions') do
+        click_button 'Unsubscribe'
+        wait_for_requests
+
+        expect(page).to have_content('Subscribe')
       end
     end
   end

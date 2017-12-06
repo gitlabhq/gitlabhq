@@ -1,7 +1,7 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, consistent-return, no-new, prefer-arrow-callback, no-return-assign, one-var, one-var-declaration-per-line, object-shorthand, no-else-return, newline-per-chained-call, no-shadow, vars-on-top, prefer-template, max-len */
-/* global ProjectSelect */
 
 import Cookies from 'js-cookie';
+import projectSelect from './project_select';
 
 export default class Project {
   constructor() {
@@ -17,13 +17,14 @@ export default class Project {
     $('a', $cloneOptions).on('click', (e) => {
       const $this = $(e.currentTarget);
       const url = $this.attr('href');
+      const activeText = $this.find('.dropdown-menu-inner-title').text();
 
       e.preventDefault();
 
       $('.is-active', $cloneOptions).not($this).removeClass('is-active');
       $this.toggleClass('is-active');
       $projectCloneField.val(url);
-      $cloneBtnText.text($this.text());
+      $cloneBtnText.text(activeText);
 
       return $('.clone').text(url);
     });
@@ -46,7 +47,7 @@ export default class Project {
   }
 
   static projectSelectDropdown () {
-    new ProjectSelect();
+    projectSelect();
     $('.project-item-select').on('click', e => Project.changeProject($(e.currentTarget).val()));
   }
 
