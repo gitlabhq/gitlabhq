@@ -6,11 +6,11 @@ module Ci
       access = ::Gitlab::UserAccess.new(@user, project: @subject.project)
 
       if @subject.project.repository.branch_exists?(@subject.ref)
-        access.can_update_branch?(@subject.ref)
+        !access.can_update_branch?(@subject.ref)
       elsif @subject.project.repository.tag_exists?(@subject.ref)
-        access.can_create_tag?(@subject.ref)
+        !access.can_create_tag?(@subject.ref)
       else
-        true
+        false
       end
     end
 

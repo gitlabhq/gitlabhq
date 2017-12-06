@@ -27,7 +27,7 @@
     %td
       .pull-right.btn-group
         - if can?(current_user, :play_pipeline_schedule, pipeline_schedule)
-          = link_to run_pipeline_schedule_path(pipeline_schedule), method: :post, title: s_('Play'), class: 'btn' do
+          = link_to play_pipeline_schedule_path(pipeline_schedule), method: :post, title: s_('Play'), class: 'btn' do
             = icon('play')
         - if can?(current_user, :update_pipeline_schedule, pipeline_schedule)
           = link_to take_ownership_pipeline_schedule_path(pipeline_schedule), method: :post, title: s_('PipelineSchedules|Take ownership'), class: 'btn' do
