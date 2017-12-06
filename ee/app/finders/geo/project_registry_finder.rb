@@ -28,10 +28,10 @@ module Geo
 
     def find_unsynced_projects(batch_size:)
       relation =
-        if fdw?
-          fdw_find_unsynced_projects
-        else
+        if use_legacy_queries?
           legacy_find_unsynced_projects
+        else
+          fdw_find_unsynced_projects
         end
 
       relation.limit(batch_size)
@@ -39,10 +39,10 @@ module Geo
 
     def find_projects_updated_recently(batch_size:)
       relation =
-        if fdw?
-          fdw_find_projects_updated_recently
-        else
+        if use_legacy_queries?
           legacy_find_projects_updated_recently
+        else
+          fdw_find_projects_updated_recently
         end
 
       relation.limit(batch_size)

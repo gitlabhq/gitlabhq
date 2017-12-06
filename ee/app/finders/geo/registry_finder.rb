@@ -10,10 +10,10 @@ module Geo
 
     protected
 
-    def fdw?
+    def use_legacy_queries?
       # Selective project replication adds a wrinkle to FDW
       # queries, so we fallback to the legacy version for now.
-      Gitlab::Geo.fdw? && !selective_sync?
+      !Gitlab::Geo.fdw? || selective_sync?
     end
   end
 end

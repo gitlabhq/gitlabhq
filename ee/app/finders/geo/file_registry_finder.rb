@@ -22,10 +22,10 @@ module Geo
       # Selective project replication adds a wrinkle to FDW queries, so
       # we fallback to the legacy version for now.
       relation =
-        if fdw?
-          fdw_find_nonreplicated_lfs_objects
-        else
+        if use_legacy_queries?
           legacy_find_nonreplicated_lfs_objects(except_registry_ids: except_registry_ids)
+        else
+          fdw_find_nonreplicated_lfs_objects
         end
 
       relation
@@ -48,10 +48,10 @@ module Geo
       # Selective project replication adds a wrinkle to FDW queries, so
       # we fallback to the legacy version for now.
       relation =
-        if fdw?
-          fdw_find_nonreplicated_uploads
-        else
+        if use_legacy_queries?
           legacy_find_nonreplicated_uploads(except_registry_ids: except_registry_ids)
+        else
+          fdw_find_nonreplicated_uploads
         end
 
       relation

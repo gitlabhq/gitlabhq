@@ -2,10 +2,10 @@ module Geo
   class AttachmentRegistryFinder < RegistryFinder
     def find_synced_attachments
       relation =
-        if fdw?
-          fdw_find_synced_attachments
-        else
+        if use_legacy_queries?
           legacy_find_synced_attachments
+        else
+          fdw_find_synced_attachments
         end
 
       relation
@@ -13,10 +13,10 @@ module Geo
 
     def find_failed_attachments
       relation =
-        if fdw?
-          fdw_find_failed_attachments
-        else
+        if use_legacy_queries?
           legacy_find_failed_attachments
+        else
+          fdw_find_failed_attachments
         end
 
       relation
