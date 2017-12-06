@@ -96,7 +96,7 @@ module API
 
         if opts[:created_at]
           opts.delete(:created_at) unless
-            current_user.admin? || parent.owned_by?(current_user)
+            (current_user.admin? || user_project.owner == current_user || current_user.owned_groups.include?(user_project.owner))
         end
 
         opts[:updated_at] = opts[:created_at] if opts[:created_at]
