@@ -13,27 +13,20 @@ FactoryGirl.define do
       provider_type :user
       platform_type :kubernetes
 
-      platform_kubernetes do
-        create(:cluster_platform_kubernetes, :configured)
-      end
+      platform_kubernetes factory: [:cluster_platform_kubernetes, :configured]
     end
 
     trait :provided_by_gcp do
       provider_type :gcp
       platform_type :kubernetes
 
-      before(:create) do |cluster, evaluator|
-        cluster.platform_kubernetes = build(:cluster_platform_kubernetes, :configured)
-        cluster.provider_gcp = build(:cluster_provider_gcp, :created)
-      end
+      provider_gcp factory: [:cluster_provider_gcp, :created]
+      platform_kubernetes factory: [:cluster_platform_kubernetes, :configured]
     end
 
     trait :providing_by_gcp do
       provider_type :gcp
-
-      provider_gcp do
-        create(:cluster_provider_gcp, :creating)
-      end
+      provider_gcp factory: [:cluster_provider_gcp, :creating]
     end
   end
 end
