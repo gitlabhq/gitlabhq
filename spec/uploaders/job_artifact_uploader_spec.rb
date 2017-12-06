@@ -1,12 +1,8 @@
 require 'spec_helper'
 
 describe JobArtifactUploader do
-<<<<<<< HEAD
   let(:store) { described_class::LOCAL_STORE }
   let(:job_artifact) { create(:ci_job_artifact, file_store: store) }
-=======
-  let(:job_artifact) { create(:ci_job_artifact) }
->>>>>>> upstream/master
   let(:uploader) { described_class.new(job_artifact, :file) }
   let(:local_path) { Gitlab.config.artifacts.path }
 
@@ -20,7 +16,6 @@ describe JobArtifactUploader do
       it { is_expected.to match(/\h{2}\/\h{2}\/\h{64}\/\d{4}_\d{1,2}_\d{1,2}\/\d+\/\d+\z/) }
       it { is_expected.to end_with(path) }
     end
-<<<<<<< HEAD
 
     context 'when using remote storage' do
       let(:store) { described_class::REMOTE_STORE }
@@ -32,8 +27,6 @@ describe JobArtifactUploader do
       it { is_expected.to match(/\h{2}\/\h{2}\/\h{64}\/\d{4}_\d{1,2}_\d{1,2}\/\d+\/\d+\z/) }
       it { is_expected.to end_with(path) }
     end
-=======
->>>>>>> upstream/master
   end
 
   describe '#cache_dir' do
