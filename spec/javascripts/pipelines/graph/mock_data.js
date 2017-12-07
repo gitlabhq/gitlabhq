@@ -20,7 +20,7 @@ export default {
       has_details: true,
       details_path: '/root/ci-mock/pipelines/123',
       favicon:
-        '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+        '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
     },
     duration: 9,
     finished_at: '2017-04-19T14:30:27.542Z',
@@ -40,7 +40,7 @@ export default {
               has_details: true,
               details_path: '/root/ci-mock/builds/4153',
               favicon:
-                '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+                '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
               action: {
                 icon: 'retry',
                 title: 'Retry',
@@ -65,7 +65,7 @@ export default {
                   has_details: true,
                   details_path: '/root/ci-mock/builds/4153',
                   favicon:
-                    '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+                    '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
                   action: {
                     icon: 'retry',
                     title: 'Retry',
@@ -85,7 +85,7 @@ export default {
           has_details: true,
           details_path: '/root/ci-mock/pipelines/123#test',
           favicon:
-            '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+            '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
         },
         path: '/root/ci-mock/pipelines/123#test',
         dropdown_path: '/root/ci-mock/pipelines/123/stage.json?stage=test',
@@ -105,7 +105,7 @@ export default {
               has_details: true,
               details_path: '/root/ci-mock/builds/4166',
               favicon:
-                '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+                '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
               action: {
                 icon: 'retry',
                 title: 'Retry',
@@ -130,7 +130,7 @@ export default {
                   has_details: true,
                   details_path: '/root/ci-mock/builds/4166',
                   favicon:
-                    '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+                    '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
                   action: {
                     icon: 'retry',
                     title: 'Retry',
@@ -152,7 +152,7 @@ export default {
               has_details: true,
               details_path: '/root/ci-mock/builds/4159',
               favicon:
-                '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+                '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
               action: {
                 icon: 'retry',
                 title: 'Retry',
@@ -177,7 +177,7 @@ export default {
                   has_details: true,
                   details_path: '/root/ci-mock/builds/4159',
                   favicon:
-                    '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+                    '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
                   action: {
                     icon: 'retry',
                     title: 'Retry',
@@ -197,7 +197,7 @@ export default {
           has_details: true,
           details_path: '/root/ci-mock/pipelines/123#deploy',
           favicon:
-            '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+            '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
         },
         path: '/root/ci-mock/pipelines/123#deploy',
         dropdown_path: '/root/ci-mock/pipelines/123/stage.json?stage=deploy',

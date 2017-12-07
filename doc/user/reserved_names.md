@@ -58,7 +58,7 @@ Currently the following names are reserved as top level groups:
 - dashboard
 - deploy.html
 - explore
-- favicon.ico
+- favicon.png
 - groups
 - header_logo_dark.png
 - header_logo_light.png

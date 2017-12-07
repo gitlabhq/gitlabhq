@@ -3,16 +3,15 @@ module Gitlab
     class << self
       def main
         return custom_favicon_url(appearance_favicon.favicon_main.url) if appearance_favicon.exists?
-        return 'favicon-yellow.ico' if Gitlab::Utils.to_boolean(ENV['CANARY'])
-        return 'favicon-blue.ico' if Rails.env.development?
+        return ActionController::Base.helpers.image_path('favicon-yellow.png') if Gitlab::Utils.to_boolean(ENV['CANARY'])
+        return ActionController::Base.helpers.image_path('favicon-blue.png') if Rails.env.development?
 
-        'favicon.ico'
+        ActionController::Base.helpers.image_path('favicon.png')
       end
 
       def status_overlay(status_name)
         path = File.join(
           'ci_favicons',
-          'overlays',
           "#{status_name}.png"
         )
 
@@ -27,7 +26,7 @@ module Gitlab
 
       def available_status_names
         @available_status_names ||= begin
-          Dir.glob(Rails.root.join('app', 'assets', 'images', 'ci_favicons', 'overlays', "*.png"))
+          Dir.glob(Rails.root.join('app', 'assets', 'images', 'ci_favicons', '*.png'))
             .map { |file| File.basename(file, '.png') }
             .sort
         end

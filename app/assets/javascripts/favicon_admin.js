@@ -4,7 +4,7 @@ export default class FaviconAdmin {
   constructor() {
     const faviconContainer = $('.js-favicons');
     const faviconUrl = faviconContainer.data('favicon');
-    const overlayUrls = faviconContainer.data('status-overlays');
+    const overlayUrls = faviconContainer.data('status-overlays') || [];
 
     overlayUrls.forEach((statusOverlay) => {
       createOverlayIcon(faviconUrl, statusOverlay).then((faviconWithOverlayUrl) => {
