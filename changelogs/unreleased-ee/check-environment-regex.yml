@@ -1,0 +1,5 @@
+---
+title: Fix validation of environment scope for Ci::Variable
+merge_request: 3641
+author:
+type: fixed
