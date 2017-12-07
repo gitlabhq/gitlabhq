@@ -3,7 +3,7 @@
 - script = local_assigns.fetch(:script, true)
 - has_submit = local_assigns.fetch(:has_submit, true)
 
-= form_for resource_name, method: :put, html: { class: 'recaptcha-form js-recaptcha-form' } do |f|
+= form_for resource_name, method: :post, html: { class: 'recaptcha-form js-recaptcha-form' } do |f|
   .recaptcha
     - params[resource_name].each do |field, value|
       = hidden_field(resource_name, field, value: value)
