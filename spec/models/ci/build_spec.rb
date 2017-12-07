@@ -1870,7 +1870,7 @@ describe Ci::Build do
 
   describe 'state transition: any => [:running]' do
     before do
-      stub_feature_flags(ci_validates_dependencies: true)
+      stub_feature_flags(ci_disable_validates_dependencies: true)
     end
 
     let(:build) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 1, options: options) }

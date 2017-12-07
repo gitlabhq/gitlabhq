@@ -143,7 +143,7 @@ module Ci
       end
 
       before_transition any => [:running] do |build|
-        build.validates_dependencies! if Feature.enabled?('ci_validates_dependencies')
+        build.validates_dependencies! unless Feature.enabled?('ci_disable_validates_dependencies')
       end
     end
 
