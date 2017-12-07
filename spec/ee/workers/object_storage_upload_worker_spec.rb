@@ -17,7 +17,7 @@ describe ObjectStorageUploadWorker do
 
     context 'when object storage is enabled' do
       before do
-        stub_lfs_object_storage
+        stub_lfs_object_storage(background_upload: true)
       end
 
       it 'uploads object to storage' do
