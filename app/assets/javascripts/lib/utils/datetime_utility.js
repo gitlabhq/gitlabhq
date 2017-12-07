@@ -35,8 +35,6 @@ window.dateFormat = dateFormat;
 
     w.gl.utils.localTimeAgo = function($timeagoEls, setTimeago = true) {
       $timeagoEls.each((i, el) => {
-        el.setAttribute('title', el.getAttribute('title'));
-
         if (setTimeago) {
           // Recreate with custom template
           $(el).tooltip({
