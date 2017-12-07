@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import * as urlUtils from '~/lib/utils/url_utility';
 import store from '~/repo/stores';
 import service from '~/repo/services';
 import repoCommitSection from '~/repo/components/repo_commit_section.vue';
@@ -97,7 +98,7 @@ describe('RepoCommitSection', () => {
     });
 
     it('redirects to MR creation page if start new MR checkbox checked', (done) => {
-      spyOn(gl.utils, 'visitUrl');
+      spyOn(urlUtils, 'visitUrl');
       vm.startNewMR = true;
 
       vm.makeCommit();
@@ -105,7 +106,7 @@ describe('RepoCommitSection', () => {
       getSetTimeoutPromise()
         .then(() => Vue.nextTick())
         .then(() => {
-          expect(gl.utils.visitUrl).toHaveBeenCalled();
+          expect(urlUtils.visitUrl).toHaveBeenCalled();
         })
         .then(done)
         .catch(done.fail);

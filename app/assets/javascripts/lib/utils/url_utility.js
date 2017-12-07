@@ -17,20 +17,17 @@ export function getParameterValues(sParam) {
 // @param {Object} params - url keys and value to merge
 // @param {String} url
 export function mergeUrlParams(params, url) {
-  let newUrl = Object.keys(params).reduce((accParam, paramName) => {
+  let newUrl = Object.keys(params).reduce((acc, paramName) => {
     const paramValue = params[paramName];
     const pattern = new RegExp(`\\b(${paramName}=).*?(&|$)`);
-    let acc = accParam;
 
     if (paramValue === null) {
-      acc = acc.replace(pattern, '');
+      return acc.replace(pattern, '');
     } else if (url.search(pattern) !== -1) {
-      acc = acc.replace(pattern, `$1${paramValue}$2`);
-    } else {
-      acc = `${accParam}${accParam.indexOf('?') > 0 ? '&' : '?'}${paramName}=${paramValue}`;
+      return acc.replace(pattern, `$1${paramValue}$2`);
     }
 
-    return acc;
+    return `${acc}${acc.indexOf('?') > 0 ? '&' : '?'}${paramName}=${paramValue}`;
   }, decodeURIComponent(url));
 
   // Remove a trailing ampersand
@@ -86,15 +83,3 @@ export function refreshCurrentPage() {
 export function redirectTo(url) {
   return window.location.assign(url);
 }
-
-window.gl = window.gl || {};
-window.gl.utils = {
-  ...(window.gl.utils || {}),
-  mergeUrlParams,
-  getLocationHash,
-  getParameterValues,
-  redirectTo,
-  refreshCurrentPage,
-  removeParams,
-  visitUrl,
-};
