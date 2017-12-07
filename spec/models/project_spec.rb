@@ -2393,13 +2393,19 @@ describe Project do
         let(:project) { create(:project) }
 
         let!(:default_cluster) do
-          create(:cluster, platform_type: :kubernetes, projects: [project],
-                 environment_scope: '*', platform_kubernetes: default_cluster_kubernetes)
+          create(:cluster,
+                 platform_type: :kubernetes,
+                 projects: [project],
+                 environment_scope: '*',
+                 platform_kubernetes: default_cluster_kubernetes)
         end
 
         let!(:review_env_cluster) do
-          create(:cluster, platform_type: :kubernetes, projects: [project],
-                 environment_scope: 'review/*', platform_kubernetes: review_env_cluster_kubernetes)
+          create(:cluster,
+                 platform_type: :kubernetes,
+                 projects: [project],
+                 environment_scope: 'review/*',
+                 platform_kubernetes: review_env_cluster_kubernetes)
         end
 
         let(:default_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'default-AAA') }
