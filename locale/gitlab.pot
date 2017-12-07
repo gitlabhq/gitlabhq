@@ -8,13 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-<<<<<<< HEAD
-"POT-Creation-Date: 2017-11-02 14:42+0100\n"
-"PO-Revision-Date: 2017-11-02 14:42+0100\n"
-=======
 "POT-Creation-Date: 2017-12-05 20:31+0100\n"
 "PO-Revision-Date: 2017-12-05 20:31+0100\n"
->>>>>>> upstream/master
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -224,7 +219,6 @@ msgstr ""
 msgid "AutoDevOps|You can activate %{link_to_settings} for this project."
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Billing"
 msgstr ""
 
@@ -277,9 +271,6 @@ msgid "BillingPlans|paid annually at %{price_per_year}"
 msgstr ""
 
 msgid "BillingPlans|per user"
-=======
-msgid "Available"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Branch"
@@ -894,7 +885,6 @@ msgstr ""
 msgid "Contributors"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Control the maximum concurrency of LFS/attachment backfill for this secondary node"
 msgstr ""
 
@@ -902,7 +892,8 @@ msgid "Control the maximum concurrency of repository backfill for this secondary
 msgstr ""
 
 msgid "Copy SSH public key to clipboard"
-=======
+msgstr ""
+
 msgid "ContributorsPage|Building repository graph."
 msgstr ""
 
@@ -910,7 +901,6 @@ msgid "ContributorsPage|Commits to %{branch_name}, excluding merge commits. Limi
 msgstr ""
 
 msgid "ContributorsPage|Please wait a moment, this page will automatically refresh when ready."
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Copy URL to clipboard"
@@ -1176,15 +1166,12 @@ msgstr ""
 msgid "Failed to remove the pipeline schedule"
 msgstr ""
 
-<<<<<<< HEAD
-=======
 msgid "Feb"
 msgstr ""
 
 msgid "February"
 msgstr ""
 
->>>>>>> upstream/master
 msgid "File name"
 msgstr ""
 
@@ -1591,12 +1578,9 @@ msgstr ""
 msgid "No schedules"
 msgstr ""
 
-<<<<<<< HEAD
-=======
 msgid "No time spent"
 msgstr ""
 
->>>>>>> upstream/master
 msgid "None"
 msgstr ""
 
@@ -1663,30 +1647,24 @@ msgstr ""
 msgid "Notifications"
 msgstr ""
 
-<<<<<<< HEAD
-=======
 msgid "Nov"
 msgstr ""
 
 msgid "November"
 msgstr ""
 
->>>>>>> upstream/master
 msgid "Number of access attempts"
 msgstr ""
 
 msgid "Number of failures before backing off"
 msgstr ""
 
-<<<<<<< HEAD
-=======
 msgid "Oct"
 msgstr ""
 
 msgid "October"
 msgstr ""
 
->>>>>>> upstream/master
 msgid "OfSearchInADropdown|Filter"
 msgstr ""
 
@@ -1927,7 +1905,6 @@ msgstr ""
 msgid "ProjectNetworkGraph|Graph"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "ProjectSettings|Contact an admin to change this setting."
 msgstr ""
 
@@ -1944,12 +1921,12 @@ msgid "ProjectSettings|This setting will be applied to all projects unless overr
 msgstr ""
 
 msgid "ProjectSettings|Users can only push commits to this repository that were committed with one of their own verified emails."
-=======
+msgstr ""
+
 msgid "ProjectSettings|Immediately run a pipeline on the default branch"
 msgstr ""
 
 msgid "ProjectSettings|Problem setting up the CI/CD settings JavaScript"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Projects"
@@ -2275,11 +2252,7 @@ msgstr ""
 msgid "SortOptions|Start soon"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "SortOptions|Weight"
-=======
-msgid "Source"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "Source code"
@@ -2404,15 +2377,12 @@ msgstr ""
 msgid "Team"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Thanks! Don't show me this again"
 msgstr ""
 
 msgid "The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "The circuitbreaker backoff threshold should be lower than the failure count threshold"
 msgstr ""
 
@@ -2675,7 +2645,6 @@ msgstr ""
 msgid "Unsubscribe"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "Upgrade your plan to activate Advanced Global Search."
 msgstr ""
 
@@ -2691,8 +2660,6 @@ msgstr ""
 msgid "Upgrade your plan to improve Issue boards."
 msgstr ""
 
-=======
->>>>>>> upstream/master
 msgid "Upload New File"
 msgstr ""
 
@@ -2924,11 +2891,10 @@ msgstr ""
 msgid "Your projects"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "commit"
-=======
+msgstr ""
+
 msgid "branch name"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "day"
@@ -2953,11 +2919,10 @@ msgstr ""
 msgid "personal access token"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "to help your contributors communicate effectively!"
-=======
+msgstr ""
+
 msgid "source"
->>>>>>> upstream/master
 msgstr ""
 
 msgid "username"
