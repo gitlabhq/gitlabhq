@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
           canUpdate: this.canUpdate,
           canDestroy: this.canDestroy,
           endpoint: this.endpoint,
+          updateEndpoint: this.updateEndpoint,
           issuableRef: this.issuableRef,
           initialTitleHtml: this.initialTitleHtml,
           initialTitleText: this.initialTitleText,
