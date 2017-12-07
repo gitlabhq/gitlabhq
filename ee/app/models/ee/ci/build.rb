@@ -10,6 +10,7 @@ module EE
       included do
         scope :codequality, ->() { where(name: %w[codequality codeclimate]) }
         scope :sast, ->() { where(name: 'sast') }
+        scope :clair, ->() { where(name: 'clair') }
 
         after_save :stick_build_if_status_changed
       end
@@ -26,12 +27,21 @@ module EE
       end
 
       def has_codeclimate_json?
-        options.dig(:artifacts, :paths) == ['codeclimate.json'] &&
-          artifacts_metadata?
+        has_artifact?('codeclimate.json')
       end
 
       def has_sast_json?
-        options.dig(:artifacts, :paths) == ['gl-sast-report.json'] &&
+        has_artifact?('gl-sast-report.json')
+      end
+
+      def has_clair_json?
+        has_artifact?('gl-clair-report.json')
+      end
+
+      private
+
+      def has_artifact?(name)
+        options.dig(:artifacts, :paths) == [name] &&
           artifacts_metadata?
       end
     end
