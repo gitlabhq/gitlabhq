@@ -55,8 +55,8 @@
     to-fast-properties "^2.0.0"
 
 "@gitlab-org/gitlab-svgs@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.1.1.tgz#6e07ea02c3b104fa8b5d860a5e2fa9dab4edab96"
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.1.3.tgz#2beead1bcdd83e7400de29b01014bf17bf76318e"
 
 "@types/jquery@^2.0.40":
   version "2.0.48"

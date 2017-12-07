@@ -1,6 +1,6 @@
 module RepositoryCheck
   class SingleRepositoryWorker
-    include Sidekiq::Worker
+    include ApplicationWorker
     include RepositoryCheckQueue
 
     def perform(project_id)

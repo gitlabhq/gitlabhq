@@ -1,9 +1,8 @@
 class RepositoryForkWorker
   ForkError = Class.new(StandardError)
 
-  include Sidekiq::Worker
+  include ApplicationWorker
   include Gitlab::ShellAdapter
-  include DedicatedSidekiqQueue
   include ProjectStartImport
 
   sidekiq_options status_expiration: StuckImportJobsWorker::IMPORT_JOBS_EXPIRATION

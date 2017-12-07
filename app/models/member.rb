@@ -1,4 +1,5 @@
 class Member < ActiveRecord::Base
+  include AfterCommitQueue
   include Sortable
   include Importable
   include Expirable

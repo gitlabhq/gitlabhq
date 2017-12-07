@@ -304,7 +304,7 @@ describe 'Pipelines', :js do
 
         context 'with artifacts expired' do
           let!(:with_artifacts_expired) do
-            create(:ci_build, :artifacts_expired, :success,
+            create(:ci_build, :expired, :success,
               pipeline: pipeline,
               name: 'rspec',
               stage: 'test')

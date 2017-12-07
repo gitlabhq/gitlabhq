@@ -215,17 +215,19 @@ module API
         job = authenticate_job!
         forbidden!('Job is not running!') unless job.running?
 
-        artifacts_upload_path = ArtifactUploader.artifacts_upload_path
+        artifacts_upload_path = JobArtifactUploader.artifacts_upload_path
         artifacts = uploaded_file(:file, artifacts_upload_path)
         metadata = uploaded_file(:metadata, artifacts_upload_path)
 
         bad_request!('Missing artifacts file!') unless artifacts
         file_to_large! unless artifacts.size < max_artifacts_size
 
-        job.artifacts_file = artifacts
-        job.artifacts_metadata = metadata
-        job.artifacts_expire_in = params['expire_in'] ||
+        expire_in = params['expire_in'] ||
           Gitlab::CurrentSettings.current_application_settings.default_artifacts_expire_in
+
+        job.build_job_artifacts_archive(project: job.project, file_type: :archive, file: artifacts, expire_in: expire_in)
+        job.build_job_artifacts_metadata(project: job.project, file_type: :metadata, file: metadata, expire_in: expire_in) if metadata
+        job.artifacts_expire_in = expire_in
 
         if job.save
           present job, with: Entities::JobRequest::Response

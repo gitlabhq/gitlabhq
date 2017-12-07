@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
   include Gitlab::ConfigHelper
   include Gitlab::CurrentSettings
   include Gitlab::SQL::Pattern
+  include AfterCommitQueue
   include Avatarable
   include Referable
   include Sortable
@@ -903,6 +904,7 @@ class User < ActiveRecord::Base
 
   def post_destroy_hook
     log_info("User \"#{name}\" (#{email})  was removed")
+
     system_hook_service.execute_hooks_for(self, :destroy)
   end
 

@@ -213,11 +213,17 @@ module Gitlab
         end
 
         def shas_with_signatures(repository, shas)
-          shas.select do |sha|
-            begin
-              Rugged::Commit.extract_signature(repository.rugged, sha)
-            rescue Rugged::OdbError
-              false
+          GitalyClient.migrate(:filter_shas_with_signatures) do |is_enabled|
+            if is_enabled
+              Gitlab::GitalyClient::CommitService.new(repository).filter_shas_with_signatures(shas)
+            else
+              shas.select do |sha|
+                begin
+                  Rugged::Commit.extract_signature(repository.rugged, sha)
+                rescue Rugged::OdbError
+                  false
+                end
+              end
             end
           end
         end

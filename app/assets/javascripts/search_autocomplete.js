@@ -1,5 +1,12 @@
-/* eslint-disable comma-dangle, no-return-assign, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-unused-vars, no-cond-assign, consistent-return, object-shorthand, prefer-arrow-callback, func-names, space-before-function-paren, prefer-template, quotes, class-methods-use-this, no-unused-expressions, no-sequences, wrap-iife, no-lonely-if, no-else-return, no-param-reassign, vars-on-top, max-len */
+/* eslint-disable no-return-assign, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-unused-vars, no-cond-assign, consistent-return, object-shorthand, prefer-arrow-callback, func-names, space-before-function-paren, prefer-template, quotes, class-methods-use-this, no-sequences, wrap-iife, no-lonely-if, no-else-return, no-param-reassign, vars-on-top, max-len */
 import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from './lib/utils/common_utils';
+
+/**
+ * Search input in top navigation bar.
+ * On click, opens a dropdown
+ * As the user types it filters the results
+ * When the user clicks `x` button it cleans the input and closes the dropdown.
+ */
 
 ((global) => {
   const KEYCODE = {
@@ -7,7 +14,7 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
     BACKSPACE: 8,
     ENTER: 13,
     UP: 38,
-    DOWN: 40
+    DOWN: 40,
   };
 
   class SearchAutocomplete {
@@ -19,6 +26,7 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
       this.projectId = projectId || (this.optsEl.data('autocomplete-project-id') || '');
       this.projectRef = projectRef || (this.optsEl.data('autocomplete-project-ref') || '');
       this.dropdown = this.wrap.find('.dropdown');
+      this.dropdownToggle = this.wrap.find('.js-dropdown-search-toggle');
       this.dropdownContent = this.dropdown.find('.dropdown-content');
       this.locationBadgeEl = this.getElement('.location-badge');
       this.scopeInputEl = this.getElement('#scope');
@@ -29,13 +37,16 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
       this.repositoryInputEl = this.getElement('#repository_ref');
       this.clearInput = this.getElement('.js-clear-input');
       this.saveOriginalState();
+
       // Only when user is logged in
       if (gon.current_user_id) {
         this.createAutocomplete();
       }
+
       this.searchInput.addClass('disabled');
       this.saveTextLength();
       this.bindEvents();
+      this.dropdownToggle.dropdown();
     }
 
     // Finds an element inside wrapper element
@@ -43,7 +54,6 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
       this.onSearchInputBlur = this.onSearchInputBlur.bind(this);
       this.onClearInputClick = this.onClearInputClick.bind(this);
       this.onSearchInputFocus = this.onSearchInputFocus.bind(this);
-      this.onSearchInputClick = this.onSearchInputClick.bind(this);
       this.onSearchInputKeyUp = this.onSearchInputKeyUp.bind(this);
       this.onSearchInputKeyDown = this.onSearchInputKeyDown.bind(this);
     }
@@ -68,12 +78,12 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
         enterCallback: false,
         filterInput: 'input#search',
         search: {
-          fields: ['text']
+          fields: ['text'],
         },
         id: this.getSearchText,
         data: this.getData.bind(this),
         selectable: true,
-        clicked: this.onClick.bind(this)
+        clicked: this.onClick.bind(this),
       });
     }
 
@@ -82,32 +92,35 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
     }
 
     getData(term, callback) {
-      var _this, contents, jqXHR;
-      _this = this;
       if (!term) {
-        if (contents = this.getCategoryContents()) {
+        const contents = this.getCategoryContents();
+        if (contents) {
           this.searchInput.data('glDropdown').filter.options.callback(contents);
           this.enableAutocomplete();
         }
         return;
       }
+
       // Prevent multiple ajax calls
       if (this.loadingSuggestions) {
         return;
       }
+
       this.loadingSuggestions = true;
-      return jqXHR = $.get(this.autocompletePath, {
+
+      return $.get(this.autocompletePath, {
         project_id: this.projectId,
         project_ref: this.projectRef,
-        term: term
-      }, function(response) {
-        var data, firstCategory, i, lastCategory, len, suggestion;
+        term: term,
+      }, (response) => {
+        var firstCategory, i, lastCategory, len, suggestion;
         // Hide dropdown menu if no suggestions returns
         if (!response.length) {
-          _this.disableAutocomplete();
+          this.disableAutocomplete();
           return;
         }
-        data = [];
+
+        const data = [];
         // List results
         firstCategory = true;
         for (i = 0, len = response.length; i < len; i += 1) {
@@ -121,7 +134,7 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
               firstCategory = false;
             }
             data.push({
-              header: suggestion.category
+              header: suggestion.category,
             });
             lastCategory = suggestion.category;
           }
@@ -129,7 +142,7 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
             id: (suggestion.category.toLowerCase()) + "-" + suggestion.id,
             category: suggestion.category,
             text: suggestion.label,
-            url: suggestion.url
+            url: suggestion.url,
           });
         }
         // Add option to proceed with the search
@@ -137,20 +150,21 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
           data.push('separator');
           data.push({
             text: "Result name contains \"" + term + "\"",
-            url: "/search?search=" + term + "&project_id=" + (_this.projectInputEl.val()) + "&group_id=" + (_this.groupInputEl.val())
+            url: "/search?search=" + term + "&project_id=" + (this.projectInputEl.val()) + "&group_id=" + (this.groupInputEl.val()),
           });
         }
         return callback(data);
-      }).always(function() {
-        return _this.loadingSuggestions = false;
-      });
+      })
+      .always(() => { this.loadingSuggestions = false; });
     }
 
     getCategoryContents() {
-      var dashboardOptions, groupOptions, issuesPath, items, mrPath, name, options, projectOptions, userId, userName;
-      userId = gon.current_user_id;
-      userName = gon.current_username;
-      projectOptions = gl.projectOptions, groupOptions = gl.groupOptions, dashboardOptions = gl.dashboardOptions;
+      const userId = gon.current_user_id;
+      const userName = gon.current_username;
+      const { projectOptions, groupOptions, dashboardOptions } = gl;
+
+      // Get options
+      let options;
       if (isInGroupsPage() && groupOptions) {
         options = groupOptions[getGroupSlug()];
       } else if (isInProjectPage() && projectOptions) {
@@ -158,37 +172,42 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
       } else if (dashboardOptions) {
         options = dashboardOptions;
       }
-      issuesPath = options.issuesPath, mrPath = options.mrPath, name = options.name;
-      items = [
-        {
-          header: "" + name
-        }
-      ];
+
+      const { issuesPath, mrPath, name, issuesDisabled } = options;
+      const baseItems = [];
+
+      if (name) {
+        baseItems.push({
+          header: `${name}`,
+        });
+      }
+
       const issueItems = [
         {
           text: 'Issues assigned to me',
-          url: issuesPath + "/?assignee_username=" + userName
-        }, {
+          url: `${issuesPath}/?assignee_username=${userName}`,
+        },
+        {
           text: "Issues I've created",
-          url: issuesPath + "/?author_username=" + userName
-        }
+          url: `${issuesPath}/?author_username=${userName}`,
+        },
       ];
       const mergeRequestItems = [
         {
           text: 'Merge requests assigned to me',
-          url: mrPath + "/?assignee_username=" + userName
-        }, {
+          url: `${mrPath}/?assignee_username=${userName}`,
+        },
+        {
           text: "Merge requests I've created",
-          url: mrPath + "/?author_username=" + userName
-        }
+          url: `${mrPath}/?author_username=${userName}`,
+        },
       ];
-      if (options.issuesDisabled) {
-        items = items.concat(mergeRequestItems);
+
+      let items;
+      if (issuesDisabled) {
+        items = baseItems.concat(mergeRequestItems);
       } else {
-        items = items.concat(...issueItems, 'separator', ...mergeRequestItems);
-      }
-      if (!name) {
-        items.splice(0, 1);
+        items = baseItems.concat(...issueItems, 'separator', ...mergeRequestItems);
       }
       return items;
     }
@@ -202,39 +221,34 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
         repository_ref: this.repositoryInputEl.val(),
         scope: this.scopeInputEl.val(),
         // Location badge
-        _location: this.locationBadgeEl.text()
+        _location: this.locationBadgeEl.text(),
       };
     }
 
     bindEvents() {
       this.searchInput.on('keydown', this.onSearchInputKeyDown);
       this.searchInput.on('keyup', this.onSearchInputKeyUp);
-      this.searchInput.on('click', this.onSearchInputClick);
       this.searchInput.on('focus', this.onSearchInputFocus);
       this.searchInput.on('blur', this.onSearchInputBlur);
       this.clearInput.on('click', this.onClearInputClick);
-      return this.locationBadgeEl.on('click', (function(_this) {
-        return function() {
-          return _this.searchInput.focus();
-        };
-      })(this));
+      this.locationBadgeEl.on('click', () => this.searchInput.focus());
     }
 
     enableAutocomplete() {
-      var _this;
       // No need to enable anything if user is not logged in
       if (!gon.current_user_id) {
         return;
       }
+
+      // If the dropdown is closed, we'll open it
       if (!this.dropdown.hasClass('open')) {
-        _this = this;
         this.loadingSuggestions = false;
-        this.dropdown.addClass('open').trigger('shown.bs.dropdown');
+        this.dropdownToggle.dropdown('toggle');
         return this.searchInput.removeClass('disabled');
       }
     }
 
-      // Saves last length of the entered text
+    // Saves last length of the entered text
     onSearchInputKeyDown() {
       return this.saveTextLength();
     }
@@ -277,11 +291,6 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
           }
       }
       this.wrap.toggleClass('has-value', !!e.target.value);
-    }
-
-    // Avoid falsy value to be returned
-    onSearchInputClick(e) {
-      return e.stopImmediatePropagation();
     }
 
     onSearchInputFocus() {
@@ -335,7 +344,7 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
         return this.locationBadgeEl.hide();
       } else {
         return this.addLocationBadge({
-          value: this.originalState._location
+          value: this.originalState._location,
         });
       }
     }
@@ -387,13 +396,13 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
           if (item.category === 'Projects') {
             this.projectInputEl.val(item.id);
             this.addLocationBadge({
-              value: 'This project'
+              value: 'This project',
             });
           }
           if (item.category === 'Groups') {
             this.groupInputEl.val(item.id);
             this.addLocationBadge({
-              value: 'This group'
+              value: 'This group',
             });
           }
         }
@@ -420,7 +429,7 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
         name: $projectOptionsDataEl.data('name'),
         issuesPath: $projectOptionsDataEl.data('issues-path'),
         issuesDisabled: $projectOptionsDataEl.data('issues-disabled'),
-        mrPath: $projectOptionsDataEl.data('mr-path')
+        mrPath: $projectOptionsDataEl.data('mr-path'),
       };
     }
 
@@ -432,14 +441,14 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
       gl.groupOptions[groupPath] = {
         name: $groupOptionsDataEl.data('name'),
         issuesPath: $groupOptionsDataEl.data('issues-path'),
-        mrPath: $groupOptionsDataEl.data('mr-path')
+        mrPath: $groupOptionsDataEl.data('mr-path'),
       };
     }
 
     if ($dashboardOptionsDataEl.length) {
       gl.dashboardOptions = {
         issuesPath: $dashboardOptionsDataEl.data('issues-path'),
-        mrPath: $dashboardOptionsDataEl.data('mr-path')
+        mrPath: $dashboardOptionsDataEl.data('mr-path'),
       };
     }
   });

@@ -9,6 +9,7 @@ class Issue < ActiveRecord::Base
   include FasterCacheKeys
   include RelativePositioning
   include TimeTrackable
+  include ThrottledTouch
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
