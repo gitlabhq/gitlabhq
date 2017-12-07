@@ -351,7 +351,6 @@ describe Project do
       it { is_expected.to delegate_method(method).to(:team) }
     end
 
-    it { is_expected.to delegate_method(:empty_repo?).to(:repository) }
     it { is_expected.to delegate_method(:members).to(:team).with_prefix(true) }
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).with_arguments(allow_nil: true) }
   end
@@ -775,6 +774,24 @@ describe Project do
       project = create(:redmine_project)
 
       expect(project.default_issues_tracker?).to be_falsey
+    end
+  end
+
+  describe '#empty_repo?' do
+    context 'when the repo does not exist' do
+      let(:project) { build_stubbed(:project) }
+
+      it 'returns true' do
+        expect(project.empty_repo?).to be(true)
+      end
+    end
+
+    context 'when the repo exists' do
+      let(:project) { create(:project, :repository) }
+      let(:empty_project) { create(:project, :empty_repo) }
+
+      it { expect(empty_project.empty_repo?).to be(true) }
+      it { expect(project.empty_repo?).to be(false) }
     end
   end
 
