@@ -1,7 +1,7 @@
 module EE
   module Gitlab
     module GitAccessWiki
-      prepend GeoGitAccess
+      include GeoGitAccess
 
       private
 
