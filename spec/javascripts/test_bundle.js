@@ -11,6 +11,9 @@ const isHeadlessChrome = /\bHeadlessChrome\//.test(navigator.userAgent);
 Vue.config.devtools = !isHeadlessChrome;
 Vue.config.productionTip = false;
 
+const nonce = 9999 * Math.random();
+console.log('test_bundle.js', nonce, process.env.NODE_ENV, isHeadlessChrome, new Error().stack);
+
 Vue.use(VueResource);
 
 // enable test fixtures
@@ -48,14 +51,18 @@ const checkUnhandledPromiseRejections = (done) => {
 beforeEach(done => done());
 
 beforeAll(() => {
+  /* */
   const origError = console.error;
   spyOn(console, 'error').and.callFake((message) => {
+    console.log(`console error message |||${message}|||`, new Error().stack);
     if (/^\[Vue warn\]/.test(message)) {
+      console.log('we found a Vue warn!!!');
       fail(message);
     } else {
       origError(message);
     }
   });
+  /* */
 });
 
 const builtinVueHttpInterceptors = Vue.http.interceptors.slice();

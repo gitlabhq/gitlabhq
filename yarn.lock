@@ -6401,9 +6401,9 @@ vue-template-es2015-compiler@^1.2.2:
   version "1.5.1"
   resolved "https://registry.yarnpkg.com/vue-template-es2015-compiler/-/vue-template-es2015-compiler-1.5.1.tgz#0c36cc57aa3a9ec13e846342cb14a72fcac8bd93"
 
-vue@^2.2.6:
+vue@MadLittleMods/vue#debugging-vue-errors-2.2.6:
   version "2.2.6"
-  resolved "https://registry.yarnpkg.com/vue/-/vue-2.2.6.tgz#451714b394dd6d4eae7b773c40c2034a59621aed"
+  resolved "https://codeload.github.com/MadLittleMods/vue/tar.gz/5f67bc6d27ffd35a0c46ecd45761fd31a65169c4"
 
 vuex@^3.0.0:
   version "3.0.0"

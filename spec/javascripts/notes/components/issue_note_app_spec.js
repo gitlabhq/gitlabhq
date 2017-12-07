@@ -184,6 +184,7 @@ describe('issue_note_app', () => {
       });
 
       it('updates the note and resets the edit form', (done) => {
+        console.log('running test in question');
         setTimeout(() => {
           vm.$el.querySelector('.js-note-edit').click();
           Vue.nextTick(() => {
