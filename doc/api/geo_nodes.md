@@ -98,7 +98,8 @@ Example response:
     "cursor_last_event_id": 23,
     "cursor_last_event_timestamp": 1509681166,
     "last_successful_status_check_timestamp": 1510125024,
-    "version": "10.3.0"
+    "version": "10.3.0",
+    "revision": "33d33a096a"
   }
 ]
 ```
@@ -138,7 +139,8 @@ Example response:
   "cursor_last_event_id": 23,
   "cursor_last_event_timestamp": 1509681166,
   "last_successful_status_check_timestamp": 1510125268,
-  "version": "10.3.0"
+  "version": "10.3.0",
+  "revision": "33d33a096a"
 }
 ```
 
