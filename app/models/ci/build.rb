@@ -234,7 +234,7 @@ module Ci
       variables += pipeline.predefined_variables
       variables += runner.predefined_variables if runner
       variables += project.container_registry_variables
-      variables += project.deployment_variables if has_environment?
+      variables += project.deployment_variables(environment: environment) if has_environment?
       variables += project.auto_devops_variables
       variables += yaml_variables
       variables += user_variables
