@@ -163,6 +163,14 @@ information in the UI.
 
 ![Latest artifacts button](img/job_latest_artifacts_browser.png)
 
+## Validation for `dependency` keyword
+
+To disable [the validation for dependency], you can flip the feature flag from a rails console:
+
+```
+Feature.enable('ci_disable_validates_dependencies')
+```
 
 [expiry date]: ../../../ci/yaml/README.md#artifacts-expire_in
+[the validation for dependency]: ../../../ci/yaml/README.md#dependencies
 [ce-14399]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/14399

@@ -1153,21 +1153,15 @@ deploy:
   script: make deploy
 ```
 
-### Validations for `dependencies` keyword
-
+>**Note:**
 > Introduced in GitLab 10.3
+> This is the user documentation. For the administration guide see
+  [administration/job_artifacts](../../../administration/job_artifacts.md#validation_for_dependency).
 
-`dependencies` keyword doesn't check the depended `artifacts` strictly. Therefore
-they do not fail even though it falls into the following conditions.
+If a depended job doesn't have artifacts by the following reason, the depending job will fail.
 
 1. A depended `artifacts` has been [erased](https://docs.gitlab.com/ee/api/jobs.html#erase-a-job).
 1. A depended `artifacts` has been [expired](https://docs.gitlab.com/ee/ci/yaml/#artifacts-expire_in).
-
-To validate those conditions, you can flip the feature flag from a rails console:
-
-```
-Feature.enable('ci_validates_dependencies')
-```
 
 ### before_script and after_script
 
