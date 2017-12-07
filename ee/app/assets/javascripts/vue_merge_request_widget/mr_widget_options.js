@@ -16,8 +16,10 @@ export default {
   data() {
     return {
       isLoadingCodequality: false,
+      isLoadingPerformance: false,
       isLoadingSecurity: false,
       loadingCodequalityFailed: false,
+      loadingPerformanceFailed: false,
       loadingSecurityFailed: false,
     };
   },
@@ -28,6 +30,10 @@ export default {
     shouldRenderCodeQuality() {
       const { codeclimate } = this.mr;
       return codeclimate && codeclimate.head_path && codeclimate.base_path;
+    },
+    shouldRenderPerformance() {
+      const { performance } = this.mr;
+      return performance && performance.head_path && performance.base_path;
     },
     shouldRenderSecurityReport() {
       return this.mr.sast;
@@ -65,6 +71,39 @@ export default {
       return text.join('');
     },
 
+    performanceText() {
+      const { improved, degraded } = this.mr.performanceMetrics;
+      const text = [];
+
+      if (!improved.length && !degraded.length) {
+        text.push('No changes to performance metrics');
+      } else if (improved.length || degraded.length) {
+        text.push('Performance metrics');
+
+        if (improved.length) {
+          text.push(n__(
+            ' improved on %d point',
+            ' improved on %d points',
+            improved.length,
+          ));
+        }
+
+        if (improved.length > 0 && degraded.length > 0) {
+          text.push(' and');
+        }
+
+        if (degraded.length) {
+          text.push(n__(
+            ' degraded on %d point',
+            ' degraded on %d points',
+            degraded.length,
+          ));
+        }
+      }
+
+      return text.join('');
+    },
+
     securityText() {
       if (this.mr.securityReport.length) {
         return n__(
@@ -81,6 +120,15 @@ export default {
       if (this.isLoadingCodequality) {
         return 'loading';
       } else if (this.loadingCodequalityFailed) {
+        return 'error';
+      }
+      return 'success';
+    },
+
+    performanceStatus() {
+      if (this.isLoadingPerformance) {
+        return 'loading';
+      } else if (this.loadingPerformanceFailed) {
         return 'error';
       }
       return 'success';
@@ -115,6 +163,25 @@ export default {
         });
     },
 
+    fetchPerformance() {
+      const { head_path, base_path } = this.mr.performance;
+
+      this.isLoadingPerformance = true;
+
+      Promise.all([
+        this.service.fetchReport(head_path),
+        this.service.fetchReport(base_path),
+      ])
+        .then((values) => {
+          this.mr.comparePerformanceMetrics(values[0], values[1]);
+          this.isLoadingPerformance = false;
+        })
+        .catch(() => {
+          this.isLoadingPerformance = false;
+          this.loadingPerformanceFailed = true;
+        });
+    },
+
     fetchSecurity() {
       const { path, blob_path } = this.mr.sast;
       this.isLoadingSecurity = true;
@@ -133,6 +200,10 @@ export default {
   created() {
     if (this.shouldRenderCodeQuality) {
       this.fetchCodeQuality();
+    }
+
+    if (this.shouldRenderPerformance) {
+      this.fetchPerformance();
     }
 
     if (this.shouldRenderSecurityReport) {
@@ -166,6 +237,18 @@ export default {
         :success-text="codequalityText"
         :unresolvedIssues="mr.codeclimateMetrics.newIssues"
         :resolvedIssues="mr.codeclimateMetrics.resolvedIssues"
+        />
+      <collapsible-section
+        class="js-performance-widget"
+        v-if="shouldRenderPerformance"
+        type="performance"
+        :status="performanceStatus"
+        loading-text="Loading performance report"
+        error-text="Failed to load performance report"
+        :success-text="performanceText"
+        :unresolvedIssues="mr.performanceMetrics.degraded"
+        :resolvedIssues="mr.performanceMetrics.improved"
+        :neutralIssues="mr.performanceMetrics.neutral"
         />
       <collapsible-section
         class="js-sast-widget"

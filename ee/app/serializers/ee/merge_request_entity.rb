@@ -25,6 +25,20 @@ module EE
         end
       end
 
+      expose :performance, if: -> (mr, _) { expose_performance_data?(mr) } do
+        expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.head_performance_artifact) } do |merge_request|
+          raw_project_build_artifacts_url(merge_request.source_project,
+                                          merge_request.head_performance_artifact,
+                                          path: 'performance.json')
+        end
+
+        expose :base_path, if: -> (mr, _) { can?(current_user, :read_build, mr.base_performance_artifact) } do |merge_request|
+          raw_project_build_artifacts_url(merge_request.target_project,
+                                          merge_request.base_performance_artifact,
+                                          path: 'performance.json')
+        end
+      end
+
       expose :sast, if: -> (mr, _) { expose_sast_data?(mr, current_user) } do
         expose :path do |merge_request|
           raw_project_build_artifacts_url(merge_request.source_project,
@@ -44,6 +58,11 @@ module EE
       mr.project.feature_available?(:sast) &&
         mr.has_sast_data? &&
         can?(current_user, :read_build, mr.sast_artifact)
+    end
+
+    def expose_performance_data?(mr)
+      mr.project.feature_available?(:merge_request_performance_metrics) &&
+        mr.has_performance_data?
     end
   end
 end
