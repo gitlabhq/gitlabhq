@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Ci::CreatePipelineService, '#execute' do
-  set(:namespace) { create(:namespace, plan: EE::Namespace::GOLD_PLAN) }
+  set(:namespace) { create(:namespace, plan: :gold_plan) }
   set(:project) { create(:project, :repository, namespace: namespace) }
   set(:user) { create(:user) }
 
