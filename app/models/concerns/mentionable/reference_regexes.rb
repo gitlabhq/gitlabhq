@@ -3,6 +3,7 @@ module Mentionable
     def self.reference_pattern(link_patterns, issue_pattern)
       Regexp.union(link_patterns,
                    issue_pattern,
+                   Epic.reference_pattern,
                    Commit.reference_pattern,
                    MergeRequest.reference_pattern)
     end
