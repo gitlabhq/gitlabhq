@@ -222,7 +222,6 @@ import '~/notes';
         notes.note_ids = [];
         notes.updatedNotesTrackingMap = {};
 
-        spyOn(gl.utils, 'localTimeAgo');
         spyOn(Notes, 'isNewNote').and.callThrough();
         spyOn(Notes, 'isUpdatedNote').and.callThrough();
         spyOn(Notes, 'animateAppendNote').and.callThrough();
@@ -349,7 +348,6 @@ import '~/notes';
         ]);
         notes.note_ids = [];
 
-        spyOn(gl.utils, 'localTimeAgo');
         spyOn(Notes, 'isNewNote');
         spyOn(Notes, 'animateAppendNote');
         Notes.isNewNote.and.returnValue(true);

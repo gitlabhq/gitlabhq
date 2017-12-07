@@ -2,6 +2,7 @@
 /* global Pager */
 
 import Cookies from 'js-cookie';
+import { localTimeAgo } from './lib/utils/datetime_utility';
 
 class Activities {
   constructor() {
@@ -15,7 +16,7 @@ class Activities {
   }
 
   updateTooltips() {
-    gl.utils.localTimeAgo($('.js-timeago', '.content_list'));
+    localTimeAgo($('.js-timeago', '.content_list'));
   }
 
   reloadActivities() {

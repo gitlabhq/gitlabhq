@@ -3,6 +3,7 @@ import { visitUrl } from './lib/utils/url_utility';
 import bp from './breakpoints';
 import { bytesToKiB } from './lib/utils/number_utils';
 import { setCiStatusFavicon } from './lib/utils/common_utils';
+import { timeFor } from './lib/utils/datetime_utility';
 
 export default class Job {
   constructor(options) {
@@ -261,7 +262,7 @@ export default class Job {
     if ($date.length) {
       const date = $date.text();
       return $date.text(
-        gl.utils.timeFor(new Date(date.replace(/([0-9]+)-([0-9]+)-([0-9]+)/g, '$1/$2/$3')), ' '),
+        timeFor(new Date(date.replace(/([0-9]+)-([0-9]+)-([0-9]+)/g, '$1/$2/$3'))),
       );
     }
   }

@@ -28,7 +28,7 @@ import './commit/image_file';
 
 // lib/utils
 import { handleLocationHash } from './lib/utils/common_utils';
-import './lib/utils/datetime_utility';
+import { localTimeAgo, renderTimeago } from './lib/utils/datetime_utility';
 import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 
 // behaviors
@@ -200,7 +200,7 @@ $(function () {
     return $(this).parents('form').submit();
   // Form submitter
   });
-  gl.utils.localTimeAgo($('abbr.timeago, .js-timeago'), true);
+  localTimeAgo($('abbr.timeago, .js-timeago'), true);
   // Disable form buttons while a form is submitting
   $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function (e) {
     var buttons;
@@ -292,7 +292,7 @@ $(function () {
   loadAwardsHandler();
   new Aside();
 
-  gl.utils.renderTimeago();
+  renderTimeago();
 
   $(document).trigger('init.scrolling-tabs');
 
