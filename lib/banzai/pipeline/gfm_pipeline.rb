@@ -20,7 +20,6 @@ module Banzai
           Filter::ImageLazyLoadFilter,
           Filter::ImageLinkFilter,
           Filter::EmojiFilter,
-          Filter::TableOfContentsFilter,
           Filter::AutolinkFilter,
           Filter::ExternalLinkFilter,
 
@@ -33,6 +32,8 @@ module Banzai
           Filter::CommitReferenceFilter,
           Filter::LabelReferenceFilter,
           Filter::MilestoneReferenceFilter,
+
+          Filter::TableOfContentsFilter,
 
           Filter::TaskListFilter,
           Filter::InlineDiffFilter,
