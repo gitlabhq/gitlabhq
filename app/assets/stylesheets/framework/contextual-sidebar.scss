@@ -313,16 +313,12 @@
 
 // Collapsed nav
 
-.toggle-button-container {
+.toggle-sidebar-button,
+.close-nav-button {
   width: $contextual-sidebar-width - 2px;
   transition: width, $sidebar-transition-duration;
   position: fixed;
   bottom: 0;
-  left: 0;
-}
-
-.toggle-sidebar-button,
-.close-nav-button {
   padding: 16px;
   background-color: $gray-light;
   border: 0;
@@ -386,12 +382,9 @@
     margin-right: 0;
   }
 
-  .toggle-button-container {
-    width: $contextual-sidebar-collapsed-width - 2px;
-  }
-
   .toggle-sidebar-button {
     padding: 16px;
+    width: $contextual-sidebar-collapsed-width - 2px;
 
     .collapse-text,
     .icon-angle-double-left {
