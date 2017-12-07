@@ -1,6 +1,7 @@
 module EE
   module Gitlab
     module GeoGitAccess
+      include ::Gitlab::ConfigHelper
       include ::EE::GitlabRoutingHelper
 
       GEO_SERVER_DOCS_URL = 'https://docs.gitlab.com/ee/gitlab-geo/using_a_geo_server.html'.freeze
@@ -32,10 +33,6 @@ module EE
 
       def project_or_wiki
         self.class.name == 'Gitlab::GitAccessWiki' ? @project.wiki : @project
-      end
-
-      def gitlab_config
-        ::Gitlab.config.gitlab
       end
     end
   end
