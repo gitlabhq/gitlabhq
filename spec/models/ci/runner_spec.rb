@@ -19,6 +19,63 @@ describe Ci::Runner do
         end
       end
     end
+
+    context 'either_projects_or_group' do
+      it 'disallows assigning to a group if already assigned to a group' do
+        group = create(:group)
+        runner = create(:ci_runner, groups: [group])
+
+        runner.groups << build(:group)
+
+        expect(runner).not_to be_valid
+        expect(runner.errors.full_messages).to eq ['Runner can only be assigned to one group']
+      end
+
+      it 'disallows assigning to a group if already assigned to a project' do
+        project = create(:project)
+        runner = create(:ci_runner, projects: [project])
+
+        runner.groups << build(:group)
+
+        expect(runner).not_to be_valid
+        expect(runner.errors.full_messages).to eq ['Runner can only be assigned either to projects or to a group']
+      end
+
+      it 'disallows assigning to a project if already assigned to a group' do
+        group = create(:group)
+        runner = create(:ci_runner, groups: [group])
+
+        runner.projects << build(:project)
+
+        expect(runner).not_to be_valid
+        expect(runner.errors.full_messages).to eq ['Runner can only be assigned either to projects or to a group']
+      end
+
+      it 'allows assigning to a group if not assigned to a group nor a project' do
+        runner = create(:ci_runner)
+
+        runner.groups << build(:group)
+
+        expect(runner).to be_valid
+      end
+
+      it 'allows assigning to a project if not assigned to a group nor a project' do
+        runner = create(:ci_runner)
+
+        runner.projects << build(:project)
+
+        expect(runner).to be_valid
+      end
+
+      it 'allows assigning to a project if already assigned to a project' do
+        project = create(:project)
+        runner = create(:ci_runner, projects: [project])
+
+        runner.projects << build(:project)
+
+        expect(runner).to be_valid
+      end
+    end
   end
 
   describe '#access_level' do
