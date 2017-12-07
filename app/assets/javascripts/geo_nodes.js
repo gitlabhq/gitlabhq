@@ -201,7 +201,7 @@ class GeoNodeStatus {
       this.$dbReplicationLag.text('UNKNOWN');
     }
 
-    if (this.primaryVersion === status.version && this.primaryRevision === status.revision) {
+    if (!this.primaryVersion || (this.primaryVersion === status.version && this.primaryRevision === status.revision)) {
       this.$secondaryVersion.removeClass(`${versionMismatchClass}`);
       this.$secondaryVersion.text(`${status.version} (${status.revision})`);
     } else {
