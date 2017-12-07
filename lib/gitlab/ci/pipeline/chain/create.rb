@@ -18,9 +18,7 @@ module Gitlab
           rescue ActiveRecord::RecordInvalid => e
             error("Failed to persist the pipeline: #{e}")
           ensure
-            pipeline.builds.find_each do |build|
-              next if build.stage_id.present?
-
+            if pipeline.builds.where(stage_id: nil).any?
               invalid_builds_counter.increment(node: hostname)
             end
           end
@@ -33,7 +31,8 @@ module Gitlab
 
           def invalid_builds_counter
             @counter ||= Gitlab::Metrics
-              .counter(:invalid_builds_counter, 'Invalid builds counter')
+              .counter(:gitlab_ci_invalid_builds_total,
+                       'Invalid builds without stage assigned counter')
           end
 
           def hostname
