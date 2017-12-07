@@ -1,6 +1,6 @@
 module Gitlab
   class GitAccessWiki < GitAccess
-    prepend EE::Gitlab::GeoGitAccess
+    prepend EE::Gitlab::GitAccessWiki
 
     ERROR_MESSAGES = {
       read_only:     "You can't push code to a read-only GitLab instance.",

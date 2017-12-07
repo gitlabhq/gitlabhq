@@ -6,6 +6,12 @@ module EE
 
       GEO_SERVER_DOCS_URL = 'https://docs.gitlab.com/ee/gitlab-geo/using_a_geo_server.html'.freeze
 
+      protected
+
+      def project_or_wiki
+        @project
+      end
+
       private
 
       def push_to_read_only_message
@@ -29,10 +35,6 @@ module EE
 
       def current_user
         user
-      end
-
-      def project_or_wiki
-        self.class.name == 'Gitlab::GitAccessWiki' ? @project.wiki : @project
       end
     end
   end
