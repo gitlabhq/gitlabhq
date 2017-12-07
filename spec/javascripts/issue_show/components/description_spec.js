@@ -33,10 +33,6 @@ describe('Description component', () => {
     vm.$destroy();
   });
 
-  afterEach(() => {
-    vm.$destroy();
-  });
-
   it('animates description changes', (done) => {
     vm.descriptionHtml = 'changed';
 
