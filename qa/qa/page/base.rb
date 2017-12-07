@@ -22,10 +22,6 @@ module QA
         yield if block_given?
       end
 
-      def self.address
-        raise NotImplementedError
-      end
-
       def scroll_to(selector, text: nil)
         page.execute_script <<~JS
           var elements = Array.from(document.querySelectorAll('#{selector}'));
@@ -39,6 +35,10 @@ module QA
         JS
 
         page.within(selector) { yield } if block_given?
+      end
+
+      def self.path
+        raise NotImplementedError
       end
     end
   end

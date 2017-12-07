@@ -12,14 +12,25 @@ module QA
         self.class.configure!
       end
 
-      def visit(page, &block)
-        Browser::Session.new(page).tap do |session|
+      ##
+      # Visit a page that belongs to a GitLab instance under given address.
+      #
+      # Example:
+      #
+      # visit(:gitlab, Page::Main::Login)
+      # visit('http://gitlab.example/users/sign_in')
+      #
+      # In case of an address that is a symbol we will try to guess address
+      # based on `Runtime::Scenario#something_address`.
+      #
+      def visit(address, page, &block)
+        Browser::Session.new(address, page).tap do |session|
           session.perform(&block)
         end
       end
 
-      def self.visit(page, &block)
-        new.visit(page, &block)
+      def self.visit(address, page, &block)
+        new.visit(address, page, &block)
       end
 
       def self.configure!
@@ -52,10 +63,17 @@ module QA
       class Session
         include Capybara::DSL
 
-        attr_reader :address
+        def initialize(instance, page = nil)
+          @instance = instance
+          @address = host + page&.path
+        end
 
-        def initialize(page)
-          @address = page.is_a?(String) ? page : page.address
+        def host
+          if @instance.is_a?(Symbol)
+            Runtime::Scenario.send("#{@instance}_address")
+          else
+            @instance.to_s
+          end
         end
 
         def perform(&block)
