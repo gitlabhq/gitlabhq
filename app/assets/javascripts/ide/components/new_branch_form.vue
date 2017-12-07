@@ -15,7 +15,7 @@
     },
     computed: {
       ...mapState([
-        'currentBranchId',
+        'currentBranch',
       ]),
       btnDisabled() {
         return this.loading || this.branchName === '';
@@ -74,7 +74,7 @@
     </div>
     <p>
       Create from:
-      <code>{{ currentBranchId }}</code>
+      <code>{{ currentBranch }}</code>
     </p>
     <input
       class="form-control js-new-branch-name"

@@ -33,7 +33,7 @@ describe('IdeSidebar', () => {
     });
 
     it('adds collapsed class', () => {
-      expect(vm.$el.querySelector('.is-collapsed')).not.toBeNull();
+      expect(vm.$el.classList).toContain('is-collapsed');
     });
 
     it('shows correct icon', () => {

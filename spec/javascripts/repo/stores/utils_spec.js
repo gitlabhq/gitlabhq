@@ -1,4 +1,6 @@
 import * as utils from '~/ide/stores/utils';
+import state from '~/ide/stores/state';
+import { file } from '../helpers';
 
 describe('Multi-file store utils', () => {
   describe('setPageTitle', () => {
@@ -6,6 +8,31 @@ describe('Multi-file store utils', () => {
       utils.setPageTitle('test');
 
       expect(document.title).toBe('test');
+    });
+  });
+
+  describe('treeList', () => {
+    let localState;
+
+    beforeEach(() => {
+      localState = state();
+    });
+
+    it('returns flat tree list', () => {
+      localState.trees = [];
+      localState.trees['abcproject/mybranch'] = {
+        tree: [],
+      };
+      const baseTree = localState.trees['abcproject/mybranch'].tree;
+      baseTree.push(file('1'));
+      baseTree[0].tree.push(file('2'));
+      baseTree[0].tree[0].tree.push(file('3'));
+
+      const treeList = utils.treeList(localState, 'abcproject/mybranch');
+
+      expect(treeList.length).toBe(3);
+      expect(treeList[1].name).toBe(baseTree[0].tree[0].name);
+      expect(treeList[2].name).toBe(baseTree[0].tree[0].tree[0].name);
     });
   });
 
@@ -42,10 +69,10 @@ describe('Multi-file store utils', () => {
   });
 
   describe('findIndexOfFile', () => {
-    let state;
+    let localState;
 
     beforeEach(() => {
-      state = [{
+      localState = [{
         path: '1',
       }, {
         path: '2',
@@ -53,7 +80,7 @@ describe('Multi-file store utils', () => {
     });
 
     it('finds in the index of an entry by path', () => {
-      const index = utils.findIndexOfFile(state, {
+      const index = utils.findIndexOfFile(localState, {
         path: '2',
       });
 
@@ -62,10 +89,10 @@ describe('Multi-file store utils', () => {
   });
 
   describe('findEntry', () => {
-    let state;
+    let localState;
 
     beforeEach(() => {
-      state = {
+      localState = {
         tree: [{
           type: 'tree',
           name: 'test',
@@ -77,14 +104,14 @@ describe('Multi-file store utils', () => {
     });
 
     it('returns an entry found by name', () => {
-      const foundEntry = utils.findEntry(state, 'tree', 'test');
+      const foundEntry = utils.findEntry(localState.tree, 'tree', 'test');
 
       expect(foundEntry.type).toBe('tree');
       expect(foundEntry.name).toBe('test');
     });
 
     it('returns undefined when no entry found', () => {
-      const foundEntry = utils.findEntry(state, 'blob', 'test');
+      const foundEntry = utils.findEntry(localState.tree, 'blob', 'test');
 
       expect(foundEntry).toBeUndefined();
     });

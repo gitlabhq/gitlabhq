@@ -12,7 +12,7 @@ describe('Multi-file store branch mutations', () => {
     it('sets currentBranch', () => {
       mutations.SET_CURRENT_BRANCH(localState, 'master');
 
-      expect(localState.currentBranch).toBe('master');
+      expect(localState.currentBranchId).toBe('master');
     });
   });
 });

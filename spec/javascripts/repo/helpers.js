@@ -12,4 +12,5 @@ export const file = (name = 'name', id = name, type = '') => decorateData({
   url: 'url',
   name,
   path: name,
+  lastCommit: {},
 });

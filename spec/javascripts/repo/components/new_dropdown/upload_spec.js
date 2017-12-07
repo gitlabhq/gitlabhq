@@ -90,15 +90,23 @@ describe('new dropdown upload', () => {
     });
 
     it('creates new file in path', (done) => {
-      vm.$store.state.path = 'testing';
+      const baseTree = vm.$store.state.trees['abcproject/mybranch'].tree;
+      const tree = {
+        type: 'tree',
+        name: 'testing',
+        path: 'testing',
+        tree: [],
+      };
+      baseTree.push(tree);
+
+      vm.parent = tree;
       vm.createFile(target, file, true);
 
       vm.$nextTick(() => {
-        const baseTree = vm.$store.state.trees['abcproject/mybranch'].tree;
         expect(baseTree.length).toBe(1);
-        expect(baseTree[0].name).toBe(file.name);
-        expect(baseTree[0].content).toBe(target.result);
-        expect(baseTree[0].path).toBe(`testing/${file.name}`);
+        expect(baseTree[0].tree[0].name).toBe(file.name);
+        expect(baseTree[0].tree[0].content).toBe(target.result);
+        expect(baseTree[0].tree[0].path).toBe(`testing/${file.name}`);
 
         done();
       });

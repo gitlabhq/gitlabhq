@@ -89,24 +89,25 @@ export const createTempTree = (
   { state, commit, dispatch },
   { projectId, branchId, parent, name },
 ) => {
-  let selectedTree = state;
+  let selectedTree = parent;
   const dirNames = name.replace(new RegExp(`^${state.path}/`), '').split('/');
 
   dirNames.forEach((dirName) => {
-    const foundEntry = findEntry(parent.tree, 'tree', dirName);
+    const foundEntry = findEntry(selectedTree.tree, 'tree', dirName);
 
     if (!foundEntry) {
       const tmpEntry = createTemp({
         projectId,
         branchId,
         name: dirName,
-        path: parent.path !== undefined ? parent.path : '',
+        path: selectedTree.path !== undefined ? selectedTree.path : '',
         type: 'tree',
-        level: parent.level !== undefined ? parent.level + 1 : 0,
+        level: selectedTree.level !== undefined ? selectedTree.level + 1 : 0,
+        tree: [],
       });
 
       commit(types.CREATE_TMP_TREE, {
-        parent,
+        parent: selectedTree,
         tmpEntry,
       });
       commit(types.TOGGLE_TREE_OPEN, tmpEntry);

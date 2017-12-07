@@ -108,24 +108,6 @@ describe('new file modal component', () => {
           }
         });
 
-        it(`creates ${type} in the current stores path`, (done) => {
-          vm.$store.state.path = 'app';
-
-          vm.createEntryInStore();
-
-          setTimeout(() => {
-            const baseTree = vm.$store.state.trees['abcproject/mybranch'].tree;
-            expect(baseTree[0].path).toBe('app/testing');
-            expect(baseTree[0].name).toBe('testing');
-
-            if (type === 'tree') {
-              expect(baseTree[0].tree.length).toBe(1);
-            }
-
-            done();
-          });
-        });
-
         if (type === 'blob') {
           it('creates new file', (done) => {
             vm.createEntryInStore();

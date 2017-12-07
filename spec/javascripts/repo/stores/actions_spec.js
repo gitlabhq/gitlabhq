@@ -230,6 +230,7 @@ describe('Multi-file store actions', () => {
       store.state.currentProjectId = 'abcproject';
       store.state.currentBranchId = 'master';
       store.state.projects.abcproject = {
+        new_merge_request_path: 'newMergeRequestUrl?branch=',
         branches: {
           master: {
             workingReference: '1',
@@ -323,8 +324,6 @@ describe('Multi-file store actions', () => {
 
       it('redirects to new merge request page', (done) => {
         spyOn(urlUtils, 'visitUrl');
-
-        store.state.endpoints.newMergeRequestUrl = 'newMergeRequestUrl?branch=';
 
         store.dispatch('commitChanges', { payload, newMr: true })
           .then(() => {

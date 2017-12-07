@@ -74,7 +74,7 @@ describe('RepoFile', () => {
     });
   });
 
-  it('fires clickedTreeRow when the link is clicked', () => {
+  it('fires clickFile when the link is clicked', () => {
     vm = createComponent({
       file: file(),
     });

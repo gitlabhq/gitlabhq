@@ -26,7 +26,7 @@ export const getBranchData = (
 });
 
 export const createNewBranch = ({ state, commit }, branch) => service.createBranch(
-  state.project.id,
+  state.currentProjectId,
   {
     branch,
     ref: state.currentBranchId,
@@ -37,7 +37,7 @@ export const createNewBranch = ({ state, commit }, branch) => service.createBran
   const branchName = data.name;
   const url = location.href.replace(state.currentBranchId, branchName);
 
-  this.$router.push(url);
+  if (this.$router) this.$router.push(url);
 
   commit(types.SET_CURRENT_BRANCH, branchName);
 });

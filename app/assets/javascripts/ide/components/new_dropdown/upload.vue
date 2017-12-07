@@ -15,10 +15,6 @@
         type: Object,
         default: null,
       },
-      path: {
-        type: String,
-        required: true,
-      },
     },
     computed: {
       ...mapState([

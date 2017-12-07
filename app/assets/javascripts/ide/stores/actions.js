@@ -118,7 +118,9 @@ export const commitChanges = ({ commit, state, dispatch, getters }, { payload, n
   })
   .catch(() => flash('Error committing changes. Please try again.'));
 
-export const createTempEntry = ({ state, dispatch }, { projectId, branchId, parent, name, type, content = '', base64 = false }) => {
+export const createTempEntry = ({ state, dispatch }, {
+  projectId, branchId, parent, name, type, content = '', base64 = false,
+}) => {
   const selectedParent = parent || state.trees[`${projectId}/${branchId}`];
   if (type === 'tree') {
     dispatch('createTempTree', {
