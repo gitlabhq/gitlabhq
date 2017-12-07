@@ -30,7 +30,7 @@ describe('issue_discussion component', () => {
 
   it('should render discussion header', () => {
     expect(vm.$el.querySelector('.discussion-header')).toBeDefined();
-    expect(vm.$el.querySelectorAll('.notes li').length).toEqual(discussionMock.notes.length);
+    expect(vm.$el.querySelector('.notes').children.length).toEqual(discussionMock.notes.length);
   });
 
   describe('actions', () => {
