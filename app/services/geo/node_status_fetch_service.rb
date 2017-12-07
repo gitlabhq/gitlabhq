@@ -6,7 +6,8 @@ module Geo
     def call(geo_node)
       return GeoNodeStatus.current_node_status if geo_node.current?
 
-      data = { success: false }
+      data = GeoNodeStatus.find_or_initialize_by(geo_node: geo_node).attributes
+      data = data.merge(success: false, health_status: 'Offline')
 
       begin
         response = self.class.get(geo_node.status_url, headers: headers, timeout: timeout)
@@ -29,8 +30,10 @@ module Geo
         end
       rescue Gitlab::Geo::GeoNodeNotFoundError
         data[:health] = 'This GitLab instance does not appear to be configured properly as a Geo node. Make sure the URLs are using the correct fully-qualified domain names.'
+        data[:health_status] = 'Unhealthy'
       rescue OpenSSL::Cipher::CipherError
         data[:health] = 'Error decrypting the Geo secret from the database. Check that the primary uses the correct db_key_base.'
+        data[:health_status] = 'Unhealthy'
       rescue HTTParty::Error, Timeout::Error, SocketError, SystemCallError, OpenSSL::SSL::SSLError => e
         data[:health] = e.message
       end
