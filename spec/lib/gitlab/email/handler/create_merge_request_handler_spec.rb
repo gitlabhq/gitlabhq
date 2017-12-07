@@ -10,14 +10,14 @@ describe Gitlab::Email::Handler::CreateMergeRequestHandler do
     stub_config_setting(host: 'localhost')
   end
 
+  after do
+    TestEnv.clean_test_path
+  end
+
   let(:email_raw) { fixture_file('emails/valid_new_merge_request.eml') }
   let(:namespace) { create(:namespace, path: 'gitlabhq') }
 
-  # project's git repository is not deleted when project is deleted
-  # between tests. Then tests fail because re-creation of the project with
-  # the same name fails on existing git repository -> skip_disk_validation
-  # ignores repository existence on disk
-  let!(:project)  { create(:project, :public, :repository, skip_disk_validation: true, namespace: namespace, path: 'gitlabhq') }
+  let!(:project)  { create(:project, :public, :repository, namespace: namespace, path: 'gitlabhq') }
   let!(:user) do
     create(
       :user,
