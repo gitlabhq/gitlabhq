@@ -10,6 +10,7 @@ export default class SidebarMediator extends CESidebarMediator {
   processFetchedData(data) {
     super.processFetchedData(data);
     this.store.setWeightData(data);
+    this.store.setEpicData(data);
   }
 
   updateWeight(newWeight) {
