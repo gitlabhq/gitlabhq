@@ -327,13 +327,13 @@ describe('Multi-file store actions', () => {
       });
 
       it('redirects to new merge request page', (done) => {
-        spyOn(gl.utils, 'visitUrl');
+        spyOn(urlUtils, 'visitUrl');
 
         store.state.endpoints.newMergeRequestUrl = 'newMergeRequestUrl?branch=';
 
         store.dispatch('commitChanges', { payload, newMr: true })
           .then(() => {
-            expect(gl.utils.visitUrl).toHaveBeenCalledWith('newMergeRequestUrl?branch=master');
+            expect(urlUtils.visitUrl).toHaveBeenCalledWith('newMergeRequestUrl?branch=master');
 
             done();
           }).catch(done.fail);
