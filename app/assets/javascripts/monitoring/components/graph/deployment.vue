@@ -64,6 +64,14 @@
         }
         return xPosition;
       },
+
+      svgContainerHeight(tag) {
+        let svgHeight = 80;
+        if (!tag) {
+          svgHeight -= 20;
+        }
+        return svgHeight;
+      },
     },
   };
 </script>
@@ -97,14 +105,14 @@
         :x="positionFlag(deployment)"
         y="0"
         width="134"
-        height="80">
+        :height="svgContainerHeight(deployment.tag)">
         <rect
           class="rect-text-metric deploy-info-rect rect-metric"
           x="1"
           y="1"
           rx="2"
           width="132"
-          height="78">
+          :height="svgContainerHeight(deployment.tag) - 2">
         </rect>
         <text
           class="deploy-info-text text-metric-bold"
@@ -136,7 +144,7 @@
             name="commit"
             :width="12"
             :height="12"
-            :y="5">
+            :y="3">
           </icon>
           <a :xlink:href="deployment.commitUrl">
             <text
