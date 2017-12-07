@@ -18,8 +18,8 @@ module QA
           click_button 'Sign in'
         end
 
-        def self.address
-          Runtime::Scenario.gitlab_address + '/users/sign_in'
+        def self.path
+          '/users/sign_in'
         end
       end
     end

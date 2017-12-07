@@ -10,6 +10,20 @@ module QA
         visit current_url
       end
 
+      def wait(css = '.application', time: 60)
+        Time.now.tap do |start|
+          while Time.now - start < time
+            puts "Waiting for `#{css} on `#{current_url}`"
+
+            break if page.has_css?(css, wait: 5)
+
+            refresh
+          end
+        end
+
+        yield if block_given?
+      end
+
       def scroll_to(selector, text: nil)
         page.execute_script <<~JS
           var elements = Array.from(document.querySelectorAll('#{selector}'));
@@ -25,21 +39,7 @@ module QA
         page.within(selector) { yield } if block_given?
       end
 
-      def wait(css = '.application', time: 60)
-        # This resolves cold boot / background tasks problems
-        #
-        Time.now.tap do |start|
-          while Time.now - start < time
-            break if page.has_css?(css, wait: 5)
-            puts "Waiting for `#{css} on `#{current_url}`"
-            refresh
-          end
-        end
-
-        yield if block_given?
-      end
-
-      def self.address
+      def self.path
         raise NotImplementedError
       end
     end

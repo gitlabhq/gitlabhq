@@ -10,8 +10,8 @@ module QA
           end
         end
 
-        def self.address
-          Runtime::Scenario.gitlab_address + '/login'
+        def self.path
+          '/login'
         end
       end
     end
