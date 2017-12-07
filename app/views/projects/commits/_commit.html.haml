@@ -53,4 +53,4 @@
           .diff-viewer
             - file_identifier = commit.change_summary.first[:file_identifier]
 
-            = render partial: 'projects/diffs/collapsed', locals: { commit: commit, file_identifier: file_identifier, render_diffs_link: render_diffs_link }
+            = render partial: 'projects/diffs/collapsed', locals: { commit: commit, file_identifier: file_identifier }

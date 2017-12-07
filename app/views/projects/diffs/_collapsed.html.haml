@@ -4,12 +4,12 @@
   - diff_file = viewer.diff_file
   - url_params.merge!(old_path: diff_file.old_path, new_path: diff_file.new_path, file_identifier: diff_file.file_identifier)
 
-- if defined?(:file_identifier)
+- if defined?(file_identifier)
   - url_params.merge!(controller: :commit, id: commit.id, file_identifier: file_identifier)
 
 .nothing-here-block.diff-collapsed{ data: { diff_for_path: url_for(url_params) } }
   -# On the file history page we have the `Show diff` button to laod diffs.
   -# In that case we do NOT want to show both the text and the link below.
-  - unless render_diffs_link
+  - unless defined?(file_identifier)
     This diff is collapsed.
     %a.click-to-expand Click to expand it.
