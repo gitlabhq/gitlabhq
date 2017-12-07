@@ -5,8 +5,6 @@
 #
 module Gitlab
   module OAuth
-    SignupDisabledError = Class.new(StandardError)
-
     class User
       attr_accessor :auth_hash, :gl_user
 
@@ -29,7 +27,8 @@ module Gitlab
       end
 
       def save(provider = 'OAuth')
-        unauthorized_to_create unless gl_user
+        raise SigninDisabledForProviderError if oauth_provider_disabled?
+        raise SignupDisabledError unless gl_user
 
         block_after_save = needs_blocking?
 
@@ -224,8 +223,10 @@ module Gitlab
         Gitlab::AppLogger
       end
 
-      def unauthorized_to_create
-        raise SignupDisabledError
+      def oauth_provider_disabled?
+        Gitlab::CurrentSettings.current_application_settings
+                               .disabled_oauth_sign_in_sources
+                               .include?(auth_hash.provider)
       end
     end
   end
