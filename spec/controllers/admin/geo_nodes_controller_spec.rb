@@ -30,18 +30,16 @@ describe Admin::GeoNodesController, :postgresql do
         allow(Gitlab::Geo).to receive(:license_allows?).and_return(true)
       end
 
-      it 'renders creation form' do
-        expect(go).to render_template(partial: 'admin/geo_nodes/_form')
+      it 'does not display a flash message' do
+        go
+
+        expect(flash).not_to include(:alert)
       end
     end
 
     context 'without add-on license available' do
       before do
         allow(Gitlab::Geo).to receive(:license_allows?).and_return(false)
-      end
-
-      it 'does not render the creation form' do
-        expect(go).not_to render_template(partial: 'admin/geo_nodes/_form')
       end
 
       it 'displays a flash message' do
