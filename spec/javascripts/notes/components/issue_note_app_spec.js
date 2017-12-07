@@ -3,7 +3,7 @@ import issueNotesApp from '~/notes/components/issue_notes_app.vue';
 import service from '~/notes/services/notes_service';
 import * as mockData from '../mock_data';
 
-describe('issue_note_app', () => {
+fdescribe('issue_note_app', () => {
   let mountComponent;
   let vm;
 
@@ -183,7 +183,7 @@ describe('issue_note_app', () => {
         }, 0);
       });
 
-      it('updates the note and resets the edit form', (done) => {
+      fit('updates the note and resets the edit form', (done) => {
         setTimeout(() => {
           vm.$el.querySelector('.js-note-edit').click();
           Vue.nextTick(() => {

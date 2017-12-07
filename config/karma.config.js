@@ -3,6 +3,8 @@ var webpack = require('webpack');
 var webpackConfig = require('./webpack.config.js');
 var ROOT_PATH = path.resolve(__dirname, '..');
 
+console.log('now in karma.config.js');
+
 // remove problematic plugins
 if (webpackConfig.plugins) {
   webpackConfig.plugins = webpackConfig.plugins.filter(function (plugin) {

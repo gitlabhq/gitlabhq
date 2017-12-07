@@ -11,11 +11,16 @@ const isHeadlessChrome = /\bHeadlessChrome\//.test(navigator.userAgent);
 Vue.config.devtools = !isHeadlessChrome;
 Vue.config.productionTip = false;
 
+const nonce = 9999 * Math.random();
+console.log('test_bundle.js', nonce, isHeadlessChrome, new Error().stack);
+
 let hasVueWarnings = false;
+/* * /
 Vue.config.warnHandler = (msg, vm, trace) => {
   hasVueWarnings = true;
   fail(`${msg}${trace}`);
 };
+/* */
 
 Vue.use(VueResource);
 
@@ -38,6 +43,21 @@ window.addEventListener('unhandledrejection', (event) => {
   hasUnhandledPromiseRejections = true;
   console.error('Unhandled promise rejection:');
   console.error(event.reason.stack || event.reason);
+});
+
+beforeAll(() => {
+  /* */
+  const origError = console.error;
+  spyOn(console, 'error').and.callFake((message) => {
+    console.log(`console error message ${nonce} |||${message}|||`, new Error().stack);
+    if (/^\[Vue warn\]/.test(message)) {
+      console.log('we found a Vue warn!!!');
+      //fail(message);
+    } else {
+      origError(message);
+    }
+  });
+  /* */
 });
 
 // HACK: Chrome 59 disconnects if there are too many synchronous tests in a row
