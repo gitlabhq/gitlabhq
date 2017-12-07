@@ -221,6 +221,22 @@ describe Gitlab::Database do
       described_class.bulk_insert('test', rows)
     end
 
+    it 'does not quote values of a column in the disable_quote option' do
+      [1, 2, 4, 5].each do |i|
+        expect(connection).to receive(:quote).with(i)
+      end
+
+      described_class.bulk_insert('test', rows, disable_quote: :c)
+    end
+
+    it 'does not quote values of columns in the disable_quote option' do
+      [2, 5].each do |i|
+        expect(connection).to receive(:quote).with(i)
+      end
+
+      described_class.bulk_insert('test', rows, disable_quote: [:a, :c])
+    end
+
     it 'handles non-UTF-8 data' do
       expect { described_class.bulk_insert('test', [{ a: "\255" }]) }.not_to raise_error
     end
