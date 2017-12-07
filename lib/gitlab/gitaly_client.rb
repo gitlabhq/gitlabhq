@@ -27,7 +27,7 @@ module Gitlab
     end
 
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'.freeze
-    MAXIMUM_GITALY_CALLS = 30
+    MAXIMUM_GITALY_CALLS = 35
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
 
     MUTEX = Mutex.new
