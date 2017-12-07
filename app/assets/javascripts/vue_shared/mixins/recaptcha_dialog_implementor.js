@@ -1,4 +1,4 @@
-import RecaptchaDialog from '~/vue_shared/components/recaptcha_dialog.vue';
+import RecaptchaDialog from '../components/recaptcha_dialog.vue';
 
 export default {
   data() {

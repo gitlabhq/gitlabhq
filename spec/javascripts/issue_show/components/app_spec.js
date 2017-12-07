@@ -4,6 +4,7 @@ import '~/render_gfm';
 import issuableApp from '~/issue_show/components/app.vue';
 import eventHub from '~/issue_show/event_hub';
 import issueShowData from '../mock_data';
+import setTimeoutPromise from '../../helpers/set_timeout_promise_helper';
 
 function formatText(text) {
   return text.trim().replace(/\s\s+/g, ' ');
@@ -265,6 +266,44 @@ describe('Issuable output', () => {
         });
       });
     });
+  });
+
+  fit('opens recaptcha dialog if update rejected as spam', (done) => {
+    let modal;
+    const promise = new Promise((resolve) => {
+      resolve({
+        json() {
+          return {
+            recaptcha_html: '<div class="g-recaptcha">recaptcha_html</div>',
+          };
+        },
+      });
+    });
+
+    spyOn(vm.service, 'updateIssuable').and.returnValue(promise);
+
+    vm.canUpdate = true;
+    vm.showForm = true;
+
+    vm.updateIssuable();
+
+    promise
+      .then(() => setTimeoutPromise())
+      .then(() => {
+        modal = vm.$el.querySelector('.js-recaptcha-dialog');
+
+        expect(modal.style.display).not.toEqual('none');
+        expect(modal.querySelector('.g-recaptcha').textContent).toEqual('recaptcha_html');
+        expect(document.body.querySelector('.js-recaptcha-script').src).toEqual('https://www.google.com/recaptcha/api.js');
+      })
+      .then(() => modal.querySelector('.close').click())
+      .then(() => vm.$nextTick())
+      .then(() => {
+        expect(modal.style.display).toEqual('none');
+        expect(document.body.querySelector('.js-recaptcha-script')).toBeNull();
+      })
+      .then(done)
+      .catch(done.fail);
   });
 
   describe('deleteIssuable', () => {

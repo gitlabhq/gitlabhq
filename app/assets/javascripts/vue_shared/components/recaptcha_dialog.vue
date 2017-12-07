@@ -28,6 +28,7 @@ export default {
 
       const script = document.createElement('script');
       script.src = 'https://www.google.com/recaptcha/api.js';
+      script.classList.add('js-recaptcha-script');
       script.async = true;
       script.defer = true;
 
@@ -65,13 +66,15 @@ export default {
 <template>
 <popup-dialog
   kind="warning"
-  class="recaptcha-modal"
+  class="recaptcha-dialog js-recaptcha-dialog"
   :hide-footer="true"
   :title="__('Please solve the reCAPTCHA')"
   @toggle="close"
 >
   <div slot="body">
-    <p>{{__('We want to be sure it is you, please confirm you are not a robot.')}}</p>
+    <p>
+      {{__('We want to be sure it is you, please confirm you are not a robot.')}}
+    </p>
     <div
       ref="recaptcha"
       v-html="html"

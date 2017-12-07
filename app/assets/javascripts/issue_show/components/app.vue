@@ -179,12 +179,12 @@ export default {
           eventHub.$emit('close.form');
         })
         .catch((error) => {
-          if (error.name === 'SpamError') return this.openRecaptcha();
-
-          eventHub.$emit('close.form');
-          window.Flash(`Error updating ${this.issuableType}`);
-
-          return undefined;
+          if (error && error.name === 'SpamError') {
+            this.openRecaptcha();
+          } else {
+            eventHub.$emit('close.form');
+            window.Flash(`Error updating ${this.issuableType}`);
+          }
         });
     },
 

@@ -66,7 +66,7 @@
         try {
           this.checkForSpam(data);
         } catch (error) {
-          if (error.name === 'SpamError') this.openRecaptcha();
+          if (error && error.name === 'SpamError') this.openRecaptcha();
         }
       },
 
