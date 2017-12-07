@@ -20,7 +20,7 @@ export default {
     group: 'success',
     has_details: true,
     details_path: '/root/ci-mock/-/jobs/4757',
-    favicon: '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+    favicon: '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
     action: {
       icon: 'retry',
       title: 'Retry',
@@ -78,7 +78,7 @@ export default {
         group: 'success',
         has_details: true,
         details_path: '/root/ci-mock/pipelines/140',
-        favicon: '/assets/ci_favicons/dev/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.ico',
+        favicon: '/assets/ci_favicons/favicon_status_success-308b4fc054cdd1b68d0865e6cfb7b02e92e3472f201507418f8eddb74ac11a59.png',
       },
       duration: 6,
       finished_at: '2017-06-01T17:32:00.042Z',

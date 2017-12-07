@@ -2,19 +2,19 @@ require 'rails_helper'
 
 RSpec.describe Gitlab::Favicon, :request_store do
   describe '.main' do
-    it 'defaults to favicon.ico' do
+    it 'defaults to favicon.png' do
       allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('production'))
-      expect(described_class.main).to eq 'favicon.ico'
+      expect(described_class.main).to match_asset_path '/assets/favicon.png'
     end
 
     it 'has green favicon for development' do
       allow(Rails).to receive(:env).and_return(ActiveSupport::StringInquirer.new('development'))
-      expect(described_class.main).to eq 'favicon-green.ico'
+      expect(described_class.main).to match_asset_path 'favicon-green.png'
     end
 
     it 'has yellow favicon for canary' do
       stub_env('CANARY', 'true')
-      expect(described_class.main).to eq 'favicon-yellow.ico'
+      expect(described_class.main).to match_asset_path 'favicon-yellow.png'
     end
 
     it 'uses the custom favicon if a favicon appearance is present' do
@@ -27,7 +27,7 @@ RSpec.describe Gitlab::Favicon, :request_store do
     subject { described_class.status_overlay('favicon_status_created') }
 
     it 'returns the overlay for the status' do
-      expect(subject).to eq '/assets/ci_favicons/overlays/favicon_status_created.png'
+      expect(subject).to match_asset_path '/assets/ci_favicons/favicon_status_created.png'
     end
   end
 

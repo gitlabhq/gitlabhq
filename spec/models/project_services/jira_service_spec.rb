@@ -173,7 +173,7 @@ describe JiraService do
           object: {
             url: "#{Gitlab.config.gitlab.url}/#{project.full_path}/commit/#{merge_request.diff_head_sha}",
             title: "GitLab: Solved by commit #{merge_request.diff_head_sha}.",
-            icon: { title: "GitLab", url16x16: "http://localhost/favicon.ico" },
+            icon: { title: "GitLab", url16x16: "http://localhost/favicon.png" },
             status: { resolved: true }
           }
         )
