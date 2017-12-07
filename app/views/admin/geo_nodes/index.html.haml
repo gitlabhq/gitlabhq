@@ -34,7 +34,7 @@
               %p
                 %span.help-block
                   Gitlab version:
-                  %strong.node-info= Gitlab::VERSION
+                  %strong.node-info.js-primary-version= Gitlab::VERSION
             - else
               = status_loading_icon
               %table.geo-node-status.js-geo-node-status.hidden
@@ -44,6 +44,7 @@
                       GitLab Version:
                   %td
                     .node-info.prepend-top-10.prepend-left-5.js-gitlab-version
+                      %span.node-info.geo-node-version-mismatch Foo
                 - if node.enabled?
                   %tr
                     %td

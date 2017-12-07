@@ -13,6 +13,8 @@ const healthyIcon = 'fa-check';
 const unhealthyIcon = 'fa-times';
 const unknownIcon = 'fa-times';
 const notAvailable = 'Not Available';
+const versionMismatch = 'does not match the primary node version';
+const versionMismatchClass = 'geo-node-version-mismatch';
 
 class GeoNodeStatus {
   constructor(el) {
@@ -21,6 +23,7 @@ class GeoNodeStatus {
     this.$loadingIcon = $('.js-geo-node-loading', this.$el);
     this.$dbReplicationLag = $('.js-db-replication-lag', this.$status);
     this.$healthStatus = $('.js-health-status', this.$el);
+    this.$primaryVersion = $('.js-primary-version');
     this.$status = $('.js-geo-node-status', this.$el);
     this.$repositories = $('.js-repositories', this.$status);
     this.$lfsObjects = $('.js-lfs-objects', this.$status);
@@ -30,6 +33,7 @@ class GeoNodeStatus {
     this.$lastCursorEvent = $('.js-last-cursor-event', this.$status);
     this.$health = $('.js-health-message', this.$status.parent());
     this.$version = $('.js-gitlab-version', this.$status);
+    this.$secondaryVersion = $('.js-secondary-version', this.$status);
     this.endpoint = this.$el.data('status-url');
     this.$advancedStatus = $('.js-advanced-geo-node-status-toggler', this.$status.parent());
     this.$advancedStatus.on('click', GeoNodeStatus.toggleShowAdvancedStatus.bind(this));
@@ -194,6 +198,14 @@ class GeoNodeStatus {
       this.$dbReplicationLag.text(stringifyTime(parsedTime));
     } else {
       this.$dbReplicationLag.text('UNKNOWN');
+    }
+
+    if (this.$primaryVersion.text() !== status.version) {
+      this.$secondaryVersion.removeClass(`${versionMismatchClass}`);
+      this.$secondaryVersion.text(status.version);
+    } else {
+      this.$secondaryVersion.addClass(`${versionMismatchClass}`);
+      this.$secondaryVersion.text(`${status.version} (${versionMismatch})`);
     }
 
     if (status.repositories_count > 0) {
