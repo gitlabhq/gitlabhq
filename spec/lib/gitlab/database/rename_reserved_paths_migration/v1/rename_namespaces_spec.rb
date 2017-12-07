@@ -7,7 +7,6 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameNamespaces, :
 
   before do
     allow(migration).to receive(:say)
-    TestEnv.clean_test_path
   end
 
   def migration_namespace(namespace)

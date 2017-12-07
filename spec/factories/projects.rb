@@ -11,6 +11,8 @@ FactoryBot.define do
     # Behaves differently to nil due to cache_has_external_issue_tracker
     has_external_issue_tracker false
 
+    skip_disk_validation true
+
     # Associations
     namespace
     creator { group ? create(:user) : namespace&.owner }

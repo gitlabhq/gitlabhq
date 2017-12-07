@@ -11,7 +11,6 @@ describe Gitlab::Database::RenameReservedPathsMigration::V1::RenameProjects, :de
 
   before do
     allow(migration).to receive(:say)
-    TestEnv.clean_test_path
   end
 
   describe '#projects_for_paths' do

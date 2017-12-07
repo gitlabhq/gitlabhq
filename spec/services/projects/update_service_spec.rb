@@ -5,7 +5,11 @@ describe Projects::UpdateService do
 
   let(:user) { create(:user) }
   let(:project) do
-    create(:project, creator: user, namespace: user.namespace)
+    create(:project, skip_disk_validation: false, creator: user, namespace: user.namespace)
+  end
+
+  before do
+    TestEnv.clean_test_path
   end
 
   describe '#execute' do
