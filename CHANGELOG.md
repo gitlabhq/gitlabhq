@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.0.7 (2017-12-07)
+
+### Security (3 changes)
+
+- Don't match partial email adresses. !2227
+- Prevent creating issues through API when user does not have permissions.
+- Prevent an information disclosure in the Groups API.
+
+
 ## 10.0.6 (2017-11-08)
 
 - [SECURITY] Add X-Content-Type-Options header in API responses to make it more difficult to find other vulnerabilities.
