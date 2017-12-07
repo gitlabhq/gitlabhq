@@ -65,6 +65,25 @@ describe MergeRequest do
     end
   end
 
+  describe 'callbacks' do
+    describe '#ensure_merge_request_metrics' do
+      it 'creates metrics after saving' do
+        merge_request = create(:merge_request)
+
+        expect(merge_request.metrics).to be_persisted
+        expect(MergeRequest::Metrics.count).to eq(1)
+      end
+
+      it 'does not duplicate metrics for a merge request' do
+        merge_request = create(:merge_request)
+
+        merge_request.mark_as_merged!
+
+        expect(MergeRequest::Metrics.count).to eq(1)
+      end
+    end
+  end
+
   describe 'respond to' do
     it { is_expected.to respond_to(:unchecked?) }
     it { is_expected.to respond_to(:can_be_merged?) }

@@ -16,9 +16,9 @@ export default {
       <div class="media-body">
         <mr-widget-author-and-time
           actionText="Closed by"
-          :author="mr.closedEvent.author"
-          :dateTitle="mr.closedEvent.updatedAt"
-          :dateReadable="mr.closedEvent.formattedUpdatedAt"
+          :author="mr.metrics.closedBy"
+          :dateTitle="mr.metrics.closedAt"
+          :dateReadable="mr.metrics.readableClosedAt"
         />
         <section class="mr-info-list">
           <p>

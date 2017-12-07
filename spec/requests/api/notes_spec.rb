@@ -464,7 +464,7 @@ describe API::Notes do
 
   describe "POST /projects/:id/noteable/:noteable_id/notes to test observer on create" do
     it "creates an activity event when an issue note is created" do
-      expect(Event).to receive(:create)
+      expect(Event).to receive(:create!)
 
       post api("/projects/#{project.id}/issues/#{issue.iid}/notes", user), body: 'hi!'
     end
