@@ -1,5 +1,5 @@
 .page-with-contextual-sidebar {
-  transition: padding-left, $sidebar-transition-duration;
+  transition: padding-left $sidebar-transition-duration;
 
   @media (min-width: $screen-md-min) {
     padding-left: $contextual-sidebar-collapsed-width;
@@ -32,7 +32,7 @@
   width: $contextual-sidebar-width;
 
   a {
-    transition: padding, $sidebar-transition-duration;
+    transition: padding $sidebar-transition-duration;
     font-weight: $gl-font-weight-bold;
     display: flex;
     align-items: center;
@@ -67,7 +67,7 @@
 }
 
 .nav-sidebar {
-  transition: width, $sidebar-transition-duration;
+  transition: width $sidebar-transition-duration, left $sidebar-transition-duration;
   position: fixed;
   z-index: 400;
   width: $contextual-sidebar-width;
@@ -128,10 +128,10 @@
     white-space: nowrap;
 
     a {
-      transition: padding, $sidebar-transition-duration;
+      transition: padding $sidebar-transition-duration;
       display: flex;
       align-items: center;
-      padding: 12px 16px;
+      padding: 12px 15px;
       color: $gl-text-color-secondary;
     }
 
@@ -291,7 +291,8 @@
 
       > a {
         margin-left: 4px;
-        padding-left: 12px;
+        // Subtract width of left border on active element
+        padding-left: 11px;
       }
 
       .badge {
@@ -316,7 +317,7 @@
 .toggle-sidebar-button,
 .close-nav-button {
   width: $contextual-sidebar-width - 2px;
-  transition: width, $sidebar-transition-duration;
+  transition: width $sidebar-transition-duration;
   position: fixed;
   bottom: 0;
   padding: 16px;
@@ -354,16 +355,12 @@
 
 .sidebar-collapsed-desktop {
   .context-header {
-    height: 61px;
+    height: 60px;
     width: $contextual-sidebar-collapsed-width;
 
     a {
       padding: 10px 4px;
     }
-  }
-
-  li a {
-    padding: 12px 15px;
   }
 
   .sidebar-top-level-items > li {
