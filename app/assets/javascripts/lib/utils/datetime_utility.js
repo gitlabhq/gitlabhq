@@ -93,8 +93,6 @@ export const renderTimeago = ($els) => {
  */
 export const localTimeAgo = ($timeagoEls, setTimeago = true) => {
   $timeagoEls.each((i, el) => {
-    el.setAttribute('title', el.getAttribute('title'));
-
     if (setTimeago) {
       // Recreate with custom template
       $(el).tooltip({
