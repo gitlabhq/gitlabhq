@@ -32,7 +32,7 @@ module IssuablesHelper
     end
   end
 
-  def serialize_issuable(issuable)
+  def serialize_issuable(issuable, serializer: nil)
     serializer_klass = case issuable
                        when Issue
                          IssueSerializer
@@ -42,7 +42,7 @@ module IssuablesHelper
 
     serializer_klass
       .new(current_user: current_user, project: issuable.project)
-      .represent(issuable)
+      .represent(issuable, serializer: serializer)
       .to_json
   end
 

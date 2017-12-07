@@ -1,9 +1,7 @@
-class MergeRequestEntity < IssuableEntity
-  include TimeTrackableEntity
-  prepend ::EE::MergeRequestEntity
+class MergeRequestWidgetEntity < IssuableEntity
+  prepend ::EE::MergeRequestWidgetEntity
 
   expose :state
-  expose :deleted_at
   expose :in_progress_merge_commit_sha
   expose :merge_commit_sha
   expose :merge_error
