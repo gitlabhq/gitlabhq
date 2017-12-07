@@ -725,15 +725,15 @@ describe Projects::IssuesController do
       end
 
       context 'when an issue is identified as spam' do
-        def post_spam_issue
-          post_new_issue({ title: 'Spam Title', description: 'Spam lives here' })
-        end
-
         before do
           allow_any_instance_of(AkismetService).to receive(:spam?).and_return(true)
         end
 
         context 'when captcha is not verified' do
+          def post_spam_issue
+            post_new_issue({ title: 'Spam Title', description: 'Spam lives here' })
+          end
+
           before do
             allow_any_instance_of(described_class).to receive(:verify_recaptcha).and_return(false)
           end

@@ -23,8 +23,8 @@ module SpammableActions
     @spam_config_loaded = Gitlab::Recaptcha.load_configurations!
   end
 
-  def recaptcha_check_with_fallback(&fallback)
-    if spammable.valid?
+  def recaptcha_check_with_fallback(should_redirect = true, &fallback)
+    if should_redirect && spammable.valid?
       redirect_to spammable_path
     elsif render_recaptcha?
       ensure_spam_config_loaded!
