@@ -92,7 +92,10 @@ export default {
         });
     },
     toggleCollapsed() {
-      this.setPanelCollapsedStatus('right', !this.rightPanelCollapsed);
+      this.setPanelCollapsedStatus({
+        side: 'right',
+        collapsed: !this.rightPanelCollapsed
+      });
     },
   },
 };
@@ -127,7 +130,7 @@ export default {
   <form
     class="form-horizontal multi-file-commit-form"
     @submit.prevent="tryCommit"
-    v-if="!rightPanelCollapsed && changedFiles.length"
+    v-if="!rightPanelCollapsed"
   >
     <div class="multi-file-commit-fieldset">
       <textarea

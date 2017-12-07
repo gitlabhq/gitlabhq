@@ -33,7 +33,7 @@ export default class Model {
   }
 
   get eol() {
-    return encodeURI(this.model.getEOL()) === '%0A' ? 'LF' : 'CRLF';
+    return this.model.getEOL() === '\n' ? 'LF' : 'CRLF';
   }
 
   get path() {

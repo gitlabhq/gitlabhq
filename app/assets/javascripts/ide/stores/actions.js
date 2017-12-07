@@ -50,7 +50,7 @@ export const toggleBlobView = ({ commit, state }) => {
   }
 };
 
-export const setPanelCollapsedStatus = ({ commit }, side, collapsed) => {
+export const setPanelCollapsedStatus = ({ commit }, { side, collapsed }) => {
   if (side === 'left') {
     commit(types.SET_LEFT_PANEL_COLLAPSED, collapsed);
   } else {
@@ -95,9 +95,13 @@ export const commitChanges = ({ commit, state, dispatch, getters }, { payload, n
     flash(`Your changes have been committed. Commit ${data.short_id} with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`, 'notice');
 
     if (newMr) {
-      dispatch('redirectToUrl', `${state.endpoints.newMergeRequestUrl}${branch}`);
+      dispatch('redirectToUrl', `${selectedProject.new_merge_request_path}${branch}`);
     } else {
-      // commit(types.SET_COMMIT_REF, data.id);
+      commit(types.SET_BRANCH_WORKING_REFERENCE, {
+        projectId: state.currentProjectId,
+        branchId: state.currentBranchId,
+        reference: data.id,
+      });
 
       getters.changedFiles.forEach((entry) => {
         commit(types.SET_LAST_COMMIT_DATA, {

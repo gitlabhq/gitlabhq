@@ -22,7 +22,10 @@ export default {
       'setPanelCollapsedStatus',
     ]),
     toggleCollapsed() {
-      this.setPanelCollapsedStatus('left', !this.leftPanelCollapsed);
+      this.setPanelCollapsedStatus({
+        side: 'left',
+        collapsed: !this.leftPanelCollapsed
+      });
     },
   },
 };

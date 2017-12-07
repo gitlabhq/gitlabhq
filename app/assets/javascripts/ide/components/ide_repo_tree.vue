@@ -3,6 +3,7 @@ import { mapState, mapGetters } from 'vuex';
 import RepoPreviousDirectory from './repo_prev_directory.vue';
 import RepoFile from './repo_file.vue';
 import RepoLoadingFile from './repo_loading_file.vue';
+import { treeList } from '../stores/utils';
 
 export default {
   components: {
@@ -26,11 +27,11 @@ export default {
         return state.project.name;
       },
     }),
-    ...mapGetters([
-      'treeList',
-    ]),
+    fetchedList() {
+      return treeList(this.$store.state, this.treeId);
+    },
     hasPreviousDirectory() {
-      return !this.isRoot && this.treeList(this.treeId).length;
+      return !this.isRoot && this.fetchedList.length;
     },
     showLoading() {
       return this.loading;
@@ -54,7 +55,7 @@ export default {
           :key="n"
         />
         <repo-file
-          v-for="file in treeList(treeId)"
+          v-for="file in fetchedList"
           :key="file.key"
           :file="file"
         />

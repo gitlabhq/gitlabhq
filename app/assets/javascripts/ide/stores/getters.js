@@ -1,24 +1,5 @@
 import _ from 'underscore';
 
-/*
-  Takes the multi-dimensional tree and returns a flattened array.
-  This allows for the table to recursively render the table rows but keeps the data
-  structure nested to make it easier to add new files/directories.
-*/
-export const treeList = state => (treeId) => {
-  const baseTree = state.trees[treeId];
-  if (baseTree) {
-    const mapTree = arr => (!arr.tree || !arr.tree.length ?
-                            [] : _.map(arr.tree, a => [a, mapTree(a)]));
-
-    return _.chain(baseTree.tree)
-      .map(arr => [arr, mapTree(arr)])
-      .flatten()
-      .value();
-  }
-  return [];
-};
-
 export const changedFiles = state => state.openFiles.filter(file => file.changed);
 
 export const activeFile = state => state.openFiles.find(file => file.active) || null;

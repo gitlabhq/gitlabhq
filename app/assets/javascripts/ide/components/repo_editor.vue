@@ -38,7 +38,10 @@ export default {
           this.editor.createInstance(this.$refs.editor);
         })
         .then(() => this.setupEditor())
-        .catch(() => flash('Error setting up monaco. Please try again.'));
+        .catch((e) => {
+          console.error('E ' ,e);
+          flash('Error setting up monaco. Please try again.')
+        });
     },
     setupEditor() {
       if (!this.activeFile) return;
