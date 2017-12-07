@@ -1153,15 +1153,19 @@ deploy:
   script: make deploy
 ```
 
->**Note:**
-> Introduced in GitLab 10.3
-> This is the user documentation. For the administration guide see
-  [administration/job_artifacts](../../../administration/job_artifacts.md#validation_for_dependency).
+#### When a dependent job will fail
 
-If a depended job doesn't have artifacts by the following reason, the depending job will fail.
+> Introduced in GitLab 10.3.
 
-1. A depended `artifacts` has been [erased](https://docs.gitlab.com/ee/api/jobs.html#erase-a-job).
-1. A depended `artifacts` has been [expired](https://docs.gitlab.com/ee/ci/yaml/#artifacts-expire_in).
+If the artifacts of the job that is set as a dependency have been
+[expired](#artifacts-expire_in) or
+[erased](../../user/project/pipelines/job_artifacts.md#erasing-artifacts), then
+the dependent job will fail.
+
+NOTE: **Note:**
+You can ask your administrator to
+[flip this switch](../../administration/job_artifacts.md#validation-for-dependencies)
+and bring back the old behavior.
 
 ### before_script and after_script
 
