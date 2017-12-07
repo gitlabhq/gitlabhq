@@ -731,7 +731,7 @@ describe Projects::IssuesController do
 
         context 'when captcha is not verified' do
           def post_spam_issue
-            post_new_issue({ title: 'Spam Title', description: 'Spam lives here' })
+            post_new_issue(title: 'Spam Title', description: 'Spam lives here')
           end
 
           before do
