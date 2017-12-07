@@ -11,7 +11,7 @@ module Banzai
     # ref - String reference.
     #
     # Returns a Project, or nil if the reference can't be found
-    def project_from_ref(ref)
+    def parent_from_ref(ref)
       return context[:project] unless ref
 
       Project.find_by_full_path(ref)
