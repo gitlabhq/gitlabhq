@@ -6,7 +6,7 @@ require 'selenium-webdriver'
 module QA
   module Runtime
     class Browser
-      include Scenario::Actable
+      include QA::Scenario::Actable
 
       def initialize
         self.class.configure!
@@ -63,9 +63,11 @@ module QA
 
           block.call if block_given?
         rescue
+          raise if block.nil?
+
           # RSpec examples will take care of screenshots on their own
           #
-          unless block.binding.receiver.class < RSpec::Core::ExampleGroup
+          unless block.binding.receiver.is_a?(RSpec::Core::ExampleGroup)
             Capybara::Screenshot.screenshot_and_save_page
           end
 
