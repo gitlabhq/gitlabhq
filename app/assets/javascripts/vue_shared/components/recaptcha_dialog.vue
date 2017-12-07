@@ -15,6 +15,7 @@ export default {
   data() {
     return {
       script: {},
+      scriptSrc: 'https://www.google.com/recaptcha/api.js',
     };
   },
 
@@ -27,7 +28,7 @@ export default {
       this.removeRecaptchaScript();
 
       const script = document.createElement('script');
-      script.src = 'https://www.google.com/recaptcha/api.js';
+      script.src = this.scriptSrc;
       script.classList.add('js-recaptcha-script');
       script.async = true;
       script.defer = true;

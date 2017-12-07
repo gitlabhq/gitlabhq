@@ -26,6 +26,10 @@ describe('Description component', () => {
     }).$mount();
   });
 
+  afterEach(() => {
+    vm.$destroy();
+  });
+
   it('animates description changes', (done) => {
     vm.descriptionHtml = 'changed';
 
@@ -46,6 +50,11 @@ describe('Description component', () => {
 
   it('opens recaptcha dialog if update rejected as spam', (done) => {
     let modal;
+    const recaptchaChild = vm.$children.find((child) => {
+      return child.$options._componentTag === 'recaptcha-dialog'; // eslint-disable-line no-underscore-dangle
+    });
+
+    recaptchaChild.scriptSrc = '//scriptsrc';
 
     vm.taskListUpdateSuccess({
       recaptcha_html: '<div class="g-recaptcha">recaptcha_html</div>',
@@ -57,7 +66,7 @@ describe('Description component', () => {
 
         expect(modal.style.display).not.toEqual('none');
         expect(modal.querySelector('.g-recaptcha').textContent).toEqual('recaptcha_html');
-        expect(document.body.querySelector('.js-recaptcha-script').src).toEqual('https://www.google.com/recaptcha/api.js');
+        expect(document.body.querySelector('.js-recaptcha-script').src).toMatch('//scriptsrc');
       })
       .then(() => modal.querySelector('.close').click())
       .then(() => vm.$nextTick())

@@ -55,6 +55,8 @@ describe('Issuable output', () => {
     Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
 
     vm.poll.stop();
+
+    vm.$destroy();
   });
 
   it('should render a title/description/edited and update title/description/edited on update', (done) => {
@@ -269,6 +271,14 @@ describe('Issuable output', () => {
   });
 
   it('opens recaptcha dialog if update rejected as spam', (done) => {
+    function mockScriptSrc() {
+      const recaptchaChild = vm.$children.find((child) => {
+        return child.$options._componentTag === 'recaptcha-dialog'; // eslint-disable-line no-underscore-dangle
+      });
+
+      recaptchaChild.scriptSrc = '//scriptsrc';
+    }
+
     let modal;
     const promise = new Promise((resolve) => {
       resolve({
@@ -285,16 +295,17 @@ describe('Issuable output', () => {
     vm.canUpdate = true;
     vm.showForm = true;
 
-    vm.updateIssuable();
-
-    promise
+    vm.$nextTick()
+      .then(() => mockScriptSrc())
+      .then(() => vm.updateIssuable())
+      .then(promise)
       .then(() => setTimeoutPromise())
       .then(() => {
         modal = vm.$el.querySelector('.js-recaptcha-dialog');
 
         expect(modal.style.display).not.toEqual('none');
         expect(modal.querySelector('.g-recaptcha').textContent).toEqual('recaptcha_html');
-        expect(document.body.querySelector('.js-recaptcha-script').src).toEqual('https://www.google.com/recaptcha/api.js');
+        expect(document.body.querySelector('.js-recaptcha-script').src).toMatch('//scriptsrc');
       })
       .then(() => modal.querySelector('.close').click())
       .then(() => vm.$nextTick())
