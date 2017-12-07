@@ -7,6 +7,10 @@ module EE
     module Build
       extend ActiveSupport::Concern
 
+      CODEQUALITY_FILE = 'codeclimate.json'
+      SAST_FILE = 'gl-sast-report.json'
+      CLAIR_FILE = 'gl-clair-report.json'
+
       included do
         scope :codequality, ->() { where(name: %w[codequality codeclimate]) }
         scope :sast, ->() { where(name: 'sast') }
@@ -27,15 +31,15 @@ module EE
       end
 
       def has_codeclimate_json?
-        has_artifact?('codeclimate.json')
+        has_artifact?(CODEQUALITY_FILE)
       end
 
       def has_sast_json?
-        has_artifact?('gl-sast-report.json')
+        has_artifact?(SAST_FILE)
       end
 
       def has_clair_json?
-        has_artifact?('gl-clair-report.json')
+        has_artifact?(CLAIR_FILE)
       end
 
       private

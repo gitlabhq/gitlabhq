@@ -55,6 +55,7 @@ class License < ActiveRecord::Base
   EEU_FEATURES = EEP_FEATURES + %i[
     sast
     epics
+    clair
   ].freeze
 
   # List all features available for early adopters,
