@@ -9,11 +9,6 @@
         type: String,
         required: false,
       },
-      canAttachFile: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
     },
   };
 </script>
@@ -46,10 +41,7 @@
         are supported
       </template>
     </div>
-    <span
-      v-if="canAttachFile"
-      class="uploading-container"
-    >
+    <span class="uploading-container">
       <span class="uploading-progress-container hide">
         <i
           class="fa fa-file-image-o toolbar-button-icon"

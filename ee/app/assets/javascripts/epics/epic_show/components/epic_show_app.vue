@@ -128,7 +128,6 @@
           :project-namespace="projectNamespace"
           :show-inline-edit-button="true"
           :show-delete-button="false"
-          :can-attach-file="false"
           :enable-autocomplete="false"
         />
       </div>

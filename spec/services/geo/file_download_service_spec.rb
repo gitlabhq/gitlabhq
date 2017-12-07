@@ -138,6 +138,29 @@ describe Geo::FileDownloadService do
       end
     end
 
+    context 'with namespace file upload' do
+      let(:group) { create(:group) }
+      let(:upload) { Upload.find_by(model: group, uploader: 'NamespaceFileUploader') }
+
+      subject { described_class.new(:file, upload.id) }
+
+      before do
+        NamespaceFileUploader.new(group).store!(fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png'))
+      end
+
+      it 'downloads the file' do
+        stub_transfer(Gitlab::Geo::FileTransfer, 100)
+
+        expect { subject.execute }.to change { Geo::FileRegistry.synced.count }.by(1)
+      end
+
+      it 'registers when the download fails' do
+        stub_transfer(Gitlab::Geo::FileTransfer, -1)
+
+        expect { subject.execute }.to change { Geo::FileRegistry.failed.count }.by(1)
+      end
+    end
+
     context 'LFS object' do
       let(:lfs_object) { create(:lfs_object) }
 
