@@ -11,6 +11,12 @@ class LfsObject < ActiveRecord::Base
 
   mount_uploader :file, LfsObjectUploader
 
+  after_save if: :file_changed?, on: [:create, :update] do
+    run_after_commit do
+      file.schedule_migration_to_object_storage
+    end
+  end
+
   def project_allowed_access?(project)
     projects.exists?(project.lfs_storage_project.id)
   end

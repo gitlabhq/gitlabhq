@@ -17,6 +17,10 @@ describe Ci::JobArtifact do
 
     describe '#schedule_migration_to_object_storage' do
       context 'when object storage is disabled' do
+        before do
+          stub_artifacts_object_storage(enabled: false)
+        end
+
         it 'does not schedule the migration' do
           expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
 
@@ -25,26 +29,42 @@ describe Ci::JobArtifact do
       end
 
       context 'when object storage is enabled' do
-        before do
-          stub_artifacts_object_storage
+        context 'when background upload is enabled' do
+          context 'when is licensed' do
+            before do
+              stub_artifacts_object_storage(background_upload: true)
+            end
+
+            it 'schedules the model for migration' do
+              expect(ObjectStorageUploadWorker).to receive(:perform_async).with('JobArtifactUploader', described_class.name, :file, kind_of(Numeric))
+
+              subject
+            end
+          end
+
+          context 'when is unlicensed' do
+            before do
+              stub_artifacts_object_storage(background_upload: true, licensed: false)
+            end
+
+            it 'does not schedule the migration' do
+              expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
+
+              subject
+            end
+          end
         end
 
-        it 'schedules the model for migration' do
-          expect(ObjectStorageUploadWorker).to receive(:perform_async).with('JobArtifactUploader', described_class.name, :file, kind_of(Numeric))
+        context 'when background upload is disabled' do
+          before do
+            stub_artifacts_object_storage(background_upload: false)
+          end
 
-          subject
-        end
-      end
+          it 'schedules the model for migration' do
+            expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
 
-      context 'when object storage is unlicensed' do
-        before do
-          stub_artifacts_object_storage(licensed: false)
-        end
-
-        it 'does not schedule the migration' do
-          expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
-
-          subject
+            subject
+          end
         end
       end
     end
