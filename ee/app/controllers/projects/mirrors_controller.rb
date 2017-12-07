@@ -2,7 +2,7 @@ class Projects::MirrorsController < Projects::ApplicationController
   include RepositorySettingsRedirect
   include SafeMirrorParams
   # Authorize
-  before_action :authorize_admin_project!
+  before_action :authorize_admin_mirror!
   before_action :remote_mirror, only: [:update]
   before_action :check_repository_mirrors_available!
 
@@ -73,12 +73,8 @@ class Projects::MirrorsController < Projects::ApplicationController
     @remote_mirror = @project.remote_mirrors.first_or_initialize
   end
 
-  def remote_mirror_attributes
-    { remote_mirrors_attributes: %i[url id enabled only_protected_branches] }
-  end
-
   def mirror_params_attributes
-    attributes = [
+    [
       :mirror,
       :import_url,
       :username_only_import_url,
@@ -92,14 +88,15 @@ class Projects::MirrorsController < Projects::ApplicationController
         password
         ssh_known_hosts
         regenerate_ssh_private_key
+      ],
+
+      remote_mirrors_attributes: %i[
+        url
+        id
+        enabled
+        only_protected_branches
       ]
     ]
-
-    if can?(current_user, :admin_remote_mirror, project)
-      attributes << remote_mirror_attributes
-    end
-
-    attributes
   end
 
   def mirror_params

@@ -162,7 +162,6 @@ ActiveRecord::Schema.define(version: 20171205190711) do
     t.integer "circuitbreaker_failure_wait_time", default: 30
     t.integer "circuitbreaker_failure_reset_time", default: 1800
     t.integer "circuitbreaker_storage_timeout", default: 30
-    t.boolean "remote_mirror_available", default: true, null: false
     t.integer "circuitbreaker_access_retries", default: 3
     t.integer "circuitbreaker_backoff_threshold", default: 80
     t.boolean "throttle_unauthenticated_enabled", default: false, null: false
@@ -179,6 +178,7 @@ ActiveRecord::Schema.define(version: 20171205190711) do
     t.integer "gitaly_timeout_default", default: 55, null: false
     t.integer "gitaly_timeout_medium", default: 30, null: false
     t.integer "gitaly_timeout_fast", default: 10, null: false
+    t.boolean "mirror_available", default: true, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -1856,6 +1856,7 @@ ActiveRecord::Schema.define(version: 20171205190711) do
     t.boolean "resolve_outdated_diff_discussions"
     t.boolean "remote_mirror_available_overridden"
     t.boolean "only_mirror_protected_branches"
+    t.boolean "pull_mirror_available_overridden"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree

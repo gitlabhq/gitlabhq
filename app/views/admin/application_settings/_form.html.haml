@@ -128,7 +128,6 @@
 
   - if License.feature_available?(:repository_mirrors)
     = render partial: 'repository_mirrors_form', locals: { f: f }
-    = render partial: 'repository_remote_mirrors_form', locals: { f: f }
 
   %fieldset
     %legend Sign-up Restrictions
