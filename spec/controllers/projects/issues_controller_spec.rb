@@ -518,17 +518,16 @@ describe Projects::IssuesController do
               expect(spam_logs.first.recaptcha_verified).to be_falsey
             end
 
-            it 'renders json errors' do
+            it 'renders recaptcha_html json response' do
               update_issue
 
-              expect(json_response)
-                .to eql("errors" => ["Your issue has been recognized as spam. Please, change the content or solve the reCAPTCHA to proceed."])
+              expect(json_response).to have_key('recaptcha_html')
             end
 
-            it 'returns 422 status' do
+            it 'returns 200 status' do
               update_issue
 
-              expect(response).to have_gitlab_http_status(422)
+              expect(response).to have_gitlab_http_status(200)
             end
           end
 
