@@ -407,6 +407,7 @@ ActiveRecord::Schema.define(version: 20171124182517) do
     t.datetime_with_timezone "updated_at", null: false
     t.datetime_with_timezone "expire_at"
     t.string "file"
+    t.integer "file_store"
   end
 
   add_index "ci_job_artifacts", ["job_id", "file_type"], name: "index_ci_job_artifacts_on_job_id_and_file_type", unique: true, using: :btree
