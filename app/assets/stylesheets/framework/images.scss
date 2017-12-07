@@ -19,6 +19,13 @@
     max-width: 425px;
     width: 100%;
   }
+
+  &.svg-250 {
+    img,
+    svg {
+      width: 250px;
+    }
+  }
 }
 
 @mixin svg-size($size) {
