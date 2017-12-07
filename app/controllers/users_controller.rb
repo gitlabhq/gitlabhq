@@ -1,5 +1,6 @@
 class UsersController < ApplicationController
   include RoutableActions
+  include RendersMemberAccess
 
   skip_before_action :authenticate_user!
   before_action :user, except: [:exists]
@@ -116,14 +117,20 @@ class UsersController < ApplicationController
     @projects =
       PersonalProjectsFinder.new(user).execute(current_user)
       .page(params[:page])
+
+    prepare_projects_for_rendering(@projects)
   end
 
   def load_contributed_projects
     @contributed_projects = contributed_projects.joined(user)
+
+    prepare_projects_for_rendering(@contributed_projects)
   end
 
   def load_groups
     @groups = JoinedGroupsFinder.new(user).execute(current_user)
+
+    prepare_groups_for_rendering(@groups)
   end
 
   def load_snippets
