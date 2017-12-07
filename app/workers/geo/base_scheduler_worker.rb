@@ -69,6 +69,9 @@ module Geo
 
     private
 
+    def worker_metadata
+    end
+
     def db_retrieve_batch_size
       DB_RETRIEVE_BATCH_SIZE
     end
@@ -119,7 +122,8 @@ module Geo
     end
 
     def schedule_jobs
-      num_to_schedule = [max_capacity - scheduled_job_ids.size, pending_resources.size].min
+      capacity = max_capacity
+      num_to_schedule = [capacity - scheduled_job_ids.size, pending_resources.size].min
       to_schedule = pending_resources.shift(num_to_schedule)
 
       scheduled = to_schedule.map do |args|
@@ -129,7 +133,7 @@ module Geo
 
       scheduled_jobs.concat(scheduled)
 
-      log_info("Loop #{loops}", enqueued: scheduled.length, pending: pending_resources.length, scheduled: scheduled_jobs.length)
+      log_info("Loop #{loops}", enqueued: scheduled.length, pending: pending_resources.length, scheduled: scheduled_jobs.length, capacity: capacity)
     end
 
     def scheduled_job_ids
@@ -152,11 +156,13 @@ module Geo
 
     def log_info(message, extra_args = {})
       args = { class: self.class.name, message: message }.merge(extra_args)
+      args.merge!(worker_metadata) if worker_metadata
       Gitlab::Geo::Logger.info(args)
     end
 
     def log_error(message, extra_args = {})
       args = { class: self.class.name, message: message }.merge(extra_args)
+      args.merge!(worker_metadata) if worker_metadata
       Gitlab::Geo::Logger.error(args)
     end
   end
