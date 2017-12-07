@@ -46,15 +46,15 @@ feature 'Gcp Cluster', :js do
         end
 
         it 'user sees a cluster details page and creation status' do
-          expect(page).to have_content('Cluster is being created on Google Container Engine...')
+          expect(page).to have_content('Cluster is being created on Google Kubernetes Engine...')
 
           Clusters::Cluster.last.provider.make_created!
 
-          expect(page).to have_content('Cluster was successfully created on Google Container Engine')
+          expect(page).to have_content('Cluster was successfully created on Google Kubernetes Engine')
         end
 
         it 'user sees a error if something worng during creation' do
-          expect(page).to have_content('Cluster is being created on Google Container Engine...')
+          expect(page).to have_content('Cluster is being created on Google Kubernetes Engine...')
 
           Clusters::Cluster.last.provider.make_errored!('Something wrong!')
 

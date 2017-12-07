@@ -497,13 +497,13 @@ msgstr ""
 msgid "ClusterIntegration|Cluster integration is enabled for this project. Disabling this integration will not affect your cluster, it will only temporarily turn off GitLab's connection to it."
 msgstr ""
 
-msgid "ClusterIntegration|Cluster is being created on Google Container Engine..."
+msgid "ClusterIntegration|Cluster is being created on Google Kubernetes Engine..."
 msgstr ""
 
 msgid "ClusterIntegration|Cluster name"
 msgstr ""
 
-msgid "ClusterIntegration|Cluster was successfully created on Google Container Engine"
+msgid "ClusterIntegration|Cluster was successfully created on Google Kubernetes Engine"
 msgstr ""
 
 msgid "ClusterIntegration|Copy cluster name"
@@ -512,7 +512,7 @@ msgstr ""
 msgid "ClusterIntegration|Create cluster"
 msgstr ""
 
-msgid "ClusterIntegration|Create new cluster on Google Container Engine"
+msgid "ClusterIntegration|Create new cluster on Google Kubernetes Engine"
 msgstr ""
 
 msgid "ClusterIntegration|Enable cluster integration"
@@ -521,10 +521,10 @@ msgstr ""
 msgid "ClusterIntegration|Google Cloud Platform project ID"
 msgstr ""
 
-msgid "ClusterIntegration|Google Container Engine"
+msgid "ClusterIntegration|Google Kubernetes Engine"
 msgstr ""
 
-msgid "ClusterIntegration|Google Container Engine project"
+msgid "ClusterIntegration|Google Kubernetes Engine project"
 msgstr ""
 
 msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
@@ -578,7 +578,7 @@ msgstr ""
 msgid "ClusterIntegration|Something went wrong on our end."
 msgstr ""
 
-msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine"
+msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Kubernetes Engine"
 msgstr ""
 
 msgid "ClusterIntegration|Toggle Cluster"
@@ -587,13 +587,13 @@ msgstr ""
 msgid "ClusterIntegration|With a cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
 msgstr ""
 
-msgid "ClusterIntegration|Your account must have %{link_to_container_engine}"
+msgid "ClusterIntegration|Your account must have %{link_to_kubernetes_engine}"
 msgstr ""
 
 msgid "ClusterIntegration|Zone"
 msgstr ""
 
-msgid "ClusterIntegration|access to Google Container Engine"
+msgid "ClusterIntegration|access to Google Kubernetes Engine"
 msgstr ""
 
 msgid "ClusterIntegration|cluster"
