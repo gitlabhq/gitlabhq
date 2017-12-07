@@ -87,6 +87,9 @@ pushes to the repository when a file matches a regular expression as read from
 [`files_blacklist.yml`][list] (make sure you are at the right branch
 as your GitLab version when viewing this file).
 
+NOTE: **Note**:
+Files already committed won't get restricted by this push rule.
+
 Below is an example list of what will be rejected by these regular expressions:
 
 ```shell
