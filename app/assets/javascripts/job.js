@@ -9,7 +9,7 @@ export default class Job {
     this.state = null;
     this.options = options || $('.js-build-options').data();
 
-    this.pageUrl = this.options.pageUrl;
+    this.pagePath = this.options.pagePath;
     this.buildStatus = this.options.buildStatus;
     this.state = this.options.logState;
     this.buildStage = this.options.buildStage;
@@ -167,11 +167,11 @@ export default class Job {
 
   getBuildTrace() {
     return $.ajax({
-      url: `${this.pageUrl}/trace.json`,
+      url: `${this.pagePath}/trace.json`,
       data: { state: this.state },
     })
       .done((log) => {
-        setCiStatusFavicon(`${this.pageUrl}/status.json`);
+        setCiStatusFavicon(`${this.pagePath}/status.json`);
 
         if (log.state) {
           this.state = log.state;
@@ -209,7 +209,7 @@ export default class Job {
         }
 
         if (log.status !== this.buildStatus) {
-          gl.utils.visitUrl(this.pageUrl);
+          gl.utils.visitUrl(this.pagePath);
         }
       })
       .fail(() => {
