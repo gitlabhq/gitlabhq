@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.1.5 (2017-12-07)
+
+### Security (3 changes)
+
+- Don't match partial email adresses. !2227
+- Prevent creating issues through API when user does not have permissions.
+- Prevent an information disclosure in the Groups API.
+
+
 ## 10.1.4 (2017-11-14)
 
 ### Fixed (4 changes)

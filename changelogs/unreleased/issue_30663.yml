@@ -1,5 +1,0 @@
----
-title: Prevent creating issues through API when user does not have permissions
-merge_request:
-author:
-type: security
