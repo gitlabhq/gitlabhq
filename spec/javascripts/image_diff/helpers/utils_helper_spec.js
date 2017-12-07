@@ -157,25 +157,17 @@ describe('utilsHelper', () => {
     beforeEach(() => {
       window.gl = window.gl || (window.gl = {});
       glCache = window.gl;
-      window.gl.ImageFile = () => {};
       fileEl = document.createElement('div');
       fileEl.innerHTML = `
         <div class="diff-file"></div>
       `;
 
-      spyOn(ImageDiff.prototype, 'init').and.callFake(() => {});
       spyOn(ReplacedImageDiff.prototype, 'init').and.callFake(() => {});
+      spyOn(ImageDiff.prototype, 'init').and.callFake(() => {});
     });
 
     afterEach(() => {
       window.gl = glCache;
-    });
-
-    it('should initialize gl.ImageFile', () => {
-      spyOn(window.gl, 'ImageFile');
-
-      utilsHelper.initImageDiff(fileEl, false, false);
-      expect(gl.ImageFile).toHaveBeenCalled();
     });
 
     it('should initialize ImageDiff if js-single-image', () => {

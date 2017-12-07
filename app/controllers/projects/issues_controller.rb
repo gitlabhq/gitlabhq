@@ -158,7 +158,8 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def create_merge_request
-    result = ::MergeRequests::CreateFromIssueService.new(project, current_user, issue_iid: issue.iid).execute
+    create_params = params.slice(:branch_name, :ref).merge(issue_iid: issue.iid)
+    result = ::MergeRequests::CreateFromIssueService.new(project, current_user, create_params).execute
 
     if result[:status] == :success
       render json: MergeRequestCreateSerializer.new.represent(result[:merge_request])
@@ -171,6 +172,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def issue
     return @issue if defined?(@issue)
+
     # The Sortable default scope causes performance issues when used with find_by
     @issuable = @noteable = @issue ||= @project.issues.where(iid: params[:id]).reorder(nil).take!
     @note = @project.notes.new(noteable: @issuable)

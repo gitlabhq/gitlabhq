@@ -95,26 +95,18 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         end
       end
 
-      it 'has the correct data for merge request st_diffs' do
-        # makes sure we are renaming the custom method +utf8_st_diffs+ into +st_diffs+
-        # one MergeRequestDiff uses the new format, where st_diffs is expected to be nil
-
-        expect(MergeRequestDiff.where.not(st_diffs: nil).count).to eq(8)
-      end
-
       it 'has the correct data for merge request diff files' do
-        expect(MergeRequestDiffFile.where.not(diff: nil).count).to eq(9)
+        expect(MergeRequestDiffFile.where.not(diff: nil).count).to eq(55)
       end
 
-      it 'has the correct data for merge request diff commits in serialised and table formats' do
-        expect(MergeRequestDiff.where.not(st_commits: nil).count).to eq(7)
-        expect(MergeRequestDiffCommit.count).to eq(6)
+      it 'has the correct data for merge request diff commits' do
+        expect(MergeRequestDiffCommit.count).to eq(77)
       end
 
-      it 'has the correct time for merge request st_commits' do
-        st_commits = MergeRequestDiff.where.not(st_commits: nil).first.st_commits
-
-        expect(st_commits.first[:committed_date]).to be_kind_of(Time)
+      it 'has the correct data for merge request latest_merge_request_diff' do
+        MergeRequest.find_each do |merge_request|
+          expect(merge_request.latest_merge_request_diff_id).to eq(merge_request.merge_request_diffs.maximum(:id))
+        end
       end
 
       it 'has labels associated to label links, associated to issues' do
@@ -155,7 +147,7 @@ describe Gitlab::ImportExport::ProjectTreeRestorer do
         end
 
         it 'has no source if source/target differ' do
-          expect(MergeRequest.find_by_title('MR2').source_project_id).to eq(-1)
+          expect(MergeRequest.find_by_title('MR2').source_project_id).to be_nil
         end
       end
 

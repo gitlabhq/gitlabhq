@@ -28,7 +28,7 @@ module QA
 
         private
 
-        def attribute(name, arg, desc)
+        def attribute(name, arg, desc = '')
           options.push(Option.new(name, arg, desc))
         end
 

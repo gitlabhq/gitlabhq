@@ -30,7 +30,8 @@ with all their related data and be moved into a new GitLab instance.
 
 | GitLab version   | Import/Export version |
 | ---------------- | --------------------- |
-| 10.0 to current  | 0.2.0                 |
+| 10.3 to current  | 0.2.1                 |
+| 10.0             | 0.2.0                 |
 | 9.4.0            | 0.1.8                 |
 | 9.2.0            | 0.1.7                 |
 | 8.17.0           | 0.1.6                 |

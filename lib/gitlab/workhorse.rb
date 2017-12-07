@@ -58,7 +58,7 @@ module Gitlab
       end
 
       def artifact_upload_ok
-        { TempPath: ArtifactUploader.artifacts_upload_path }
+        { TempPath: JobArtifactUploader.artifacts_upload_path }
       end
 
       def send_git_blob(repository, blob)
@@ -174,6 +174,7 @@ module Gitlab
         @secret ||= begin
           bytes = Base64.strict_decode64(File.read(secret_path).chomp)
           raise "#{secret_path} does not contain #{SECRET_LENGTH} bytes" if bytes.length != SECRET_LENGTH
+
           bytes
         end
       end

@@ -1,6 +1,6 @@
 import * as actions from '~/notes/stores/actions';
 import testAction from '../../helpers/vuex_action_helper';
-import { discussionMock, notesDataMock, userDataMock, issueDataMock, individualNote } from '../mock_data';
+import { discussionMock, notesDataMock, userDataMock, noteableDataMock, individualNote } from '../mock_data';
 
 describe('Actions Notes Store', () => {
   describe('setNotesData', () => {
@@ -11,10 +11,10 @@ describe('Actions Notes Store', () => {
     });
   });
 
-  describe('setIssueData', () => {
+  describe('setNoteableData', () => {
     it('should set received issue data', (done) => {
-      testAction(actions.setIssueData, null, { issueData: {} }, [
-        { type: 'SET_ISSUE_DATA', payload: issueDataMock },
+      testAction(actions.setNoteableData, null, { noteableData: {} }, [
+        { type: 'SET_NOTEABLE_DATA', payload: noteableDataMock },
       ], done);
     });
   });

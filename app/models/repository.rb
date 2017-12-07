@@ -132,7 +132,8 @@ class Repository
 
     commits = Gitlab::Git::Commit.where(options)
     commits = Commit.decorate(commits, @project) if commits.present?
-    commits
+
+    CommitCollection.new(project, commits, ref)
   end
 
   def commits_between(from, to)
@@ -148,11 +149,14 @@ class Repository
     end
 
     raw_repository.gitaly_migrate(:commits_by_message) do |is_enabled|
-      if is_enabled
-        find_commits_by_message_by_gitaly(query, ref, path, limit, offset)
-      else
-        find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
-      end
+      commits =
+        if is_enabled
+          find_commits_by_message_by_gitaly(query, ref, path, limit, offset)
+        else
+          find_commits_by_message_by_shelling_out(query, ref, path, limit, offset)
+        end
+
+      CommitCollection.new(project, commits, ref)
     end
   end
 
@@ -213,11 +217,7 @@ class Repository
   def branch_exists?(branch_name)
     return false unless raw_repository
 
-    @branch_exists_memo ||= Hash.new do |hash, key|
-      hash[key] = raw_repository.branch_exists?(key)
-    end
-
-    @branch_exists_memo[branch_name]
+    branch_names.include?(branch_name)
   end
 
   def ref_exists?(ref)
@@ -242,6 +242,7 @@ class Repository
       Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
     rescue Rugged::OSError => ex
       raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
+
       Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
     end
   end
@@ -255,7 +256,7 @@ class Repository
   end
 
   def diverging_commit_counts(branch)
-    root_ref_hash = raw_repository.rev_parse_target(root_ref).oid
+    root_ref_hash = raw_repository.commit(root_ref).id
     cache.fetch(:"diverging_commit_counts_#{branch.name}") do
       # Rugged seems to throw a `ReferenceError` when given branch_names rather
       # than SHA-1 hashes
@@ -473,6 +474,11 @@ class Repository
     nil
   end
 
+  # items is an Array like: [[oid, path], [oid1, path1]]
+  def blobs_at(items)
+    raw_repository.batch_blobs(items).map { |blob| Blob.decorate(blob, project) }
+  end
+
   def root_ref
     if raw_repository
       raw_repository.root_ref
@@ -662,6 +668,7 @@ class Repository
   def next_branch(name, opts = {})
     branch_ids = self.branch_names.map do |n|
       next 1 if n == name
+
       result = n.match(/\A#{name}-([0-9]+)\z/)
       result[1].to_i if result
     end.compact
@@ -902,19 +909,13 @@ class Repository
     end
   end
 
-  def merged_to_root_ref?(branch_or_name, pre_loaded_merged_branches = nil)
+  def merged_to_root_ref?(branch_or_name)
     branch = Gitlab::Git::Branch.find(self, branch_or_name)
 
     if branch
       @root_ref_sha ||= commit(root_ref).sha
       same_head = branch.target == @root_ref_sha
-      merged =
-        if pre_loaded_merged_branches
-          pre_loaded_merged_branches.include?(branch.name)
-        else
-          ancestor?(branch.target, @root_ref_sha)
-        end
-
+      merged = ancestor?(branch.target, @root_ref_sha)
       !same_head && merged
     else
       nil
@@ -965,6 +966,19 @@ class Repository
     run_git(args).first.lines.map(&:strip)
   end
 
+  def fetch_as_mirror(url, forced: false, refmap: :all_refs, remote_name: nil)
+    unless remote_name
+      remote_name = "tmp-#{SecureRandom.hex}"
+      tmp_remote_name = true
+    end
+
+    add_remote(remote_name, url)
+    set_remote_as_mirror(remote_name, refmap: refmap)
+    fetch_remote(remote_name, forced: forced)
+  ensure
+    remove_remote(remote_name) if tmp_remote_name
+  end
+
   def fetch_remote(remote, forced: false, ssh_auth: nil, no_tags: false)
     gitlab_shell.fetch_remote(raw_repository, remote, ssh_auth: ssh_auth, forced: forced, no_tags: no_tags)
   end
@@ -988,10 +1002,6 @@ class Repository
   def ls_files(ref)
     actual_ref = ref || root_ref
     raw_repository.ls_files(actual_ref)
-  end
-
-  def gitattribute(path, name)
-    raw_repository.attributes(path)[name]
   end
 
   def copy_gitattributes(ref)
@@ -1066,6 +1076,10 @@ class Repository
     raw_repository.fetch_ref(source_repository.raw_repository, source_ref: source_ref, target_ref: target_ref)
   end
 
+  def repository_storage_path
+    @project.repository_storage_path
+  end
+
   private
 
   # TODO Generice finder, later split this on finders by Ref or Oid
@@ -1129,10 +1143,6 @@ class Repository
   def last_commit_id_for_path_by_shelling_out(sha, path)
     args = %W(rev-list --max-count=1 #{sha} -- #{path})
     raw_repository.run_git_with_timeout(args, Gitlab::Git::Popen::FAST_GIT_PROCESS_TIMEOUT).first.strip
-  end
-
-  def repository_storage_path
-    @project.repository_storage_path
   end
 
   def initialize_raw_repository

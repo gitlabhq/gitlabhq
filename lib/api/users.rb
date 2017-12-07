@@ -31,7 +31,6 @@ module API
           optional :location, type: String, desc: 'The location of the user'
           optional :admin, type: Boolean, desc: 'Flag indicating the user is an administrator'
           optional :can_create_group, type: Boolean, desc: 'Flag indicating the user can create groups'
-          optional :skip_confirmation, type: Boolean, default: false, desc: 'Flag indicating the account is confirmed'
           optional :external, type: Boolean, desc: 'Flag indicating the user is an external user'
           optional :avatar, type: File, desc: 'Avatar image for user'
           all_or_none_of :extern_uid, :provider
@@ -77,6 +76,8 @@ module API
         forbidden!("Not authorized to access /api/v4/users") unless authorized
 
         entity = current_user&.admin? ? Entities::UserWithAdmin : Entities::UserBasic
+        users = users.preload(:identities, :u2f_registrations) if entity == Entities::UserWithAdmin
+
         present paginate(users), with: entity
       end
 
@@ -101,6 +102,7 @@ module API
         requires :email, type: String, desc: 'The email of the user'
         optional :password, type: String, desc: 'The password of the new user'
         optional :reset_password, type: Boolean, desc: 'Flag indicating the user will be sent a password reset token'
+        optional :skip_confirmation, type: Boolean, desc: 'Flag indicating the account is confirmed'
         at_least_one_of :password, :reset_password
         requires :name, type: String, desc: 'The name of the user'
         requires :username, type: String, desc: 'The username of the user'
@@ -134,6 +136,7 @@ module API
         requires :id, type: Integer, desc: 'The ID of the user'
         optional :email, type: String, desc: 'The email of the user'
         optional :password, type: String, desc: 'The password of the new user'
+        optional :skip_reconfirmation, type: Boolean, desc: 'Flag indicating the account skips the confirmation by email'
         optional :name, type: String, desc: 'The name of the user'
         optional :username, type: String, desc: 'The username of the user'
         use :optional_attributes

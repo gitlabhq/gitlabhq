@@ -13,5 +13,16 @@ module QA
         end
       end
     end
+
+    ##
+    # TODO, temporary workaround for gitlab-org/gitlab-qa#102.
+    #
+    after do
+      visit Runtime::Scenario.mattermost_address
+      reset_session!
+
+      visit Runtime::Scenario.gitlab_address
+      reset_session!
+    end
   end
 end

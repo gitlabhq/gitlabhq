@@ -1,5 +1,0 @@
----
-title: Remove create MR button from issues when MRs are disabled
-merge_request: 15071
-author: George Andrinopoulos
-type: fixed

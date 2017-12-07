@@ -4,6 +4,7 @@ RSpec.configure do |config|
       allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(false)
     else
       next if example.metadata[:skip_gitaly_mock]
+
       allow(Gitlab::GitalyClient).to receive(:feature_enabled?).and_return(true)
     end
   end

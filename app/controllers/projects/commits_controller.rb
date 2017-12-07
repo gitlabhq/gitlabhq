@@ -45,8 +45,7 @@ class Projects::CommitsController < Projects::ApplicationController
   private
 
   def set_commits
-    render_404 unless request.format == :atom || @repository.blob_at(@commit.id, @path) || @repository.tree(@commit.id, @path).entries.present?
-
+    render_404 unless @path.empty? || request.format == :atom || @repository.blob_at(@commit.id, @path) || @repository.tree(@commit.id, @path).entries.present?
     @limit, @offset = (params[:limit] || 40).to_i, (params[:offset] || 0).to_i
     search = params[:search]
 
@@ -57,6 +56,7 @@ class Projects::CommitsController < Projects::ApplicationController
         @repository.commits(@ref, path: @path, limit: @limit, offset: @offset)
       end
 
+    @commits = @commits.with_pipeline_status
     @commits = prepare_commits_for_rendering(@commits)
   end
 end

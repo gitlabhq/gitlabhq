@@ -58,6 +58,9 @@ Before proceeding with the Pages configuration, you will need to:
    so that your users don't have to bring their own.
 1. (Only for custom domains) Have a **secondary IP**.
 
+NOTE: **Note:**
+If your GitLab instance and the Pages daemon are deployed in a private network or behind a firewall, your GitLab Pages websites will only be accessible to devices/users that have access to the private network.
+
 ### DNS configuration
 
 GitLab Pages expect to run on their own virtual host. In your DNS server/provider

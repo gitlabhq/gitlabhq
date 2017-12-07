@@ -449,15 +449,19 @@ ul.indent-list {
   }
 }
 
+.namespace-title {
+  .tooltip-inner {
+    max-width: 350px;
+  }
+}
+
 ul.group-list-tree {
   li.group-row {
-    &.has-description {
-      .title {
-        line-height: inherit;
-      }
+    &.has-description .title {
+      line-height: inherit;
     }
 
-    .title {
+    &:not(.has-description) .title {
       line-height: $list-text-height;
     }
   }

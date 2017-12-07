@@ -65,6 +65,7 @@ module Gitlab
               y << item
             end
             break if items.empty? || items.size < per_page
+
             page += 1
           end
         end

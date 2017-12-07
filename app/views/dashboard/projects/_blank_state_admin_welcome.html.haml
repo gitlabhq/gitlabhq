@@ -10,7 +10,7 @@
           Projects are where you store your code, access issues, wiki and other features of GitLab.
 
   - if current_user.can_create_group?
-    = link_to admin_root_path, class: "blank-state-link" do
+    = link_to new_group_path, class: "blank-state-link" do
       .blank-state
         .blank-state-icon
           = custom_icon("add_new_group", size: 50)

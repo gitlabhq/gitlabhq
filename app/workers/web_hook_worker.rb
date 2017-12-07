@@ -1,6 +1,5 @@
 class WebHookWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   sidekiq_options retry: 4, dead: false
 

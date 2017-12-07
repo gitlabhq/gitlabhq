@@ -27,6 +27,7 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
 
   def set_in_redis(name, value)
     Gitlab::Git::Storage.redis.with do |redis|
+      redis.zadd(Gitlab::Git::Storage::REDIS_KNOWN_KEYS, 0, cache_key)
       redis.hmset(cache_key, name, value)
     end.first
   end
@@ -179,6 +180,24 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
       expect(value_from_redis(:last_failure)).to be_empty
       expect(circuit_breaker.failure_count).to eq(0)
       expect(circuit_breaker.last_failure).to be_nil
+    end
+
+    it 'maintains known storage keys' do
+      Timecop.freeze do
+        # Insert an old key to expire
+        old_entry = Time.now.to_i - 3.days.to_i
+        Gitlab::Git::Storage.redis.with do |redis|
+          redis.zadd(Gitlab::Git::Storage::REDIS_KNOWN_KEYS, old_entry, 'to_be_removed')
+        end
+
+        circuit_breaker.perform { '' }
+
+        known_keys = Gitlab::Git::Storage.redis.with do |redis|
+          redis.zrange(Gitlab::Git::Storage::REDIS_KNOWN_KEYS, 0, -1)
+        end
+
+        expect(known_keys).to contain_exactly(cache_key)
+      end
     end
 
     it 'only performs the accessibility check once' do

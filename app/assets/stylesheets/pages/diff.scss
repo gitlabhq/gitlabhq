@@ -628,21 +628,46 @@
 }
 
 .diff-file-changes {
-  width: 450px;
+  max-width: 560px;
+  width: 100%;
   z-index: 150;
 
   @media (min-width: $screen-sm-min) {
     left: $gl-padding;
   }
 
-  a {
-    padding-top: 8px;
-    padding-bottom: 8px;
-  }
-
   .diff-changed-file {
     display: flex;
-    align-items: center;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    min-width: 0;
+  }
+
+  .diff-file-changed-icon {
+    margin-top: 2px;
+  }
+
+  .diff-changed-file-content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .diff-changed-file-name,
+  .diff-changed-file-path {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .diff-changed-file-path {
+    direction: rtl;
+    color: $gl-text-color-tertiary;
+  }
+
+  .diff-changed-stats {
+    margin-left: auto;
+    white-space: nowrap;
   }
 }
 

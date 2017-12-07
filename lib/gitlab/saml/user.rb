@@ -28,6 +28,7 @@ module Gitlab
 
       def changed?
         return true unless gl_user
+
         gl_user.changed? || gl_user.identities.any?(&:changed?)
       end
 

@@ -337,6 +337,7 @@ $regular_font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-San
 * Dropdowns
 */
 $dropdown-width: 300px;
+$dropdown-max-height: 215px;
 $dropdown-vertical-offset: 4px;
 $dropdown-link-color: #555;
 $dropdown-link-hover-bg: $row-hover;
@@ -353,6 +354,7 @@ $dropdown-loading-bg: rgba(#fff, .6);
 $dropdown-chevron-size: 10px;
 $dropdown-toggle-active-border-color: darken($border-color, 14%);
 $dropdown-item-hover-bg: $gray-darker;
+$dropdown-fade-mask-height: 32px;
 
 /*
 * Filtered Search
@@ -406,7 +408,6 @@ $location-icon-color: #e7e9ed;
  *  Notes
  */
 $notes-light-color: $gl-text-color-secondary;
-$notes-role-color: $gl-text-color-secondary;
 $note-disabled-comment-color: #b2b2b2;
 $note-targe3-outside: #fffff0;
 $note-targe3-inside: #ffffd3;
@@ -555,6 +556,7 @@ $jq-ui-default-color: #777;
 /*
 * Label
 */
+$label-padding: 7px;
 $label-gray-bg: #f8fafc;
 $label-inverse-bg: #333;
 $label-remove-border: rgba(0, 0, 0, .1);
@@ -564,6 +566,8 @@ $label-border-radius: 100px;
 * Animation
 */
 $fade-in-duration: 200ms;
+$fade-mask-transition-duration: .1s;
+$fade-mask-transition-curve: ease-in-out;
 
 /*
 * Lint

@@ -63,7 +63,7 @@ module CommitsHelper
   # Returns a link formatted as a commit branch link
   def commit_branch_link(url, text)
     link_to(url, class: 'label label-gray ref-name branch-link') do
-      icon('code-fork') + " #{text}"
+      icon('code-fork', class: 'append-right-5') + "#{text}"
     end
   end
 
@@ -77,7 +77,7 @@ module CommitsHelper
   # Returns a link formatted as a commit tag link
   def commit_tag_link(url, text)
     link_to(url, class: 'label label-gray ref-name') do
-      icon('tag') + " #{text}"
+      icon('tag', class: 'append-right-5') + "#{text}"
     end
   end
 

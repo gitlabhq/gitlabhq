@@ -1,3 +1,8 @@
+##
+# NOTE:
+# We'll move this class to Clusters::Platforms::Kubernetes, which contains exactly the same logic.
+# After we've migrated data, we'll remove KubernetesService. This would happen in a few months.
+# If you're modyfiyng this class, please note that you should update the same change in Clusters::Platforms::Kubernetes.
 class KubernetesService < DeploymentService
   include Gitlab::CurrentSettings
   include Gitlab::Kubernetes
@@ -182,6 +187,7 @@ class KubernetesService < DeploymentService
     kubeclient.get_pods(namespace: actual_namespace).as_json
   rescue KubeException => err
     raise err unless err.error_code == 404
+
     []
   end
 

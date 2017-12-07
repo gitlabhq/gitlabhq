@@ -1,6 +1,5 @@
 class GitGarbageCollectWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
   include Gitlab::CurrentSettings
 
   sidekiq_options retry: false

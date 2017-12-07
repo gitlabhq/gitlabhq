@@ -1,4 +1,4 @@
 %p
   %span.light
     Already have login and password?
-    = link_to "Sign in", new_session_path(resource_name)
+    = link_to "Sign in", new_session_path(:user, redirect_to_referer: 'yes')

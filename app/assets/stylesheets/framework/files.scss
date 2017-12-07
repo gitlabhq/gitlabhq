@@ -364,6 +364,18 @@ span.idiff {
       float: none;
     }
   }
+
+  @media (max-width: $screen-xs-max) {
+    display: block;
+
+    .file-actions {
+      white-space: normal;
+
+      .btn-group {
+        padding-top: 5px;
+      }
+    }
+  }
 }
 
 .is-stl-loading {
