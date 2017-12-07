@@ -18,7 +18,7 @@ self-hosted, fully featured solution of GitLab, available under distinct [subscr
 
 > **GitLab EE** contains all features available in **GitLab CE**,
 plus premium features available in each version: **Enterprise Edition Starter**
-(**EES**), **Enterprise Edition Premium** (**EEP**), and **Enterprise Edition Premium**
+(**EES**), **Enterprise Edition Premium** (**EEP**), and **Enterprise Edition Ultimate**
 (**EEU**). Everything available in **EES** is also available in **EEP**. Every feature
 available in **EEP** is also available in **EEU**.
 
