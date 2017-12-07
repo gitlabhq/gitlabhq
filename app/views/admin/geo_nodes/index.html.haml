@@ -1,8 +1,12 @@
 - page_title 'Geo nodes'
-%h3.page-title
-  Geo Nodes
+- @content_class = "geo-admin-container"
+%h2.page-title.clearfix
+  %span.title-text.pull-left
+    Geo Nodes
+  = link_to "New node", new_admin_geo_node_path, class: 'btn btn-create pull-right'
+%hr.page-title-separator
 
-%p.light
+%p.page-subtitle.light
   With #{link_to 'GitLab Geo', help_page_path('gitlab-geo/README'), class: 'vlink'} you can install a special
   read-only and replicated instance anywhere.
   Before you add nodes, follow the
@@ -10,16 +14,6 @@
   in the
   %strong exact order
   they appear.
-
-%hr
-
-- if Gitlab::Geo.license_allows?
-  = form_for [:admin, @node], as: :geo_node, url: admin_geo_nodes_path, html: { class: 'form-horizontal js-geo-node-form' } do |f|
-    = render partial: 'form', locals: { form: f, geo_node: @node }
-    .form-actions
-      = f.submit 'Add Node', class: 'btn btn-create'
-
-%hr
 
 - if @nodes.any?
   .panel.panel-default
@@ -38,59 +32,84 @@
               %span.help-block Primary node
             - else
               = status_loading_icon
-              - if node.restricted_project_ids
-                %p
-                  %span.help-block
-                    Namespaces to replicate:
-                    %strong.node-info
-                      = node_selected_namespaces_to_replicate(node)
-              .js-geo-node-status{ style: 'display: none' }
+              %table.geo-node-status.js-geo-node-status.hidden
                 - if node.enabled?
-                  %p
-                    %span.help-block
-                      Health Status:
-                      %span.js-health-status
-                %p
-                  %span.help-block
-                    Repositories synced:
-                    %strong.node-info.js-repositories-synced
-                %p
-                  %span.help-block
-                    Repositories failed:
-                    %strong.node-info.js-repositories-failed
-                %p
-                  %span.help-block
-                    LFS objects synced:
-                    %strong.node-info.js-lfs-objects-synced
-                %p
-                  %span.help-block
-                    LFS objects failed:
-                    %strong.node-info.js-lfs-objects-failed
-                %p
-                  %span.help-block
-                    Attachments synced:
-                    %strong.node-info.js-attachments-synced
-                %p
-                  %span.help-block
-                    Attachments failed:
-                    %strong.node-info.js-attachments-failed
-                %p
-                .advanced-geo-node-status-container
-                  .advanced-status.hidden
-                    %span.help-block
+                  %tr
+                    %td
+                      .help-block
+                        Health Status:
+                    %td
+                      .health-status.prepend-top-10.prepend-left-5.js-health-status
+                %tr
+                  %td
+                    .help-block.prepend-top-10
+                      Repositories:
+                  %td
+                    .node-info.prepend-top-10.prepend-left-5.stacked-progress-bar.js-repositories
+                      %span.status-unavailable.js-stats-unavailable
+                        Not available
+                      %span.status-green.js-synced
+                      %span.status-neutral.js-waiting
+                      %span.status-red.js-failed
+                %tr
+                  %td
+                    .help-block.prepend-top-10
+                      LFS objects:
+                  %td
+                    .node-info.prepend-top-10.prepend-left-5.stacked-progress-bar.js-lfs-objects
+                      %span.status-unavailable.js-stats-unavailable
+                        Not available
+                      %span.status-green.js-synced
+                      %span.status-neutral.js-waiting
+                      %span.status-red.js-failed
+                %tr
+                  %td
+                    .help-block.prepend-top-10
+                      Attachments:
+                  %td
+                    .node-info.prepend-top-10.prepend-left-5.stacked-progress-bar.js-attachments
+                      %span.status-unavailable.js-stats-unavailable
+                        Not available
+                      %span.status-green.js-synced
+                      %span.status-neutral.js-waiting
+                      %span.status-red.js-failed
+                %tr
+                  %td
+                    .help-block.prepend-top-10
+                      Sync settings:
+                  %td
+                    .node-info.prepend-top-10.prepend-left-5.js-sync-settings
+                      %span.js-sync-type
+                      %span.has-tooltip.sync-status.js-sync-status
+                        %i.sync-status-icon.js-sync-status-icon
+                        %span.sync-status-timestamp.js-sync-status-timestamp
+                %tr.js-advanced-status.hidden
+                  %td
+                    .help-block.prepend-top-10
                       Database replication lag:
-                      %strong.node-info.js-db-replication-lag
-                    %span.help-block
+                  %td
+                    .node-info.prepend-top-10.prepend-left-5.js-db-replication-lag
+                %tr.js-advanced-status.hidden
+                  %td
+                    .help-block.prepend-top-10
                       Last event ID seen from primary:
-                      %strong.node-info.js-last-event-seen
-                    %span.help-block
+                  %td
+                    .node-info.prepend-top-10.prepend-left-5.js-last-event-seen
+                      %span.js-event-id
+                      %span.event-timestamp.js-event-timestamp.has-tooltip
+                %tr.js-advanced-status.hidden
+                  %td
+                    .help-block.prepend-top-10
                       Last event ID processed by cursor:
-                      %strong.node-info.js-last-cursor-event
-                  %button.btn-link.js-advanced-geo-node-status-toggler
-                    %span> Advanced
-                    = icon('angle-down')
-                %p
-                  .js-health
+                  %td
+                    .node-info.prepend-top-10.prepend-left-5.js-last-cursor-event
+                      %span.js-event-id
+                      %span.event-timestamp.js-event-timestamp.has-tooltip
+              %button.btn-link.advanced-geo-node-status-toggler.js-advanced-geo-node-status-toggler
+                %span> Advanced
+                %span.js-advance-toggle.show-advance-chevron.pull-right.inline.prepend-left-5
+                  = sprite_icon('angle-down', css_class: 's16')
+              %p.health-message.hidden.js-health-message
 
           - if Gitlab::Database.read_write?
             .node-actions
