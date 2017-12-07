@@ -68,13 +68,6 @@ export default {
       });
 
       // Handle File Language
-      model.onLanguageChange((m, e) => {
-        this.setFileLanguage({
-          file: this.$store.state.selectedFile,
-          fileLanguage: e.newLanguage,
-        });
-      });
-
       this.setFileLanguage({
         file: this.$store.state.selectedFile,
         fileLanguage: model.language,

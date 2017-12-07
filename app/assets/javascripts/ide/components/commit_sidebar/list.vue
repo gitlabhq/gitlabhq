@@ -24,7 +24,7 @@
       ...mapState([
         'currentProjectId',
         'currentBranchId',
-        'rightBarCollapsed',
+        'rightPanelCollapsed',
       ]),
     },
     methods: {
@@ -39,7 +39,7 @@
 <template>
   <div class="multi-file-commit-list">
     <list-collapsed
-      v-if="rightBarCollapsed"
+      v-if="rightPanelCollapsed"
     />
     <template v-else>
       <ul

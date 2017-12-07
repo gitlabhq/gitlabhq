@@ -15,6 +15,7 @@
       },
       parent: {
         type: Object,
+        default: null,
       },
       type: {
         type: String,
@@ -41,7 +42,7 @@
         this.createTempEntry({
           projectId: this.projectId,
           branchId: this.branchId,
-          parent: this.parent || this.trees[`${this.projectId}/${this.branchId}`],
+          parent: this.parent,
           name: this.entryName.replace(new RegExp(`^${this.path}/`), ''),
           type: this.type,
         });

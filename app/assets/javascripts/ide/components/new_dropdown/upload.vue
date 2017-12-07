@@ -13,6 +13,7 @@
       },
       parent: {
         type: Object,
+        default: null,
       },
       path: {
         type: String,
@@ -40,7 +41,7 @@
           name,
           projectId: this.projectId,
           branchId: this.branchId,
-          parent: this.parent || this.trees[`${this.projectId}/${this.branchId}`],
+          parent: this.parent,
           type: 'blob',
           content: result,
           base64: !isText,

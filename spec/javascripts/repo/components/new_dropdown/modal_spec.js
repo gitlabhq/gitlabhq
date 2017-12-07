@@ -7,6 +7,7 @@ import { file, resetStore } from '../../helpers';
 describe('new file modal component', () => {
   const Component = Vue.extend(modal);
   let vm;
+  let projectTree;
 
   afterEach(() => {
     vm.$destroy();
@@ -17,12 +18,26 @@ describe('new file modal component', () => {
   ['tree', 'blob'].forEach((type) => {
     describe(type, () => {
       beforeEach(() => {
+        store.state.projects.abcproject = {
+          web_url: '',
+        };
+        store.state.trees = [];
+        store.state.trees['abcproject/mybranch'] = {
+          tree: [],
+        };
+        projectTree = store.state.trees['abcproject/mybranch'];
+
         vm = createComponentWithStore(Component, store, {
           type,
+          projectId: 'abcproject',
+          branchId: 'master',
           path: '',
-        }).$mount();
+          parent: projectTree,
+        });
 
         vm.entryName = 'testing';
+
+        vm.$mount();
       });
 
       it(`sets modal title as ${type}`, () => {
@@ -50,6 +65,9 @@ describe('new file modal component', () => {
           vm.createEntryInStore();
 
           expect(vm.createTempEntry).toHaveBeenCalledWith({
+            projectId: 'abcproject',
+            branchId: 'master',
+            parent: projectTree,
             name: 'testing',
             type,
           });
@@ -76,14 +94,18 @@ describe('new file modal component', () => {
         });
 
         it('opens newly created file', (done) => {
-          vm.createEntryInStore();
+          if (type === 'blob') {
+            vm.createEntryInStore();
 
-          setTimeout(() => {
-            expect(vm.$store.state.openFiles.length).toBe(1);
-            expect(vm.$store.state.openFiles[0].name).toBe(type === 'blob' ? 'testing' : '.gitkeep');
+            setTimeout(() => {
+              expect(vm.$store.state.openFiles.length).toBe(1);
+              expect(vm.$store.state.openFiles[0].name).toBe(type === 'blob' ? 'testing' : '.gitkeep');
 
+              done();
+            });
+          } else {
             done();
-          });
+          }
         });
 
         it(`creates ${type} in the current stores path`, (done) => {
@@ -92,11 +114,12 @@ describe('new file modal component', () => {
           vm.createEntryInStore();
 
           setTimeout(() => {
-            expect(vm.$store.state.tree[0].path).toBe('app/testing');
-            expect(vm.$store.state.tree[0].name).toBe('testing');
+            const baseTree = vm.$store.state.trees['abcproject/mybranch'].tree;
+            expect(baseTree[0].path).toBe('app/testing');
+            expect(baseTree[0].name).toBe('testing');
 
             if (type === 'tree') {
-              expect(vm.$store.state.tree[0].tree.length).toBe(1);
+              expect(baseTree[0].tree.length).toBe(1);
             }
 
             done();
@@ -108,25 +131,27 @@ describe('new file modal component', () => {
             vm.createEntryInStore();
 
             setTimeout(() => {
-              expect(vm.$store.state.tree.length).toBe(1);
-              expect(vm.$store.state.tree[0].name).toBe('testing');
-              expect(vm.$store.state.tree[0].type).toBe('blob');
-              expect(vm.$store.state.tree[0].tempFile).toBeTruthy();
+              const baseTree = vm.$store.state.trees['abcproject/mybranch'].tree;
+              expect(baseTree.length).toBe(1);
+              expect(baseTree[0].name).toBe('testing');
+              expect(baseTree[0].type).toBe('blob');
+              expect(baseTree[0].tempFile).toBeTruthy();
 
               done();
             });
           });
 
           it('does not create temp file when file already exists', (done) => {
-            vm.$store.state.tree.push(file('testing', '1', type));
+            const baseTree = vm.$store.state.trees['abcproject/mybranch'].tree;
+            baseTree.push(file('testing', '1', type));
 
             vm.createEntryInStore();
 
             setTimeout(() => {
-              expect(vm.$store.state.tree.length).toBe(1);
-              expect(vm.$store.state.tree[0].name).toBe('testing');
-              expect(vm.$store.state.tree[0].type).toBe('blob');
-              expect(vm.$store.state.tree[0].tempFile).toBeFalsy();
+              expect(baseTree.length).toBe(1);
+              expect(baseTree[0].name).toBe('testing');
+              expect(baseTree[0].type).toBe('blob');
+              expect(baseTree[0].tempFile).toBeFalsy();
 
               done();
             });
@@ -135,48 +160,47 @@ describe('new file modal component', () => {
           it('creates new tree', () => {
             vm.createEntryInStore();
 
-            expect(vm.$store.state.tree.length).toBe(1);
-            expect(vm.$store.state.tree[0].name).toBe('testing');
-            expect(vm.$store.state.tree[0].type).toBe('tree');
-            expect(vm.$store.state.tree[0].tempFile).toBeTruthy();
-            expect(vm.$store.state.tree[0].tree.length).toBe(1);
-            expect(vm.$store.state.tree[0].tree[0].name).toBe('.gitkeep');
+            const baseTree = vm.$store.state.trees['abcproject/mybranch'].tree;
+            expect(baseTree.length).toBe(1);
+            expect(baseTree[0].name).toBe('testing');
+            expect(baseTree[0].type).toBe('tree');
+            expect(baseTree[0].tempFile).toBeTruthy();
           });
 
           it('creates multiple trees when entryName has slashes', () => {
             vm.entryName = 'app/test';
             vm.createEntryInStore();
 
-            expect(vm.$store.state.tree.length).toBe(1);
-            expect(vm.$store.state.tree[0].name).toBe('app');
-            expect(vm.$store.state.tree[0].tree[0].name).toBe('test');
-            expect(vm.$store.state.tree[0].tree[0].tree[0].name).toBe('.gitkeep');
+            const baseTree = vm.$store.state.trees['abcproject/mybranch'].tree;
+            expect(baseTree.length).toBe(1);
+            expect(baseTree[0].name).toBe('app');
           });
 
           it('creates tree in existing tree', () => {
-            vm.$store.state.tree.push(file('app', '1', 'tree'));
+            const baseTree = vm.$store.state.trees['abcproject/mybranch'].tree;
+            baseTree.push(file('app', '1', 'tree'));
 
             vm.entryName = 'app/test';
             vm.createEntryInStore();
 
-            expect(vm.$store.state.tree.length).toBe(1);
-            expect(vm.$store.state.tree[0].name).toBe('app');
-            expect(vm.$store.state.tree[0].tempFile).toBeFalsy();
-            expect(vm.$store.state.tree[0].tree[0].tempFile).toBeTruthy();
-            expect(vm.$store.state.tree[0].tree[0].name).toBe('test');
-            expect(vm.$store.state.tree[0].tree[0].tree[0].name).toBe('.gitkeep');
+            expect(baseTree.length).toBe(1);
+            expect(baseTree[0].name).toBe('app');
+            expect(baseTree[0].tempFile).toBeFalsy();
+            expect(baseTree[0].tree[0].tempFile).toBeTruthy();
+            expect(baseTree[0].tree[0].name).toBe('test');
           });
 
           it('does not create new tree when already exists', () => {
-            vm.$store.state.tree.push(file('app', '1', 'tree'));
+            const baseTree = vm.$store.state.trees['abcproject/mybranch'].tree;
+            baseTree.push(file('app', '1', 'tree'));
 
             vm.entryName = 'app';
             vm.createEntryInStore();
 
-            expect(vm.$store.state.tree.length).toBe(1);
-            expect(vm.$store.state.tree[0].name).toBe('app');
-            expect(vm.$store.state.tree[0].tempFile).toBeFalsy();
-            expect(vm.$store.state.tree[0].tree.length).toBe(0);
+            expect(baseTree.length).toBe(1);
+            expect(baseTree[0].name).toBe('app');
+            expect(baseTree[0].tempFile).toBeFalsy();
+            expect(baseTree[0].tree.length).toBe(0);
           });
         }
       });
@@ -188,6 +212,8 @@ describe('new file modal component', () => {
 
     vm = createComponentWithStore(Component, store, {
       type: 'tree',
+      projectId: 'abcproject',
+      branchId: 'master',
       path: '',
     }).$mount('.js-test');
 

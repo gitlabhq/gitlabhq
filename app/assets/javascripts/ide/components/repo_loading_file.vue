@@ -8,7 +8,7 @@
     },
     computed: {
       ...mapState([
-        'leftBarCollapsed',
+        'leftPanelCollapsed',
       ]),
     },
   };
@@ -24,7 +24,7 @@
         :small="true"
       />
     </td>
-    <template v-if="!leftBarCollapsed">
+    <template v-if="!leftPanelCollapsed">
       <td
         class="hidden-sm hidden-xs">
         <skeleton-loading-container

@@ -11,7 +11,7 @@ describe('Multi-file editor right context bar', () => {
 
     vm = createComponentWithStore(Component, store).$mount();
 
-    vm.$store.state.rightBarCollapsed = false;
+    vm.$store.state.rightPanelCollapsed = false;
   });
 
   afterEach(() => {
@@ -20,7 +20,7 @@ describe('Multi-file editor right context bar', () => {
 
   describe('collapsed', () => {
     beforeEach((done) => {
-      vm.$store.state.rightBarCollapsed = true;
+      vm.$store.state.rightPanelCollapsed = true;
 
       Vue.nextTick(done);
     });
@@ -34,9 +34,7 @@ describe('Multi-file editor right context bar', () => {
     });
   });
 
-  it('clicking toggle collapse button emits toggle event', () => {
-    spyOn(vm, '$emit');
-
+  it('clicking toggle collapse button collapses the bar', () => {
     vm.$el.querySelector('.multi-file-commit-panel-collapse-btn').click();
 
     expect(vm).toHaveBeenCalledWith('toggleCollapsed');

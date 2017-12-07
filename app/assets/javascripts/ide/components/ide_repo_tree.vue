@@ -33,7 +33,7 @@ export default {
       return !this.isRoot && this.treeList(this.treeId).length;
     },
     showLoading() {
-      return (!this.treeId || !this.treeList(this.treeId).length) && this.loading;
+      return this.loading;
     },
   },
 };

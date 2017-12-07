@@ -50,12 +50,12 @@ export const toggleBlobView = ({ commit, state }) => {
   }
 };
 
-export const setLeftBarCollapsedStatus = ({ commit, state }, collapsed) => {
-  commit(types.SET_LEFT_BAR_COLLAPSED, collapsed);
-};
-
-export const setRightBarCollapsedStatus = ({ commit, state }, collapsed) => {
-  commit(types.SET_RIGHT_BAR_COLLAPSED, collapsed);
+export const setPanelCollapsedStatus = ({ commit }, side, collapsed) => {
+  if (side === 'left') {
+    commit(types.SET_LEFT_PANEL_COLLAPSED, collapsed);
+  } else {
+    commit(types.SET_RIGHT_PANEL_COLLAPSED, collapsed);
+  }
 };
 
 export const checkCommitStatus = ({ state }) => service.getBranchData(
@@ -115,18 +115,19 @@ export const commitChanges = ({ commit, state, dispatch, getters }, { payload, n
   .catch(() => flash('Error committing changes. Please try again.'));
 
 export const createTempEntry = ({ state, dispatch }, { projectId, branchId, parent, name, type, content = '', base64 = false }) => {
+  const selectedParent = parent || state.trees[`${projectId}/${branchId}`];
   if (type === 'tree') {
     dispatch('createTempTree', {
       projectId,
       branchId,
-      parent,
+      parent: selectedParent,
       name,
     });
   } else if (type === 'blob') {
     dispatch('createTempFile', {
       projectId,
       branchId,
-      parent,
+      parent: selectedParent,
       name,
       base64,
       content,

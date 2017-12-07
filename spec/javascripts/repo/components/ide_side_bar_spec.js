@@ -1,22 +1,18 @@
 import Vue from 'vue';
 import store from '~/ide/stores';
 import ideSidebar from '~/ide/components/ide_side_bar.vue';
-import { file, resetStore } from '../helpers';
+import { resetStore } from '../helpers';
+import { createComponentWithStore } from '../../helpers/vue_mount_component_helper';
 
 describe('IdeSidebar', () => {
   let vm;
 
   beforeEach(() => {
-    const IdeSidebar = Vue.extend(ideSidebar);
+    const Component = Vue.extend(ideSidebar);
 
-    vm = new IdeSidebar({
-      store,
-    });
+    vm = createComponentWithStore(Component, store).$mount();
 
-    vm.$store.state.isRoot = true;
-    vm.$store.state.tree.push(file());
-
-    vm.$mount();
+    vm.$store.state.leftPanelCollapsed = false;
   });
 
   afterEach(() => {
@@ -26,37 +22,22 @@ describe('IdeSidebar', () => {
   });
 
   it('renders a sidebar', () => {
-    const thead = vm.$el.querySelector('thead');
-    const tbody = vm.$el.querySelector('tbody');
-
-    expect(vm.$el.classList.contains('sidebar-mini')).toBeFalsy();
-    expect(thead.querySelector('.name').textContent.trim()).toEqual('Name');
-    expect(thead.querySelector('.last-commit').textContent.trim()).toEqual('Last commit');
-    expect(thead.querySelector('.last-update').textContent.trim()).toEqual('Last update');
-    expect(tbody.querySelector('.repo-file-options')).toBeFalsy();
-    expect(tbody.querySelector('.prev-directory')).toBeFalsy();
-    expect(tbody.querySelector('.loading-file')).toBeFalsy();
-    expect(tbody.querySelector('.file')).toBeTruthy();
+    expect(vm.$el.querySelector('.multi-file-commit-panel-inner-scroll')).not.toBeNull();
   });
 
-  it('renders 5 loading files if tree is loading', (done) => {
-    vm.$store.state.tree = [];
-    vm.$store.state.loading = true;
+  describe('collapsed', () => {
+    beforeEach((done) => {
+      vm.$store.state.leftPanelCollapsed = true;
 
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelectorAll('tbody .loading-file').length).toEqual(5);
-
-      done();
+      Vue.nextTick(done);
     });
-  });
 
-  it('renders a prev directory if is not root', (done) => {
-    vm.$store.state.isRoot = false;
+    it('adds collapsed class', () => {
+      expect(vm.$el.querySelector('.is-collapsed')).not.toBeNull();
+    });
 
-    Vue.nextTick(() => {
-      expect(vm.$el.querySelector('tbody .prev-directory')).toBeTruthy();
-
-      done();
+    it('shows correct icon', () => {
+      expect(vm.currentIcon).toBe('angle-double-right');
     });
   });
 });

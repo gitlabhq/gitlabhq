@@ -6,11 +6,12 @@ import _ from 'underscore';
   structure nested to make it easier to add new files/directories.
 */
 export const treeList = state => (treeId) => {
-  if (state.trees[treeId]) {
+  const baseTree = state.trees[treeId];
+  if (baseTree) {
     const mapTree = arr => (!arr.tree || !arr.tree.length ?
                             [] : _.map(arr.tree, a => [a, mapTree(a)]));
 
-    return _.chain(state.trees[treeId].tree)
+    return _.chain(baseTree.tree)
       .map(arr => [arr, mapTree(arr)])
       .flatten()
       .value();

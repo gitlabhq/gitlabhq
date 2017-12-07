@@ -17,10 +17,6 @@
         type: Object,
         required: true,
       },
-      collapsed: {
-        type: Boolean,
-        default: true,
-      },
       showExtraColumns: {
         type: Boolean,
         default: false,
@@ -28,7 +24,7 @@
     },
     computed: {
       ...mapState([
-        'leftBarCollapsed',
+        'leftPanelCollapsed',
       ]),
       fileIcon() {
         return {
@@ -52,7 +48,7 @@
         return this.file.id.substr(0, 8);
       },
       submoduleColSpan() {
-        return !this.leftBarCollapsed && this.isSubmodule ? 3 : 1;
+        return !this.leftPanelCollapsed && this.isSubmodule ? 3 : 1;
       },
       openedClass() {
         return this.file.type === 'blob' && this.file.opened ? 'file-open' : '';
@@ -118,7 +114,7 @@
       </template>
     </td>
 
-    <template v-if="showExtraColumns">
+    <template v-if="showExtraColumns && !isSubmodule">
       <td class="multi-file-table-col-commit-message hidden-sm hidden-xs">
         <a
           v-if="file.lastCommit.message"

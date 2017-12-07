@@ -39,14 +39,14 @@ export default {
       isInitialRoot: isRoot,
     });
   },
-  [types.SET_LEFT_BAR_COLLAPSED](state, collapsed) {
+  [types.SET_LEFT_PANEL_COLLAPSED](state, collapsed) {
     Object.assign(state, {
-      leftBarCollapsed: collapsed,
+      leftPanelCollapsed: collapsed,
     });
   },
-  [types.SET_RIGHT_BAR_COLLAPSED](state, collapsed) {
+  [types.SET_RIGHT_PANEL_COLLAPSED](state, collapsed) {
     Object.assign(state, {
-      rightBarCollapsed: collapsed,
+      rightPanelCollapsed: collapsed,
     });
   },
   [types.SET_LAST_COMMIT_DATA](state, { entry, lastCommit }) {

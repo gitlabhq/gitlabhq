@@ -48,6 +48,7 @@ describe('RepoLoadingFile', () => {
 
   it('renders 1 column of animated LoC if isMini', (done) => {
     vm = createComponent();
+    vm.$store.state.leftPanelCollapsed = true;
     vm.$store.state.openFiles.push('test');
 
     vm.$nextTick(() => {

@@ -39,7 +39,6 @@ describe('RepoFile', () => {
     expect(name.textContent.trim()).toEqual(vm.file.name);
     expect(fileIcon.classList.contains(vm.file.icon)).toBeTruthy();
     expect(fileIcon.style.marginLeft).toEqual(`${vm.file.level * 10}px`);
-    expect(vm.$el.querySelectorAll('.animation-container').length).toBe(2);
   });
 
   it('does render if hasFiles is true and is loading tree', () => {
@@ -80,11 +79,11 @@ describe('RepoFile', () => {
       file: file(),
     });
 
-    spyOn(vm, 'clickedTreeRow');
+    spyOn(vm, 'clickFile');
 
     vm.$el.click();
 
-    expect(vm.clickedTreeRow).toHaveBeenCalledWith(vm.file);
+    expect(vm.clickFile).toHaveBeenCalledWith(vm.file);
   });
 
   describe('submodule', () => {

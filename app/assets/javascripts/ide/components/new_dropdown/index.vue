@@ -19,6 +19,7 @@
       },
       parent: {
         type: Object,
+        default: null,
       },
     },
     components: {
@@ -55,10 +56,12 @@
       >
         <icon
           name="plus"
+          :size="12"
           css-classes="pull-left"
         />
         <icon
           name="arrow-down"
+          :size="12"
           css-classes="pull-left"
         />
       </button>

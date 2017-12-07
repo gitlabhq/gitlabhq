@@ -24,7 +24,9 @@ describe('ide component', () => {
   });
 
   it('renders panel right when files are open', (done) => {
-    vm.$store.state.tree.push(file());
+    vm.$store.state.trees['abcproject/mybranch'] = {
+      tree: [file()],
+    };
 
     Vue.nextTick(() => {
       expect(vm.$el.querySelector('.panel-right')).toBeNull();

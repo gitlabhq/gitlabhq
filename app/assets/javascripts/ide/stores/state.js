@@ -17,6 +17,6 @@ export default () => ({
   parentTreeUrl: '',
   trees: {},
   projects: {},
-  leftBarCollapsed: false,
-  rightBarCollapsed: true,
+  leftPanelCollapsed: false,
+  rightPanelCollapsed: true,
 });

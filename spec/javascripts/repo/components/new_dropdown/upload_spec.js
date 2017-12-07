@@ -6,13 +6,28 @@ import { resetStore } from '../../helpers';
 
 describe('new dropdown upload', () => {
   let vm;
+  let projectTree;
 
   beforeEach(() => {
     const Component = Vue.extend(upload);
 
+    store.state.projects.abcproject = {
+      web_url: '',
+    };
+    store.state.trees = [];
+    store.state.trees['abcproject/mybranch'] = {
+      tree: [],
+    };
+    projectTree = store.state.trees['abcproject/mybranch'];
+
     vm = createComponentWithStore(Component, store, {
+      projectId: 'abcproject',
+      branchId: 'master',
       path: '',
+      parent: projectTree,
     });
+
+    vm.entryName = 'testing';
 
     vm.$mount();
   });
@@ -65,9 +80,10 @@ describe('new dropdown upload', () => {
       vm.createFile(target, file, true);
 
       vm.$nextTick(() => {
-        expect(vm.$store.state.tree.length).toBe(1);
-        expect(vm.$store.state.tree[0].name).toBe(file.name);
-        expect(vm.$store.state.tree[0].content).toBe(target.result);
+        const baseTree = vm.$store.state.trees['abcproject/mybranch'].tree;
+        expect(baseTree.length).toBe(1);
+        expect(baseTree[0].name).toBe(file.name);
+        expect(baseTree[0].content).toBe(target.result);
 
         done();
       });
@@ -78,10 +94,11 @@ describe('new dropdown upload', () => {
       vm.createFile(target, file, true);
 
       vm.$nextTick(() => {
-        expect(vm.$store.state.tree.length).toBe(1);
-        expect(vm.$store.state.tree[0].name).toBe(file.name);
-        expect(vm.$store.state.tree[0].content).toBe(target.result);
-        expect(vm.$store.state.tree[0].path).toBe(`testing/${file.name}`);
+        const baseTree = vm.$store.state.trees['abcproject/mybranch'].tree;
+        expect(baseTree.length).toBe(1);
+        expect(baseTree[0].name).toBe(file.name);
+        expect(baseTree[0].content).toBe(target.result);
+        expect(baseTree[0].path).toBe(`testing/${file.name}`);
 
         done();
       });
@@ -91,10 +108,11 @@ describe('new dropdown upload', () => {
       vm.createFile(binaryTarget, file, false);
 
       vm.$nextTick(() => {
-        expect(vm.$store.state.tree.length).toBe(1);
-        expect(vm.$store.state.tree[0].name).toBe(file.name);
-        expect(vm.$store.state.tree[0].content).toBe(binaryTarget.result.split('base64,')[1]);
-        expect(vm.$store.state.tree[0].base64).toBe(true);
+        const baseTree = vm.$store.state.trees['abcproject/mybranch'].tree;
+        expect(baseTree.length).toBe(1);
+        expect(baseTree[0].name).toBe(file.name);
+        expect(baseTree[0].content).toBe(binaryTarget.result.split('base64,')[1]);
+        expect(baseTree[0].base64).toBe(true);
 
         done();
       });

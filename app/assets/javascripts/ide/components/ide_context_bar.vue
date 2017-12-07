@@ -10,21 +10,21 @@ export default {
   },
   computed: {
     ...mapState([
-      'rightBarCollapsed',
+      'rightPanelCollapsed',
     ]),
     ...mapGetters([
       'changedFiles',
     ]),
     currentIcon() {
-      return this.rightBarCollapsed ? 'angle-double-left' : 'angle-double-right';
+      return this.rightPanelCollapsed ? 'angle-double-left' : 'angle-double-right';
     },
   },
   methods: {
     ...mapActions([
-      'setRightBarCollapsedStatus',
+      'setPanelCollapsedStatus',
     ]),
     toggleCollapsed() {
-      this.setRightBarCollapsedStatus(!this.rightBarCollapsed);
+      this.setPanelCollapsedStatus('right', !this.rightPanelCollapsed);
     },
   },
 };
@@ -34,7 +34,7 @@ export default {
   <div
     class="multi-file-commit-panel"
     :class="{
-      'is-collapsed': rightBarCollapsed,
+      'is-collapsed': rightPanelCollapsed,
     }"
   >
     <div 
@@ -42,7 +42,7 @@ export default {
       <header
         class="multi-file-commit-panel-header"
         :class="{
-          'is-collapsed': rightBarCollapsed,
+            'is-collapsed': rightPanelCollapsed,
           }"
         >
         <button

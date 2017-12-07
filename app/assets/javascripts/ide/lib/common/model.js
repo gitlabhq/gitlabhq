@@ -57,14 +57,6 @@ export default class Model {
     );
   }
 
-  onLanguageChange(cb) {
-    this.events.set(
-      this.disposable.add(
-        this.model.onDidChangeLanguage(e => cb(this.model, e)),
-      ),
-    );
-  }
-
   dispose() {
     this.disposable.dispose();
     this.events.clear();

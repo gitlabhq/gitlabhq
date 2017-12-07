@@ -15,7 +15,7 @@ describe('Multi-file editor commit sidebar list', () => {
       fileList: [],
     });
 
-    vm.$store.state.rightBarCollapsed = false;
+    vm.$store.state.rightPanelCollapsed = false;
 
     vm.$mount();
   });
@@ -46,7 +46,7 @@ describe('Multi-file editor commit sidebar list', () => {
 
   describe('collapsed', () => {
     beforeEach((done) => {
-      vm.$store.state.rightBarCollapsed = true;
+      vm.$store.state.rightPanelCollapsed = true;
 
       Vue.nextTick(done);
     });
