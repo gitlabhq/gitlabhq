@@ -72,7 +72,9 @@ module Gitlab
       end
 
       def call_measurement_enabled?
-        Feature.get(:prometheus_metrics_method_instrumentation).enabled?
+        Rails.cache.fetch(:prometheus_metrics_method_instrumentation_enabled, expires_in: 5.minutes) do
+          Feature.get(:prometheus_metrics_method_instrumentation).enabled?
+        end
       end
     end
   end

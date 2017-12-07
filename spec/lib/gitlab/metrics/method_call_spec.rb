@@ -23,6 +23,17 @@ describe Gitlab::Metrics::MethodCall do
           Feature.get(:prometheus_metrics_method_instrumentation).enable
         end
 
+        it 'feature check is cached for 5 minutes' do
+          allow(Feature.get(:prometheus_metrics_method_instrumentation)).to receive(:enabled?).and_call_original
+          allow(Rails.cache).to receive(:fetch).and_call_original
+
+          method_call.measure { 'foo' }
+          method_call.measure { 'foo' }
+
+          expect(Feature.get(:prometheus_metrics_method_instrumentation)).to have_received(:enabled?).twice
+          expect(Rails.cache).to have_received(:fetch).with(:prometheus_metrics_method_instrumentation_enabled, expires_in: 5.minutes).twice
+        end
+
         it 'observes the performance of the supplied block' do
           expect(described_class.call_duration_histogram)
             .to receive(:observe)
