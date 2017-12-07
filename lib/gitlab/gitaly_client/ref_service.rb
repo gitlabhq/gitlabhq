@@ -46,7 +46,8 @@ module Gitlab
           commit_id: commit_id,
           prefix: ref_prefix
         )
-        encode!(GitalyClient.call(@storage, :ref_service, :find_ref_name, request).name.dup)
+        response = GitalyClient.call(@storage, :ref_service, :find_ref_name, request, timeout: GitalyClient.medium_timeout)
+        encode!(response.name.dup)
       end
 
       def count_tag_names

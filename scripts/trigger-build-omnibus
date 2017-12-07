@@ -30,12 +30,16 @@ module Omnibus
 
     private
 
+    def ee?
+      File.exist?('CHANGELOG-EE.md')
+    end
+
     def env_params
       {
         "ref" => ENV["OMNIBUS_BRANCH"] || "master",
         "variables[GITLAB_VERSION]" => ENV["CI_COMMIT_SHA"],
         "variables[ALTERNATIVE_SOURCES]" => true,
-        "variables[ee]" => ENV["EE_PACKAGE"] || "false"
+        "variables[ee]" => ee? ? 'true' : 'false'
       }
     end
 

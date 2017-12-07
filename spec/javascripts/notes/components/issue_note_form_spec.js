@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import store from '~/notes/stores';
 import issueNoteForm from '~/notes/components/issue_note_form.vue';
-import { issueDataMock, notesDataMock } from '../mock_data';
+import { noteableDataMock, notesDataMock } from '../mock_data';
 import { keyboardDownEvent } from '../../issue_show/helpers';
 
 describe('issue_note_form component', () => {
@@ -11,7 +11,7 @@ describe('issue_note_form component', () => {
   beforeEach(() => {
     const Component = Vue.extend(issueNoteForm);
 
-    store.dispatch('setIssueData', issueDataMock);
+    store.dispatch('setNoteableData', noteableDataMock);
     store.dispatch('setNotesData', notesDataMock);
 
     props = {

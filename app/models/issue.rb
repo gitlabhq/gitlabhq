@@ -9,6 +9,7 @@ class Issue < ActiveRecord::Base
   include FasterCacheKeys
   include RelativePositioning
   include TimeTrackable
+  include ThrottledTouch
 
   DueDateStruct = Struct.new(:title, :name).freeze
   NoDueDate     = DueDateStruct.new('No Due Date', '0').freeze
@@ -49,7 +50,6 @@ class Issue < ActiveRecord::Base
   scope :public_only, -> { where(confidential: false) }
 
   after_save :expire_etag_cache
-  after_commit :update_project_counter_caches, on: :destroy
 
   attr_spammable :title, spam_title: true
   attr_spammable :description, spam_description: true

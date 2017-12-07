@@ -9,6 +9,24 @@ describe HasVariable do
   it { is_expected.not_to allow_value('foo bar').for(:key) }
   it { is_expected.not_to allow_value('foo/bar').for(:key) }
 
+  describe '#key=' do
+    context 'when the new key is nil' do
+      it 'strips leading and trailing whitespaces' do
+        subject.key = nil
+
+        expect(subject.key).to eq('')
+      end
+    end
+
+    context 'when the new key has leadind and trailing whitespaces' do
+      it 'strips leading and trailing whitespaces' do
+        subject.key = ' my key '
+
+        expect(subject.key).to eq('my key')
+      end
+    end
+  end
+
   describe '#value' do
     before do
       subject.value = 'secret'

@@ -942,8 +942,8 @@ describe Gitlab::Database::MigrationHelpers do
         end
 
         it 'queues jobs in groups of buffer size 1' do
-          expect(BackgroundMigrationWorker).to receive(:perform_bulk).with([['FooJob', [id1, id2]]])
-          expect(BackgroundMigrationWorker).to receive(:perform_bulk).with([['FooJob', [id3, id3]]])
+          expect(BackgroundMigrationWorker).to receive(:bulk_perform_async).with([['FooJob', [id1, id2]]])
+          expect(BackgroundMigrationWorker).to receive(:bulk_perform_async).with([['FooJob', [id3, id3]]])
 
           model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob', batch_size: 2)
         end
@@ -960,8 +960,8 @@ describe Gitlab::Database::MigrationHelpers do
         end
 
         it 'queues jobs in bulk all at once (big buffer size)' do
-          expect(BackgroundMigrationWorker).to receive(:perform_bulk).with([['FooJob', [id1, id2]],
-                                                                            ['FooJob', [id3, id3]]])
+          expect(BackgroundMigrationWorker).to receive(:bulk_perform_async).with([['FooJob', [id1, id2]],
+                                                                                  ['FooJob', [id3, id3]]])
 
           model.bulk_queue_background_migration_jobs_by_range(User, 'FooJob', batch_size: 2)
         end

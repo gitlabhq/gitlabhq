@@ -76,6 +76,7 @@ module MergeRequests
         end
 
         merge_request.mark_as_unchecked
+        UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
       end
     end
 

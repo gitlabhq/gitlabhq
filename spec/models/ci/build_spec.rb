@@ -23,6 +23,8 @@ describe Ci::Build do
   it { is_expected.to respond_to(:has_trace?) }
   it { is_expected.to respond_to(:trace) }
 
+  it { is_expected.to be_a(ArtifactMigratable) }
+
   describe 'callbacks' do
     context 'when running after_create callback' do
       it 'triggers asynchronous build hooks worker' do
@@ -130,34 +132,55 @@ describe Ci::Build do
   end
 
   describe '#artifacts?' do
-    subject { build.artifacts? }
-
-    context 'artifacts archive does not exist' do
-      before do
-        build.update_attributes(artifacts_file: nil)
-      end
-
-      it { is_expected.to be_falsy }
-    end
-
-    context 'artifacts archive exists' do
+    context 'when new artifacts are used' do
       let(:build) { create(:ci_build, :artifacts) }
-      it { is_expected.to be_truthy }
 
-      context 'is expired' do
-        before do
-          build.update(artifacts_expire_at: Time.now - 7.days)
-        end
+      subject { build.artifacts? }
+
+      context 'artifacts archive does not exist' do
+        let(:build) { create(:ci_build) }
 
         it { is_expected.to be_falsy }
       end
 
-      context 'is not expired' do
-        before do
-          build.update(artifacts_expire_at: Time.now + 7.days)
+      context 'artifacts archive exists' do
+        it { is_expected.to be_truthy }
+
+        context 'is expired' do
+          let!(:build) { create(:ci_build, :artifacts, :expired) }
+
+          it { is_expected.to be_falsy }
         end
 
+        context 'is not expired' do
+          it { is_expected.to be_truthy }
+        end
+      end
+    end
+
+    context 'when legacy artifacts are used' do
+      let(:build) { create(:ci_build, :legacy_artifacts) }
+
+      subject { build.artifacts? }
+
+      context 'artifacts archive does not exist' do
+        let(:build) { create(:ci_build) }
+
+        it { is_expected.to be_falsy }
+      end
+
+      context 'artifacts archive exists' do
         it { is_expected.to be_truthy }
+
+        context 'is expired' do
+          let!(:build) { create(:ci_build, :legacy_artifacts, :expired) }
+
+          it { is_expected.to be_falsy }
+        end
+
+        context 'is not expired' do
+          it { is_expected.to be_truthy }
+        end
       end
     end
   end
@@ -612,71 +635,144 @@ describe Ci::Build do
 
       describe '#erasable?' do
         subject { build.erasable? }
+
         it { is_expected.to eq false }
       end
     end
 
     context 'build is erasable' do
-      let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
-
-      describe '#erase' do
-        before do
-          build.erase(erased_by: user)
-        end
-
-        context 'erased by user' do
-          let!(:user) { create(:user, username: 'eraser') }
-
-          include_examples 'erasable'
-
-          it 'records user who erased a build' do
-            expect(build.erased_by).to eq user
-          end
-        end
-
-        context 'erased by system' do
-          let(:user) { nil }
-
-          include_examples 'erasable'
-
-          it 'does not set user who erased a build' do
-            expect(build.erased_by).to be_nil
-          end
-        end
-      end
-
-      describe '#erasable?' do
-        subject { build.erasable? }
-        it { is_expected.to be_truthy }
-      end
-
-      describe '#erased?' do
+      context 'new artifacts' do
         let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
-        subject { build.erased? }
-
-        context 'job has not been erased' do
-          it { is_expected.to be_falsey }
-        end
-
-        context 'job has been erased' do
-          before do
-            build.erase
-          end
-
-          it { is_expected.to be_truthy }
-        end
-      end
-
-      context 'metadata and build trace are not available' do
-        let!(:build) { create(:ci_build, :success, :artifacts) }
-
-        before do
-          build.remove_artifacts_metadata!
-        end
 
         describe '#erase' do
-          it 'does not raise error' do
-            expect { build.erase }.not_to raise_error
+          before do
+            build.erase(erased_by: user)
+          end
+
+          context 'erased by user' do
+            let!(:user) { create(:user, username: 'eraser') }
+
+            include_examples 'erasable'
+
+            it 'records user who erased a build' do
+              expect(build.erased_by).to eq user
+            end
+          end
+
+          context 'erased by system' do
+            let(:user) { nil }
+
+            include_examples 'erasable'
+
+            it 'does not set user who erased a build' do
+              expect(build.erased_by).to be_nil
+            end
+          end
+        end
+
+        describe '#erasable?' do
+          subject { build.erasable? }
+          it { is_expected.to be_truthy }
+        end
+
+        describe '#erased?' do
+          let!(:build) { create(:ci_build, :trace, :success, :artifacts) }
+          subject { build.erased? }
+
+          context 'job has not been erased' do
+            it { is_expected.to be_falsey }
+          end
+
+          context 'job has been erased' do
+            before do
+              build.erase
+            end
+
+            it { is_expected.to be_truthy }
+          end
+        end
+
+        context 'metadata and build trace are not available' do
+          let!(:build) { create(:ci_build, :success, :artifacts) }
+
+          before do
+            build.remove_artifacts_metadata!
+          end
+
+          describe '#erase' do
+            it 'does not raise error' do
+              expect { build.erase }.not_to raise_error
+            end
+          end
+        end
+      end
+    end
+
+    context 'old artifacts' do
+      context 'build is erasable' do
+        context 'new artifacts' do
+          let!(:build) { create(:ci_build, :trace, :success, :legacy_artifacts) }
+
+          describe '#erase' do
+            before do
+              build.erase(erased_by: user)
+            end
+
+            context 'erased by user' do
+              let!(:user) { create(:user, username: 'eraser') }
+
+              include_examples 'erasable'
+
+              it 'records user who erased a build' do
+                expect(build.erased_by).to eq user
+              end
+            end
+
+            context 'erased by system' do
+              let(:user) { nil }
+
+              include_examples 'erasable'
+
+              it 'does not set user who erased a build' do
+                expect(build.erased_by).to be_nil
+              end
+            end
+          end
+
+          describe '#erasable?' do
+            subject { build.erasable? }
+            it { is_expected.to be_truthy }
+          end
+
+          describe '#erased?' do
+            let!(:build) { create(:ci_build, :trace, :success, :legacy_artifacts) }
+            subject { build.erased? }
+
+            context 'job has not been erased' do
+              it { is_expected.to be_falsey }
+            end
+
+            context 'job has been erased' do
+              before do
+                build.erase
+              end
+
+              it { is_expected.to be_truthy }
+            end
+          end
+
+          context 'metadata and build trace are not available' do
+            let!(:build) { create(:ci_build, :success, :legacy_artifacts) }
+
+            before do
+              build.remove_artifacts_metadata!
+            end
+
+            describe '#erase' do
+              it 'does not raise error' do
+                expect { build.erase }.not_to raise_error
+              end
+            end
           end
         end
       end
@@ -912,10 +1008,22 @@ describe Ci::Build do
   describe '#keep_artifacts!' do
     let(:build) { create(:ci_build, artifacts_expire_at: Time.now + 7.days) }
 
+    subject { build.keep_artifacts! }
+
     it 'to reset expire_at' do
-      build.keep_artifacts!
+      subject
 
       expect(build.artifacts_expire_at).to be_nil
+    end
+
+    context 'when having artifacts files' do
+      let!(:artifact) { create(:ci_job_artifact, job: build, expire_in: '7 days') }
+
+      it 'to reset dependent objects' do
+        subject
+
+        expect(artifact.reload.expire_at).to be_nil
+      end
     end
   end
 
@@ -1241,10 +1349,10 @@ describe Ci::Build do
         context 'when config does not have a questioned job' do
           let(:config) do
             YAML.dump({
-                        test_other: {
-                          script: 'Hello World'
-                        }
-                      })
+              test_other: {
+                script: 'Hello World'
+              }
+            })
           end
 
           it { is_expected.to eq('on_success') }
@@ -1253,11 +1361,11 @@ describe Ci::Build do
         context 'when config has `when`' do
           let(:config) do
             YAML.dump({
-                        test: {
-                          script: 'Hello World',
-                          when: 'always'
-                        }
-                      })
+              test: {
+                script: 'Hello World',
+                when: 'always'
+              }
+            })
           end
 
           it { is_expected.to eq('always') }
@@ -1338,10 +1446,10 @@ describe Ci::Build do
 
       let!(:environment) do
         create(:environment,
-          project: build.project,
-          name: 'production',
-          slug: 'prod-slug',
-          external_url: '')
+               project: build.project,
+               name: 'production',
+               slug: 'prod-slug',
+               external_url: '')
       end
 
       before do
@@ -1565,8 +1673,8 @@ describe Ci::Build do
 
       let!(:pipeline_schedule_variable) do
         create(:ci_pipeline_schedule_variable,
-          key: 'SCHEDULE_VARIABLE_KEY',
-          pipeline_schedule: pipeline_schedule)
+               key: 'SCHEDULE_VARIABLE_KEY',
+               pipeline_schedule: pipeline_schedule)
       end
 
       before do
@@ -1708,8 +1816,8 @@ describe Ci::Build do
         allow_any_instance_of(Project)
           .to receive(:secret_variables_for)
           .with(ref: 'master', environment: nil) do
-            [create(:ci_variable, key: 'secret', value: 'value')]
-          end
+          [create(:ci_variable, key: 'secret', value: 'value')]
+        end
 
         allow_any_instance_of(Ci::Pipeline)
           .to receive(:predefined_variables) { [pipeline_pre_var] }
@@ -1810,6 +1918,79 @@ describe Ci::Build do
         expect(service).to receive(:commit_status_merge_requests)
 
         subject.drop!
+      end
+    end
+  end
+
+  describe '.matches_tag_ids' do
+    set(:build) { create(:ci_build, project: project, user: user) }
+    let(:tag_ids) { ::ActsAsTaggableOn::Tag.named_any(tag_list).ids }
+
+    subject { described_class.where(id: build).matches_tag_ids(tag_ids) }
+
+    before do
+      build.update(tag_list: build_tag_list)
+    end
+
+    context 'when have different tags' do
+      let(:build_tag_list) { %w(A B) }
+      let(:tag_list) { %w(C D) }
+
+      it "does not match a build" do
+        is_expected.not_to contain_exactly(build)
+      end
+    end
+
+    context 'when have a subset of tags' do
+      let(:build_tag_list) { %w(A B) }
+      let(:tag_list) { %w(A B C D) }
+
+      it "does match a build" do
+        is_expected.to contain_exactly(build)
+      end
+    end
+
+    context 'when build does not have tags' do
+      let(:build_tag_list) { [] }
+      let(:tag_list) { %w(C D) }
+
+      it "does match a build" do
+        is_expected.to contain_exactly(build)
+      end
+    end
+
+    context 'when does not have a subset of tags' do
+      let(:build_tag_list) { %w(A B C) }
+      let(:tag_list) { %w(C D) }
+
+      it "does not match a build" do
+        is_expected.not_to contain_exactly(build)
+      end
+    end
+  end
+
+  describe '.matches_tags' do
+    set(:build) { create(:ci_build, project: project, user: user) }
+
+    subject { described_class.where(id: build).with_any_tags }
+
+    before do
+      build.update(tag_list: tag_list)
+    end
+
+    context 'when does have tags' do
+      let(:tag_list) { %w(A B) }
+
+      it "does match a build" do
+        is_expected.to contain_exactly(build)
+      end
+    end
+
+    context 'when does not have tags' do
+      let(:tag_list) { [] }
+
+      it "does not match a build" do
+        is_expected.not_to contain_exactly(build)
       end
     end
   end

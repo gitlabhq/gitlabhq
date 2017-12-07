@@ -141,20 +141,20 @@
 
 .sidebar-item-icon {
   border-radius: $border-radius-default;
-  margin: 0 3px 0 -4px;
-  vertical-align: middle;
+  margin: 0 5px 0 0;
+  vertical-align: text-bottom;
 
   &.is-active {
     fill: $orange-600;
   }
-}
 
-.sidebar-collapsed-icon .sidebar-item-icon {
-  margin: 0;
-}
+  .sidebar-collapsed-icon & {
+    margin: 0;
+  }
 
-.sidebar-item-value .sidebar-item-icon {
-  fill: $theme-gray-700;
+  .sidebar-item-value & {
+    fill: $theme-gray-700;
+  }
 }
 
 .sidebar-item-warning-message {

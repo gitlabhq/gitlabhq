@@ -40,20 +40,24 @@ export default {
 </script>
 
 <template>
-  <div class="repository-view">
-    <div class="tree-content-holder" :class="{'tree-content-holder-mini' : isCollapsed}">
-      <repo-sidebar/>
-      <div
-        v-if="isCollapsed"
-        class="panel-right"
-      >
-        <repo-tabs/>
-        <component
-          :is="currentBlobView"
-        />
-        <repo-file-buttons/>
-      </div>
+  <div
+    class="multi-file"
+    :class="{
+      'is-collapsed': isCollapsed
+    }"
+  >
+    <repo-sidebar/>
+    <div
+      v-if="isCollapsed"
+      class="multi-file-edit-pane"
+    >
+      <repo-tabs />
+      <component
+        class="multi-file-edit-pane-content"
+        :is="currentBlobView"
+      />
+      <repo-file-buttons />
     </div>
-    <repo-commit-section v-if="changedFiles.length" />
+    <repo-commit-section />
   </div>
 </template>
