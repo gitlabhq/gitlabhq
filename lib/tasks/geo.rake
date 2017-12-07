@@ -66,7 +66,8 @@ namespace :geo do
         Gitlab::Geo::GeoTasks.refresh_foreign_tables!
         puts 'Done!'
       else
-        puts "Warning: Cannot refresh foreign tables, there is no foreign server configured."
+        puts "Error: Cannot refresh foreign tables, there is no foreign server configured."
+        exit 1
       end
     end
 
