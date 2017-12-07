@@ -3,6 +3,7 @@ class GeoNodeStatus < ActiveRecord::Base
 
   # Whether we were successful in reaching this node
   attr_accessor :success
+  attr_accessor :health_status
 
   # Be sure to keep this consistent with Prometheus naming conventions
   PROMETHEUS_METRICS = {
@@ -47,8 +48,8 @@ class GeoNodeStatus < ActiveRecord::Base
   end
 
   def self.allowed_params
-    excluded_params = %w(id last_successful_status_check_at created_at updated_at).freeze
-    extra_params = %w(success health last_event_timestamp cursor_last_event_timestamp).freeze
+    excluded_params = %w(id created_at updated_at).freeze
+    extra_params = %w(success health health_status last_event_timestamp cursor_last_event_timestamp).freeze
     self.column_names - excluded_params + extra_params
   end
 
@@ -87,6 +88,10 @@ class GeoNodeStatus < ActiveRecord::Base
 
   def healthy?
     status_message.blank? || status_message == 'Healthy'.freeze
+  end
+
+  def health_status
+    @health_status || (healthy? ? 'Healthy' : 'Unhealthy')
   end
 
   def last_successful_status_check_timestamp
