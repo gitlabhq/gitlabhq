@@ -50,6 +50,7 @@ module Ci
     end
 
     validate :tag_constraints
+    validate :either_projects_or_group
     validates :access_level, presence: true
 
     acts_as_taggable
@@ -225,6 +226,16 @@ module Ci
 
     def assignable_for?(project_id)
       self.class.owned_or_shared(project_id).where(id: self.id).any?
+    end
+
+    def either_projects_or_group
+      if groups.length > 1
+        errors.add(:runner, 'can only be assigned to one group')
+      end
+
+      if groups.length > 0 && projects.length > 0
+        errors.add(:runner, 'can only be assigned either to projects or to a group')
+      end
     end
 
     def accepting_tags?(build)
