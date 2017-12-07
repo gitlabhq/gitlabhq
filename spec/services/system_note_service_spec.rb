@@ -5,10 +5,11 @@ describe SystemNoteService do
   include Gitlab::Routing
 
   set(:group)    { create(:group) }
-  set(:project)  { create(:project, :repository, group: group) }
+  let(:project)  { create(:project, :repository, group: group) }
   set(:author)   { create(:user) }
   let(:noteable) { create(:issue, project: project) }
   let(:issue)    { noteable }
+  let(:epic)     { create(:epic) }
 
   shared_examples_for 'a system note' do
     let(:expected_noteable) { noteable }
@@ -1300,6 +1301,75 @@ describe SystemNoteService do
           expect(described_class.discussion_lock(issuable, author).note)
             .to eq("locked this #{type.to_s.titleize.downcase}")
         end
+      end
+    end
+  end
+
+  describe '.epic_issue' do
+    let(:noteable) { epic }
+    let(:project) { nil }
+
+    context 'issue added to an epic' do
+      subject { described_class.epic_issue(epic, issue, author, :added)  }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'epic_issue_added' }
+      end
+
+      it 'creates the note text correctly' do
+        expect(subject.note).to eq("added issue #{issue.to_reference(epic.group)}")
+      end
+    end
+
+    context 'issue removed from an epic' do
+      subject { described_class.epic_issue(epic, issue, author, :removed)  }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'epic_issue_removed' }
+      end
+
+      it 'creates the note text correctly' do
+        expect(subject.note).to eq("removed issue #{issue.to_reference(epic.group)}")
+      end
+    end
+
+    context 'invalid type' do
+      it 'raises an error' do
+        expect { described_class.issue_on_epic(issue, epic, author, :invalid) }
+          .not_to change { Note.count }
+      end
+    end
+  end
+
+  describe '.issue_on_epic' do
+    context 'issue added to an epic' do
+      subject { described_class.issue_on_epic(issue, epic, author, :added)  }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'issue_added_to_epic' }
+      end
+
+      it 'creates the note text correctly' do
+        expect(subject.note).to eq("added to epic #{epic.to_reference(issue.project)}")
+      end
+    end
+
+    context 'issue removed from an epic' do
+      subject { described_class.issue_on_epic(issue, epic, author, :removed)  }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'issue_removed_from_epic' }
+      end
+
+      it 'creates the note text correctly' do
+        expect(subject.note).to eq("removed from epic #{epic.to_reference(issue.project)}")
+      end
+    end
+
+    context 'invalid type' do
+      it 'does not create a new note' do
+        expect { described_class.issue_on_epic(issue, epic, author, :invalid) }
+          .not_to change { Note.count }
       end
     end
   end
