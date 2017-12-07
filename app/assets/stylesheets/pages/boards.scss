@@ -92,7 +92,7 @@
   position: relative;
 
   @media (min-width: $screen-sm-min) {
-    transition: width $right-sidebar-transition-duration;
+    transition: width $sidebar-transition-duration;
     width: 100%;
 
     &.is-compact {
@@ -520,8 +520,8 @@
 .right-sidebar.right-sidebar-expanded {
   &.boards-sidebar-slide-enter-active,
   &.boards-sidebar-slide-leave-active {
-    transition: width $right-sidebar-transition-duration,
-                padding $right-sidebar-transition-duration;
+    transition: width $sidebar-transition-duration,
+                padding $sidebar-transition-duration;
   }
 
   &.boards-sidebar-slide-enter,

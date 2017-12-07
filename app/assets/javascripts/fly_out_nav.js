@@ -21,7 +21,7 @@ let headerHeight = 50;
 
 export const getHeaderHeight = () => headerHeight;
 
-export const isSidebarCollapsed = () => sidebar && sidebar.classList.contains('sidebar-icons-only');
+export const isSidebarCollapsed = () => sidebar && sidebar.classList.contains('sidebar-collapsed-desktop');
 
 export const canShowActiveSubItems = (el) => {
   if (el.classList.contains('active') && !isSidebarCollapsed()) {
