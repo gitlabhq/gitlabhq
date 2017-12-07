@@ -24,6 +24,7 @@ import Autosave from './autosave';
 import TaskList from './task_list';
 import { ajaxPost, isInViewport, getPagePath, scrollToElement, isMetaKey } from './lib/utils/common_utils';
 import imageDiffHelper from './image_diff/helpers/index';
+import { localTimeAgo } from './lib/utils/datetime_utility';
 
 window.autosize = Autosize;
 
@@ -310,7 +311,7 @@ export default class Notes {
 
   setupNewNote($note) {
     // Update datetime format on the recent note
-    gl.utils.localTimeAgo($note.find('.js-timeago'), false);
+    localTimeAgo($note.find('.js-timeago'), false);
 
     this.collapseLongCommitList();
     this.taskList.init();
@@ -462,7 +463,7 @@ export default class Notes {
       this.renderDiscussionAvatar(diffAvatarContainer, noteEntity);
     }
 
-    gl.utils.localTimeAgo($('.js-timeago'), false);
+    localTimeAgo($('.js-timeago'), false);
     Notes.checkMergeRequestStatus();
     return this.updateNotesCount(1);
   }

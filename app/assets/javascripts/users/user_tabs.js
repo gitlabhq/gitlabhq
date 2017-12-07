@@ -1,4 +1,5 @@
 import ActivityCalendar from './activity_calendar';
+import { localTimeAgo } from '../lib/utils/datetime_utility';
 
 /**
  * UserTabs
@@ -138,7 +139,7 @@ export default class UserTabs {
         const tabSelector = `div#${action}`;
         this.$parentEl.find(tabSelector).html(data.html);
         this.loaded[action] = true;
-        gl.utils.localTimeAgo($('.js-timeago', tabSelector));
+        localTimeAgo($('.js-timeago', tabSelector));
       },
     });
   }

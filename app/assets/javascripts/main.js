@@ -28,7 +28,7 @@ import './commit/image_file';
 
 // lib/utils
 import { handleLocationHash } from './lib/utils/common_utils';
-import './lib/utils/datetime_utility';
+import { localTimeAgo, renderTimeago, getLocationHash } from './lib/utils/datetime_utility';
 import './lib/utils/url_utility';
 
 // behaviors
@@ -122,7 +122,7 @@ $(function () {
   // `hashchange` is not triggered when link target is already in window.location
   $body.on('click', 'a[href^="#"]', function() {
     var href = this.getAttribute('href');
-    if (href.substr(1) === gl.utils.getLocationHash()) {
+    if (href.substr(1) === getLocationHash()) {
       setTimeout(handleLocationHash, 1);
     }
   });
@@ -194,7 +194,7 @@ $(function () {
     return $(this).parents('form').submit();
   // Form submitter
   });
-  gl.utils.localTimeAgo($('abbr.timeago, .js-timeago'), true);
+  localTimeAgo($('abbr.timeago, .js-timeago'), true);
   // Disable form buttons while a form is submitting
   $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function (e) {
     var buttons;
@@ -283,7 +283,7 @@ $(function () {
   loadAwardsHandler();
   new Aside();
 
-  gl.utils.renderTimeago();
+  renderTimeago();
 
   $(document).trigger('init.scrolling-tabs');
 

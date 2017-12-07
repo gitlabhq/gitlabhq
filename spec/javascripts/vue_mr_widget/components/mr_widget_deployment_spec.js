@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import deploymentComponent from '~/vue_merge_request_widget/components/mr_widget_deployment';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
+import { getTimeago } from '~/lib/utils/datetime_utility';
 
 const deploymentMockData = [
   {
@@ -48,7 +49,7 @@ describe('MRWidgetDeployment', () => {
 
     describe('formatDate', () => {
       it('should work', () => {
-        const readable = gl.utils.getTimeago().format(deployment.deployed_at);
+        const readable = getTimeago().format(deployment.deployed_at);
         expect(vm.formatDate(deployment.deployed_at)).toEqual(readable);
       });
     });
