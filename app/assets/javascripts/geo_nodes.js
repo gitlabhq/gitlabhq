@@ -13,7 +13,7 @@ const healthyIcon = 'fa-check';
 const unhealthyIcon = 'fa-times';
 const unknownIcon = 'fa-times';
 const notAvailable = 'Not Available';
-const versionMismatch = 'does not match the primary node version';
+const versionMismatch = 'Does not match the primary node version';
 const versionMismatchClass = 'geo-node-version-mismatch';
 
 class GeoNodeStatus {
@@ -23,7 +23,6 @@ class GeoNodeStatus {
     this.$loadingIcon = $('.js-geo-node-loading', this.$el);
     this.$dbReplicationLag = $('.js-db-replication-lag', this.$status);
     this.$healthStatus = $('.js-health-status', this.$el);
-    this.$primaryVersion = $('.js-primary-version');
     this.$status = $('.js-geo-node-status', this.$el);
     this.$repositories = $('.js-repositories', this.$status);
     this.$lfsObjects = $('.js-lfs-objects', this.$status);
@@ -37,6 +36,8 @@ class GeoNodeStatus {
     this.endpoint = this.$el.data('status-url');
     this.$advancedStatus = $('.js-advanced-geo-node-status-toggler', this.$status.parent());
     this.$advancedStatus.on('click', GeoNodeStatus.toggleShowAdvancedStatus.bind(this));
+    this.primaryVersion = $('.js-primary-version').text();
+    this.primaryRevision = $('.js-primary-revision').text().replace(/\W/g, '');
 
     this.statusInterval = new SmartInterval({
       callback: this.getStatus.bind(this),
@@ -200,12 +201,12 @@ class GeoNodeStatus {
       this.$dbReplicationLag.text('UNKNOWN');
     }
 
-    if (this.$primaryVersion.text() !== status.version) {
+    if (this.primaryVersion === status.version && this.primaryRevision === status.revision) {
       this.$secondaryVersion.removeClass(`${versionMismatchClass}`);
-      this.$secondaryVersion.text(status.version);
+      this.$secondaryVersion.text(`${status.version} (${status.revision})`);
     } else {
       this.$secondaryVersion.addClass(`${versionMismatchClass}`);
-      this.$secondaryVersion.text(`${status.version} (${versionMismatch})`);
+      this.$secondaryVersion.text(`${status.version} (${status.revision}) - ${versionMismatch}`);
     }
 
     if (status.repositories_count > 0) {
