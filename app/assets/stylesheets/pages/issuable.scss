@@ -470,7 +470,8 @@
       }
     }
 
-    .milestone-title span {
+    .milestone-title span,
+    .collapse-truncated-title {
       @include str-truncated(100%);
       display: block;
       margin: 0 4px;
