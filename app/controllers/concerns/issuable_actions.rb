@@ -25,7 +25,7 @@ module IssuableActions
       end
 
       format.json do
-        render_entity_json
+        recaptcha_check_with_fallback(false) { render_entity_json }
       end
     end
 
