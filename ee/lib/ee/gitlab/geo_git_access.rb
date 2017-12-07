@@ -32,10 +32,6 @@ module EE
           geo_primary_http_url_to_repo(project_or_wiki)
         end
       end
-
-      def current_user
-        user
-      end
     end
   end
 end
