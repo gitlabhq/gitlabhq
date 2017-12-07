@@ -101,18 +101,24 @@ module CommitsHelper
     elsif @repo.blob_at(commit.id, @path)
       return link_to(
         _("Browse File"),
-        project_blob_path(project,
-                                    tree_join(commit.id, @path)),
+        project_blob_path(project, tree_join(commit.id, @path)),
         class: "btn btn-default"
       )
     elsif @path.present?
       return link_to(
         _("Browse Directory"),
-        project_tree_path(project,
-                                    tree_join(commit.id, @path)),
+        project_tree_path(project, tree_join(commit.id, @path)),
         class: "btn btn-default"
       )
     end
+  end
+
+  def link_to_show_diff(commit)
+    link_to(
+      _('Show diff'),
+      'javascript:void(0)',
+      class: 'btn btn-default js-show-diff-button', data: { diff_commit_id: commit.id }
+    )
   end
 
   def revert_commit_link(commit, continue_to_path, btn_class: nil, has_tooltip: true)

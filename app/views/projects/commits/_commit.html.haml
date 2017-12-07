@@ -43,6 +43,7 @@
         = link_to commit.short_id, project_commit_path(project, commit), class: "commit-sha btn btn-transparent"
         = clipboard_button(text: commit.id, title: _("Copy commit SHA to clipboard"))
         = link_to_browse_code(project, commit)
+        = link_to_show_diff(commit) if render_diffs_link
 
   -# Render the `Click to expand it` link for diffs.
   - if render_diffs_link
@@ -51,7 +52,5 @@
         .diff-content
           .diff-viewer
             - file_identifier = commit.change_summary.first[:file_identifier]
-            - old_path = commit.change_summary.first[:paths][:old_path]
-            - new_path = commit.change_summary.first[:paths][:new_path]
 
-            = render partial: 'projects/diffs/collapsed', locals: { commit: commit, file_identifier: file_identifier, new_path: new_path, old_path: old_path }
+            = render partial: 'projects/diffs/collapsed', locals: { commit: commit, file_identifier: file_identifier, render_diffs_link: render_diffs_link }

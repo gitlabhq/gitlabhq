@@ -16,6 +16,7 @@ export default class SingleFileDiff {
     this.$toggleIcon = $('.diff-toggle-caret', this.file);
     this.diffForPath = this.content.find('[data-diff-for-path]').data('diff-for-path');
     this.isOpen = !this.diffForPath;
+
     if (this.diffForPath) {
       this.collapsedContent = this.content;
       this.loadingContent = $(WRAPPER).addClass('loading').html(LOADING_HTML).hide();
@@ -31,11 +32,24 @@ export default class SingleFileDiff {
     $('.js-file-title, .click-to-expand', this.file).on('click', (function (e) {
       this.toggleDiff($(e.target));
     }).bind(this));
+
+    // `Show diff` button on each commit of the file history page.
+    // E.g. http://example.com/user/project/commits/master/README.md
+    $(`.js-show-diff-button[data-diff-commit-id='${this.file.dataset.diffCommitId}']`).on('click', (function (event) {
+      this.toggleDiff($(event.target));
+    }).bind(this));
   }
 
   toggleDiff($target, cb) {
-    if (!$target.hasClass('js-file-title') && !$target.hasClass('click-to-expand') && !$target.hasClass('diff-toggle-caret')) return;
+    if (
+      !$target.hasClass('js-file-title') &&
+      !$target.hasClass('js-show-diff-button') &&
+      !$target.hasClass('click-to-expand') &&
+      !$target.hasClass('diff-toggle-caret')
+    ) return;
+
     this.isOpen = !this.isOpen;
+
     if (!this.isOpen && !this.hasError) {
       this.content.hide();
       this.$toggleIcon.addClass('fa-caret-right').removeClass('fa-caret-down');
