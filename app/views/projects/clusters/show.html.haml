@@ -1,5 +1,6 @@
 - @content_class = "limit-container-width" unless fluid_layout
-- breadcrumb_title "Cluster"
+- add_to_breadcrumbs "Clusters", project_clusters_path(@project)
+- breadcrumb_title @cluster.id
 - page_title _("Cluster")
 
 - expanded = Rails.env.test?
@@ -28,7 +29,6 @@
       %button.btn.js-settings-toggle
         = expanded ? 'Collapse' : 'Expand'
       %p= s_('ClusterIntegration|See and edit the details for your cluster')
-
     .settings-content
       - if @cluster.managed?
         = render 'projects/clusters/gcp/show'

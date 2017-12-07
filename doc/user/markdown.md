@@ -446,6 +446,7 @@ For example:
 # This header has Unicode in it: 한글
 ## This header has spaces in it
 ### This header has spaces in it
+## This header has 3.5 in it (and parentheses)
 ```
 
 Would generate the following link IDs:
@@ -455,6 +456,7 @@ Would generate the following link IDs:
 1. `this-header-has-unicode-in-it-한글`
 1. `this-header-has-spaces-in-it`
 1. `this-header-has-spaces-in-it-1`
+1. `this-header-has-3-5-in-it-and-parentheses`
 
 Note that the Emoji processing happens before the header IDs are generated, so the Emoji is converted to an image which then gets removed from the ID.
 

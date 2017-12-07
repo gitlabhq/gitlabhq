@@ -621,7 +621,15 @@ import initGroupAnalytics from './init_group_analytics';
           import(/* webpackChunkName: "clusters" */ './clusters/clusters_bundle')
             .then(cluster => new cluster.default()) // eslint-disable-line new-cap
             .catch((err) => {
-              Flash(s__('ClusterIntegration|Problem setting up the cluster JavaScript'));
+              Flash(s__('ClusterIntegration|Problem setting up the cluster'));
+              throw err;
+            });
+          break;
+        case 'projects:clusters:index':
+          import(/* webpackChunkName: "clusters_index" */ './clusters/clusters_index')
+            .then(clusterIndex => clusterIndex.default())
+            .catch((err) => {
+              Flash(s__('ClusterIntegration|Problem setting up the clusters list'));
               throw err;
             });
           break;
