@@ -10,7 +10,6 @@ class AkismetService
   end
 
   def spam?
-    return true
     return false unless akismet_enabled?
 
     params = {
