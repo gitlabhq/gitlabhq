@@ -1,7 +1,5 @@
 module Banzai
   module Filter
-    # Context options:
-    #   :project (required) - Current project, ignored if reference is cross-project.
     class CustomEmojiFilter < HTML::Pipeline::Filter
       include ActionView::Helpers::AssetTagHelper
 

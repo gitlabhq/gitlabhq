@@ -32,4 +32,10 @@ describe Banzai::Filter::CustomEmojiFilter do
 
     expect(doc.css('img').size).to eq 1
   end
+
+  it "doesn't match enclosed colons" do
+    doc = filter('awesome_banana:awesome_banana:)')
+
+    expect(doc.css('img').size).to be 0
+  end
 end
