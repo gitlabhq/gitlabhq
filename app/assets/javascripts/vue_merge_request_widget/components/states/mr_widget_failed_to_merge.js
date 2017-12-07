@@ -51,7 +51,7 @@ export default {
         </span>
       </template>
       <template v-else>
-        <status-icon status="failed" :show-disabled-button="true" />
+        <status-icon status="warning" :show-disabled-button="true" />
         <div class="media-body space-children">
           <span class="bold">
             <span

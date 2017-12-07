@@ -11,7 +11,7 @@ export default {
   template: `
     <div class="mr-widget-body media">
       <status-icon
-        status="failed"
+        status="warning"
         :show-disabled-button="true" />
       <div class="media-body space-children">
         <span

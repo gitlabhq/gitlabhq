@@ -42,13 +42,13 @@ export default {
       const { pipeline, isPipelineActive, isPipelineFailed, hasCI, ciStatus } = this.mr;
 
       if (hasCI && !ciStatus) {
-        return 'failed';
+        return 'warning';
       } else if (!pipeline) {
         return 'success';
       } else if (isPipelineActive) {
         return 'pending';
       } else if (isPipelineFailed) {
-        return 'failed';
+        return 'warning';
       }
 
       return 'success';
@@ -68,7 +68,7 @@ export default {
     },
     iconClass() {
       if (this.status === 'failed' || !this.commitMessage.length || !this.mr.isMergeAllowed || this.mr.preventMerge) {
-        return 'failed';
+        return 'warning';
       }
       return 'success';
     },

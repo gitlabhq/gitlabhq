@@ -12,7 +12,7 @@ export default {
   },
   template: `
     <div class="mr-widget-body media">
-      <status-icon status="failed" />
+      <status-icon status="warning" />
       <div class="media-body">
         <mr-widget-author-and-time
           actionText="Closed by"
