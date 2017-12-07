@@ -120,104 +120,22 @@ class GeoNode < ActiveRecord::Base
     end
   end
 
-  def projects_include?(project_id)
-    return true if restricted_project_ids.nil?
-
-    restricted_project_ids.include?(project_id)
-  end
-
-  def restricted_project_ids
-    return unless namespaces.presence
-
-    relations = namespaces.map { |namespace| namespace.all_projects.select(:id) }
-
-    Project.unscoped
-       .from("(#{Gitlab::SQL::Union.new(relations).to_sql}) #{Project.table_name}")
-       .pluck(:id)
-  end
-
-  def lfs_objects
-    relation =
-      if restricted_project_ids
-        LfsObject.joins(:projects).where(projects: { id: restricted_project_ids })
-      else
-        LfsObject.all
-      end
-
-    relation.with_files_stored_locally
-  end
-
   def projects
-    if restricted_project_ids
-      Project.where(id: restricted_project_ids)
+    if selective_sync?
+      Project.where(namespace_id: Gitlab::GroupHierarchy.new(namespaces).base_and_descendants.select(:id))
     else
       Project.all
     end
   end
 
-  def project_registries
-    if restricted_project_ids
-      Geo::ProjectRegistry.where(project_id: restricted_project_ids)
-    else
-      Geo::ProjectRegistry.all
-    end
+  def projects_include?(project_id)
+    return true unless selective_sync?
+
+    projects.where(id: project_id).exists?
   end
 
-  def filtered_project_registries(type = nil)
-    case type
-    when 'repository'
-      project_registries.failed_repos
-    when 'wiki'
-      project_registries.failed_wikis
-    else
-      project_registries.failed
-    end
-  end
-
-  def uploads
-    if restricted_project_ids
-      uploads_table   = Upload.arel_table
-      group_uploads   = uploads_table[:model_type].eq('Namespace').and(uploads_table[:model_id].in(Gitlab::Geo.current_node.namespace_ids))
-      project_uploads = uploads_table[:model_type].eq('Project').and(uploads_table[:model_id].in(restricted_project_ids))
-      other_uploads   = uploads_table[:model_type].not_in(%w[Namespace Project])
-
-      Upload.where(group_uploads.or(project_uploads).or(other_uploads))
-    else
-      Upload.all
-    end
-  end
-
-  def lfs_objects_synced_count
-    return unless secondary?
-
-    relation = Geo::FileRegistry.lfs_objects.synced
-
-    if restricted_project_ids
-      relation = relation.where(file_id: lfs_objects.pluck(:id))
-    end
-
-    relation.count
-  end
-
-  def lfs_objects_failed_count
-    return unless secondary?
-
-    Geo::FileRegistry.lfs_objects.failed.count
-  end
-
-  def attachments_synced_count
-    return unless secondary?
-
-    upload_ids = uploads.pluck(:id)
-    synced_ids = Geo::FileRegistry.attachments.synced.pluck(:file_id)
-
-    (synced_ids & upload_ids).length
-  end
-
-  def attachments_failed_count
-    return unless secondary?
-
-    Geo::FileRegistry.attachments.failed.count
+  def selective_sync?
+    namespaces.exists?
   end
 
   def find_or_build_status
