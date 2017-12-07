@@ -7,7 +7,6 @@ export default class SidebarMediator {
     if (!SidebarMediator.singleton) {
       this.initSingleton(options);
     }
-
     return SidebarMediator.singleton;
   }
 
