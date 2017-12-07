@@ -59,6 +59,13 @@ Then save and close the file.
     service gitlab restart
     ```
 
+The secondary will start automatically replicating missing data from the
+primary in a process known as backfill. Meanwhile, the primary node will start
+to notify changes to the secondary, which will act on those notifications
+immediately. Make sure the secondary instance is running and accessible.
+
+### Step 2. (Optional) Enabling hashed storage
+
 Once restarted, the secondary will automatically start replicating missing data
 from the primary in a process known as backfill. Meanwhile, the primary node
 will start to notify the secondary of any changes, so that the secondary can
@@ -87,7 +94,33 @@ cp primary.geo.example.com.crt /usr/local/share/ca-certificates
 update-ca-certificates
 ```
 
+### Step 4. Managing the secondary GitLab node
+
+Congratulations! Your secondary geo node is now configured!
+
+The initial replication, or 'backfill', will probably still be in progress.
+You can monitor the synchronization process on each geo node from the primary
+node's Geo Nodes dashboard (Admin Area ➔ Geo Nodes, `/admin/geo_nodes`) in your
+browser.
+
+![GitLab Geo dashboard](img/geo-node-dashboard.png)
+
+After the backfill is completed you can continue to monitor geo node health and
+replication delays from the dashboard.
+
+The two most obvious issues that can become apparent in the dashboard are:
+
+1. Database replication not working well
+1. Instance to instance notification not working. In that case, it can be
+   something of the following:
+     - You are using a custom certificate or custom CA (see the
 ### Step 4. Enable Git access over HTTP/HTTPS
+     - Instance is firewalled (check your firewall rules)
+
+Please note that disabling a secondary node will stop the sync process.
+
+Please note that if `git_data_dirs` is customized on the primary for multiple
+repository shards you must duplicate the same configuration on the secondary.
 
 GitLab Geo synchronizes repositories over HTTP/HTTPS, and so requires this clone
 method to be enabled. Navigate to **Admin Area ➔ Settings**
