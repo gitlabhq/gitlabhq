@@ -26,7 +26,7 @@ module Banzai
         return [] unless noteable.is_a?(MergeRequest)
 
         @referenced_merge_request_commit_shas ||= begin
-          referenced_shas = references_per_project.values.reduce(:|).to_a
+          referenced_shas = references_per_parent.values.reduce(:|).to_a
           noteable.all_commit_shas.select do |sha|
             referenced_shas.any? { |ref| Gitlab::Git.shas_eql?(sha, ref) }
           end
