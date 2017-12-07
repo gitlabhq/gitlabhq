@@ -44,6 +44,31 @@ describe('Description component', () => {
     });
   });
 
+  it('opens recaptcha dialog if update rejected as spam', (done) => {
+    let modal;
+
+    vm.taskListUpdateSuccess({
+      recaptcha_html: '<div class="g-recaptcha">recaptcha_html</div>',
+    });
+
+    vm.$nextTick()
+      .then(() => {
+        modal = vm.$el.querySelector('.js-recaptcha-dialog');
+
+        expect(modal.style.display).not.toEqual('none');
+        expect(modal.querySelector('.g-recaptcha').textContent).toEqual('recaptcha_html');
+        expect(document.body.querySelector('.js-recaptcha-script').src).toEqual('https://www.google.com/recaptcha/api.js');
+      })
+      .then(() => modal.querySelector('.close').click())
+      .then(() => vm.$nextTick())
+      .then(() => {
+        expect(modal.style.display).toEqual('none');
+        expect(document.body.querySelector('.js-recaptcha-script')).toBeNull();
+      })
+      .then(done)
+      .catch(done.fail);
+  });
+
   // TODO: gl.TaskList no longer exists. rewrite these tests once we have a way to rewire ES modules
 
   // it('re-inits the TaskList when description changed', (done) => {

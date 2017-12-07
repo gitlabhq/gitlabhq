@@ -116,7 +116,7 @@ export default {
           <button
             v-if="primaryButtonLabel"
             type="button"
-            class="btn pull-right"
+            class="btn pull-right js-primary-button"
             :disabled="submitDisabled"
             :class="btnKindClass"
             @click="emitSubmit(true)">

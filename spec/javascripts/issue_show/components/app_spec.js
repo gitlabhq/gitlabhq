@@ -268,7 +268,7 @@ describe('Issuable output', () => {
     });
   });
 
-  fit('opens recaptcha dialog if update rejected as spam', (done) => {
+  it('opens recaptcha dialog if update rejected as spam', (done) => {
     let modal;
     const promise = new Promise((resolve) => {
       resolve({
