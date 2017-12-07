@@ -102,7 +102,7 @@ module API
         # (fixed in https://github.com/rails/rails/pull/25976).
         project.tags.map(&:name).sort
       end
-      expose :ssh_url_to_repo, :http_url_to_repo, :web_url, :new_merge_request_path
+      expose :ssh_url_to_repo, :http_url_to_repo, :web_url
       expose :avatar_url do |project, options|
         project.avatar_url(only_path: false)
       end
@@ -174,6 +174,7 @@ module API
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :public_builds, as: :public_jobs
       expose :ci_config_path
+      expose :new_merge_request_path
       expose :shared_with_groups do |project, options|
         SharedGroup.represent(project.project_group_links, options)
       end

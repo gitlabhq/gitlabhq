@@ -94,7 +94,7 @@ export default {
     toggleCollapsed() {
       this.setPanelCollapsedStatus({
         side: 'right',
-        collapsed: !this.rightPanelCollapsed
+        collapsed: !this.rightPanelCollapsed,
       });
     },
   },

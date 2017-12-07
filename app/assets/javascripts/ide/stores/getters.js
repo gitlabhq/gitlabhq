@@ -1,5 +1,3 @@
-import _ from 'underscore';
-
 export const changedFiles = state => state.openFiles.filter(file => file.changed);
 
 export const activeFile = state => state.openFiles.find(file => file.active) || null;
