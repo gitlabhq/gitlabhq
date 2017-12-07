@@ -161,7 +161,7 @@ describe API::V3::Milestones do
 
   describe 'PUT /projects/:id/milestones/:milestone_id to test observer on close' do
     it 'creates an activity event when an milestone is closed' do
-      expect(Event).to receive(:create)
+      expect(Event).to receive(:create!)
 
       put v3_api("/projects/#{project.id}/milestones/#{milestone.id}", user),
           state_event: 'close'

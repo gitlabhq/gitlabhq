@@ -31,8 +31,10 @@
     "source_project_id": { "type": "integer" },
     "target_branch": { "type": "string" },
     "target_project_id": { "type": "integer" },
-    "merge_event": { "type": ["object", "null"] },
-    "closed_event": { "type": ["object", "null"] },
+    "metrics": {
+      "type": "object",
+      "$ref": "merge_request_metrics.json"
+    },
     "author": { "type": ["object", "null"] },
     "merge_user": { "type": ["object", "null"] },
     "diff_head_sha": { "type": ["string", "null"] },

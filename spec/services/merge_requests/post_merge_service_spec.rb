@@ -22,5 +22,18 @@ describe MergeRequests::PostMergeService do
       expect { service.execute(merge_request) }
         .to change { project.open_merge_requests_count }.from(1).to(0)
     end
+
+    it 'updates metrics' do
+      metrics = merge_request.metrics
+      metrics_service = double(MergeRequestMetricsService)
+      allow(MergeRequestMetricsService)
+        .to receive(:new)
+        .with(metrics)
+        .and_return(metrics_service)
+
+      expect(metrics_service).to receive(:merge)
+
+      described_class.new(project, user, {}).execute(merge_request)
+    end
   end
 end
