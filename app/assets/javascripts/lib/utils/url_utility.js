@@ -58,8 +58,8 @@ export function removeParams(params) {
   return url.href;
 }
 
-export function getLocationHash(url) {
-  const hashIndex = window.location.href.indexOf('#');
+export function getLocationHash(url = window.location.href) {
+  const hashIndex = url.indexOf('#');
 
   return hashIndex === -1 ? null : url.substring(hashIndex + 1);
 }
