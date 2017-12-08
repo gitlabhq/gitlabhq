@@ -1387,7 +1387,7 @@ module Gitlab
           summary = change_summary[commit]
           commit = Rugged::Commit.new(rugged, commit)
 
-          Commit.decorate(self, commit, nil, change_summary: summary)
+          Commit.decorate(self, commit, change_summary: summary)
         end
       end
 
