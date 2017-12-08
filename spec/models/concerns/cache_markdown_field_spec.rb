@@ -171,6 +171,25 @@ describe CacheMarkdownField do
       is_expected.to be_truthy
     end
 
+    it 'returns true if markdown and html are both empty' do
+      thing.foo = ''
+      thing.foo_html = ''
+
+      is_expected.to be_truthy
+    end
+
+    it 'returns false if markdown is empty but html is not' do
+      thing.foo = ''
+
+      is_expected.to be_falsey
+    end
+
+    it 'returns false if html is empty but markdown is not' do
+      thing.foo_html = ''
+
+      is_expected.to be_falsey
+    end
+
     it 'returns false if the markdown field is set but the html is not' do
       thing.foo_html = nil
 
