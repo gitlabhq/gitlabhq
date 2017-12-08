@@ -132,6 +132,20 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
 
       expect(File).to exist(File.join(project.repository_storage_path, project.disk_path + '.git'))
     end
+
+    it 'moves an existing project to the correct path' do
+      project = create(:project, :repository)
+      original_commit_count = project.repository.commit_count
+
+      bare_repo = Gitlab::BareRepositoryImport::Repository.new(project.repository_storage_path, project.repository.path)
+      gitlab_importer = described_class.new(admin, bare_repo)
+
+      expect(gitlab_importer).to receive(:create_project).and_call_original
+
+      new_project = gitlab_importer.create_project_if_needed
+
+      expect(new_project.repository.commit_count).to eq(original_commit_count)
+    end
   end
 
   context 'with Wiki' do

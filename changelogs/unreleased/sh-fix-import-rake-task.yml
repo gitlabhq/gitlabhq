@@ -1,0 +1,5 @@
+---
+title: Fix gitlab:import:repos Rake task moving repositories into the wrong location
+merge_request:
+author:
+type: fixed
