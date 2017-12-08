@@ -5,7 +5,7 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities do
   set(:user) { create(:user) }
 
   let(:pipeline) do
-    build_stubbed(:ci_pipeline,  project: project)
+    build_stubbed(:ci_pipeline, project: project)
   end
 
   let(:command) do
