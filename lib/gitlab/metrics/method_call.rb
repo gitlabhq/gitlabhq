@@ -18,6 +18,24 @@ module Gitlab
         end
       end
 
+      def self.call_measurement_enabled?
+        return @call_measurement_enabled unless call_measurement_enabled_cache_expired?
+        MUTEX.synchronize do
+          return @call_measurement_enabled unless call_measurement_enabled_cache_expired?
+          @call_measurement_enabled_cache_expires_at = Time.now + 5.minutes
+          @call_measurement_enabled = Feature.get(:prometheus_metrics_method_instrumentation).enabled?
+        end
+      end
+
+      def self.call_measurement_enabled_cache_expired?
+        @call_measurement_enabled.nil? || @call_measurement_enabled_cache_expires_at.nil? || @call_measurement_enabled_cache_expires_at < Time.now
+      end
+
+      def self.call_measurement_enabled_cache_expire
+        @call_measurement_enabled = nil
+        @call_measurement_enabled_cache_expires_at = nil
+      end
+
       # name - The full name of the method (including namespace) such as
       #        `User#sign_in`.
       #
@@ -45,7 +63,7 @@ module Gitlab
         @cpu_time += cpu_time
         @call_count += 1
 
-        if call_measurement_enabled? && above_threshold?
+        if self.class.call_measurement_enabled? && above_threshold?
           self.class.call_duration_histogram.observe(@transaction.labels.merge(labels), real_time / 1000.0)
         end
 
@@ -69,12 +87,6 @@ module Gitlab
       # threshold.
       def above_threshold?
         real_time >= Metrics.method_call_threshold
-      end
-
-      def call_measurement_enabled?
-        Rails.cache.fetch(:prometheus_metrics_method_instrumentation_enabled, expires_in: 5.minutes) do
-          Feature.get(:prometheus_metrics_method_instrumentation).enabled?
-        end
       end
     end
   end

@@ -20,18 +20,35 @@ describe Gitlab::Metrics::MethodCall do
 
       context 'prometheus instrumentation is enabled' do
         before do
+          allow(Feature.get(:prometheus_metrics_method_instrumentation)).to receive(:enabled?).and_call_original
+          described_class.call_measurement_enabled_cache_expire
           Feature.get(:prometheus_metrics_method_instrumentation).enable
         end
 
-        it 'feature check is cached for 5 minutes' do
-          allow(Feature.get(:prometheus_metrics_method_instrumentation)).to receive(:enabled?).and_call_original
-          allow(Rails.cache).to receive(:fetch).and_call_original
+        around do |example|
+          Timecop.freeze do
+            example.run
+          end
+        end
 
-          method_call.measure { 'foo' }
-          method_call.measure { 'foo' }
+        it 'caches subsequent invocations of feature check' do
+          10.times do
+            method_call.measure { 'foo' }
+          end
+
+          expect(Feature.get(:prometheus_metrics_method_instrumentation)).to have_received(:enabled?).once
+        end
+
+        it 'expires feature check cache after 5 minutes' do
+          10.times do
+            method_call.measure { 'foo' }
+          end
+
+          Timecop.travel(Time.now + 5.minutes) do
+            method_call.measure { 'foo' }
+          end
 
           expect(Feature.get(:prometheus_metrics_method_instrumentation)).to have_received(:enabled?).twice
-          expect(Rails.cache).to have_received(:fetch).with(:prometheus_metrics_method_instrumentation_enabled, expires_in: 5.minutes).twice
         end
 
         it 'observes the performance of the supplied block' do
@@ -45,6 +62,7 @@ describe Gitlab::Metrics::MethodCall do
 
       context 'prometheus instrumentation is disabled' do
         before do
+          described_class.call_measurement_enabled_cache_expire
           Feature.get(:prometheus_metrics_method_instrumentation).disable
         end
 
