@@ -24,10 +24,13 @@ module Ci
         schedule: schedule,
         ignore_skip_ci: ignore_skip_ci,
         save_incompleted: save_on_errors,
-        allow_mirror_update: mirror_update,
         seeds_block: block,
         project: project,
-        current_user: current_user)
+        current_user: current_user,
+
+        # EE specific
+        allow_mirror_update: mirror_update
+      )
 
       sequence = Gitlab::Ci::Pipeline::Chain::Sequence
         .new(pipeline, command, SEQUENCE)
