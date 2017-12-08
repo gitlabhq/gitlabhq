@@ -15,7 +15,7 @@
   import issuableStateMixin from '../mixins/issuable_state';
 
   export default {
-    name: 'issueCommentForm',
+    name: 'commentForm',
     data() {
       return {
         note: '',

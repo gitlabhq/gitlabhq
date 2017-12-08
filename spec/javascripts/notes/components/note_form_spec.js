@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import store from '~/notes/stores';
-import issueNoteForm from '~/notes/components/issue_note_form.vue';
+import issueNoteForm from '~/notes/components/note_form.vue';
 import { noteableDataMock, notesDataMock } from '../mock_data';
 import { keyboardDownEvent } from '../../issue_show/helpers';
 

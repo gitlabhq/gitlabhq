@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import store from '~/notes/stores';
-import issueDiscussion from '~/notes/components/issue_discussion.vue';
+import issueDiscussion from '~/notes/components/noteable_discussion.vue';
 import { noteableDataMock, discussionMock, notesDataMock } from '../mock_data';
 
 describe('issue_discussion component', () => {
@@ -30,7 +30,7 @@ describe('issue_discussion component', () => {
 
   it('should render discussion header', () => {
     expect(vm.$el.querySelector('.discussion-header')).toBeDefined();
-    expect(vm.$el.querySelectorAll('.notes li').length).toEqual(discussionMock.notes.length);
+    expect(vm.$el.querySelector('.notes').children.length).toEqual(discussionMock.notes.length);
   });
 
   describe('actions', () => {
