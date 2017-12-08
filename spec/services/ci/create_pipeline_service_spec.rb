@@ -519,21 +519,16 @@ describe Ci::CreatePipelineService do
       end
     end
 
-    context 'when pipelie is running for a tag' do
+    context 'when pipeline is running for a tag' do
       before do
-        allow_any_instance_of(Repository)
-          .to receive(:tag_exists?).and_return(false)
-        allow_any_instance_of(Repository)
-          .to receive(:tag_exists?).with('refs/tags/mytag').and_return(true)
-
         config = YAML.dump(test: { script: 'test', only: ['branches'] },
-                                   deploy: { script: 'deploy', only: ['tags'] })
+                           deploy: { script: 'deploy', only: ['tags'] })
 
         stub_ci_pipeline_yaml_file(config)
       end
 
       it 'creates a tagged pipeline' do
-        pipeline = execute_service(ref: 'mytag')
+        pipeline = execute_service(ref: 'v1.0.0')
 
         expect(pipeline.tag?).to be true
       end

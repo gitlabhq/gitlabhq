@@ -46,7 +46,7 @@ module Gitlab
           end
 
           def before_sha
-            before_sha || checkout_sha || Gitlab::Git::BLANK_SHA
+            self[:before_sha] || checkout_sha || Gitlab::Git::BLANK_SHA
           end
 
           def protected_ref?
