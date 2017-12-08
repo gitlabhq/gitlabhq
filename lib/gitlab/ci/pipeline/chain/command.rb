@@ -46,17 +46,13 @@ module Gitlab
           end
 
           def before_sha
-            checkout_sha || before_sha || Gitlab::Git::BLANK_SHA
+            before_sha || checkout_sha || Gitlab::Git::BLANK_SHA
           end
 
           def protected_ref?
             strong_memoize(:protected_ref) do
               project.protected_for?(ref)
             end
-          end
-
-          def error(message)
-            pipeline.errors.add(:base, message)
           end
         end
       end
