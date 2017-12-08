@@ -380,7 +380,7 @@ describe Projects::PipelineSchedulesController do
 
         post :play, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
 
-        expect(flash[:notice]).to eq 'Successfully scheduled pipeline to run immediately'
+        expect(flash[:notice]).to start_with 'Successfully scheduled a pipeline to run'
         expect(response).to have_gitlab_http_status(302)
       end
     end

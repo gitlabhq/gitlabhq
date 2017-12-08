@@ -46,7 +46,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
 
     flash[:notice] =
       if job_id
-        'Successfully scheduled pipeline to run immediately'
+        "Successfully scheduled a pipeline to run. Go to the <a href=\"#{project_pipelines_path(@project)}\">Pipelines page</a> for details".html_safe
       else
         'Unable to schedule a pipeline to run immediately'
       end
