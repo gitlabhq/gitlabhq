@@ -105,7 +105,7 @@ Removing the unused slots can reduce the amount of space used in the `pg_xlog`.
 Slots where `active` is `f` are not active.
 
 - When this slot should be active, because you have a secondary configured using that slot,
-log in to that secondary and check the postgresql logs why the replication is not running.
+log in to that secondary and check the PostgreSQL logs why the replication is not running.
 
 - If you are no longer using the slot (e.g. you no longer have Geo enabled), you can remove it with in the PostgreSQL console session:
 
