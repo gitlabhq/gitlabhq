@@ -360,13 +360,14 @@ class Note < ActiveRecord::Base
     end
   end
 
-  def replies_to
+  def references
+    refs = [noteable]
+
     if part_of_discussion?
-      previous_note = discussion.notes.take_while { |n| n.id < id }.last
-      return previous_note if previous_note
+      refs += discussion.notes.take_while { |n| n.id < id }
     end
 
-    noteable
+    refs
   end
 
   def expire_etag_cache

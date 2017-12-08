@@ -756,18 +756,15 @@ describe Note do
     end
   end
 
-  describe '#replies_to' do
+  describe '#references' do
     context 'when part of a discussion' do
-      let(:note) { create(:discussion_note_on_issue) }
+      it 'references all earlier notes in the discussion' do
+        first_note = create(:discussion_note_on_issue)
+        second_note = create(:discussion_note_on_issue, in_reply_to: first_note)
+        third_note = create(:discussion_note_on_issue, in_reply_to: second_note)
+        create(:discussion_note_on_issue, in_reply_to: third_note)
 
-      it 'returns noteable when there are not earlier notes in the discussion' do
-        expect(note.replies_to).to eq(note.noteable)
-      end
-
-      it 'returns previous note in discussion' do
-        reply = create(:discussion_note_on_issue, in_reply_to: note)
-
-        expect(reply.replies_to).to eq(note)
+        expect(third_note.references).to eq([first_note.noteable, first_note, second_note])
       end
     end
 
@@ -776,7 +773,7 @@ describe Note do
       let(:note) { create(:note, in_reply_to: subject) }
 
       it 'returns the noteable' do
-        expect(note.replies_to).to eq(note.noteable)
+        expect(note.references).to eq([note.noteable])
       end
     end
   end
