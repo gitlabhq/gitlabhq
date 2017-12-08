@@ -7,9 +7,9 @@ module EE
     module Build
       extend ActiveSupport::Concern
 
-      CODEQUALITY_FILE = 'codeclimate.json'
-      SAST_FILE = 'gl-sast-report.json'
-      CLAIR_FILE = 'gl-clair-report.json'
+      CODEQUALITY_FILE = 'codeclimate.json'.freeze
+      SAST_FILE = 'gl-sast-report.json'.freeze
+      CLAIR_FILE = 'gl-clair-report.json'.freeze
 
       included do
         scope :codequality, ->() { where(name: %w[codequality codeclimate]) }
