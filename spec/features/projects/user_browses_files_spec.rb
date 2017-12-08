@@ -30,29 +30,29 @@ describe 'User browses files' do
       expect(page).to have_content('LICENSE')
     end
 
-    it 'shows the "Browse Directory" link' do
+    it 'shows the "Browse directory" link' do
       click_link('files')
       click_link('History')
 
-      expect(page).to have_link('Browse Directory')
+      expect(page).to have_link('Browse directory')
       expect(page).not_to have_link('Browse Code')
     end
 
-    it 'shows the "Browse File" link' do
+    it 'shows the "Browse file" link' do
       page.within('.tree-table') do
         click_link('README.md')
       end
       click_link('History')
 
-      expect(page).to have_link('Browse File')
-      expect(page).not_to have_link('Browse Files')
+      expect(page).to have_link('Browse file')
+      expect(page).not_to have_link('Browse files')
     end
 
     it 'shows the "Browse Code" link' do
       click_link('History')
 
-      expect(page).to have_link('Browse Files')
-      expect(page).not_to have_link('Browse Directory')
+      expect(page).to have_link('Browse files')
+      expect(page).not_to have_link('Browse directory')
     end
 
     it 'redirects to the permalink URL' do
