@@ -113,7 +113,7 @@
       />
 
     <div
-      v-else-if="!repo.isLoading && isOpen"
+      v-else-if="isOpen"
       class="container-image-tags">
 
       <table-registry
