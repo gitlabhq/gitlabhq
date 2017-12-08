@@ -28,7 +28,7 @@ FactoryGirl.define do
     end
 
     before :create do |namespace, evaluator|
-      if evaluator.plan
+      if evaluator.plan.present?
         namespace.plan = create(evaluator.plan)
       end
     end

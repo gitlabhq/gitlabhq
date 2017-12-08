@@ -165,7 +165,7 @@ eos
         end
 
         context 'when namespace has a plan' do
-          let(:namespace) { create(:group, :private, plan: Namespace::BRONZE_PLAN) }
+          let(:namespace) { create(:group, :private, plan: :bronze_plan) }
 
           it_behaves_like 'an enabled jenkins deprecated service'
         end

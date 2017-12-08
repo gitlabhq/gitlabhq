@@ -174,7 +174,7 @@ describe Project do
 
               context 'allowed by Plan License AND Global License' do
                 let(:allowed_on_global_license) { true }
-                let(:plan_license) { Plan.find_by(name: 'gold') }
+                let(:plan_license) { create(:gold_plan) }
 
                 it 'returns true' do
                   is_expected.to eq(true)
@@ -183,7 +183,7 @@ describe Project do
 
               context 'not allowed by Plan License but project and namespace are public' do
                 let(:allowed_on_global_license) { true }
-                let(:plan_license) { Plan.find_by(name: 'bronze') }
+                let(:plan_license) { create(:bronze_plan) }
 
                 it 'returns true' do
                   allow(namespace).to receive(:public?) { true }
@@ -196,7 +196,7 @@ describe Project do
               unless License.plan_includes_feature?(License::STARTER_PLAN, feature_sym)
                 context 'not allowed by Plan License' do
                   let(:allowed_on_global_license) { true }
-                  let(:plan_license) { Plan.find_by(name: 'bronze') }
+                  let(:plan_license) { create(:bronze_plan) }
 
                   it 'returns false' do
                     is_expected.to eq(false)
@@ -206,7 +206,7 @@ describe Project do
 
               context 'not allowed by Global License' do
                 let(:allowed_on_global_license) { false }
-                let(:plan_license) { Plan.find_by(name: 'gold') }
+                let(:plan_license) { create(:gold_plan) }
 
                 it 'returns false' do
                   is_expected.to eq(false)
@@ -679,7 +679,7 @@ describe Project do
       end
 
       context 'Service Desk available in namespace plan' do
-        let(:namespace) { create(:namespace, plan: Namespace::SILVER_PLAN) }
+        let(:namespace) { create(:namespace, plan: :silver_plan) }
 
         it 'is enabled' do
           expect(project.service_desk_enabled?).to be_truthy
@@ -1163,7 +1163,7 @@ describe Project do
         end
 
         context 'and namespace has a plan' do
-          let(:namespace) { create(:group, :private, plan: Namespace::BRONZE_PLAN) }
+          let(:namespace) { create(:group, :private, plan: :bronze_plan) }
 
           it_behaves_like 'project without disabled services'
         end
