@@ -45,6 +45,7 @@ class License < ActiveRecord::Base
     jira_dev_panel_integration
     ldap_group_sync_filter
     multiple_clusters
+    merge_request_performance_metrics
     object_storage
     service_desk
     variable_environment_scope

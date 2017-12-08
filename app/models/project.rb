@@ -232,7 +232,6 @@ class Project < ActiveRecord::Base
   delegate :members, to: :team, prefix: true
   delegate :add_user, :add_users, to: :team
   delegate :add_guest, :add_reporter, :add_developer, :add_master, to: :team
-  delegate :empty_repo?, to: :repository
 
   # Validations
   validates :creator, presence: true, on: :create
@@ -505,6 +504,10 @@ class Project < ActiveRecord::Base
 
   def has_auto_devops_implicitly_disabled?
     auto_devops&.enabled.nil? && !current_application_settings.auto_devops_enabled?
+  end
+
+  def empty_repo?
+    repository.empty?
   end
 
   def repository_storage_path
@@ -905,8 +908,7 @@ class Project < ActiveRecord::Base
     @ci_service ||= ci_services.reorder(nil).find_by(active: true)
   end
 
-  # TODO: This will be extended for multiple enviroment clusters
-  def deployment_platform
+  def deployment_platform(environment: nil)
     @deployment_platform ||= clusters.find_by(enabled: true)&.platform_kubernetes
     @deployment_platform ||= services.where(category: :deployment).reorder(nil).find_by(active: true)
   end
@@ -1557,10 +1559,8 @@ class Project < ActiveRecord::Base
       ProtectedTag.protected?(self, ref)
   end
 
-  def deployment_variables
-    return [] unless deployment_platform
-
-    deployment_platform.predefined_variables
+  def deployment_variables(environment: nil)
+    deployment_platform(environment: environment)&.predefined_variables || []
   end
 
   def auto_devops_variables

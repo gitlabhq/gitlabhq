@@ -8,9 +8,10 @@ RSpec.describe 'admin Geo Nodes', type: :feature do
     sign_in(create(:admin))
   end
 
-  it 'show all public Geo Nodes' do
+  it 'show all public Geo Nodes and create new node link' do
     visit admin_geo_nodes_path
 
+    expect(page).to have_link('New node', href: new_admin_geo_node_path)
     page.within(find('.geo-nodes', match: :first)) do
       expect(page).to have_content(geo_node.url)
     end
@@ -20,7 +21,7 @@ RSpec.describe 'admin Geo Nodes', type: :feature do
     let(:new_ssh_key) { attributes_for(:key)[:key] }
 
     before do
-      visit admin_geo_nodes_path
+      visit new_admin_geo_node_path
     end
 
     it 'creates a new Geo Node' do
@@ -36,12 +37,10 @@ RSpec.describe 'admin Geo Nodes', type: :feature do
     end
 
     it 'returns an error message when a duplicate primary is added' do
-      check 'This is a primary node'
-      fill_in 'geo_node_url', with: 'https://test.example.com'
-      click_button 'Add Node'
+      create(:geo_node, :primary)
 
       check 'This is a primary node'
-      fill_in 'geo_node_url', with: 'https://secondary.example.com'
+      fill_in 'geo_node_url', with: 'https://another-primary.example.com'
       click_button 'Add Node'
 
       expect(current_path).to eq admin_geo_nodes_path

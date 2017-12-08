@@ -229,10 +229,13 @@ primary before the database is replicated.
    (`/admin/geo_nodes`) in your browser.
 1. Add the secondary node by providing its full URL. **Do NOT** check the box
    'This is a primary node'.
-1. Added in GitLab 9.5: Choose which namespaces should be replicated by the
+1. Optionally, choose which namespaces should be replicated by the
    secondary node. Leave blank to replicate all. Read more in
    [selective replication](#selective-replication).
 1. Click the **Add node** button.
+
+The new secondary geo node will have the status **Unhealthy**. This is expected
+because we have not yet configured the secondary server. This is the next step.
 
 ### Step 3. Configure the secondary server
 
@@ -273,10 +276,10 @@ primary before the database is replicated.
 
     ```
     # Certificate and key currently used by GitLab, and connecting by FQDN
-    sudo -u postgres psql -h primary.geo.example.com -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W
+    sudo -u postgres psql -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W -h primary.geo.example.com
 
     # Self-signed certificate and key, or connecting by IP address
-    sudo -u postgres psql -h 1.2.3.4 -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W
+    sudo -u postgres psql -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W -h 1.2.3.4
     ```
 
     When prompted enter the password you set in the first step for the
@@ -473,5 +476,4 @@ We don't support MySQL replication for GitLab Geo.
 Read the [troubleshooting document](troubleshooting.md).
 
 [pgback]: http://www.postgresql.org/docs/9.6/static/app-pgbasebackup.html
-[reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
 [toc]: README.md#using-gitlab-installed-from-source

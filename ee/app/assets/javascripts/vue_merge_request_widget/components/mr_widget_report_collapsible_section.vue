@@ -7,7 +7,7 @@ export default {
   name: 'MRWidgetCodeQuality',
 
   props: {
-    // security | codequality
+    // security | codequality | performance
     type: {
       type: String,
       required: true,
@@ -35,6 +35,11 @@ export default {
       default: () => [],
     },
     resolvedIssues: {
+      type: Array,
+      required: false,
+      default: () => [],
+    },
+    neutralIssues: {
       type: Array,
       required: false,
       default: () => [],
@@ -129,6 +134,14 @@ export default {
         :type="type"
         status="success"
         :issues="resolvedIssues"
+        />
+
+      <issues-block
+        class="js-mr-code-non-issues"
+        v-if="neutralIssues.length"
+        :type="type"
+        status="neutral"
+        :issues="neutralIssues"
         />
 
       <issues-block

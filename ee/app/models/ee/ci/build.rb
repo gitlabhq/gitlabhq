@@ -13,6 +13,7 @@ module EE
 
       included do
         scope :codequality, ->() { where(name: %w[codequality codeclimate]) }
+        scope :performance, ->() { where(name: %w[performance deploy]) }
         scope :sast, ->() { where(name: 'sast') }
         scope :clair, ->() { where(name: 'clair') }
 
@@ -32,6 +33,11 @@ module EE
 
       def has_codeclimate_json?
         has_artifact?(CODEQUALITY_FILE)
+      end
+
+      def has_performance_json?
+        options.dig(:artifacts, :paths) == ['performance.json'] &&
+          artifacts_metadata?
       end
 
       def has_sast_json?

@@ -130,6 +130,7 @@ describe Ci::Build do
 
   ARTIFACTS_METHODS = {
     has_codeclimate_json?: 'codeclimate.json',
+    has_performance_json?: 'performance.json',
     has_sast_json?: 'gl-sast-report.json',
     has_clair_json?: 'gl-clair-report.json'
   }.freeze

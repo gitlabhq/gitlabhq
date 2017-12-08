@@ -1,0 +1,5 @@
+---
+title: Fix Git message when pushing to Geo secondary
+merge_request: 3616
+author:
+type: fixed

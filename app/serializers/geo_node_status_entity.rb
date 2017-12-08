@@ -7,6 +7,7 @@ class GeoNodeStatusEntity < Grape::Entity
   expose :health do |node|
     node.healthy? ? 'Healthy' : node.health
   end
+  expose :health_status
 
   expose :attachments_count
   expose :attachments_synced_count
@@ -37,4 +38,23 @@ class GeoNodeStatusEntity < Grape::Entity
   expose :cursor_last_event_timestamp
 
   expose :last_successful_status_check_timestamp
+
+  expose :version
+  expose :revision
+
+  expose :namespaces, using: NamespaceEntity
+
+  private
+
+  def namespaces
+    object.geo_node.namespaces
+  end
+
+  def version
+    Gitlab::VERSION
+  end
+
+  def revision
+    Gitlab::REVISION
+  end
 end

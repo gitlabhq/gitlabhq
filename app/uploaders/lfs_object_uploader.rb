@@ -1,6 +1,5 @@
 class LfsObjectUploader < ObjectStoreUploader
   storage_options Gitlab.config.lfs
-  after :store, :schedule_migration_to_object_storage
 
   def self.local_store_path
     Gitlab.config.lfs.storage_path

@@ -10,6 +10,16 @@ describe MergeRequestEntity do
     described_class.new(merge_request, request: request)
   end
 
+  it 'has performance data' do
+    build = create(:ci_build, name: 'job')
+
+    allow(subject).to receive(:expose_performance_data?).and_return(true)
+    allow(merge_request).to receive(:base_performance_artifact).and_return(build)
+    allow(merge_request).to receive(:head_performance_artifact).and_return(build)
+
+    expect(subject.as_json).to include(:performance)
+  end
+
   it 'has sast data' do
     build = create(:ci_build, name: 'sast')
 

@@ -1,6 +1,7 @@
 module Clusters
   class Cluster < ActiveRecord::Base
     include Presentable
+    prepend HasEnvironmentScope
 
     self.table_name = 'clusters'
 
@@ -26,6 +27,7 @@ module Clusters
     accepts_nested_attributes_for :platform_kubernetes, update_only: true
 
     validates :name, cluster_name: true
+    validate :unique_environment_scope, if: :has_project?
     validate :restrict_modification, on: :update
 
     delegate :status, to: :provider, allow_nil: true
@@ -91,6 +93,15 @@ module Clusters
 
     private
 
+    def unique_environment_scope
+      if project.clusters.where(environment_scope: environment_scope).where.not(id: self.id).exists?
+        errors.add(:base, "cannot add duplicated environment scope")
+        return false
+      end
+
+      true
+    end
+
     def restrict_modification
       if provider&.on_creation?
         errors.add(:base, "cannot modify during creation")
@@ -98,6 +109,10 @@ module Clusters
       end
 
       true
+    end
+
+    def has_project?
+      projects.exists?
     end
   end
 end
