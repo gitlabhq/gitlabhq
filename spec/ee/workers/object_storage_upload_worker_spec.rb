@@ -17,7 +17,7 @@ describe ObjectStorageUploadWorker do
 
     context 'when object storage is enabled' do
       before do
-        stub_lfs_object_storage
+        stub_lfs_object_storage(background_upload: true)
       end
 
       it 'uploads object to storage' do
@@ -60,7 +60,7 @@ describe ObjectStorageUploadWorker do
 
       context 'and remote storage is defined' do
         before do
-          stub_artifacts_object_storage
+          stub_artifacts_object_storage(background_upload: true)
         end
 
         it "migrates file to remote storage" do
@@ -94,7 +94,7 @@ describe ObjectStorageUploadWorker do
 
       context 'and remote storage is defined' do
         before do
-          stub_artifacts_object_storage
+          stub_artifacts_object_storage(background_upload: true)
         end
 
         it "migrates file to remote storage" do
