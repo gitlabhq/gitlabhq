@@ -1,6 +1,7 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
 /* global Notes */
 
+import * as urlUtils from '~/lib/utils/url_utility';
 import '~/merge_request_tabs';
 import '~/commit/pipelines/pipelines_bundle';
 import '~/breakpoints';
@@ -333,7 +334,7 @@ import 'vendor/jquery.scrollTo';
 
         describe('with note fragment hash', () => {
           it('should expand and scroll to linked fragment hash #note_xxx', function () {
-            spyOn(window.gl.utils, 'getLocationHash').and.returnValue(noteId);
+            spyOn(urlUtils, 'getLocationHash').and.returnValue(noteId);
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
             expect(noteId.length).toBeGreaterThan(0);
@@ -345,7 +346,7 @@ import 'vendor/jquery.scrollTo';
           });
 
           it('should gracefully ignore non-existant fragment hash', function () {
-            spyOn(window.gl.utils, 'getLocationHash').and.returnValue('note_something-that-does-not-exist');
+            spyOn(urlUtils, 'getLocationHash').and.returnValue('note_something-that-does-not-exist');
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
             expect(window.notes.toggleDiffNote).not.toHaveBeenCalled();
@@ -354,7 +355,7 @@ import 'vendor/jquery.scrollTo';
 
         describe('with line number fragment hash', () => {
           it('should gracefully ignore line number fragment hash', function () {
-            spyOn(window.gl.utils, 'getLocationHash').and.returnValue(noteLineNumId);
+            spyOn(urlUtils, 'getLocationHash').and.returnValue(noteLineNumId);
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
             expect(noteLineNumId.length).toBeGreaterThan(0);
@@ -387,7 +388,7 @@ import 'vendor/jquery.scrollTo';
 
         describe('with note fragment hash', () => {
           it('should expand and scroll to linked fragment hash #note_xxx', function () {
-            spyOn(window.gl.utils, 'getLocationHash').and.returnValue(noteId);
+            spyOn(urlUtils, 'getLocationHash').and.returnValue(noteId);
 
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
@@ -400,7 +401,7 @@ import 'vendor/jquery.scrollTo';
           });
 
           it('should gracefully ignore non-existant fragment hash', function () {
-            spyOn(window.gl.utils, 'getLocationHash').and.returnValue('note_something-that-does-not-exist');
+            spyOn(urlUtils, 'getLocationHash').and.returnValue('note_something-that-does-not-exist');
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
             expect(window.notes.toggleDiffNote).not.toHaveBeenCalled();
@@ -409,7 +410,7 @@ import 'vendor/jquery.scrollTo';
 
         describe('with line number fragment hash', () => {
           it('should gracefully ignore line number fragment hash', function () {
-            spyOn(window.gl.utils, 'getLocationHash').and.returnValue(noteLineNumId);
+            spyOn(urlUtils, 'getLocationHash').and.returnValue(noteLineNumId);
             this.class.loadDiff('/foo/bar/merge_requests/1/diffs');
 
             expect(noteLineNumId.length).toBeGreaterThan(0);

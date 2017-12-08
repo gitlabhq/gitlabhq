@@ -1,4 +1,5 @@
 <script>
+import * as urlUtils from '../../lib/utils/url_utility';
 import tooltip from '../../vue_shared/directives/tooltip';
 import identicon from '../../vue_shared/components/identicon.vue';
 import eventHub from '../event_hub';
@@ -60,7 +61,7 @@ export default {
         if (this.hasChildren) {
           eventHub.$emit('toggleChildren', this.group);
         } else {
-          gl.utils.visitUrl(this.group.relativePath);
+          urlUtils.visitUrl(this.group.relativePath);
         }
       }
     },

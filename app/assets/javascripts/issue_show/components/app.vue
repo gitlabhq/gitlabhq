@@ -1,5 +1,6 @@
 <script>
 import Visibility from 'visibilityjs';
+import * as urlUtils from '../../lib/utils/url_utility';
 import Poll from '../../lib/utils/poll';
 import eventHub from '../event_hub';
 import Service from '../services/index';
@@ -8,7 +9,6 @@ import titleComponent from './title.vue';
 import descriptionComponent from './description.vue';
 import editedComponent from './edited.vue';
 import formComponent from './form.vue';
-import '../../lib/utils/url_utility';
 
 export default {
   props: {
@@ -169,7 +169,7 @@ export default {
         .then(res => res.json())
         .then((data) => {
           if (location.pathname !== data.web_url) {
-            gl.utils.visitUrl(data.web_url);
+            urlUtils.visitUrl(data.web_url);
           }
 
           return this.service.getData();
@@ -191,7 +191,7 @@ export default {
           // Stop the poll so we don't get 404's with the issuable not existing
           this.poll.stop();
 
-          gl.utils.visitUrl(data.web_url);
+          urlUtils.visitUrl(data.web_url);
         })
         .catch(() => {
           eventHub.$emit('close.form');

@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import '~/render_math';
 import '~/render_gfm';
+import * as urlUtils from '~/lib/utils/url_utility';
 import issuableApp from '~/issue_show/components/app.vue';
 import eventHub from '~/issue_show/event_hub';
 import issueShowData from '../mock_data';
@@ -177,7 +178,7 @@ describe('Issuable output', () => {
     });
 
     it('does not redirect if issue has not moved', (done) => {
-      spyOn(gl.utils, 'visitUrl');
+      spyOn(urlUtils, 'visitUrl');
       spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
         resolve({
           json() {
@@ -193,7 +194,7 @@ describe('Issuable output', () => {
 
       setTimeout(() => {
         expect(
-          gl.utils.visitUrl,
+          urlUtils.visitUrl,
         ).not.toHaveBeenCalled();
 
         done();
@@ -201,7 +202,7 @@ describe('Issuable output', () => {
     });
 
     it('redirects if returned web_url has changed', (done) => {
-      spyOn(gl.utils, 'visitUrl');
+      spyOn(urlUtils, 'visitUrl');
       spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve) => {
         resolve({
           json() {
@@ -217,7 +218,7 @@ describe('Issuable output', () => {
 
       setTimeout(() => {
         expect(
-          gl.utils.visitUrl,
+          urlUtils.visitUrl,
         ).toHaveBeenCalledWith('/testing-issue-move');
 
         done();
@@ -270,7 +271,7 @@ describe('Issuable output', () => {
 
   describe('deleteIssuable', () => {
     it('changes URL when deleted', (done) => {
-      spyOn(gl.utils, 'visitUrl');
+      spyOn(urlUtils, 'visitUrl');
       spyOn(vm.service, 'deleteIssuable').and.callFake(() => new Promise((resolve) => {
         resolve({
           json() {
@@ -283,7 +284,7 @@ describe('Issuable output', () => {
 
       setTimeout(() => {
         expect(
-          gl.utils.visitUrl,
+          urlUtils.visitUrl,
         ).toHaveBeenCalledWith('/test');
 
         done();
@@ -291,7 +292,7 @@ describe('Issuable output', () => {
     });
 
     it('stops polling when deleting', (done) => {
-      spyOn(gl.utils, 'visitUrl');
+      spyOn(urlUtils, 'visitUrl');
       spyOn(vm.poll, 'stop').and.callThrough();
       spyOn(vm.service, 'deleteIssuable').and.callFake(() => new Promise((resolve) => {
         resolve({
