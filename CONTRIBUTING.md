@@ -598,6 +598,7 @@ merge request:
     present time and never use past tense (has been/was). For example instead
     of _prohibited this user from being saved due to the following errors:_ the
     text should be _sorry, we could not create your account because:_
+1.  Code should be written in [US English][us-english]
 
 This is also the style used by linting tools such as
 [RuboCop](https://github.com/bbatsov/rubocop),
@@ -663,6 +664,7 @@ available at [http://contributor-covenant.org/version/1/1/0/](http://contributor
 [GitLab Inc engineering workflow]: https://about.gitlab.com/handbook/engineering/workflow/#labelling-issues
 [polling-etag]: https://docs.gitlab.com/ce/development/polling.html
 [testing]: doc/development/testing_guide/index.md
+[us-english]: https://en.wikipedia.org/wiki/American_English
 
 [^1]: Please note that specs other than JavaScript specs are considered backend
       code.

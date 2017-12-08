@@ -1,7 +1,31 @@
 # User account
 
-When logged into their GitLab account, users can customize their
+When signed into their GitLab account, users can customize their
 experience according to the best approach to their cases.
+
+## Signing in
+
+There are several ways to sign into your GitLab account.
+See the [authentication topic](../../topics/authentication/index.md) for more details.
+
+### Why do I keep getting signed out?
+
+When signing in to the main GitLab application, a `_gitlab_session` cookie is
+set. `_gitlab_session` is cleared client-side when you close your browser
+and expires after "Application settings -> Session duration (minutes)"/`session_expire_delay`
+(defaults to `10080` minutes = 7 days).
+
+When signing in to the main GitLab application, you can also check the
+"Remember me" option which sets the `remember_user_token`
+cookie (via [`devise`](https://github.com/plataformatec/devise)).
+`remember_user_token` expires after
+`config/initializers/devise.rb` -> `config.remember_for` (defaults to 2 weeks).
+
+When the `_gitlab_session` expires or isn't available, GitLab uses the `remember_user_token`
+to get you a new `_gitlab_session` and keep you signed in through browser restarts.
+
+After your `remember_user_token` expires and your `_gitlab_session` is cleared/expired,
+you will be asked to sign in again to verify your identity (which is for security reasons).
 
 ## Username
 

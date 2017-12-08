@@ -129,8 +129,6 @@ full use of Auto DevOps. If this is your fist time, we recommend you follow the
 1. Go to your project's **Settings > CI/CD > General pipelines settings** and
    find the Auto DevOps section
 1. Select "Enable Auto DevOps"
-1. After selecting an option to enable Auto DevOps, a checkbox will appear below
-   so you can immediately run a pipeline on the default branch
 1. Optionally, but recommended, add in the [base domain](#auto-devops-base-domain)
    that will be used by Kubernetes to deploy your application
 1. Hit **Save changes** for the changes to take effect

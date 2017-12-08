@@ -29,11 +29,11 @@ class FileUploader < GitlabUploader
   # model - Object that responds to `full_path` and `disk_path`
   #
   # Returns a String without a trailing slash
-  def self.dynamic_path_segment(project)
-    if project.hashed_storage?(:attachments)
-      dynamic_path_builder(project.disk_path)
+  def self.dynamic_path_segment(model)
+    if model.hashed_storage?(:attachments)
+      dynamic_path_builder(model.disk_path)
     else
-      dynamic_path_builder(project.full_path)
+      dynamic_path_builder(model.full_path)
     end
   end
 

@@ -16,14 +16,13 @@ describe Projects::PipelinesSettingsController do
       patch :update,
         namespace_id: project.namespace.to_param,
         project_id: project,
-        project: { auto_devops_attributes: params,
-                   run_auto_devops_pipeline_implicit: 'false',
-                   run_auto_devops_pipeline_explicit: auto_devops_pipeline }
+        project: {
+          auto_devops_attributes: params
+        }
     end
 
     context 'when updating the auto_devops settings' do
       let(:params) { { enabled: '', domain: 'mepmep.md' } }
-      let(:auto_devops_pipeline) { 'false' }
 
       it 'redirects to the settings page' do
         subject
@@ -44,7 +43,9 @@ describe Projects::PipelinesSettingsController do
       end
 
       context 'when run_auto_devops_pipeline is true' do
-        let(:auto_devops_pipeline) { 'true' }
+        before do
+          expect_any_instance_of(Projects::UpdateService).to receive(:run_auto_devops_pipeline?).and_return(true)
+        end
 
         it 'queues a CreatePipelineWorker' do
           expect(CreatePipelineWorker).to receive(:perform_async).with(project.id, user.id, project.default_branch, :web, any_args)
@@ -54,7 +55,9 @@ describe Projects::PipelinesSettingsController do
       end
 
       context 'when run_auto_devops_pipeline is not true' do
-        let(:auto_devops_pipeline) { 'false' }
+        before do
+          expect_any_instance_of(Projects::UpdateService).to receive(:run_auto_devops_pipeline?).and_return(false)
+        end
 
         it 'does not queue a CreatePipelineWorker' do
           expect(CreatePipelineWorker).not_to receive(:perform_async).with(project.id, user.id, :web, any_args)

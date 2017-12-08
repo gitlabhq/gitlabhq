@@ -166,7 +166,7 @@ module Gitlab
       end
 
       if Gitlab::Database.read_only?
-        raise UnauthorizedError, ERROR_MESSAGES[:cannot_push_to_read_only]
+        raise UnauthorizedError, push_to_read_only_message
       end
 
       if deploy_key
@@ -279,6 +279,10 @@ module Gitlab
                        else
                          UserAccess.new(user, project: project)
                        end
+    end
+
+    def push_to_read_only_message
+      ERROR_MESSAGES[:cannot_push_to_read_only]
     end
   end
 end

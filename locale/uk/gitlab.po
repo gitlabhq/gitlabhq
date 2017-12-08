@@ -511,14 +511,14 @@ msgstr "Інтеграція із кластером увімкнена для �
 msgid "ClusterIntegration|Cluster integration is enabled for this project. Disabling this integration will not affect your cluster, it will only temporarily turn off GitLab's connection to it."
 msgstr "Для цього проекту увімкнена інтеграція із кластером. Викнення інтеграції не вплине на кластер, але з'єднання GitLab з ним буде тимчасово розірване."
 
-msgid "ClusterIntegration|Cluster is being created on Google Container Engine..."
-msgstr "Створюється кластер в Google Container Engine..."
+msgid "ClusterIntegration|Cluster is being created on Google Kubernetes Engine..."
+msgstr "Створюється кластер в Google Kubernetes Engine..."
 
 msgid "ClusterIntegration|Cluster name"
 msgstr "Ім'я кластера"
 
-msgid "ClusterIntegration|Cluster was successfully created on Google Container Engine"
-msgstr "Кластер був успішно створений в Google Container Engine"
+msgid "ClusterIntegration|Cluster was successfully created on Google Kubernetes Engine"
+msgstr "Кластер був успішно створений в Google Kubernetes Engine"
 
 msgid "ClusterIntegration|Copy cluster name"
 msgstr "Копіювати назву кластера"
@@ -526,8 +526,8 @@ msgstr "Копіювати назву кластера"
 msgid "ClusterIntegration|Create cluster"
 msgstr "Створити кластер"
 
-msgid "ClusterIntegration|Create new cluster on Google Container Engine"
-msgstr "Створити новий кластер в Google Container Engine"
+msgid "ClusterIntegration|Create new cluster on Google Kubernetes Engine"
+msgstr "Створити новий кластер в Google Kubernetes Engine"
 
 msgid "ClusterIntegration|Enable cluster integration"
 msgstr "Увімкнути інтеграцію із кластерами"
@@ -535,11 +535,11 @@ msgstr "Увімкнути інтеграцію із кластерами"
 msgid "ClusterIntegration|Google Cloud Platform project ID"
 msgstr "Ідентифікатор проекту в Google Cloud Platform"
 
-msgid "ClusterIntegration|Google Container Engine"
-msgstr "Google Container Engine"
+msgid "ClusterIntegration|Google Kubernetes Engine"
+msgstr "Google Kubernetes Engine"
 
-msgid "ClusterIntegration|Google Container Engine project"
-msgstr "Проект Google Container Engine"
+msgid "ClusterIntegration|Google Kubernetes Engine project"
+msgstr "Проект Google Kubernetes Engine"
 
 msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
 msgstr "Дізнайтеся більше про %{link_to_documentation}"
@@ -592,8 +592,8 @@ msgstr "Переглянути зони"
 msgid "ClusterIntegration|Something went wrong on our end."
 msgstr "Щось пішло не так з нашого боку."
 
-msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine"
-msgstr "Щось пішло не так під час створення кластера в Google Container Engine"
+msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Kubernetes Engine"
+msgstr "Щось пішло не так під час створення кластера в Google Kubernetes Engine"
 
 msgid "ClusterIntegration|Toggle Cluster"
 msgstr "Переключити Кластер"
@@ -601,14 +601,14 @@ msgstr "Переключити Кластер"
 msgid "ClusterIntegration|With a cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
 msgstr "За допомогою підключеного до цього проекту кластера, ви можете використовувати Review Apps, розгортати ваші проекти, запускати конвеєри збірки та багато іншого."
 
-msgid "ClusterIntegration|Your account must have %{link_to_container_engine}"
-msgstr "Ваш обліковий запис повинен мати %{link_to_container_engine}"
+msgid "ClusterIntegration|Your account must have %{link_to_kubernetes_engine}"
+msgstr "Ваш обліковий запис повинен мати %{link_to_kubernetes_engine}"
 
 msgid "ClusterIntegration|Zone"
 msgstr "Зона"
 
-msgid "ClusterIntegration|access to Google Container Engine"
-msgstr "доступ до Google Container Engine"
+msgid "ClusterIntegration|access to Google Kubernetes Engine"
+msgstr "доступ до Google Kubernetes Engine"
 
 msgid "ClusterIntegration|cluster"
 msgstr "кластер"
