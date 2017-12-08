@@ -75,6 +75,7 @@
   >
     {{ __('Upload file') }}
     <input
+      id="file-upload"
       type="file"
       class="hidden"
       ref="fileUpload"

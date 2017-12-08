@@ -34,6 +34,8 @@ feature 'Multi-file editor new directory', :js do
       click_button('Create directory')
     end
 
+    wait_for_requests
+
     find('.multi-file-commit-panel-collapse-btn').click
 
     fill_in('commit-message', with: 'commit message ide')
