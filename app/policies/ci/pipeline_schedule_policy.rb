@@ -3,15 +3,7 @@ module Ci
     alias_method :pipeline_schedule, :subject
 
     condition(:protected_ref) do
-      access = ::Gitlab::UserAccess.new(@user, project: @subject.project)
-
-      if @subject.project.repository.branch_exists?(@subject.ref)
-        !access.can_update_branch?(@subject.ref)
-      elsif @subject.project.repository.tag_exists?(@subject.ref)
-        !access.can_create_tag?(@subject.ref)
-      else
-        false
-      end
+      ref_protected?(@user, @subject.project, @subject.project.repository.tag_exists?(@subject.ref), @subject.ref)
     end
 
     condition(:owner_of_schedule) do
