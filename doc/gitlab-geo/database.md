@@ -112,8 +112,10 @@ will not be able to perform all necessary configuration steps. Refer to
     this example:
 
     ```bash
-    # Certificate and key currently used by GitLab
-    # - replace primary.geo.example.com with your domain
+    ##
+    ## Certificate and key currently used by GitLab
+    ## - replace primary.geo.example.com with your domain
+    ##
     install -o gitlab-psql -g gitlab-psql -m 0400 -T /etc/gitlab/ssl/primary.geo.example.com.crt ~gitlab-psql/data/server.crt
     install -o gitlab-psql -g gitlab-psql -m 0400 -T /etc/gitlab/ssl/primary.geo.example.com.key ~gitlab-psql/data/server.key
     ```
@@ -134,8 +136,10 @@ will not be able to perform all necessary configuration steps. Refer to
     to the correct location:
 
     ```
-    # Self-signed certificate and key
-    # - assumes the files are in your current working directory
+    ##
+    ## Self-signed certificate and key
+    ## - assumes the files are in your current working directory
+    ##
     install -o gitlab-psql -g gitlab-psql -m 0400 -T server.crt ~gitlab-psql/data/server.crt
     install -o gitlab-psql -g gitlab-psql -m 0400 -T server.key ~gitlab-psql/data/server.key
     ```
@@ -166,10 +170,14 @@ will not be able to perform all necessary configuration steps. Refer to
     To lookup the address of a Geo node, SSH in to the Geo node and execute:
 
     ```bash
-    # Private address
+    ##
+    ## Private address
+    ##
     ip route get 255.255.255.255 | awk '{print "Private address:", $NF; exit}'
 
-    # Public address
+    ##
+    ## Public address
+    ##
     echo "External address: $(curl ipinfo.io/ip)"
     ```
 
@@ -199,23 +207,31 @@ will not be able to perform all necessary configuration steps. Refer to
     ```ruby
     geo_primary_role['enable'] = true
 
-    # Primary address
-    # - replace '1.2.3.4' with the primary private address
+    ##
+    ## Primary address
+    ## - replace '1.2.3.4' with the primary private address
+    ##
     postgresql['listen_address'] = '1.2.3.4'
     postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','1.2.3.4/32']
 
+    ##
     # Secondary addresses
     # - replace '5.6.7.8' with the secondary public address
+    ##
     postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
 
-    # Replication settings
-    # - set this to be the number of Geo secondary nodes you have
+    ##
+    ## Replication settings
+    ## - set this to be the number of Geo secondary nodes you have
+    ##
     postgresql['max_replication_slots'] = 1
     # postgresql['max_wal_senders'] = 10
     # postgresql['wal_keep_segments'] = 10
 
-    # Disable automatic database migrations temporarily
-    # (until PostgreSQL is restarted and listening on the private address)
+    ##
+    ## Disable automatic database migrations temporarily
+    ## (until PostgreSQL is restarted and listening on the private address).
+    ##
     gitlab_rails['auto_migrate'] = false
     ```
 
@@ -234,7 +250,7 @@ will not be able to perform all necessary configuration steps. Refer to
 
 1. Save the file and reconfigure GitLab for the database listen changes and
    the replication slot changes to be applied.
-    
+
     ```bash
     gitlab-ctl reconfigure
     ```
@@ -322,13 +338,17 @@ because we have not yet configured the secondary server. This is the next step.
     it in the right location.
 
     ```bash
-    # Certificate and key currently used by GitLab
+    ##
+    ## Certificate and key currently used by GitLab
+    ##
     mkdir -p ~gitlab-psql/.postgresql
     ln -s /opt/gitlab/embedded/ssl/certs/cacert.pem ~gitlab-psql/.postgresql/root.crt
     ```
-    
+
     ```bash
-    # Self-signed certificate and key
+    ##
+    ## Self-signed certificate and key
+    ##
     install -o gitlab-psql -g gitlab-psql -m 0400 -T server.crt -D ~gitlab-psql/.postgresql/root.crt
     ```
 
@@ -336,15 +356,20 @@ because we have not yet configured the secondary server. This is the next step.
     connections.
 
 
-1. Test that the remote connection to the primary server works.
+1. Test that the remote connection to the primary server works (as the
+   `gitlab-psql` user):
 
     ```
-    # Certificate and key currently used by GitLab, and connecting by FQDN
+    ##
+    ## Certificate and key currently used by GitLab, and connecting by FQDN
+    ##
     sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-full" -W -h primary.geo.example.com
     ```
-    
+
     ```
-    # Self-signed certificate and key, or connecting by IP address
+    ##
+    ## Self-signed certificate and key, or connecting by IP address
+    ##
     sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W -h 1.2.3.4
     ```
 
@@ -417,13 +442,17 @@ data before running `pg_basebackup`.
 1. Execute the command below to start a backup/restore and begin the replication:
 
     ```
-    # Certificate and key currently used by GitLab, and connecting by FQDN
+    ##
+    ## Certificate and key currently used by GitLab, and connecting by FQDN
+    ##
     gitlab-ctl replicate-geo-database --slot-name=secondary_example --host=primary.geo.example.com
     ```
-    
+
     ```
-    # Self-signed certificate and key, or connecting by IP
-    gitlab-ctl replicate-geo-database --slot-name=secondary_example --sslmode=verify-ca --host=1.2.3.4
+    ##
+    ## Self-signed certificate and key, or connecting by IP
+    ##
+    gitlab-ctl replicate-geo-database --sslmode=verify-ca --slot-name=secondary_example --host=1.2.3.4
     ```
 
     If PostgreSQL is listening on a non-standard port, add `--port=` as well.
@@ -477,14 +506,18 @@ The `geo_primary_role` makes configuration changes to `pg_hba.conf` and
 `postgresql.conf` on the primary:
 
 ```
-# pg_hba.conf
-# GitLab Geo Primary
+##
+## GitLab Geo Primary
+## - pg_hba.conf
+##
 host    replication gitlab_replicator <trusted secondary IP>/32     md5
 ```
 
 ```
-# postgresql.conf
-# Geo Primary Role
+##
+## Geo Primary Role
+## - postgresql.conf
+##
 sql_replication_user = gitlab_replicator
 wal_level = hot_standby
 max_wal_senders = 10
@@ -499,8 +532,10 @@ on the secondary. The PostgreSQL settings for this database it adds to
 the default settings:
 
 ```
-# postgresql.conf
-# Geo Secondary Role
+##
+## Geo Secondary Role
+## - postgresql.conf
+##
 wal_level = hot_standby
 max_wal_senders = 10
 wal_keep_segments = 10
