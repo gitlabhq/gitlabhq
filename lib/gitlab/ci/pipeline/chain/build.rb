@@ -3,8 +3,6 @@ module Gitlab
     module Pipeline
       module Chain
         class Build < Chain::Base
-          include Chain::Helpers
-
           def perform!
             @pipeline.assign_attributes(
               source: @command.source,
@@ -50,6 +48,10 @@ module Gitlab
 
           def protected_ref?
             @project.protected_for?(ref)
+          end
+
+          def tag_exists?
+            project.repository.tag_exists?(ref)
           end
         end
       end
