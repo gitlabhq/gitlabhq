@@ -8,18 +8,7 @@ import IssuablesHelper from './helpers/issuables_helper';
 
 export default class Issue {
   constructor() {
-    if ($('a.btn-close').length) {
-      this.taskList = new TaskList({
-        dataType: 'issue',
-        fieldName: 'description',
-        selector: '.detail-page-description',
-        onSuccess: (result) => {
-          document.querySelector('#task_status').innerText = result.task_status;
-          document.querySelector('#task_status_short').innerText = result.task_status_short;
-        }
-      });
-      this.initIssueBtnEventListeners();
-    }
+    if ($('a.btn-close').length) this.initIssueBtnEventListeners();
 
     Issue.$btnNewBranch = $('#new-branch');
     Issue.createMrDropdownWrap = document.querySelector('.create-mr-dropdown-wrap');
