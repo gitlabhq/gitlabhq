@@ -35,7 +35,8 @@
                 %span.help-block
                   GitLab version:
                   %span.js-primary-version= Gitlab::VERSION
-                  %small.js-primary-revision= "(#{Gitlab::REVISION})"
+                  %small.js-primary-revision
+                    = "(#{Gitlab::REVISION})"
             - else
               = status_loading_icon
               %table.geo-node-status.js-geo-node-status.hidden
