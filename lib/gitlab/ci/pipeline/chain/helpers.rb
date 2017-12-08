@@ -3,16 +3,22 @@ module Gitlab
     module Pipeline
       module Chain
         module Helpers
-          def branch_exists?
-            return @is_branch if defined?(@is_branch)
+          include Gitlab::Utils::StrongMemoize
 
-            @is_branch = project.repository.branch_exists?(pipeline.ref)
+          def branch_exists?
+            strong_memoize(:is_branch) do
+              raise ArgumentError unless pipeline.ref
+
+              project.repository.branch_exists?(pipeline.ref)
+            end
           end
 
           def tag_exists?
-            return @is_tag if defined?(@is_tag)
+            strong_memoize(:is_tag) do
+              raise ArgumentError unless pipeline.ref
 
-            @is_tag = project.repository.tag_exists?(pipeline.ref)
+              project.repository.tag_exists?(pipeline.ref)
+            end
           end
 
           def error(message)
