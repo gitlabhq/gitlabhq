@@ -45,7 +45,7 @@ class GeoNodeStatusEntity < Grape::Entity
   expose :namespaces, using: NamespaceEntity
 
   private
-  
+
   def namespaces
     object.geo_node.namespaces
   end
