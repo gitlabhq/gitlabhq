@@ -130,7 +130,8 @@ freeze date (the 7th) should have a corresponding Enterprise Edition merge
 request, even if there are no conflicts. This is to reduce the size of the
 subsequent EE merge, as we often merge a lot to CE on the release date. For more
 information, see
-[limit conflicts with EE when developing on CE][limit_ee_conflicts].
+[Automatic CE->EE merge][automatic_ce_ee_merge] and
+[Guidelines for implementing Enterprise Edition features][ee_features].
 
 ### After the 7th
 
@@ -281,4 +282,5 @@ still an issue I encourage you to open it on the [GitLab.com issue tracker](http
 ["Implement design & UI elements" guidelines]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#implement-design-ui-elements
 [Thoughtbot code review guide]: https://github.com/thoughtbot/guides/tree/master/code-review
 [done]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#definition-of-done
-[limit_ee_conflicts]: https://docs.gitlab.com/ce/development/limit_ee_conflicts.html
+[automatic_ce_ee_merge]: https://docs.gitlab.com/ce/development/automatic_ce_ee_merge.html
+[ee_features]: https://docs.gitlab.com/ce/development/ee_features.html
