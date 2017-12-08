@@ -23,7 +23,8 @@ export const getTreeData = (
     // We are merging the web_url that we got on the project info with the endpoint
     // we got on the tree entry, as both contain the projectId, we replace it in the tree endpoint
     const completeEndpoint = selectedProject.web_url + (endpoint).replace(projectId, '');
-    service.getTreeData(completeEndpoint)
+    if (completeEndpoint) {
+      service.getTreeData(completeEndpoint)
       .then((res) => {
         const pageTitle = decodeURI(normalizeHeaders(res.headers)['PAGE-TITLE']);
 
@@ -54,6 +55,9 @@ export const getTreeData = (
         if (tree) commit(types.TOGGLE_LOADING, tree);
         reject(e);
       });
+    } else {
+      resolve();
+    }
   }
 });
 

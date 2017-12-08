@@ -14,7 +14,7 @@ feature 'Multi-file editor new directory', :js do
 
     wait_for_requests
 
-    click_button('Multi Edit')
+    click_link('Multi Edit')
     
     wait_for_requests
   end
@@ -40,6 +40,6 @@ feature 'Multi-file editor new directory', :js do
 
     click_button('Commit')
 
-    expect(page).to have_content('commit message ide')
+    expect(page).to have_content('foldername')
   end
 end
