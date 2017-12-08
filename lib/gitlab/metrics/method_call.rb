@@ -20,10 +20,13 @@ module Gitlab
 
       def self.call_measurement_enabled?
         return @call_measurement_enabled unless call_measurement_enabled_cache_expired?
+
         MUTEX.synchronize do
           return @call_measurement_enabled unless call_measurement_enabled_cache_expired?
-          @call_measurement_enabled_cache_expires_at = Time.now + 5.minutes
+
           @call_measurement_enabled = Feature.get(:prometheus_metrics_method_instrumentation).enabled?
+          @call_measurement_enabled_cache_expires_at = Time.now + 5.minutes
+          @call_measurement_enabled
         end
       end
 
