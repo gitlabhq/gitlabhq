@@ -14,19 +14,20 @@ module Ci
     def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, mirror_update: false, &block)
       @pipeline = Ci::Pipeline.new
 
-      command = OpenStruct.new(source: source,
-                               origin_ref: params[:ref],
-                               checkout_sha: params[:checkout_sha],
-                               after_sha: params[:after],
-                               before_sha: params[:before],
-                               trigger_request: trigger_request,
-                               schedule: schedule,
-                               ignore_skip_ci: ignore_skip_ci,
-                               save_incompleted: save_on_errors,
-                               allow_mirror_update: mirror_update,
-                               seeds_block: block,
-                               project: project,
-                               current_user: current_user)
+      command = Gitlab::Ci::Pipeline::Chain::Command.new(
+        source: source,
+        origin_ref: params[:ref],
+        checkout_sha: params[:checkout_sha],
+        after_sha: params[:after],
+        before_sha: params[:before],
+        trigger_request: trigger_request,
+        schedule: schedule,
+        ignore_skip_ci: ignore_skip_ci,
+        save_incompleted: save_on_errors,
+        allow_mirror_update: mirror_update,
+        seeds_block: block,
+        project: project,
+        current_user: current_user)
 
       sequence = Gitlab::Ci::Pipeline::Chain::Sequence
         .new(pipeline, command, SEQUENCE)

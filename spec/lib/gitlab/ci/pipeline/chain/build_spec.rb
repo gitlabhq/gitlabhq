@@ -6,15 +6,16 @@ describe Gitlab::Ci::Pipeline::Chain::Build do
   let(:pipeline) { Ci::Pipeline.new }
 
   let(:command) do
-    double('command', source: :push,
-                      origin_ref: 'master',
-                      checkout_sha: project.commit.id,
-                      after_sha: nil,
-                      before_sha: nil,
-                      trigger_request: nil,
-                      schedule: nil,
-                      project: project,
-                      current_user: user)
+    Gitlab::Ci::Pipeline::Chain::Command.new(
+      source: :push,
+      origin_ref: 'master',
+      checkout_sha: project.commit.id,
+      after_sha: nil,
+      before_sha: nil,
+      trigger_request: nil,
+      schedule: nil,
+      project: project,
+      current_user: user)
   end
 
   let(:step) { described_class.new(pipeline, command) }
@@ -60,19 +61,20 @@ describe Gitlab::Ci::Pipeline::Chain::Build do
 
   context 'when pipeline is running for a tag' do
     let(:command) do
-      double('command', source: :push,
-                        origin_ref: 'mytag',
-                        checkout_sha: project.commit.id,
-                        after_sha: nil,
-                        before_sha: nil,
-                        trigger_request: nil,
-                        schedule: nil,
-                        project: project,
-                        current_user: user)
+      Gitlab::Ci::Pipeline::Chain::Command.new(
+        source: :push,
+        origin_ref: 'mytag',
+        checkout_sha: project.commit.id,
+        after_sha: nil,
+        before_sha: nil,
+        trigger_request: nil,
+        schedule: nil,
+        project: project,
+        current_user: user)
     end
 
     before do
-      allow(step).to receive(:tag_exists?).and_return(true)
+      allow_any_instance_of(Repository).to receive(:tag_exists?).with('mytag').and_return(true)
 
       step.perform!
     end
