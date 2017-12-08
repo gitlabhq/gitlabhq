@@ -1010,7 +1010,7 @@ describe 'Git LFS API and storage' do
 
             context 'with object storage enabled' do
               before do
-                stub_lfs_object_storage
+                stub_lfs_object_storage(background_upload: true)
               end
 
               it 'schedules migration of file to object storage' do

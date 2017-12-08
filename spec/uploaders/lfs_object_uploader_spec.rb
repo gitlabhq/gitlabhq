@@ -49,7 +49,7 @@ describe LfsObjectUploader do
 
     context 'with object storage enabled' do
       before do
-        stub_lfs_object_storage
+        stub_lfs_object_storage(background_upload: true)
       end
 
       it 'is scheduled to run after creation' do

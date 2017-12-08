@@ -679,6 +679,7 @@ test:
     object_store:
       enabled: false
       remote_directory: artifacts # The bucket name
+      background_upload: false
       connection:
         provider: AWS # Only AWS supported at the moment
         aws_access_key_id: AWS_ACCESS_KEY_ID

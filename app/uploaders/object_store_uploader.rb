@@ -116,10 +116,13 @@ class ObjectStoreUploader < GitlabUploader
     end
   end
 
-  def schedule_migration_to_object_storage(new_file)
-    if self.class.object_store_enabled? && licensed? && file_storage?
-      ObjectStorageUploadWorker.perform_async(self.class.name, model.class.name, mounted_as, model.id)
-    end
+  def schedule_migration_to_object_storage(*args)
+    return unless self.class.object_store_enabled?
+    return unless self.class.background_upload_enabled?
+    return unless self.licensed?
+    return unless self.file_storage?
+
+    ObjectStorageUploadWorker.perform_async(self.class.name, model.class.name, mounted_as, model.id)
   end
 
   def fog_directory
