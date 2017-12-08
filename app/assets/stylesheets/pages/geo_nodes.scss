@@ -127,6 +127,10 @@
   }
 }
 
+.geo-node-version-mismatch {
+  color: $gl-danger;
+}
+
 .node-badge {
   color: $white-light;
   display: inline-block;

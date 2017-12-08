@@ -39,9 +39,22 @@ class GeoNodeStatusEntity < Grape::Entity
 
   expose :last_successful_status_check_timestamp
 
+  expose :version
+  expose :revision
+
   expose :namespaces, using: NamespaceEntity
+
+  private
 
   def namespaces
     object.geo_node.namespaces
+  end
+
+  def version
+    Gitlab::VERSION
+  end
+
+  def revision
+    Gitlab::REVISION
   end
 end

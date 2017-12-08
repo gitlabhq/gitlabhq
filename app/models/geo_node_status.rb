@@ -2,8 +2,7 @@ class GeoNodeStatus < ActiveRecord::Base
   belongs_to :geo_node
 
   # Whether we were successful in reaching this node
-  attr_accessor :success
-  attr_accessor :health_status
+  attr_accessor :success, :health_status, :version, :revision
 
   # Be sure to keep this consistent with Prometheus naming conventions
   PROMETHEUS_METRICS = {
@@ -48,7 +47,7 @@ class GeoNodeStatus < ActiveRecord::Base
 
   def self.allowed_params
     excluded_params = %w(id created_at updated_at).freeze
-    extra_params = %w(success health health_status last_event_timestamp cursor_last_event_timestamp).freeze
+    extra_params = %w(success health health_status last_event_timestamp cursor_last_event_timestamp version revision).freeze
     self.column_names - excluded_params + extra_params
   end
 

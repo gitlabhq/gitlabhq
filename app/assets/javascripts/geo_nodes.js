@@ -13,6 +13,8 @@ const healthyIcon = 'fa-check';
 const unhealthyIcon = 'fa-times';
 const unknownIcon = 'fa-times';
 const notAvailable = 'Not Available';
+const versionMismatch = 'Does not match the primary node version';
+const versionMismatchClass = 'geo-node-version-mismatch';
 
 class GeoNodeStatus {
   constructor(el) {
@@ -29,9 +31,13 @@ class GeoNodeStatus {
     this.$lastEventSeen = $('.js-last-event-seen', this.$status);
     this.$lastCursorEvent = $('.js-last-cursor-event', this.$status);
     this.$health = $('.js-health-message', this.$status.parent());
+    this.$version = $('.js-gitlab-version', this.$status);
+    this.$secondaryVersion = $('.js-secondary-version', this.$status);
     this.endpoint = this.$el.data('status-url');
     this.$advancedStatus = $('.js-advanced-geo-node-status-toggler', this.$status.parent());
     this.$advancedStatus.on('click', GeoNodeStatus.toggleShowAdvancedStatus.bind(this));
+    this.primaryVersion = $('.js-primary-version').text();
+    this.primaryRevision = $('.js-primary-revision').text().replace(/\W/g, '');
 
     this.statusInterval = new SmartInterval({
       callback: this.getStatus.bind(this),
@@ -182,6 +188,7 @@ class GeoNodeStatus {
       healthStatus: status.health_status,
       healthMessage: status.health,
     });
+    this.$version.text(status.version);
 
       // Replication lag can be nil if the secondary isn't actually streaming
     if (status.db_replication_lag_seconds !== null && status.db_replication_lag_seconds >= 0) {
@@ -192,6 +199,15 @@ class GeoNodeStatus {
       this.$dbReplicationLag.text(stringifyTime(parsedTime));
     } else {
       this.$dbReplicationLag.text('UNKNOWN');
+    }
+
+    if (!this.primaryVersion || (this.primaryVersion === status.version
+      && this.primaryRevision === status.revision)) {
+      this.$secondaryVersion.removeClass(`${versionMismatchClass}`);
+      this.$secondaryVersion.text(`${status.version} (${status.revision})`);
+    } else {
+      this.$secondaryVersion.addClass(`${versionMismatchClass}`);
+      this.$secondaryVersion.text(`${status.version} (${status.revision}) - ${versionMismatch}`);
     }
 
     if (status.repositories_count > 0) {
