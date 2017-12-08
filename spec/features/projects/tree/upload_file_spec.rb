@@ -15,6 +15,14 @@ feature 'Multi-file editor upload file', :js do
     visit project_tree_path(project, :master)
 
     wait_for_requests
+
+    click_button('Multi Edit')
+    
+    wait_for_requests
+  end
+
+  after do
+    set_cookie('new_repo', 'false')
   end
 
   it 'uploads text file' do

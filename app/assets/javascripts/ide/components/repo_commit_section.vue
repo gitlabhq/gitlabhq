@@ -70,6 +70,7 @@ export default {
             projectId: this.currentProjectId,
             branch: this.currentBranchId,
             endpoint: `/tree/${this.currentBranchId}`,
+            force: true,
           });
         })
         .catch(() => {
