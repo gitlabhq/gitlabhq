@@ -94,19 +94,19 @@ module CommitsHelper
 
     if @path.blank?
       return link_to(
-        _("Browse Files"),
+        _("Browse files"),
         project_tree_path(project, commit),
         class: "btn btn-default"
       )
     elsif @repo.blob_at(commit.id, @path)
       return link_to(
-        _("Browse File"),
+        _("Browse file"),
         project_blob_path(project, tree_join(commit.id, @path)),
         class: "btn btn-default"
       )
     elsif @path.present?
       return link_to(
-        _("Browse Directory"),
+        _("Browse directory"),
         project_tree_path(project, tree_join(commit.id, @path)),
         class: "btn btn-default"
       )
@@ -115,7 +115,7 @@ module CommitsHelper
 
   def link_to_show_diff(commit)
     link_to(
-      _('Show diff'),
+      _('Toggle diff'),
       'javascript:void(0)',
       class: 'btn btn-default js-show-diff-button', data: { diff_commit_id: commit.id }
     )

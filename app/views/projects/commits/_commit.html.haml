@@ -42,8 +42,10 @@
 
         = link_to commit.short_id, project_commit_path(project, commit), class: "commit-sha btn btn-transparent"
         = clipboard_button(text: commit.id, title: _("Copy commit SHA to clipboard"))
-        = link_to_browse_code(project, commit)
-        = link_to_show_diff(commit) if render_diffs_link
+
+        .btn-group{ role: 'group' }
+          = link_to_browse_code(project, commit)
+          = link_to_show_diff(commit) if render_diffs_link
 
   -# Render the `Click to expand it` link for diffs.
   - if render_diffs_link

@@ -196,6 +196,9 @@
     font-size: 0;
   }
 
+  display: flex;
+  justify-content: center;
+
   .ci-status-link {
     display: inline-block;
     position: relative;
@@ -204,19 +207,15 @@
 
   .btn-clipboard,
   .btn-transparent {
+    margin-right: $gl-padding;
     padding-left: 0;
     padding-right: 0;
-  }
-
-  .btn {
-    &:not(:first-child) {
-      margin-left: $gl-padding;
-    }
   }
 
   .commit-sha {
     font-size: 14px;
     font-weight: $gl-font-weight-bold;
+    margin-right: $gl-padding;
   }
 }
 
