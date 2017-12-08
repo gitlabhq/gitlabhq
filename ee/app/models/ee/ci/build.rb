@@ -7,6 +7,10 @@ module EE
     module Build
       extend ActiveSupport::Concern
 
+      CODEQUALITY_FILE = 'codeclimate.json'.freeze
+      SAST_FILE = 'gl-sast-report.json'.freeze
+      PERFORMANCE_FILE = 'performance.json'.freeze
+
       included do
         scope :codequality, ->() { where(name: %w[codequality codeclimate]) }
         scope :performance, ->() { where(name: %w[performance deploy]) }
@@ -27,17 +31,21 @@ module EE
       end
 
       def has_codeclimate_json?
-        options.dig(:artifacts, :paths) == ['codeclimate.json'] &&
-          artifacts_metadata?
+        has_artifact?(CODEQUALITY_FILE)
       end
 
       def has_performance_json?
-        options.dig(:artifacts, :paths) == ['performance.json'] &&
-          artifacts_metadata?
+        has_artifact?(PERFORMANCE_FILE)
       end
 
       def has_sast_json?
-        options.dig(:artifacts, :paths) == ['gl-sast-report.json'] &&
+        has_artifact?(SAST_FILE)
+      end
+
+      private
+
+      def has_artifact?(name)
+        options.dig(:artifacts, :paths) == [name] &&
           artifacts_metadata?
       end
     end
