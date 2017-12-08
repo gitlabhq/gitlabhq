@@ -29,7 +29,9 @@ describe Repository do
   def expect_to_raise_storage_error
     expect { yield }.to raise_error do |exception|
       storage_exceptions = [Gitlab::Git::Storage::Inaccessible, Gitlab::Git::CommandError, GRPC::Unavailable]
-      expect(exception.class).to be_in(storage_exceptions)
+      known_exception = storage_exceptions.select { |e| exception.is_a?(e) }
+
+      expect(known_exception).not_to be_nil
     end
   end
 
@@ -634,9 +636,7 @@ describe Repository do
   end
 
   describe '#fetch_ref' do
-    # Setting the var here, sidesteps the stub that makes gitaly raise an error
-    # before the actual test call
-    set(:broken_repository) { create(:project, :broken_storage).repository }
+    let(:broken_repository) { create(:project, :broken_storage).repository }
 
     describe 'when storage is broken', :broken_storage  do
       it 'should raise a storage error' do
