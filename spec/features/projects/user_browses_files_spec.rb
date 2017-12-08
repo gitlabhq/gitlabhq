@@ -123,6 +123,39 @@ describe 'User browses files' do
     end
   end
 
+  context 'when browsing a file history' do
+    before do
+      visit(project_commits_path(project, 'master/CHANGELOG'))
+    end
+
+    it 'toggles diffs', :js do
+      expect(page).to have_link('Toggle diff')
+
+      buttons = all('.js-show-diff-button')
+
+      buttons.first.click # show diff.
+
+      wait_for_requests
+
+      expect(page).to have_content('v6.7.0')
+
+      buttons.first.click # hide diff.
+
+      buttons.last.click # show diff.
+
+      expect(page).not_to have_content('v6.7.0')
+
+      wait_for_requests
+
+      expect(page).to have_content('v 5.0.0')
+
+      buttons.last.click # hide diff.
+
+      expect(page).not_to have_content('v 5.0.0')
+    end
+  end
+
+
   context 'when browsing a raw file' do
     before do
       visit(project_blob_path(project, File.join(RepoHelpers.sample_commit.id, RepoHelpers.sample_blob.path)))
