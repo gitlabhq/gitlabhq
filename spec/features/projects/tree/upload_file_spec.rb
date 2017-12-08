@@ -17,7 +17,7 @@ feature 'Multi-file editor upload file', :js do
     wait_for_requests
 
     click_link('Multi Edit')
-    
+
     wait_for_requests
   end
 

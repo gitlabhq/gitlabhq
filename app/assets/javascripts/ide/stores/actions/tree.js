@@ -122,15 +122,6 @@ export const createTempTree = (
       selectedTree = foundEntry;
     }
   });
-
-  if (selectedTree.tempFile) {
-    /* dispatch('createTempFile', {
-      projectId,
-      branchId,
-      tree: selectedTree,
-      name: '.gitkeep',
-    }); */
-  }
 };
 
 export const getLastCommitData = ({ state, commit, dispatch, getters }, tree = state) => {
