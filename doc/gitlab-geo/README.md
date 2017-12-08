@@ -212,6 +212,10 @@ example:
 
 This message shows that Geo detected that a repository update was needed for project 1.
 
+## Tuning Geo
+
+Read the [GitLab Geo tuning](tuning.md) documentation.
+
 ## Troubleshooting
 
 Read the [troubleshooting document](troubleshooting.md).
