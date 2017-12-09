@@ -7,6 +7,8 @@ describe Projects::PipelineSchedulesController do
   set(:pipeline_schedule) { create(:ci_pipeline_schedule, project: project) }
 
   describe 'GET #index' do
+    render_views
+
     let(:scope) { nil }
     let!(:inactive_pipeline_schedule) do
       create(:ci_pipeline_schedule, :inactive, project: project)
