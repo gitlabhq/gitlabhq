@@ -324,9 +324,9 @@ describe 'Git HTTP requests' do
             <<-MSG.strip_heredoc
               Project '#{redirect.path}' was moved to '#{project.full_path}'.
 
-              Please update your Git remote and try again:
+              Please update your Git remote:
 
-                git remote set-url origin #{project.http_url_to_repo}
+                git remote set-url origin #{project.http_url_to_repo} and try again.
             MSG
           end
 
@@ -533,9 +533,9 @@ describe 'Git HTTP requests' do
                   <<-MSG.strip_heredoc
                     Project '#{redirect.path}' was moved to '#{project.full_path}'.
 
-                    Please update your Git remote and try again:
+                    Please update your Git remote:
 
-                      git remote set-url origin #{project.http_url_to_repo}
+                      git remote set-url origin #{project.http_url_to_repo} and try again.
                   MSG
                 end
 
