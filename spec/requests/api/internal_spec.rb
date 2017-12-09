@@ -585,16 +585,7 @@ describe API::Internal do
 
     context 'the project path was changed' do
       let!(:old_path_to_repo) { project.repository.path_to_repo }
-      let!(:old_full_path) { project.full_path }
-      let(:project_moved_message) do
-        <<-MSG.strip_heredoc
-          Project '#{old_full_path}' was moved to '#{project.full_path}'.
-
-          Please update your Git remote and try again:
-
-            git remote set-url origin #{project.ssh_url_to_repo}
-        MSG
-      end
+      let!(:repository) { project.repository }
 
       before do
         project.team << [user, :developer]
@@ -603,19 +594,17 @@ describe API::Internal do
       end
 
       it 'rejects the push' do
-        push_with_path(key, old_path_to_repo)
+        push(key, project)
 
         expect(response).to have_gitlab_http_status(200)
-        expect(json_response['status']).to be_falsey
-        expect(json_response['message']).to eq(project_moved_message)
+        expect(json_response['status']).to be_falsy
       end
 
       it 'rejects the SSH pull' do
-        pull_with_path(key, old_path_to_repo)
+        pull(key, project)
 
         expect(response).to have_gitlab_http_status(200)
-        expect(json_response['status']).to be_falsey
-        expect(json_response['message']).to eq(project_moved_message)
+        expect(json_response['status']).to be_falsy
       end
     end
   end
@@ -743,7 +732,7 @@ describe API::Internal do
   #   end
   # end
 
-  describe 'POST /internal/post_receive' do
+  describe 'POST /internal/post_receive', :clean_gitlab_redis_shared_state do
     let(:identifier) { 'key-123' }
 
     let(:valid_params) do
@@ -761,6 +750,8 @@ describe API::Internal do
 
     before do
       project.team << [user, :developer]
+      allow(described_class).to receive(:identify).and_return(user)
+      allow_any_instance_of(Gitlab::Identifier).to receive(:identify).and_return(user)
     end
 
     it 'enqueues a PostReceive worker job' do
@@ -826,6 +817,19 @@ describe API::Internal do
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['broadcast_message']).to eq(nil)
+      end
+    end
+
+    context 'with a redirected data' do
+      it 'returns redirected message on the response' do
+        project_moved = Gitlab::Checks::ProjectMoved.new(project, user, 'foo/baz', 'http')
+        project_moved.add_redirect_message
+
+        post api("/internal/post_receive"), valid_params
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response["redirected_message"]).to be_present
+        expect(json_response["redirected_message"]).to eq(project_moved.redirect_message)
       end
     end
   end

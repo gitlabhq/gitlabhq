@@ -2715,4 +2715,28 @@ describe User do
       include_examples 'max member access for groups'
     end
   end
+
+  describe "#username_previously_taken?" do
+    let(:user1) { create(:user, username: 'foo') }
+
+    context 'when the username has been taken before' do
+      before do
+        user1.username = 'bar'
+        user1.save!
+      end
+
+      it 'should raise an ActiveRecord::RecordInvalid exception' do
+        user2 = build(:user, username: 'foo')
+        expect { user2.save! }.to raise_error(ActiveRecord::RecordInvalid, /Path foo has been taken before/)
+      end
+    end
+
+    context 'when the username has not been taken before' do
+      it 'should be valid' do
+        expect(RedirectRoute.count).to eq(0)
+        user2 = build(:user, username: 'baz')
+        expect(user2).to be_valid
+      end
+    end
+  end
 end
