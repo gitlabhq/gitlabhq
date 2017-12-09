@@ -45,7 +45,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
     limiter = ::Gitlab::ActionRateLimiter.new(action: 'play_pipeline_schedule')
 
     if limiter.throttled?(throttle_key, 1)
-      flash[:notice] = 'You cannot play this scheduled pipeline at the moment. Please wait a minute.'
+      flash[:alert] = 'You cannot play this scheduled pipeline at the moment. Please wait a minute.'
       return redirect_to pipeline_schedules_path(@project)
     end
 
@@ -53,7 +53,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
 
     flash[:notice] =
       if job_id
-        "Successfully scheduled a pipeline to run. Go to the <a href=\"#{project_pipelines_path(@project)}\">Pipelines page</a> for details".html_safe
+        "Successfully scheduled a pipeline to run. Go to the <a href=\"#{project_pipelines_path(@project)}\">Pipelines page</a> for details.".html_safe
       else
         'Unable to schedule a pipeline to run immediately'
       end

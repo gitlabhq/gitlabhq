@@ -385,6 +385,16 @@ describe Projects::PipelineSchedulesController do
         expect(flash[:notice]).to start_with 'Successfully scheduled a pipeline to run'
         expect(response).to have_gitlab_http_status(302)
       end
+
+      it 'prevents users from scheduling the same pipeline repeatedly' do
+        2.times do
+          post :play, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+        end
+
+        expect(flash.to_a.size).to eq(2)
+        expect(flash[:alert]).to eq 'You cannot play this scheduled pipeline at the moment. Please wait a minute.'
+        expect(response).to have_gitlab_http_status(302)
+      end
     end
 
     context 'when a developer attempts to schedule a protected ref' do
