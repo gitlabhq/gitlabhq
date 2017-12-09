@@ -12,11 +12,9 @@ This is the final step in setting up a secondary Geo node. Stages of the
 setup process must be completed in the documented order.
 Before attempting the steps in this stage, [complete all prior stages](README.md#using-omnibus-gitlab).
 
-The basic steps of configuring a secondary node are:
-
-1. replicate required configurations between the primary and the secondaries;
-1. configure a second, tracking database on each secondary;
-1. start GitLab on the secondary node's machine.
+The basic steps of configuring a secondary node are to replicate required
+configurations between the primary and the secondaries; to configure a tracking
+database on each secondary; and to start GitLab on the secondary node.
 
 You are encouraged to first read through all the steps before executing them
 in your testing/production environment.
@@ -99,35 +97,30 @@ on the secondary.
 
 ### Step 4. Enable Git access over HTTP/HTTPS
 
-GitLab Geo synchronizes repositories over HTTP/HTTPS, and so requires this clone
+GitLab Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
 method to be enabled. Navigate to **Admin Area ➔ Settings**
 (`/admin/application_settings`) on the primary node, and set
 `Enabled Git access protocols` to `Both SSH and HTTP(S)` or `Only HTTP(S)`.
 
-### Verify proper functioning of the secondary node
+### Step 5. Verify proper functioning of the secondary node
 
-Your nodes should now be ready to use. You can login to the secondary node
-with the same credentials as used in the primary. Visit the secondary node's
-**Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`) in your browser to check if it's
-correctly identified as a secondary Geo node and if Geo is enabled.
+Congratulations! Your secondary geo node is now configured!
+
+You can login to the secondary node with the same credentials you used on the
+primary. Visit the secondary node's **Admin Area ➔ Geo Nodes**
+(`/admin/geo_nodes`) in your browser to check if it's correctly identified as a
+secondary Geo node and if Geo is enabled.
+
+The initial replication, or 'backfill', will probably still be in progress. You
+can monitor the synchronization process on each geo node from the primary
+node's Geo Nodes dashboard in your browser.
+
+![GitLab Geo dashboard](img/geo-node-dashboard.png)
 
 If your installation isn't working properly, check the
 [troubleshooting document](troubleshooting.md).
 
-Point your users to the ["Using a Geo Server" guide](using_a_geo_server.md).
-
-You can monitor the status of the syncing process on a secondary node
-by visiting the primary node's **Admin Area ➔ Geo Nodes** (`/admin/geo_nodes`)
-in your browser.
-
-Please note that if `git_data_dirs` is customized on the primary for multiple
-repository shards you must duplicate the same configuration on the secondary.
-
-![GitLab Geo dashboard](img/geo-node-dashboard.png)
-
-Disabling a secondary node stops the syncing process.
-
-The two most obvious issues that replication can have here are:
+The two most obvious issues that can become apparent in the dashboard are:
 
 1. Database replication not working well
 1. Instance to instance notification not working. In that case, it can be
@@ -135,6 +128,13 @@ The two most obvious issues that replication can have here are:
      - You are using a custom certificate or custom CA (see the
        [troubleshooting document](troubleshooting.md))
      - The instance is firewalled (check your firewall rules)
+
+Please note that disabling a secondary node will stop the sync process.
+
+Please note that if `git_data_dirs` is customized on the primary for multiple
+repository shards you must duplicate the same configuration on the secondary.
+
+Point your users to the ["Using a Geo Server" guide](using_a_geo_server.md).
 
 Currently, this is what is synced:
 
