@@ -42,6 +42,13 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   end
 
   def play
+    limiter = ::Gitlab::ActionRateLimiter.new(action: 'play_pipeline_schedule')
+
+    if limiter.throttled?(throttle_key, 1)
+      flash[:notice] = 'You cannot play this scheduled pipeline at the moment. Please wait a minute.'
+      return redirect_to pipeline_schedules_path(@project)
+    end
+
     job_id = RunPipelineScheduleWorker.perform_async(schedule.id, current_user.id)
 
     flash[:notice] =
@@ -73,6 +80,10 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   end
 
   private
+
+  def throttle_key
+    "user:#{current_user.id}:schedule:#{schedule.id}"
+  end
 
   def schedule
     @schedule ||= project.pipeline_schedules.find(params[:id])

@@ -366,7 +366,7 @@ describe Projects::PipelineSchedulesController do
     end
   end
 
-  describe 'POST #play' do
+  describe 'POST #play', :clean_gitlab_redis_cache do
     set(:user) { create(:user) }
     let(:ref) { 'master' }
 
