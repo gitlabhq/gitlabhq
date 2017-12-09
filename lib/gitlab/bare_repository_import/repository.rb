@@ -34,8 +34,11 @@ module Gitlab
       private
 
       def repo_relative_path
+        absolute_path = Pathname.new(repo_path)
+        project_root = Pathname.new(@root_path)
+
         # Remove root path and `.git` at the end
-        repo_path[@root_path.size...-4]
+        absolute_path.relative_path_from(project_root).to_s.gsub(/\.git$/, '')
       end
     end
   end
