@@ -16,7 +16,7 @@ module Gitlab
       value = 0
 
       Gitlab::Redis::Cache.with do |redis|
-        cache_key = "action_rate_limiter:#{action.to_s}:#{key}"
+        cache_key = "action_rate_limiter:#{action}:#{key}"
         value = redis.incr(cache_key)
         redis.expire(cache_key, expiry_time) if value == 1
       end

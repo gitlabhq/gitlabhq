@@ -42,7 +42,7 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   end
 
   def play
-    limiter = ::Gitlab::ActionRateLimiter.new(action: 'play_pipeline_schedule')
+    limiter = ::Gitlab::ActionRateLimiter.new(action: :play_pipeline_schedule)
 
     if limiter.throttled?(throttle_key, 1)
       flash[:alert] = 'You cannot play this scheduled pipeline at the moment. Please wait a minute.'
