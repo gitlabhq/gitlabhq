@@ -2,6 +2,7 @@ import Vue from 'vue';
 import issueNotesApp from '~/notes/components/issue_notes_app.vue';
 import service from '~/notes/services/notes_service';
 import * as mockData from '../mock_data';
+import getSetTimeoutPromise from '../../helpers/set_timeout_promise_helper';
 
 describe('issue_note_app', () => {
   let mountComponent;
@@ -13,10 +14,20 @@ describe('issue_note_app', () => {
     }));
   };
 
-  const discussionNoteInterceptor = (request, next) => {
-    next(request.respondWith(JSON.stringify(mockData.discussionNoteServerResponse), {
-      status: 200,
-    }));
+  const noteInterceptor = (request, next) => {
+    if (request.url === '/gitlab-org/gitlab-ce/issues/26/discussions.json') {
+      next(request.respondWith(JSON.stringify(mockData.discussionNoteServerResponse), {
+        status: 200,
+      }));
+    } else if (request.url === '/gitlab-org/gitlab-ce/noteable/issue/98/notes') {
+      next(request.respondWith(JSON.stringify(mockData.notesPollingResponse), {
+        status: 200,
+      }));
+    } else if (request.method === 'PUT' && request.url === '/gitlab-org/gitlab-ce/notes/1471') {
+      next(request.respondWith(JSON.stringify(mockData.updatedNoteResponse), {
+        status: 200,
+      }));
+    }
   };
 
   beforeEach(() => {
@@ -129,13 +140,13 @@ describe('issue_note_app', () => {
   describe('update note', () => {
     describe('individual note', () => {
       beforeEach(() => {
-        Vue.http.interceptors.push(individualNoteInterceptor);
-        spyOn(service, 'updateNote').and.callFake(() => Promise.resolve());
+        Vue.http.interceptors.push(noteInterceptor);
+        spyOn(service, 'updateNote').and.callThrough();
         vm = mountComponent();
       });
 
       afterEach(() => {
-        Vue.http.interceptors = _.without(Vue.http.interceptors, individualNoteInterceptor);
+        Vue.http.interceptors = _.without(Vue.http.interceptors, noteInterceptor);
       });
 
       it('renders edit form', (done) => {
@@ -149,28 +160,33 @@ describe('issue_note_app', () => {
       });
 
       it('calls the service to update the note', (done) => {
-        setTimeout(() => {
-          vm.$el.querySelector('.js-note-edit').click();
-          Vue.nextTick(() => {
+        getSetTimeoutPromise()
+          .then(() => {
+            vm.$el.querySelector('.js-note-edit').click();
+          })
+          .then(Vue.nextTick)
+          .then(() => {
             vm.$el.querySelector('.js-vue-issue-note-form').value = 'this is a note';
             vm.$el.querySelector('.js-vue-issue-save').click();
 
             expect(service.updateNote).toHaveBeenCalled();
-            done();
-          });
-        }, 0);
+          })
+          // Wait for the requests to finish before destroying
+          .then(Vue.nextTick)
+          .then(done)
+          .catch(done.fail);
       });
     });
 
     describe('dicussion note', () => {
       beforeEach(() => {
-        Vue.http.interceptors.push(discussionNoteInterceptor);
-        spyOn(service, 'updateNote').and.callFake(() => Promise.resolve());
+        Vue.http.interceptors.push(noteInterceptor);
+        spyOn(service, 'updateNote').and.callThrough();
         vm = mountComponent();
       });
 
       afterEach(() => {
-        Vue.http.interceptors = _.without(Vue.http.interceptors, discussionNoteInterceptor);
+        Vue.http.interceptors = _.without(Vue.http.interceptors, noteInterceptor);
       });
 
       it('renders edit form', (done) => {
@@ -184,16 +200,21 @@ describe('issue_note_app', () => {
       });
 
       it('updates the note and resets the edit form', (done) => {
-        setTimeout(() => {
-          vm.$el.querySelector('.js-note-edit').click();
-          Vue.nextTick(() => {
+        getSetTimeoutPromise()
+          .then(() => {
+            vm.$el.querySelector('.js-note-edit').click();
+          })
+          .then(Vue.nextTick)
+          .then(() => {
             vm.$el.querySelector('.js-vue-issue-note-form').value = 'this is a note';
             vm.$el.querySelector('.js-vue-issue-save').click();
 
             expect(service.updateNote).toHaveBeenCalled();
-            done();
-          });
-        }, 0);
+          })
+          // Wait for the requests to finish before destroying
+          .then(Vue.nextTick)
+          .then(done)
+          .catch(done.fail);
       });
     });
   });

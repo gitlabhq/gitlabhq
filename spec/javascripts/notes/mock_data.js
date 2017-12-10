@@ -447,3 +447,51 @@ export const discussionNoteServerResponse = [{
   }],
   "individual_note": false
 }];
+
+export const notesPollingResponse = {
+  last_fetched_at: 1512900838,
+  notes: [],
+};
+
+export const updatedNoteResponse = {
+  "commands_changes": null,
+  "valid": true,
+  "id": 1471,
+  "attachment": null,
+  "author": {
+    "id": 1,
+    "name": "Root",
+    "username": "root",
+    "state": "active",
+    "avatar_url": null,
+    "path": "/root"
+  },
+  "created_at": "2017-08-08T16:53:00.666Z",
+  "updated_at": "2017-12-10T11:03:21.876Z",
+  "system": false,
+  "noteable_id": 124,
+  "noteable_type": "Issue",
+  "noteable_iid": 29,
+  "type": "DiscussionNote",
+  "human_access": "Owner",
+  "note": "Adding a comment",
+  "note_html": "\u003cp dir=\"auto\"\u003eAdding a comment\u003c/p\u003e",
+  "last_edited_at": "2017-12-10T11:03:21.876Z",
+  "last_edited_by": {
+    "id": 1,
+    "name": 'Root',
+    "username": 'root',
+    "state": 'active',
+    "avatar_url": null,
+    "path": '/root',
+  },
+  "current_user": {
+    "can_edit": true
+  },
+  "discussion_id": "a3ed36e29b1957efb3b68c53e2d7a2b24b1df052",
+  "emoji_awardable": true,
+  "award_emoji": [],
+  "toggle_award_path": "/gitlab-org/gitlab-ce/notes/1471/toggle_award_emoji",
+  "report_abuse_path": "/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F29%23note_1471\u0026user_id=1",
+  "path": "/gitlab-org/gitlab-ce/notes/1471"
+};
