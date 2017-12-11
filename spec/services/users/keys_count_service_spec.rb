@@ -15,14 +15,12 @@ describe Users::KeysCountService, :use_clean_rails_memory_store_caching do
       expect(service.count).to eq(1)
     end
 
-    it 'caches the number of keys in Redis' do
+    it 'caches the number of keys in Redis', :request_store do
+      service.delete_cache
+      control_count = ActiveRecord::QueryRecorder.new { service.count }.count
       service.delete_cache
 
-      recorder = ActiveRecord::QueryRecorder.new do
-        2.times { service.count }
-      end
-
-      expect(recorder.count).to eq(1)
+      expect { 2.times { service.count } }.not_to exceed_query_limit(control_count)
     end
   end
 
