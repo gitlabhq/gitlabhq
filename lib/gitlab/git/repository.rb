@@ -21,6 +21,7 @@ module Gitlab
       GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'.freeze
       REBASE_WORKTREE_PREFIX = 'rebase'.freeze
       SQUASH_WORKTREE_PREFIX = 'squash'.freeze
+      GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'.freeze
 
       NoRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
@@ -888,8 +889,11 @@ module Gitlab
         end
       end
 
-      def add_remote(remote_name, url)
+      # If `mirror_refmap` is present the remote is set as mirror with that mapping
+      def add_remote(remote_name, url, mirror_refmap: nil)
         rugged.remotes.create(remote_name, url)
+
+        set_remote_as_mirror(remote_name, refmap: mirror_refmap) if mirror_refmap
       rescue Rugged::ConfigError
         remote_update(remote_name, url: url)
       end
@@ -1143,8 +1147,7 @@ module Gitlab
           end
         end
 
-        add_remote(remote_name, url)
-        set_remote_as_mirror(remote_name)
+        add_remote(remote_name, url, mirror_refmap: :all_refs)
         fetch_remote(remote_name, env: env)
       ensure
         remove_remote(remote_name)
