@@ -20,17 +20,6 @@ module Gitlab
         end
       end
 
-      def call_measurement_enabled?
-        expires_at = MEASUREMENT_ENABLED_CACHE_EXPIRES_AT.value
-        if expires_at < Time.now.to_i
-          if MEASUREMENT_ENABLED_CACHE_EXPIRES_AT.compare_and_set(expires_at, (Time.now + 30.seconds).to_i)
-            MEASUREMENT_ENABLED_CACHE.value = Feature.get(:prometheus_metrics_method_instrumentation).enabled?
-          end
-        end
-
-        MEASUREMENT_ENABLED_CACHE.value
-      end
-
       # name - The full name of the method (including namespace) such as
       #        `User#sign_in`.
       #
@@ -82,6 +71,17 @@ module Gitlab
       # threshold.
       def above_threshold?
         real_time >= Metrics.method_call_threshold
+      end
+
+      def call_measurement_enabled?
+        expires_at = MEASUREMENT_ENABLED_CACHE_EXPIRES_AT.value
+        if expires_at < Time.now.to_i
+          if MEASUREMENT_ENABLED_CACHE_EXPIRES_AT.compare_and_set(expires_at, (Time.now + 30.seconds).to_i)
+            MEASUREMENT_ENABLED_CACHE.value = Feature.get(:prometheus_metrics_method_instrumentation).enabled?
+          end
+        end
+
+        MEASUREMENT_ENABLED_CACHE.value
       end
     end
   end
