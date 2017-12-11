@@ -369,15 +369,12 @@ msgid "Chat"
 msgstr ""
 
 msgid "Checking %{text} availability…"
-<<<<<<< HEAD
 msgstr ""
 
 msgid "Checking branch availability..."
 msgstr ""
 
 msgid "Cherry-pick this commit"
-=======
->>>>>>> origin/master
 msgstr ""
 
 msgid "Checking branch availability..."
@@ -455,12 +452,9 @@ msgstr ""
 msgid "ClusterIntegration|%{appList} was successfully installed on your cluster"
 msgstr ""
 
-<<<<<<< HEAD
 msgid "ClusterIntegration|%{appList} was successfully installed on your cluster"
 msgstr ""
 
-=======
->>>>>>> origin/master
 msgid "ClusterIntegration|%{boldNotice} This will add some extra resources like a load balancer, which incur additional costs. See %{pricingLink}"
 msgstr ""
 
@@ -1845,7 +1839,6 @@ msgid "ProjectsDropdown|This feature requires browser localStorage support"
 msgstr ""
 
 msgid "PrometheusService|By default, Prometheus listens on ‘http://localhost:9090’. It’s not recommended to change the default address and port as this might affect or conflict with other services running on the GitLab server."
-<<<<<<< HEAD
 msgstr ""
 
 msgid "PrometheusService|Finding and configuring metrics..."
@@ -1879,8 +1872,6 @@ msgid "PrometheusService|View environments"
 msgstr ""
 
 msgid "Public - The group and any public projects can be viewed without any authentication."
-=======
->>>>>>> origin/master
 msgstr ""
 
 msgid "PrometheusService|Finding and configuring metrics..."
@@ -2215,7 +2206,6 @@ msgid "Tags"
 msgstr ""
 
 msgid "TagsPage|Browse commits"
-<<<<<<< HEAD
 msgstr ""
 
 msgid "TagsPage|Browse files"
@@ -2285,8 +2275,6 @@ msgid "TagsPage|protected"
 msgstr ""
 
 msgid "Target Branch"
-=======
->>>>>>> origin/master
 msgstr ""
 
 msgid "TagsPage|Browse files"
@@ -2603,12 +2591,9 @@ msgid "Total Time"
 msgstr ""
 
 msgid "Total issue time spent"
-<<<<<<< HEAD
 msgstr ""
 
 msgid "Total test time for all commits/merges"
-=======
->>>>>>> origin/master
 msgstr ""
 
 msgid "Total test time for all commits/merges"
