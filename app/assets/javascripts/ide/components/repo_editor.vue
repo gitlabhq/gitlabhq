@@ -1,6 +1,6 @@
 <script>
 /* global monaco */
-import { mapGetters, mapActions } from 'vuex';
+import { mapState, mapGetters, mapActions } from 'vuex';
 import flash from '../../flash';
 import monacoLoader from '../monaco_loader';
 import Editor from '../lib/editor';
@@ -37,8 +37,7 @@ export default {
         .then(() => {
           this.editor.createInstance(this.$refs.editor);
         })
-        .then(() => this.setupEditor())
-        .catch(() => flash('Error setting up monaco. Please try again.'));
+        .then(() => this.setupEditor());
     },
     setupEditor() {
       if (!this.activeFile) return;
@@ -84,14 +83,21 @@ export default {
         this.initMonaco();
       }
     },
-    rightBarCollapsed() {
-      alert('RB');
+    leftPanelCollapsed() {
+      this.editor.updateDimensions();
+    },
+    rightPanelCollapsed() {
+      this.editor.updateDimensions();
     },
   },
   computed: {
     ...mapGetters([
       'activeFile',
       'activeFileExtension',
+    ]),
+    ...mapState([
+      'leftPanelCollapsed',
+      'rightPanelCollapsed',
     ]),
     shouldHideEditor() {
       return this.activeFile.binary && !this.activeFile.raw;
