@@ -108,9 +108,12 @@ export const ContributorsMasterGraph = (function(superClass) {
   extend(ContributorsMasterGraph, superClass);
 
   function ContributorsMasterGraph(data1) {
+    const $parentElement = $('#contributors-master');
+    const parentPadding = parseFloat($parentElement.css('padding-left')) + parseFloat($parentElement.css('padding-right'));
+
     this.data = data1;
     this.update_content = this.update_content.bind(this);
-    this.width = $('.content').width() - 70;
+    this.width = $('.content').width() - parentPadding - (this.MARGIN.left + this.MARGIN.right);
     this.height = 200;
     this.x = null;
     this.y = null;
