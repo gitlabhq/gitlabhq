@@ -10,7 +10,7 @@ setOptions({
   showSearchBox: false,
   downPanelInRight: true,
   sortStoriesByKind: false,
-  hierarchySeparator: '\\/|\\.',
+  hierarchySeparator: /\./,
 });
 
 function loadStories() {

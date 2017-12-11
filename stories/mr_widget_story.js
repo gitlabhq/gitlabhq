@@ -1,5 +1,5 @@
 import { storiesOf } from '@storybook/vue';
-import { addonKnobs, boolean, select, number, text } from '@storybook/addon-knobs';
+import { withKnobs, boolean, select, number, text } from '@storybook/addon-knobs';
 import mrWidgetOptions from '../app/assets/javascripts/vue_merge_request_widget/mr_widget_options';
 import * as mrWidget from '../app/assets/javascripts/vue_merge_request_widget/dependencies';
 import mockData from '../spec/javascripts/vue_mr_widget/mock_data';
@@ -19,6 +19,7 @@ mr.deployments = [
     external_url_formatted: 'diplo.',
     deployed_at: '2017-03-22T22:44:42.258Z',
     deployed_at_formatted: 'Mar 22, 2017 10:44pm',
+    metrics_monitoring_url: '/fake_url',
   },
 ];
 mr.relatedLinks = {
@@ -59,7 +60,7 @@ const mrStates = ['opened', 'locked', 'merged', 'closed', 'reopened'];
 function makeStory(options) {
   delete mrWidgetOptions.el; // Prevent component mounting
 
-  return addonKnobs()(() => ({
+  return {
     components: {
       mrWidgetOptions,
     },
@@ -122,7 +123,8 @@ function makeStory(options) {
         </div>
       </div>
     `,
-  }));
+  };
 }
 
-stories.add('All states', () => {});
+stories.addDecorator(withKnobs);
+stories.add('All states', () => makeStory());
