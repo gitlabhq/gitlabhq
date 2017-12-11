@@ -128,6 +128,9 @@ module ExtractsPath
     @hex_path = Digest::SHA1.hexdigest(@path)
     @logs_path = logs_file_project_ref_path(@project, @ref, @path)
 
+    blob_ids = tree.blobs.map(&:id)
+    @lfs_blobs = Gitlab::Git::Blob.batch_lfs_pointers(@repo, blob_ids)
+
   rescue RuntimeError, NoMethodError, InvalidPathError
     render_404
   end
