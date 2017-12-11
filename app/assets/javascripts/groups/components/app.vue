@@ -5,7 +5,7 @@ import eventHub from '../event_hub';
 import { getParameterByName } from '../../lib/utils/common_utils';
 import loadingIcon from '../../vue_shared/components/loading_icon.vue';
 import { COMMON_STR } from '../constants';
-import * as utils from '../../lib/utils/url_utility';
+import { mergeUrlParams } from '../../lib/utils/url_utility';
 import groupsComponent from './groups.vue';
 
 export default {
@@ -93,7 +93,7 @@ export default {
         this.isLoading = false;
         $.scrollTo(0);
 
-        const currentPath = utils.mergeUrlParams({ page }, window.location.href);
+        const currentPath = mergeUrlParams({ page }, window.location.href);
         window.history.replaceState({
           page: currentPath,
         }, document.title, currentPath);

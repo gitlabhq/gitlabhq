@@ -1,4 +1,4 @@
-import * as urlUtils from '../lib/utils/url_utility';
+import { visitUrl } from '../lib/utils/url_utility';
 import Flash from '../flash';
 import FilteredSearchContainer from './container';
 import RecentSearchesRoot from './recent_searches_root';
@@ -567,7 +567,7 @@ class FilteredSearchManager {
     if (this.updateObject) {
       this.updateObject(parameterizedUrl);
     } else {
-      urlUtils.visitUrl(parameterizedUrl);
+      visitUrl(parameterizedUrl);
     }
   }
 

@@ -1,10 +1,10 @@
 import Vue from 'vue';
-import * as urlUtils from '../../lib/utils/url_utility';
+import { visitUrl } from '../../lib/utils/url_utility';
 import flash from '../../flash';
 import service from '../services';
 import * as types from './mutation_types';
 
-export const redirectToUrl = (_, url) => urlUtils.visitUrl(url);
+export const redirectToUrl = (_, url) => visitUrl(url);
 
 export const setInitialData = ({ commit }, data) => commit(types.SET_INITIAL_DATA, data);
 

@@ -1,6 +1,6 @@
 <script>
 import Visibility from 'visibilityjs';
-import * as urlUtils from '../../lib/utils/url_utility';
+import { visitUrl } from '../../lib/utils/url_utility';
 import Poll from '../../lib/utils/poll';
 import eventHub from '../event_hub';
 import Service from '../services/index';
@@ -177,7 +177,7 @@ export default {
         .then(data => this.checkForSpam(data))
         .then((data) => {
           if (location.pathname !== data.web_url) {
-            urlUtils.visitUrl(data.web_url);
+            visitUrl(data.web_url);
           }
 
           return this.service.getData();
@@ -212,7 +212,7 @@ export default {
           // Stop the poll so we don't get 404's with the issuable not existing
           this.poll.stop();
 
-          urlUtils.visitUrl(data.web_url);
+          visitUrl(data.web_url);
         })
         .catch(() => {
           eventHub.$emit('close.form');

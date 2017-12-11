@@ -11,7 +11,7 @@ import {
   handleLocationHash,
   isMetaClick,
 } from './lib/utils/common_utils';
-import * as urlUtils from './lib/utils/url_utility';
+import { getLocationHash } from './lib/utils/url_utility';
 import initDiscussionTab from './image_diff/init_discussion_tab';
 import Diff from './diff';
 
@@ -318,7 +318,7 @@ import Diff from './diff';
 
           // Scroll any linked note into view
           // Similar to `toggler_behavior` in the discussion tab
-          const hash = urlUtils.getLocationHash();
+          const hash = getLocationHash();
           const anchor = hash && $container.find(`.note[id="${hash}"]`);
           if (anchor && anchor.length > 0) {
             const notesContent = anchor.closest('.notes_content');
