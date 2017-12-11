@@ -329,13 +329,8 @@ class User < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-<<<<<<< HEAD
-=======
-      table = arel_table
       query = query.downcase
-      pattern = User.to_pattern(query)
 
->>>>>>> f45fc58d84... Merge branch 'bvl-10-2-email-disclosure' into 'security-10-2'
       order = <<~SQL
         CASE
           WHEN users.name = %{query} THEN 0
@@ -345,16 +340,11 @@ class User < ActiveRecord::Base
         END
       SQL
 
-<<<<<<< HEAD
-      fuzzy_search(query, [:name, :email, :username])
-        .reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
-=======
       where(
-        table[:name].matches(pattern)
-          .or(table[:email].eq(query))
-          .or(table[:username].matches(pattern))
+        fuzzy_arel_match(:name, query)
+          .or(fuzzy_arel_match(:username, query))
+          .or(arel_table[:email].eq(query))
       ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
->>>>>>> f45fc58d84... Merge branch 'bvl-10-2-email-disclosure' into 'security-10-2'
     end
 
     # searches user by given pattern
@@ -362,28 +352,18 @@ class User < ActiveRecord::Base
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
 
     def search_with_secondary_emails(query)
+      query = query.downcase
+
       email_table = Email.arel_table
-<<<<<<< HEAD
       matched_by_emails_user_ids = email_table
         .project(email_table[:user_id])
-        .where(Email.fuzzy_arel_match(:email, query))
+        .where(email_table[:email].eq(query))
 
       where(
         fuzzy_arel_match(:name, query)
-          .or(fuzzy_arel_match(:email, query))
           .or(fuzzy_arel_match(:username, query))
+          .or(arel_table[:email].eq(query))
           .or(arel_table[:id].in(matched_by_emails_user_ids))
-=======
-      query = query.downcase
-      pattern = User.to_pattern(query)
-      matched_by_emails_user_ids = email_table.project(email_table[:user_id]).where(email_table[:email].eq(query))
-
-      where(
-        table[:name].matches(pattern)
-          .or(table[:email].eq(query))
-          .or(table[:username].matches(pattern))
-          .or(table[:id].in(matched_by_emails_user_ids))
->>>>>>> f45fc58d84... Merge branch 'bvl-10-2-email-disclosure' into 'security-10-2'
       )
     end
 
