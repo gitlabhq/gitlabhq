@@ -7,6 +7,8 @@ module Gitlab
         @root_path = root_path
         @repo_path = repo_path
 
+        @root_path << '/' unless root_path.ends_with?('/')
+
         # Split path into 'all/the/namespaces' and 'project_name'
         @group_path, _, @project_name = repo_relative_path.rpartition('/')
       end
@@ -34,11 +36,8 @@ module Gitlab
       private
 
       def repo_relative_path
-        absolute_path = Pathname.new(repo_path)
-        project_root = Pathname.new(@root_path)
-
         # Remove root path and `.git` at the end
-        absolute_path.relative_path_from(project_root).to_s.gsub(/\.git$/, '')
+        repo_path[@root_path.size...-4]
       end
     end
   end
