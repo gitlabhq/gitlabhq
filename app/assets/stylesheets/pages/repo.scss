@@ -341,7 +341,7 @@
     .multi-file-commit-panel-collapse-btn {
       margin-right: auto;
       margin-left: auto;
-      border-left: none;
+      border-left: 0;
     }
   }
 }
@@ -357,7 +357,7 @@
 }
 
 .multi-file-commit-panel-collapse-btn {
-  border-left:  1px solid $white-dark;
+  border-left: 1px solid $white-dark;
 }
 
 .multi-file-commit-list {

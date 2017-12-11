@@ -52,7 +52,10 @@
       },
       fileClass() {
         if (this.file.type === 'blob') {
-           return this.file.active ? 'file-open file-active' : this.file.opened ? 'file-open' : '';
+          if (this.file.active) {
+            return 'file-open file-active';
+          }
+          return this.file.opened ? 'file-open' : '';
         }
         return '';
       },
@@ -78,7 +81,7 @@
       if (this.file.type === 'blob' && this.file.active) {
         this.$el.scrollIntoView();
       }
-    }
+    },
   };
 </script>
 
