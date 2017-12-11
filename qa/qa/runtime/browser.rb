@@ -86,7 +86,7 @@ module QA
           # RSpec examples will take care of screenshots on their own
           #
           unless block.binding.receiver.is_a?(RSpec::Core::ExampleGroup)
-            Capybara::Screenshot.screenshot_and_save_page
+            screenshot_and_save_page
           end
 
           raise
@@ -101,7 +101,7 @@ module QA
         #
         def clear!
           visit(@address)
-          Capybara.reset_session!
+          reset_session!
         end
       end
     end
