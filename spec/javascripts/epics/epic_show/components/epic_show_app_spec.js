@@ -4,7 +4,7 @@ import epicHeader from 'ee/epics/epic_show/components/epic_header.vue';
 import epicSidebar from 'ee/epics/sidebar/components/sidebar_app.vue';
 import issuableApp from '~/issue_show/components/app.vue';
 import issuableAppEventHub from '~/issue_show/event_hub';
-import '~/lib/utils/url_utility';
+import * as urlUtils from '~/lib/utils/url_utility';
 import mountComponent from '../../../helpers/vue_mount_component_helper';
 import { props } from '../mock_data';
 import issueShowData from '../../../issue_show/mock_data';
@@ -102,7 +102,7 @@ describe('EpicShowApp', () => {
     const deleteIssuable = jasmine.createSpy();
     issuableAppEventHub.$on('delete.issuable', deleteIssuable);
     spyOn(window, 'confirm').and.returnValue(true);
-    spyOn(gl.utils, 'visitUrl').and.callFake(() => {});
+    spyOn(urlUtils, 'visitUrl').and.callFake(() => {});
 
     vm.$el.querySelector('.detail-page-header .btn-remove').click();
     expect(deleteIssuable).toHaveBeenCalled();

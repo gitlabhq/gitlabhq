@@ -1,5 +1,6 @@
 <script>
   import { mapGetters, mapActions } from 'vuex';
+  import { getLocationHash } from '../../lib/utils/url_utility';
   import Flash from '../../flash';
   import store from '../stores/';
   import * as constants from '../constants';
@@ -95,7 +96,7 @@
         this.poll();
       },
       checkLocationHash() {
-        const hash = gl.utils.getLocationHash();
+        const hash = getLocationHash();
         const element = document.getElementById(hash);
 
         if (hash && element) {
