@@ -54,9 +54,6 @@
       },
     },
     computed: {
-      ...mapState([
-        'trees',
-      ]),
       modalTitle() {
         if (this.type === 'tree') {
           return __('Create new directory');

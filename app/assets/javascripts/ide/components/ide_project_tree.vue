@@ -36,7 +36,7 @@ export default {
         </div>
       </a>
     </div>
-    <div>
+    <div class="multi-file-commit-panel-inner-scroll">
       <branches-tree
         v-for="(branch, index) in project.branches"
         :key="branch.name"

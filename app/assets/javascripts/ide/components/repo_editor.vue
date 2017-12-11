@@ -69,13 +69,11 @@ export default {
 
       // Handle File Language
       this.setFileLanguage({
-        file: this.$store.state.selectedFile,
         fileLanguage: model.language,
       });
 
       // Get File eol
       this.setFileEOL({
-        file: this.$store.state.selectedFile,
         eol: model.eol,
       });
     },

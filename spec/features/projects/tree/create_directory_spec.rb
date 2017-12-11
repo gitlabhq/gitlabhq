@@ -34,8 +34,10 @@ feature 'Multi-file editor new directory', :js do
       click_button('Create directory')
     end
 
+    find('.add-to-tree').click
+
     click_link('New file')
-    
+
     page.within('.popup-dialog') do
       find('.form-control').set('filename')
 

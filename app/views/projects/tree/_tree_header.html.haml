@@ -6,10 +6,11 @@
 
 .tree-controls
   - if show_new_repo?
-    = link_to ide_edit_path(@project, @id), class: 'btn btn-default' do
-      Multi Edit
-      %span.label.label-primary
-        Beta
+    = succeed " " do
+      = link_to ide_edit_path(@project, @id), class: 'btn btn-default' do
+        Multi Edit
+        %span.label.label-primary
+          Beta
 
   = link_to s_('Commits|History'), project_commits_path(@project, @id), class: 'btn'
 

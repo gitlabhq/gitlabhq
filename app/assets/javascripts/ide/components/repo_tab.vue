@@ -27,16 +27,18 @@ export default {
 
   methods: {
     ...mapActions([
-      'setFileActive',
       'closeFile',
     ]),
+    clickFile(tab) {
+      this.$router.push(`/project${tab.url}`);
+    },
   },
 };
 </script>
 
 <template>
   <li
-    @click="setFileActive(tab)"
+    @click="clickFile(tab)"
   >
     <button
       type="button"

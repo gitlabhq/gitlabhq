@@ -58,6 +58,9 @@
       openFile() {
         Array.from(this.$refs.fileUpload.files).forEach(file => this.readFile(file));
       },
+      startFileUpload() {
+        this.$refs.fileUpload.click();
+      },
     },
     mounted() {
       this.$refs.fileUpload.addEventListener('change', this.openFile);
@@ -69,16 +72,19 @@
 </script>
 
 <template>
-  <label
-    role="button"
-    class="menu-item"
-  >
-    {{ __('Upload file') }}
+  <div>
+    <a
+      href="#"
+      role="button"
+      @click.prevent="startFileUpload"
+    >
+      {{ __('Upload file') }}
+    </a>
     <input
       id="file-upload"
       type="file"
       class="hidden"
       ref="fileUpload"
     />
-  </label>
+  </div>
 </template>

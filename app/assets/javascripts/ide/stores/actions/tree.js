@@ -3,6 +3,7 @@ import { normalizeHeaders } from '../../../lib/utils/common_utils';
 import flash from '../../../flash';
 import service from '../../services';
 import * as types from '../mutation_types';
+import router from '../../ide_router';
 import {
   setPageTitle,
   findEntry,
@@ -101,14 +102,16 @@ export const createTempTree = (
     const foundEntry = findEntry(selectedTree.tree, 'tree', dirName);
 
     if (!foundEntry) {
+      const path = selectedTree.path !== undefined ? selectedTree.path : '';
       const tmpEntry = createTemp({
         projectId,
         branchId,
         name: dirName,
-        path: selectedTree.path !== undefined ? selectedTree.path : '',
+        path,
         type: 'tree',
         level: selectedTree.level !== undefined ? selectedTree.level + 1 : 0,
         tree: [],
+        url: `/${projectId}/blob/${branchId}/${path}${path ? '/' : ''}${dirName}`,
       });
 
       commit(types.CREATE_TMP_TREE, {
@@ -116,6 +119,8 @@ export const createTempTree = (
         tmpEntry,
       });
       commit(types.TOGGLE_TREE_OPEN, tmpEntry);
+
+      router.push(`/project${tmpEntry.url}`);
 
       selectedTree = tmpEntry;
     } else {

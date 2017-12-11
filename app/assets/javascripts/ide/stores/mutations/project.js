@@ -15,9 +15,9 @@ export default {
     });
 
     Object.assign(state, {
-      projects: {
+      projects: Object.assign({}, state.projects, {
         [projectPath]: project,
-      },
+      }),
     });
   },
 };

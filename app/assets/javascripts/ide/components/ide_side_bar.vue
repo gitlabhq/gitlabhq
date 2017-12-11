@@ -38,7 +38,7 @@ export default {
         'is-collapsed': leftPanelCollapsed,
       }"
     >
-    <div class="multi-file-commit-panel-inner-scroll">
+    <div class="multi-file-commit-panel-inner">
       <project-tree
         v-for="(project, index) in projects"
         :key="project.id"

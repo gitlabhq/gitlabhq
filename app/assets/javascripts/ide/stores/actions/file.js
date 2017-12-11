@@ -83,12 +83,12 @@ export const changeFileContent = ({ commit }, { file, content }) => {
   commit(types.UPDATE_FILE_CONTENT, { file, content });
 };
 
-export const setFileLanguage = ({ commit }, { file, fileLanguage }) => {
-  commit(types.SET_FILE_LANGUAGE, { file, fileLanguage });
+export const setFileLanguage = ({ state, commit }, { fileLanguage }) => {
+  commit(types.SET_FILE_LANGUAGE, { file: state.selectedFile, fileLanguage });
 };
 
-export const setFileEOL = ({ commit }, { file, eol }) => {
-  commit(types.SET_FILE_EOL, { file, eol });
+export const setFileEOL = ({ state, commit }, { eol }) => {
+  commit(types.SET_FILE_EOL, { file: state.selectedFile, eol });
 };
 
 export const setEditorPosition = ({ state, commit }, { editorRow, editorColumn }) => {
@@ -97,9 +97,8 @@ export const setEditorPosition = ({ state, commit }, { editorRow, editorColumn }
 
 export const createTempFile = ({ state, commit, dispatch }, { projectId, branchId, parent, name, content = '', base64 = '' }) => {
   const path = parent.path !== undefined ? parent.path : '';
-  const selectedProject = state.projects[projectId];
   // We need to do the replacement otherwise the web_url + file.url duplicate
-  const newUrl = `${selectedProject.web_url}/blob/${branchId}/${path}${path ? '/' : ''}${name}`;
+  const newUrl = `/${projectId}/blob/${branchId}/${path}${path ? '/' : ''}${name}`;
   const file = createTemp({
     projectId,
     branchId,
@@ -125,6 +124,8 @@ export const createTempFile = ({ state, commit, dispatch }, { projectId, branchI
   if (!state.editMode && !file.base64) {
     dispatch('toggleEditMode', true);
   }
+
+  router.push(`/project${file.url}`);
 
   return Promise.resolve(file);
 };

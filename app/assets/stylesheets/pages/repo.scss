@@ -235,12 +235,22 @@
   background-color: $gray-light;
   border-left: 1px solid $white-dark;
 
+  .projects-sidebar {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .multi-file-commit-panel-inner {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+  }
+
   .multi-file-commit-panel-inner-scroll {
     display: flex;
     flex: 1;
     flex-direction: column;
     overflow: auto;
-    border-bottom: solid 1px $gray-normal;
   }
 
   &.is-collapsed {

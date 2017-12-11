@@ -51,6 +51,9 @@
         return !this.leftPanelCollapsed && this.isSubmodule ? 3 : 1;
       },
       openedClass() {
+        if (this.file.type === 'blob' && this.file.active) {
+          this.$el.scrollIntoView();
+        }
         return this.file.type === 'blob' && this.file.opened ? 'file-open' : '';
       },
       changedClass() {
@@ -61,6 +64,13 @@
     },
     methods: {
       clickFile(row) {
+        // Manual Action if a tree is selected/opened
+        if (this.file.type === 'tree' && this.$router.currentRoute.path === '/project' + this.file.url) {
+          this.$store.dispatch('toggleTreeOpen', {
+            endpoint: this.file.url,
+            tree: this.file,
+          });
+        }
         this.$router.push(`/project${row.url}`);
       },
     },
@@ -71,7 +81,7 @@
   <tr
     class="file"
     :class="openedClass"
-    @click.prevent="clickFile(file)">
+    @click="clickFile(file)">
     <td
       class="multi-file-table-name"
       :colspan="submoduleColSpan"
@@ -84,7 +94,6 @@
       >
       </i>
       <a
-        :href="file.url"
         class="repo-file-name"
       >
         {{ file.name }}
@@ -97,6 +106,7 @@
         :parent="file"/>
       <i
         class="fa"
+        v-if="changedClass"
         :class="changedClass"
         aria-hidden="true"
       >

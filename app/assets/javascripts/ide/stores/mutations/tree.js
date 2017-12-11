@@ -8,11 +8,11 @@ export default {
   },
   [types.CREATE_TREE](state, { treePath }) {
     Object.assign(state, {
-      trees: {
+      trees: Object.assign({}, state.trees, {
         [treePath]: {
           tree: [],
         },
-      },
+      }),
     });
   },
   [types.SET_DIRECTORY_DATA](state, { data, tree }) {
