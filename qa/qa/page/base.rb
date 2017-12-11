@@ -13,8 +13,10 @@ module QA
       def wait(css = '.application', time: 60)
         Time.now.tap do |start|
           while Time.now - start < time
-            break if page.has_css?(css, wait: 5)
             puts "Waiting for `#{css} on `#{current_url}`"
+
+            break if page.has_css?(css, wait: 5)
+
             refresh
           end
         end
