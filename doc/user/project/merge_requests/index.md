@@ -193,6 +193,17 @@ can show the Code Climate report right in the merge request widget area.
 
 [Read more about Code Quality reports.](code_quality_diff.md)
 
+## Static Application Security Testing
+
+> Introduced in [GitLab Enterprise Edition Ultimate][products] 10.3.
+
+If you are using [GitLab CI/CD][ci], you can analyze your source code for known
+vulnerabilities using Static Application Security Testing (SAST).
+Going a step further, GitLab can show the vulnerability report right in the
+merge request widget area.
+
+[Read more about Static Application Security Testing reports.](sast.md)
+
 ## Live preview with Review Apps
 
 If you configured [Review Apps](https://about.gitlab.com/features/review-apps/) for your project,
