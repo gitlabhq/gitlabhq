@@ -11,6 +11,7 @@ class Discussion
             :author,
 
             :noteable,
+            :commit_id,
             :for_commit?,
             :for_merge_request?,
 

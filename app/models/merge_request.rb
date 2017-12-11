@@ -667,6 +667,7 @@ class MergeRequest < ActiveRecord::Base
       .to_sql
 
     Note.from("(#{union}) #{Note.table_name}")
+      .includes(:noteable)
   end
 
   alias_method :discussion_notes, :related_notes
@@ -942,21 +943,27 @@ class MergeRequest < ActiveRecord::Base
       .order(id: :desc)
   end
 
-  # Note that this could also return SHA from now dangling commits
-  #
-  def all_commit_shas
-    return commit_shas unless persisted?
-
-    diffs_relation = merge_request_diffs
-
+  def all_commits
     # MySQL doesn't support LIMIT in a subquery.
-    diffs_relation = diffs_relation.recent if Gitlab::Database.postgresql?
+    diffs_relation = if Gitlab::Database.postgresql?
+                       merge_request_diffs.recent
+                     else
+                       merge_request_diffs
+                     end
 
     MergeRequestDiffCommit
       .where(merge_request_diff: diffs_relation)
       .limit(10_000)
-      .pluck('sha')
-      .uniq
+  end
+
+  # Note that this could also return SHA from now dangling commits
+  #
+  def all_commit_shas
+    @all_commit_shas ||= begin
+      return commit_shas unless persisted?
+
+      all_commits.pluck(:sha).uniq
+    end
   end
 
   def merge_commit

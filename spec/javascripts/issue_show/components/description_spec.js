@@ -51,6 +51,35 @@ describe('Description component', () => {
     });
   });
 
+  it('opens recaptcha dialog if update rejected as spam', (done) => {
+    let modal;
+    const recaptchaChild = vm.$children
+      .find(child => child.$options._componentTag === 'recaptcha-dialog'); // eslint-disable-line no-underscore-dangle
+
+    recaptchaChild.scriptSrc = '//scriptsrc';
+
+    vm.taskListUpdateSuccess({
+      recaptcha_html: '<div class="g-recaptcha">recaptcha_html</div>',
+    });
+
+    vm.$nextTick()
+      .then(() => {
+        modal = vm.$el.querySelector('.js-recaptcha-dialog');
+
+        expect(modal.style.display).not.toEqual('none');
+        expect(modal.querySelector('.g-recaptcha').textContent).toEqual('recaptcha_html');
+        expect(document.body.querySelector('.js-recaptcha-script').src).toMatch('//scriptsrc');
+      })
+      .then(() => modal.querySelector('.close').click())
+      .then(() => vm.$nextTick())
+      .then(() => {
+        expect(modal.style.display).toEqual('none');
+        expect(document.body.querySelector('.js-recaptcha-script')).toBeNull();
+      })
+      .then(done)
+      .catch(done.fail);
+  });
+
   describe('TaskList', () => {
     beforeEach(() => {
       vm = mountComponent(DescriptionComponent, Object.assign({}, props, {
@@ -86,6 +115,7 @@ describe('Description component', () => {
           dataType: 'issuableType',
           fieldName: 'description',
           selector: '.detail-page-description',
+          onSuccess: jasmine.any(Function),
         });
         done();
       });

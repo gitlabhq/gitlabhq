@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import { visitUrl } from './lib/utils/url_utility';
 import bp from './breakpoints';
 import { bytesToKiB } from './lib/utils/number_utils';
 import { setCiStatusFavicon } from './lib/utils/common_utils';
@@ -209,7 +210,7 @@ export default class Job {
         }
 
         if (log.status !== this.buildStatus) {
-          gl.utils.visitUrl(this.pagePath);
+          visitUrl(this.pagePath);
         }
       })
       .fail(() => {

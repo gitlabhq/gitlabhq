@@ -21,11 +21,11 @@ module IssuableActions
 
     respond_to do |format|
       format.html do
-        recaptcha_check_with_fallback { render :edit }
+        recaptcha_check_if_spammable { render :edit }
       end
 
       format.json do
-        render_entity_json
+        recaptcha_check_if_spammable(false) { render_entity_json }
       end
     end
 
@@ -79,6 +79,12 @@ module IssuableActions
   end
 
   private
+
+  def recaptcha_check_if_spammable(should_redirect = true, &block)
+    return yield unless @issuable.is_a? Spammable
+
+    recaptcha_check_with_fallback(should_redirect, &block)
+  end
 
   def render_conflict_response
     respond_to do |format|

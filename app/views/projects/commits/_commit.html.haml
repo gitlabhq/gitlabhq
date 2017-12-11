@@ -1,7 +1,18 @@
-- ref = local_assigns.fetch(:ref)
+- view_details  = local_assigns.fetch(:view_details, false)
+- merge_request = local_assigns.fetch(:merge_request, nil)
+- project       = local_assigns.fetch(:project) { merge_request&.project }
+- ref           = local_assigns.fetch(:ref) { merge_request&.source_branch }
 
-- cache_key = [project.full_path, commit.id, current_application_settings, @path.presence, current_controller?(:commits), I18n.locale]
-- cache_key.push(commit.status(ref)) if commit.status(ref)
+- link = commit_path(project, commit, merge_request: merge_request)
+- cache_key = [project.full_path,
+               commit.id,
+               current_application_settings,
+               @path.presence,
+               current_controller?(:commits),
+               merge_request&.iid,
+               view_details,
+               commit.status(ref),
+               I18n.locale].compact
 
 -# EE-only
 - show_project_name = local_assigns.fetch(:show_project_name, false)
@@ -15,7 +26,7 @@
 
     .commit-detail
       .commit-content
-        = link_to_markdown_field(commit, :title, project_commit_path(project, commit.id), class: "commit-row-message item-title")
+        = link_to_markdown_field(commit, :title, link, class: "commit-row-message item-title")
         %span.commit-row-message.visible-xs-inline
           &middot;
           = commit.short_id
@@ -38,8 +49,7 @@
           %span.project_namespace
             = project.name_with_namespace
 
-
-      .commit-actions.hidden-xs
+      .commit-actions.flex-row.hidden-xs
         - if request.xhr?
           = render partial: 'projects/commit/signature', object: commit.signature
         - else
@@ -48,6 +58,9 @@
         - if commit.status(ref)
           = render_commit_status(commit, ref: ref)
 
-        = link_to commit.short_id, project_commit_path(project, commit), class: "commit-sha btn btn-transparent btn-link"
+        = link_to commit.short_id, link, class: "commit-sha btn btn-transparent btn-link"
         = clipboard_button(text: commit.id, title: _("Copy commit SHA to clipboard"))
         = link_to_browse_code(project, commit)
+
+        - if view_details && merge_request
+          = link_to "View details", project_commit_path(project, commit.id, merge_request_iid: merge_request.iid), class: "btn btn-default"

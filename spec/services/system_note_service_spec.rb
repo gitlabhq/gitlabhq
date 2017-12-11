@@ -694,9 +694,9 @@ describe SystemNoteService do
   describe '.new_commit_summary' do
     it 'escapes HTML titles' do
       commit = double(title: '<pre>This is a test</pre>', short_id: '12345678')
-      escaped = '* 12345678 - &lt;pre&gt;This is a test&lt;&#x2F;pre&gt;'
+      escaped = '&lt;pre&gt;This is a test&lt;&#x2F;pre&gt;'
 
-      expect(described_class.new_commit_summary([commit])).to eq([escaped])
+      expect(described_class.new_commit_summary([commit])).to all(match(%r[- #{escaped}]))
     end
   end
 
