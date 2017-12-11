@@ -17,18 +17,27 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
       path: parsedUserData.path,
     } : {};
 
+    function camelize(string) {
+      return string.replace(/(_\w)/g, match => match[1].toUpperCase());
+    }
+
+    function camelizeKeys(notesData) {
+      return Object.keys(notesData).reduce(
+        (acc, curr) => ({
+          ...acc,
+          [camelize(curr)]: notesData[curr],
+        }),
+        {},
+      );
+    }
+
+    const notesDataOrig = JSON.parse(notesDataset.notesData);
+    const notesData = camelizeKeys(notesDataOrig);
+
     return {
       noteableData: JSON.parse(notesDataset.noteableData),
       currentUserData,
-      notesData: {
-        lastFetchedAt: notesDataset.lastFetchedAt,
-        discussionsPath: notesDataset.discussionsPath,
-        newSessionPath: notesDataset.newSessionPath,
-        registerPath: notesDataset.registerPath,
-        notesPath: notesDataset.notesPath,
-        markdownDocsPath: notesDataset.markdownDocsPath,
-        quickActionsDocsPath: notesDataset.quickActionsDocsPath,
-      },
+      notesData,
     };
   },
   render(createElement) {
