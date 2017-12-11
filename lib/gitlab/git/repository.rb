@@ -781,24 +781,21 @@ module Gitlab
       end
 
       def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
-        OperationService.new(user, self).with_branch(
-          branch_name,
-          start_branch_name: start_branch_name,
-          start_repository: start_repository
-        ) do |start_commit|
+        gitaly_migrate(:revert) do |is_enabled|
+          args = {
+            user: user,
+            commit: commit,
+            branch_name: branch_name,
+            message: message,
+            start_branch_name: start_branch_name,
+            start_repository: start_repository
+          }
 
-          Gitlab::Git.check_namespace!(commit, start_repository)
-
-          revert_tree_id = check_revert_content(commit, start_commit.sha)
-          raise CreateTreeError unless revert_tree_id
-
-          committer = user_to_committer(user)
-
-          create_commit(message: message,
-                        author: committer,
-                        committer: committer,
-                        tree: revert_tree_id,
-                        parents: [start_commit.sha])
+          if is_enabled
+            gitaly_operations_client.user_revert(args)
+          else
+            rugged_revert(args)
+          end
         end
       end
 
@@ -1768,6 +1765,28 @@ module Gitlab
         # Use binary mode to prevent Rails from converting ASCII-8BIT to UTF-8
         File.open(info_attributes_path, "wb") do |file|
           file.write(gitattributes_content)
+        end
+      end
+
+      def rugged_revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
+        OperationService.new(user, self).with_branch(
+          branch_name,
+          start_branch_name: start_branch_name,
+          start_repository: start_repository
+        ) do |start_commit|
+
+          Gitlab::Git.check_namespace!(commit, start_repository)
+
+          revert_tree_id = check_revert_content(commit, start_commit.sha)
+          raise CreateTreeError unless revert_tree_id
+
+          committer = user_to_committer(user)
+
+          create_commit(message: message,
+                        author: committer,
+                        committer: committer,
+                        tree: revert_tree_id,
+                        parents: [start_commit.sha])
         end
       end
 

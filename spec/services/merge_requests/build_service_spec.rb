@@ -39,6 +39,7 @@ describe MergeRequests::BuildService do
 
   describe '#execute' do
     it 'calls the compare service with the correct arguments' do
+      allow_any_instance_of(described_class).to receive(:branches_valid?).and_return(true)
       expect(CompareService).to receive(:new)
                                   .with(project, Gitlab::Git::BRANCH_REF_PREFIX + source_branch)
                                   .and_call_original

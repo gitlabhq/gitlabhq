@@ -51,6 +51,25 @@ module Ci
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
     scope :ref_protected, -> { where(protected: true) }
 
+    scope :matches_tag_ids, -> (tag_ids) do
+      matcher = ::ActsAsTaggableOn::Tagging
+        .where(taggable_type: CommitStatus)
+        .where(context: 'tags')
+        .where('taggable_id = ci_builds.id')
+        .where.not(tag_id: tag_ids).select('1')
+
+      where("NOT EXISTS (?)", matcher)
+    end
+
+    scope :with_any_tags, -> do
+      matcher = ::ActsAsTaggableOn::Tagging
+        .where(taggable_type: CommitStatus)
+        .where(context: 'tags')
+        .where('taggable_id = ci_builds.id').select('1')
+
+      where("EXISTS (?)", matcher)
+    end
+
     mount_uploader :legacy_artifacts_file, LegacyArtifactUploader, mount_on: :artifacts_file
     mount_uploader :legacy_artifacts_metadata, LegacyArtifactUploader, mount_on: :artifacts_metadata
 
