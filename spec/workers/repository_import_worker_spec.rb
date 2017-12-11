@@ -1,11 +1,15 @@
 require 'spec_helper'
 
 describe RepositoryImportWorker do
-  let(:project) { create(:project, :import_scheduled) }
-
-  subject { described_class.new }
+  describe 'modules' do
+    it 'includes ProjectImportOptions' do
+      expect(described_class).to include_module(ProjectImportOptions)
+    end
+  end
 
   describe '#perform' do
+    let(:project) { create(:project, :import_scheduled) }
+
     context 'when worker was reset without cleanup' do
       let(:jid) { '12345678' }
       let(:started_project) { create(:project, :import_started, import_jid: jid) }
@@ -57,19 +61,8 @@ describe RepositoryImportWorker do
 
         expect do
           subject.perform(project.id)
-        end.to raise_error(RepositoryImportWorker::ImportError, error)
+        end.to raise_error(StandardError, error)
         expect(project.reload.import_jid).not_to be_nil
-      end
-    end
-
-    context 'with unexpected error' do
-      it 'marks import as failed' do
-        allow_any_instance_of(Projects::ImportService).to receive(:execute).and_raise(RuntimeError)
-
-        expect do
-          subject.perform(project.id)
-        end.to raise_error(RepositoryImportWorker::ImportError)
-        expect(project.reload.import_status).to eq('failed')
       end
     end
 
