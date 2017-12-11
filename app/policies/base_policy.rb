@@ -16,6 +16,9 @@ class BasePolicy < DeclarativePolicy::Base
     Gitlab::CurrentSettings.current_application_settings.restricted_visibility_levels.include?(Gitlab::VisibilityLevel::PUBLIC)
   end
 
+  # This is prevented in some cases in `gitlab-ee`
+  rule { default }.enable :read_cross_project
+
   # EE Extensions
   with_scope :user
   condition(:auditor, score: 0) { @user&.auditor? }

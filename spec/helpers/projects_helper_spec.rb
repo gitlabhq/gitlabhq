@@ -75,6 +75,12 @@ describe ProjectsHelper do
 
   describe "#project_list_cache_key", :clean_gitlab_redis_shared_state do
     let(:project) { create(:project, :repository) }
+    let(:user) { create(:user) }
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+      allow(helper).to receive(:can?).with(user, :read_cross_project) { true }
+    end
 
     it "includes the route" do
       expect(helper.project_list_cache_key(project)).to include(project.route.cache_key)
@@ -104,6 +110,10 @@ describe ProjectsHelper do
 
     it "includes a version" do
       expect(helper.project_list_cache_key(project).last).to start_with('v')
+    end
+
+    it 'includes wether or not the user can read cross project' do
+      expect(helper.project_list_cache_key(project)).to include('cross-project:true')
     end
 
     it "includes the pipeline status when there is a status" do

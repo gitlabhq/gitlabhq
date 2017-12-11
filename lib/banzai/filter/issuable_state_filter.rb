@@ -15,6 +15,8 @@ module Banzai
         issuables = extractor.extract([doc])
 
         issuables.each do |node, issuable|
+          next if !can_read_cross_project? && issuable.project != project
+
           if VISIBLE_STATES.include?(issuable.state) && node.inner_html == issuable.reference_link_text(project)
             node.content += " (#{issuable.state})"
           end
@@ -24,6 +26,10 @@ module Banzai
       end
 
       private
+
+      def can_read_cross_project?
+        Ability.allowed?(current_user, :read_cross_project)
+      end
 
       def current_user
         context[:current_user]

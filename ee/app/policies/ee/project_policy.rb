@@ -95,6 +95,8 @@ module EE
       rule { admin | (reject_unsigned_commits_disabled_globally & can?(:master_access)) }.enable :change_reject_unsigned_commits
 
       rule { admin | (commit_committer_check_disabled_globally & can?(:master_access)) }.enable :change_commit_committer_check
+
+      rule { owner | reporter }.enable :build_read_project
     end
   end
 end

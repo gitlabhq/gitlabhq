@@ -13,6 +13,11 @@
 #
 
 class TodosFinder
+  prepend FinderWithCrossProjectAccess
+  include FinderMethods
+
+  requires_cross_project_access unless: -> { project? }
+
   NONE = '0'.freeze
 
   attr_accessor :current_user, :params

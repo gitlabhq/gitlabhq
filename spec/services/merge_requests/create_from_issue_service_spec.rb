@@ -24,7 +24,7 @@ describe MergeRequests::CreateFromIssueService do
     end
 
     it 'delegates issue search to IssuesFinder' do
-      expect_any_instance_of(IssuesFinder).to receive(:execute).once.and_call_original
+      expect_any_instance_of(IssuesFinder).to receive(:find_by).once.and_call_original
 
       described_class.new(project, user, issue_iid: -1).execute
     end
