@@ -22,7 +22,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each, :delete) do
-    DatabaseCleaner.strategy = :deletion, { except: %w[licenses plans] }
+    DatabaseCleaner.strategy = :deletion, { except: %w[licenses] }
   end
 
   config.before(:each, :migration) do
