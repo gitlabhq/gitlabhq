@@ -9,3 +9,4 @@ export const CLOSED = 'closed';
 export const EMOJI_THUMBSUP = 'thumbsup';
 export const EMOJI_THUMBSDOWN = 'thumbsdown';
 export const NOTEABLE_TYPE = 'Issue';
+export const MERGE_REQUEST_NOTEABLE_TYPE = 'merge_request';
