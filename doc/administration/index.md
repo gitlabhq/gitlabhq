@@ -41,7 +41,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 - [Raketasks](../raketasks/README.md): Perform various tasks for maintenance, backups, automatic webhooks setup, etc.
   - [Backup and restore](../raketasks/backup_restore.md): Backup and restore your GitLab instance.
-- [Operations](operations.md): Keeping GitLab up and running (clean up Redis sessions, moving repositories, Sidekiq Job throttling, Sidekiq MemoryKiller, Unicorn).
+- [Operations](operations/index.md): Keeping GitLab up and running (clean up Redis sessions, moving repositories, Sidekiq Job throttling, Sidekiq MemoryKiller, Unicorn).
 - [Restart GitLab](restart_gitlab.md): Learn how to restart GitLab and its components.
 
 #### Updating GitLab
