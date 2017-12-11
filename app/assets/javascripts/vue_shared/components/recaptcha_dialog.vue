@@ -1,5 +1,5 @@
 <script>
-import PopupDialog from './popup_dialog.vue';
+import modal from './modal.vue';
 
 export default {
   name: 'recaptcha-dialog',
@@ -20,7 +20,7 @@ export default {
   },
 
   components: {
-    PopupDialog,
+    modal,
   },
 
   methods: {
@@ -65,7 +65,7 @@ export default {
 </script>
 
 <template>
-<popup-dialog
+<modal
   kind="warning"
   class="recaptcha-dialog js-recaptcha-dialog"
   :hide-footer="true"
@@ -81,5 +81,5 @@ export default {
       v-html="html"
     ></div>
   </div>
-</popup-dialog>
+</modal>
 </template>
