@@ -29,7 +29,9 @@ describe Repository do
   def expect_to_raise_storage_error
     expect { yield }.to raise_error do |exception|
       storage_exceptions = [Gitlab::Git::Storage::Inaccessible, Gitlab::Git::CommandError, GRPC::Unavailable]
-      expect(exception.class).to be_in(storage_exceptions)
+      known_exception = storage_exceptions.select { |e| exception.is_a?(e) }
+
+      expect(known_exception).not_to be_nil
     end
   end
 
@@ -583,7 +585,7 @@ describe Repository do
     end
 
     it 'properly handles query when repo is empty' do
-      repository = create(:project).repository
+      repository = create(:project, :empty_repo).repository
       results = repository.search_files_by_content('test', 'master')
 
       expect(results).to match_array([])
@@ -619,7 +621,7 @@ describe Repository do
     end
 
     it 'properly handles query when repo is empty' do
-      repository = create(:project).repository
+      repository = create(:project, :empty_repo).repository
 
       results = repository.search_files_by_name('test', 'master')
 
@@ -634,9 +636,7 @@ describe Repository do
   end
 
   describe '#fetch_ref' do
-    # Setting the var here, sidesteps the stub that makes gitaly raise an error
-    # before the actual test call
-    set(:broken_repository) { create(:project, :broken_storage).repository }
+    let(:broken_repository) { create(:project, :broken_storage).repository }
 
     describe 'when storage is broken', :broken_storage  do
       it 'should raise a storage error' do
@@ -1204,17 +1204,15 @@ describe Repository do
     let(:empty_repository) { create(:project_empty_repo).repository }
 
     it 'returns true for an empty repository' do
-      expect(empty_repository.empty?).to eq(true)
+      expect(empty_repository).to be_empty
     end
 
     it 'returns false for a non-empty repository' do
-      expect(repository.empty?).to eq(false)
+      expect(repository).not_to be_empty
     end
 
     it 'caches the output' do
-      expect(repository.raw_repository).to receive(:empty?)
-        .once
-        .and_return(false)
+      expect(repository.raw_repository).to receive(:has_visible_content?).once
 
       repository.empty?
       repository.empty?

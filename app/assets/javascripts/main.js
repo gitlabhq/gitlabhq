@@ -28,8 +28,8 @@ import './commit/image_file';
 
 // lib/utils
 import { handleLocationHash } from './lib/utils/common_utils';
-import { localTimeAgo, renderTimeago, getLocationHash } from './lib/utils/datetime_utility';
-import './lib/utils/url_utility';
+import { localTimeAgo, renderTimeago } from './lib/utils/datetime_utility';
+import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 
 // behaviors
 import './behaviors/';
@@ -40,9 +40,6 @@ import './admin';
 import './aside';
 import loadAwardsHandler from './awards_handler';
 import bp from './breakpoints';
-import './commits';
-import './compare';
-import './compare_autocomplete';
 import './confirm_danger_modal';
 import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
@@ -294,7 +291,7 @@ $(function () {
     const action = `${this.action}${link.search === '' ? '?' : '&'}`;
 
     event.preventDefault();
-    gl.utils.visitUrl(`${action}${$(this).serialize()}`);
+    visitUrl(`${action}${$(this).serialize()}`);
   });
 
   const flashContainer = document.querySelector('.flash-container');

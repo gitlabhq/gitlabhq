@@ -28,7 +28,7 @@ export default class ContextualSidebar {
     this.$closeSidebar.on('click', () => this.toggleSidebarNav(false));
     this.$overlay.on('click', () => this.toggleSidebarNav(false));
     this.$sidebarToggle.on('click', () => {
-      const value = !this.$sidebar.hasClass('sidebar-icons-only');
+      const value = !this.$sidebar.hasClass('sidebar-collapsed-desktop');
       this.toggleCollapsedSidebar(value);
     });
 
@@ -43,16 +43,16 @@ export default class ContextualSidebar {
   }
 
   toggleSidebarNav(show) {
-    this.$sidebar.toggleClass('nav-sidebar-expanded', show);
+    this.$sidebar.toggleClass('sidebar-expanded-mobile', show);
     this.$overlay.toggleClass('mobile-nav-open', show);
-    this.$sidebar.removeClass('sidebar-icons-only');
+    this.$sidebar.removeClass('sidebar-collapsed-desktop');
   }
 
   toggleCollapsedSidebar(collapsed) {
     const breakpoint = bp.getBreakpointSize();
 
     if (this.$sidebar.length) {
-      this.$sidebar.toggleClass('sidebar-icons-only', collapsed);
+      this.$sidebar.toggleClass('sidebar-collapsed-desktop', collapsed);
       this.$page.toggleClass('page-with-icon-sidebar', breakpoint === 'sm' ? true : collapsed);
     }
     ContextualSidebar.setCollapsedCookie(collapsed);

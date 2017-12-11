@@ -9,7 +9,6 @@
 
 import Vue from 'vue';
 
-import '~/lib/utils/url_utility';
 import '~/boards/models/issue';
 import '~/boards/models/label';
 import '~/boards/models/list';

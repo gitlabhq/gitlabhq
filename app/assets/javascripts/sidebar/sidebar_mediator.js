@@ -1,3 +1,4 @@
+import { visitUrl } from '../lib/utils/url_utility';
 import Flash from '../flash';
 import Service from './services/sidebar_service';
 import Store from './stores/sidebar_store';
@@ -81,7 +82,7 @@ export default class SidebarMediator {
       .then(response => response.json())
       .then((data) => {
         if (location.pathname !== data.web_url) {
-          gl.utils.visitUrl(data.web_url);
+          visitUrl(data.web_url);
         }
       });
   }

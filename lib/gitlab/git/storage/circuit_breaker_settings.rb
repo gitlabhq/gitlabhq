@@ -6,10 +6,6 @@ module Gitlab
           application_settings.circuitbreaker_failure_count_threshold
         end
 
-        def failure_wait_time
-          application_settings.circuitbreaker_failure_wait_time
-        end
-
         def failure_reset_time
           application_settings.circuitbreaker_failure_reset_time
         end
@@ -22,8 +18,12 @@ module Gitlab
           application_settings.circuitbreaker_access_retries
         end
 
-        def backoff_threshold
-          application_settings.circuitbreaker_backoff_threshold
+        def check_interval
+          application_settings.circuitbreaker_check_interval
+        end
+
+        def cache_key
+          @cache_key ||= "#{Gitlab::Git::Storage::REDIS_KEY_PREFIX}#{storage}:#{hostname}"
         end
 
         private

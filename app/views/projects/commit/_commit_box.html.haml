@@ -47,7 +47,7 @@
           %li= link_to s_("DownloadCommit|Email Patches"), project_commit_path(@project, @commit, format: :patch)
         %li= link_to s_("DownloadCommit|Plain Diff"),    project_commit_path(@project, @commit, format: :diff)
 
-.commit-box
+.commit-box{ data: { project_path: project_path(@project) } }
   %h3.commit-title
     = markdown(@commit.title, pipeline: :single_line, author: @commit.author)
   - if @commit.description.present?
@@ -80,3 +80,13 @@
       - if last_pipeline.duration
         in
         = time_interval_in_words last_pipeline.duration
+
+  - if @merge_request
+    .well-segment
+      = icon('info-circle fw')
+
+      This commit is part of merge request
+      = succeed '.' do
+        = link_to @merge_request.to_reference, diffs_project_merge_request_path(@project, @merge_request, commit_id: @commit.id)
+
+      Comments created here will be created in the context of that merge request.

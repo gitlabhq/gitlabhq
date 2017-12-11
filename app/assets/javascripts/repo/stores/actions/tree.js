@@ -1,3 +1,4 @@
+import { visitUrl } from '../../../lib/utils/url_utility';
 import { normalizeHeaders } from '../../../lib/utils/common_utils';
 import flash from '../../../flash';
 import service from '../../services';
@@ -73,7 +74,7 @@ export const clickedTreeRow = ({ commit, dispatch }, row) => {
   } else if (row.type === 'submodule') {
     commit(types.TOGGLE_LOADING, row);
 
-    gl.utils.visitUrl(row.url);
+    visitUrl(row.url);
   } else if (row.type === 'blob' && row.opened) {
     dispatch('setFileActive', row);
   } else {

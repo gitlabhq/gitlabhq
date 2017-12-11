@@ -1,0 +1,5 @@
+---
+title: Remove allocation tracking code from InfluxDB sampler for performance
+merge_request:
+author:
+type: performance
