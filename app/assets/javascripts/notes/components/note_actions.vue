@@ -4,6 +4,8 @@
   import emojiSmile from 'icons/_emoji_smile.svg';
   import emojiSmiley from 'icons/_emoji_smiley.svg';
   import editSvg from 'icons/_icon_pencil.svg';
+  import resolveDiscussionSvg from 'icons/_icon_resolve_discussion.svg';
+  import resolvedDiscussionSvg from 'icons/_icon_status_success_solid.svg';
   import ellipsisSvg from 'icons/_ellipsis_v.svg';
   import loadingIcon from '~/vue_shared/components/loading_icon.vue';
   import tooltip from '~/vue_shared/directives/tooltip';
@@ -36,6 +38,11 @@
         type: Boolean,
         required: true,
       },
+      canResolve: { // FIXME
+        type: Boolean,
+        required: false,
+        default: true,
+      },
       canReportAsAbuse: {
         type: Boolean,
         required: true,
@@ -63,6 +70,12 @@
       currentUserId() {
         return this.getUserDataByProp('id');
       },
+      resolveButtonTitle() { // FIXME
+        return 'Mark as resolved';
+      },
+      isResolved() { // FIXME
+        return false;
+      },
     },
     methods: {
       onEdit() {
@@ -71,6 +84,9 @@
       onDelete() {
         this.$emit('handleDelete');
       },
+      onResolve() {
+        this.$emit('handleResolve');
+      },
     },
     created() {
       this.emojiSmiling = emojiSmiling;
@@ -78,6 +94,8 @@
       this.emojiSmiley = emojiSmiley;
       this.editSvg = editSvg;
       this.ellipsisSvg = ellipsisSvg;
+      this.resolveDiscussionSvg = resolveDiscussionSvg;
+      this.resolvedDiscussionSvg = resolvedDiscussionSvg;
     },
   };
 </script>
@@ -87,6 +105,25 @@
     <span
       v-if="accessLevel"
       class="note-role user-access-role">{{accessLevel}}</span>
+    <div
+      v-if="canResolve"
+      class="note-actions-item">
+      <button
+        v-tooltip
+        @click="onResolve"
+        :class="{ 'is-disabled': !canResolve, 'is-active': isResolved }"
+        :title="resolveButtonTitle"
+        :aria-label="resolveButtonTitle"
+        type="button"
+        class="line-resolve-btn note-action-button">
+        <div
+          v-if="isResolved"
+          v-html="resolvedDiscussionSvg"></div>
+        <div
+          v-else
+          v-html="resolveDiscussionSvg"></div>
+      </button>
+    </div>
     <div
       v-if="canAddAwardEmoji"
       class="note-actions-item">
