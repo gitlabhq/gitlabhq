@@ -1,11 +1,11 @@
 require 'spec_helper'
 
-# Disable transactions via :truncate method because a foreign table
-# can't see changes inside a transaction of a different connection.
-describe Geo::ExpireUploadsFinder, :geo, :truncate do
+describe Geo::ExpireUploadsFinder, :geo do
   let(:project) { create(:project) }
 
-  context 'FDW' do
+  # Disable transactions via :truncate method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  context 'FDW', :truncate do
     before do
       skip('FDW is not configured') if Gitlab::Database.postgresql? && !Gitlab::Geo.fdw?
     end

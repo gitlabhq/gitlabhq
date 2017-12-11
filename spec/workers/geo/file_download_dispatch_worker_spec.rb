@@ -2,7 +2,7 @@ require 'spec_helper'
 
 # Disable transactions via :truncate method because a foreign table
 # can't see changes inside a transaction of a different connection.
-describe Geo::FileDownloadDispatchWorker, :geo, :truncate do
+describe Geo::FileDownloadDispatchWorker, :geo do
   include ::EE::GeoHelpers
 
   let(:primary)   { create(:geo_node, :primary, host: 'primary-geo-node') }
@@ -171,7 +171,7 @@ describe Geo::FileDownloadDispatchWorker, :geo, :truncate do
     end
   end
 
-  describe 'when PostgreSQL FDW is available', :geo do
+  describe 'when PostgreSQL FDW is available', :geo, :truncate do
     # Skip if FDW isn't activated on this database
     it_behaves_like '#perform', Gitlab::Database.postgresql? && !Gitlab::Geo.fdw?
   end
