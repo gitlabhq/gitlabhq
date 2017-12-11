@@ -26,6 +26,7 @@ class Projects::TreeController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
+        @lfs_blobs = Gitlab::Git::Blob.batch_lfs_pointers(@project.repository, @tree.blobs.map(&:id))
         @last_commit = @repository.last_commit_for_path(@commit.id, @tree.path) || @commit
       end
 
