@@ -2,7 +2,7 @@
 import modal from './modal.vue';
 
 export default {
-  name: 'recaptcha-dialog',
+  name: 'recaptcha-modal',
 
   props: {
     html: {
@@ -67,7 +67,7 @@ export default {
 <template>
 <modal
   kind="warning"
-  class="recaptcha-dialog js-recaptcha-dialog"
+  class="recaptcha-modal js-recaptcha-modal"
   :hide-footer="true"
   :title="__('Please solve the reCAPTCHA')"
   @toggle="close"

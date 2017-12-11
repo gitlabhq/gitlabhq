@@ -1,4 +1,4 @@
-import RecaptchaDialog from '../components/recaptcha_dialog.vue';
+import recaptchaModal from '../components/recaptcha_modal.vue';
 
 export default {
   data() {
@@ -9,7 +9,7 @@ export default {
   },
 
   components: {
-    RecaptchaDialog,
+    recaptchaModal,
   },
 
   methods: {
