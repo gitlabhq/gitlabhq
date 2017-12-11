@@ -1,7 +1,7 @@
 <script>
   import Flash from '~/flash';
   import GitlabSlackService from '../services/gitlab_slack_service';
-  import redirectTo from '../../lib/utils/url_utility';
+  import { redirectTo } from '../../lib/utils/url_utility';
 
   export default {
     props: {
