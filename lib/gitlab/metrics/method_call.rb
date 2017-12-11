@@ -2,7 +2,8 @@ module Gitlab
   module Metrics
     # Class for tracking timing information about method calls
     class MethodCall
-      MEASUREMENT_ENABLED_CACHE = Concurrent::AtomicReference.new({ enabled: false, expires_at: Time.now })
+      MEASUREMENT_ENABLED_CACHE = Concurrent::AtomicBoolean.new(false)
+      MEASUREMENT_ENABLED_CACHE_EXPIRES_AT = Concurrent::AtomicFixnum.new(Time.now.to_i)
       MUTEX = Mutex.new
       BASE_LABELS = { module: nil, method: nil }.freeze
       attr_reader :real_time, :cpu_time, :call_count, :labels
@@ -20,18 +21,14 @@ module Gitlab
       end
 
       def call_measurement_enabled?
-        res = MEASUREMENT_ENABLED_CACHE.update do |cache|
-          if cache[:expires_at] < Time.now
-            {
-              enabled: Feature.get(:prometheus_metrics_method_instrumentation).enabled?,
-              expires_at: Time.now + 5.minutes
-            }
-          else
-            cache
+        expires_at = MEASUREMENT_ENABLED_CACHE_EXPIRES_AT.value
+        if expires_at < Time.now.to_i
+          if MEASUREMENT_ENABLED_CACHE_EXPIRES_AT.compare_and_set(expires_at, (Time.now + 30.seconds).to_i)
+            MEASUREMENT_ENABLED_CACHE.value = Feature.get(:prometheus_metrics_method_instrumentation).enabled?
           end
         end
 
-        res[:enabled]
+        MEASUREMENT_ENABLED_CACHE.value
       end
 
       # name - The full name of the method (including namespace) such as
