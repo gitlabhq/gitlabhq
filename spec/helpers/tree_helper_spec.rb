@@ -9,6 +9,7 @@ describe TreeHelper do
     before do
       @id = sha
       @project = project
+      @lfs_blobs = []
     end
 
     it 'displays all entries without a warning' do
