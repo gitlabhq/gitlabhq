@@ -8,28 +8,6 @@ describe('issue_note_app', () => {
   let mountComponent;
   let vm;
 
-  const individualNoteInterceptor = (request, next) => {
-    next(request.respondWith(JSON.stringify(mockData.individualNoteServerResponse), {
-      status: 200,
-    }));
-  };
-
-  const noteInterceptor = (request, next) => {
-    if (request.url === '/gitlab-org/gitlab-ce/issues/26/discussions.json') {
-      next(request.respondWith(JSON.stringify(mockData.discussionNoteServerResponse), {
-        status: 200,
-      }));
-    } else if (request.url === '/gitlab-org/gitlab-ce/noteable/issue/98/notes') {
-      next(request.respondWith(JSON.stringify(mockData.notesPollingResponse), {
-        status: 200,
-      }));
-    } else if (request.method === 'PUT' && request.url === '/gitlab-org/gitlab-ce/notes/1471') {
-      next(request.respondWith(JSON.stringify(mockData.updatedNoteResponse), {
-        status: 200,
-      }));
-    }
-  };
-
   beforeEach(() => {
     const IssueNotesApp = Vue.extend(issueNotesApp);
 
@@ -85,16 +63,16 @@ describe('issue_note_app', () => {
 
   describe('render', () => {
     beforeEach(() => {
-      Vue.http.interceptors.push(individualNoteInterceptor);
+      Vue.http.interceptors.push(mockData.individualNoteInterceptor);
       vm = mountComponent();
     });
 
     afterEach(() => {
-      Vue.http.interceptors = _.without(Vue.http.interceptors, individualNoteInterceptor);
+      Vue.http.interceptors = _.without(Vue.http.interceptors, mockData.individualNoteInterceptor);
     });
 
     it('should render list of notes', (done) => {
-      const note = mockData.individualNoteServerResponse[0].notes[0];
+      const note = mockData.INDIVIDUAL_NOTE_RESPONSE_MAP.GET['/gitlab-org/gitlab-ce/issues/26/discussions.json'][0].notes[0];
 
       setTimeout(() => {
         expect(
@@ -140,13 +118,16 @@ describe('issue_note_app', () => {
   describe('update note', () => {
     describe('individual note', () => {
       beforeEach(() => {
-        Vue.http.interceptors.push(noteInterceptor);
+        Vue.http.interceptors.push(mockData.individualNoteInterceptor);
         spyOn(service, 'updateNote').and.callThrough();
         vm = mountComponent();
       });
 
       afterEach(() => {
-        Vue.http.interceptors = _.without(Vue.http.interceptors, noteInterceptor);
+        Vue.http.interceptors = _.without(
+          Vue.http.interceptors,
+          mockData.individualNoteInterceptor,
+        );
       });
 
       it('renders edit form', (done) => {
@@ -180,13 +161,16 @@ describe('issue_note_app', () => {
 
     describe('dicussion note', () => {
       beforeEach(() => {
-        Vue.http.interceptors.push(noteInterceptor);
+        Vue.http.interceptors.push(mockData.discussionNoteInterceptor);
         spyOn(service, 'updateNote').and.callThrough();
         vm = mountComponent();
       });
 
       afterEach(() => {
-        Vue.http.interceptors = _.without(Vue.http.interceptors, noteInterceptor);
+        Vue.http.interceptors = _.without(
+          Vue.http.interceptors,
+          mockData.discussionNoteInterceptor,
+        );
       });
 
       it('renders edit form', (done) => {
@@ -237,12 +221,12 @@ describe('issue_note_app', () => {
 
   describe('edit form', () => {
     beforeEach(() => {
-      Vue.http.interceptors.push(individualNoteInterceptor);
+      Vue.http.interceptors.push(mockData.individualNoteInterceptor);
       vm = mountComponent();
     });
 
     afterEach(() => {
-      Vue.http.interceptors = _.without(Vue.http.interceptors, individualNoteInterceptor);
+      Vue.http.interceptors = _.without(Vue.http.interceptors, mockData.individualNoteInterceptor);
     });
 
     it('should render markdown docs url', (done) => {
