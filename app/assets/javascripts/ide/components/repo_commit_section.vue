@@ -113,15 +113,6 @@ export default {
     @toggle="showNewBranchModal = false"
     @submit="makeCommit(true)"
   />
-  <div class="multi-file-context-bar-icon text-center">
-    <icon
-      name="list-bulleted"
-      :size="18"
-    />
-    <template v-if="!rightPanelCollapsed">
-      Staged
-    </template>
-  </div>
   <commit-files-list
     title="Staged"
     :file-list="changedFiles"

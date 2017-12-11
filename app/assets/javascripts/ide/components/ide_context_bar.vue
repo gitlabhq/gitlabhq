@@ -48,6 +48,15 @@ export default {
             'is-collapsed': rightPanelCollapsed,
           }"
         >
+        <div
+          class="multi-file-commit-panel-header-title"
+          v-if="!rightPanelCollapsed">
+          <icon
+            name="list-bulleted"
+            :size="18"
+          />
+          Staged
+        </div>
         <button
           type="button"
           class="btn btn-transparent multi-file-commit-panel-collapse-btn"
@@ -59,8 +68,6 @@ export default {
           />
         </button>
       </header>
-      <div>
-      </div>
       <repo-commit-section 
         class=""/>
     </div>

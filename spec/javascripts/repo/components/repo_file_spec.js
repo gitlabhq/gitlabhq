@@ -35,7 +35,7 @@ describe('RepoFile', () => {
     const fileIcon = vm.$el.querySelector('.file-icon');
 
     expect(vm.$el.querySelector(`.${vm.file.icon}`).style.marginLeft).toEqual('0px');
-    expect(name.href).toMatch(`/${vm.file.url}`);
+    expect(name.href).toMatch('');
     expect(name.textContent.trim()).toEqual(vm.file.name);
     expect(fileIcon.classList.contains(vm.file.icon)).toBeTruthy();
     expect(fileIcon.style.marginLeft).toEqual(`${vm.file.level * 10}px`);

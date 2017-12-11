@@ -1,5 +1,5 @@
 <script>
-  import { mapActions, mapState } from 'vuex';
+  import { mapActions } from 'vuex';
   import { __ } from '../../../locale';
   import modal from '../../../vue_shared/components/modal.vue';
 

@@ -50,11 +50,11 @@
       submoduleColSpan() {
         return !this.leftPanelCollapsed && this.isSubmodule ? 3 : 1;
       },
-      openedClass() {
-        if (this.file.type === 'blob' && this.file.active) {
-          this.$el.scrollIntoView();
+      fileClass() {
+        if (this.file.type === 'blob') {
+           return this.file.active ? 'file-open file-active' : this.file.opened ? 'file-open' : '';
         }
-        return this.file.type === 'blob' && this.file.opened ? 'file-open' : '';
+        return '';
       },
       changedClass() {
         return {
@@ -65,7 +65,7 @@
     methods: {
       clickFile(row) {
         // Manual Action if a tree is selected/opened
-        if (this.file.type === 'tree' && this.$router.currentRoute.path === '/project' + this.file.url) {
+        if (this.file.type === 'tree' && this.$router.currentRoute.path === `/project${row.url}`) {
           this.$store.dispatch('toggleTreeOpen', {
             endpoint: this.file.url,
             tree: this.file,
@@ -74,13 +74,18 @@
         this.$router.push(`/project${row.url}`);
       },
     },
+    updated() {
+      if (this.file.type === 'blob' && this.file.active) {
+        this.$el.scrollIntoView();
+      }
+    }
   };
 </script>
 
 <template>
   <tr
     class="file"
-    :class="openedClass"
+    :class="fileClass"
     @click="clickFile(file)">
     <td
       class="multi-file-table-name"

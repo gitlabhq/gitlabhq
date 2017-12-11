@@ -328,6 +328,7 @@
   align-items: center;
   margin-bottom: 12px;
   border-bottom: 1px solid $white-dark;
+  padding: $gl-btn-padding 0;
 
   &.is-collapsed {
     border-bottom: 1px solid $white-dark;
@@ -336,16 +337,27 @@
       margin-left: auto;
       margin-right: auto;
     }
+
+    .multi-file-commit-panel-collapse-btn {
+      margin-right: auto;
+      margin-left: auto;
+      border-left: none;
+    }
+  }
+}
+
+.multi-file-commit-panel-header-title {
+  display: flex;
+  flex: 1;
+  padding: $gl-btn-padding;
+
+  svg {
+    margin-right: $gl-btn-padding;
   }
 }
 
 .multi-file-commit-panel-collapse-btn {
-  padding-top: 10px;
-  width: 100%;
-
-  &.is-collapsed {
-    margin-right: auto;
-  }
+  border-left:  1px solid $white-dark;
 }
 
 .multi-file-commit-list {

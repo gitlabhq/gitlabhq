@@ -31,16 +31,16 @@ describe('RepoTab', () => {
     expect(name.textContent.trim()).toEqual(vm.tab.name);
   });
 
-  it('calls setFileActive when clicking tab', () => {
+  it('fires clickFile when the link is clicked', () => {
     vm = createComponent({
       tab: file(),
     });
 
-    spyOn(vm, 'setFileActive');
+    spyOn(vm, 'clickFile');
 
     vm.$el.click();
 
-    expect(vm.setFileActive).toHaveBeenCalledWith(vm.tab);
+    expect(vm.clickFile).toHaveBeenCalledWith(vm.tab);
   });
 
   it('calls closeFile when clicking close button', () => {

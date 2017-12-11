@@ -22,7 +22,7 @@ describe('IdeSidebar', () => {
   });
 
   it('renders a sidebar', () => {
-    expect(vm.$el.querySelector('.multi-file-commit-panel-inner-scroll')).not.toBeNull();
+    expect(vm.$el.querySelector('.multi-file-commit-panel-inner')).not.toBeNull();
   });
 
   describe('collapsed', () => {

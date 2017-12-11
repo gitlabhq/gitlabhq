@@ -84,6 +84,9 @@ export default {
         this.initMonaco();
       }
     },
+    rightBarCollapsed() {
+      alert('RB');
+    },
   },
   computed: {
     ...mapGetters([
