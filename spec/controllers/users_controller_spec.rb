@@ -74,6 +74,31 @@ describe UsersController do
         end
       end
     end
+
+    context 'json with events' do
+      let(:project) { create(:project) }
+      before do
+        project.add_developer(user)
+        Gitlab::DataBuilder::Push.build_sample(project, user)
+
+        sign_in(user)
+      end
+
+      it 'loads events' do
+        get :show, username: user, format: :json
+
+        expect(assigns(:events)).not_to be_empty
+      end
+
+      it 'hides events if the user cannot read cross project' do
+        allow(Ability).to receive(:allowed?).and_call_original
+        expect(Ability).to receive(:allowed?).with(user, :read_cross_project) { false }
+
+        get :show, username: user, format: :json
+
+        expect(assigns(:events)).to be_empty
+      end
+    end
   end
 
   describe 'GET #calendar' do

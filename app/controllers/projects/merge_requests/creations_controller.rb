@@ -75,7 +75,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
   def branch_to
     @target_project = selected_target_project
 
-    if params[:ref].present?
+    if @target_project && params[:ref].present?
       @ref = params[:ref]
       @commit = @target_project.commit(Gitlab::Git::BRANCH_REF_PREFIX + @ref)
     end
@@ -85,7 +85,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
   def update_branches
     @target_project = selected_target_project
-    @target_branches = @target_project.repository.branch_names
+    @target_branches = @target_project ? @target_project.repository.branch_names : []
 
     render layout: false
   end
@@ -121,7 +121,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
       @project
     elsif params[:target_project_id].present?
       MergeRequestTargetProjectFinder.new(current_user: current_user, source_project: @project)
-        .execute.find(params[:target_project_id])
+        .find_by(id: params[:target_project_id])
     else
       @project.forked_from_project
     end

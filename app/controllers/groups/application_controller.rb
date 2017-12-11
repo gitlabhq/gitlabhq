@@ -1,10 +1,12 @@
 class Groups::ApplicationController < ApplicationController
   include RoutableActions
+  include ControllerWithCrossProjectAccessCheck
 
   layout 'group'
 
   skip_before_action :authenticate_user!
   before_action :group
+  requires_cross_project_access
 
   private
 

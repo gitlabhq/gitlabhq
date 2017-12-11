@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Banzai::Redactor do
-  let(:user) { build(:user) }
+  let(:user) { create(:user) }
   let(:project) { build(:project) }
   let(:redactor) { described_class.new(project, user) }
 
