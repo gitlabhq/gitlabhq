@@ -6,6 +6,7 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.initCodeclimate(data);
     this.initPerformanceReport(data);
     this.initSecurityReport(data);
+    this.initDockerReport(data);
   }
 
   setData(data) {
@@ -71,8 +72,24 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.securityReport = [];
   }
 
+  initDockerReport(data) {
+    this.clair = data.clair;
+    this.dockerReport = {
+      approved: [],
+      unapproved: [],
+      vulnerabilities: [],
+    };
+  }
+
   setSecurityReport(issues, path) {
     this.securityReport = MergeRequestStore.parseIssues(issues, path);
+  }
+
+  setDockerReport(data) {
+    // Set data - TODO parse the data
+    this.dockerReport.approved = data.approved || [];
+    this.dockerReport.unapproved = data.unapproved || [];
+    this.dockerReport.vulnerabilities = data.vulnerabilities || [];
   }
 
   compareCodeclimateMetrics(headIssues, baseIssues, headBlobPath, baseBlobPath) {

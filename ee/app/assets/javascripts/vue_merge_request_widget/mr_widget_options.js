@@ -18,9 +18,11 @@ export default {
       isLoadingCodequality: false,
       isLoadingPerformance: false,
       isLoadingSecurity: false,
+      isLoadingDocker: false,
       loadingCodequalityFailed: false,
       loadingPerformanceFailed: false,
       loadingSecurityFailed: false,
+      loadingDockerFailed: false,
     };
   },
   computed: {
@@ -37,6 +39,9 @@ export default {
     },
     shouldRenderSecurityReport() {
       return this.mr.sast;
+    },
+    shouldRenderDockerReport() {
+      return this.mr.clair;
     },
     codequalityText() {
       const { newIssues, resolvedIssues } = this.mr.codeclimateMetrics;
@@ -116,34 +121,68 @@ export default {
       return 'No security vulnerabilities detected';
     },
 
-    codequalityStatus() {
-      if (this.isLoadingCodequality) {
-        return 'loading';
-      } else if (this.loadingCodequalityFailed) {
-        return 'error';
+    dockerText() {
+      const { vulnerabilities, approved, unapproved } = this.mr.dockerReport;
+      const text = [];
+
+      if (vulnerabilities.length) {
+        text.push(n__(
+          '%d vulnerability.',
+          '%d vulnerabilities.',
+          vulnerabilities.length,
+        ));
       }
-      return 'success';
+
+      if (approved.length) {
+        text.push(n__(
+          '%d of those was approved.',
+          '%d of those were approved.',
+          approved.length,
+        ));
+      }
+
+      if (approved.length > 0 && unapproved.length > 0) {
+        text.push('and');
+      }
+
+      if (unapproved.length) {
+        text.push(n__(
+          '%d of those was unapproved.',
+          '%d of those were unapproved.',
+          unapproved.length,
+        ));
+      }
+
+      return text.join(' ');
+    },
+
+    codequalityStatus() {
+      return this.checkStatus(this.isLoadingCodequality, this.loadingCodequalityFailed);
     },
 
     performanceStatus() {
-      if (this.isLoadingPerformance) {
-        return 'loading';
-      } else if (this.loadingPerformanceFailed) {
-        return 'error';
-      }
-      return 'success';
+      return this.checkStatus(this.isLoadingPerformance, this.loadingPerformanceFailed);
     },
 
     securityStatus() {
-      if (this.isLoadingSecurity) {
-        return 'loading';
-      } else if (this.loadingSecurityFailed) {
-        return 'error';
-      }
-      return 'success';
+      return this.checkStatus(this.isLoadingSecurity, this.loadingSecurityFailed);
+    },
+
+    dockerStatus() {
+      return this.checkStatus(this.isLoadingDocker, this.loadingDockerFailed);
     },
   },
   methods: {
+    checkStatus(loading, error) {
+      if (loading) {
+        return 'loading';
+      } else if (error) {
+        return 'error';
+      }
+
+      return 'success';
+    },
+
     fetchCodeQuality() {
       const { head_path, head_blob_path, base_path, base_blob_path } = this.mr.codeclimate;
 
@@ -196,6 +235,21 @@ export default {
           this.loadingSecurityFailed = true;
         });
     },
+
+    fetchDockerReport() {
+      const { path } = this.mr.clair;
+      this.isLoadingDocker = true;
+
+      this.service.fetchReport(path)
+        .then((data) => {
+          this.mr.setDockerReport(data);
+          this.isLoadingDocker = false;
+        })
+        .catch(() => {
+          this.isLoadingDocker = false;
+          this.loadingDockerFailed = true;
+        });
+    },
   },
   created() {
     if (this.shouldRenderCodeQuality) {
@@ -208,6 +262,10 @@ export default {
 
     if (this.shouldRenderSecurityReport) {
       this.fetchSecurity();
+    }
+
+    if (this.shouldRenderDockerReport) {
+      this.fetchDockerReport();
     }
   },
   template: `
@@ -259,6 +317,17 @@ export default {
         error-text="Failed to load security report"
         :success-text="securityText"
         :unresolvedIssues="mr.securityReport"
+        />
+      <collapsible-section
+        class="js-docker-widget"
+        v-if="shouldRenderDockerReport"
+        type="codequality"
+        :status="dockerStatus"
+        loading-text="Loading clair report"
+        error-text="Failed to load clair report"
+        :success-text="dockerText"
+        :unresolvedIssues="mr.dockerReport.unapproved"
+        :resolvedIssues="mr.dockerReport.approved"
         />
       <div class="mr-widget-section">
         <component
