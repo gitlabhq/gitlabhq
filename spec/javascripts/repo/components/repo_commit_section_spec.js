@@ -69,7 +69,6 @@ describe('RepoCommitSection', () => {
     const submitCommit = vm.$el.querySelector('form .btn');
 
     expect(vm.$el.querySelector('.multi-file-commit-form')).not.toBeNull();
-    expect(vm.$el.querySelector('.multi-file-context-bar-icon').textContent.trim()).toEqual('Staged');
     expect(changedFileElements.length).toEqual(2);
 
     changedFileElements.forEach((changedFile, i) => {
