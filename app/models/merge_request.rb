@@ -86,6 +86,14 @@ class MergeRequest < ActiveRecord::Base
       transition locked: :opened
     end
 
+    before_transition any => :opened do |merge_request|
+      merge_request.merge_jid = nil
+
+      merge_request.run_after_commit do
+        UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
+      end
+    end
+
     state :opened
     state :closed
     state :merged
