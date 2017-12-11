@@ -5,9 +5,10 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Config do
   set(:user) { create(:user) }
 
   let(:command) do
-    double('command', project: project,
-                      current_user: user,
-                      save_incompleted: true)
+    Gitlab::Ci::Pipeline::Chain::Command.new(
+      project: project,
+      current_user: user,
+      save_incompleted: true)
   end
 
   let!(:step) { described_class.new(pipeline, command) }

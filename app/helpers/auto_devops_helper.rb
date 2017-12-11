@@ -8,22 +8,6 @@ module AutoDevopsHelper
       !project.ci_service
   end
 
-  def show_run_auto_devops_pipeline_checkbox_for_instance_setting?(project)
-    return false if project.repository.gitlab_ci_yml
-
-    if project&.auto_devops&.enabled.present?
-      !project.auto_devops.enabled && current_application_settings.auto_devops_enabled?
-    else
-      current_application_settings.auto_devops_enabled?
-    end
-  end
-
-  def show_run_auto_devops_pipeline_checkbox_for_explicit_setting?(project)
-    return false if project.repository.gitlab_ci_yml
-
-    !project.auto_devops_enabled?
-  end
-
   def auto_devops_warning_message(project)
     missing_domain = !project.auto_devops&.has_domain?
     missing_service = !project.deployment_platform&.active?

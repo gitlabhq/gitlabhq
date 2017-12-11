@@ -87,6 +87,17 @@ module Gitlab
 
         response.result
       end
+
+      def fsck
+        request = Gitaly::FsckRequest.new(repository: @gitaly_repo)
+        response = GitalyClient.call(@storage, :repository_service, :fsck, request)
+
+        if response.error.empty?
+          return "", 0
+        else
+          return response.error.b, 1
+        end
+      end
     end
   end
 end

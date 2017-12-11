@@ -75,9 +75,6 @@ module Gitlab
         @attributes = Gitlab::Git::Attributes.new(path)
       end
 
-      delegate  :empty?,
-                to: :rugged
-
       def ==(other)
         path == other.path
       end
@@ -205,6 +202,13 @@ module Gitlab
           end
         end
       end
+
+      # Git repository can contains some hidden refs like:
+      #   /refs/notes/*
+      #   /refs/git-as-svn/*
+      #   /refs/pulls/*
+      # This refs by default not visible in project page and not cloned to client side.
+      alias_method :has_visible_content?, :has_local_branches?
 
       def has_local_branches_rugged?
         rugged.branches.each(:local).any? do |ref|
@@ -1004,7 +1008,7 @@ module Gitlab
         Gitlab::Git.check_namespace!(start_repository)
         start_repository = RemoteRepository.new(start_repository) unless start_repository.is_a?(RemoteRepository)
 
-        return yield nil if start_repository.empty_repo?
+        return yield nil if start_repository.empty?
 
         if start_repository.same_repository?(self)
           yield commit(start_branch_name)
@@ -1120,24 +1124,8 @@ module Gitlab
         Gitlab::Git::Commit.find(self, ref)
       end
 
-      # Refactoring aid; allows us to copy code from app/models/repository.rb
-      def empty_repo?
-        !exists? || !has_visible_content?
-      end
-
-      #
-      # Git repository can contains some hidden refs like:
-      #   /refs/notes/*
-      #   /refs/git-as-svn/*
-      #   /refs/pulls/*
-      # This refs by default not visible in project page and not cloned to client side.
-      #
-      # This method return true if repository contains some content visible in project page.
-      #
-      def has_visible_content?
-        return @has_visible_content if defined?(@has_visible_content)
-
-        @has_visible_content = has_local_branches?
+      def empty?
+        !has_visible_content?
       end
 
       # Like all public `Gitlab::Git::Repository` methods, this method is part
@@ -1172,9 +1160,15 @@ module Gitlab
       end
 
       def fsck
-        output, status = run_git(%W[--git-dir=#{path} fsck], nice: true)
+        gitaly_migrate(:git_fsck) do |is_enabled|
+          msg, status = if is_enabled
+                          gitaly_fsck
+                        else
+                          shell_fsck
+                        end
 
-        raise GitError.new("Could not fsck repository:\n#{output}") unless status.zero?
+          raise GitError.new("Could not fsck repository: #{msg}") unless status.zero?
+        end
       end
 
       def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
@@ -1320,6 +1314,14 @@ module Gitlab
         worktree_info_path = File.join(worktree_git_path, 'info')
         FileUtils.mkdir_p(worktree_info_path)
         File.write(File.join(worktree_info_path, 'sparse-checkout'), files)
+      end
+
+      def gitaly_fsck
+        gitaly_repository_client.fsck
+      end
+
+      def shell_fsck
+        run_git(%W[--git-dir=#{path} fsck], nice: true)
       end
 
       def rugged_fetch_source_branch(source_repository, source_branch, local_ref)
