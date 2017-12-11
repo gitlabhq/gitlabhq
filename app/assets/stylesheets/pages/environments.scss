@@ -173,7 +173,7 @@
 
 .prometheus-graph-overlay {
   fill: none;
-  opacity: 0.0;
+  opacity: 0;
   pointer-events: all;
 }
 
@@ -201,8 +201,9 @@
   stroke-width: 1;
 }
 
-.deploy-info-text {
-  dominant-baseline: text-before-edge;
+.divider-line {
+  stroke-width: 1;
+  stroke: $gray-darkest;
 }
 
 .prometheus-state {
@@ -310,6 +311,20 @@
 
     .axis-tick {
       stroke: $gray-darker;
+    }
+
+    .deploy-info-text {
+      dominant-baseline: text-before-edge;
+      font-size: 12px;
+    }
+
+    .deploy-info-text-link {
+      font-family: $monospace_font;
+      fill: $gl-link-color;
+
+      &:hover {
+        fill: $gl-link-hover-color;
+      }
     }
 
     @media (max-width: $screen-sm-max) {

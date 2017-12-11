@@ -3,6 +3,10 @@ module Gitlab
     class Importer
       include Gitlab::ShellAdapter
 
+      def self.refmap
+        Gitlab::GithubImport.refmap
+      end
+
       attr_reader :errors, :project, :repo, :repo_url
 
       def initialize(project)
@@ -15,6 +19,7 @@ module Gitlab
 
       def client
         return @client if defined?(@client)
+
         unless credentials
           raise Projects::ImportService::Error,
                 "Unable to find project import data credentials for project ID: #{@project.id}"

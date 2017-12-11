@@ -6,11 +6,19 @@ class Projects::PipelinesSettingsController < Projects::ApplicationController
   end
 
   def update
-    if @project.update(update_params)
-      flash[:notice] = "Pipelines settings for '#{@project.name}' were successfully updated."
-      redirect_to project_settings_ci_cd_path(@project)
-    else
-      render 'show'
+    Projects::UpdateService.new(project, current_user, update_params).tap do |service|
+      if service.execute
+        flash[:notice] = "Pipelines settings for '#{@project.name}' were successfully updated."
+
+        if service.run_auto_devops_pipeline?
+          CreatePipelineWorker.perform_async(project.id, current_user.id, project.default_branch, :web, ignore_skip_ci: true, save_on_errors: false)
+          flash[:success] = "A new Auto DevOps pipeline has been created, go to <a href=\"#{project_pipelines_path(@project)}\">Pipelines page</a> for details".html_safe
+        end
+
+        redirect_to project_settings_ci_cd_path(@project)
+      else
+        render 'show'
+      end
     end
   end
 

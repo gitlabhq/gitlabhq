@@ -2,8 +2,7 @@ require 'json'
 require 'socket'
 
 class IrkerWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   def perform(project_id, chans, colors, push_data, settings)
     project = Project.find(project_id)
@@ -104,6 +103,7 @@ class IrkerWorker
     parents = commit.parents
     # Return old value if there's no new one
     return push_data['before'] if parents.empty?
+
     # Or return the first parent-commit
     parents[0].id
   end

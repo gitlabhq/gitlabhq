@@ -16,12 +16,14 @@ comments: false
 - [GitLab core team & GitLab Inc. contribution process](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/PROCESS.md)
 - [Generate a changelog entry with `bin/changelog`](changelog.md)
 - [Code review guidelines](code_review.md) for reviewing code and having code reviewed.
-- [Limit conflicts with EE when developing on CE](limit_ee_conflicts.md)
+- [Automatic CE->EE merge](automatic_ce_ee_merge.md)
+- [Guidelines for implementing Enterprise Edition features](ee_features.md)
 
 ## UX and frontend guides
 
 - [UX guide](ux_guide/index.md) for building GitLab with existing CSS styles and elements
 - [Frontend guidelines](fe_guide/index.md)
+- [Emoji guide](fe_guide/emojis.md)
 
 ## Backend guides
 
@@ -70,6 +72,7 @@ comments: false
 - [Iterating tables in batches](iterating_tables_in_batches.md)
 - [Ordering table columns](ordering_table_columns.md)
 - [Verifying database capabilities](verifying_database_capabilities.md)
+- [Database Debugging and Troubleshooting](database_debugging.md)
 
 ## Testing guides
 

@@ -58,8 +58,14 @@ module Gitlab
         end
       end
 
-      def pages
-        gollum_wiki.pages.map { |gollum_page| new_page(gollum_page) }
+      def pages(limit: nil)
+        @repository.gitaly_migrate(:wiki_get_all_pages, status: Gitlab::GitalyClient::MigrationStatus::DISABLED) do |is_enabled|
+          if is_enabled
+            gitaly_get_all_pages
+          else
+            gollum_get_all_pages(limit: limit)
+          end
+        end
       end
 
       def page(title:, version: nil, dir: nil)
@@ -82,12 +88,21 @@ module Gitlab
         end
       end
 
-      def page_versions(page_path)
+      # options:
+      #  :page     - The Integer page number.
+      #  :per_page - The number of items per page.
+      #  :limit    - Total number of items to return.
+      def page_versions(page_path, options = {})
         current_page = gollum_page_by_path(page_path)
-        current_page.versions.map do |gollum_git_commit|
-          gollum_page = gollum_wiki.page(current_page.title, gollum_git_commit.id)
-          new_version(gollum_page, gollum_git_commit.id)
+
+        commits_from_page(current_page, options).map do |gitlab_git_commit|
+          gollum_page = gollum_wiki.page(current_page.title, gitlab_git_commit.id)
+          Gitlab::Git::WikiPageVersion.new(gitlab_git_commit, gollum_page&.format)
         end
+      end
+
+      def count_page_versions(page_path)
+        @repository.count_commits(ref: 'HEAD', path: page_path)
       end
 
       def preview_slug(title, format)
@@ -103,6 +118,22 @@ module Gitlab
       end
 
       private
+
+      # options:
+      #  :page     - The Integer page number.
+      #  :per_page - The number of items per page.
+      #  :limit    - Total number of items to return.
+      def commits_from_page(gollum_page, options = {})
+        unless options[:limit]
+          options[:offset] = ([1, options.delete(:page).to_i].max - 1) * Gollum::Page.per_page
+          options[:limit] = (options.delete(:per_page) || Gollum::Page.per_page).to_i
+        end
+
+        @repository.log(ref: gollum_page.last_version.id,
+                        path: gollum_page.path,
+                        limit: options[:limit],
+                        offset: options[:offset])
+      end
 
       def gollum_wiki
         @gollum_wiki ||= Gollum::Wiki.new(@repository.path)
@@ -120,8 +151,17 @@ module Gitlab
       end
 
       def new_version(gollum_page, commit_id)
-        commit = Gitlab::Git::Commit.find(@repository, commit_id)
-        Gitlab::Git::WikiPageVersion.new(commit, gollum_page&.format)
+        Gitlab::Git::WikiPageVersion.new(version(commit_id), gollum_page&.format)
+      end
+
+      def version(commit_id)
+        commit_find_proc = -> { Gitlab::Git::Commit.find(@repository, commit_id) }
+
+        if RequestStore.active?
+          RequestStore.fetch([:wiki_version_commit, commit_id]) { commit_find_proc.call }
+        else
+          commit_find_proc.call
+        end
       end
 
       def assert_type!(object, klass)
@@ -179,6 +219,10 @@ module Gitlab
         Gitlab::Git::WikiFile.new(gollum_file)
       end
 
+      def gollum_get_all_pages(limit: nil)
+        gollum_wiki.pages(limit: limit).map { |gollum_page| new_page(gollum_page) }
+      end
+
       def gitaly_write_page(name, format, content, commit_details)
         gitaly_wiki_client.write_page(name, format, content, commit_details)
       end
@@ -203,6 +247,12 @@ module Gitlab
         return unless wiki_file
 
         Gitlab::Git::WikiFile.new(wiki_file)
+      end
+
+      def gitaly_get_all_pages
+        gitaly_wiki_client.get_all_pages.map do |wiki_page, version|
+          Gitlab::Git::WikiPage.new(wiki_page, version)
+        end
       end
     end
   end

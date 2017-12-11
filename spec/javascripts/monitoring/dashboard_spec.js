@@ -1,6 +1,8 @@
 import Vue from 'vue';
+import MockAdapter from 'axios-mock-adapter';
 import Dashboard from '~/monitoring/components/dashboard.vue';
-import { MonitorMockInterceptor } from './mock_data';
+import axios from '~/lib/utils/axios_utils';
+import { metricsGroupsAPIResponse, mockApiEndpoint } from './mock_data';
 
 describe('Dashboard', () => {
   const fixtureName = 'environments/metrics/metrics.html.raw';
@@ -26,13 +28,17 @@ describe('Dashboard', () => {
   });
 
   describe('requests information to the server', () => {
+    let mock;
     beforeEach(() => {
       document.querySelector('#prometheus-graphs').setAttribute('data-has-metrics', 'true');
-      Vue.http.interceptors.push(MonitorMockInterceptor);
+      mock = new MockAdapter(axios);
+      mock.onGet(mockApiEndpoint).reply(200, {
+        metricsGroupsAPIResponse,
+      });
     });
 
     afterEach(() => {
-      Vue.http.interceptors = _.without(Vue.http.interceptors, MonitorMockInterceptor);
+      mock.reset();
     });
 
     it('shows up a loading state', (done) => {

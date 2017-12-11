@@ -336,6 +336,29 @@ describe Projects::NotesController do
     end
   end
 
+  describe 'PUT update' do
+    let(:request_params) do
+      {
+        namespace_id: project.namespace,
+        project_id: project,
+        id: note,
+        format: :json,
+        note: {
+          note: "New comment"
+        }
+      }
+    end
+
+    before do
+      sign_in(note.author)
+      project.team << [note.author, :developer]
+    end
+
+    it "updates the note" do
+      expect { put :update, request_params }.to change { note.reload.note }
+    end
+  end
+
   describe 'DELETE destroy' do
     let(:request_params) do
       {

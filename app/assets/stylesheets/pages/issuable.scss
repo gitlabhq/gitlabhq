@@ -6,28 +6,20 @@
 }
 
 .issuable-warning-icon {
-  color: $orange-600;
   background-color: $orange-100;
   border-radius: $border-radius-default;
-  padding: 5px;
   margin: 0 $btn-side-margin 0 0;
   width: $issuable-warning-size;
   height: $issuable-warning-size;
   text-align: center;
 
+  .icon {
+    fill: $orange-600;
+    vertical-align: text-bottom;
+  }
+
   &:first-of-type {
     margin-right: $issuable-warning-icon-margin;
-  }
-}
-
-.sidebar-item-icon {
-  border-radius: $border-radius-default;
-  padding: 5px;
-  margin: 0 3px 0 -4px;
-
-  &.is-active {
-    color: $orange-600;
-    background-color: $orange-50;
   }
 }
 
@@ -78,14 +70,13 @@
 
   .title {
     padding: 0;
-    margin-bottom: 16px;
+    margin-bottom: $gl-padding;
     border-bottom: 0;
   }
 
   .btn-edit {
     margin-left: auto;
-    // Set height to match title height
-    height: 2em;
+    height: $gl-padding * 2;
   }
 
   // Border around images in issue and MR descriptions.
@@ -118,6 +109,10 @@
     .color-label {
       padding: 6px 10px;
       border-radius: $label-border-radius;
+    }
+
+    &:hover .color-label {
+      text-decoration: underline;
     }
   }
 
@@ -181,6 +176,14 @@
 
       &:hover {
         color: $gray-darkest;
+      }
+    }
+
+    &.assignee {
+      .author_link:hover {
+        .author {
+          text-decoration: underline;
+        }
       }
     }
   }
@@ -284,8 +287,13 @@
       font-weight: $gl-font-weight-normal;
     }
 
-    .no-value {
+    .no-value,
+    .btn-secondary-hover-link {
       color: $gl-text-color-secondary;
+    }
+
+    .btn-secondary-hover-link:hover {
+      color: $gl-link-color;
     }
 
     .sidebar-collapsed-icon {
@@ -295,6 +303,8 @@
     .gutter-toggle {
       margin-top: 7px;
       border-left: 1px solid $border-gray-normal;
+      padding-left: 0;
+      text-align: center;
     }
 
     .title .gutter-toggle {
@@ -367,7 +377,7 @@
         fill: $issuable-sidebar-color;
       }
 
-      &:hover,
+      &:hover:not(.disabled),
       &:hover .todo-undone {
         color: $gl-text-color;
 
@@ -470,7 +480,6 @@
   a:not(.btn-retry) {
     &:hover {
       color: $md-link-color;
-      text-decoration: none;
 
       .avatar {
         border-color: rgba($avatar-border, .2);
@@ -615,50 +624,16 @@
   margin-top: 0;
   height: auto;
   align-self: center;
-
-  @media (max-width: $screen-xs-max) {
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-}
-
-.issuable-header {
-  position: relative;
-  padding-left: 45px;
-  padding-right: 45px;
-  line-height: 35px;
-  display: flex;
-  flex-grow: 1;
-
-  @media (min-width: $screen-sm-min) {
-    float: left;
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
-.issuable-actions {
-  @include new-style-dropdown;
-
-  align-self: center;
-  flex-shrink: 0;
-  flex: 0 0 auto;
-
-  @media (min-width: $screen-sm-min) {
-    float: right;
-  }
 }
 
 .issuable-gutter-toggle {
   @media (max-width: $screen-sm-max) {
-    position: absolute;
-    top: 0;
-    right: 0;
+    margin-left: $btn-side-margin;
   }
 }
 
 .issuable-meta {
+  flex: 1;
   display: inline-block;
   font-size: 14px;
   line-height: 24px;
@@ -906,5 +881,23 @@
 
   .dropdown-toggle > .icon {
     margin: 0 3px;
+  }
+}
+
+.right-sidebar-collapsed {
+  .sidebar-grouped-item {
+    .sidebar-collapsed-icon {
+      margin-bottom: 0;
+    }
+
+    .sidebar-collapsed-divider {
+      line-height: 5px;
+      font-size: 12px;
+      color: $theme-gray-700;
+
+      + .sidebar-collapsed-icon {
+        padding-top: 0;
+      }
+    }
   }
 }

@@ -44,7 +44,7 @@ module GoogleApi
         service = Google::Apis::ContainerV1::ContainerService.new
         service.authorization = access_token
 
-        service.get_zone_cluster(project_id, zone, cluster_id)
+        service.get_zone_cluster(project_id, zone, cluster_id, options: user_agent_header)
       end
 
       def projects_zones_clusters_create(project_id, zone, cluster_name, cluster_size, machine_type:)
@@ -62,14 +62,14 @@ module GoogleApi
             }
           } )
 
-        service.create_cluster(project_id, zone, request_body)
+        service.create_cluster(project_id, zone, request_body, options: user_agent_header)
       end
 
       def projects_zones_operations(project_id, zone, operation_id)
         service = Google::Apis::ContainerV1::ContainerService.new
         service.authorization = access_token
 
-        service.get_zone_operation(project_id, zone, operation_id)
+        service.get_zone_operation(project_id, zone, operation_id, options: user_agent_header)
       end
 
       def parse_operation_id(self_link)
@@ -81,6 +81,12 @@ module GoogleApi
 
       def token_life_time(expires_at)
         DateTime.strptime(expires_at, '%s').to_time.utc - Time.now.utc
+      end
+
+      def user_agent_header
+        Google::Apis::RequestOptions.new.tap do |options|
+          options.header = { 'User-Agent': "GitLab/#{Gitlab::VERSION.match('(\d+\.\d+)').captures.first} (GPN:GitLab;)" }
+        end
       end
     end
   end

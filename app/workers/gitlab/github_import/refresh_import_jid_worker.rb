@@ -3,7 +3,7 @@
 module Gitlab
   module GithubImport
     class RefreshImportJidWorker
-      include Sidekiq::Worker
+      include ApplicationWorker
       include GithubImport::Queue
 
       # The interval to schedule new instances of this job at.

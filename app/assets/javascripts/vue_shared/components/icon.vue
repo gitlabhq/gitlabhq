@@ -6,13 +6,15 @@
   Sample configuration:
 
   <icon
-    :img-src="userAvatarSrc"
-    :img-alt="tooltipText"
-    :tooltip-text="tooltipText"
-    tooltip-placement="top"
+    name="retry"
+    :size="32"
+    css-classes="top"
   />
 
 */
+  // only allow classes in images.scss e.g. s12
+  const validSizes = [8, 12, 16, 18, 24, 32, 48, 72];
+
   export default {
     props: {
       name: {
@@ -23,13 +25,40 @@
       size: {
         type: Number,
         required: false,
-        default: 0,
+        default: 16,
+        validator(value) {
+          return validSizes.includes(value);
+        },
       },
 
       cssClasses: {
         type: String,
         required: false,
         default: '',
+      },
+
+      width: {
+        type: Number,
+        required: false,
+        default: null,
+      },
+
+      height: {
+        type: Number,
+        required: false,
+        default: null,
+      },
+
+      y: {
+        type: Number,
+        required: false,
+        default: null,
+      },
+
+      x: {
+        type: Number,
+        required: false,
+        default: null,
       },
     },
 
@@ -43,10 +72,15 @@
     },
   };
 </script>
+
 <template>
   <svg
-    :class="[iconSizeClass, cssClasses]">
-    <use 
+    :class="[iconSizeClass, cssClasses]"
+    :width="width"
+    :height="height"
+    :x="x"
+    :y="y">
+    <use
       v-bind="{'xlink:href':spriteHref}"/>
   </svg>
 </template>

@@ -7,7 +7,7 @@
 
 .diff-file .diff-content {
   tr.line_holder:hover > td .line_note_link {
-    opacity: 1.0;
+    opacity: 1;
     filter: alpha(opacity = 100);
   }
 }
@@ -113,6 +113,8 @@
 
   .icon {
     margin-right: $issuable-warning-icon-margin;
+    vertical-align: text-bottom;
+    fill: $orange-600;
   }
 
   + .md-area {
@@ -137,9 +139,21 @@
   }
 }
 
-.sidebar-item-value {
-  .fa {
-    background-color: inherit;
+.sidebar-item-icon {
+  border-radius: $border-radius-default;
+  margin: 0 5px 0 0;
+  vertical-align: text-bottom;
+
+  &.is-active {
+    fill: $orange-600;
+  }
+
+  .sidebar-collapsed-icon & {
+    margin: 0;
+  }
+
+  .sidebar-item-value & {
+    fill: $theme-gray-700;
   }
 }
 

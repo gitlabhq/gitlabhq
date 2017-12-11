@@ -203,18 +203,44 @@ describe API::Internal do
       end
 
       context 'with env passed as a JSON' do
-        it 'sets env in RequestStore' do
-          expect(Gitlab::Git::Env).to receive(:set).with({
-            'GIT_OBJECT_DIRECTORY' => 'foo',
-            'GIT_ALTERNATE_OBJECT_DIRECTORIES' => 'bar'
-          })
+        context 'when relative path envs are not set' do
+          it 'sets env in RequestStore' do
+            expect(Gitlab::Git::Env).to receive(:set).with({
+              'GIT_OBJECT_DIRECTORY' => 'foo',
+              'GIT_ALTERNATE_OBJECT_DIRECTORIES' => 'bar'
+            })
 
-          push(key, project.wiki, env: {
-            GIT_OBJECT_DIRECTORY: 'foo',
-            GIT_ALTERNATE_OBJECT_DIRECTORIES: 'bar'
-          }.to_json)
+            push(key, project.wiki, env: {
+              GIT_OBJECT_DIRECTORY: 'foo',
+              GIT_ALTERNATE_OBJECT_DIRECTORIES: 'bar'
+            }.to_json)
 
-          expect(response).to have_gitlab_http_status(200)
+            expect(response).to have_gitlab_http_status(200)
+          end
+        end
+
+        context 'when relative path envs are set' do
+          it 'sets env in RequestStore' do
+            obj_dir_relative = './objects'
+            alt_obj_dirs_relative = ['./alt-objects-1', './alt-objects-2']
+            repo_path = project.wiki.repository.path_to_repo
+
+            expect(Gitlab::Git::Env).to receive(:set).with({
+              'GIT_OBJECT_DIRECTORY' => File.join(repo_path, obj_dir_relative),
+              'GIT_ALTERNATE_OBJECT_DIRECTORIES' => alt_obj_dirs_relative.map { |d| File.join(repo_path, d) },
+              'GIT_OBJECT_DIRECTORY_RELATIVE' => obj_dir_relative,
+              'GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE' => alt_obj_dirs_relative
+            })
+
+            push(key, project.wiki, env: {
+              GIT_OBJECT_DIRECTORY: 'foo',
+              GIT_ALTERNATE_OBJECT_DIRECTORIES: 'bar',
+              GIT_OBJECT_DIRECTORY_RELATIVE: obj_dir_relative,
+              GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE: alt_obj_dirs_relative
+            }.to_json)
+
+            expect(response).to have_gitlab_http_status(200)
+          end
         end
       end
 
@@ -243,9 +269,8 @@ describe API::Internal do
       end
 
       context "git pull" do
-        context "gitaly disabled" do
+        context "gitaly disabled", :disable_gitaly do
           it "has the correct payload" do
-            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:ssh_upload_pack).and_return(false)
             pull(key, project)
 
             expect(response).to have_gitlab_http_status(200)
@@ -259,7 +284,6 @@ describe API::Internal do
 
         context "gitaly enabled" do
           it "has the correct payload" do
-            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:ssh_upload_pack).and_return(true)
             pull(key, project)
 
             expect(response).to have_gitlab_http_status(200)
@@ -278,9 +302,8 @@ describe API::Internal do
       end
 
       context "git push" do
-        context "gitaly disabled" do
+        context "gitaly disabled", :disable_gitaly do
           it "has the correct payload" do
-            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:ssh_receive_pack).and_return(false)
             push(key, project)
 
             expect(response).to have_gitlab_http_status(200)
@@ -294,7 +317,6 @@ describe API::Internal do
 
         context "gitaly enabled" do
           it "has the correct payload" do
-            allow(Gitlab::GitalyClient).to receive(:feature_enabled?).with(:ssh_receive_pack).and_return(true)
             push(key, project)
 
             expect(response).to have_gitlab_http_status(200)
@@ -515,16 +537,7 @@ describe API::Internal do
 
     context 'the project path was changed' do
       let!(:old_path_to_repo) { project.repository.path_to_repo }
-      let!(:old_full_path) { project.full_path }
-      let(:project_moved_message) do
-        <<-MSG.strip_heredoc
-          Project '#{old_full_path}' was moved to '#{project.full_path}'.
-
-          Please update your Git remote and try again:
-
-            git remote set-url origin #{project.ssh_url_to_repo}
-        MSG
-      end
+      let!(:repository) { project.repository }
 
       before do
         project.team << [user, :developer]
@@ -533,19 +546,17 @@ describe API::Internal do
       end
 
       it 'rejects the push' do
-        push_with_path(key, old_path_to_repo)
+        push(key, project)
 
         expect(response).to have_gitlab_http_status(200)
-        expect(json_response['status']).to be_falsey
-        expect(json_response['message']).to eq(project_moved_message)
+        expect(json_response['status']).to be_falsy
       end
 
       it 'rejects the SSH pull' do
-        pull_with_path(key, old_path_to_repo)
+        pull(key, project)
 
         expect(response).to have_gitlab_http_status(200)
-        expect(json_response['status']).to be_falsey
-        expect(json_response['message']).to eq(project_moved_message)
+        expect(json_response['status']).to be_falsy
       end
     end
   end
@@ -673,7 +684,7 @@ describe API::Internal do
   #   end
   # end
 
-  describe 'POST /internal/post_receive' do
+  describe 'POST /internal/post_receive', :clean_gitlab_redis_shared_state do
     let(:identifier) { 'key-123' }
 
     let(:valid_params) do
@@ -691,6 +702,8 @@ describe API::Internal do
 
     before do
       project.team << [user, :developer]
+      allow(described_class).to receive(:identify).and_return(user)
+      allow_any_instance_of(Gitlab::Identifier).to receive(:identify).and_return(user)
     end
 
     it 'enqueues a PostReceive worker job' do
@@ -756,6 +769,19 @@ describe API::Internal do
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['broadcast_message']).to eq(nil)
+      end
+    end
+
+    context 'with a redirected data' do
+      it 'returns redirected message on the response' do
+        project_moved = Gitlab::Checks::ProjectMoved.new(project, user, 'foo/baz', 'http')
+        project_moved.add_redirect_message
+
+        post api("/internal/post_receive"), valid_params
+
+        expect(response).to have_gitlab_http_status(200)
+        expect(json_response["redirected_message"]).to be_present
+        expect(json_response["redirected_message"]).to eq(project_moved.redirect_message)
       end
     end
   end

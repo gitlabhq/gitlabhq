@@ -28,14 +28,14 @@ feature 'Mini Pipeline Graph', :js do
     let(:artifacts_file2) { fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png') }
 
     before do
-      create(:ci_build, pipeline: pipeline, artifacts_file: artifacts_file1)
+      create(:ci_build, pipeline: pipeline, legacy_artifacts_file: artifacts_file1)
       create(:ci_build, pipeline: pipeline, when: 'manual')
     end
 
     it 'avoids repeated database queries' do
       before = ActiveRecord::QueryRecorder.new { visit_merge_request(:json) }
 
-      create(:ci_build, pipeline: pipeline, artifacts_file: artifacts_file2)
+      create(:ci_build, pipeline: pipeline, legacy_artifacts_file: artifacts_file2)
       create(:ci_build, pipeline: pipeline, when: 'manual')
 
       after = ActiveRecord::QueryRecorder.new { visit_merge_request(:json) }

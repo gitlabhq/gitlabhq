@@ -122,9 +122,7 @@ module Issuable
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
-      title = to_fuzzy_arel(:title, query)
-
-      where(title)
+      fuzzy_search(query, [:title])
     end
 
     # Searches for records with a matching title or description.
@@ -135,10 +133,7 @@ module Issuable
     #
     # Returns an ActiveRecord::Relation.
     def full_search(query)
-      title = to_fuzzy_arel(:title, query)
-      description = to_fuzzy_arel(:description, query)
-
-      where(title&.or(description))
+      fuzzy_search(query, [:title, :description])
     end
 
     def sort(method, excluded_labels: [])
@@ -255,8 +250,10 @@ module Issuable
     participants(user).include?(user)
   end
 
-  def to_hook_data(user, old_labels: [], old_assignees: [])
+  def to_hook_data(user, old_associations: {})
     changes = previous_changes
+    old_labels = old_associations.fetch(:labels, [])
+    old_assignees = old_associations.fetch(:assignees, [])
 
     if old_labels != labels
       changes[:labels] = [old_labels.map(&:hook_attrs), labels.map(&:hook_attrs)]
@@ -267,6 +264,14 @@ module Issuable
         changes[:assignees] = [old_assignees.map(&:hook_attrs), assignees.map(&:hook_attrs)]
       else
         changes[:assignee] = [old_assignees&.first&.hook_attrs, assignee&.hook_attrs]
+      end
+    end
+
+    if self.respond_to?(:total_time_spent)
+      old_total_time_spent = old_associations.fetch(:total_time_spent, nil)
+
+      if old_total_time_spent != total_time_spent
+        changes[:total_time_spent] = [old_total_time_spent, total_time_spent]
       end
     end
 
@@ -340,5 +345,12 @@ module Issuable
   #
   def first_contribution?
     false
+  end
+
+  ##
+  # Overriden in MergeRequest
+  #
+  def wipless_title_changed(old_title)
+    old_title != title
   end
 end

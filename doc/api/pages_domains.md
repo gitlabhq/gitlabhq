@@ -4,6 +4,31 @@ Endpoints for connecting custom domain(s) and TLS certificates in [GitLab Pages]
 
 The GitLab Pages feature must be enabled to use these endpoints. Find out more about [administering](../administration/pages/index.md) and [using](../user/project/pages/index.md) the feature.
 
+## List all pages domains
+
+Get a list of all pages domains. The user must have admin permissions.
+
+```http
+GET /pages/domains
+```
+
+```bash
+curl --header "PRIVATE-TOKEN: 9koXpg98eAheJpvBs5tK" https://gitlab.example.com/api/v4/pages/domains
+```
+
+```json
+[
+  {
+    "domain": "ssl.domain.example",
+    "url": "https://ssl.domain.example",
+    "certificate": {
+      "expired": false,
+      "expiration": "2020-04-12T14:32:00.000Z"
+    }
+  }
+]
+```
+
 ## List pages domains
 
 Get a list of project pages domains. The user must have permissions to view pages domains.

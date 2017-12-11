@@ -42,6 +42,7 @@ Rails.application.routes.draw do
   scope path: '-' do
     get 'liveness' => 'health#liveness'
     get 'readiness' => 'health#readiness'
+    post 'storage_check' => 'health#storage_check'
     resources :metrics, only: [:index]
     mount Peek::Railtie => '/peek'
 
@@ -99,8 +100,6 @@ Rails.application.routes.draw do
   draw :project
 
   root to: "root#index"
-
-  draw :test if Rails.env.test?
 
   get '*unmatched_route', to: 'application#route_not_found'
 end

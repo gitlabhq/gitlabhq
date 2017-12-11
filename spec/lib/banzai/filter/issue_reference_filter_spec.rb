@@ -157,6 +157,12 @@ describe Banzai::Filter::IssueReferenceFilter do
       expect(doc.text).to eq("Fixed (#{project2.full_path}##{issue.iid}.)")
     end
 
+    it 'includes default classes' do
+      doc = reference_filter("Fixed (#{reference}.)")
+
+      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue has-tooltip'
+    end
+
     it 'ignores invalid issue IDs on the referenced project' do
       exp = act = "Fixed #{invalidate_reference(reference)}"
 
@@ -199,6 +205,12 @@ describe Banzai::Filter::IssueReferenceFilter do
       doc = reference_filter("Fixed (#{reference}.)")
 
       expect(doc.text).to eq("Fixed (#{project2.path}##{issue.iid}.)")
+    end
+
+    it 'includes default classes' do
+      doc = reference_filter("Fixed (#{reference}.)")
+
+      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue has-tooltip'
     end
 
     it 'ignores invalid issue IDs on the referenced project' do
@@ -245,6 +257,12 @@ describe Banzai::Filter::IssueReferenceFilter do
       expect(doc.text).to eq("Fixed (#{project2.path}##{issue.iid}.)")
     end
 
+    it 'includes default classes' do
+      doc = reference_filter("Fixed (#{reference}.)")
+
+      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue has-tooltip'
+    end
+
     it 'ignores invalid issue IDs on the referenced project' do
       exp = act = "Fixed #{invalidate_reference(reference)}"
 
@@ -269,7 +287,14 @@ describe Banzai::Filter::IssueReferenceFilter do
 
     it 'links with adjacent text' do
       doc = reference_filter("Fixed (#{reference}.)")
+
       expect(doc.to_html).to match(/\(<a.+>#{Regexp.escape(issue.to_reference(project))} \(comment 123\)<\/a>\.\)/)
+    end
+
+    it 'includes default classes' do
+      doc = reference_filter("Fixed (#{reference}.)")
+
+      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue has-tooltip'
     end
   end
 
@@ -291,7 +316,14 @@ describe Banzai::Filter::IssueReferenceFilter do
 
     it 'links with adjacent text' do
       doc = reference_filter("Fixed (#{reference_link}.)")
+
       expect(doc.to_html).to match(/\(<a.+>Reference<\/a>\.\)/)
+    end
+
+    it 'includes default classes' do
+      doc = reference_filter("Fixed (#{reference_link}.)")
+
+      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue has-tooltip'
     end
   end
 
@@ -313,7 +345,14 @@ describe Banzai::Filter::IssueReferenceFilter do
 
     it 'links with adjacent text' do
       doc = reference_filter("Fixed (#{reference_link}.)")
+
       expect(doc.to_html).to match(/\(<a.+>Reference<\/a>\.\)/)
+    end
+
+    it 'includes default classes' do
+      doc = reference_filter("Fixed (#{reference_link}.)")
+
+      expect(doc.css('a').first.attr('class')).to eq 'gfm gfm-issue has-tooltip'
     end
   end
 
@@ -343,7 +382,9 @@ describe Banzai::Filter::IssueReferenceFilter do
       reference = "#{project.full_path}##{issue.iid}"
       doc = reference_filter("See #{reference}", context)
 
-      expect(doc.css('a').first.attr('href')).to eq helper.url_for_issue(issue.iid, project)
+      link = doc.css('a').first
+      expect(link.attr('href')).to eq(helper.url_for_issue(issue.iid, project))
+      expect(link.text).to include("#{project.full_path}##{issue.iid}")
     end
 
     it 'ignores reference for shorthand cross-reference' do
@@ -358,7 +399,9 @@ describe Banzai::Filter::IssueReferenceFilter do
 
       doc = reference_filter("See #{reference}", context)
 
-      expect(doc.css('a').first.attr('href')).to eq(helper.url_for_issue(issue.iid, project) + "#note_123")
+      link = doc.css('a').first
+      expect(link.attr('href')).to eq(helper.url_for_issue(issue.iid, project) + "#note_123")
+      expect(link.text).to include("#{project.full_path}##{issue.iid}")
     end
 
     it 'links to a valid reference for cross-reference in link href' do
@@ -367,7 +410,9 @@ describe Banzai::Filter::IssueReferenceFilter do
 
       doc = reference_filter("See #{reference_link}", context)
 
-      expect(doc.css('a').first.attr('href')).to eq helper.url_for_issue(issue.iid, project) + "#note_123"
+      link = doc.css('a').first
+      expect(link.attr('href')).to eq(helper.url_for_issue(issue.iid, project) + "#note_123")
+      expect(link.text).to include('Reference')
     end
 
     it 'links to a valid reference for issue reference in the link href' do
@@ -375,23 +420,25 @@ describe Banzai::Filter::IssueReferenceFilter do
       reference_link = %{<a href="#{reference}">Reference</a>}
       doc = reference_filter("See #{reference_link}", context)
 
-      expect(doc.css('a').first.attr('href')).to eq helper.url_for_issue(issue.iid, project)
+      link = doc.css('a').first
+      expect(link.attr('href')).to eq(helper.url_for_issue(issue.iid, project))
+      expect(link.text).to include('Reference')
     end
   end
 
-  describe '#issues_per_project' do
+  describe '#records_per_parent' do
     context 'using an internal issue tracker' do
       it 'returns a Hash containing the issues per project' do
         doc = Nokogiri::HTML.fragment('')
         filter = described_class.new(doc, project: project)
 
-        expect(filter).to receive(:projects_per_reference)
+        expect(filter).to receive(:parent_per_reference)
           .and_return({ project.full_path => project })
 
-        expect(filter).to receive(:references_per_project)
+        expect(filter).to receive(:references_per_parent)
           .and_return({ project.full_path => Set.new([issue.iid]) })
 
-        expect(filter.issues_per_project)
+        expect(filter.records_per_parent)
           .to eq({ project => { issue.iid => issue } })
       end
     end

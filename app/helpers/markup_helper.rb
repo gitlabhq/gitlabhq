@@ -53,6 +53,7 @@ module MarkupHelper
       # text, wrapping anything found in the requested link
       fragment.children.each do |node|
         next unless node.text?
+
         node.replace(link_to(node.text, url, html_options))
       end
     end
@@ -85,6 +86,8 @@ module MarkupHelper
     return '' unless text.present?
 
     context[:project] ||= @project
+    context[:group] ||= @group
+
     html = markdown_unsafe(text, context)
     prepare_for_rendering(html, context)
   end
@@ -112,7 +115,13 @@ module MarkupHelper
     text = wiki_page.content
     return '' unless text.present?
 
-    context = { pipeline: :wiki, project: @project, project_wiki: @project_wiki, page_slug: wiki_page.slug }
+    context = {
+      pipeline: :wiki,
+      project: @project,
+      project_wiki: @project_wiki,
+      page_slug: wiki_page.slug,
+      issuable_state_filter_enabled: true
+    }
 
     html =
       case wiki_page.format
@@ -221,7 +230,7 @@ module MarkupHelper
     data = options[:data].merge({ container: 'body' })
     content_tag :button,
       type: 'button',
-      class: 'toolbar-btn js-md has-tooltip hidden-xs',
+      class: 'toolbar-btn js-md has-tooltip',
       tabindex: -1,
       data: data,
       title: options[:title],

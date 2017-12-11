@@ -6,7 +6,6 @@
           %h5 Auto DevOps (Beta)
           %p
             Auto DevOps will automatically build, test, and deploy your application based on a predefined Continuous Integration and Delivery configuration.
-            This will happen starting with the next event (e.g.: push) that occurs to the project.
             = link_to 'Learn more about Auto DevOps', help_page_path('topics/autodevops/index.md')
             - message = auto_devops_warning_message(@project)
             - if message
@@ -20,6 +19,7 @@
                 %br
                 %span.descr
                   The Auto DevOps pipeline configuration will be used when there is no <code>.gitlab-ci.yml</code> in the project.
+
             .radio
               = form.label :enabled_false do
                 = form.radio_button :enabled, 'false'
@@ -29,13 +29,12 @@
                   An explicit <code>.gitlab-ci.yml</code> needs to be specified before you can begin using Continuous Integration and Delivery.
 
             .radio
-              = form.label :enabled_nil do
+              = form.label :enabled_ do
                 = form.radio_button :enabled, ''
                 %strong Instance default (#{current_application_settings.auto_devops_enabled? ? 'enabled' : 'disabled'})
                 %br
                 %span.descr
                   Follow the instance default to either have Auto DevOps enabled or disabled when there is no project specific <code>.gitlab-ci.yml</code>.
-                %br
             %p
               You need to specify a domain if you want to use Auto Review Apps and Auto Deploy stages.
             = form.text_field :domain, class: 'form-control', placeholder: 'domain.com'

@@ -7,7 +7,7 @@
           = link_to root_path, title: 'Dashboard', id: 'logo' do
             = brand_header_logo
             %span.logo-text.hidden-xs
-              = render 'shared/logo_type.svg'
+              = brand_header_logo_type
 
         - if current_user
           = render "layouts/nav/dashboard"
@@ -75,5 +75,3 @@
         %span.sr-only Toggle navigation
         = sprite_icon('more', size: 12, css_class: 'more-icon js-navbar-toggle-right')
         = sprite_icon('close', size: 12, css_class: 'close-icon js-navbar-toggle-left')
-
-= render 'shared/outdated_browser'

@@ -29,7 +29,9 @@ describe Repository do
   def expect_to_raise_storage_error
     expect { yield }.to raise_error do |exception|
       storage_exceptions = [Gitlab::Git::Storage::Inaccessible, Gitlab::Git::CommandError, GRPC::Unavailable]
-      expect(exception.class).to be_in(storage_exceptions)
+      known_exception = storage_exceptions.select { |e| exception.is_a?(e) }
+
+      expect(known_exception).not_to be_nil
     end
   end
 
@@ -298,24 +300,6 @@ describe Repository do
       subject { repository.merged_to_root_ref?('master') }
 
       it { is_expected.to be_falsey }
-    end
-
-    context 'when pre-loaded merged branches are provided' do
-      using RSpec::Parameterized::TableSyntax
-
-      where(:branch, :pre_loaded, :expected) do
-        'not-merged-branch' | ['branch-merged']     | false
-        'branch-merged'     | ['not-merged-branch'] | false
-        'branch-merged'     | ['branch-merged']     | true
-        'not-merged-branch' | ['not-merged-branch'] | false
-        'master'            | ['master']            | false
-      end
-
-      with_them do
-        subject { repository.merged_to_root_ref?(branch, pre_loaded) }
-
-        it { is_expected.to eq(expected) }
-      end
     end
   end
 
@@ -601,7 +585,7 @@ describe Repository do
     end
 
     it 'properly handles query when repo is empty' do
-      repository = create(:project).repository
+      repository = create(:project, :empty_repo).repository
       results = repository.search_files_by_content('test', 'master')
 
       expect(results).to match_array([])
@@ -637,7 +621,7 @@ describe Repository do
     end
 
     it 'properly handles query when repo is empty' do
-      repository = create(:project).repository
+      repository = create(:project, :empty_repo).repository
 
       results = repository.search_files_by_name('test', 'master')
 
@@ -652,9 +636,7 @@ describe Repository do
   end
 
   describe '#fetch_ref' do
-    # Setting the var here, sidesteps the stub that makes gitaly raise an error
-    # before the actual test call
-    set(:broken_repository) { create(:project, :broken_storage).repository }
+    let(:broken_repository) { create(:project, :broken_storage).repository }
 
     describe 'when storage is broken', :broken_storage  do
       it 'should raise a storage error' do
@@ -1166,6 +1148,31 @@ describe Repository do
     end
   end
 
+  describe '#branch_exists?' do
+    it 'uses branch_names' do
+      allow(repository).to receive(:branch_names).and_return(['foobar'])
+
+      expect(repository.branch_exists?('foobar')).to eq(true)
+      expect(repository.branch_exists?('master')).to eq(false)
+    end
+  end
+
+  describe '#branch_names', :use_clean_rails_memory_store_caching do
+    let(:fake_branch_names) { ['foobar'] }
+
+    it 'gets cached across Repository instances' do
+      allow(repository.raw_repository).to receive(:branch_names).once.and_return(fake_branch_names)
+
+      expect(repository.branch_names).to eq(fake_branch_names)
+
+      fresh_repository = Project.find(project.id).repository
+      expect(fresh_repository.object_id).not_to eq(repository.object_id)
+
+      expect(fresh_repository.raw_repository).not_to receive(:branch_names)
+      expect(fresh_repository.branch_names).to eq(fake_branch_names)
+    end
+  end
+
   describe '#update_autocrlf_option' do
     describe 'when autocrlf is not already set to :input' do
       before do
@@ -1197,17 +1204,15 @@ describe Repository do
     let(:empty_repository) { create(:project_empty_repo).repository }
 
     it 'returns true for an empty repository' do
-      expect(empty_repository.empty?).to eq(true)
+      expect(empty_repository).to be_empty
     end
 
     it 'returns false for a non-empty repository' do
-      expect(repository.empty?).to eq(false)
+      expect(repository).not_to be_empty
     end
 
     it 'caches the output' do
-      expect(repository.raw_repository).to receive(:empty?)
-        .once
-        .and_return(false)
+      expect(repository.raw_repository).to receive(:has_visible_content?).once
 
       repository.empty?
       repository.empty?
@@ -1365,77 +1370,97 @@ describe Repository do
   end
 
   describe '#revert' do
-    let(:new_image_commit) { repository.commit('33f3729a45c02fc67d00adb1b8bca394b0e761d9') }
-    let(:update_image_commit) { repository.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
-    let(:message) { 'revert message' }
+    shared_examples 'reverting a commit' do
+      let(:new_image_commit) { repository.commit('33f3729a45c02fc67d00adb1b8bca394b0e761d9') }
+      let(:update_image_commit) { repository.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
+      let(:message) { 'revert message' }
 
-    context 'when there is a conflict' do
-      it 'raises an error' do
-        expect { repository.revert(user, new_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
+      context 'when there is a conflict' do
+        it 'raises an error' do
+          expect { repository.revert(user, new_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
+        end
+      end
+
+      context 'when commit was already reverted' do
+        it 'raises an error' do
+          repository.revert(user, update_image_commit, 'master', message)
+
+          expect { repository.revert(user, update_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
+        end
+      end
+
+      context 'when commit can be reverted' do
+        it 'reverts the changes' do
+          expect(repository.revert(user, update_image_commit, 'master', message)).to be_truthy
+        end
+      end
+
+      context 'reverting a merge commit' do
+        it 'reverts the changes' do
+          merge_commit
+          expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).to be_present
+
+          repository.revert(user, merge_commit, 'master', message)
+          expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).not_to be_present
+        end
       end
     end
 
-    context 'when commit was already reverted' do
-      it 'raises an error' do
-        repository.revert(user, update_image_commit, 'master', message)
-
-        expect { repository.revert(user, update_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
-      end
+    context 'when Gitaly revert feature is enabled' do
+      it_behaves_like 'reverting a commit'
     end
 
-    context 'when commit can be reverted' do
-      it 'reverts the changes' do
-        expect(repository.revert(user, update_image_commit, 'master', message)).to be_truthy
-      end
-    end
-
-    context 'reverting a merge commit' do
-      it 'reverts the changes' do
-        merge_commit
-        expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).to be_present
-
-        repository.revert(user, merge_commit, 'master', message)
-        expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).not_to be_present
-      end
+    context 'when Gitaly revert feature is disabled', :disable_gitaly do
+      it_behaves_like 'reverting a commit'
     end
   end
 
   describe '#cherry_pick' do
-    let(:conflict_commit) { repository.commit('c642fe9b8b9f28f9225d7ea953fe14e74748d53b') }
-    let(:pickable_commit) { repository.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
-    let(:pickable_merge) { repository.commit('e56497bb5f03a90a51293fc6d516788730953899') }
-    let(:message) { 'cherry-pick message' }
+    shared_examples 'cherry-picking a commit' do
+      let(:conflict_commit) { repository.commit('c642fe9b8b9f28f9225d7ea953fe14e74748d53b') }
+      let(:pickable_commit) { repository.commit('7d3b0f7cff5f37573aea97cebfd5692ea1689924') }
+      let(:pickable_merge) { repository.commit('e56497bb5f03a90a51293fc6d516788730953899') }
+      let(:message) { 'cherry-pick message' }
 
-    context 'when there is a conflict' do
-      it 'raises an error' do
-        expect { repository.cherry_pick(user, conflict_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
+      context 'when there is a conflict' do
+        it 'raises an error' do
+          expect { repository.cherry_pick(user, conflict_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
+        end
+      end
+
+      context 'when commit was already cherry-picked' do
+        it 'raises an error' do
+          repository.cherry_pick(user, pickable_commit, 'master', message)
+
+          expect { repository.cherry_pick(user, pickable_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
+        end
+      end
+
+      context 'when commit can be cherry-picked' do
+        it 'cherry-picks the changes' do
+          expect(repository.cherry_pick(user, pickable_commit, 'master', message)).to be_truthy
+        end
+      end
+
+      context 'cherry-picking a merge commit' do
+        it 'cherry-picks the changes' do
+          expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).to be_nil
+
+          cherry_pick_commit_sha = repository.cherry_pick(user, pickable_merge, 'improve/awesome', message)
+          cherry_pick_commit_message = project.commit(cherry_pick_commit_sha).message
+
+          expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).not_to be_nil
+          expect(cherry_pick_commit_message).to eq(message)
+        end
       end
     end
 
-    context 'when commit was already cherry-picked' do
-      it 'raises an error' do
-        repository.cherry_pick(user, pickable_commit, 'master', message)
-
-        expect { repository.cherry_pick(user, pickable_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
-      end
+    context 'when Gitaly cherry_pick feature is enabled' do
+      it_behaves_like 'cherry-picking a commit'
     end
 
-    context 'when commit can be cherry-picked' do
-      it 'cherry-picks the changes' do
-        expect(repository.cherry_pick(user, pickable_commit, 'master', message)).to be_truthy
-      end
-    end
-
-    context 'cherry-picking a merge commit' do
-      it 'cherry-picks the changes' do
-        expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).to be_nil
-
-        cherry_pick_commit_sha = repository.cherry_pick(user, pickable_merge, 'improve/awesome', message)
-        cherry_pick_commit_message = project.commit(cherry_pick_commit_sha).message
-
-        expect(repository.blob_at_branch('improve/awesome', 'foo/bar/.gitkeep')).not_to be_nil
-        expect(cherry_pick_commit_message).to eq(message)
-      end
+    context 'when Gitaly cherry_pick feature is disabled', :disable_gitaly do
+      it_behaves_like 'cherry-picking a commit'
     end
   end
 

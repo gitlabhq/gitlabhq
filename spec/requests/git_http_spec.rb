@@ -324,9 +324,9 @@ describe 'Git HTTP requests' do
             <<-MSG.strip_heredoc
               Project '#{redirect.path}' was moved to '#{project.full_path}'.
 
-              Please update your Git remote and try again:
+              Please update your Git remote:
 
-                git remote set-url origin #{project.http_url_to_repo}
+                git remote set-url origin #{project.http_url_to_repo} and try again.
             MSG
           end
 
@@ -463,7 +463,7 @@ describe 'Git HTTP requests' do
 
               context 'when internal auth is disabled' do
                 before do
-                  allow_any_instance_of(ApplicationSetting).to receive(:password_authentication_enabled?) { false }
+                  allow_any_instance_of(ApplicationSetting).to receive(:password_authentication_enabled_for_git?) { false }
                 end
 
                 it 'rejects pulls with personal access token error message' do
@@ -533,9 +533,9 @@ describe 'Git HTTP requests' do
                   <<-MSG.strip_heredoc
                     Project '#{redirect.path}' was moved to '#{project.full_path}'.
 
-                    Please update your Git remote and try again:
+                    Please update your Git remote:
 
-                      git remote set-url origin #{project.http_url_to_repo}
+                      git remote set-url origin #{project.http_url_to_repo} and try again.
                   MSG
                 end
 

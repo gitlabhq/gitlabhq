@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-02 14:42+0100\n"
-"PO-Revision-Date: 2017-11-04 13:27-0400\n"
+"PO-Revision-Date: 2017-11-18 12:51-0500\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: Portuguese, Brazilian\n"
 "Language: pt_BR\n"
@@ -361,10 +361,10 @@ msgid "Browse Directory"
 msgstr "Navegar no Diretório"
 
 msgid "Browse File"
-msgstr "Pesquisar Arquivo"
+msgstr "Acessar arquivo"
 
 msgid "Browse Files"
-msgstr "Pesquisar Arquivos"
+msgstr "Acessar arquivos"
 
 msgid "Browse files"
 msgstr "Navegar pelos arquivos"
@@ -504,14 +504,14 @@ msgstr "Integração do cluster está ativada nesse projeto."
 msgid "ClusterIntegration|Cluster integration is enabled for this project. Disabling this integration will not affect your cluster, it will only temporarily turn off GitLab's connection to it."
 msgstr "Integração do cluster está ativada para esse projeto. Desabilitar a integração não afetará seu cluster, mas desligará temporariamente a conexão do Gitlab com ele."
 
-msgid "ClusterIntegration|Cluster is being created on Google Container Engine..."
-msgstr "O cluster está sendo criado no Google Container Engine..."
+msgid "ClusterIntegration|Cluster is being created on Google Kubernetes Engine..."
+msgstr "O cluster está sendo criado no Google Kubernetes Engine..."
 
 msgid "ClusterIntegration|Cluster name"
 msgstr "Nome do cluster"
 
-msgid "ClusterIntegration|Cluster was successfully created on Google Container Engine"
-msgstr "O cluster foi criado com sucesso no Google Container Engine"
+msgid "ClusterIntegration|Cluster was successfully created on Google Kubernetes Engine"
+msgstr "O cluster foi criado com sucesso no Google Kubernetes Engine"
 
 msgid "ClusterIntegration|Copy cluster name"
 msgstr "Copiar nome do cluster"
@@ -519,8 +519,8 @@ msgstr "Copiar nome do cluster"
 msgid "ClusterIntegration|Create cluster"
 msgstr "Criar cluster"
 
-msgid "ClusterIntegration|Create new cluster on Google Container Engine"
-msgstr "Criar novo cluster no Google Container Engine"
+msgid "ClusterIntegration|Create new cluster on Google Kubernetes Engine"
+msgstr "Criar novo cluster no Google Kubernetes Engine"
 
 msgid "ClusterIntegration|Enable cluster integration"
 msgstr "Ativar integração com o cluster"
@@ -528,11 +528,11 @@ msgstr "Ativar integração com o cluster"
 msgid "ClusterIntegration|Google Cloud Platform project ID"
 msgstr "ID do projeto no Google Cloud Platform"
 
-msgid "ClusterIntegration|Google Container Engine"
-msgstr "Google Container Engine"
+msgid "ClusterIntegration|Google Kubernetes Engine"
+msgstr "Google Kubernetes Engine"
 
-msgid "ClusterIntegration|Google Container Engine project"
-msgstr "Projeto no Google Container Engine"
+msgid "ClusterIntegration|Google Kubernetes Engine project"
+msgstr "Projeto no Google Kubernetes Engine"
 
 msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
 msgstr "Leia mais sobre %{link_to_documentation}"
@@ -585,8 +585,8 @@ msgstr "Ver zonas"
 msgid "ClusterIntegration|Something went wrong on our end."
 msgstr "Alguma coisa deu errado do nosso lado."
 
-msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine"
-msgstr "Algo deu errado ao criar seu cluster no Google Container Engine"
+msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Kubernetes Engine"
+msgstr "Algo deu errado ao criar seu cluster no Google Kubernetes Engine"
 
 msgid "ClusterIntegration|Toggle Cluster"
 msgstr "Alternar cluster"
@@ -594,14 +594,14 @@ msgstr "Alternar cluster"
 msgid "ClusterIntegration|With a cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
 msgstr "Com um cluster associado à esse projeto, você pode usar revisão de apps, fazer deploy de suas aplicações, rodar suas pipelines e muito mais de um jeito simples."
 
-msgid "ClusterIntegration|Your account must have %{link_to_container_engine}"
-msgstr "Sua conta precisa ter %{link_to_container_engine}"
+msgid "ClusterIntegration|Your account must have %{link_to_kubernetes_engine}"
+msgstr "Sua conta precisa ter %{link_to_kubernetes_engine}"
 
 msgid "ClusterIntegration|Zone"
 msgstr "Zona"
 
-msgid "ClusterIntegration|access to Google Container Engine"
-msgstr "Acesso ao Google Container Engine"
+msgid "ClusterIntegration|access to Google Kubernetes Engine"
+msgstr "Acesso ao Google Kubernetes Engine"
 
 msgid "ClusterIntegration|cluster"
 msgstr "cluster"
@@ -1367,7 +1367,7 @@ msgid "Number of access attempts"
 msgstr "Número de tentativas de acesso"
 
 msgid "Number of failures before backing off"
-msgstr ""
+msgstr "Número de falhas antes de reverter"
 
 msgid "OfSearchInADropdown|Filter"
 msgstr "Filtrar"
@@ -1968,7 +1968,7 @@ msgid "The Advanced Global Search in GitLab is a powerful search service that sa
 msgstr "A pesquisa global avançado no GitLab é um serviço poderoso de pesquisa que poupa seu tempo. Ao invés de criar código duplicado e perder seu tempo, você pode agora pesquisar por código de outros times que podem ajudar no seu próprio projeto."
 
 msgid "The circuitbreaker backoff threshold should be lower than the failure count threshold"
-msgstr ""
+msgstr "O limite do recuso do circuitbreaker deve ser inferior ao limite de contagem de falhas"
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr "A etapa de codificação mostra o tempo desde a entrega do primeiro commit até a criação do merge request. Os dados serão automaticamente adicionados aqui desde o momento de criação do merge request."

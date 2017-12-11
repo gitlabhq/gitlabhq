@@ -4,6 +4,7 @@ import '~/render_gfm';
 import issuableApp from '~/issue_show/components/app.vue';
 import eventHub from '~/issue_show/event_hub';
 import issueShowData from '../mock_data';
+import setTimeoutPromise from '../../helpers/set_timeout_promise_helper';
 
 function formatText(text) {
   return text.trim().replace(/\s\s+/g, ' ');
@@ -35,11 +36,12 @@ describe('Issuable output', () => {
         canUpdate: true,
         canDestroy: true,
         endpoint: '/gitlab-org/gitlab-shell/issues/9/realtime_changes',
+        updateEndpoint: gl.TEST_HOST,
         issuableRef: '#1',
         initialTitleHtml: '',
         initialTitleText: '',
-        initialDescriptionHtml: '',
-        initialDescriptionText: '',
+        initialDescriptionHtml: 'test',
+        initialDescriptionText: 'test',
         markdownPreviewPath: '/',
         markdownDocsPath: '/',
         projectNamespace: '/',
@@ -54,6 +56,8 @@ describe('Issuable output', () => {
     Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
 
     vm.poll.stop();
+
+    vm.$destroy();
   });
 
   it('should render a title/description/edited and update title/description/edited on update', (done) => {
@@ -223,25 +227,94 @@ describe('Issuable output', () => {
       });
     });
 
-    it('closes form on error', (done) => {
-      spyOn(window, 'Flash').and.callThrough();
-      spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve, reject) => {
-        reject();
-      }));
+    describe('error when updating', () => {
+      beforeEach(() => {
+        spyOn(window, 'Flash').and.callThrough();
+        spyOn(vm.service, 'updateIssuable').and.callFake(() => new Promise((resolve, reject) => {
+          reject();
+        }));
+      });
 
-      vm.updateIssuable();
+      it('closes form on error', (done) => {
+        vm.updateIssuable();
 
-      setTimeout(() => {
-        expect(
-          eventHub.$emit,
-        ).toHaveBeenCalledWith('close.form');
-        expect(
-          window.Flash,
-        ).toHaveBeenCalledWith('Error updating issue');
+        setTimeout(() => {
+          expect(
+            eventHub.$emit,
+          ).toHaveBeenCalledWith('close.form');
+          expect(
+            window.Flash,
+          ).toHaveBeenCalledWith('Error updating issue');
 
-        done();
+          done();
+        });
+      });
+
+      it('returns the correct error message for issuableType', (done) => {
+        vm.issuableType = 'merge request';
+
+        Vue.nextTick(() => {
+          vm.updateIssuable();
+
+          setTimeout(() => {
+            expect(
+              eventHub.$emit,
+            ).toHaveBeenCalledWith('close.form');
+            expect(
+              window.Flash,
+            ).toHaveBeenCalledWith('Error updating merge request');
+
+            done();
+          });
+        });
       });
     });
+  });
+
+  it('opens recaptcha dialog if update rejected as spam', (done) => {
+    function mockScriptSrc() {
+      const recaptchaChild = vm.$children
+        .find(child => child.$options._componentTag === 'recaptcha-dialog'); // eslint-disable-line no-underscore-dangle
+
+      recaptchaChild.scriptSrc = '//scriptsrc';
+    }
+
+    let modal;
+    const promise = new Promise((resolve) => {
+      resolve({
+        json() {
+          return {
+            recaptcha_html: '<div class="g-recaptcha">recaptcha_html</div>',
+          };
+        },
+      });
+    });
+
+    spyOn(vm.service, 'updateIssuable').and.returnValue(promise);
+
+    vm.canUpdate = true;
+    vm.showForm = true;
+
+    vm.$nextTick()
+      .then(() => mockScriptSrc())
+      .then(() => vm.updateIssuable())
+      .then(promise)
+      .then(() => setTimeoutPromise())
+      .then(() => {
+        modal = vm.$el.querySelector('.js-recaptcha-dialog');
+
+        expect(modal.style.display).not.toEqual('none');
+        expect(modal.querySelector('.g-recaptcha').textContent).toEqual('recaptcha_html');
+        expect(document.body.querySelector('.js-recaptcha-script').src).toMatch('//scriptsrc');
+      })
+      .then(() => modal.querySelector('.close').click())
+      .then(() => vm.$nextTick())
+      .then(() => {
+        expect(modal.style.display).toEqual('none');
+        expect(document.body.querySelector('.js-recaptcha-script')).toBeNull();
+      })
+      .then(done)
+      .catch(done.fail);
   });
 
   describe('deleteIssuable', () => {

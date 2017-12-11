@@ -25,7 +25,7 @@ module IssuableActions
       end
 
       format.json do
-        render_entity_json
+        recaptcha_check_with_fallback(false) { render_entity_json }
       end
     end
 
@@ -54,7 +54,7 @@ module IssuableActions
   end
 
   def destroy
-    issuable.destroy
+    Issuable::DestroyService.new(issuable.project, current_user).execute(issuable)
     TodoService.new.destroy_issuable(issuable, current_user)
 
     name = issuable.human_class_name

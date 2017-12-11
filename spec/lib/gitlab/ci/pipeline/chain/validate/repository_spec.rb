@@ -3,10 +3,7 @@ require 'spec_helper'
 describe Gitlab::Ci::Pipeline::Chain::Validate::Repository do
   set(:project) { create(:project, :repository) }
   set(:user) { create(:user) }
-
-  let(:command) do
-    double('command', project: project, current_user: user)
-  end
+  let(:pipeline) { build_stubbed(:ci_pipeline) }
 
   let!(:step) { described_class.new(pipeline, command) }
 
@@ -14,9 +11,10 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Repository do
     step.perform!
   end
 
-  context 'when pipeline ref and sha exists' do
-    let(:pipeline) do
-      build_stubbed(:ci_pipeline, ref: 'master', sha: '123', project: project)
+  context 'when ref and sha exists' do
+    let(:command) do
+      Gitlab::Ci::Pipeline::Chain::Command.new(
+        project: project, current_user: user, origin_ref: 'master', checkout_sha: project.commit.id)
     end
 
     it 'does not break the chain' do
@@ -28,9 +26,10 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Repository do
     end
   end
 
-  context 'when pipeline ref does not exist' do
-    let(:pipeline) do
-      build_stubbed(:ci_pipeline, ref: 'something', project: project)
+  context 'when ref does not exist' do
+    let(:command) do
+      Gitlab::Ci::Pipeline::Chain::Command.new(
+        project: project, current_user: user, origin_ref: 'something')
     end
 
     it 'breaks the chain' do
@@ -43,9 +42,10 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Repository do
     end
   end
 
-  context 'when pipeline does not have SHA set' do
-    let(:pipeline) do
-      build_stubbed(:ci_pipeline, ref: 'master', sha: nil, project: project)
+  context 'when does not have existing SHA set' do
+    let(:command) do
+      Gitlab::Ci::Pipeline::Chain::Command.new(
+        project: project, current_user: user, origin_ref: 'master', checkout_sha: 'something')
     end
 
     it 'breaks the chain' do

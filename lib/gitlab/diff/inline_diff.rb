@@ -70,7 +70,7 @@ module Gitlab
         def find_changed_line_pairs(lines)
           # Prefixes of all diff lines, indicating their types
           # For example: `" - +  -+  ---+++ --+  -++"`
-          line_prefixes = lines.each_with_object("") { |line, s| s << line[0] }.gsub(/[^ +-]/, ' ')
+          line_prefixes = lines.each_with_object("") { |line, s| s << (line[0] || ' ') }.gsub(/[^ +-]/, ' ')
 
           changed_line_pairs = []
           line_prefixes.scan(LINE_PAIRS_PATTERN) do
@@ -102,6 +102,7 @@ module Gitlab
           new_char = b[pos]
 
           break if old_char != new_char
+
           length += 1
         end
 

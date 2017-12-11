@@ -766,21 +766,7 @@ describe Issue do
     end
   end
 
-  describe '#update_project_counter_caches?' do
-    it 'returns true when the state changes' do
-      subject.state = 'closed'
-
-      expect(subject.update_project_counter_caches?).to eq(true)
-    end
-
-    it 'returns true when the confidential flag changes' do
-      subject.confidential = true
-
-      expect(subject.update_project_counter_caches?).to eq(true)
-    end
-
-    it 'returns false when the state or confidential flag did not change' do
-      expect(subject.update_project_counter_caches?).to eq(false)
-    end
+  it_behaves_like 'throttled touch' do
+    subject { create(:issue, updated_at: 1.hour.ago) }
   end
 end

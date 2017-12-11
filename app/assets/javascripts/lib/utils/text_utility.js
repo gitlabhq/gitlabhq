@@ -18,7 +18,7 @@ export const addDelimiter = text => (text ? text.toString().replace(/\B(?=(\d{3}
 export const highCountTrim = count => (count > 99 ? '99+' : count);
 
 /**
- * Converst first char to uppercase and replaces undercores with spaces
+ * Converts first char to uppercase and replaces undercores with spaces
  * @param {String} string
  * @requires {String}
  */
@@ -55,3 +55,12 @@ export const slugify = str => str.trim().toLowerCase();
  */
 export const truncate = (string, maxLength) => `${string.substr(0, (maxLength - 3))}...`;
 
+/**
+ * Capitalizes first character
+ *
+ * @param {String} text
+ * @return {String}
+ */
+export function capitalizeFirstCharacter(text) {
+  return `${text[0].toUpperCase()}${text.slice(1)}`;
+}

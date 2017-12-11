@@ -25,6 +25,16 @@
         type: String,
         required: false,
       },
+      canAttachFile: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
+      enableAutocomplete: {
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
     data() {
       return {
@@ -92,7 +102,7 @@
       /*
         GLForm class handles all the toolbar buttons
       */
-      return new GLForm($(this.$refs['gl-form']), true);
+      return new GLForm($(this.$refs['gl-form']), this.enableAutocomplete);
     },
     beforeDestroy() {
       const glForm = $(this.$refs['gl-form']).data('gl-form');
@@ -129,6 +139,7 @@
         <markdown-toolbar
           :markdown-docs-path="markdownDocsPath"
           :quick-actions-docs-path="quickActionsDocsPath"
+          :can-attach-file="canAttachFile"
           />
       </div>
     </div>

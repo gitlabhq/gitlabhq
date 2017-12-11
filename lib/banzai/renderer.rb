@@ -149,6 +149,7 @@ module Banzai
 
     def self.full_cache_key(cache_key, pipeline_name)
       return unless cache_key
+
       ["banzai", *cache_key, pipeline_name || :full]
     end
 
@@ -157,6 +158,7 @@ module Banzai
     # method.
     def self.full_cache_multi_key(cache_key, pipeline_name)
       return unless cache_key
+
       Rails.cache.__send__(:expanded_key, full_cache_key(cache_key, pipeline_name)) # rubocop:disable GitlabSecurity/PublicSend
     end
   end

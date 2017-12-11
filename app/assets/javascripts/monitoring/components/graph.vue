@@ -30,6 +30,14 @@
         required: false,
         default: () => ({}),
       },
+      projectPath: {
+        type: String,
+        required: true,
+      },
+      tagsPath: {
+        type: String,
+        required: true,
+      },
     },
 
     mixins: [MonitoringMixin],
@@ -251,6 +259,14 @@
               :line-color="path.lineColor"
               :area-color="path.areaColor"
             />
+            <rect
+              class="prometheus-graph-overlay"
+              :width="(graphWidth - 70)"
+              :height="(graphHeight - 100)"
+              transform="translate(-5, 20)"
+              ref="graphOverlay"
+              @mousemove="handleMouseOverGraph($event)">
+            </rect>
             <graph-deployment
               :show-deploy-info="showDeployInfo"
               :deployment-data="reducedDeploymentData"
@@ -267,14 +283,6 @@
               :graph-height-offset="graphHeightOffset"
               :show-flag-content="showFlagContent"
             />
-            <rect
-              class="prometheus-graph-overlay"
-              :width="(graphWidth - 70)"
-              :height="(graphHeight - 100)"
-              transform="translate(-5, 20)"
-              ref="graphOverlay"
-              @mousemove="handleMouseOverGraph($event)">
-            </rect>
         </svg>
       </svg>
     </div>
