@@ -41,6 +41,8 @@ class RemoveAssigneeIdFromIssue < ActiveRecord::Migration
 
     update_value = Arel.sql('(SELECT user_id FROM issue_assignees WHERE issue_assignees.issue_id = issues.id LIMIT 1)')
 
-    update_column_in_batches(:issues, :assignee_id, update_value)
+    # This is only used in the down step, so we can ignore the RuboCop warning
+    # about large tables, as this is very unlikely to be run on GitLab.com
+    update_column_in_batches(:issues, :assignee_id, update_value) # rubocop:disable Migration/UpdateLargeTable
   end
 end
