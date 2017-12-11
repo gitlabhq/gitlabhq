@@ -177,6 +177,10 @@ class MergeRequestEntity < IssuableEntity
     end
   end
 
+  expose :create_note_path do |merge_request|
+    project_notes_path(merge_request.project, target_type: 'merge_request', target_id: merge_request.id)
+  end
+
   expose :commit_change_content_path do |merge_request|
     commit_change_content_project_merge_request_path(merge_request.project, merge_request)
   end
