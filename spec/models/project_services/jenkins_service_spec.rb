@@ -192,7 +192,7 @@ describe JenkinsService do
         end
 
         context 'when namespace has a plan' do
-          let(:namespace) { create(:group, :private, plan: Namespace::BRONZE_PLAN) }
+          let(:namespace) { create(:group, :private, plan: :bronze_plan) }
 
           it 'adds default web hook headers to the request' do
             jenkins_service.execute(push_sample_data)

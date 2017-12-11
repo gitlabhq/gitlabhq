@@ -30,8 +30,8 @@ feature 'Projects > Push Rules', :js do
       end
 
       context 'licensed' do
-        let(:bronze_plan) { Plan.find_by!(name: 'bronze') }
-        let(:gold_plan) { Plan.find_by!(name: 'gold') }
+        let(:bronze_plan) { create(:bronze_plan) }
+        let(:gold_plan) { create(:gold_plan) }
 
         before do
           stub_licensed_features(rule_attr => true)
