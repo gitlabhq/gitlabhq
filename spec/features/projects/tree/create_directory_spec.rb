@@ -34,6 +34,14 @@ feature 'Multi-file editor new directory', :js do
       click_button('Create directory')
     end
 
+    click_link('New file')
+    
+    page.within('.popup-dialog') do
+      find('.form-control').set('filename')
+
+      click_button('Create file')
+    end
+
     wait_for_requests
 
     find('.multi-file-commit-panel-collapse-btn').click
