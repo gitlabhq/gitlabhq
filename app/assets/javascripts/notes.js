@@ -16,6 +16,7 @@ import Autosize from 'autosize';
 import 'vendor/jquery.caret'; // required by jquery.atwho
 import 'vendor/jquery.atwho';
 import AjaxCache from '~/lib/utils/ajax_cache';
+import { getLocationHash } from './lib/utils/url_utility';
 import Flash from './flash';
 import CommentTypeToggle from './comment_type_toggle';
 import GLForm from './gl_form';
@@ -330,7 +331,7 @@ export default class Notes {
   }
 
   static updateNoteTargetSelector($note) {
-    const hash = gl.utils.getLocationHash();
+    const hash = getLocationHash();
     // Needs to be an explicit true/false for the jQuery `toggleClass(force)`
     const addTargetClass = Boolean(hash && $note.filter(`#${hash}`).length > 0);
     $note.toggleClass('target', addTargetClass);

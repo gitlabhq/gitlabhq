@@ -1,3 +1,4 @@
+import * as urlUtils from '~/lib/utils/url_utility';
 import Todos from '~/todos';
 import '~/lib/utils/common_utils';
 
@@ -16,7 +17,7 @@ describe('Todos', () => {
     it('opens the todo url', (done) => {
       const todoLink = todoItem.dataset.url;
 
-      spyOn(gl.utils, 'visitUrl').and.callFake((url) => {
+      spyOn(urlUtils, 'visitUrl').and.callFake((url) => {
         expect(url).toEqual(todoLink);
         done();
       });
@@ -31,7 +32,7 @@ describe('Todos', () => {
 
       beforeEach(() => {
         metakeyEvent = $.Event('click', { keyCode: 91, ctrlKey: true });
-        visitUrlSpy = spyOn(gl.utils, 'visitUrl').and.callFake(() => {});
+        visitUrlSpy = spyOn(urlUtils, 'visitUrl').and.callFake(() => {});
         windowOpenSpy = spyOn(window, 'open').and.callFake(() => {});
       });
 

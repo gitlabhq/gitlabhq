@@ -1,6 +1,6 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, comma-dangle, object-shorthand, no-else-return, prefer-template, quotes, prefer-arrow-callback, max-len */
 import Api from './api';
-import './lib/utils/url_utility';
+import { mergeUrlParams } from './lib/utils/url_utility';
 
 export default class NamespaceSelect {
   constructor(opts) {
@@ -50,7 +50,7 @@ export default class NamespaceSelect {
         }
       },
       url(namespace) {
-        return gl.utils.mergeUrlParams({ [fieldName]: namespace.id }, window.location.href);
+        return mergeUrlParams({ [fieldName]: namespace.id }, window.location.href);
       },
     });
   }

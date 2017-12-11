@@ -29,7 +29,7 @@ import './commit/image_file';
 // lib/utils
 import { handleLocationHash } from './lib/utils/common_utils';
 import './lib/utils/datetime_utility';
-import './lib/utils/url_utility';
+import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 
 // behaviors
 import './behaviors/';
@@ -119,7 +119,7 @@ $(function () {
   // `hashchange` is not triggered when link target is already in window.location
   $body.on('click', 'a[href^="#"]', function() {
     var href = this.getAttribute('href');
-    if (href.substr(1) === gl.utils.getLocationHash()) {
+    if (href.substr(1) === getLocationHash()) {
       setTimeout(handleLocationHash, 1);
     }
   });
@@ -291,7 +291,7 @@ $(function () {
     const action = `${this.action}${link.search === '' ? '?' : '&'}`;
 
     event.preventDefault();
-    gl.utils.visitUrl(`${action}${$(this).serialize()}`);
+    visitUrl(`${action}${$(this).serialize()}`);
   });
 
   const flashContainer = document.querySelector('.flash-container');
