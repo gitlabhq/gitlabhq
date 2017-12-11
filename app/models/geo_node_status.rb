@@ -2,7 +2,7 @@ class GeoNodeStatus < ActiveRecord::Base
   belongs_to :geo_node
 
   # Whether we were successful in reaching this node
-  attr_accessor :success
+  attr_accessor :success, :health_status, :version, :revision
 
   # Be sure to keep this consistent with Prometheus naming conventions
   PROMETHEUS_METRICS = {
@@ -26,7 +26,6 @@ class GeoNodeStatus < ActiveRecord::Base
 
   def self.current_node_status
     current_node = Gitlab::Geo.current_node
-
     return unless current_node
 
     status = current_node.find_or_build_status
@@ -47,8 +46,8 @@ class GeoNodeStatus < ActiveRecord::Base
   end
 
   def self.allowed_params
-    excluded_params = %w(id last_successful_status_check_at created_at updated_at).freeze
-    extra_params = %w(success health last_event_timestamp cursor_last_event_timestamp).freeze
+    excluded_params = %w(id created_at updated_at).freeze
+    extra_params = %w(success health health_status last_event_timestamp cursor_last_event_timestamp version revision).freeze
     self.column_names - excluded_params + extra_params
   end
 
@@ -63,21 +62,21 @@ class GeoNodeStatus < ActiveRecord::Base
     latest_event = Geo::EventLog.latest_event
     self.last_event_id = latest_event&.id
     self.last_event_date = latest_event&.created_at
-    self.repositories_count = geo_node.projects.count
-    self.lfs_objects_count = geo_node.lfs_objects.count
-    self.attachments_count = geo_node.uploads.count
+    self.repositories_count = projects_finder.count_projects
+    self.lfs_objects_count = lfs_objects_finder.count_lfs_objects
+    self.attachments_count = attachments_finder.count_attachments
     self.last_successful_status_check_at = Time.now
 
     if Gitlab::Geo.secondary?
       self.db_replication_lag_seconds = Gitlab::Geo::HealthCheck.db_replication_lag_seconds
       self.cursor_last_event_id = Geo::EventLogState.last_processed&.event_id
       self.cursor_last_event_date = Geo::EventLog.find_by(id: self.cursor_last_event_id)&.created_at
-      self.repositories_synced_count = geo_node.project_registries.synced.count
-      self.repositories_failed_count = geo_node.project_registries.failed.count
-      self.lfs_objects_synced_count = geo_node.lfs_objects_synced_count
-      self.lfs_objects_failed_count = geo_node.lfs_objects_failed_count
-      self.attachments_synced_count = geo_node.attachments_synced_count
-      self.attachments_failed_count = geo_node.attachments_failed_count
+      self.repositories_synced_count = projects_finder.count_synced_project_registries
+      self.repositories_failed_count = projects_finder.count_failed_project_registries
+      self.lfs_objects_synced_count = lfs_objects_finder.count_synced_lfs_objects
+      self.lfs_objects_failed_count = lfs_objects_finder.count_failed_lfs_objects
+      self.attachments_synced_count = attachments_finder.count_synced_attachments
+      self.attachments_failed_count = attachments_finder.count_failed_attachments
     end
 
     self
@@ -87,6 +86,10 @@ class GeoNodeStatus < ActiveRecord::Base
 
   def healthy?
     status_message.blank? || status_message == 'Healthy'.freeze
+  end
+
+  def health_status
+    @health_status || (healthy? ? 'Healthy' : 'Unhealthy')
   end
 
   def last_successful_status_check_timestamp
@@ -130,6 +133,18 @@ class GeoNodeStatus < ActiveRecord::Base
   end
 
   private
+
+  def attachments_finder
+    @attachments_finder ||= Geo::AttachmentRegistryFinder.new(current_node: geo_node)
+  end
+
+  def lfs_objects_finder
+    @lfs_objects_finder ||= Geo::LfsObjectRegistryFinder.new(current_node: geo_node)
+  end
+
+  def projects_finder
+    @projects_finder ||= Geo::ProjectRegistryFinder.new(current_node: geo_node)
+  end
 
   def sync_percentage(total, synced)
     return 0 if !total.present? || total.zero?

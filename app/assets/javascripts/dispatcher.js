@@ -22,8 +22,8 @@ import NewCommitForm from './new_commit_form';
 import Project from './project';
 import projectAvatar from './project_avatar';
 /* global MergeRequest */
-/* global Compare */
-/* global CompareAutocomplete */
+import Compare from './compare';
+import initCompareAutocomplete from './compare_autocomplete';
 /* global PathLocks */
 /* global ProjectFindFile */
 import ProjectNew from './project_new';
@@ -715,7 +715,7 @@ import initGroupAnalytics from './init_group_analytics';
           projectAvatar();
           switch (path[1]) {
             case 'compare':
-              new CompareAutocomplete();
+              initCompareAutocomplete();
               break;
             case 'edit':
               shortcut_handler = new ShortcutsNavigation();

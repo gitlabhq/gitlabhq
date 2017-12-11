@@ -38,7 +38,7 @@ describe GitPushService do
 
     context 'when remote mirror feature is disabled' do
       before do
-        stub_application_setting(remote_mirror_available: false)
+        stub_application_setting(mirror_available: false)
       end
 
       context 'with remote mirrors global setting overridden' do

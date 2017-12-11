@@ -162,6 +162,40 @@ describe Ci::Build do
     end
   end
 
+  describe '#has_performance_json?' do
+    context 'valid build' do
+      let!(:build) do
+        create(
+          :ci_build,
+          :artifacts,
+          name: 'performance',
+          pipeline: pipeline,
+          options: {
+            artifacts: {
+              paths: ['performance.json']
+            }
+          }
+        )
+      end
+
+      it { expect(build.has_performance_json?).to be_truthy }
+    end
+
+    context 'invalid build' do
+      let!(:build) do
+        create(
+          :ci_build,
+          :artifacts,
+          name: 'performance',
+          pipeline: pipeline,
+          options: {}
+        )
+      end
+
+      it { expect(build.has_performance_json?).to be_falsey }
+    end
+  end
+
   describe '#has_sast_json?' do
     context 'valid build' do
       let!(:build) do

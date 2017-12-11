@@ -2,7 +2,13 @@ import Vue from 'vue';
 import mrWidgetOptions from 'ee/vue_merge_request_widget/mr_widget_options';
 import MRWidgetService from 'ee/vue_merge_request_widget/services/mr_widget_service';
 import MRWidgetStore from 'ee/vue_merge_request_widget/stores/mr_widget_store';
-import mockData, { baseIssues, headIssues, securityIssues } from './mock_data';
+import mockData, {
+  baseIssues,
+  headIssues,
+  basePerformance,
+  headPerformance,
+  securityIssues,
+} from './mock_data';
 import mountComponent from '../helpers/vue_mount_component_helper';
 
 describe('ee merge request widget options', () => {
@@ -272,6 +278,158 @@ describe('ee merge request widget options', () => {
       it('should render error indicator', (done) => {
         setTimeout(() => {
           expect(vm.$el.querySelector('.js-codequality-widget').textContent.trim()).toContain('Failed to load codeclimate report');
+          done();
+        }, 0);
+      });
+    });
+  });
+
+  describe('performance', () => {
+    beforeEach(() => {
+      gl.mrWidgetData = {
+        ...mockData,
+        performance: {
+          head_path: 'head.json',
+          base_path: 'base.json',
+        },
+      };
+
+      Component.mr = new MRWidgetStore(gl.mrWidgetData);
+      Component.service = new MRWidgetService({});
+    });
+
+    describe('when it is loading', () => {
+      it('should render loading indicator', () => {
+        vm = mountComponent(Component);
+        expect(
+          vm.$el.querySelector('.js-performance-widget').textContent.trim(),
+        ).toContain('Loading performance report');
+      });
+    });
+
+    describe('with successful request', () => {
+      const interceptor = (request, next) => {
+        if (request.url === 'head.json') {
+          next(request.respondWith(JSON.stringify(headPerformance), {
+            status: 200,
+          }));
+        }
+
+        if (request.url === 'base.json') {
+          next(request.respondWith(JSON.stringify(basePerformance), {
+            status: 200,
+          }));
+        }
+      };
+
+      beforeEach(() => {
+        Vue.http.interceptors.push(interceptor);
+        vm = mountComponent(Component);
+      });
+
+      afterEach(() => {
+        Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+      });
+
+      it('should render provided data', (done) => {
+        setTimeout(() => {
+          expect(
+            vm.$el.querySelector('.js-performance-widget .js-code-text').textContent.trim(),
+          ).toEqual('Performance metrics improved on 1 point and degraded on 1 point');
+          done();
+        }, 0);
+      });
+
+      describe('text connector', () => {
+        it('should only render information about fixed issues', (done) => {
+          setTimeout(() => {
+            vm.mr.performanceMetrics.degraded = [];
+
+            Vue.nextTick(() => {
+              expect(
+                vm.$el.querySelector('.js-performance-widget .js-code-text').textContent.trim(),
+              ).toEqual('Performance metrics improved on 1 point');
+              done();
+            });
+          }, 0);
+        });
+
+        it('should only render information about added issues', (done) => {
+          setTimeout(() => {
+            vm.mr.performanceMetrics.improved = [];
+
+            Vue.nextTick(() => {
+              expect(
+                vm.$el.querySelector('.js-performance-widget .js-code-text').textContent.trim(),
+              ).toEqual('Performance metrics degraded on 1 point');
+              done();
+            });
+          }, 0);
+        });
+      });
+    });
+
+    describe('with empty successful request', () => {
+      const emptyInterceptor = (request, next) => {
+        if (request.url === 'head.json') {
+          next(request.respondWith(JSON.stringify([]), {
+            status: 200,
+          }));
+        }
+
+        if (request.url === 'base.json') {
+          next(request.respondWith(JSON.stringify([]), {
+            status: 200,
+          }));
+        }
+      };
+
+      beforeEach(() => {
+        Vue.http.interceptors.push(emptyInterceptor);
+        vm = mountComponent(Component);
+      });
+
+      afterEach(() => {
+        Vue.http.interceptors = _.without(Vue.http.interceptors, emptyInterceptor);
+      });
+
+      it('should render provided data', (done) => {
+        setTimeout(() => {
+          expect(
+            vm.$el.querySelector('.js-performance-widget .js-code-text').textContent.trim(),
+          ).toEqual('No changes to performance metrics');
+          done();
+        }, 0);
+      });
+    });
+
+    describe('with failed request', () => {
+      const errorInterceptor = (request, next) => {
+        if (request.url === 'head.json') {
+          next(request.respondWith(JSON.stringify([]), {
+            status: 500,
+          }));
+        }
+
+        if (request.url === 'base.json') {
+          next(request.respondWith(JSON.stringify([]), {
+            status: 500,
+          }));
+        }
+      };
+
+      beforeEach(() => {
+        Vue.http.interceptors.push(errorInterceptor);
+        vm = mountComponent(Component);
+      });
+
+      afterEach(() => {
+        Vue.http.interceptors = _.without(Vue.http.interceptors, errorInterceptor);
+      });
+
+      it('should render error indicator', (done) => {
+        setTimeout(() => {
+          expect(vm.$el.querySelector('.js-performance-widget').textContent.trim()).toContain('Failed to load performance report');
           done();
         }, 0);
       });

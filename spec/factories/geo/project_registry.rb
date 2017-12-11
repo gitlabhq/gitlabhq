@@ -40,6 +40,7 @@ FactoryGirl.define do
       resync_repository true
       resync_wiki true
       repository_retry_count 1
+      wiki_retry_count 1
     end
 
     trait :repository_sync_failed do

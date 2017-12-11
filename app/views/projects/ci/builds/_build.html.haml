@@ -14,7 +14,7 @@
 
   %td.branch-commit
     - if can?(current_user, :read_build, job)
-      = link_to project_job_url(job.project, job) do
+      = link_to project_job_path(job.project, job) do
         %span.build-link ##{job.id}
     - else
       %span.build-link ##{job.id}

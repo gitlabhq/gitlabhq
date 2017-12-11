@@ -583,7 +583,7 @@ describe Repository do
     end
 
     it 'properly handles query when repo is empty' do
-      repository = create(:project).repository
+      repository = create(:project, :empty_repo).repository
       results = repository.search_files_by_content('test', 'master')
 
       expect(results).to match_array([])
@@ -619,7 +619,7 @@ describe Repository do
     end
 
     it 'properly handles query when repo is empty' do
-      repository = create(:project).repository
+      repository = create(:project, :empty_repo).repository
 
       results = repository.search_files_by_name('test', 'master')
 
@@ -1204,17 +1204,15 @@ describe Repository do
     let(:empty_repository) { create(:project_empty_repo).repository }
 
     it 'returns true for an empty repository' do
-      expect(empty_repository.empty?).to eq(true)
+      expect(empty_repository).to be_empty
     end
 
     it 'returns false for a non-empty repository' do
-      expect(repository.empty?).to eq(false)
+      expect(repository).not_to be_empty
     end
 
     it 'caches the output' do
-      expect(repository.raw_repository).to receive(:empty?)
-        .once
-        .and_return(false)
+      expect(repository.raw_repository).to receive(:has_visible_content?).once
 
       repository.empty?
       repository.empty?

@@ -85,7 +85,7 @@
                             = icon('bug', text: 'Fogbugz')
                       %div
                         - if gitea_import_enabled?
-                          = link_to new_import_gitea_url, class: 'btn import_gitea' do
+                          = link_to new_import_gitea_path, class: 'btn import_gitea' do
                             = custom_icon('go_logo')
                             Gitea
                       %div

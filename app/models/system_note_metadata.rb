@@ -16,6 +16,7 @@ class SystemNoteMetadata < ActiveRecord::Base
     opened closed merged duplicate locked unlocked
     outdated
     approved unapproved relate unrelate
+    epic_issue_added issue_added_to_epic epic_issue_removed issue_removed_from_epic
   ].freeze
 
   validates :note, presence: true

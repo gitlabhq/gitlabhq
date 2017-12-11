@@ -105,16 +105,10 @@ msgstr ""
 msgid "Activity"
 msgstr ""
 
-msgid "Add"
-msgstr ""
-
 msgid "Add Changelog"
 msgstr ""
 
 msgid "Add Contribution guide"
-msgstr ""
-
-msgid "Add Group Webhooks and GitLab Enterprise Edition."
 msgstr ""
 
 msgid "Add License"
@@ -219,58 +213,7 @@ msgstr ""
 msgid "AutoDevOps|You can activate %{link_to_settings} for this project."
 msgstr ""
 
-msgid "Billing"
-msgstr ""
-
-msgid "BillingPlans|%{group_name} is currently on the %{plan_link} plan."
-msgstr ""
-
-msgid "BillingPlans|Automatic downgrade and upgrade to some plans is currently not available."
-msgstr ""
-
-msgid "BillingPlans|Current plan"
-msgstr ""
-
-msgid "BillingPlans|Customer Support"
-msgstr ""
-
-msgid "BillingPlans|Downgrade"
-msgstr ""
-
-msgid "BillingPlans|Learn more about each plan by reading our %{faq_link}."
-msgstr ""
-
-msgid "BillingPlans|Manage plan"
-msgstr ""
-
-msgid "BillingPlans|Please contact %{customer_support_link} in that case."
-msgstr ""
-
-msgid "BillingPlans|See all %{plan_name} features"
-msgstr ""
-
-msgid "BillingPlans|This group uses the plan associated with its parent group."
-msgstr ""
-
-msgid "BillingPlans|To manage the plan for this group, visit the billing section of %{parent_billing_page_link}."
-msgstr ""
-
-msgid "BillingPlans|Upgrade"
-msgstr ""
-
-msgid "BillingPlans|You are currently on the %{plan_link} plan."
-msgstr ""
-
-msgid "BillingPlans|frequently asked questions"
-msgstr ""
-
-msgid "BillingPlans|monthly"
-msgstr ""
-
-msgid "BillingPlans|paid annually at %{price_per_year}"
-msgstr ""
-
-msgid "BillingPlans|per user"
+msgid "Available"
 msgstr ""
 
 msgid "Branch"
@@ -350,9 +293,6 @@ msgstr ""
 msgid "Branches|Sort by"
 msgstr ""
 
-msgid "Branches|The branch could not be updated automatically because it has diverged from its upstream counterpart."
-msgstr ""
-
 msgid "Branches|The default branch cannot be deleted"
 msgstr ""
 
@@ -365,13 +305,7 @@ msgstr ""
 msgid "Branches|To confirm, type %{branch_name_confirmation}:"
 msgstr ""
 
-msgid "Branches|To discard the local changes and overwrite the branch with the upstream version, delete it here and choose 'Update Now' above."
-msgstr ""
-
 msgid "Branches|You’re about to permanently delete the protected branch %{branch_name}."
-msgstr ""
-
-msgid "Branches|diverged from upstream"
 msgstr ""
 
 msgid "Branches|merged"
@@ -413,9 +347,6 @@ msgstr ""
 msgid "Cancel edit"
 msgstr ""
 
-msgid "Change Weight"
-msgstr ""
-
 msgid "ChangeTypeActionLabel|Pick into branch"
 msgstr ""
 
@@ -438,6 +369,15 @@ msgid "Chat"
 msgstr ""
 
 msgid "Checking %{text} availability…"
+<<<<<<< HEAD
+msgstr ""
+
+msgid "Checking branch availability..."
+msgstr ""
+
+msgid "Cherry-pick this commit"
+=======
+>>>>>>> origin/master
 msgstr ""
 
 msgid "Checking branch availability..."
@@ -447,9 +387,6 @@ msgid "Cherry-pick this commit"
 msgstr ""
 
 msgid "Cherry-pick this merge request"
-msgstr ""
-
-msgid "Choose which groups you wish to replicate to this secondary node. Leave blank to replicate all."
 msgstr ""
 
 msgid "CiStatusLabel|canceled"
@@ -512,15 +449,18 @@ msgstr ""
 msgid "Clone repository"
 msgstr ""
 
-msgid "Close"
-msgstr ""
-
 msgid "Cluster"
 msgstr ""
 
 msgid "ClusterIntegration|%{appList} was successfully installed on your cluster"
 msgstr ""
 
+<<<<<<< HEAD
+msgid "ClusterIntegration|%{appList} was successfully installed on your cluster"
+msgstr ""
+
+=======
+>>>>>>> origin/master
 msgid "ClusterIntegration|%{boldNotice} This will add some extra resources like a load balancer, which incur additional costs. See %{pricingLink}"
 msgstr ""
 
@@ -799,11 +739,6 @@ msgid_plural "Commits"
 msgstr[0] ""
 msgstr[1] ""
 
-msgid "Commit %d file"
-msgid_plural "Commit %d files"
-msgstr[0] ""
-msgstr[1] ""
-
 msgid "Commit Message"
 msgstr ""
 
@@ -885,13 +820,13 @@ msgstr ""
 msgid "Contributors"
 msgstr ""
 
-msgid "Control the maximum concurrency of LFS/attachment backfill for this secondary node"
+msgid "ContributorsPage|Building repository graph."
 msgstr ""
 
-msgid "Control the maximum concurrency of repository backfill for this secondary node"
+msgid "ContributorsPage|Commits to %{branch_name}, excluding merge commits. Limited to 6,000 commits."
 msgstr ""
 
-msgid "Copy SSH public key to clipboard"
+msgid "ContributorsPage|Please wait a moment, this page will automatically refresh when ready."
 msgstr ""
 
 msgid "ContributorsPage|Building repository graph."
@@ -1016,9 +951,6 @@ msgstr ""
 msgid "Description"
 msgstr ""
 
-msgid "Description templates allow you to define context-specific templates for issue and merge request description fields for your project."
-msgstr ""
-
 msgid "Details"
 msgstr ""
 
@@ -1029,9 +961,6 @@ msgid "Discard changes"
 msgstr ""
 
 msgid "Dismiss Cycle Analytics introduction box"
-msgstr ""
-
-msgid "Dismiss Merge Request promotion"
 msgstr ""
 
 msgid "Don't show again"
@@ -1216,21 +1145,6 @@ msgstr ""
 msgid "GPG Keys"
 msgstr ""
 
-msgid "Geo Nodes"
-msgstr ""
-
-msgid "Geo|File sync capacity"
-msgstr ""
-
-msgid "Geo|Groups to replicate"
-msgstr ""
-
-msgid "Geo|Repository sync capacity"
-msgstr ""
-
-msgid "Geo|Select groups to replicate."
-msgstr ""
-
 msgid "Git storage health information has been reset"
 msgstr ""
 
@@ -1342,22 +1256,8 @@ msgstr ""
 msgid "Import repository"
 msgstr ""
 
-msgid "Improve Issue boards with GitLab Enterprise Edition."
-msgstr ""
-
-msgid "Improve issues management with Issue weight and GitLab Enterprise Edition."
-msgstr ""
-
-msgid "Improve search with Advanced Global Search and GitLab Enterprise Edition."
-msgstr ""
-
 msgid "Install a Runner compatible with GitLab CI"
 msgstr ""
-
-msgid "Instance"
-msgid_plural "Instances"
-msgstr[0] ""
-msgstr[1] ""
 
 msgid "Internal - The group and any internal projects can be viewed by any logged in user."
 msgstr ""
@@ -1371,22 +1271,31 @@ msgstr ""
 msgid "Introducing Cycle Analytics"
 msgstr ""
 
-msgid "Issue board focus mode"
-msgstr ""
-
-msgid "Issue boards with milestones"
-msgstr ""
-
 msgid "Issue events"
 msgstr ""
 
 msgid "IssueBoards|Board"
 msgstr ""
 
-msgid "IssueBoards|Boards"
+msgid "Issues"
 msgstr ""
 
-msgid "Issues"
+msgid "Jan"
+msgstr ""
+
+msgid "January"
+msgstr ""
+
+msgid "Jul"
+msgstr ""
+
+msgid "July"
+msgstr ""
+
+msgid "Jun"
+msgstr ""
+
+msgid "June"
 msgstr ""
 
 msgid "Jan"
@@ -1460,9 +1369,6 @@ msgstr ""
 msgid "Leave project"
 msgstr ""
 
-msgid "License"
-msgstr ""
-
 msgid "Limited to showing %d event at most"
 msgid_plural "Limited to showing %d events at most"
 msgstr[0] ""
@@ -1474,10 +1380,13 @@ msgstr ""
 msgid "Locked"
 msgstr ""
 
-msgid "Locked Files"
+msgid "Login"
 msgstr ""
 
-msgid "Login"
+msgid "Mar"
+msgstr ""
+
+msgid "March"
 msgstr ""
 
 msgid "Mar"
@@ -1517,9 +1426,6 @@ msgid "Monitoring"
 msgstr ""
 
 msgid "More information is available|here"
-msgstr ""
-
-msgid "Multiple issue boards"
 msgstr ""
 
 msgid "New Cluster"
@@ -1716,9 +1622,6 @@ msgstr ""
 msgid "Pipeline Schedules"
 msgstr ""
 
-msgid "Pipeline quota"
-msgstr ""
-
 msgid "PipelineCharts|Failed:"
 msgstr ""
 
@@ -1905,22 +1808,10 @@ msgstr ""
 msgid "ProjectNetworkGraph|Graph"
 msgstr ""
 
-msgid "ProjectSettings|Contact an admin to change this setting."
+msgid "ProjectSettings|Immediately run a pipeline on the default branch"
 msgstr ""
 
-msgid "ProjectSettings|Only signed commits can be pushed to this repository."
-msgstr ""
-
-msgid "ProjectSettings|This setting is applied on the server level and can be overridden by an admin."
-msgstr ""
-
-msgid "ProjectSettings|This setting is applied on the server level but has been overridden for this project."
-msgstr ""
-
-msgid "ProjectSettings|This setting will be applied to all projects unless overridden by an admin."
-msgstr ""
-
-msgid "ProjectSettings|Users can only push commits to this repository that were committed with one of their own verified emails."
+msgid "ProjectSettings|Problem setting up the CI/CD settings JavaScript"
 msgstr ""
 
 msgid "ProjectSettings|Immediately run a pipeline on the default branch"
@@ -1954,6 +1845,42 @@ msgid "ProjectsDropdown|This feature requires browser localStorage support"
 msgstr ""
 
 msgid "PrometheusService|By default, Prometheus listens on ‘http://localhost:9090’. It’s not recommended to change the default address and port as this might affect or conflict with other services running on the GitLab server."
+<<<<<<< HEAD
+msgstr ""
+
+msgid "PrometheusService|Finding and configuring metrics..."
+msgstr ""
+
+msgid "PrometheusService|Metrics"
+msgstr ""
+
+msgid "PrometheusService|Metrics are automatically configured and monitored based on a library of metrics from popular exporters."
+msgstr ""
+
+msgid "PrometheusService|Missing environment variable"
+msgstr ""
+
+msgid "PrometheusService|Monitored"
+msgstr ""
+
+msgid "PrometheusService|More information"
+msgstr ""
+
+msgid "PrometheusService|No metrics are being monitored. To start monitoring, deploy to an environment."
+msgstr ""
+
+msgid "PrometheusService|Prometheus API Base URL, like http://prometheus.example.com/"
+msgstr ""
+
+msgid "PrometheusService|Prometheus monitoring"
+msgstr ""
+
+msgid "PrometheusService|View environments"
+msgstr ""
+
+msgid "Public - The group and any public projects can be viewed without any authentication."
+=======
+>>>>>>> origin/master
 msgstr ""
 
 msgid "PrometheusService|Finding and configuring metrics..."
@@ -1992,13 +1919,7 @@ msgstr ""
 msgid "Public - The project can be accessed without any authentication."
 msgstr ""
 
-msgid "Push Rules"
-msgstr ""
-
 msgid "Push events"
-msgstr ""
-
-msgid "PushRule|Committer restriction"
 msgstr ""
 
 msgid "Read more"
@@ -2011,9 +1932,6 @@ msgid "RefSwitcher|Branches"
 msgstr ""
 
 msgid "RefSwitcher|Tags"
-msgstr ""
-
-msgid "Registry"
 msgstr ""
 
 msgid "Related Commits"
@@ -2198,9 +2116,6 @@ msgstr ""
 msgid "SortOptions|Least popular"
 msgstr ""
 
-msgid "SortOptions|Less weight"
-msgstr ""
-
 msgid "SortOptions|Milestone"
 msgstr ""
 
@@ -2208,9 +2123,6 @@ msgid "SortOptions|Milestone due later"
 msgstr ""
 
 msgid "SortOptions|Milestone due soon"
-msgstr ""
-
-msgid "SortOptions|More weight"
 msgstr ""
 
 msgid "SortOptions|Most popular"
@@ -2252,7 +2164,7 @@ msgstr ""
 msgid "SortOptions|Start soon"
 msgstr ""
 
-msgid "SortOptions|Weight"
+msgid "Source"
 msgstr ""
 
 msgid "Source code"
@@ -2303,6 +2215,78 @@ msgid "Tags"
 msgstr ""
 
 msgid "TagsPage|Browse commits"
+<<<<<<< HEAD
+msgstr ""
+
+msgid "TagsPage|Browse files"
+msgstr ""
+
+msgid "TagsPage|Can't find HEAD commit for this tag"
+msgstr ""
+
+msgid "TagsPage|Cancel"
+msgstr ""
+
+msgid "TagsPage|Create tag"
+msgstr ""
+
+msgid "TagsPage|Delete tag"
+msgstr ""
+
+msgid "TagsPage|Deleting the %{tag_name} tag cannot be undone. Are you sure?"
+msgstr ""
+
+msgid "TagsPage|Edit release notes"
+msgstr ""
+
+msgid "TagsPage|Existing branch name, tag, or commit SHA"
+msgstr ""
+
+msgid "TagsPage|Filter by tag name"
+msgstr ""
+
+msgid "TagsPage|New Tag"
+msgstr ""
+
+msgid "TagsPage|New tag"
+msgstr ""
+
+msgid "TagsPage|Optionally, add a message to the tag."
+msgstr ""
+
+msgid "TagsPage|Optionally, add release notes to the tag. They will be stored in the GitLab database and displayed on the tags page."
+msgstr ""
+
+msgid "TagsPage|Release notes"
+msgstr ""
+
+msgid "TagsPage|Repository has no tags yet."
+msgstr ""
+
+msgid "TagsPage|Sort by"
+msgstr ""
+
+msgid "TagsPage|Tags"
+msgstr ""
+
+msgid "TagsPage|Tags give the ability to mark specific points in history as being important"
+msgstr ""
+
+msgid "TagsPage|This tag has no release notes."
+msgstr ""
+
+msgid "TagsPage|Use git tag command to add a new one:"
+msgstr ""
+
+msgid "TagsPage|Write your release notes or drag files here..."
+msgstr ""
+
+msgid "TagsPage|protected"
+msgstr ""
+
+msgid "Target Branch"
+=======
+>>>>>>> origin/master
 msgstr ""
 
 msgid "TagsPage|Browse files"
@@ -2375,12 +2359,6 @@ msgid "Target Branch"
 msgstr ""
 
 msgid "Team"
-msgstr ""
-
-msgid "Thanks! Don't show me this again"
-msgstr ""
-
-msgid "The Advanced Global Search in GitLab is a powerful search service that saves you time. Instead of creating duplicate code and wasting time, you can now search for code within other teams that can help your own project."
 msgstr ""
 
 msgid "The circuitbreaker backoff threshold should be lower than the failure count threshold"
@@ -2625,12 +2603,15 @@ msgid "Total Time"
 msgstr ""
 
 msgid "Total issue time spent"
+<<<<<<< HEAD
 msgstr ""
 
 msgid "Total test time for all commits/merges"
+=======
+>>>>>>> origin/master
 msgstr ""
 
-msgid "Track activity with Contribution Analytics."
+msgid "Total test time for all commits/merges"
 msgstr ""
 
 msgid "Unlock"
@@ -2643,21 +2624,6 @@ msgid "Unstar"
 msgstr ""
 
 msgid "Unsubscribe"
-msgstr ""
-
-msgid "Upgrade your plan to activate Advanced Global Search."
-msgstr ""
-
-msgid "Upgrade your plan to activate Contribution Analytics."
-msgstr ""
-
-msgid "Upgrade your plan to activate Group Webhooks."
-msgstr ""
-
-msgid "Upgrade your plan to activate Issue weight."
-msgstr ""
-
-msgid "Upgrade your plan to improve Issue boards."
 msgstr ""
 
 msgid "Upload New File"
@@ -2700,12 +2666,6 @@ msgid "Want to see the data? Please ask an administrator for access."
 msgstr ""
 
 msgid "We don't have enough data to show this stage."
-msgstr ""
-
-msgid "Webhooks allow you to trigger a URL if, for example, new code is pushed or a new issue is created. You can configure webhooks to listen for specific events like pushes, issues or merge requests. Group webhooks will apply to all projects in a group, allowing you to standardize webhook functionality across your entire group."
-msgstr ""
-
-msgid "Weight"
 msgstr ""
 
 msgid "When access to a storage fails. GitLab will prevent access to the storage for the time specified here. This allows the filesystem to recover. Repositories on failing shards are temporarly unavailable"
@@ -2813,9 +2773,6 @@ msgstr ""
 msgid "Wiki|Wiki Pages"
 msgstr ""
 
-msgid "With contribution analytics you can have an overview for the activity of issues, merge requests and push events of your organization and its members."
-msgstr ""
-
 msgid "Withdraw Access Request"
 msgstr ""
 
@@ -2834,13 +2791,7 @@ msgstr ""
 msgid "You are on a read-only GitLab instance."
 msgstr ""
 
-msgid "You are on a read-only GitLab instance. If you want to make any changes, you must visit the %{link_to_primary_node}."
-msgstr ""
-
 msgid "You can only add files when you are on a branch"
-msgstr ""
-
-msgid "You cannot write to a read-only secondary GitLab Geo instance. Please use %{link_to_primary_node} instead."
 msgstr ""
 
 msgid "You cannot write to this read-only GitLab instance."
@@ -2891,7 +2842,7 @@ msgstr ""
 msgid "Your projects"
 msgstr ""
 
-msgid "commit"
+msgid "branch name"
 msgstr ""
 
 msgid "branch name"
@@ -2919,7 +2870,7 @@ msgstr ""
 msgid "personal access token"
 msgstr ""
 
-msgid "to help your contributors communicate effectively!"
+msgid "source"
 msgstr ""
 
 msgid "source"

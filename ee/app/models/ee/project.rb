@@ -13,6 +13,7 @@ module EE
 
       before_validation :mark_remote_mirrors_for_removal
 
+      before_save :set_override_pull_mirror_available, unless: -> { ::Gitlab::CurrentSettings.current_application_settings.mirror_available }
       after_save :create_mirror_data, if: ->(project) { project.mirror? && project.mirror_changed? }
       after_save :destroy_mirror_data, if: ->(project) { !project.mirror? && project.mirror_changed? }
 
@@ -91,7 +92,7 @@ module EE
     end
 
     def mirror
-      super && feature_available?(:repository_mirrors)
+      super && feature_available?(:repository_mirrors) && pull_mirror_available?
     end
     alias_method :mirror?, :mirror
 
@@ -254,58 +255,20 @@ module EE
       end
     end
 
+    def deployment_platform(environment: nil)
+      return super unless environment && feature_available?(:multiple_clusters)
+
+      @deployment_platform ||= clusters.enabled.on_environment(environment.name)
+                                               .last&.platform_kubernetes
+
+      super # Wildcard or KubernetesService
+    end
+
     def secret_variables_for(ref:, environment: nil)
       return super.where(environment_scope: '*') unless
         environment && feature_available?(:variable_environment_scope)
 
-      query = super
-
-      where = <<~SQL
-        environment_scope IN (:wildcard, :environment_name) OR
-          :environment_name LIKE
-            #{::Gitlab::SQL::Glob.to_like('environment_scope')}
-      SQL
-
-      order = <<~SQL
-        CASE environment_scope
-          WHEN %{wildcard} THEN 0
-          WHEN %{environment_name} THEN 2
-          ELSE 1
-        END
-      SQL
-
-      values = {
-        wildcard: '*',
-        environment_name: environment.name
-      }
-
-      quoted_values = values.transform_values do |value|
-        # Note that the connection could be
-        # Gitlab::Database::LoadBalancing::ConnectionProxy
-        # which supports `quote` via `method_missing`
-        self.class.connection.quote(value)
-      end
-
-      # The query is trying to find variables with scopes matching the
-      # current environment name. Suppose the environment name is
-      # 'review/app', and we have variables with environment scopes like:
-      # * variable A: review
-      # * variable B: review/app
-      # * variable C: review/*
-      # * variable D: *
-      # And the query should find variable B, C, and D, because it would
-      # try to convert the scope into a LIKE pattern for each variable:
-      # * A: review
-      # * B: review/app
-      # * C: review/%
-      # * D: %
-      # Note that we'll match % and _ literally therefore we'll escape them.
-      # In this case, B, C, and D would match. We also want to prioritize
-      # the exact matched name, and put * last, and everything else in the
-      # middle. So the order should be: D < C < B
-      query
-        .where(where, values)
-        .order(order % quoted_values) # `order` cannot escape for us!
+      super.on_environment(environment.name)
     end
 
     def execute_hooks(data, hooks_scope = :push_hooks)
@@ -500,10 +463,20 @@ module EE
 
     def remote_mirror_available?
       remote_mirror_available_overridden ||
-        current_application_settings.remote_mirror_available
+        current_application_settings.mirror_available
+    end
+
+    def pull_mirror_available?
+      pull_mirror_available_overridden ||
+        current_application_settings.mirror_available
     end
 
     private
+
+    def set_override_pull_mirror_available
+      self.pull_mirror_available_overridden = read_attribute(:mirror)
+      true
+    end
 
     def licensed_feature_available?(feature)
       @licensed_feature_available ||= Hash.new do |h, feature|

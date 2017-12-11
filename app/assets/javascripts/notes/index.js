@@ -8,10 +8,18 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
   },
   data() {
     const notesDataset = document.getElementById('js-vue-notes').dataset;
+    const parsedUserData = JSON.parse(notesDataset.currentUserData);
+    const currentUserData = parsedUserData ? {
+      id: parsedUserData.id,
+      name: parsedUserData.name,
+      username: parsedUserData.username,
+      avatar_url: parsedUserData.avatar_path || parsedUserData.avatar_url,
+      path: parsedUserData.path,
+    } : {};
 
     return {
       noteableData: JSON.parse(notesDataset.noteableData),
-      currentUserData: JSON.parse(notesDataset.currentUserData),
+      currentUserData,
       notesData: {
         lastFetchedAt: notesDataset.lastFetchedAt,
         discussionsPath: notesDataset.discussionsPath,

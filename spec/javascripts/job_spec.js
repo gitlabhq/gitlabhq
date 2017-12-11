@@ -28,7 +28,7 @@ describe('Job', () => {
       });
 
       it('copies build options', function () {
-        expect(this.job.pageUrl).toBe(JOB_URL);
+        expect(this.job.pagePath).toBe(JOB_URL);
         expect(this.job.buildStatus).toBe('success');
         expect(this.job.buildStage).toBe('test');
         expect(this.job.state).toBe('');

@@ -83,7 +83,7 @@ module Gitlab
         Gitlab::Git.check_namespace!(start_repository)
         start_repository = RemoteRepository.new(start_repository) unless start_repository.is_a?(RemoteRepository)
 
-        start_branch_name = nil if start_repository.empty_repo?
+        start_branch_name = nil if start_repository.empty?
 
         if start_branch_name && !start_repository.branch_exists?(start_branch_name)
           raise ArgumentError, "Cannot find branch #{start_branch_name} in #{start_repository.relative_path}"

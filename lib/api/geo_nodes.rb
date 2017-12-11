@@ -49,7 +49,8 @@ module API
 
         not_found('Geo node not found') unless geo_node
 
-        project_registries = paginate(geo_node.filtered_project_registries(params[:type]))
+        finder = ::Geo::ProjectRegistryFinder.new(current_node: geo_node)
+        project_registries = paginate(finder.find_failed_project_registries(params[:type]))
 
         present project_registries, with: ::GeoProjectRegistryEntity
       end

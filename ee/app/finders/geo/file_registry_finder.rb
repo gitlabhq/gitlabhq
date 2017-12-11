@@ -22,10 +22,10 @@ module Geo
       # Selective project replication adds a wrinkle to FDW queries, so
       # we fallback to the legacy version for now.
       relation =
-        if fdw?
-          fdw_find_nonreplicated_lfs_objects
-        else
+        if use_legacy_queries?
           legacy_find_nonreplicated_lfs_objects(except_registry_ids: except_registry_ids)
+        else
+          fdw_find_nonreplicated_lfs_objects
         end
 
       relation
@@ -48,10 +48,10 @@ module Geo
       # Selective project replication adds a wrinkle to FDW queries, so
       # we fallback to the legacy version for now.
       relation =
-        if fdw?
-          fdw_find_nonreplicated_uploads
-        else
+        if use_legacy_queries?
           legacy_find_nonreplicated_uploads(except_registry_ids: except_registry_ids)
+        else
+          fdw_find_nonreplicated_uploads
         end
 
       relation
@@ -95,7 +95,7 @@ module Geo
       registry_ids = legacy_pluck_registry_ids(file_types: :lfs, except_registry_ids: except_registry_ids)
 
       legacy_filter_registry_ids(
-        current_node.lfs_objects,
+        lfs_objects_finder.lfs_objects,
         registry_ids,
         LfsObject.table_name
       )
@@ -105,7 +105,7 @@ module Geo
       registry_ids = legacy_pluck_registry_ids(file_types: Geo::FileService::DEFAULT_OBJECT_TYPES, except_registry_ids: except_registry_ids)
 
       legacy_filter_registry_ids(
-        current_node.uploads,
+        attachments_finder.uploads,
         registry_ids,
         Upload.table_name
       )
@@ -131,6 +131,14 @@ module Geo
     def legacy_pluck_registry_ids(file_types:, except_registry_ids:)
       ids = Geo::FileRegistry.where(file_type: file_types).pluck(:file_id)
       (ids + except_registry_ids).uniq
+    end
+
+    def attachments_finder
+      @attachments_finder ||= AttachmentRegistryFinder.new(current_node: current_node)
+    end
+
+    def lfs_objects_finder
+      @lfs_objects_finder ||= LfsObjectRegistryFinder.new(current_node: current_node)
     end
   end
 end

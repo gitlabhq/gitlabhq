@@ -112,8 +112,10 @@ will not be able to perform all necessary configuration steps. Refer to
     this example:
 
     ```bash
-    # Certificate and key currently used by GitLab
-    # - replace primary.geo.example.com with your domain
+    ##
+    ## Certificate and key currently used by GitLab
+    ## - replace primary.geo.example.com with your domain
+    ##
     install -o gitlab-psql -g gitlab-psql -m 0400 -T /etc/gitlab/ssl/primary.geo.example.com.crt ~gitlab-psql/data/server.crt
     install -o gitlab-psql -g gitlab-psql -m 0400 -T /etc/gitlab/ssl/primary.geo.example.com.key ~gitlab-psql/data/server.key
     ```
@@ -134,8 +136,10 @@ will not be able to perform all necessary configuration steps. Refer to
     to the correct location:
 
     ```
-    # Self-signed certificate and key
-    # - assumes the files are in your current working directory
+    ##
+    ## Self-signed certificate and key
+    ## - assumes the files are in your current working directory
+    ##
     install -o gitlab-psql -g gitlab-psql -m 0400 -T server.crt ~gitlab-psql/data/server.crt
     install -o gitlab-psql -g gitlab-psql -m 0400 -T server.key ~gitlab-psql/data/server.key
     ```
@@ -160,17 +164,21 @@ will not be able to perform all necessary configuration steps. Refer to
 
     | GitLab Terminology | Amazon Web Services | Google Cloud Platform |
     |-----|-----|-----|-----|
-    | Interface address | Private address | Internal address |
+    | Private address | Private address | Internal address |
     | Public address | Public address | External address |
 
-    To lookup the address of a Geo node, on the Geo node execute:
+    To lookup the address of a Geo node, SSH in to the Geo node and execute:
 
     ```bash
-    # Interface address
-    ip route get 255.255.255.255 | awk '{print $NF; exit}'
+    ##
+    ## Private address
+    ##
+    ip route get 255.255.255.255 | awk '{print "Private address:", $NF; exit}'
 
-    # Public address
-    curl ipinfo.io/ip
+    ##
+    ## Public address
+    ##
+    echo "External address: $(curl ipinfo.io/ip)"
     ```
 
     In most cases, the following addresses will be used to configure GitLab
@@ -178,8 +186,8 @@ will not be able to perform all necessary configuration steps. Refer to
 
     | Configuration | Address |
     |-----|-----|
-    | `postgresql['listen_address']` | Primary's interface address |
-    | `postgresql['trust_auth_cidr_addresses']` | Primary's interface address |
+    | `postgresql['listen_address']` | Primary's private address |
+    | `postgresql['trust_auth_cidr_addresses']` | Primary's private address |
     | `postgresql['md5_auth_cidr_addresses']` | Secondary's public addresses |
 
     The `listen_address` option opens PostgreSQL up to network connections
@@ -191,7 +199,7 @@ will not be able to perform all necessary configuration steps. Refer to
     be correct. If your primary and secondary connect over a local
     area network, or a virtual network connecting availability zones like
     Amazon's [VPC](https://aws.amazon.com/vpc/) of Google's [VPC](https://cloud.google.com/vpc/)
-    you should use the secondary's interface address for `postgresql['md5_auth_cidr_addresses']`.
+    you should use the secondary's private address for `postgresql['md5_auth_cidr_addresses']`.
 
     Edit `/etc/gitlab/gitlab.rb` and add the following, replacing the IP
     addresses with addresses appropriate to your network configuration:
@@ -199,23 +207,31 @@ will not be able to perform all necessary configuration steps. Refer to
     ```ruby
     geo_primary_role['enable'] = true
 
-    # Primary address
-    # - replace '1.2.3.4' with the primary interface address
+    ##
+    ## Primary address
+    ## - replace '1.2.3.4' with the primary private address
+    ##
     postgresql['listen_address'] = '1.2.3.4'
     postgresql['trust_auth_cidr_addresses'] = ['127.0.0.1/32','1.2.3.4/32']
 
+    ##
     # Secondary addresses
     # - replace '5.6.7.8' with the secondary public address
+    ##
     postgresql['md5_auth_cidr_addresses'] = ['5.6.7.8/32']
 
-    # Replication settings
-    # - set this to be the number of Geo secondary nodes you have
+    ##
+    ## Replication settings
+    ## - set this to be the number of Geo secondary nodes you have
+    ##
     postgresql['max_replication_slots'] = 1
     # postgresql['max_wal_senders'] = 10
     # postgresql['wal_keep_segments'] = 10
 
-    # Disable automatic database migrations for now
-    # (until PostgreSQL is restarted and listening on the interface address)
+    ##
+    ## Disable automatic database migrations temporarily
+    ## (until PostgreSQL is restarted and listening on the private address).
+    ##
     gitlab_rails['auto_migrate'] = false
     ```
 
@@ -232,8 +248,12 @@ will not be able to perform all necessary configuration steps. Refer to
     Replication documentation](https://www.postgresql.org/docs/9.6/static/runtime-config-replication.html)
     for more information.
 
-1. Save the file and [reconfigure GitLab][] for the database listen changes and
+1. Save the file and reconfigure GitLab for the database listen changes and
    the replication slot changes to be applied.
+
+    ```bash
+    gitlab-ctl reconfigure
+    ```
 
     Restart PostgreSQL for its changes to take effect:
 
@@ -241,21 +261,24 @@ will not be able to perform all necessary configuration steps. Refer to
     gitlab-ctl restart postgresql
     ```
 
-1. Reenable migrations
+1. Re-enable migrations now that PostgreSQL is restarted and listening on the
+   private address.
 
-    Edit `/etc/gitlab/gitlab.rb` and **delete** the following lines:
+    Edit `/etc/gitlab/gitlab.rb` and **change** the configuration to `true`:
 
     ```ruby
-    # Disable automatic database migrations for now
-    # (until PostgreSQL is restarted and listening on the interface address)
-    gitlab_rails['auto_migrate'] = false
+    gitlab_rails['auto_migrate'] = true
     ```
 
-    Save the file and [reconfigure GitLab][].
+    Save the file and reconfigure GitLab:
+
+    ```bash
+    gitlab-ctl reconfigure
+    ```
 
 1. Now that the PostgreSQL server is set up to accept remote connections, run
    `netstat -plnt` to make sure that PostgreSQL is listening on port `5432` to
-   the server's interface address.
+   the primary server's private address.
 
 1. Verify that clock synchronization is enabled.
 
@@ -284,10 +307,13 @@ primary before the database is replicated.
    (`/admin/geo_nodes`) in your browser.
 1. Add the secondary node by providing its full URL. **Do NOT** check the box
    'This is a primary node'.
-1. Added in GitLab 9.5: Choose which namespaces should be replicated by the
+1. Optionally, choose which namespaces should be replicated by the
    secondary node. Leave blank to replicate all. Read more in
    [selective replication](#selective-replication).
 1. Click the **Add node** button.
+
+The new secondary geo node will have the status **Unhealthy**. This is expected
+because we have not yet configured the secondary server. This is the next step.
 
 ### Step 3. Configure the secondary server
 
@@ -312,13 +338,17 @@ primary before the database is replicated.
     it in the right location.
 
     ```bash
-    # Certificate and key currently used by GitLab
+    ##
+    ## Certificate and key currently used by GitLab
+    ##
     mkdir -p ~gitlab-psql/.postgresql
     ln -s /opt/gitlab/embedded/ssl/certs/cacert.pem ~gitlab-psql/.postgresql/root.crt
     ```
-    
+
     ```bash
-    # Self-signed certificate and key
+    ##
+    ## Self-signed certificate and key
+    ##
     install -o gitlab-psql -g gitlab-psql -m 0400 -T server.crt -D ~gitlab-psql/.postgresql/root.crt
     ```
 
@@ -326,16 +356,21 @@ primary before the database is replicated.
     connections.
 
 
-1. Test that the remote connection to the primary server works.
+1. Test that the remote connection to the primary server works (as the
+   `gitlab-psql` user):
 
     ```
-    # Certificate and key currently used by GitLab, and connecting by FQDN
-    sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h primary.geo.example.com -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-full" -W
+    ##
+    ## Certificate and key currently used by GitLab, and connecting by FQDN
+    ##
+    sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-full" -W -h primary.geo.example.com
     ```
-    
+
     ```
-    # Self-signed certificate and key, or connecting by IP address
-    sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -h 1.2.3.4 -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W
+    ##
+    ## Self-signed certificate and key, or connecting by IP address
+    ##
+    sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W -h 1.2.3.4
     ```
 
     When prompted enter the password you set in the first step for the
@@ -399,21 +434,25 @@ data before running `pg_basebackup`.
     sudo -i
     ```
 
-1. New for 9.4: Choose a database-friendly name to use for your secondary to
+1. Choose a database-friendly name to use for your secondary to
    use as the replication slot name. For example, if your domain is
    `secondary.geo.example.com`, you may use `secondary_example` as the slot
-   name.
+   name as shown in the commands below.
 
 1. Execute the command below to start a backup/restore and begin the replication:
 
     ```
-    # Certificate and key currently used by GitLab, and connecting by FQDN
-    gitlab-ctl replicate-geo-database --host=primary.geo.example.com --slot-name=secondary_example
+    ##
+    ## Certificate and key currently used by GitLab, and connecting by FQDN
+    ##
+    gitlab-ctl replicate-geo-database --slot-name=secondary_example --host=primary.geo.example.com
     ```
-    
+
     ```
-    # Self-signed certificate and key, or connecting by IP
-    gitlab-ctl replicate-geo-database --host=1.2.3.4 --slot-name=secondary_example --sslmode=verify-ca
+    ##
+    ## Self-signed certificate and key, or connecting by IP
+    ##
+    gitlab-ctl replicate-geo-database --sslmode=verify-ca --slot-name=secondary_example --host=1.2.3.4
     ```
 
     If PostgreSQL is listening on a non-standard port, add `--port=` as well.
@@ -467,14 +506,18 @@ The `geo_primary_role` makes configuration changes to `pg_hba.conf` and
 `postgresql.conf` on the primary:
 
 ```
-# pg_hba.conf
-# GitLab Geo Primary
+##
+## GitLab Geo Primary
+## - pg_hba.conf
+##
 host    replication gitlab_replicator <trusted secondary IP>/32     md5
 ```
 
 ```
-# postgresql.conf
-# Geo Primary Role
+##
+## Geo Primary Role
+## - postgresql.conf
+##
 sql_replication_user = gitlab_replicator
 wal_level = hot_standby
 max_wal_senders = 10
@@ -489,8 +532,10 @@ on the secondary. The PostgreSQL settings for this database it adds to
 the default settings:
 
 ```
-# postgresql.conf
-# Geo Secondary Role
+##
+## Geo Secondary Role
+## - postgresql.conf
+##
 wal_level = hot_standby
 max_wal_senders = 10
 wal_keep_segments = 10
@@ -510,7 +555,6 @@ We don't support MySQL replication for GitLab Geo.
 Read the [troubleshooting document](troubleshooting.md).
 
 [pgback]: http://www.postgresql.org/docs/9.2/static/app-pgbasebackup.html
-[reconfigure GitLab]: ../administration/restart_gitlab.md#omnibus-gitlab-reconfigure
 [external postgresql]: #external-postgresql-instances
 [tracking]: database_source.md#enable-tracking-database-on-the-secondary-server
 [toc]: README.md#using-omnibus-gitlab

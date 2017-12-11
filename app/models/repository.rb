@@ -44,7 +44,7 @@ class Repository
                       issue_template_names merge_request_template_names).freeze
 
   # Methods that use cache_method but only memoize the value
-  MEMOIZED_CACHED_METHODS = %i(license empty_repo?).freeze
+  MEMOIZED_CACHED_METHODS = %i(license).freeze
 
   # Certain method caches should be refreshed when certain types of files are
   # changed. This Hash maps file types (as returned by Gitlab::FileDetector) to
@@ -504,7 +504,11 @@ class Repository
   end
   cache_method :exists?
 
-  delegate :empty?, to: :raw_repository
+  def empty?
+    return true unless exists?
+
+    !has_visible_content?
+  end
   cache_method :empty?
 
   # The size of this repository in megabytes.
@@ -993,13 +997,8 @@ class Repository
     end
   end
 
-  def empty_repo?
-    !exists? || !has_visible_content?
-  end
-  cache_method :empty_repo?, memoize_only: true
-
   def search_files_by_content(query, ref)
-    return [] if empty_repo? || query.blank?
+    return [] if empty? || query.blank?
 
     offset = 2
     args = %W(grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
@@ -1008,7 +1007,7 @@ class Repository
   end
 
   def search_files_by_name(query, ref)
-    return [] if empty_repo? || query.blank?
+    return [] if empty? || query.blank?
 
     args = %W(ls-tree --full-tree -r #{ref || root_ref} --name-status | #{Regexp.escape(query)})
 

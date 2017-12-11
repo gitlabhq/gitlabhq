@@ -121,5 +121,29 @@ describe Geo::NodeStatusFetchService, :geo do
 
       expect(status.status_message).to eq('This GitLab instance does not appear to be configured properly as a Geo node. Make sure the URLs are using the correct fully-qualified domain names.')
     end
+
+    it 'returns the status from database if it could not fetch it' do
+      allow(described_class).to receive(:get).and_raise(Errno::ECONNREFUSED.new('bad connection'))
+      db_status = create(:geo_node_status, :healthy, geo_node: secondary)
+
+      status = subject.call(secondary)
+
+      expect(status.status_message).to eq('Connection refused - bad connection')
+      expect(status).not_to be_healthy
+      expect(status.attachments_count).to eq(db_status.attachments_count)
+      expect(status.attachments_failed_count).to eq(db_status.attachments_failed_count)
+      expect(status.attachments_synced_count).to eq(db_status.attachments_synced_count)
+      expect(status.lfs_objects_count).to eq(db_status.lfs_objects_count)
+      expect(status.lfs_objects_failed_count).to eq(db_status.lfs_objects_failed_count)
+      expect(status.lfs_objects_synced_count).to eq(db_status.lfs_objects_synced_count)
+      expect(status.repositories_count).to eq(db_status.repositories_count)
+      expect(status.repositories_synced_count).to eq(db_status.repositories_synced_count)
+      expect(status.repositories_failed_count).to eq(db_status.repositories_failed_count)
+      expect(status.last_event_id).to eq(db_status.last_event_id)
+      expect(status.last_event_timestamp).to eq(db_status.last_event_timestamp)
+      expect(status.cursor_last_event_id).to eq(db_status.cursor_last_event_id)
+      expect(status.cursor_last_event_timestamp).to eq(db_status.cursor_last_event_timestamp)
+      expect(status.last_successful_status_check_timestamp).to eq(db_status.last_successful_status_check_timestamp)
+    end
   end
 end

@@ -415,7 +415,6 @@ $location-icon-color: #e7e9ed;
  *  Notes
  */
 $notes-light-color: $gl-text-color-secondary;
-$notes-role-color: $gl-text-color-secondary;
 $note-disabled-comment-color: #b2b2b2;
 $note-targe3-outside: #fffff0;
 $note-targe3-inside: #ffffd3;
@@ -564,6 +563,7 @@ $jq-ui-default-color: #777;
 /*
 * Label
 */
+$label-padding: 7px;
 $label-gray-bg: #f8fafc;
 $label-inverse-bg: #333;
 $label-remove-border: rgba(0, 0, 0, .1);

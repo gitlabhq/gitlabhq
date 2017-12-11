@@ -106,18 +106,15 @@ module Gitlab
     end
 
     def check_project_moved!
-      return unless redirected_path
+      return if redirected_path.nil?
 
-      url = protocol == 'ssh' ? project.ssh_url_to_repo : project.http_url_to_repo
-      message = <<-MESSAGE.strip_heredoc
-        Project '#{redirected_path}' was moved to '#{project.full_path}'.
+      project_moved = Checks::ProjectMoved.new(project, user, redirected_path, protocol)
 
-        Please update your Git remote and try again:
-
-          git remote set-url origin #{url}
-      MESSAGE
-
-      raise ProjectMovedError, message
+      if project_moved.permanent_redirect?
+        project_moved.add_redirect_message
+      else
+        raise ProjectMovedError, project_moved.redirect_message(rejected: true)
+      end
     end
 
     def check_command_disabled!(cmd)
@@ -171,7 +168,7 @@ module Gitlab
       end
 
       if Gitlab::Database.read_only?
-        raise UnauthorizedError, ERROR_MESSAGES[:cannot_push_to_read_only]
+        raise UnauthorizedError, push_to_read_only_message
       end
 
       if deploy_key
@@ -303,6 +300,10 @@ module Gitlab
                        else
                          UserAccess.new(user, project: project)
                        end
+    end
+
+    def push_to_read_only_message
+      ERROR_MESSAGES[:cannot_push_to_read_only]
     end
   end
 end

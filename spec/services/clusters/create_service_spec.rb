@@ -45,6 +45,7 @@ describe Clusters::CreateService do
         expect { subject }
           .to change { Clusters::Cluster.count }.by(1)
           .and change { Clusters::Providers::Gcp.count }.by(1)
+<<<<<<< HEAD
 
         expect(subject.name).to eq('test-cluster')
         expect(subject.user).to eq(user)
@@ -58,6 +59,21 @@ describe Clusters::CreateService do
       end
     end
 
+=======
+
+        expect(subject.name).to eq('test-cluster')
+        expect(subject.user).to eq(user)
+        expect(subject.project).to eq(project)
+        expect(subject.provider.gcp_project_id).to eq('gcp-project')
+        expect(subject.provider.zone).to eq('us-central1-a')
+        expect(subject.provider.num_nodes).to eq(1)
+        expect(subject.provider.machine_type).to eq('machine_type-a')
+        expect(subject.provider.access_token).to eq(access_token)
+        expect(subject.platform).to be_nil
+      end
+    end
+
+>>>>>>> origin/master
     shared_examples 'error' do
       it 'returns an error' do
         expect(ClusterProvisionWorker).not_to receive(:perform_async)
@@ -81,12 +97,50 @@ describe Clusters::CreateService do
     end
 
     context 'when project has a cluster' do
+<<<<<<< HEAD
       include_context 'valid params'
       let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
       it 'does not create a cluster' do
         expect(ClusterProvisionWorker).not_to receive(:perform_async)
         expect { subject }.to raise_error(ArgumentError).and change { Clusters::Cluster.count }.by(0)
+=======
+      let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+
+      before do
+        allow(project).to receive(:feature_available?).and_call_original
+      end
+
+      context 'when license has multiple clusters feature' do
+        before do
+          allow(project).to receive(:feature_available?).with(:multiple_clusters).and_return(true)
+        end
+
+        context 'when correct params' do
+          include_context 'valid params'
+
+          include_examples 'create cluster'
+        end
+
+        context 'when invalid params' do
+          include_context 'invalid params'
+
+          include_examples 'error'
+        end
+      end
+
+      context 'when license does not have multiple clusters feature' do
+        include_context 'valid params'
+
+        before do
+          allow(project).to receive(:feature_available?).with(:multiple_clusters).and_return(false)
+        end
+
+        it 'does not create a cluster' do
+          expect(ClusterProvisionWorker).not_to receive(:perform_async)
+          expect { subject }.to raise_error(ArgumentError).and change { Clusters::Cluster.count }.by(0)
+        end
+>>>>>>> origin/master
       end
     end
   end

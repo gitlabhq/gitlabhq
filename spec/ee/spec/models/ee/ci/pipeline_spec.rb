@@ -43,6 +43,34 @@ describe Ci::Pipeline do
     end
   end
 
+  describe '#performance_artifact' do
+    context 'has performance job' do
+      let!(:build) do
+        create(
+          :ci_build,
+          :artifacts,
+          name: 'performance',
+          pipeline: pipeline,
+          options: {
+            artifacts: {
+              paths: ['performance.json']
+            }
+          }
+        )
+      end
+
+      it { expect(pipeline.performance_artifact).to eq(build) }
+    end
+
+    context 'no performance job' do
+      before do
+        create(:ci_build, pipeline: pipeline)
+      end
+
+      it { expect(pipeline.performance_artifact).to be_nil }
+    end
+  end
+
   describe '#sast_artifact' do
     context 'has sast job' do
       let!(:build) do

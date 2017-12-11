@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171124182517) do
+ActiveRecord::Schema.define(version: 20171206221519) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -162,7 +162,6 @@ ActiveRecord::Schema.define(version: 20171124182517) do
     t.integer "circuitbreaker_failure_wait_time", default: 30
     t.integer "circuitbreaker_failure_reset_time", default: 1800
     t.integer "circuitbreaker_storage_timeout", default: 30
-    t.boolean "remote_mirror_available", default: true, null: false
     t.integer "circuitbreaker_access_retries", default: 3
     t.integer "circuitbreaker_backoff_threshold", default: 80
     t.boolean "throttle_unauthenticated_enabled", default: false, null: false
@@ -179,6 +178,7 @@ ActiveRecord::Schema.define(version: 20171124182517) do
     t.integer "gitaly_timeout_default", default: 55, null: false
     t.integer "gitaly_timeout_medium", default: 30, null: false
     t.integer "gitaly_timeout_fast", default: 10, null: false
+    t.boolean "mirror_available", default: true, null: false
   end
 
   create_table "approvals", force: :cascade do |t|
@@ -1856,6 +1856,7 @@ ActiveRecord::Schema.define(version: 20171124182517) do
     t.boolean "resolve_outdated_diff_discussions"
     t.boolean "remote_mirror_available_overridden"
     t.boolean "only_mirror_protected_branches"
+    t.boolean "pull_mirror_available_overridden"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1971,10 +1972,12 @@ ActiveRecord::Schema.define(version: 20171124182517) do
     t.string "path", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "permanent"
   end
 
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
+  add_index "redirect_routes", ["permanent"], name: "index_redirect_routes_on_permanent", using: :btree
   add_index "redirect_routes", ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
 
   create_table "releases", force: :cascade do |t|
@@ -2214,7 +2217,7 @@ ActiveRecord::Schema.define(version: 20171124182517) do
 
   create_table "uploads", force: :cascade do |t|
     t.integer "size", limit: 8, null: false
-    t.string "path", null: false
+    t.string "path", limit: 511, null: false
     t.string "checksum", limit: 64
     t.integer "model_id"
     t.string "model_type"

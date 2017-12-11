@@ -87,10 +87,11 @@
               %h3.panel-title
                 Related issues
 
-    #merge-requests{ data: { url: referenced_merge_requests_project_issue_url(@project, @issue) } }
+
+    #merge-requests{ data: { url: referenced_merge_requests_project_issue_path(@project, @issue) } }
       // This element is filled in using JavaScript.
 
-    #related-branches{ data: { url: related_branches_project_issue_url(@project, @issue) } }
+    #related-branches{ data: { url: related_branches_project_issue_path(@project, @issue) } }
       // This element is filled in using JavaScript.
 
   .content-block.emoji-block

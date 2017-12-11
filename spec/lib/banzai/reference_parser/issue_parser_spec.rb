@@ -70,12 +70,12 @@ describe Banzai::ReferenceParser::IssueParser do
     end
   end
 
-  describe '#issues_for_nodes' do
+  describe '#records_for_nodes' do
     it 'returns a Hash containing the issues for a list of nodes' do
       link['data-issue'] = issue.id.to_s
       nodes = [link]
 
-      expect(subject.issues_for_nodes(nodes)).to eq({ link => issue })
+      expect(subject.records_for_nodes(nodes)).to eq({ link => issue })
     end
   end
 end

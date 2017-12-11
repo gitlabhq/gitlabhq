@@ -9,7 +9,7 @@ describe Projects::MirrorsController do
 
     context 'when remote mirrors are disabled' do
       before do
-        stub_application_setting(remote_mirror_available: false)
+        stub_application_setting(mirror_available: false)
       end
 
       context 'when user is admin' do
@@ -46,7 +46,7 @@ describe Projects::MirrorsController do
         expect_any_instance_of(EE::Project).to receive(:force_import_job!)
 
         expect do
-          do_put(project, remote_mirrors_attributes: { '0' => { 'enabled' => 1, 'url' => 'http://foo.com' } })
+          do_put(project, remote_mirrors_attributes: { '0' => { 'enabled' => 1, 'url' => url } })
         end.to change { RemoteMirror.count }.to(1)
       end
 
@@ -121,27 +121,59 @@ describe Projects::MirrorsController do
   end
 
   describe 'setting up a mirror' do
-    before do
-      sign_in(project.owner)
-    end
+    let(:url) { 'http://foo.com' }
+    let(:project) { create(:project, :repository) }
 
-    context 'when project does not have a mirror' do
-      let(:project) { create(:project) }
+    context 'when mirrors are disabled' do
+      before do
+        stub_application_setting(mirror_available: false)
+      end
 
-      it 'allows to create a mirror' do
-        expect_any_instance_of(EE::Project).to receive(:force_import_job!)
+      context 'when user is admin' do
+        let(:admin) { create(:user, :admin) }
 
-        expect do
-          do_put(project, mirror: true, mirror_user_id: project.owner.id, import_url: 'http://foo.com')
-        end.to change { Project.mirror.count }.to(1)
+        it 'creates a new mirror' do
+          sign_in(admin)
+          expect_any_instance_of(EE::Project).to receive(:force_import_job!)
+
+          expect do
+            do_put(project, mirror: true, mirror_user_id: admin.id, import_url: url)
+          end.to change { Project.mirror.count }.to(1)
+        end
+      end
+
+      context 'when user is not an admin' do
+        it 'does not create a new mirror' do
+          sign_in(project.owner)
+
+          expect do
+            do_put(project, mirror: true, mirror_user_id: project.owner.id, import_url: url)
+          end.not_to change { Project.mirror.count }
+        end
       end
     end
 
-    context 'when project has a mirror' do
-      let(:project) { create(:project, :mirror, :import_finished) }
+    context 'when mirrors are enabled' do
+      before do
+        sign_in(project.owner)
+      end
 
-      it 'is able to disable the mirror' do
-        expect { do_put(project, mirror: false) }.to change { Project.mirror.count }.to(0)
+      context 'when project does not have a mirror' do
+        it 'allows to create a mirror' do
+          expect_any_instance_of(EE::Project).to receive(:force_import_job!)
+
+          expect do
+            do_put(project, mirror: true, mirror_user_id: project.owner.id, import_url: url)
+          end.to change { Project.mirror.count }.to(1)
+        end
+      end
+
+      context 'when project has a mirror' do
+        let(:project) { create(:project, :mirror, :import_finished) }
+
+        it 'is able to disable the mirror' do
+          expect { do_put(project, mirror: false) }.to change { Project.mirror.count }.to(0)
+        end
       end
     end
   end
@@ -154,25 +186,6 @@ describe Projects::MirrorsController do
       expect_any_instance_of(EE::Project).to receive(:force_import_job!)
 
       put :update_now, { namespace_id: project.namespace.to_param, project_id: project.to_param }
-    end
-  end
-
-  describe 'forcing an update on a push mirror' do
-    context 'when remote mirrors are disabled' do
-      let(:project) { create(:project, :repository, :remote_mirror) }
-
-      before do
-        stub_application_setting(remote_mirror_available: false)
-        sign_in(project.owner)
-      end
-
-      it 'updates now when overridden' do
-        project.update(remote_mirror_available_overridden: true)
-
-        expect_any_instance_of(EE::Project).to receive(:update_remote_mirrors)
-
-        put :update_now, { namespace_id: project.namespace.to_param, project_id: project.to_param, sync_remote: 1 }
-      end
     end
   end
 

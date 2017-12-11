@@ -1,30 +1,9 @@
 require 'spec_helper'
 
 describe GeoNodeStatusEntity, :postgresql do
-  let(:geo_node_status) do
-    GeoNodeStatus.new(
-      geo_node_id: 1,
-      health: '',
-      attachments_count: 329,
-      attachments_failed_count: 25,
-      attachments_synced_count: 141,
-      lfs_objects_count: 256,
-      lfs_objects_failed_count: 12,
-      lfs_objects_synced_count: 123,
-      repositories_count: 10,
-      repositories_synced_count: 5,
-      repositories_failed_count: 0,
-      last_successful_status_check_timestamp: Time.now.beginning_of_day
-    )
-  end
-
-  let(:entity) do
-    described_class.new(geo_node_status, request: double)
-  end
-
-  let(:error) do
-    'Could not connect to Geo database'
-  end
+  let(:geo_node_status) { build(:geo_node_status) }
+  let(:entity) { described_class.new(geo_node_status, request: double) }
+  let(:error) { 'Could not connect to Geo database' }
 
   subject { entity.as_json }
 
@@ -44,6 +23,7 @@ describe GeoNodeStatusEntity, :postgresql do
   it { is_expected.to have_key(:repositories_synced_count)}
   it { is_expected.to have_key(:repositories_synced_in_percentage) }
   it { is_expected.to have_key(:last_successful_status_check_timestamp) }
+  it { is_expected.to have_key(:namespaces) }
 
   describe '#healthy' do
     context 'when node is healthy' do
@@ -87,19 +67,47 @@ describe GeoNodeStatusEntity, :postgresql do
 
   describe '#attachments_synced_in_percentage' do
     it 'formats as percentage' do
+      geo_node_status.assign_attributes(attachments_count: 329,
+                                        attachments_failed_count: 25,
+                                        attachments_synced_count: 141)
+
       expect(subject[:attachments_synced_in_percentage]).to eq '42.86%'
     end
   end
 
   describe '#lfs_objects_synced_in_percentage' do
     it 'formats as percentage' do
+      geo_node_status.assign_attributes(lfs_objects_count: 256,
+                                        lfs_objects_failed_count: 12,
+                                        lfs_objects_synced_count: 123)
+
       expect(subject[:lfs_objects_synced_in_percentage]).to eq '48.05%'
     end
   end
 
   describe '#repositories_synced_in_percentage' do
     it 'formats as percentage' do
+      geo_node_status.assign_attributes(repositories_count: 10,
+                                        repositories_synced_count: 5,
+                                        repositories_failed_count: 0)
+
       expect(subject[:repositories_synced_in_percentage]).to eq '50.00%'
+    end
+  end
+
+  describe '#namespaces' do
+    it 'returns empty array when full sync is active' do
+      expect(subject[:namespaces]).to be_empty
+    end
+
+    it 'returns array of namespace ids and paths for selective sync' do
+      namespace = create(:namespace)
+      geo_node_status.geo_node.namespaces << namespace
+
+      expect(subject[:namespaces]).not_to be_empty
+      expect(subject[:namespaces]).to be_an(Array)
+      expect(subject[:namespaces].first[:id]).to eq(namespace.id)
+      expect(subject[:namespaces].first[:path]).to eq(namespace.path)
     end
   end
 end

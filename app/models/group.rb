@@ -344,6 +344,10 @@ class Group < Namespace
     end
   end
 
+  def hashed_storage?(_feature)
+    false
+  end
+
   private
 
   def update_two_factor_requirement

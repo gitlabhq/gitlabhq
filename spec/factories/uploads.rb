@@ -14,5 +14,11 @@ FactoryGirl.define do
       path { "#{SecureRandom.hex}/myfile.jpg" }
       uploader "FileUploader"
     end
+
+    trait :namespace_upload do
+      path { "#{SecureRandom.hex}/myfile.jpg" }
+      model { build(:group) }
+      uploader "NamespaceFileUploader"
+    end
   end
 end

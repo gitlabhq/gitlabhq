@@ -351,7 +351,6 @@ describe Project do
       it { is_expected.to delegate_method(method).to(:team) }
     end
 
-    it { is_expected.to delegate_method(:empty_repo?).to(:repository) }
     it { is_expected.to delegate_method(:members).to(:team).with_prefix(true) }
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).with_arguments(allow_nil: true) }
   end
@@ -785,6 +784,24 @@ describe Project do
       project = create(:redmine_project)
 
       expect(project.default_issues_tracker?).to be_falsey
+    end
+  end
+
+  describe '#empty_repo?' do
+    context 'when the repo does not exist' do
+      let(:project) { build_stubbed(:project) }
+
+      it 'returns true' do
+        expect(project.empty_repo?).to be(true)
+      end
+    end
+
+    context 'when the repo exists' do
+      let(:project) { create(:project, :repository) }
+      let(:empty_project) { create(:project, :empty_repo) }
+
+      it { expect(empty_project.empty_repo?).to be(true) }
+      it { expect(project.empty_repo?).to be(false) }
     end
   end
 
@@ -2393,6 +2410,55 @@ describe Project do
         let(:project) { cluster.project }
 
         it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+      end
+
+      context 'when multiple clusters (EEP) is enabled' do
+        before do
+          stub_licensed_features(multiple_clusters: true)
+        end
+
+        let(:project) { create(:project) }
+
+        let!(:default_cluster) do
+          create(:cluster,
+                 platform_type: :kubernetes,
+                 projects: [project],
+                 environment_scope: '*',
+                 platform_kubernetes: default_cluster_kubernetes)
+        end
+
+        let!(:review_env_cluster) do
+          create(:cluster,
+                 platform_type: :kubernetes,
+                 projects: [project],
+                 environment_scope: 'review/*',
+                 platform_kubernetes: review_env_cluster_kubernetes)
+        end
+
+        let(:default_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'default-AAA') }
+        let(:review_env_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'review-AAA') }
+
+        subject { project.deployment_variables(environment: environment) }
+
+        context 'when environment name is review/name' do
+          let!(:environment) { create(:environment, project: project, name: 'review/name') }
+
+          it 'returns variables from this service' do
+            expect(subject).to include(
+              { key: 'KUBE_TOKEN', value: 'review-AAA', public: false }
+            )
+          end
+        end
+
+        context 'when environment name is other' do
+          let!(:environment) { create(:environment, project: project, name: 'staging/name') }
+
+          it 'returns variables from this service' do
+            expect(subject).to include(
+              { key: 'KUBE_TOKEN', value: 'default-AAA', public: false }
+            )
+          end
+        end
       end
     end
   end
