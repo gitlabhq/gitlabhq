@@ -1,10 +1,10 @@
 import Vue from 'vue';
-import issueNotesApp from '../notes/components/issue_notes_app.vue';
+import notesApp from '../notes/components/notes_app.vue';
 
 document.addEventListener('DOMContentLoaded', () => new Vue({
   el: '#js-vue-mr-discussions',
   components: {
-    issueNotesApp,
+    notesApp,
   },
   data() {
     const notesDataset = document.getElementById('js-vue-mr-discussions').dataset;
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => new Vue({
     };
   },
   render(createElement) {
-    return createElement('issue-notes-app', {
+    return createElement('notes-app', {
       props: {
         noteableData: this.issueData,
         notesData: this.notesData,
