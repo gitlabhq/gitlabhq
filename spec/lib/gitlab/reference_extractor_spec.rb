@@ -115,6 +115,15 @@ describe Gitlab::ReferenceExtractor do
     end
   end
 
+  it 'does not include anchors from table of contents in issue references' do
+    issue1 = create(:issue, project: project)
+    issue2 = create(:issue, project: project)
+
+    subject.analyze("not real issue <h4>#{issue1.iid}</h4>, real issue #{issue2.to_reference}")
+
+    expect(subject.issues).to match_array([issue2])
+  end
+
   it 'accesses valid issue objects' do
     @i0 = create(:issue, project: project)
     @i1 = create(:issue, project: project)
@@ -249,5 +258,35 @@ describe Gitlab::ReferenceExtractor do
   describe '.references_pattern' do
     subject { described_class.references_pattern }
     it { is_expected.to be_kind_of Regexp }
+  end
+
+  describe 'referables prefixes' do
+    def prefixes
+      described_class::REFERABLES.each_with_object({}) do |referable, result|
+        klass = referable.to_s.camelize.constantize
+
+        next unless klass.respond_to?(:reference_prefix)
+
+        prefix = klass.reference_prefix
+        result[prefix] ||= []
+        result[prefix] << referable
+      end
+    end
+
+    it 'returns all supported prefixes' do
+      expect(prefixes.keys.uniq).to match_array(%w(@ # ~ % ! $ &))
+    end
+
+    it 'does not allow one prefix for multiple referables if not allowed specificly' do
+      # make sure you are not overriding existing prefix before changing this hash
+      multiple_allowed = {
+        '@' => 3
+      }
+
+      prefixes.each do |prefix, referables|
+        expected_count = multiple_allowed[prefix] || 1
+        expect(referables.count).to eq(expected_count)
+      end
+    end
   end
 end

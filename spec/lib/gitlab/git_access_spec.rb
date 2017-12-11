@@ -193,7 +193,15 @@ describe Gitlab::GitAccess do
     let(:actor) { build(:rsa_deploy_key_2048, user: user) }
   end
 
-  describe '#check_project_moved!' do
+  shared_examples 'check_project_moved' do
+    it 'enqueues a redirected message' do
+      push_access_check
+
+      expect(Gitlab::Checks::ProjectMoved.fetch_redirect_message(user.id, project.id)).not_to be_nil
+    end
+  end
+
+  describe '#check_project_moved!', :clean_gitlab_redis_shared_state do
     before do
       project.add_master(user)
     end
@@ -207,7 +215,40 @@ describe Gitlab::GitAccess do
       end
     end
 
-    context 'when a redirect was followed to find the project' do
+    context 'when a permanent redirect and ssh protocol' do
+      let(:redirected_path) { 'some/other-path' }
+
+      before do
+        allow_any_instance_of(Gitlab::Checks::ProjectMoved).to receive(:permanent_redirect?).and_return(true)
+      end
+
+      it 'allows push and pull access' do
+        aggregate_failures do
+          expect { push_access_check }.not_to raise_error
+        end
+      end
+
+      it_behaves_like 'check_project_moved'
+    end
+
+    context 'with a permanent redirect and http protocol' do
+      let(:redirected_path) { 'some/other-path' }
+      let(:protocol) { 'http' }
+
+      before do
+        allow_any_instance_of(Gitlab::Checks::ProjectMoved).to receive(:permanent_redirect?).and_return(true)
+      end
+
+      it 'allows_push and pull access' do
+        aggregate_failures do
+          expect { push_access_check }.not_to raise_error
+        end
+      end
+
+      it_behaves_like 'check_project_moved'
+    end
+
+    context 'with a temporal redirect and ssh protocol' do
       let(:redirected_path) { 'some/other-path' }
 
       it 'blocks push and pull access' do
@@ -219,16 +260,15 @@ describe Gitlab::GitAccess do
           expect { pull_access_check }.to raise_error(described_class::ProjectMovedError, /git remote set-url origin #{project.ssh_url_to_repo}/)
         end
       end
+    end
 
-      context 'http protocol' do
-        let(:protocol) { 'http' }
+    context 'with a temporal redirect and http protocol' do
+      let(:redirected_path) { 'some/other-path' }
+      let(:protocol) { 'http' }
 
-        it 'includes the path to the project using HTTP' do
-          aggregate_failures do
-            expect { push_access_check }.to raise_error(described_class::ProjectMovedError, /git remote set-url origin #{project.http_url_to_repo}/)
-            expect { pull_access_check }.to raise_error(described_class::ProjectMovedError, /git remote set-url origin #{project.http_url_to_repo}/)
-          end
-        end
+      it 'does not allow to push and pull access' do
+        expect { push_access_check }.to raise_error(described_class::ProjectMovedError, /git remote set-url origin #{project.http_url_to_repo}/)
+        expect { pull_access_check }.to raise_error(described_class::ProjectMovedError, /git remote set-url origin #{project.http_url_to_repo}/)
       end
     end
   end

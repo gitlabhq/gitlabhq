@@ -32,9 +32,17 @@
             - elsif discussion.diff_discussion?
               on
               = conditional_link_to url.present?, url do
-                - unless discussion.active?
-                  an old version of
-                the diff
+                - if discussion.on_merge_request_commit?
+                  - unless discussion.active?
+                    an outdated change in
+                  commit
+
+                  %span.commit-sha= Commit.truncate_sha(discussion.commit_id)
+                - else
+                  - unless discussion.active?
+                    an old version of
+                  the diff
+
 
             = time_ago_with_tooltip(discussion.created_at, placement: "bottom", html_class: "note-created-ago")
           = render "discussions/headline", discussion: discussion

@@ -41,7 +41,7 @@ module API
             detail 'This feature was introduced in GitLab 9.5'
           end
           delete do
-            Gitlab::Git::Storage::CircuitBreaker.reset_all!
+            Gitlab::Git::Storage::FailureInfo.reset_all!
           end
         end
       end
