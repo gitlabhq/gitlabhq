@@ -66,7 +66,7 @@ module Omnibus
         raise 'Pipeline timeout!' if timeout?
 
         case status
-        when :pending, :running
+        when :created, :pending, :running
           puts "Waiting another #{INTERVAL} seconds ..."
           sleep INTERVAL
         when :success
