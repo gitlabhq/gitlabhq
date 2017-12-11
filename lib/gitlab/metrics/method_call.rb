@@ -2,8 +2,8 @@ module Gitlab
   module Metrics
     # Class for tracking timing information about method calls
     class MethodCall
-      MEASUREMENT_ENABLED_CACHE = Concurrent::AtomicBoolean.new(false)
-      MEASUREMENT_ENABLED_CACHE_EXPIRES_AT = Concurrent::AtomicFixnum.new(Time.now.to_i)
+      @@measurement_enabled_cache = Concurrent::AtomicBoolean.new(false)
+      @@measurement_enabled_cache_expires_at = Concurrent::AtomicFixnum.new(Time.now.to_i)
       MUTEX = Mutex.new
       BASE_LABELS = { module: nil, method: nil }.freeze
       attr_reader :real_time, :cpu_time, :call_count, :labels
@@ -18,6 +18,10 @@ module Gitlab
             Transaction::BASE_LABELS.merge(BASE_LABELS),
             [0.01, 0.05, 0.1, 0.5, 1])
         end
+      end
+
+      def self.measurement_enabled_cache_expires_at
+        @@measurement_enabled_cache_expires_at
       end
 
       # name - The full name of the method (including namespace) such as
@@ -74,14 +78,14 @@ module Gitlab
       end
 
       def call_measurement_enabled?
-        expires_at = MEASUREMENT_ENABLED_CACHE_EXPIRES_AT.value
+        expires_at = @@measurement_enabled_cache_expires_at.value
         if expires_at < Time.now.to_i
-          if MEASUREMENT_ENABLED_CACHE_EXPIRES_AT.compare_and_set(expires_at, (Time.now + 30.seconds).to_i)
-            MEASUREMENT_ENABLED_CACHE.value = Feature.get(:prometheus_metrics_method_instrumentation).enabled?
+          if @@measurement_enabled_cache_expires_at.compare_and_set(expires_at, (Time.now + 30.seconds).to_i)
+            @@measurement_enabled_cache.value = Feature.get(:prometheus_metrics_method_instrumentation).enabled?
           end
         end
 
-        MEASUREMENT_ENABLED_CACHE.value
+        @@measurement_enabled_cache.value
       end
     end
   end
