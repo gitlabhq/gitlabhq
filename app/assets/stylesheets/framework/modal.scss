@@ -47,3 +47,11 @@ body.modal-open {
 .modal.popup-dialog {
   display: block;
 }
+
+.recaptcha-dialog .recaptcha-form {
+  display: inline-block;
+
+  .recaptcha {
+    margin: 0;
+  }
+}
