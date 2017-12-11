@@ -15,12 +15,6 @@ feature 'Clusters', :js do
     before do
       visit project_clusters_path(project)
     end
-<<<<<<< HEAD
-
-    it 'sees empty state' do
-      expect(page).to have_link('Add cluster')
-      expect(page).to have_selector('.empty-state')
-=======
 
     it 'sees empty state' do
       expect(page).to have_link('Add cluster')
@@ -39,7 +33,6 @@ feature 'Clusters', :js do
     it 'user sees a table with one cluster' do
       # One is the header row, the other the cluster row
       expect(page).to have_selector('.gl-responsive-table-row', count: 2)
->>>>>>> origin/master
     end
   end
 
@@ -103,8 +96,6 @@ feature 'Clusters', :js do
         click_link cluster.name
       end
 
-<<<<<<< HEAD
-=======
     context 'when license has multiple clusters feature' do
       before do
         allow_any_instance_of(EE::Project).to receive(:feature_available?).with(:multiple_clusters).and_return(true)
@@ -172,7 +163,6 @@ feature 'Clusters', :js do
         click_link cluster.name
       end
 
->>>>>>> origin/master
       it 'user sees a cluster details page' do
         expect(page).to have_button('Save')
         expect(page.find(:css, '.cluster-name').value).to eq(cluster.name)
