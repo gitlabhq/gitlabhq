@@ -1,8 +1,7 @@
 import Jed from 'jed';
 import sprintf from './sprintf';
 
-const langAttribute = document.querySelector('html').getAttribute('lang');
-const lang = (langAttribute || 'en').replace(/-/g, '_');
+const languageCode = () => document.querySelector('html').getAttribute('lang') || 'en';
 const locale = new Jed(window.translations || {});
 delete window.translations;
 
@@ -47,9 +46,19 @@ const pgettext = (keyOrContext, key) => {
   return translated[translated.length - 1];
 };
 
-export { lang };
+/**
+  Creates an instance of Intl.DateTimeFormat for the current locale.
+
+  @param formatOptions for available options, please see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/DateTimeFormat
+  @returns {Intl.DateTimeFormat}
+*/
+const createDateTimeFormat =
+  formatOptions => Intl.DateTimeFormat(languageCode(), formatOptions);
+
+export { languageCode };
 export { gettext as __ };
 export { ngettext as n__ };
 export { pgettext as s__ };
 export { sprintf };
+export { createDateTimeFormat };
 export default locale;
