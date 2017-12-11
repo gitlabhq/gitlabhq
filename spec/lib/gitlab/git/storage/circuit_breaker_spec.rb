@@ -1,10 +1,17 @@
 require 'spec_helper'
 
-describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: true, broken_storage: true do
+describe Gitlab::Git::Storage::CircuitBreaker, :broken_storage do
   let(:storage_name) { 'default' }
   let(:circuit_breaker) { described_class.new(storage_name, hostname) }
   let(:hostname) { Gitlab::Environment.hostname }
   let(:cache_key) { "storage_accessible:#{storage_name}:#{hostname}" }
+
+  def set_in_redis(name, value)
+    Gitlab::Git::Storage.redis.with do |redis|
+      redis.zadd(Gitlab::Git::Storage::REDIS_KNOWN_KEYS, 0, cache_key)
+      redis.hmset(cache_key, name, value)
+    end.first
+  end
 
   before do
     # Override test-settings for the circuitbreaker with something more realistic
@@ -19,36 +26,7 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
                          )
   end
 
-  def value_from_redis(name)
-    Gitlab::Git::Storage.redis.with do |redis|
-      redis.hmget(cache_key, name)
-    end.first
-  end
-
-  def set_in_redis(name, value)
-    Gitlab::Git::Storage.redis.with do |redis|
-      redis.zadd(Gitlab::Git::Storage::REDIS_KNOWN_KEYS, 0, cache_key)
-      redis.hmset(cache_key, name, value)
-    end.first
-  end
-
-  describe '.reset_all!' do
-    it 'clears all entries form redis' do
-      set_in_redis(:failure_count, 10)
-
-      described_class.reset_all!
-
-      key_exists = Gitlab::Git::Storage.redis.with { |redis| redis.exists(cache_key) }
-
-      expect(key_exists).to be_falsey
-    end
-
-    it 'does not break when there are no keys in redis' do
-      expect { described_class.reset_all! }.not_to raise_error
-    end
-  end
-
-  describe '.for_storage' do
+  describe '.for_storage', :request_store do
     it 'only builds a single circuitbreaker per storage' do
       expect(described_class).to receive(:new).once.and_call_original
 
@@ -71,7 +49,6 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
     it 'assigns the settings' do
       expect(circuit_breaker.hostname).to eq(hostname)
       expect(circuit_breaker.storage).to eq('default')
-      expect(circuit_breaker.storage_path).to eq(TestEnv.repos_path)
     end
   end
 
@@ -91,9 +68,9 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
       end
     end
 
-    describe '#failure_wait_time' do
+    describe '#check_interval' do
       it 'reads the value from settings' do
-        expect(circuit_breaker.failure_wait_time).to eq(1)
+        expect(circuit_breaker.check_interval).to eq(1)
       end
     end
 
@@ -114,12 +91,6 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
         expect(circuit_breaker.access_retries).to eq(4)
       end
     end
-
-    describe '#backoff_threshold' do
-      it 'reads the value from settings' do
-        expect(circuit_breaker.backoff_threshold).to eq(5)
-      end
-    end
   end
 
   describe '#perform' do
@@ -131,19 +102,6 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
         .to raise_error do |exception|
         expect(exception).to be_kind_of(Gitlab::Git::Storage::CircuitOpen)
         expect(exception.retry_after).to eq(1800)
-      end
-    end
-
-    it 'raises the correct exception when backing off' do
-      Timecop.freeze do
-        set_in_redis(:last_failure, 1.second.ago.to_f)
-        set_in_redis(:failure_count, 90)
-
-        expect { |b| circuit_breaker.perform(&b) }
-          .to raise_error do |exception|
-          expect(exception).to be_kind_of(Gitlab::Git::Storage::Failing)
-          expect(exception.retry_after).to eq(30)
-        end
       end
     end
 
@@ -170,54 +128,6 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
         .to raise_error(Rugged::OSError)
     end
 
-    it 'tracks that the storage was accessible' do
-      set_in_redis(:failure_count, 10)
-      set_in_redis(:last_failure, Time.now.to_f)
-
-      circuit_breaker.perform { '' }
-
-      expect(value_from_redis(:failure_count).to_i).to eq(0)
-      expect(value_from_redis(:last_failure)).to be_empty
-      expect(circuit_breaker.failure_count).to eq(0)
-      expect(circuit_breaker.last_failure).to be_nil
-    end
-
-    it 'maintains known storage keys' do
-      Timecop.freeze do
-        # Insert an old key to expire
-        old_entry = Time.now.to_i - 3.days.to_i
-        Gitlab::Git::Storage.redis.with do |redis|
-          redis.zadd(Gitlab::Git::Storage::REDIS_KNOWN_KEYS, old_entry, 'to_be_removed')
-        end
-
-        circuit_breaker.perform { '' }
-
-        known_keys = Gitlab::Git::Storage.redis.with do |redis|
-          redis.zrange(Gitlab::Git::Storage::REDIS_KNOWN_KEYS, 0, -1)
-        end
-
-        expect(known_keys).to contain_exactly(cache_key)
-      end
-    end
-
-    it 'only performs the accessibility check once' do
-      expect(Gitlab::Git::Storage::ForkedStorageCheck)
-        .to receive(:storage_available?).once.and_call_original
-
-      2.times { circuit_breaker.perform { '' } }
-    end
-
-    it 'calls the check with the correct arguments' do
-      stub_application_setting(circuitbreaker_storage_timeout: 30,
-                               circuitbreaker_access_retries: 3)
-
-      expect(Gitlab::Git::Storage::ForkedStorageCheck)
-        .to receive(:storage_available?).with(TestEnv.repos_path, 30, 3)
-              .and_call_original
-
-      circuit_breaker.perform { '' }
-    end
-
     context 'with the feature disabled' do
       before do
         stub_feature_flags(git_storage_circuit_breaker: false)
@@ -240,31 +150,6 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
         expect(result).to eq('hello')
       end
     end
-
-    context 'the storage is not available' do
-      let(:storage_name) { 'broken' }
-
-      it 'raises the correct exception' do
-        expect(circuit_breaker).to receive(:track_storage_inaccessible)
-
-        expect { circuit_breaker.perform { '' } }
-          .to raise_error do |exception|
-          expect(exception).to be_kind_of(Gitlab::Git::Storage::Inaccessible)
-          expect(exception.retry_after).to eq(30)
-        end
-      end
-
-      it 'tracks that the storage was inaccessible' do
-        Timecop.freeze do
-          expect { circuit_breaker.perform { '' } }.to raise_error(Gitlab::Git::Storage::Inaccessible)
-
-          expect(value_from_redis(:failure_count).to_i).to eq(1)
-          expect(value_from_redis(:last_failure)).not_to be_empty
-          expect(circuit_breaker.failure_count).to eq(1)
-          expect(circuit_breaker.last_failure).to be_within(1.second).of(Time.now)
-        end
-      end
-    end
   end
 
   describe '#circuit_broken?' do
@@ -280,32 +165,6 @@ describe Gitlab::Git::Storage::CircuitBreaker, clean_gitlab_redis_shared_state: 
       set_in_redis(:failure_count, 200)
 
       expect(circuit_breaker.circuit_broken?).to be_truthy
-    end
-  end
-
-  describe '#backing_off?' do
-    it 'is true when there was a recent failure' do
-      Timecop.freeze do
-        set_in_redis(:last_failure, 1.second.ago.to_f)
-        set_in_redis(:failure_count, 90)
-
-        expect(circuit_breaker.backing_off?).to be_truthy
-      end
-    end
-
-    context 'the `failure_wait_time` is set to 0' do
-      before do
-        stub_application_setting(circuitbreaker_failure_wait_time: 0)
-      end
-
-      it 'is working even when there are failures' do
-        Timecop.freeze do
-          set_in_redis(:last_failure, 0.seconds.ago.to_f)
-          set_in_redis(:failure_count, 90)
-
-          expect(circuit_breaker.backing_off?).to be_falsey
-        end
-      end
     end
   end
 

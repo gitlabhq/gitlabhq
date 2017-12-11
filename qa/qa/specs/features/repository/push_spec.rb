@@ -10,21 +10,10 @@ module QA
           scenario.description = 'project with repository'
         end
 
-        Git::Repository.perform do |repository|
-          repository.location = Page::Project::Show.act do
-            choose_repository_clone_http
-            repository_location
-          end
-
-          repository.use_default_credentials
-
-          repository.act do
-            clone
-            configure_identity('GitLab QA', 'root@gitlab.com')
-            add_file('README.md', '# This is test project')
-            commit('Add README.md')
-            push_changes
-          end
+        Scenario::Gitlab::Repository::Push.perform do |scenario|
+          scenario.file_name = 'README.md'
+          scenario.file_content = '# This is test project'
+          scenario.commit_message = 'Add README.md'
         end
 
         Page::Project::Show.act do

@@ -518,5 +518,20 @@ describe Ci::CreatePipelineService do
         end
       end
     end
+
+    context 'when pipeline is running for a tag' do
+      before do
+        config = YAML.dump(test: { script: 'test', only: ['branches'] },
+                           deploy: { script: 'deploy', only: ['tags'] })
+
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'creates a tagged pipeline' do
+        pipeline = execute_service(ref: 'v1.0.0')
+
+        expect(pipeline.tag?).to be true
+      end
+    end
   end
 end

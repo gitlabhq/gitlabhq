@@ -58,6 +58,11 @@ GEM
     asciidoctor (1.5.3)
     asciidoctor-plantuml (0.0.7)
       asciidoctor (~> 1.5)
+    asset_sync (2.2.0)
+      activemodel (>= 4.1.0)
+      fog-core
+      mime-types (>= 2.99)
+      unf
     ast (2.3.0)
     atomic (1.1.99)
     attr_encrypted (3.0.3)
@@ -975,6 +980,7 @@ DEPENDENCIES
   asana (~> 0.6.0)
   asciidoctor (~> 1.5.2)
   asciidoctor-plantuml (= 0.0.7)
+  asset_sync (~> 2.2.0)
   attr_encrypted (~> 3.0.0)
   awesome_print (~> 1.2.0)
   babosa (~> 1.0.2)
