@@ -59,6 +59,7 @@ export default class Notes {
     this.postComment = this.postComment.bind(this);
     this.clearFlashWrapper = this.clearFlash.bind(this);
     this.onHashChange = this.onHashChange.bind(this);
+    this.handleQuickActionsCommands = this.handleQuickActionsCommands.bind(this);
 
     this.notes_url = notes_url;
     this.note_ids = note_ids;
@@ -338,6 +339,20 @@ export default class Notes {
     $note.toggleClass('target', addTargetClass);
   }
 
+  handleQuickActionsCommands(noteEntity, $notesList) {
+    const quickActionsCommands = noteEntity.quick_actions_commands;
+    const hasQuickActionsCommands = !_.isEmpty(quickActionsCommands);
+
+    if (hasQuickActionsCommands) {
+      $notesList.find('.system-note.being-posted').remove();
+      this.addFlash('Commands applied', 'notice', this.parentTimeline.get(0));
+
+      if (!noteEntity.valid) {
+        this.refresh();
+      }
+    }
+  }
+
   /**
    * Render note in main comments area.
    *
@@ -348,38 +363,9 @@ export default class Notes {
       return this.renderDiscussionNote(noteEntity, $form);
     }
 
-    const quickActionsCommands = noteEntity.quick_actions_commands;
-    const hasQuickActionsCommands = quickActionsCommands && Object.keys(quickActionsCommands).length;
-    let quickActionsMessage = null;
-    let quickActionsMessageType = 'notice';
+    this.handleQuickActionsCommands(noteEntity, $notesList);
 
-    // If the note is invalid with quickActionsCommands, that means it only contained quick actions
     if (!noteEntity.valid) {
-      if (hasQuickActionsCommands) {
-        quickActionsMessage = 'Commands applied';
-      }
-
-      const quickActionsResults = noteEntity.quick_actions_results;
-
-      if (quickActionsResults && quickActionsResults.create_branch) {
-        const createBranchResult = quickActionsResults.create_branch;
-
-        if (createBranchResult.status === 'error') {
-          if (quickActionsMessage) {
-            quickActionsMessage = `Commands applied, but the branch '${createBranchResult.branch_name}' could not be created.`;
-          } else {
-            quickActionsMessage = `The branch '${createBranchResult.branch_name}' could not be created!`;
-            quickActionsMessageType = 'alert';
-          }
-        }
-      }
-
-      if (quickActionsMessage) {
-        this.addFlash(quickActionsMessage, quickActionsMessageType, this.parentTimeline.get(0));
-        this.refresh();
-        $notesList.find('.system-note.being-posted').remove();
-      }
-
       return;
     }
 

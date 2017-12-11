@@ -61,6 +61,60 @@ export const createNewNote = ({ commit }, { endpoint, data }) => service
 export const removePlaceholderNotes = ({ commit }) =>
   commit(types.REMOVE_PLACEHOLDER_NOTES);
 
+const handleQuickActionsCommands = (noteEntity, noteData) => {
+  const quickActionsCommands = noteEntity.quick_actions_commands;
+  const hasQuickActionsCommands = !_.isEmpty(quickActionsCommands);
+  const quickActionsResults = noteEntity.quick_actions_results;
+  const hasQuickActionsResults = !_.isEmpty(quickActionsResults);
+  let quickActionsMessage = null;
+  let quickActionsMessageType = 'notice';
+
+  if (hasQuickActionsCommands || hasQuickActionsResults) {
+    quickActionsMessage = 'Commands applied';
+    eTagPoll.makeRequest();
+    $('.js-gfm-input').trigger('clear-commands-cache.atwho');
+
+    if (quickActionsCommands.emoji_award) {
+      const votesBlock = $('.js-awards-block').eq(0);
+
+      loadAwardsHandler()
+      .then((awardsHandler) => {
+        awardsHandler.addAwardToEmojiBar(votesBlock, quickActionsCommands.emoji_award);
+        awardsHandler.scrollToAwards();
+      })
+      .catch(() => {
+        Flash(
+          'Something went wrong while adding your award. Please try again.',
+          'alert',
+          noteData.flashContainer,
+        );
+      });
+    }
+
+    if (quickActionsCommands.spend_time != null
+      || quickActionsCommands.time_estimate != null) {
+      sidebarTimeTrackingEventHub.$emit('timeTrackingUpdated', noteEntity);
+    }
+  }
+
+  if (quickActionsResults && quickActionsResults.create_branch) {
+    const createBranchResult = quickActionsResults.create_branch;
+
+    if (createBranchResult.status === 'error') {
+      if (hasQuickActionsCommands) {
+        quickActionsMessage = quickActionsMessage.concat(`, but the branch '${createBranchResult.branch_name}' could not be created.`);
+      } else {
+        quickActionsMessage = `The branch '${createBranchResult.branch_name}' could not be created.`;
+        quickActionsMessageType = 'alert';
+      }
+    }
+  }
+
+  if (quickActionsMessage) {
+    Flash(quickActionsMessage, quickActionsMessageType, noteData.flashContainer);
+  }
+};
+
 export const saveNote = ({ commit, dispatch }, noteData) => {
   const { note } = noteData.data.note;
   let placeholderText = note;
@@ -92,68 +146,7 @@ export const saveNote = ({ commit, dispatch }, noteData) => {
 
   return dispatch(methodToDispatch, noteData)
     .then((res) => {
-      const quickActionsCommands = res.quick_actions_commands;
-      const hasQuickActionsCommands = quickActionsCommands
-        && Object.keys(quickActionsCommands).length;
-      let quickActionsMessage = null;
-      let quickActionsMessageType = 'notice';
-
-      // If the note is invalid with quickActionsCommands, that means it only
-      // contained quick actions
-      if (!res.valid) {
-        if (hasQuickActionsCommands) {
-          quickActionsMessage = 'Commands applied';
-        }
-
-        const quickActionsResults = res.quick_actions_results;
-
-        if (quickActionsResults && quickActionsResults.create_branch) {
-          const createBranchResult = quickActionsResults.create_branch;
-
-          if (createBranchResult.status === 'error') {
-            if (quickActionsMessage) {
-              quickActionsMessage = `Commands applied, but the branch '${createBranchResult.branch_name}' could not be created.`;
-            } else {
-              quickActionsMessage = `The branch '${createBranchResult.branch_name}' could not be created!`;
-              quickActionsMessageType = 'alert';
-            }
-          } else {
-            quickActionsMessage = 'Commands applied';
-          }
-        }
-
-        if (quickActionsMessage) {
-          Flash(quickActionsMessage, quickActionsMessageType, noteData.flashContainer);
-
-          if (quickActionsCommands.emoji_award) {
-            const votesBlock = $('.js-awards-block').eq(0);
-
-            loadAwardsHandler()
-            .then((awardsHandler) => {
-              awardsHandler.addAwardToEmojiBar(votesBlock, quickActionsCommands.emoji_award);
-              awardsHandler.scrollToAwards();
-            })
-            .catch(() => {
-              Flash(
-                'Something went wrong while adding your award. Please try again.',
-                'alert',
-                noteData.flashContainer,
-              );
-            });
-          }
-
-          if (quickActionsCommands.spend_time != null
-            || quickActionsCommands.time_estimate != null) {
-            sidebarTimeTrackingEventHub.$emit('timeTrackingUpdated', res);
-          }
-        }
-      }
-
-      if (hasQuickActionsCommands) {
-        eTagPoll.makeRequest();
-
-        $('.js-gfm-input').trigger('clear-commands-cache.atwho');
-      }
+      handleQuickActionsCommands(res, noteData);
 
       commit(types.REMOVE_PLACEHOLDER_NOTES);
 

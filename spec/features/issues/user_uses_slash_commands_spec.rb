@@ -284,7 +284,7 @@ feature 'Issues > User uses quick actions', :js do
           write_note("/create_branch A New Feature")
 
           expect(page).not_to have_content '/create_branch'
-          expect(page).to have_content "The branch 'A New Feature' could not be created!"
+          expect(page).to have_content "The branch 'A New Feature' could not be created."
         end
       end
 
@@ -293,7 +293,7 @@ feature 'Issues > User uses quick actions', :js do
 
         before do
           project.add_guest(guest)
-          sign_out(user)
+          gitlab_sign_out
           sign_in(guest)
           visit project_issue_path(project, issue)
         end
