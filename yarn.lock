@@ -74,7 +74,7 @@
     react-inspector "^2.2.1"
     uuid "^3.1.0"
 
-"@storybook/addon-knobs@^3.2.8":
+"@storybook/addon-knobs@^3.2.17":
   version "3.2.17"
   resolved "https://registry.yarnpkg.com/@storybook/addon-knobs/-/addon-knobs-3.2.17.tgz#337320c704f9bf53217278aa7a7d442c3428fcf3"
   dependencies:
@@ -97,7 +97,7 @@
   dependencies:
     "@storybook/addons" "^3.2.17"
 
-"@storybook/addon-options@^3.2.6":
+"@storybook/addon-options@^3.2.17":
   version "3.2.17"
   resolved "https://registry.yarnpkg.com/@storybook/addon-options/-/addon-options-3.2.17.tgz#1ca1de1f3cf8ac7ec99bcdd534d6e034f9ee4f20"
   dependencies:
@@ -197,7 +197,7 @@
     react-treebeard "^2.0.3"
     redux "^3.7.2"
 
-"@storybook/vue@^3.2.8":
+"@storybook/vue@^3.2.17":
   version "3.2.17"
   resolved "https://registry.yarnpkg.com/@storybook/vue/-/vue-3.2.17.tgz#73e0fe257ee02124f0695ccd541db86b26b01600"
   dependencies:

@@ -84,9 +84,9 @@
   },
   "devDependencies": {
     "@gitlab-org/gitlab-svgs": "^1.1.1",
-    "@storybook/addon-knobs": "^3.2.8",
-    "@storybook/addon-options": "^3.2.6",
-    "@storybook/vue": "^3.2.8",
+    "@storybook/addon-knobs": "^3.2.17",
+    "@storybook/addon-options": "^3.2.17",
+    "@storybook/vue": "^3.2.17",
     "babel-plugin-istanbul": "^4.1.5",
     "eslint": "^3.10.1",
     "eslint-config-airbnb-base": "^10.0.1",
