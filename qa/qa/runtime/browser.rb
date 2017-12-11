@@ -79,7 +79,7 @@ module QA
         def perform(&block)
           visit(@address)
 
-          block.call if block_given?
+          yield if block_given?
         rescue
           raise if block.nil?
 
