@@ -25,6 +25,12 @@ class RemoveAssigneeIdFromIssue < ActiveRecord::Migration
   # comments:
   disable_ddl_transaction!
 
+  class Issue < ActiveRecord::Base
+    self.table_name = 'issues'
+
+    include ::EachBatch
+  end
+
   def up
     remove_column :issues, :assignee_id
   end
@@ -33,6 +39,8 @@ class RemoveAssigneeIdFromIssue < ActiveRecord::Migration
     add_column :issues, :assignee_id, :integer
     add_concurrent_index :issues, :assignee_id
 
-    execute('UPDATE issues SET assignee_id = (SELECT user_id FROM issue_assignees WHERE issue_assignees.issue_id = issues.id LIMIT 1)')
+    update_value = Arel.sql('(SELECT user_id FROM issue_assignees WHERE issue_assignees.issue_id = issues.id LIMIT 1)')
+
+    update_column_in_batches(:issues, :assignee_id, update_value)
   end
 end
