@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.2.4 (2017-12-08)
+
+### Security (4 changes)
+
+- Fix e-mail address disclosure through member search fields
+- Prevent creating issues through API when user does not have permissions
+- Prevent an information disclosure in the Groups API
+- Fix user without access to private Wiki being able to see it on the project page
+- Fix Cross-Site Scripting (XSS) vulnerability while editing a comment
+
+
 ## 10.2.3 (2017-11-30)
 
 ### Fixed (7 changes)
