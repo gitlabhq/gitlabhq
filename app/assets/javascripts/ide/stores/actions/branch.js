@@ -18,7 +18,7 @@ export const getBranchData = (
       })
       .catch(() => {
         flash('Error loading branch data. Please try again.');
-        reject(new Error('Branch not loaded'));
+        reject(new Error(`Branch not loaded - ${projectId}/${branchId}`));
       });
   } else {
     resolve(state.projects[`${projectId}`].branches[branchId]);

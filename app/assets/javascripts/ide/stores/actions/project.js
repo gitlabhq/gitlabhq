@@ -16,7 +16,7 @@ export const getProjectData = (
     })
     .catch(() => {
       flash('Error loading project data. Please try again.');
-      reject(new Error('Project not loaded'));
+      reject(new Error(`Project not loaded ${namespace}/${projectId}`));
     });
   } else {
     resolve(state.projects[`${namespace}/${projectId}`]);

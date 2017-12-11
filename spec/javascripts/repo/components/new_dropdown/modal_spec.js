@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import store from '~/ide/stores';
+import service from '~/ide/services';
 import modal from '~/ide/components/new_dropdown/modal.vue';
 import { createComponentWithStore } from '../../../helpers/vue_mount_component_helper';
 import { file, resetStore } from '../../helpers';
@@ -8,6 +9,34 @@ describe('new file modal component', () => {
   const Component = Vue.extend(modal);
   let vm;
   let projectTree;
+
+  beforeEach(() => {
+    spyOn(service, 'getProjectData').and.returnValue(Promise.resolve({
+      data: {
+        id: '123',
+      },
+    }));
+
+    spyOn(service, 'getBranchData').and.returnValue(Promise.resolve({
+      commit: {
+        id: '123branch',
+      },
+    }));
+
+    spyOn(service, 'getTreeData').and.returnValue(Promise.resolve({
+      headers: {
+        'page-title': 'test',
+      },
+      json: () => Promise.resolve({
+        last_commit_path: 'last_commit_path',
+        parent_tree_url: 'parent_tree_url',
+        path: '/',
+        trees: [{ name: 'tree' }],
+        blobs: [{ name: 'blob' }],
+        submodules: [{ name: 'submodule' }],
+      }),
+    }));
+  });
 
   afterEach(() => {
     vm.$destroy();
