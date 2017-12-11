@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-# Disable transactions via :truncate method because a foreign table
+# Disable transactions via :delete method because a foreign table
 # can't see changes inside a transaction of a different connection.
-describe Geo::RepositoryShardSyncWorker, :geo, :truncate, :clean_gitlab_redis_cache do
+describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cache do
   include ::EE::GeoHelpers
 
   let!(:primary) { create(:geo_node, :primary) }
