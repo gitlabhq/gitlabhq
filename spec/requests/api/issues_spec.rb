@@ -860,6 +860,20 @@ describe API::Issues, :mailer do
       end
     end
 
+    context 'user does not have permissions to create issue' do
+      let(:not_member)  { create(:user) }
+
+      before do
+        project.project_feature.update(issues_access_level: ProjectFeature::PRIVATE)
+      end
+
+      it 'renders 403' do
+        post api("/projects/#{project.id}/issues", not_member), title: 'new issue'
+
+        expect(response).to have_gitlab_http_status(403)
+      end
+    end
+
     it 'creates a new project issue' do
       post api("/projects/#{project.id}/issues", user),
         title: 'new issue', labels: 'label, label2', weight: 3,
