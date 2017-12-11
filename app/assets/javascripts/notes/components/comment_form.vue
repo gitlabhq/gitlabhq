@@ -27,6 +27,13 @@
         isSubmitButtonDisabled: true,
       };
     },
+    props: {
+      noteableType: {
+        type: String,
+        required: false,
+        default: constants.NOTEABLE_TYPE,
+      },
+    },
     components: {
       issueWarning,
       noteSignedOutWidget,
@@ -118,8 +125,7 @@
             flashContainer: this.$el,
             data: {
               note: {
-                // TODO: this should be passed, not a constant
-                noteable_type: constants.NOTEABLE_TYPE,
+                noteable_type: this.noteableType,
                 noteable_id: this.getNoteableData.id,
                 note: this.note,
               },
