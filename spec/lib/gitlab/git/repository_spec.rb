@@ -1217,6 +1217,16 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
     end
 
+    context 'when no root ref is available' do
+      it 'returns empty list' do
+        project = create(:project, :empty_repo)
+
+        names = project.repository.merged_branch_names(%w[feature])
+
+        expect(names).to be_empty
+      end
+    end
+
     context 'when no branch names are specified' do
       it 'returns all merged branch names' do
         names = repository.merged_branch_names
