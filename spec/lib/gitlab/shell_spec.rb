@@ -64,14 +64,6 @@ describe Gitlab::Shell do
       end
     end
 
-    describe '#mv_storage' do
-      it 'executes the command' do
-        expect(Gitlab::Utils).to receive(:system_silent)
-          .with([projects_path, 'mv-storage', 'current/storage', 'project/path.git', 'new/storage'])
-        gitlab_shell.mv_storage('current/storage', 'project/path', 'new/storage')
-      end
-    end
-
     describe '#push_remote_branches' do
       let!(:args) { [projects_path, 'push-branches', 'current/storage', 'project/path.git', 'new/storage', '600', '--force', 'master'] }
 
