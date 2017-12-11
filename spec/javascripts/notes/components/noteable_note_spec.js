@@ -1,7 +1,7 @@
 
 import Vue from 'vue';
 import store from '~/notes/stores';
-import issueNote from '~/notes/components/issue_note.vue';
+import issueNote from '~/notes/components/noteable_note.vue';
 import { noteableDataMock, notesDataMock, note } from '../mock_data';
 
 describe('issue_note', () => {
