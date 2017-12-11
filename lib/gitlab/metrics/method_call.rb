@@ -2,6 +2,7 @@ module Gitlab
   module Metrics
     # Class for tracking timing information about method calls
     class MethodCall
+      MEASUREMENT_ENABLED_CACHE = Concurrent::AtomicReference.new({ enabled: false, expires_at: Time.now })
       MUTEX = Mutex.new
       BASE_LABELS = { module: nil, method: nil }.freeze
       attr_reader :real_time, :cpu_time, :call_count, :labels
@@ -18,25 +19,19 @@ module Gitlab
         end
       end
 
-      def self.call_measurement_enabled?
-        return @call_measurement_enabled unless call_measurement_enabled_cache_expired?
-
-        MUTEX.synchronize do
-          return @call_measurement_enabled unless call_measurement_enabled_cache_expired?
-
-          @call_measurement_enabled = Feature.get(:prometheus_metrics_method_instrumentation).enabled?
-          @call_measurement_enabled_cache_expires_at = Time.now + 5.minutes
-          @call_measurement_enabled
+      def call_measurement_enabled?
+        res = MEASUREMENT_ENABLED_CACHE.update do |cache|
+          if cache[:expires_at] < Time.now
+            {
+              enabled: Feature.get(:prometheus_metrics_method_instrumentation).enabled?,
+              expires_at: Time.now + 5.minutes
+            }
+          else
+            cache
+          end
         end
-      end
 
-      def self.call_measurement_enabled_cache_expired?
-        @call_measurement_enabled.nil? || @call_measurement_enabled_cache_expires_at.nil? || @call_measurement_enabled_cache_expires_at < Time.now
-      end
-
-      def self.call_measurement_enabled_cache_expire
-        @call_measurement_enabled = nil
-        @call_measurement_enabled_cache_expires_at = nil
+        res[:enabled]
       end
 
       # name - The full name of the method (including namespace) such as
@@ -66,7 +61,7 @@ module Gitlab
         @cpu_time += cpu_time
         @call_count += 1
 
-        if self.class.call_measurement_enabled? && above_threshold?
+        if call_measurement_enabled? && above_threshold?
           self.class.call_duration_histogram.observe(@transaction.labels.merge(labels), real_time / 1000.0)
         end
 

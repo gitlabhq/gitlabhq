@@ -21,7 +21,7 @@ describe Gitlab::Metrics::MethodCall do
       context 'prometheus instrumentation is enabled' do
         before do
           allow(Feature.get(:prometheus_metrics_method_instrumentation)).to receive(:enabled?).and_call_original
-          described_class.call_measurement_enabled_cache_expire
+          described_class::MEASUREMENT_ENABLED_CACHE.set({enabled: false, expires_at: Time.now - 1.second})
           Feature.get(:prometheus_metrics_method_instrumentation).enable
         end
 
@@ -62,7 +62,7 @@ describe Gitlab::Metrics::MethodCall do
 
       context 'prometheus instrumentation is disabled' do
         before do
-          described_class.call_measurement_enabled_cache_expire
+          described_class::MEASUREMENT_ENABLED_CACHE.set({enabled: false, expires_at: Time.now})
           Feature.get(:prometheus_metrics_method_instrumentation).disable
         end
 
