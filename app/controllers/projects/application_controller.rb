@@ -1,4 +1,5 @@
 class Projects::ApplicationController < ApplicationController
+  prepend EE::Projects::ApplicationController
   include RoutableActions
 
   skip_before_action :authenticate_user!

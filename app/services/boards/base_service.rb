@@ -29,7 +29,7 @@ module Boards
           { project_ids: [parent.id], group_ids: [parent.group&.id] }
         end
 
-      milestone = MilestonesFinder.new(finder_params).execute.find_by_id(milestone_id)
+      milestone = MilestonesFinder.new(finder_params).find_by(id: milestone_id)
 
       params[:milestone_id] = milestone&.id
     end

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: gitlab 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2018-02-22 13:39+0100\n"
-"PO-Revision-Date: 2018-02-22 13:39+0100\n"
+"POT-Creation-Date: 2018-02-22 17:55+0100\n"
+"PO-Revision-Date: 2018-02-22 17:55+0100\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "Language: \n"
@@ -1312,6 +1312,9 @@ msgstr ""
 msgid "December"
 msgstr ""
 
+msgid "Default classification label"
+msgstr ""
+
 msgid "Define a custom pattern with cron syntax"
 msgstr ""
 
@@ -1525,6 +1528,21 @@ msgid "Explore projects"
 msgstr ""
 
 msgid "Explore public groups"
+msgstr ""
+
+msgid "External Classification Policy Authorization"
+msgstr ""
+
+msgid "External authorization denied access to this project"
+msgstr ""
+
+msgid "ExternalAuthorizationService|Classification Label"
+msgstr ""
+
+msgid "ExternalAuthorizationService|Classification label"
+msgstr ""
+
+msgid "ExternalAuthorizationService|When no classification label is set the default label `%{default_label}` will be used."
 msgstr ""
 
 msgid "Failed Jobs"
@@ -2896,6 +2914,9 @@ msgid "Server version"
 msgstr ""
 
 msgid "Service Templates"
+msgstr ""
+
+msgid "Service URL"
 msgstr ""
 
 msgid "Set a password on your account to pull or push via %{protocol}."

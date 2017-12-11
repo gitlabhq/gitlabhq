@@ -1,5 +1,7 @@
 module EE
   module Issue
+    extend ::Gitlab::Utils::Override
+
     # override
     def check_for_spam?
       author.support_bot? || super
@@ -32,6 +34,23 @@ module EE
     # override
     def weight
       super if supports_weight?
+    end
+
+    # The functionality here is duplicated from the `IssuePolicy` and the
+    # `EE::IssuePolicy` for better performace
+    #
+    # Make sure to keep this in sync with the policies.
+    override :readable_by?
+    def readable_by?(user)
+      return super if user.full_private_access?
+
+      super && ::EE::Gitlab::ExternalAuthorization
+                 .access_allowed?(user, project.external_authorization_classification_label)
+    end
+
+    override :publicly_visible?
+    def publicly_visible?
+      super && !::EE::Gitlab::ExternalAuthorization.enabled?
     end
 
     def supports_weight?

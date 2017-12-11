@@ -53,6 +53,7 @@ class License < ActiveRecord::Base
     reject_unsigned_commits
     commit_committer_check
     project_creation_level
+    external_authorization_service
   ].freeze
 
   EEU_FEATURES = EEP_FEATURES + %i[
@@ -133,6 +134,7 @@ class License < ActiveRecord::Base
     multiple_ldap_servers
     object_storage
     repository_size_limit
+    external_authorization_service
   ].freeze
 
   validate :valid_license

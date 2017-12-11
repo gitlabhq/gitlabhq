@@ -44,4 +44,9 @@ describe Issue, elastic: true do
 
     expect(issue.as_indexed_json).to eq(expected_hash)
   end
+
+  it_behaves_like 'no results when the user cannot read cross project' do
+    let(:record1) { create(:issue, project: project, title: 'test-issue') }
+    let(:record2) { create(:issue, project: project2, title: 'test-issue') }
+  end
 end

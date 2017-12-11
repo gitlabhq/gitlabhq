@@ -1,5 +1,7 @@
 module EE
   module GroupsController
+    extend ActiveSupport::Concern
+
     def group_params_attributes
       super + group_params_ee
     end

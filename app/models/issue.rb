@@ -213,7 +213,11 @@ class Issue < ActiveRecord::Base
                        .preload(preload)
                        .reorder('issue_link_id')
 
-    Ability.issues_readable_by_user(related_issues, current_user)
+    cross_project_filter = -> (issues) { issues.where(project: project) }
+    Ability.issues_readable_by_user(
+      related_issues, current_user,
+      filters: { read_cross_project: cross_project_filter }
+    )
   end
 
   # Returns boolean if a related branch exists for the current issue

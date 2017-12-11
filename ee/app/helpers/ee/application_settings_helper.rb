@@ -34,5 +34,17 @@ module EE
         :mirror_capacity_threshold
       ]
     end
+
+    def self.external_authorization_service_attributes
+      [
+        :external_authorization_service_enabled,
+        :external_authorization_service_url,
+        :external_authorization_service_default_label
+      ]
+    end
+
+    def self.possible_licensed_attributes
+      repository_mirror_attributes + external_authorization_service_attributes
+    end
   end
 end

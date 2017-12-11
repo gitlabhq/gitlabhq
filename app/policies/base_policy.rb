@@ -1,6 +1,8 @@
 require_dependency 'declarative_policy'
 
 class BasePolicy < DeclarativePolicy::Base
+  prepend EE::BasePolicy
+
   desc "User is an instance admin"
   with_options scope: :user, score: 0
   condition(:admin) { @user&.admin? }
