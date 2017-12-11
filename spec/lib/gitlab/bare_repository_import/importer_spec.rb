@@ -134,12 +134,11 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
     end
 
     it 'moves an existing project to the correct path' do
-      # This is a quick way to get a valid repository instead of copying an existing one
+      # This is a quick way to get a valid repository instead of copying an
+      # existing one. Since it's not persisted, the importer will try to
+      # create the project.
       project = build(:project, :repository)
       original_commit_count = project.repository.commit_count
-      # We need to destroy the model but keep the repository so that the
-      # importer will attempt to load the repository
-      project.destroy
 
       bare_repo = Gitlab::BareRepositoryImport::Repository.new(project.repository_storage_path, project.repository.path)
       gitlab_importer = described_class.new(admin, bare_repo)
