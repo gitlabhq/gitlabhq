@@ -20,6 +20,7 @@ module Gitlab
       SEARCH_CONTEXT_LINES = 3
       REBASE_WORKTREE_PREFIX = 'rebase'.freeze
       SQUASH_WORKTREE_PREFIX = 'squash'.freeze
+      GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'.freeze
 
       NoRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
@@ -887,8 +888,11 @@ module Gitlab
         end
       end
 
-      def add_remote(remote_name, url)
+      # If `mirror_refmap` is present the remote is set as mirror with that mapping
+      def add_remote(remote_name, url, mirror_refmap: nil)
         rugged.remotes.create(remote_name, url)
+
+        set_remote_as_mirror(remote_name, refmap: mirror_refmap) if mirror_refmap
       rescue Rugged::ConfigError
         remote_update(remote_name, url: url)
       end
@@ -1128,12 +1132,24 @@ module Gitlab
         !has_visible_content?
       end
 
-      # Like all public `Gitlab::Git::Repository` methods, this method is part
-      # of `Repository`'s interface through `method_missing`.
-      # `Repository` has its own `fetch_remote` which uses `gitlab-shell` and
-      # takes some extra attributes, so we qualify this method name to prevent confusion.
-      def fetch_remote_without_shell(remote = 'origin')
-        run_git(['fetch', remote]).last.zero?
+      def fetch_repository_as_mirror(repository)
+        remote_name = "tmp-#{SecureRandom.hex}"
+
+        # Notice that this feature flag is not for `fetch_repository_as_mirror`
+        # as a whole but for the fetching mechanism (file path or gitaly-ssh).
+        url, env = gitaly_migrate(:fetch_internal) do |is_enabled|
+          if is_enabled
+            repository = RemoteRepository.new(repository) unless repository.is_a?(RemoteRepository)
+            [GITALY_INTERNAL_URL, repository.fetch_env]
+          else
+            [repository.path, nil]
+          end
+        end
+
+        add_remote(remote_name, url, mirror_refmap: :all_refs)
+        fetch_remote(remote_name, env: env)
+      ensure
+        remove_remote(remote_name)
       end
 
       def blob_at(sha, path)
@@ -1851,7 +1867,7 @@ module Gitlab
       end
 
       def gitaly_fetch_ref(source_repository, source_ref:, target_ref:)
-        args = %W(fetch --no-tags -f ssh://gitaly/internal.git #{source_ref}:#{target_ref})
+        args = %W(fetch --no-tags -f #{GITALY_INTERNAL_URL} #{source_ref}:#{target_ref})
 
         run_git(args, env: source_repository.fetch_env)
       end
@@ -1870,6 +1886,10 @@ module Gitlab
         end
       rescue Rugged::ReferenceError
         raise ArgumentError, 'Invalid merge source'
+      end
+
+      def fetch_remote(remote_name = 'origin', env: nil)
+        run_git(['fetch', remote_name], env: env).last.zero?
       end
     end
   end
