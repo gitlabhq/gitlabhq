@@ -39,7 +39,12 @@
           %li
             = link_to 'Edit', edit_label_path(label)
           %li
-            = link_to 'Delete', destroy_label_path(label), title: 'Delete', method: :delete, data: {confirm: 'Remove this label? Are you sure?'}
+            = link_to 'Delete',
+              destroy_label_path(label),
+              title: 'Delete',
+              method: :delete,
+              data: {confirm: 'Remove this label? Are you sure?'},
+              class: 'text-danger'
 
   .pull-right.hidden-xs.hidden-sm.hidden-md
     - if show_label_merge_requests_link
