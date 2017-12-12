@@ -759,7 +759,7 @@ describe Project do
 
       context 'when environment scope is exactly matched' do
         before do
-          cluster.update(environment_scope: 'review/name')
+          cluster.update!(environment_scope: 'review/name')
         end
 
         it_behaves_like 'matching environment scope'
@@ -767,7 +767,7 @@ describe Project do
 
       context 'when environment scope is matched by wildcard' do
         before do
-          cluster.update(environment_scope: 'review/*')
+          cluster.update!(environment_scope: 'review/*')
         end
 
         it_behaves_like 'matching environment scope'
@@ -775,7 +775,7 @@ describe Project do
 
       context 'when environment scope does not match' do
         before do
-          cluster.update(environment_scope: 'review/*/special')
+          cluster.update!(environment_scope: 'review/*/special')
         end
 
         it_behaves_like 'not matching environment scope'
@@ -789,14 +789,14 @@ describe Project do
         end
 
         it 'does not treat it as wildcard' do
-          cluster.update(environment_scope: 'foo_bar/*')
+          cluster.update!(environment_scope: 'foo_bar/*')
 
           is_expected.to eq(default_cluster.platform_kubernetes)
         end
 
         it 'matches literally for _' do
-          cluster.update(environment_scope: 'foo_bar/*')
-          environment.update(name: 'foo_bar/test')
+          cluster.update!(environment_scope: 'foo_bar/*')
+          environment.update!(name: 'foo_bar/test')
 
           is_expected.to eq(cluster.platform_kubernetes)
         end
@@ -819,8 +819,8 @@ describe Project do
           is_expected.to eq(default_cluster.platform_kubernetes)
         end
 
-        it 'matches literally for _' do
-          cluster.update(environment_scope: 'foo%bar/*')
+        it 'matches literally for %' do
+          cluster.update_attribute(:environment_scope, 'foo%bar/*')
           environment.update_attribute(:name, 'foo%bar/test')
 
           is_expected.to eq(cluster.platform_kubernetes)
