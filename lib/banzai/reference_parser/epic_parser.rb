@@ -2,8 +2,11 @@ module Banzai
   module ReferenceParser
     # The actual parser is implemented in the EE mixin
     class EpicParser < IssuableParser
+<<<<<<< HEAD
       prepend EE::Banzai::ReferenceParser::EpicParser
 
+=======
+>>>>>>> upstream/master
       self.reference_type = :epic
 
       def records_for_nodes(_nodes)

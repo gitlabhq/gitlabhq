@@ -2294,4 +2294,8 @@ describe MergeRequest do
         .to change { project.open_merge_requests_count }.from(1).to(0)
     end
   end
+
+  it_behaves_like 'throttled touch' do
+    subject { create(:merge_request, updated_at: 1.hour.ago) }
+  end
 end

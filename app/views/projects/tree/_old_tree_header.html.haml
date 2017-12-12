@@ -1,3 +1,8 @@
+- if on_top_of_branch?
+  - addtotree_toggle_attributes = { href: '#', 'data-toggle': 'dropdown', 'data-target': '.add-to-tree-dropdown' }
+- else
+  - addtotree_toggle_attributes = { title: _("You can only add files when you are on a branch"), data: { container: 'body' }, class: 'disabled has-tooltip' }
+
 %ul.breadcrumb.repo-breadcrumb
   %li
     = link_to project_tree_path(@project, @ref) do
@@ -8,13 +13,10 @@
 
   - if current_user
     %li
-      - if !on_top_of_branch?
-        %span.btn.add-to-tree.disabled.has-tooltip{ title: _("You can only add files when you are on a branch"), data: { container: 'body' } }
-          = icon('plus')
-      - else
-        %span.dropdown
-          %a.dropdown-toggle.btn.add-to-tree{ href: '#', "data-toggle" => "dropdown", "data-target" => ".add-to-tree-dropdown" }
-            = icon('plus')
+      %a.btn.add-to-tree{ addtotree_toggle_attributes }
+        = sprite_icon('plus', size: 16, css_class: 'pull-left')
+        = sprite_icon('arrow-down', size: 16, css_class: 'pull-left')
+      - if on_top_of_branch?
         .add-to-tree-dropdown
           %ul.dropdown-menu
             - if can_edit_tree?

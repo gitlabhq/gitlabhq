@@ -7,6 +7,8 @@ module Gitlab
         @root_path = root_path
         @repo_path = repo_path
 
+        @root_path << '/' unless root_path.ends_with?('/')
+
         # Split path into 'all/the/namespaces' and 'project_name'
         @group_path, _, @project_name = repo_relative_path.rpartition('/')
       end

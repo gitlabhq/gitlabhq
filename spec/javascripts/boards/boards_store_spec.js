@@ -8,6 +8,10 @@
 
 import Vue from 'vue';
 import Cookies from 'js-cookie';
+<<<<<<< HEAD
+=======
+
+>>>>>>> upstream/master
 import '~/boards/models/issue';
 import '~/boards/models/label';
 import '~/boards/models/list';

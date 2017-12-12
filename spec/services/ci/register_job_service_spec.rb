@@ -276,6 +276,89 @@ module Ci
         end
       end
 
+      context 'when "dependencies" keyword is specified' do
+        shared_examples 'not pick' do
+          it 'does not pick the build and drops the build' do
+            expect(subject).to be_nil
+            expect(pending_job.reload).to be_failed
+            expect(pending_job).to be_missing_dependency_failure
+          end
+        end
+
+        shared_examples 'validation is active' do
+          context 'when depended job has not been completed yet' do
+            let!(:pre_stage_job) { create(:ci_build, :running, pipeline: pipeline, name: 'test', stage_idx: 0) }
+
+            it_behaves_like 'not pick'
+          end
+
+          context 'when artifacts of depended job has been expired' do
+            let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
+
+            it_behaves_like 'not pick'
+          end
+
+          context 'when artifacts of depended job has been erased' do
+            let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0, erased_at: 1.minute.ago) }
+
+            before do
+              pre_stage_job.erase
+            end
+
+            it_behaves_like 'not pick'
+          end
+        end
+
+        shared_examples 'validation is not active' do
+          context 'when depended job has not been completed yet' do
+            let!(:pre_stage_job) { create(:ci_build, :running, pipeline: pipeline, name: 'test', stage_idx: 0) }
+
+            it { expect(subject).to eq(pending_job) }
+          end
+
+          context 'when artifacts of depended job has been expired' do
+            let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
+
+            it { expect(subject).to eq(pending_job) }
+          end
+
+          context 'when artifacts of depended job has been erased' do
+            let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0, erased_at: 1.minute.ago) }
+
+            before do
+              pre_stage_job.erase
+            end
+
+            it { expect(subject).to eq(pending_job) }
+          end
+        end
+
+        before do
+          stub_feature_flags(ci_disable_validates_dependencies: false)
+        end
+
+        let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0) }
+        let!(:pending_job) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 1, options: { dependencies: ['test'] } ) }
+
+        subject { execute(specific_runner) }
+
+        context 'when validates for dependencies is enabled' do
+          before do
+            stub_feature_flags(ci_disable_validates_dependencies: false)
+          end
+
+          it_behaves_like 'validation is active'
+        end
+
+        context 'when validates for dependencies is disabled' do
+          before do
+            stub_feature_flags(ci_disable_validates_dependencies: true)
+          end
+
+          it_behaves_like 'validation is not active'
+        end
+      end
+
       def execute(runner)
         described_class.new(runner).execute.build
       end

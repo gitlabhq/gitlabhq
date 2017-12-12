@@ -139,4 +139,18 @@ describe('Deploy keys app component', () => {
   it('hasKeys returns true when there are keys', () => {
     expect(vm.hasKeys).toEqual(3);
   });
+
+  it('resets remove button loading state', (done) => {
+    spyOn(window, 'confirm').and.returnValue(false);
+
+    const btn = vm.$el.querySelector('.btn-warning');
+
+    btn.click();
+
+    Vue.nextTick(() => {
+      expect(btn.querySelector('.fa')).toBeNull();
+
+      done();
+    });
+  });
 });

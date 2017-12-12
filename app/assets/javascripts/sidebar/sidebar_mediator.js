@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 import Store from 'ee/sidebar/stores/sidebar_store';
+=======
+>>>>>>> upstream/master
 import { visitUrl } from '../lib/utils/url_utility';
 import Flash from '../flash';
 import Service from './services/sidebar_service';

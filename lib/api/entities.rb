@@ -289,9 +289,12 @@ module API
           options: { only_shared: true }
         ).execute
       end
+<<<<<<< HEAD
 
       # EE-only
       expose :shared_runners_minutes_limit
+=======
+>>>>>>> upstream/master
     end
 
     class Commit < Grape::Entity

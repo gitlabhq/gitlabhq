@@ -45,8 +45,9 @@ In this experimental phase, only a few metrics are available:
 | redis_ping_success                | Gauge     | 9.4   | Whether or not the last redis ping succeeded |
 | redis_ping_latency_seconds        | Gauge     | 9.4   | Round trip time of the redis ping |
 | user_session_logins_total         | Counter   | 9.4   | Counter of how many users have logged in |
-| filesystem_circuitbreaker_latency_seconds | Histogram | 9.5 | Latency of the stat check the circuitbreaker uses to probe a shard |
+| filesystem_circuitbreaker_latency_seconds | Gauge | 9.5 | Time spent validating if a storage is accessible |
 | filesystem_circuitbreaker         | Gauge     | 9.5   | Wether or not the circuit for a certain shard is broken or not |
+| circuitbreaker_storage_check_duration_seconds | Histogram | 10.3 | Time a single storage probe took |
 
 ## Sidekiq Metrics available
 

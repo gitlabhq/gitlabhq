@@ -57,6 +57,7 @@ constraints(GroupUrlConstrainer.new) do
         get ":secret/:filename", action: :show, as: :show, constraints: { filename: /[^\/]+/ }
       end
     end
+<<<<<<< HEAD
 
     ## EE-specific
     resource :analytics, only: [:show]
@@ -96,6 +97,8 @@ constraints(GroupUrlConstrainer.new) do
     end
     get 'boards(/*extra_params)', as: :legacy_ee_group_boards_redirect, to: legacy_ee_group_boards_redirect
     ## EE-specific
+=======
+>>>>>>> upstream/master
   end
 
   scope(path: '*id',

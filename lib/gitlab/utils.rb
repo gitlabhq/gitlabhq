@@ -63,6 +63,7 @@ module Gitlab
 
       nil
     end
+<<<<<<< HEAD
 
     # EE below
     def try_megabytes_to_bytes(size)
@@ -70,5 +71,7 @@ module Gitlab
     rescue ArgumentError
       size
     end
+=======
+>>>>>>> upstream/master
   end
 end

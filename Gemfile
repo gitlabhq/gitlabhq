@@ -295,7 +295,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.7.0.beta39'
+  gem 'prometheus-client-mmap', '~> 0.7.0.beta43'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -427,3 +427,6 @@ gem 'flipper-active_record', '~> 0.10.2'
 # Structured logging
 gem 'lograge', '~> 0.5'
 gem 'grape_logging', '~> 1.7'
+
+# Asset synchronization
+gem 'asset_sync', '~> 2.2.0'

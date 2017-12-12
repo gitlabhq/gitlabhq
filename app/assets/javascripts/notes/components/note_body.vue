@@ -2,7 +2,7 @@
   import noteEditedText from './note_edited_text.vue';
   import noteAwardsList from './note_awards_list.vue';
   import noteAttachment from './note_attachment.vue';
-  import issueNoteForm from './issue_note_form.vue';
+  import noteForm from './note_form.vue';
   import TaskList from '../../task_list';
   import autosave from '../mixins/autosave';
 
@@ -29,7 +29,7 @@
       noteEditedText,
       noteAwardsList,
       noteAttachment,
-      issueNoteForm,
+      noteForm,
     },
     computed: {
       noteBody() {
@@ -87,7 +87,7 @@
     <div
       v-html="note.note_html"
       class="note-text md"></div>
-    <issue-note-form
+    <note-form
       v-if="isEditing"
       ref="noteForm"
       @handleFormUpdate="handleFormUpdate"

@@ -2,12 +2,12 @@
   import { mapActions, mapGetters } from 'vuex';
   import Flash from '../../flash';
   import { SYSTEM_NOTE } from '../constants';
-  import issueNote from './issue_note.vue';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
+  import noteableNote from './noteable_note.vue';
   import noteHeader from './note_header.vue';
   import noteSignedOutWidget from './note_signed_out_widget.vue';
   import noteEditedText from './note_edited_text.vue';
-  import issueNoteForm from './issue_note_form.vue';
+  import noteForm from './note_form.vue';
   import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
   import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
   import autosave from '../mixins/autosave';
@@ -25,12 +25,12 @@
       };
     },
     components: {
-      issueNote,
+      noteableNote,
       userAvatarLink,
       noteHeader,
       noteSignedOutWidget,
       noteEditedText,
-      issueNoteForm,
+      noteForm,
       placeholderNote,
       placeholderSystemNote,
     },
@@ -86,7 +86,7 @@
           return placeholderNote;
         }
 
-        return issueNote;
+        return noteableNote;
       },
       componentData(note) {
         return note.isPlaceholderNote ? note.notes[0] : note;
@@ -209,7 +209,7 @@
                     type="button"
                     class="js-vue-discussion-reply btn btn-text-field"
                     title="Add a reply">Reply...</button>
-                  <issue-note-form
+                  <note-form
                     v-if="isReplying"
                     save-button-title="Comment"
                     :discussion="note"

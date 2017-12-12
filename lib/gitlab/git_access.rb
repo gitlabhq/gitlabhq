@@ -107,9 +107,15 @@ module Gitlab
 
     def check_project_moved!
       return if redirected_path.nil?
+<<<<<<< HEAD
 
       project_moved = Checks::ProjectMoved.new(project, user, redirected_path, protocol)
 
+=======
+
+      project_moved = Checks::ProjectMoved.new(project, user, redirected_path, protocol)
+
+>>>>>>> upstream/master
       if project_moved.permanent_redirect?
         project_moved.add_redirect_message
       else

@@ -1248,7 +1248,7 @@ describe Ci::Pipeline, :mailer do
 
   describe '#execute_hooks' do
     let!(:build_a) { create_build('a', 0) }
-    let!(:build_b) { create_build('b', 1) }
+    let!(:build_b) { create_build('b', 0) }
 
     let!(:hook) do
       create(:project_hook, project: project, pipeline_events: enabled)
@@ -1304,6 +1304,8 @@ describe Ci::Pipeline, :mailer do
         end
 
         context 'when stage one failed' do
+          let!(:build_b) { create_build('b', 1) }
+
           before do
             build_a.drop
           end

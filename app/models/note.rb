@@ -18,6 +18,7 @@ class Note < ActiveRecord::Base
   include IgnorableColumn
   include Editable
   include Gitlab::SQL::Pattern
+  include ThrottledTouch
 
   module SpecialRole
     FIRST_TIME_CONTRIBUTOR = :first_time_contributor
@@ -58,7 +59,7 @@ class Note < ActiveRecord::Base
   participant :author
 
   belongs_to :project
-  belongs_to :noteable, polymorphic: true, touch: true # rubocop:disable Cop/PolymorphicAssociations
+  belongs_to :noteable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :author, class_name: "User"
   belongs_to :updated_by, class_name: "User"
   belongs_to :last_edited_by, class_name: 'User'
@@ -122,6 +123,7 @@ class Note < ActiveRecord::Base
   before_validation :set_discussion_id, on: :create
   after_save :keep_around_commit, if: :for_project_noteable?
   after_save :expire_etag_cache
+  after_save :touch_noteable
   after_destroy :expire_etag_cache
 
   class << self

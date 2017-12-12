@@ -7,6 +7,8 @@ module Ci
     include Importable
     prepend EE::Ci::Build
 
+    MissingDependenciesError = Class.new(StandardError)
+
     belongs_to :runner
     belongs_to :trigger_request
     belongs_to :erased_by, class_name: 'User'
@@ -142,6 +144,10 @@ module Ci
         if build.retries_count < build.retries_max
           Ci::Build.retry(build, build.user)
         end
+      end
+
+      before_transition any => [:running] do |build|
+        build.validates_dependencies! unless Feature.enabled?('ci_disable_validates_dependencies')
       end
     end
 
@@ -486,6 +492,20 @@ module Ci
 
     def empty_dependencies?
       options[:dependencies]&.empty?
+    end
+
+    def validates_dependencies!
+      dependencies.each do |dependency|
+        raise MissingDependenciesError unless dependency.valid_dependency?
+      end
+    end
+
+    def valid_dependency?
+      return false unless complete?
+      return false if artifacts_expired?
+      return false if erased?
+
+      true
     end
 
     def hide_secrets(trace)

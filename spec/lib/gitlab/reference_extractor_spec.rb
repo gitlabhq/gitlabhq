@@ -116,6 +116,15 @@ describe Gitlab::ReferenceExtractor do
     end
   end
 
+  it 'does not include anchors from table of contents in issue references' do
+    issue1 = create(:issue, project: project)
+    issue2 = create(:issue, project: project)
+
+    subject.analyze("not real issue <h4>#{issue1.iid}</h4>, real issue #{issue2.to_reference}")
+
+    expect(subject.issues).to match_array([issue2])
+  end
+
   it 'accesses valid issue objects' do
     @i0 = create(:issue, project: project)
     @i1 = create(:issue, project: project)

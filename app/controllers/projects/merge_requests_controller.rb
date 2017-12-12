@@ -6,8 +6,11 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
   include ToggleAwardEmoji
   include IssuableCollections
 
+<<<<<<< HEAD
   prepend ::EE::Projects::MergeRequestsController
 
+=======
+>>>>>>> upstream/master
   skip_before_action :merge_request, only: [:index, :bulk_update]
   before_action :authorize_update_issuable!, only: [:close, :edit, :update, :remove_wip, :sort]
   before_action :set_issuables_index, only: [:index]

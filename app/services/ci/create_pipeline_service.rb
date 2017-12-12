@@ -26,11 +26,15 @@ module Ci
         save_incompleted: save_on_errors,
         seeds_block: block,
         project: project,
+<<<<<<< HEAD
         current_user: current_user,
 
         # EE specific
         allow_mirror_update: mirror_update
       )
+=======
+        current_user: current_user)
+>>>>>>> upstream/master
 
       sequence = Gitlab::Ci::Pipeline::Chain::Sequence
         .new(pipeline, command, SEQUENCE)

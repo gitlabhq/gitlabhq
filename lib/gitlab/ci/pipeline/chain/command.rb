@@ -7,10 +7,14 @@ module Gitlab
           :origin_ref, :checkout_sha, :after_sha, :before_sha,
           :trigger_request, :schedule,
           :ignore_skip_ci, :save_incompleted,
+<<<<<<< HEAD
           :seeds_block,
 
           # EE specific
           :allow_mirror_update
+=======
+          :seeds_block
+>>>>>>> upstream/master
         ) do
           include Gitlab::Utils::StrongMemoize
 

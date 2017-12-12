@@ -4,6 +4,11 @@
   .nav-block {
     margin: 10px 0;
 
+    .btn .fa,
+    .btn svg {
+      color: $gl-text-color-secondary;
+    }
+
     @media (min-width: $screen-sm-min) {
       display: flex;
 
@@ -91,8 +96,12 @@
   }
 
   .add-to-tree {
-    vertical-align: middle;
-    padding: 6px 10px;
+    vertical-align: top;
+    padding: 8px;
+
+    svg {
+      top: 0;
+    }
   }
 
   .tree-table {
