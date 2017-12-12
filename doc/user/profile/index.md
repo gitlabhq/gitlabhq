@@ -45,11 +45,10 @@ Alternatively, you can follow [this detailed procedure from the GitLab Team Hand
 Changing your username can have unintended side effects.
 
 * Existing web URLs for the user and anything under it (i.e. projects) will
-redirect to the new URLs
-* Existing Git remote URLs for projects under the user will no longer work, but
-Git responses will show an error with the new remote URL
-* The original namespace can be claimed again by any group or user, which will
-destroy any web redirects and Git remote warnings
+redirect to the new URLs.
+* Existing Git remote URLs for projects under the user will redirect to the new remote URL. Git responses
+will show a warning with the new remote URL.
+* The redirect to the new URL is permanent, that implies the original namespace can't be claimed again by any group or user.
 
 > It is currently not possible to rename a namespace if it contains a
 project with container registry tags, because the project cannot be moved.

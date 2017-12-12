@@ -50,3 +50,9 @@ Here you can run housekeeping, archive, rename, transfer, or remove a project.
 It's possible to mark a project as archived via the Project Settings. An archived project will be hidden by default in the project listings.
 
 An archived project can be fully restored and will therefore retain it's repository and all associated resources whilst in an archived state.
+
+#### Renaming a project
+
+>**Note:** Only Project Owners and Admin users have the permission to rename a project
+
+It's possible to rename a project from "Rename repository" or "Transfer project" sections. When doing so, you will need to update your local repositories to point to the new location, otherwise Git operations will be rejected.
