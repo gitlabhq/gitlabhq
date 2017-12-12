@@ -85,11 +85,28 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.securityReport = MergeRequestStore.parseIssues(issues, path);
   }
 
-  setDockerReport(data) {
-    // Set data - TODO parse the data
-    this.dockerReport.approved = data.approved || [];
-    this.dockerReport.unapproved = data.unapproved || [];
-    this.dockerReport.vulnerabilities = data.vulnerabilities || [];
+  setDockerReport(data = {}) {
+    const parsedVulnerabilities = MergeRequestStore
+      .parseDockerVulnerabilities(data.vulnerabilities);
+
+    this.dockerReport.vulnerabilities = parsedVulnerabilities || [];
+
+    // Approved can be calculated by subtracting unapproved from vulnerabilities.
+    this.dockerReport.approved = parsedVulnerabilities
+      .filter(item => !data.unapproved.find(el => el === item.vulnerability)) || [];
+
+    this.dockerReport.unapproved = parsedVulnerabilities
+      .filter(item => data.unapproved.find(el => el === item.vulnerability)) || [];
+  }
+
+  // TODO: Add links
+  static parseDockerVulnerabilities(data) {
+    return data.map(el => ({
+      name: el.vulnerability,
+      priority: el.severity,
+      path: el.namespace,
+      ...el,
+    }));
   }
 
   compareCodeclimateMetrics(headIssues, baseIssues, headBlobPath, baseBlobPath) {

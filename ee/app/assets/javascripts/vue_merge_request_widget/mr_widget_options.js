@@ -1,4 +1,4 @@
-import { n__ } from '~/locale';
+import { n__, s__ } from '~/locale';
 import CEWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import WidgetApprovals from './components/approvals/mr_widget_approvals';
 import GeoSecondaryNode from './components/states/mr_widget_secondary_geo_node';
@@ -123,37 +123,36 @@ export default {
 
     dockerText() {
       const { vulnerabilities, approved, unapproved } = this.mr.dockerReport;
-      const text = [];
 
-      if (vulnerabilities.length) {
-        text.push(n__(
-          '%d vulnerability.',
-          '%d vulnerabilities.',
-          vulnerabilities.length,
-        ));
+      if (!vulnerabilities.length) {
+        return s__('ciReport|No vulnerabilities were found');
       }
 
-      if (approved.length) {
-        text.push(n__(
-          '%d of those was approved.',
-          '%d of those were approved.',
+      if (!unapproved.length) {
+        return n__(
+          'Found %d approved vulnerability',
+          'Found %d approved vulnerabilities',
           approved.length,
-        ));
+        );
       }
 
-      if (approved.length > 0 && unapproved.length > 0) {
-        text.push('and');
-      }
-
-      if (unapproved.length) {
-        text.push(n__(
-          '%d of those was unapproved.',
-          '%d of those were unapproved.',
+      if (unapproved.length && !approved.length) {
+        return n__(
+          'Found %d vulnerability',
+          'Found %d vulnerabilities',
           unapproved.length,
-        ));
+        );
       }
 
-      return text.join(' ');
+      return `${n__(
+        'Found %d vulnerability,',
+        'Found %d vulnerabilities,',
+        unapproved.length,
+      )} ${n__(
+        'of which %d is approved',
+        'of which %d are approved',
+        approved.length,
+      )}`;
     },
 
     codequalityStatus() {
@@ -280,11 +279,13 @@ export default {
       <mr-widget-deployment
         v-if="shouldRenderDeployments"
         :mr="mr"
-        :service="service" />
+        :service="service"
+        />
       <mr-widget-approvals
         v-if="shouldRenderApprovals"
         :mr="mr"
-        :service="service" />
+        :service="service"
+        />
       <collapsible-section
         class="js-codequality-widget"
         v-if="shouldRenderCodeQuality"
@@ -320,7 +321,7 @@ export default {
         />
       <collapsible-section
         class="js-docker-widget"
-        v-if="shouldRenderDockerReport"
+
         type="codequality"
         :status="dockerStatus"
         loading-text="Loading clair report"
@@ -336,7 +337,8 @@ export default {
           :service="service" />
         <mr-widget-related-links
           v-if="shouldRenderRelatedLinks"
-          :related-links="mr.relatedLinks" />
+          :related-links="mr.relatedLinks"
+          />
       </div>
       <div class="mr-widget-footer" v-if="shouldRenderMergeHelp">
         <mr-widget-merge-help />
