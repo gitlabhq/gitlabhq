@@ -12,8 +12,6 @@ module QA
           attribute :geo_skip_setup?, '--without-setup'
 
           def perform(**args)
-            QA::Specs::Config.act { configure_capybara! }
-
             unless args[:geo_skip_setup?]
               Geo::Primary.act do
                 add_license
