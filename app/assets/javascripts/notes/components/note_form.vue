@@ -31,6 +31,11 @@
         type: Boolean,
         required: true,
       },
+      canResolve: { // FIXME
+        type: Boolean,
+        required: false,
+        default: true,
+      },
     },
     data() {
       return {
@@ -161,6 +166,11 @@
           :disabled="isDisabled"
           class="js-vue-issue-save btn btn-save">
           {{saveButtonTitle}}
+        </button>
+        <button
+          v-if="canResolve"
+          class="btn btn-nr btn-default append-right-10 js-comment-resolve-button">
+            Resolve discussion
         </button>
         <button
           @click="cancelHandler()"
