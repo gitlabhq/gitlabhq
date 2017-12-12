@@ -3,7 +3,7 @@ Sidekiq::Worker.extend ActiveSupport::Concern
 module ApplicationWorker
   extend ActiveSupport::Concern
 
-  include Sidekiq::Worker
+  include Sidekiq::Worker # rubocop:disable Cop/IncludeSidekiqWorker
 
   included do
     set_queue
@@ -17,7 +17,7 @@ module ApplicationWorker
     def set_queue
       queue_name = [queue_namespace, base_queue_name].compact.join(':')
 
-      sidekiq_options queue: queue_name
+      sidekiq_options queue: queue_name # rubocop:disable Cop/SidekiqOptionsQueue
     end
 
     def base_queue_name
