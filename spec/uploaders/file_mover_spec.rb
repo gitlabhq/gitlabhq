@@ -3,13 +3,13 @@ require 'spec_helper'
 describe FileMover do
   let(:filename) { 'banana_sample.gif' }
   let(:file) { fixture_file_upload(Rails.root.join('spec', 'fixtures', filename)) }
-  let(:temp_description) do
-    'test ![banana_sample](/uploads/-/system/temp/secret55/banana_sample.gif) same ![banana_sample]'\
-    '(/uploads/-/system/temp/secret55/banana_sample.gif)'
-  end
-  let(:temp_file_path) { File.join('secret55', filename).to_s }
-  let(:file_path) { File.join('uploads', '-', 'system', 'personal_snippet', snippet.id.to_s, 'secret55', filename).to_s }
+  let(:temp_file_path) { File.join('uploads/-/system/temp', 'secret55', filename) }
 
+  let(:temp_description) do
+    "test ![banana_sample](/#{temp_file_path}) "\
+    "same ![banana_sample](/#{temp_file_path}) "
+  end
+  let(:file_path) { File.join('uploads/-/system/personal_snippet', snippet.id.to_s, 'secret55', filename) }
   let(:snippet) { create(:personal_snippet, description: temp_description) }
 
   subject { described_class.new(file_path, snippet).execute }
@@ -24,12 +24,13 @@ describe FileMover do
 
     context 'when move and field update successful' do
       it 'updates the description correctly' do
+        binding.pry
         subject
 
         expect(snippet.reload.description)
           .to eq(
-            "test ![banana_sample](/uploads/-/system/personal_snippet/#{snippet.id}/secret55/banana_sample.gif)"\
-            " same ![banana_sample](/uploads/-/system/personal_snippet/#{snippet.id}/secret55/banana_sample.gif)"
+            "test ![banana_sample](/uploads/-/system/personal_snippet/#{snippet.id}/secret55/banana_sample.gif) "\
+            "same ![banana_sample](/uploads/-/system/personal_snippet/#{snippet.id}/secret55/banana_sample.gif) "
           )
       end
 
@@ -50,8 +51,8 @@ describe FileMover do
 
         expect(snippet.reload.description)
           .to eq(
-            "test ![banana_sample](/uploads/-/system/temp/secret55/banana_sample.gif)"\
-            " same ![banana_sample](/uploads/-/system/temp/secret55/banana_sample.gif)"
+            "test ![banana_sample](/uploads/-/system/temp/secret55/banana_sample.gif) "\
+            "same ![banana_sample](/uploads/-/system/temp/secret55/banana_sample.gif) "
           )
       end
 

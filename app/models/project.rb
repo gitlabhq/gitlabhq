@@ -931,6 +931,14 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def avatar_uploader(uploader)
+    return uploader unless avatar_identifier
+
+    paths = uploader.store_dirs.map {|store, path| File.join(path, avatar_identifier) }
+    uploader.upload = uploads.where(uploader: 'AvatarUploader', path: paths)&.last
+    uploader.object_store = uploader.upload&.store # TODO: move this to RecordsUploads
+  end
+
   def avatar_in_git
     repository.avatar
   end

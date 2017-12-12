@@ -9,7 +9,7 @@ describe Geo::FilesExpireService, :geo, :truncate do
 
   describe '#execute' do
     let(:file_uploader) { build(:file_uploader, project: project) }
-    let!(:upload) { Upload.find_by(path: file_uploader.relative_path) }
+    let!(:upload) { Upload.find_by(path: file_uploader.upload_path) }
     let!(:file_registry) { create(:geo_file_registry, file_id: upload.id) }
 
     before do

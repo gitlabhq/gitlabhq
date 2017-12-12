@@ -73,7 +73,7 @@ module Geo
       Geo::Fdw::LfsObject.joins("LEFT OUTER JOIN file_registry
                                               ON file_registry.file_id = #{fdw_table}.id
                                              AND file_registry.file_type = 'lfs'")
-        .where("#{fdw_table}.file_store IS NULL OR #{fdw_table}.file_store = #{LfsObjectUploader::LOCAL_STORE}")
+        .where("#{fdw_table}.file_store IS NULL OR #{fdw_table}.file_store = #{LfsObjectUploader::Store::LOCAL}")
         .where('file_registry.file_id IS NULL')
     end
 

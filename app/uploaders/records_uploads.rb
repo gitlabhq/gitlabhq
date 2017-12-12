@@ -1,35 +1,43 @@
 module RecordsUploads
-  extend ActiveSupport::Concern
+  module Concern
+    extend ActiveSupport::Concern
 
-  included do
-    after :store,   :record_upload
-    before :remove, :destroy_upload
-  end
+    attr_accessor :upload
 
-  # After storing an attachment, create a corresponding Upload record
-  #
-  # NOTE: We're ignoring the argument passed to this callback because we want
-  # the `SanitizedFile` object from `CarrierWave::Uploader::Base#file`, not the
-  # `Tempfile` object the callback gets.
-  #
-  # Called `after :store`
-  def record_upload(_tempfile = nil)
-    return unless model
-    return unless file_storage?
-    return unless file.exists?
+    included do
+      before :store,  :destroy_upload
+      after  :store,  :record_upload
+      before :remove, :destroy_upload
+    end
 
-    Upload.record(self)
-  end
+    # After storing an attachment, create a corresponding Upload record
+    #
+    # NOTE: We're ignoring the argument passed to this callback because we want
+    # the `SanitizedFile` object from `CarrierWave::Uploader::Base#file`, not the
+    # `Tempfile` object the callback gets.
+    #
+    # Called `after :store`
+    def record_upload(_tempfile = nil)
+      return unless model
+      return unless file && file.exists?
 
-  private
+      Upload.record(self)
+    end
 
-  # Before removing an attachment, destroy any Upload records at the same path
-  #
-  # Called `before :remove`
-  def destroy_upload(*args)
-    return unless file_storage?
-    return unless file
+    def upload_path
+      File.join(store_dir, filename.to_s)
+    end
 
-    Upload.remove_path(relative_path)
+    private
+
+    # Before removing an attachment, destroy any Upload records at the same path
+    #
+    # Called `before :remove`
+    def destroy_upload(*args)
+      return unless file && file.exists?
+
+      # that should be the old path?
+      Upload.remove_path(upload_path)
+    end
   end
 end

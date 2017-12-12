@@ -1,18 +1,15 @@
 require 'spec_helper'
 
 describe AttachmentUploader do
-  let(:uploader) { described_class.new(build_stubbed(:user)) }
+  let(:uploader) { described_class.new(build_stubbed(:user), :attachment) }
+  let(:upload) { create(:upload, :attachment_upload, model: uploader.model) }
 
-  describe "#store_dir" do
-    it "stores in the system dir" do
-      expect(uploader.store_dir).to start_with("uploads/-/system/user")
-    end
+  subject { uploader }
 
-    it "uses the old path when using object storage" do
-      expect(described_class).to receive(:file_storage?).and_return(false)
-      expect(uploader.store_dir).to start_with("uploads/user")
-    end
-  end
+  it_behaves_like 'builds correct paths',
+                  store_dir: %r[uploads/-/system/user/attachment/],
+                  upload_path: %r[uploads/-/system/user/attachment/],
+                  absolute_path: %r[#{CarrierWave.root}/uploads/-/system/user/attachment/]
 
   describe '#move_to_cache' do
     it 'is true' do
@@ -24,5 +21,18 @@ describe AttachmentUploader do
     it 'is true' do
       expect(uploader.move_to_store).to eq(true)
     end
+  end
+
+  # EE-specific
+  context "object_store is REMOTE" do
+    before do
+      stub_uploads_object_storage
+    end
+
+    include_context 'with storage', described_class::Store::REMOTE
+
+    it_behaves_like 'builds correct paths',
+                    store_dir: %r[user/attachment/],
+                    upload_path: %r[user/attachment/]
   end
 end

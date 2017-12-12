@@ -30,4 +30,11 @@ module StubConfiguration
                                  remote_directory: 'lfs-objects',
                                  **params)
   end
+
+  def stub_uploads_object_storage(uploader = described_class, **params)
+    stub_object_storage_uploader(config: Gitlab.config.uploads.object_store,
+                                 uploader: uploader,
+                                 remote_directory: 'uploads',
+                                 **params)
+  end
 end

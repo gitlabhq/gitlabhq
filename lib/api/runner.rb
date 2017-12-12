@@ -215,7 +215,7 @@ module API
         job = authenticate_job!
         forbidden!('Job is not running!') unless job.running?
 
-        artifacts_upload_path = JobArtifactUploader.artifacts_upload_path
+        artifacts_upload_path = JobArtifactUploader.workhorse_upload_path
         artifacts = uploaded_file(:file, artifacts_upload_path)
         metadata = uploaded_file(:metadata, artifacts_upload_path)
 

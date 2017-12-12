@@ -1,12 +1,10 @@
 class AvatarUploader < GitlabUploader
-  include RecordsUploads
   include UploaderHelper
+  include RecordsUploads::Concern
+  include ObjectStorage::Concern
+  prepend ObjectStorage::Extension::RecordsUploads
 
-  storage :file
-
-  def store_dir
-    "#{base_dir}/#{model.class.to_s.underscore}/#{mounted_as}/#{model.id}"
-  end
+  storage_options Gitlab.config.uploads
 
   def exists?
     model.avatar.file && model.avatar.file.present?
@@ -21,5 +19,11 @@ class AvatarUploader < GitlabUploader
 
   def move_to_cache
     false
+  end
+
+  private
+
+  def dynamic_segment
+    File.join(model.class.to_s.underscore, mounted_as.to_s, model.id.to_s)
   end
 end

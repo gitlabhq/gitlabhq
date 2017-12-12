@@ -16,9 +16,9 @@ module Projects
         @old_path = project.full_path
         @new_path = project.disk_path
 
-        origin = FileUploader.dynamic_path_segment(project)
+        origin = FileUploader.model_path_segment(project)
         project.storage_version = ::Project::HASHED_STORAGE_FEATURES[:attachments]
-        target = FileUploader.dynamic_path_segment(project)
+        target = FileUploader.model_path_segment(project)
 
         result = move_folder!(origin, target)
         project.save!

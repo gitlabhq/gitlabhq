@@ -236,7 +236,7 @@ module TestEnv
   end
 
   def artifacts_path
-    Gitlab.config.artifacts.path
+    Gitlab.config.artifacts.storage_path
   end
 
   # When no cached assets exist, manually hit the root path to create them

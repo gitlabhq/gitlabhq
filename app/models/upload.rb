@@ -17,13 +17,15 @@ class Upload < ActiveRecord::Base
   end
 
   def self.record(uploader)
-    remove_path(uploader.relative_path)
+    upload = uploader.upload || new
 
-    create(
+    binding.pry
+    upload.update_attributes(
       size: uploader.file.size,
-      path: uploader.relative_path,
+      path: uploader.dynamic_path,
       model: uploader.model,
-      uploader: uploader.class.to_s
+      uploader: uploader.class.to_s,
+      store: uploader.try(:object_store) || ObjectStorage::Store::LOCAL
     )
   end
 
@@ -49,7 +51,15 @@ class Upload < ActiveRecord::Base
     File.exist?(absolute_path)
   end
 
-  private
+  def build_uploader(from = nil)
+    uploader = from || uploader_class.new(model)
+
+    uploader.upload = self
+    uploader.object_store = store
+    uploader
+  end
+
+  #private
 
   def foreground_checksum?
     size <= CHECKSUM_THRESHOLD

@@ -73,7 +73,7 @@ describe LfsObjectUploader do
   end
 
   describe 'remote file' do
-    let(:remote) { described_class::REMOTE_STORE }
+    let(:remote) { described_class::Store::REMOTE }
     let(:lfs_object) { create(:lfs_object, file_store: remote) }
 
     context 'with object storage enabled' do

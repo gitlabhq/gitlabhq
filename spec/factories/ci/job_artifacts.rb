@@ -6,7 +6,7 @@ FactoryGirl.define do
     file_type :archive
 
     trait :remote_store do
-      file_store JobArtifactUploader::REMOTE_STORE
+      file_store JobArtifactUploader::Store::REMOTE
     end
 
     after :build do |artifact|

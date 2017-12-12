@@ -21,13 +21,12 @@ class FileMover
   end
 
   def update_markdown
-    updated_text = model.read_attribute(update_field).gsub(temp_file_uploader.to_markdown, uploader.to_markdown)
+    binding.pry
+    updated_text = model.read_attribute(update_field)
+                        .gsub(temp_file_uploader.markdown_link, uploader.markdown_link)
     model.update_attribute(update_field, updated_text)
-
-    true
   rescue
     revert
-
     false
   end
 

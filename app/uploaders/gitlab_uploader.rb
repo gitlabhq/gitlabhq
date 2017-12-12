@@ -1,26 +1,27 @@
 class GitlabUploader < CarrierWave::Uploader::Base
-  def self.absolute_path(upload_record)
-    File.join(CarrierWave.root, upload_record.path)
-  end
+  class << self
+    # DSL setter
+    def storage_options(options = nil)
+      @storage_options = options if options
+      @storage_options
+    end
 
-  def self.root_dir
-    'uploads'
-  end
+    def root
+      storage_options&.storage_path
+    end
 
-  # When object storage is used, keep the `root_dir` as `base_dir`.
-  # The files aren't really in folders there, they just have a name.
-  # The files that contain user input in their name, also contain a hash, so
-  # the names are still unique
-  #
-  # This method is overridden in the `FileUploader`
-  def self.base_dir
-    return root_dir unless file_storage?
+    # represent the directory namespacing at the class level
+    def base_dir
+      storage_options&.base_dir || ""
+    end
 
-    File.join(root_dir, '-', 'system')
-  end
+    def file_storage?
+      storage == CarrierWave::Storage::File
+    end
 
-  def self.file_storage?
-    self.storage == CarrierWave::Storage::File
+    def absolute_path(upload_record)
+      File.join(CarrierWave.root, upload_record.path)
+    end
   end
 
   delegate :base_dir, :file_storage?, to: :class
@@ -39,17 +40,6 @@ class GitlabUploader < CarrierWave::Uploader::Base
     true
   end
 
-  # Designed to be overridden by child uploaders that have a dynamic path
-  # segment -- that is, a path that changes based on mutable attributes of its
-  # associated model
-  #
-  # For example, `FileUploader` builds the storage path based on the associated
-  # project model's `path_with_namespace` value, which can change when the
-  # project or its containing namespace is moved or renamed.
-  def relative_path
-    self.file.path.sub("#{root}/", '')
-  end
-
   def exists?
     file.present?
   end
@@ -66,6 +56,17 @@ class GitlabUploader < CarrierWave::Uploader::Base
   end
 
   private
+
+  # Designed to be overridden by child uploaders that have a dynamic path
+  # segment -- that is, a path that changes based on mutable attributes of its
+  # associated model
+  #
+  # For example, `FileUploader` builds the storage path based on the associated
+  # project model's `path_with_namespace` value, which can change when the
+  # project or its containing namespace is moved or renamed.
+  def dynamic_segment
+    raise(NotImplementedError)
+  end
 
   # To prevent files from moving across filesystems, override the default
   # implementation:

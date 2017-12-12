@@ -1154,7 +1154,7 @@ describe API::Runner do
 
         context 'when job has artifacts' do
           let(:job) { create(:ci_build) }
-          let(:store) { JobArtifactUploader::LOCAL_STORE }
+          let(:store) { JobArtifactUploader::Store::LOCAL }
 
           before do
             create(:ci_job_artifact, :archive, file_store: store, job: job)
@@ -1176,7 +1176,7 @@ describe API::Runner do
             end
 
             context 'when artifacts are stored remotely' do
-              let(:store) { JobArtifactUploader::REMOTE_STORE }
+              let(:store) { JobArtifactUploader::Store::REMOTE }
               let!(:job) { create(:ci_build) }
 
               it 'download artifacts' do

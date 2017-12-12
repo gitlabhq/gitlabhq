@@ -58,7 +58,7 @@ describe Projects::RawController do
               lfs_object.file = fixture_file_upload(Rails.root + "spec/fixtures/dk.png", "`/png")
               lfs_object.save!
               stub_lfs_object_storage
-              lfs_object.file.migrate!(LfsObjectUploader::REMOTE_STORE)
+              lfs_object.file.migrate!(LfsObjectUploader::Store::REMOTE)
             end
 
             it 'responds with redirect to file' do

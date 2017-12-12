@@ -23,8 +23,9 @@ module Gitlab
         File.join(@shared.export_path, 'uploads')
       end
 
+      # this is not all uploads
       def uploads_path
-        FileUploader.dynamic_path_segment(@project)
+        FileUploader.new(@project).store_dir
       end
     end
   end

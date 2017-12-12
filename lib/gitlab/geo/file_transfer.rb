@@ -2,12 +2,12 @@ module Gitlab
   module Geo
     class FileTransfer < Transfer
       def initialize(file_type, upload)
-        uploader = upload.uploader.constantize
-
         @file_type = file_type
         @file_id = upload.id
-        @filename = uploader.absolute_path(upload)
+        @filename = upload.absolute_path
         @request_data = build_request_data(upload)
+      rescue ObjectStorage::RemoteStoreError
+        Rails.logger.warn "Cannot transfer a remote object."
       end
 
       private

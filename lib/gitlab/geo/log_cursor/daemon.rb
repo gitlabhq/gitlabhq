@@ -201,7 +201,7 @@ module Gitlab
         end
 
         def handle_lfs_object_deleted_event(event, created_at)
-          file_path = File.join(LfsObjectUploader.local_store_path, event.file_path)
+          file_path = File.join(LfsObjectUploader.workhorse_upload_path, event.file_path)
 
           job_id = ::Geo::FileRemovalWorker.perform_async(file_path)
 

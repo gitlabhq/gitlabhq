@@ -90,7 +90,9 @@ class Note < ActiveRecord::Base
     end
   end
 
+  # @deprecated attachments are handler by the MarkdownUploader
   mount_uploader :attachment, AttachmentUploader
+  deprecate :attachment => 'Use the Markdown uploader instead'
 
   # Scopes
   scope :searchable, -> { where(system: false) }

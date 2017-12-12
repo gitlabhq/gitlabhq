@@ -245,7 +245,7 @@ describe 'Git LFS API and storage' do
             context 'when LFS uses object storage' do
               let(:before_get) do
                 stub_lfs_object_storage
-                lfs_object.file.migrate!(LfsObjectUploader::REMOTE_STORE)
+                lfs_object.file.migrate!(LfsObjectUploader::Store::REMOTE)
               end
 
               it 'responds with redirect' do

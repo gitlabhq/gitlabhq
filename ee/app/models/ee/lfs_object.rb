@@ -11,7 +11,7 @@ module EE
     end
 
     def local_store?
-      [nil, LfsObjectUploader::LOCAL_STORE].include?(self.file_store)
+      [nil, LfsObjectUploader::Store::LOCAL].include?(self.file_store)
     end
 
     private

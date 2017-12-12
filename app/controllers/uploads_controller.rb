@@ -1,19 +1,22 @@
+# Used out-of-context uploads
+#   see #upload_model_classs
+#
 class UploadsController < ApplicationController
   include UploadsActions
 
+  UnknownUploadModelError = Class.new(StandardError)
+
+  rescue_from UnknownUploadModelError, with: :render_404
+
   skip_before_action :authenticate_user!
+  before_action :upload_mount_satisfied?
   before_action :find_model
   before_action :authorize_access!, only: [:show]
   before_action :authorize_create_access!, only: [:create]
 
-  private
-
   def find_model
     return nil unless params[:id]
-
-    return render_404 unless upload_model && upload_mount
-
-    @model = upload_model.find(params[:id])
+    @model = upload_model_class.find(params[:id])
   end
 
   def authorize_access!
@@ -53,8 +56,8 @@ class UploadsController < ApplicationController
     end
   end
 
-  def upload_model
-    upload_models = {
+  def upload_model_class
+    model_classes = {
       "user"    => User,
       "project" => Project,
       "note"    => Note,
@@ -63,42 +66,17 @@ class UploadsController < ApplicationController
       "personal_snippet" => PersonalSnippet
     }
 
-    upload_models[params[:model]]
+    raise UnknownUploadModelError unless cls = model_classes[params[:model]]
+    cls
   end
 
-  def upload_mount
-    return true unless params[:mounted_as]
-
-    upload_mounts = %w(avatar attachment file logo header_logo)
-
-    if upload_mounts.include?(params[:mounted_as])
-      params[:mounted_as]
-    end
+  def upload_model_class_has_mounts?
+    upload_model_class < CarrierWave::Mount::Extension
   end
 
-  def uploader
-    return @uploader if defined?(@uploader)
-
-    case model
-    when nil
-      @uploader = PersonalFileUploader.new(nil, params[:secret])
-
-      @uploader.retrieve_from_store!(params[:filename])
-    when PersonalSnippet
-      @uploader = PersonalFileUploader.new(model, params[:secret])
-
-      @uploader.retrieve_from_store!(params[:filename])
-    else
-      @uploader = @model.public_send(upload_mount) # rubocop:disable GitlabSecurity/PublicSend
-
-      redirect_to @uploader.url unless @uploader.file_storage?
-    end
-
-    @uploader
-  end
-
-  def uploader_class
-    PersonalFileUploader
+  def upload_mount_satisfied?
+    return true unless upload_model_class_has_mounts?
+    upload_model_class.uploader_options.has_key?(upload_mount)
   end
 
   def model

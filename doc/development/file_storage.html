@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+<title>file_storage.html</title>
+
+</head>
+
+<body>
+
+<h1>File Storage in GitLab</h1>
+
+<p>We use the <a href="https://github.com/carrierwaveuploader/carrierwave">CarrierWave</a> gem to handle file upload, store and retrieval.</p>
+
+<p>There are many places where file uploading is used, according to contexts:</p>
+
+<ul>
+<li>System
+
+<ul>
+<li>Instance Logo (logo visible in sign in/sign up pages)</li>
+<li>Header Logo (one displayed in the navigation bar)</li>
+</ul>
+</li>
+<li>Group
+
+<ul>
+<li>Group avatars</li>
+</ul>
+</li>
+<li>User
+
+<ul>
+<li>User avatars</li>
+<li>User snippet attachments</li>
+</ul>
+</li>
+<li>Project
+
+<ul>
+<li>Project avatars</li>
+<li>Issues/MR/Notes Markdown attachments</li>
+<li>Issues/MR/Notes Legacy Markdown attachments</li>
+<li>CI Build Artifacts</li>
+<li>LFS Objects</li>
+</ul>
+</li>
+</ul>
+
+
+<h2>Disk storage</h2>
+
+<p>GitLab started saving everything on local disk. While directory location changed from previous versions,
+they are still not 100% standardized. You can see them below:</p>
+
+<table>
+<thead>
+<tr>
+<th> Description                           </th>
+<th> In DB? </th>
+<th> Relative path                                               </th>
+<th> Uploader class         </th>
+<th> model_type </th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td> Instance logo                         </td>
+<td> yes    </td>
+<td> uploads/-/system/appearance/logo/:id/:filename              </td>
+<td> <code>AttachmentUploader</code>   </td>
+<td> Appearance </td>
+</tr>
+<tr>
+<td> Header logo                           </td>
+<td> yes    </td>
+<td> uploads/-/system/appearance/header_logo/:id/:filename       </td>
+<td> <code>AttachmentUploader</code>   </td>
+<td> Appearance </td>
+</tr>
+<tr>
+<td> Group avatars                         </td>
+<td> yes    </td>
+<td> uploads/-/system/group/avatar/:id/:filename                 </td>
+<td> <code>AvatarUploader</code>       </td>
+<td> Group      </td>
+</tr>
+<tr>
+<td> User avatars                          </td>
+<td> yes    </td>
+<td> uploads/-/system/user/avatar/:id/:filename                  </td>
+<td> <code>AvatarUploader</code>       </td>
+<td> User       </td>
+</tr>
+<tr>
+<td> User snippet attachments              </td>
+<td> yes    </td>
+<td> uploads/-/system/personal_snippet/:id/:random_hex/:filename </td>
+<td> <code>PersonalFileUploader</code> </td>
+<td> Snippet    </td>
+</tr>
+<tr>
+<td> Project avatars                       </td>
+<td> yes    </td>
+<td> uploads/-/system/project/avatar/:id/:filename               </td>
+<td> <code>AvatarUploader</code>       </td>
+<td> Project    </td>
+</tr>
+<tr>
+<td> Issues/MR/Notes Markdown attachments        </td>
+<td> yes    </td>
+<td> uploads/:project_path_with_namespace/:random_hex/:filename  </td>
+<td> <code>FileUploader</code>         </td>
+<td> Project    </td>
+</tr>
+<tr>
+<td> Issues/MR/Notes Legacy Markdown attachments </td>
+<td> no     </td>
+<td> uploads/-/system/note/attachment/:id/:filename              </td>
+<td> <code>AttachmentUploader</code>   </td>
+<td> Note       </td>
+</tr>
+<tr>
+<td> CI Artifacts (CE)                     </td>
+<td> yes    </td>
+<td> shared/artifacts/:year_:month/:project_id/:id               </td>
+<td> <code>ArtifactUploader</code>     </td>
+<td> Ci::Build  </td>
+</tr>
+<tr>
+<td> LFS Objects  (CE)                     </td>
+<td> yes    </td>
+<td> shared/lfs-objects/:hex/:hex/:object_hash                   </td>
+<td> <code>LfsObjectUploader</code>    </td>
+<td> LfsObject  </td>
+</tr>
+</tbody>
+</table>
+
+
+<p>CI Artifacts and LFS Objects behave differently in CE and EE. In CE they inherit the <code>GitlabUploader</code>
+while in EE they inherit the <code>ObjectStoreUploader</code> and store files in and S3 API compatible object store.</p>
+
+<p>In the case of Issues/MR/Notes Markdown attachments, there is a different approach using the <a href="../administration/repository_storage_types.md">Hashed Storage</a> layout,
+instead of basing the path into a mutable variable <code>:project_path_with_namespace</code>, it&rsquo;s possible to use the
+hash of the project ID instead, if project migrates to the new approach (introduced in 10.2).</p>
+
+</body>
+</html>
