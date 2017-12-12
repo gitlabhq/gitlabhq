@@ -684,7 +684,6 @@ describe Namespace do
     end
   end
 
-<<<<<<< HEAD
   describe '#root_ancestor' do
     it 'returns the top most ancestor', :nested_groups do
       root_group = create(:group)
@@ -698,8 +697,6 @@ describe Namespace do
     end
   end
 
-=======
->>>>>>> upstream/master
   describe "#allowed_path_by_redirects" do
     let(:namespace1) { create(:namespace, path: 'foo') }
 
