@@ -40,15 +40,13 @@ describe Gitlab::Metrics::MethodCall do
         end
 
         it 'expires feature check cache after 30 seconds' do
-          10.times do
+          method_call.measure { 'foo' }
+
+          Timecop.travel(1.minute.from_now) do
             method_call.measure { 'foo' }
           end
 
-          Timecop.travel(Time.now + 30.seconds) do
-            method_call.measure { 'foo' }
-          end
-
-          Timecop.travel(Time.now + 31.seconds) do
+          Timecop.travel(1.minute.from_now + 1.second) do
             method_call.measure { 'foo' }
           end
 

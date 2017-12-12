@@ -80,7 +80,7 @@ module Gitlab
       def call_measurement_enabled?
         expires_at = @@measurement_enabled_cache_expires_at.value
         if expires_at < Time.now.to_i
-          if @@measurement_enabled_cache_expires_at.compare_and_set(expires_at, (Time.now + 30.seconds).to_i)
+          if @@measurement_enabled_cache_expires_at.compare_and_set(expires_at, 1.minute.from_now.to_i)
             @@measurement_enabled_cache.value = Feature.get(:prometheus_metrics_method_instrumentation).enabled?
           end
         end
