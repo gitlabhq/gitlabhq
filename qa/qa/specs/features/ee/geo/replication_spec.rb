@@ -29,7 +29,6 @@ module QA
           end
         end
 
-
         Runtime::Browser.visit(:geo_secondary, QA::Page::Main::Login) do
           Page::Main::OAuth.act do
             authorize! if needs_authorization?
