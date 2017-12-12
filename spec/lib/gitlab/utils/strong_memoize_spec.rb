@@ -62,4 +62,3 @@ describe Gitlab::Utils::StrongMemoize do
     end
   end
 end
-
