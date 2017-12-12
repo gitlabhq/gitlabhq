@@ -380,19 +380,11 @@ module API
         authenticated_as_admin!
 
         fork_from_project = find_project!(params[:forked_from_id])
-<<<<<<< HEAD
 
         not_found!("Source Project") unless fork_from_project
 
         result = ::Projects::ForkService.new(fork_from_project, current_user).execute(user_project)
 
-=======
-
-        not_found!("Source Project") unless fork_from_project
-
-        result = ::Projects::ForkService.new(fork_from_project, current_user).execute(user_project)
-
->>>>>>> upstream/master
         if result
           present user_project.reload, with: Entities::Project
         else
