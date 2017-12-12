@@ -43,6 +43,11 @@
         required: false,
         default: true,
       },
+      isResolved: { // FIXME
+        type: Boolean,
+        required: false,
+        default: false,
+      },
       canReportAsAbuse: {
         type: Boolean,
         required: true,
@@ -72,9 +77,6 @@
       },
       resolveButtonTitle() { // FIXME
         return 'Mark as resolved';
-      },
-      isResolved() { // FIXME
-        return false;
       },
     },
     methods: {

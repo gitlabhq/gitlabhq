@@ -19,6 +19,9 @@ export default {
   createNewNote(endpoint, data) {
     return Vue.http.post(endpoint, data, { emulateJSON: true });
   },
+  resolveNote(endpoint) {
+    return Vue.http.post(endpoint);
+  },
   poll(data = {}) {
     const { endpoint, lastFetchedAt } = data;
     const options = {

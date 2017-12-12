@@ -18,6 +18,7 @@
         isEditing: false,
         isDeleting: false,
         isRequesting: false,
+        isResolving: false,
       };
     },
     components: {
@@ -53,6 +54,7 @@
       ...mapActions([
         'deleteNote',
         'updateNote',
+        'resolveNote',
         'scrollToNoteIfNeeded',
       ]),
       editHandler() {
@@ -103,6 +105,21 @@
               this.recoverNoteContent(noteText);
               callback();
             });
+          });
+      },
+      resolveHandler() {
+        // FIXME: Handle this request properly.
+        this.isResolving = true;
+        const endpoint = `${this.note.path}/resolve`;
+
+        this.resolveNote({ endpoint })
+          .then((res) => {
+            this.isResolving = false;
+            this.$set(this.note, 'is_resolved', true);
+          })
+          .catch((res) => {
+            const msg = 'Something went wrong while resolving this discussion. Please try again.';
+            Flash(msg, 'alert', this.$el);
           });
       },
       formCancelHandler(shouldConfirm, isDirty) {
@@ -166,8 +183,10 @@
             :can-delete="note.current_user.can_edit"
             :can-report-as-abuse="canReportAsAbuse"
             :report-abuse-path="note.report_abuse_path"
+            :is-resolved="note.is_resolved"
             @handleEdit="editHandler"
             @handleDelete="deleteHandler"
+            @handleResolve="resolveHandler"
             />
         </div>
         <note-body
