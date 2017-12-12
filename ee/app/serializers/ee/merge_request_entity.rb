@@ -29,13 +29,13 @@ module EE
         expose :head_path, if: -> (mr, _) { can?(current_user, :read_build, mr.head_performance_artifact) } do |merge_request|
           raw_project_build_artifacts_url(merge_request.source_project,
                                           merge_request.head_performance_artifact,
-                                          path: 'performance.json')
+                                          path: Ci::Build::PERFORMANCE_FILE)
         end
 
         expose :base_path, if: -> (mr, _) { can?(current_user, :read_build, mr.base_performance_artifact) } do |merge_request|
           raw_project_build_artifacts_url(merge_request.target_project,
                                           merge_request.base_performance_artifact,
-                                          path: 'performance.json')
+                                          path: Ci::Build::PERFORMANCE_FILE)
         end
       end
 
@@ -72,15 +72,15 @@ module EE
         can?(current_user, :read_build, mr.sast_artifact)
     end
 
+    def expose_performance_data?(mr)
+      mr.project.feature_available?(:merge_request_performance_metrics) &&
+        mr.has_performance_data?
+    end
+
     def expose_clair_data?(mr, current_user)
       mr.project.feature_available?(:clair) &&
         mr.has_clair_data? &&
         can?(current_user, :read_build, mr.clair_artifact)
-    end
-
-    def expose_performance_data?(mr)
-      mr.project.feature_available?(:merge_request_performance_metrics) &&
-        mr.has_performance_data?
     end
   end
 end

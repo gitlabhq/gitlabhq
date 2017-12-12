@@ -129,10 +129,10 @@ describe Ci::Build do
   end
 
   ARTIFACTS_METHODS = {
-    has_codeclimate_json?: 'codeclimate.json',
-    has_performance_json?: 'performance.json',
-    has_sast_json?: 'gl-sast-report.json',
-    has_clair_json?: 'gl-clair-report.json'
+    has_codeclimate_json?: Ci::Build::CODEQUALITY_FILE,
+    has_performance_json?: Ci::Build::PERFORMANCE_FILE,
+    has_sast_json?: Ci::Build::SAST_FILE,
+    has_clair_json?: Ci::Build::CLAIR_FILE
   }.freeze
 
   ARTIFACTS_METHODS.each do |method, filename|

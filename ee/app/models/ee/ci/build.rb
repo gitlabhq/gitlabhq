@@ -9,6 +9,7 @@ module EE
 
       CODEQUALITY_FILE = 'codeclimate.json'.freeze
       SAST_FILE = 'gl-sast-report.json'.freeze
+      PERFORMANCE_FILE = 'performance.json'.freeze
       CLAIR_FILE = 'gl-clair-report.json'.freeze
 
       included do
@@ -36,8 +37,7 @@ module EE
       end
 
       def has_performance_json?
-        options.dig(:artifacts, :paths) == ['performance.json'] &&
-          artifacts_metadata?
+        has_artifact?(PERFORMANCE_FILE)
       end
 
       def has_sast_json?
