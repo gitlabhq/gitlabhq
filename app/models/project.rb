@@ -659,7 +659,8 @@ class Project < ActiveRecord::Base
   end
 
   def import_started?
-    import? && import_status == 'started'
+    # import? does SQL work so only run it if it looks like there's an import running
+    import_status == 'started' && import?
   end
 
   def import_scheduled?
@@ -1147,7 +1148,7 @@ class Project < ActiveRecord::Base
   def change_head(branch)
     if repository.branch_exists?(branch)
       repository.before_change_head
-      repository.write_ref('HEAD', "refs/heads/#{branch}")
+      repository.write_ref('HEAD', "refs/heads/#{branch}", force: true)
       repository.copy_gitattributes(branch)
       repository.after_change_head
       reload_default_branch

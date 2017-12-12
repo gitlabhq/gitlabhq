@@ -143,20 +143,48 @@
   }
 }
 
-@mixin dropdown-link {
-  display: block;
-  position: relative;
-  padding: 5px 8px;
+@mixin dropdown-item-hover {
+  background-color: $dropdown-item-hover-bg;
   color: $gl-text-color;
-  line-height: initial;
-  border-radius: 2px;
-  white-space: nowrap;
+  outline: 0;
+
+  // make sure the text color is not overriden
+  &.text-danger {
+    color: $brand-danger;
+  }
+
+  .avatar {
+    border-color: $white-light;
+  }
+}
+
+@mixin dropdown-link {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  display: block;
+  font-weight: $gl-font-weight-normal;
+  position: relative;
+  padding: 8px 16px;
+  color: $gl-text-color;
+  line-height: normal;
+  white-space: normal;
   overflow: hidden;
+  text-align: left;
+  width: 100%;
+
+  // make sure the text color is not overriden
+  &.text-danger {
+    color: $brand-danger;
+  }
 
   &:hover,
+  &:active,
   &:focus,
   &.is-focused {
-    background-color: $dropdown-link-hover-bg;
+    @include dropdown-item-hover;
+
     text-decoration: none;
 
     .badge {
@@ -166,6 +194,13 @@
 
   &.dropdown-menu-user-link {
     line-height: 16px;
+    padding-top: 10px;
+    padding-bottom: 7px;
+    white-space: nowrap;
+
+    .dropdown-menu-user-username {
+      display: block;
+    }
   }
 
   .icon-play {
@@ -187,8 +222,8 @@
   z-index: 300;
   min-width: 240px;
   max-width: 500px;
-  margin-top: 2px;
-  margin-bottom: 2px;
+  margin-top: $dropdown-vertical-offset;
+  margin-bottom: 24px;
   font-size: 14px;
   font-weight: $gl-font-weight-normal;
   padding: 8px 0;
@@ -196,6 +231,10 @@
   border: 1px solid $dropdown-border-color;
   border-radius: $border-radius-base;
   box-shadow: 0 2px 4px $dropdown-shadow-color;
+
+  &.dropdown-open-top {
+    margin-bottom: $dropdown-vertical-offset;
+  }
 
   &.dropdown-open-left {
     right: 0;
@@ -227,16 +266,27 @@
   }
 
   li {
+    display: block;
     text-align: left;
     list-style: none;
-    padding: 0 10px;
+    padding: 0 1px;
+
+    a,
+    button,
+    .menu-item {
+      @include dropdown-link;
+    }
   }
 
   .divider {
     height: 1px;
-    margin: 6px 10px;
+    margin: 6px 0;
     padding: 0;
     background-color: $dropdown-divider-color;
+
+    &:hover {
+      background-color: $dropdown-divider-color;
+    }
   }
 
   .separator {
@@ -245,10 +295,6 @@
     margin-top: 8px;
     margin-bottom: 8px;
     background-color: $dropdown-divider-color;
-  }
-
-  a {
-    @include dropdown-link;
   }
 
   .dropdown-menu-empty-item a {
@@ -262,7 +308,7 @@
     color: $gl-text-color-secondary;
     font-size: 13px;
     line-height: 22px;
-    padding: 0 16px;
+    padding: 8px 16px;
   }
 
   &.capitalize-header .dropdown-header {
@@ -277,7 +323,7 @@
 
   .separator + .dropdown-header,
   .separator + .dropdown-bold-header {
-    padding-top: 2px;
+    padding-top: 10px;
   }
 
   .unclickable {
@@ -298,46 +344,26 @@
   }
 
   .dropdown-menu li {
-    padding: $gl-btn-padding;
     cursor: pointer;
+
+    &.droplab-item-active button {
+      @include dropdown-item-hover;
+    }
 
     > a,
     > button {
       display: flex;
       margin: 0;
-      padding: 0;
-      border-radius: 0;
       text-overflow: inherit;
-      background-color: inherit;
-      color: inherit;
-      border: inherit;
       text-align: left;
-
-      &:hover,
-      &:focus {
-        background-color: inherit;
-        color: inherit;
-      }
 
       &.btn .fa:not(:last-child) {
         margin-left: 5px;
       }
     }
 
-    &:hover,
-    &:focus {
-      background-color: $dropdown-hover-color;
-      color: $white-light;
-    }
-
     &.droplab-item-selected i {
       visibility: visible;
-    }
-
-    &.divider {
-      margin: 0 8px;
-      padding: 0;
-      border-top: $gray-darkest;
     }
 
     .icon {
@@ -431,11 +457,6 @@
   }
 }
 
-.dropdown-menu-user-link {
-  padding-top: 10px;
-  padding-bottom: 7px;
-}
-
 .dropdown-menu-user-full-name {
   display: block;
   font-weight: $gl-font-weight-normal;
@@ -464,41 +485,44 @@
 .dropdown-menu-align-right {
   left: auto;
   right: 0;
-  margin-top: -5px;
 }
 
 .dropdown-menu-selectable {
-  a {
-    padding-left: 26px;
-    position: relative;
+  li {
+    a {
+      padding: 8px 40px;
+      position: relative;
 
-    &.is-indeterminate,
-    &.is-active {
-      font-weight: $gl-font-weight-bold;
-      color: $gl-text-color;
+      &.is-indeterminate,
+      &.is-active {
+        color: $gl-text-color;
 
-      &::before {
-        position: absolute;
-        left: 6px;
-        top: 50%;
-        transform: translateY(-50%);
-        font: normal normal normal 14px/1 FontAwesome;
-        font-size: inherit;
-        text-rendering: auto;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
+        &::before {
+          position: absolute;
+          left: 16px;
+          top: 16px;
+          transform: translateY(-50%);
+          font: normal normal normal 14px/1 FontAwesome;
+          font-size: inherit;
+          text-rendering: auto;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+
+        &.dropdown-menu-user-link {
+          &::before {
+            top: 50%;
+          }
+        }
       }
-    }
 
-    &.is-indeterminate::before {
-      content: "\f068";
-    }
+      &.is-indeterminate::before {
+        content: "\f068";
+      }
 
-    &.is-active::before {
-      content: "\f00c";
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
+      &.is-active::before {
+        content: "\f00c";
+      }
     }
   }
 }
@@ -735,136 +759,6 @@
   }
 }
 
-@mixin dropdown-item-hover {
-  background-color: $dropdown-item-hover-bg;
-  color: $gl-text-color;
-}
-
-// TODO: change global style and remove mixin
-@mixin new-style-dropdown($selector: '') {
-  #{$selector}.dropdown-menu,
-  #{$selector}.dropdown-menu-nav {
-    margin-bottom: 24px;
-
-    &.dropdown-open-top {
-      margin-bottom: $dropdown-vertical-offset;
-    }
-
-    li {
-      display: block;
-      padding: 0 1px;
-
-      &:hover {
-        background-color: transparent;
-      }
-
-      &.divider {
-        margin: 6px 0;
-
-        &:hover {
-          background-color: $dropdown-divider-color;
-        }
-      }
-
-      &.dropdown-header {
-        padding: 8px 16px;
-      }
-
-      &.droplab-item-active button {
-        @include dropdown-item-hover;
-      }
-
-      a,
-      button,
-      .menu-item {
-        margin-bottom: 0;
-        border-radius: 0;
-        box-shadow: none;
-        padding: 8px 16px;
-        text-align: left;
-        white-space: normal;
-        width: 100%;
-        font-weight: $gl-font-weight-normal;
-        line-height: normal;
-
-        &.dropdown-menu-user-link {
-          white-space: nowrap;
-
-          .dropdown-menu-user-username {
-            display: block;
-          }
-        }
-
-        // make sure the text color is not overriden
-        &.text-danger {
-          color: $brand-danger;
-        }
-
-        &.is-focused,
-        &:hover,
-        &:active,
-        &:focus {
-          @include dropdown-item-hover;
-
-          background-color: $dropdown-item-hover-bg;
-          color: $gl-text-color;
-
-          // make sure the text color is not overriden
-          &.text-danger {
-            color: $brand-danger;
-          }
-        }
-
-        &.is-active {
-          font-weight: inherit;
-
-          &::before {
-            top: 16px;
-          }
-
-          &.dropdown-menu-user-link::before {
-            top: 50%;
-            transform: translateY(-50%);
-          }
-        }
-      }
-
-      &.dropdown-menu-empty-item a {
-        &:hover,
-        &:focus {
-          background-color: transparent;
-        }
-      }
-    }
-
-    &.dropdown-menu-selectable {
-      li {
-        a {
-          padding: 8px 40px;
-
-          &.is-indeterminate::before,
-          &.is-active::before {
-            left: 16px;
-          }
-        }
-      }
-    }
-  }
-
-  #{$selector}.dropdown-menu-align-right {
-    margin-top: 2px;
-  }
-
-  .open {
-    #{$selector}.dropdown-menu,
-    #{$selector}.dropdown-menu-nav {
-      @media (max-width: $screen-xs-max) {
-        max-width: 100%;
-      }
-    }
-  }
-}
-
 @media (max-width: $screen-xs-max) {
   .navbar-gitlab {
     li.header-projects,
@@ -890,9 +784,6 @@
     }
   }
 }
-
-@include new-style-dropdown('.breadcrumbs-list .dropdown ');
-@include new-style-dropdown('.js-namespace-select + ');
 
 header.header-content .dropdown-menu.projects-dropdown-menu {
   padding: 0;

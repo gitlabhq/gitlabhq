@@ -138,7 +138,8 @@ You can create a new merge request by sending an email to a user-specific email
 address. The address can be obtained on the merge requests page by clicking on
 a **Email a new merge request to this project** button.  The subject will be
 used as the source branch name for the new merge request and the target branch
-will be the default branch for the project.
+will be the default branch for the project. The message body (if not empty)
+will be used as the merge request description.
 
 ## Revert changes
 

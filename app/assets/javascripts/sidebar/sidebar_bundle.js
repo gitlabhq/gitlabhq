@@ -1,9 +1,8 @@
 import Mediator from './sidebar_mediator';
-import mountSidebar from './mount_sidebar';
+import { mountSidebar, getSidebarOptions } from './mount_sidebar';
 
 function domContentLoaded() {
-  const sidebarOptions = JSON.parse(document.querySelector('.js-sidebar-options').innerHTML);
-  const mediator = new Mediator(sidebarOptions);
+  const mediator = new Mediator(getSidebarOptions());
   mediator.fetch();
 
   mountSidebar(mediator);
