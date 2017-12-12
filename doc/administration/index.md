@@ -15,16 +15,13 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 ### Installing GitLab
 
 - [Install](../install/README.md): Requirements, directory structures, and installation methods.
-<<<<<<< HEAD
   - **(EES/EEP)** [Database load balancing](database_load_balancing.md): Distribute database queries among multiple database servers.
   - **(EES/EEP)** [Omnibus support for external MySQL DB](https://docs.gitlab.com/omnibus/settings/database.html#using-a-mysql-database-management-server-enterprise-edition-only): Omnibus package supports configuring an external MySQL database.
   - **(EES/EEP)** [Omnibus support for log forwarding](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only)
 - [High Availability](high_availability/README.md): Configure multiple servers for scaling or high availability.
 - **(EEP)** [GitLab GEO](../gitlab-geo/README.md): Replicate your GitLab instance to other geographical locations as a read-only fully operational version.
 - **(EEP)** [Pivotal Tile](../install/pivotal/index.md): Deploy GitLab as a pre-configured appliance using Ops Manager (BOSH) for Pivotal Cloud Foundry.
-=======
 - [High Availability](high_availability/README.md): Configure multiple servers for scaling or high availability.
->>>>>>> upstream/master
 
 ### Configuring GitLab
 
@@ -39,10 +36,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [GitLab Pages configuration for installations from the source](pages/source.md): Enable and configure GitLab Pages on
 [source installations](../install/installation.md#installation-from-source).
 - [Environment variables](environment_variables.md): Supported environment variables that can be used to override their defaults values in order to configure GitLab.
-<<<<<<< HEAD
 - **(EES/EEP)** [Elasticsearch](../integration/elasticsearch.md): Enable Elasticsearch to empower GitLab's Advanced Global Search. Useful when you deal with a huge amount of data.
-=======
->>>>>>> upstream/master
 
 ### Maintaining GitLab
 
@@ -76,7 +70,6 @@ created in snippets, wikis, and repos.
 - [Sign-up restrictions](../user/admin_area/settings/sign_up_restrictions.md): block email addresses of specific domains, or whitelist only specific domains.
 - [Access restrictions](../user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab (SSH, HTTP, HTTPS).
 - [Authentication/Authorization](../topics/authentication/index.md#gitlab-administrators): Enforce 2FA, configure external authentication with LDAP, SAML, CAS and additional Omniauth providers.
-<<<<<<< HEAD
   - **(EES/EEP)** [Sync LDAP](auth/ldap-ee.md)
   - **(EES/EEP)** [Kerberos authentication](../integration/kerberos.md)
 - [Reply by email](reply_by_email.md): Allow users to comment on issues and merge requests by replying to notification emails.
@@ -86,12 +79,10 @@ server with IMAP authentication on Ubuntu, to be used with Reply by email.
 - [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
 - **(EES/EEP)** [Audit logs and events](audit_events.md): View the changes made within the GitLab server.
 - **(EEP)** [Auditor users](auditor_users.md): Users with read-only access to all projects, groups, and other resources on the GitLab instance.
-=======
 - [Reply by email](reply_by_email.md): Allow users to comment on issues and merge requests by replying to notification emails.
   - [Postfix for Reply by email](reply_by_email_postfix_setup.md): Set up a basic Postfix mail
 server with IMAP authentication on Ubuntu, to be used with Reply by email.
 - [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
->>>>>>> upstream/master
 
 ## Project settings
 
@@ -99,10 +90,7 @@ server with IMAP authentication on Ubuntu, to be used with Reply by email.
 - [Issue closing pattern](issue_closing_pattern.md): Customize how to close an issue from commit messages.
 - [Gitaly](gitaly/index.md): Configuring Gitaly, GitLab's Git repository storage service.
 - [Default labels](../user/admin_area/labels.html): Create labels that will be automatically added to every new project.
-<<<<<<< HEAD
 - **(EES/EEP)** [Limit project size](../user/admin_area/settings/account_and_limit_settings.md): Set a hard limit for your repositories' size.
-=======
->>>>>>> upstream/master
 
 ### Repository settings
 
