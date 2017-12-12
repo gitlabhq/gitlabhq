@@ -105,7 +105,6 @@ export const ContributorsMasterGraph = (function(superClass) {
     this.y = null;
     this.x_axis = null;
     this.y_axis = null;
-    this.area = null;
     this.svg = null;
     this.brush = null;
     this.x_max_domain = null;
@@ -135,24 +134,17 @@ export const ContributorsMasterGraph = (function(superClass) {
   };
 
   ContributorsMasterGraph.prototype.create_axes = function() {
+    const barWidth = this.width / this.data.length;
+    this.x.range([ barWidth / 2, this.width - barWidth / 2]);
     this.x_axis = d3.svg.axis()
       .scale(this.x)
       .orient('bottom')
       .tickFormat(dateTickFormat);
-    return this.y_axis = d3.svg.axis().scale(this.y).orient("left").ticks(5);
+    this.y_axis = d3.svg.axis().scale(this.y).orient("left").ticks(5);
   };
 
   ContributorsMasterGraph.prototype.create_svg = function() {
     return this.svg = d3.select("#contributors-master").append("svg").attr("width", this.width + this.MARGIN.left + this.MARGIN.right).attr("height", this.height + this.MARGIN.top + this.MARGIN.bottom).attr("class", "tint-box").append("g").attr("transform", "translate(" + this.MARGIN.left + "," + this.MARGIN.top + ")");
-  };
-
-  ContributorsMasterGraph.prototype.create_area = function(x, y) {
-    return this.area = d3.svg.area().x(function(d) {
-      return x(d.date);
-    }).y0(this.height).y1(function(d) {
-      d.commits = d.commits || d.additions || d.deletions;
-      return y(d.commits);
-    }).interpolate("basis");
   };
 
   ContributorsMasterGraph.prototype.create_brush = function() {
@@ -160,7 +152,18 @@ export const ContributorsMasterGraph = (function(superClass) {
   };
 
   ContributorsMasterGraph.prototype.draw_path = function(data) {
-    return this.svg.append("path").datum(data).attr("class", "area").attr("d", this.area);
+    const g = this.svg.append('g');
+    g.selectAll('.bar')
+      .data(data)
+      .enter().append('rect')
+        .attr('class', 'bar')
+        .attr('x', d => this.x(d.date) - this.width / data.length / 2 + 5)
+        .attr('y', d => {
+          d.commits = d.commits || d.additions || d.deletions;
+          return this.y(d.commits || 0) - 0.5
+        })
+        .attr('width', this.width / data.length / 2)
+        .attr('height', d => this.height - this.y(d.commits || 0));
   };
 
   ContributorsMasterGraph.prototype.add_brush = function() {
@@ -179,7 +182,6 @@ export const ContributorsMasterGraph = (function(superClass) {
     ContributorsGraph.init_domain(this.data);
     this.x_max_domain = this.x_domain;
     this.set_domain();
-    this.create_area(this.x, this.y);
     this.create_svg();
     this.create_brush();
     this.draw_path(this.data);
@@ -193,7 +195,6 @@ export const ContributorsMasterGraph = (function(superClass) {
     ContributorsGraph.set_y_domain(this.data);
     this.set_y_domain();
     this.svg.select("path").datum(this.data);
-    this.svg.select("path").attr("d", this.area);
     return this.svg.select(".y.axis").call(this.y_axis);
   };
 
@@ -216,7 +217,6 @@ export const ContributorsAuthorGraph = (function(superClass) {
     this.y = null;
     this.x_axis = null;
     this.y_axis = null;
-    this.area = null;
     this.svg = null;
     this.list_item = null;
   }
@@ -226,28 +226,14 @@ export const ContributorsAuthorGraph = (function(superClass) {
   };
 
   ContributorsAuthorGraph.prototype.create_axes = function() {
+    const barWidth = this.width / this.dates.length;
+    this.x.range([ barWidth / 2, this.width - barWidth / 2 ])
     this.x_axis = d3.svg.axis()
       .scale(this.x)
       .orient('bottom')
       .ticks(8)
       .tickFormat(dateTickFormat);
-    return this.y_axis = d3.svg.axis().scale(this.y).orient("left").ticks(5);
-  };
-
-  ContributorsAuthorGraph.prototype.create_area = function(x, y) {
-    return this.area = d3.svg.area().x(function(d) {
-      var parseDate;
-      parseDate = d3.time.format("%Y-%m-%d").parse;
-      return x(parseDate(d));
-    }).y0(this.height).y1((function(_this) {
-      return function(d) {
-        if (_this.data[d] != null) {
-          return y(_this.data[d]);
-        } else {
-          return y(0);
-        }
-      };
-    })(this)).interpolate("basis");
+    this.y_axis = d3.svg.axis().scale(this.y).orient("left").ticks(5);
   };
 
   ContributorsAuthorGraph.prototype.create_svg = function() {
@@ -255,15 +241,23 @@ export const ContributorsAuthorGraph = (function(superClass) {
     return this.svg = d3.select(this.list_item).append("svg").attr("width", this.width + this.MARGIN.left + this.MARGIN.right).attr("height", this.height + this.MARGIN.top + this.MARGIN.bottom).attr("class", "spark").append("g").attr("transform", "translate(" + this.MARGIN.left + "," + this.MARGIN.top + ")");
   };
 
-  ContributorsAuthorGraph.prototype.draw_path = function(data) {
-    return this.svg.append("path").datum(data).attr("class", "area-contributor").attr("d", this.area);
+  ContributorsAuthorGraph.prototype.draw_path = function(dates) {
+    const g = this.svg.append('g');
+    const parseDate = d3.time.format("%Y-%m-%d").parse;
+    g.selectAll('.bar')
+      .data(dates)
+      .enter().append('rect')
+        .attr('class', 'bar')
+        .attr('x', d => this.x(parseDate(d)) - this.width / dates.length / 2)
+        .attr('y', d => this.y(this.data[d] || 0) - 0.5)
+        .attr('width', this.width / dates.length / 2)
+        .attr('height', d => this.height - this.y(this.data[d] || 0));
   };
 
   ContributorsAuthorGraph.prototype.draw = function() {
     this.create_scale();
     this.create_axes();
     this.set_domain();
-    this.create_area(this.x, this.y);
     this.create_svg();
     this.draw_path(this.dates);
     this.draw_x_axis();
@@ -273,7 +267,6 @@ export const ContributorsAuthorGraph = (function(superClass) {
   ContributorsAuthorGraph.prototype.redraw = function() {
     this.set_domain();
     this.svg.select("path").datum(this.dates);
-    this.svg.select("path").attr("d", this.area);
     this.svg.select(".x.axis").call(this.x_axis);
     return this.svg.select(".y.axis").call(this.y_axis);
   };

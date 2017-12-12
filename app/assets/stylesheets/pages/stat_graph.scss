@@ -4,7 +4,7 @@
   margin-bottom: 10px;
 }
 
-.area {
+.bar {
   fill: $stat-graph-area-fill;
   fill-opacity: 0.5;
 }
@@ -47,7 +47,7 @@
       width: 100%;
     }
 
-    .area-contributor {
+    .bar {
       fill: $stat-graph-orange-fill;
     }
   }
