@@ -659,7 +659,8 @@ class Project < ActiveRecord::Base
   end
 
   def import_started?
-    import? && import_status == 'started'
+    # import? does SQL work so only run it if it looks like there's an import running
+    import_status == 'started' && import?
   end
 
   def import_scheduled?
