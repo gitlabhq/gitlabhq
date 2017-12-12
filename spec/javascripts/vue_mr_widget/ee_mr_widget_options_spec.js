@@ -1,4 +1,6 @@
 import Vue from 'vue';
+import MockAdapter from 'axios-mock-adapter';
+import axios from '~/lib/utils/axios_utils';
 import mrWidgetOptions from 'ee/vue_merge_request_widget/mr_widget_options';
 import MRWidgetService from 'ee/vue_merge_request_widget/services/mr_widget_service';
 import MRWidgetStore from 'ee/vue_merge_request_widget/stores/mr_widget_store';
@@ -49,21 +51,16 @@ describe('ee merge request widget options', () => {
     });
 
     describe('with successful request', () => {
-      const interceptor = (request, next) => {
-        if (request.url === 'path.json') {
-          next(request.respondWith(JSON.stringify(securityIssues), {
-            status: 200,
-          }));
-        }
-      };
+      let mock;
 
       beforeEach(() => {
-        Vue.http.interceptors.push(interceptor);
+        mock = mock = new MockAdapter(axios);
+        mock.onGet('path.json').reply(200, securityIssues);
         vm = mountComponent(Component);
       });
 
       afterEach(() => {
-        Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+        mock.reset();
       });
 
       it('should render provided data', (done) => {
@@ -77,21 +74,16 @@ describe('ee merge request widget options', () => {
     });
 
     describe('with empty successful request', () => {
-      const emptyInterceptor = (request, next) => {
-        if (request.url === 'path.json') {
-          next(request.respondWith(JSON.stringify([]), {
-            status: 200,
-          }));
-        }
-      };
+      let mock;
 
       beforeEach(() => {
-        Vue.http.interceptors.push(emptyInterceptor);
+        mock = mock = new MockAdapter(axios);
+        mock.onGet('path.json').reply(200, []);
         vm = mountComponent(Component);
       });
 
       afterEach(() => {
-        Vue.http.interceptors = _.without(Vue.http.interceptors, emptyInterceptor);
+        mock.reset();
       });
 
       it('should render provided data', (done) => {
@@ -105,21 +97,16 @@ describe('ee merge request widget options', () => {
     });
 
     describe('with failed request', () => {
-      const errorInterceptor = (request, next) => {
-        if (request.url === 'path.json') {
-          next(request.respondWith(JSON.stringify([]), {
-            status: 500,
-          }));
-        }
-      };
+      let mock;
 
       beforeEach(() => {
-        Vue.http.interceptors.push(errorInterceptor);
+        mock = mock = new MockAdapter(axios);
+        mock.onGet('path.json').reply(500, []);
         vm = mountComponent(Component);
       });
 
       afterEach(() => {
-        Vue.http.interceptors = _.without(Vue.http.interceptors, errorInterceptor);
+        mock.reset();
       });
 
       it('should render error indicator', (done) => {
@@ -157,27 +144,17 @@ describe('ee merge request widget options', () => {
     });
 
     describe('with successful request', () => {
-      const interceptor = (request, next) => {
-        if (request.url === 'head.json') {
-          next(request.respondWith(JSON.stringify(headIssues), {
-            status: 200,
-          }));
-        }
-
-        if (request.url === 'base.json') {
-          next(request.respondWith(JSON.stringify(baseIssues), {
-            status: 200,
-          }));
-        }
-      };
+      let mock;
 
       beforeEach(() => {
-        Vue.http.interceptors.push(interceptor);
+        mock = mock = new MockAdapter(axios);
+        mock.onGet('head.json').reply(200, headIssues);
+        mock.onGet('base.json').reply(200, baseIssues);
         vm = mountComponent(Component);
       });
 
       afterEach(() => {
-        Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+        mock.reset();
       });
 
       it('should render provided data', (done) => {
@@ -218,27 +195,17 @@ describe('ee merge request widget options', () => {
     });
 
     describe('with empty successful request', () => {
-      const emptyInterceptor = (request, next) => {
-        if (request.url === 'head.json') {
-          next(request.respondWith(JSON.stringify([]), {
-            status: 200,
-          }));
-        }
-
-        if (request.url === 'base.json') {
-          next(request.respondWith(JSON.stringify([]), {
-            status: 200,
-          }));
-        }
-      };
+      let mock;
 
       beforeEach(() => {
-        Vue.http.interceptors.push(emptyInterceptor);
+        mock = mock = new MockAdapter(axios);
+        mock.onGet('head.json').reply(200, []);
+        mock.onGet('base.json').reply(200, []);
         vm = mountComponent(Component);
       });
 
       afterEach(() => {
-        Vue.http.interceptors = _.without(Vue.http.interceptors, emptyInterceptor);
+        mock.reset();
       });
 
       it('should render provided data', (done) => {
@@ -252,27 +219,17 @@ describe('ee merge request widget options', () => {
     });
 
     describe('with failed request', () => {
-      const errorInterceptor = (request, next) => {
-        if (request.url === 'head.json') {
-          next(request.respondWith(JSON.stringify([]), {
-            status: 500,
-          }));
-        }
-
-        if (request.url === 'base.json') {
-          next(request.respondWith(JSON.stringify([]), {
-            status: 500,
-          }));
-        }
-      };
+      let mock;
 
       beforeEach(() => {
-        Vue.http.interceptors.push(errorInterceptor);
+        mock = mock = new MockAdapter(axios);
+        mock.onGet('head.json').reply(500, []);
+        mock.onGet('base.json').reply(500, []);
         vm = mountComponent(Component);
       });
 
       afterEach(() => {
-        Vue.http.interceptors = _.without(Vue.http.interceptors, errorInterceptor);
+        mock.reset();
       });
 
       it('should render error indicator', (done) => {
@@ -308,27 +265,17 @@ describe('ee merge request widget options', () => {
     });
 
     describe('with successful request', () => {
-      const interceptor = (request, next) => {
-        if (request.url === 'head.json') {
-          next(request.respondWith(JSON.stringify(headPerformance), {
-            status: 200,
-          }));
-        }
-
-        if (request.url === 'base.json') {
-          next(request.respondWith(JSON.stringify(basePerformance), {
-            status: 200,
-          }));
-        }
-      };
+      let mock;
 
       beforeEach(() => {
-        Vue.http.interceptors.push(interceptor);
+        mock = mock = new MockAdapter(axios);
+        mock.onGet('head.json').reply(200, headPerformance);
+        mock.onGet('base.json').reply(200, basePerformance);
         vm = mountComponent(Component);
       });
 
       afterEach(() => {
-        Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+        mock.reset();
       });
 
       it('should render provided data', (done) => {
@@ -370,27 +317,17 @@ describe('ee merge request widget options', () => {
     });
 
     describe('with empty successful request', () => {
-      const emptyInterceptor = (request, next) => {
-        if (request.url === 'head.json') {
-          next(request.respondWith(JSON.stringify([]), {
-            status: 200,
-          }));
-        }
-
-        if (request.url === 'base.json') {
-          next(request.respondWith(JSON.stringify([]), {
-            status: 200,
-          }));
-        }
-      };
+      let mock;
 
       beforeEach(() => {
-        Vue.http.interceptors.push(emptyInterceptor);
+        mock = mock = new MockAdapter(axios);
+        mock.onGet('head.json').reply(200, []);
+        mock.onGet('base.json').reply(200, []);
         vm = mountComponent(Component);
       });
 
       afterEach(() => {
-        Vue.http.interceptors = _.without(Vue.http.interceptors, emptyInterceptor);
+        mock.reset();
       });
 
       it('should render provided data', (done) => {
@@ -404,27 +341,17 @@ describe('ee merge request widget options', () => {
     });
 
     describe('with failed request', () => {
-      const errorInterceptor = (request, next) => {
-        if (request.url === 'head.json') {
-          next(request.respondWith(JSON.stringify([]), {
-            status: 500,
-          }));
-        }
-
-        if (request.url === 'base.json') {
-          next(request.respondWith(JSON.stringify([]), {
-            status: 500,
-          }));
-        }
-      };
+      let mock;
 
       beforeEach(() => {
-        Vue.http.interceptors.push(errorInterceptor);
+        mock = mock = new MockAdapter(axios);
+        mock.onGet('head.json').reply(500, []);
+        mock.onGet('base.json').reply(500, []);
         vm = mountComponent(Component);
       });
 
       afterEach(() => {
-        Vue.http.interceptors = _.without(Vue.http.interceptors, errorInterceptor);
+        mock.reset();
       });
 
       it('should render error indicator', (done) => {
