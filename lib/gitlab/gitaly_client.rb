@@ -132,7 +132,7 @@ module Gitlab
       self.query_time += duration
       gitaly_call_histogram.observe(
         current_transaction_labels.merge(gitaly_service: service.to_s, rpc: rpc.to_s),
-        duration)
+        duration / 1000.0)
     end
 
     def self.current_transaction_labels
