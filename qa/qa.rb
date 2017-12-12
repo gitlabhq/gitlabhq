@@ -9,6 +9,7 @@ module QA
     autoload :User, 'qa/runtime/user'
     autoload :Namespace, 'qa/runtime/namespace'
     autoload :Scenario, 'qa/runtime/scenario'
+    autoload :Browser, 'qa/runtime/browser'
   end
 
   ##
@@ -65,7 +66,6 @@ module QA
     autoload :Base, 'qa/page/base'
 
     module Main
-      autoload :Entry, 'qa/page/main/entry'
       autoload :Login, 'qa/page/main/login'
       autoload :Menu, 'qa/page/main/menu'
       autoload :OAuth, 'qa/page/main/oauth'

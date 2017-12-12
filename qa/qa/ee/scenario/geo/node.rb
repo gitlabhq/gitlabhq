@@ -6,7 +6,6 @@ module QA
           attr_accessor :address
 
           def perform
-            QA::Page::Main::Entry.act { visit_login_page }
             QA::Page::Main::Login.act { sign_in_using_credentials }
             QA::Page::Main::Menu.act { go_to_admin_area }
             QA::Page::Admin::Menu.act { go_to_geo_nodes }
