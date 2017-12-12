@@ -35,7 +35,7 @@ export default class BlobViewer {
     const initialViewer = this.$fileHolder[0].querySelector('.blob-viewer:not(.hidden)');
     let initialViewerName = initialViewer.getAttribute('data-type');
 
-    if (this.switcher && location.hash.indexOf('#L') === 0) {
+    if (this.switcher && document.location.hash.indexOf('#L') === 0) {
       initialViewerName = 'simple';
     }
 

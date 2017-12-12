@@ -24,7 +24,7 @@ describe('Multi-file store tree actions', () => {
           submodules: [{ name: 'submodule' }],
         }),
       }));
-      spyOn(history, 'pushState');
+      spyOn(window.history, 'pushState');
 
       Object.assign(store.state.endpoints, {
         rootEndpoint: 'rootEndpoint',
@@ -113,7 +113,7 @@ describe('Multi-file store tree actions', () => {
       store.dispatch('getTreeData')
         .then(Vue.nextTick)
         .then(() => {
-          expect(history.pushState).toHaveBeenCalledWith(jasmine.anything(), '', 'rootEndpoint');
+          expect(window.history.pushState).toHaveBeenCalledWith(jasmine.anything(), '', 'rootEndpoint');
 
           done();
         }).catch(done.fail);
@@ -201,7 +201,7 @@ describe('Multi-file store tree actions', () => {
     });
 
     it('pushes new state', (done) => {
-      spyOn(history, 'pushState');
+      spyOn(window.history, 'pushState');
       Object.assign(tree, {
         opened: true,
         parentTreeUrl: 'testing',
@@ -211,7 +211,7 @@ describe('Multi-file store tree actions', () => {
         endpoint: 'test',
         tree,
       }).then(() => {
-        expect(history.pushState).toHaveBeenCalledWith(jasmine.anything(), '', 'testing');
+        expect(window.history.pushState).toHaveBeenCalledWith(jasmine.anything(), '', 'testing');
 
         done();
       }).catch(done.fail);

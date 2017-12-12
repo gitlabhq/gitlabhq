@@ -51,7 +51,7 @@ describe('User Avatar Image Component', function () {
     });
 
     it('should properly render img css', function () {
-      const classList = vm.$el.classList;
+      const { classList } = vm.$el;
       const containsAvatar = classList.contains('avatar');
       const containsSizeClass = classList.contains('s99');
       const containsCustomClass = classList.contains(DEFAULT_PROPS.cssClasses);
@@ -73,7 +73,7 @@ describe('User Avatar Image Component', function () {
     });
 
     it('should add lazy attributes', function () {
-      const classList = vm.$el.classList;
+      const { classList } = vm.$el;
       const lazyClass = classList.contains('lazy');
 
       expect(lazyClass).toBe(true);

@@ -30,7 +30,7 @@ Vue.use(VueResource);
 $(() => {
   const $boardApp = document.getElementById('board-app');
   const Store = gl.issueBoards.BoardsStore;
-  const ModalStore = gl.issueBoards.ModalStore;
+  const { ModalStore } = gl.issueBoards;
 
   window.gl = window.gl || {};
 
@@ -120,7 +120,7 @@ $(() => {
         this.filterManager.updateTokens();
       },
       updateDetailIssue(newIssue) {
-        const sidebarInfoEndpoint = newIssue.sidebarInfoEndpoint;
+        const { sidebarInfoEndpoint } = newIssue;
         if (sidebarInfoEndpoint && newIssue.subscribed === undefined) {
           newIssue.setFetchingState('subscriptions', true);
           BoardService.getIssueInfo(sidebarInfoEndpoint)
@@ -143,7 +143,7 @@ $(() => {
         Store.detail.issue = {};
       },
       toggleSubscription(id) {
-        const issue = Store.detail.issue;
+        const { issue } = Store.detail;
         if (issue.id === id && issue.toggleSubscriptionEndpoint) {
           issue.setFetchingState('subscriptions', true);
           BoardService.toggleIssueSubscription(issue.toggleSubscriptionEndpoint)

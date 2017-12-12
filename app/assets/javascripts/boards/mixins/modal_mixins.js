@@ -1,4 +1,4 @@
-const ModalStore = gl.issueBoards.ModalStore;
+const { ModalStore } = gl.issueBoards;
 
 gl.issueBoards.ModalMixins = {
   methods: {

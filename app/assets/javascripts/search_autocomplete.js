@@ -394,7 +394,7 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
     }
 
     onClick(item, $el, e) {
-      if (location.pathname.indexOf(item.url) !== -1) {
+      if (document.location.pathname.indexOf(item.url) !== -1) {
         if (!e.metaKey) e.preventDefault();
         if (!this.badgePresent) {
           if (item.category === 'Projects') {

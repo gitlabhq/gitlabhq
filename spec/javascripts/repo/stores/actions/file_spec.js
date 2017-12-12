@@ -25,7 +25,7 @@ describe('Multi-file store file actions', () => {
 
       store.state.openFiles.push(localFile);
 
-      spyOn(history, 'pushState');
+      spyOn(window.history, 'pushState');
     });
 
     afterEach(() => {
@@ -85,7 +85,7 @@ describe('Multi-file store file actions', () => {
     it('calls pushState when no open files are left', (done) => {
       store.dispatch('closeFile', { file: localFile })
         .then(() => {
-          expect(history.pushState).toHaveBeenCalledWith(jasmine.anything(), '', 'parentTreeUrl');
+          expect(window.history.pushState).toHaveBeenCalledWith(jasmine.anything(), '', 'parentTreeUrl');
 
           done();
         }).catch(done.fail);
@@ -175,11 +175,11 @@ describe('Multi-file store file actions', () => {
     });
 
     it('resets location.hash for line highlighting', (done) => {
-      location.hash = 'test';
+      document.location.hash = 'test';
 
       store.dispatch('setFileActive', file())
         .then(() => {
-          expect(location.hash).not.toBe('test');
+          expect(document.location.hash).not.toBe('test');
 
           done();
         }).catch(done.fail);

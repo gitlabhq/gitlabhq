@@ -11,7 +11,7 @@ export const setInitialData = ({ commit }, data) => commit(types.SET_INITIAL_DAT
 export const closeDiscardPopup = ({ commit }) => commit(types.TOGGLE_DISCARD_POPUP, false);
 
 export const discardAllChanges = ({ commit, getters, dispatch }) => {
-  const changedFiles = getters.changedFiles;
+  const { changedFiles } = getters;
 
   changedFiles.forEach((file) => {
     commit(types.DISCARD_FILE_CHANGES, file);
@@ -29,7 +29,7 @@ export const closeAllFiles = ({ state, dispatch }) => {
 export const toggleEditMode = ({
   state, commit, getters, dispatch,
 }, force = false) => {
-  const changedFiles = getters.changedFiles;
+  const { changedFiles } = getters;
 
   if (changedFiles.length && !force) {
     commit(types.TOGGLE_DISCARD_POPUP, true);
@@ -125,7 +125,7 @@ export const createTempEntry = ({ state, dispatch }, {
 };
 
 export const popHistoryState = ({ state, dispatch, getters }) => {
-  const treeList = getters.treeList;
+  const { treeList } = getters;
   const tree = treeList.find(file => file.url === state.previousUrl);
 
   if (!tree) return;

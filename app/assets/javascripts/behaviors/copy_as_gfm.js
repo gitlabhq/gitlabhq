@@ -293,7 +293,7 @@ export class CopyAsGFM {
   }
 
   static copyAsGFM(e, transformer) {
-    const clipboardData = e.originalEvent.clipboardData;
+    const { clipboardData } = e.originalEvent;
     if (!clipboardData) return;
 
     const documentFragment = getSelectedFragment();
@@ -310,7 +310,7 @@ export class CopyAsGFM {
   }
 
   static pasteGFM(e) {
-    const clipboardData = e.originalEvent.clipboardData;
+    const { clipboardData } = e.originalEvent;
     if (!clipboardData) return;
 
     const text = clipboardData.getData('text/plain');

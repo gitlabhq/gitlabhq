@@ -52,7 +52,7 @@ gl.issueBoards.Board = Vue.extend({
         const issue = this.list.findIssue(this.detailIssue.issue.id);
 
         if (issue) {
-          const offsetLeft = this.$el.offsetLeft;
+          const { offsetLeft } = this.$el;
           const boardsList = document.querySelectorAll('.boards-list')[0];
           const left = boardsList.scrollLeft - offsetLeft;
           let right = (offsetLeft + this.$el.offsetWidth);

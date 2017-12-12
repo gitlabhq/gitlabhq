@@ -15,7 +15,7 @@ export default (function () {
 
     $('body').on('click', '.day-commits-table li.commit', function (e) {
       if (e.target.nodeName !== 'A') {
-        location.href = $(this).attr('url');
+        document.location.href = $(this).attr('url');
         e.stopPropagation();
         return false;
       }
@@ -55,7 +55,7 @@ export default (function () {
       success: function (data) {
         CommitsList.lastSearch = search;
         CommitsList.content.html(data.html);
-        return history.replaceState({
+        return window.history.replaceState({
           page: commitsUrl,
         // Change url so if user reload a page - search results are saved
         }, document.title, commitsUrl);

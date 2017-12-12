@@ -40,8 +40,8 @@ export default class SmartInterval {
   /* public */
 
   start() {
-    const cfg = this.cfg;
-    const state = this.state;
+    const { cfg } = this;
+    const { state } = this;
 
     if (cfg.immediateExecution && !this.isLoading) {
       cfg.immediateExecution = false;
@@ -98,7 +98,7 @@ export default class SmartInterval {
   /* private */
 
   initInterval() {
-    const cfg = this.cfg;
+    const { cfg } = this;
 
     if (!cfg.lazyStart) {
       this.start();
@@ -149,7 +149,7 @@ export default class SmartInterval {
   }
 
   incrementInterval() {
-    const cfg = this.cfg;
+    const { cfg } = this;
     const currentInterval = this.getCurrentInterval();
     if (cfg.hiddenInterval && !this.isPageVisible()) return;
     let nextInterval = currentInterval * cfg.incrementByFactorOf;
@@ -164,7 +164,7 @@ export default class SmartInterval {
   isPageVisible() { return this.state.pageVisibility === 'visible'; }
 
   stopTimer() {
-    const state = this.state;
+    const { state } = this;
 
     state.intervalId = window.clearInterval(state.intervalId);
   }
