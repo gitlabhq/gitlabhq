@@ -319,86 +319,61 @@ As you can see, the syntax of `command` is similar to [Dockerfile's `CMD`][cmd].
 > Introduced in GitLab and GitLab Runner 9.4. Read more about the [extended
 configuration options](#extended-docker-configuration-options).
 
+Before showing the available entrypoint override methods, let's describe shortly
+how the Runner starts and uses a Docker image for the containers used in the
+CI jobs:
+
+1. The Runner starts a Docker container using the defined entrypoint (default
+   from `Dockerfile` that may be overridden in `.gitlab-ci.yml`)
+1. The Runner attaches itself to a running container.
+1. The Runner prepares a script (the combination of
+   [`before_script`](../yaml/README.md#before_script),
+   [`script`](../yaml/README.md#script),
+   and [`after_script`](../yaml/README.md#after_script)).
+1. The Runner sends the script to the container's shell STDIN and receives the
+   output.
+
+To override the entrypoint of a Docker image, the recommended solution is to
+define an empty `entrypoint` in `.gitlab-ci.yml`, so the Runner doesn't start
+a useless shell layer. However, that will not work for all Docker versions, and
+you should check which one your Runner is using. Specifically:
+
+- If Docker 17.06 or later is used, the `entrypoint` can be set to an empty value.
+- If Docker 17.03 or previous versions are used, the `entrypoint` can be set to
+  `/bin/sh -c`, `/bin/bash -c` or an equivalent shell available in the image.
+
+The syntax of `image:entrypoint` is similar to [Dockerfile's `ENTRYPOINT`][entrypoint].
+
+----
+
 Let's assume you have a `super/sql:experimental` image with some SQL database
 inside it and you would like to use it as a base image for your job because you
 want to execute some tests with this database binary. Let's also assume that
 this image is configured with `/usr/bin/super-sql run` as an entrypoint. That
-means, that when starting the container without additional options, it will run
+means that when starting the container without additional options, it will run
 the database's process, while Runner expects that the image will have no
 entrypoint or that the entrypoint is prepared to start a shell command.
 
-----
+With the extended Docker configuration options, instead of creating your
+own image based on `super/sql:experimental`, setting the `ENTRYPOINT`
+to a shell, and then using the new image in your CI job, you can now simply
+define an `entrypoint` in `.gitlab-ci.yml`.
 
-Before showing available entrypoint overwrite methods, let's describe shortly
-how Runner start's and uses Docker image for job container:
-
-1. Runner start's Docker container using defined entrypoint (default from `Dockerfile`
-   that may be overridden with `.gitlab-ci.yml`) and
-   [shell discovering](https://gitlab.com/gitlab-org/gitlab-runner/blob/v10.2.0/shells/bash.go#L16)
-   as [command](https://gitlab.com/gitlab-org/gitlab-runner/blob/v10.2.0/shells/bash.go#L215).
-1. Runner attaches itself to a running container.
-1. Runner prepares a script (it may be the combination of `before_script` and `script`
-   or the `after_script`).
-1. Runner sends the script to container shell's STDIN and receives the output.
-
-After analyzing how works the code linked in first point, we can assume that Runner
-will work if entrypoint will be either:
-
-- empty,
-- set to `sh -c`, `bash -c` or an equivalent with shell available in the image.
-
-We recommend to make the entrypoint empty, so it doesn't start an useless shell
-layer. However if Docker older than 17.04 is used, the empty entrypoint may not
-work and for Docker older than 1.13 it will certainly not work. In that case
-the `/bin/sh -c` or equal entrypoint should be used.
-
-----
-
-Before the new extended Docker configuration options, you would need to create
-your own image based on the `super/sql:experimental` image, set the entrypoint
-to a shell and then use it in job's configuration, like:
-
-```Dockerfile
-# my-super-sql:experimental image's Dockerfile
-
-FROM super/sql:experimental
-ENTRYPOINT [""]
-```
-or
-```Dockerfile
-# my-super-sql:experimental image's Dockerfile
-
-FROM super/sql:experimental
-ENTRYPOINT ["/bin/sh", "-c"]
-```
-and
-```yaml
-# .gitlab-ci.yml
-
-image: my-super-sql:experimental
-```
-
-After the new extended Docker configuration options, you can now simply
-set an `entrypoint` in `.gitlab-ci.yml`, like:
+**For Docker 17.06+:**
 
 ```yaml
-# .gitlab-ci.yml
-
 image:
   name: super/sql:experimental
   entrypoint: [""]
 ```
-or
-```yaml
-# .gitlab-ci.yml
 
+**For Docker =< 17.03:**
+
+```yaml
 image:
   name: super/sql:experimental
   entrypoint: ["/bin/sh", "-c"]
 ```
-
-As you can see the syntax of `entrypoint` is similar to
-[Dockerfile's `ENTRYPOINT`][entrypoint].
 
 ## Define image and services in `config.toml`
 
