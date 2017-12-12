@@ -107,8 +107,6 @@ RSpec.configure do |config|
   config.before(:all) do
     License.destroy_all
     TestLicense.init
-
-    SeedFu.seed
   end
 
   config.after(:suite) do

@@ -58,7 +58,7 @@ module PreferencesHelper
       user_view
     elsif user_view == "activity"
       "activity"
-    elsif @project.wiki_enabled?
+    elsif can?(current_user, :read_wiki, @project)
       "wiki"
     elsif @project.feature_available?(:issues, current_user)
       "projects/issues/issues"

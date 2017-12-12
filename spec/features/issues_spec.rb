@@ -376,16 +376,16 @@ describe 'Issues' do
     end
 
     it 'changes incoming email address token', :js do
-      find('.issue-email-modal-btn').click
-      previous_token = find('input#issue_email').value
+      find('.issuable-email-modal-btn').click
+      previous_token = find('input#issuable_email').value
       find('.incoming-email-token-reset').click
 
       wait_for_requests
 
-      expect(page).to have_no_field('issue_email', with: previous_token)
-      new_token = project1.new_issue_address(user.reload)
+      expect(page).to have_no_field('issuable_email', with: previous_token)
+      new_token = project1.new_issuable_address(user.reload, 'issue')
       expect(page).to have_field(
-        'issue_email',
+        'issuable_email',
         with: new_token
       )
     end
@@ -666,8 +666,8 @@ describe 'Issues' do
       end
 
       it 'click the button to show modal for the new email' do
-        page.within '#issue-email-modal' do
-          email = project.new_issue_address(user)
+        page.within '#issuable-email-modal' do
+          email = project.new_issuable_address(user, 'issue')
 
           expect(page).to have_selector("input[value='#{email}']")
         end

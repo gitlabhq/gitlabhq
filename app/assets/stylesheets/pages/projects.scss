@@ -1182,6 +1182,11 @@ a.allowed-to-push {
   }
 }
 
+.issuable-footer {
+  padding-top: $gl-padding;
+  padding-bottom: 37px;
+}
+
 /* EE-specific styles */
 .project-mirror-settings {
   .fingerprint-verified {

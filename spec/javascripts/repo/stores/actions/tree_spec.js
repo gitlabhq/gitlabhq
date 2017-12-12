@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import * as urlUtils from '~/lib/utils/url_utility';
 import store from '~/repo/stores';
 import service from '~/repo/services';
 import { file, resetStore } from '../../helpers';
@@ -255,7 +256,7 @@ describe('Multi-file store tree actions', () => {
       let row;
 
       beforeEach(() => {
-        spyOn(gl.utils, 'visitUrl');
+        spyOn(urlUtils, 'visitUrl');
 
         row = {
           url: 'submoduleurl',
@@ -276,7 +277,7 @@ describe('Multi-file store tree actions', () => {
       it('opens submodule URL', (done) => {
         store.dispatch('clickedTreeRow', row)
           .then(() => {
-            expect(gl.utils.visitUrl).toHaveBeenCalledWith('submoduleurl');
+            expect(urlUtils.visitUrl).toHaveBeenCalledWith('submoduleurl');
 
             done();
           }).catch(done.fail);

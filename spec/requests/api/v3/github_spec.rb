@@ -75,7 +75,7 @@ describe API::V3::Github do
     end
 
     it 'filters unlicensed namespace projects' do
-      silver_plan = Plan.find_by!(name: 'silver')
+      silver_plan = create(:silver_plan)
       licensed_project = create(:project, :empty_repo)
       licensed_project.add_reporter(user)
       licensed_project.namespace.update!(plan_id: silver_plan.id)

@@ -1,3 +1,4 @@
+# coding: utf-8
 class Commit
   extend ActiveModel::Naming
   extend Gitlab::Cache::RequestCache
@@ -25,7 +26,7 @@ class Commit
   DIFF_HARD_LIMIT_FILES = 1000
   DIFF_HARD_LIMIT_LINES = 50000
 
-  MIN_SHA_LENGTH = 7
+  MIN_SHA_LENGTH = Gitlab::Git::Commit::MIN_SHA_LENGTH
   COMMIT_SHA_PATTERN = /\h{#{MIN_SHA_LENGTH},40}/.freeze
 
   def banzai_render_context(field)

@@ -60,7 +60,7 @@ describe UpdateAllMirrorsWorker do
 
     context 'licensed' do
       def scheduled_mirror(at:, licensed:)
-        namespace = create(:group, :public, plan: (Namespace::BRONZE_PLAN if licensed))
+        namespace = create(:group, :public, plan: (:bronze_plan if licensed))
         project = create(:project, :public, :mirror, namespace: namespace)
 
         project.mirror_data.update!(next_execution_timestamp: at)

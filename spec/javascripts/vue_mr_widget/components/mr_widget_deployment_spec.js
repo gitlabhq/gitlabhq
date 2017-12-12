@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import * as urlUtils from '~/lib/utils/url_utility';
 import deploymentComponent from '~/vue_merge_request_widget/components/mr_widget_deployment';
 import MRWidgetService from '~/vue_merge_request_widget/services/mr_widget_service';
 
@@ -108,13 +109,13 @@ describe('MRWidgetDeployment', () => {
       it('should show a confirm dialog and call service.stopEnvironment when confirmed', (done) => {
         spyOn(window, 'confirm').and.returnValue(true);
         spyOn(MRWidgetService, 'stopEnvironment').and.returnValue(returnPromise(true));
-        spyOn(gl.utils, 'visitUrl').and.returnValue(true);
+        spyOn(urlUtils, 'visitUrl').and.returnValue(true);
         vm = mockStopEnvironment();
 
         expect(window.confirm).toHaveBeenCalled();
         expect(MRWidgetService.stopEnvironment).toHaveBeenCalledWith(deploymentMockData.stop_url);
         setTimeout(() => {
-          expect(gl.utils.visitUrl).toHaveBeenCalledWith(url);
+          expect(urlUtils.visitUrl).toHaveBeenCalledWith(url);
           done();
         }, 333);
       });

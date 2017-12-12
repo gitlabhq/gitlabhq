@@ -55,7 +55,7 @@ describe 'User creates a merge request', :js do
       expect(page).to have_content('Wiki Feature')
     end
 
-    page.within('.issuable-actions') do
+    page.within('.js-issuable-actions') do
       click_link('Edit', match: :first)
     end
 

@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.2.4 (2017-12-07)
+
+- No changes.
+
 ## 10.2.3 (2017-11-30)
 
 ### Fixed (5 changes)
@@ -93,6 +97,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Enhance the documentation for gitlab-ctl replicate-geo-database. !3268
 
 
+## 10.1.5 (2017-12-07)
+
+- No changes.
+
 ## 10.1.4 (2017-11-14)
 
 - No changes.
@@ -146,6 +154,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - [OTHER] Improve logging output for several Geo background workers. !2961
 - [OTHER] Add partial index on push_rules.is_sample.
 - Add new push rule to reject unsigned commits. !2913
+
+## 10.0.7 (2017-12-07)
+
+- No changes.
 
 ## 10.0.5 (2017-11-03)
 

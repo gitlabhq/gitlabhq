@@ -32,6 +32,10 @@ module DiscussionOnDiff
     first_note.position.new_path
   end
 
+  def on_merge_request_commit?
+    for_merge_request? && commit_id.present?
+  end
+
   # Returns an array of at most 16 highlighted lines above a diff note
   def truncated_diff_lines(highlight: true)
     lines = highlight ? highlighted_diff_lines : diff_lines

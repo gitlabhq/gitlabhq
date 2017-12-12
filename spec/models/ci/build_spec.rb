@@ -133,11 +133,9 @@ describe Ci::Build do
   end
 
   describe '#artifacts?' do
+    subject { build.artifacts? }
+
     context 'when new artifacts are used' do
-      let(:build) { create(:ci_build, :artifacts) }
-
-      subject { build.artifacts? }
-
       context 'artifacts archive does not exist' do
         let(:build) { create(:ci_build) }
 
@@ -145,25 +143,19 @@ describe Ci::Build do
       end
 
       context 'artifacts archive exists' do
+        let(:build) { create(:ci_build, :artifacts) }
+
         it { is_expected.to be_truthy }
 
         context 'is expired' do
-          let!(:build) { create(:ci_build, :artifacts, :expired) }
+          let(:build) { create(:ci_build, :artifacts, :expired) }
 
           it { is_expected.to be_falsy }
-        end
-
-        context 'is not expired' do
-          it { is_expected.to be_truthy }
         end
       end
     end
 
     context 'when legacy artifacts are used' do
-      let(:build) { create(:ci_build, :legacy_artifacts) }
-
-      subject { build.artifacts? }
-
       context 'artifacts archive does not exist' do
         let(:build) { create(:ci_build) }
 
@@ -171,16 +163,14 @@ describe Ci::Build do
       end
 
       context 'artifacts archive exists' do
+        let(:build) { create(:ci_build, :legacy_artifacts) }
+
         it { is_expected.to be_truthy }
 
         context 'is expired' do
-          let!(:build) { create(:ci_build, :legacy_artifacts, :expired) }
+          let(:build) { create(:ci_build, :legacy_artifacts, :expired) }
 
           it { is_expected.to be_falsy }
-        end
-
-        context 'is not expired' do
-          it { is_expected.to be_truthy }
         end
       end
     end
@@ -1937,6 +1927,79 @@ describe Ci::Build do
         expect(service).to receive(:commit_status_merge_requests)
 
         subject.drop!
+      end
+    end
+  end
+
+  describe '.matches_tag_ids' do
+    set(:build) { create(:ci_build, project: project, user: user) }
+    let(:tag_ids) { ::ActsAsTaggableOn::Tag.named_any(tag_list).ids }
+
+    subject { described_class.where(id: build).matches_tag_ids(tag_ids) }
+
+    before do
+      build.update(tag_list: build_tag_list)
+    end
+
+    context 'when have different tags' do
+      let(:build_tag_list) { %w(A B) }
+      let(:tag_list) { %w(C D) }
+
+      it "does not match a build" do
+        is_expected.not_to contain_exactly(build)
+      end
+    end
+
+    context 'when have a subset of tags' do
+      let(:build_tag_list) { %w(A B) }
+      let(:tag_list) { %w(A B C D) }
+
+      it "does match a build" do
+        is_expected.to contain_exactly(build)
+      end
+    end
+
+    context 'when build does not have tags' do
+      let(:build_tag_list) { [] }
+      let(:tag_list) { %w(C D) }
+
+      it "does match a build" do
+        is_expected.to contain_exactly(build)
+      end
+    end
+
+    context 'when does not have a subset of tags' do
+      let(:build_tag_list) { %w(A B C) }
+      let(:tag_list) { %w(C D) }
+
+      it "does not match a build" do
+        is_expected.not_to contain_exactly(build)
+      end
+    end
+  end
+
+  describe '.matches_tags' do
+    set(:build) { create(:ci_build, project: project, user: user) }
+
+    subject { described_class.where(id: build).with_any_tags }
+
+    before do
+      build.update(tag_list: tag_list)
+    end
+
+    context 'when does have tags' do
+      let(:tag_list) { %w(A B) }
+
+      it "does match a build" do
+        is_expected.to contain_exactly(build)
+      end
+    end
+
+    context 'when does not have tags' do
+      let(:tag_list) { [] }
+
+      it "does not match a build" do
+        is_expected.not_to contain_exactly(build)
       end
     end
   end
