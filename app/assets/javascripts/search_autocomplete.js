@@ -19,7 +19,7 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
 
   class SearchAutocomplete {
     constructor({
-      wrap, optsEl, autocompletePath, projectId, projectRef
+      wrap, optsEl, autocompletePath, projectId, projectRef,
     } = {}) {
       this.bindEventContext();
       this.wrap = wrap || $('.search');
@@ -157,7 +157,7 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
         }
         return callback(data);
       })
-      .always(() => { this.loadingSuggestions = false; });
+        .always(() => { this.loadingSuggestions = false; });
     }
 
     getCategoryContents() {
@@ -175,7 +175,9 @@ import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from '.
         options = dashboardOptions;
       }
 
-      const { issuesPath, mrPath, name, issuesDisabled } = options;
+      const {
+        issuesPath, mrPath, name, issuesDisabled,
+      } = options;
       const baseItems = [];
 
       if (name) {

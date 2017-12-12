@@ -108,11 +108,11 @@ export default class CreateMergeRequestDropdown {
       url: this.createBranchPath,
       beforeSend: () => (this.isCreatingBranch = true),
     })
-    .done((data) => {
-      this.branchCreated = true;
-      window.location.href = data.url;
-    })
-    .fail(() => new Flash('Failed to create a branch for this issue. Please try again.'));
+      .done((data) => {
+        this.branchCreated = true;
+        window.location.href = data.url;
+      })
+      .fail(() => new Flash('Failed to create a branch for this issue. Please try again.'));
   }
 
   createMergeRequest() {
@@ -122,11 +122,11 @@ export default class CreateMergeRequestDropdown {
       url: this.createMrPath,
       beforeSend: () => (this.isCreatingMergeRequest = true),
     })
-    .done((data) => {
-      this.mergeRequestCreated = true;
-      window.location.href = data.url;
-    })
-    .fail(() => new Flash('Failed to create Merge Request. Please try again.'));
+      .done((data) => {
+        this.mergeRequestCreated = true;
+        window.location.href = data.url;
+      })
+      .fail(() => new Flash('Failed to create Merge Request. Please try again.'));
   }
 
   disable() {
@@ -207,31 +207,31 @@ export default class CreateMergeRequestDropdown {
         this.isGettingRef = true;
       },
     })
-    .always(() => {
-      this.isGettingRef = false;
-    })
-    .done((data) => {
-      const branches = data[Object.keys(data)[0]];
-      const tags = data[Object.keys(data)[1]];
-      let result;
+      .always(() => {
+        this.isGettingRef = false;
+      })
+      .done((data) => {
+        const branches = data[Object.keys(data)[0]];
+        const tags = data[Object.keys(data)[1]];
+        let result;
 
-      if (target === 'branch') {
-        result = CreateMergeRequestDropdown.findByValue(branches, ref);
-      } else {
-        result = CreateMergeRequestDropdown.findByValue(branches, ref, true) ||
+        if (target === 'branch') {
+          result = CreateMergeRequestDropdown.findByValue(branches, ref);
+        } else {
+          result = CreateMergeRequestDropdown.findByValue(branches, ref, true) ||
           CreateMergeRequestDropdown.findByValue(tags, ref, true);
-        this.suggestedRef = result;
-      }
+          this.suggestedRef = result;
+        }
 
-      return this.updateInputState(target, ref, result);
-    })
-    .fail(() => {
-      this.unavailable();
-      this.disable();
-      new Flash('Failed to get ref.');
+        return this.updateInputState(target, ref, result);
+      })
+      .fail(() => {
+        this.unavailable();
+        this.disable();
+        new Flash('Failed to get ref.');
 
-      return false;
-    });
+        return false;
+      });
   }
 
   getTargetData(target) {

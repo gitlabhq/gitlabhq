@@ -7,7 +7,7 @@
 //
 //   <code class="js-render-math"></div>
 //
-  // Only load once
+// Only load once
 let katexLoaded = false;
 
 // Loop over all math elements and render math

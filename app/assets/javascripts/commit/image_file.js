@@ -66,14 +66,14 @@ export default class ImageFile {
       dragging = false;
       $body.css('user-select', '');
     })
-    .on('mousemove', function(e) {
-      var left;
-      if (!dragging) return;
+      .on('mousemove', function(e) {
+        var left;
+        if (!dragging) return;
 
-      left = e.pageX - ($offsetEl.offset().left + padding);
+        left = e.pageX - ($offsetEl.offset().left + padding);
 
-      callback(e, left);
-    });
+        callback(e, left);
+      });
   }
 
   prepareFrames(view) {
