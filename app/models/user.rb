@@ -18,12 +18,9 @@ class User < ActiveRecord::Base
   include CreatedAtFilterable
   include IgnorableColumn
   include BulkMemberAccessLoad
-<<<<<<< HEAD
 
   prepend EE::GeoAwareAvatar
   prepend EE::User
-=======
->>>>>>> upstream/master
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
