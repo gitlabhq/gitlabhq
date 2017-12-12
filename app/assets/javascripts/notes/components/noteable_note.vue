@@ -1,10 +1,11 @@
 <script>
   import { mapGetters, mapActions } from 'vuex';
+  import { escape } from 'underscore';
   import Flash from '../../flash';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
   import noteHeader from './note_header.vue';
   import noteActions from './note_actions.vue';
-  import issueNoteBody from './issue_note_body.vue';
+  import noteBody from './note_body.vue';
   import eventHub from '../event_hub';
 
   export default {
@@ -25,7 +26,7 @@
       userAvatarLink,
       noteHeader,
       noteActions,
-      issueNoteBody,
+      noteBody,
     },
     computed: {
       ...mapGetters([
@@ -85,7 +86,7 @@
         };
         this.isRequesting = true;
         this.oldContent = this.note.note_html;
-        this.note.note_html = noteText;
+        this.note.note_html = escape(noteText);
 
         this.updateNote(data)
           .then(() => {
@@ -122,9 +123,7 @@
         // we need to do this to prevent noteForm inconsistent content warning
         // this is something we intentionally do so we need to recover the content
         this.note.note = noteText;
-        if (this.$refs.noteBody) {
-          this.$refs.noteBody.$refs.noteForm.note = noteText; // TODO: This could be better
-        }
+        this.$refs.noteBody.$refs.noteForm.note = noteText;
       },
     },
     created() {
@@ -173,7 +172,7 @@
             @handleDelete="deleteHandler"
             />
         </div>
-        <issue-note-body
+        <note-body
           :note="note"
           :can-edit="note.current_user.can_edit"
           :is-editing="isEditing"

@@ -3,6 +3,7 @@
 import '~/gl_dropdown';
 import '~/search_autocomplete';
 import '~/lib/utils/common_utils';
+import * as urlUtils from '~/lib/utils/url_utility';
 
 (function() {
   var assertLinks, dashboardIssuesPath, dashboardMRsPath, groupIssuesPath, groupMRsPath, groupName, mockDashboardOptions, mockGroupOptions, mockProjectOptions, projectIssuesPath, projectMRsPath, projectName, userId, widget;
@@ -121,7 +122,7 @@ import '~/lib/utils/common_utils';
       loadFixtures('static/search_autocomplete.html.raw');
 
       // Prevent turbolinks from triggering within gl_dropdown
-      spyOn(window.gl.utils, 'visitUrl').and.returnValue(true);
+      spyOn(urlUtils, 'visitUrl').and.returnValue(true);
 
       window.gon = {};
       window.gon.current_user_id = userId;

@@ -17,7 +17,7 @@ someone who is familiar with the code you touched.
 
 [`CE Upstream` merge requests]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests?label_name%5B%5D=CE+upstream
 
-### Always merge EE merge requests before their CE counterparts
+## Always merge EE merge requests before their CE counterparts
 
 **In order to avoid conflicts in the CE->EE merge, you should always merge the
 EE version of your CE merge request first, if present.**

@@ -307,6 +307,19 @@ module Ci
 
             it_behaves_like 'not pick'
           end
+
+          context 'when job object is staled' do
+            let!(:pre_stage_job) { create(:ci_build, :running, pipeline: pipeline, name: 'test', stage_idx: 0) }
+
+            before do
+              allow_any_instance_of(Ci::Build).to receive(:drop!)
+                .and_raise(ActiveRecord::StaleObjectError.new(pending_job, :drop!))
+            end
+
+            it 'does not drop nor pick' do
+              expect(subject).to be_nil
+            end
+          end
         end
 
         shared_examples 'validation is not active' do
