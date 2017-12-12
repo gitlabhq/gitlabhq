@@ -1,6 +1,7 @@
 class Projects::PipelineSchedulesController < Projects::ApplicationController
   before_action :schedule, except: [:index, :new, :create]
 
+  before_action :play_rate_limit, only: [:play]
   before_action :authorize_play_pipeline_schedule!, only: [:play]
   before_action :authorize_read_pipeline_schedule!
   before_action :authorize_create_pipeline_schedule!, only: [:new, :create]
@@ -42,21 +43,13 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
   end
 
   def play
-    limiter = ::Gitlab::ActionRateLimiter.new(action: :play_pipeline_schedule)
-
-    if limiter.throttled?(throttle_key, 1)
-      flash[:alert] = 'You cannot play this scheduled pipeline at the moment. Please wait a minute.'
-      return redirect_to pipeline_schedules_path(@project)
-    end
-
     job_id = RunPipelineScheduleWorker.perform_async(schedule.id, current_user.id)
 
-    flash[:notice] =
-      if job_id
-        "Successfully scheduled a pipeline to run. Go to the <a href=\"#{project_pipelines_path(@project)}\">Pipelines page</a> for details.".html_safe
-      else
-        'Unable to schedule a pipeline to run immediately'
-      end
+    if job_id
+      flash[:notice] = "Successfully scheduled a pipeline to run. Go to the <a href=\"#{project_pipelines_path(@project)}\">Pipelines page</a> for details.".html_safe
+    else
+      flash[:alert] = 'Unable to schedule a pipeline to run immediately'
+    end
 
     redirect_to pipeline_schedules_path(@project)
   end
@@ -81,8 +74,15 @@ class Projects::PipelineSchedulesController < Projects::ApplicationController
 
   private
 
-  def throttle_key
-    "user:#{current_user.id}:schedule:#{schedule.id}"
+  def play_rate_limit
+    return unless current_user
+
+    limiter = ::Gitlab::ActionRateLimiter.new(action: :play_pipeline_schedule)
+
+    return unless limiter.throttled?([current_user, schedule], 1)
+
+    flash[:alert] = 'You cannot play this scheduled pipeline at the moment. Please wait a minute.'
+    redirect_to pipeline_schedules_path(@project)
   end
 
   def schedule

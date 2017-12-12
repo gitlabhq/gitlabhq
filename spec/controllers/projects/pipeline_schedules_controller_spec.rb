@@ -370,13 +370,27 @@ describe Projects::PipelineSchedulesController do
     set(:user) { create(:user) }
     let(:ref) { 'master' }
 
-    context 'when a developer makes the request' do
-      before do
-        project.add_developer(user)
+    before do
+      project.add_developer(user)
 
-        sign_in(user)
+      sign_in(user)
+    end
+
+    context 'when an anonymous user makes the request' do
+      before do
+        sign_out(user)
       end
 
+      it 'does not allow pipeline to be executed' do
+        expect(RunPipelineScheduleWorker).not_to receive(:perform_async)
+
+        post :play, namespace_id: project.namespace.to_param, project_id: project, id: pipeline_schedule.id
+
+        expect(response).to have_gitlab_http_status(404)
+      end
+    end
+
+    context 'when a developer makes the request' do
       it 'executes a new pipeline' do
         expect(RunPipelineScheduleWorker).to receive(:perform_async).with(pipeline_schedule.id, user.id).and_return('job-123')
 

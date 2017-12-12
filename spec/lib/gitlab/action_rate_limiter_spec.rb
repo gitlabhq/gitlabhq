@@ -2,8 +2,10 @@ require 'spec_helper'
 
 describe Gitlab::ActionRateLimiter do
   let(:redis) { double('redis') }
-  let(:key) { 'user:1' }
-  let(:cache_key) { "action_rate_limiter:test_action:#{key}" }
+  let(:user) { create(:user) }
+  let(:project) { create(:project) }
+  let(:key) { [user, project] }
+  let(:cache_key) { "action_rate_limiter:test_action:user:#{user.id}:project:#{project.id}" }
 
   subject { described_class.new(action: :test_action, expiry_time: 100) }
 
