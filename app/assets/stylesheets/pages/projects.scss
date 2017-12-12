@@ -331,8 +331,6 @@
 }
 
 .project-repo-buttons {
-  @include new-style-dropdown;
-
   .project-action-button .dropdown-menu {
     max-height: 250px;
     overflow-y: auto;
@@ -910,8 +908,6 @@ a.allowed-to-push {
 
 .new-protected-branch,
 .new-protected-tag {
-  @include new-style-dropdown;
-
   label {
     margin-top: 6px;
     font-weight: $gl-font-weight-normal;
@@ -938,8 +934,6 @@ a.allowed-to-push {
 
 .protected-branches-list,
 .protected-tags-list {
-  @include new-style-dropdown;
-
   margin-bottom: 30px;
 
   .settings-message {
