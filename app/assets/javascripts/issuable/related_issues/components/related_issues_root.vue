@@ -45,6 +45,11 @@ export default {
       required: false,
       default: false,
     },
+    canReorder: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     helpPath: {
       type: String,
       required: false,
@@ -228,6 +233,7 @@ export default {
     :is-submitting="isSubmitting"
     :related-issues="state.relatedIssues"
     :can-admin="canAdmin"
+    :can-reorder="canReorder"
     :pending-references="state.pendingReferences"
     :is-form-visible="isFormVisible"
     :input-value="inputValue"

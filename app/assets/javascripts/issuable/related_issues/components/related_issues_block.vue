@@ -7,7 +7,6 @@ import addIssuableForm from './add_issuable_form.vue';
 
 export default {
   name: 'RelatedIssuesBlock',
-
   props: {
     isFetching: {
       type: Boolean,
@@ -25,6 +24,11 @@ export default {
       default: () => [],
     },
     canAdmin: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+    canReorder: {
       type: Boolean,
       required: false,
       default: false,
@@ -60,17 +64,14 @@ export default {
       default: 'Related issues',
     },
   },
-
   directives: {
     tooltip,
   },
-
   components: {
     loadingIcon,
     addIssuableForm,
     issueToken,
   },
-
   computed: {
     hasRelatedIssues() {
       return this.relatedIssues.length > 0;
@@ -88,11 +89,23 @@ export default {
       return this.helpPath.length > 0;
     },
   },
-
   methods: {
     toggleAddRelatedIssuesForm() {
       eventHub.$emit('toggleAddRelatedIssuesForm');
     },
+    reordered(event) {
+      console.log(event);
+    },
+  },
+  mounted() {
+    if (this.canReorder) {
+      this.sortable = Sortable.create(this.$refs.list, {
+        animation: 200,
+        ghostClass: 'is-ghost',
+        chosenClass: "sortable-chosen",
+        onEnd: this.reordered,
+      });
+    }
   },
 };
 </script>
@@ -161,11 +174,15 @@ export default {
             label="Fetching related issues" />
         </div>
         <ul
-          class="flex-list content-list issuable-list">
+          ref="list"
+          class="flex-list content-list issuable-list"
+        >
           <li
             :key="issue.id"
             v-for="issue in relatedIssues"
-            class="js-related-issues-token-list-item">
+            class="js-related-issues-token-list-item"
+            :class="{ 'is-dragging': canReorder }"
+          >
             <issue-token
               event-namespace="relatedIssue"
               :id-key="issue.id"

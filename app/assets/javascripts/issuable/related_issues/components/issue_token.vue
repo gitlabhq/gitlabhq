@@ -162,7 +162,7 @@ export default {
       v-tooltip
       ref="removeButton"
       type="button"
-      class="js-issue-token-remove-button"
+      class="js-issue-token-remove-button flex-right sortable-hidden"
       :class="{
         'issue-token-remove-button': isCondensed,
         'btn btn-default': !isCondensed
