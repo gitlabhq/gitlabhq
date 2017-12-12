@@ -1,6 +1,6 @@
 import Vue from 'vue';
 
-const ModalStore = gl.issueBoards.ModalStore;
+const { ModalStore } = gl.issueBoards;
 
 gl.issueBoards.ModalTabs = Vue.extend({
   mixins: [gl.issueBoards.ModalMixins],

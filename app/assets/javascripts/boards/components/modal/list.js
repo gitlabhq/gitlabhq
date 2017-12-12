@@ -1,9 +1,7 @@
-/* global ListIssue */
-
 import Vue from 'vue';
 import bp from '../../../breakpoints';
 
-const ModalStore = gl.issueBoards.ModalStore;
+const { ModalStore } = gl.issueBoards;
 
 gl.issueBoards.ModalList = Vue.extend({
   props: {

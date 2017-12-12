@@ -29,7 +29,7 @@ class ModalStore {
 
   toggleIssue(issueObj) {
     const issue = issueObj;
-    const selected = issue.selected;
+    const { selected } = issue;
 
     issue.selected = !selected;
 

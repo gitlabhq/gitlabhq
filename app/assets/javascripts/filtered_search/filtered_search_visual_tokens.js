@@ -83,7 +83,7 @@ class FilteredSearchVisualTokens {
 
   static updateLabelTokenColor(tokenValueContainer, tokenValue) {
     const filteredSearchInput = FilteredSearchContainer.container.querySelector('.filtered-search');
-    const baseEndpoint = filteredSearchInput.dataset.baseEndpoint;
+    const { baseEndpoint } = filteredSearchInput.dataset;
     const labelsEndpoint = `${baseEndpoint}/labels.json`;
 
     return AjaxCache.retrieve(labelsEndpoint)
@@ -194,7 +194,7 @@ class FilteredSearchVisualTokens {
   static addFilterVisualToken(tokenName, tokenValue, canEdit) {
     const { lastVisualToken, isLastVisualTokenValid }
       = FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
-    const addVisualTokenElement = FilteredSearchVisualTokens.addVisualTokenElement;
+    const { addVisualTokenElement } = FilteredSearchVisualTokens;
 
     if (isLastVisualTokenValid) {
       addVisualTokenElement(tokenName, tokenValue, false, canEdit);
