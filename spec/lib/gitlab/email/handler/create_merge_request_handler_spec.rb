@@ -49,6 +49,7 @@ describe Gitlab::Email::Handler::CreateMergeRequestHandler do
         expect(merge_request.author).to eq(user)
         expect(merge_request.source_branch).to eq('feature')
         expect(merge_request.title).to eq('Feature added')
+        expect(merge_request.description).to eq('Merge request description')
         expect(merge_request.target_branch).to eq(project.default_branch)
       end
     end
@@ -77,6 +78,17 @@ describe Gitlab::Email::Handler::CreateMergeRequestHandler do
 
         it "raises an InvalidMergeRequestError" do
           expect { receiver.execute }.to raise_error(Gitlab::Email::InvalidMergeRequestError)
+        end
+      end
+
+      context "when the message body is blank" do
+        let(:email_raw) { fixture_file("emails/valid_new_merge_request_no_description.eml") }
+
+        it "creates a new merge request with description set from the last commit" do
+          expect { receiver.execute }.to change { project.merge_requests.count }.by(1)
+          merge_request = project.merge_requests.last
+
+          expect(merge_request.description).to eq('Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>')
         end
       end
     end
