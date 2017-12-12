@@ -1,9 +1,9 @@
 - show_roles = local_assigns.fetch(:show_roles, true)
 - show_controls = local_assigns.fetch(:show_controls, true)
 - force_mobile_view = local_assigns.fetch(:force_mobile_view, false)
+- member = local_assigns.fetch(:member)
 - user = local_assigns.fetch(:user, member.user)
 - source = member.source
-- can_admin_member = can?(current_user, action_member_permission(:update, member), member)
 
 %li.member{ class: dom_class(member), id: dom_id(member) }
   %span.list-item-name
@@ -50,18 +50,17 @@
     .controls.member-controls
       - if show_controls && member.source == current_resource
 
-        - if member.invite? && can?(current_user, action_member_permission(:admin, member), member.source)
+        - if member.can_resend_invite?
           = link_to icon('paper-plane'), polymorphic_path([:resend_invite, member]),
                     method: :post,
                     class: 'btn btn-default prepend-left-10 hidden-xs',
                     title: 'Resend invite'
 
-        - if user != current_user && can_admin_member
+        - if user != current_user && member.can_update?
           = form_for member, remote: true, html: { class: 'form-horizontal js-edit-member-form' } do |f|
             = f.hidden_field :access_level
             .member-form-control.dropdown.append-right-5
               %button.dropdown-menu-toggle.js-member-permissions-dropdown{ type: "button",
-                disabled: !can_admin_member,
                 data: { toggle: "dropdown", field_name: "#{f.object_name}[access_level]" } }
                 %span.dropdown-toggle-text
                   = member.human_access
@@ -70,23 +69,22 @@
                 = dropdown_title("Change permissions")
                 .dropdown-content
                   %ul
-                    - member.class.access_level_roles.each do |role, role_id|
+                    - member.access_level_roles.each do |role, role_id|
                       %li
                         = link_to role, "javascript:void(0)",
                           class: ("is-active" if member.access_level == role_id),
                           data: { id: role_id, el_id: dom_id(member) }
             .prepend-left-5.clearable-input.member-form-control
-              = f.text_field :expires_at, class: 'form-control js-access-expiration-date js-member-update-control', placeholder: 'Expiration date', id: "member_expires_at_#{member.id}", disabled: !can_admin_member, data: { el_id: dom_id(member) }
+              = f.text_field :expires_at,
+                class: 'form-control js-access-expiration-date js-member-update-control',
+                placeholder: 'Expiration date',
+                id: "member_expires_at_#{member.id}",
+                data: { el_id: dom_id(member) }
               %i.clear-icon.js-clear-input
         - else
           %span.member-access-text= member.human_access
 
-        - if member.invite? && can?(current_user, action_member_permission(:admin, member), member.source)
-          = link_to 'Resend invite', polymorphic_path([:resend_invite, member]),
-                    method: :post,
-                    class: 'btn btn-default  prepend-left-10 visible-xs-block'
-
-        - elsif member.request? && can_admin_member
+        - if member.can_approve?
           = link_to polymorphic_path([:approve_access_request, member]),
                     method: :post,
                     class: 'btn btn-success prepend-left-10',
@@ -96,7 +94,7 @@
             - unless force_mobile_view
               = icon('check inverse', class: 'hidden-xs')
 
-        - if can?(current_user, action_member_permission(:destroy, member), member)
+        - if member.can_remove?
           - if current_user == user
             = link_to icon('sign-out', text: 'Leave'), polymorphic_path([:leave, member.source, :members]),
                       method: :delete,

@@ -1,5 +1,6 @@
 class Groups::GroupMembersController < Groups::ApplicationController
   include MembershipActions
+  include MembersPresentation
   include SortingHelper
 
   # Authorize
@@ -14,15 +15,17 @@ class Groups::GroupMembersController < Groups::ApplicationController
     @members = @members.search(params[:search]) if params[:search].present?
     @members = @members.sort(@sort)
     @members = @members.page(params[:page]).per(50)
-    @members.includes(:user)
+    @members = present_members(@members.includes(:user))
 
-    @requesters = AccessRequestsFinder.new(@group).execute(current_user)
+    @requesters = present_members(
+      AccessRequestsFinder.new(@group).execute(current_user))
 
     @group_member = @group.group_members.new
   end
 
   def update
     @group_member = @group.members_and_requesters.find(params[:id])
+      .present(current_user: current_user)
 
     return render_403 unless can?(current_user, :update_group_member, @group_member)
 
