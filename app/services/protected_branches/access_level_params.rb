@@ -1,10 +1,7 @@
 module ProtectedBranches
   class AccessLevelParams
-<<<<<<< HEAD
     prepend EE::ProtectedBranches::AccessLevelParams
 
-=======
->>>>>>> upstream/master
     attr_reader :type, :params
 
     def initialize(type, params)
