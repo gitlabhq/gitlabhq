@@ -39,10 +39,7 @@ class GroupPolicy < BasePolicy
 
   rule { guest }.policy do
     enable :read_group
-<<<<<<< HEAD
     enable :read_list
-=======
->>>>>>> upstream/master
     enable :upload_file
   end
 

@@ -28,15 +28,11 @@ module Banzai
       end
 
       def build_url(uri)
-<<<<<<< HEAD
         base_path = if Gitlab::Geo.secondary?
                       Gitlab::Geo.primary_node.url
                     else
                       Gitlab.config.gitlab.url
                     end
-=======
-        base_path = Gitlab.config.gitlab.url
->>>>>>> upstream/master
 
         if group
           urls = Gitlab::Routing.url_helpers

@@ -163,8 +163,6 @@ describe Banzai::Filter::UploadLinkFilter do
     end
   end
 
-<<<<<<< HEAD
-=======
   context 'in group context' do
     let(:upload_link) { link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg') }
     let(:group) { create(:group) }
@@ -193,7 +191,6 @@ describe Banzai::Filter::UploadLinkFilter do
     end
   end
 
->>>>>>> upstream/master
   context 'when project or group context does not exist' do
     let(:upload_link) { link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg') }
 
