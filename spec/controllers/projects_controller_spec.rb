@@ -449,11 +449,12 @@ describe ProjectsController do
     end
   end
 
-  describe 'PUT #new_issue_address' do
+  describe 'PUT #new_issuable_address for issue' do
     subject do
-      put :new_issue_address,
+      put :new_issuable_address,
         namespace_id: project.namespace,
-        id: project
+        id: project,
+        issuable_type: 'issue'
       user.reload
     end
 
@@ -472,7 +473,35 @@ describe ProjectsController do
     end
 
     it 'changes projects new issue address' do
-      expect { subject }.to change { project.new_issue_address(user) }
+      expect { subject }.to change { project.new_issuable_address(user, 'issue') }
+    end
+  end
+
+  describe 'PUT #new_issuable_address for merge request' do
+    subject do
+      put :new_issuable_address,
+        namespace_id: project.namespace,
+        id: project,
+        issuable_type: 'merge_request'
+      user.reload
+    end
+
+    before do
+      sign_in(user)
+      project.team << [user, :developer]
+      allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
+    end
+
+    it 'has http status 200' do
+      expect(response).to have_http_status(200)
+    end
+
+    it 'changes the user incoming email token' do
+      expect { subject }.to change { user.incoming_email_token }
+    end
+
+    it 'changes projects new merge request address' do
+      expect { subject }.to change { project.new_issuable_address(user, 'merge_request') }
     end
   end
 

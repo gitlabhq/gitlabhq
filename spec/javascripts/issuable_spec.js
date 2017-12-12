@@ -26,7 +26,7 @@ describe('Issuable', () => {
       document.body.appendChild(element);
 
       const input = document.createElement('input');
-      input.setAttribute('id', 'issue_email');
+      input.setAttribute('id', 'issuable_email');
       document.body.appendChild(input);
 
       Issuable = new IssuableIndex('issue_');

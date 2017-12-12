@@ -1020,8 +1020,7 @@ class Repository
       tmp_remote_name = true
     end
 
-    add_remote(remote_name, url)
-    set_remote_as_mirror(remote_name, refmap: refmap)
+    add_remote(remote_name, url, mirror_refmap: refmap)
     fetch_remote(remote_name, forced: forced)
   ensure
     remove_remote(remote_name) if tmp_remote_name

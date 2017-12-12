@@ -1,4 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, one-var, no-var, one-var-declaration-per-line, no-unused-vars, no-else-return, prefer-arrow-callback, camelcase, quotes, comma-dangle, max-len */
+import { refreshCurrentPage } from './lib/utils/url_utility';
 
 window.Admin = (function() {
   function Admin() {
@@ -40,10 +41,10 @@ window.Admin = (function() {
       return $('.change-owner-link').show();
     });
     $('li.project_member').bind('ajax:success', function() {
-      return gl.utils.refreshCurrentPage();
+      return refreshCurrentPage();
     });
     $('li.group_member').bind('ajax:success', function() {
-      return gl.utils.refreshCurrentPage();
+      return refreshCurrentPage();
     });
     showBlacklistType = function() {
       if ($("input[name='blacklist_type']:checked").val() === 'file') {

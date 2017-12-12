@@ -5,22 +5,34 @@ describe MergeRequestEntity do
   let(:resource) { create(:merge_request, source_project: project, target_project: project) }
   let(:user)     { create(:user) }
 
-  let(:request) { double('request', current_user: user) }
+  let(:request) { double('request', current_user: user, project: project) }
 
   subject do
     described_class.new(resource, request: request).as_json
   end
 
-  it 'includes pipeline' do
-    req = double('request', current_user: user)
-    pipeline = build_stubbed(:ci_pipeline)
-    allow(resource).to receive(:head_pipeline).and_return(pipeline)
+  describe 'pipeline' do
+    let(:pipeline) { create(:ci_empty_pipeline, project: project, ref: resource.source_branch, sha: resource.source_branch_sha, head_pipeline_of: resource) }
 
-    pipeline_payload = PipelineDetailsEntity
-      .represent(pipeline, request: req)
-      .as_json
+    context 'when is up to date' do
+      let(:req) { double('request', current_user: user, project: project) }
 
-    expect(subject[:pipeline]).to eq(pipeline_payload)
+      it 'returns pipeline' do
+        pipeline_payload = PipelineDetailsEntity
+          .represent(pipeline, request: req)
+          .as_json
+
+        expect(subject[:pipeline]).to eq(pipeline_payload)
+      end
+    end
+
+    context 'when is not up to date' do
+      it 'returns nil' do
+        pipeline.update(sha: "not up to date")
+
+        expect(subject[:pipeline]).to be_nil
+      end
+    end
   end
 
   it 'includes issues_links' do

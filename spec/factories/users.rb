@@ -62,6 +62,10 @@ FactoryGirl.define do
       end
     end
 
+    trait :readme do
+      project_view :readme
+    end
+
     factory :omniauth_user do
       transient do
         extern_uid '123456'

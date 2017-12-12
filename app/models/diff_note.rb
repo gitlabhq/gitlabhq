@@ -22,6 +22,7 @@ class DiffNote < Note
   validates :noteable_type, inclusion: { in: NOTEABLE_TYPES }
   validate :positions_complete
   validate :verify_supported
+  validate :diff_refs_match_commit, if: :for_commit?
 
   before_validation :set_original_position, on: :create
   before_validation :update_position, on: :create, if: :on_text?
@@ -138,6 +139,12 @@ class DiffNote < Note
     return if self.original_position.complete? && self.position.complete?
 
     errors.add(:position, "is invalid")
+  end
+
+  def diff_refs_match_commit
+    return if self.original_position.diff_refs == self.commit.diff_refs
+
+    errors.add(:commit_id, 'does not match the diff refs')
   end
 
   def keep_around_commits

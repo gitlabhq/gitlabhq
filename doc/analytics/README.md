@@ -1,4 +1,1 @@
-# Analytics
-
-- [Contribution Analytics](contribution_analytics.md)
-- (EE) [Burndown charts](../user/project/milestones/index.md#burndown-charts)
+This document was moved to [another location](../user/group/index.md#user-contribution-analysis-ees-eep)

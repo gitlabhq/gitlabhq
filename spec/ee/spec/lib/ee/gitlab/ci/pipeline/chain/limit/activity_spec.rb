@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe EE::Gitlab::Ci::Pipeline::Chain::Limit::Activity do
-  set(:namespace) { create(:namespace, plan: Namespace::GOLD_PLAN) }
+  set(:namespace) { create(:namespace, plan: :gold_plan) }
   set(:project) { create(:project, namespace: namespace) }
   set(:user) { create(:user) }
 
