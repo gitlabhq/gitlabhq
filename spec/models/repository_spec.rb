@@ -1370,38 +1370,48 @@ describe Repository do
   end
 
   describe '#revert' do
-    let(:new_image_commit) { repository.commit('33f3729a45c02fc67d00adb1b8bca394b0e761d9') }
-    let(:update_image_commit) { repository.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
-    let(:message) { 'revert message' }
+    shared_examples 'reverting a commit' do
+      let(:new_image_commit) { repository.commit('33f3729a45c02fc67d00adb1b8bca394b0e761d9') }
+      let(:update_image_commit) { repository.commit('2f63565e7aac07bcdadb654e253078b727143ec4') }
+      let(:message) { 'revert message' }
 
-    context 'when there is a conflict' do
-      it 'raises an error' do
-        expect { repository.revert(user, new_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
+      context 'when there is a conflict' do
+        it 'raises an error' do
+          expect { repository.revert(user, new_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
+        end
+      end
+
+      context 'when commit was already reverted' do
+        it 'raises an error' do
+          repository.revert(user, update_image_commit, 'master', message)
+
+          expect { repository.revert(user, update_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
+        end
+      end
+
+      context 'when commit can be reverted' do
+        it 'reverts the changes' do
+          expect(repository.revert(user, update_image_commit, 'master', message)).to be_truthy
+        end
+      end
+
+      context 'reverting a merge commit' do
+        it 'reverts the changes' do
+          merge_commit
+          expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).to be_present
+
+          repository.revert(user, merge_commit, 'master', message)
+          expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).not_to be_present
+        end
       end
     end
 
-    context 'when commit was already reverted' do
-      it 'raises an error' do
-        repository.revert(user, update_image_commit, 'master', message)
-
-        expect { repository.revert(user, update_image_commit, 'master', message) }.to raise_error(Gitlab::Git::Repository::CreateTreeError)
-      end
+    context 'when Gitaly revert feature is enabled' do
+      it_behaves_like 'reverting a commit'
     end
 
-    context 'when commit can be reverted' do
-      it 'reverts the changes' do
-        expect(repository.revert(user, update_image_commit, 'master', message)).to be_truthy
-      end
-    end
-
-    context 'reverting a merge commit' do
-      it 'reverts the changes' do
-        merge_commit
-        expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).to be_present
-
-        repository.revert(user, merge_commit, 'master', message)
-        expect(repository.blob_at_branch('master', 'files/ruby/feature.rb')).not_to be_present
-      end
+    context 'when Gitaly revert feature is disabled', :disable_gitaly do
+      it_behaves_like 'reverting a commit'
     end
   end
 

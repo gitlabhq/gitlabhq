@@ -14,11 +14,15 @@ RSpec.configure do |config|
   end
 
   config.before(:each, :js) do
-    DatabaseCleaner.strategy = :truncation, { except: %w[licenses plans] }
+    DatabaseCleaner.strategy = :truncation, { except: %w[licenses] }
   end
 
   config.before(:each, :truncate) do
-    DatabaseCleaner.strategy = :truncation, { except: %w[licenses plans] }
+    DatabaseCleaner.strategy = :truncation, { except: %w[licenses] }
+  end
+
+  config.before(:each, :delete) do
+    DatabaseCleaner.strategy = :deletion, { except: %w[licenses] }
   end
 
   config.before(:each, :migration) do

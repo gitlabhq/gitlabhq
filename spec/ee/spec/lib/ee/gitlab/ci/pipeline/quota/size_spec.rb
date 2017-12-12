@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe EE::Gitlab::Ci::Pipeline::Quota::Size do
-  set(:namespace) { create(:namespace, plan: EE::Namespace::GOLD_PLAN) }
+  set(:namespace) { create(:namespace, plan: :gold_plan) }
   set(:project) { create(:project, namespace: namespace) }
 
   let(:pipeline) { build_stubbed(:ci_pipeline, project: project) }

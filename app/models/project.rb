@@ -764,13 +764,14 @@ class Project < ActiveRecord::Base
     Gitlab::Routing.url_helpers.project_url(self)
   end
 
-  def new_issue_address(author)
+  def new_issuable_address(author, address_type)
     return unless Gitlab::IncomingEmail.supports_issue_creation? && author
 
     author.ensure_incoming_email_token!
 
+    suffix = address_type == 'merge_request' ? '+merge-request' : ''
     Gitlab::IncomingEmail.reply_address(
-      "#{full_path}+#{author.incoming_email_token}")
+      "#{full_path}#{suffix}+#{author.incoming_email_token}")
   end
 
   def build_commit_note(commit)
