@@ -124,6 +124,7 @@ describe MergeRequest do
     context 'when the target branch does not exist' do
       before do
         project.repository.rm_branch(subject.author, subject.target_branch)
+        subject.clear_memoized_shas
       end
 
       it 'returns nil' do
@@ -733,7 +734,7 @@ describe MergeRequest do
 
       before do
         project.repository.raw_repository.delete_branch(subject.target_branch)
-        subject.reload
+        subject.clear_memoized_shas
       end
 
       it 'does not crash' do
@@ -1468,6 +1469,7 @@ describe MergeRequest do
     context 'when the target branch does not exist' do
       before do
         subject.project.repository.rm_branch(subject.author, subject.target_branch)
+        subject.clear_memoized_shas
       end
 
       it 'returns nil' do
