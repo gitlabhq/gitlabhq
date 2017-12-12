@@ -1,24 +1,10 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, max-len, no-restricted-syntax, vars-on-top, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, wrap-iife, comma-dangle, no-return-assign, prefer-arrow-callback, quotes, prefer-template, newline-per-chained-call, no-else-return, no-shadow */
 import _ from 'underscore';
 import d3 from 'd3';
-import { createDateTimeFormat } from '../locale';
+import { dateTickFormat } from '../lib/utils/tick_formats';
 
 const extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 const hasProp = {}.hasOwnProperty;
-
-const dayFormat = createDateTimeFormat({ month: 'short', day: 'numeric' });
-const monthFormat = createDateTimeFormat({ month: 'long' });
-const yearFormat = createDateTimeFormat({ year: 'numeric' });
-
-const xTickFormat = (date) => {
-  if (date.getDate() !== 1) {
-    return dayFormat.format(date);
-  } else if (date.getMonth() > 0) {
-    return monthFormat.format(date);
-  } else {
-    return yearFormat.format(date);
-  }
-};
 
 export const ContributorsGraph = (function() {
   function ContributorsGraph() {}
@@ -152,7 +138,7 @@ export const ContributorsMasterGraph = (function(superClass) {
     this.x_axis = d3.svg.axis()
       .scale(this.x)
       .orient('bottom')
-      .tickFormat(xTickFormat);
+      .tickFormat(dateTickFormat);
     return this.y_axis = d3.svg.axis().scale(this.y).orient("left").ticks(5);
   };
 
@@ -244,7 +230,7 @@ export const ContributorsAuthorGraph = (function(superClass) {
       .scale(this.x)
       .orient('bottom')
       .ticks(8)
-      .tickFormat(xTickFormat);
+      .tickFormat(dateTickFormat);
     return this.y_axis = d3.svg.axis().scale(this.y).orient("left").ticks(5);
   };
 

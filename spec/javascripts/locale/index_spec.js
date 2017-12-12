@@ -1,14 +1,6 @@
 import { createDateTimeFormat, languageCode } from '~/locale';
 
-const setLanguage = (languageCode) => {
-  const htmlElement = document.querySelector('html');
-
-  if (languageCode) {
-    htmlElement.setAttribute('lang', languageCode);
-  } else {
-    htmlElement.removeAttribute('lang');
-  }
-};
+import { setLanguage } from '../helpers/locale_helper';
 
 describe('locale', () => {
   afterEach(() => {
