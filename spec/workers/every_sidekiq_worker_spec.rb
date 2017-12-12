@@ -1,10 +1,6 @@
 require 'spec_helper'
 
 describe 'Every Sidekiq worker' do
-  it 'includes ApplicationWorker' do
-    expect(Gitlab::SidekiqConfig.workers).to all(include(ApplicationWorker))
-  end
-
   it 'does not use the default queue' do
     expect(Gitlab::SidekiqConfig.workers.map(&:queue)).not_to include('default')
   end
