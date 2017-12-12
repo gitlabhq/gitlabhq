@@ -44,7 +44,6 @@ describe MergeRequestsHelper do
     end
   end
 
-<<<<<<< HEAD
   describe '#render_items_list' do
     it "returns one item in the list" do
       expect(render_items_list(["user"])).to eq("user")
@@ -59,8 +58,6 @@ describe MergeRequestsHelper do
     end
   end
 
-=======
->>>>>>> upstream/master
   describe '#tab_link_for' do
     let(:merge_request) { create(:merge_request, :simple) }
     let(:options) { Hash.new }
