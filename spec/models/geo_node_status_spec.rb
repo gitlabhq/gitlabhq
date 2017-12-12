@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-# Disable transactions via :truncate method because a foreign table
-# can't see changes inside a transaction of a different connection.
-describe GeoNodeStatus, :geo, :truncate do
+describe GeoNodeStatus, :geo do
   include ::EE::GeoHelpers
 
   let!(:primary)  { create(:geo_node, :primary) }
@@ -52,7 +50,9 @@ describe GeoNodeStatus, :geo, :truncate do
     end
   end
 
-  describe '#attachments_synced_count' do
+  # Disable transactions via :delete method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  describe '#attachments_synced_count', :delete do
     it 'only counts successful syncs' do
       create_list(:user, 3, avatar: fixture_file_upload(Rails.root + 'spec/fixtures/dk.png', 'image/png'))
       uploads = Upload.all.pluck(:id)
@@ -95,7 +95,7 @@ describe GeoNodeStatus, :geo, :truncate do
     end
   end
 
-  describe '#attachments_failed_count' do
+  describe '#attachments_failed_count', :delete do
     it 'counts failed avatars, attachment, personal snippets and files' do
       # These two should be ignored
       create(:geo_file_registry, :lfs, :with_file, success: false)
@@ -110,7 +110,7 @@ describe GeoNodeStatus, :geo, :truncate do
     end
   end
 
-  describe '#attachments_synced_in_percentage' do
+  describe '#attachments_synced_in_percentage', :delete do
     let(:avatar) { fixture_file_upload(Rails.root.join('spec/fixtures/dk.png')) }
     let(:upload_1) { create(:upload, model: group, path: avatar) }
     let(:upload_2) { create(:upload, model: project_1, path: avatar) }

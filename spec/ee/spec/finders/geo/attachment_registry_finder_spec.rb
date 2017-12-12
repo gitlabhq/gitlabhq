@@ -1,8 +1,6 @@
 require 'spec_helper'
 
-# Disable transactions via :truncate method because a foreign table
-# can't see changes inside a transaction of a different connection.
-describe Geo::AttachmentRegistryFinder, :geo, :truncate do
+describe Geo::AttachmentRegistryFinder, :geo do
   include ::EE::GeoHelpers
 
   let(:secondary) { create(:geo_node) }
@@ -28,7 +26,9 @@ describe Geo::AttachmentRegistryFinder, :geo, :truncate do
     stub_current_geo_node(secondary)
   end
 
-  context 'FDW' do
+  # Disable transactions via :delete method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  context 'FDW', :delete do
     before do
       skip('FDW is not configured') if Gitlab::Database.postgresql? && !Gitlab::Geo.fdw?
     end
