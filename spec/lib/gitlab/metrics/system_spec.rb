@@ -40,8 +40,8 @@ describe Gitlab::Metrics::System do
   end
 
   describe '.monotonic_time' do
-    it 'returns a Fixnum' do
-      expect(described_class.monotonic_time).to be_an(Integer)
+    it 'returns a Float' do
+      expect(described_class.monotonic_time).to be_an(Float)
     end
   end
 end

@@ -51,11 +51,12 @@ module Gitlab
         Process.clock_gettime(Process::CLOCK_REALTIME, precision)
       end
 
-      # Returns the current monotonic clock time in a given precision.
+      # Returns the current monotonic clock time as seconds with microseconds precision.
       #
-      # Returns the time as a Fixnum.
-      def self.monotonic_time(precision = :millisecond)
-        Process.clock_gettime(Process::CLOCK_MONOTONIC, precision)
+      # Returns the time as a Float.
+      def self.monotonic_time
+
+        Process.clock_gettime(Process::CLOCK_MONOTONIC, :float_second)
       end
     end
   end
