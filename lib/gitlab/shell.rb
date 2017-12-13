@@ -228,7 +228,8 @@ module Gitlab
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/385
     def add_namespace(storage, name)
-      Gitlab::GitalyClient.migrate(:add_namespace) do |enabled|
+      Gitlab::GitalyClient.migrate(:add_namespace,
+                                   status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
         if enabled
           gitaly_namespace_client(storage).add(name)
         else
@@ -250,7 +251,8 @@ module Gitlab
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/385
     def rm_namespace(storage, name)
-      Gitlab::GitalyClient.migrate(:remove_namespace) do |enabled|
+      Gitlab::GitalyClient.migrate(:remove_namespace,
+                               status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
         if enabled
           gitaly_namespace_client(storage).remove(name)
         else
@@ -268,7 +270,8 @@ module Gitlab
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/385
     def mv_namespace(storage, old_name, new_name)
-      Gitlab::GitalyClient.migrate(:rename_namespace) do |enabled|
+      Gitlab::GitalyClient.migrate(:rename_namespace,
+                                   status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
         if enabled
           gitaly_namespace_client(storage).rename(old_name, new_name)
         else
@@ -302,7 +305,8 @@ module Gitlab
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/385
     def exists?(storage, dir_name)
-      Gitlab::GitalyClient.migrate(:namespace_exists) do |enabled|
+      Gitlab::GitalyClient.migrate(:namespace_exists,
+                                   status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
         if enabled
           gitaly_namespace_client(storage).exists?(dir_name)
         else
