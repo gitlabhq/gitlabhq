@@ -204,8 +204,8 @@ Follow the steps in ["add the secondary GitLab node"](database.md#step-2-add-the
 Follow the first steps in ["configure the secondary server"](database.md#step-3-configure-the-secondary-server),
 but note that since you are installing from source, the username and
 group listed as `gitlab-psql` in those steps should be replaced by `postgres`
-instead. After completing the "Test that the remote connection to the
-primary server works" step, continue here:
+instead. After completing the "Test that the `gitlab-psql` user can connect to
+the primary's database" step, continue here:
 
 1. Edit `postgresql.conf` to configure the secondary for streaming replication
    (for Debian/Ubuntu that would be `/etc/postgresql/9.*/main/postgresql.conf`):

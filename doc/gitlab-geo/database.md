@@ -270,6 +270,19 @@ because we have not yet configured the secondary server. This is the next step.
     sudo -i
     ```
 
+1. [Check TCP connectivity](../administration/raketasks/maintenance.md) to the
+   primary's PostgreSQL server:
+
+    ```bash
+    gitlab-rake gitlab:tcp_check[1.2.3.4,5432]
+    ```
+
+    If this step fails, you may be using the wrong IP address, or a firewall may
+    be preventing access to the server. Check the IP address, paying close
+    attention to the difference between public and private addresses and ensure
+    that, if a firewall is present, the secondary is permitted to connect to the
+    primary on port 5432.
+
 1. Set up PostgreSQL TLS verification on the secondary
 
     Install the `server.crt` file:
@@ -282,8 +295,7 @@ because we have not yet configured the secondary server. This is the next step.
     connections. The certificate can only be replicated by someone with access
     to the private key, which is **only** present on the primary node.
 
-1. Test that the remote connection to the primary server works (as the
-   `gitlab-psql` user):
+1. Test that the `gitlab-psql` user can connect to the primary's database:
 
     ```bash
     sudo -u gitlab-psql /opt/gitlab/embedded/bin/psql --list -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W -h 1.2.3.4
@@ -293,10 +305,9 @@ because we have not yet configured the secondary server. This is the next step.
     `gitlab_replicator` user. If all worked correctly, you should see the
     database prompt.
 
-    A failure to connect here indicates that the TLS or networking configuration
-    is incorrect. Ensure that you've used the correct certificates and IP
-    addresses throughout. If you have a firewall, ensure that the secondary is
-    permitted to access the primary on port 5432.
+    A failure to connect here indicates that the TLS configuration is incorrect.
+    Ensure that the contents of `~gitlab-psql/data/server.crt` on the primary
+    match the contents of `~gitlab-psql/.postgresql/root.crt` on the secondary.
 
 1. Edit `/etc/gitlab/gitlab.rb` and add the following:
 
