@@ -35,37 +35,6 @@ feature 'Clusters', :js do
       expect(page).to have_selector('.gl-responsive-table-row', count: 2)
     end
 
-    context 'when license has multiple clusters feature' do
-      before do
-        allow_any_instance_of(EE::Project).to receive(:feature_available?).with(:multiple_clusters).and_return(true)
-      end
-
-      it 'user sees a add cluster button ' do
-        expect(page).to have_selector('.js-add-cluster')
-      end
-    end
-
-    context 'when license does not have multiple clusters feature' do
-      before do
-        allow_any_instance_of(EE::Project).to receive(:feature_available?).with(:multiple_clusters).and_return(false)
-      end
-
-      it 'user sees a disabled add cluster button ' do
-        expect(page).to have_selector('.js-add-cluster.disabled')
-      end
-    end
-
-    it 'user sees navigation tabs' do
-      expect(page.find('.js-active-tab').text).to include('Active')
-      expect(page.find('.js-active-tab .badge').text).to include('1')
-
-      expect(page.find('.js-inactive-tab').text).to include('Inactive')
-      expect(page.find('.js-inactive-tab .badge').text).to include('0')
-
-      expect(page.find('.js-all-tab').text).to include('All')
-      expect(page.find('.js-all-tab .badge').text).to include('1')
-    end
-
     context 'inline update of cluster' do
       it 'user can update cluster' do
         expect(page).to have_selector('.js-toggle-cluster-list')
