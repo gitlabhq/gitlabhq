@@ -8,6 +8,7 @@
   import noteSignedOutWidget from './note_signed_out_widget.vue';
   import noteEditedText from './note_edited_text.vue';
   import noteForm from './note_form.vue';
+  import diffWithNote from './diff_with_note.vue';
   import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
   import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
   import autosave from '../mixins/autosave';
@@ -28,6 +29,7 @@
     },
     components: {
       noteableNote,
+      diffWithNote,
       userAvatarLink,
       noteHeader,
       noteSignedOutWidget,
@@ -207,76 +209,80 @@
           <div
             v-if="note.expanded"
             class="discussion-body">
-            <div class="panel panel-default">
-              <div class="discussion-notes">
-                <ul class="notes">
-                  <component
-                    v-for="note in note.notes"
-                    :is="componentName(note)"
-                    :note="componentData(note)"
-                    :key="note.id"
-                    />
-                </ul>
-                <div
-                  :class="{ 'is-replying': isReplying }"
-                  class="discussion-reply-holder">
-                  <template v-if="!isReplying && canReply">
-                    <div
-                      class="btn-group-justified discussion-with-resolve-btn"
-                      role="group">
+            <diff-with-note
+              :discussion="discussion"
+            >
+              <div class="panel panel-default">
+                <div class="discussion-notes">
+                  <ul class="notes">
+                    <component
+                      v-for="note in note.notes"
+                      :is="componentName(note)"
+                      :note="componentData(note)"
+                      :key="note.id"
+                      />
+                  </ul>
+                  <div
+                    :class="{ 'is-replying': isReplying }"
+                    class="discussion-reply-holder">
+                    <template v-if="!isReplying && canReply">
                       <div
-                        class="btn-group"
+                        class="btn-group-justified discussion-with-resolve-btn"
                         role="group">
-                        <button
-                          @click="showReplyForm"
-                          type="button"
-                          class="js-vue-discussion-reply btn btn-text-field"
-                          title="Add a reply">Reply...</button>
-                      </div>
-                      <div
-                        v-if="isResolvable"
-                        class="btn-group"
-                        role="group">
-                        <button
-                          type="button"
-                          class="btn btn-default">
-                            <i
-                              v-if="isResolving"
-                              aria-hidden="true"
-                              class="fa fa-spinner fa-spin"></i>
-                            {{resolveButtonTitle}}
-                        </button>
-                      </div>
-                      <div
-                        v-if="isResolvable && !isResolved"
-                        class="btn-group discussion-actions">
                         <div
                           class="btn-group"
                           role="group">
-                          <a
-                            :href="resolveWithIssuePath"
-                            v-tooltip
-                            class="new-issue-for-discussion btn btn-default discussion-create-issue-btn"
-                            title="Resolve this discussion in a new issue"
-                            data-container="body">
-                              <span v-html="resolveDiscussionsSvg"></span>
-                            </a>
+                          <button
+                            @click="showReplyForm"
+                            type="button"
+                            class="js-vue-discussion-reply btn btn-text-field"
+                            title="Add a reply">Reply...</button>
+                        </div>
+                        <div
+                          v-if="isResolvable"
+                          class="btn-group"
+                          role="group">
+                          <button
+                            type="button"
+                            class="btn btn-default">
+                              <i
+                                v-if="isResolving"
+                                aria-hidden="true"
+                                class="fa fa-spinner fa-spin"></i>
+                              {{resolveButtonTitle}}
+                          </button>
+                        </div>
+                        <div
+                          v-if="isResolvable && !isResolved"
+                          class="btn-group discussion-actions">
+                          <div
+                            class="btn-group"
+                            role="group">
+                            <a
+                              :href="resolveWithIssuePath"
+                              v-tooltip
+                              class="new-issue-for-discussion btn btn-default discussion-create-issue-btn"
+                              title="Resolve this discussion in a new issue"
+                              data-container="body">
+                                <span v-html="resolveDiscussionsSvg"></span>
+                              </a>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  </template>
-                  <note-form
-                    v-if="isReplying"
-                    save-button-title="Comment"
-                    :discussion="note"
-                    :is-editing="false"
-                    @handleFormUpdate="saveReply"
-                    @cancelFormEdition="cancelReplyForm"
-                    ref="noteForm" />
-                  <note-signed-out-widget v-if="!canReply" />
+                    </template>
+                    <note-form
+                      v-if="isReplying"
+                      save-button-title="Comment"
+                      :discussion="note"
+                      :is-editing="false"
+                      @handleFormUpdate="saveReply"
+                      @cancelFormEdition="cancelReplyForm"
+                      ref="noteForm" />
+                    <note-signed-out-widget v-if="!canReply" />
+                  </div>
                 </div>
               </div>
-            </div>
+            </diff-with-note>
           </div>
         </div>
       </div>
