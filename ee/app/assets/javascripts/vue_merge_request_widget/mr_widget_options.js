@@ -156,23 +156,23 @@ export default {
     },
 
     codequalityStatus() {
-      return this.checkStatus(this.isLoadingCodequality, this.loadingCodequalityFailed);
+      return this.checkReportStatus(this.isLoadingCodequality, this.loadingCodequalityFailed);
     },
 
     performanceStatus() {
-      return this.checkStatus(this.isLoadingPerformance, this.loadingPerformanceFailed);
+      return this.checkReportStatus(this.isLoadingPerformance, this.loadingPerformanceFailed);
     },
 
     securityStatus() {
-      return this.checkStatus(this.isLoadingSecurity, this.loadingSecurityFailed);
+      return this.checkReportStatus(this.isLoadingSecurity, this.loadingSecurityFailed);
     },
 
     dockerStatus() {
-      return this.checkStatus(this.isLoadingDocker, this.loadingDockerFailed);
+      return this.checkReportStatus(this.isLoadingDocker, this.loadingDockerFailed);
     },
   },
   methods: {
-    checkStatus(loading, error) {
+    checkReportStatus(loading, error) {
       if (loading) {
         return 'loading';
       } else if (error) {
