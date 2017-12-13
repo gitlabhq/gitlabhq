@@ -68,7 +68,7 @@ describe Note, elastic: true do
 
   it "does not create ElasticIndexerWorker job for system messages" do
     project = create :project, :repository
-    issue = create :issue, project: project
+    issue = create :issue, project: project, updated_at: 1.minute.ago
 
     # Only issue should be updated
     expect(ElasticIndexerWorker).to receive(:perform_async).with(:update, 'Issue', anything, anything)
