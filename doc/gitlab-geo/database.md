@@ -208,21 +208,22 @@ will not be able to perform all necessary configuration steps. Refer to
    `netstat -plnt` to make sure that PostgreSQL is listening on port `5432` to
    the primary server's private address.
 
-1. Make a copy of the PostgreSQL `server.crt` file
-   A certificate was automatically generated when GitLab was reconfigured. This
-   will be used automatically to protect your PostgreSQL traffic from
-   eavesdroppers, but to protect against active ("man-in-the-middle") attackers,
-   the secondary needs a copy of the certificate.
+1. Make a copy of the PostgreSQL `server.crt` file.
 
-   Run this command:
+    A certificate was automatically generated when GitLab was reconfigured. This
+    will be used automatically to protect your PostgreSQL traffic from
+    eavesdroppers, but to protect against active ("man-in-the-middle") attackers,
+    the secondary needs a copy of the certificate.
 
-   ```
-   cat ~gitlab-psql/data/server.crt
-   ```
+    Run this command:
 
-   Copy the output into a file on your local computer called `server.crt`. You
-   will need it when setting up the secondary! The certificate is not sensitive
-   data.
+    ```
+    cat ~gitlab-psql/data/server.crt
+    ```
+
+    Copy the output into a file on your local computer called `server.crt`. You
+    will need it when setting up the secondary! The certificate is not sensitive
+    data.
 
 1. Verify that clock synchronization is enabled.
 
