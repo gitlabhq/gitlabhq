@@ -74,9 +74,10 @@ constraints(ProjectUrlConstrainer.new) do
 
       namespace :prometheus do
         resources :metrics, constraints: { id: /[^\/]+/ }, only: [:index, :show, :edit, :update, :destroy] do
-          post :validate_query
-          get :active
+          post :validate_query, on: :collection
+          get :active, on: :collection
         end
+
         get :active_metrics
       end
 
