@@ -100,5 +100,17 @@ describe MergeRequests::CreateFromIssueService do
 
       expect(result[:merge_request].target_branch).to eq(project.default_branch)
     end
+
+    it 'executes quick actions if the build service sets them in the description' do
+      allow(service).to receive(:merge_request).and_wrap_original do |m, *args|
+        m.call(*args).tap do |merge_request|
+          merge_request.description = "/assign #{user.to_reference}"
+        end
+      end
+
+      result = service.execute
+
+      expect(result[:merge_request].assignee).to eq(user)
+    end
   end
 end
