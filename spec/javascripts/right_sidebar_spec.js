@@ -41,7 +41,7 @@ import '~/right_sidebar';
         loadFixtures(fixtureName);
         this.sidebar = new Sidebar;
         $aside = $('.right-sidebar');
-        $page = $('.page-with-sidebar');
+        $page = $('.layout-page');
         $icon = $aside.find('i');
         $toggle = $aside.find('.js-sidebar-toggle');
         return $labelsIcon = $aside.find('.sidebar-collapsed-icon');

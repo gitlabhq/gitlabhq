@@ -23,7 +23,7 @@ describe 'epics list', :js do
     end
 
     it 'renders the list correctly' do
-      page.within('.page-with-new-nav .content') do
+      page.within('.content-wrapper .content') do
         expect(find('.top-area')).to have_content('All 2')
         within('.issuable-list') do
           expect(page).to have_content(epics.first.title)
@@ -33,7 +33,7 @@ describe 'epics list', :js do
     end
 
     it 'renders the epic detail correctly after clicking the link' do
-      page.within('.page-with-new-nav .content .issuable-list') do
+      page.within('.content-wrapper .content .issuable-list') do
         click_link(epics.first.title)
       end
 
