@@ -132,8 +132,6 @@ ul.content-list {
     }
 
     .controls {
-      @include new-style-dropdown;
-
       float: right;
 
       > .control-text {

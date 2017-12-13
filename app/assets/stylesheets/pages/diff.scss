@@ -581,8 +581,6 @@
   }
 
   .commit-stat-summary {
-    @include new-style-dropdown;
-
     @media (min-width: $screen-sm-min) {
       margin-left: -$gl-padding;
       padding-left: $gl-padding;

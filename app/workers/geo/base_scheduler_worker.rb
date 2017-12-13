@@ -124,6 +124,8 @@ module Geo
     def schedule_jobs
       capacity = max_capacity
       num_to_schedule = [capacity - scheduled_job_ids.size, pending_resources.size].min
+      num_to_schedule = 0 if num_to_schedule < 0
+
       to_schedule = pending_resources.shift(num_to_schedule)
 
       scheduled = to_schedule.map do |args|

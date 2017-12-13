@@ -9,7 +9,7 @@ export default class ContextualSidebar {
   }
 
   initDomElements() {
-    this.$page = $('.page-with-sidebar');
+    this.$page = $('.layout-page');
     this.$sidebar = $('.nav-sidebar');
     this.$innerScroll = $('.nav-sidebar-inner-scroll', this.$sidebar);
     this.$overlay = $('.mobile-overlay');

@@ -142,8 +142,6 @@ ul.related-merge-requests > li {
 }
 
 .issue-form {
-  @include new-style-dropdown;
-
   .select2-container {
     width: 250px !important;
   }

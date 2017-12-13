@@ -207,11 +207,7 @@ Make sure you install the necessary dependencies from step 1,
 add GitLab package repository from step 2.
 When installing the GitLab package, do not supply `EXTERNAL_URL` value.
 
-### Initial node configuration
-
-Each node needs to be configured to run only the services it needs.
-
-#### Configuring the Consul nodes
+### Configuring the Consul nodes
 
 On each Consul node perform the following:
 
@@ -249,9 +245,28 @@ On each Consul node perform the following:
 
 1. [Reconfigure GitLab] for the changes to take effect.
 
-After this is completed on each Consul server node, proceed further.
+#### Consul Checkpoint
 
-#### Configuring the Database nodes
+Before moving on, make sure Consul is configured correctly. Run the following
+command to verify all server nodes are communicating:
+
+```
+/opt/gitlab/embedded/bin/consul members
+```
+
+The output should be similar to:
+
+```
+Node                 Address               Status  Type    Build  Protocol  DC
+CONSUL_NODE_ONE      XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
+CONSUL_NODE_TWO      XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
+CONSUL_NODE_THREE    XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
+```
+
+If any of the nodes isn't `alive` or if any of the three nodes are missing,
+check the [Troubleshooting section](#troubleshooting) before proceeding.
+
+### Configuring the Database nodes
 
 On each database node perform the following:
 
@@ -321,7 +336,112 @@ On each database node perform the following:
 you also need to specify: `postgresql['pgbouncer_user'] = PGBOUNCER_USERNAME` in
 your configuration
 
-#### Configuring the Pgbouncer node
+#### Database nodes post-configuration
+
+##### Primary node
+
+Select one node as a primary node.
+
+1. Open a database prompt:
+
+    ```sh
+    gitlab-psql -d gitlabhq_production
+    ```
+
+1. Enable the `pg_trgm` extension:
+
+    ```sh
+    CREATE EXTENSION pg_trgm;
+    ```
+
+1. Exit the database prompt by typing `\q` and Enter.
+
+1. Verify the cluster is initialized with one node:
+
+     ```sh
+     gitlab-ctl repmgr cluster show
+     ```
+
+     The output should be similar to the following:
+
+     ```
+     Role      | Name     | Upstream | Connection String
+     ----------+----------|----------|----------------------------------------
+     * master  | HOSTNAME |          | host=HOSTNAME user=gitlab_repmgr dbname=gitlab_repmgr
+     ```
+
+1. Note down the hostname/ip in the connection string: `host=HOSTNAME`. We will
+   refer to the hostname in the next section as `MASTER_NODE_NAME`. If the value
+   is not an IP address, it will need to be a resolvable name (via DNS or
+   `/etc/hosts`)
+
+
+##### Secondary nodes
+
+1. Setup the repmgr standby:
+
+    ```sh
+    gitlab-ctl repmgr standby setup MASTER_NODE_NAME
+    ```
+    Do note that this will remove the existing data on the node. The command
+    has a wait time.
+
+    The output should be similar to the following:
+
+    ```console
+    # gitlab-ctl repmgr standby setup MASTER_NODE_NAME
+    Doing this will delete the entire contents of /var/opt/gitlab/postgresql/data
+    If this is not what you want, hit Ctrl-C now to exit
+    To skip waiting, rerun with the -w option
+    Sleeping for 30 seconds
+    Stopping the database
+    Removing the data
+    Cloning the data
+    Starting the database
+    Registering the node with the cluster
+    ok: run: repmgrd: (pid 19068) 0s
+    ```
+
+1. Verify the node now appears in the cluster:
+
+     ```sh
+     gitlab-ctl repmgr cluster show
+     ```
+
+     The output should be similar to the following:
+
+     ```
+     Role      | Name    | Upstream  | Connection String
+     ----------+---------|-----------|------------------------------------------------
+     * master  | MASTER  |           | host=MASTER_NODE_NAME user=gitlab_repmgr dbname=gitlab_repmgr
+       standby | STANDBY | MASTER    | host=STANDBY_HOSTNAME user=gitlab_repmgr dbname=gitlab_repmgr
+     ```
+
+Repeat the above steps on all secondary nodes.
+
+#### Database checkpoint
+
+Before moving on, make sure the databases are configured correctly. Run the
+following command on the **primary** node to verify that replication is working
+properly:
+
+```
+gitlab-ctl repmgr cluster show
+```
+
+The output should be similar to:
+
+```
+Role      | Name         | Upstream     | Connection String
+----------+--------------|--------------|--------------------------------------------------------------------
+* master  | MASTER  |        | host=MASTER port=5432 user=gitlab_repmgr dbname=gitlab_repmgr
+  standby | STANDBY | MASTER | host=STANDBY port=5432 user=gitlab_repmgr dbname=gitlab_repmgr
+```
+
+If the 'Role' column for any node says "FAILED", check the
+[Troubleshooting section](#troubleshooting) before proceeding.
+
+### Configuring the Pgbouncer node
 
 1. Make sure you collect [`CONSUL_SERVER_NODES`](#consul_information), [`CONSUL_PASSWORD_HASH`](#consul_information), and [`PGBOUNCER_PASSWORD_HASH`](#pgbouncer_information) before executing the next step.
 
@@ -375,7 +495,49 @@ your configuration
 
 1. [Reconfigure GitLab] for the changes to take effect.
 
-#### Configuring the Application nodes
+1. Create a `.pgpass` file so Consule is able to
+   reload pgbouncer. Enter the `PGBOUNCER_PASSWORD` twice when asked:
+
+     ```sh
+     gitlab-ctl write-pgpass --host 127.0.0.1 --database pgbouncer --user pgbouncer --hostuser gitlab-consul
+     ```
+
+#### PGBouncer Checkpoint
+
+1. Ensure the node is talking to the current master:
+
+     ```sh
+     gitlab-ctl pgb-console # You will be prompted for PGBOUNCER_PASSWORD
+     ```
+
+     If there is an error `psql: ERROR:  Auth failed` after typing in the
+     password, ensure you previously generated the MD5 password hashes with the correct
+     format. The correct format is to concatenate the password and the username:
+     `PASSWORDUSERNAME`. For example, `Sup3rS3cr3tpgbouncer` would be the text
+     needed to generate an MD5 password hash for the `pgbouncer` user.
+
+1. Once the console prompt is available, run the following queries:
+
+     ```sh
+     show databases ; show clients ;
+     ```
+
+     The output should be similar to the following:
+
+     ```
+             name         |  host       | port |      database       | force_user | pool_size | reserve_pool | pool_mode | max_connections | current_connections
+     ---------------------+-------------+------+---------------------+------------+-----------+--------------+-----------+-----------------+---------------------
+      gitlabhq_production | MASTER_HOST | 5432 | gitlabhq_production |            |        20 |            0 |           |               0 |                   0
+      pgbouncer           |             | 6432 | pgbouncer           | pgbouncer  |         2 |            0 | statement |               0 |                   0
+     (2 rows)
+
+      type |   user    |      database       |  state  |   addr         | port  | local_addr | local_port |    connect_time     |    request_time     |    ptr    | link | remote_pid | tls
+     ------+-----------+---------------------+---------+----------------+-------+------------+------------+---------------------+---------------------+-----------+------+------------+-----
+      C    | pgbouncer | pgbouncer           | active  | 127.0.0.1      | 56846 | 127.0.0.1  |       6432 | 2017-08-21 18:09:59 | 2017-08-21 18:10:48 | 0x22b3880 |      |          0 |
+     (2 rows)
+     ```
+
+### Configuring the Application nodes
 
 These will be the nodes running the `gitlab-rails` service. You may have other
 attributes set, but the following need to be set.
@@ -394,148 +556,6 @@ attributes set, but the following need to be set.
 
 1. [Reconfigure GitLab] for the changes to take effect.
 
-### Node post-configuration
-
-After reconfigure successfully runs, the following steps must be completed to
-get the cluster up and running.
-
-#### Consul nodes post-configuration
-
-Verify the nodes are all communicating:
-
-```sh
-/opt/gitlab/embedded/bin/consul members
-```
-
-The output should be similar to:
-
-```
-Node                 Address               Status  Type    Build  Protocol  DC
-CONSUL_NODE_ONE      XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
-CONSUL_NODE_TWO      XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
-CONSUL_NODE_THREE    XXX.XXX.XXX.YYY:8301  alive   server  0.9.2  2         gitlab_consul
-DATABASE_NODE_ONE    XXX.XXX.XXX.YYY:8301  alive   client  0.9.2  2         gitlab_consul
-DATABASE_NODE_TWO    XXX.XXX.XXX.YYY:8301  alive   client  0.9.2  2         gitlab_consul
-DATABASE_NODE_THREE  XXX.XXX.XXX.YYY:8301  alive   client  0.9.2  2         gitlab_consul
-PGBOUNCER_NODE       XXX.XXX.XXX.YYY:8301  alive   client  0.9.0  2         gitlab_consul
-```
-
-#### Database nodes post-configuration
-
-##### Primary node
-
-Select one node as a primary node.
-
-1. Open a database prompt:
-
-    ```sh
-    gitlab-psql -d gitlabhq_production
-    ```
-
-1. Enable the `pg_trgm` extension:
-
-    ```sh
-    CREATE EXTENSION pg_trgm;
-    ```
-
-1. Exit the database prompt by typing `\q` and Enter.
-
-1. Verify the cluster is initialized with one node:
-
-     ```sh
-     gitlab-ctl repmgr cluster show
-     ```
-
-     The output should be similar to the following:
-
-     ```
-     Role      | Name     | Upstream | Connection String
-     ----------+----------|----------|----------------------------------------
-     * master  | HOSTNAME |          | host=HOSTNAME user=gitlab_repmgr dbname=gitlab_repmgr
-     ```
-1. Note down the value in the `Name` column. We will refer to it in the next section as `MASTER_NODE_NAME`.
-
-
-##### Secondary nodes
-
-1. Setup the repmgr standby:
-
-    ```sh
-    gitlab-ctl repmgr standby setup MASTER_NODE_NAME
-    ```
-    Do note that this will remove the existing data on the node. The command
-    has a wait time.
-
-    The output should be similar to the following:
-
-    ```console
-    # gitlab-ctl repmgr standby setup MASTER_NODE_NAME
-    Doing this will delete the entire contents of /var/opt/gitlab/postgresql/data
-    If this is not what you want, hit Ctrl-C now to exit
-    To skip waiting, rerun with the -w option
-    Sleeping for 30 seconds
-    Stopping the database
-    Removing the data
-    Cloning the data
-    Starting the database
-    Registering the node with the cluster
-    ok: run: repmgrd: (pid 19068) 0s
-    ```
-
-1. Verify the node now appears in the cluster:
-
-     ```sh
-     gitlab-ctl repmgr cluster show
-     ```
-
-     The output should be similar to the following:
-
-     ```
-     Role      | Name    | Upstream  | Connection String
-     ----------+---------|-----------|------------------------------------------------
-     * master  | MASTER  |           | host=MASTER_NODE_NAME user=gitlab_repmgr dbname=gitlab_repmgr
-       standby | STANDBY | MASTER    | host=STANDBY_HOSTNAME user=gitlab_repmgr dbname=gitlab_repmgr
-     ```
-
-Repeat the above steps on all secondary nodes.
-
-#### Pgbouncer node post-configuration
-
-1. Create a `.pgpass` file user for the `CONSUL_USER` account to be able to
-   reload pgbouncer. Confirm `PGBOUNCER_PASSWORD` twice when asked:
-
-     ```sh
-     gitlab-ctl write-pgpass --host 127.0.0.1 --database pgbouncer --user pgbouncer --hostuser gitlab-consul
-     ```
-
-1. Ensure the node is talking to the current master:
-
-     ```sh
-     gitlab-ctl pgb-console # You will be prompted for PGBOUNCER_PASSWORD
-     ```
-
-     Then run:
-
-     ```sh
-     show databases ; show clients ;
-     ```
-
-     The output should be similar to the following:
-
-     ```
-             name         |  host       | port |      database       | force_user | pool_size | reserve_pool | pool_mode | max_connections | current_connections
-     ---------------------+-------------+------+---------------------+------------+-----------+--------------+-----------+-----------------+---------------------
-      gitlabhq_production | MASTER_HOST | 5432 | gitlabhq_production |            |        20 |            0 |           |               0 |                   0
-      pgbouncer           |             | 6432 | pgbouncer           | pgbouncer  |         2 |            0 | statement |               0 |                   0
-     (2 rows)
-
-      type |   user    |      database       |  state  |   addr         | port  | local_addr | local_port |    connect_time     |    request_time     |    ptr    | link | remote_pid | tls
-     ------+-----------+---------------------+---------+----------------+-------+------------+------------+---------------------+---------------------+-----------+------+------------+-----
-      C    | (nouser)  | gitlabhq_production | waiting | IP_OF_APP_NODE | 56512 | 127.0.0.1  |       6432 | 2017-08-21 18:08:51 | 2017-08-21 18:08:51 | 0x22b3700 |      |          0 |
-      C    | pgbouncer | pgbouncer           | active  | 127.0.0.1      | 56846 | 127.0.0.1  |       6432 | 2017-08-21 18:09:59 | 2017-08-21 18:10:48 | 0x22b3880 |      |          0 |
-     (2 rows)
-     ```
-
 #### Application node post-configuration
 
 Ensure that all migrations ran:
@@ -547,7 +567,8 @@ gitlab-rake gitlab:db:configure
 #### Ensure GitLab is running
 
 At this point, your GitLab instance should be up and running. Verify you are
-able to login, and create issues and merge requests.  If you have troubles check the [Troubleshooting section](#troubleshooting).
+able to login, and create issues and merge requests.  If you have troubles check
+the [Troubleshooting section](#troubleshooting).
 
 ### Example configuration
 
