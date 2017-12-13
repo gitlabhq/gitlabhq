@@ -1,6 +1,6 @@
 <script>
 export default {
-  name: 'popup-dialog',
+  name: 'modal',
 
   props: {
     title: {
@@ -75,7 +75,7 @@ export default {
 <template>
 <div class="modal-open">
   <div
-    class="modal popup-dialog"
+    class="modal show"
     role="dialog"
     tabindex="-1"
   >

@@ -9,7 +9,7 @@ import titleComponent from './title.vue';
 import descriptionComponent from './description.vue';
 import editedComponent from './edited.vue';
 import formComponent from './form.vue';
-import RecaptchaDialogImplementor from '../../vue_shared/mixins/recaptcha_dialog_implementor';
+import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';
 
 export default {
   props: {
@@ -152,7 +152,7 @@ export default {
   },
 
   mixins: [
-    RecaptchaDialogImplementor,
+    recaptchaModalImplementor,
   ],
 
   methods: {
@@ -197,7 +197,7 @@ export default {
         });
     },
 
-    closeRecaptchaDialog() {
+    closeRecaptchaModal() {
       this.store.setFormState({
         updateLoading: false,
       });
@@ -273,10 +273,10 @@ export default {
       :enable-autocomplete="enableAutocomplete"
     />
 
-    <recaptcha-dialog
+    <recaptcha-modal
       v-show="showRecaptcha"
       :html="recaptchaHTML"
-      @close="closeRecaptchaDialog"
+      @close="closeRecaptchaModal"
     />
   </div>
   <div v-else>
