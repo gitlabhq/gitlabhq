@@ -37,8 +37,8 @@ describe Geo::ProjectRegistryFinder, :geo do
         secondary.update_attribute(:namespaces, [synced_group])
       end
 
-      it 'delegates to #legacy_find_synced_project_registries' do
-        expect(subject).to receive(:legacy_find_synced_project_registries).and_call_original
+      it 'delegates to #legacy_find_synced_projects' do
+        expect(subject).to receive(:legacy_find_synced_projects).and_call_original
 
         subject.count_synced_project_registries
       end
@@ -128,8 +128,8 @@ describe Geo::ProjectRegistryFinder, :geo do
         secondary.update_attribute(:namespaces, [synced_group])
       end
 
-      it 'delegates to #legacy_find_filtered_failed_project_registries' do
-        expect(subject).to receive(:legacy_find_filtered_failed_project_registries).and_call_original
+      it 'delegates to #legacy_find_filtered_failed_projects' do
+        expect(subject).to receive(:legacy_find_filtered_failed_projects).and_call_original
 
         subject.find_failed_project_registries
       end
