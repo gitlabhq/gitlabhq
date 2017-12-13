@@ -1,5 +1,5 @@
 ---
-last_updated: 2017-12-05
+last_updated: 2017-12-13
 ---
 
 # Audit Events
@@ -15,8 +15,9 @@ filesystem, see [the logs system documentation](logs.md) for more details.
 ## Overview
 
 **Audit Events** is a tool for GitLab Enterprise Edition administrators to be
-able to track important events such as who performed what action and the time
-it happened.
+able to track important events such as who performed certain actions and the
+time they happened. These actions could be, for example, change a user
+permission level, who added a new user, or who removed a user.
 
 ## Use-cases
 
@@ -29,9 +30,9 @@ it happened.
 
 There are two kinds of events logged:
 
-- Events scoped to the group or project, used by group / project owners
+- Events scoped to the group or project, used by group / project managers
   to loop up who made what change
-- Events scoped to the whole GitLab instance, used by the Compliance team to
+- Events scoped to the whole GitLab instance, used by your Compliance team to
   perform formal audits
 
 ### Group events
@@ -39,7 +40,7 @@ There are two kinds of events logged:
 > Available in [GitLab Enterprise Edition Starter][ee].
 
 NOTE: **Note:**
-You need Owner [permissions] to view the Audit Events page.
+You need Owner [permissions] to view the group Audit Events page.
 
 To view a group's audit events, navigate to **Group > Settings > Audit Events**.
 From there, you can see the following actions:
@@ -51,7 +52,7 @@ From there, you can see the following actions:
 - Removed user from group
 - Project added to group and with which visibility level
 - Project removed from group
-- [Group shared with project](../user/project/members/share_project_with_groups.md)
+- [Project shared with group](../user/project/members/share_project_with_groups.md)
   and with which [permissions]
 - Removal of a previously shared group with a project
 
@@ -60,7 +61,7 @@ From there, you can see the following actions:
 > Available in [GitLab Enterprise Edition Starter][ee].
 
 NOTE: **Note:**
-You need Master [permissions] or higher to view the Audit Events page.
+You need Master [permissions] or higher to view the project Audit Events page.
 
 To view a project's audit events, navigate to **Project > Settings > Audit Events**.
 From there, you can see the following actions:
@@ -88,7 +89,7 @@ recorded:
 
 - Failed Logins
 - Sign-in events and the authentication type (standard, LDAP, OmniAuth, etc.)
-- Added ssh key
+- Added SSH key
 - Added/removed email
 - Changed password
 - Ask for password reset
