@@ -1,5 +1,6 @@
 <script>
   import mock from './mockdata';
+  import DiffFileHeader from './diff_file_header.vue';
 
   export default {
     props: {
@@ -7,6 +8,9 @@
         type: Object,
         required: true,
       },
+    },
+    components: {
+      DiffFileHeader,
     },
     data() {
       return {
@@ -44,8 +48,7 @@
     :class="diffFileClass"
   >
     <div class="js-file-title file-title file-title-flex-parent">
-      <div class="file-header-content">
-      </div>
+      <diff-file-header />
     </div>
     <div class="diff-content code js-syntax-highlight">
       <table>
