@@ -3,10 +3,6 @@
 
   export default {
     props: {
-      projectId: {
-        type: String,
-        required: true,
-      },
       branchId: {
         type: String,
         required: true,
@@ -19,6 +15,7 @@
     computed: {
       ...mapState([
         'trees',
+        'currentProjectId',
       ]),
     },
     methods: {
@@ -35,7 +32,7 @@
 
         this.createTempEntry({
           name,
-          projectId: this.projectId,
+          projectId: this.currentProjectId,
           branchId: this.branchId,
           parent: this.parent,
           type: 'blob',

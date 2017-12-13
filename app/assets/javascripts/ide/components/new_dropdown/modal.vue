@@ -1,14 +1,10 @@
 <script>
-  import { mapActions } from 'vuex';
+  import { mapActions, mapState } from 'vuex';
   import { __ } from '../../../locale';
   import modal from '../../../vue_shared/components/modal.vue';
 
   export default {
     props: {
-      projectId: {
-        type: String,
-        required: true,
-      },
       branchId: {
         type: String,
         required: true,
@@ -40,7 +36,7 @@
       ]),
       createEntryInStore() {
         this.createTempEntry({
-          projectId: this.projectId,
+          projectId: this.currentProjectId,
           branchId: this.branchId,
           parent: this.parent,
           name: this.entryName.replace(new RegExp(`^${this.path}/`), ''),
@@ -54,6 +50,9 @@
       },
     },
     computed: {
+      ...mapState([
+        'currentProjectId'
+      ]),
       modalTitle() {
         if (this.type === 'tree') {
           return __('Create new directory');

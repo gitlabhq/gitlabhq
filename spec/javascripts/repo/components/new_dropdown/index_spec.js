@@ -11,11 +11,11 @@ describe('new dropdown component', () => {
     const component = Vue.extend(newDropdown);
 
     vm = createComponentWithStore(component, store, {
-      projectId: 'abcproject',
       branch: 'master',
       path: '',
     });
 
+    vm.$store.state.currentProjectId = 'abcproject';
     vm.$store.state.path = '';
 
     vm.$mount();

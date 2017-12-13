@@ -55,10 +55,10 @@ describe('new file modal component', () => {
           tree: [],
         };
         projectTree = store.state.trees['abcproject/mybranch'];
+        store.state.currentProjectId = 'abcproject';
 
         vm = createComponentWithStore(Component, store, {
           type,
-          projectId: 'abcproject',
           branchId: 'master',
           path: '',
           parent: projectTree,

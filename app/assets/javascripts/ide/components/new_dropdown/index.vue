@@ -5,10 +5,6 @@
 
   export default {
     props: {
-      projectId: {
-        type: String,
-        required: true,
-      },
       branch: {
         type: String,
         required: true,
@@ -77,7 +73,6 @@
         </li>
         <li>
           <upload
-            :project-id="projectId"
             :branch-id="branch"
             :path="path"
             :parent="parent"
@@ -97,7 +92,6 @@
     <new-modal
       v-if="openModal"
       :type="modalType"
-      :project-id="projectId"
       :branch-id="branch"
       :path="path"
       :parent="parent"

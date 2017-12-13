@@ -41,6 +41,7 @@ describe('new dropdown upload', () => {
     store.state.projects.abcproject = {
       web_url: '',
     };
+    store.state.currentProjectId = 'abcproject';
     store.state.trees = [];
     store.state.trees['abcproject/mybranch'] = {
       tree: [],
@@ -48,7 +49,6 @@ describe('new dropdown upload', () => {
     projectTree = store.state.trees['abcproject/mybranch'];
 
     vm = createComponentWithStore(Component, store, {
-      projectId: 'abcproject',
       branchId: 'master',
       path: '',
       parent: projectTree,
