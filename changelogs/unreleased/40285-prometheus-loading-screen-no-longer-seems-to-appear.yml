@@ -1,0 +1,5 @@
+---
+title: Fix broken illustration images for monitoring page empty states
+merge_request: 15889
+author:
+type: fixed

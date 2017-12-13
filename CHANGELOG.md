@@ -2,9 +2,9 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
-## 10.2.4 (2017-12-08)
+## 10.2.4 (2017-12-07)
 
-### Security (4 changes)
+### Security (5 changes)
 
 - Fix e-mail address disclosure through member search fields
 - Prevent creating issues through API when user does not have permissions
@@ -246,6 +246,17 @@ entry.
 - Remove filter icon from search bar.
 - Use title as placeholder instead of issue title for reusability.
 - Add Gitaly metrics to the performance bar.
+
+
+## 10.1.5 (2017-12-07)
+
+### Security (5 changes)
+
+- Fix e-mail address disclosure through member search fields
+- Prevent creating issues through API when user does not have permissions
+- Prevent an information disclosure in the Groups API
+- Fix user without access to private Wiki being able to see it on the project page
+- Fix Cross-Site Scripting (XSS) vulnerability while editing a comment
 
 
 ## 10.1.4 (2017-11-14)
@@ -495,6 +506,17 @@ entry.
 - Hide read_registry scope when registry is disabled on instance. !13314 (Robin Bobbitt)
 - creation of keys moved to services. !13331 (haseebeqx)
 - Add username as GL_USERNAME in hooks.
+
+## 10.0.7 (2017-12-07)
+
+### Security (5 changes)
+
+- Fix e-mail address disclosure through member search fields
+- Prevent creating issues through API when user does not have permissions
+- Prevent an information disclosure in the Groups API
+- Fix user without access to private Wiki being able to see it on the project page
+- Fix Cross-Site Scripting (XSS) vulnerability while editing a comment
+
 
 ## 10.0.5 (2017-11-03)
 
