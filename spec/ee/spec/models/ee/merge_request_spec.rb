@@ -246,4 +246,8 @@ describe MergeRequest do
 
     it { expect(merge_request.has_sast_data?).to be_truthy }
   end
+
+  describe '#clair_artifact' do
+    it { is_expected.to delegate_method(:clair_artifact).to(:head_pipeline) }
+  end
 end
