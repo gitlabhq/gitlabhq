@@ -120,7 +120,7 @@ $(function () {
   });
 
   if (bootstrapBreakpoint === 'xs') {
-    const $rightSidebar = $('aside.right-sidebar, .page-with-sidebar');
+    const $rightSidebar = $('aside.right-sidebar, .layout-page');
 
     $rightSidebar
       .removeClass('right-sidebar-expanded')
@@ -180,7 +180,7 @@ $(function () {
     trigger: 'focus',
     // set the viewport to the main content, excluding the navigation bar, so
     // the navigation can't overlap the popover
-    viewport: '.page-with-sidebar'
+    viewport: '.layout-page'
   });
   $('.trigger-submit').on('change', function () {
     return $(this).parents('form').submit();
