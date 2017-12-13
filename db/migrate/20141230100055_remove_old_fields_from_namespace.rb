@@ -1,3 +1,4 @@
+# rubocop:disable Migration/RemoveColumn
 class RemoveOldFieldsFromNamespace < ActiveRecord::Migration
   def up
     remove_column :namespaces, :ldap_cn
