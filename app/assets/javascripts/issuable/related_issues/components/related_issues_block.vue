@@ -101,8 +101,10 @@ export default {
     if (this.canReorder) {
       this.sortable = Sortable.create(this.$refs.list, {
         animation: 200,
+        forceFallback: true,
+        fallbackClass: 'is-dragging',
+        fallbackOnBody: true,
         ghostClass: 'is-ghost',
-        chosenClass: "sortable-chosen",
         onEnd: this.reordered,
       });
     }
@@ -164,7 +166,8 @@ export default {
       <div
         class="related-issues-token-body panel-body"
         :class="{
-            'collapsed': !shouldShowTokenBody
+          'collapsed': !shouldShowTokenBody,
+          'sortable-container': canReorder
         }">
         <div
           v-if="isFetching"
@@ -175,13 +178,18 @@ export default {
         </div>
         <ul
           ref="list"
-          class="flex-list content-list issuable-list"
+          class="flex-list issuable-list"
+          :class="{ 'content-list' : !canReorder }"
         >
           <li
             :key="issue.id"
             v-for="issue in relatedIssues"
-            class="js-related-issues-token-list-item"
-            :class="{ 'is-dragging': canReorder }"
+            class="js-related-issues-token-list-item "
+            :class="{
+              'user-can-drag': canReorder,
+              'sortable-row': canReorder,
+              card: canReorder
+            }"
           >
             <issue-token
               event-namespace="relatedIssue"
@@ -191,6 +199,7 @@ export default {
               :path="issue.path"
               :state="issue.state"
               :can-remove="canAdmin"
+              :can-reorder="canReorder"
             />
           </li>
         </ul>

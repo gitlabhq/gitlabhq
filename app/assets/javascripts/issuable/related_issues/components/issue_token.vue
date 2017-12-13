@@ -43,6 +43,11 @@ export default {
       required: false,
       default: false,
     },
+    canReorder: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
     isCondensed: {
       type: Boolean,
       required: false,
@@ -116,6 +121,7 @@ export default {
       :class="{
         'issue-token-link': isCondensed,
         'issue-main-info': !isCondensed,
+        'sortable-link': canReorder
       }"
       :href="computedPath"
       :title="issueTitle"
@@ -162,7 +168,7 @@ export default {
       v-tooltip
       ref="removeButton"
       type="button"
-      class="js-issue-token-remove-button flex-right sortable-hidden"
+      class="js-issue-token-remove-button flex-right"
       :class="{
         'issue-token-remove-button': isCondensed,
         'btn btn-default': !isCondensed
