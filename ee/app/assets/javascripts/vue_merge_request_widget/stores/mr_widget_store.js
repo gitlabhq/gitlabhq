@@ -91,20 +91,26 @@ export default class MergeRequestStore extends CEMergeRequestStore {
 
     this.dockerReport.vulnerabilities = parsedVulnerabilities || [];
 
+    // There is a typo in the original repo:
+    // https://github.com/arminc/clair-scanner/pull/39/files
+    // Fix this when the above PR is accepted
+    const unapproved = data.unapproved || data.unaproved || [];
+
     // Approved can be calculated by subtracting unapproved from vulnerabilities.
     this.dockerReport.approved = parsedVulnerabilities
-      .filter(item => !data.unapproved.find(el => el === item.vulnerability)) || [];
+      .filter(item => !unapproved.find(el => el === item.vulnerability)) || [];
 
     this.dockerReport.unapproved = parsedVulnerabilities
-      .filter(item => data.unapproved.find(el => el === item.vulnerability)) || [];
+      .filter(item => unapproved.find(el => el === item.vulnerability)) || [];
   }
 
-  // TODO: Add links
   static parseDockerVulnerabilities(data) {
     return data.map(el => ({
       name: el.vulnerability,
       priority: el.severity,
       path: el.namespace,
+      // external link to provide better description
+      nameLink: `https://cve.mitre.org/cgi-bin/cvename.cgi?name=${el.vulnerability}`,
       ...el,
     }));
   }

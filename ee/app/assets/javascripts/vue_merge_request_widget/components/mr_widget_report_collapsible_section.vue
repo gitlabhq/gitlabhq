@@ -7,7 +7,7 @@ export default {
   name: 'MRWidgetCodeQuality',
 
   props: {
-    // security | codequality | performance
+    // security | codequality | performance | docker
     type: {
       type: String,
       required: true,
@@ -43,6 +43,10 @@ export default {
       type: Array,
       required: false,
       default: () => [],
+    },
+    infoText: {
+      type: String,
+      required: false,
     },
   },
 
@@ -128,12 +132,19 @@ export default {
       class="code-quality-container"
       v-if="hasIssues"
       v-show="!isCollapsed">
+
+      <p
+        v-if="type === 'docker' && infoText"
+        v-html="infoText"
+        class="js-mr-code-quality-info mr-widget-code-quality-info">
+      </p>
+
       <issues-block
-        class="js-mr-code-resolved-issues"
-        v-if="resolvedIssues.length"
+        class="js-mr-code-new-issues"
+        v-if="unresolvedIssues.length"
         :type="type"
-        status="success"
-        :issues="resolvedIssues"
+        status="failed"
+        :issues="unresolvedIssues"
         />
 
       <issues-block
@@ -145,11 +156,11 @@ export default {
         />
 
       <issues-block
-        class="js-mr-code-new-issues"
-        v-if="unresolvedIssues.length"
+        class="js-mr-code-resolved-issues"
+        v-if="resolvedIssues.length"
         :type="type"
-        status="failed"
-        :issues="unresolvedIssues"
+        status="success"
+        :issues="resolvedIssues"
         />
     </div>
     <div

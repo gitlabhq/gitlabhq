@@ -1,4 +1,4 @@
-import { n__, s__ } from '~/locale';
+import { n__, s__, sprintf } from '~/locale';
 import CEWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import WidgetApprovals from './components/approvals/mr_widget_approvals';
 import GeoSecondaryNode from './components/states/mr_widget_secondary_geo_node';
@@ -128,15 +128,13 @@ export default {
         return s__('ciReport|No vulnerabilities were found');
       }
 
-      if (!unapproved.length) {
+      if (!unapproved.length && approved.length) {
         return n__(
           'Found %d approved vulnerability',
           'Found %d approved vulnerabilities',
           approved.length,
         );
-      }
-
-      if (unapproved.length && !approved.length) {
+      } else if (unapproved.length && !approved.length) {
         return n__(
           'Found %d vulnerability',
           'Found %d vulnerabilities',
@@ -147,7 +145,7 @@ export default {
       return `${n__(
         'Found %d vulnerability,',
         'Found %d vulnerabilities,',
-        unapproved.length,
+        vulnerabilities.length,
       )} ${n__(
         'of which %d is approved',
         'of which %d are approved',
@@ -169,6 +167,17 @@ export default {
 
     dockerStatus() {
       return this.checkReportStatus(this.isLoadingDocker, this.loadingDockerFailed);
+    },
+
+    dockerInformationText() {
+      return sprintf(
+        _.escape(s__('ciReport|Unapproved vulnerabilities (red) can be marked as approved. %{helpLink}')), {
+          helpLink: `<a href="todo" _target="blank" >
+            ${_.escape(s__('ciReport|Learn more about whitelisting'))}
+          </a>`,
+        },
+        false,
+      );
     },
   },
   methods: {
@@ -294,8 +303,8 @@ export default {
         loading-text="Loading codeclimate report"
         error-text="Failed to load codeclimate report"
         :success-text="codequalityText"
-        :unresolvedIssues="mr.codeclimateMetrics.newIssues"
-        :resolvedIssues="mr.codeclimateMetrics.resolvedIssues"
+        :unresolved-issues="mr.codeclimateMetrics.newIssues"
+        :resolved-issues="mr.codeclimateMetrics.resolvedIssues"
         />
       <collapsible-section
         class="js-performance-widget"
@@ -305,9 +314,9 @@ export default {
         loading-text="Loading performance report"
         error-text="Failed to load performance report"
         :success-text="performanceText"
-        :unresolvedIssues="mr.performanceMetrics.degraded"
-        :resolvedIssues="mr.performanceMetrics.improved"
-        :neutralIssues="mr.performanceMetrics.neutral"
+        :unresolved-issues="mr.performanceMetrics.degraded"
+        :resolved-issues="mr.performanceMetrics.improved"
+        :neutral-issues="mr.performanceMetrics.neutral"
         />
       <collapsible-section
         class="js-sast-widget"
@@ -317,18 +326,19 @@ export default {
         loading-text="Loading security report"
         error-text="Failed to load security report"
         :success-text="securityText"
-        :unresolvedIssues="mr.securityReport"
+        :unresolved-issues="mr.securityReport"
         />
       <collapsible-section
         class="js-docker-widget"
         v-if="shouldRenderDockerReport"
-        type="codequality"
+        type="docker"
         :status="dockerStatus"
         loading-text="Loading clair report"
         error-text="Failed to load clair report"
         :success-text="dockerText"
-        :unresolvedIssues="mr.dockerReport.unapproved"
-        :resolvedIssues="mr.dockerReport.approved"
+        :unresolved-issues="mr.dockerReport.unapproved"
+        :neutral-issues="mr.dockerReport.approved"
+        :info-text="dockerInformationText"
         />
       <div class="mr-widget-section">
         <component

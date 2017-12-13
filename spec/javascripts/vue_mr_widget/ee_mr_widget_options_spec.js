@@ -8,6 +8,8 @@ import mockData, {
   basePerformance,
   headPerformance,
   securityIssues,
+  dockerReport,
+  dockerReportParsed,
 } from './mock_data';
 import mountComponent from '../helpers/vue_mount_component_helper';
 
@@ -437,6 +439,19 @@ describe('ee merge request widget options', () => {
   });
 
   describe('docker report', () => {
+    beforeEach(() => {
+      gl.mrWidgetData = {
+        ...mockData,
+        clair: {
+          path: 'clair.json',
+          blob_path: 'blob_path',
+        },
+      };
+
+      Component.mr = new MRWidgetStore(gl.mrWidgetData);
+      Component.service = new MRWidgetService({});
+    });
+
     describe('when it is loading', () => {
       it('should render loading indicator', () => {
         vm = mountComponent(Component);
@@ -447,13 +462,74 @@ describe('ee merge request widget options', () => {
     });
 
     describe('with successful request', () => {
-      it('should render provided data', () => {
+      const interceptor = (request, next) => {
+        if (request.url === 'clair.json') {
+          next(request.respondWith(JSON.stringify(dockerReport), {
+            status: 200,
+          }));
+        }
+      };
 
+      beforeEach(() => {
+        Vue.http.interceptors.push(interceptor);
+        vm = mountComponent(Component);
+      });
+
+      afterEach(() => {
+        Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+      });
+
+      it('should render provided data', (done) => {
+        setTimeout(() => {
+          expect(
+            vm.$el.querySelector('.js-docker-widget .js-code-text').textContent.trim(),
+          ).toEqual('Found 3 vulnerabilities, of which 1 is approved');
+
+          vm.$el.querySelector('.js-docker-widget button').click();
+
+          Vue.nextTick(() => {
+            expect(
+              vm.$el.querySelector('.js-docker-widget .mr-widget-code-quality-info').textContent.trim(),
+            ).toContain('Unapproved vulnerabilities (red) can be marked as approved.');
+            expect(
+              vm.$el.querySelector('.js-docker-widget .mr-widget-code-quality-info a').textContent.trim(),
+            ).toContain('Learn more about whitelisting');
+
+            const firstVulnerability = vm.$el.querySelector('.js-docker-widget .mr-widget-code-quality-list').textContent.trim();
+
+            expect(firstVulnerability).toContain(dockerReportParsed.unapproved[0].name);
+            expect(firstVulnerability).toContain(dockerReportParsed.unapproved[0].path);
+            done();
+          });
+        }, 0);
       });
     });
 
     describe('with failed request', () => {
-      it('should render error indicator', () => {
+      const interceptor = (request, next) => {
+        if (request.url === 'clair.json') {
+          next(request.respondWith({}, {
+            status: 500,
+          }));
+        }
+      };
+
+      beforeEach(() => {
+        Vue.http.interceptors.push(interceptor);
+        vm = mountComponent(Component);
+      });
+
+      afterEach(() => {
+        Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+      });
+
+      it('should render error indicator', (done) => {
+        setTimeout(() => {
+          expect(
+            vm.$el.querySelector('.js-docker-widget').textContent.trim(),
+          ).toContain('Failed to load clair report');
+          done();
+        }, 0);
       });
     });
   });
@@ -497,31 +573,6 @@ describe('ee merge request widget options', () => {
       });
     });
 
-    describe('shouldRenderDockerReport', () => {
-      it('returns undefined when clair is not set up', () => {
-        vm = mountComponent(Component, {
-          mrData: {
-            ...mockData,
-          },
-        });
-
-        expect(vm.shouldRenderDockerReport).toEqual(undefined);
-      });
-
-      it('returns clair object when clair is set up', () => {
-        vm = mountComponent(Component, {
-          mrData: {
-            ...mockData,
-            clair: {
-              path: 'foo',
-            },
-          },
-        });
-
-        expect(vm.shouldRenderDockerReport).toEqual({ path: 'foo' });
-      });
-    });
-
     describe('dockerText', () => {
       beforeEach(() => {
         vm = mountComponent(Component, {
@@ -555,7 +606,7 @@ describe('ee merge request widget options', () => {
             }],
             unapproved: [],
           };
-          expect(vm.dockerText).toEqual('Found 1 vulnerability');
+          expect(vm.dockerText).toEqual('Found 1 approved vulnerability');
         });
 
         it('returns approved information - plural', () => {

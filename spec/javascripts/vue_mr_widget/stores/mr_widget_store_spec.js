@@ -6,6 +6,8 @@ import mockData, {
   parsedBaseIssues,
   parsedHeadIssues,
   parsedSecurityIssuesStore,
+  dockerReport,
+  dockerReportParsed,
 } from '../mock_data';
 
 describe('MergeRequestStore', () => {
@@ -93,6 +95,53 @@ describe('MergeRequestStore', () => {
       const security = MergeRequestStore.parseIssues(securityIssues, 'path')[0];
       expect(security.name).toEqual(securityIssues[0].message);
       expect(security.path).toEqual(securityIssues[0].file);
+    });
+  });
+
+  describe('initDockerReport', () => {
+    it('sets the defaults', () => {
+      store.initDockerReport({ clair: { path: 'clair.json' } });
+
+      expect(store.clair).toEqual({ path: 'clair.json' });
+      expect(store.dockerReport).toEqual({
+        approved: [],
+        unapproved: [],
+        vulnerabilities: [],
+      });
+    });
+  });
+
+  describe('setDockerReport', () => {
+    it('sets docker report with approved and unapproved vulnerabilities parsed', () => {
+      store.setDockerReport(dockerReport);
+      expect(store.dockerReport.vulnerabilities).toEqual(dockerReportParsed.vulnerabilities);
+      expect(store.dockerReport.approved).toEqual(dockerReportParsed.approved);
+      expect(store.dockerReport.unapproved).toEqual(dockerReportParsed.unapproved);
+    });
+
+    it('handles unaproved typo', () => {
+      store.setDockerReport({
+        vulnerabilities: [
+          {
+            vulnerability: 'CVE-2017-12944',
+            namespace: 'debian:8',
+            severity: 'Medium',
+          },
+        ],
+        unaproved: ['CVE-2017-12944'],
+      });
+
+      expect(store.dockerReport.unapproved[0].vulnerability).toEqual('CVE-2017-12944');
+    });
+  });
+
+  describe('parseDockerVulnerabilities', () => {
+    it('parses docker report', () => {
+      expect(
+        MergeRequestStore.parseDockerVulnerabilities(dockerReport.vulnerabilities),
+      ).toEqual(
+        dockerReportParsed.vulnerabilities,
+      );
     });
   });
 });
