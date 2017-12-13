@@ -27,12 +27,8 @@ class Projects::ProjectMembersController < Projects::ApplicationController
   end
 
   def update
-<<<<<<< HEAD
     @project_member = @project.members_and_requesters.find(params[:id])
-=======
-    @project_member = @project.project_members.find(params[:id])
       .present(current_user: current_user)
->>>>>>> 2f1fd0d9bbedfec1d84550fd7fe14aebe91713aa
 
     return render_403 unless can?(current_user, :update_project_member, @project_member)
 
