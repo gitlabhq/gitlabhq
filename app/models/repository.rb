@@ -697,10 +697,14 @@ class Repository
     end
   end
 
-  def contributors
+  # Params:
+  #
+  # order_by: name|email|commits
+  # sort: asc|desc default: 'asc'
+  def contributors(order_by: nil, sort: 'asc')
     commits = self.commits(nil, limit: 2000, offset: 0, skip_merges: true)
 
-    commits.group_by(&:author_email).map do |email, commits|
+    commits = commits.group_by(&:author_email).map do |email, commits|
       contributor = Gitlab::Contributor.new
       contributor.email = email
 
@@ -714,6 +718,7 @@ class Repository
 
       contributor
     end
+    Commit.order_by(collection: commits, order_by: order_by, sort: sort)
   end
 
   def refs_contains_sha(ref_type, sha)
