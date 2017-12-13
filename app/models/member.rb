@@ -1,8 +1,10 @@
 class Member < ActiveRecord::Base
+  include AfterCommitQueue
   include Sortable
   include Importable
   include Expirable
   include Gitlab::Access
+  include Presentable
 
   attr_accessor :raw_invite_token
 

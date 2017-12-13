@@ -40,6 +40,7 @@ class Namespace < ActiveRecord::Base
     namespace_path: true
 
   validate :nesting_level_allowed
+  validate :allowed_path_by_redirects
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
@@ -139,7 +140,17 @@ class Namespace < ActiveRecord::Base
   def find_fork_of(project)
     return nil unless project.fork_network
 
-    project.fork_network.find_forks_in(projects).first
+    if RequestStore.active?
+      forks_in_namespace = RequestStore.fetch("namespaces:#{id}:forked_projects") do
+        Hash.new do |found_forks, project|
+          found_forks[project] = project.fork_network.find_forks_in(projects).first
+        end
+      end
+
+      forks_in_namespace[project]
+    else
+      project.fork_network.find_forks_in(projects).first
+    end
   end
 
   def lfs_enabled?
@@ -246,5 +257,15 @@ class Namespace < ActiveRecord::Base
     # maximum of 20 nested groups this should be fine.
     Namespace.where(id: descendants.select(:id))
       .update_all(share_with_group_lock: true)
+  end
+
+  def allowed_path_by_redirects
+    return if path.nil?
+
+    errors.add(:path, "#{path} has been taken before. Please use another one") if namespace_previously_created_with_same_path?
+  end
+
+  def namespace_previously_created_with_same_path?
+    RedirectRoute.permanent.exists?(path: path)
   end
 end

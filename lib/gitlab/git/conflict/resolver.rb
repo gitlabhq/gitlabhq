@@ -75,7 +75,7 @@ module Gitlab
             resolved_lines = file.resolve_lines(params[:sections])
             new_file = resolved_lines.map { |line| line[:full_line] }.join("\n")
 
-            new_file << "\n" if file.our_blob.data.ends_with?("\n")
+            new_file << "\n" if file.our_blob.data.end_with?("\n")
           elsif params[:content]
             new_file = file.resolve_content(params[:content])
           end

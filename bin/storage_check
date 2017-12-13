@@ -1,0 +1,11 @@
+#!/usr/bin/env ruby
+
+require 'optparse'
+require 'net/http'
+require 'json'
+require 'socket'
+require 'logger'
+
+require_relative '../lib/gitlab/storage_check'
+
+Gitlab::StorageCheck::CLI.start!(ARGV)

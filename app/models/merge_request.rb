@@ -7,6 +7,8 @@ class MergeRequest < ActiveRecord::Base
   include TimeTrackable
   include ManualInverseAssociation
   include EachBatch
+  include ThrottledTouch
+  include Gitlab::Utils::StrongMemoize
 
   ignore_column :locked_at,
                 :ref_fetched
@@ -52,6 +54,7 @@ class MergeRequest < ActiveRecord::Base
 
   after_create :ensure_merge_request_diff, unless: :importing?
   after_update :reload_diff_if_branch_changed
+  after_update :clear_memoized_shas
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -143,6 +146,13 @@ class MergeRequest < ActiveRecord::Base
 
   def self.reference_prefix
     '!'
+  end
+
+  # Use this method whenever you need to make sure the head_pipeline is synced with the
+  # branch head commit, for example checking if a merge request can be merged.
+  # For more information check: https://gitlab.com/gitlab-org/gitlab-ce/issues/40004
+  def actual_head_pipeline
+    head_pipeline&.sha == diff_head_sha ? head_pipeline : nil
   end
 
   # Pattern used to extract `!123` merge request references from text
@@ -379,13 +389,17 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def source_branch_head
-    return unless source_project
-
-    source_project.repository.commit(source_branch_ref) if source_branch_ref
+    strong_memoize(:source_branch_head) do
+      if source_project && source_branch_ref
+        source_project.repository.commit(source_branch_ref)
+      end
+    end
   end
 
   def target_branch_head
-    target_project.repository.commit(target_branch_ref)
+    strong_memoize(:target_branch_head) do
+      target_project.repository.commit(target_branch_ref)
+    end
   end
 
   def branch_merge_base_commit
@@ -517,6 +531,13 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def clear_memoized_shas
+    @target_branch_sha = @source_branch_sha = nil
+
+    clear_memoization(:source_branch_head)
+    clear_memoization(:target_branch_head)
+  end
+
   def reload_diff_if_branch_changed
     if (source_branch_changed? || target_branch_changed?) &&
         (source_branch_head && target_branch_head)
@@ -641,6 +662,7 @@ class MergeRequest < ActiveRecord::Base
       .to_sql
 
     Note.from("(#{union}) #{Note.table_name}")
+      .includes(:noteable)
   end
 
   alias_method :discussion_notes, :related_notes
@@ -822,8 +844,9 @@ class MergeRequest < ActiveRecord::Base
 
   def mergeable_ci_state?
     return true unless project.only_allow_merge_if_pipeline_succeeds?
+    return true unless head_pipeline
 
-    !head_pipeline || head_pipeline.success? || head_pipeline.skipped?
+    actual_head_pipeline&.success? || actual_head_pipeline&.skipped?
   end
 
   def environments_for(current_user)
@@ -916,21 +939,27 @@ class MergeRequest < ActiveRecord::Base
       .order(id: :desc)
   end
 
-  # Note that this could also return SHA from now dangling commits
-  #
-  def all_commit_shas
-    return commit_shas unless persisted?
-
-    diffs_relation = merge_request_diffs
-
+  def all_commits
     # MySQL doesn't support LIMIT in a subquery.
-    diffs_relation = diffs_relation.recent if Gitlab::Database.postgresql?
+    diffs_relation = if Gitlab::Database.postgresql?
+                       merge_request_diffs.recent
+                     else
+                       merge_request_diffs
+                     end
 
     MergeRequestDiffCommit
       .where(merge_request_diff: diffs_relation)
       .limit(10_000)
-      .pluck('sha')
-      .uniq
+  end
+
+  # Note that this could also return SHA from now dangling commits
+  #
+  def all_commit_shas
+    @all_commit_shas ||= begin
+      return commit_shas unless persisted?
+
+      all_commits.pluck(:sha).uniq
+    end
   end
 
   def merge_commit
@@ -997,7 +1026,7 @@ class MergeRequest < ActiveRecord::Base
     return true if autocomplete_precheck
 
     return false unless mergeable?(skip_ci_check: true)
-    return false if head_pipeline && !(head_pipeline.success? || head_pipeline.active?)
+    return false if actual_head_pipeline && !(actual_head_pipeline.success? || actual_head_pipeline.active?)
     return false if last_diff_sha != diff_head_sha
 
     true

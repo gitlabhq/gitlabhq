@@ -4,7 +4,7 @@ module Gitlab
   module GithubImport
     module Stage
       class ImportRepositoryWorker
-        include Sidekiq::Worker
+        include ApplicationWorker
         include GithubImport::Queue
         include StageMethods
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171124150326) do
+ActiveRecord::Schema.define(version: 20171206221519) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,8 @@ ActiveRecord::Schema.define(version: 20171124150326) do
     t.datetime_with_timezone "updated_at", null: false
     t.text "description_html"
     t.integer "cached_markdown_version"
+    t.text "new_project_guidelines"
+    t.text "new_project_guidelines_html"
   end
 
   create_table "application_settings", force: :cascade do |t|
@@ -133,12 +135,10 @@ ActiveRecord::Schema.define(version: 20171124150326) do
     t.boolean "hashed_storage_enabled", default: false, null: false
     t.boolean "project_export_enabled", default: true, null: false
     t.boolean "auto_devops_enabled", default: false, null: false
-    t.integer "circuitbreaker_failure_count_threshold", default: 160
-    t.integer "circuitbreaker_failure_wait_time", default: 30
+    t.integer "circuitbreaker_failure_count_threshold", default: 3
     t.integer "circuitbreaker_failure_reset_time", default: 1800
-    t.integer "circuitbreaker_storage_timeout", default: 30
+    t.integer "circuitbreaker_storage_timeout", default: 15
     t.integer "circuitbreaker_access_retries", default: 3
-    t.integer "circuitbreaker_backoff_threshold", default: 80
     t.boolean "throttle_unauthenticated_enabled", default: false, null: false
     t.integer "throttle_unauthenticated_requests_per_period", default: 3600, null: false
     t.integer "throttle_unauthenticated_period_in_seconds", default: 3600, null: false
@@ -148,6 +148,7 @@ ActiveRecord::Schema.define(version: 20171124150326) do
     t.boolean "throttle_authenticated_web_enabled", default: false, null: false
     t.integer "throttle_authenticated_web_requests_per_period", default: 7200, null: false
     t.integer "throttle_authenticated_web_period_in_seconds", default: 3600, null: false
+    t.integer "circuitbreaker_check_interval", default: 1, null: false
     t.boolean "password_authentication_enabled_for_web"
     t.boolean "password_authentication_enabled_for_git", default: true
     t.integer "gitaly_timeout_default", default: 55, null: false
@@ -318,6 +319,20 @@ ActiveRecord::Schema.define(version: 20171124150326) do
   end
 
   add_index "ci_group_variables", ["group_id", "key"], name: "index_ci_group_variables_on_group_id_and_key", unique: true, using: :btree
+
+  create_table "ci_job_artifacts", force: :cascade do |t|
+    t.integer "project_id", null: false
+    t.integer "job_id", null: false
+    t.integer "file_type", null: false
+    t.integer "size", limit: 8
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+    t.datetime_with_timezone "expire_at"
+    t.string "file"
+  end
+
+  add_index "ci_job_artifacts", ["job_id", "file_type"], name: "index_ci_job_artifacts_on_job_id_and_file_type", unique: true, using: :btree
+  add_index "ci_job_artifacts", ["project_id"], name: "index_ci_job_artifacts_on_project_id", using: :btree
 
   create_table "ci_pipeline_schedule_variables", force: :cascade do |t|
     t.string "key", null: false
@@ -826,7 +841,6 @@ ActiveRecord::Schema.define(version: 20171124150326) do
 
   create_table "issues", force: :cascade do |t|
     t.string "title"
-    t.integer "assignee_id"
     t.integer "author_id"
     t.integer "project_id"
     t.datetime "created_at"
@@ -852,7 +866,6 @@ ActiveRecord::Schema.define(version: 20171124150326) do
     t.datetime_with_timezone "closed_at"
   end
 
-  add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
   add_index "issues", ["author_id"], name: "index_issues_on_author_id", using: :btree
   add_index "issues", ["confidential"], name: "index_issues_on_confidential", using: :btree
   add_index "issues", ["deleted_at"], name: "index_issues_on_deleted_at", using: :btree
@@ -1511,10 +1524,12 @@ ActiveRecord::Schema.define(version: 20171124150326) do
     t.string "path", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "permanent"
   end
 
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path", unique: true, using: :btree
   add_index "redirect_routes", ["path"], name: "index_redirect_routes_on_path_text_pattern_ops", using: :btree, opclasses: {"path"=>"varchar_pattern_ops"}
+  add_index "redirect_routes", ["permanent"], name: "index_redirect_routes_on_permanent", using: :btree
   add_index "redirect_routes", ["source_type", "source_id"], name: "index_redirect_routes_on_source_type_and_source_id", using: :btree
 
   create_table "releases", force: :cascade do |t|
@@ -1721,7 +1736,7 @@ ActiveRecord::Schema.define(version: 20171124150326) do
 
   create_table "uploads", force: :cascade do |t|
     t.integer "size", limit: 8, null: false
-    t.string "path", null: false
+    t.string "path", limit: 511, null: false
     t.string "checksum", limit: 64
     t.integer "model_id"
     t.string "model_type"
@@ -1909,6 +1924,8 @@ ActiveRecord::Schema.define(version: 20171124150326) do
   add_foreign_key "ci_builds", "ci_stages", column: "stage_id", name: "fk_3a9eaa254d", on_delete: :cascade
   add_foreign_key "ci_builds", "projects", name: "fk_befce0568a", on_delete: :cascade
   add_foreign_key "ci_group_variables", "namespaces", column: "group_id", name: "fk_33ae4d58d8", on_delete: :cascade
+  add_foreign_key "ci_job_artifacts", "ci_builds", column: "job_id", on_delete: :cascade
+  add_foreign_key "ci_job_artifacts", "projects", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedule_variables", "ci_pipeline_schedules", column: "pipeline_schedule_id", name: "fk_41c35fda51", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedules", "projects", name: "fk_8ead60fcc4", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedules", "users", column: "owner_id", name: "fk_9ea99f58d2", on_delete: :nullify

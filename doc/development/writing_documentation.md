@@ -142,7 +142,7 @@ tests. If it doesn't, the whole test suite will run (including docs).
 ---
 
 When you submit a merge request to GitLab Community Edition (CE), there is an
-additional job called `rake ee_compat_check` that runs against Enterprise
+additional job called `ee_compat_check` that runs against Enterprise
 Edition (EE) and checks if your changes can apply cleanly to the EE codebase.
 If that job fails, read the instructions in the job log for what to do next.
 Contributors do not need to submit their changes to EE, GitLab Inc. employees
@@ -152,11 +152,22 @@ CE and EE.
 ## Previewing the changes live
 
 If you want to preview the doc changes of your merge request live, you can use
-the manual `review-docs-deploy` job in your merge request.
+the manual `review-docs-deploy` job in your merge request. You will need at
+least Master permissions to be able to run it and is currently enabled for the
+following projects:
+
+- https://gitlab.com/gitlab-org/gitlab-ce
+- https://gitlab.com/gitlab-org/gitlab-ee
+
+NOTE: **Note:**
+You will need to push a branch to those repositories, it doesn't work for forks.
 
 TIP: **Tip:**
 If your branch contains only documentation changes, you can use
 [special branch names](#testing) to avoid long running pipelines.
+
+In the mini pipeline graph, you should see an `>>` icon. Clicking on it will
+reveal the `review-docs-deploy` job. Hit the play button for the job to start.
 
 ![Manual trigger a docs build](img/manual_build_docs.png)
 

@@ -1,5 +1,5 @@
 class PipelineScheduleWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
   include CronjobQueue
 
   def perform

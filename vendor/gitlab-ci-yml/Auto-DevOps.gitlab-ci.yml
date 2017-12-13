@@ -83,6 +83,16 @@ codequality:
   artifacts:
     paths: [codeclimate.json]
 
+sast:
+  image: registry.gitlab.com/gitlab-org/gl-sast:latest
+  variables:
+    POSTGRES_DB: "false"
+  allow_failure: true
+  script:
+    - /app/bin/run .
+  artifacts:
+    paths: [gl-sast-report.json]
+
 review:
   stage: review
   script:
@@ -218,8 +228,8 @@ production:
              --volume /var/run/docker.sock:/var/run/docker.sock \
              --volume /tmp/cc:/tmp/cc"
 
-    docker run ${cc_opts} codeclimate/codeclimate init
-    docker run ${cc_opts} codeclimate/codeclimate analyze -f json > codeclimate.json
+    docker run ${cc_opts} codeclimate/codeclimate:0.69.0 init
+    docker run ${cc_opts} codeclimate/codeclimate:0.69.0 analyze -f json > codeclimate.json
   }
 
   function deploy() {
@@ -345,6 +355,13 @@ production:
   }
 
   function build() {
+
+    if [[ -n "$CI_REGISTRY_USER" ]]; then
+      echo "Logging to GitLab Container Registry with CI credentials..."
+      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
+      echo ""
+    fi
+
     if [[ -f Dockerfile ]]; then
       echo "Building Dockerfile-based application..."
       docker build -t "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" .
@@ -359,12 +376,6 @@ production:
       docker create --expose 5000 --env PORT=5000 --name="$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG" /bin/herokuish procfile start web
       docker commit "$CI_CONTAINER_NAME" "$CI_APPLICATION_REPOSITORY:$CI_APPLICATION_TAG"
       docker rm "$CI_CONTAINER_NAME" >/dev/null
-      echo ""
-    fi
-
-    if [[ -n "$CI_REGISTRY_USER" ]]; then
-      echo "Logging to GitLab Container Registry with CI credentials..."
-      docker login -u "$CI_REGISTRY_USER" -p "$CI_REGISTRY_PASSWORD" "$CI_REGISTRY"
       echo ""
     fi
 
@@ -402,7 +413,9 @@ production:
       name="$name-$track"
     fi
 
-    helm delete "$name" || true
+    if [[ -n "$(helm ls -q "^$name$")" ]]; then
+      helm delete "$name"
+    fi
   }
 
 before_script:

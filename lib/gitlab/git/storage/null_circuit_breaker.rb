@@ -11,6 +11,9 @@ module Gitlab
         # These will always have nil values
         attr_reader :storage_path
 
+        delegate :last_failure, :failure_count, :no_failures?,
+                 to: :failure_info
+
         def initialize(storage, hostname, error: nil)
           @storage = storage
           @hostname = hostname
@@ -29,16 +32,17 @@ module Gitlab
           false
         end
 
-        def last_failure
-          circuit_broken? ? Time.now : nil
-        end
-
-        def failure_count
-          circuit_broken? ? failure_count_threshold : 0
-        end
-
         def failure_info
-          Gitlab::Git::Storage::CircuitBreaker::FailureInfo.new(last_failure, failure_count)
+          @failure_info ||=
+            if circuit_broken?
+              Gitlab::Git::Storage::FailureInfo.new(Time.now,
+                                                    Time.now,
+                                                    failure_count_threshold)
+            else
+              Gitlab::Git::Storage::FailureInfo.new(nil,
+                                                    nil,
+                                                    0)
+            end
         end
       end
     end

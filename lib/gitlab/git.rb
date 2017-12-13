@@ -70,6 +70,18 @@ module Gitlab
       def diff_line_code(file_path, new_line_position, old_line_position)
         "#{Digest::SHA1.hexdigest(file_path)}_#{old_line_position}_#{new_line_position}"
       end
+
+      def shas_eql?(sha1, sha2)
+        return false if sha1.nil? || sha2.nil?
+        return false unless sha1.class == sha2.class
+
+        # If either of the shas is below the minimum length, we cannot be sure
+        # that they actually refer to the same commit because of hash collision.
+        length = [sha1.length, sha2.length].min
+        return false if length < Gitlab::Git::Commit::MIN_SHA_LENGTH
+
+        sha1[0, length] == sha2[0, length]
+      end
     end
   end
 end

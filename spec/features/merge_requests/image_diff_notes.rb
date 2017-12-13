@@ -185,6 +185,18 @@ feature 'image diff notes', :js do
       expect(page).to have_content(diff_note.note)
     end
   end
+
+  describe 'image view modes' do
+    before do
+      visit project_commit_path(project, '2f63565e7aac07bcdadb654e253078b727143ec4')
+    end
+
+    it 'resizes image in onion skin view mode' do
+      find('.view-modes-menu .onion-skin').click
+
+      expect(find('.onion-skin-frame')['style']).to match('width: 228px; height: 240px;')
+    end
+  end
 end
 
 def create_image_diff_note

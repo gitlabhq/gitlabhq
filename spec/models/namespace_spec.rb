@@ -531,7 +531,7 @@ describe Namespace do
     end
   end
 
-  describe '#has_forks_of?' do
+  describe '#find_fork_of?' do
     let(:project) { create(:project, :public) }
     let!(:forked_project) { fork_project(project, namespace.owner, namespace: namespace) }
 
@@ -549,6 +549,44 @@ describe Namespace do
       other_fork = fork_project(forked_project, other_namespace.owner, namespace: other_namespace)
 
       expect(other_namespace.find_fork_of(project)).to eq(other_fork)
+    end
+
+    context 'with request store enabled', :request_store do
+      it 'only queries once' do
+        expect(project.fork_network).to receive(:find_forks_in).once.and_call_original
+
+        2.times { namespace.find_fork_of(project) }
+      end
+    end
+  end
+
+  describe "#allowed_path_by_redirects" do
+    let(:namespace1) { create(:namespace, path: 'foo') }
+
+    context "when the path has been taken before" do
+      before do
+        namespace1.path = 'bar'
+        namespace1.save!
+      end
+
+      it 'should be invalid' do
+        namespace2 = build(:group, path: 'foo')
+        expect(namespace2).to be_invalid
+      end
+
+      it 'should return an error on path' do
+        namespace2 = build(:group, path: 'foo')
+        namespace2.valid?
+        expect(namespace2.errors.messages[:path].first).to eq('foo has been taken before. Please use another one')
+      end
+    end
+
+    context "when the path has not been taken before" do
+      it 'should be valid' do
+        expect(RedirectRoute.count).to eq(0)
+        namespace = build(:namespace)
+        expect(namespace).to be_valid
+      end
     end
   end
 end

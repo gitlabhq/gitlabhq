@@ -19,7 +19,7 @@ class ScheduleCreateGpgKeySubkeysFromGpgKeys < ActiveRecord::Migration
         [MIGRATION, [id]]
       end
 
-      BackgroundMigrationWorker.perform_bulk(jobs)
+      BackgroundMigrationWorker.bulk_perform_async(jobs)
     end
   end
 
