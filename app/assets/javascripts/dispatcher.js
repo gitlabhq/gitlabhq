@@ -447,9 +447,6 @@ import Activities from './activities';
           break;
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
-
-          if (UserFeatureHelper.isNewRepoEnabled()) break;
-
           new TreeView();
           new BlobViewer();
           new NewCommitForm($('.js-create-dir-form'));
@@ -468,7 +465,6 @@ import Activities from './activities';
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
-          if (UserFeatureHelper.isNewRepoEnabled()) break;
           new BlobViewer();
           initBlob();
           break;
