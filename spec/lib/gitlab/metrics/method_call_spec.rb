@@ -39,7 +39,7 @@ describe Gitlab::Metrics::MethodCall do
           expect(Feature.get(:prometheus_metrics_method_instrumentation)).to have_received(:enabled?).once
         end
 
-        it 'expires feature check cache after 30 seconds' do
+        it 'expires feature check cache after 1 minute' do
           method_call.measure { 'foo' }
 
           Timecop.travel(1.minute.from_now) do
