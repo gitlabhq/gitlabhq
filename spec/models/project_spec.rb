@@ -996,6 +996,21 @@ describe Project do
     end
   end
 
+  describe '.with_feature_enabled' do
+    context 'when there is a project with a feature disabled' do
+      let!(:project1) { create(:project, issues_access_level: ProjectFeature::DISABLED) }
+      let!(:project2) { create(:project, issues_access_level: ProjectFeature::ENABLED) }
+      let!(:project3) { create(:project, issues_access_level: ProjectFeature::PRIVATE) }
+      let(:features) { %w(issues) }
+
+      it "ignores only disabled project" do
+        projects = described_class.with_feature_enabled(:issues)
+        expect(projects).not_to include(project1)
+        expect(projects).to include(project2, project3)
+      end
+    end
+  end
+
   describe '.cached_count', :use_clean_rails_memory_store_caching do
     let(:group)     { create(:group, :public) }
     let!(:project1) { create(:project, :public, group: group) }

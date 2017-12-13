@@ -301,7 +301,7 @@ class Project < ActiveRecord::Base
   # "enabled" here means "not disabled". It includes private features!
   scope :with_feature_enabled, ->(feature) {
     access_level_attribute = ProjectFeature.access_level_attribute(feature)
-    with_project_feature.where(project_features: { access_level_attribute => [nil, ProjectFeature::PRIVATE, ProjectFeature::ENABLED] })
+    with_project_feature.where.not(project_features: { access_level_attribute => ProjectFeature::DISABLED })
   }
 
   # Picks a feature where the level is exactly that given.
