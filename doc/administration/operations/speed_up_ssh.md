@@ -1,5 +1,9 @@
 # Speed up SSH operations
 
+>
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/250) in GitLab Enterprise Edition 8.7.
+- Available in GitLab Enterprise Edition Starter.
+
 ## The problem
 
 SSH operations become slow as the number of users grows.
