@@ -14,7 +14,15 @@
       Icon,
     },
     computed: {
-
+      titleTag() {
+        if (!this.diffFile.discussionPath) {
+          return 'span';
+        }
+        return 'a';
+      },
+      titleHref() {
+        return this.diffFile.discussionPath;
+      },
     },
   };
 </script>
@@ -31,45 +39,48 @@
           class="file-title-name"
         />
         <clipboard-button
-          text="Copy file path to clipboard"
-          :title="diffFile.submoduleLink"
+          title="Copy file path to clipboard"
+          :text="diffFile.submoduleLink"
         />
       </span>
     </div>
-    <component
-      v-else
-      is="a"
-    >
-      <i class="fa fw" :class="diffFile.fileTypeIcon" />
-      <span v-if="diffFile.renamedFile">
+    <div v-else>
+      <component
+        ref="titleWrapper"
+        :is="titleTag"
+        :href="titleHref"
+      >
+        <i class="fa fw" :class="diffFile.fileTypeIcon" />
+        <span v-if="diffFile.renamedFile">
+          <strong
+            class="file-title-name has-tooltip"
+            :title="diffFile.oldPath"
+            data-container="body"
+          >
+            {{ diffFile.oldPath }}
+          </strong>
+          &rarr;
+          <strong
+            class="file-title-name has-tooltip"
+            :title="diffFile.newPath"
+            data-container="body"
+          >
+            {{ diffFile.newPath }}
+          </strong>
+        </span>
+
         <strong
+          v-else
           class="file-title-name has-tooltip"
           :title="diffFile.oldPath"
           data-container="body"
         >
-          {{ diffFile.oldPath }}
+          {{ diffFile.filePath }}
+          <span v-if="diffFile.deletedFile">
+            deleted
+          </span>
         </strong>
-        &rarr;
-        <strong
-          class="file-title-name has-tooltip"
-          :title="diffFile.newPath"
-          data-container="body"
-        >
-          {{ diffFile.newPath }}
-        </strong>
-      </span>
-
-      <strong
-        v-else
-        class="file-title-name has-tooltip"
-        :title="diffFile.oldPath"
-        data-container="body"
-      >
-        {{ diffFile.filePath }}
-        <span v-if="diffFile.deletedFile">
-          deleted
-        </span>
-      </strong>
+      </component>
 
       <clipboard-button
         title="Copy file path to clipboard"
@@ -79,6 +90,6 @@
       <small v-if="diffFile.modeChanged" ref="fileMode">
         {{diffFile.aMode}} → {{diffFile.bMode}}
       </small>
-    </component>
+    </div>
   </div>
 </template>

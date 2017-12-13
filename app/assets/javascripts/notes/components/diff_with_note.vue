@@ -5,7 +5,7 @@
   const diffFile = {
     submodule: false,
     submoduleLink: '<a href="/bha">Submodule</a>', // submodule_link(blob, diff_file.content_sha, diff_file.repository)
-    url: '',
+    discussionPath: '/something',
     renamedFile: false,
     deletedFile: false,
     modeChanged: false,
