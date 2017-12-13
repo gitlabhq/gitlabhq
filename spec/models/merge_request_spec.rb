@@ -1634,6 +1634,20 @@ describe MergeRequest do
 
       subject.reload_diff
     end
+
+    context 'wehn using the after_update hook to update' do
+      context 'when the merge request is updated' do
+        it 'uses the new heads to generate the diff' do
+          target_branch_sha = subject.target_branch_sha
+          source_branch_sha = subject.source_branch_sha
+
+          subject.update!(source_branch: subject.target_branch, target_branch: subject.source_branch)
+
+          expect(subject.merge_request_diff.start_commit_sha).not_to eq(target_branch_sha)
+          expect(subject.merge_request_diff.head_commit_sha).not_to eq(source_branch_sha)
+        end
+      end
+    end
   end
 
   describe '#update_diff_discussion_positions' do
