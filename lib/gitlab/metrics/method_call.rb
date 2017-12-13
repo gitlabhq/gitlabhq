@@ -1,7 +1,11 @@
+# rubocop:disable Style/ClassVars
+
 module Gitlab
   module Metrics
     # Class for tracking timing information about method calls
     class MethodCall
+      @@measurement_enabled_cache = Concurrent::AtomicBoolean.new(false)
+      @@measurement_enabled_cache_expires_at = Concurrent::AtomicFixnum.new(Time.now.to_i)
       MUTEX = Mutex.new
       BASE_LABELS = { module: nil, method: nil }.freeze
       attr_reader :real_time, :cpu_time, :call_count, :labels
@@ -16,6 +20,10 @@ module Gitlab
             Transaction::BASE_LABELS.merge(BASE_LABELS),
             [0.01, 0.05, 0.1, 0.5, 1])
         end
+      end
+
+      def self.measurement_enabled_cache_expires_at
+        @@measurement_enabled_cache_expires_at
       end
 
       # name - The full name of the method (including namespace) such as
@@ -72,7 +80,14 @@ module Gitlab
       end
 
       def call_measurement_enabled?
-        Feature.get(:prometheus_metrics_method_instrumentation).enabled?
+        expires_at = @@measurement_enabled_cache_expires_at.value
+        if expires_at < Time.now.to_i
+          if @@measurement_enabled_cache_expires_at.compare_and_set(expires_at, 1.minute.from_now.to_i)
+            @@measurement_enabled_cache.value = Feature.get(:prometheus_metrics_method_instrumentation).enabled?
+          end
+        end
+
+        @@measurement_enabled_cache.value
       end
     end
   end
