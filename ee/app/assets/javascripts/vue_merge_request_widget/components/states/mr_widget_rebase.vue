@@ -50,35 +50,36 @@
 
         this.service.rebase()
           .then(() => {
-            simplePoll((continuePolling, stopPolling) => {
-              this.service.poll()
-                .then(res => res.json())
-                .then((res) => {
-                  if (res.rebase_in_progress) {
-                    continuePolling();
-                  } else {
-                    this.isMakingRequest = false;
-
-                    if (res.merge_error.length) {
-                      this.rebasingError = res.merge_error;
-                      Flash('Something went wrong. Please try again.');
-                    }
-
-                    eventHub.$emit('MRWidgetUpdateRequested');
-                    stopPolling();
-                  }
-                })
-                .catch(() => {
-                  this.isMakingRequest = false;
-                  Flash('Something went wrong. Please try again.');
-                  stopPolling();
-                });
-            });
+            simplePoll(this.checkRebaseStatus);
           })
           .catch((error) => {
             this.rebasingError = error.merge_error;
             this.isMakingRequest = false;
             Flash('Something went wrong. Please try again.');
+          });
+      },
+      checkRebaseStatus(continuePolling, stopPolling) {
+        this.service.poll()
+          .then(res => res.json())
+          .then((res) => {
+            if (res.rebase_in_progress) {
+              continuePolling();
+            } else {
+              this.isMakingRequest = false;
+
+              if (res.merge_error && res.merge_error.length) {
+                this.rebasingError = res.merge_error;
+                Flash('Something went wrong. Please try again.');
+              }
+
+              eventHub.$emit('MRWidgetUpdateRequested');
+              stopPolling();
+            }
+          })
+          .catch(() => {
+            this.isMakingRequest = false;
+            Flash('Something went wrong. Please try again.');
+            stopPolling();
           });
       },
     },
