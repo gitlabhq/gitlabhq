@@ -1,36 +1,17 @@
 <script>
-  const diffFile = {
-    submodule: false,
-    submoduleLink: '<a href="/bha">Submodule</a>', // submodule_link(blob, diff_file.content_sha, diff_file.repository)
-    url: '',
-    renamedFile: false,
-    deletedFile: false,
-    modeChanged: false,
-    bMode: false, // TODO: check type
-    filePath: '/some/file/path',
-    oldPath: '',
-    newPath: '',
-    fileTypeIcon: 'fa-file-image-o', // file_type_icon_class('file', diff_file.b_mode, diff_file.file_path)
-  }
-
-  const CopyToClipboardBtn = {
-    template: '<button>Copy</button>'
-  }
-
+  import ClipboardButton from '~/vue_shared/components/clipboard_button.vue';
   import Icon from '~/vue_shared/components/icon.vue';
 
   export default {
     props: {
+      diffFile: {
+        type: Object,
+        required: true,
+      },
     },
     components: {
+      ClipboardButton,
       Icon,
-      CopyToClipboardBtn,
-    },
-    data() {
-      return {
-        showToggle: false,
-        diffFile,
-      };
     },
     computed: {
 
@@ -40,28 +21,25 @@
 
 <template>
   <div class="file-header-content">
-    <i
-      class="fa diff-toggle-caret fa-fw"
-      v-if="showToggle"
-    />
     <div
       v-if="diffFile.submodule"
     >
       <span>
         <Icon name="archive" />
         <strong
-          v-html="submoduleLink"
+          v-html="diffFile.submoduleLink"
           class="file-title-name"
         />
-        <!-- TODO: this onclick: = copy_file_path_button(blob.path) -->
-        <Icon name="copy" />
+        <clipboard-button
+          text="Copy file path to clipboard"
+          :title="diffFile.submoduleLink"
+        />
       </span>
     </div>
     <component
       v-else
       is="a"
     >
-      <!-- Icon :name="diffFile.fileTypeIcon" / -->
       <i class="fa fw" :class="diffFile.fileTypeIcon" />
       <span v-if="diffFile.renamedFile">
         <strong
@@ -93,12 +71,13 @@
         </span>
       </strong>
 
-      <copy-to-clipboard-btn
+      <clipboard-button
+        title="Copy file path to clipboard"
         :text="diffFile.filePath"
       />
 
-      <small v-if="diffFile.modeChanged">
-        #{diffFile.aMode} → #{diffFile.bMode}
+      <small v-if="diffFile.modeChanged" ref="fileMode">
+        {{diffFile.aMode}} → {{diffFile.bMode}}
       </small>
     </component>
   </div>
