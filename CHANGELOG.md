@@ -2,6 +2,17 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.0.7 (2017-12-07)
+
+### Security (5 changes)
+
+- Fix e-mail address disclosure through member search fields
+- Prevent creating issues through API when user does not have permissions
+- Prevent an information disclosure in the Groups API
+- Fix user without access to private Wiki being able to see it on the project page
+- Fix Cross-Site Scripting (XSS) vulnerability while editing a comment
+
+
 ## 10.0.6 (2017-11-08)
 
 - [SECURITY] Add X-Content-Type-Options header in API responses to make it more difficult to find other vulnerabilities.
