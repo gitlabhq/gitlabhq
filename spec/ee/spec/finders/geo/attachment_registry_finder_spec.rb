@@ -11,10 +11,10 @@ describe Geo::AttachmentRegistryFinder, :geo do
   let(:synced_project) { create(:project, group: synced_group) }
   let(:unsynced_project) { create(:project, group: unsynced_group) }
 
-  let(:upload_1) { create(:upload, model: synced_group) }
-  let(:upload_2) { create(:upload, model: unsynced_group) }
-  let(:upload_3) { create(:upload, :issuable_upload, model: synced_project) }
-  let(:upload_4) { create(:upload, model: unsynced_project) }
+  let!(:upload_1) { create(:upload, model: synced_group) }
+  let!(:upload_2) { create(:upload, model: unsynced_group) }
+  let!(:upload_3) { create(:upload, :issuable_upload, model: synced_project) }
+  let!(:upload_4) { create(:upload, model: unsynced_project) }
   let(:upload_5) { create(:upload, model: synced_project) }
   let(:upload_6) { create(:upload, :personal_snippet) }
   let(:upload_7) { create(:upload, model: synced_subgroup) }
@@ -112,6 +112,30 @@ describe Geo::AttachmentRegistryFinder, :geo do
         end
       end
     end
+
+    describe '#find_unsynced_attachments' do
+      it 'delegates to #fdw_find_unsynced_attachments' do
+        expect(subject).to receive(:fdw_find_unsynced_attachments).and_call_original
+
+        subject.find_unsynced_attachments(batch_size: 10)
+      end
+
+      it 'returns uploads without an entry on the tracking database' do
+        create(:geo_file_registry, :avatar, file_id: upload_1.id, success: true)
+
+        uploads = subject.find_unsynced_attachments(batch_size: 10)
+
+        expect(uploads.map(&:id)).to match_array([upload_2.id, upload_3.id, upload_4.id])
+      end
+
+      it 'excludes uploads without an entry on the tracking database' do
+        create(:geo_file_registry, :avatar, file_id: upload_1.id, success: true)
+
+        uploads = subject.find_unsynced_attachments(batch_size: 10, except_registry_ids: [upload_2.id])
+
+        expect(uploads.map(&:id)).to match_array([upload_3.id, upload_4.id])
+      end
+    end
   end
 
   context 'Legacy' do
@@ -196,6 +220,30 @@ describe Geo::AttachmentRegistryFinder, :geo do
 
           expect(failed_attachments).to match_array([upload_1, upload_3, upload_6, upload_7])
         end
+      end
+    end
+
+    describe '#find_unsynced_attachments' do
+      it 'delegates to #legacy_find_unsynced_attachments' do
+        expect(subject).to receive(:legacy_find_unsynced_attachments).and_call_original
+
+        subject.find_unsynced_attachments(batch_size: 10)
+      end
+
+      it 'returns LFS objects without an entry on the tracking database' do
+        create(:geo_file_registry, :avatar, file_id: upload_1.id, success: true)
+
+        uploads = subject.find_unsynced_attachments(batch_size: 10)
+
+        expect(uploads).to match_array([upload_2, upload_3, upload_4])
+      end
+
+      it 'excludes uploads without an entry on the tracking database' do
+        create(:geo_file_registry, :avatar, file_id: upload_1.id, success: true)
+
+        uploads = subject.find_unsynced_attachments(batch_size: 10, except_registry_ids: [upload_2.id])
+
+        expect(uploads).to match_array([upload_3, upload_4])
       end
     end
   end
