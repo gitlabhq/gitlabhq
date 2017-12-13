@@ -343,8 +343,6 @@ a > code {
   @extend .ref-name;
 }
 
-@include new-style-dropdown('.git-revision-dropdown');
-
 /**
  * Apply Markdown typography
  *

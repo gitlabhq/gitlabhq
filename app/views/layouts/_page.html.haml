@@ -1,8 +1,12 @@
-.page-with-sidebar{ class: page_with_sidebar_class }
+.layout-page{ class: page_with_sidebar_class }
   - if defined?(nav) && nav
     = render "layouts/nav/sidebar/#{nav}"
+<<<<<<< HEAD
   .content-wrapper.page-with-new-nav
     = render 'shared/outdated_browser'
+=======
+  .content-wrapper
+>>>>>>> 2f1fd0d9bbedfec1d84550fd7fe14aebe91713aa
     .mobile-overlay
     .alert-wrapper
       = render "layouts/header/ee_license_banner"

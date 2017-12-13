@@ -477,8 +477,6 @@
 }
 
 .mr-source-target {
-  @include new-style-dropdown;
-
   display: flex;
   flex-wrap: wrap;
   justify-content: space-between;
@@ -600,8 +598,6 @@
 }
 
 .mr-version-controls {
-  @include new-style-dropdown;
-
   position: relative;
   background: $gray-light;
   color: $gl-text-color;
@@ -823,8 +819,4 @@
       }
     }
   }
-}
-
-.merge-request-form {
-  @include new-style-dropdown;
 }

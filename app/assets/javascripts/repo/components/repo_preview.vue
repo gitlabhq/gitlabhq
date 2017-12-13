@@ -1,6 +1,7 @@
 <script>
 /* global LineHighlighter */
 import { mapGetters } from 'vuex';
+import syntaxHighlight from '../../syntax_highlight';
 
 export default {
   computed: {
@@ -13,7 +14,7 @@ export default {
   },
   methods: {
     highlightFile() {
-      $(this.$el).find('.file-content').syntaxHighlight();
+      syntaxHighlight($(this.$el).find('.file-content'));
     },
   },
   mounted() {

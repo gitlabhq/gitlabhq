@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-# Disable transactions via :truncate method because a foreign table
+# Disable transactions via :delete method because a foreign table
 # can't see changes inside a transaction of a different connection.
-describe Geo::FilesExpireService, :geo, :truncate do
+describe Geo::FilesExpireService, :geo, :delete do
   let(:project) { create(:project) }
   let!(:old_full_path) { project.full_path }
   subject { described_class.new(project, old_full_path) }

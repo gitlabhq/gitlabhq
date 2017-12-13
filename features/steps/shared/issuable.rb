@@ -3,7 +3,7 @@ module SharedIssuable
   include WaitForRequests
 
   def edit_issuable
-    find('.issuable-edit', visible: true).click
+    find('.js-issuable-edit', visible: true).click
   end
 
   step 'project "Community" has "Community issue" open issue' do

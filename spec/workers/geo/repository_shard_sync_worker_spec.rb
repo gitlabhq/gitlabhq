@@ -1,8 +1,8 @@
 require 'spec_helper'
 
-# Disable transactions via :truncate method because a foreign table
+# Disable transactions via :delete method because a foreign table
 # can't see changes inside a transaction of a different connection.
-describe Geo::RepositoryShardSyncWorker, :geo, :truncate, :clean_gitlab_redis_cache do
+describe Geo::RepositoryShardSyncWorker, :geo, :delete, :clean_gitlab_redis_cache do
   include ::EE::GeoHelpers
 
   let!(:primary) { create(:geo_node, :primary) }
@@ -171,6 +171,15 @@ describe Geo::RepositoryShardSyncWorker, :geo, :truncate, :clean_gitlab_redis_ca
         expect(Geo::ProjectSyncWorker).to receive(:perform_async).with(project_in_synced_group.id, anything)
         expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(missing_not_synced.id, anything)
         expect(Geo::ProjectSyncWorker).not_to receive(:perform_async).with(missing_dirty.id, anything)
+
+        Sidekiq::Testing.inline! { subject.perform(shard_name) }
+      end
+    end
+
+    context 'number of scheduled jobs exceeds capacity' do
+      it 'schedules 0 jobs' do
+        is_expected.to receive(:scheduled_job_ids).and_return(1..1000).at_least(:once)
+        is_expected.not_to receive(:schedule_job)
 
         Sidekiq::Testing.inline! { subject.perform(shard_name) }
       end

@@ -21,6 +21,10 @@ RSpec.configure do |config|
     DatabaseCleaner.strategy = :truncation, { except: %w[licenses] }
   end
 
+  config.before(:each, :delete) do
+    DatabaseCleaner.strategy = :deletion, { except: %w[licenses] }
+  end
+
   config.before(:each, :migration) do
     DatabaseCleaner.strategy = :truncation, { cache_tables: false }
   end

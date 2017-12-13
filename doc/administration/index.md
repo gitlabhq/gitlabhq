@@ -33,7 +33,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - [Usage statistics, version check, and usage ping](../user/admin_area/settings/usage_statistics.md): Enable or disable information about your instance to be sent to GitLab, Inc.
 - [Polling](polling.md): Configure how often the GitLab UI polls for updates.
 - [GitLab Pages configuration](pages/index.md): Enable and configure GitLab Pages.
-- [GitLab Pages configuration for installations from the source](pages/source.md): Enable and configure GitLab Pages on
+- [GitLab Pages configuration for GitLab source installations](pages/source.md): Enable and configure GitLab Pages on
 [source installations](../install/installation.md#installation-from-source).
 - [Environment variables](environment_variables.md): Supported environment variables that can be used to override their defaults values in order to configure GitLab.
 - **(EES/EEP)** [Elasticsearch](../integration/elasticsearch.md): Enable Elasticsearch to empower GitLab's Advanced Global Search. Useful when you deal with a huge amount of data.
@@ -90,13 +90,13 @@ server with IMAP authentication on Ubuntu, to be used with Reply by email.
 - [Issue closing pattern](issue_closing_pattern.md): Customize how to close an issue from commit messages.
 - [Gitaly](gitaly/index.md): Configuring Gitaly, GitLab's Git repository storage service.
 - [Default labels](../user/admin_area/labels.html): Create labels that will be automatically added to every new project.
-- **(EES/EEP)** [Limit project size](../user/admin_area/settings/account_and_limit_settings.md): Set a hard limit for your repositories' size.
 
 ### Repository settings
 
 - [Repository checks](repository_checks.md): Periodic Git repository checks.
 - [Repository storage paths](repository_storage_paths.md): Manage the paths used to store repositories.
 - [Repository storage rake tasks](raketasks/storage.md): A collection of rake tasks to list and migrate existing projects and attachments associated with it from Legacy storage to Hashed storage.
+- **(EES/EEP)** [Limit repository size](../user/admin_area/settings/account_and_limit_settings.md): Set a hard limit for your repositories' size.
 
 ## Continuous Integration settings
 
