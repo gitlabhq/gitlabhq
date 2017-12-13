@@ -1,5 +1,4 @@
 import Vue from 'vue';
-import * as urlUtils from '~/lib/utils/url_utility';
 import store from '~/ide/stores';
 import service from '~/ide/services';
 import { file, resetStore } from '../../helpers';
@@ -193,6 +192,13 @@ describe('Multi-file store tree actions', () => {
   });
 
   describe('createTempTree', () => {
+    beforeEach(() => {
+      store.state.trees['abcproject/mybranch'] = {
+        tree: [],
+      };
+      projectTree = store.state.trees['abcproject/mybranch'];
+    });
+
     it('creates temp tree', (done) => {
       store.dispatch('createTempTree', {
         projectId: store.state.currentProjectId,
