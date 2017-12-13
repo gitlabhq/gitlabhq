@@ -1,13 +1,12 @@
 class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migration
   DOWNTIME = false
-  DEFAULT_KUBERNETES_SERVICE_CLUSTER_NAME = 'KubernetesService'
+  DEFAULT_KUBERNETES_SERVICE_CLUSTER_NAME = 'KubernetesService'.freeze
 
   class Cluster < ActiveRecord::Base
     self.table_name = 'clusters'
 
     has_many :cluster_projects, class_name: 'ClustersProject'
     has_many :projects, through: :cluster_projects, class_name: 'Project'
-    has_one :provider_gcp, class_name: 'ProvidersGcp'
     has_one :platform_kubernetes, class_name: 'PlatformsKubernetes'
 
     attr_encrypted :token,
@@ -15,7 +14,6 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
       key: Gitlab::Application.secrets.db_key_base,
       algorithm: 'aes-256-cbc'
 
-    accepts_nested_attributes_for :provider_gcp
     accepts_nested_attributes_for :platform_kubernetes
 
     enum platform_type: {
@@ -31,8 +29,8 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
   class Project < ActiveRecord::Base
     self.table_name = 'projects'
 
-    has_one :cluster_project, class_name: 'ClustersProject'
-    has_one :cluster, through: :cluster_project, class_name: 'Cluster'
+    has_many :cluster_projects, class_name: 'ClustersProject'
+    has_many :clusters, through: :cluster_projects, class_name: 'Cluster'
   end
 
   class Service < ActiveRecord::Base
@@ -42,20 +40,30 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
 
     belongs_to :project, class_name: 'Project'
 
+    # 10.1 ~ 10.2
     # When users create a cluster, KubernetesService is automatically synchronized
     # with Platforms::Kubernetes due to delegate Kubernetes specific logic.
     # We only target unmanaged KubernetesService records.
+    #
+    # 10.3
+    # We no longer create KubernetesService because Platforms::Kubernetes has the specific logic.
+    #
+    # "unmanaged" means "unmanaged by Platforms::Kubernetes(New archetecture)"
+    #
+    # "cluster_projects.project_id IS NULL" -> it's not copied from KubernetesService
+    # "services.properties NOT LIKE CONCAT('%', cluster_platforms_kubernetes.api_url, '%')" -> KubernetesService has unique configuration which is not included in Platforms::Kubernetes
     scope :unmanaged_kubernetes_service, -> do
-      joins('INNER JOIN projects ON projects.id = services.project_id ' \
-        'INNER JOIN cluster_projects ON projects.id = cluster_projects.project_id ' \
-        'INNER JOIN clusters ON cluster_projects.cluster_id = clusters.id ' \
-        'INNER JOIN cluster_platforms_kubernetes ON cluster_platforms_kubernetes.cluster_id = clusters.id')
-      .where("services.category = 'deployment' AND services.type = 'KubernetesService' " \
-        "AND ( " \
-        "    cluster_projects.project_id IS NULL " \
-        "    OR " \
-        "    services.properties NOT LIKE CONCAT('%', cluster_platforms_kubernetes.api_url, '%') " \
-        ") ")
+      joins('INNER JOIN projects ON projects.id = services.project_id')
+      .where("services.category = 'deployment'")
+      .where("services.type = 'KubernetesService'")
+      .where("services.template = FALSE")
+      .where("NOT EXISTS (?)",
+        PlatformsKubernetes
+          .joins('INNER JOIN cluster_projects ON cluster_projects.project_id = projects.id')
+          .where('cluster_projects.cluster_id = cluster_platforms_kubernetes.cluster_id')
+          .where("services.properties LIKE CONCAT('%', cluster_platforms_kubernetes.api_url, '%')")
+          .select('1') )
+      .order('services.project_id')
     end
   end
 
@@ -94,8 +102,10 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
             token: kubernetes_service.token # encrypted_token and encrypted_token_iv
           } )
 
-      # Disable the service, so that new cluster archetecture is going to be used
-      kubernetes_service.updated(active: false)
+      # Disable the KubernetesService. Platforms::Kubernetes will be used from next time.
+      kubernetes_service.active = false
+      kubernetes_service.propaties.merge!( { migrated: true } )
+      kubernetes_service.save!
     end
   end
 
