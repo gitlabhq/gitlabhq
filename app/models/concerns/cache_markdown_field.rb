@@ -85,8 +85,7 @@ module CacheMarkdownField
   def cached_html_up_to_date?(markdown_field)
     html_field = cached_markdown_fields.html_field(markdown_field)
 
-    cached = cached_html_for(markdown_field).present? && __send__(markdown_field).present? # rubocop:disable GitlabSecurity/PublicSend
-    return false unless cached
+    return false if cached_html_for(markdown_field).nil? && !__send__(markdown_field).nil? # rubocop:disable GitlabSecurity/PublicSend
 
     markdown_changed = attribute_changed?(markdown_field) || false
     html_changed = attribute_changed?(html_field) || false

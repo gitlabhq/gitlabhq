@@ -132,11 +132,9 @@ describe Ci::Build do
   end
 
   describe '#artifacts?' do
+    subject { build.artifacts? }
+
     context 'when new artifacts are used' do
-      let(:build) { create(:ci_build, :artifacts) }
-
-      subject { build.artifacts? }
-
       context 'artifacts archive does not exist' do
         let(:build) { create(:ci_build) }
 
@@ -144,25 +142,19 @@ describe Ci::Build do
       end
 
       context 'artifacts archive exists' do
+        let(:build) { create(:ci_build, :artifacts) }
+
         it { is_expected.to be_truthy }
 
         context 'is expired' do
-          let!(:build) { create(:ci_build, :artifacts, :expired) }
+          let(:build) { create(:ci_build, :artifacts, :expired) }
 
           it { is_expected.to be_falsy }
-        end
-
-        context 'is not expired' do
-          it { is_expected.to be_truthy }
         end
       end
     end
 
     context 'when legacy artifacts are used' do
-      let(:build) { create(:ci_build, :legacy_artifacts) }
-
-      subject { build.artifacts? }
-
       context 'artifacts archive does not exist' do
         let(:build) { create(:ci_build) }
 
@@ -170,16 +162,14 @@ describe Ci::Build do
       end
 
       context 'artifacts archive exists' do
+        let(:build) { create(:ci_build, :legacy_artifacts) }
+
         it { is_expected.to be_truthy }
 
         context 'is expired' do
-          let!(:build) { create(:ci_build, :legacy_artifacts, :expired) }
+          let(:build) { create(:ci_build, :legacy_artifacts, :expired) }
 
           it { is_expected.to be_falsy }
-        end
-
-        context 'is not expired' do
-          it { is_expected.to be_truthy }
         end
       end
     end

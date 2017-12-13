@@ -17,6 +17,7 @@ import Diff from './diff';
 import {
   localTimeAgo,
 } from './lib/utils/datetime_utility';
+import syntaxHighlight from './syntax_highlight';
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -298,7 +299,7 @@ import {
           }
 
           localTimeAgo($('.js-timeago', 'div#diffs'));
-          $('#diffs .js-syntax-highlight').syntaxHighlight();
+          syntaxHighlight($('#diffs .js-syntax-highlight'));
 
           if (this.diffViewType() === 'parallel' && this.isDiffAction(this.currentAction)) {
             this.expandViewContainer();

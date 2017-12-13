@@ -10,6 +10,27 @@ import Translate from '../vue_shared/translate';
 
 Vue.use(Translate);
 
+function mountAssigneesComponent(mediator) {
+  const el = document.getElementById('js-vue-sidebar-assignees');
+
+  if (!el) return;
+
+  // eslint-disable-next-line no-new
+  new Vue({
+    el,
+    components: {
+      SidebarAssignees,
+    },
+    render: createElement => createElement('sidebar-assignees', {
+      props: {
+        mediator,
+        field: el.dataset.field,
+        signedIn: el.hasAttribute('data-signed-in'),
+      },
+    }),
+  });
+}
+
 function mountConfidentialComponent(mediator) {
   const el = document.getElementById('js-confidential-entry-point');
 
@@ -49,9 +70,10 @@ function mountLockComponent(mediator) {
   }).$mount(el);
 }
 
-function mountParticipantsComponent() {
+function mountParticipantsComponent(mediator) {
   const el = document.querySelector('.js-sidebar-participants-entry-point');
 
+  // eslint-disable-next-line no-new
   if (!el) return;
 
   // eslint-disable-next-line no-new
@@ -60,11 +82,15 @@ function mountParticipantsComponent() {
     components: {
       sidebarParticipants,
     },
-    render: createElement => createElement('sidebar-participants', {}),
+    render: createElement => createElement('sidebar-participants', {
+      props: {
+        mediator,
+      },
+    }),
   });
 }
 
-function mountSubscriptionsComponent() {
+function mountSubscriptionsComponent(mediator) {
   const el = document.querySelector('.js-sidebar-subscriptions-entry-point');
 
   if (!el) return;
@@ -75,22 +101,35 @@ function mountSubscriptionsComponent() {
     components: {
       sidebarSubscriptions,
     },
-    render: createElement => createElement('sidebar-subscriptions', {}),
+    render: createElement => createElement('sidebar-subscriptions', {
+      props: {
+        mediator,
+      },
+    }),
   });
 }
 
-function mount(mediator) {
-  const sidebarAssigneesEl = document.getElementById('js-vue-sidebar-assignees');
-  // Only create the sidebarAssignees vue app if it is found in the DOM
-  // We currently do not use sidebarAssignees for the MR page
-  if (sidebarAssigneesEl) {
-    new Vue(SidebarAssignees).$mount(sidebarAssigneesEl);
-  }
+function mountTimeTrackingComponent() {
+  const el = document.getElementById('issuable-time-tracker');
 
+  if (!el) return;
+
+  // eslint-disable-next-line no-new
+  new Vue({
+    el,
+    components: {
+      SidebarTimeTracking,
+    },
+    render: createElement => createElement('sidebar-time-tracking', {}),
+  });
+}
+
+export function mountSidebar(mediator) {
+  mountAssigneesComponent(mediator);
   mountConfidentialComponent(mediator);
   mountLockComponent(mediator);
-  mountParticipantsComponent();
-  mountSubscriptionsComponent();
+  mountParticipantsComponent(mediator);
+  mountSubscriptionsComponent(mediator);
 
   new SidebarMoveIssue(
     mediator,
@@ -98,7 +137,9 @@ function mount(mediator) {
     $('.js-move-issue-confirmation-button'),
   ).init();
 
-  new Vue(SidebarTimeTracking).$mount('#issuable-time-tracker');
+  mountTimeTrackingComponent();
 }
 
-export default mount;
+export function getSidebarOptions() {
+  return JSON.parse(document.querySelector('.js-sidebar-options').innerHTML);
+}

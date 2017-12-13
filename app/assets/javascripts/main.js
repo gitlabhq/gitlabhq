@@ -60,15 +60,10 @@ import './notifications_dropdown';
 import './notifications_form';
 import './pager';
 import './preview_markdown';
-import './project_find_file';
 import './project_import';
 import './projects_dropdown';
-import './projects_list';
-import './syntax_highlight';
 import './render_gfm';
 import './right_sidebar';
-import './search';
-import './search_autocomplete';
 import initBreadcrumbs from './breadcrumb';
 
 import './dispatcher';

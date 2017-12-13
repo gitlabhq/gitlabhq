@@ -3,8 +3,6 @@
 }
 
 .navbar-gitlab {
-  @include new-style-dropdown;
-
   &.navbar-gitlab {
     padding: 0 16px;
     z-index: 1000;

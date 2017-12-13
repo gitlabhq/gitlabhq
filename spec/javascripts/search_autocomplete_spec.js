@@ -1,7 +1,7 @@
 /* eslint-disable space-before-function-paren, max-len, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign, comma-dangle, object-shorthand, prefer-template, quotes, new-parens, vars-on-top, new-cap, max-len */
 
 import '~/gl_dropdown';
-import '~/search_autocomplete';
+import SearchAutocomplete from '~/search_autocomplete';
 import '~/lib/utils/common_utils';
 import * as urlUtils from '~/lib/utils/url_utility';
 
@@ -128,7 +128,7 @@ import * as urlUtils from '~/lib/utils/url_utility';
       window.gon.current_user_id = userId;
       window.gon.current_username = userName;
 
-      return widget = new gl.SearchAutocomplete;
+      return widget = new SearchAutocomplete();
     });
 
     afterEach(function() {

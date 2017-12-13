@@ -27,5 +27,13 @@ describe Gitlab::View::Presenter::Factory do
 
       expect(presenter).to be_a(Ci::BuildPresenter)
     end
+
+    it 'uses the presenter_class if given on #initialize' do
+      MyCustomPresenter = Class.new(described_class)
+
+      presenter = described_class.new(build, presenter_class: MyCustomPresenter).fabricate!
+
+      expect(presenter).to be_a(MyCustomPresenter)
+    end
   end
 end

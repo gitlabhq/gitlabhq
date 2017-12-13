@@ -470,7 +470,8 @@
       }
     }
 
-    .milestone-title span {
+    .milestone-title span,
+    .collapse-truncated-title {
       @include str-truncated(100%);
       display: block;
       margin: 0 4px;
@@ -484,12 +485,6 @@
       .avatar {
         border-color: rgba($avatar-border, .2);
       }
-    }
-  }
-
-  .dropdown-content {
-    a:hover {
-      color: inherit;
     }
   }
 
@@ -509,10 +504,6 @@
   .issuable-sidebar {
     height: calc(100% - #{$header-height} - #{$performance-bar-height});
   }
-}
-
-.sidebar-move-issue-dropdown {
-  @include new-style-dropdown;
 }
 
 .sidebar-move-issue-confirmation-button {

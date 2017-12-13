@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const initialDataEl = document.getElementById('js-issuable-app-initial-data');
   const props = JSON.parse(initialDataEl.innerHTML.replace(/&quot;/g, '"'));
 
-  $('.issuable-edit').on('click', (e) => {
+  $('.js-issuable-edit').on('click', (e) => {
     e.preventDefault();
 
     eventHub.$emit('open.form');

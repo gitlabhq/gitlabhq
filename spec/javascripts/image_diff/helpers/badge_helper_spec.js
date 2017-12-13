@@ -89,15 +89,8 @@ describe('badge helper', () => {
     });
 
     it('should create icon comment button', () => {
-      const iconEl = buttonEl.querySelector('i');
+      const iconEl = buttonEl.querySelector('svg');
       expect(iconEl).toBeDefined();
-      expect(iconEl.classList.contains('fa')).toEqual(true);
-      expect(iconEl.classList.contains('fa-comment-o')).toEqual(true);
-    });
-
-    it('should have .image-comment-badge.inverted in button class', () => {
-      expect(buttonEl.classList.contains('image-comment-badge')).toEqual(true);
-      expect(buttonEl.classList.contains('inverted')).toEqual(true);
     });
   });
 
