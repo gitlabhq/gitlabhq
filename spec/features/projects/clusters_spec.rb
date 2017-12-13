@@ -82,6 +82,7 @@ feature 'Clusters', :js do
     before do
       visit project_clusters_path(project)
 
+      click_link 'Add cluster'
       click_link 'Create on GKE'
     end
 
