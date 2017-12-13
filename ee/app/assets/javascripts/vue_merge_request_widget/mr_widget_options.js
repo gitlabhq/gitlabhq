@@ -321,7 +321,7 @@ export default {
         />
       <collapsible-section
         class="js-docker-widget"
-        v-if="shouldRenderDockerReport
+        v-if="shouldRenderDockerReport"
         type="codequality"
         :status="dockerStatus"
         loading-text="Loading clair report"
