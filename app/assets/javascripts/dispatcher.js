@@ -15,7 +15,7 @@ import GroupLabelSubscription from './group_label_subscription';
 import BuildArtifacts from './build_artifacts';
 import CILintEditor from './ci_lint_editor';
 import groupsSelect from './groups_select';
-/* global Search */
+import Search from './search';
 /* global Admin */
 import NamespaceSelect from './namespace_select';
 import NewCommitForm from './new_commit_form';
@@ -24,7 +24,7 @@ import projectAvatar from './project_avatar';
 /* global MergeRequest */
 import Compare from './compare';
 import initCompareAutocomplete from './compare_autocomplete';
-/* global ProjectFindFile */
+import ProjectFindFile from './project_find_file';
 import ProjectNew from './project_new';
 import projectImport from './project_import';
 import Labels from './labels';
@@ -91,6 +91,7 @@ import DueDateSelectors from './due_date_select';
 import Diff from './diff';
 import ProjectLabelSubscription from './project_label_subscription';
 import ProjectVariables from './project_variables';
+import SearchAutocomplete from './search_autocomplete';
 
 (function() {
   var Dispatcher;
@@ -683,7 +684,7 @@ import ProjectVariables from './project_variables';
     Dispatcher.prototype.initSearch = function() {
       // Only when search form is present
       if ($('.search').length) {
-        return new gl.SearchAutocomplete();
+        return new SearchAutocomplete();
       }
     };
 
