@@ -35,6 +35,7 @@ import Flash from './flash';
 import CommitsList from './commits';
 import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
+import SecretValues from './behaviors/secret_values';
 import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
 import GroupsList from './groups_list';
@@ -90,7 +91,6 @@ import memberExpirationDate from './member_expiration_date';
 import DueDateSelectors from './due_date_select';
 import Diff from './diff';
 import ProjectLabelSubscription from './project_label_subscription';
-import ProjectVariables from './project_variables';
 import SearchAutocomplete from './search_autocomplete';
 import Activities from './activities';
 
@@ -527,8 +527,18 @@ import Activities from './activities';
         case 'projects:settings:ci_cd:show':
           // Initialize expandable settings panels
           initSettingsPanels();
+
+          const runnerToken = document.querySelector('.js-secret-runner-token');
+          if (runnerToken) {
+            const runnerTokenSecretValue = new SecretValues(runnerToken);
+            runnerTokenSecretValue.init();
+          }
         case 'groups:settings:ci_cd:show':
-          new ProjectVariables();
+          const secretVariableTable = document.querySelector('.js-secret-variable-table');
+          if (secretVariableTable) {
+            const secretVariableTableValues = new SecretValues(secretVariableTable);
+            secretVariableTableValues.init();
+          }
           break;
         case 'ci:lints:create':
         case 'ci:lints:show':
