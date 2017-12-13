@@ -61,8 +61,8 @@ export const createNewNote = ({ commit }, { endpoint, data }) => service
 export const removePlaceholderNotes = ({ commit }) =>
   commit(types.REMOVE_PLACEHOLDER_NOTES);
 
-export const resolveNote = ({ commit }, { endpoint, note }) => service
-  .resolveNote(endpoint, note)
+export const toggleResolveNote = ({ commit }, { endpoint, isResolved }) => service
+  .toggleResolveNote(endpoint, isResolved)
   .then(res => res.json());
 
 export const saveNote = ({ commit, dispatch }, noteData) => {

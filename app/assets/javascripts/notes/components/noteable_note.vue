@@ -54,7 +54,7 @@
       ...mapActions([
         'deleteNote',
         'updateNote',
-        'resolveNote',
+        'toggleResolveNote',
         'scrollToNoteIfNeeded',
       ]),
       editHandler() {
@@ -108,14 +108,17 @@
           });
       },
       resolveHandler() {
-        // FIXME: Handle this request properly.
         this.isResolving = true;
-        const endpoint = `${this.note.path}/resolve`;
+        const endpoint = `${this.note.path}/resolve`; // FIXME -- @fatihacet
+        const isResolved = this.note.resolved;
 
-        this.resolveNote({ endpoint })
+        this.toggleResolveNote({ endpoint, isResolved })
           .then((res) => {
             this.isResolving = false;
-            this.$set(this.note, 'is_resolved', true);
+            // FIXME -- @fatihacet
+            // Request should return JSON with full note
+            // We should also update the resolved_by and other properties too
+            this.note.resolved = !this.note.resolved;
           })
           .catch((res) => {
             const msg = 'Something went wrong while resolving this discussion. Please try again.';
@@ -183,7 +186,10 @@
             :can-delete="note.current_user.can_edit"
             :can-report-as-abuse="canReportAsAbuse"
             :report-abuse-path="note.report_abuse_path"
-            :is-resolved="note.is_resolved"
+            :resolvable="note.resolvable"
+            :is-resolved="note.resolved"
+            :is-resolving="isResolving"
+            :resolved-by="note.resolved_by"
             @handleEdit="editHandler"
             @handleDelete="deleteHandler"
             @handleResolve="resolveHandler"

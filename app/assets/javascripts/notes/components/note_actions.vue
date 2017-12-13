@@ -38,15 +38,24 @@
         type: Boolean,
         required: true,
       },
-      canResolve: { // FIXME
-        type: Boolean,
-        required: false,
-        default: true,
-      },
-      isResolved: { // FIXME
+      resolvable: {
         type: Boolean,
         required: false,
         default: false,
+      },
+      isResolved: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+      isResolving: {
+        type: Boolean,
+        required: false,
+        default: false,
+      },
+      resolvedBy: {
+        type: Object,
+        required: false,
       },
       canReportAsAbuse: {
         type: Boolean,
@@ -75,8 +84,14 @@
       currentUserId() {
         return this.getUserDataByProp('id');
       },
-      resolveButtonTitle() { // FIXME
-        return 'Mark as resolved';
+      resolveButtonTitle() {
+        let title = 'Mark as resolved';
+
+        if (this.resolvedBy) {
+          title = `Resolved by ${this.resolvedBy.name}`;
+        }
+
+        return title;
       },
     },
     methods: {
@@ -108,22 +123,27 @@
       v-if="accessLevel"
       class="note-role user-access-role">{{accessLevel}}</span>
     <div
-      v-if="canResolve"
+      v-if="resolvable"
       class="note-actions-item">
       <button
         v-tooltip
         @click="onResolve"
-        :class="{ 'is-disabled': !canResolve, 'is-active': isResolved }"
+        :class="{ 'is-disabled': !resolvable, 'is-active': isResolved }"
         :title="resolveButtonTitle"
         :aria-label="resolveButtonTitle"
         type="button"
         class="line-resolve-btn note-action-button">
-        <div
-          v-if="isResolved"
-          v-html="resolvedDiscussionSvg"></div>
-        <div
+        <template v-if="!isResolving">
+          <div
+            v-if="isResolved"
+            v-html="resolvedDiscussionSvg"></div>
+          <div
+            v-else
+            v-html="resolveDiscussionSvg"></div>
+        </template>
+        <loading-icon
           v-else
-          v-html="resolveDiscussionSvg"></div>
+          :inline="true"  />
       </button>
     </div>
     <div

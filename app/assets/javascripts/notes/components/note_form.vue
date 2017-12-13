@@ -31,7 +31,7 @@
         type: Boolean,
         required: true,
       },
-      canResolve: { // FIXME
+      canResolve: { // FIXME -- @fatihacet
         type: Boolean,
         required: false,
         default: true,

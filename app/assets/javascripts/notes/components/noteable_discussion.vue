@@ -74,16 +74,16 @@
         return null;
       },
       isResolvable() {
-        return true; // FIXME
+        return true; // FIXME -- @fatihacet
       },
       isResolved() {
-        return false; // FIXME
+        return false; // FIXME -- @fatihacet
       },
       resolveButtonTitle() {
-        return 'Resolve discussion'; // FIXME
+        return 'Resolve discussion'; // FIXME -- @fatihacet
       },
       resolveWithIssuePath() {
-        return '#'; // FIXME
+        return '#'; // FIXME -- @fatihacet
       },
     },
     methods: {
