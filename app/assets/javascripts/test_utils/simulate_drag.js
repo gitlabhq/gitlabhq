@@ -106,9 +106,9 @@ export default function simulateDrag(options) {
 
   // New Sortable needs a little bit of treshhold
   if (options.to.index < options.from.index) {
-    toRect.cy -= 20;
+    toRect.cy -= 50;
   } else {
-    toRect.cy += 20;
+    toRect.cy += 50;
   }
   if (options.to.index === 0) {
     toRect.cy = firstRect.y - 50;
