@@ -2,9 +2,10 @@ require 'spec_helper'
 require Rails.root.join('db', 'post_migrate', '20171013104327_migrate_gcp_clusters_to_new_clusters_architectures.rb')
 
 describe MigrateGcpClustersToNewClustersArchitectures, :migration do
-  let(:project) { create(:project) }
+  let(:projects) { table(:projects) }
+  let(:project) { projects.create }
   let(:user) { create(:user) }
-  let(:service) { create(:kubernetes_service, project: project) }
+  let(:service) { create(:kubernetes_service, project_id: project.id) }
 
   context 'when cluster is being created' do
     let(:project_id) { project.id }
@@ -56,8 +57,7 @@ describe MigrateGcpClustersToNewClustersArchitectures, :migration do
       expect(cluster.provider_type).to eq('gcp')
       expect(cluster.platform_type).to eq('kubernetes')
 
-      expect(cluster.project).to eq(project)
-      expect(project.clusters).to include(cluster)
+      expect(cluster.project_ids).to include(project.id)
 
       expect(cluster.provider_gcp.cluster).to eq(cluster)
       expect(cluster.provider_gcp.status).to eq(status)
@@ -133,8 +133,7 @@ describe MigrateGcpClustersToNewClustersArchitectures, :migration do
       expect(cluster.provider_type).to eq('gcp')
       expect(cluster.platform_type).to eq('kubernetes')
 
-      expect(cluster.project).to eq(project)
-      expect(project.clusters).to include(cluster)
+      expect(cluster.project_ids).to include(project.id)
 
       expect(cluster.provider_gcp.cluster).to eq(cluster)
       expect(cluster.provider_gcp.status).to eq(status)
