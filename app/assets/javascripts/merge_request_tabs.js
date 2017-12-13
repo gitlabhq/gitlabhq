@@ -14,6 +14,7 @@ import {
 import { getLocationHash } from './lib/utils/url_utility';
 import initDiscussionTab from './image_diff/init_discussion_tab';
 import Diff from './diff';
+import syntaxHighlight from './syntax_highlight';
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -295,7 +296,7 @@ import Diff from './diff';
           }
 
           gl.utils.localTimeAgo($('.js-timeago', 'div#diffs'));
-          $('#diffs .js-syntax-highlight').syntaxHighlight();
+          syntaxHighlight($('#diffs .js-syntax-highlight'));
 
           if (this.diffViewType() === 'parallel' && this.isDiffAction(this.currentAction)) {
             this.expandViewContainer();
