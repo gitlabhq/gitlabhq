@@ -42,11 +42,11 @@ import Cookies from 'js-cookie';
       if ($thisIcon.hasClass('fa-angle-double-right')) {
         $allGutterToggleIcons.removeClass('fa-angle-double-right').addClass('fa-angle-double-left');
         $('aside.right-sidebar').removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
-        $('.page-with-sidebar').removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
+        $('.layout-page').removeClass('right-sidebar-expanded').addClass('right-sidebar-collapsed');
       } else {
         $allGutterToggleIcons.removeClass('fa-angle-double-left').addClass('fa-angle-double-right');
         $('aside.right-sidebar').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
-        $('.page-with-sidebar').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
+        $('.layout-page').removeClass('right-sidebar-collapsed').addClass('right-sidebar-expanded');
 
         if (gl.lazyLoader) gl.lazyLoader.loadCheck();
       }
@@ -173,7 +173,7 @@ import Cookies from 'js-cookie';
 
     Sidebar.prototype.setCollapseAfterUpdate = function($block) {
       $block.addClass('collapse-after-update');
-      return $('.page-with-sidebar').addClass('with-overlay');
+      return $('.layout-page').addClass('with-overlay');
     };
 
     Sidebar.prototype.onSidebarDropdownHidden = function(e) {
@@ -187,7 +187,7 @@ import Cookies from 'js-cookie';
     Sidebar.prototype.sidebarDropdownHidden = function($block) {
       if ($block.hasClass('collapse-after-update')) {
         $block.removeClass('collapse-after-update');
-        $('.page-with-sidebar').removeClass('with-overlay');
+        $('.layout-page').removeClass('with-overlay');
         return this.toggleSidebar('hide');
       }
     };

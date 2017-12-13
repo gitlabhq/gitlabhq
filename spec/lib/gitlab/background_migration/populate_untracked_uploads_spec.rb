@@ -182,13 +182,22 @@ describe Gitlab::BackgroundMigration::PopulateUntrackedUploads, :sidekiq do
     end
 
     context 'for a pre-Markdown Note attachment file path' do
-      class Note < ActiveRecord::Base
-        has_many :uploads, as: :model, dependent: :destroy
+      let(:model) { create(:note, :with_attachment) }
+      let!(:expected_upload_attrs) { Upload.where(model_type: 'Note', model_id: model.id).first.attributes.slice('path', 'uploader', 'size', 'checksum') }
+      let!(:untracked_file) { untracked_files_for_uploads.create!(path: expected_upload_attrs['path']) }
+
+      before do
+        Upload.where(model_type: 'Note', model_id: model.id).delete_all
       end
 
-      let(:model) { create(:note, :with_attachment) }
+      # Can't use the shared example because Note doesn't have an `uploads` association
+      it 'creates an Upload record' do
+        expect do
+          subject.perform(1, untracked_files_for_uploads.last.id)
+        end.to change { Upload.where(model_type: 'Note', model_id: model.id).count }.from(0).to(1)
 
-      it_behaves_like 'non_markdown_file'
+        expect(Upload.where(model_type: 'Note', model_id: model.id).first.attributes).to include(expected_upload_attrs)
+      end
     end
 
     context 'for a user avatar file path' do
