@@ -16,20 +16,26 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 
 - [Install](../install/README.md): Requirements, directory structures, and installation methods.
 - [High Availability](high_availability/README.md): Configure multiple servers for scaling or high availability.
+  - [High Availability on AWS](../university/high-availability/aws/README.md): Set up GitLab HA on Amazon AWS.
 
 ### Configuring GitLab
 
 - [Adjust your instance's timezone](../workflow/timezone.md): Customize the default time zone of GitLab.
-- [Header logo](../customization/branded_page_and_email_header.md): Change the logo on all pages and email headers.
-- [Welcome message](../customization/welcome_message.md): Add a custom welcome message to the sign-in page.
 - [System hooks](../system_hooks/system_hooks.md): Notifications when users, projects and keys are changed.
 - [Security](../security/README.md): Learn what you can do to further secure your GitLab instance.
 - [Usage statistics, version check, and usage ping](../user/admin_area/settings/usage_statistics.md): Enable or disable information about your instance to be sent to GitLab, Inc.
 - [Polling](polling.md): Configure how often the GitLab UI polls for updates.
 - [GitLab Pages configuration](pages/index.md): Enable and configure GitLab Pages.
-- [GitLab Pages configuration for installations from the source](pages/source.md): Enable and configure GitLab Pages on
+- [GitLab Pages configuration for GitLab source installations](pages/source.md): Enable and configure GitLab Pages on
 [source installations](../install/installation.md#installation-from-source).
 - [Environment variables](environment_variables.md): Supported environment variables that can be used to override their defaults values in order to configure GitLab.
+
+#### Customizing GitLab's appearance
+
+- [Header logo](../customization/branded_page_and_email_header.md): Change the logo on all pages and email headers.
+- [Branded login page](../customization/branded_login_page.md): Customize the login page with your own logo, title, and description.
+- [Welcome message](../customization/welcome_message.md): Add a custom welcome message to the sign-in page.
+- ["New Project" page](../customization/new_project_page.md): Customize the text to be displayed on the page that opens whenever your users create a new project.
 
 ### Maintaining GitLab
 
@@ -74,6 +80,7 @@ server with IMAP authentication on Ubuntu, to be used with Reply by email.
 - [Issue closing pattern](issue_closing_pattern.md): Customize how to close an issue from commit messages.
 - [Gitaly](gitaly/index.md): Configuring Gitaly, GitLab's Git repository storage service.
 - [Default labels](../user/admin_area/labels.html): Create labels that will be automatically added to every new project.
+- [Restrict the use of public or internal projects](../public_access/public_access.md#restricting-the-use-of-public-or-internal-projects): Restrict the use of visibility levels for users when they create a project or a snippet.
 
 ### Repository settings
 
