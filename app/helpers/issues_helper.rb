@@ -74,7 +74,7 @@ module IssuesHelper
     elsif item.try(:merged?)
       'status-box-merged'
     elsif item.closed?
-      'status-box-closed'
+      'status-box-mr-closed'
     elsif item.try(:upcoming?)
       'status-box-upcoming'
     else
