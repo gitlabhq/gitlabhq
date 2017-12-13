@@ -7,7 +7,7 @@
 .detail-page-header
   .detail-page-header-body
     .issuable-status-box.status-box{ class: status_box_class(@merge_request) }
-      = icon(@merge_request.state_icon_name, class: "hidden-sm hidden-md hidden-lg")
+      = sprite_icon(@merge_request.state_icon_name, size: 16, css_class: 'hidden-sm hidden-md hidden-lg')
       %span.hidden-xs
         = @merge_request.state_human_name
 
