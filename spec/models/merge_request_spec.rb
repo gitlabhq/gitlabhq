@@ -1857,4 +1857,20 @@ describe MergeRequest do
   it_behaves_like 'throttled touch' do
     subject { create(:merge_request, updated_at: 1.hour.ago) }
   end
+
+  context 'state machine transitions' do
+    describe '#unlock_mr' do
+      subject { create(:merge_request, state: 'locked', merge_jid: 123) }
+
+      it 'updates merge request head pipeline and sets merge_jid to nil' do
+        pipeline = create(:ci_empty_pipeline, project: subject.project, ref: subject.source_branch, sha: subject.source_branch_sha)
+
+        subject.unlock_mr
+
+        subject.reload
+        expect(subject.head_pipeline).to eq(pipeline)
+        expect(subject.merge_jid).to be_nil
+      end
+    end
+  end
 end
