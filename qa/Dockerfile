@@ -1,4 +1,4 @@
-FROM ruby:2.3
+FROM ruby:2.4
 LABEL maintainer "Grzegorz Bizon <grzegorz@gitlab.com>"
 ENV DEBIAN_FRONTEND noninteractive
 
