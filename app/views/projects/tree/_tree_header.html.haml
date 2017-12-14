@@ -8,7 +8,7 @@
   - if show_new_repo?
     = succeed " " do
       = link_to ide_edit_path(@project, @id), class: 'btn btn-default' do
-        Multi Edit
+        = _('Multi Edit')
         %span.label.label-primary
           Beta
 

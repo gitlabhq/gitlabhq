@@ -755,10 +755,6 @@ class Project < ActiveRecord::Base
     Gitlab::Routing.url_helpers.project_url(self)
   end
 
-  def new_merge_request_path
-    Gitlab::Routing.url_helpers.project_new_merge_request_path(self, merge_request: { source_branch: '' })
-  end
-
   def new_issuable_address(author, address_type)
     return unless Gitlab::IncomingEmail.supports_issue_creation? && author
 

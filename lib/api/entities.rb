@@ -174,7 +174,10 @@ module API
       expose :runners_token, if: lambda { |_project, options| options[:user_can_admin_project] }
       expose :public_builds, as: :public_jobs
       expose :ci_config_path
-      expose :new_merge_request_path
+      expose :new_merge_request_path do |project|
+        Gitlab::Routing.url_helpers.project_new_merge_request_path(project, merge_request: { source_branch: '' })
+      end
+ 
       expose :shared_with_groups do |project, options|
         SharedGroup.represent(project.project_group_links, options)
       end
