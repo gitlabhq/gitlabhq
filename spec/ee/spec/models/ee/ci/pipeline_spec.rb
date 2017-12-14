@@ -23,7 +23,7 @@ describe Ci::Pipeline do
   }.freeze
 
   ARTIFACTS_METHODS.each do |method, filename|
-    describe "##{method}codeclimate_artifact" do
+    describe method.to_s do
       context 'has corresponding job' do
         let!(:build) do
           create(
