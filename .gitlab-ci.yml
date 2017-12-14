@@ -68,11 +68,10 @@ stages:
     - redis:alpine
     - docker.elastic.co/elasticsearch/elasticsearch:5.5.2
 
-.use-pg-9-6: &use-pg-9-6
+.use-pg-9-6-no-elasticsearch: &use-pg-9-6-no-elasticsearch
   services:
     - postgres:9.6
     - redis:alpine
-    - docker.elastic.co/elasticsearch/elasticsearch:5.5.2
 
 .use-mysql: &use-mysql
   services:
@@ -124,7 +123,7 @@ stages:
 
 .rspec-geo-pg-9-6: &rspec-metadata-pg-geo
   <<: *rspec-metadata
-  <<: *use-pg-9-6
+  <<: *use-pg-9-6-no-elasticsearch
   stage: test
   script:
     - export NO_KNAPSACK=1
