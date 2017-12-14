@@ -1,6 +1,6 @@
 let hasUserDefinedProjectPath = false;
 
-const deriveProjectPathFromUrl = ($projectImportUrl, $projectPath) => {
+const deriveProjectPathFromUrl = ($projectImportUrl, projectPath) => {
   if (hasUserDefinedProjectPath) {
     return;
   }
@@ -21,7 +21,11 @@ const deriveProjectPathFromUrl = ($projectImportUrl, $projectPath) => {
   // extract everything after the last slash
   const pathMatch = /\/([^/]+)$/.exec(importUrl);
   if (pathMatch) {
-    $projectPath.val(pathMatch[1]);
+    const projectPathInputs = document.querySelectorAll(projectPath);
+    projectPathInputs.forEach((el) => {
+      const input = el;
+      input.value = pathMatch[1];
+    });
   }
 };
 
@@ -96,7 +100,7 @@ const bindEvents = () => {
     hasUserDefinedProjectPath = $projectPath.val().trim().length > 0;
   });
 
-  $projectImportUrl.keyup(() => deriveProjectPathFromUrl($projectImportUrl, $projectPath));
+  $projectImportUrl.keyup(() => deriveProjectPathFromUrl($projectImportUrl, '#project_path'));
 };
 
 document.addEventListener('DOMContentLoaded', bindEvents);

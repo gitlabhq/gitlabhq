@@ -1,0 +1,6 @@
+---
+title: Fix projectPath input not updating when adding a URL to the import project
+  page
+merge_request: 40607
+author:
+type: fixed
