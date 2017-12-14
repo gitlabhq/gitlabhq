@@ -32,7 +32,7 @@ module Gitlab
 
         def init_metrics
           metrics = {}
-          metrics[:sampler_duration] = Metrics.histogram(with_prefix(:sampler_duration, :seconds), 'Sampler time', {})
+          metrics[:sampler_duration] = Metrics.histogram(with_prefix(:sampler_duration, :seconds), 'Sampler time', { worker: nil })
           metrics[:total_time] = Metrics.gauge(with_prefix(:gc, :time_total), 'Total GC time', labels, :livesum)
           GC.stat.keys.each do |key|
             metrics[key] = Metrics.gauge(with_prefix(:gc, key), to_doc_string(key), labels, :livesum)
@@ -99,9 +99,9 @@ module Gitlab
           worker_no = ::Prometheus::Client::Support::Unicorn.worker_id
 
           if worker_no
-            { unicorn: worker_no }
+            { worker: worker_no }
           else
-            { unicorn: 'master' }
+            { worker: 'master' }
           end
         end
       end
