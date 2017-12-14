@@ -1,5 +1,6 @@
 import _ from 'underscore';
 import d3 from 'd3';
+import { getDayName, getDayDifference } from '../lib/utils/datetime_utility';
 
 const LOADING_HTML = `
   <div class="text-center">
@@ -17,7 +18,7 @@ function getSystemDate(systemUtcOffsetSeconds) {
 
 function formatTooltipText({ date, count }) {
   const dateObject = new Date(date);
-  const dateDayName = gl.utils.getDayName(dateObject);
+  const dateDayName = getDayName(dateObject);
   const dateText = dateObject.format('mmm d, yyyy');
 
   let contribText = 'No contributions';
@@ -51,7 +52,7 @@ export default class ActivityCalendar {
     const oneYearAgo = new Date(today);
     oneYearAgo.setFullYear(today.getFullYear() - 1);
 
-    const days = gl.utils.getDayDifference(oneYearAgo, today);
+    const days = getDayDifference(oneYearAgo, today);
 
     for (let i = 0; i <= days; i += 1) {
       const date = new Date(oneYearAgo);
