@@ -172,7 +172,6 @@ describe Ci::Build do
 
           it { is_expected.to be_falsy }
         end
-<<<<<<< HEAD
       end
     end
   end
@@ -183,8 +182,6 @@ describe Ci::Build do
     context 'artifacts metadata does not exist' do
       before do
         build.update_attributes(legacy_artifacts_metadata: nil)
-=======
->>>>>>> upstream/master
       end
 
       it { is_expected.to be_falsy }
