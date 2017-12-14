@@ -88,7 +88,7 @@ module Omnibus
     end
 
     def duration
-      (Time.now.to_i - @start)/60
+      (Time.now.to_i - @start) / 60
     end
 
     def status
