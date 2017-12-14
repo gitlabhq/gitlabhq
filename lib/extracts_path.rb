@@ -135,6 +135,11 @@ module ExtractsPath
     @tree ||= @repo.tree(@commit.id, @path)
   end
 
+  def lfs_blob_ids
+    blob_ids = tree.blobs.map(&:id)
+    @lfs_blob_ids = Gitlab::Git::Blob.batch_lfs_pointers(@project.repository, blob_ids).map(&:id)
+  end
+
   private
 
   # overriden in subclasses, do not remove

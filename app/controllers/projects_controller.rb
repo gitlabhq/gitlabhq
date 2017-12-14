@@ -404,9 +404,4 @@ class ProjectsController < Projects::ApplicationController
     #
     redirect_to request.original_url.sub(/\.git\/?\Z/, '') if params[:format] == 'git'
   end
-
-  def lfs_blob_ids
-    blob_ids = tree.blobs.map(&:id)
-    @lfs_blob_ids = Gitlab::Git::Blob.batch_lfs_pointers(@repo, blob_ids).map(&:id)
-  end
 end
