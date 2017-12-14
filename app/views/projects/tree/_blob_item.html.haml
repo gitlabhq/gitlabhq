@@ -1,4 +1,4 @@
-- is_lfs_blob = @lfs_blobs.select{|b| b.id === blob_item.id }.any?
+- is_lfs_blob = @lfs_blob_ids.include?(blob_item.id)
 %tr{ class: "tree-item #{tree_hex_class(blob_item)}" }
   %td.tree-item-file-name
     = tree_icon(type, blob_item.mode, blob_item.name)

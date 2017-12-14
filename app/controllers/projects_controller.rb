@@ -9,6 +9,7 @@ class ProjectsController < Projects::ApplicationController
   before_action :repository, except: [:index, :new, :create]
   before_action :assign_ref_vars, only: [:show], if: :repo_exists?
   before_action :tree, only: [:show], if: [:repo_exists?, :project_view_files?]
+  before_action :lfs_blob_ids, only: [:show], if: [:repo_exists?, :project_view_files?]
   before_action :project_export_enabled, only: [:export, :download_export, :remove_export, :generate_new_export]
 
   # Authorize
@@ -402,5 +403,10 @@ class ProjectsController < Projects::ApplicationController
     #   localhost/group/project
     #
     redirect_to request.original_url.sub(/\.git\/?\Z/, '') if params[:format] == 'git'
+  end
+
+  def lfs_blob_ids
+    blob_ids = tree.blobs.map(&:id)
+    @lfs_blob_ids = Gitlab::Git::Blob.batch_lfs_pointers(@repo, blob_ids).map(&:id)
   end
 end
