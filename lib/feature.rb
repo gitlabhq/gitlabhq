@@ -1,5 +1,3 @@
-require 'flipper/adapters/active_record'
-
 class Feature
   # Classes to override flipper table names
   class FlipperFeature < Flipper::Adapters::ActiveRecord::Feature
@@ -62,12 +60,7 @@ class Feature
     end
 
     def flipper
-      @flipper ||= begin
-        adapter = Flipper::Adapters::ActiveRecord.new(
-          feature_class: FlipperFeature, gate_class: FlipperGate)
-
-        Flipper.new(adapter)
-      end
+      @flipper ||= Flipper.instance
     end
 
     # This method is called from config/initializers/flipper.rb and can be used

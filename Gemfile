@@ -405,8 +405,9 @@ gem 'gitaly-proto', '~> 0.59.0', require: 'gitaly'
 gem 'toml-rb', '~> 0.3.15', require: false
 
 # Feature toggles
-gem 'flipper', '~> 0.10.2'
-gem 'flipper-active_record', '~> 0.10.2'
+gem 'flipper', '~> 0.11.0'
+gem 'flipper-active_record', '~> 0.11.0'
+gem 'flipper-active_support_cache_store', '~> 0.11.0'
 
 # Structured logging
 gem 'lograge', '~> 0.5'
