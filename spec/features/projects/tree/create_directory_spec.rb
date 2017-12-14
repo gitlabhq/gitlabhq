@@ -38,7 +38,7 @@ feature 'Multi-file editor new directory', :js do
 
     click_link('New file')
 
-    page.within('.popup-dialog') do
+    page.within('.modal-dialog') do
       find('.form-control').set('filename')
 
       click_button('Create file')

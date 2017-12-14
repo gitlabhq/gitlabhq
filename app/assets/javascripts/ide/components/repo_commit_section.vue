@@ -104,8 +104,8 @@ export default {
 
 <template>
 <div class="multi-file-commit-panel-section">
-  <popup-dialog
-    v-if="showNewBranchDialog"
+  <modal
+    v-if="showNewBranchModal"
     :primary-button-label="__('Create new branch')"
     kind="primary"
     :title="__('Branch has changed')"

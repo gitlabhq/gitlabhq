@@ -18,7 +18,7 @@ describe('RepoCommitSection', () => {
 
     comp.$store.state.currentProjectId = 'abcproject';
     comp.$store.state.currentBranchId = 'master';
-    store.state.projects.abcproject = {
+    comp.$store.state.projects.abcproject = {
       web_url: '',
       branches: {
         master: {
