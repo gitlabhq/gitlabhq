@@ -39,7 +39,9 @@ module Omnibus
         "ref" => ENV["OMNIBUS_BRANCH"] || "master",
         "variables[GITLAB_VERSION]" => ENV["CI_COMMIT_SHA"],
         "variables[ALTERNATIVE_SOURCES]" => true,
-        "variables[ee]" => ee? ? 'true' : 'false'
+        "variables[ee]" => ee? ? 'true' : 'false',
+        "variables[TRIGGERED_USER]" => ENV["GITLAB_USER_NAME"],
+        "variables[TRIGGER_SOURCE_JOB]" => "https://gitlab.com/gitlab-org/#{ENV['CI_PROJECT_NAME']}/-/jobs/#{ENV['CI_JOB_ID']}"
       }
     end
 
