@@ -2,6 +2,7 @@
 /* global NoteModel */
 
 import Vue from 'vue';
+import { localTimeAgo } from '../../lib/utils/datetime_utility';
 
 class DiscussionModel {
   constructor (discussionId) {
@@ -71,7 +72,7 @@ class DiscussionModel {
         $(`${discussionSelector} .discussion-header`).append(data.discussion_headline_html);
       }
 
-      gl.utils.localTimeAgo($('.js-timeago', `${discussionSelector}`));
+      localTimeAgo($('.js-timeago', `${discussionSelector}`));
     } else {
       $discussionHeadline.remove();
     }

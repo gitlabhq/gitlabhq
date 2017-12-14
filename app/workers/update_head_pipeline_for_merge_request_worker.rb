@@ -1,7 +1,6 @@
 class UpdateHeadPipelineForMergeRequestWorker
   include ApplicationWorker
-
-  sidekiq_options queue: 'pipeline_default'
+  include PipelineQueue
 
   def perform(merge_request_id)
     merge_request = MergeRequest.find(merge_request_id)

@@ -14,6 +14,7 @@ import {
 import { getLocationHash } from './lib/utils/url_utility';
 import initDiscussionTab from './image_diff/init_discussion_tab';
 import Diff from './diff';
+import { localTimeAgo } from './lib/utils/datetime_utility';
 import syntaxHighlight from './syntax_highlight';
 
 /* eslint-disable max-len */
@@ -248,7 +249,7 @@ import syntaxHighlight from './syntax_highlight';
         url: `${source}.json`,
         success: (data) => {
           document.querySelector('div#commits').innerHTML = data.html;
-          gl.utils.localTimeAgo($('.js-timeago', 'div#commits'));
+          localTimeAgo($('.js-timeago', 'div#commits'));
           this.commitsLoaded = true;
           this.scrollToElement('#commits');
         },
@@ -295,7 +296,7 @@ import syntaxHighlight from './syntax_highlight';
             gl.diffNotesCompileComponents();
           }
 
-          gl.utils.localTimeAgo($('.js-timeago', 'div#diffs'));
+          localTimeAgo($('.js-timeago', 'div#diffs'));
           syntaxHighlight($('#diffs .js-syntax-highlight'));
 
           if (this.diffViewType() === 'parallel' && this.isDiffAction(this.currentAction)) {

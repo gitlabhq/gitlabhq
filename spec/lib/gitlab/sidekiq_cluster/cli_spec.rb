@@ -11,26 +11,39 @@ describe Gitlab::SidekiqCluster::CLI do
     end
 
     context 'with arguments' do
-      it 'starts the Sidekiq workers' do
-        expect(Gitlab::SidekiqCluster).to receive(:start).and_return([])
+      before do
         expect(cli).to receive(:write_pid)
         expect(cli).to receive(:trap_signals)
         expect(cli).to receive(:start_loop)
+      end
+
+      it 'starts the Sidekiq workers' do
+        expect(Gitlab::SidekiqCluster).to receive(:start)
+                                            .with([['foo']], 'test', Dir.pwd, dryrun: false)
+                                            .and_return([])
 
         cli.run(%w(foo))
       end
 
       context 'with --negate flag' do
-        it 'starts Sidekiq workers for all queues on sidekiq_queues.yml except the ones on argv' do
-          expect(Gitlab::SidekiqConfig).to receive(:config_queues).and_return(['baz'])
+        it 'starts Sidekiq workers for all queues in all_queues.yml except the ones in argv' do
+          expect(Gitlab::SidekiqConfig).to receive(:worker_queues).and_return(['baz'])
           expect(Gitlab::SidekiqCluster).to receive(:start)
                                               .with([['baz']], 'test', Dir.pwd, dryrun: false)
                                               .and_return([])
-          expect(cli).to receive(:write_pid)
-          expect(cli).to receive(:trap_signals)
-          expect(cli).to receive(:start_loop)
 
           cli.run(%w(foo -n))
+        end
+      end
+
+      context 'queue namespace expansion' do
+        it 'starts Sidekiq workers for all queues in all_queues.yml with a namespace in argv' do
+          expect(Gitlab::SidekiqConfig).to receive(:worker_queues).and_return(['cronjob:foo', 'cronjob:bar'])
+          expect(Gitlab::SidekiqCluster).to receive(:start)
+                                              .with([['cronjob', 'cronjob:foo', 'cronjob:bar']], 'test', Dir.pwd, dryrun: false)
+                                              .and_return([])
+
+          cli.run(%w(cronjob))
         end
       end
     end
