@@ -55,8 +55,6 @@ module QA
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
       end
     end
-
-    end
   end
 
   ##
