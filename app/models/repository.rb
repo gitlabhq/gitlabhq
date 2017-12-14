@@ -24,6 +24,7 @@ class Repository
   attr_accessor :full_path, :disk_path, :project, :is_wiki
 
   delegate :ref_name_for_sha, to: :raw_repository
+  delegate :write_ref, to: :raw_repository
 
   CreateTreeError = Class.new(StandardError)
 
@@ -244,11 +245,10 @@ class Repository
 
     # This will still fail if the file is corrupted (e.g. 0 bytes)
     begin
-      write_ref(keep_around_ref_name(sha), sha)
-    rescue Rugged::ReferenceError => ex
-      Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
-    rescue Rugged::OSError => ex
-      raise unless ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
+      write_ref(keep_around_ref_name(sha), sha, force: true)
+    rescue Gitlab::Git::Repository::GitError => ex
+      # Necessary because https://gitlab.com/gitlab-org/gitlab-ce/issues/20156
+      return true if ex.message =~ /Failed to create locked file/ && ex.message =~ /File exists/
 
       Rails.logger.error "Unable to create #{REF_KEEP_AROUND} reference for repository #{path}: #{ex}"
     end
@@ -256,10 +256,6 @@ class Repository
 
   def kept_around?(sha)
     ref_exists?(keep_around_ref_name(sha))
-  end
-
-  def write_ref(ref_path, sha)
-    rugged.references.create(ref_path, sha, force: true)
   end
 
   def diverging_commit_counts(branch)
@@ -697,7 +693,9 @@ class Repository
 
   def tags_sorted_by(value)
     case value
-    when 'name'
+    when 'name_asc'
+      VersionSorter.sort(tags) { |tag| tag.name }
+    when 'name_desc'
       VersionSorter.rsort(tags) { |tag| tag.name }
     when 'updated_desc'
       tags_sorted_by_committed_date.reverse
@@ -708,10 +706,14 @@ class Repository
     end
   end
 
-  def contributors
+  # Params:
+  #
+  # order_by: name|email|commits
+  # sort: asc|desc default: 'asc'
+  def contributors(order_by: nil, sort: 'asc')
     commits = self.commits(nil, limit: 2000, offset: 0, skip_merges: true)
 
-    commits.group_by(&:author_email).map do |email, commits|
+    commits = commits.group_by(&:author_email).map do |email, commits|
       contributor = Gitlab::Contributor.new
       contributor.email = email
 
@@ -725,6 +727,7 @@ class Repository
 
       contributor
     end
+    Commit.order_by(collection: commits, order_by: order_by, sort: sort)
   end
 
   def refs_contains_sha(ref_type, sha)
@@ -1043,7 +1046,7 @@ class Repository
   end
 
   def create_ref(ref, ref_path)
-    raw_repository.write_ref(ref_path, ref)
+    write_ref(ref_path, ref)
   end
 
   def ls_files(ref)

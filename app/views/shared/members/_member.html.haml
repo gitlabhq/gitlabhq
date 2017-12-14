@@ -62,7 +62,10 @@
             = f.hidden_field :access_level
             .member-form-control.dropdown.append-right-5
               %button.dropdown-menu-toggle.js-member-permissions-dropdown{ type: "button",
+<<<<<<< HEAD
                 disabled: member.can_override?,
+=======
+>>>>>>> upstream/master
                 data: { toggle: "dropdown", field_name: "#{f.object_name}[access_level]" } }
                 %span.dropdown-toggle-text
                   = member.human_access
@@ -82,7 +85,10 @@
                       can_override: member.can_override?
             .prepend-left-5.clearable-input.member-form-control
               = f.text_field :expires_at,
+<<<<<<< HEAD
                 disabled: member.can_override?,
+=======
+>>>>>>> upstream/master
                 class: 'form-control js-access-expiration-date js-member-update-control',
                 placeholder: 'Expiration date',
                 id: "member_expires_at_#{member.id}",

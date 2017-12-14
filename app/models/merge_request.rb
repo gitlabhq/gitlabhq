@@ -913,11 +913,11 @@ class MergeRequest < ActiveRecord::Base
 
   def state_icon_name
     if merged?
-      "check"
+      "git-merge"
     elsif closed?
-      "times"
+      "close"
     else
-      "circle-o"
+      "issue-open-m"
     end
   end
 

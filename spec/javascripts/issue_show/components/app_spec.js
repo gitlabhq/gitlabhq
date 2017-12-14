@@ -272,10 +272,10 @@ describe('Issuable output', () => {
     });
   });
 
-  it('opens recaptcha dialog if update rejected as spam', (done) => {
+  it('opens recaptcha modal if update rejected as spam', (done) => {
     function mockScriptSrc() {
       const recaptchaChild = vm.$children
-        .find(child => child.$options._componentTag === 'recaptcha-dialog'); // eslint-disable-line no-underscore-dangle
+        .find(child => child.$options._componentTag === 'recaptcha-modal'); // eslint-disable-line no-underscore-dangle
 
       recaptchaChild.scriptSrc = '//scriptsrc';
     }
@@ -302,7 +302,7 @@ describe('Issuable output', () => {
       .then(promise)
       .then(() => setTimeoutPromise())
       .then(() => {
-        modal = vm.$el.querySelector('.js-recaptcha-dialog');
+        modal = vm.$el.querySelector('.js-recaptcha-modal');
 
         expect(modal.style.display).not.toEqual('none');
         expect(modal.querySelector('.g-recaptcha').textContent).toEqual('recaptcha_html');

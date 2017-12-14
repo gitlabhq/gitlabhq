@@ -1,7 +1,10 @@
 import renderMath from './render_math';
 import renderMermaid from './render_mermaid';
 import syntaxHighlight from './syntax_highlight';
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/master
 // Render Gitlab flavoured Markdown
 //
 // Delegates to syntax highlight and render math & mermaid diagrams.

@@ -1,12 +1,26 @@
 /* eslint-disable comma-dangle, no-return-assign, one-var, no-var, no-underscore-dangle, one-var-declaration-per-line, no-unused-vars, no-cond-assign, consistent-return, object-shorthand, prefer-arrow-callback, func-names, space-before-function-paren, prefer-template, quotes, class-methods-use-this, no-unused-expressions, no-sequences, wrap-iife, no-lonely-if, no-else-return, no-param-reassign, vars-on-top, max-len */
 import { isInGroupsPage, isInProjectPage, getGroupSlug, getProjectSlug } from './lib/utils/common_utils';
 
+<<<<<<< HEAD
+=======
+/**
+ * Search input in top navigation bar.
+ * On click, opens a dropdown
+ * As the user types it filters the results
+ * When the user clicks `x` button it cleans the input and closes the dropdown.
+ */
+
+>>>>>>> upstream/master
 const KEYCODE = {
   ESCAPE: 27,
   BACKSPACE: 8,
   ENTER: 13,
   UP: 38,
+<<<<<<< HEAD
   DOWN: 40
+=======
+  DOWN: 40,
+>>>>>>> upstream/master
 };
 
 function setSearchOptions() {
@@ -23,7 +37,11 @@ function setSearchOptions() {
       name: $projectOptionsDataEl.data('name'),
       issuesPath: $projectOptionsDataEl.data('issues-path'),
       issuesDisabled: $projectOptionsDataEl.data('issues-disabled'),
+<<<<<<< HEAD
       mrPath: $projectOptionsDataEl.data('mr-path')
+=======
+      mrPath: $projectOptionsDataEl.data('mr-path'),
+>>>>>>> upstream/master
     };
   }
 
@@ -31,6 +49,7 @@ function setSearchOptions() {
     gl.groupOptions = gl.groupOptions || {};
 
     var groupPath = $groupOptionsDataEl.data('group-path');
+<<<<<<< HEAD
 
     gl.groupOptions[groupPath] = {
       name: $groupOptionsDataEl.data('name'),
@@ -70,12 +89,114 @@ export default class SearchAutocomplete {
     // Only when user is logged in
     if (gon.current_user_id) {
       this.createAutocomplete();
+=======
+
+    gl.groupOptions[groupPath] = {
+      name: $groupOptionsDataEl.data('name'),
+      issuesPath: $groupOptionsDataEl.data('issues-path'),
+      mrPath: $groupOptionsDataEl.data('mr-path'),
+    };
+  }
+
+  if ($dashboardOptionsDataEl.length) {
+    gl.dashboardOptions = {
+      issuesPath: $dashboardOptionsDataEl.data('issues-path'),
+      mrPath: $dashboardOptionsDataEl.data('mr-path'),
+    };
+  }
+}
+
+export default class SearchAutocomplete {
+  constructor({ wrap, optsEl, autocompletePath, projectId, projectRef } = {}) {
+    setSearchOptions();
+    this.bindEventContext();
+    this.wrap = wrap || $('.search');
+    this.optsEl = optsEl || this.wrap.find('.search-autocomplete-opts');
+    this.autocompletePath = autocompletePath || this.optsEl.data('autocomplete-path');
+    this.projectId = projectId || (this.optsEl.data('autocomplete-project-id') || '');
+    this.projectRef = projectRef || (this.optsEl.data('autocomplete-project-ref') || '');
+    this.dropdown = this.wrap.find('.dropdown');
+    this.dropdownToggle = this.wrap.find('.js-dropdown-search-toggle');
+    this.dropdownContent = this.dropdown.find('.dropdown-content');
+    this.locationBadgeEl = this.getElement('.location-badge');
+    this.scopeInputEl = this.getElement('#scope');
+    this.searchInput = this.getElement('.search-input');
+    this.projectInputEl = this.getElement('#search_project_id');
+    this.groupInputEl = this.getElement('#group_id');
+    this.searchCodeInputEl = this.getElement('#search_code');
+    this.repositoryInputEl = this.getElement('#repository_ref');
+    this.clearInput = this.getElement('.js-clear-input');
+    this.saveOriginalState();
+
+    // Only when user is logged in
+    if (gon.current_user_id) {
+      this.createAutocomplete();
+    }
+
+    this.searchInput.addClass('disabled');
+    this.saveTextLength();
+    this.bindEvents();
+    this.dropdownToggle.dropdown();
+  }
+
+  // Finds an element inside wrapper element
+  bindEventContext() {
+    this.onSearchInputBlur = this.onSearchInputBlur.bind(this);
+    this.onClearInputClick = this.onClearInputClick.bind(this);
+    this.onSearchInputFocus = this.onSearchInputFocus.bind(this);
+    this.onSearchInputKeyUp = this.onSearchInputKeyUp.bind(this);
+    this.onSearchInputKeyDown = this.onSearchInputKeyDown.bind(this);
+  }
+  getElement(selector) {
+    return this.wrap.find(selector);
+  }
+
+  saveOriginalState() {
+    return this.originalState = this.serializeState();
+  }
+
+  saveTextLength() {
+    return this.lastTextLength = this.searchInput.val().length;
+  }
+
+  createAutocomplete() {
+    return this.searchInput.glDropdown({
+      filterInputBlur: false,
+      filterable: true,
+      filterRemote: true,
+      highlight: true,
+      enterCallback: false,
+      filterInput: 'input#search',
+      search: {
+        fields: ['text'],
+      },
+      id: this.getSearchText,
+      data: this.getData.bind(this),
+      selectable: true,
+      clicked: this.onClick.bind(this),
+    });
+  }
+
+  getSearchText(selectedObject, el) {
+    return selectedObject.id ? selectedObject.text : '';
+  }
+
+  getData(term, callback) {
+    if (!term) {
+      const contents = this.getCategoryContents();
+      if (contents) {
+        this.searchInput.data('glDropdown').filter.options.callback(contents);
+        this.enableAutocomplete();
+      }
+      return;
+>>>>>>> upstream/master
     }
     this.searchInput.addClass('disabled');
     this.saveTextLength();
     this.bindEvents();
   }
 
+<<<<<<< HEAD
   // Finds an element inside wrapper element
   bindEventContext() {
     this.onSearchInputBlur = this.onSearchInputBlur.bind(this);
@@ -146,6 +267,28 @@ export default class SearchAutocomplete {
         return;
       }
       data = [];
+=======
+    // Prevent multiple ajax calls
+    if (this.loadingSuggestions) {
+      return;
+    }
+
+    this.loadingSuggestions = true;
+
+    return $.get(this.autocompletePath, {
+      project_id: this.projectId,
+      project_ref: this.projectRef,
+      term: term,
+    }, (response) => {
+      var firstCategory, i, lastCategory, len, suggestion;
+      // Hide dropdown menu if no suggestions returns
+      if (!response.length) {
+        this.disableAutocomplete();
+        return;
+      }
+
+      const data = [];
+>>>>>>> upstream/master
       // List results
       firstCategory = true;
       for (i = 0, len = response.length; i < len; i += 1) {
@@ -159,7 +302,11 @@ export default class SearchAutocomplete {
             firstCategory = false;
           }
           data.push({
+<<<<<<< HEAD
             header: suggestion.category
+=======
+            header: suggestion.category,
+>>>>>>> upstream/master
           });
           lastCategory = suggestion.category;
         }
@@ -167,7 +314,11 @@ export default class SearchAutocomplete {
           id: (suggestion.category.toLowerCase()) + "-" + suggestion.id,
           category: suggestion.category,
           text: suggestion.label,
+<<<<<<< HEAD
           url: suggestion.url
+=======
+          url: suggestion.url,
+>>>>>>> upstream/master
         });
       }
       // Add option to proceed with the search
@@ -175,6 +326,7 @@ export default class SearchAutocomplete {
         data.push('separator');
         data.push({
           text: "Result name contains \"" + term + "\"",
+<<<<<<< HEAD
           url: "/search?search=" + term + "&project_id=" + (_this.projectInputEl.val()) + "&group_id=" + (_this.groupInputEl.val())
         });
       }
@@ -189,12 +341,30 @@ export default class SearchAutocomplete {
     userId = gon.current_user_id;
     userName = gon.current_username;
     projectOptions = gl.projectOptions, groupOptions = gl.groupOptions, dashboardOptions = gl.dashboardOptions;
+=======
+          url: "/search?search=" + term + "&project_id=" + (this.projectInputEl.val()) + "&group_id=" + (this.groupInputEl.val()),
+        });
+      }
+      return callback(data);
+    })
+    .always(() => { this.loadingSuggestions = false; });
+  }
+
+  getCategoryContents() {
+    const userId = gon.current_user_id;
+    const userName = gon.current_username;
+    const { projectOptions, groupOptions, dashboardOptions } = gl;
+
+    // Get options
+    let options;
+>>>>>>> upstream/master
     if (isInGroupsPage() && groupOptions) {
       options = groupOptions[getGroupSlug()];
     } else if (isInProjectPage() && projectOptions) {
       options = projectOptions[getProjectSlug()];
     } else if (dashboardOptions) {
       options = dashboardOptions;
+<<<<<<< HEAD
     }
     issuesPath = options.issuesPath, mrPath = options.mrPath, name = options.name;
     items = [
@@ -227,10 +397,22 @@ export default class SearchAutocomplete {
     }
     if (!name) {
       items.splice(0, 1);
+=======
+    }
+
+    const { issuesPath, mrPath, name, issuesDisabled } = options;
+    const baseItems = [];
+
+    if (name) {
+      baseItems.push({
+        header: `${name}`,
+      });
+>>>>>>> upstream/master
     }
     return items;
   }
 
+<<<<<<< HEAD
   serializeState() {
     return {
       // Search Criteria
@@ -269,14 +451,88 @@ export default class SearchAutocomplete {
       this.loadingSuggestions = false;
       this.dropdown.addClass('open').trigger('shown.bs.dropdown');
       return this.searchInput.removeClass('disabled');
+=======
+    const issueItems = [
+      {
+        text: 'Issues assigned to me',
+        url: `${issuesPath}/?assignee_username=${userName}`,
+      },
+      {
+        text: "Issues I've created",
+        url: `${issuesPath}/?author_username=${userName}`,
+      },
+    ];
+    const mergeRequestItems = [
+      {
+        text: 'Merge requests assigned to me',
+        url: `${mrPath}/?assignee_username=${userName}`,
+      },
+      {
+        text: "Merge requests I've created",
+        url: `${mrPath}/?author_username=${userName}`,
+      },
+    ];
+
+    let items;
+    if (issuesDisabled) {
+      items = baseItems.concat(mergeRequestItems);
+    } else {
+      items = baseItems.concat(...issueItems, 'separator', ...mergeRequestItems);
+    }
+    return items;
+  }
+
+  serializeState() {
+    return {
+      // Search Criteria
+      search_project_id: this.projectInputEl.val(),
+      group_id: this.groupInputEl.val(),
+      search_code: this.searchCodeInputEl.val(),
+      repository_ref: this.repositoryInputEl.val(),
+      scope: this.scopeInputEl.val(),
+      // Location badge
+      _location: this.locationBadgeEl.text(),
+    };
+  }
+
+  bindEvents() {
+    this.searchInput.on('keydown', this.onSearchInputKeyDown);
+    this.searchInput.on('keyup', this.onSearchInputKeyUp);
+    this.searchInput.on('focus', this.onSearchInputFocus);
+    this.searchInput.on('blur', this.onSearchInputBlur);
+    this.clearInput.on('click', this.onClearInputClick);
+    this.locationBadgeEl.on('click', () => this.searchInput.focus());
+  }
+
+  enableAutocomplete() {
+    // No need to enable anything if user is not logged in
+    if (!gon.current_user_id) {
+      return;
+>>>>>>> upstream/master
     }
   }
 
+<<<<<<< HEAD
     // Saves last length of the entered text
   onSearchInputKeyDown() {
     return this.saveTextLength();
   }
 
+=======
+    // If the dropdown is closed, we'll open it
+    if (!this.dropdown.hasClass('open')) {
+      this.loadingSuggestions = false;
+      this.dropdownToggle.dropdown('toggle');
+      return this.searchInput.removeClass('disabled');
+    }
+  }
+
+  // Saves last length of the entered text
+  onSearchInputKeyDown() {
+    return this.saveTextLength();
+  }
+
+>>>>>>> upstream/master
   onSearchInputKeyUp(e) {
     switch (e.keyCode) {
       case KEYCODE.BACKSPACE:
@@ -286,6 +542,7 @@ export default class SearchAutocomplete {
         }
         // When removing the last character and no badge is present
         if (this.lastTextLength === 1) {
+<<<<<<< HEAD
           this.disableAutocomplete();
         }
         // When removing any character from existin value
@@ -307,6 +564,29 @@ export default class SearchAutocomplete {
         // e.g. Pressing ctrl + backspace or ctrl + x
         if (this.searchInput.val() === '') {
           this.disableAutocomplete();
+=======
+          this.disableAutocomplete();
+        }
+        // When removing any character from existin value
+        if (this.lastTextLength > 1) {
+          this.enableAutocomplete();
+        }
+        break;
+      case KEYCODE.ESCAPE:
+        this.restoreOriginalState();
+        break;
+      case KEYCODE.ENTER:
+        this.disableAutocomplete();
+        break;
+      case KEYCODE.UP:
+      case KEYCODE.DOWN:
+        return;
+      default:
+        // Handle the case when deleting the input value other than backspace
+        // e.g. Pressing ctrl + backspace or ctrl + x
+        if (this.searchInput.val() === '') {
+          this.disableAutocomplete();
+>>>>>>> upstream/master
         } else {
           // We should display the menu only when input is not empty
           if (e.keyCode !== KEYCODE.ENTER) {
@@ -316,6 +596,7 @@ export default class SearchAutocomplete {
     }
     this.wrap.toggleClass('has-value', !!e.target.value);
   }
+<<<<<<< HEAD
 
   // Avoid falsy value to be returned
   onSearchInputClick(e) {
@@ -393,9 +674,129 @@ export default class SearchAutocomplete {
         break;
       }
       results.push(this.getElement("#" + input).val(''));
+=======
+
+  onSearchInputFocus() {
+    this.isFocused = true;
+    this.wrap.addClass('search-active');
+    if (this.getValue() === '') {
+      return this.getData();
+    }
+  }
+
+  getValue() {
+    return this.searchInput.val();
+  }
+
+  onClearInputClick(e) {
+    e.preventDefault();
+    this.wrap.toggleClass('has-value', !!e.target.value);
+    return this.searchInput.val('').focus();
+  }
+
+  onSearchInputBlur(e) {
+    this.isFocused = false;
+    this.wrap.removeClass('search-active');
+    // If input is blank then restore state
+    if (this.searchInput.val() === '') {
+      return this.restoreOriginalState();
+    }
+  }
+
+  addLocationBadge(item) {
+    var badgeText, category, value;
+    category = item.category != null ? item.category + ": " : '';
+    value = item.value != null ? item.value : '';
+    badgeText = "" + category + value;
+    this.locationBadgeEl.text(badgeText).show();
+    return this.wrap.addClass('has-location-badge');
+  }
+
+  hasLocationBadge() {
+    return this.wrap.is('.has-location-badge');
+  }
+
+  restoreOriginalState() {
+    var i, input, inputs, len;
+    inputs = Object.keys(this.originalState);
+    for (i = 0, len = inputs.length; i < len; i += 1) {
+      input = inputs[i];
+      this.getElement("#" + input).val(this.originalState[input]);
+    }
+    if (this.originalState._location === '') {
+      return this.locationBadgeEl.hide();
+    } else {
+      return this.addLocationBadge({
+        value: this.originalState._location,
+      });
+    }
+  }
+
+  badgePresent() {
+    return this.locationBadgeEl.length;
+  }
+
+  resetSearchState() {
+    var i, input, inputs, len, results;
+    inputs = Object.keys(this.originalState);
+    results = [];
+    for (i = 0, len = inputs.length; i < len; i += 1) {
+      input = inputs[i];
+      // _location isnt a input
+      if (input === '_location') {
+        break;
+      }
+      results.push(this.getElement("#" + input).val(''));
     }
     return results;
   }
+
+  removeLocationBadge() {
+    this.locationBadgeEl.hide();
+    this.resetSearchState();
+    this.wrap.removeClass('has-location-badge');
+    return this.disableAutocomplete();
+  }
+
+  disableAutocomplete() {
+    if (!this.searchInput.hasClass('disabled') && this.dropdown.hasClass('open')) {
+      this.searchInput.addClass('disabled');
+      this.dropdown.removeClass('open').trigger('hidden.bs.dropdown');
+      this.restoreMenu();
+    }
+  }
+
+  restoreMenu() {
+    var html;
+    html = '<ul><li class="dropdown-menu-empty-item"><a>Loading...</a></li></ul>';
+    return this.dropdownContent.html(html);
+  }
+
+  onClick(item, $el, e) {
+    if (location.pathname.indexOf(item.url) !== -1) {
+      if (!e.metaKey) e.preventDefault();
+      if (!this.badgePresent) {
+        if (item.category === 'Projects') {
+          this.projectInputEl.val(item.id);
+          this.addLocationBadge({
+            value: 'This project',
+          });
+        }
+        if (item.category === 'Groups') {
+          this.groupInputEl.val(item.id);
+          this.addLocationBadge({
+            value: 'This group',
+          });
+        }
+      }
+      $el.removeClass('is-active');
+      this.disableAutocomplete();
+      return this.searchInput.val('').focus();
+>>>>>>> upstream/master
+    }
+    return results;
+  }
+<<<<<<< HEAD
 
   removeLocationBadge() {
     this.locationBadgeEl.hide();
@@ -440,4 +841,6 @@ export default class SearchAutocomplete {
       return this.searchInput.val('').focus();
     }
   }
+=======
+>>>>>>> upstream/master
 }

@@ -17,12 +17,12 @@
 
 .detail-page-header
   .detail-page-header-body
-    .issuable-status-box.status-box.status-box-closed{ class: issue_button_visibility(@issue, false) }
-      = icon('check', class: "hidden-sm hidden-md hidden-lg")
+    .issuable-status-box.status-box.status-box-issue-closed{ class: issue_button_visibility(@issue, false) }
+      = sprite_icon('mobile-issue-close', size: 16, css_class: 'hidden-sm hidden-md hidden-lg')
       %span.hidden-xs
         Closed
     .issuable-status-box.status-box.status-box-open{ class: issue_button_visibility(@issue, true) }
-      = icon('circle-o', class: "hidden-sm hidden-md hidden-lg")
+      = sprite_icon('issue-open-m', size: 16, css_class: 'hidden-sm hidden-md hidden-lg')
       %span.hidden-xs Open
 
     .issuable-meta

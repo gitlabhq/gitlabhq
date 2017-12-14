@@ -16,6 +16,44 @@ describe API::Tags do
   describe 'GET /projects/:id/repository/tags' do
     let(:route) { "/projects/#{project_id}/repository/tags" }
 
+    context 'sorting' do
+      let(:current_user) { user }
+
+      it 'sorts by descending order by default' do
+        get api(route, current_user)
+
+        desc_order_tags = project.repository.tags.sort_by { |tag| tag.dereferenced_target.committed_date }
+        desc_order_tags.reverse!.map! { |tag| tag.dereferenced_target.id }
+
+        expect(json_response.map { |tag| tag['commit']['id'] }).to eq(desc_order_tags)
+      end
+
+      it 'sorts by ascending order if specified' do
+        get api("#{route}?sort=asc", current_user)
+
+        asc_order_tags = project.repository.tags.sort_by { |tag| tag.dereferenced_target.committed_date }
+        asc_order_tags.map! { |tag| tag.dereferenced_target.id }
+
+        expect(json_response.map { |tag| tag['commit']['id'] }).to eq(asc_order_tags)
+      end
+
+      it 'sorts by name in descending order when requested' do
+        get api("#{route}?order_by=name", current_user)
+
+        ordered_by_name = project.repository.tags.map { |tag| tag.name }.sort.reverse
+
+        expect(json_response.map { |tag| tag['name'] }).to eq(ordered_by_name)
+      end
+
+      it 'sorts by name in ascending order when requested' do
+        get api("#{route}?order_by=name&sort=asc", current_user)
+
+        ordered_by_name = project.repository.tags.map { |tag| tag.name }.sort
+
+        expect(json_response.map { |tag| tag['name'] }).to eq(ordered_by_name)
+      end
+    end
+
     shared_examples_for 'repository tags' do
       it 'returns the repository tags' do
         get api(route, current_user)

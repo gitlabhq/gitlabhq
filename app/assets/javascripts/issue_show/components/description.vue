@@ -1,12 +1,12 @@
 <script>
   import animateMixin from '../mixins/animate';
   import TaskList from '../../task_list';
-  import RecaptchaDialogImplementor from '../../vue_shared/mixins/recaptcha_dialog_implementor';
+  import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';
 
   export default {
     mixins: [
       animateMixin,
-      RecaptchaDialogImplementor,
+      recaptchaModalImplementor,
     ],
 
     props: {
@@ -126,7 +126,7 @@
     >
     </textarea>
 
-    <recaptcha-dialog
+    <recaptcha-modal
       v-show="showRecaptcha"
       :html="recaptchaHTML"
       @close="closeRecaptcha"

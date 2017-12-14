@@ -79,7 +79,11 @@ export default class Search {
       .on('keyup', this.searchInput, this.searchKeyUp);
     $(document)
       .off('click', this.searchClear)
+<<<<<<< HEAD
       .on('click', this.searchClear, this.clearSearchField);
+=======
+      .on('click', this.searchClear, this.clearSearchField.bind(this));
+>>>>>>> upstream/master
   }
 
   static submitSearch() {

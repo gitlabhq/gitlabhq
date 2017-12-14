@@ -1,6 +1,9 @@
 class GroupMemberPresenter < MemberPresenter
+<<<<<<< HEAD
   prepend EE::GroupMemberPresenter
 
+=======
+>>>>>>> upstream/master
   private
 
   def admin_member_permission

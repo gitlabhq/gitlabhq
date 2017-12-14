@@ -1,6 +1,9 @@
 class MemberPresenter < Gitlab::View::Presenter::Delegated
+<<<<<<< HEAD
   prepend EE::MemberPresenter
 
+=======
+>>>>>>> upstream/master
   presents :member
 
   def access_level_roles

@@ -601,6 +601,7 @@ describe MergeRequest do
     end
   end
 
+<<<<<<< HEAD
   describe "#approvers_left" do
     let(:merge_request) {create :merge_request}
 
@@ -815,6 +816,14 @@ describe MergeRequest do
 
     subject { merge_request }
 
+=======
+  describe '#can_remove_source_branch?' do
+    set(:user) { create(:user) }
+    set(:merge_request) { create(:merge_request, :simple) }
+
+    subject { merge_request }
+
+>>>>>>> upstream/master
     before do
       subject.source_project.add_master(user)
     end
