@@ -171,9 +171,9 @@ export default {
 
     dockerInformationText() {
       return sprintf(
-        _.escape(s__('ciReport|Unapproved vulnerabilities (red) can be marked as approved. %{helpLink}')), {
-          helpLink: `<a href="todo" _target="blank" >
-            ${_.escape(s__('ciReport|Learn more about whitelisting'))}
+        s__('ciReport|Unapproved vulnerabilities (red) can be marked as approved. %{helpLink}'), {
+          helpLink: `<a href="todo" target="_blank" rel="noopener noreferrer nofollow">
+            ${s__('ciReport|Learn more about whitelisting')}
           </a>`,
         },
         false,
@@ -258,6 +258,13 @@ export default {
           this.loadingDockerFailed = true;
         });
     },
+
+    translateText(type) {
+      return {
+        error: s__(`ciReport|Failed to load ${type} report`),
+        loading: s__(`ciReport|Loading ${type} report`),
+      };
+    },
   },
   created() {
     if (this.shouldRenderCodeQuality) {
@@ -300,8 +307,8 @@ export default {
         v-if="shouldRenderCodeQuality"
         type="codequality"
         :status="codequalityStatus"
-        loading-text="Loading codeclimate report"
-        error-text="Failed to load codeclimate report"
+        :loading-text="translateText('codeclimate').loading"
+        :error-text="translateText('codeclimate').error"
         :success-text="codequalityText"
         :unresolved-issues="mr.codeclimateMetrics.newIssues"
         :resolved-issues="mr.codeclimateMetrics.resolvedIssues"
@@ -311,8 +318,8 @@ export default {
         v-if="shouldRenderPerformance"
         type="performance"
         :status="performanceStatus"
-        loading-text="Loading performance report"
-        error-text="Failed to load performance report"
+        :loading-text="translateText('performance').loading"
+        :error-text="translateText('performance').error"
         :success-text="performanceText"
         :unresolved-issues="mr.performanceMetrics.degraded"
         :resolved-issues="mr.performanceMetrics.improved"
@@ -323,8 +330,8 @@ export default {
         v-if="shouldRenderSecurityReport"
         type="security"
         :status="securityStatus"
-        loading-text="Loading security report"
-        error-text="Failed to load security report"
+        :loading-text="translateText('security').loading"
+        :error-text="translateText('security').error"
         :success-text="securityText"
         :unresolved-issues="mr.securityReport"
         />
@@ -333,8 +340,8 @@ export default {
         v-if="shouldRenderDockerReport"
         type="docker"
         :status="dockerStatus"
-        loading-text="Loading clair report"
-        error-text="Failed to load clair report"
+        :loading-text="translateText('clair').loading"
+        :error-text="translateText('clair').error"
         :success-text="dockerText"
         :unresolved-issues="mr.dockerReport.unapproved"
         :neutral-issues="mr.dockerReport.approved"
