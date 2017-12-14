@@ -52,19 +52,21 @@ module API
         optional :sort, type: String, values: %w[asc desc], default: 'asc', desc: 'Sort by asc (ascending) or desc (descending)'
         use :pagination
       end
-      get do
+
+      def find_groups(params)
         find_params = {
           all_available: params[:all_available],
-          owned: params[:owned],
-          custom_attributes: params[:custom_attributes]
+          custom_attributes: params[:custom_attributes],
+          owned: params[:owned]
         }
+        find_params[:parent] = find_group!(params[:id]) if params[:id]
 
         groups = GroupsFinder.new(current_user, find_params).execute
         groups = groups.search(params[:search]) if params[:search].present?
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
         groups = groups.reorder(params[:order_by] => params[:sort])
 
-        present_groups params, groups
+        groups
       end
 
       def find_group_projects(params)
@@ -98,7 +100,6 @@ module API
       get do
         groups = find_groups(params)
         present_groups params, groups
->>>>>>> 65b7a7a063... Merge branch 'sh-optimize-groups-api' into 'master'
       end
 
       desc 'Create a group. Available only for users who can create groups.' do
