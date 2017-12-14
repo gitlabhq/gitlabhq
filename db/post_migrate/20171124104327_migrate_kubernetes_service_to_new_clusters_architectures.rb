@@ -2,17 +2,19 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
   DOWNTIME = false
   DEFAULT_KUBERNETES_SERVICE_CLUSTER_NAME = 'KubernetesService'.freeze
 
+  class Project < ActiveRecord::Base
+    self.table_name = 'projects'
+
+    has_many :cluster_projects, class_name: 'ClustersProject'
+    has_many :clusters, through: :cluster_projects, class_name: 'Cluster'
+  end
+
   class Cluster < ActiveRecord::Base
     self.table_name = 'clusters'
 
     has_many :cluster_projects, class_name: 'ClustersProject'
     has_many :projects, through: :cluster_projects, class_name: 'Project'
     has_one :platform_kubernetes, class_name: 'PlatformsKubernetes'
-
-    attr_encrypted :token,
-      mode: :per_attribute_iv,
-      key: Gitlab::Application.secrets.db_key_base,
-      algorithm: 'aes-256-cbc'
 
     accepts_nested_attributes_for :platform_kubernetes
 
@@ -26,11 +28,20 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
     }
   end
 
-  class Project < ActiveRecord::Base
-    self.table_name = 'projects'
+  class ClustersProject < ActiveRecord::Base
+    self.table_name = 'cluster_projects'
 
-    has_many :cluster_projects, class_name: 'ClustersProject'
-    has_many :clusters, through: :cluster_projects, class_name: 'Cluster'
+    belongs_to :cluster, class_name: 'Cluster'
+    belongs_to :project, class_name: 'Project'
+  end
+
+  class PlatformsKubernetes < ActiveRecord::Base
+    self.table_name = 'cluster_platforms_kubernetes'
+
+    attr_encrypted :token,
+      mode: :per_attribute_iv,
+      key: Gitlab::Application.secrets.db_key_base,
+      algorithm: 'aes-256-cbc'
   end
 
   class Service < ActiveRecord::Base
@@ -67,21 +78,6 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
     end
   end
 
-  class ClustersProject < ActiveRecord::Base
-    self.table_name = 'cluster_projects'
-
-    belongs_to :cluster, class_name: 'Cluster'
-    belongs_to :project, class_name: 'Project'
-  end
-
-  class ProvidersGcp < ActiveRecord::Base
-    self.table_name = 'cluster_providers_gcp'
-  end
-
-  class PlatformsKubernetes < ActiveRecord::Base
-    self.table_name = 'cluster_platforms_kubernetes'
-  end
-
   def up
     Service.unmanaged_kubernetes_service
       .find_each(batch_size: 1) do |kubernetes_service|
@@ -104,7 +100,7 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
 
       # Disable the KubernetesService. Platforms::Kubernetes will be used from next time.
       kubernetes_service.active = false
-      kubernetes_service.propaties.merge!( { migrated: true } )
+      kubernetes_service.properties.merge!( { migrated: true } )
       kubernetes_service.save!
     end
   end
