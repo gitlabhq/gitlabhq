@@ -1,7 +1,6 @@
 module Geo
   class BaseSchedulerWorker
     include ApplicationWorker
-    include CronjobQueue
     include ExclusiveLeaseGuard
 
     DB_RETRIEVE_BATCH_SIZE = 1000
