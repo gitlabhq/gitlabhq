@@ -686,7 +686,9 @@ class Repository
 
   def tags_sorted_by(value)
     case value
-    when 'name'
+    when 'name_asc'
+      VersionSorter.sort(tags) { |tag| tag.name }
+    when 'name_desc'
       VersionSorter.rsort(tags) { |tag| tag.name }
     when 'updated_desc'
       tags_sorted_by_committed_date.reverse

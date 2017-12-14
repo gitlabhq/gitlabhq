@@ -59,10 +59,16 @@ describe Repository do
   end
 
   describe 'tags_sorted_by' do
-    context 'name' do
-      subject { repository.tags_sorted_by('name').map(&:name) }
+    context 'name_desc' do
+      subject { repository.tags_sorted_by('name_desc').map(&:name) }
 
       it { is_expected.to eq(['v1.1.0', 'v1.0.0']) }
+    end
+
+    context 'name_asc' do
+      subject { repository.tags_sorted_by('name_asc').map(&:name) }
+
+      it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
     end
 
     context 'updated' do
