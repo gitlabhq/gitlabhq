@@ -67,8 +67,7 @@ module Omnibus
     def wait!
       loop do
         if timeout?
-          puts "\nWaited for #{((Time.now.to_i - @start)/60)} minutes"
-          raise 'Pipeline timeout!'
+          raise "Pipeline timed out after waiting for #{duration} minutes!"
         end
 
         case status
@@ -76,8 +75,7 @@ module Omnibus
           print "."
           sleep INTERVAL
         when :success
-          puts "\nWaited for #{((Time.now.to_i - @start)/60)} minutes"
-          puts "Omnibus pipeline succeeded!"
+          puts "Omnibus pipeline succeeded in #{duration} minutes!"
           break
         else
           raise "Omnibus pipeline did not succeed!"
@@ -89,6 +87,10 @@ module Omnibus
 
     def timeout?
       Time.now.to_i > (@start + MAX_DURATION)
+    end
+
+    def duration
+      (Time.now.to_i - @start)/60
     end
 
     def status
