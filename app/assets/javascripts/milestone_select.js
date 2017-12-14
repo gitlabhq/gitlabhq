@@ -2,6 +2,7 @@
 /* global Issuable */
 /* global ListMilestone */
 import _ from 'underscore';
+import { timeFor } from './lib/utils/datetime_utility';
 
 (function() {
   this.MilestoneSelect = (function() {
@@ -216,7 +217,7 @@ import _ from 'underscore';
                 $value.css('display', '');
                 if (data.milestone != null) {
                   data.milestone.full_path = _this.currentProject.full_path;
-                  data.milestone.remaining = gl.utils.timeFor(data.milestone.due_date);
+                  data.milestone.remaining = timeFor(data.milestone.due_date);
                   data.milestone.name = data.milestone.title;
                   $value.html(milestoneLinkTemplate(data.milestone));
                   return $sidebarCollapsedValue.find('span').html(collapsedSidebarLabelTemplate(data.milestone));

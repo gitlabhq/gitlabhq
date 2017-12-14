@@ -4,6 +4,7 @@
 /* global Pager */
 
 import { pluralize } from './lib/utils/text_utility';
+import { localTimeAgo } from './lib/utils/datetime_utility';
 
 export default (function () {
   const CommitsList = {};
@@ -91,7 +92,7 @@ export default (function () {
       $commitsHeadersLast.find('span.commits-count').text(`${commitsCount} ${pluralize('commit', commitsCount)}`);
     }
 
-    gl.utils.localTimeAgo($processedData.find('.js-timeago'));
+    localTimeAgo($processedData.find('.js-timeago'));
 
     return processedData;
   };
