@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :instance_configuration do
     skip_create
   end

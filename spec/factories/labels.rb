@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   trait :base_label do
     title { generate(:label_title) }
     color "#990000"

@@ -40,7 +40,7 @@ describe Ci::RetryBuildService do
              description: 'my-job', stage: 'test',  pipeline: pipeline,
              auto_canceled_by: create(:ci_empty_pipeline, project: project)) do |build|
                ##
-               # TODO, workaround for FactoryGirl limitation when having both
+               # TODO, workaround for FactoryBot limitation when having both
                # stage (text) and stage_id (integer) columns in the table.
                build.stage_id = stage.id
              end
