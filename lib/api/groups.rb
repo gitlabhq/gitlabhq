@@ -25,24 +25,7 @@ module API
         optional :statistics, type: Boolean, default: false, desc: 'Include project statistics'
       end
 
-      def present_groups(groups, options = {})
-        options = options.reverse_merge(
-          with: Entities::Group,
-          current_user: current_user
-        )
-
-        groups = groups.with_statistics if options[:statistics]
-        present paginate(groups), options
-      end
-    end
-
-    resource :groups do
-      include CustomAttributesEndpoints
-
-      desc 'Get a groups list' do
-        success Entities::Group
-      end
-      params do
+      params :group_list_params do
         use :statistics_params
         optional :skip_groups, type: Array[Integer], desc: 'Array of group ids to exclude from list'
         optional :all_available, type: Boolean, desc: 'Show all group that you have access to'
@@ -76,12 +59,11 @@ module API
         paginate(projects)
       end
 
-      def present_groups(params, groups)
-        options = {
+      def present_groups(groups, options = {})
+        options = options.reverse_merge(
           with: Entities::Group,
-          current_user: current_user,
-          statistics: params[:statistics] && current_user.admin?
-        }
+          current_user: current_user
+        )
 
         groups = groups.with_statistics if options[:statistics]
         present paginate(groups), options
