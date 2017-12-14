@@ -12,8 +12,16 @@ module Geo
       { id: object_db_id, type: object_type, job_id: job_id } if job_id
     end
 
-    def finder
-      @finder ||= FileRegistryFinder.new(current_node: current_node)
+    def attachments_finder
+      @attachments_finder ||= AttachmentRegistryFinder.new(current_node: current_node)
+    end
+
+    def file_registry_finder
+      @file_registry_finder ||= FileRegistryFinder.new(current_node: current_node)
+    end
+
+    def lfs_objects_finder
+      @lfs_objects_finder ||= LfsObjectRegistryFinder.new(current_node: current_node)
     end
 
     # Pools for new resources to be transferred
@@ -26,19 +34,36 @@ module Geo
       if remaining_capacity.zero?
         resources
       else
-        resources + finder.find_failed_objects(batch_size: remaining_capacity)
+        resources + find_failed_upload_object_ids(batch_size: remaining_capacity)
       end
     end
 
     def find_unsynced_objects(batch_size:)
-      lfs_object_ids = finder.find_nonreplicated_lfs_objects(batch_size: batch_size, except_registry_ids: scheduled_file_ids(:lfs))
-      upload_objects_ids = finder.find_nonreplicated_uploads(batch_size: batch_size, except_registry_ids: scheduled_file_ids(Geo::FileService::DEFAULT_OBJECT_TYPES))
+      lfs_object_ids = find_unsynced_lfs_objects_ids(batch_size: batch_size)
+      attachment_ids = find_unsynced_attachments_ids(batch_size: batch_size)
 
-      interleave(lfs_object_ids, upload_objects_ids)
+      interleave(lfs_object_ids, attachment_ids)
+    end
+
+    def find_unsynced_lfs_objects_ids(batch_size:)
+      lfs_objects_finder.find_unsynced_lfs_objects(batch_size: batch_size, except_registry_ids: scheduled_file_ids(:lfs))
+                        .pluck(:id)
+                        .map { |id| [id, :lfs] }
+    end
+
+    def find_unsynced_attachments_ids(batch_size:)
+      attachments_finder.find_unsynced_attachments(batch_size: batch_size, except_registry_ids: scheduled_file_ids(Geo::FileService::DEFAULT_OBJECT_TYPES))
+                        .pluck(:id, :uploader)
+                        .map { |id, uploader| [id, uploader.sub(/Uploader\z/, '').underscore] }
+    end
+
+    def find_failed_upload_object_ids(batch_size:)
+      file_registry_finder.find_failed_file_registries(batch_size: batch_size)
+                          .pluck(:file_id, :file_type)
     end
 
     def scheduled_file_ids(file_types)
-      file_types = Array(file_types) unless file_types.is_a? Array
+      file_types = Array(file_types)
 
       scheduled_jobs.select { |data| file_types.include?(data[:type]) }.map { |data| data[:id] }
     end
