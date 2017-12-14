@@ -35,7 +35,10 @@ they are still not 100% standardized. You can see them below:
 | Project avatars                       | yes    | uploads/-/system/project/avatar/:id/:filename               | `AvatarUploader`       | Project    |
 | Issues/MR Markdown attachments        | yes    | uploads/:project_path_with_namespace/:random_hex/:filename  | `FileUploader`         | Project    |
 | Issues/MR Legacy Markdown attachments | no     | uploads/-/system/note/attachment/:id/:filename              | `AttachmentUploader`   | Note       |
-| CI Artifacts (CE)                     | yes    | shared/artifacts/:year_:month/:project_id/:id               | `ArtifactUploader`     | Ci::Build  |
+| CI Artifacts (CE/EE) Latest           | yes    | shared/artifacts/:disk_hash[0..1]/:disk_hash[2..3]/:disk_hash/:year_:month:date/:job_id/:job_artifact_id | `ArtifactUploader`     | Ci::JobArtifact  |
+| CI Artifacts (CE/EE) Ver.1            | yes    | shared/artifacts/:year_:month/:project_id/:id               | `LegacyArtifactUploader`     | Ci::Build  |
+| CI Traces Latest                      | yes    | builds/:year_:month/:project_id/:job_id.log                 | None                   | None       |
+| CI Traces Ver.1                       | yes    | builds/:year_:month/:project.ci_id/:job_id.log              | None                   | None       |
 | LFS Objects  (CE)                     | yes    | shared/lfs-objects/:hex/:hex/:object_hash                   | `LfsObjectUploader`    | LfsObject  |
 
 CI Artifacts and LFS Objects behave differently in CE and EE. In CE they inherit the `GitlabUploader`
