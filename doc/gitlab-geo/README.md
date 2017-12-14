@@ -75,7 +75,7 @@ internally by the secondary node to record what data has been replicated.
 
 In the secondary nodes there is an additional daemon: Geo Log Cursor.
 
-## Geo Requirements
+## Geo Recommendations
 
 We highly recommend that you install Geo on an operating system that supports
 OpenSSH 6.9 or higher. The following operating systems are known to ship with a
@@ -215,6 +215,10 @@ example:
 ```
 
 This message shows that Geo detected that a repository update was needed for project 1.
+
+## Security of GitLab Geo  
+
+Read the [security review](security-review.md) page.
 
 ## Tuning Geo
 
