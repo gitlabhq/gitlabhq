@@ -64,10 +64,7 @@ module API
         groups = groups.where.not(id: params[:skip_groups]) if params[:skip_groups].present?
         groups = groups.reorder(params[:order_by] => params[:sort])
 
-<<<<<<< HEAD
-        present_groups groups, statistics: params[:statistics] && current_user.admin?
-=======
-        groups
+        present_groups params, groups
       end
 
       def find_group_projects(params)
