@@ -172,7 +172,7 @@ export default {
     dockerInformationText() {
       return sprintf(
         s__('ciReport|Unapproved vulnerabilities (red) can be marked as approved. %{helpLink}'), {
-          helpLink: `<a href="todo" target="_blank" rel="noopener noreferrer nofollow">
+          helpLink: `<a href="https://gitlab.com/gitlab-org/clair-scanner#example-whitelist-yaml-file" target="_blank" rel="noopener noreferrer nofollow">
             ${s__('ciReport|Learn more about whitelisting')}
           </a>`,
         },
