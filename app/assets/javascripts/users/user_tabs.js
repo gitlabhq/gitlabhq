@@ -1,3 +1,4 @@
+import Activities from '../activities';
 import ActivityCalendar from './activity_calendar';
 import { localTimeAgo } from '../lib/utils/datetime_utility';
 
@@ -170,7 +171,7 @@ export default class UserTabs {
     });
 
     // eslint-disable-next-line no-new
-    new gl.Activities();
+    new Activities();
     this.loaded.activity = true;
   }
 
