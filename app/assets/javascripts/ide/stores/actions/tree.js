@@ -24,7 +24,7 @@ export const getTreeData = (
     // We are merging the web_url that we got on the project info with the endpoint
     // we got on the tree entry, as both contain the projectId, we replace it in the tree endpoint
     const completeEndpoint = selectedProject.web_url + (endpoint).replace(projectId, '');
-    if (completeEndpoint) {
+    if (completeEndpoint && (!tree || !tree.tempFile)) {
       service.getTreeData(completeEndpoint)
       .then((res) => {
         const pageTitle = decodeURI(normalizeHeaders(res.headers)['PAGE-TITLE']);

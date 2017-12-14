@@ -51,7 +51,7 @@
     },
     computed: {
       ...mapState([
-        'currentProjectId'
+        'currentProjectId',
       ]),
       modalTitle() {
         if (this.type === 'tree') {
