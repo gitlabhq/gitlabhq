@@ -12,6 +12,7 @@ export const getProjectData = (
     .then(res => res.data)
     .then((data) => {
       commit(types.SET_PROJECT, { projectPath: `${namespace}/${projectId}`, project: data });
+      if (!state.currentProjectId) commit(types.SET_CURRENT_PROJECT, `${namespace}/${projectId}`);
       resolve(data);
     })
     .catch(() => {
