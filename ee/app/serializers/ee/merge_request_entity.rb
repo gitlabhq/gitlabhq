@@ -78,7 +78,7 @@ module EE
     end
 
     def expose_clair_data?(mr, current_user)
-      mr.project.feature_available?(:clair) &&
+      mr.project.feature_available?(:sast_image) &&
         mr.has_clair_data? &&
         can?(current_user, :read_build, mr.clair_artifact)
     end
