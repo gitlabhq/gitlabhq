@@ -66,9 +66,7 @@ module Omnibus
 
     def wait!
       loop do
-        if timeout?
-          raise "Pipeline timed out after waiting for #{duration} minutes!"
-        end
+        raise "Pipeline timed out after waiting for #{duration} minutes!" if timeout?
 
         case status
         when :created, :pending, :running
