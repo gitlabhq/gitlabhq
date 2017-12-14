@@ -373,7 +373,7 @@ Parameters:
 | `visibility` | string | no | The group's visibility. Can be `private`, `internal`, or `public`. |
 | `lfs_enabled` | boolean | no | Enable/disable Large File Storage (LFS) for the projects in this group |
 | `request_access_enabled` | boolean | no | Allow users to request member access. |
-| `parent_id` | int | no | The parent group id for creating nested group. |
+| `parent_id` | integer | no | The parent group id for creating nested group. |
 
 ## Transfer project to group
 
