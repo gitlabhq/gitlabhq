@@ -1,5 +1,4 @@
-class
-AuditEventPresenter < Gitlab::View::Presenter::Simple
+class AuditEventPresenter < Gitlab::View::Presenter::Simple
   presents :audit_event
 
   def author_name
