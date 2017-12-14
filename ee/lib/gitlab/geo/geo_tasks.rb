@@ -5,10 +5,14 @@ module Gitlab
 
       def set_primary_geo_node
         node = GeoNode.new(primary: true, url: GeoNode.current_node_url)
-        $stdout.puts "Saving primary GeoNode with URL #{node.url}".color(:green)
+        $stdout.puts "Saving primary Geo node with URL #{node.url} ..."
         node.save
 
-        $stdout.puts "Error saving GeoNode:\n#{node.errors.full_messages.join("\n")}".color(:red) unless node.persisted?
+        if node.persisted?
+          $stdout.puts "#{node.url} is now the primary Geo node".color(:green)
+        else
+          $stdout.puts "Error saving Geo node:\n#{node.errors.full_messages.join("\n")}".color(:red)
+        end
       end
 
       def refresh_foreign_tables!
