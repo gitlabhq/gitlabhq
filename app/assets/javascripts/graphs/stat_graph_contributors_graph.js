@@ -1,6 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, max-len, no-restricted-syntax, vars-on-top, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, wrap-iife, comma-dangle, no-return-assign, prefer-arrow-callback, quotes, prefer-template, newline-per-chained-call, no-else-return, no-shadow */
 import _ from 'underscore';
-import { dateTickFormat } from '../lib/utils/tick_formats';
 import { extent, max } from 'd3-array';
 import { select, event as d3Event } from 'd3-selection';
 import { scaleTime, scaleLinear } from 'd3-scale';
@@ -8,6 +7,7 @@ import { axisLeft, axisBottom } from 'd3-axis';
 import { area } from 'd3-shape';
 import { brushX } from 'd3-brush';
 import { timeParse } from 'd3-time-format';
+import { dateTickFormat } from '../lib/utils/tick_formats';
 
 const d3 = { extent, max, select, scaleTime, scaleLinear, axisLeft, axisBottom, area, brushX, timeParse };
 
