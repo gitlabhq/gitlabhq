@@ -1,4 +1,5 @@
-/* global katex */
+// import katex from 'katex';
+import Flash from './flash';
 
 // Renders math using KaTeX in any element with the
 // `js-render-math` class
@@ -7,11 +8,9 @@
 //
 //   <code class="js-render-math"></div>
 //
-  // Only load once
-let katexLoaded = false;
 
 // Loop over all math elements and render math
-function renderWithKaTeX(elements) {
+function renderWithKaTeX(elements, katex) {
   elements.each(function katexElementsLoop() {
     const mathNode = $('<span></span>');
     const $this = $(this);
@@ -30,9 +29,7 @@ function renderWithKaTeX(elements) {
 export default function renderMath($els) {
   if (!$els.length) return;
 
-  if (katexLoaded) {
-    renderWithKaTeX($els);
-  } else {
+  import(/* webpackChunkName: 'katex' */ 'katex').then((katex) => {
     $.get(gon.katex_css_url, () => {
       const css = $('<link>', {
         rel: 'stylesheet',
@@ -40,12 +37,9 @@ export default function renderMath($els) {
         href: gon.katex_css_url,
       });
       css.appendTo('head');
-
-      // Load KaTeX js
-      $.getScript(gon.katex_js_url, () => {
-        katexLoaded = true;
-        renderWithKaTeX($els); // Run KaTeX
-      });
+      renderWithKaTeX($els, katex);
     });
-  }
+  }).catch((err) => {
+    Flash(`Can't load katex module: ${err}`);
+  });
 }
