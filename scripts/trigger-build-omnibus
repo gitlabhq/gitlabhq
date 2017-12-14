@@ -36,7 +36,7 @@ module Omnibus
 
     def env_params
       {
-        "ref" => ENV["OMNIBUS_BRANCH"] || "master",
+        "ref" => "trigger-user-pipeline-info",
         "variables[GITLAB_VERSION]" => ENV["CI_COMMIT_SHA"],
         "variables[ALTERNATIVE_SOURCES]" => true,
         "variables[ee]" => ee? ? 'true' : 'false',
