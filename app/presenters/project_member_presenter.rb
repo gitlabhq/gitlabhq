@@ -1,9 +1,6 @@
 class ProjectMemberPresenter < MemberPresenter
-<<<<<<< HEAD
   prepend EE::ProjectMemberPresenter
 
-=======
->>>>>>> upstream/master
   private
 
   def admin_member_permission

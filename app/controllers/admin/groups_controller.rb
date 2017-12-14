@@ -1,9 +1,7 @@
 class Admin::GroupsController < Admin::ApplicationController
   include MembersPresentation
-<<<<<<< HEAD
+
   prepend EE::Admin::GroupsController
-=======
->>>>>>> upstream/master
 
   before_action :group, only: [:edit, :update, :destroy, :project_update, :members_update]
 
