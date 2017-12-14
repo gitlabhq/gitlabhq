@@ -9,7 +9,7 @@ describe 'projects/tree/_blob_item' do
     assign(:project, project)
     assign(:repository, repository)
     assign(:id, File.join('master', ''))
-    assign(:lfs_blobs, [])
+    assign(:lfs_blob_ids, [])
   end
 
   it 'renders blob item' do
@@ -21,7 +21,7 @@ describe 'projects/tree/_blob_item' do
 
   describe 'LFS blob' do
     before do
-      assign(:lfs_blobs, [blob_item])
+      assign(:lfs_blob_ids, [blob_item].map(&:id))
 
       render_partial(blob_item)
     end
