@@ -30,6 +30,16 @@ namespace :gitlab do
       end
     end
 
+    desc 'GitLab | Git | Check all repos integrity'
+    task fsck: :environment do
+      failures = perform_git_cmd(%W(#{Gitlab.config.git.bin_path} fsck --name-objects --no-progress), "Checking integrity")
+      if failures.empty?
+        puts "Done".color(:green)
+      else
+        output_failures(failures)
+      end
+    end
+
     def perform_git_cmd(cmd, message)
       puts "Starting #{message} on all repositories"
 
