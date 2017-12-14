@@ -80,16 +80,37 @@ module API
       expose :group_access, as: :group_access_level
     end
 
-    class BasicProjectDetails < Grape::Entity
-      expose :id, :description, :default_branch, :tag_list
-      expose :ssh_url_to_repo, :http_url_to_repo, :web_url
+    class ProjectIdentity < Grape::Entity
+      expose :id, :description
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
+      expose :created_at
+    end
+
+    class BasicProjectDetails < ProjectIdentity
+      include ::API::ProjectsRelationBuilder
+
+      expose :default_branch
+      # Avoids an N+1 query: https://github.com/mbleigh/acts-as-taggable-on/issues/91#issuecomment-168273770
+      expose :tag_list do |project|
+        # project.tags.order(:name).pluck(:name) is the most suitable option
+        # to avoid loading all the ActiveRecord objects but, if we use it here
+        # it override the preloaded associations and makes a query
+        # (fixed in https://github.com/rails/rails/pull/25976).
+        project.tags.map(&:name).sort
+      end
+      expose :ssh_url_to_repo, :http_url_to_repo, :web_url
       expose :avatar_url do |project, options|
         project.avatar_url(only_path: false)
       end
       expose :star_count, :forks_count
-      expose :created_at, :last_activity_at
+      expose :last_activity_at
+
+      def self.preload_relation(projects_relation, options =  {})
+        projects_relation.preload(:project_feature, :route)
+                         .preload(namespace: [:route, :owner],
+                                  tags: :taggings)
+      end
     end
 
     class Project < BasicProjectDetails
@@ -141,7 +162,7 @@ module API
       expose :shared_runners_enabled
       expose :lfs_enabled?, as: :lfs_enabled
       expose :creator_id
-      expose :namespace, using: 'API::Entities::Namespace'
+      expose :namespace, using: 'API::Entities::NamespaceBasic'
       expose :forked_from_project, using: Entities::BasicProjectDetails, if: lambda { |project, options| project.forked? }
       expose :import_status
       expose :import_error, if: lambda { |_project, options| options[:user_can_admin_project] }
@@ -151,7 +172,7 @@ module API
       expose :public_builds, as: :public_jobs
       expose :ci_config_path
       expose :shared_with_groups do |project, options|
-        SharedGroup.represent(project.project_group_links.all, options)
+        SharedGroup.represent(project.project_group_links, options)
       end
       expose :only_allow_merge_if_pipeline_succeeds
       expose :request_access_enabled
@@ -159,6 +180,18 @@ module API
       expose :printing_merge_request_link_enabled
 
       expose :statistics, using: 'API::Entities::ProjectStatistics', if: :statistics
+
+      def self.preload_relation(projects_relation, options =  {})
+        super(projects_relation).preload(:group)
+                                .preload(project_group_links: :group,
+                                         fork_network: :root_project,
+                                         forked_project_link: :forked_from_project,
+                                         forked_from_project: [:route, :forks, namespace: :route, tags: :taggings])
+      end
+
+      def self.forks_counting_projects(projects_relation)
+        projects_relation + projects_relation.map(&:forked_from_project).compact
+      end
     end
 
     class ProjectStatistics < Grape::Entity
@@ -622,9 +655,11 @@ module API
       expose :created_at
     end
 
-    class Namespace < Grape::Entity
+    class NamespaceBasic < Grape::Entity
       expose :id, :name, :path, :kind, :full_path, :parent_id
+    end
 
+    class Namespace < NamespaceBasic
       expose :members_count_with_descendants, if: -> (namespace, opts) { expose_members_count_with_descendants?(namespace, opts) } do |namespace, _|
         namespace.users_with_descendants.count
       end
@@ -684,7 +719,7 @@ module API
           if options.key?(:project_members)
             (options[:project_members] || []).find { |member| member.source_id == project.id }
           else
-            project.project_members.find_by(user_id: options[:current_user].id)
+            project.project_member(options[:current_user])
           end
         end
 
@@ -693,10 +728,24 @@ module API
             if options.key?(:group_members)
               (options[:group_members] || []).find { |member| member.source_id == project.namespace_id }
             else
-              project.group.group_members.find_by(user_id: options[:current_user].id)
+              project.group.group_member(options[:current_user])
             end
           end
         end
+      end
+
+      def self.preload_relation(projects_relation, options = {})
+        relation = super(projects_relation, options)
+
+        unless options.key?(:group_members)
+          relation = relation.preload(group: [group_members: [:source, user: [notification_settings: :source]]])
+        end
+
+        unless options.key?(:project_members)
+          relation = relation.preload(project_members: [:source, user: [notification_settings: :source]])
+        end
+
+        relation
       end
     end
 
@@ -833,15 +882,22 @@ module API
       expose :id, :sha, :ref, :status
     end
 
-    class Job < Grape::Entity
+    class JobBasic < Grape::Entity
       expose :id, :status, :stage, :name, :ref, :tag, :coverage
       expose :created_at, :started_at, :finished_at
       expose :duration
       expose :user, with: User
-      expose :artifacts_file, using: JobArtifactFile, if: -> (job, opts) { job.artifacts? }
       expose :commit, with: Commit
-      expose :runner, with: Runner
       expose :pipeline, with: PipelineBasic
+    end
+
+    class Job < JobBasic
+      expose :artifacts_file, using: JobArtifactFile, if: -> (job, opts) { job.artifacts? }
+      expose :runner, with: Runner
+    end
+
+    class JobBasicWithProject < JobBasic
+      expose :project, with: ProjectIdentity
     end
 
     class Trigger < Grape::Entity

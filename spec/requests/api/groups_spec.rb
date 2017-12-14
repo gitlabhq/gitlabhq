@@ -463,6 +463,20 @@ describe API::Groups do
 
         expect(response).to have_gitlab_http_status(404)
       end
+
+      it 'avoids N+1 queries' do
+        get api("/groups/#{group1.id}/projects", admin)
+
+        control_count = ActiveRecord::QueryRecorder.new do
+          get api("/groups/#{group1.id}/projects", admin)
+        end.count
+
+        create(:project, namespace: group1)
+
+        expect do
+          get api("/groups/#{group1.id}/projects", admin)
+        end.not_to exceed_query_limit(control_count)
+      end
     end
 
     context 'when using group path in URL' do
