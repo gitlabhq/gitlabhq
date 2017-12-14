@@ -55,6 +55,7 @@ class License < ActiveRecord::Base
 
   EEU_FEATURES = EEP_FEATURES + %i[
     sast
+    sast_image
     epics
   ].freeze
 

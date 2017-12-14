@@ -95,7 +95,6 @@ describe('Merge Request collapsible section', () => {
         errorText: 'Failed to load codeclimate report',
         successText: 'Code quality improved on 1 point and degraded on 1 point',
       });
-
       expect(vm.$el.textContent.trim()).toEqual('Failed to load codeclimate report');
     });
   });

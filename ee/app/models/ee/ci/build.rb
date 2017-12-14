@@ -10,11 +10,13 @@ module EE
       CODEQUALITY_FILE = 'codeclimate.json'.freeze
       SAST_FILE = 'gl-sast-report.json'.freeze
       PERFORMANCE_FILE = 'performance.json'.freeze
+      CLAIR_FILE = 'gl-clair-report.json'.freeze
 
       included do
         scope :codequality, ->() { where(name: %w[codequality codeclimate]) }
         scope :performance, ->() { where(name: %w[performance deploy]) }
         scope :sast, ->() { where(name: 'sast') }
+        scope :clair, ->() { where(name: 'clair') }
 
         after_save :stick_build_if_status_changed
       end
@@ -40,6 +42,10 @@ module EE
 
       def has_sast_json?
         has_artifact?(SAST_FILE)
+      end
+
+      def has_clair_json?
+        has_artifact?(CLAIR_FILE)
       end
 
       private

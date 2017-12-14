@@ -50,6 +50,18 @@ module EE
           project_blob_path(merge_request.project, merge_request.head_pipeline_sha)
         end
       end
+
+      expose :clair, if: -> (mr, _) { expose_clair_data?(mr, current_user) } do
+        expose :path do |merge_request|
+          raw_project_build_artifacts_url(merge_request.source_project,
+                                          merge_request.clair_artifact,
+                                          path: Ci::Build::CLAIR_FILE)
+        end
+
+        expose :blob_path, if: -> (mr, _) { mr.head_pipeline_sha } do |merge_request|
+          project_blob_path(merge_request.project, merge_request.head_pipeline_sha)
+        end
+      end
     end
 
     private
@@ -63,6 +75,12 @@ module EE
     def expose_performance_data?(mr)
       mr.project.feature_available?(:merge_request_performance_metrics) &&
         mr.has_performance_data?
+    end
+
+    def expose_clair_data?(mr, current_user)
+      mr.project.feature_available?(:sast_image) &&
+        mr.has_clair_data? &&
+        can?(current_user, :read_build, mr.clair_artifact)
     end
   end
 end

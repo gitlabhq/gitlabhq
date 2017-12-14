@@ -10,6 +10,8 @@ import mockData, {
   basePerformance,
   headPerformance,
   securityIssues,
+  dockerReport,
+  dockerReportParsed,
 } from './mock_data';
 import mountComponent from '../helpers/vue_mount_component_helper';
 
@@ -363,6 +365,102 @@ describe('ee merge request widget options', () => {
     });
   });
 
+  describe('docker report', () => {
+    beforeEach(() => {
+      gl.mrWidgetData = {
+        ...mockData,
+        clair: {
+          path: 'clair.json',
+          blob_path: 'blob_path',
+        },
+      };
+
+      Component.mr = new MRWidgetStore(gl.mrWidgetData);
+      Component.service = new MRWidgetService({});
+    });
+
+    describe('when it is loading', () => {
+      it('should render loading indicator', () => {
+        vm = mountComponent(Component);
+        expect(
+          vm.$el.querySelector('.js-docker-widget').textContent.trim(),
+        ).toContain('Loading clair report');
+      });
+    });
+
+    describe('with successful request', () => {
+      const interceptor = (request, next) => {
+        if (request.url === 'clair.json') {
+          next(request.respondWith(JSON.stringify(dockerReport), {
+            status: 200,
+          }));
+        }
+      };
+
+      beforeEach(() => {
+        Vue.http.interceptors.push(interceptor);
+        vm = mountComponent(Component);
+      });
+
+      afterEach(() => {
+        Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+      });
+
+      it('should render provided data', (done) => {
+        setTimeout(() => {
+          expect(
+            vm.$el.querySelector('.js-docker-widget .js-code-text').textContent.trim(),
+          ).toEqual('Found 3 vulnerabilities, of which 1 is approved');
+
+          vm.$el.querySelector('.js-docker-widget button').click();
+
+          Vue.nextTick(() => {
+            expect(
+              vm.$el.querySelector('.js-docker-widget .mr-widget-code-quality-info').textContent.trim(),
+            ).toContain('Unapproved vulnerabilities (red) can be marked as approved.');
+            expect(
+              vm.$el.querySelector('.js-docker-widget .mr-widget-code-quality-info a').textContent.trim(),
+            ).toContain('Learn more about whitelisting');
+
+            const firstVulnerability = vm.$el.querySelector('.js-docker-widget .mr-widget-code-quality-list').textContent.trim();
+
+            expect(firstVulnerability).toContain(dockerReportParsed.unapproved[0].name);
+            expect(firstVulnerability).toContain(dockerReportParsed.unapproved[0].path);
+            done();
+          });
+        }, 0);
+      });
+    });
+
+    describe('with failed request', () => {
+      const interceptor = (request, next) => {
+        if (request.url === 'clair.json') {
+          next(request.respondWith({}, {
+            status: 500,
+          }));
+        }
+      };
+
+      beforeEach(() => {
+        Vue.http.interceptors.push(interceptor);
+        vm = mountComponent(Component);
+      });
+
+      afterEach(() => {
+        Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+      });
+
+      it('should render error indicator', (done) => {
+        setTimeout(() => {
+          expect(
+            vm.$el.querySelector('.js-docker-widget').textContent.trim(),
+          ).toContain('Failed to load clair report');
+          done();
+        }, 0);
+      });
+    });
+  });
+
   describe('computed', () => {
     describe('shouldRenderApprovals', () => {
       it('should return false when no approvals', () => {
@@ -399,6 +497,183 @@ describe('ee merge request widget options', () => {
         vm.mr.state = 'readyToMerge';
 
         expect(vm.shouldRenderApprovals).toBeTruthy();
+      });
+    });
+
+    describe('dockerText', () => {
+      beforeEach(() => {
+        vm = mountComponent(Component, {
+          mrData: {
+            ...mockData,
+            clair: {
+              path: 'foo',
+            },
+          },
+        });
+      });
+
+      describe('with no vulnerabilities', () => {
+        it('returns No vulnerabilities found', () => {
+          expect(vm.dockerText).toEqual('No vulnerabilities were found');
+        });
+      });
+
+      describe('without unapproved vulnerabilities', () => {
+        it('returns approved information - single', () => {
+          vm.mr.dockerReport = {
+            vulnerabilities: [{
+              vulnerability: 'CVE-2017-12944',
+              namespace: 'debian:8',
+              severity: 'Medium',
+            }],
+            approved: [{
+              vulnerability: 'CVE-2017-12944',
+              namespace: 'debian:8',
+              severity: 'Medium',
+            }],
+            unapproved: [],
+          };
+          expect(vm.dockerText).toEqual('Found 1 approved vulnerability');
+        });
+
+        it('returns approved information - plural', () => {
+          vm.mr.dockerReport = {
+            vulnerabilities: [{
+              vulnerability: 'CVE-2017-12944',
+              namespace: 'debian:8',
+              severity: 'Medium',
+            }],
+            approved: [
+              {
+                vulnerability: 'CVE-2017-12944',
+                namespace: 'debian:8',
+                severity: 'Medium',
+              },
+              {
+                vulnerability: 'CVE-2017-13726',
+                namespace: 'debian:8',
+                severity: 'Medium',
+              },
+            ],
+            unapproved: [],
+          };
+          expect(vm.dockerText).toEqual('Found 2 approved vulnerabilities');
+        });
+      });
+
+      describe('with only unapproved vulnerabilities', () => {
+        it('returns number of vulnerabilities - single', () => {
+          vm.mr.dockerReport = {
+            vulnerabilities: [{
+              vulnerability: 'CVE-2017-12944',
+              namespace: 'debian:8',
+              severity: 'Medium',
+            }],
+            unapproved: [
+              {
+                vulnerability: 'CVE-2017-12944',
+                namespace: 'debian:8',
+                severity: 'Medium',
+              },
+            ],
+            approved: [],
+          };
+          expect(vm.dockerText).toEqual('Found 1 vulnerability');
+        });
+
+        it('returns number of vulnerabilities - plural', () => {
+          vm.mr.dockerReport = {
+            vulnerabilities: [{
+              vulnerability: 'CVE-2017-12944',
+              namespace: 'debian:8',
+              severity: 'Medium',
+            }],
+            unapproved: [
+              {
+                vulnerability: 'CVE-2017-12944',
+                namespace: 'debian:8',
+                severity: 'Medium',
+              },
+              {
+                vulnerability: 'CVE-2017-12944',
+                namespace: 'debian:8',
+                severity: 'Medium',
+              },
+            ],
+            approved: [],
+          };
+          expect(vm.dockerText).toEqual('Found 2 vulnerabilities');
+        });
+      });
+
+      describe('with approved and unapproved vulnerabilities', () => {
+        it('returns message with information about both - single', () => {
+          vm.mr.dockerReport = {
+            vulnerabilities: [{
+              vulnerability: 'CVE-2017-12944',
+              namespace: 'debian:8',
+              severity: 'Medium',
+            }],
+            unapproved: [
+              {
+                vulnerability: 'CVE-2017-12944',
+                namespace: 'debian:8',
+                severity: 'Medium',
+              },
+            ],
+            approved: [
+              {
+                vulnerability: 'CVE-2017-12944',
+                namespace: 'debian:8',
+                severity: 'Medium',
+              },
+            ],
+          };
+
+          expect(vm.dockerText).toEqual('Found 1 vulnerability, of which 1 is approved');
+        });
+
+        it('returns message with information about both - plural', () => {
+          vm.mr.dockerReport = {
+            vulnerabilities: [
+              {
+                vulnerability: 'CVE-2017-12944',
+                namespace: 'debian:8',
+                severity: 'Medium',
+              },
+              {
+                vulnerability: 'CVE-2017-12944',
+                namespace: 'debian:8',
+                severity: 'Medium',
+              },
+            ],
+            unapproved: [
+              {
+                vulnerability: 'CVE-2017-12944',
+                namespace: 'debian:8',
+                severity: 'Medium',
+              },
+              {
+                vulnerability: 'CVE-2017-12923',
+                namespace: 'debian:8',
+                severity: 'Medium',
+              },
+            ],
+            approved: [
+              {
+                vulnerability: 'CVE-2017-12944',
+                namespace: 'debian:8',
+                severity: 'Medium',
+              },
+              {
+                vulnerability: 'CVE-2017-13944',
+                namespace: 'debian:8',
+                severity: 'Medium',
+              },
+            ],
+          };
+          expect(vm.dockerText).toEqual('Found 2 vulnerabilities, of which 2 are approved');
+        });
       });
     });
   });

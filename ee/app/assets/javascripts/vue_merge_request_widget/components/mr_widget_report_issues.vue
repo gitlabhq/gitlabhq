@@ -8,7 +8,7 @@
         type: Array,
         required: true,
       },
-      // security || codequality || performance
+      // security || codequality || performance || docker
       type: {
         type: String,
         required: true,
@@ -41,6 +41,14 @@
       isTypeSecurity() {
         return this.type === 'security';
       },
+      isTypeDocker() {
+        return this.type === 'docker';
+      },
+    },
+    methods: {
+      shouldRenderPriority(issue) {
+        return (this.isTypeSecurity || this.isTypeDocker) && issue.priority;
+      },
     },
   };
 </script>
@@ -60,9 +68,23 @@
       </span>
 
       <template v-if="isStatusSuccess && isTypeQuality">Fixed:</template>
-      <template v-if="isTypeSecurity && issue.priority">{{issue.priority}}:</template>
+      <template v-if="shouldRenderPriority(issue)">{{issue.priority}}:</template>
 
-      {{issue.name}}<template v-if="issue.score">: <strong>{{issue.score}}</strong></template>
+      <template v-if="isTypeDocker">
+        <a
+          v-if="issue.nameLink"
+          :href="issue.nameLink"
+          target="_blank"
+          rel="noopener noreferrer nofollow">
+          {{issue.name}}
+        </a>
+        <template v-else>
+          {{issue.name}}
+        </template>
+      </template>
+      <template v-else>
+        {{issue.name}}<template v-if="issue.score">: <strong>{{issue.score}}</strong></template>
+      </template>
 
       <template v-if="isTypePerformance && issue.delta != null">
         ({{issue.delta >= 0 ? '+' : ''}}{{issue.delta}})

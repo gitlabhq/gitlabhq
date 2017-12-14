@@ -24,6 +24,10 @@ module EE
       def sast_artifact
         artifacts.sast.find(&:has_sast_json?)
       end
+
+      def clair_artifact
+        artifacts.clair.find(&:has_clair_json?)
+      end
     end
   end
 end

@@ -790,6 +790,10 @@
     background-color: $gray-light;
     margin: $gl-padding -16px -16px;
 
+    .mr-widget-code-quality-info {
+      padding-left: 12px;
+    }
+
     .mr-widget-code-quality-list {
       list-style: none;
       padding: 0 12px;

@@ -6,6 +6,7 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.initCodeclimate(data);
     this.initPerformanceReport(data);
     this.initSecurityReport(data);
+    this.initDockerReport(data);
   }
 
   setData(data) {
@@ -71,8 +72,47 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     this.securityReport = [];
   }
 
+  initDockerReport(data) {
+    this.clair = data.clair;
+    this.dockerReport = {
+      approved: [],
+      unapproved: [],
+      vulnerabilities: [],
+    };
+  }
+
   setSecurityReport(issues, path) {
     this.securityReport = MergeRequestStore.parseIssues(issues, path);
+  }
+
+  setDockerReport(data = {}) {
+    const parsedVulnerabilities = MergeRequestStore
+      .parseDockerVulnerabilities(data.vulnerabilities);
+
+    this.dockerReport.vulnerabilities = parsedVulnerabilities || [];
+
+    // There is a typo in the original repo:
+    // https://github.com/arminc/clair-scanner/pull/39/files
+    // Fix this when the above PR is accepted
+    const unapproved = data.unapproved || data.unaproved || [];
+
+    // Approved can be calculated by subtracting unapproved from vulnerabilities.
+    this.dockerReport.approved = parsedVulnerabilities
+      .filter(item => !unapproved.find(el => el === item.vulnerability)) || [];
+
+    this.dockerReport.unapproved = parsedVulnerabilities
+      .filter(item => unapproved.find(el => el === item.vulnerability)) || [];
+  }
+
+  static parseDockerVulnerabilities(data) {
+    return data.map(el => ({
+      name: el.vulnerability,
+      priority: el.severity,
+      path: el.namespace,
+      // external link to provide better description
+      nameLink: `https://cve.mitre.org/cgi-bin/cvename.cgi?name=${el.vulnerability}`,
+      ...el,
+    }));
   }
 
   compareCodeclimateMetrics(headIssues, baseIssues, headBlobPath, baseBlobPath) {
