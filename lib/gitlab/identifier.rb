@@ -2,9 +2,8 @@
 # key-13 or user-36 or last commit
 module Gitlab
   module Identifier
-    def identify(identifier, project, newrev)
+    def identify(identifier, project = nil, newrev = nil)
       if identifier.blank?
-        # Local push from gitlab
         identify_using_commit(project, newrev)
       elsif identifier =~ /\Auser-\d+\Z/
         # git push over http
@@ -17,6 +16,8 @@ module Gitlab
 
     # Tries to identify a user based on a commit SHA.
     def identify_using_commit(project, ref)
+      return if project.nil? && ref.nil?
+
       commit = project.commit(ref)
 
       return if !commit || !commit.author_email

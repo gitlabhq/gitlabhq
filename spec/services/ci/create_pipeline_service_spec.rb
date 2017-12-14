@@ -64,6 +64,18 @@ describe Ci::CreatePipelineService do
           create(:merge_request, source_branch: 'master', target_branch: "branch_2", source_project: project)
         end
 
+        context 'when related merge request is already merged' do
+          let!(:merged_merge_request) do
+            create(:merge_request, source_branch: 'master', target_branch: "branch_2", source_project: project, state: 'merged')
+          end
+
+          it 'does not schedule update head pipeline job' do
+            expect(UpdateHeadPipelineForMergeRequestWorker).not_to receive(:perform_async).with(merged_merge_request.id)
+
+            execute_service
+          end
+        end
+
         context 'when the head pipeline sha equals merge request sha' do
           it 'updates head pipeline of each merge request' do
             merge_request_1
@@ -77,13 +89,13 @@ describe Ci::CreatePipelineService do
         end
 
         context 'when the head pipeline sha does not equal merge request sha' do
-          it 'raises the ArgumentError error from worker and does not update the head piepeline of MRs' do
+          it 'does not update the head piepeline of MRs' do
             merge_request_1
             merge_request_2
 
             allow_any_instance_of(Ci::Pipeline).to receive(:latest?).and_return(true)
 
-            expect { execute_service(after: 'ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }.to raise_error(ArgumentError)
+            expect { execute_service(after: 'ae73cb07c9eeaf35924a10f713b364d32b2dd34f') }.not_to raise_error
 
             last_pipeline = Ci::Pipeline.last
 
@@ -516,6 +528,21 @@ describe Ci::CreatePipelineService do
           expect(pipeline).not_to be_protected
           expect(Ci::Pipeline.count).to eq(1)
         end
+      end
+    end
+
+    context 'when pipeline is running for a tag' do
+      before do
+        config = YAML.dump(test: { script: 'test', only: ['branches'] },
+                           deploy: { script: 'deploy', only: ['tags'] })
+
+        stub_ci_pipeline_yaml_file(config)
+      end
+
+      it 'creates a tagged pipeline' do
+        pipeline = execute_service(ref: 'v1.0.0')
+
+        expect(pipeline.tag?).to be true
       end
     end
   end

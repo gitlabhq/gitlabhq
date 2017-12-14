@@ -50,6 +50,11 @@
     &:not(.disabled) {
       cursor: pointer;
     }
+
+    svg {
+      width: $gl-padding;
+      height: $gl-padding;
+    }
   }
 }
 
