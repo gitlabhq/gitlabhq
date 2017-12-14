@@ -287,9 +287,9 @@ module Ci
 
         shared_examples 'validation is active' do
           context 'when depended job has not been completed yet' do
-            let!(:pre_stage_job) { create(:ci_build, :running, pipeline: pipeline, name: 'test', stage_idx: 0) }
+            let!(:pre_stage_job) { create(:ci_build, :manual, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
-            it_behaves_like 'not pick'
+            it { expect(subject).to eq(pending_job) }
           end
 
           context 'when artifacts of depended job has been expired' do
@@ -309,7 +309,7 @@ module Ci
           end
 
           context 'when job object is staled' do
-            let!(:pre_stage_job) { create(:ci_build, :running, pipeline: pipeline, name: 'test', stage_idx: 0) }
+            let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
             before do
               allow_any_instance_of(Ci::Build).to receive(:drop!)
@@ -324,11 +324,10 @@ module Ci
 
         shared_examples 'validation is not active' do
           context 'when depended job has not been completed yet' do
-            let!(:pre_stage_job) { create(:ci_build, :running, pipeline: pipeline, name: 'test', stage_idx: 0) }
+            let!(:pre_stage_job) { create(:ci_build, :manual, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
             it { expect(subject).to eq(pending_job) }
           end
-
           context 'when artifacts of depended job has been expired' do
             let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
 

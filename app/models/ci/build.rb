@@ -491,7 +491,6 @@ module Ci
     end
 
     def valid_dependency?
-      return false unless complete?
       return false if artifacts_expired?
       return false if erased?
 
