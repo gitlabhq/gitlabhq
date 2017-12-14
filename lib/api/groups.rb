@@ -59,11 +59,12 @@ module API
         paginate(projects)
       end
 
-      def present_groups(groups, options = {})
-        options = options.reverse_merge(
+      def present_groups(params, groups)
+        options = {
           with: Entities::Group,
-          current_user: current_user
-        )
+          current_user: current_user,
+          statistics: params[:statistics] && current_user.admin?
+        }
 
         groups = groups.with_statistics if options[:statistics]
         present paginate(groups), options
