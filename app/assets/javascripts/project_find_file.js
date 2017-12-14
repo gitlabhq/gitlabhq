@@ -28,12 +28,7 @@ const highlighter = function(element, text, matches) {
 };
 
 export default class ProjectFindFile {
-<<<<<<< HEAD
-
-  constructor (element1, options) {
-=======
   constructor(element1, options) {
->>>>>>> upstream/master
     this.element = element1;
     this.options = options;
     this.goToBlob = this.goToBlob.bind(this);
@@ -75,11 +70,7 @@ export default class ProjectFindFile {
   // find file
   }
 
-<<<<<<< HEAD
   // files pathes load
-=======
-    // files pathes load
->>>>>>> upstream/master
   load(url) {
     return $.ajax({
       url: url,

@@ -24,10 +24,7 @@ import projectAvatar from './project_avatar';
 /* global MergeRequest */
 import Compare from './compare';
 import initCompareAutocomplete from './compare_autocomplete';
-<<<<<<< HEAD
 /* global PathLocks */
-=======
->>>>>>> upstream/master
 import ProjectFindFile from './project_find_file';
 import ProjectNew from './project_new';
 import projectImport from './project_import';
