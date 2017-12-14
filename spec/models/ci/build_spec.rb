@@ -1871,9 +1871,9 @@ describe Ci::Build do
   describe 'state transition: any => [:running]' do
     shared_examples 'validation is active' do
       context 'when depended job has not been completed yet' do
-        let!(:pre_stage_job) { create(:ci_build, :running, pipeline: pipeline, name: 'test', stage_idx: 0) }
+        let!(:pre_stage_job) { create(:ci_build, :manual, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
-        it { expect { job.run! }.to raise_error(Ci::Build::MissingDependenciesError) }
+        it { expect { job.run! }.not_to raise_error(Ci::Build::MissingDependenciesError) }
       end
 
       context 'when artifacts of depended job has been expired' do
@@ -1895,11 +1895,10 @@ describe Ci::Build do
 
     shared_examples 'validation is not active' do
       context 'when depended job has not been completed yet' do
-        let!(:pre_stage_job) { create(:ci_build, :running, pipeline: pipeline, name: 'test', stage_idx: 0) }
+        let!(:pre_stage_job) { create(:ci_build, :manual, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
         it { expect { job.run! }.not_to raise_error }
       end
-
       context 'when artifacts of depended job has been expired' do
         let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
