@@ -320,13 +320,14 @@
   transition: width $sidebar-transition-duration;
   position: fixed;
   bottom: 0;
-  padding: 16px;
+  padding: $gl-padding;
   background-color: $gray-light;
   border: 0;
   border-top: 2px solid $border-color;
   color: $gl-text-color-secondary;
   display: flex;
   align-items: center;
+  line-height: 1;
 
   svg {
     margin-right: 8px;
