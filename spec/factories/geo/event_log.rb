@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :geo_event_log, class: Geo::EventLog do
     trait :created_event do
       repository_created_event factory: :geo_repository_created_event

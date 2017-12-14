@@ -180,7 +180,7 @@ module Gitlab
     config.middleware.insert_after ActionDispatch::Flash, 'Gitlab::Middleware::ReadOnly'
 
     config.generators do |g|
-      g.factory_girl false
+      g.factory_bot false
     end
 
     config.after_initialize do

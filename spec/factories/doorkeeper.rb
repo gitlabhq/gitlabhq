@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :doorkeeper_access_grant, class: Doorkeeper::AccessGrant do
     sequence(:resource_owner_id) { |n| n }
     association :application, factory: :doorkeeper_application

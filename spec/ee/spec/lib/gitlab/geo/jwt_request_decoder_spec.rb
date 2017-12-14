@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Gitlab::Geo::JwtRequestDecoder do
-  let!(:primary_node) { FactoryGirl.create(:geo_node, :primary) }
+  let!(:primary_node) { FactoryBot.create(:geo_node, :primary) }
   let(:data) { { input: 123 } }
   let(:request) { Gitlab::Geo::TransferRequest.new(data) }
 

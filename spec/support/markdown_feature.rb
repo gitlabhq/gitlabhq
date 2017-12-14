@@ -8,7 +8,7 @@
 # The class renders `spec/fixtures/markdown.md.erb` using ERB, allowing for
 # reference to the factory-created objects.
 class MarkdownFeature
-  include FactoryGirl::Syntax::Methods
+  include FactoryBot::Syntax::Methods
 
   def user
     @user ||= create(:user)

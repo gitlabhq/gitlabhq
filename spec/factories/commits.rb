@@ -1,6 +1,6 @@
 require_relative '../support/repo_helpers'
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :commit do
     git_commit RepoHelpers.sample_commit
     project
