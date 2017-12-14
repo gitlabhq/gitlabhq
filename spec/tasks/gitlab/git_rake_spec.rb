@@ -4,9 +4,11 @@ describe 'gitlab:git rake tasks' do
   before do
     Rake.application.rake_require 'tasks/gitlab/git'
 
-    stub_warn_user_is_not_gitlab
+    storages = { 'default' => { 'path' => Settings.absolute('tmp/tests/default_storage') } }
 
-    FileUtils.mkdir(Settings.absolute('tmp/tests/default_storage'))
+    FileUtils.mkdir_p(Settings.absolute('tmp/tests/default_storage/repo/test.git'))
+    allow(Gitlab.config.repositories).to receive(:storages).and_return(storages)
+    stub_warn_user_is_not_gitlab
   end
 
   after do
@@ -14,14 +16,8 @@ describe 'gitlab:git rake tasks' do
   end
 
   describe 'fsck' do
-    let(:storages) do
-      { 'default' => { 'path' => Settings.absolute('tmp/tests/default_storage') } }
-    end
-
     it 'outputs the right git command' do
-      expect(Kernel).to receive(:system).with('').and_return(true)
-
-      run_rake_task('gitlab:git:fsck')
+      expect { run_rake_task('gitlab:git:fsck') }.to output(/Performed Checking integrity/).to_stdout
     end
   end
 end
