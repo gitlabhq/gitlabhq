@@ -15,6 +15,8 @@ const unknownIcon = 'fa-times';
 const notAvailable = 'Not Available';
 const versionMismatch = 'Does not match the primary node version';
 const versionMismatchClass = 'geo-node-version-mismatch';
+const storageMismatch = 'Does not match the primary storage configuration';
+const storageMismatchClass = 'geo-node-storage-mismatch';
 
 class GeoNodeStatus {
   constructor(el) {
@@ -34,11 +36,13 @@ class GeoNodeStatus {
     this.$health = $('.js-health-message', this.$status.parent());
     this.$version = $('.js-gitlab-version', this.$status);
     this.$secondaryVersion = $('.js-secondary-version', this.$status);
+    this.$secondaryStorage = $('.js-secondary-storage-shards', this.$status);
     this.endpoint = this.$el.data('status-url');
     this.$advancedStatus = $('.js-advanced-geo-node-status-toggler', this.$status.parent());
     this.$advancedStatus.on('click', GeoNodeStatus.toggleShowAdvancedStatus.bind(this));
     this.primaryVersion = $('.js-primary-version').text();
     this.primaryRevision = $('.js-primary-revision').text().replace(/\W/g, '');
+    this.primaryStorageConfiguration = $('.primary-node').data('storageShards');
 
     this.statusInterval = new SmartInterval({
       callback: this.getStatus.bind(this),
@@ -72,6 +76,15 @@ class GeoNodeStatus {
       failedCount,
       waitingCount: totalCount - syncedCount - failedCount,
     };
+  }
+
+  static sortByStorageName(config) {
+    return config.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  static storageConfigEquals(first, second) {
+    return _.isEqual(GeoNodeStatus.sortByStorageName(first),
+                     GeoNodeStatus.sortByStorageName(second));
   }
 
   static renderSyncGraph($itemEl, syncStats) {
@@ -209,6 +222,17 @@ class GeoNodeStatus {
     } else {
       this.$secondaryVersion.addClass(`${versionMismatchClass}`);
       this.$secondaryVersion.text(`${status.version} (${status.revision}) - ${versionMismatch}`);
+    }
+
+    if (!this.primaryStorageConfiguration || !status.storage_shards) {
+      this.$secondaryStorage.text('UNKNOWN');
+    } else if (GeoNodeStatus.storageConfigEquals(
+      this.primaryStorageConfiguration, status.storage_shards)) {
+      this.$secondaryStorage.removeClass(`${storageMismatchClass}`);
+      this.$secondaryStorage.text('OK');
+    } else {
+      this.$secondaryStorage.addClass(`${storageMismatchClass}`);
+      this.$secondaryStorage.text(storageMismatch);
     }
 
     if (status.repositories_count > 0) {

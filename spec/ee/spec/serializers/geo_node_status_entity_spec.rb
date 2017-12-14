@@ -32,6 +32,7 @@ describe GeoNodeStatusEntity, :postgresql do
   it { is_expected.to have_key(:replication_slots_max_retained_wal_bytes) }
   it { is_expected.to have_key(:last_successful_status_check_timestamp) }
   it { is_expected.to have_key(:namespaces) }
+  it { is_expected.to have_key(:storage_shards) }
 
   describe '#healthy' do
     context 'when node is healthy' do
@@ -125,6 +126,13 @@ describe GeoNodeStatusEntity, :postgresql do
       expect(subject[:namespaces]).to be_an(Array)
       expect(subject[:namespaces].first[:id]).to eq(namespace.id)
       expect(subject[:namespaces].first[:path]).to eq(namespace.path)
+    end
+  end
+
+  describe '#storage_shards' do
+    it 'returns the config' do
+      expect(subject[:storage_shards].first[:name]).to eq('default')
+      expect(subject[:storage_shards].first[:path]).to eq('/tmp/test')
     end
   end
 end

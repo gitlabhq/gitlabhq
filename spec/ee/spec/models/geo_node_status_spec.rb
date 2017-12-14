@@ -396,18 +396,26 @@ describe GeoNodeStatus, :geo do
     it_behaves_like 'timestamp parameters', :cursor_last_event_timestamp, :cursor_last_event_date
   end
 
+  describe '#storage_shards' do
+    it "returns the current node's shard config" do
+      expect(subject[:storage_shards].as_json).to eq(StorageShard.current_shards.as_json)
+    end
+  end
+
   describe '#from_json' do
     it 'returns a new GeoNodeStatus excluding parameters' do
       status = create(:geo_node_status)
 
       data = status.as_json
-      data[:id] = 10000
+      data['id'] = 10000
+      data['storage_shards'] = Settings.repositories.storages
 
       result = GeoNodeStatus.from_json(data)
 
       expect(result.id).to be_nil
       expect(result.attachments_count).to eq(status.attachments_count)
       expect(result.cursor_last_event_date).to eq(status.cursor_last_event_date)
+      expect(result.storage_shards.count).to eq(Settings.repositories.storages.count)
     end
   end
 end

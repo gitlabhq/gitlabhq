@@ -62,6 +62,7 @@
     "cursor_last_event_timestamp": { "type": ["integer", "null"] },
     "last_successful_status_check_timestamp": { "type": ["integer", "null"] },
     "namespaces": { "type": "array" },
+    "storage_shards": { "type": "array" },
     "version": { "type": ["string"] },
     "revision": { "type": ["string"] }
   },

@@ -4,6 +4,7 @@ class GeoNodeStatus < ActiveRecord::Base
   # Whether we were successful in reaching this node
   attr_accessor :success, :version, :revision
   attr_writer :health_status
+  attr_accessor :storage_shards
 
   # Be sure to keep this consistent with Prometheus naming conventions
   PROMETHEUS_METRICS = {
@@ -49,12 +50,12 @@ class GeoNodeStatus < ActiveRecord::Base
   def self.from_json(json_data)
     json_data.slice!(*allowed_params)
 
-    GeoNodeStatus.new(json_data)
+    GeoNodeStatus.new(HashWithIndifferentAccess.new(json_data))
   end
 
   def self.allowed_params
     excluded_params = %w(id created_at updated_at).freeze
-    extra_params = %w(success health health_status last_event_timestamp cursor_last_event_timestamp version revision).freeze
+    extra_params = %w(success health health_status last_event_timestamp cursor_last_event_timestamp version revision storage_shards).freeze
     self.column_names - excluded_params + extra_params
   end
 
@@ -74,6 +75,7 @@ class GeoNodeStatus < ActiveRecord::Base
     self.lfs_objects_count = lfs_objects_finder.count_lfs_objects
     self.attachments_count = attachments_finder.count_attachments
     self.last_successful_status_check_at = Time.now
+    self.storage_shards = StorageShard.current_shards
 
     if Gitlab::Geo.primary?
       self.replication_slots_count = geo_node.replication_slots_count

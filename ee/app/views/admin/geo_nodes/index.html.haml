@@ -15,6 +15,7 @@
   %strong exact order
   they appear.
 
+- current_primary = Gitlab::Geo.primary?
 - if @nodes.any?
   .panel.panel-default
     .panel-heading
@@ -28,7 +29,10 @@
             - if node.current?
               .node-badge.current-node Current node
             - if node.primary?
-              .node-badge.primary-node Primary
+              - if node.current?
+                .node-badge.primary-node{ data: { storage_shards: @current_storage_shards.to_json } } Primary
+              - else
+                .node-badge.primary-node
               %p
                 %span.help-block Primary node
               %p
@@ -46,6 +50,13 @@
                       GitLab version:
                   %td
                     .node-info.prepend-top-5.prepend-left-5.js-secondary-version
+                - if current_primary
+                  %tr
+                    %td
+                      .help-block
+                        Storage config:
+                        %td
+                          .node-info.prepend-top-5.prepend-left-5.js-secondary-storage-shards
                 - if node.enabled?
                   %tr
                     %td
