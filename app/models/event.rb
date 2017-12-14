@@ -72,7 +72,7 @@ class Event < ActiveRecord::Base
     # We're using preload for "push_event_payload" as otherwise the association
     # is not always available (depending on the query being built).
     includes(:author, :project, project: :namespace)
-      .preload(:target, :push_event_payload)
+      .preload(:push_event_payload, target: :author)
   end
 
   scope :for_milestone_id, ->(milestone_id) { where(target_type: "Milestone", target_id: milestone_id) }

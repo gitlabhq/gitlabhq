@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Autosize from 'autosize';
 import store from '~/notes/stores';
-import issueCommentForm from '~/notes/components/issue_comment_form.vue';
+import issueCommentForm from '~/notes/components/comment_form.vue';
 import { loggedOutnoteableData, notesDataMock, userDataMock, noteableDataMock } from '../mock_data';
 import { keyboardDownEvent } from '../../issue_show/helpers';
 

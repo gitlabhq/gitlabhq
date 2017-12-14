@@ -68,7 +68,8 @@ describe Note, elastic: true do
 
   it "does not create ElasticIndexerWorker job for system messages" do
     project = create :project, :repository
-    issue = create :issue, project: project
+    # We have to set one minute delay because of https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15682
+    issue = create :issue, project: project, updated_at: 1.minute.ago
 
     # Only issue should be updated
     expect(ElasticIndexerWorker).to receive(:perform_async).with(:update, 'Issue', anything, anything)

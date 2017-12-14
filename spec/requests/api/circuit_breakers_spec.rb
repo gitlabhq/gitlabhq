@@ -47,7 +47,7 @@ describe API::CircuitBreakers do
 
   describe 'DELETE circuit_breakers/repository_storage' do
     it 'clears all circuit_breakers' do
-      expect(Gitlab::Git::Storage::CircuitBreaker).to receive(:reset_all!)
+      expect(Gitlab::Git::Storage::FailureInfo).to receive(:reset_all!)
 
       delete api('/circuit_breakers/repository_storage', admin)
 

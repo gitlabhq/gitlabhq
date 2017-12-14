@@ -220,6 +220,89 @@ feature 'GFM autocomplete', :js do
     end
   end
 
+  # This context has jsut one example in each contexts in order to improve spec performance.
+  context 'labels' do
+    let!(:backend)          { create(:label, project: project, title: 'backend') }
+    let!(:bug)              { create(:label, project: project, title: 'bug') }
+    let!(:feature_proposal) { create(:label, project: project, title: 'feature proposal') }
+
+    context 'when no labels are assigned' do
+      it 'shows labels' do
+        note = find('#note-body')
+
+        # It should show all the labels on "~".
+        type(note, '~')
+        expect_labels(shown: [backend, bug, feature_proposal])
+
+        # It should show all the labels on "/label ~".
+        type(note, '/label ~')
+        expect_labels(shown: [backend, bug, feature_proposal])
+
+        # It should show all the labels on "/relabel ~".
+        type(note, '/relabel ~')
+        expect_labels(shown: [backend, bug, feature_proposal])
+
+        # It should show no labels on "/unlabel ~".
+        type(note, '/unlabel ~')
+        expect_labels(not_shown: [backend, bug, feature_proposal])
+      end
+    end
+
+    context 'when some labels are assigned' do
+      before do
+        issue.labels << [backend]
+      end
+
+      it 'shows labels' do
+        note = find('#note-body')
+
+        # It should show all the labels on "~".
+        type(note, '~')
+        expect_labels(shown: [backend, bug, feature_proposal])
+
+        # It should show only unset labels on "/label ~".
+        type(note, '/label ~')
+        expect_labels(shown: [bug, feature_proposal], not_shown: [backend])
+
+        # It should show all the labels on "/relabel ~".
+        type(note, '/relabel ~')
+        expect_labels(shown: [backend, bug, feature_proposal])
+
+        # It should show only set labels on "/unlabel ~".
+        type(note, '/unlabel ~')
+        expect_labels(shown: [backend], not_shown: [bug, feature_proposal])
+      end
+    end
+
+    context 'when all labels are assigned' do
+      before do
+        issue.labels << [backend, bug, feature_proposal]
+      end
+
+      it 'shows labels' do
+        note = find('#note-body')
+
+        # It should show all the labels on "~".
+        type(note, '~')
+        expect_labels(shown: [backend, bug, feature_proposal])
+
+        # It should show no labels on "/label ~".
+        type(note, '/label ~')
+        expect_labels(not_shown: [backend, bug, feature_proposal])
+
+        # It should show all the labels on "/relabel ~".
+        type(note, '/relabel ~')
+        expect_labels(shown: [backend, bug, feature_proposal])
+
+        # It should show all the labels on "/unlabel ~".
+        type(note, '/unlabel ~')
+        expect_labels(shown: [backend, bug, feature_proposal])
+      end
+    end
+  end
+
+  private
+
   def expect_to_wrap(should_wrap, item, note, value)
     expect(item).to have_content(value)
     expect(item).not_to have_content("\"#{value}\"")
@@ -230,6 +313,29 @@ feature 'GFM autocomplete', :js do
       expect(note.value).to include("\"#{value}\"")
     else
       expect(note.value).not_to include("\"#{value}\"")
+    end
+  end
+
+  def expect_labels(shown: nil, not_shown: nil)
+    page.within('.atwho-container') do
+      if shown
+        expect(page).to have_selector('.atwho-view li', count: shown.size)
+        shown.each { |label| expect(page).to have_content(label.title) }
+      end
+
+      if not_shown
+        expect(page).not_to have_selector('.atwho-view li') unless shown
+        not_shown.each { |label| expect(page).not_to have_content(label.title) }
+      end
+    end
+  end
+
+  # `note` is a textarea where the given text should be typed.
+  # We don't want to find it each time this function gets called.
+  def type(note, text)
+    page.within('.timeline-content-form') do
+      note.set('')
+      note.native.send_keys(text)
     end
   end
 end

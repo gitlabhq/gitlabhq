@@ -212,6 +212,45 @@ steps below.
 
 1. Save the file and [restart GitLab][] for the changes to take effect.
 
+## Validation for dependencies
+
+> Introduced in GitLab 10.3.
+
+To disable [the dependencies validation](../ci/yaml/README.md#when-a-dependent-job-will-fail),
+you can flip the feature flag from a Rails console.
+
+---
+
+**In Omnibus installations:**
+
+1. Enter the Rails console:
+
+    ```sh
+    sudo gitlab-rails console
+    ```
+
+1. Flip the switch and disable it:
+
+    ```ruby
+    Feature.enable('ci_disable_validates_dependencies')
+    ```
+---
+
+**In installations from source:**
+
+1. Enter the Rails console:
+
+    ```sh
+    cd /home/git/gitlab
+    RAILS_ENV=production sudo -u git -H bundle exec rails console
+    ```
+
+1. Flip the switch and disable it:
+
+    ```ruby
+    Feature.enable('ci_disable_validates_dependencies')
+    ```
+
 ## Set the maximum file size of the artifacts
 
 Provided the artifacts are enabled, you can change the maximum file size of the

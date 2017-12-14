@@ -1,7 +1,7 @@
 
 import Vue from 'vue';
 import store from '~/notes/stores';
-import noteBody from '~/notes/components/issue_note_body.vue';
+import noteBody from '~/notes/components/note_body.vue';
 import { noteableDataMock, notesDataMock, note } from '../mock_data';
 
 describe('issue_note_body component', () => {

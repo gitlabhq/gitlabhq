@@ -22,6 +22,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
   - [High Availability on AWS](../university/high-availability/aws/README.md): Set up GitLab HA on Amazon AWS.
 - **(EEP)** [GitLab GEO](../gitlab-geo/README.md): Replicate your GitLab instance to other geographical locations as a read-only fully operational version.
 - **(EEP)** [Pivotal Tile](../install/pivotal/index.md): Deploy GitLab as a pre-configured appliance using Ops Manager (BOSH) for Pivotal Cloud Foundry.
+- [High Availability](high_availability/README.md): Configure multiple servers for scaling or high availability.
 
 ### Configuring GitLab
 
@@ -84,6 +85,10 @@ server with IMAP authentication on Ubuntu, to be used with Reply by email.
 - [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
 - **(EES/EEP)** [Audit logs and events](audit_events.md): View the changes made within the GitLab server.
 - **(EEP)** [Auditor users](auditor_users.md): Users with read-only access to all projects, groups, and other resources on the GitLab instance.
+- [Reply by email](reply_by_email.md): Allow users to comment on issues and merge requests by replying to notification emails.
+  - [Postfix for Reply by email](reply_by_email_postfix_setup.md): Set up a basic Postfix mail
+server with IMAP authentication on Ubuntu, to be used with Reply by email.
+- [User Cohorts](../user/admin_area/user_cohorts.md): Display the monthly cohorts of new users and their activities over time.
 
 ## Project settings
 

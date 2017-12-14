@@ -163,6 +163,34 @@ describe Banzai::Filter::UploadLinkFilter do
     end
   end
 
+  context 'in group context' do
+    let(:upload_link) { link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg') }
+    let(:group) { create(:group) }
+    let(:filter_context) { { project: nil, group: group } }
+    let(:relative_path) { "groups/#{group.full_path}/-/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg" }
+
+    it 'rewrites the link correctly' do
+      doc = raw_filter(upload_link, filter_context)
+
+      expect(doc.at_css('a')['href']).to eq("#{Gitlab.config.gitlab.url}/#{relative_path}")
+    end
+
+    it 'rewrites the link correctly for subgroup' do
+      subgroup = create(:group, parent: group)
+      relative_path = "groups/#{subgroup.full_path}/-/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+
+      doc = raw_filter(upload_link, { project: nil, group: subgroup })
+
+      expect(doc.at_css('a')['href']).to eq("#{Gitlab.config.gitlab.url}/#{relative_path}")
+    end
+
+    it 'does not modify absolute URL' do
+      doc = filter(link('http://example.com'), filter_context)
+
+      expect(doc.at_css('a')['href']).to eq 'http://example.com'
+    end
+  end
+
   context 'when project or group context does not exist' do
     let(:upload_link) { link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg') }
 

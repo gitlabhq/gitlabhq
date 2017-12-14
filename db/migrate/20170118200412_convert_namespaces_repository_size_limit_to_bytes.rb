@@ -1,3 +1,4 @@
+# rubocop:disable Migration/RemoveColumn
 # rubocop:disable Migration/UpdateColumnInBatches
 # rubocop:disable Migration/UpdateLargeTable
 class ConvertNamespacesRepositorySizeLimitToBytes < ActiveRecord::Migration

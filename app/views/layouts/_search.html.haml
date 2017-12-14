@@ -18,10 +18,10 @@
                                             spellcheck: false,
                                             tabindex: '1',
                                             autocomplete: 'off',
-                                            data: { toggle: 'dropdown',
-                                              issues_path: issues_dashboard_path,
+                                            data: { issues_path: issues_dashboard_path,
                                               mr_path: merge_requests_dashboard_path },
                                             aria: { label: 'Search' }
+          %button.hidden.js-dropdown-search-toggle{ type: 'button', data: { toggle: 'dropdown' } }
           .dropdown-menu.dropdown-select
             = dropdown_content do
               %ul

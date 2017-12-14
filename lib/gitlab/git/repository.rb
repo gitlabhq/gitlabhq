@@ -1177,9 +1177,15 @@ module Gitlab
       end
 
       def fsck
-        output, status = run_git(%W[--git-dir=#{path} fsck], nice: true)
+        gitaly_migrate(:git_fsck) do |is_enabled|
+          msg, status = if is_enabled
+                          gitaly_fsck
+                        else
+                          shell_fsck
+                        end
 
-        raise GitError.new("Could not fsck repository:\n#{output}") unless status.zero?
+          raise GitError.new("Could not fsck repository: #{msg}") unless status.zero?
+        end
       end
 
       def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
@@ -1325,6 +1331,14 @@ module Gitlab
         worktree_info_path = File.join(worktree_git_path, 'info')
         FileUtils.mkdir_p(worktree_info_path)
         File.write(File.join(worktree_info_path, 'sparse-checkout'), files)
+      end
+
+      def gitaly_fsck
+        gitaly_repository_client.fsck
+      end
+
+      def shell_fsck
+        run_git(%W[--git-dir=#{path} fsck], nice: true)
       end
 
       def rugged_fetch_source_branch(source_repository, source_branch, local_ref)

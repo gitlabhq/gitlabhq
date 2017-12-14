@@ -158,12 +158,10 @@ ActiveRecord::Schema.define(version: 20171213160445) do
     t.boolean "hashed_storage_enabled", default: false, null: false
     t.boolean "project_export_enabled", default: true, null: false
     t.boolean "auto_devops_enabled", default: false, null: false
-    t.integer "circuitbreaker_failure_count_threshold", default: 160
-    t.integer "circuitbreaker_failure_wait_time", default: 30
+    t.integer "circuitbreaker_failure_count_threshold", default: 3
     t.integer "circuitbreaker_failure_reset_time", default: 1800
-    t.integer "circuitbreaker_storage_timeout", default: 30
+    t.integer "circuitbreaker_storage_timeout", default: 15
     t.integer "circuitbreaker_access_retries", default: 3
-    t.integer "circuitbreaker_backoff_threshold", default: 80
     t.boolean "throttle_unauthenticated_enabled", default: false, null: false
     t.integer "throttle_unauthenticated_requests_per_period", default: 3600, null: false
     t.integer "throttle_unauthenticated_period_in_seconds", default: 3600, null: false
@@ -173,6 +171,7 @@ ActiveRecord::Schema.define(version: 20171213160445) do
     t.boolean "throttle_authenticated_web_enabled", default: false, null: false
     t.integer "throttle_authenticated_web_requests_per_period", default: 7200, null: false
     t.integer "throttle_authenticated_web_period_in_seconds", default: 3600, null: false
+    t.integer "circuitbreaker_check_interval", default: 1, null: false
     t.boolean "password_authentication_enabled_for_web"
     t.boolean "password_authentication_enabled_for_git", default: true
     t.integer "gitaly_timeout_default", default: 55, null: false
@@ -1161,7 +1160,6 @@ ActiveRecord::Schema.define(version: 20171213160445) do
 
   create_table "issues", force: :cascade do |t|
     t.string "title"
-    t.integer "assignee_id"
     t.integer "author_id"
     t.integer "project_id"
     t.datetime "created_at"
@@ -1189,7 +1187,6 @@ ActiveRecord::Schema.define(version: 20171213160445) do
     t.datetime "closed_at"
   end
 
-  add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree
   add_index "issues", ["author_id"], name: "index_issues_on_author_id", using: :btree
   add_index "issues", ["confidential"], name: "index_issues_on_confidential", using: :btree
   add_index "issues", ["deleted_at"], name: "index_issues_on_deleted_at", using: :btree

@@ -19,4 +19,6 @@
     "empty-loading-svg-path": image_path('illustrations/monitoring/loading.svg'),
     "empty-unable-to-connect-svg-path": image_path('illustrations/monitoring/unable_to_connect.svg'),
     "additional-metrics": additional_metrics_project_environment_path(@project, @environment, format: :json),
+    "project-path": project_path(@project),
+    "tags-path": project_tags_path(@project),
     "has-metrics": "#{@environment.has_metrics?}", deployment_endpoint: project_environment_deployments_path(@project, @environment, format: :json) } }

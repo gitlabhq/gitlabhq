@@ -115,9 +115,8 @@ describe ApplicationSetting do
     end
 
     context 'circuitbreaker settings' do
-      [:circuitbreaker_backoff_threshold,
-       :circuitbreaker_failure_count_threshold,
-       :circuitbreaker_failure_wait_time,
+      [:circuitbreaker_failure_count_threshold,
+       :circuitbreaker_check_interval,
        :circuitbreaker_failure_reset_time,
        :circuitbreaker_storage_timeout].each do |field|
         it "Validates #{field} as number" do
@@ -125,16 +124,6 @@ describe ApplicationSetting do
                            .only_integer
                            .is_greater_than_or_equal_to(0)
         end
-      end
-
-      it 'requires the `backoff_threshold` to be lower than the `failure_count_threshold`' do
-        setting.circuitbreaker_failure_count_threshold = 10
-        setting.circuitbreaker_backoff_threshold = 15
-        failure_message = "The circuitbreaker backoff threshold should be lower "\
-                          "than the failure count threshold"
-
-        expect(setting).not_to be_valid
-        expect(setting.errors[:circuitbreaker_backoff_threshold]).to include(failure_message)
       end
     end
 

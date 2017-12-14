@@ -583,6 +583,12 @@
   %fieldset
     %legend Git Storage Circuitbreaker settings
     .form-group
+      = f.label :circuitbreaker_check_interval, _('Check interval'), class: 'control-label col-sm-2'
+      .col-sm-10
+        = f.number_field :circuitbreaker_check_interval, class: 'form-control'
+        .help-block
+          = circuitbreaker_check_interval_help_text
+    .form-group
       = f.label :circuitbreaker_access_retries, _('Number of access attempts'), class: 'control-label col-sm-2'
       .col-sm-10
         = f.number_field :circuitbreaker_access_retries, class: 'form-control'
@@ -594,18 +600,6 @@
         = f.number_field :circuitbreaker_storage_timeout, class: 'form-control'
         .help-block
           = circuitbreaker_storage_timeout_help_text
-    .form-group
-      = f.label :circuitbreaker_backoff_threshold, _('Number of failures before backing off'), class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.number_field :circuitbreaker_backoff_threshold, class: 'form-control'
-        .help-block
-          = circuitbreaker_backoff_threshold_help_text
-    .form-group
-      = f.label :circuitbreaker_failure_wait_time, _('Seconds to wait after a storage failure'), class: 'control-label col-sm-2'
-      .col-sm-10
-        = f.number_field :circuitbreaker_failure_wait_time, class: 'form-control'
-        .help-block
-          = circuitbreaker_failure_wait_time_help_text
     .form-group
       = f.label :circuitbreaker_failure_count_threshold, _('Maximum git storage failures'), class: 'control-label col-sm-2'
       .col-sm-10

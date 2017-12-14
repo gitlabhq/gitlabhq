@@ -53,6 +53,8 @@ module StubConfiguration
   end
 
   def stub_storage_settings(messages)
+    messages.deep_stringify_keys!
+
     # Default storage is always required
     messages['default'] ||= Gitlab.config.repositories.storages.default
     messages.each do |storage_name, storage_settings|

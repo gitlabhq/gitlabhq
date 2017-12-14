@@ -133,18 +133,6 @@ RSpec.configure do |config|
     reset_delivered_emails!
   end
 
-  # Stub the `ForkedStorageCheck.storage_available?` method unless
-  # `:broken_storage` metadata is defined
-  #
-  # This check can be slow and is unnecessary in a test environment where we
-  # know the storage is available, because we create it at runtime
-  config.before(:example) do |example|
-    unless example.metadata[:broken_storage]
-      allow(Gitlab::Git::Storage::ForkedStorageCheck)
-        .to receive(:storage_available?).and_return(true)
-    end
-  end
-
   config.around(:each, :use_clean_rails_memory_store_caching) do |example|
     caching_store = Rails.cache
     Rails.cache = ActiveSupport::Cache::MemoryStore.new

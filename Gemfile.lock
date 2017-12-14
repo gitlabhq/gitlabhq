@@ -58,6 +58,11 @@ GEM
     asciidoctor (1.5.3)
     asciidoctor-plantuml (0.0.7)
       asciidoctor (~> 1.5)
+    asset_sync (2.2.0)
+      activemodel (>= 4.1.0)
+      fog-core
+      mime-types (>= 2.99)
+      unf
     ast (2.3.0)
     atomic (1.1.99)
     attr_encrypted (3.0.3)
@@ -514,7 +519,6 @@ GEM
     mini_mime (0.1.4)
     mini_portile2 (2.3.0)
     minitest (5.7.0)
-    mmap2 (2.2.9)
     mousetrap-rails (1.4.6)
     multi_json (1.12.2)
     multi_xml (0.6.0)
@@ -652,8 +656,7 @@ GEM
       parser
       unparser
     procto (0.0.3)
-    prometheus-client-mmap (0.7.0.beta39)
-      mmap2 (~> 2.2, >= 2.2.9)
+    prometheus-client-mmap (0.7.0.beta43)
     pry (0.10.4)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -1007,6 +1010,7 @@ DEPENDENCIES
   asana (~> 0.6.0)
   asciidoctor (~> 1.5.2)
   asciidoctor-plantuml (= 0.0.7)
+  asset_sync (~> 2.2.0)
   attr_encrypted (~> 3.0.0)
   awesome_print (~> 1.2.0)
   aws-sdk
@@ -1147,7 +1151,7 @@ DEPENDENCIES
   peek-sidekiq (~> 1.0.3)
   pg (~> 0.18.2)
   premailer-rails (~> 1.9.7)
-  prometheus-client-mmap (~> 0.7.0.beta39)
+  prometheus-client-mmap (~> 0.7.0.beta43)
   pry-byebug (~> 3.4.1)
   pry-rails (~> 0.3.4)
   rack-attack (~> 4.4.1)
