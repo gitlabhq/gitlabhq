@@ -123,20 +123,22 @@ server with IMAP authentication on Ubuntu, to be used with Reply by email.
 
 ## Monitoring GitLab
 
-- [Monitoring uptime](../user/admin_area/monitoring/health_check.md): Check the server status using the health check endpoint.
-  - [IP whitelist](monitoring/ip_whitelist.md): Monitor endpoints that provide health check information when probed.
-- [Monitoring GitHub imports](monitoring/github_imports.md): GitLab's GitHub Importer displays Prometheus metrics to monitor the health and progress of the importer.
+- [Monitoring GitLab](monitoring/index.md):
+  - [Monitoring uptime](../user/admin_area/monitoring/health_check.md): Check the server status using the health check endpoint.
+    - [IP whitelist](monitoring/ip_whitelist.md): Monitor endpoints that provide health check information when probed.
+    - [Monitoring GitHub imports](monitoring/github_imports.md): GitLab's GitHub Importer displays Prometheus metrics to monitor the health and progress of the importer.
 - [Conversational Development (ConvDev) Index](../user/admin_area/monitoring/convdev.md): Provides an overview of your entire instance's feature usage.
 
 ### Performance Monitoring
 
-- [GitLab Performance Monitoring](monitoring/performance/gitlab_configuration.md): Enable GitLab Performance Monitoring.
-- [GitLab performance monitoring with InfluxDB](monitoring/performance/introduction.md): Configure GitLab and InfluxDB for measuring performance metrics.
-  - [InfluxDB Schema](monitoring/performance/influxdb_schema.md): Measurements stored in InfluxDB.
-- [GitLab performance monitoring with Prometheus](monitoring/prometheus/index.md): Configure GitLab and Prometheus for measuring performance metrics.
-- [GitLab performance monitoring with Grafana](monitoring/prometheus/index.md): Configure GitLab to visualize time series metrics through graphs and dashboards.
-- [Request Profiling](monitoring/performance/request_profiling.md): Get a detailed profile on slow requests.
-- [Performance Bar](monitoring/performance/performance_bar.md): Get performance information for the current page.
+- [GitLab Performance Monitoring](monitoring/performance/index.md):
+  - [Enable Performance Monitoring](monitoring/performance/gitlab_configuration.md): Enable GitLab Performance Monitoring.
+  - [GitLab performance monitoring with InfluxDB](monitoring/performance/influxdb_configuration.md): Configure GitLab and InfluxDB for measuring performance metrics.
+    - [InfluxDB Schema](monitoring/performance/influxdb_schema.md): Measurements stored in InfluxDB.
+  - [GitLab performance monitoring with Prometheus](monitoring/prometheus/index.md): Configure GitLab and Prometheus for measuring performance metrics.
+  - [GitLab performance monitoring with Grafana](monitoring/performance/grafana_configuration.md): Configure GitLab to visualize time series metrics through graphs and dashboards.
+  - [Request Profiling](monitoring/performance/request_profiling.md): Get a detailed profile on slow requests.
+  - [Performance Bar](monitoring/performance/performance_bar.md): Get performance information for the current page.
 
 ## Troubleshooting
 
