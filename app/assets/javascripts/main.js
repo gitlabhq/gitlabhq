@@ -1,6 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, quotes, consistent-return, prefer-arrow-callback, comma-dangle, object-shorthand, no-new, max-len, no-multi-spaces, import/newline-after-import, import/first */
 /* global ConfirmDangerModal */
-/* global Aside */
 
 import jQuery from 'jquery';
 import _ from 'underscore';
@@ -37,7 +36,6 @@ import './behaviors/';
 // everything else
 import './activities';
 import './admin';
-import './aside';
 import loadAwardsHandler from './awards_handler';
 import bp from './breakpoints';
 import './confirm_danger_modal';
@@ -285,7 +283,6 @@ $(function () {
     return fitSidebarForSize();
   });
   loadAwardsHandler();
-  new Aside();
 
   renderTimeago();
 

@@ -16,7 +16,7 @@ import BuildArtifacts from './build_artifacts';
 import CILintEditor from './ci_lint_editor';
 import groupsSelect from './groups_select';
 import Search from './search';
-/* global Admin */
+import initAdmin from './admin';
 import NamespaceSelect from './namespace_select';
 import NewCommitForm from './new_commit_form';
 import Project from './project';
@@ -97,6 +97,7 @@ import Diff from './diff';
 import ProjectLabelSubscription from './project_label_subscription';
 import ProjectVariables from './project_variables';
 import SearchAutocomplete from './search_autocomplete';
+import Activities from './activities';
 
 // EE-only
 import ApproversSelect from './approvers_select';
@@ -366,7 +367,7 @@ import initGroupAnalytics from './init_group_analytics';
           shortcut_handler = new ShortcutsIssuable(true);
           break;
         case 'dashboard:activity':
-          new gl.Activities();
+          new Activities();
           break;
         case 'projects:commit:show':
           new Diff();
@@ -387,7 +388,7 @@ import initGroupAnalytics from './init_group_analytics';
           $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
         case 'projects:activity':
-          new gl.Activities();
+          new Activities();
           shortcut_handler = new ShortcutsNavigation();
           break;
         case 'projects:commits:show':
@@ -408,7 +409,7 @@ import initGroupAnalytics from './init_group_analytics';
 
           if ($('#tree-slider').length) new TreeView();
           if ($('.blob-viewer').length) new BlobViewer();
-          if ($('.project-show-activity').length) new gl.Activities();
+          if ($('.project-show-activity').length) new Activities();
 
           $('#tree-slider').waitForImages(function() {
             ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
@@ -449,7 +450,7 @@ import initGroupAnalytics from './init_group_analytics';
           });
           break;
         case 'groups:activity':
-          new gl.Activities();
+          new Activities();
           break;
         case 'groups:show':
           const newGroupChildWrapper = document.querySelector('.js-new-project-subgroup');
@@ -664,7 +665,7 @@ import initGroupAnalytics from './init_group_analytics';
           // needed in rspec
           gl.u2fAuthenticate = u2fAuthenticate;
         case 'admin':
-          new Admin();
+          initAdmin();
           switch (path[1]) {
             case 'broadcast_messages':
               initBroadcastMessagesForm();
