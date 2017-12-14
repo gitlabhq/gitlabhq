@@ -2295,10 +2295,10 @@ describe MergeRequest do
     end
   end
 
-<<<<<<< HEAD
   it_behaves_like 'throttled touch' do
     subject { create(:merge_request, updated_at: 1.hour.ago) }
-=======
+  end
+
   context 'state machine transitions' do
     describe '#unlock_mr' do
       subject { create(:merge_request, state: 'locked', merge_jid: 123) }
@@ -2313,6 +2313,5 @@ describe MergeRequest do
         expect(subject.merge_jid).to be_nil
       end
     end
->>>>>>> 025bdb21e8f30282fdf3a6675bf9d3de11e6235d
   end
 end
