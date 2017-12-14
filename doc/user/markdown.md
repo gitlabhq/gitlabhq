@@ -195,12 +195,23 @@ With inline diffs tags you can display {+ additions +} or [- deletions -].
 
 The wrapping tags can be either curly braces or square brackets [+ additions +] or {- deletions -}.
 
+Examples:
+
+```
+- {+ additions +}
+- [+ additions +]
+- {- deletions -}
+- [- deletions -]
+```
+
 However the wrapping tags cannot be mixed as such:
 
+```
 - {+ additions +]
 - [+ additions +}
 - {- deletions -]
 - [- deletions -}
+```
 
 ### Emoji
 
