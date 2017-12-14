@@ -68,11 +68,12 @@ The following table depicts the various user permission levels in a project.
 | Edit project                          |         |            |             | ✓        | ✓      |
 | Add deploy keys to project            |         |            |             | ✓        | ✓      |
 | Configure project hooks               |         |            |             | ✓        | ✓      |
-| Manage runners                        |         |            |             | ✓        | ✓      |
+| Manage Runners                        |         |            |             | ✓        | ✓      |
 | Manage job triggers                   |         |            |             | ✓        | ✓      |
 | Manage variables                      |         |            |             | ✓        | ✓      |
-| Manage pages                          |         |            |             | ✓        | ✓      |
-| Manage pages domains and certificates |         |            |             | ✓        | ✓      |
+| Manage GitLab Pages                   |         |            |             | ✓        | ✓      |
+| Manage GitLab Pages domains and certificates |         |            |             | ✓        | ✓      |
+| Remove GitLab Pages                   |         |            |             |          | ✓      |
 | Manage clusters                       |         |            |             | ✓        | ✓      |
 | Edit comments (posted by any user)    |         |            |             | ✓        | ✓      |
 | Switch visibility level               |         |            |             |          | ✓      |
@@ -82,6 +83,7 @@ The following table depicts the various user permission levels in a project.
 | Remove pages                          |         |            |             |          | ✓      |
 | Force push to protected branches [^4] |         |            |             |          |        |
 | Remove protected branches [^4]        |         |            |             |          |        |
+| View project Audit Events             |         |            |             | ✓        | ✓      |
 
 ## Project features permissions
 
@@ -155,6 +157,7 @@ group.
 | View public group epic   | ✓       | ✓        | ✓         | ✓      | ✓     |
 | Create/edit group epic   |         | ✓        | ✓         | ✓      | ✓     |
 | Delete group epic        |         |          |           |        | ✓     |
+| View group Audit Events  |         |          |           |        | ✓     |
 
 ### Subgroup permissions
 
