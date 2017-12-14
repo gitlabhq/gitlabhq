@@ -177,7 +177,7 @@ module API
       expose :new_merge_request_path do |project|
         Gitlab::Routing.url_helpers.project_new_merge_request_path(project, merge_request: { source_branch: '' })
       end
- 
+
       expose :shared_with_groups do |project, options|
         SharedGroup.represent(project.project_group_links, options)
       end
