@@ -67,16 +67,6 @@ export function getTimeago() {
       ][index];
     };
 
-<<<<<<< HEAD
-    w.gl.utils.localTimeAgo = function($timeagoEls, setTimeago = true) {
-      $timeagoEls.each((i, el) => {
-        if (setTimeago) {
-          // Recreate with custom template
-          $(el).tooltip({
-            template: '<div class="tooltip local-timeago" role="tooltip"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
-          });
-        }
-=======
     timeago.register(lang, locale);
     timeago.register(`${lang}-remaining`, localeRemaining);
     timeagoInstance = timeago();
@@ -84,7 +74,6 @@ export function getTimeago() {
 
   return timeagoInstance;
 }
->>>>>>> 38b066905132eff84ec50caa8b785d3118b462c2
 
 /**
  * For the given element, renders a timeago instance.
