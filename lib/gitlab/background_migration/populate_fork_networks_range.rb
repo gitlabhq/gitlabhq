@@ -1,8 +1,5 @@
-<<<<<<< HEAD
-=======
 # frozen_string_literal: true
 
->>>>>>> 552c908930... Merge branch 'bvl-fork-networks-for-deleted-projects' into 'master'
 module Gitlab
   module BackgroundMigration
     # This background migration is going to create all `fork_networks` and
