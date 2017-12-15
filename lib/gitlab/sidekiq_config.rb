@@ -24,7 +24,13 @@ module Gitlab
 
     def self.redis_queues
       # Not memoized, because this can change during the life of the application
-      Sidekiq::Queue.all.map(&:name)
+      block = -> { Sidekiq::Queue.all.map(&:name) }
+
+      if RequestStore.active?
+        RequestStore.fetch("sidekiq_config:redis_queues", &block)
+      else
+        block.call
+      end
     end
 
     def self.config_queues
