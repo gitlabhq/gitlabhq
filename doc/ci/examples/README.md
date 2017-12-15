@@ -58,6 +58,10 @@ Apart from those, here is an collection of tutorials and guides on setting up yo
 
 - [Analyze code quality with the Code Climate CLI](code_climate.md)
 
+### Static Application Security Testing (SAST)
+
+- [Scan your code for vulnerabilities](sast.md)
+
 ### Other
 
 - [Using `dpl` as deployment tool](deployment/README.md)
