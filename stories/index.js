@@ -15,6 +15,8 @@ import './mr_widget_states_story';
 import './mr_widget_pipeline_story';
 import './mr_widget_deployment_story';
 
+import './notes';
+
 try {
   require('./ee');
 } catch(e) {

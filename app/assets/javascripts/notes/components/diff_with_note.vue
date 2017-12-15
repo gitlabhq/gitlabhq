@@ -1,4 +1,5 @@
 <script>
+  import syntaxHighlight from '~/syntax_highlight';
   import DiffFileHeader from './diff_file_header.vue';
 
   export default {
@@ -17,7 +18,7 @@
         return text ? 'text-file' : 'js-image-file';
       },
       diffRows() {
-        return this.discussion.truncated_diff_lines;
+        return $(this.discussion.truncated_diff_lines);
       },
       diffFile() {
         return this.discussion.diff_file || {};
@@ -26,7 +27,7 @@
     mounted() {
       const fileHolder = $(this.$refs.fileHolder);
       this.$nextTick(() => {
-        fileHolder.syntaxHighlight();
+        syntaxHighlight(fileHolder);
       });
     },
   };
