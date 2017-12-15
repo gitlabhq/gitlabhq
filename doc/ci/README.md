@@ -79,6 +79,8 @@ learn how to leverage its potential even more.
 - [Trigger pipelines through the GitLab API](triggers/README.md)
 - [Trigger pipelines on a schedule](../user/project/pipelines/schedules.md)
 - [Deploy Boards](../user/project/deploy_boards.md) - Check the current health
+- [Kubernetes clusters](../user/project/clusters/index.md) - Integrate one or
+  more Kubernetes clusters to your project
 
 ## Review Apps
 
