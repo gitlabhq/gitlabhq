@@ -4,7 +4,7 @@ module QA
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
 
-      Factory::Resource::Project.fabricate!do |project|
+      Factory::Resource::Project.fabricate! do |project|
         project.name = 'awesome-project'
         project.description = 'create awesome project test'
       end
