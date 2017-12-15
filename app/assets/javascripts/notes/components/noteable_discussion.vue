@@ -87,11 +87,20 @@
       resolveWithIssuePath() {
         return '#'; // FIXME
       },
+      isDiffDiscussion() {
+        return (this.discussion.diff_discussion && this.discussion.diff_file);
+      },
       wrapperComponent() {
-        if (this.discussion.diff_discussion && this.discussion.diff_note) {
+        if (this.isDiffDiscussion) {
           return diffWithNote;
         }
         return 'div';
+      },
+      wrapperClass() {
+        if (this.isDiffDiscussion) {
+          return '';
+        }
+        return 'panel panel-default';
       },
     },
     methods: {
@@ -217,75 +226,74 @@
             <component
               :is="wrapperComponent"
               :discussion="discussion"
+              :class="wrapperClass"
             >
-              <div class="panel panel-default">
-                <div class="discussion-notes">
-                  <ul class="notes">
-                    <component
-                      v-for="note in note.notes"
-                      :is="componentName(note)"
-                      :note="componentData(note)"
-                      :key="note.id"
-                      />
-                  </ul>
-                  <div
-                    :class="{ 'is-replying': isReplying }"
-                    class="discussion-reply-holder">
-                    <template v-if="!isReplying && canReply">
+              <div class="discussion-notes">
+                <ul class="notes">
+                  <component
+                    v-for="note in note.notes"
+                    :is="componentName(note)"
+                    :note="componentData(note)"
+                    :key="note.id"
+                    />
+                </ul>
+                <div
+                  :class="{ 'is-replying': isReplying }"
+                  class="discussion-reply-holder">
+                  <template v-if="!isReplying && canReply">
+                    <div
+                      class="btn-group-justified discussion-with-resolve-btn"
+                      role="group">
                       <div
-                        class="btn-group-justified discussion-with-resolve-btn"
+                        class="btn-group"
                         role="group">
+                        <button
+                          @click="showReplyForm"
+                          type="button"
+                          class="js-vue-discussion-reply btn btn-text-field"
+                          title="Add a reply">Reply...</button>
+                      </div>
+                      <div
+                        v-if="isResolvable"
+                        class="btn-group"
+                        role="group">
+                        <button
+                          type="button"
+                          class="btn btn-default">
+                            <i
+                              v-if="isResolving"
+                              aria-hidden="true"
+                              class="fa fa-spinner fa-spin"></i>
+                            {{resolveButtonTitle}}
+                        </button>
+                      </div>
+                      <div
+                        v-if="isResolvable && !isResolved"
+                        class="btn-group discussion-actions">
                         <div
                           class="btn-group"
                           role="group">
-                          <button
-                            @click="showReplyForm"
-                            type="button"
-                            class="js-vue-discussion-reply btn btn-text-field"
-                            title="Add a reply">Reply...</button>
-                        </div>
-                        <div
-                          v-if="isResolvable"
-                          class="btn-group"
-                          role="group">
-                          <button
-                            type="button"
-                            class="btn btn-default">
-                              <i
-                                v-if="isResolving"
-                                aria-hidden="true"
-                                class="fa fa-spinner fa-spin"></i>
-                              {{resolveButtonTitle}}
-                          </button>
-                        </div>
-                        <div
-                          v-if="isResolvable && !isResolved"
-                          class="btn-group discussion-actions">
-                          <div
-                            class="btn-group"
-                            role="group">
-                            <a
-                              :href="resolveWithIssuePath"
-                              v-tooltip
-                              class="new-issue-for-discussion btn btn-default discussion-create-issue-btn"
-                              title="Resolve this discussion in a new issue"
-                              data-container="body">
-                                <span v-html="resolveDiscussionsSvg"></span>
-                              </a>
-                          </div>
+                          <a
+                            :href="resolveWithIssuePath"
+                            v-tooltip
+                            class="new-issue-for-discussion btn btn-default discussion-create-issue-btn"
+                            title="Resolve this discussion in a new issue"
+                            data-container="body">
+                              <span v-html="resolveDiscussionsSvg"></span>
+                            </a>
                         </div>
                       </div>
-                    </template>
-                    <note-form
-                      v-if="isReplying"
-                      save-button-title="Comment"
-                      :discussion="note"
-                      :is-editing="false"
-                      @handleFormUpdate="saveReply"
-                      @cancelFormEdition="cancelReplyForm"
-                      ref="noteForm" />
-                    <note-signed-out-widget v-if="!canReply" />
-                  </div>
+                    </div>
+                  </template>
+                  <note-form
+                    v-if="isReplying"
+                    save-button-title="Comment"
+                    :discussion="note"
+                    :is-editing="false"
+                    @handleFormUpdate="saveReply"
+                    @cancelFormEdition="cancelReplyForm"
+                    ref="noteForm" />
+                  <note-signed-out-widget v-if="!canReply" />
                 </div>
               </div>
             </component>
