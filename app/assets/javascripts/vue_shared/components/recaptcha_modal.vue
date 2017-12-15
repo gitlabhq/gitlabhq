@@ -1,8 +1,8 @@
 <script>
-import PopupDialog from './popup_dialog.vue';
+import modal from './modal.vue';
 
 export default {
-  name: 'recaptcha-dialog',
+  name: 'recaptcha-modal',
 
   props: {
     html: {
@@ -20,7 +20,7 @@ export default {
   },
 
   components: {
-    PopupDialog,
+    modal,
   },
 
   methods: {
@@ -65,9 +65,9 @@ export default {
 </script>
 
 <template>
-<popup-dialog
+<modal
   kind="warning"
-  class="recaptcha-dialog js-recaptcha-dialog"
+  class="recaptcha-modal js-recaptcha-modal"
   :hide-footer="true"
   :title="__('Please solve the reCAPTCHA')"
   @toggle="close"
@@ -81,5 +81,5 @@ export default {
       v-html="html"
     ></div>
   </div>
-</popup-dialog>
+</modal>
 </template>

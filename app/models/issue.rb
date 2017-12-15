@@ -16,7 +16,7 @@ class Issue < ActiveRecord::Base
   include ThrottledTouch
   include IgnorableColumn
 
-  ignore_column :assignee_id
+  ignore_column :assignee_id, :branch_name
 
   WEIGHT_RANGE = 1..9
   WEIGHT_ALL = 'Everything'.freeze

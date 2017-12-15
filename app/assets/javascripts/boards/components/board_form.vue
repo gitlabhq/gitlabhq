@@ -2,7 +2,7 @@
 /* global BoardService */
 
 import Flash from '~/flash';
-import PopupDialog from '~/vue_shared/components/popup_dialog.vue';
+import modal from '../../vue_shared/components/modal.vue';
 import { visitUrl } from '../../lib/utils/url_utility';
 import BoardMilestoneSelect from './milestone_select.vue';
 import BoardWeightSelect from './weight_select.vue';
@@ -74,7 +74,7 @@ export default {
     BoardLabelsSelect,
     BoardMilestoneSelect,
     BoardWeightSelect,
-    PopupDialog,
+    modal,
   },
   computed: {
     isNewForm() {
@@ -179,7 +179,7 @@ export default {
 </script>
 
 <template>
-  <popup-dialog
+  <modal
     v-show="currentPage"
     modal-dialog-class="board-config-modal"
     :hide-footer="readonly"
@@ -275,5 +275,5 @@ export default {
         </div>
       </form>
     </template>
-  </popup-dialog>
+  </modal>
 </template>

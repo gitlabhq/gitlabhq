@@ -23,6 +23,7 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 - **(EEP)** [GitLab GEO](../gitlab-geo/README.md): Replicate your GitLab instance to other geographical locations as a read-only fully operational version.
 - **(EEP)** [Pivotal Tile](../install/pivotal/index.md): Deploy GitLab as a pre-configured appliance using Ops Manager (BOSH) for Pivotal Cloud Foundry.
 - [High Availability](high_availability/README.md): Configure multiple servers for scaling or high availability.
+  - [High Availability on AWS](../university/high-availability/aws/README.md): Set up GitLab HA on Amazon AWS.
 
 ### Configuring GitLab
 
@@ -36,6 +37,13 @@ Learn how to install, configure, update, and maintain your GitLab instance.
 [source installations](../install/installation.md#installation-from-source).
 - [Environment variables](environment_variables.md): Supported environment variables that can be used to override their defaults values in order to configure GitLab.
 - **(EES/EEP)** [Elasticsearch](../integration/elasticsearch.md): Enable Elasticsearch to empower GitLab's Advanced Global Search. Useful when you deal with a huge amount of data.
+
+#### Customizing GitLab's appearance
+
+- [Header logo](../customization/branded_page_and_email_header.md): Change the logo on all pages and email headers.
+- [Branded login page](../customization/branded_login_page.md): Customize the login page with your own logo, title, and description.
+- [Welcome message](../customization/welcome_message.md): Add a custom welcome message to the sign-in page.
+- ["New Project" page](../customization/new_project_page.md): Customize the text to be displayed on the page that opens whenever your users create a new project.
 
 #### Customizing GitLab's appearance
 

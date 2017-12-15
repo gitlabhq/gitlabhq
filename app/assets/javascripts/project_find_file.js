@@ -28,8 +28,7 @@ const highlighter = function(element, text, matches) {
 };
 
 export default class ProjectFindFile {
-
-  constructor (element1, options) {
+  constructor(element1, options) {
     this.element = element1;
     this.options = options;
     this.goToBlob = this.goToBlob.bind(this);

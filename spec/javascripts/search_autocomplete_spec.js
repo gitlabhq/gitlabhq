@@ -128,7 +128,7 @@ import * as urlUtils from '~/lib/utils/url_utility';
       window.gon.current_user_id = userId;
       window.gon.current_username = userName;
 
-      return widget = new SearchAutocomplete;
+      return widget = new SearchAutocomplete();
     });
 
     afterEach(function() {
