@@ -213,27 +213,32 @@ backoff period will be penalized each time it fails up to a maximum amount of ti
 
 ## Pushing to a remote repository
 
->[Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/249) in GitLab Enterprise Edition 8.7.
+>[Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/249) in
+GitLab Enterprise Edition 8.7.
 
-For an existing project, you can set up mirror pushing by visiting your project's
+For an existing project, you can set up push mirror from your project's
 **Settings ➔ Repository** and searching for the "Push to a remote repository"
-section. Check the "Remote mirror repository" box and fill in the Git URL of the
-repository to push to. Hit **Save changes** for the changes to take effect.
+section. Check the "Remote mirror repository" box and fill in the Git URL of
+the repository to push to. Click **Save changes** for the changes to take
+effect.
 
 ![Push settings](repository_mirroring/repository_mirroring_push_settings.png)
 
-Similarly to the pull mirroring, since the upstream repository functions as a
-mirror to the repository in GitLab, you are advised not to push commits directly
-to the mirrored repository. Instead, all changes will end up in the mirrored repository
-whenever commits are pushed to GitLab, or when a [forced update](#forcing-an-update) is initiated.
+Similarly to pull mirroring, when push mirroring is enabled, you are advised
+not to push commits directly to the mirrored repository to prevent the mirror
+diverging. All changes will end up in the mirrored repository whenever commits
+are pushed to GitLab, or when a [forced update](#forcing-an-update) is
+initiated.
 
-Pushes into GitLab are automatically pushed to the remote mirror at least once every 5 minutes 
-after they come in or 1 minute if **push only protected branches** is enabled.
+Pushes into GitLab are automatically pushed to the remote mirror at least once
+every 5 minutes after they are received or once every minute if **push only
+protected branches** is enabled.
 
-In case of a diverged branch, you will see an error indicated at the
-**Mirror repository** settings.
+In case of a diverged branch, you will see an error indicated at the **Mirror
+repository** settings.
 
-![Diverged branch](repository_mirroring/repository_mirroring_diverged_branch_push.png)
+![Diverged branch](
+repository_mirroring/repository_mirroring_diverged_branch_push.png)
 
 ### Push only protected branches
 
