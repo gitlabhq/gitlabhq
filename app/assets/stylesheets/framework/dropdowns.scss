@@ -214,7 +214,6 @@
 .dropdown-menu,
 .dropdown-menu-nav {
   @include set-invisible;
-  display: block;
   position: absolute;
   width: auto;
   top: 100%;
