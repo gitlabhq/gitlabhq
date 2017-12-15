@@ -47,3 +47,8 @@
  * Styles for JS behaviors.
  */
 @import "behaviors";
+
+/*
+ * Styling Fixes for IE11 & Edge
+ */
+@import "ie_edge_compat";
