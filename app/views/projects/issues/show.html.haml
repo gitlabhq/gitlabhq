@@ -12,8 +12,8 @@
 - can_update_issue = can?(current_user, :update_issue, @issue)
 - can_report_spam = @issue.submittable_as_spam_by?(current_user)
 
-.clearfix.detail-page-header
-  .issuable-header
+.detail-page-header
+  .detail-page-header-body
     .issuable-status-box.status-box.status-box-closed{ class: issue_button_visibility(@issue, false) }
       = icon('check', class: "hidden-sm hidden-md hidden-lg")
       %span.hidden-xs
@@ -22,9 +22,6 @@
       = icon('circle-o', class: "hidden-sm hidden-md hidden-lg")
       %span.hidden-xs Open
 
-    %a.btn.btn-default.pull-right.visible-xs-block.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
-      = icon('angle-double-left')
-
     .issuable-meta
       - if @issue.confidential
         = icon('eye-slash', class: 'issuable-warning-icon')
@@ -32,7 +29,10 @@
         = icon('lock', class: 'issuable-warning-icon')
       = issuable_meta(@issue, @project, "Issue")
 
-  .issuable-actions.js-issuable-actions
+    %a.btn.btn-default.pull-right.visible-xs-block.gutter-toggle.issuable-gutter-toggle.js-sidebar-toggle{ href: "#" }
+      = icon('angle-double-left')
+
+  .detail-page-header-actions.js-issuable-actions
     .clearfix.issue-btn-group.dropdown
       %button.btn.btn-default.pull-left.hidden-md.hidden-lg{ type: "button", data: { toggle: "dropdown" } }
         Options
@@ -74,10 +74,10 @@
 
       = edited_time_ago_with_tooltip(@issue, placement: 'bottom', html_class: 'issue-edited-ago js-issue-edited-ago')
 
-    #merge-requests{ data: { url: referenced_merge_requests_project_issue_url(@project, @issue) } }
+    #merge-requests{ data: { url: referenced_merge_requests_project_issue_path(@project, @issue) } }
       // This element is filled in using JavaScript.
 
-    #related-branches{ data: { url: related_branches_project_issue_url(@project, @issue) } }
+    #related-branches{ data: { url: related_branches_project_issue_path(@project, @issue) } }
       // This element is filled in using JavaScript.
 
   .content-block.emoji-block

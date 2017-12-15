@@ -567,8 +567,7 @@ class Project < ActiveRecord::Base
       if forked?
         RepositoryForkWorker.perform_async(id,
                                            forked_from_project.repository_storage_path,
-                                           forked_from_project.full_path,
-                                           self.namespace.full_path)
+                                           forked_from_project.disk_path)
       else
         RepositoryImportWorker.perform_async(self.id)
       end
@@ -1125,7 +1124,11 @@ class Project < ActiveRecord::Base
   end
 
   def project_member(user)
-    project_members.find_by(user_id: user)
+    if project_members.loaded?
+      project_members.find { |member| member.user_id == user.id }
+    else
+      project_members.find_by(user_id: user)
+    end
   end
 
   def default_branch

@@ -128,7 +128,7 @@ import IssuablesHelper from './helpers/issuables_helper';
     };
 
     MergeRequest.prototype.hideCloseButton = function() {
-      const el = document.querySelector('.merge-request .issuable-actions');
+      const el = document.querySelector('.merge-request .js-issuable-actions');
       const closeDropdownItem = el.querySelector('li.close-item');
       if (closeDropdownItem) {
         closeDropdownItem.classList.add('hidden');

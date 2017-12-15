@@ -314,7 +314,6 @@ describe Project do
 
     it { is_expected.to delegate_method(:empty_repo?).to(:repository) }
     it { is_expected.to delegate_method(:members).to(:team).with_prefix(true) }
-    it { is_expected.to delegate_method(:count).to(:forks).with_prefix(true) }
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).with_arguments(allow_nil: true) }
   end
 
@@ -1716,8 +1715,7 @@ describe Project do
         expect(RepositoryForkWorker).to receive(:perform_async).with(
           project.id,
           forked_from_project.repository_storage_path,
-          forked_from_project.disk_path,
-          project.namespace.full_path).and_return(import_jid)
+          forked_from_project.disk_path).and_return(import_jid)
 
         expect(project.add_import_job).to eq(import_jid)
       end
@@ -2459,7 +2457,7 @@ describe Project do
     it 'returns the number of forks' do
       project = build(:project)
 
-      allow(project.forks).to receive(:count).and_return(1)
+      expect_any_instance_of(Projects::ForksCountService).to receive(:count).and_return(1)
 
       expect(project.forks_count).to eq(1)
     end

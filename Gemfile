@@ -171,7 +171,7 @@ gem 're2', '~> 1.1.1'
 gem 'version_sorter', '~> 2.1.0'
 
 # Cache
-gem 'redis-rails', '~> 5.0.1'
+gem 'redis-rails', '~> 5.0.2'
 
 # Redis
 gem 'redis', '~> 3.2'
@@ -281,7 +281,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~>0.7.0.beta18'
+  gem 'prometheus-client-mmap', '~> 0.7.0.beta43'
   gem 'raindrops', '~> 0.18'
 end
 

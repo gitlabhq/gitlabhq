@@ -622,50 +622,16 @@
   margin-top: 0;
   height: auto;
   align-self: center;
-
-  @media (max-width: $screen-xs-max) {
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-}
-
-.issuable-header {
-  position: relative;
-  padding-left: 45px;
-  padding-right: 45px;
-  line-height: 35px;
-  display: flex;
-  flex-grow: 1;
-
-  @media (min-width: $screen-sm-min) {
-    float: left;
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
-.issuable-actions {
-  @include new-style-dropdown;
-
-  align-self: center;
-  flex-shrink: 0;
-  flex: 0 0 auto;
-
-  @media (min-width: $screen-sm-min) {
-    float: right;
-  }
 }
 
 .issuable-gutter-toggle {
   @media (max-width: $screen-sm-max) {
-    position: absolute;
-    top: 0;
-    right: 0;
+    margin-left: $btn-side-margin;
   }
 }
 
 .issuable-meta {
+  flex: 1;
   display: inline-block;
   font-size: 14px;
   line-height: 24px;
