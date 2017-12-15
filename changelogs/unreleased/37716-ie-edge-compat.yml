@@ -1,0 +1,5 @@
+---
+title: Fix styling issues with IE11 and Edge on Windows 10
+merge_request: 15930
+author:
+type: fixed
