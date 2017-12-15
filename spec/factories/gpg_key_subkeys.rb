@@ -1,6 +1,6 @@
 require_relative '../support/gpg_helpers'
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :gpg_key_subkey do
     gpg_key
 

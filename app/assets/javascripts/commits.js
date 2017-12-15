@@ -1,10 +1,10 @@
 /* eslint-disable func-names, wrap-iife, consistent-return,
   no-return-assign, no-param-reassign, one-var-declaration-per-line, no-unused-vars,
   prefer-template, object-shorthand, prefer-arrow-callback */
-/* global Pager */
 
 import { pluralize } from './lib/utils/text_utility';
 import { localTimeAgo } from './lib/utils/datetime_utility';
+import Pager from './pager';
 
 export default (function () {
   const CommitsList = {};

@@ -27,7 +27,7 @@
   border: 0;
   outline: 0;
   display: block;
-  width: 100px;
+  width: 50px;
   height: 24px;
   cursor: pointer;
   user-select: none;
@@ -42,31 +42,31 @@
     background: none;
   }
 
-  &::before {
-    color: $feature-toggle-text-color;
-    font-size: 12px;
-    line-height: 24px;
-    position: absolute;
-    top: 0;
-    left: 25px;
-    right: 5px;
-    text-align: center;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    animation: animate-disabled .2s ease-in;
-    content: attr(data-disabled-text);
-  }
-
-  &::after {
+  .toggle-icon {
     position: relative;
     display: block;
-    content: "";
-    width: 22px;
-    height: 18px;
     left: 0;
     border-radius: 9px;
     background: $feature-toggle-color;
     transition: all .2s ease;
+
+    &,
+    .toggle-icon-svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .toggle-icon-svg {
+      fill: $feature-toggle-color-disabled;
+    }
+
+    .toggle-status-checked {
+      display: none;
+    }
+
+    .toggle-status-unchecked {
+      display: inline;
+    }
   }
 
   .loading-icon {
@@ -77,11 +77,10 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-
   }
 
   &.is-loading {
-    &::before {
+    .toggle-icon {
       display: none;
     }
 
@@ -100,15 +99,20 @@
   &.is-checked {
     background: $feature-toggle-color-enabled;
 
-    &::before {
-      left: 5px;
-      right: 25px;
-      animation: animate-enabled .2s ease-in;
-      content: attr(data-enabled-text);
-    }
+    .toggle-icon {
+      left: calc(100% - 18px);
 
-    &::after {
-      left: calc(100% - 22px);
+      .toggle-icon-svg {
+        fill: $feature-toggle-color-enabled;
+      }
+
+      .toggle-status-checked {
+        display: inline;
+      }
+
+      .toggle-status-unchecked {
+        display: none;
+      }
     }
   }
 

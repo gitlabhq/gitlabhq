@@ -12,6 +12,7 @@ module Spammable
 
     attr_accessor :spam
     attr_accessor :spam_log
+    alias_method :spam?, :spam
 
     after_validation :check_for_spam, on: [:create, :update]
 
@@ -32,10 +33,6 @@ module Spammable
     else
       false
     end
-  end
-
-  def spam?
-    @spam
   end
 
   def check_for_spam

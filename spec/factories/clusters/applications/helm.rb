@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :cluster_applications_helm, class: Clusters::Applications::Helm do
     cluster factory: %i(cluster provided_by_gcp)
 

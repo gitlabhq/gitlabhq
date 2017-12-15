@@ -34,16 +34,11 @@ import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 import './behaviors/';
 
 // everything else
-import './activities';
-import './admin';
 import loadAwardsHandler from './awards_handler';
 import bp from './breakpoints';
 import './confirm_danger_modal';
 import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
-import './gl_field_error';
-import './gl_field_errors';
-import './gl_form';
 import initTodoToggle from './header';
 import initImporterStatus from './importer_status';
 import './layout_nav';
@@ -54,11 +49,7 @@ import './merge_request';
 import './merge_request_tabs';
 import './milestone_select';
 import './notes';
-import './notifications_dropdown';
-import './notifications_form';
-import './pager';
 import './preview_markdown';
-import './project_import';
 import './projects_dropdown';
 import './render_gfm';
 import './right_sidebar';
