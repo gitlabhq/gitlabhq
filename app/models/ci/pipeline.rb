@@ -138,6 +138,7 @@ module Ci
         pipeline.run_after_commit do
           PipelineHooksWorker.perform_async(pipeline.id)
           ExpirePipelineCacheWorker.perform_async(pipeline.id)
+          PipelineWebpushWorker.perform_async(pipeline.id)
         end
       end
 

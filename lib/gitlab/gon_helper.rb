@@ -21,6 +21,7 @@ module Gitlab
       gon.revision               = Gitlab::REVISION
       gon.gitlab_logo            = ActionController::Base.helpers.asset_path('gitlab_logo.png')
       gon.sprite_icons           = IconsHelper.sprite_icon_path
+      gon.pipeline_notification_worker_path = ActionController::Base.helpers.asset_path('service_workers/workers/pipeline_notification_worker.js')
 
       if current_user
         gon.current_user_id = current_user.id

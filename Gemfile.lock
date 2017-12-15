@@ -386,6 +386,7 @@ GEM
     hipchat (1.5.2)
       httparty
       mimemagic
+    hkdf (0.3.0)
     html-pipeline (1.11.0)
       activesupport (>= 2)
       nokogiri (~> 1.4)
@@ -960,6 +961,9 @@ GEM
       hashdiff
     webpack-rails (0.9.10)
       railties (>= 3.2.0)
+    webpush (0.3.2)
+      hkdf (~> 0.2)
+      jwt
     wikicloth (0.8.1)
       builder
       expression_parser
@@ -1198,6 +1202,7 @@ DEPENDENCIES
   vmstat (~> 2.3.0)
   webmock (~> 2.3.2)
   webpack-rails (~> 0.9.10)
+  webpush (~> 0.3.2)
   wikicloth (= 0.8.1)
 
 BUNDLED WITH

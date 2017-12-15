@@ -68,6 +68,8 @@
   %meta{ name: 'msapplication-TileImage', content: image_path('msapplication-tile.png') }
   %meta{ name: 'msapplication-TileColor', content: '#30353E' }
 
+  %link{ rel: 'manifest', href: manifest_json_path }
+
   = yield :meta_tags
 
   = render 'layouts/google_analytics' if extra_config.has_key?('google_analytics_id')
