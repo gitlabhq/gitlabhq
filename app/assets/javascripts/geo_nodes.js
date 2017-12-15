@@ -3,7 +3,7 @@ import axios from 'axios';
 import SmartInterval from '~/smart_interval';
 import { s__ } from '~/locale';
 import { parseSeconds, stringifyTime } from './lib/utils/pretty_time';
-import { timeIntervalInWords } from './lib/utils/datetime_utility';
+import { formatDate, timeIntervalInWords } from './lib/utils/datetime_utility';
 import timeago from './vue_shared/mixins/timeago';
 
 const healthyClass = 'geo-node-healthy';
@@ -115,7 +115,7 @@ class GeoNodeStatus {
     let eventDate = notAvailable;
 
     if (eventTimestamp && eventTimestamp > 0) {
-      eventDate = gl.utils.formatDate(new Date(eventTimestamp * 1000));
+      eventDate = formatDate(new Date(eventTimestamp * 1000));
     }
 
     if (eventId) {

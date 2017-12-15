@@ -19,6 +19,7 @@ project in an easy and automatic way:
 1. [Auto Build](#auto-build)
 1. [Auto Test](#auto-test)
 1. [Auto Code Quality](#auto-code-quality)
+1. [Auto SAST (Static Application Security Testing)](#auto-sast)
 1. [Auto Review Apps](#auto-review-apps)
 1. [Auto Deploy](#auto-deploy)
 1. [Auto Monitoring](#auto-monitoring)
@@ -197,6 +198,18 @@ created, and is uploaded as an artifact which you can later download and check
 out. In GitLab Enterprise Edition Starter, differences between the source and
 target branches are
 [shown in the merge request widget](../../user/project/merge_requests/code_quality_diff.md).
+
+### Auto SAST
+
+> Introduced in [GitLab Enterprise Edition Ultimate][ee] 10.3.
+
+Static Application Security Testing (SAST) uses the
+[gl-sast Docker image](https://gitlab.com/gitlab-org/gl-sast) to run static
+analysis on the current code and checks for potential security issues. Once the
+report is created, it's uploaded as an artifact which you can later download and
+check out.
+
+Any security warnings are also [shown in the merge request widget](../../user/project/merge_requests/sast.md).
 
 ### Auto Review Apps
 
@@ -536,3 +549,4 @@ curl --data "value=true" --header "PRIVATE-TOKEN: personal_access_token" https:/
 [postgresql]: https://www.postgresql.org/
 [Auto DevOps template]: https://gitlab.com/gitlab-org/gitlab-ci-yml/blob/master/Auto-DevOps.gitlab-ci.yml
 [GitLab Omnibus Helm Chart]: ../../install/kubernetes/gitlab_omnibus.md
+[ee]: https://about.gitlab.com/gitlab-ee/

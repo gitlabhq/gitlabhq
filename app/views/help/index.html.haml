@@ -1,6 +1,6 @@
 %div
-- if current_application_settings.help_text.present?
-  = markdown(current_application_settings.help_text)
+- if current_application_settings.help_page_text.present?
+  = markdown(current_application_settings.help_page_text)
   %hr
 
 - unless current_application_settings.help_page_hide_commercial_content?
