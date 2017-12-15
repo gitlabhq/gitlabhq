@@ -136,9 +136,9 @@ module Ci
         next if transition.loopback?
 
         pipeline.run_after_commit do
+          PipelineWebpushWorker.perform_async(pipeline.id)
           PipelineHooksWorker.perform_async(pipeline.id)
           ExpirePipelineCacheWorker.perform_async(pipeline.id)
-          PipelineWebpushWorker.perform_async(pipeline.id)
         end
       end
 

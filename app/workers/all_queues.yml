@@ -44,6 +44,7 @@
 - pipeline_default:pipeline_metrics
 - pipeline_default:pipeline_notification
 - pipeline_default:update_head_pipeline_for_merge_request
+- pipeline_default:pipeline_webpush
 - pipeline_hooks:build_hooks
 - pipeline_hooks:pipeline_hooks
 - pipeline_processing:build_finished
