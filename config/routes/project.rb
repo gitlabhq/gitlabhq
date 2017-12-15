@@ -73,12 +73,10 @@ constraints(ProjectUrlConstrainer.new) do
       resource :mattermost, only: [:new, :create]
 
       namespace :prometheus do
-        resources :metrics, constraints: { id: /[^\/]+/ }, only: [:index, :show, :edit, :update, :destroy] do
+        resources :metrics, constraints: { id: /[^\/]+/ }, only: [:index, :new, :create, :edit, :update, :destroy] do
           post :validate_query, on: :collection
           get :active, on: :collection
         end
-
-        get :active_metrics
       end
 
       resources :deploy_keys, constraints: { id: /\d+/ }, only: [:index, :new, :create, :edit, :update] do

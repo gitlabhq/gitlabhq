@@ -1,4 +1,4 @@
-require('spec_helper')
+require 'spec_helper'
 
 describe Projects::Prometheus::MetricsController do
   let(:user) { create(:user) }
@@ -12,6 +12,24 @@ describe Projects::Prometheus::MetricsController do
 
     project.add_master(user)
     sign_in(user)
+  end
+
+  describe 'POST #validate_query' do
+    context 'query is valid' do
+      it 'confirms query is valid' do
+        post :validate_query, project_params(format: :json, query: 'avg(metric)')
+
+        expect(json_response).to eq("query_valid" => true)
+      end
+    end
+
+    context 'query is invalid' do
+      it 'confirms query is valid' do
+        post :validate_query, project_params(format: :json, query: 'test(metric)')
+
+        expect(json_response).to eq("query_valid" => false)
+      end
+    end
   end
 
   describe 'GET #active' do
@@ -49,6 +67,29 @@ describe Projects::Prometheus::MetricsController do
 
           expect(response).to have_gitlab_http_status(404)
         end
+      end
+    end
+  end
+
+  describe 'POST #create' do
+    context 'metric is valid' do
+      let(:valid_metric) { { prometheus_metric: { title: 'title', query: 'query' } } }
+
+      it 'shows a success flash message' do
+        post :create, project_params(valid_metric)
+
+        expect(flash[:notice]).to include('Metric was successfully added.')
+        expect(response).to redirect_to(edit_namespace_project_service_path(project.namespace, project, project.prometheus_service))
+      end
+    end
+
+    context 'metric is invalid' do
+      let(:invalid_metric) { { prometheus_metric: { title: 'title' } } }
+
+      it 'returns an error' do
+        post :create, project_params(invalid_metric)
+
+        expect(response).to have_gitlab_http_status(422)
       end
     end
   end

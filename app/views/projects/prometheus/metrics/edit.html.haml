@@ -1,0 +1,5 @@
+- breadcrumb_title @metric.title
+- add_to_breadcrumbs("Settings", edit_project_path(@project))
+- add_to_breadcrumbs("Prometheus", edit_project_service_path(@project, @project.prometheus_service))
+- page_title @metric.title, "Prometheus Metrics"
+= render 'form'

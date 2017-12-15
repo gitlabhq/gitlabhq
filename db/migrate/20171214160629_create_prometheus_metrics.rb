@@ -1,6 +1,6 @@
-class CreatePrometheusQueries < ActiveRecord::Migration
+class CreatePrometheusMetrics < ActiveRecord::Migration
   def change
-    create_table :prometheus_queries do |t|
+    create_table :prometheus_metrics do |t|
       t.references :project, index: true, foreign_key: true
       t.string :title
       t.string :query

@@ -2,10 +2,9 @@ module Gitlab
   module Prometheus
     class Query
       include ActiveModel::Model
-      include ActiveRecord::Base
+      # include ActiveRecord::Base
 
-      attr_accessor :unit, :series_dsl, :label, :type, track: canary
-
+      attr_accessor :unit, :series_dsl, :label, :type, :track
 
       validates :title, :required_metrics, :weight, :y_label, :queries, presence: true
 
