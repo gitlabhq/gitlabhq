@@ -11,6 +11,10 @@ module QA
           element :project_repository_location, 'text_field_tag :project_clone'
         end
 
+        view 'app/views/projects/_last_push.html.haml' do
+          element :create_merge_request
+        end
+
         view 'app/views/projects/_home_panel.html.haml' do
           element :project_name
         end
@@ -29,6 +33,10 @@ module QA
 
         def project_name
           find('.qa-project-name').text
+        end
+
+        def new_merge_request
+          click_element :create_merge_request
         end
 
         def wait_for_push
