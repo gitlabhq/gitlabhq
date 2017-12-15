@@ -96,7 +96,6 @@
 - update_user_activity
 - upload_checksum
 - web_hook
-<<<<<<< HEAD
 
 # EE-specific queues
 - cronjob:clear_shared_runners_minutes
@@ -131,5 +130,3 @@
 - rebase
 - repository_update_mirror
 - repository_update_remote_mirror
-=======
->>>>>>> upstream/master
