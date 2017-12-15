@@ -8,7 +8,6 @@ feature 'Issue Sidebar' do
   let(:issue) { create(:issue, project: project) }
   let!(:user) { create(:user)}
   let!(:label) { create(:label, project: project, title: 'bug') }
-  let!(:label) { create(:label, project: project, title: '&lt;script&gt;alert("xss");&lt;&#x2F;script&gt;') }
 
   before do
     sign_in(user)
@@ -84,6 +83,8 @@ feature 'Issue Sidebar' do
     end
 
     context 'sidebar', :js do
+      let!(:xss_label) { create(:label, project: project, title: '&lt;script&gt;alert("xss");&lt;&#x2F;script&gt;') }
+
       it 'changes size when the screen size is smaller' do
         sidebar_selector = 'aside.right-sidebar.right-sidebar-collapsed'
         # Resize the window
