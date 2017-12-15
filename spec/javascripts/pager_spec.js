@@ -1,15 +1,9 @@
 /* global fixture */
 
 import * as utils from '~/lib/utils/url_utility';
-import '~/pager';
+import Pager from '~/pager';
 
 describe('pager', () => {
-  const Pager = window.Pager;
-
-  it('is defined on window', () => {
-    expect(window.Pager).toBeDefined();
-  });
-
   describe('init', () => {
     const originalHref = window.location.href;
 

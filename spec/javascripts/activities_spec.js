@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-expressions, no-prototype-builtins, no-new, no-shadow, max-len */
 
 import 'vendor/jquery.endless-scroll';
-import '~/pager';
 import Activities from '~/activities';
 
 (() => {
