@@ -90,6 +90,12 @@ module Gitlab
           def self.aspects
             @aspects ||= []
           end
+
+          private
+
+          def entries
+            @entries
+          end
         end
       end
     end

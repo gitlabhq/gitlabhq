@@ -6,7 +6,7 @@ module Gitlab
           query
             .group("DATE(#{::Ci::Pipeline.table_name}.created_at)")
             .count(:created_at)
-            .transform_keys { |date| date.strftime(@format) }
+            .transform_keys { |date| date.strftime(@format) } # rubocop:disable Gitlab/ModuleWithInstanceVariables
         end
 
         def interval_step
