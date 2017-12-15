@@ -46,7 +46,7 @@ module BlobHelper
   end
 
   def ide_edit_text
-    'Multi Edit <span class="label label-primary">Beta</span>'.html_safe
+    "#{_('Multi Edit')} <span class='label label-primary'>#{_('Beta')}</span>".html_safe
   end
 
   def ide_blob_link(project = @project, ref = @ref, path = @path, options = {})
@@ -60,7 +60,7 @@ module BlobHelper
     common_classes = "btn js-edit-ide #{options[:extra_class]}"
 
     if !on_top_of_branch?(project, ref)
-      button_tag ide_edit_text, class: "#{common_classes} disabled has-tooltip", title: "You can only edit files when you are on a branch", data: { container: 'body' }
+      button_tag ide_edit_text, class: "#{common_classes} disabled has-tooltip", title: _('You can only edit files when you are on a branch'), data: { container: 'body' }
     # This condition applies to anonymous or users who can edit directly
     elsif !current_user || (current_user && can_modify_blob?(blob, project, ref))
       link_to ide_edit_text, ide_edit_path(project, ref, path, options), class: "#{common_classes} btn-sm"

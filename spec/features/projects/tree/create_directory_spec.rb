@@ -29,7 +29,7 @@ feature 'Multi-file editor new directory', :js do
     click_link('New directory')
 
     page.within('.modal') do
-      find('.form-control').set('foldername')
+      find('.form-control').set('folder name')
 
       click_button('Create directory')
     end
@@ -39,7 +39,7 @@ feature 'Multi-file editor new directory', :js do
     click_link('New file')
 
     page.within('.modal-dialog') do
-      find('.form-control').set('filename')
+      find('.form-control').set('file name')
 
       click_button('Create file')
     end
@@ -52,6 +52,6 @@ feature 'Multi-file editor new directory', :js do
 
     click_button('Commit')
 
-    expect(page).to have_content('foldername')
+    expect(page).to have_content('folder name')
   end
 end

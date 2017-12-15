@@ -10,7 +10,7 @@
       = link_to ide_edit_path(@project, @id), class: 'btn btn-default' do
         = _('Multi Edit')
         %span.label.label-primary
-          Beta
+          = _('Beta')
 
   = link_to s_('Commits|History'), project_commits_path(@project, @id), class: 'btn'
 

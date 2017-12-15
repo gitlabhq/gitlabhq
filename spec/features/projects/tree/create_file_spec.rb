@@ -29,7 +29,7 @@ feature 'Multi-file editor new file', :js do
     click_link('New file')
 
     page.within('.modal') do
-      find('.form-control').set('filename')
+      find('.form-control').set('file name')
 
       click_button('Create file')
     end
@@ -42,6 +42,6 @@ feature 'Multi-file editor new file', :js do
 
     click_button('Commit')
 
-    expect(page).to have_content('filename')
+    expect(page).to have_content('file name')
   end
 end
