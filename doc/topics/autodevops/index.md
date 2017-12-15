@@ -147,6 +147,10 @@ has a `.gitlab-ci.yml` or not:
   do that in a branch to test Auto DevOps before committing to `master`.
 
 NOTE: **Note:**
+Starting with GitLab 10.3, when enabling Auto DevOps, a pipeline is
+automatically run on the default branch.
+
+NOTE: **Note:**
 If you are a GitLab Administrator, you can enable Auto DevOps instance wide
 in **Admin Area > Settings > Continuous Integration and Deployment**. Doing that,
 all the projects that haven't explicitly set an option will have Auto DevOps
