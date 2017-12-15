@@ -1,7 +1,6 @@
 /* eslint-disable comma-dangle */
 /* global BoardService */
 /* global ListIssue */
-/* global mockBoardService */
 
 import Vue from 'vue';
 import '~/boards/models/issue';
@@ -10,7 +9,7 @@ import '~/boards/models/list';
 import '~/boards/models/assignee';
 import '~/boards/services/board_service';
 import '~/boards/stores/boards_store';
-import './mock_data';
+import { mockBoardService } from './mock_data';
 
 describe('Issue model', () => {
   let issue;
