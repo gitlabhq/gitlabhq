@@ -86,7 +86,7 @@ current version of OpenSSH:
 
 Note that CentOS 6 and 7.0 ship with an old version of OpenSSH that do not
 support a feature that Geo requires. See the [documentation on GitLab Geo SSH
-access](ssh.md) for more details.
+access](../administration/operations/fast_ssh_key_lookup.md) for more details.
 
 ### LDAP
 
@@ -145,8 +145,8 @@ If you installed GitLab using the Omnibus packages (highly recommended):
    Geo node to unlock GitLab Geo.
 1. [Setup the database replication](database.md) (`primary (read-write) <->
    secondary (read-only)` topology).
-1. [Lookup authorized SSH keys in the database](../administration/operations/speed_up_ssh.html),
-   do this step for both primary AND secondary nodes.
+1. [Configure fast lookup of authorized SSH keys in the database](../administration/operations/fast_ssh_key_lookup.md),
+   this step is required and needs to be done on both the primary AND secondary nodes.
 1. [Configure GitLab](configuration.md) to set the primary and secondary nodes.
 1. Optional: [Configure a secondary LDAP server](../administration/auth/ldap.md)
    for the secondary. See [notes on LDAP](#ldap).
@@ -165,7 +165,7 @@ If you installed GitLab from source:
    Geo node to unlock GitLab Geo.
 1. [Setup the database replication](database_source.md) (`primary (read-write)
    <-> secondary (read-only)` topology).
-1. [Lookup authorized SSH keys in the database](../administration/operations/speed_up_ssh.html),
+1. [Configure fast lookup of authorized SSH keys in the database](../administration/operations/fast_ssh_key_lookup.md),
    do this step for both primary AND secondary nodes.
 1. [Configure GitLab](configuration_source.md) to set the primary and secondary
    nodes.

@@ -93,7 +93,7 @@ for existing repositories was added in GitLab 10.1.
 ## Upgrading to GitLab 10.0
 
 Since GitLab 10.0, we require all **Geo** systems to [use SSH key lookups via
-the database](ssh.md) to avoid having to maintain consistency of the
+the database](../administration/operations/fast_ssh_key_lookup.md) to avoid having to maintain consistency of the
 `authorized_keys` file for SSH access. Failing to do this will prevent users
 from being able to clone via SSH.
 
