@@ -87,6 +87,12 @@
       resolveWithIssuePath() {
         return '#'; // FIXME
       },
+      wrapperComponent() {
+        if (this.discussion.diff_discussion && this.discussion.diff_note) {
+          return diffWithNote;
+        }
+        return 'div';
+      },
     },
     methods: {
       ...mapActions([
@@ -203,13 +209,13 @@
               :edited-by="lastUpdatedBy"
               action-text="Last updated"
               class-name="discussion-headline-light js-discussion-headline"
-              />
-            </div>
+            />
           </div>
           <div
             v-if="note.expanded"
             class="discussion-body">
-            <diff-with-note
+            <component
+              :is="wrapperComponent"
               :discussion="discussion"
             >
               <div class="panel panel-default">
@@ -282,7 +288,7 @@
                   </div>
                 </div>
               </div>
-            </diff-with-note>
+            </component>
           </div>
         </div>
       </div>
