@@ -282,7 +282,8 @@ to resolve this issue.
 [ee-51]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51
 [ee-2551]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2551
 [ee-3117]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3117
+[ee-3326]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3326
 [ee-3350]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3350
 [perms]: ../user/permissions.md
-[hooks]: https://docs.gitlab.com/ee/administration/custom_hooks.html
+[hooks]: ../administration/custom_hooks.html
 [deploy-key]: ../ssh/README.md#deploy-keys
