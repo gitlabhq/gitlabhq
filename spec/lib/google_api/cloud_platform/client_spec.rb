@@ -62,6 +62,18 @@ describe GoogleApi::CloudPlatform::Client do
     it { is_expected.to eq(projects) }
   end
 
+  def projects_get_billing_info
+    subject { client.projects_get_billing_info }
+    let(:billing_info) { double }
+
+    before do
+      allow_any_instance_of(Google::Apis::CloudbillingV1::CloudbillingService)
+        .to receive(:get_project_billing_info).and_return(billing_info)
+    end
+
+    it { is_expected.to eq(billing_info) }
+  end
+
   describe '#projects_zones_clusters_get' do
     subject { client.projects_zones_clusters_get(spy, spy, spy) }
     let(:gke_cluster) { double }
