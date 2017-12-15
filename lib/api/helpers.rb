@@ -3,6 +3,7 @@ module API
     prepend EE::API::Helpers
 
     include Gitlab::Utils
+    include Gitlab::Utils::StrongMemoize
     include Helpers::Pagination
 
     SUDO_HEADER = "HTTP_SUDO".freeze

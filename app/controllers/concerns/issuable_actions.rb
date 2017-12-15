@@ -81,7 +81,7 @@ module IssuableActions
   private
 
   def recaptcha_check_if_spammable(should_redirect = true, &block)
-    return yield unless @issuable.is_a? Spammable
+    return yield unless issuable.is_a? Spammable
 
     recaptcha_check_with_fallback(should_redirect, &block)
   end

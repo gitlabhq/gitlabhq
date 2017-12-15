@@ -12,11 +12,11 @@ module EE
       end
 
       def audit_event_service
-        ::AuditEventService.new(@user,
-                                @user,
+        ::AuditEventService.new(user,
+                                user,
                                 action: :custom,
                                 custom_message: 'Added SSH key',
-                                ip_address: @ip_address)
+                                ip_address: @ip_address) # rubocop:disable Gitlab/ModuleWithInstanceVariables
       end
     end
   end

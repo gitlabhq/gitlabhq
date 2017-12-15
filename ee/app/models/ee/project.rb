@@ -5,6 +5,7 @@ module EE
   # and be prepended in the `Project` model
   module Project
     extend ActiveSupport::Concern
+    include ::Gitlab::Utils::StrongMemoize
 
     prepended do
       include Elastic::ProjectsSearch
@@ -258,8 +259,9 @@ module EE
     def deployment_platform(environment: nil)
       return super unless environment && feature_available?(:multiple_clusters)
 
-      @deployment_platform ||= clusters.enabled.on_environment(environment.name)
-                                               .last&.platform_kubernetes
+      @deployment_platform ||= # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        clusters.enabled.on_environment(environment.name)
+          .last&.platform_kubernetes
 
       super # Wildcard or KubernetesService
     end
@@ -323,8 +325,11 @@ module EE
     end
 
     def find_path_lock(path, exact_match: false, downstream: false)
-      @path_lock_finder ||= ::Gitlab::PathLocksFinder.new(self)
-      @path_lock_finder.find(path, exact_match: exact_match, downstream: downstream)
+      path_lock_finder = strong_memoize(:path_lock_finder) do
+        ::Gitlab::PathLocksFinder.new(self)
+      end
+
+      path_lock_finder.find(path, exact_match: exact_match, downstream: downstream)
     end
 
     def import_url_updated?
@@ -450,15 +455,15 @@ module EE
     end
 
     def disabled_services
-      return @disabled_services if defined?(@disabled_services)
+      strong_memoize(:disabled_services) do
+        disabled_services = []
 
-      @disabled_services = []
+        unless feature_available?(:jenkins_integration)
+          disabled_services.push('jenkins', 'jenkins_deprecated')
+        end
 
-      unless feature_available?(:jenkins_integration)
-        @disabled_services.push('jenkins', 'jenkins_deprecated')
+        disabled_services
       end
-
-      @disabled_services
     end
 
     def remote_mirror_available?
@@ -479,11 +484,13 @@ module EE
     end
 
     def licensed_feature_available?(feature)
-      @licensed_feature_available ||= Hash.new do |h, feature|
-        h[feature] = load_licensed_feature_available(feature)
+      available_features = strong_memoize(:licensed_feature_available) do
+        Hash.new do |h, feature|
+          h[feature] = load_licensed_feature_available(feature)
+        end
       end
 
-      @licensed_feature_available[feature]
+      available_features[feature]
     end
 
     def load_licensed_feature_available(feature)

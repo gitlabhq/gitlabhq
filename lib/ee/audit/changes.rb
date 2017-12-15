@@ -3,7 +3,7 @@ module EE
     module Changes
       def audit_changes(column, options = {})
         column = options[:column] || column
-        @model = options[:model]
+        @model = options[:model] # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
         return unless changed?(column)
 
@@ -39,7 +39,7 @@ module EE
       end
 
       def audit_event(options)
-        ::AuditEventService.new(@current_user, model, options)
+        ::AuditEventService.new(@current_user, model, options) # rubocop:disable Gitlab/ModuleWithInstanceVariables
           .for_changes.security_event
       end
     end

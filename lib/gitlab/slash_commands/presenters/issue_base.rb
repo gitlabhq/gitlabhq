@@ -37,7 +37,7 @@ module Gitlab
             },
             {
               title: "Weight",
-              value: @resource.weight? ? @resource.weight : "_None_",
+              value: resource.weight? ? resource.weight : "_None_",
               short: true
             }
           ]

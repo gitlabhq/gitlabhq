@@ -41,7 +41,7 @@ module EE
 
         create_predefined_push_rule
 
-        @project.group&.refresh_members_authorized_projects
+        project.group&.refresh_members_authorized_projects
       end
 
       def create_predefined_push_rule

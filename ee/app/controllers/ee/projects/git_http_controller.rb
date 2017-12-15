@@ -33,7 +33,7 @@ module EE
 
         payload = ::Gitlab::Geo::JwtRequestDecoder.new(request.headers['Authorization']).decode
         if payload
-          @authentication_result = ::Gitlab::Auth::Result.new(nil, project, :geo, [:download_code])
+          @authentication_result = ::Gitlab::Auth::Result.new(nil, project, :geo, [:download_code]) # rubocop:disable Gitlab/ModuleWithInstanceVariables
           return # grant access
         end
 
