@@ -1355,7 +1355,7 @@ module Gitlab
       def rugged_fetch_source_branch(source_repository, source_branch, local_ref)
         with_repo_branch_commit(source_repository, source_branch) do |commit|
           if commit
-            write_ref(local_ref, commit.sha)
+            write_ref(local_ref, commit.sha, force: true)
             true
           else
             false
