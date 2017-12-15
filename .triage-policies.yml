@@ -102,7 +102,7 @@ resource_rules:
       - name: Mark unpopular, old feature proposals for closure
         conditions:
           date:
-            attribute: updated_at
+            attribute: created_at
             condition: older_than
             interval_type: years
             interval: 1
@@ -126,8 +126,8 @@ resource_rules:
 
             First of all, thank you for raising an issue to help improve the GitLab product. This issue was labelled as a ~"feature proposal" in the past. In order to maintain order in the issue tracker, we are starting to close off old, unpopular feature proposals that have not gained many votes since opening.
 
-            This issue will be closed, as it meets the following criteria:
-            * No activity in the past 12 months
+            This issue will be marked for closure, as it meets the following criteria:
+            * Created over 1 year ago
             * Labelled as a ~"feature proposal"
             * Unscheduled (not associated with a milestone)
             * Less than 10 upvotes
