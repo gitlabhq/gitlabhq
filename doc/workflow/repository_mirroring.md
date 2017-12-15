@@ -270,14 +270,29 @@ While mirrors are scheduled to update automatically, you can always force an upd
 - in the tags page
 - in the **Mirror repository** settings page
 
-## Using both mirroring methods at the same time
+## Bidirectional mirroring
 
-Currently there is no bidirectional support without conflicts. That means that
-if you configure a repository to both pull and push to a second one, there is
-no guarantee that it will update correctly on both remotes.
-You can try [configuring custom Git hooks][hooks] on the GitLab server in order
-to resolve this issue.
+> **Warning:** There is no bidirectional support without conflicts. If you
+> configure a repository to pull and push to a second remote, there is no
+> guarantee that it will update correctly on both remotes. If you configure
+> a repository for bidirectional mirroring, you should consider when conflicts
+> occur who and how they will be resolved.
 
+Rewriting any mirrored commit on either remote will cause conflicts and
+mirroring to fail. This can be prevented by [only pulling protected branches](
+#pull-only-protected-branches) and [only pushing protected branches](
+#push-only-protected-branches). You should protect the branches you wish to
+mirror on both remotes to prevent conflicts caused by rewriting history.
+
+Bidirectional mirroring also creates a race condition where commits to the same
+branch in close proximity will cause conflicts. The race condition can be
+mitigated by reducing the mirroring delay by using a Push event webhook to
+trigger an immediate pull to GitLab. Push mirroring from GitLab is rate limited
+to once per minute when only push mirroring protected branches.
+
+It may be possible to implement a locking mechanism using the server-side
+`pre-receive` hook to prevent the race condition. Read about [configuring
+custom Git hooks][hooks] on the GitLab server.
 
 [ee-51]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/51
 [ee-2551]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/2551
