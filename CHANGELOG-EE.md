@@ -1,5 +1,12 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.2.5 (2017-12-15)
+
+### Fixed (1 change)
+
+- Fix board filter for predefined milestones.
+
+
 ## 10.2.4 (2017-12-07)
 
 - No changes.
