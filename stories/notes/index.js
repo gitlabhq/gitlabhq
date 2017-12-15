@@ -38,7 +38,7 @@ function makeStory(note = {}) {
     },
     template: `
       <div class="c  ontainer-fluid container-limited limit-container-width">
-        <ul class="notes"
+        <ul class="notes">
           <noteable-discussion :note="note" />
         </ul>
       </div>

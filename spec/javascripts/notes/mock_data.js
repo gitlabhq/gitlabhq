@@ -299,6 +299,8 @@ export const diffDiscussionMock = {
         text: true,
       },
     },
+    discussionMock.notes[1],
+    discussionMock.notes[1],
   ],
 }
 
