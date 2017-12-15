@@ -52,7 +52,7 @@ describe MergeRequests::CreateService do
         expect(Todo.where(attributes).count).to be_zero
       end
 
-      it 'creates exactly 1 create MR event' do
+      it 'creates exactly 1 create MR event', :sidekiq do
         attributes = {
           action: Event::CREATED,
           target_id: merge_request.id,

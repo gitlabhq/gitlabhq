@@ -1,12 +1,14 @@
-require 'sidekiq/testing/inline'
+require 'sidekiq/testing'
 
 Sidekiq::Testing.server_middleware do |chain|
   chain.add Gitlab::SidekiqStatus::ServerMiddleware
 end
 
 RSpec.configure do |config|
-  config.after(:each, :sidekiq) do
-    Sidekiq::Worker.clear_all
+  config.around(:each, :sidekiq) do |example|
+    Sidekiq::Testing.inline! do
+      example.run
+    end
   end
 
   config.after(:each, :sidekiq, :redis) do

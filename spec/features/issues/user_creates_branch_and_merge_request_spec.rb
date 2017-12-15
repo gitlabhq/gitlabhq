@@ -63,16 +63,14 @@ describe 'User creates branch and merge request on issue page', :js do
         expect(page).to have_button('Create branch', disabled: true)
       end
 
-      context 'when branch name is auto-generated' do
+      context 'when branch name is auto-generated', :sidekiq do
         it 'creates a merge request' do
-          perform_enqueued_jobs do
-            select_dropdown_option('create-mr')
+          select_dropdown_option('create-mr')
 
-            expect(page).to have_content('WIP: Resolve "Cherry-Coloured Funk"')
-            expect(current_path).to eq(project_merge_request_path(project, MergeRequest.first))
+          expect(page).to have_content('WIP: Resolve "Cherry-Coloured Funk"')
+          expect(current_path).to eq(project_merge_request_path(project, MergeRequest.first))
 
-            wait_for_requests
-          end
+          wait_for_requests
 
           visit project_issue_path(project, issue)
 
@@ -93,16 +91,14 @@ describe 'User creates branch and merge request on issue page', :js do
       context 'when branch name is custom' do
         let(:branch_name) { 'custom-branch-name' }
 
-        it 'creates a merge request' do
-          perform_enqueued_jobs do
-            select_dropdown_option('create-mr', branch_name)
+        it 'creates a merge request', :sidekiq do
+          select_dropdown_option('create-mr', branch_name)
 
-            expect(page).to have_content('WIP: Resolve "Cherry-Coloured Funk"')
-            expect(page).to have_content('Request to merge custom-branch-name into')
-            expect(current_path).to eq(project_merge_request_path(project, MergeRequest.first))
+          expect(page).to have_content('WIP: Resolve "Cherry-Coloured Funk"')
+          expect(page).to have_content('Request to merge custom-branch-name into')
+          expect(current_path).to eq(project_merge_request_path(project, MergeRequest.first))
 
-            wait_for_requests
-          end
+          wait_for_requests
 
           visit project_issue_path(project, issue)
 

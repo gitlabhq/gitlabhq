@@ -14,7 +14,7 @@ describe 'Project deploy keys', :js do
       create(:deploy_keys_project, project: project)
     end
 
-    it 'removes association between project and deploy key' do
+    it 'removes association between project and deploy key', :sidekiq do
       visit project_settings_repository_path(project)
 
       page.within(find('.deploy-keys')) do

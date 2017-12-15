@@ -106,6 +106,8 @@ RSpec.configure do |config|
     allow_any_instance_of(Gitlab::Git::Hook).to receive(:trigger).and_return([true, nil])
     # Enable all features by default for testing
     allow(Feature).to receive(:enabled?) { true }
+
+    Sidekiq::Worker.clear_all
   end
 
   config.before(:example, :request_store) do

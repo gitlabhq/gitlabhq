@@ -602,7 +602,7 @@ describe SystemNoteService do
       end
     end
 
-    context 'commit with cross-reference from fork' do
+    context 'commit with cross-reference from fork', :sidekiq do
       let(:author2) { create(:project_member, :reporter, user: create(:user), project: project).user }
       let(:forked_project) { Projects::ForkService.new(project, author2).execute }
       let(:commit2) { forked_project.commit }

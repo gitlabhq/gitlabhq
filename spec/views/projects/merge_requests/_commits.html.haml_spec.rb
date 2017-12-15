@@ -22,7 +22,7 @@ describe 'projects/merge_requests/_commits.html.haml' do
     assign(:commits, merge_request.commits)
   end
 
-  it 'shows commits from source project' do
+  it 'shows commits from source project', :sidekiq do
     render
 
     commit = merge_request.commits.first # HEAD

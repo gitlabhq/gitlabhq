@@ -1594,7 +1594,7 @@ describe Project do
         .and_call_original
     end
 
-    it 'imports a project' do
+    it 'imports a project', :sidekiq do
       expect_any_instance_of(RepositoryImportWorker).to receive(:perform).and_call_original
 
       expect { project.import_schedule }.to change { project.import_jid }

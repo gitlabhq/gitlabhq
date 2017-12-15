@@ -77,11 +77,10 @@ feature 'Merge Requests > User uses quick actions', :js do
 
     describe 'merging the MR from the note' do
       context 'when the current user can merge the MR' do
-        it 'merges the MR' do
+        it 'merges the MR', :sidekiq do
           write_note("/merge")
 
           expect(page).to have_content 'Commands applied'
-
           expect(merge_request.reload).to be_merged
         end
       end

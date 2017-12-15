@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe GitPushService, services: true do
+describe GitPushService, :sidekiq do
   include RepoHelpers
 
   let(:user)     { create(:user) }

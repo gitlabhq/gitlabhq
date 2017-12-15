@@ -188,7 +188,7 @@ describe 'New/edit merge request', :js do
           })
       end
 
-      it 'creates new merge request' do
+      it 'creates new merge request', :sidekiq do
         click_button 'Assignee'
         page.within '.dropdown-menu-user' do
           click_link user.name

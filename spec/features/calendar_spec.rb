@@ -139,7 +139,7 @@ feature 'Contributions Calendar', :js do
       end
     end
 
-    describe '1 issue creation calendar activity' do
+    describe '1 issue creation calendar activity', :sidekiq do
       before do
         Issues::CreateService.new(contributed_project, user, issue_params).execute
       end
@@ -171,7 +171,7 @@ feature 'Contributions Calendar', :js do
       it_behaves_like 'a day with activity', contribution_count: 10
     end
 
-    describe 'calendar activity on two days' do
+    describe 'calendar activity on two days', :sidekiq do
       before do
         push_code_contribution
 
@@ -181,16 +181,12 @@ feature 'Contributions Calendar', :js do
       end
       include_context 'visit user page'
 
-      it 'displays calendar activity squares for both days' do
+      it 'displays calendar activity squares' do
         expect(page).to have_selector(get_cell_color_selector(1), count: 2)
-      end
 
-      it 'displays calendar activity square for yesterday' do
         yesterday = Date.yesterday.strftime(date_format)
         expect(page).to have_selector(get_cell_date_selector(1, yesterday), count: 1)
-      end
 
-      it 'displays calendar activity square for today' do
         today = Date.today.strftime(date_format)
         expect(page).to have_selector(get_cell_date_selector(1, today), count: 1)
       end
