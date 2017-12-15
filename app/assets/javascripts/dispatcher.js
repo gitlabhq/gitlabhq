@@ -98,15 +98,12 @@ import ProjectLabelSubscription from './project_label_subscription';
 import ProjectVariables from './project_variables';
 import SearchAutocomplete from './search_autocomplete';
 import Activities from './activities';
-<<<<<<< HEAD
 
 // EE-only
 import ApproversSelect from './approvers_select';
 import AuditLogs from './audit_logs';
 import initGeoInfoModal from './init_geo_info_modal';
 import initGroupAnalytics from './init_group_analytics';
-=======
->>>>>>> upstream/master
 
 (function() {
   var Dispatcher;
@@ -413,10 +410,6 @@ import initGroupAnalytics from './init_group_analytics';
           if ($('#tree-slider').length) new TreeView();
           if ($('.blob-viewer').length) new BlobViewer();
           if ($('.project-show-activity').length) new Activities();
-<<<<<<< HEAD
-
-=======
->>>>>>> upstream/master
           $('#tree-slider').waitForImages(function() {
             ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
           });
