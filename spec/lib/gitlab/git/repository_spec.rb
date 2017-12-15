@@ -257,7 +257,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#empty?' do
-    it { expect(repository.empty?).to be_falsey }
+    it { expect(repository).not_to be_empty }
   end
 
   describe '#ref_names' do
@@ -588,12 +588,12 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe '#fetch_as_mirror_without_shell' do
+  describe '#fetch_repository_as_mirror' do
     let(:new_repository) do
       Gitlab::Git::Repository.new('default', 'my_project.git', '')
     end
 
-    subject { new_repository.fetch_as_mirror_without_shell(repository.path) }
+    subject { new_repository.fetch_repository_as_mirror(repository) }
 
     before do
       Gitlab::Shell.new.add_repository('default', 'my_project')
@@ -603,7 +603,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       Gitlab::Shell.new.remove_repository(TestEnv.repos_path, 'my_project')
     end
 
-    it 'fetches a url as a mirror remote' do
+    it 'fetches a repository as a mirror remote' do
       subject
 
       expect(refs(new_repository.path)).to eq(refs(repository.path))
@@ -1210,6 +1210,16 @@ describe Gitlab::Git::Repository, seed_helper: true do
       end
     end
 
+    context 'when no root ref is available' do
+      it 'returns empty list' do
+        project = create(:project, :empty_repo)
+
+        names = project.repository.merged_branch_names(%w[feature])
+
+        expect(names).to be_empty
+      end
+    end
+
     context 'when no branch names are specified' do
       before do
         repository.create_branch('identical', 'master')
@@ -1649,21 +1659,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
           expect { repository.write_ref(ref_path, ref) }.to raise_error(ArgumentError)
         end
       end
-    end
-  end
-
-  describe '#fetch_remote_without_shell' do
-    let(:git_path) { Gitlab.config.git.bin_path }
-    let(:remote_name) { 'my_remote' }
-
-    subject { repository.fetch_remote_without_shell(remote_name) }
-
-    it 'fetches the remote and returns true if the command was successful' do
-      expect(repository).to receive(:popen)
-        .with(%W(#{git_path} fetch #{remote_name}), repository.path, {})
-        .and_return(['', 0])
-
-      expect(subject).to be(true)
     end
   end
 

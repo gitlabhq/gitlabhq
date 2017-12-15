@@ -21,7 +21,7 @@ export default class IssuableBulkUpdateSidebar {
   }
 
   initDomElements() {
-    this.$page = $('.page-with-sidebar');
+    this.$page = $('.layout-page');
     this.$sidebar = $('.right-sidebar');
     this.$sidebarInnerContainer = this.$sidebar.find('.issuable-sidebar');
     this.$bulkEditCancelBtn = $('.js-bulk-update-menu-hide');

@@ -1,11 +1,12 @@
 require 'spec_helper'
 
-describe Gitlab::Git::Storage::Health, clean_gitlab_redis_shared_state: true, broken_storage: true do
+describe Gitlab::Git::Storage::Health, broken_storage: true do
   let(:host1_key) { 'storage_accessible:broken:web01' }
   let(:host2_key) { 'storage_accessible:default:kiq01' }
 
   def set_in_redis(cache_key, value)
     Gitlab::Git::Storage.redis.with do |redis|
+      redis.zadd(Gitlab::Git::Storage::REDIS_KNOWN_KEYS, 0, cache_key)
       redis.hmset(cache_key, :failure_count, value)
     end.first
   end

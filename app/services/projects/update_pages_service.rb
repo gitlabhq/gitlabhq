@@ -18,7 +18,7 @@ module Projects
       @status.enqueue!
       @status.run!
 
-      raise 'missing pages artifacts' unless build.artifacts_file?
+      raise 'missing pages artifacts' unless build.artifacts?
       raise 'pages are outdated' unless latest?
 
       # Create temporary directory in which we will extract the artifacts

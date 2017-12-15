@@ -24,10 +24,12 @@ module Gitlab
         @path = repository.path
       end
 
-      def empty_repo?
+      def empty?
         # We will override this implementation in gitaly-ruby because we cannot
         # use '@repository' there.
-        @repository.empty_repo?
+        #
+        # Caches and memoization used on the Rails side
+        !@repository.exists? || @repository.empty?
       end
 
       def commit_id(revision)

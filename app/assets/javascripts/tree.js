@@ -1,4 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, max-len, quotes, consistent-return, no-var, one-var, one-var-declaration-per-line, no-else-return, prefer-arrow-callback, class-methods-use-this */
+import { visitUrl } from './lib/utils/url_utility';
 
 export default class TreeView {
   constructor() {
@@ -14,7 +15,7 @@ export default class TreeView {
           e.preventDefault();
           return window.open(path, '_blank');
         } else {
-          return gl.utils.visitUrl(path);
+          return visitUrl(path);
         }
       }
     });
@@ -56,7 +57,7 @@ export default class TreeView {
       } else if (e.which === 13) {
         path = $('.tree-item.selected .tree-item-file-name a').attr('href');
         if (path) {
-          return gl.utils.visitUrl(path);
+          return visitUrl(path);
         }
       }
     });

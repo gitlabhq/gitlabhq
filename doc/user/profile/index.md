@@ -1,7 +1,31 @@
 # User account
 
-When logged into their GitLab account, users can customize their
+When signed into their GitLab account, users can customize their
 experience according to the best approach to their cases.
+
+## Signing in
+
+There are several ways to sign into your GitLab account.
+See the [authentication topic](../../topics/authentication/index.md) for more details.
+
+### Why do I keep getting signed out?
+
+When signing in to the main GitLab application, a `_gitlab_session` cookie is
+set. `_gitlab_session` is cleared client-side when you close your browser
+and expires after "Application settings -> Session duration (minutes)"/`session_expire_delay`
+(defaults to `10080` minutes = 7 days).
+
+When signing in to the main GitLab application, you can also check the
+"Remember me" option which sets the `remember_user_token`
+cookie (via [`devise`](https://github.com/plataformatec/devise)).
+`remember_user_token` expires after
+`config/initializers/devise.rb` -> `config.remember_for` (defaults to 2 weeks).
+
+When the `_gitlab_session` expires or isn't available, GitLab uses the `remember_user_token`
+to get you a new `_gitlab_session` and keep you signed in through browser restarts.
+
+After your `remember_user_token` expires and your `_gitlab_session` is cleared/expired,
+you will be asked to sign in again to verify your identity (which is for security reasons).
 
 ## Username
 
@@ -21,11 +45,10 @@ Alternatively, you can follow [this detailed procedure from the GitLab Team Hand
 Changing your username can have unintended side effects.
 
 * Existing web URLs for the user and anything under it (i.e. projects) will
-redirect to the new URLs
-* Existing Git remote URLs for projects under the user will no longer work, but
-Git responses will show an error with the new remote URL
-* The original namespace can be claimed again by any group or user, which will
-destroy any web redirects and Git remote warnings
+redirect to the new URLs.
+* Existing Git remote URLs for projects under the user will redirect to the new remote URL. Git responses
+will show a warning with the new remote URL.
+* The redirect to the new URL is permanent, that implies the original namespace can't be claimed again by any group or user.
 
 > It is currently not possible to rename a namespace if it contains a
 project with container registry tags, because the project cannot be moved.

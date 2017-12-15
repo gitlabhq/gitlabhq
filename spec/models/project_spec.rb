@@ -78,7 +78,7 @@ describe Project do
     it { is_expected.to have_many(:uploads).dependent(:destroy) }
     it { is_expected.to have_many(:pipeline_schedules) }
     it { is_expected.to have_many(:members_and_requesters) }
-    it { is_expected.to have_one(:cluster) }
+    it { is_expected.to have_many(:clusters) }
     it { is_expected.to have_many(:custom_attributes).class_name('ProjectCustomAttribute') }
 
     context 'after initialized' do
@@ -138,6 +138,7 @@ describe Project do
     it { is_expected.to validate_length_of(:ci_config_path).is_at_most(255) }
     it { is_expected.to allow_value('').for(:ci_config_path) }
     it { is_expected.not_to allow_value('test/../foo').for(:ci_config_path) }
+    it { is_expected.not_to allow_value('/test/foo').for(:ci_config_path) }
 
     it { is_expected.to validate_presence_of(:creator) }
 
@@ -312,9 +313,7 @@ describe Project do
       it { is_expected.to delegate_method(method).to(:team) }
     end
 
-    it { is_expected.to delegate_method(:empty_repo?).to(:repository) }
     it { is_expected.to delegate_method(:members).to(:team).with_prefix(true) }
-    it { is_expected.to delegate_method(:count).to(:forks).with_prefix(true) }
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).with_arguments(allow_nil: true) }
   end
 
@@ -451,7 +450,7 @@ describe Project do
     end
   end
 
-  describe "#new_issue_address" do
+  describe "#new_issuable_address" do
     let(:project) { create(:project, path: "somewhere") }
     let(:user) { create(:user) }
 
@@ -463,7 +462,13 @@ describe Project do
       it 'returns the address to create a new issue' do
         address = "p+#{project.full_path}+#{user.incoming_email_token}@gl.ab"
 
-        expect(project.new_issue_address(user)).to eq(address)
+        expect(project.new_issuable_address(user, 'issue')).to eq(address)
+      end
+
+      it 'returns the address to create a new merge request' do
+        address = "p+#{project.full_path}+merge-request+#{user.incoming_email_token}@gl.ab"
+
+        expect(project.new_issuable_address(user, 'merge_request')).to eq(address)
       end
     end
 
@@ -473,7 +478,11 @@ describe Project do
       end
 
       it 'returns nil' do
-        expect(project.new_issue_address(user)).to be_nil
+        expect(project.new_issuable_address(user, 'issue')).to be_nil
+      end
+
+      it 'returns nil' do
+        expect(project.new_issuable_address(user, 'merge_request')).to be_nil
       end
     end
   end
@@ -643,6 +652,24 @@ describe Project do
       project = create(:redmine_project)
 
       expect(project.default_issues_tracker?).to be_falsey
+    end
+  end
+
+  describe '#empty_repo?' do
+    context 'when the repo does not exist' do
+      let(:project) { build_stubbed(:project) }
+
+      it 'returns true' do
+        expect(project.empty_repo?).to be(true)
+      end
+    end
+
+    context 'when the repo exists' do
+      let(:project) { create(:project, :repository) }
+      let(:empty_project) { create(:project, :empty_repo) }
+
+      it { expect(empty_project.empty_repo?).to be(true) }
+      it { expect(project.empty_repo?).to be(false) }
     end
   end
 
@@ -1548,8 +1575,8 @@ describe Project do
       expect(project.ci_config_path).to eq('foo/.gitlab_ci.yml')
     end
 
-    it 'sets a string but removes all leading slashes and null characters' do
-      project.update!(ci_config_path: "///f\0oo/\0/.gitlab_ci.yml")
+    it 'sets a string but removes all null characters' do
+      project.update!(ci_config_path: "f\0oo/\0/.gitlab_ci.yml")
 
       expect(project.ci_config_path).to eq('foo//.gitlab_ci.yml')
     end
@@ -1716,8 +1743,7 @@ describe Project do
         expect(RepositoryForkWorker).to receive(:perform_async).with(
           project.id,
           forked_from_project.repository_storage_path,
-          forked_from_project.disk_path,
-          project.namespace.full_path).and_return(import_jid)
+          forked_from_project.disk_path).and_return(import_jid)
 
         expect(project.add_import_job).to eq(import_jid)
       end
@@ -1837,10 +1863,11 @@ describe Project do
       project.change_head(project.default_branch)
     end
 
-    it 'creates the new reference with rugged' do
-      expect(project.repository.rugged.references).to receive(:create).with('HEAD',
+    it 'creates the new reference' do
+      expect(project.repository.raw_repository).to receive(:write_ref).with('HEAD',
                                                                             "refs/heads/#{project.default_branch}",
                                                                             force: true)
+
       project.change_head(project.default_branch)
     end
 
@@ -2002,12 +2029,25 @@ describe Project do
     end
 
     context 'when project has a deployment service' do
-      let(:project) { create(:kubernetes_project) }
+      shared_examples 'same behavior between KubernetesService and Platform::Kubernetes' do
+        it 'returns variables from this service' do
+          expect(project.deployment_variables).to include(
+            { key: 'KUBE_TOKEN', value: project.deployment_platform.token, public: false }
+          )
+        end
+      end
 
-      it 'returns variables from this service' do
-        expect(project.deployment_variables).to include(
-          { key: 'KUBE_TOKEN', value: project.kubernetes_service.token, public: false }
-        )
+      context 'when user configured kubernetes from Integration > Kubernetes' do
+        let(:project) { create(:kubernetes_project) }
+
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+      end
+
+      context 'when user configured kubernetes from CI/CD > Clusters' do
+        let!(:cluster) { create(:cluster, :project, :provided_by_gcp) }
+        let(:project) { cluster.project }
+
+        it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
       end
     end
   end
@@ -2459,7 +2499,7 @@ describe Project do
     it 'returns the number of forks' do
       project = build(:project)
 
-      allow(project.forks).to receive(:count).and_return(1)
+      expect_any_instance_of(Projects::ForksCountService).to receive(:count).and_return(1)
 
       expect(project.forks_count).to eq(1)
     end
@@ -3081,6 +3121,25 @@ describe Project do
       project = create(:project)
 
       expect(project.wiki_repository_exists?).to eq(false)
+    end
+  end
+
+  describe '#deployment_platform' do
+    subject { project.deployment_platform }
+
+    let(:project) { create(:project) }
+
+    context 'when user configured kubernetes from Integration > Kubernetes' do
+      let!(:kubernetes_service) { create(:kubernetes_service, project: project) }
+
+      it { is_expected.to eq(kubernetes_service) }
+    end
+
+    context 'when user configured kubernetes from CI/CD > Clusters' do
+      let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+      let(:platform_kubernetes) { cluster.platform_kubernetes }
+
+      it { is_expected.to eq(platform_kubernetes) }
     end
   end
 end

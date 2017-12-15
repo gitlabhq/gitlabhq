@@ -280,7 +280,7 @@ module Gitlab
         The `#{branch}` branch applies cleanly to EE/master!
 
         Much ❤️! For more information, see
-        https://docs.gitlab.com/ce/development/limit_ee_conflicts.html#check-the-rake-ee_compat_check-in-your-merge-requests
+        https://docs.gitlab.com/ce/development/automatic_ce_ee_merge.html
         #{THANKS_FOR_READING_BANNER}
       }
     end
@@ -357,7 +357,7 @@ module Gitlab
         Once this is done, you can retry this failed build, and it should pass.
 
         Stay 💪 ! For more information, see
-        https://docs.gitlab.com/ce/development/limit_ee_conflicts.html#check-the-rake-ee_compat_check-in-your-merge-requests
+        https://docs.gitlab.com/ce/development/automatic_ce_ee_merge.html
         #{THANKS_FOR_READING_BANNER}
       }
     end
@@ -378,7 +378,7 @@ module Gitlab
         retry this build.
 
         Stay 💪 ! For more information, see
-        https://docs.gitlab.com/ce/development/limit_ee_conflicts.html#check-the-rake-ee_compat_check-in-your-merge-requests
+        https://docs.gitlab.com/ce/development/automatic_ce_ee_merge.html
         #{THANKS_FOR_READING_BANNER}
       }
     end

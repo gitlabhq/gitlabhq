@@ -177,7 +177,7 @@ describe 'Edit Project Settings' do
         click_button "Save changes"
       end
 
-      expect(find(".sharing-permissions")).to have_selector(".project-feature-toggle.disabled", count: 2)
+      expect(find(".sharing-permissions")).to have_selector(".project-feature-toggle.is-disabled", count: 2)
     end
 
     it "shows empty features project homepage" do
@@ -272,10 +272,10 @@ describe 'Edit Project Settings' do
   end
 
   def toggle_feature_off(feature_name)
-    find(".project-feature-controls[data-for=\"#{feature_name}\"] .project-feature-toggle.checked").click
+    find(".project-feature-controls[data-for=\"#{feature_name}\"] .project-feature-toggle.is-checked").click
   end
 
   def toggle_feature_on(feature_name)
-    find(".project-feature-controls[data-for=\"#{feature_name}\"] .project-feature-toggle:not(.checked)").click
+    find(".project-feature-controls[data-for=\"#{feature_name}\"] .project-feature-toggle:not(.is-checked)").click
   end
 end

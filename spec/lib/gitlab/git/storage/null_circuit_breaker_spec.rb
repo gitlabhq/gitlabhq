@@ -27,7 +27,7 @@ describe Gitlab::Git::Storage::NullCircuitBreaker do
     end
 
     describe '#failure_info' do
-      it { Timecop.freeze { expect(breaker.failure_info).to eq(Gitlab::Git::Storage::CircuitBreaker::FailureInfo.new(Time.now, breaker.failure_count_threshold)) } }
+      it { expect(breaker.failure_info.no_failures?).to be_falsy }
     end
   end
 
@@ -49,7 +49,7 @@ describe Gitlab::Git::Storage::NullCircuitBreaker do
     end
 
     describe '#failure_info' do
-      it { expect(breaker.failure_info).to eq(Gitlab::Git::Storage::CircuitBreaker::FailureInfo.new(nil, 0)) }
+      it { expect(breaker.failure_info.no_failures?).to be_truthy }
     end
   end
 

@@ -189,7 +189,6 @@ class Project < ActiveRecord::Base
   has_one :statistics, class_name: 'ProjectStatistics'
 
   has_one :cluster_project, class_name: 'Clusters::Project'
-  has_one :cluster, through: :cluster_project, class_name: 'Clusters::Cluster'
   has_many :clusters, through: :cluster_project, class_name: 'Clusters::Cluster'
 
   # Container repositories need to remove data from the container registry,
@@ -228,14 +227,13 @@ class Project < ActiveRecord::Base
   delegate :members, to: :team, prefix: true
   delegate :add_user, :add_users, to: :team
   delegate :add_guest, :add_reporter, :add_developer, :add_master, to: :team
-  delegate :empty_repo?, to: :repository
 
   # Validations
   validates :creator, presence: true, on: :create
   validates :description, length: { maximum: 2000 }, allow_blank: true
   validates :ci_config_path,
-    format: { without: /\.{2}/,
-              message: 'cannot include directory traversal.' },
+    format: { without: /(\.{2}|\A\/)/,
+              message: 'cannot include leading slash or directory traversal.' },
     length: { maximum: 255 },
     allow_blank: true
   validates :name,
@@ -500,6 +498,10 @@ class Project < ActiveRecord::Base
     auto_devops&.enabled.nil? && !current_application_settings.auto_devops_enabled?
   end
 
+  def empty_repo?
+    repository.empty?
+  end
+
   def repository_storage_path
     Gitlab.config.repositories.storages[repository_storage].try(:[], 'path')
   end
@@ -562,8 +564,7 @@ class Project < ActiveRecord::Base
       if forked?
         RepositoryForkWorker.perform_async(id,
                                            forked_from_project.repository_storage_path,
-                                           forked_from_project.full_path,
-                                           self.namespace.full_path)
+                                           forked_from_project.disk_path)
       else
         RepositoryImportWorker.perform_async(self.id)
       end
@@ -599,7 +600,7 @@ class Project < ActiveRecord::Base
 
   def ci_config_path=(value)
     # Strip all leading slashes so that //foo -> foo
-    super(value&.sub(%r{\A/+}, '')&.delete("\0"))
+    super(value&.delete("\0"))
   end
 
   def import_url=(value)
@@ -658,7 +659,8 @@ class Project < ActiveRecord::Base
   end
 
   def import_started?
-    import? && import_status == 'started'
+    # import? does SQL work so only run it if it looks like there's an import running
+    import_status == 'started' && import?
   end
 
   def import_scheduled?
@@ -753,13 +755,14 @@ class Project < ActiveRecord::Base
     Gitlab::Routing.url_helpers.project_url(self)
   end
 
-  def new_issue_address(author)
+  def new_issuable_address(author, address_type)
     return unless Gitlab::IncomingEmail.supports_issue_creation? && author
 
     author.ensure_incoming_email_token!
 
+    suffix = address_type == 'merge_request' ? '+merge-request' : ''
     Gitlab::IncomingEmail.reply_address(
-      "#{full_path}+#{author.incoming_email_token}")
+      "#{full_path}#{suffix}+#{author.incoming_email_token}")
   end
 
   def build_commit_note(commit)
@@ -897,12 +900,10 @@ class Project < ActiveRecord::Base
     @ci_service ||= ci_services.reorder(nil).find_by(active: true)
   end
 
-  def deployment_services
-    services.where(category: :deployment)
-  end
-
-  def deployment_service
-    @deployment_service ||= deployment_services.reorder(nil).find_by(active: true)
+  # TODO: This will be extended for multiple enviroment clusters
+  def deployment_platform
+    @deployment_platform ||= clusters.find_by(enabled: true)&.platform_kubernetes
+    @deployment_platform ||= services.where(category: :deployment).reorder(nil).find_by(active: true)
   end
 
   def monitoring_services
@@ -1116,7 +1117,11 @@ class Project < ActiveRecord::Base
   end
 
   def project_member(user)
-    project_members.find_by(user_id: user)
+    if project_members.loaded?
+      project_members.find { |member| member.user_id == user.id }
+    else
+      project_members.find_by(user_id: user)
+    end
   end
 
   def default_branch
@@ -1143,7 +1148,7 @@ class Project < ActiveRecord::Base
   def change_head(branch)
     if repository.branch_exists?(branch)
       repository.before_change_head
-      repository.write_ref('HEAD', "refs/heads/#{branch}")
+      repository.write_ref('HEAD', "refs/heads/#{branch}", force: true)
       repository.copy_gitattributes(branch)
       repository.after_change_head
       reload_default_branch
@@ -1547,9 +1552,9 @@ class Project < ActiveRecord::Base
   end
 
   def deployment_variables
-    return [] unless deployment_service
+    return [] unless deployment_platform
 
-    deployment_service.predefined_variables
+    deployment_platform.predefined_variables
   end
 
   def auto_devops_variables

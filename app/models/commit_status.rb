@@ -43,7 +43,8 @@ class CommitStatus < ActiveRecord::Base
     script_failure: 1,
     api_failure: 2,
     stuck_or_timeout_failure: 3,
-    runner_system_failure: 4
+    runner_system_failure: 4,
+    missing_dependency_failure: 5
   }
 
   ##

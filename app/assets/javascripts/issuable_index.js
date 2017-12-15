@@ -28,7 +28,7 @@ export default class IssuableIndex {
         url: $('.incoming-email-token-reset').attr('href'),
         dataType: 'json',
         success(response) {
-          $('#issue_email').val(response.new_issue_address).focus();
+          $('#issuable_email').val(response.new_address).focus();
         },
         beforeSend() {
           $('.incoming-email-token-reset').text('resetting...');

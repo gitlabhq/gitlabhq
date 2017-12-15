@@ -2,6 +2,7 @@
 
 import FilesCommentButton from './files_comment_button';
 import imageDiffHelper from './image_diff/helpers/index';
+import syntaxHighlight from './syntax_highlight';
 
 const WRAPPER = '<div class="diff-content"></div>';
 const LOADING_HTML = '<i class="fa fa-spinner fa-spin"></i>';
@@ -64,7 +65,7 @@ export default class SingleFileDiff {
         _this.loadingContent.hide();
         if (data.html) {
           _this.content = $(data.html);
-          _this.content.syntaxHighlight();
+          syntaxHighlight(_this.content);
         } else {
           _this.hasError = true;
           _this.content = $(ERROR_HTML);

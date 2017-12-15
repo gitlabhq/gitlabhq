@@ -18,7 +18,7 @@ module Gitlab
 
       def initialize(kubeclient)
         @kubeclient = kubeclient
-        @namespace = Namespace.new(NAMESPACE, kubeclient)
+        @namespace = Gitlab::Kubernetes::Namespace.new(NAMESPACE, kubeclient)
       end
 
       def install(command)

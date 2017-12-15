@@ -1,6 +1,5 @@
 class ProjectServiceWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   sidekiq_options dead: false
 

@@ -1,3 +1,4 @@
+# coding: utf-8
 class Commit
   extend ActiveModel::Naming
   extend Gitlab::Cache::RequestCache
@@ -25,7 +26,7 @@ class Commit
   DIFF_HARD_LIMIT_FILES = 1000
   DIFF_HARD_LIMIT_LINES = 50000
 
-  MIN_SHA_LENGTH = 7
+  MIN_SHA_LENGTH = Gitlab::Git::Commit::MIN_SHA_LENGTH
   COMMIT_SHA_PATTERN = /\h{#{MIN_SHA_LENGTH},40}/.freeze
 
   def banzai_render_context(field)
@@ -49,6 +50,20 @@ class Commit
     # Calculate number of lines to render for diffs
     def diff_line_count(diffs)
       diffs.reduce(0) { |sum, d| sum + Gitlab::Git::Util.count_lines(d.diff) }
+    end
+
+    def order_by(collection:, order_by:, sort:)
+      return collection unless %w[email name commits].include?(order_by)
+      return collection unless %w[asc desc].include?(sort)
+
+      collection.sort do |a, b|
+        operands = [a, b].tap { |o| o.reverse! if sort == 'desc' }
+
+        attr1, attr2 = operands.first.public_send(order_by), operands.second.public_send(order_by) # rubocop:disable PublicSend
+
+        # use case insensitive comparison for string values
+        order_by.in?(%w[email name]) ? attr1.casecmp(attr2) : attr1 <=> attr2
+      end
     end
 
     # Truncate sha to 8 characters

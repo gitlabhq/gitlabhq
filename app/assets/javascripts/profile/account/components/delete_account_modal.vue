@@ -1,5 +1,5 @@
 <script>
-  import popupDialog from '../../../vue_shared/components/popup_dialog.vue';
+  import modal from '../../../vue_shared/components/modal.vue';
   import { __, s__, sprintf } from '../../../locale';
   import csrf from '../../../lib/utils/csrf';
 
@@ -26,7 +26,7 @@
       };
     },
     components: {
-      popupDialog,
+      modal,
     },
     computed: {
       csrfToken() {
@@ -89,7 +89,7 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
 
 <template>
   <div>
-    <popup-dialog
+    <modal
       v-if="isOpen"
       :title="s__('Profiles|Delete your account?')"
       :text="text"
@@ -134,7 +134,7 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
         </form>
       </template>
 
-    </popup-dialog>
+    </modal>
 
     <button
       type="button"

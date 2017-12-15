@@ -1,7 +1,7 @@
 - issues = IssuesFinder.new(current_user, group_id: @group.id, state: 'opened').execute
 - merge_requests = MergeRequestsFinder.new(current_user, group_id: @group.id, state: 'opened', non_archived: true).execute
 
-.nav-sidebar{ class: ("sidebar-icons-only" if collapsed_sidebar?) }
+.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?) }
   .nav-sidebar-inner-scroll
     .context-header
       = link_to group_path(@group), title: @group.name do

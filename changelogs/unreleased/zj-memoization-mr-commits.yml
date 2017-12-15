@@ -1,0 +1,5 @@
+---
+title: Cache commits for MergeRequest diffs
+merge_request:
+author:
+type: performance

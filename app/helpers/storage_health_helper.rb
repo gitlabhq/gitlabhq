@@ -18,16 +18,12 @@ module StorageHealthHelper
     current_failures = circuit_breaker.failure_count
 
     translation_params = { number_of_failures: current_failures,
-                           maximum_failures: maximum_failures,
-                           number_of_seconds: circuit_breaker.failure_wait_time }
+                           maximum_failures: maximum_failures }
 
     if circuit_breaker.circuit_broken?
       s_("%{number_of_failures} of %{maximum_failures} failures. GitLab will not "\
          "retry automatically. Reset storage information when the problem is "\
          "resolved.") % translation_params
-    elsif circuit_breaker.backing_off?
-      _("%{number_of_failures} of %{maximum_failures} failures. GitLab will "\
-        "block access for %{number_of_seconds} seconds.") % translation_params
     else
       _("%{number_of_failures} of %{maximum_failures} failures. GitLab will "\
         "allow access on the next attempt.") % translation_params

@@ -1,6 +1,7 @@
 import d3 from 'd3';
 
 export const dateFormat = d3.time.format('%b %-d, %Y');
+export const dateFormatWithName = d3.time.format('%a, %b %-d');
 export const timeFormat = d3.time.format('%-I:%M%p');
 export const bisectDate = d3.bisector(d => d.time).left;
 
