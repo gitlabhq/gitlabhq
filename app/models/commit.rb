@@ -52,6 +52,20 @@ class Commit
       diffs.reduce(0) { |sum, d| sum + Gitlab::Git::Util.count_lines(d.diff) }
     end
 
+    def order_by(collection:, order_by:, sort:)
+      return collection unless %w[email name commits].include?(order_by)
+      return collection unless %w[asc desc].include?(sort)
+
+      collection.sort do |a, b|
+        operands = [a, b].tap { |o| o.reverse! if sort == 'desc' }
+
+        attr1, attr2 = operands.first.public_send(order_by), operands.second.public_send(order_by) # rubocop:disable PublicSend
+
+        # use case insensitive comparison for string values
+        order_by.in?(%w[email name]) ? attr1.casecmp(attr2) : attr1 <=> attr2
+      end
+    end
+
     # Truncate sha to 8 characters
     def truncate_sha(sha)
       sha[0..MIN_SHA_LENGTH]

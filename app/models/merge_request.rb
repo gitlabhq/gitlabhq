@@ -8,6 +8,7 @@ class MergeRequest < ActiveRecord::Base
   include ManualInverseAssociation
   include EachBatch
   include ThrottledTouch
+  include Gitlab::Utils::StrongMemoize
 
   ignore_column :locked_at,
                 :ref_fetched
@@ -52,6 +53,7 @@ class MergeRequest < ActiveRecord::Base
   serialize :merge_params, Hash # rubocop:disable Cop/ActiveRecordSerialize
 
   after_create :ensure_merge_request_diff, unless: :importing?
+  after_update :clear_memoized_shas
   after_update :reload_diff_if_branch_changed
 
   # When this attribute is true some MR validation is ignored
@@ -81,6 +83,14 @@ class MergeRequest < ActiveRecord::Base
 
     event :unlock_mr do
       transition locked: :opened
+    end
+
+    before_transition any => :opened do |merge_request|
+      merge_request.merge_jid = nil
+
+      merge_request.run_after_commit do
+        UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
+      end
     end
 
     state :opened
@@ -387,13 +397,17 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def source_branch_head
-    return unless source_project
-
-    source_project.repository.commit(source_branch_ref) if source_branch_ref
+    strong_memoize(:source_branch_head) do
+      if source_project && source_branch_ref
+        source_project.repository.commit(source_branch_ref)
+      end
+    end
   end
 
   def target_branch_head
-    target_project.repository.commit(target_branch_ref)
+    strong_memoize(:target_branch_head) do
+      target_project.repository.commit(target_branch_ref)
+    end
   end
 
   def branch_merge_base_commit
@@ -523,6 +537,13 @@ class MergeRequest < ActiveRecord::Base
         start_sha: diff_refs.start_sha
       }
     end
+  end
+
+  def clear_memoized_shas
+    @target_branch_sha = @source_branch_sha = nil
+
+    clear_memoization(:source_branch_head)
+    clear_memoization(:target_branch_head)
   end
 
   def reload_diff_if_branch_changed
@@ -866,11 +887,11 @@ class MergeRequest < ActiveRecord::Base
 
   def state_icon_name
     if merged?
-      "check"
+      "git-merge"
     elsif closed?
-      "times"
+      "close"
     else
-      "circle-o"
+      "issue-open-m"
     end
   end
 

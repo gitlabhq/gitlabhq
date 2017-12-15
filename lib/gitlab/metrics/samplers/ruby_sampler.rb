@@ -48,7 +48,6 @@ module Gitlab
         def sample
           start_time = System.monotonic_time
           sample_gc
-          sample_objects
 
           metrics[:memory_usage].set(labels, System.memory_usage)
           metrics[:file_descriptors].set(labels, System.file_descriptor_count)
@@ -65,32 +64,6 @@ module Gitlab
 
           GC.stat.each do |key, value|
             metrics[key].set(labels, value)
-          end
-        end
-
-        def sample_objects
-          list_objects.each do |name, count|
-            metrics[:objects_total].set(labels.merge(class: name), count)
-          end
-        end
-
-        if Metrics.mri?
-          def list_objects
-            sample = Allocations.to_hash
-            counts = sample.each_with_object({}) do |(klass, count), hash|
-              name = klass.name
-
-              next unless name
-
-              hash[name] = count
-            end
-
-            # Symbols aren't allocated so we'll need to add those manually.
-            counts['Symbol'] = Symbol.all_symbols.length
-            counts
-          end
-        else
-          def list_objects
           end
         end
 

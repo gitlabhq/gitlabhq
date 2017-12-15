@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import * as urlUtils from '~/lib/utils/url_utility';
 import store from '~/repo/stores';
 import service from '~/repo/services';
 import { resetStore, file } from '../helpers';
@@ -10,11 +11,11 @@ describe('Multi-file store actions', () => {
 
   describe('redirectToUrl', () => {
     it('calls visitUrl', (done) => {
-      spyOn(gl.utils, 'visitUrl');
+      spyOn(urlUtils, 'visitUrl');
 
       store.dispatch('redirectToUrl', 'test')
         .then(() => {
-          expect(gl.utils.visitUrl).toHaveBeenCalledWith('test');
+          expect(urlUtils.visitUrl).toHaveBeenCalledWith('test');
 
           done();
         })
@@ -326,13 +327,13 @@ describe('Multi-file store actions', () => {
       });
 
       it('redirects to new merge request page', (done) => {
-        spyOn(gl.utils, 'visitUrl');
+        spyOn(urlUtils, 'visitUrl');
 
         store.state.endpoints.newMergeRequestUrl = 'newMergeRequestUrl?branch=';
 
         store.dispatch('commitChanges', { payload, newMr: true })
           .then(() => {
-            expect(gl.utils.visitUrl).toHaveBeenCalledWith('newMergeRequestUrl?branch=master');
+            expect(urlUtils.visitUrl).toHaveBeenCalledWith('newMergeRequestUrl?branch=master');
 
             done();
           }).catch(done.fail);

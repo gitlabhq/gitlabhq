@@ -1,7 +1,8 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, quotes, no-var, object-shorthand, consistent-return, no-unused-vars, comma-dangle, vars-on-top, prefer-template, max-len */
+import { localTimeAgo } from './lib/utils/datetime_utility';
 
-window.Compare = (function() {
-  function Compare(opts) {
+export default class Compare {
+  constructor(opts) {
     this.opts = opts;
     this.source_loading = $(".js-source-loading");
     this.target_loading = $(".js-target-loading");
@@ -34,12 +35,12 @@ window.Compare = (function() {
     this.initialState();
   }
 
-  Compare.prototype.initialState = function() {
+  initialState() {
     this.getSourceHtml();
-    return this.getTargetHtml();
-  };
+    this.getTargetHtml();
+  }
 
-  Compare.prototype.getTargetProject = function() {
+  getTargetProject() {
     return $.ajax({
       url: this.opts.targetProjectUrl,
       data: {
@@ -52,22 +53,22 @@ window.Compare = (function() {
         return $('.js-target-branch-dropdown .dropdown-content').html(html);
       }
     });
-  };
+  }
 
-  Compare.prototype.getSourceHtml = function() {
-    return this.sendAjax(this.opts.sourceBranchUrl, this.source_loading, '.mr_source_commit', {
+  getSourceHtml() {
+    return this.constructor.sendAjax(this.opts.sourceBranchUrl, this.source_loading, '.mr_source_commit', {
       ref: $("input[name='merge_request[source_branch]']").val()
     });
-  };
+  }
 
-  Compare.prototype.getTargetHtml = function() {
-    return this.sendAjax(this.opts.targetBranchUrl, this.target_loading, '.mr_target_commit', {
+  getTargetHtml() {
+    return this.constructor.sendAjax(this.opts.targetBranchUrl, this.target_loading, '.mr_target_commit', {
       target_project_id: $("input[name='merge_request[target_project_id]']").val(),
       ref: $("input[name='merge_request[target_branch]']").val()
     });
-  };
+  }
 
-  Compare.prototype.sendAjax = function(url, loading, target, data) {
+  static sendAjax(url, loading, target, data) {
     var $target;
     $target = $(target);
     return $.ajax({
@@ -81,10 +82,8 @@ window.Compare = (function() {
         loading.hide();
         $target.html(html);
         var className = '.' + $target[0].className.replace(' ', '.');
-        gl.utils.localTimeAgo($('.js-timeago', className));
+        localTimeAgo($('.js-timeago', className));
       }
     });
-  };
-
-  return Compare;
-})();
+  }
+}

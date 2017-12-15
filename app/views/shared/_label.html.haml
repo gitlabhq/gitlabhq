@@ -2,6 +2,8 @@
 - status = label_subscription_status(label, @project).inquiry if current_user
 - subject = local_assigns[:subject]
 - toggle_subscription_path = toggle_subscription_label_path(label, @project) if current_user
+- show_label_merge_requests_link = show_label_issuables_link?(label, :merge_requests, project: @project)
+- show_label_issues_link = show_label_issuables_link?(label, :issues, project: @project)
 
 %li{ id: label_css_id, data: { id: label.id } }
   = render "shared/label_row", label: label
@@ -12,12 +14,14 @@
       = icon('caret-down')
     .dropdown-menu.dropdown-menu-align-right
       %ul
-        %li
-          = link_to_label(label, subject: subject, type: :merge_request) do
-            View merge requests
-        %li
-          = link_to_label(label, subject: subject) do
-            View open issues
+        - if show_label_merge_requests_link
+          %li
+            = link_to_label(label, subject: subject, type: :merge_request) do
+              View merge requests
+        - if show_label_issues_link
+          %li
+            = link_to_label(label, subject: subject) do
+              View open issues
         - if current_user
           %li.label-subscription
             - if can_subscribe_to_label_in_different_levels?(label)
@@ -35,13 +39,20 @@
           %li
             = link_to 'Edit', edit_label_path(label)
           %li
-            = link_to 'Delete', destroy_label_path(label), title: 'Delete', method: :delete, data: {confirm: 'Remove this label? Are you sure?'}
+            = link_to 'Delete',
+              destroy_label_path(label),
+              title: 'Delete',
+              method: :delete,
+              data: {confirm: 'Remove this label? Are you sure?'},
+              class: 'text-danger'
 
   .pull-right.hidden-xs.hidden-sm.hidden-md
-    = link_to_label(label, subject: subject, type: :merge_request, css_class: 'btn btn-transparent btn-action btn-link') do
-      view merge requests
-    = link_to_label(label, subject: subject, css_class: 'btn btn-transparent btn-action btn-link') do
-      view open issues
+    - if show_label_merge_requests_link
+      = link_to_label(label, subject: subject, type: :merge_request, css_class: 'btn btn-transparent btn-action btn-link') do
+        view merge requests
+    - if show_label_issues_link
+      = link_to_label(label, subject: subject, css_class: 'btn btn-transparent btn-action btn-link') do
+        view open issues
 
     - if current_user
       .label-subscription.inline

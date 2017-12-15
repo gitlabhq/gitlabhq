@@ -1,4 +1,6 @@
 .page-with-contextual-sidebar {
+  transition: padding-left $sidebar-transition-duration;
+
   @media (min-width: $screen-md-min) {
     padding-left: $contextual-sidebar-collapsed-width;
   }
@@ -27,8 +29,10 @@
 .context-header {
   position: relative;
   margin-right: 2px;
+  width: $contextual-sidebar-width;
 
   a {
+    transition: padding $sidebar-transition-duration;
     font-weight: $gl-font-weight-bold;
     display: flex;
     align-items: center;
@@ -63,10 +67,10 @@
 }
 
 .nav-sidebar {
+  transition: width $sidebar-transition-duration, left $sidebar-transition-duration;
   position: fixed;
   z-index: 400;
   width: $contextual-sidebar-width;
-  transition: left $sidebar-transition-duration;
   top: $header-height;
   bottom: 0;
   left: 0;
@@ -74,16 +78,15 @@
   box-shadow: inset -2px 0 0 $border-color;
   transform: translate3d(0, 0, 0);
 
-  &:not(.sidebar-icons-only) {
+  &:not(.sidebar-collapsed-desktop) {
     @media (min-width: $screen-sm-min) and (max-width: $screen-md-max) {
       box-shadow: inset -2px 0 0 $border-color,
                   2px 1px 3px $dropdown-shadow-color;
     }
   }
 
-  &.sidebar-icons-only {
-    width: auto;
-    min-width: $contextual-sidebar-collapsed-width;
+  &.sidebar-collapsed-desktop {
+    width: $contextual-sidebar-collapsed-width;
 
     .nav-sidebar-inner-scroll {
       overflow-x: hidden;
@@ -108,12 +111,11 @@
     }
   }
 
-  &.nav-sidebar-expanded {
+  &.sidebar-expanded-mobile {
     left: 0;
   }
 
   a {
-    transition: none;
     text-decoration: none;
   }
 
@@ -126,9 +128,10 @@
     white-space: nowrap;
 
     a {
+      transition: padding $sidebar-transition-duration;
       display: flex;
       align-items: center;
-      padding: 12px 16px;
+      padding: 12px 15px;
       color: $gl-text-color-secondary;
     }
 
@@ -288,7 +291,8 @@
 
       > a {
         margin-left: 4px;
-        padding-left: 12px;
+        // Subtract width of left border on active element
+        padding-left: 11px;
       }
 
       .badge {
@@ -313,6 +317,7 @@
 .toggle-sidebar-button,
 .close-nav-button {
   width: $contextual-sidebar-width - 2px;
+  transition: width $sidebar-transition-duration;
   position: fixed;
   bottom: 0;
   padding: 16px;
@@ -343,18 +348,19 @@
   }
 }
 
+.collapse-text {
+  white-space: nowrap;
+  overflow: hidden;
+}
 
-.sidebar-icons-only {
+.sidebar-collapsed-desktop {
   .context-header {
-    height: 61px;
+    height: 60px;
+    width: $contextual-sidebar-collapsed-width;
 
     a {
       padding: 10px 4px;
     }
-  }
-
-  li a {
-    padding: 12px 15px;
   }
 
   .sidebar-top-level-items > li {
@@ -374,8 +380,8 @@
   }
 
   .toggle-sidebar-button {
-    width: $contextual-sidebar-collapsed-width - 2px;
     padding: 16px;
+    width: $contextual-sidebar-collapsed-width - 2px;
 
     .collapse-text,
     .icon-angle-double-left {

@@ -342,6 +342,46 @@ describe Notify do
       end
     end
 
+    context 'for issue notes' do
+      let(:host) { Gitlab.config.gitlab.host }
+
+      context 'in discussion' do
+        set(:first_note) { create(:discussion_note_on_issue) }
+        set(:second_note) { create(:discussion_note_on_issue, in_reply_to: first_note) }
+        set(:third_note) { create(:discussion_note_on_issue, in_reply_to: second_note) }
+
+        subject { described_class.note_issue_email(recipient.id, third_note.id) }
+
+        it 'has In-Reply-To header pointing to previous note in discussion' do
+          expect(subject.header['In-Reply-To'].message_ids).to eq(["note_#{second_note.id}@#{host}"])
+        end
+
+        it 'has References header including the notes and issue of the discussion' do
+          expect(subject.header['References'].message_ids).to include("issue_#{first_note.noteable.id}@#{host}",
+                                                                   "note_#{first_note.id}@#{host}",
+                                                                   "note_#{second_note.id}@#{host}")
+        end
+
+        it 'has X-GitLab-Discussion-ID header' do
+          expect(subject.header['X-GitLab-Discussion-ID'].value).to eq(third_note.discussion.id)
+        end
+      end
+
+      context 'individual issue comments' do
+        set(:note) { create(:note_on_issue) }
+
+        subject { described_class.note_issue_email(recipient.id, note.id) }
+
+        it 'has In-Reply-To header pointing to the issue' do
+          expect(subject.header['In-Reply-To'].message_ids).to eq(["issue_#{note.noteable.id}@#{host}"])
+        end
+
+        it 'has References header including the notes and issue of the discussion' do
+          expect(subject.header['References'].message_ids).to include("issue_#{note.noteable.id}@#{host}")
+        end
+      end
+    end
+
     context 'for snippet notes' do
       let(:project_snippet) { create(:project_snippet, project: project) }
       let(:project_snippet_note) { create(:note_on_project_snippet, project: project, noteable: project_snippet) }

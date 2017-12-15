@@ -19,6 +19,8 @@ module Gitlab
           commit_message: commit_message || default_commit_message
         }
         resolver.resolve_conflicts(user, files, args)
+      ensure
+        @merge_request.clear_memoized_shas
       end
 
       def files

@@ -1,10 +1,10 @@
 <script>
 import { mapGetters, mapActions, mapState } from 'vuex';
-import popupDialog from '../../vue_shared/components/popup_dialog.vue';
+import modal from '../../vue_shared/components/modal.vue';
 
 export default {
   components: {
-    popupDialog,
+    modal,
   },
   computed: {
     ...mapState([
@@ -43,7 +43,7 @@ export default {
         {{buttonLabel}}
       </span>
     </button>
-    <popup-dialog
+    <modal
       v-if="discardPopupOpen"
       class="text-left"
       :primary-button-label="__('Discard changes')"

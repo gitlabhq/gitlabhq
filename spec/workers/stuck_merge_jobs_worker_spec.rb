@@ -14,7 +14,6 @@ describe StuckMergeJobsWorker do
 
         mr_with_sha.reload
         mr_without_sha.reload
-
         expect(mr_with_sha).to be_merged
         expect(mr_without_sha).to be_opened
         expect(mr_with_sha.merge_jid).to be_present
@@ -24,10 +23,13 @@ describe StuckMergeJobsWorker do
       it 'updates merge request to opened when locked but has not been merged' do
         allow(Gitlab::SidekiqStatus).to receive(:completed_jids).and_return(%w(123))
         merge_request = create(:merge_request, :locked, merge_jid: '123', state: :locked)
+        pipeline = create(:ci_empty_pipeline, project: merge_request.project, ref: merge_request.source_branch, sha: merge_request.source_branch_sha)
 
         worker.perform
 
-        expect(merge_request.reload).to be_opened
+        merge_request.reload
+        expect(merge_request).to be_opened
+        expect(merge_request.head_pipeline).to eq(pipeline)
       end
 
       it 'logs updated stuck merge job ids' do

@@ -66,6 +66,26 @@ describe Projects::ProjectMembersController do
     end
   end
 
+  describe 'PUT update' do
+    let(:requester) { create(:project_member, :access_request, project: project) }
+
+    before do
+      project.add_master(user)
+      sign_in(user)
+    end
+
+    Gitlab::Access.options.each do |label, value|
+      it "can change the access level to #{label}" do
+        xhr :put, :update, project_member: { access_level: value },
+                           namespace_id: project.namespace,
+                           project_id: project,
+                           id: requester
+
+        expect(requester.reload.human_access).to eq(label)
+      end
+    end
+  end
+
   describe 'DELETE destroy' do
     let(:member) { create(:project_member, :developer, project: project) }
 

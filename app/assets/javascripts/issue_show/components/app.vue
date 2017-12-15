@@ -1,5 +1,6 @@
 <script>
 import Visibility from 'visibilityjs';
+import { visitUrl } from '../../lib/utils/url_utility';
 import Poll from '../../lib/utils/poll';
 import eventHub from '../event_hub';
 import Service from '../services/index';
@@ -8,8 +9,7 @@ import titleComponent from './title.vue';
 import descriptionComponent from './description.vue';
 import editedComponent from './edited.vue';
 import formComponent from './form.vue';
-import '../../lib/utils/url_utility';
-import RecaptchaDialogImplementor from '../../vue_shared/mixins/recaptcha_dialog_implementor';
+import recaptchaModalImplementor from '../../vue_shared/mixins/recaptcha_modal_implementor';
 
 export default {
   props: {
@@ -152,7 +152,7 @@ export default {
   },
 
   mixins: [
-    RecaptchaDialogImplementor,
+    recaptchaModalImplementor,
   ],
 
   methods: {
@@ -177,7 +177,7 @@ export default {
         .then(data => this.checkForSpam(data))
         .then((data) => {
           if (location.pathname !== data.web_url) {
-            gl.utils.visitUrl(data.web_url);
+            visitUrl(data.web_url);
           }
 
           return this.service.getData();
@@ -197,7 +197,7 @@ export default {
         });
     },
 
-    closeRecaptchaDialog() {
+    closeRecaptchaModal() {
       this.store.setFormState({
         updateLoading: false,
       });
@@ -212,7 +212,7 @@ export default {
           // Stop the poll so we don't get 404's with the issuable not existing
           this.poll.stop();
 
-          gl.utils.visitUrl(data.web_url);
+          visitUrl(data.web_url);
         })
         .catch(() => {
           eventHub.$emit('close.form');
@@ -273,10 +273,10 @@ export default {
       :enable-autocomplete="enableAutocomplete"
     />
 
-    <recaptcha-dialog
+    <recaptcha-modal
       v-show="showRecaptcha"
       :html="recaptchaHTML"
-      @close="closeRecaptchaDialog"
+      @close="closeRecaptchaModal"
     />
   </div>
   <div v-else>

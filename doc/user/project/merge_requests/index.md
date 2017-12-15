@@ -27,7 +27,7 @@ With GitLab merge requests, you can:
 - [Resolve merge conflicts from the UI](#resolve-conflicts)
 - Enable [fast-forward merge requests](#fast-forward-merge-requests)
 - Enable [semi-linear history merge requests](#semi-linear-history-merge-requests) as another security layer to guarantee the pipeline is passing in the target branch
-- [Create new merge requests by email](#create_by_email)
+- [Create new merge requests by email](#create-new-merge-requests-by-email)
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
@@ -138,7 +138,13 @@ You can create a new merge request by sending an email to a user-specific email
 address. The address can be obtained on the merge requests page by clicking on
 a **Email a new merge request to this project** button.  The subject will be
 used as the source branch name for the new merge request and the target branch
-will be the default branch for the project.
+will be the default branch for the project. The message body (if not empty)
+will be used as the merge request description. You need
+["Reply by email"](../../../administration/reply_by_email.md) enabled to use
+this feature. If it's not enabled to your instance, you may ask your GitLab
+administrator to do so.
+
+![Create new merge requests by email](img/create_from_email.png)
 
 ## Revert changes
 

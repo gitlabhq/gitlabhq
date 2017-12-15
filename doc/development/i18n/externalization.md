@@ -215,6 +215,9 @@ There is also and alternative method to [translate messages from validation erro
     sprintf(__('Hello %{username}'), { username: 'Joe' }) => 'Hello Joe'
     ```
 
+The placeholders should match the code style of the respective source file.
+For example use `%{created_at}` in Ruby but `%{createdAt}` in JavaScript.
+
 ### Plurals
 
 - In Ruby/HAML:

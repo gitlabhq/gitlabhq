@@ -1,8 +1,9 @@
 /* eslint-disable space-before-function-paren, max-len, no-var, one-var, one-var-declaration-per-line, no-unused-expressions, consistent-return, no-param-reassign, default-case, no-return-assign, comma-dangle, object-shorthand, prefer-template, quotes, new-parens, vars-on-top, new-cap, max-len */
 
 import '~/gl_dropdown';
-import '~/search_autocomplete';
+import SearchAutocomplete from '~/search_autocomplete';
 import '~/lib/utils/common_utils';
+import * as urlUtils from '~/lib/utils/url_utility';
 
 (function() {
   var assertLinks, dashboardIssuesPath, dashboardMRsPath, groupIssuesPath, groupMRsPath, groupName, mockDashboardOptions, mockGroupOptions, mockProjectOptions, projectIssuesPath, projectMRsPath, projectName, userId, widget;
@@ -121,13 +122,13 @@ import '~/lib/utils/common_utils';
       loadFixtures('static/search_autocomplete.html.raw');
 
       // Prevent turbolinks from triggering within gl_dropdown
-      spyOn(window.gl.utils, 'visitUrl').and.returnValue(true);
+      spyOn(urlUtils, 'visitUrl').and.returnValue(true);
 
       window.gon = {};
       window.gon.current_user_id = userId;
       window.gon.current_username = userName;
 
-      return widget = new gl.SearchAutocomplete;
+      return widget = new SearchAutocomplete();
     });
 
     afterEach(function() {

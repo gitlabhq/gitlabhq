@@ -124,6 +124,7 @@ describe MergeRequest do
     context 'when the target branch does not exist' do
       before do
         project.repository.rm_branch(subject.author, subject.target_branch)
+        subject.clear_memoized_shas
       end
 
       it 'returns nil' do
@@ -600,30 +601,30 @@ describe MergeRequest do
   end
 
   describe '#can_remove_source_branch?' do
-    let(:user) { create(:user) }
-    let(:user2) { create(:user) }
+    set(:user) { create(:user) }
+    set(:merge_request) { create(:merge_request, :simple) }
+
+    subject { merge_request }
 
     before do
-      subject.source_project.team << [user, :master]
-
-      subject.source_branch = "feature"
-      subject.target_branch = "master"
-      subject.save!
+      subject.source_project.add_master(user)
     end
 
     it "can't be removed when its a protected branch" do
       allow(ProtectedBranch).to receive(:protected?).and_return(true)
+
       expect(subject.can_remove_source_branch?(user)).to be_falsey
     end
 
     it "can't remove a root ref" do
-      subject.source_branch = "master"
-      subject.target_branch = "feature"
+      subject.update(source_branch: 'master', target_branch: 'feature')
 
       expect(subject.can_remove_source_branch?(user)).to be_falsey
     end
 
     it "is unable to remove the source branch for a project the user cannot push to" do
+      user2 = create(:user)
+
       expect(subject.can_remove_source_branch?(user2)).to be_falsey
     end
 
@@ -634,6 +635,7 @@ describe MergeRequest do
     end
 
     it "cannot be removed if the last commit is not also the head of the source branch" do
+      subject.clear_memoized_shas
       subject.source_branch = "lfs"
 
       expect(subject.can_remove_source_branch?(user)).to be_falsey
@@ -733,7 +735,7 @@ describe MergeRequest do
 
       before do
         project.repository.raw_repository.delete_branch(subject.target_branch)
-        subject.reload
+        subject.clear_memoized_shas
       end
 
       it 'does not crash' do
@@ -1404,6 +1406,16 @@ describe MergeRequest do
 
       subject.reload_diff
     end
+
+    context 'when using the after_update hook to update' do
+      context 'when the branches are updated' do
+        it 'uses the new heads to generate the diff' do
+          expect { subject.update!(source_branch: subject.target_branch, target_branch: subject.source_branch) }
+            .to change { subject.merge_request_diff.start_commit_sha }
+            .and change { subject.merge_request_diff.head_commit_sha }
+        end
+      end
+    end
   end
 
   describe '#update_diff_discussion_positions' do
@@ -1468,6 +1480,7 @@ describe MergeRequest do
     context 'when the target branch does not exist' do
       before do
         subject.project.repository.rm_branch(subject.author, subject.target_branch)
+        subject.clear_memoized_shas
       end
 
       it 'returns nil' do
@@ -1854,5 +1867,21 @@ describe MergeRequest do
 
   it_behaves_like 'throttled touch' do
     subject { create(:merge_request, updated_at: 1.hour.ago) }
+  end
+
+  context 'state machine transitions' do
+    describe '#unlock_mr' do
+      subject { create(:merge_request, state: 'locked', merge_jid: 123) }
+
+      it 'updates merge request head pipeline and sets merge_jid to nil' do
+        pipeline = create(:ci_empty_pipeline, project: subject.project, ref: subject.source_branch, sha: subject.source_branch_sha)
+
+        subject.unlock_mr
+
+        subject.reload
+        expect(subject.head_pipeline).to eq(pipeline)
+        expect(subject.merge_jid).to be_nil
+      end
+    end
   end
 end

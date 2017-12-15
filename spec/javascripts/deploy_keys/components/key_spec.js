@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import DeployKeysStore from '~/deploy_keys/store';
 import key from '~/deploy_keys/components/key.vue';
+import { getTimeago } from '~/lib/utils/datetime_utility';
 
 describe('Deploy keys key', () => {
   let vm;
@@ -37,7 +38,7 @@ describe('Deploy keys key', () => {
     it('renders human friendly formatted created date', () => {
       expect(
         vm.$el.querySelector('.key-created-at').textContent.trim(),
-      ).toBe(`created ${gl.utils.getTimeago().format(deployKey.created_at)}`);
+      ).toBe(`created ${getTimeago().format(deployKey.created_at)}`);
     });
 
     it('shows edit button', () => {

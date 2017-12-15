@@ -756,6 +756,28 @@ describe Note do
     end
   end
 
+  describe '#references' do
+    context 'when part of a discussion' do
+      it 'references all earlier notes in the discussion' do
+        first_note = create(:discussion_note_on_issue)
+        second_note = create(:discussion_note_on_issue, in_reply_to: first_note)
+        third_note = create(:discussion_note_on_issue, in_reply_to: second_note)
+        create(:discussion_note_on_issue, in_reply_to: third_note)
+
+        expect(third_note.references).to eq([first_note.noteable, first_note, second_note])
+      end
+    end
+
+    context 'when not part of a discussion' do
+      subject { create(:note) }
+      let(:note) { create(:note, in_reply_to: subject) }
+
+      it 'returns the noteable' do
+        expect(note.references).to eq([note.noteable])
+      end
+    end
+  end
+
   describe 'expiring ETag cache' do
     let(:note) { build(:note_on_issue) }
 
