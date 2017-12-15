@@ -34,10 +34,10 @@ function makeStory(note = {}) {
       };
     },
     template: `
-      <div class="container-fluid container-limited limit-container-width">
-        <div class="content" id="content-body">
+      <div class="c  ontainer-fluid container-limited limit-container-width">
+        <ul class="notes"
           <noteable-discussion :note="note" />
-        </div>
+        </ul>
       </div>
     `,
   };
