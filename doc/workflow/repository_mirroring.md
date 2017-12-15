@@ -242,7 +242,7 @@ repository_mirroring/repository_mirroring_diverged_branch_push.png)
 
 ### Push only protected branches
 
->[Introduced][ee-3350] in Gitlab Enterprise Edition 10.3.
+>[Introduced][ee-3350] in GitLab Enterprise Edition 10.3.
 
 You can choose to only push your protected branches from GitLab to your remote repository.
 
