@@ -86,7 +86,7 @@ this branch to prevent any changes from being lost.
 
 ### Pull only protected branches
 
->[Introduced][ee-3326] in Gitlab Enterprise Edition 10.3.
+>[Introduced][ee-3326] in GitLab Enterprise Edition 10.3.
 
 You can choose to only pull the protected branches from your remote repository to GitLab.
 
