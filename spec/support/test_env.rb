@@ -82,10 +82,10 @@ module TestEnv
 
     setup_gitaly
 
-    # Create repository for FactoryGirl.create(:project)
+    # Create repository for FactoryBot.create(:project)
     setup_factory_repo
 
-    # Create repository for FactoryGirl.create(:forked_project_with_submodules)
+    # Create repository for FactoryBot.create(:forked_project_with_submodules)
     setup_forked_repo
   end
 

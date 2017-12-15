@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :oauth_application, class: 'Doorkeeper::Application', aliases: [:application] do
     sequence(:name) { |n| "OAuth App #{n}" }
     uid { Doorkeeper::OAuth::Helpers::UniqueToken.generate }

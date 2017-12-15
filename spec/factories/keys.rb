@@ -1,6 +1,6 @@
 require_relative '../support/helpers/key_generator_helper'
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :key do
     title
     key { Spec::Support::Helpers::KeyGeneratorHelper.new(1024).generate + ' dummy@gitlab.com' }

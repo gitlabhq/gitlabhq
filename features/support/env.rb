@@ -27,7 +27,7 @@ Spinach.hooks.before_run do
   # web editor and merge
   TestEnv.disable_pre_receive
 
-  include FactoryGirl::Syntax::Methods
+  include FactoryBot::Syntax::Methods
   include GitlabRoutingHelper
 end
 

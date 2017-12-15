@@ -2,11 +2,11 @@ require 'spec_helper'
 
 module Ci
   describe RegisterJobService do
-    let!(:project) { FactoryGirl.create :project, shared_runners_enabled: false }
-    let!(:pipeline) { FactoryGirl.create :ci_pipeline, project: project }
-    let!(:pending_job) { FactoryGirl.create :ci_build, pipeline: pipeline }
-    let!(:shared_runner) { FactoryGirl.create(:ci_runner, is_shared: true) }
-    let!(:specific_runner) { FactoryGirl.create(:ci_runner, is_shared: false) }
+    let!(:project) { FactoryBot.create :project, shared_runners_enabled: false }
+    let!(:pipeline) { FactoryBot.create :ci_pipeline, project: project }
+    let!(:pending_job) { FactoryBot.create :ci_build, pipeline: pipeline }
+    let!(:shared_runner) { FactoryBot.create(:ci_runner, is_shared: true) }
+    let!(:specific_runner) { FactoryBot.create(:ci_runner, is_shared: false) }
 
     before do
       specific_runner.assign_to(project)
@@ -74,11 +74,11 @@ module Ci
           let!(:project3) { create :project, shared_runners_enabled: true }
           let!(:pipeline3) { create :ci_pipeline, project: project3 }
           let!(:build1_project1) { pending_job }
-          let!(:build2_project1) { FactoryGirl.create :ci_build, pipeline: pipeline }
-          let!(:build3_project1) { FactoryGirl.create :ci_build, pipeline: pipeline }
-          let!(:build1_project2) { FactoryGirl.create :ci_build, pipeline: pipeline2 }
-          let!(:build2_project2) { FactoryGirl.create :ci_build, pipeline: pipeline2 }
-          let!(:build1_project3) { FactoryGirl.create :ci_build, pipeline: pipeline3 }
+          let!(:build2_project1) { FactoryBot.create :ci_build, pipeline: pipeline }
+          let!(:build3_project1) { FactoryBot.create :ci_build, pipeline: pipeline }
+          let!(:build1_project2) { FactoryBot.create :ci_build, pipeline: pipeline2 }
+          let!(:build2_project2) { FactoryBot.create :ci_build, pipeline: pipeline2 }
+          let!(:build1_project3) { FactoryBot.create :ci_build, pipeline: pipeline3 }
 
           it 'prefers projects without builds first' do
             # it gets for one build from each of the projects
