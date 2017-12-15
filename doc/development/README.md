@@ -81,10 +81,9 @@ comments: false
 
 ## Documentation guides
 
-- [Documentation styleguide](doc_styleguide.md): Use this styleguide if you are
-  contributing to the documentation.
 - [Writing documentation](writing_documentation.md)
-  - [Distinction between general documentation and technical articles](writing_documentation.md#distinction-between-general-documentation-and-technical-articles)
+- [Documentation styleguide](doc_styleguide.md)
+- [Markdown](../user/markdown.md)
 
 ## Internationalization (i18n) guides
 
