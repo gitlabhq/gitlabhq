@@ -1,5 +1,10 @@
 image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.5-golang-1.8-git-2.14-chrome-63.0-node-8.x-yarn-1.2-postgresql-9.6"
 
+.dedicated-runner: &dedicated-runner
+  retry: 1
+  tags:
+    - gitlab-org
+
 .default-cache: &default-cache
   key: "ruby-235-with-yarn"
   paths:
@@ -42,11 +47,6 @@ stages:
   - post-cleanup
 
 # Predefined scopes
-.dedicated-runner: &dedicated-runner
-  retry: 1
-  tags:
-    - gitlab-org
-
 .tests-metadata-state: &tests-metadata-state
   <<: *dedicated-runner
   variables:
@@ -82,9 +82,9 @@ stages:
 
 .rspec-metadata: &rspec-metadata
   <<: *dedicated-runner
-  <<: *pull-cache
   <<: *except-docs
   <<: *except-qa
+  <<: *pull-cache
   stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
@@ -121,9 +121,9 @@ stages:
 
 .spinach-metadata: &spinach-metadata
   <<: *dedicated-runner
-  <<: *pull-cache
   <<: *except-docs
   <<: *except-qa
+  <<: *pull-cache
   stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
@@ -162,6 +162,7 @@ stages:
 # Trigger a package build in omnibus-gitlab repository
 #
 package-qa:
+  <<: *dedicated-runner
   image: ruby:2.4-alpine
   before_script: []
   stage: build
@@ -175,6 +176,7 @@ package-qa:
 
 # Review docs base
 .review-docs: &review-docs
+  <<: *dedicated-runner
   <<: *except-qa
   image: ruby:2.4-alpine
   before_script:
@@ -284,9 +286,9 @@ flaky-examples-check:
     - scripts/detect-new-flaky-examples $NEW_FLAKY_SPECS_REPORT
 
 setup-test-env:
-  <<: *use-pg
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *use-pg
   stage: prepare
   cache:
     <<: *default-cache
@@ -375,19 +377,19 @@ spinach-mysql 3 4: *spinach-metadata-mysql
     SETUP_DB: "false"
 
 .rake-exec: &rake-exec
-  <<: *ruby-static-analysis
   <<: *dedicated-runner
   <<: *except-docs
   <<: *except-qa
   <<: *pull-cache
+  <<: *ruby-static-analysis
   stage: test
   script:
     - bundle exec rake $CI_JOB_NAME
 
 static-analysis:
-  <<: *ruby-static-analysis
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *ruby-static-analysis
   stage: test
   script:
     - scripts/static-analysis
@@ -456,11 +458,17 @@ db:migrate:reset-mysql:
   <<: *db-migrate-reset
   <<: *use-mysql
 
+db:check-schema-pg:
+  <<: *db-migrate-reset
+  <<: *use-pg
+  script:
+    - source scripts/schema_changed.sh
+
 .migration-paths: &migration-paths
   <<: *dedicated-runner
-  <<: *pull-cache
   <<: *except-docs
   <<: *except-qa
+  <<: *pull-cache
   stage: test
   variables:
     SETUP_DB: "false"
@@ -530,12 +538,6 @@ db:seed_fu-mysql:
   <<: *db-seed_fu
   <<: *use-mysql
 
-db:check-schema-pg:
-  <<: *db-migrate-reset
-  <<: *use-pg
-  script:
-    - source scripts/schema_changed.sh
-
 # Frontend-related jobs
 gitlab:assets:compile:
   <<: *dedicated-runner
@@ -561,11 +563,11 @@ gitlab:assets:compile:
       - webpack-report/
 
 karma:
-  <<: *use-pg
   <<: *dedicated-runner
   <<: *except-docs
   <<: *except-qa
   <<: *pull-cache
+  <<: *use-pg
   stage: test
   variables:
     BABEL_ENV: "coverage"
@@ -604,6 +606,7 @@ codequality:
     paths: [codeclimate.json]
 
 qa:internal:
+  <<: *dedicated-runner
   <<: *except-docs
   stage: test
   variables:
@@ -695,9 +698,10 @@ cache gems:
     - master@gitlab-org/gitlab-ee
 
 gitlab_git_test:
-  <<: *pull-cache
+  <<: *dedicated-runner
   <<: *except-docs
   <<: *except-qa
+  <<: *pull-cache
   variables:
     SETUP_DB: "false"
   script:
