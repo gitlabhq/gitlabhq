@@ -25,7 +25,6 @@ class ListIssue {
     this.isLoading = {
       weight: false,
     };
-    this.isLoading = {};
     this.sidebarInfoEndpoint = obj.issue_sidebar_endpoint;
     this.toggleSubscriptionEndpoint = obj.toggle_subscription_endpoint;
     this.milestone_id = obj.milestone_id;
