@@ -52,24 +52,24 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
     belongs_to :project, class_name: 'Project'
 
     # 10.1 ~ 10.2
-    # When users create a cluster, KubernetesService is automatically synchronized
-    # with Platforms::Kubernetes due to delegate Kubernetes specific logic.
-    # We only target unmanaged KubernetesService records.
+    # When users created a cluster, KubernetesService was automatically configured
+    # by Platforms::Kubernetes parameters.
+    # Because Platforms::Kubernetes delegated some logic to KubernetesService.
     #
     # 10.3
-    # We no longer create KubernetesService because Platforms::Kubernetes has the specific logic.
+    # When users create a cluster, KubernetesService is no longer synchronized.
+    # Because we copied delegated logic in Platforms::Kubernetes.
     #
-    # "unmanaged" means "unmanaged by Platforms::Kubernetes(New archetecture)"
-    #
-    # "cluster_projects.project_id IS NULL" -> it's not copied from KubernetesService
-    # "services.properties NOT LIKE CONCAT('%', cluster_platforms_kubernetes.api_url, '%')" -> KubernetesService has unique configuration which is not included in Platforms::Kubernetes
+    # NOTE: 
+    # - "unmanaged" means "unmanaged by Platforms::Kubernetes(New archetecture)"
+    # - We only want to migrate records which are not synchronized with Platforms::Kubernetes.
     scope :unmanaged_kubernetes_service, -> do
-      joins('INNER JOIN projects ON projects.id = services.project_id')
-      .where("services.category = 'deployment'")
+      where("services.category = 'deployment'")
       .where("services.type = 'KubernetesService'")
       .where("services.template = FALSE")
       .where("NOT EXISTS (?)",
         PlatformsKubernetes
+          .joins('INNER JOIN projects ON projects.id = services.project_id')
           .joins('INNER JOIN cluster_projects ON cluster_projects.project_id = projects.id')
           .where('cluster_projects.cluster_id = cluster_platforms_kubernetes.cluster_id')
           .where("services.properties LIKE CONCAT('%', cluster_platforms_kubernetes.api_url, '%')")
