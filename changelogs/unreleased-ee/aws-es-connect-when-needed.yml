@@ -1,0 +1,6 @@
+---
+title: Stop authorization attempts with instance profile when static credentials are
+  provided for AWS Elasticsearch
+merge_request:
+author:
+type: fixed

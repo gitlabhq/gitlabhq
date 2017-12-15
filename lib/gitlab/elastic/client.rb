@@ -32,13 +32,15 @@ module Gitlab
         # Resolve credentials in order
         # 1.  Static config
         # 2.  ec2 instance profile
-        credentials = [
-          Aws::Credentials.new(config[:aws_access_key], config[:aws_secret_access_key]),
-          Aws::InstanceProfileCredentials.new
-        ]
-        credentials.find do |creds|
-          creds&.set?
-        end
+        static_credentials = Aws::Credentials.new(config[:aws_access_key], config[:aws_secret_access_key])
+
+        return static_credentials if static_credentials&.set?
+
+        # Instantiating this will perform an API call, so only do so if the
+        # static credentials did not work
+        instance_credentials = Aws::InstanceProfileCredentials.new
+
+        instance_credentials if instance_credentials&.set?
       end
     end
   end
