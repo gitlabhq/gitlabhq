@@ -2,17 +2,18 @@ import Vue from 'vue';
 import DiffFileHeader from '~/notes/components/diff_file_header.vue';
 import mountComponent from '../../helpers/vue_mount_component_helper';
 
-fdescribe('diff_file_header', () => {
+describe('diff_file_header', () => {
   let vm;
-  let props = {
+  const props = {
     diffFile: {
       submodule: false,
       submoduleLink: '<a href="/bha">Submodule</a>', // submodule_link(blob, diff_file.content_sha, diff_file.repository)
-      url: '',
+      discussionPath: '',
       renamedFile: false,
       deletedFile: false,
       modeChanged: false,
-      bMode: false, // TODO: check type
+      aMode: '',
+      bMode: '',
       filePath: '/some/file/path',
       oldPath: '',
       newPath: '',
@@ -20,29 +21,39 @@ fdescribe('diff_file_header', () => {
     },
   };
   const Component = Vue.extend(DiffFileHeader);
+  const selectors = {
+    get copyButton() {
+      return vm.$el.querySelector('button[data-title="Copy file path to clipboard"]');
+    },
+    get fileName() {
+      return vm.$el.querySelector('.file-title-name');
+    },
+    get titleWrapper() {
+      return vm.$refs.titleWrapper;
+    },
+  };
 
   describe('submodule', () => {
     beforeEach(() => {
-      props.diffFile.submodule = false;
+      props.diffFile.submodule = true;
       props.diffFile.submoduleLink = '<a href="/bha">Submodule</a>';
+      vm = mountComponent(Component, props);
     });
 
-    xit('shows archive icon', () => {
-
+    it('shows submoduleLink', () => {
+      expect(selectors.fileName.innerHTML).toBe(props.diffFile.submoduleLink);
     });
 
-    xit('shows submoduleLink', () => {
-
-    });
-
-    xit('has button to copu blob path', () => {
-      // check button text and title
+    it('has button to copy blob path', () => {
+      expect(selectors.copyButton).toExist();
+      expect(selectors.copyButton.getAttribute('data-clipboard-text')).toBe(props.diffFile.submoduleLink);
     });
   });
 
   describe('changed file', () => {
     beforeEach(() => {
       props.diffFile.submodule = false;
+      props.diffFile.discussionPath = 'some/discussion/id';
     });
 
     it('shows file type icon', () => {
@@ -51,8 +62,25 @@ fdescribe('diff_file_header', () => {
       expect(vm.$el.innerHTML).toContain('fa-file-image-o');
     });
 
+    it('links to discussion path', () => {
+      vm = mountComponent(Component, props);
+
+      expect(selectors.titleWrapper).toExist();
+      expect(selectors.titleWrapper.tagName).toBe('A');
+      expect(selectors.titleWrapper.getAttribute('href')).toBe(props.diffFile.discussionPath);
+    });
+
+    it('shows plain title if no link given', () => {
+      props.diffFile.discussionPath = undefined;
+      vm = mountComponent(Component, props);
+
+      expect(selectors.titleWrapper.tagName).not.toBe('A');
+      expect(selectors.titleWrapper.href).toBeFalsy();
+    });
+
     it('has button to copy file path', () => {
-      // const filePath
+      expect(selectors.copyButton).toExist();
+      expect(selectors.copyButton.getAttribute('data-clipboard-text')).toBe(props.diffFile.filePath);
     });
 
     it('shows file mode change', () => {
