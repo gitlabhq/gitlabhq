@@ -4,6 +4,7 @@ import {
   noteableDataMock,
   discussionMock,
   diffDiscussionMock,
+  imageDiffDiscussionMock,
   notesDataMock,
   systemNoteMock,
 } from '../../spec/javascripts/notes/mock_data';
@@ -70,7 +71,7 @@ stories.add('text diff', () => makeStory({
 }));
 
 stories.add('image diff', () => makeStory({
-  ...diffDiscussionMock,
+  ...imageDiffDiscussionMock,
 }));
 
 stories.add('system notes.default system', () => makeStory({
