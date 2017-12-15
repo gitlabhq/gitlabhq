@@ -243,6 +243,7 @@
 
   .issuable-sidebar {
     width: calc(100% + 100px);
+    height: 100%;
     overflow-y: scroll;
     overflow-x: hidden;
     -webkit-overflow-scrolling: touch;
@@ -499,6 +500,10 @@
 
 .with-performance-bar .right-sidebar {
   top: $header-height + $performance-bar-height;
+
+  .issuable-sidebar {
+    height: calc(100% - #{$performance-bar-height});
+  }
 }
 
 .sidebar-move-issue-confirmation-button {
