@@ -85,7 +85,11 @@ constraints(GroupUrlConstrainer.new) do
         get :realtime_changes
       end
 
-      resources :epic_issues, only: [:index, :create, :destroy], as: 'issues', path: 'issues'
+      resources :epic_issues, only: [:index, :create, :destroy], as: 'issues', path: 'issues' do
+        member do
+          put :order
+        end
+      end
     end
 
     legacy_ee_group_boards_redirect = redirect do |params, request|

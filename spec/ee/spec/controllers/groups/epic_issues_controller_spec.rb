@@ -86,7 +86,7 @@ describe Groups::EpicIssuesController do
       delete :destroy, group_id: group, epic_id: epic.to_param, id: epic_issue.id
     end
 
-    context 'when user has permissions to detele the link' do
+    context 'when user has permissions to delete the link' do
       before do
         group.add_developer(user)
       end
@@ -133,6 +133,74 @@ describe Groups::EpicIssuesController do
 
       it 'does not destroy the link' do
         expect { subject }.not_to change { EpicIssue.count }.from(1)
+      end
+    end
+
+    context 'when the epic_issue record does not exists' do
+      it 'returns status 404' do
+        delete :destroy, group_id: group, epic_id: epic.to_param, id: 9999
+
+        expect(response.status).to eq(403)
+      end
+    end
+  end
+
+  describe 'PUT #order' do
+    let(:issue2) { create(:issue, project: project) }
+    let!(:epic_issue1) { create(:epic_issue, epic: epic, issue: issue, position: 1) }
+    let!(:epic_issue2) { create(:epic_issue, epic: epic, issue: issue2, position: 2) }
+
+    subject do
+      put :order, group_id: group, epic_id: epic.to_param, id: epic_issue1.id, position: 2
+    end
+
+    context 'when user has permissions to admin the epic' do
+      before do
+        group.add_developer(user)
+      end
+
+      it 'returns status 200' do
+        subject
+
+        expect(response.status).to eq(200)
+      end
+
+      it 'updates the issue position value' do
+        expect { subject }.to change { epic_issue1.reload.position }.from(1).to(2)
+      end
+    end
+
+    context 'when user does not have permissions to admin the epic' do
+      it 'returns status 404' do
+        subject
+
+        expect(response.status).to eq(403)
+      end
+
+      it 'does not change the position value' do
+        expect { subject }.not_to change { epic_issue1.reload.position }.from(1)
+      end
+    end
+
+    context 'when the epic from the association does not equal epic from the path' do
+      subject do
+        put :order, group_id: group, epic_id: another_epic.to_param, id: epic_issue1.id, position: 2
+      end
+
+      let(:another_epic) { create(:epic, group: group) }
+
+      before do
+        group.add_developer(user)
+      end
+
+      it 'returns status 404' do
+        subject
+
+        expect(response.status).to eq(404)
+      end
+
+      it 'does not change the position value' do
+        expect { subject }.not_to change { epic_issue1.position }.from(1)
       end
     end
 

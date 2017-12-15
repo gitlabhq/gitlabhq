@@ -4,8 +4,14 @@ class Groups::EpicIssuesController < Groups::EpicsController
   skip_before_action :authorize_destroy_issuable!
   skip_before_action :authorize_create_epic!
 
-  before_action :authorize_admin_epic!, only: [:create, :destroy]
-  before_action :authorize_issue_link_association!, only: :destroy
+  before_action :authorize_admin_epic!, only: [:create, :destroy, :order]
+  before_action :authorize_issue_link_association!, only: [:destroy, :order]
+
+  def order
+    result = EpicIssues::OrderService.new(link, current_user, params).execute
+
+    render json: { message: result[:message] }, status: result[:http_status]
+  end
 
   private
 
