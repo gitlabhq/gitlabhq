@@ -36,7 +36,7 @@ const createComponent = (customConfig = {}) => {
   });
 };
 
-fescribe('MRWidgetReadyToMerge', () => {
+describe('MRWidgetReadyToMerge', () => {
   let vm;
 
   beforeEach(() => {
