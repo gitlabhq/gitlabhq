@@ -199,7 +199,7 @@ If you need to change the key at any time, you can press the `Regenerate key`
 button to do so. You'll have to update the source repository with the new key
 to keep the mirror running.
 
-## How it works
+### How it works
 
 Once you activate the pull mirroring feature, the mirror will be inserted into a queue.
 A scheduler will start every minute and schedule a fixed amount of mirrors for update, based
