@@ -184,7 +184,7 @@ describe 'Scoped issue boards', :js do
       it 'edits board name' do
         edit_board.click
 
-        page.within('.popup-dialog') do
+        page.within('.modal') do
           fill_in 'board-new-name', with: 'Testing'
 
           click_button 'Save'
@@ -396,7 +396,7 @@ describe 'Scoped issue boards', :js do
     it 'can view board scope' do
       view_scope.click
 
-      page.within('.popup-dialog') do
+      page.within('.modal') do
         expect(find('.modal-header')).to have_content('Board scope')
         expect(page).not_to have_content('Board name')
         expect(page).not_to have_link('Edit')
