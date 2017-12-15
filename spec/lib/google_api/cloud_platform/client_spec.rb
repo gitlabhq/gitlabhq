@@ -50,6 +50,18 @@ describe GoogleApi::CloudPlatform::Client do
     end
   end
 
+  describe '#projects_list' do
+    subject { client.projects_list }
+    let(:projects) { double }
+
+    before do
+      allow_any_instance_of(Google::Apis::CloudresourcemanagerV1::CloudResourceManagerService)
+        .to receive(:fetch_all).and_return(projects)
+    end
+
+    it { is_expected.to eq(projects) }
+  end
+
   describe '#projects_zones_clusters_get' do
     subject { client.projects_zones_clusters_get(spy, spy, spy) }
     let(:gke_cluster) { double }
