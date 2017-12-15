@@ -1,6 +1,7 @@
 import { computeDiff } from './diff';
 
-self.addEventListener('message', (e) => {
+// eslint-disable-next-line prefer-arrow-callback
+self.addEventListener('message', function diffWorker(e) {
   const data = e.data;
 
   self.postMessage({
