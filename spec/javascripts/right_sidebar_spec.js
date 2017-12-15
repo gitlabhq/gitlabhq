@@ -1,8 +1,7 @@
 /* eslint-disable space-before-function-paren, no-var, one-var, one-var-declaration-per-line, new-parens, no-return-assign, new-cap, vars-on-top, max-len */
-/* global Sidebar */
 
 import '~/commons/bootstrap';
-import '~/right_sidebar';
+import Sidebar from '~/right_sidebar';
 
 (function() {
   var $aside, $icon, $labelsIcon, $page, $toggle, assertSidebarState;
