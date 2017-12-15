@@ -680,7 +680,7 @@ msgstr ""
 msgid "ClusterIntegration|Manage your cluster by visiting %{link_gke}"
 msgstr ""
 
-msgid "ClusterIntegration|Multiple clusters are available in GitLab Entreprise Edition Premium and Ultimate"
+msgid "ClusterIntegration|Multiple clusters are available in GitLab Enterprise Edition Premium and Ultimate"
 msgstr ""
 
 msgid "ClusterIntegration|Note:"
