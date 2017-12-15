@@ -231,7 +231,7 @@ export default class LabelsSelect {
             selectedClass.push('label-item');
             $a.attr('data-label-id', label.id);
           }
-          $a.addClass(selectedClass.join(' ')).html(colorEl + " " + label.title);
+          $a.addClass(selectedClass.join(' ')).html(`${colorEl} ${_.escape(label.title)}`);
           // Return generated html
           return $li.html($a).prop('outerHTML');
         },
