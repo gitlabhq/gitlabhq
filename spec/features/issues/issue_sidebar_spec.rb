@@ -83,6 +83,8 @@ feature 'Issue Sidebar' do
     end
 
     context 'sidebar', :js do
+      let!(:xss_label) { create(:label, project: project, title: '&lt;script&gt;alert("xss");&lt;&#x2F;script&gt;') }
+
       it 'changes size when the screen size is smaller' do
         sidebar_selector = 'aside.right-sidebar.right-sidebar-collapsed'
         # Resize the window
@@ -98,6 +100,14 @@ feature 'Issue Sidebar' do
         # Restore the window size as it was including the sidebar
         restore_window_size
         open_issue_sidebar
+      end
+
+      it 'escapes XSS when viewing issue labels' do
+        page.within('.block.labels') do
+          find('.edit-link').click
+
+          expect(page).to have_content '<script>alert("xss");</script>'
+        end
       end
     end
 
