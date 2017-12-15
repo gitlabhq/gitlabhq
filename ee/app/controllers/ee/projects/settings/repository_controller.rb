@@ -15,15 +15,16 @@ module EE
           return unless project.feature_available?(:push_rules)
 
           project.create_push_rule unless project.push_rule
-          @push_rule = project.push_rule
+          @push_rule = project.push_rule # rubocop:disable Gitlab/ModuleWithInstanceVariables
         end
 
         def remote_mirror
           return unless project.feature_available?(:repository_mirrors)
 
-          @remote_mirror = @project.remote_mirrors.first_or_initialize
+          @remote_mirror = project.remote_mirrors.first_or_initialize # rubocop:disable Gitlab/ModuleWithInstanceVariables
         end
 
+        # rubocop:disable Gitlab/ModuleWithInstanceVariables
         def acces_levels_options
           super.merge(
             selected_merge_access_levels: @protected_branch.merge_access_levels.map { |access_level| access_level.user_id || access_level.access_level },
@@ -31,11 +32,12 @@ module EE
             selected_create_access_levels: @protected_tag.create_access_levels.map { |access_level| access_level.user_id || access_level.access_level }
           )
         end
+        # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
         def load_gon_index
           super
 
-          gon.push(current_project_id: @project.id) if @project
+          gon.push(current_project_id: project.id) if project
         end
       end
     end

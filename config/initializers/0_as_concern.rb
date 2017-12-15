@@ -10,8 +10,8 @@ module Prependable
 
       super
       base.singleton_class.send(:prepend, const_get('ClassMethods')) if const_defined?(:ClassMethods)
-      @_dependencies.each { |dep| base.send(:prepend, dep) }
-      base.class_eval(&@_included_block) if instance_variable_defined?(:@_included_block)
+      @_dependencies.each { |dep| base.send(:prepend, dep) } # rubocop:disable Gitlab/ModuleWithInstanceVariables
+      base.class_eval(&@_included_block) if instance_variable_defined?(:@_included_block) # rubocop:disable Gitlab/ModuleWithInstanceVariables
     end
   end
 end

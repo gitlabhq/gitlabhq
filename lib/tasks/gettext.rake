@@ -23,6 +23,7 @@ namespace :gettext do
   desc 'Lint all po files in `locale/'
   task lint: :environment do
     require 'simple_po_parser'
+    require 'gitlab/utils'
 
     FastGettext.silence_errors
     files = Dir.glob(Rails.root.join('locale/*/gitlab.po'))

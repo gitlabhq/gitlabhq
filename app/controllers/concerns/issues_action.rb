@@ -2,6 +2,7 @@ module IssuesAction
   extend ActiveSupport::Concern
   include IssuableCollections
 
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def issues
     @finder_type = IssuesFinder
     @label = finder.labels.first
@@ -17,4 +18,5 @@ module IssuesAction
       format.atom { render layout: 'xml.atom' }
     end
   end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 end

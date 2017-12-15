@@ -1,5 +1,6 @@
 class AuditEvent < ActiveRecord::Base
   prepend EE::AuditEvent
+  include Gitlab::Utils::StrongMemoize
 
   serialize :details, Hash # rubocop:disable Cop/ActiveRecordSerialize
 

@@ -1,5 +1,6 @@
 module EE
   module Applications
+    # rubocop:disable Gitlab/ModuleWithInstanceVariables
     module CreateService
       def execute(request)
         super.tap do |application|

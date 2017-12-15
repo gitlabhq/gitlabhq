@@ -2,6 +2,7 @@ module SpammableActions
   extend ActiveSupport::Concern
 
   include Recaptcha::Verify
+  include Gitlab::Utils::StrongMemoize
 
   included do
     before_action :authorize_submit_spammable!, only: :mark_as_spam
@@ -18,9 +19,9 @@ module SpammableActions
   private
 
   def ensure_spam_config_loaded!
-    return @spam_config_loaded if defined?(@spam_config_loaded)
-
-    @spam_config_loaded = Gitlab::Recaptcha.load_configurations!
+    strong_memoize(:spam_config_loaded) do
+      Gitlab::Recaptcha.load_configurations!
+    end
   end
 
   def recaptcha_check_with_fallback(should_redirect = true, &fallback)

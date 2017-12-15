@@ -6,7 +6,7 @@ module LocalCacheRegistryCleanupWithEnsure
 
   def call(env)
     LocalCacheRegistry.set_cache_for(local_cache_key, LocalStore.new)
-    response = @app.call(env)
+    response = @app.call(env) # rubocop:disable Gitlab/ModuleWithInstanceVariables
     response[2] = ::Rack::BodyProxy.new(response[2]) do
       LocalCacheRegistry.set_cache_for(local_cache_key, nil)
     end

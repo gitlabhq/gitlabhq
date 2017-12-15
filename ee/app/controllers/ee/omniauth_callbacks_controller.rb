@@ -3,7 +3,7 @@ module EE
     protected
 
     def fail_login
-      log_failed_login(@user.username, oauth['provider'])
+      log_failed_login(@user.username, oauth['provider']) # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
       super
     end

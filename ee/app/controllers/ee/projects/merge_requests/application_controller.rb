@@ -7,11 +7,11 @@ module EE
         private
 
         def set_suggested_approvers
-          if @merge_request.requires_approve?
-            @suggested_approvers = ::Gitlab::AuthorityAnalyzer.new(
-              @merge_request,
-              @merge_request.author || current_user
-            ).calculate(@merge_request.approvals_required)
+          if merge_request.requires_approve?
+            @suggested_approvers = ::Gitlab::AuthorityAnalyzer.new( # rubocop:disable Gitlab/ModuleWithInstanceVariables
+              merge_request,
+              merge_request.author || current_user
+            ).calculate(merge_request.approvals_required)
           end
         end
 
@@ -38,12 +38,12 @@ module EE
 
           # Target the MR target project in priority, else it depends whether the project
           # is forked.
-          target_project = if @merge_request
-                             @merge_request.target_project
-                           elsif @project.forked? && @project.id.to_s != mr_params[:target_project_id]
-                             @project.forked_from_project
+          target_project = if @merge_request # rubocop:disable Gitlab/ModuleWithInstanceVariables
+                             @merge_request.target_project # rubocop:disable Gitlab/ModuleWithInstanceVariables
+                           elsif project.forked? && project.id.to_s != mr_params[:target_project_id]
+                             project.forked_from_project
                            else
-                             @project
+                             project
                            end
 
           if mr_params[:approvals_before_merge].to_i <= target_project.approvals_before_merge

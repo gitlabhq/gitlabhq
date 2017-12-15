@@ -3,8 +3,8 @@ module EE
     module Issues
       module ListService
         def set_parent
-          if @parent.is_a?(Group)
-            params[:group_id] = @parent.id
+          if parent.is_a?(Group)
+            params[:group_id] = parent.id
           else
             super
           end
