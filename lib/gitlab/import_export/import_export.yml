@@ -107,6 +107,8 @@ excluded_attributes:
     - :mirror_trigger_builds
     - :storage_version
     - :remote_mirror_available_overridden
+    - :only_mirror_protected_branches
+    - :pull_mirror_available_overridden
   snippets:
     - :expired_at
   merge_request_diff:
@@ -138,8 +140,6 @@ methods:
     - :type
   services:
     - :type
-  merge_request_diff:
-    - :utf8_st_diffs
   merge_request_diff_files:
     - :utf8_diff
   merge_requests:

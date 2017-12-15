@@ -67,7 +67,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
     if params[:ref].present?
       @ref = params[:ref]
-      @commit = @repository.commit("refs/heads/#{@ref}")
+      @commit = @repository.commit(Gitlab::Git::BRANCH_REF_PREFIX + @ref)
     end
 
     render layout: false
@@ -78,7 +78,7 @@ class Projects::MergeRequests::CreationsController < Projects::MergeRequests::Ap
 
     if params[:ref].present?
       @ref = params[:ref]
-      @commit = @target_project.commit("refs/heads/#{@ref}")
+      @commit = @target_project.commit(Gitlab::Git::BRANCH_REF_PREFIX + @ref)
     end
 
     render layout: false

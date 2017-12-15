@@ -63,13 +63,19 @@ FactoryGirl.define do
 
     factory :diff_note_on_commit, traits: [:on_commit], class: DiffNote do
       association :project, :repository
+
+      transient do
+        line_number 14
+        diff_refs { project.commit(commit_id).try(:diff_refs) }
+      end
+
       position do
         Gitlab::Diff::Position.new(
           old_path: "files/ruby/popen.rb",
           new_path: "files/ruby/popen.rb",
           old_line: nil,
-          new_line: 14,
-          diff_refs: project.commit(commit_id).try(:diff_refs)
+          new_line: line_number,
+          diff_refs: diff_refs
         )
       end
     end

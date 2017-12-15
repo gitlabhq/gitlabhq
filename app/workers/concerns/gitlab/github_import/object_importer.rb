@@ -8,7 +8,7 @@ module Gitlab
       extend ActiveSupport::Concern
 
       included do
-        include Sidekiq::Worker
+        include ApplicationWorker
         include GithubImport::Queue
         include ReschedulingMethods
         include NotifyUponDeath

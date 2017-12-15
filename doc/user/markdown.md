@@ -22,6 +22,7 @@ You can use GFM in the following areas:
 - snippets (the snippet must be named with a `.md` extension)
 - wiki pages
 - markdown documents inside the repository
+- epics
 
 You can also use other rich text files in GitLab. You might have to install a
 dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
@@ -41,7 +42,7 @@ Line-breaks, or softreturns, are rendered if you end a line with two or more spa
 
     Sugar is sweet
 
-Roses are red  
+Roses are red
 Violets are blue
 
 Sugar is sweet
@@ -245,6 +246,7 @@ GFM will recognize the following:
 | `#123`                     | issue                           |
 | `!123`                     | merge request                   |
 | `$123`                     | snippet                         |
+| `&123`                     | epic                            |
 | `~123`                     | label by ID                     |
 | `~bug`                     | one-word label by name          |
 | `~"feature request"`       | multi-word label by name        |
@@ -265,6 +267,7 @@ GFM also recognizes certain cross-project references:
 | `namespace/project%123`                 | project milestone       |
 | `namespace/project$123`                 | snippet                 |
 | `namespace/project@9ba12248`            | specific commit         |
+| `group1/subgroup&123`                   | epic                    |
 | `namespace/project@9ba12248...b19a04f5` | commit range comparison |
 | `namespace/project~"Some label"`        | issues with given label |
 
@@ -370,14 +373,17 @@ This also works for the asciidoctor `:stem: latexmath`. For details see the [asc
 
 ### Mermaid
 
+> [Introduced](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15107) in
+GitLab 10.3.
+
 > If this is not rendered correctly, see
 https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/user/markdown.md#mermaid
 
-It is possible to generate diagrams and flowcharts from text using [Mermaid][mermaid]. 
+It is possible to generate diagrams and flowcharts from text using [Mermaid][mermaid].
 
-In order to generate a diagram or flowchart, you should write your text inside the `mermaid` block. 
+In order to generate a diagram or flowchart, you should write your text inside the `mermaid` block.
 
-Example: 
+Example:
 
     ```mermaid
     graph TD;
@@ -385,7 +391,7 @@ Example:
       A-->C;
       B-->D;
       C-->D;
-    ```   
+    ```
 
 Becomes:
 
@@ -395,7 +401,7 @@ graph TD;
   A-->C;
   B-->D;
   C-->D;
-```   
+```
 
 For details see the [Mermaid official page][mermaid].
 
@@ -443,6 +449,7 @@ For example:
 # This header has Unicode in it: 한글
 ## This header has spaces in it
 ### This header has spaces in it
+## This header has 3.5 in it (and parentheses)
 ```
 
 Would generate the following link IDs:
@@ -452,6 +459,7 @@ Would generate the following link IDs:
 1. `this-header-has-unicode-in-it-한글`
 1. `this-header-has-spaces-in-it`
 1. `this-header-has-spaces-in-it-1`
+1. `this-header-has-3-5-in-it-and-parentheses`
 
 Note that the Emoji processing happens before the header IDs are generated, so the Emoji is converted to an image which then gets removed from the ID.
 
@@ -697,7 +705,7 @@ This line is separated from the one above by two newlines, so it will be a *sepa
 This line is also a separate paragraph, but...
 This line is only separated by a single newline, so it *does not break* and just follows the previous line in the *same paragraph*.
 
-This line is also a separate paragraph, and...  
+This line is also a separate paragraph, and...
 This line is *on its own line*, because the previous line ends with two spaces. (but still in the *same paragraph*)
 
 spaces.
@@ -710,7 +718,7 @@ This line is separated from the one above by two newlines, so it will be a *sepa
 This line is also a separate paragraph, but...
 This line is only separated by a single newline, so it *does not break* and just follows the previous line in the *same paragraph*.
 
-This line is also a separate paragraph, and...  
+This line is also a separate paragraph, and...
 This line is *on its own line*, because the previous line ends with two spaces. (but still in the *same paragraph*)
 
 spaces.

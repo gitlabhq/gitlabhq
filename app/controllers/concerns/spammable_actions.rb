@@ -24,8 +24,8 @@ module SpammableActions
     end
   end
 
-  def recaptcha_check_with_fallback(&fallback)
-    if spammable.valid?
+  def recaptcha_check_with_fallback(should_redirect = true, &fallback)
+    if should_redirect && spammable.valid?
       redirect_to spammable_path
     elsif render_recaptcha?
       ensure_spam_config_loaded!
@@ -34,7 +34,18 @@ module SpammableActions
         flash[:alert] = 'There was an error with the reCAPTCHA. Please solve the reCAPTCHA again.'
       end
 
-      render :verify
+      respond_to do |format|
+        format.html do
+          render :verify
+        end
+
+        format.json do
+          locals = { spammable: spammable, script: false, has_submit: false }
+          recaptcha_html = render_to_string(partial: 'shared/recaptcha_form', formats: :html, locals: locals)
+
+          render json: { recaptcha_html: recaptcha_html }
+        end
+      end
     else
       yield
     end

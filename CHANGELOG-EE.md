@@ -1,5 +1,20 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.2.4 (2017-12-07)
+
+- No changes.
+
+## 10.2.3 (2017-11-30)
+
+### Fixed (5 changes)
+
+- Fix viewing default push rules on a Geo secondary. !3559
+- Disable autocomplete for epics.
+- Fix epic fullscreen editing.
+- Fix tasklist for epics.
+- Fix Geo wiki sync error not increasing retry count.
+
+
 ## 10.2.2 (2017-11-23)
 
 ### Fixed (6 changes)
@@ -82,6 +97,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - Enhance the documentation for gitlab-ctl replicate-geo-database. !3268
 
 
+## 10.1.5 (2017-12-07)
+
+- No changes.
+
 ## 10.1.4 (2017-11-14)
 
 - No changes.
@@ -135,6 +154,10 @@ Please view this file on the master branch, on stable branches it's out of date.
 - [OTHER] Improve logging output for several Geo background workers. !2961
 - [OTHER] Add partial index on push_rules.is_sample.
 - Add new push rule to reject unsigned commits. !2913
+
+## 10.0.7 (2017-12-07)
+
+- No changes.
 
 ## 10.0.5 (2017-11-03)
 

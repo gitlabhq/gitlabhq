@@ -85,11 +85,11 @@ module API
         projects = projects.with_statistics if params[:statistics]
         projects = projects.with_issues_enabled if params[:with_issues_enabled]
         projects = projects.with_merge_requests_enabled if params[:with_merge_requests_enabled]
+        projects = paginate(projects)
 
         if current_user
-          projects = projects.includes(:route, :taggings, namespace: :route)
-          project_members = current_user.project_members
-          group_members = current_user.group_members
+          project_members = current_user.project_members.preload(:source, user: [notification_settings: :source])
+          group_members = current_user.group_members.preload(:source, user: [notification_settings: :source])
         end
 
         options = options.reverse_merge(
@@ -101,7 +101,7 @@ module API
         )
         options[:with] = Entities::BasicProjectDetails if params[:simple]
 
-        present paginate(projects), options
+        present options[:with].prepare_relation(projects, options), options
       end
     end
 
@@ -379,15 +379,16 @@ module API
       post ":id/fork/:forked_from_id" do
         authenticated_as_admin!
 
-        forked_from_project = find_project!(params[:forked_from_id])
-        not_found!("Source Project") unless forked_from_project
+        fork_from_project = find_project!(params[:forked_from_id])
 
-        if user_project.forked_from_project.nil?
-          user_project.create_forked_project_link(forked_to_project_id: user_project.id, forked_from_project_id: forked_from_project.id)
+        not_found!("Source Project") unless fork_from_project
 
-          ::Projects::ForksCountService.new(forked_from_project).refresh_cache
+        result = ::Projects::ForkService.new(fork_from_project, current_user).execute(user_project)
+
+        if result
+          present user_project.reload, with: Entities::Project
         else
-          render_api_error!("Project already forked", 409)
+          render_api_error!("Project already forked", 409) if user_project.forked?
         end
       end
 
@@ -395,11 +396,11 @@ module API
       delete ":id/fork" do
         authorize! :remove_fork_project, user_project
 
-        if user_project.forked?
-          destroy_conditionally!(user_project.forked_project_link)
-        else
-          not_modified!
+        result = destroy_conditionally!(user_project) do
+          ::Projects::UnlinkForkService.new(user_project, current_user).execute
         end
+
+        result ? status(204) : not_modified!
       end
 
       desc 'Share the project with a group' do
@@ -476,6 +477,17 @@ module API
         rescue ::Projects::HousekeepingService::LeaseTaken => error
           conflict!(error.message)
         end
+      end
+
+      desc 'Triggers a pull mirror operation'
+      post ":id/mirror/pull" do
+        authorize_admin_project
+
+        return render_api_error!('The project is not mirrored', 400) unless user_project.mirror?
+
+        user_project.force_import_job!
+
+        status 200
       end
     end
   end

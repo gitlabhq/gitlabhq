@@ -1,7 +1,7 @@
 class ClearSharedRunnersMinutesWorker
   LEASE_TIMEOUT = 3600
 
-  include Sidekiq::Worker
+  include ApplicationWorker
   include CronjobQueue
 
   def perform

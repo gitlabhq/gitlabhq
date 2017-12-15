@@ -136,11 +136,11 @@ class ProjectsController < Projects::ApplicationController
     redirect_to edit_project_path(@project), status: 302, alert: ex.message
   end
 
-  def new_issue_address
+  def new_issuable_address
     return render_404 unless Gitlab::IncomingEmail.supports_issue_creation?
 
     current_user.reset_incoming_email_token!
-    render json: { new_issue_address: @project.new_issue_address(current_user) }
+    render json: { new_address: @project.new_issuable_address(current_user, params[:issuable_type]) }
   end
 
   def archive
@@ -275,7 +275,7 @@ class ProjectsController < Projects::ApplicationController
 
       render 'projects/empty' if @project.empty_repo?
     else
-      if @project.wiki_enabled?
+      if can?(current_user, :read_wiki, @project)
         @project_wiki = @project.wiki
         @wiki_home = @project_wiki.find_page('home', params[:version_id])
       elsif @project.feature_available?(:issues, current_user)

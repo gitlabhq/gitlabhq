@@ -1,6 +1,6 @@
 module RepositoryCheck
   class BatchWorker
-    include Sidekiq::Worker
+    include ApplicationWorker
     include CronjobQueue
 
     RUN_TIME = 3600

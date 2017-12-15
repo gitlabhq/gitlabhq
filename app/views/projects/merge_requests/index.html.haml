@@ -4,6 +4,7 @@
 - new_merge_request_path = project_new_merge_request_path(merge_project) if merge_project
 
 - page_title "Merge Requests"
+- new_merge_request_email = @project.new_issuable_address(current_user, 'merge_request')
 
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag 'common_vue'
@@ -25,6 +26,8 @@
 
     .merge-requests-holder
       = render 'merge_requests'
+      - if new_merge_request_email
+        = render 'projects/issuable_by_email', email: new_merge_request_email, issuable_type: 'merge_request'
 - else
   = render 'shared/empty_states/merge_requests', button_path: new_merge_request_path
 

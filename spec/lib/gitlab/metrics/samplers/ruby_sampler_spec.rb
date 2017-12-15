@@ -11,7 +11,6 @@ describe Gitlab::Metrics::Samplers::RubySampler do
     it 'samples various statistics' do
       expect(Gitlab::Metrics::System).to receive(:memory_usage)
       expect(Gitlab::Metrics::System).to receive(:file_descriptor_count)
-      expect(sampler).to receive(:sample_objects)
       expect(sampler).to receive(:sample_gc)
 
       sampler.sample
@@ -63,28 +62,6 @@ describe Gitlab::Metrics::Samplers::RubySampler do
       end
 
       sampler.sample
-    end
-  end
-
-  if Gitlab::Metrics.mri?
-    describe '#sample_objects' do
-      it 'adds a metric containing the amount of allocated objects' do
-        expect(sampler.metrics[:objects_total]).to receive(:set)
-                                                     .with(include(class: anything), be > 0)
-                                                     .at_least(:once)
-                                                     .and_call_original
-
-        sampler.sample
-      end
-
-      it 'ignores classes without a name' do
-        expect(Allocations).to receive(:to_hash).and_return({ Class.new => 4 })
-
-        expect(sampler.metrics[:objects_total]).not_to receive(:set)
-                                                         .with(include(class: 'object_counts'), anything)
-
-        sampler.sample
-      end
     end
   end
 end

@@ -73,6 +73,28 @@ describe Gitlab::Database do
     end
   end
 
+  describe '.replication_slots_supported?' do
+    it 'returns false when using MySQL' do
+      allow(described_class).to receive(:postgresql?).and_return(false)
+
+      expect(described_class.replication_slots_supported?).to eq(false)
+    end
+
+    it 'returns false when using PostgreSQL 9.3' do
+      allow(described_class).to receive(:postgresql?).and_return(true)
+      allow(described_class).to receive(:version).and_return('9.3.1')
+
+      expect(described_class.replication_slots_supported?).to eq(false)
+    end
+
+    it 'returns true when using PostgreSQL 9.4.0 or newer' do
+      allow(described_class).to receive(:postgresql?).and_return(true)
+      allow(described_class).to receive(:version).and_return('9.4.0')
+
+      expect(described_class.replication_slots_supported?).to eq(true)
+    end
+  end
+
   describe '.nulls_last_order' do
     context 'when using PostgreSQL' do
       before do
@@ -197,6 +219,22 @@ describe Gitlab::Database do
       end
 
       described_class.bulk_insert('test', rows)
+    end
+
+    it 'does not quote values of a column in the disable_quote option' do
+      [1, 2, 4, 5].each do |i|
+        expect(connection).to receive(:quote).with(i)
+      end
+
+      described_class.bulk_insert('test', rows, disable_quote: :c)
+    end
+
+    it 'does not quote values of columns in the disable_quote option' do
+      [2, 5].each do |i|
+        expect(connection).to receive(:quote).with(i)
+      end
+
+      described_class.bulk_insert('test', rows, disable_quote: [:a, :c])
     end
 
     it 'handles non-UTF-8 data' do

@@ -9,10 +9,89 @@ describe Gitlab::Database::LoadBalancing do
     end
   end
 
+  describe '.configuration' do
+    it 'returns a Hash' do
+      config = { 'hosts' => %w(foo) }
+
+      allow(ActiveRecord::Base.configurations[Rails.env])
+        .to receive(:[])
+        .with('load_balancing')
+        .and_return(config)
+
+      expect(described_class.configuration).to eq(config)
+    end
+  end
+
+  describe '.max_replication_difference' do
+    context 'without an explicitly configured value' do
+      it 'returns the default value' do
+        allow(described_class)
+          .to receive(:configuration)
+          .and_return({})
+
+        expect(described_class.max_replication_difference).to eq(8.megabytes)
+      end
+    end
+
+    context 'with an explicitly configured value' do
+      it 'returns the configured value' do
+        allow(described_class)
+          .to receive(:configuration)
+          .and_return({ 'max_replication_difference' => 4 })
+
+        expect(described_class.max_replication_difference).to eq(4)
+      end
+    end
+  end
+
+  describe '.max_replication_lag_time' do
+    context 'without an explicitly configured value' do
+      it 'returns the default value' do
+        allow(described_class)
+          .to receive(:configuration)
+          .and_return({})
+
+        expect(described_class.max_replication_lag_time).to eq(60)
+      end
+    end
+
+    context 'with an explicitly configured value' do
+      it 'returns the configured value' do
+        allow(described_class)
+          .to receive(:configuration)
+          .and_return({ 'max_replication_lag_time' => 4 })
+
+        expect(described_class.max_replication_lag_time).to eq(4)
+      end
+    end
+  end
+
+  describe '.replica_check_interval' do
+    context 'without an explicitly configured value' do
+      it 'returns the default value' do
+        allow(described_class)
+          .to receive(:configuration)
+          .and_return({})
+
+        expect(described_class.replica_check_interval).to eq(60)
+      end
+    end
+
+    context 'with an explicitly configured value' do
+      it 'returns the configured value' do
+        allow(described_class)
+          .to receive(:configuration)
+          .and_return({ 'replica_check_interval' => 4 })
+
+        expect(described_class.replica_check_interval).to eq(4)
+      end
+    end
+  end
+
   describe '.hosts' do
     it 'returns a list of hosts' do
-      allow(ActiveRecord::Base.configurations[Rails.env]).to receive(:[])
-        .with('load_balancing')
+      allow(described_class)
+        .to receive(:configuration)
         .and_return({ 'hosts' => %w(foo bar baz) })
 
       expect(described_class.hosts).to eq(%w(foo bar baz))

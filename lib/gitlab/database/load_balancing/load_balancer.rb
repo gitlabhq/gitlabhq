@@ -15,7 +15,7 @@ module Gitlab
 
         # hosts - The hostnames/addresses of the additional databases.
         def initialize(hosts = [])
-          @host_list = HostList.new(hosts.map { |addr| Host.new(addr) })
+          @host_list = HostList.new(hosts.map { |addr| Host.new(addr, self) })
         end
 
         # Yields a connection that can be used for reads.

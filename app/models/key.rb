@@ -2,6 +2,7 @@ require 'digest/md5'
 
 class Key < ActiveRecord::Base
   include Gitlab::CurrentSettings
+  include AfterCommitQueue
   include Sortable
 
   belongs_to :user

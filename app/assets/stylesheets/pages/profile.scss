@@ -73,7 +73,7 @@
 .profile-link-holder {
   display: inline;
 
-  a {
+  a:not(.text-link) {
     text-decoration: none;
   }
 }

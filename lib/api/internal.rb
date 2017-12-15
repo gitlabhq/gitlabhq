@@ -4,6 +4,7 @@ module API
     before { authenticate_by_gitlab_shell_token! }
 
     helpers ::API::Helpers::InternalHelpers
+    helpers ::Gitlab::Identifier
 
     namespace 'internal' do
       # Check if git command is allowed to project
@@ -57,8 +58,7 @@ module API
           gl_repository: gl_repository,
           gl_username: user&.username,
           repository_path: repository_path,
-          gitaly: gitaly_payload(params[:action]),
-          geo_node: actor.is_a?(GeoNodeKey)
+          gitaly: gitaly_payload(params[:action])
         }
       end
 
@@ -189,17 +189,25 @@ module API
 
       post '/post_receive' do
         status 200
-
         PostReceive.perform_async(params[:gl_repository], params[:identifier],
           params[:changes])
         broadcast_message = BroadcastMessage.current&.last&.message
         reference_counter_decreased = Gitlab::ReferenceCounter.new(params[:gl_repository]).decrease
 
-        {
+        output = {
           merge_request_urls: merge_request_urls,
           broadcast_message: broadcast_message,
           reference_counter_decreased: reference_counter_decreased
         }
+
+        project = Gitlab::GlRepository.parse(params[:gl_repository]).first
+        user = identify(params[:identifier])
+        redirect_message = Gitlab::Checks::ProjectMoved.fetch_redirect_message(user.id, project.id)
+        if redirect_message
+          output[:redirected_message] = redirect_message
+        end
+
+        output
       end
     end
   end

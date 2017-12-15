@@ -62,26 +62,32 @@ module Gitlab
     # directory - The directory of the Rails application.
     #
     # Returns an Array containing the PIDs of the started processes.
-    def self.start(queues, env, directory = Dir.pwd)
-      queues.map { |pair| start_sidekiq(pair, env, directory) }
+    def self.start(queues, env, directory = Dir.pwd, dryrun: false)
+      queues.map { |pair| start_sidekiq(pair, env, directory, dryrun: dryrun) }
     end
 
     # Starts a Sidekiq process that processes _only_ the given queues.
     #
     # Returns the PID of the started process.
-    def self.start_sidekiq(queues, env, directory = Dir.pwd)
-      switches = queues.map { |q| "-q#{q},1" }
+    def self.start_sidekiq(queues, env, directory = Dir.pwd, dryrun: false)
+      cmd = %w[bundle exec sidekiq]
+      cmd << "-c #{queues.length + 1}"
+      cmd << "-e#{env}"
+      cmd << "-gqueues: #{queues.join(', ')}"
+      cmd << "-r#{directory}"
+
+      queues.each do |q|
+        cmd << "-q#{q},1"
+      end
+
+      if dryrun
+        puts "Sidekiq command: #{cmd}" # rubocop:disable Rails/Output
+        return
+      end
 
       pid = Process.spawn(
         { 'ENABLE_SIDEKIQ_CLUSTER' => '1' },
-        'bundle',
-        'exec',
-        'sidekiq',
-        "-c #{queues.length + 1}",
-        "-e#{env}",
-        "-gqueues: #{queues.join(', ')}",
-        "-r#{directory}",
-        *switches,
+        *cmd,
         err: $stderr,
         out: $stdout
       )

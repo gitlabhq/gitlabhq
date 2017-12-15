@@ -786,4 +786,8 @@ describe Issue do
       expect(described_class.public_only).to eq([public_issue])
     end
   end
+
+  it_behaves_like 'throttled touch' do
+    subject { create(:issue, updated_at: 1.hour.ago) }
+  end
 end

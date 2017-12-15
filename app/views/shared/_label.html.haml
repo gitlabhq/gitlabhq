@@ -35,12 +35,17 @@
           %li
             = link_to 'Edit', edit_label_path(label)
           %li
-            = link_to 'Delete', destroy_label_path(label), title: 'Delete', method: :delete, data: {confirm: 'Remove this label? Are you sure?'}
+            = link_to 'Delete',
+              destroy_label_path(label),
+              title: 'Delete',
+              method: :delete,
+              data: {confirm: 'Remove this label? Are you sure?'},
+              class: 'text-danger'
 
   .pull-right.hidden-xs.hidden-sm.hidden-md
-    = link_to_label(label, subject: subject, type: :merge_request, css_class: 'btn btn-transparent btn-action') do
+    = link_to_label(label, subject: subject, type: :merge_request, css_class: 'btn btn-transparent btn-action btn-link') do
       view merge requests
-    = link_to_label(label, subject: subject, css_class: 'btn btn-transparent btn-action') do
+    = link_to_label(label, subject: subject, css_class: 'btn btn-transparent btn-action btn-link') do
       view open issues
 
     - if current_user

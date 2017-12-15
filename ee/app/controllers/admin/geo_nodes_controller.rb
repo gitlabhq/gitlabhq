@@ -22,8 +22,12 @@ class Admin::GeoNodesController < Admin::ApplicationController
     else
       @nodes = GeoNode.all
 
-      render :index
+      render :new
     end
+  end
+
+  def new
+    @node = GeoNode.new
   end
 
   def update
@@ -86,9 +90,7 @@ class Admin::GeoNodesController < Admin::ApplicationController
       :primary,
       :namespace_ids,
       :repos_max_capacity,
-      :files_max_capacity,
-      :clone_protocol,
-      geo_node_key_attributes: [:key]
+      :files_max_capacity
     )
   end
 

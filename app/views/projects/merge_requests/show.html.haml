@@ -9,7 +9,7 @@
   = webpack_bundle_tag('diff_notes')
   = webpack_bundle_tag('issuable')
 
-.merge-request{ 'data-mr-action': "#{j params[:tab].presence || 'show'}", 'data-url' => merge_request_path(@merge_request, format: :json), 'data-project-path' => project_path(@merge_request.project) }
+.merge-request{ data: { mr_action: j(params[:tab].presence || 'show'), url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project) } }
   = render "projects/merge_requests/mr_title"
 
   .merge-request-details.issuable-details{ data: { id: @merge_request.project.id } }
@@ -46,21 +46,21 @@
           .nav-links.scrolling-tabs
             %ul.merge-request-tabs
               %li.notes-tab
-                = link_to project_merge_request_path(@project, @merge_request), data: { target: 'div#notes', action: 'show', toggle: 'tab' } do
+                = tab_link_for @merge_request, :show, force_link: @commit.present? do
                   Discussion
                   %span.badge= @merge_request.related_notes.user.count
               - if @merge_request.source_project
                 %li.commits-tab
-                  = link_to commits_project_merge_request_path(@project, @merge_request), data: { target: 'div#commits', action: 'commits', toggle: 'tab' } do
+                  = tab_link_for @merge_request, :commits do
                     Commits
                     %span.badge= @commits_count
               - if @pipelines.any?
                 %li.pipelines-tab
-                  = link_to pipelines_project_merge_request_path(@project, @merge_request), data: { target: '#pipelines', action: 'pipelines', toggle: 'tab' } do
+                  = tab_link_for @merge_request, :pipelines do
                     Pipelines
                     %span.badge.js-pipelines-mr-count= @pipelines.size
               %li.diffs-tab
-                = link_to diffs_project_merge_request_path(@project, @merge_request), data: { target: 'div#diffs', action: 'diffs', toggle: 'tab' } do
+                = tab_link_for @merge_request, :diffs do
                   Changes
                   %span.badge= @merge_request.diff_size
         #resolve-count-app.line-resolve-all-container.prepend-top-10{ "v-cloak" => true }

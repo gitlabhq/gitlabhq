@@ -1,0 +1,5 @@
+---
+title: Geo - Improve performance when calculating the node status
+merge_request: 3595
+author:
+type: performance

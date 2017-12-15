@@ -25,7 +25,7 @@ module Projects
         return error("Could not set the default branch") unless project.change_head(params[:default_branch])
       end
 
-      if project.update_attributes(update_params)
+      if project.update_attributes(params.except(:default_branch))
         if project.previous_changes.include?('path')
           project.rename_repo
         else
@@ -42,21 +42,12 @@ module Projects
     end
 
     def run_auto_devops_pipeline?
-      params.dig(:run_auto_devops_pipeline_explicit) == 'true' || params.dig(:run_auto_devops_pipeline_implicit) == 'true'
+      return false if project.repository.gitlab_ci_yml || !project.auto_devops.previous_changes.include?('enabled')
+
+      project.auto_devops.enabled? || (project.auto_devops.enabled.nil? && current_application_settings.auto_devops_enabled?)
     end
 
     private
-
-    def update_params
-      params.except(:default_branch, :run_auto_devops_pipeline_explicit, :run_auto_devops_pipeline_implicit)
-    end
-
-    def changing_storage_size?
-      new_repository_storage = params[:repository_storage]
-
-      new_repository_storage && project.repository.exists? &&
-        can?(current_user, :change_repository_storage, project)
-    end
 
     def renaming_project_with_container_registry_tags?
       new_path = params[:path]

@@ -23,6 +23,16 @@ module Ci
 
       valid = true
 
+      if Feature.enabled?('ci_job_request_with_tags_matcher')
+        # pick builds that does not have other tags than runner's one
+        builds = builds.matches_tag_ids(runner.tags.ids)
+
+        # pick builds that have at least one tag
+        unless runner.run_untagged?
+          builds = builds.with_any_tags
+        end
+      end
+
       builds.find do |build|
         next unless runner.can_pick?(build)
 
@@ -44,6 +54,9 @@ module Ci
           # In case we hit the concurrency-access lock,
           # we still have to return 409 in the end,
           # to make sure that this is properly handled by runner.
+          valid = false
+        rescue Ci::Build::MissingDependenciesError
+          build.drop!(:missing_dependency_failure)
           valid = false
         end
       end

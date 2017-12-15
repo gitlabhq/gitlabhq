@@ -10,17 +10,15 @@
 //   <div class="js-syntax-highlight"></div>
 //
 
-$.fn.syntaxHighlight = function() {
-  var $children;
-
-  if ($(this).hasClass('js-syntax-highlight')) {
+export default function syntaxHighlight(el) {
+  if ($(el).hasClass('js-syntax-highlight')) {
     // Given the element itself, apply highlighting
-    return $(this).addClass(gon.user_color_scheme);
+    return $(el).addClass(gon.user_color_scheme);
   } else {
     // Given a parent element, recurse to any of its applicable children
-    $children = $(this).find('.js-syntax-highlight');
+    const $children = $(el).find('.js-syntax-highlight');
     if ($children.length) {
-      return $children.syntaxHighlight();
+      return syntaxHighlight($children);
     }
   }
-};
+}

@@ -1,6 +1,5 @@
 class ElasticIndexerWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
   include Elasticsearch::Model::Client::ClassMethods
   include Gitlab::CurrentSettings
 

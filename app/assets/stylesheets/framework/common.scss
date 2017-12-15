@@ -39,7 +39,6 @@
   color: $brand-info;
 }
 
-.underlined-link { text-decoration: underline; }
 .hint { font-style: italic; color: $hint-color; }
 .light { color: $common-gray; }
 
@@ -235,19 +234,6 @@ li.note {
   background: $error-bg;
   margin: 0;
   color: $white-light;
-
-  a {
-    color: $white-light;
-    text-decoration: underline;
-  }
-}
-
-.browser-alert {
-  padding: 10px;
-  text-align: center;
-  background: $error-bg;
-  color: $white-light;
-  font-weight: $gl-font-weight-bold;
 
   a {
     color: $white-light;

@@ -25,11 +25,11 @@ import './components/board_sidebar';
 import './components/new_list_dropdown';
 import './components/modal/index';
 import '../vue_shared/vue_resource_interceptor';
-import { convertPermissionToBoolean } from '../lib/utils/common_utils';
 
 import './components/boards_selector';
 import collapseIcon from './icons/fullscreen_collapse.svg';
 import expandIcon from './icons/fullscreen_expand.svg';
+import tooltip from '../vue_shared/directives/tooltip';
 
 Vue.use(VueResource);
 
@@ -89,12 +89,14 @@ $(() => {
       eventHub.$on('newDetailIssue', this.updateDetailIssue);
       eventHub.$on('clearDetailIssue', this.clearDetailIssue);
       sidebarEventHub.$on('toggleSubscription', this.toggleSubscription);
+      sidebarEventHub.$on('updateWeight', this.updateWeight);
     },
     beforeDestroy() {
       eventHub.$off('updateTokens', this.updateTokens);
       eventHub.$off('newDetailIssue', this.updateDetailIssue);
       eventHub.$off('clearDetailIssue', this.clearDetailIssue);
       sidebarEventHub.$off('toggleSubscription', this.toggleSubscription);
+      sidebarEventHub.$off('updateWeight', this.updateWeight);
     },
     mounted () {
       this.filterManager = new FilteredSearchBoards(Store.filter, true, Store.cantEdit);
@@ -131,16 +133,20 @@ $(() => {
         const sidebarInfoEndpoint = newIssue.sidebarInfoEndpoint;
         if (sidebarInfoEndpoint && newIssue.subscribed === undefined) {
           newIssue.setFetchingState('subscriptions', true);
+          newIssue.setFetchingState('weight', true);
           BoardService.getIssueInfo(sidebarInfoEndpoint)
             .then(res => res.json())
             .then((data) => {
               newIssue.setFetchingState('subscriptions', false);
+              newIssue.setFetchingState('weight', false);
               newIssue.updateData({
                 subscribed: data.subscribed,
+                weight: data.weight,
               });
             })
             .catch(() => {
               newIssue.setFetchingState('subscriptions', false);
+              newIssue.setFetchingState('weight', false);
               Flash(__('An error occurred while fetching sidebar data'));
             });
         }
@@ -166,6 +172,24 @@ $(() => {
               Flash(__('An error occurred when toggling the notification subscription'));
             });
         }
+      },
+      updateWeight(newWeight, id) {
+        const issue = Store.detail.issue;
+        if (issue.id === id && issue.sidebarInfoEndpoint) {
+          issue.setLoadingState('weight', true);
+          BoardService.updateWeight(issue.sidebarInfoEndpoint, newWeight)
+            .then(res => res.json())
+            .then((data) => {
+              issue.setLoadingState('weight', false);
+              issue.updateData({
+                weight: data.weight,
+              });
+            })
+            .catch(() => {
+              issue.setLoadingState('weight', false);
+              Flash(__('An error occurred when updating the issue weight'));
+            });
+        }
       }
     },
   });
@@ -188,10 +212,13 @@ $(() => {
       el: configEl,
       data() {
         return {
-          canAdminList: convertPermissionToBoolean(
-            this.$options.el.dataset.canAdminList,
-          ),
+          canAdminList: this.$options.el.hasAttribute('data-can-admin-list'),
+          hasScope: this.$options.el.hasAttribute('data-has-scope'),
+          state: Store.state,
         };
+      },
+      directives: {
+        tooltip,
       },
       methods: {
         showPage: page => gl.issueBoards.BoardsStore.showPage(page),
@@ -200,11 +227,17 @@ $(() => {
         buttonText() {
           return this.canAdminList ? 'Edit board' : 'View scope';
         },
+        tooltipTitle() {
+          return this.hasScope ? __('This board\'s scope is reduced') : '';
+        }
       },
       template: `
         <div class="prepend-left-10">
           <button
+            v-tooltip
+            :title="tooltipTitle"
             class="btn btn-inverted"
+            :class="{ 'dot-highlight': hasScope }"
             type="button"
             @click.prevent="showPage('edit')"
           >
@@ -223,12 +256,8 @@ $(() => {
         modal: ModalStore.store,
         store: Store.state,
         isFullscreen: false,
-        focusModeAvailable: convertPermissionToBoolean(
-          $boardApp.dataset.focusModeAvailable,
-        ),
-        canAdminList: this.$options.el && convertPermissionToBoolean(
-          this.$options.el.dataset.canAdminList,
-        ),
+        focusModeAvailable: $boardApp.hasAttribute('data-focus-mode-available'),
+        canAdminList: this.$options.el.hasAttribute('data-can-admin-list'),
       };
     },
     watch: {
@@ -296,7 +325,7 @@ $(() => {
       modal: ModalStore.store,
       store: Store.state,
       isFullscreen: false,
-      focusModeAvailable: convertPermissionToBoolean($boardApp.dataset.focusModeAvailable),
+      focusModeAvailable: $boardApp.hasAttribute('data-focus-mode-available'),
     },
     methods: {
       toggleFocusMode() {

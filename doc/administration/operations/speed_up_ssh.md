@@ -1,5 +1,9 @@
 # Speed up SSH operations
 
+>
+- [Introduced](https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/250) in GitLab Enterprise Edition 8.7.
+- Available in GitLab Enterprise Edition Starter.
+
 ## The problem
 
 SSH operations become slow as the number of users grows.
@@ -18,6 +22,12 @@ instructions will break installations using older versions of OpenSSH, such as
 those included with CentOS 6 as of September 2017. If you want to use this
 feature for CentOS 6, follow [the instructions on how to build and install a custom OpenSSH package]
 (#compiling-a-custom-version-of-openssh-for-centos-6) before continuing.
+
+Create the directory `/opt/gitlab-shell` first:
+
+```bash
+sudo mkdir -p /opt/gitlab-shell
+```
 
 Create this file at `/opt/gitlab-shell/authorized_keys`:
 
@@ -43,9 +53,13 @@ AuthorizedKeysCommand /opt/gitlab-shell/authorized_keys %u %k
 AuthorizedKeysCommandUser git
 ```
 
-Reload the sshd service:
+Reload OpenSSH:
 
-```
+```bash
+# Debian or Ubuntu installations
+sudo service ssh reload
+
+# CentOS installations
 sudo service sshd reload
 ```
 

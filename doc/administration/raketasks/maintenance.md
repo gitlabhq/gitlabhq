@@ -58,7 +58,9 @@ Runs the following rake tasks:
 
 It will check that each component was setup according to the installation guide and suggest fixes for issues found.
 
-You may also have a look at our [Trouble Shooting Guide](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Trouble-Shooting-Guide).
+You may also have a look at our Trouble Shooting Guides:
+- [Trouble Shooting Guide (GitLab)](http://docs.gitlab.com/ee/README.html#troubleshooting)
+- [Trouble Shooting Guide (Omnibus Gitlab)](http://docs.gitlab.com/omnibus/README.html#troubleshooting)
 
 **Omnibus Installation**
 

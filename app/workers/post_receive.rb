@@ -1,6 +1,5 @@
 class PostReceive
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
   prepend EE::PostReceive
 
   def perform(gl_repository, identifier, changes)

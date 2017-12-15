@@ -24,6 +24,7 @@ module Banzai
           Filter::AutolinkFilter,
           Filter::ExternalLinkFilter,
 
+          Filter::EpicReferenceFilter,
           Filter::UserReferenceFilter,
           Filter::IssueReferenceFilter,
           Filter::ExternalIssueReferenceFilter,

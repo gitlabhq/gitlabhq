@@ -1,6 +1,11 @@
 require 'spec_helper'
 
 describe Banzai::Filter::UploadLinkFilter do
+  include ::EE::GeoHelpers
+
+  set(:primary) { create(:geo_node, :primary) }
+  set(:secondary) { create(:geo_node) }
+
   def filter(doc, contexts = {})
     contexts.reverse_merge!({
       project: project
@@ -89,23 +94,20 @@ describe Banzai::Filter::UploadLinkFilter do
     end
 
     context 'in a geo secondary node' do
-      let(:geo_url) { 'http://geo.example.com' }
-
       before do
-        allow(Gitlab::Geo).to receive(:secondary?) { true }
-        allow(Gitlab::Geo).to receive_message_chain(:primary_node, :url) { geo_url }
+        stub_current_geo_node(secondary)
       end
 
       it 'rebuilds relative URL for a link' do
         doc = filter(link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
         expect(doc.at_css('a')['href'])
-          .to eq "#{geo_url}/#{project.full_path}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+          .to eq "#{primary.url}#{project.full_path}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
       end
 
       it 'rebuilds relative URL for an image' do
         doc = filter(link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg'))
         expect(doc.at_css('a')['href'])
-          .to eq "#{geo_url}/#{project.full_path}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+          .to eq "#{primary.url}#{project.full_path}/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
       end
 
       it 'does not modify absolute URL' do
@@ -115,7 +117,81 @@ describe Banzai::Filter::UploadLinkFilter do
     end
   end
 
-  context 'when project context does not exist' do
+  context 'in group context' do
+    let(:upload_link) { link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg') }
+    let(:group) { create(:group) }
+    let(:filter_context) { { project: nil, group: group } }
+    let(:relative_path) { "groups/#{group.full_path}/-/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg" }
+
+    it 'rewrites the link correctly' do
+      doc = raw_filter(upload_link, filter_context)
+
+      expect(doc.at_css('a')['href']).to eq("#{Gitlab.config.gitlab.url}/#{relative_path}")
+    end
+
+    it 'rewrites the link correctly for subgroup' do
+      subgroup = create(:group, parent: group)
+      relative_path = "groups/#{subgroup.full_path}/-/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+
+      doc = raw_filter(upload_link, { project: nil, group: subgroup })
+
+      expect(doc.at_css('a')['href']).to eq("#{Gitlab.config.gitlab.url}/#{relative_path}")
+    end
+
+    it 'does not modify absolute URL' do
+      doc = filter(link('http://example.com'), filter_context)
+
+      expect(doc.at_css('a')['href']).to eq 'http://example.com'
+    end
+
+    context 'in a geo secondary node' do
+      before do
+        stub_current_geo_node(secondary)
+      end
+
+      it 'rebuilds relative URL for a link' do
+        doc = filter(upload_link, filter_context)
+
+        expect(doc.at_css('a')['href']).to eq "#{primary.url}#{relative_path}"
+      end
+
+      it 'does not modify absolute URL' do
+        doc = filter(link('http://example.com'), filter_context)
+
+        expect(doc.at_css('a')['href']).to eq 'http://example.com'
+      end
+    end
+  end
+
+  context 'in group context' do
+    let(:upload_link) { link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg') }
+    let(:group) { create(:group) }
+    let(:filter_context) { { project: nil, group: group } }
+    let(:relative_path) { "groups/#{group.full_path}/-/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg" }
+
+    it 'rewrites the link correctly' do
+      doc = raw_filter(upload_link, filter_context)
+
+      expect(doc.at_css('a')['href']).to eq("#{Gitlab.config.gitlab.url}/#{relative_path}")
+    end
+
+    it 'rewrites the link correctly for subgroup' do
+      subgroup = create(:group, parent: group)
+      relative_path = "groups/#{subgroup.full_path}/-/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg"
+
+      doc = raw_filter(upload_link, { project: nil, group: subgroup })
+
+      expect(doc.at_css('a')['href']).to eq("#{Gitlab.config.gitlab.url}/#{relative_path}")
+    end
+
+    it 'does not modify absolute URL' do
+      doc = filter(link('http://example.com'), filter_context)
+
+      expect(doc.at_css('a')['href']).to eq 'http://example.com'
+    end
+  end
+
+  context 'when project or group context does not exist' do
     let(:upload_link) { link('/uploads/e90decf88d8f96fe9e1389afc2e4a91f/test.jpg') }
 
     it 'does not raise error' do

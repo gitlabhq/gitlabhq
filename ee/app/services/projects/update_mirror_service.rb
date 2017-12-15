@@ -33,6 +33,8 @@ module Projects
       repository.upstream_branches.each do |upstream_branch|
         name = upstream_branch.name
 
+        next if skip_branch?(name)
+
         local_branch = local_branches[name]
 
         if local_branch.nil?
@@ -97,6 +99,10 @@ module Projects
     # have no target.
     def repository_tags_with_target
       repository.tags.select(&:dereferenced_target)
+    end
+
+    def skip_branch?(name)
+      project.only_mirror_protected_branches && !ProtectedBranch.protected?(project, name)
     end
   end
 end

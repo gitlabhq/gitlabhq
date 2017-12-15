@@ -38,6 +38,32 @@ describe EpicIssues::DestroyService do
         it 'returns success message' do
           is_expected.to eq(message: 'Relation was removed', status: :success)
         end
+
+        it 'creates 2 system notes' do
+          expect { subject }.to change { Note.count }.from(0).to(2)
+        end
+
+        it 'creates a note for epic correctly' do
+          subject
+          note = Note.find_by(noteable_id: epic.id, noteable_type: 'Epic')
+
+          expect(note.note).to eq("removed issue #{issue.to_reference(epic.group)}")
+          expect(note.author).to eq(user)
+          expect(note.project).to be_nil
+          expect(note.noteable_type).to eq('Epic')
+          expect(note.system_note_metadata.action).to eq('epic_issue_removed')
+        end
+
+        it 'creates a note for issue correctly' do
+          subject
+          note = Note.find_by(noteable_id: issue.id, noteable_type: 'Issue')
+
+          expect(note.note).to eq("removed from epic #{epic.to_reference(issue.project)}")
+          expect(note.author).to eq(user)
+          expect(note.project).to eq(issue.project)
+          expect(note.noteable_type).to eq('Issue')
+          expect(note.system_note_metadata.action).to eq('issue_removed_from_epic')
+        end
       end
 
       context 'user does not have permissions to remove associations' do

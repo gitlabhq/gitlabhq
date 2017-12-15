@@ -948,7 +948,7 @@ describe API::Runner do
         context 'when artifacts are being stored inside of tmp path' do
           before do
             # by configuring this path we allow to pass temp file from any path
-            allow(ArtifactUploader).to receive(:artifacts_upload_path).and_return('/')
+            allow(JobArtifactUploader).to receive(:artifacts_upload_path).and_return('/')
           end
 
           context 'when job has been erased' do
@@ -983,15 +983,6 @@ describe API::Runner do
             context 'when uses accelerated file post' do
               before do
                 upload_artifacts(file_upload, headers_with_token, true)
-              end
-
-              it_behaves_like 'successful artifacts upload'
-            end
-
-            context 'when updates artifact' do
-              before do
-                upload_artifacts(file_upload2, headers_with_token)
-                upload_artifacts(file_upload, headers_with_token)
               end
 
               it_behaves_like 'successful artifacts upload'
@@ -1109,7 +1100,7 @@ describe API::Runner do
                 expect(response).to have_gitlab_http_status(201)
                 expect(stored_artifacts_file.original_filename).to eq(artifacts.original_filename)
                 expect(stored_metadata_file.original_filename).to eq(metadata.original_filename)
-                expect(stored_artifacts_size).to eq(71759)
+                expect(stored_artifacts_size).to eq(72821)
               end
             end
 
@@ -1134,7 +1125,7 @@ describe API::Runner do
             # by configuring this path we allow to pass file from @tmpdir only
             # but all temporary files are stored in system tmp directory
             @tmpdir = Dir.mktmpdir
-            allow(ArtifactUploader).to receive(:artifacts_upload_path).and_return(@tmpdir)
+            allow(JobArtifactUploader).to receive(:artifacts_upload_path).and_return(@tmpdir)
           end
 
           after do
@@ -1161,12 +1152,15 @@ describe API::Runner do
       describe 'GET /api/v4/jobs/:id/artifacts' do
         let(:token) { job.token }
 
-        before do
-          download_artifact
-        end
-
         context 'when job has artifacts' do
-          let(:job) { create(:ci_build, :artifacts) }
+          let(:job) { create(:ci_build) }
+          let(:store) { JobArtifactUploader::LOCAL_STORE }
+
+          before do
+            create(:ci_job_artifact, :archive, file_store: store, job: job)
+
+            download_artifact
+          end
 
           context 'when using job token' do
             context 'when artifacts are stored locally' do
@@ -1182,7 +1176,8 @@ describe API::Runner do
             end
 
             context 'when artifacts are stored remotely' do
-              let(:job) { create(:ci_build, :artifacts, :remote_store) }
+              let(:store) { JobArtifactUploader::REMOTE_STORE }
+              let!(:job) { create(:ci_build) }
 
               it 'download artifacts' do
                 expect(response).to have_gitlab_http_status(302)
@@ -1201,12 +1196,16 @@ describe API::Runner do
 
         context 'when job does not has artifacts' do
           it 'responds with not found' do
+            download_artifact
+
             expect(response).to have_gitlab_http_status(404)
           end
         end
 
         def download_artifact(params = {}, request_headers = headers)
           params = params.merge(token: token)
+          job.reload
+
           get api("/jobs/#{job.id}/artifacts"), params, request_headers
         end
       end

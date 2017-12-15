@@ -81,13 +81,8 @@ class BoardsStoreEE {
     this.store.updateFiltersUrl(true);
   }
 
-  shouldAddPromotionState() {
-    // Decide whether to add the promotion state
-    return this.$boardApp.dataset.showPromotion === 'true';
-  }
-
   addPromotion() {
-    if (!this.shouldAddPromotionState() || this.promotionIsHidden() || this.store.disabled) return;
+    if (!this.$boardApp.hasAttribute('data-show-promotion') || this.promotionIsHidden() || this.store.disabled) return;
 
     this.store.addList({
       id: 'promotion',

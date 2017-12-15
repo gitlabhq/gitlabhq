@@ -137,16 +137,20 @@ class Environment < ActiveRecord::Base
     end
   end
 
-  def deployment_service_ready?
-    project.deployment_service.present? && available? && last_deployment.present?
+  def deployment_platform
+    project.deployment_platform(environment: self)
+  end
+
+  def has_terminals?
+    deployment_platform.present? && available? && last_deployment.present?
   end
 
   def terminals
-    project.deployment_service.terminals(self) if deployment_service_ready?
+    deployment_platform.terminals(self) if has_terminals?
   end
 
   def rollout_status
-    project.deployment_service.rollout_status(self) if deployment_service_ready?
+    deployment_platform.rollout_status(self) if has_terminals?
   end
 
   def has_metrics?

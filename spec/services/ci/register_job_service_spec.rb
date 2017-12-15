@@ -15,16 +15,14 @@ module Ci
     describe '#execute' do
       context 'runner follow tag list' do
         it "picks build with the same tag" do
-          pending_job.tag_list = ["linux"]
-          pending_job.save
-          specific_runner.tag_list = ["linux"]
+          pending_job.update(tag_list: ["linux"])
+          specific_runner.update(tag_list: ["linux"])
           expect(execute(specific_runner)).to eq(pending_job)
         end
 
         it "does not pick build with different tag" do
-          pending_job.tag_list = ["linux"]
-          pending_job.save
-          specific_runner.tag_list = ["win32"]
+          pending_job.update(tag_list: ["linux"])
+          specific_runner.update(tag_list: ["win32"])
           expect(execute(specific_runner)).to be_falsey
         end
 
@@ -33,13 +31,12 @@ module Ci
         end
 
         it "does not pick build with tag" do
-          pending_job.tag_list = ["linux"]
-          pending_job.save
+          pending_job.update(tag_list: ["linux"])
           expect(execute(specific_runner)).to be_falsey
         end
 
         it "pick build without tag" do
-          specific_runner.tag_list = ["win32"]
+          specific_runner.update(tag_list: ["win32"])
           expect(execute(specific_runner)).to eq(pending_job)
         end
       end
@@ -172,7 +169,7 @@ module Ci
 
       context 'when first build is stalled' do
         before do
-          pending_job.lock_version = 10
+          pending_job.update(lock_version: 0)
         end
 
         subject { described_class.new(specific_runner).execute }
@@ -182,7 +179,7 @@ module Ci
 
           before do
             allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_specific_runner)
-              .and_return([pending_job, other_build])
+              .and_return(Ci::Build.where(id: [pending_job, other_build]))
           end
 
           it "receives second build from the queue" do
@@ -194,7 +191,7 @@ module Ci
         context 'when single build is in queue' do
           before do
             allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_specific_runner)
-              .and_return([pending_job])
+              .and_return(Ci::Build.where(id: pending_job))
           end
 
           it "does not receive any valid result" do
@@ -205,7 +202,7 @@ module Ci
         context 'when there is no build in queue' do
           before do
             allow_any_instance_of(Ci::RegisterJobService).to receive(:builds_for_specific_runner)
-              .and_return([])
+              .and_return(Ci::Build.none)
           end
 
           it "does not receive builds but result is valid" do
@@ -276,6 +273,89 @@ module Ci
           it 'does not pick the job' do
             expect(execute(specific_runner)).to be_nil
           end
+        end
+      end
+
+      context 'when "dependencies" keyword is specified' do
+        shared_examples 'not pick' do
+          it 'does not pick the build and drops the build' do
+            expect(subject).to be_nil
+            expect(pending_job.reload).to be_failed
+            expect(pending_job).to be_missing_dependency_failure
+          end
+        end
+
+        shared_examples 'validation is active' do
+          context 'when depended job has not been completed yet' do
+            let!(:pre_stage_job) { create(:ci_build, :running, pipeline: pipeline, name: 'test', stage_idx: 0) }
+
+            it_behaves_like 'not pick'
+          end
+
+          context 'when artifacts of depended job has been expired' do
+            let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
+
+            it_behaves_like 'not pick'
+          end
+
+          context 'when artifacts of depended job has been erased' do
+            let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0, erased_at: 1.minute.ago) }
+
+            before do
+              pre_stage_job.erase
+            end
+
+            it_behaves_like 'not pick'
+          end
+        end
+
+        shared_examples 'validation is not active' do
+          context 'when depended job has not been completed yet' do
+            let!(:pre_stage_job) { create(:ci_build, :running, pipeline: pipeline, name: 'test', stage_idx: 0) }
+
+            it { expect(subject).to eq(pending_job) }
+          end
+
+          context 'when artifacts of depended job has been expired' do
+            let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
+
+            it { expect(subject).to eq(pending_job) }
+          end
+
+          context 'when artifacts of depended job has been erased' do
+            let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0, erased_at: 1.minute.ago) }
+
+            before do
+              pre_stage_job.erase
+            end
+
+            it { expect(subject).to eq(pending_job) }
+          end
+        end
+
+        before do
+          stub_feature_flags(ci_disable_validates_dependencies: false)
+        end
+
+        let!(:pre_stage_job) { create(:ci_build, :success, pipeline: pipeline, name: 'test', stage_idx: 0) }
+        let!(:pending_job) { create(:ci_build, :pending, pipeline: pipeline, stage_idx: 1, options: { dependencies: ['test'] } ) }
+
+        subject { execute(specific_runner) }
+
+        context 'when validates for dependencies is enabled' do
+          before do
+            stub_feature_flags(ci_disable_validates_dependencies: false)
+          end
+
+          it_behaves_like 'validation is active'
+        end
+
+        context 'when validates for dependencies is disabled' do
+          before do
+            stub_feature_flags(ci_disable_validates_dependencies: true)
+          end
+
+          it_behaves_like 'validation is not active'
         end
       end
 

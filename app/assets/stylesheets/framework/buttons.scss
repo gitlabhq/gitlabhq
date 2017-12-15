@@ -4,8 +4,8 @@
   padding: 1px 5px;
   font-size: 12px;
   color: $blue-500;
-  width: 23px;
-  height: 23px;
+  width: 24px;
+  height: 24px;
   border: 1px solid $blue-500;
 
   &:hover,
@@ -241,6 +241,16 @@
     .fa-caret-down {
       margin-left: 3px;
     }
+  }
+
+  &.dot-highlight::after {
+    content: '';
+    background-color: $blue-500;
+    width: $gl-padding * 0.5;
+    height: $gl-padding * 0.5;
+    display: inline-block;
+    border-radius: 50%;
+    margin-left: 3px;
   }
 
   svg {

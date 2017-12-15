@@ -1,5 +1,6 @@
 class IssuableSidebarEntity < Grape::Entity
   include RequestAwareEntity
+  prepend ::EE::IssuableSidebarEntity
 
   expose :participants, using: ::API::Entities::UserBasic do |issuable|
     issuable.participants(request.current_user)

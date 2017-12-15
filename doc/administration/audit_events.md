@@ -1,4 +1,10 @@
+---
+last_updated: 2017-12-13
+---
+
 # Audit Events
+
+> Available in [GitLab Enterprise Editions][ee].
 
 GitLab Enterprise Edition offers a way to view the changes made within the
 GitLab server as a help to system administrators.
@@ -9,54 +15,92 @@ filesystem, see [the logs system documentation](logs.md) for more details.
 ## Overview
 
 **Audit Events** is a tool for GitLab Enterprise Edition administrators to be
-able to track important events such as user access level, target user, and user
-addition or removal.
+able to track important events such as who performed certain actions and the
+time they happened. These actions could be, for example, change a user
+permission level, who added a new user, or who removed a user.
 
 ## Use-cases
 
-- You can use it to check who was the person who changed the permission level of
-a particular user for a project in your GitLab EE instance.
-- You can use it to track which users have access to certain group of projects
-in your GitLab instance, and who gave them that permission level.
+- Check who was the person who changed the permission level of a particular
+  user for a project in your GitLab EE instance.
+- Use it to track which users have access to a certain group of projects
+  in your GitLab instance, and who gave them that permission level.
 
-## Security events
+## List of events
 
-| Security Event                 | Description                                                                                      |
-|--------------------------------|--------------------------------------------------------------------------------------------------|
-| User added to group or project | Notes the author of the change, target user                                                      |
-| User permission changed        | Notes the author of the change, original permission and new permission, target user              |
-| User login failed              | Notes the target username and IP address                                                         |
+There are two kinds of events logged:
 
-## Audit events in project
+- Events scoped to the group or project, used by group / project managers
+  to loop up who made what change
+- Events scoped to the whole GitLab instance, used by your Compliance team to
+  perform formal audits
 
-To view the Audit Events user needs to have enough permissions to view the project Settings page.
+### Group events
 
-Navigate to **Project->Settings->Audit Events** to view the Audit Events:
+> Available in [GitLab Enterprise Edition Starter][ee].
 
-![audit events project](audit_events_project.png)
+NOTE: **Note:**
+You need Owner [permissions] to view the group Audit Events page.
 
-## Audit events in group
+To view a group's audit events, navigate to **Group > Settings > Audit Events**.
+From there, you can see the following actions:
 
-To view the Audit Events user needs to have enough permissions to view the group Settings page.
+- Group created/deleted
+- Group changed visibility
+- User was added to group and with which [permissions]
+- Permissions changes of a user assigned to a group
+- Removed user from group
+- Project added to group and with which visibility level
+- Project removed from group
+- [Project shared with group](../user/project/members/share_project_with_groups.md)
+  and with which [permissions]
+- Removal of a previously shared group with a project
 
-Navigate to **Group->Settings->Audit Events** to view the Audit Events:
+### Project events
 
-![audit events group](audit_events_group.png)
+> Available in [GitLab Enterprise Edition Starter][ee].
 
-## Audit Log (Admin only)
+NOTE: **Note:**
+You need Master [permissions] or higher to view the project Audit Events page.
 
-> **Notes:**
-> [Introduced][ee-2336] in GitLab 9.3.
+To view a project's audit events, navigate to **Project > Settings > Audit Events**.
+From there, you can see the following actions:
 
-Server-wide audit logging, available in GitLab Enterprise Edition Premium since 9.3, introduces
-the ability to observe user actions across the entire instance of your GitLab Server, making it
-easy to understand who changed what and when for audit purposes.
+- Added/removed deploy keys
+- Project created/deleted/renamed/moved(transferred)/changed path
+- Project changed visibility level
+- User was added to project and with which [permissions]
+- Permission changes of a user assigned to a project
+- User was removed from project
 
-To view the server-wide admin log, visit the Admin Area, select Monitoring and choose Audit Log.
+### Instance events
 
-It is possible to filter particular actions by choosing an audit data type from the filter drop-down.
-You can further filter by specific group, project or user (for authentication events).
+> [Introduced][ee-2336] in [GitLab Enterprise Edition Premium][ee] 9.3.
+Available only for GitLab administrators.
+
+Server-wide audit logging introduces the ability to observe user actions across
+the entire instance of your GitLab server, making it easy to understand who
+changed what and when for audit purposes.
+
+To view the server-wide admin log, visit **Admin Area > Monitoring > Audit Log**.
+
+In addition to the group and project events, the following user actions are also
+recorded:
+
+- Failed Logins
+- Sign-in events and the authentication type (standard, LDAP, OmniAuth, etc.)
+- Added SSH key
+- Added/removed email
+- Changed password
+- Ask for password reset
+- Grant OAuth access
+
+It is possible to filter particular actions by choosing an audit data type from
+the filter drop-down. You can further filter by specific group, project or user
+(for authentication events).
 
 ![audit log](audit_log.png)
 
 [ee-2336]: https://gitlab.com/gitlab-org/gitlab-ee/issues/2336
+[ee]: https://about.gitlab.com/gitlab-ee/
+[permissions]: ../user/permissions.md

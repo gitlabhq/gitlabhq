@@ -12,8 +12,12 @@ module MergeRequests
       merge_request.target_branch   = find_target_branch
       merge_request.can_be_created  = branches_valid?
 
-      compare_branches if branches_present?
-      assign_title_and_description if merge_request.can_be_created
+      # compare branches only if branches are valid, otherwise
+      # compare_branches may raise an error
+      if merge_request.can_be_created
+        compare_branches
+        assign_title_and_description
+      end
 
       merge_request
     end
@@ -22,7 +26,17 @@ module MergeRequests
 
     attr_accessor :merge_request
 
-    delegate :target_branch, :source_branch, :source_project, :target_project, :compare_commits, :wip_title, :description, :errors, to: :merge_request
+    delegate :target_branch,
+             :target_branch_ref,
+             :target_project,
+             :source_branch,
+             :source_branch_ref,
+             :source_project,
+             :compare_commits,
+             :wip_title,
+             :description,
+             :errors,
+             to: :merge_request
 
     def find_source_project
       return source_project if source_project.present? && can?(current_user, :read_project, source_project)
@@ -58,10 +72,10 @@ module MergeRequests
     def compare_branches
       compare = CompareService.new(
         source_project,
-        source_branch
+        source_branch_ref
       ).execute(
         target_project,
-        target_branch
+        target_branch_ref
       )
 
       if compare

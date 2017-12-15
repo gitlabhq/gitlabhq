@@ -1,6 +1,7 @@
 <script>
 /* global LineHighlighter */
 import { mapGetters } from 'vuex';
+import syntaxHighlight from '../../syntax_highlight';
 
 export default {
   computed: {
@@ -13,7 +14,7 @@ export default {
   },
   methods: {
     highlightFile() {
-      $(this.$el).find('.file-content').syntaxHighlight();
+      syntaxHighlight($(this.$el).find('.file-content'));
     },
   },
   mounted() {
@@ -32,10 +33,12 @@ export default {
 </script>
 
 <template>
-<div class="blob-viewer-container">
+<div>
   <div
     v-if="!activeFile.renderError"
-    v-html="activeFile.html">
+    v-html="activeFile.html"
+    class="multi-file-preview-holder"
+  >
   </div>
   <div
     v-else-if="activeFile.tempFile"

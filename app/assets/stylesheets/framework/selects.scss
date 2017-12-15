@@ -134,19 +134,22 @@
 }
 
 .select2-search {
-  padding: 15px 15px 5px;
+  padding: $grid-size;
 
   .select2-drop-auto-width & {
-    padding: 15px 15px 5px;
+    padding: $grid-size;
   }
 
   input {
-    padding: 2px 25px 2px 5px;
+    padding: $grid-size;
     background: $white-light image-url('select2.png');
+    background-clip: content-box;
+    background-origin: content-box;
     background-repeat: no-repeat;
-    background-position: right 0 bottom 6px;
+    background-position: right 0 bottom 0 !important;
     border: 1px solid $input-border;
     border-radius: $border-radius-default;
+    line-height: 16px;
     transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 
     &:focus {
@@ -156,10 +159,15 @@
     &.select2-active {
       background-color: $white-light;
       background-image: image-url('select2-spinner.gif') !important;
+      background-origin: content-box;
       background-repeat: no-repeat;
-      background-position: right 5px center !important;
+      background-position: right 6px center !important;
       background-size: 16px 16px !important;
     }
+  }
+
+  + .select2-results {
+    padding-top: 0;
   }
 }
 

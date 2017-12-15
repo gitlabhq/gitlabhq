@@ -1,6 +1,6 @@
 source 'https://rubygems.org'
 
-gem 'rails', '4.2.8'
+gem 'rails', '4.2.10'
 gem 'rails-deprecated_sanitizer', '~> 1.0.3'
 
 # Responders respond_to and respond_with
@@ -114,7 +114,7 @@ gem 'google-api-client', '~> 0.13.6'
 gem 'unf', '~> 0.1.4'
 
 # Seed data
-gem 'seed-fu', '~> 2.3.7'
+gem 'seed-fu', '2.3.6' # Upgrade to > 2.3.7 once https://github.com/mbleigh/seed-fu/issues/123 is solved
 
 # Search
 gem 'elasticsearch-model', '~> 0.1.9'
@@ -181,7 +181,7 @@ gem 're2', '~> 1.1.1'
 gem 'version_sorter', '~> 2.1.0'
 
 # Cache
-gem 'redis-rails', '~> 5.0.1'
+gem 'redis-rails', '~> 5.0.2'
 
 # Redis
 gem 'redis', '~> 3.2'
@@ -295,7 +295,7 @@ group :metrics do
   gem 'influxdb', '~> 0.2', require: false
 
   # Prometheus
-  gem 'prometheus-client-mmap', '~> 0.7.0.beta39'
+  gem 'prometheus-client-mmap', '~> 0.7.0.beta43'
   gem 'raindrops', '~> 0.18'
 end
 
@@ -416,14 +416,18 @@ group :ed25519 do
 end
 
 # Gitaly GRPC client
-gem 'gitaly-proto', '~> 0.54.0', require: 'gitaly'
+gem 'gitaly-proto', '~> 0.59.0', require: 'gitaly'
 
 gem 'toml-rb', '~> 0.3.15', require: false
 
 # Feature toggles
-gem 'flipper', '~> 0.10.2'
-gem 'flipper-active_record', '~> 0.10.2'
+gem 'flipper', '~> 0.11.0'
+gem 'flipper-active_record', '~> 0.11.0'
+gem 'flipper-active_support_cache_store', '~> 0.11.0'
 
 # Structured logging
 gem 'lograge', '~> 0.5'
 gem 'grape_logging', '~> 1.7'
+
+# Asset synchronization
+gem 'asset_sync', '~> 2.2.0'

@@ -1,5 +1,5 @@
 import { getParameterByName } from '~/lib/utils/common_utils';
-import '~/lib/utils/url_utility';
+import { removeParams } from './lib/utils/url_utility';
 
 (() => {
   const ENDLESS_SCROLL_BOTTOM_PX = 400;
@@ -7,7 +7,7 @@ import '~/lib/utils/url_utility';
 
   const Pager = {
     init(limit = 0, preload = false, disable = false, prepareData = $.noop, callback = $.noop) {
-      this.url = $('.content_list').data('href') || gl.utils.removeParams(['limit', 'offset']);
+      this.url = $('.content_list').data('href') || removeParams(['limit', 'offset']);
       this.limit = limit;
       this.offset = parseInt(getParameterByName('offset'), 10) || this.limit;
       this.disable = disable;

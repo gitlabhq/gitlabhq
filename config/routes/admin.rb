@@ -107,7 +107,7 @@ namespace :admin do
 
   resource :appearances, only: [:show, :create, :update], path: 'appearance' do
     member do
-      get :preview
+      get :preview_sign_in
       delete :logo
       delete :header_logos
     end
@@ -127,7 +127,7 @@ namespace :admin do
     get :download, on: :member
   end
 
-  resources :geo_nodes, only: [:index, :create, :edit, :update, :destroy] do
+  resources :geo_nodes, only: [:index, :create, :new, :edit, :update, :destroy] do
     member do
       post :repair
       post :toggle

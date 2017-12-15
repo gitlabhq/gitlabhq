@@ -1,8 +1,8 @@
 class ExpirePipelineCacheWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
   include PipelineQueue
 
-  enqueue_in group: :cache
+  queue_namespace :pipeline_cache
 
   def perform(pipeline_id)
     pipeline = Ci::Pipeline.find_by(id: pipeline_id)

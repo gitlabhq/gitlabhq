@@ -59,7 +59,7 @@ module Mentionable
         cache_key: [self, attr],
         author: author,
         skip_project_check: skip_project_check?
-      )
+      ).merge(mentionable_params)
 
       extractor.analyze(text, options)
     end
@@ -84,7 +84,7 @@ module Mentionable
     return [] unless matches_cross_reference_regex?
 
     refs = all_references(current_user)
-    refs = (refs.issues + refs.merge_requests + refs.commits)
+    refs = (refs.issues + refs.merge_requests + refs.commits + refs.epics)
 
     # We're using this method instead of Array diffing because that requires
     # both of the object's `hash` values to be the same, which may not be the
@@ -158,5 +158,9 @@ module Mentionable
 
   def skip_project_check?
     false
+  end
+
+  def mentionable_params
+    {}
   end
 end

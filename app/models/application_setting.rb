@@ -166,24 +166,16 @@ class ApplicationSetting < ActiveRecord::Base
             presence: true,
             numericality: { greater_than_or_equal_to: 0 }
 
-  validates :circuitbreaker_backoff_threshold,
-            :circuitbreaker_failure_count_threshold,
-            :circuitbreaker_failure_wait_time,
+  validates :circuitbreaker_failure_count_threshold,
             :circuitbreaker_failure_reset_time,
             :circuitbreaker_storage_timeout,
+            :circuitbreaker_check_interval,
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   validates :circuitbreaker_access_retries,
             presence: true,
             numericality: { only_integer: true, greater_than_or_equal_to: 1 }
-
-  validates_each :circuitbreaker_backoff_threshold do |record, attr, value|
-    if value.to_i >= record.circuitbreaker_failure_count_threshold
-      record.errors.add(attr, _("The circuitbreaker backoff threshold should be "\
-                                "lower than the failure count threshold"))
-    end
-  end
 
   validates :gitaly_timeout_default,
             presence: true,
@@ -343,13 +335,13 @@ class ApplicationSetting < ActiveRecord::Base
       user_default_external: false,
       polling_interval_multiplier: 1,
       usage_ping_enabled: Settings.gitlab['usage_ping_enabled'],
+      gitaly_timeout_fast: 10,
+      gitaly_timeout_medium: 30,
+      gitaly_timeout_default: 55,
       slack_app_enabled: false,
       slack_app_id: nil,
       slack_app_secret: nil,
-      slack_app_verification_token: nil,
-      gitaly_timeout_fast: 10,
-      gitaly_timeout_medium: 30,
-      gitaly_timeout_default: 55
+      slack_app_verification_token: nil
     }
   end
 

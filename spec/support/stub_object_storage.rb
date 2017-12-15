@@ -1,8 +1,9 @@
 module StubConfiguration
-  def stub_object_storage_uploader(config:, uploader:, remote_directory:, enabled: true, licensed: true)
+  def stub_object_storage_uploader(config:, uploader:, remote_directory:, enabled: true, licensed: true, background_upload: false)
     Fog.mock!
 
     allow(config).to receive(:enabled) { enabled }
+    allow(config).to receive(:background_upload) { background_upload }
 
     stub_licensed_features(object_storage: licensed) unless licensed == :skip
 
@@ -18,7 +19,7 @@ module StubConfiguration
 
   def stub_artifacts_object_storage(**params)
     stub_object_storage_uploader(config: Gitlab.config.artifacts.object_store,
-                                 uploader: ArtifactUploader,
+                                 uploader: JobArtifactUploader,
                                  remote_directory: 'artifacts',
                                  **params)
   end

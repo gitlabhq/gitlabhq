@@ -1,6 +1,5 @@
 class LdapGroupSyncWorker
-  include Sidekiq::Worker
-  include DedicatedSidekiqQueue
+  include ApplicationWorker
 
   def perform(group_ids, provider = nil)
     return unless Gitlab::LDAP::Config.group_sync_enabled?

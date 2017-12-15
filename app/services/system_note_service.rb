@@ -566,6 +566,36 @@ module SystemNoteService
     create_note(NoteSummary.new(noteable, noteable.project, user, body, action: 'unrelate'))
   end
 
+  def epic_issue(epic, issue, user, type)
+    return unless validate_epic_issue_action_type(type)
+
+    action = type == :added ? 'epic_issue_added' : 'epic_issue_removed'
+
+    body = "#{type} issue #{issue.to_reference(epic.group)}"
+
+    create_note(NoteSummary.new(epic, nil, user, body, action: action))
+  end
+
+  def issue_on_epic(issue, epic, user, type)
+    return unless validate_epic_issue_action_type(type)
+
+    if type == :added
+      direction = 'to'
+      action = 'issue_added_to_epic'
+    else
+      direction = 'from'
+      action = 'issue_removed_from_epic'
+    end
+
+    body = "#{type} #{direction} epic #{epic.to_reference(issue.project)}"
+
+    create_note(NoteSummary.new(issue, issue.project, user, body, action: action))
+  end
+
+  def validate_epic_issue_action_type(type)
+    [:added, :removed].include?(type)
+  end
+
   # Called when the merge request is approved by user
   #
   # noteable - Noteable object

@@ -110,6 +110,10 @@
       padding: 6px 10px;
       border-radius: $label-border-radius;
     }
+
+    &:hover .color-label {
+      text-decoration: underline;
+    }
   }
 
   &.has-labels {
@@ -122,7 +126,7 @@
   top: $header-height;
   bottom: 0;
   right: 0;
-  transition: width $right-sidebar-transition-duration;
+  transition: width $sidebar-transition-duration;
   background: $gray-light;
   z-index: 200;
   overflow: hidden;
@@ -172,6 +176,14 @@
 
       &:hover {
         color: $gray-darkest;
+      }
+    }
+
+    &.assignee {
+      .author_link:hover {
+        .author {
+          text-decoration: underline;
+        }
       }
     }
   }
@@ -459,7 +471,8 @@
       }
     }
 
-    .milestone-title span {
+    .milestone-title span,
+    .collapse-truncated-title {
       @include str-truncated(100%);
       display: block;
       margin: 0 4px;
@@ -469,17 +482,10 @@
   a:not(.btn-retry) {
     &:hover {
       color: $md-link-color;
-      text-decoration: none;
 
       .avatar {
         border-color: rgba($avatar-border, .2);
       }
-    }
-  }
-
-  .dropdown-content {
-    a:hover {
-      color: inherit;
     }
   }
 
@@ -499,10 +505,6 @@
   .issuable-sidebar {
     height: calc(100% - #{$header-height} - #{$performance-bar-height});
   }
-}
-
-.sidebar-move-issue-dropdown {
-  @include new-style-dropdown;
 }
 
 .sidebar-move-issue-confirmation-button {
@@ -613,50 +615,16 @@
   margin-top: 0;
   height: auto;
   align-self: center;
-
-  @media (max-width: $screen-xs-max) {
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-}
-
-.issuable-header {
-  position: relative;
-  padding-left: 45px;
-  padding-right: 45px;
-  line-height: 35px;
-  display: flex;
-  flex-grow: 1;
-
-  @media (min-width: $screen-sm-min) {
-    float: left;
-    padding-left: 0;
-    padding-right: 0;
-  }
-}
-
-.issuable-actions {
-  @include new-style-dropdown;
-
-  align-self: center;
-  flex-shrink: 0;
-  flex: 0 0 auto;
-
-  @media (min-width: $screen-sm-min) {
-    float: right;
-  }
 }
 
 .issuable-gutter-toggle {
   @media (max-width: $screen-sm-max) {
-    position: absolute;
-    top: 0;
-    right: 0;
+    margin-left: $btn-side-margin;
   }
 }
 
 .issuable-meta {
+  flex: 1;
   display: inline-block;
   font-size: 14px;
   line-height: 24px;

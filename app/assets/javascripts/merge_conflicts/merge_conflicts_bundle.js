@@ -10,6 +10,7 @@ import './mixins/line_conflict_actions';
 import './components/diff_file_editor';
 import './components/inline_conflict_lines';
 import './components/parallel_conflict_lines';
+import syntaxHighlight from '../syntax_highlight';
 
 $(() => {
   const INTERACTIVE_RESOLVE_MODE = 'interactive';
@@ -53,7 +54,7 @@ $(() => {
           mergeConflictsStore.setLoadingState(false);
 
           this.$nextTick(() => {
-            $('.js-syntax-highlight').syntaxHighlight();
+            syntaxHighlight($('.js-syntax-highlight'));
           });
         });
     },

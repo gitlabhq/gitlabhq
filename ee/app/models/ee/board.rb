@@ -2,6 +2,9 @@ module EE
   module Board
     extend ActiveSupport::Concern
 
+    # Empty state for milestones and weights.
+    EMPTY_SCOPE_STATE = [nil, -1].freeze
+
     prepended do
       belongs_to :group
       belongs_to :milestone
@@ -43,6 +46,15 @@ module EE
       else
         super
       end
+    end
+
+    def scoped?
+      return false unless parent.feature_available?(:scoped_issue_board)
+
+      EMPTY_SCOPE_STATE.exclude?(milestone_id) ||
+        EMPTY_SCOPE_STATE.exclude?(weight) ||
+        labels.any? ||
+        assignee.present?
     end
 
     def as_json(options = {})

@@ -6,6 +6,7 @@ This page gathers all the resources for the topic **Authentication** within GitL
 
 - [SSH](../../ssh/README.md)
 - [Two-Factor Authentication (2FA)](../../user/profile/account/two_factor_authentication.md#two-factor-authentication)
+- [Why do I keep getting signed out?](../../user/profile/index.md#why-do-i-keep-getting-signed-out)
 - **Articles:**
   - [Support for Universal 2nd Factor Authentication - YubiKeys](https://about.gitlab.com/2016/06/22/gitlab-adds-support-for-u2f/)
   - [Security Webcast with Yubico](https://about.gitlab.com/2016/08/31/gitlab-and-yubico-security-webcast/)

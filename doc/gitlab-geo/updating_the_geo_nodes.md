@@ -14,6 +14,20 @@ all you need to do is update GitLab itself:
    the tracking database is enabled.
 1. [Test](#check-status-after-updating) primary and secondary nodes, and check version in each.
 
+## Upgrading to GitLab 10.3
+
+### Support for SSH repository synchronization removed
+
+In GitLab 10.2, synchronizing secondaries over SSH was deprecated. In 10.3,
+support is removed entirely. All installations will switch to the HTTP/HTTPS
+cloning method instead. Before upgrading, ensure that all your Geo nodes are
+configured to use this method and that it works for your installation. In
+particular, ensure that [Git access over HTTP/HTTPS is enabled](configuration.md#step-4-enable-git-access-over-http-https).
+
+Synchronizing repositories over the public Internet using HTTP is insecure, so
+you should ensure that you have HTTPS configured before upgrading. Note that
+file synchronization is **also** insecure in these cases!
+
 ## Upgrading to GitLab 10.2
 
 ### Secure PostgreSQL replication 
@@ -53,17 +67,28 @@ secondary if ever promoted to a primary:
     sudo -u git -H rm ~git/.ssh/id_rsa ~git/.ssh/id_rsa.pub
     ```
 
+### Hashed Storage
+
+>**Warning**
+Hashed storage is in **Alpha**. It is considered experimental and not
+production-ready. See [Hashed
+Storage](../administration/repository_storage_types.md) for more detail.
+
+If you previously enabled Hashed Storage and migrated all your existing
+projects to Hashed Storage, disabling hashed storage will not migrate projects
+to their previous project based storage path. As such, once enabled and
+migrated we recommend leaving Hashed Storage enabled.
+
 ## Upgrading to GitLab 10.1
+
+>**Warning**
+Hashed storage is in **Alpha**. It is considered experimental and not
+production-ready. See [Hashed
+Storage](../administration/repository_storage_types.md) for more detail.
 
 [Hashed storage](../administration/repository_storage_types.md) was introduced
 in GitLab 10.0, and a [migration path](../administration/raketasks/storage.md)
 for existing repositories was added in GitLab 10.1.
-
-After upgrading to GitLab 10.1, we recommend that you
-[enable hashed storage for all new projects](#step-5-enabling-hashed-storage-from-gitlab-100),
-then [migrate existing projects to hashed storage](../administration/raketasks/storage.md).
-This will significantly reduce the amount of synchronization required between
-nodes in the event of project or group renames.
 
 ## Upgrading to GitLab 10.0
 

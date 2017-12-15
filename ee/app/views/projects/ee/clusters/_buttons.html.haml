@@ -1,0 +1,5 @@
+.nav-controls
+  - if project.feature_available?(:multiple_clusters)
+    = link_to s_("ClusterIntegration|Add cluster"), new_project_cluster_path(project), class: "btn btn-success btn-add-cluster has-tooltip js-add-cluster"
+  - else
+    = link_to s_("ClusterIntegration|Add cluster"), new_project_cluster_path(project), class: "btn btn-success btn-add-cluster disabled has-tooltip js-add-cluster", title: s_("ClusterIntegration|Multiple clusters are available in GitLab Entreprise Edition Premium and Ultimate")

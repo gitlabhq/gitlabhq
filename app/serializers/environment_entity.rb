@@ -23,7 +23,7 @@ class EnvironmentEntity < Grape::Entity
     stop_project_environment_path(environment.project, environment)
   end
 
-  expose :terminal_path, if: ->(*) { environment.deployment_service_ready? } do |environment|
+  expose :terminal_path, if: ->(*) { environment.has_terminals? } do |environment|
     can?(request.current_user, :admin_environment, environment.project) &&
       terminal_project_environment_path(environment.project, environment)
   end

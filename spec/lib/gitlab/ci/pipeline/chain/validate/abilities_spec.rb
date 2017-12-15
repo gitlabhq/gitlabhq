@@ -5,13 +5,13 @@ describe Gitlab::Ci::Pipeline::Chain::Validate::Abilities do
   set(:user) { create(:user) }
 
   let(:pipeline) do
-    build_stubbed(:ci_pipeline, ref: ref, project: project)
+    build_stubbed(:ci_pipeline, project: project)
   end
 
   let(:command) do
-    double('command', project: project,
-                      current_user: user,
-                      allow_mirror_update: false)
+    Gitlab::Ci::Pipeline::Chain::Command.new(
+      project: project, current_user: user, origin_ref: ref,
+      allow_mirror_update: false)
   end
 
   let(:step) { described_class.new(pipeline, command) }

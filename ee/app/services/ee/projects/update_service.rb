@@ -17,6 +17,13 @@ module EE
         result
       end
 
+      def changing_storage_size?
+        new_repository_storage = params[:repository_storage]
+
+        new_repository_storage && project.repository.exists? &&
+          can?(current_user, :change_repository_storage, project)
+      end
+
       private
 
       def log_audit_events

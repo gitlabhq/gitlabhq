@@ -1,3 +1,4 @@
+# rubocop:disable Migration/RemoveColumn
 class DropUnnecessaryTimestampColumnsInGeoEventTables < ActiveRecord::Migration
   include Gitlab::Database::MigrationHelpers
 

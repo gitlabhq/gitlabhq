@@ -50,6 +50,10 @@ module Gitlab
       postgresql? && version.to_f >= 9.3
     end
 
+    def self.replication_slots_supported?
+      postgresql? && version.to_f >= 9.4
+    end
+
     def self.nulls_last_order(field, direction = 'ASC')
       order = "#{field} #{direction}"
 
@@ -120,15 +124,21 @@ module Gitlab
     #        values.
     # return_ids - When set to true the return value will be an Array of IDs of
     #              the inserted rows, this only works on PostgreSQL.
-    def self.bulk_insert(table, rows, return_ids: false)
+    # disable_quote - A key or an Array of keys to exclude from quoting (You
+    #                 become responsible for protection from SQL injection for
+    #                 these keys!)
+    def self.bulk_insert(table, rows, return_ids: false, disable_quote: [])
       return if rows.empty?
 
       keys = rows.first.keys
       columns = keys.map { |key| connection.quote_column_name(key) }
       return_ids = false if mysql?
 
+      disable_quote = Array(disable_quote).to_set
       tuples = rows.map do |row|
-        row.values_at(*keys).map { |value| connection.quote(value) }
+        keys.map do |k|
+          disable_quote.include?(k) ? row[k] : connection.quote(row[k])
+        end
       end
 
       sql = <<-EOF

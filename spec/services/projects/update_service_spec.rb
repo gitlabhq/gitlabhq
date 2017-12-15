@@ -200,24 +200,53 @@ describe Projects::UpdateService, '#execute' do
   end
 
   describe '#run_auto_devops_pipeline?' do
-    subject { described_class.new(project, user, params).run_auto_devops_pipeline? }
+    subject { described_class.new(project, user).run_auto_devops_pipeline? }
 
-    context 'when neither pipeline setting is true' do
-      let(:params) { {} }
+    context 'when master contains a .gitlab-ci.yml file' do
+      before do
+        allow(project.repository).to receive(:gitlab_ci_yml).and_return("script: ['test']")
+      end
 
       it { is_expected.to eq(false) }
     end
 
-    context 'when run_auto_devops_pipeline_explicit is true' do
-      let(:params) { { run_auto_devops_pipeline_explicit: 'true' } }
+    context 'when auto devops is explicitly enabled' do
+      before do
+        project.create_auto_devops!(enabled: true)
+      end
 
       it { is_expected.to eq(true) }
     end
 
-    context 'when run_auto_devops_pipeline_implicit is true' do
-      let(:params) { { run_auto_devops_pipeline_implicit: 'true' } }
+    context 'when auto devops is explicitly disabled' do
+      before do
+        project.create_auto_devops!(enabled: false)
+      end
 
-      it { is_expected.to eq(true) }
+      it { is_expected.to eq(false) }
+    end
+
+    context 'when auto devops is set to instance setting' do
+      before do
+        project.create_auto_devops!(enabled: nil)
+        allow(project.auto_devops).to receive(:previous_changes).and_return('enabled' => true)
+      end
+
+      context 'when auto devops is enabled system-wide' do
+        before do
+          stub_application_setting(auto_devops_enabled: true)
+        end
+
+        it { is_expected.to eq(true) }
+      end
+
+      context 'when auto devops is disabled system-wide' do
+        before do
+          stub_application_setting(auto_devops_enabled: false)
+        end
+
+        it { is_expected.to eq(false) }
+      end
     end
   end
 

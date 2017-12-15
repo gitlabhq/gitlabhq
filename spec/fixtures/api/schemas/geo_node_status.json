@@ -4,6 +4,7 @@
     "geo_node_id",
     "healthy",
     "health",
+    "health_status",
     "attachments_count",
     "attachments_failed_count",
     "attachments_synced_count",
@@ -17,12 +18,16 @@
     "last_event_id",
     "last_event_timestamp",
     "cursor_last_event_id",
-    "cursor_last_event_timestamp"
+    "cursor_last_event_timestamp",
+    "namespaces",
+    "version",
+    "revision"
   ],
   "properties" : {
     "geo_node_id": { "type": "integer" },
     "healthy": { "type": "boolean" },
     "health": { "type": ["string", "null"] },
+    "health_status": { "type": "string" },
     "attachments_count": { "type": "integer" },
     "attachments_failed_count": { "type": "integer" },
     "attachments_synced_count": { "type": "integer" },
@@ -40,7 +45,10 @@
     "last_event_timestamp": { "type": ["integer", "null"] },
     "cursor_last_event_id": { "type": ["integer", "null"] },
     "cursor_last_event_timestamp": { "type": ["integer", "null"] },
-    "last_successful_status_check_timestamp": { "type": ["integer", "null"] }
+    "last_successful_status_check_timestamp": { "type": ["integer", "null"] },
+    "namespaces": { "type": "array" },
+    "version": { "type": ["string"] },
+    "revision": { "type": ["string"] }
   },
   "additionalProperties": false
 }

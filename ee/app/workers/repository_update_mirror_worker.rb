@@ -1,9 +1,8 @@
 class RepositoryUpdateMirrorWorker
   UpdateError = Class.new(StandardError)
 
-  include Sidekiq::Worker
+  include ApplicationWorker
   include Gitlab::ShellAdapter
-  include DedicatedSidekiqQueue
   include ProjectStartImport
 
   LEASE_KEY = 'repository_update_mirror_worker_start_scheduler'.freeze

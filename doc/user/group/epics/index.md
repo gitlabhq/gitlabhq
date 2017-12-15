@@ -45,6 +45,13 @@ A modal will pop-up to confirm your action.
 Deleting an epic releases all existing issues from their associated epic in the
 system.
 
+## Navigating to an epic from an issue
+
+If an issue belongs to an epic, you can navigate to the containing epic with the
+link in the issue sidebar.
+
+![containing epic](img/containing_epic.png)
+
 ## Permissions
 
 If you have access to view an epic and have access to view an issue already

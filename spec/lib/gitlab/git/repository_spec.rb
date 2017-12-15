@@ -257,7 +257,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#empty?' do
-    it { expect(repository.empty?).to be_falsey }
+    it { expect(repository).not_to be_empty }
   end
 
   describe '#ref_names' do
@@ -1205,6 +1205,16 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
       it 'does not return unmerged branch names' do
         names = repository.merged_branch_names(%w[feature])
+
+        expect(names).to be_empty
+      end
+    end
+
+    context 'when no root ref is available' do
+      it 'returns empty list' do
+        project = create(:project, :empty_repo)
+
+        names = project.repository.merged_branch_names(%w[feature])
 
         expect(names).to be_empty
       end

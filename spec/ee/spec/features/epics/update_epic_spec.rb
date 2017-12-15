@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 feature 'Update Epic', :js do
+  include DropzoneHelper
+
   let(:user) { create(:user) }
   let(:group) { create(:group, :public) }
 
@@ -35,29 +37,59 @@ feature 'Update Epic', :js do
       wait_for_requests
     end
 
-    it 'updates the issue' do
-      find('.btn-edit').click
+    context 'update form' do
+      before do
+        find('.btn-edit').click
+      end
 
-      fill_in 'issuable-title', with: 'New epic title'
-      fill_in 'issue-description', with: 'New epic description'
-      click_button 'Save changes'
+      it 'updates the epic' do
+        fill_in 'issuable-title', with: 'New epic title'
+        fill_in 'issue-description', with: 'New epic description'
 
-      expect(find('.issuable-details h2.title')).to have_content('New epic title')
-      expect(find('.issuable-details .description')).to have_content('New epic description')
-    end
+        click_link('Preview')
+        expect(find('.md-preview')).to have_content('New epic description')
 
-    it 'edits full screen' do
-      find('.btn-edit').click
-      find('.js-zen-enter').click
+        click_button 'Save changes'
 
-      expect(page).to have_selector('.div-dropzone-wrapper.fullscreen')
-    end
+        expect(find('.issuable-details h2.title')).to have_content('New epic title')
+        expect(find('.issuable-details .description')).to have_content('New epic description')
+      end
 
-    # File attachment feature is not implemented yet for epics
-    it 'cannot attach files' do
-      find('.btn-edit').click
+      it 'edits full screen' do
+        find('.js-zen-enter').click
 
-      expect(page).not_to have_selector('.uploading-container .button-attach-file')
+        expect(page).to have_selector('.div-dropzone-wrapper.fullscreen')
+      end
+
+      it 'uploads a file when dragging into textarea' do
+        link_css = 'a.no-attachment-icon img[alt="banana_sample"]'
+        link_match = %r{/groups/#{Regexp.escape(group.full_path)}/-/uploads/\h{32}/banana_sample\.gif\z}
+        dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
+
+        expect(page.find_field("issue-description").value).to have_content('banana_sample')
+
+        click_link('Preview')
+        wait_for_requests
+
+        within('.md-preview') do
+          link = find(link_css)['src']
+          expect(link).to match(link_match)
+        end
+
+        click_button 'Save changes'
+        wait_for_requests
+
+        link = find(link_css)['src']
+        expect(link).to match(link_match)
+      end
+
+      # Autocomplete is disabled for epics until #4084 is resolved
+      describe 'autocomplete disabled' do
+        it 'does not open atwho container' do
+          find('#issue-description').native.send_keys('@')
+          expect(page).not_to have_selector('.atwho-container')
+        end
+      end
     end
 
     it 'updates the tasklist' do
@@ -68,16 +100,6 @@ feature 'Update Epic', :js do
       find('.task-list .task-list-item', text: 'Incomplete entry 1').find('input').click
 
       expect(page).to have_selector('ul input[checked]', count: 1)
-    end
-
-    # Autocomplete is disabled for epics until #4084 is resolved
-    describe 'autocomplete disabled' do
-      it 'does not open atwho container' do
-        find('.btn-edit').click
-
-        find('#issue-description').native.send_keys('@')
-        expect(page).not_to have_selector('.atwho-container')
-      end
     end
   end
 

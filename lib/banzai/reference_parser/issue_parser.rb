@@ -1,10 +1,10 @@
 module Banzai
   module ReferenceParser
-    class IssueParser < BaseParser
+    class IssueParser < IssuableParser
       self.reference_type = :issue
 
       def nodes_visible_to_user(user, nodes)
-        issues = issues_for_nodes(nodes)
+        issues = records_for_nodes(nodes)
 
         readable_issues = Ability.issues_readable_by_user(issues.values, user).to_set
 
@@ -13,13 +13,7 @@ module Banzai
         end
       end
 
-      def referenced_by(nodes)
-        issues = issues_for_nodes(nodes)
-
-        nodes.map { |node| issues[node] }.compact.uniq
-      end
-
-      def issues_for_nodes(nodes)
+      def records_for_nodes(nodes)
         @issues_for_nodes ||= grouped_objects_for_nodes(
           nodes,
           Issue.all.includes(

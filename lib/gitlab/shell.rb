@@ -144,34 +144,27 @@ module Gitlab
                                  storage, "#{path}.git", "#{new_path}.git"])
     end
 
-    # Move repository storage
-    #
-    # current_storage - project's current storage path
-    # path - project path with namespace
-    # new_storage - new storage path
-    #
-    # Ex.
-    #   mv_storage("/path/to/storage", "randx/gitlab-ci", "/new/storage/path")
-    #
-    def mv_storage(current_storage, path, new_storage)
-      Gitlab::Utils.system_silent([gitlab_shell_projects_path, 'mv-storage',
-                                   current_storage, "#{path}.git", new_storage])
-    end
-
-    # Fork repository to new namespace
+    # Fork repository to new path
     # forked_from_storage - forked-from project's storage path
-    # path - project path with namespace
+    # forked_from_disk_path - project disk path
     # forked_to_storage - forked-to project's storage path
-    # fork_namespace - namespace for forked project
+    # forked_to_disk_path - forked project disk path
     #
     # Ex.
-    #  fork_repository("/path/to/forked_from/storage", "gitlab/gitlab-ci", "/path/to/forked_to/storage", "randx")
+    #  fork_repository("/path/to/forked_from/storage", "gitlab/gitlab-ci", "/path/to/forked_to/storage", "new-namespace/gitlab-ci")
     #
     # Gitaly note: JV: not easy to migrate because this involves two Gitaly servers, not one.
-    def fork_repository(forked_from_storage, path, forked_to_storage, fork_namespace)
-      gitlab_shell_fast_execute([gitlab_shell_projects_path, 'fork-project',
-                                 forked_from_storage, "#{path}.git", forked_to_storage,
-                                 fork_namespace])
+    def fork_repository(forked_from_storage, forked_from_disk_path, forked_to_storage, forked_to_disk_path)
+      gitlab_shell_fast_execute(
+        [
+          gitlab_shell_projects_path,
+          'fork-repository',
+          forked_from_storage,
+          "#{forked_from_disk_path}.git",
+          forked_to_storage,
+          "#{forked_to_disk_path}.git"
+        ]
+      )
     end
 
     # Remove repository from file system

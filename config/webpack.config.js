@@ -84,6 +84,7 @@ var config = {
     registry_list:        './registry/index.js',
     repo:                 './repo/index.js',
     sidebar:              './sidebar/sidebar_bundle.js',
+    ee_sidebar:           'ee/sidebar/sidebar_bundle.js',
     schedule_form:        './pipeline_schedules/pipeline_schedule_form_bundle.js',
     schedules_index:      './pipeline_schedules/pipeline_schedules_index_bundle.js',
     snippet:              './snippet/snippet_bundle.js',
@@ -127,6 +128,10 @@ var config = {
         test: /\.(gif|png)$/,
         loader: 'url-loader',
         options: { limit: 2048 },
+      },
+      {
+        test: /\_worker\.js$/,
+        loader: 'worker-loader',
       },
       {
         test: /\.(worker(\.min)?\.js|pdf|bmpr)$/,

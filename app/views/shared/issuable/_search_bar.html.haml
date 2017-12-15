@@ -125,7 +125,7 @@
           - if type == :boards
             - user_can_admin_list = can?(current_user, :admin_list, board.parent)
 
-            .js-board-config{ data: { can_admin_list: user_can_admin_list.to_s } }
+            .js-board-config{ data: { can_admin_list: user_can_admin_list, has_scope: board.scoped? } }
             - if user_can_admin_list
               .dropdown.prepend-left-10#js-add-list
                 %button.btn.btn-create.btn-inverted.js-new-board-list{ type: "button", data: board_list_data }
@@ -136,7 +136,7 @@
                     = render partial: "shared/issuable/label_page_create"
                   = dropdown_loading
               - if @project
-                #js-add-issues-btn.prepend-left-10{ data: { can_admin_list: can?(current_user, :admin_list, @project).to_s } }
+                #js-add-issues-btn.prepend-left-10{ data: { can_admin_list: can?(current_user, :admin_list, @project) } }
             #js-toggle-focus-btn.prepend-left-10
           - elsif type != :boards_modal
             = render 'shared/sort_dropdown'

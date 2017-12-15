@@ -53,29 +53,6 @@ and expect something like:
 By running the command above, `primary` should be `true` when executed in
 the primary node, and `false` on any secondary.
 
-#### Did I define the correct SSH Key for the node?
-
-You must create an SSH Key for `git` user.
-
-This key is the one you have to inform at `Admin > Geo`.
-
-#### Can I SSH from secondary to primary node using `git` user account?
-
-This is the most obvious cause of problems with repository replication issues.
-If you haven't added the primary node's key to `known_hosts`, you will end up with
-a lot of failed sidekiq jobs with an error similar to:
-
-```
-Gitlab::Shell::Error: Host key verification failed. fatal: Could not read from remote repository. Please make sure you have the correct access rights and the repository exists.
-```
-
-An easy way to fix this is by logging in as the `git` user in the secondary node and run:
-
-```bash
-# remove old entries to your primary gitlab in known_hosts
-ssh-keyscan -R your-primary-gitlab.example.com
-```
-
 #### How do I fix the message, "ERROR:  replication slots can only be used if max_replication_slots > 0"?
 
 This means that the `max_replication_slots` PostgreSQL variable needs to
@@ -91,12 +68,27 @@ This occurs when PostgreSQL does not have a replication slot for the
 secondary by that name. You may want to rerun the [replication
 process](database.md) on the secondary.
 
+#### How do I fix the message, "Command exceeded allowed execution time" when setting up replication?
+
+This may happen while [initiating the replication process](database.md#step-4-initiate-the-replication-process) on the Geo secondary, and indicates that your
+initial dataset is too large to be replicated in the default timeout (30 minutes).
+
+Re-run `gitlab-ctl replicate-geo-database`, but include a larger value for
+`--backup-timeout`:
+
+```bash
+sudo gitlab-ctl replicate-geo-database --host=primary.geo.example.com --slot-name=secondary_geo_example_com --backup-timeout=21600
+```
+
+This will give the initial replication up to six hours to complete, rather than
+the default thirty minutes. Adjust as required for your installation.
+
 #### How do I fix the message, "PANIC: could not write to file 'pg_xlog/xlogtemp.123': No space left on device"
 
 Determine if you have any unused replication slots in the primary database.  This can cause large amounts of log data to build up in `pg_xlog`.
 Removing the unused slots can reduce the amount of space used in the `pg_xlog`.
 
-- Start a PostgreSQL console session:
+1. Start a PostgreSQL console session:
 
     ```bash
     sudo gitlab-psql gitlabhq_production
@@ -104,17 +96,22 @@ Removing the unused slots can reduce the amount of space used in the `pg_xlog`.
 
     Note that using `gitlab-rails dbconsole` will not work, because managing replication slots requires superuser permissions.
 
-- View your replication slots with
+2. View your replication slots with
 
      ```sql
      SELECT * FROM pg_replication_slots;
      ```
 
- - If there is an unused/inactive slot, you can remove it with
+Slots where `active` is `f` are not active.
 
-     ```sql
-     SELECT pg_drop_replication_slot('name_of_extra_slot');
-     ```
+- When this slot should be active, because you have a secondary configured using that slot,
+log in to that secondary and check the PostgreSQL logs why the replication is not running.
+
+- If you are no longer using the slot (e.g. you no longer have Geo enabled), you can remove it with in the PostgreSQL console session:
+
+    ```sql
+    SELECT pg_drop_replication_slot('name_of_extra_slot');
+    ```
 
 #### Very large repositories never successfully synchronize on the secondary
 
@@ -136,3 +133,4 @@ sudo gitlab-ctl reconfigure
 
 This will increase the timeout to three hours (10800 seconds). Choose a time
 long enough to accomodate a full clone of your largest repositories.
+

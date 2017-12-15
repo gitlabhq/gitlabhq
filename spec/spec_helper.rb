@@ -107,8 +107,6 @@ RSpec.configure do |config|
   config.before(:all) do
     License.destroy_all
     TestLicense.init
-
-    SeedFu.seed
   end
 
   config.after(:suite) do
@@ -133,18 +131,6 @@ RSpec.configure do |config|
 
   config.before(:example, :mailer) do
     reset_delivered_emails!
-  end
-
-  # Stub the `ForkedStorageCheck.storage_available?` method unless
-  # `:broken_storage` metadata is defined
-  #
-  # This check can be slow and is unnecessary in a test environment where we
-  # know the storage is available, because we create it at runtime
-  config.before(:example) do |example|
-    unless example.metadata[:broken_storage]
-      allow(Gitlab::Git::Storage::ForkedStorageCheck)
-        .to receive(:storage_available?).and_return(true)
-    end
   end
 
   config.around(:each, :use_clean_rails_memory_store_caching) do |example|
@@ -225,3 +211,6 @@ Shoulda::Matchers.configure do |config|
     with.library :rails
   end
 end
+
+# Prevent Rugged from picking up local developer gitconfig.
+Rugged::Settings['search_path_global'] = Rails.root.join('tmp/tests').to_s

@@ -4,7 +4,6 @@
 /* global mockBoardService */
 
 import Vue from 'vue';
-import '~/lib/utils/url_utility';
 import '~/boards/models/issue';
 import '~/boards/models/label';
 import '~/boards/models/list';
@@ -144,6 +143,12 @@ describe('Issue model', () => {
     issue.setFetchingState('subscriptions', false);
 
     expect(issue.isFetching.subscriptions).toBe(false);
+  });
+
+  it('sets loading state', () => {
+    issue.setLoadingState('foo', true);
+
+    expect(issue.isLoading.foo).toBe(true);
   });
 
   describe('update', () => {
