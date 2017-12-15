@@ -1,0 +1,14 @@
+.issuable-close-dropdown .dropdown-menu {
+  // IE11 doesn't wrap content
+  // So we specify computed width
+  // while compensating for borders
+  width: calc(100% - 2px);
+}
+
+.projects-list .project-details {
+  // text-overflow: ellipsis doesn't
+  // work in IE11 when width is relative
+  // so we specify computed width that
+  // is evaluted in absolute pixels
+  width: calc(100% - 0px);
+}
