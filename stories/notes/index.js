@@ -10,7 +10,10 @@ import {
 import store from '~/notes/stores';
 import NoteableDiscussion from '~/notes/components/noteable_discussion.vue';
 
+import '~/commons/';
+import '~/behaviors';
 import '~/render_gfm';
+
 (function syntaxHighlightHack() {
   window.gon = window.gon || {};
   window.gon.user_color_scheme = 'white';
