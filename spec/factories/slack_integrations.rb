@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :slack_integration do
     sequence(:team_id) { |n| "T123#{n}" }
     sequence(:user_id) { |n| "U123#{n}" }

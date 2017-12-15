@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :ci_pipeline_schedule, class: Ci::PipelineSchedule do
     cron '0 1 * * *'
     cron_timezone Gitlab::Ci::CronParser::VALID_SYNTAX_SAMPLE_TIME_ZONE

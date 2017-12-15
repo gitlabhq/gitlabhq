@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Oauth2::LogoutTokenValidationService do
-  let(:user) { FactoryGirl.create(:user) }
-  let(:access_token) { FactoryGirl.create(:doorkeeper_access_token, resource_owner_id: user.id).token }
+  let(:user) { FactoryBot.create(:user) }
+  let(:access_token) { FactoryBot.create(:doorkeeper_access_token, resource_owner_id: user.id).token }
   let(:logout_state) { Gitlab::Geo::OauthSession.new(access_token: access_token).generate_logout_state }
 
   context '#execute' do
