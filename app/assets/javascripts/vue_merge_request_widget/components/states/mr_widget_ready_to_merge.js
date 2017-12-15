@@ -42,13 +42,13 @@ export default {
       const { pipeline, isPipelineActive, isPipelineFailed, hasCI, ciStatus } = this.mr;
 
       if (hasCI && !ciStatus) {
-        return 'warning';
+        return 'failed';
       } else if (!pipeline) {
         return 'success';
       } else if (isPipelineActive) {
         return 'pending';
       } else if (isPipelineFailed) {
-        return 'warning';
+        return 'failed';
       }
 
       return 'success';
