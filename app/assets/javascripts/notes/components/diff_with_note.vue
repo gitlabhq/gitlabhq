@@ -1,6 +1,8 @@
 <script>
   import syntaxHighlight from '~/syntax_highlight';
   import DiffFileHeader from './diff_file_header.vue';
+  import initDiscussionTab from '~/image_diff/init_discussion_tab';
+  import imageDiffHelper from '~/image_diff/helpers/index';
 
   export default {
     props: {
@@ -13,6 +15,9 @@
       DiffFileHeader,
     },
     computed: {
+      isImageDiff() {
+        return !this.diffFile.text;
+      },
       diffFileClass() {
         const { text } = this.diffFile;
         return text ? 'text-file' : 'js-image-file';
@@ -23,12 +28,21 @@
       diffFile() {
         return this.discussion.diff_file || {};
       },
+      replacedImageDiffHtml() {
+        return this.discussion.replaced_image_diff_html;
+      },
     },
     mounted() {
-      const fileHolder = $(this.$refs.fileHolder);
-      this.$nextTick(() => {
-        syntaxHighlight(fileHolder);
-      });
+      if (this.isImageDiff) {
+        const canCreateNote = false;
+        const renderCommentBadge = true;
+        imageDiffHelper.initImageDiff(this.$refs.fileHolder, canCreateNote, renderCommentBadge);
+      } else {
+        const fileHolder = $(this.$refs.fileHolder);
+        this.$nextTick(() => {
+          syntaxHighlight(fileHolder);
+        });
+      }
     },
   };
 </script>
@@ -64,6 +78,12 @@
           </td>
         </tr>
       </table>
+    </div>
+    <div
+      v-else
+    >
+      <div v-html="replacedImageDiffHtml"></div>
+      <slot></slot>
     </div>
   </div>
 </template>
