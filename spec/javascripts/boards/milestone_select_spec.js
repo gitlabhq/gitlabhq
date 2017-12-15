@@ -1,11 +1,9 @@
-/* global boardsMockInterceptor */
-/* global boardObj */
 /* global BoardService */
-/* global mockBoardService */
 
 import Vue from 'vue';
 import MilestoneSelect from '~/boards/components/milestone_select.vue';
 import IssuableContext from '~/issuable_context';
+import { boardObj } from './mock_data';
 
 let vm;
 
