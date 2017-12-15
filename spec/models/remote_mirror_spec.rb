@@ -234,7 +234,7 @@ describe RemoteMirror do
   end
 
   def create_mirror(params)
-    project = FactoryGirl.create(:project, :repository)
+    project = FactoryBot.create(:project, :repository)
     project.remote_mirrors.create!(params)
   end
 end

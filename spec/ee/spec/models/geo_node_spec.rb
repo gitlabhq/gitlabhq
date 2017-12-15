@@ -63,7 +63,7 @@ describe GeoNode, type: :model do
   end
 
   context 'cache expiration' do
-    let(:new_node) { FactoryGirl.build(:geo_node) }
+    let(:new_node) { FactoryBot.build(:geo_node) }
 
     it 'expires cache when saved' do
       expect(new_node).to receive(:expire_cache!).at_least(:once)

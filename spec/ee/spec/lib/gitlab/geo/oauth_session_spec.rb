@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe Gitlab::Geo::OauthSession do
   subject { described_class.new }
-  let(:oauth_app) { FactoryGirl.create(:doorkeeper_application) }
+  let(:oauth_app) { FactoryBot.create(:doorkeeper_application) }
   let(:oauth_return_to) { 'http://localhost:3000/oauth/geo/callback' }
   let(:dummy_state) { 'salt:hmac:return_to' }
   let(:valid_state) { described_class.new(return_to: oauth_return_to).generate_oauth_state }
-  let(:access_token) { FactoryGirl.create(:doorkeeper_access_token).token }
-  let(:user) { FactoryGirl.build(:user) }
+  let(:access_token) { FactoryBot.create(:doorkeeper_access_token).token }
+  let(:user) { FactoryBot.build(:user) }
 
   before do
     allow(subject).to receive(:oauth_app) { oauth_app }

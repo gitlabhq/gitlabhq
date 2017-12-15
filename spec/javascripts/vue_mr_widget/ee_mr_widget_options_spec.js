@@ -382,6 +382,7 @@ describe('ee merge request widget options', () => {
     describe('when it is loading', () => {
       it('should render loading indicator', () => {
         vm = mountComponent(Component);
+
         expect(
           vm.$el.querySelector('.js-docker-widget').textContent.trim(),
         ).toContain('Loading clair report');
@@ -389,21 +390,16 @@ describe('ee merge request widget options', () => {
     });
 
     describe('with successful request', () => {
-      const interceptor = (request, next) => {
-        if (request.url === 'clair.json') {
-          next(request.respondWith(JSON.stringify(dockerReport), {
-            status: 200,
-          }));
-        }
-      };
+      let mock;
 
       beforeEach(() => {
-        Vue.http.interceptors.push(interceptor);
+        mock = mock = new MockAdapter(axios);
+        mock.onGet('clair.json').reply(200, dockerReport);
         vm = mountComponent(Component);
       });
 
       afterEach(() => {
-        Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+        mock.reset();
       });
 
       it('should render provided data', (done) => {
@@ -433,21 +429,16 @@ describe('ee merge request widget options', () => {
     });
 
     describe('with failed request', () => {
-      const interceptor = (request, next) => {
-        if (request.url === 'clair.json') {
-          next(request.respondWith({}, {
-            status: 500,
-          }));
-        }
-      };
+      let mock;
 
       beforeEach(() => {
-        Vue.http.interceptors.push(interceptor);
+        mock = mock = new MockAdapter(axios);
+        mock.onGet('clair.json').reply(500, {});
         vm = mountComponent(Component);
       });
 
       afterEach(() => {
-        Vue.http.interceptors = _.without(Vue.http.interceptors, interceptor);
+        mock.reset();
       });
 
       it('should render error indicator', (done) => {

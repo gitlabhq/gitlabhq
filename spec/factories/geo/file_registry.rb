@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :geo_file_registry, class: Geo::FileRegistry do
     sequence(:file_id)
     file_type :file
