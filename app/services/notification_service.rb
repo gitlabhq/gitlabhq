@@ -328,8 +328,6 @@ class NotificationService
       target: pipeline
     ).map(&:notification_email)
 
-    raise recipients
-
     if recipients.any?
       mailer.public_send(email_template, pipeline, recipients).deliver_later
     end
