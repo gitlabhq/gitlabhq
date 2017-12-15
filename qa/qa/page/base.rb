@@ -10,6 +10,18 @@ module QA
         visit current_url
       end
 
+      def wait(css = '.application', time: 60)
+        Time.now.tap do |start|
+          while Time.now - start < time
+            break if page.has_css?(css, wait: 5)
+
+            refresh
+          end
+        end
+
+        yield if block_given?
+      end
+
       def scroll_to(selector, text: nil)
         page.execute_script <<~JS
           var elements = Array.from(document.querySelectorAll('#{selector}'));
@@ -23,6 +35,10 @@ module QA
         JS
 
         page.within(selector) { yield } if block_given?
+      end
+
+      def self.path
+        raise NotImplementedError
       end
     end
   end

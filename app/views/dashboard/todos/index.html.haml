@@ -83,12 +83,12 @@
         You're all done!
   - elsif current_user.todos.any?
     .todos-all-done
-      .svg-content
+      .svg-content.svg-250
         = image_tag 'illustrations/todos_all_done.svg'
       - if todos_filter_empty?
         %h4.text-center
           = Gitlab.config.gitlab.no_todos_messages.sample
-        %p.text-center
+        %p
           Are you looking for things to do? Take a look at
           = succeed "," do
             = link_to "the opened issues", issues_dashboard_path
@@ -104,7 +104,7 @@
         = image_tag 'illustrations/todos_empty.svg'
       .todos-empty-content
         %h4
-          Todos let you see what you should do next.
+          Todos let you see what you should do next
         %p
           When an issue or merge request is assigned to you, or when you
           %strong

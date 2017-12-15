@@ -1,0 +1,6 @@
+---
+title: check the import_status field before doing SQL operations to check the import
+  url
+merge_request:
+author:
+type: performance

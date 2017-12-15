@@ -116,11 +116,6 @@ input[type="checkbox"]:hover {
       opacity: 0;
       display: block;
       left: -5px;
-      padding: 0;
-
-      ul {
-        padding: 10px 0;
-      }
     }
 
     .dropdown-content {
@@ -185,8 +180,6 @@ input[type="checkbox"]:hover {
 }
 
 .search-holder {
-  @include new-style-dropdown;
-
   @media (min-width: $screen-sm-min) {
     display: -webkit-flex;
     display: flex;

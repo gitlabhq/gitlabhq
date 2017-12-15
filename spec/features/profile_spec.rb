@@ -25,7 +25,7 @@ describe 'Profile account page', :js do
 
       fill_in 'password', with: '12345678'
 
-      page.within '.popup-dialog' do
+      page.within '.modal' do
         click_button 'Delete account'
       end
 
@@ -38,7 +38,7 @@ describe 'Profile account page', :js do
 
       fill_in 'password', with: 'testing123'
 
-      page.within '.popup-dialog' do
+      page.within '.modal' do
         click_button 'Delete account'
       end
 

@@ -11,7 +11,7 @@ export default class ShortcutsIssuable extends ShortcutsNavigation {
     super();
 
     this.$replyField = isMergeRequest ? $('.js-main-target-form #note_note') : $('.js-main-target-form .js-vue-comment-form');
-    this.editBtn = document.querySelector('.issuable-edit');
+    this.editBtn = document.querySelector('.js-issuable-edit');
 
     Mousetrap.bind('a', () => ShortcutsIssuable.openSidebarDropdown('assignee'));
     Mousetrap.bind('m', () => ShortcutsIssuable.openSidebarDropdown('milestone'));

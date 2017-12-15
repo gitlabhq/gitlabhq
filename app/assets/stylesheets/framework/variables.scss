@@ -245,9 +245,6 @@ $btn-sm-side-margin: 7px;
 $btn-xs-side-margin: 5px;
 $issue-status-expired: $orange-500;
 $issuable-sidebar-color: $gl-text-color-secondary;
-$show-aside-bg: #eee;
-$show-aside-color: #777;
-$show-aside-shadow: #ddd;
 $group-path-color: #999;
 $namespace-kind-color: #aaa;
 $panel-heading-link-color: #777;
@@ -721,7 +718,7 @@ $issuable-warning-icon-margin: 4px;
 Image Commenting cursor
 */
 $image-comment-cursor-left-offset: 12;
-$image-comment-cursor-top-offset: 30;
+$image-comment-cursor-top-offset: 12;
 
 /*
 Popup

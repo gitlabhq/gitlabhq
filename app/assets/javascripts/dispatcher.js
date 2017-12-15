@@ -15,8 +15,8 @@ import GroupLabelSubscription from './group_label_subscription';
 import BuildArtifacts from './build_artifacts';
 import CILintEditor from './ci_lint_editor';
 import groupsSelect from './groups_select';
-/* global Search */
-/* global Admin */
+import Search from './search';
+import initAdmin from './admin';
 import NamespaceSelect from './namespace_select';
 import NewCommitForm from './new_commit_form';
 import Project from './project';
@@ -24,7 +24,7 @@ import projectAvatar from './project_avatar';
 /* global MergeRequest */
 import Compare from './compare';
 import initCompareAutocomplete from './compare_autocomplete';
-/* global ProjectFindFile */
+import ProjectFindFile from './project_find_file';
 import ProjectNew from './project_new';
 import projectImport from './project_import';
 import Labels from './labels';
@@ -91,6 +91,8 @@ import DueDateSelectors from './due_date_select';
 import Diff from './diff';
 import ProjectLabelSubscription from './project_label_subscription';
 import ProjectVariables from './project_variables';
+import SearchAutocomplete from './search_autocomplete';
+import Activities from './activities';
 
 (function() {
   var Dispatcher;
@@ -335,7 +337,7 @@ import ProjectVariables from './project_variables';
           shortcut_handler = new ShortcutsIssuable(true);
           break;
         case 'dashboard:activity':
-          new gl.Activities();
+          new Activities();
           break;
         case 'projects:commit:show':
           new Diff();
@@ -356,7 +358,7 @@ import ProjectVariables from './project_variables';
           $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
         case 'projects:activity':
-          new gl.Activities();
+          new Activities();
           shortcut_handler = new ShortcutsNavigation();
           break;
         case 'projects:commits:show':
@@ -374,7 +376,7 @@ import ProjectVariables from './project_variables';
 
           if ($('#tree-slider').length) new TreeView();
           if ($('.blob-viewer').length) new BlobViewer();
-          if ($('.project-show-activity').length) new gl.Activities();
+          if ($('.project-show-activity').length) new Activities();
           $('#tree-slider').waitForImages(function() {
             ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
           });
@@ -408,7 +410,7 @@ import ProjectVariables from './project_variables';
           });
           break;
         case 'groups:activity':
-          new gl.Activities();
+          new Activities();
           break;
         case 'groups:show':
           const newGroupChildWrapper = document.querySelector('.js-new-project-subgroup');
@@ -585,7 +587,7 @@ import ProjectVariables from './project_variables';
           // needed in rspec
           gl.u2fAuthenticate = u2fAuthenticate;
         case 'admin':
-          new Admin();
+          initAdmin();
           switch (path[1]) {
             case 'broadcast_messages':
               initBroadcastMessagesForm();
@@ -685,7 +687,7 @@ import ProjectVariables from './project_variables';
     Dispatcher.prototype.initSearch = function() {
       // Only when search form is present
       if ($('.search').length) {
-        return new gl.SearchAutocomplete();
+        return new SearchAutocomplete();
       }
     };
 

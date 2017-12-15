@@ -1,7 +1,7 @@
-.page-with-sidebar{ class: page_with_sidebar_class }
+.layout-page{ class: page_with_sidebar_class }
   - if defined?(nav) && nav
     = render "layouts/nav/sidebar/#{nav}"
-  .content-wrapper.page-with-new-nav
+  .content-wrapper
     = render 'shared/outdated_browser'
     .mobile-overlay
     .alert-wrapper

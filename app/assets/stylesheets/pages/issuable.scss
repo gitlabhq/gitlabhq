@@ -488,12 +488,6 @@
     }
   }
 
-  .dropdown-content {
-    a:hover {
-      color: inherit;
-    }
-  }
-
   .dropdown-menu-toggle {
     width: 100%;
     padding-top: 6px;
@@ -510,10 +504,6 @@
   .issuable-sidebar {
     height: calc(100% - #{$header-height} - #{$performance-bar-height});
   }
-}
-
-.sidebar-move-issue-dropdown {
-  @include new-style-dropdown;
 }
 
 .sidebar-move-issue-confirmation-button {
@@ -620,11 +610,19 @@
 }
 
 .issuable-status-box {
-  float: none;
-  display: inline-block;
+  align-self: stretch;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   margin-top: 0;
-  height: auto;
-  align-self: center;
+  padding-left: 9px;
+  padding-right: 9px;
+
+  @media (min-width: $screen-sm-min) {
+    display: inline-block;
+    height: auto;
+    align-self: center;
+  }
 }
 
 .issuable-gutter-toggle {

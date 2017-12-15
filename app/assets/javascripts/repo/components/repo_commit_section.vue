@@ -2,12 +2,12 @@
 import { mapGetters, mapState, mapActions } from 'vuex';
 import tooltip from '../../vue_shared/directives/tooltip';
 import icon from '../../vue_shared/components/icon.vue';
-import PopupDialog from '../../vue_shared/components/popup_dialog.vue';
+import modal from '../../vue_shared/components/modal.vue';
 import commitFilesList from './commit_sidebar/list.vue';
 
 export default {
   components: {
-    PopupDialog,
+    modal,
     icon,
     commitFilesList,
   },
@@ -16,7 +16,7 @@ export default {
   },
   data() {
     return {
-      showNewBranchDialog: false,
+      showNewBranchModal: false,
       submitCommitsLoading: false,
       startNewMR: false,
       commitMessage: '',
@@ -58,7 +58,7 @@ export default {
         start_branch: createNewBranch ? this.currentBranch : undefined,
       };
 
-      this.showNewBranchDialog = false;
+      this.showNewBranchModal = false;
       this.submitCommitsLoading = true;
 
       this.commitChanges({ payload, newMr: this.startNewMR })
@@ -76,7 +76,7 @@ export default {
       this.checkCommitStatus()
         .then((branchChanged) => {
           if (branchChanged) {
-            this.showNewBranchDialog = true;
+            this.showNewBranchModal = true;
           } else {
             this.makeCommit();
           }
@@ -99,13 +99,13 @@ export default {
     'is-collapsed': collapsed,
   }"
 >
-  <popup-dialog
-    v-if="showNewBranchDialog"
+  <modal
+    v-if="showNewBranchModal"
     :primary-button-label="__('Create new branch')"
     kind="primary"
     :title="__('Branch has changed')"
     :text="__('This branch has changed since you started editing. Would you like to create a new branch?')"
-    @toggle="showNewBranchDialog = false"
+    @toggle="showNewBranchModal = false"
     @submit="makeCommit(true)"
   />
   <button

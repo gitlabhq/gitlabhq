@@ -9,7 +9,7 @@ module QA
       end
 
       before do
-        Page::Main::Entry.act { visit_login_page }
+        Runtime::Browser.visit(:gitlab, Page::Main::Login)
         Page::Main::Login.act { sign_in_using_credentials }
 
         Scenario::Gitlab::Project::Create.perform do |scenario|

@@ -286,8 +286,6 @@
 
 // Pipeline visualization
 .pipeline-actions {
-  @include new-style-dropdown;
-
   border-bottom: 0;
 }
 
@@ -703,9 +701,6 @@ button.mini-pipeline-graph-dropdown-toggle {
   }
 }
 
-@include new-style-dropdown('.big-pipeline-graph-dropdown-menu');
-@include new-style-dropdown('.mini-pipeline-graph-dropdown-menu');
-
 // dropdown content for big and mini pipeline
 .big-pipeline-graph-dropdown-menu,
 .mini-pipeline-graph-dropdown-menu {
@@ -804,7 +799,6 @@ button.mini-pipeline-graph-dropdown-toggle {
       font-weight: normal;
       line-height: $line-height-base;
       white-space: nowrap;
-      border-radius: 3px;
 
       .ci-job-name-component {
         align-items: center;

@@ -132,11 +132,9 @@ describe Ci::Build do
   end
 
   describe '#artifacts?' do
+    subject { build.artifacts? }
+
     context 'when new artifacts are used' do
-      let(:build) { create(:ci_build, :artifacts) }
-
-      subject { build.artifacts? }
-
       context 'artifacts archive does not exist' do
         let(:build) { create(:ci_build) }
 
@@ -144,25 +142,19 @@ describe Ci::Build do
       end
 
       context 'artifacts archive exists' do
+        let(:build) { create(:ci_build, :artifacts) }
+
         it { is_expected.to be_truthy }
 
         context 'is expired' do
-          let!(:build) { create(:ci_build, :artifacts, :expired) }
+          let(:build) { create(:ci_build, :artifacts, :expired) }
 
           it { is_expected.to be_falsy }
-        end
-
-        context 'is not expired' do
-          it { is_expected.to be_truthy }
         end
       end
     end
 
     context 'when legacy artifacts are used' do
-      let(:build) { create(:ci_build, :legacy_artifacts) }
-
-      subject { build.artifacts? }
-
       context 'artifacts archive does not exist' do
         let(:build) { create(:ci_build) }
 
@@ -170,16 +162,14 @@ describe Ci::Build do
       end
 
       context 'artifacts archive exists' do
+        let(:build) { create(:ci_build, :legacy_artifacts) }
+
         it { is_expected.to be_truthy }
 
         context 'is expired' do
-          let!(:build) { create(:ci_build, :legacy_artifacts, :expired) }
+          let(:build) { create(:ci_build, :legacy_artifacts, :expired) }
 
           it { is_expected.to be_falsy }
-        end
-
-        context 'is not expired' do
-          it { is_expected.to be_truthy }
         end
       end
     end
@@ -1871,9 +1861,9 @@ describe Ci::Build do
   describe 'state transition: any => [:running]' do
     shared_examples 'validation is active' do
       context 'when depended job has not been completed yet' do
-        let!(:pre_stage_job) { create(:ci_build, :running, pipeline: pipeline, name: 'test', stage_idx: 0) }
+        let!(:pre_stage_job) { create(:ci_build, :manual, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
-        it { expect { job.run! }.to raise_error(Ci::Build::MissingDependenciesError) }
+        it { expect { job.run! }.not_to raise_error(Ci::Build::MissingDependenciesError) }
       end
 
       context 'when artifacts of depended job has been expired' do
@@ -1895,11 +1885,10 @@ describe Ci::Build do
 
     shared_examples 'validation is not active' do
       context 'when depended job has not been completed yet' do
-        let!(:pre_stage_job) { create(:ci_build, :running, pipeline: pipeline, name: 'test', stage_idx: 0) }
+        let!(:pre_stage_job) { create(:ci_build, :manual, pipeline: pipeline, name: 'test', stage_idx: 0) }
 
         it { expect { job.run! }.not_to raise_error }
       end
-
       context 'when artifacts of depended job has been expired' do
         let!(:pre_stage_job) { create(:ci_build, :success, :expired, pipeline: pipeline, name: 'test', stage_idx: 0) }
 

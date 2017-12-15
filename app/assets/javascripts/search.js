@@ -1,118 +1,113 @@
-/* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, one-var-declaration-per-line, object-shorthand, prefer-arrow-callback, comma-dangle, prefer-template, quotes, no-else-return, max-len */
 import Flash from './flash';
 import Api from './api';
 
-(function() {
-  this.Search = (function() {
-    function Search() {
-      var $groupDropdown, $projectDropdown;
-      $groupDropdown = $('.js-search-group-dropdown');
-      $projectDropdown = $('.js-search-project-dropdown');
-      this.groupId = $groupDropdown.data('group-id');
-      this.eventListeners();
-      $groupDropdown.glDropdown({
-        selectable: true,
-        filterable: true,
-        fieldName: 'group_id',
-        search: {
-          fields: ['full_name']
-        },
-        data: function(term, callback) {
-          return Api.groups(term, {}, function(data) {
+export default class Search {
+  constructor() {
+    const $groupDropdown = $('.js-search-group-dropdown');
+    const $projectDropdown = $('.js-search-project-dropdown');
+
+    this.searchInput = '.js-search-input';
+    this.searchClear = '.js-search-clear';
+
+    this.groupId = $groupDropdown.data('group-id');
+    this.eventListeners();
+
+    $groupDropdown.glDropdown({
+      selectable: true,
+      filterable: true,
+      fieldName: 'group_id',
+      search: {
+        fields: ['full_name'],
+      },
+      data(term, callback) {
+        return Api.groups(term, {}, (data) => {
+          data.unshift({
+            full_name: 'Any',
+          });
+          data.splice(1, 0, 'divider');
+          return callback(data);
+        });
+      },
+      id(obj) {
+        return obj.id;
+      },
+      text(obj) {
+        return obj.full_name;
+      },
+      toggleLabel(obj) {
+        return `${($groupDropdown.data('default-label'))} ${obj.full_name}`;
+      },
+      clicked: () => Search.submitSearch(),
+    });
+
+    $projectDropdown.glDropdown({
+      selectable: true,
+      filterable: true,
+      fieldName: 'project_id',
+      search: {
+        fields: ['name'],
+      },
+      data: (term, callback) => {
+        this.getProjectsData(term)
+          .then((data) => {
             data.unshift({
-              full_name: 'Any'
+              name_with_namespace: 'Any',
             });
             data.splice(1, 0, 'divider');
-            return callback(data);
-          });
-        },
-        id: function(obj) {
-          return obj.id;
-        },
-        text: function(obj) {
-          return obj.full_name;
-        },
-        toggleLabel: function(obj) {
-          return ($groupDropdown.data('default-label')) + " " + obj.full_name;
-        },
-        clicked: (function(_this) {
-          return function() {
-            return _this.submitSearch();
-          };
-        })(this)
-      });
-      $projectDropdown.glDropdown({
-        selectable: true,
-        filterable: true,
-        fieldName: 'project_id',
-        search: {
-          fields: ['name']
-        },
-        data: (term, callback) => {
-          this.getProjectsData(term)
-            .then((data) => {
-              data.unshift({
-                name_with_namespace: 'Any'
-              });
-              data.splice(1, 0, 'divider');
 
-              return data;
-            })
-            .then(data => callback(data))
-            .catch(() => new Flash('Error fetching projects'));
-        },
-        id: function(obj) {
-          return obj.id;
-        },
-        text: function(obj) {
-          return obj.name_with_namespace;
-        },
-        toggleLabel: function(obj) {
-          return ($projectDropdown.data('default-label')) + " " + obj.name_with_namespace;
-        },
-        clicked: (function(_this) {
-          return function() {
-            return _this.submitSearch();
-          };
-        })(this)
-      });
+            return data;
+          })
+          .then(data => callback(data))
+          .catch(() => new Flash('Error fetching projects'));
+      },
+      id(obj) {
+        return obj.id;
+      },
+      text(obj) {
+        return obj.name_with_namespace;
+      },
+      toggleLabel(obj) {
+        return `${($projectDropdown.data('default-label'))} ${obj.name_with_namespace}`;
+      },
+      clicked: () => Search.submitSearch(),
+    });
+  }
+
+  eventListeners() {
+    $(document)
+      .off('keyup', this.searchInput)
+      .on('keyup', this.searchInput, this.searchKeyUp);
+    $(document)
+      .off('click', this.searchClear)
+      .on('click', this.searchClear, this.clearSearchField.bind(this));
+  }
+
+  static submitSearch() {
+    return $('.js-search-form').submit();
+  }
+
+  searchKeyUp() {
+    const $input = $(this);
+    if ($input.val() === '') {
+      $('.js-search-clear').addClass('hidden');
+    } else {
+      $('.js-search-clear').removeClass('hidden');
     }
+  }
 
-    Search.prototype.eventListeners = function() {
-      $(document).off('keyup', '.js-search-input').on('keyup', '.js-search-input', this.searchKeyUp);
-      return $(document).off('click', '.js-search-clear').on('click', '.js-search-clear', this.clearSearchField);
-    };
+  clearSearchField() {
+    return $(this.searchInput).val('').trigger('keyup').focus();
+  }
 
-    Search.prototype.submitSearch = function() {
-      return $('.js-search-form').submit();
-    };
-
-    Search.prototype.searchKeyUp = function() {
-      var $input;
-      $input = $(this);
-      if ($input.val() === '') {
-        return $('.js-search-clear').addClass('hidden');
+  getProjectsData(term) {
+    return new Promise((resolve) => {
+      if (this.groupId) {
+        Api.groupProjects(this.groupId, term, resolve);
       } else {
-        return $('.js-search-clear').removeClass('hidden');
+        Api.projects(term, {
+          order_by: 'id',
+        }, resolve);
       }
-    };
-
-    Search.prototype.clearSearchField = function() {
-      return $('.js-search-input').val('').trigger('keyup').focus();
-    };
-
-    Search.prototype.getProjectsData = function(term) {
-      return new Promise((resolve) => {
-        if (this.groupId) {
-          Api.groupProjects(this.groupId, term, resolve);
-        } else {
-          Api.projects(term, {
-            order_by: 'id',
-          }, resolve);
-        }
-      });
-    };
-
-    return Search;
-  })();
-}).call(window);
+    });
+  }
+}

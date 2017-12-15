@@ -1,11 +1,11 @@
 import Vue from 'vue';
-import PopupDialog from '~/vue_shared/components/popup_dialog.vue';
+import modal from '~/vue_shared/components/modal.vue';
 import mountComponent from '../../helpers/vue_mount_component_helper';
 
-describe('PopupDialog', () => {
+describe('Modal', () => {
   it('does not render a primary button if no primaryButtonLabel', () => {
-    const popupDialog = Vue.extend(PopupDialog);
-    const vm = mountComponent(popupDialog);
+    const modalComponent = Vue.extend(modal);
+    const vm = mountComponent(modalComponent);
 
     expect(vm.$el.querySelector('.js-primary-button')).toBeNull();
   });

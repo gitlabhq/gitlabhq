@@ -121,9 +121,7 @@
         // we need to do this to prevent noteForm inconsistent content warning
         // this is something we intentionally do so we need to recover the content
         this.note.note = noteText;
-        if (this.$refs.noteBody) {
-          this.$refs.noteBody.$refs.noteForm.note = noteText; // TODO: This could be better
-        }
+        this.$refs.noteBody.$refs.noteForm.note = noteText;
       },
     },
     created() {

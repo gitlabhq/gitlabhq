@@ -328,138 +328,212 @@ export const loggedOutnoteableData = {
   "preview_note_path": "/gitlab-org/gitlab-ce/preview_markdown?quick_actions_target_id=98&quick_actions_target_type=Issue"
 }
 
-export const individualNoteServerResponse = [{
-  "id": "0fb4e0e3f9276e55ff32eb4195add694aece4edd",
-  "reply_id": "0fb4e0e3f9276e55ff32eb4195add694aece4edd",
-  "expanded": true,
-  "notes": [{
-    "id": 1390,
-    "attachment": {
-      "url": null,
-      "filename": null,
-      "image": false
-    },
-    "author": {
-      "id": 1,
-      "name": "Root",
-      "username": "root",
-      "state": "active",
-      "avatar_url": null,
-      "path": "/root"
-    },
-    "created_at": "2017-08-01T17:09:33.762Z",
-    "updated_at": "2017-08-01T17:09:33.762Z",
-    "system": false,
-    "noteable_id": 98,
-    "noteable_type": "Issue",
-    "type": null,
-    "human_access": "Owner",
-    "note": "sdfdsaf",
-    "note_html": "\u003cp dir=\"auto\"\u003esdfdsaf\u003c/p\u003e",
-    "current_user": {
-      "can_edit": true
-    },
-    "discussion_id": "0fb4e0e3f9276e55ff32eb4195add694aece4edd",
-    "emoji_awardable": true,
-    "award_emoji": [{
-      "name": "baseball",
-      "user": {
-        "id": 1,
-        "name": "Root",
-        "username": "root"
-      }
-    }, {
-      "name": "art",
-      "user": {
-        "id": 1,
-        "name": "Root",
-        "username": "root"
-      }
+export const INDIVIDUAL_NOTE_RESPONSE_MAP = {
+  'GET': {
+    '/gitlab-org/gitlab-ce/issues/26/discussions.json': [{
+      "id": "0fb4e0e3f9276e55ff32eb4195add694aece4edd",
+      "reply_id": "0fb4e0e3f9276e55ff32eb4195add694aece4edd",
+      "expanded": true,
+      "notes": [{
+        "id": 1390,
+        "attachment": {
+          "url": null,
+          "filename": null,
+          "image": false
+        },
+        "author": {
+          "id": 1,
+          "name": "Root",
+          "username": "root",
+          "state": "active",
+          "avatar_url": null,
+          "path": "/root"
+        },
+        "created_at": "2017-08-01T17:09:33.762Z",
+        "updated_at": "2017-08-01T17:09:33.762Z",
+        "system": false,
+        "noteable_id": 98,
+        "noteable_type": "Issue",
+        "type": null,
+        "human_access": "Owner",
+        "note": "sdfdsaf",
+        "note_html": "\u003cp dir=\"auto\"\u003esdfdsaf\u003c/p\u003e",
+        "current_user": {
+          "can_edit": true
+        },
+        "discussion_id": "0fb4e0e3f9276e55ff32eb4195add694aece4edd",
+        "emoji_awardable": true,
+        "award_emoji": [{
+          "name": "baseball",
+          "user": {
+            "id": 1,
+            "name": "Root",
+            "username": "root"
+          }
+        }, {
+          "name": "art",
+          "user": {
+            "id": 1,
+            "name": "Root",
+            "username": "root"
+          }
+        }],
+        "toggle_award_path": "/gitlab-org/gitlab-ce/notes/1390/toggle_award_emoji",
+        "report_abuse_path": "/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F26%23note_1390\u0026user_id=1",
+        "path": "/gitlab-org/gitlab-ce/notes/1390"
+      }],
+      "individual_note": true
+      }, {
+      "id": "70d5c92a4039a36c70100c6691c18c27e4b0a790",
+      "reply_id": "70d5c92a4039a36c70100c6691c18c27e4b0a790",
+      "expanded": true,
+      "notes": [{
+        "id": 1391,
+        "attachment": {
+          "url": null,
+          "filename": null,
+          "image": false
+        },
+        "author": {
+          "id": 1,
+          "name": "Root",
+          "username": "root",
+          "state": "active",
+          "avatar_url": null,
+          "path": "/root"
+        },
+        "created_at": "2017-08-02T10:51:38.685Z",
+        "updated_at": "2017-08-02T10:51:38.685Z",
+        "system": false,
+        "noteable_id": 98,
+        "noteable_type": "Issue",
+        "type": null,
+        "human_access": "Owner",
+        "note": "New note!",
+        "note_html": "\u003cp dir=\"auto\"\u003eNew note!\u003c/p\u003e",
+        "current_user": {
+          "can_edit": true
+        },
+        "discussion_id": "70d5c92a4039a36c70100c6691c18c27e4b0a790",
+        "emoji_awardable": true,
+        "award_emoji": [],
+        "toggle_award_path": "/gitlab-org/gitlab-ce/notes/1391/toggle_award_emoji",
+        "report_abuse_path": "/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F26%23note_1391\u0026user_id=1",
+        "path": "/gitlab-org/gitlab-ce/notes/1391"
+      }],
+      "individual_note": true
     }],
-    "toggle_award_path": "/gitlab-org/gitlab-ce/notes/1390/toggle_award_emoji",
-    "report_abuse_path": "/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F26%23note_1390\u0026user_id=1",
-    "path": "/gitlab-org/gitlab-ce/notes/1390"
-  }],
-  "individual_note": true
-  }, {
-  "id": "70d5c92a4039a36c70100c6691c18c27e4b0a790",
-  "reply_id": "70d5c92a4039a36c70100c6691c18c27e4b0a790",
-  "expanded": true,
-  "notes": [{
-    "id": 1391,
-    "attachment": {
-      "url": null,
-      "filename": null,
-      "image": false
+    '/gitlab-org/gitlab-ce/noteable/issue/98/notes': {
+      last_fetched_at: 1512900838,
+      notes: [],
     },
-    "author": {
-      "id": 1,
-      "name": "Root",
-      "username": "root",
-      "state": "active",
-      "avatar_url": null,
-      "path": "/root"
+  },
+  'PUT': {
+    '/gitlab-org/gitlab-ce/notes/1471': {
+      "commands_changes": null,
+      "valid": true,
+      "id": 1471,
+      "attachment": null,
+      "author": {
+        "id": 1,
+        "name": "Root",
+        "username": "root",
+        "state": "active",
+        "avatar_url": null,
+        "path": "/root"
+      },
+      "created_at": "2017-08-08T16:53:00.666Z",
+      "updated_at": "2017-12-10T11:03:21.876Z",
+      "system": false,
+      "noteable_id": 124,
+      "noteable_type": "Issue",
+      "noteable_iid": 29,
+      "type": "DiscussionNote",
+      "human_access": "Owner",
+      "note": "Adding a comment",
+      "note_html": "\u003cp dir=\"auto\"\u003eAdding a comment\u003c/p\u003e",
+      "last_edited_at": "2017-12-10T11:03:21.876Z",
+      "last_edited_by": {
+        "id": 1,
+        "name": 'Root',
+        "username": 'root',
+        "state": 'active',
+        "avatar_url": null,
+        "path": '/root',
+      },
+      "current_user": {
+        "can_edit": true
+      },
+      "discussion_id": "a3ed36e29b1957efb3b68c53e2d7a2b24b1df052",
+      "emoji_awardable": true,
+      "award_emoji": [],
+      "toggle_award_path": "/gitlab-org/gitlab-ce/notes/1471/toggle_award_emoji",
+      "report_abuse_path": "/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F29%23note_1471\u0026user_id=1",
+      "path": "/gitlab-org/gitlab-ce/notes/1471"
     },
-    "created_at": "2017-08-02T10:51:38.685Z",
-    "updated_at": "2017-08-02T10:51:38.685Z",
-    "system": false,
-    "noteable_id": 98,
-    "noteable_type": "Issue",
-    "type": null,
-    "human_access": "Owner",
-    "note": "New note!",
-    "note_html": "\u003cp dir=\"auto\"\u003eNew note!\u003c/p\u003e",
-    "current_user": {
-      "can_edit": true
-    },
-    "discussion_id": "70d5c92a4039a36c70100c6691c18c27e4b0a790",
-    "emoji_awardable": true,
-    "award_emoji": [],
-    "toggle_award_path": "/gitlab-org/gitlab-ce/notes/1391/toggle_award_emoji",
-    "report_abuse_path": "/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F26%23note_1391\u0026user_id=1",
-    "path": "/gitlab-org/gitlab-ce/notes/1391"
-  }],
-  "individual_note": true
-}];
+  }
+};
 
-export const discussionNoteServerResponse = [{
-  "id": "a3ed36e29b1957efb3b68c53e2d7a2b24b1df052",
-  "reply_id": "a3ed36e29b1957efb3b68c53e2d7a2b24b1df052",
-  "expanded": true,
-  "notes": [{
-    "id": 1471,
-    "attachment": {
-      "url": null,
-      "filename": null,
-      "image": false
-    },
-    "author": {
-      "id": 1,
-      "name": "Root",
-      "username": "root",
-      "state": "active",
-      "avatar_url": null,
-      "path": "/root"
-    },
-    "created_at": "2017-08-08T16:53:00.666Z",
-    "updated_at": "2017-08-08T16:53:00.666Z",
-    "system": false,
-    "noteable_id": 124,
-    "noteable_type": "Issue",
-    "noteable_iid": 29,
-    "type": "DiscussionNote",
-    "human_access": "Owner",
-    "note": "Adding a comment",
-    "note_html": "\u003cp dir=\"auto\"\u003eAdding a comment\u003c/p\u003e",
-    "current_user": {
-      "can_edit": true
-    },
-    "discussion_id": "a3ed36e29b1957efb3b68c53e2d7a2b24b1df052",
-    "emoji_awardable": true,
-    "award_emoji": [],
-    "toggle_award_path": "/gitlab-org/gitlab-ce/notes/1471/toggle_award_emoji",
-    "report_abuse_path": "/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F29%23note_1471\u0026user_id=1",
-    "path": "/gitlab-org/gitlab-ce/notes/1471"
-  }],
-  "individual_note": false
-}];
+export const DISCUSSION_NOTE_RESPONSE_MAP = {
+  ...INDIVIDUAL_NOTE_RESPONSE_MAP,
+  'GET': {
+    ...INDIVIDUAL_NOTE_RESPONSE_MAP.GET,
+    '/gitlab-org/gitlab-ce/issues/26/discussions.json': [{
+      "id": "a3ed36e29b1957efb3b68c53e2d7a2b24b1df052",
+      "reply_id": "a3ed36e29b1957efb3b68c53e2d7a2b24b1df052",
+      "expanded": true,
+      "notes": [{
+        "id": 1471,
+        "attachment": {
+          "url": null,
+          "filename": null,
+          "image": false
+        },
+        "author": {
+          "id": 1,
+          "name": "Root",
+          "username": "root",
+          "state": "active",
+          "avatar_url": null,
+          "path": "/root"
+        },
+        "created_at": "2017-08-08T16:53:00.666Z",
+        "updated_at": "2017-08-08T16:53:00.666Z",
+        "system": false,
+        "noteable_id": 124,
+        "noteable_type": "Issue",
+        "noteable_iid": 29,
+        "type": "DiscussionNote",
+        "human_access": "Owner",
+        "note": "Adding a comment",
+        "note_html": "\u003cp dir=\"auto\"\u003eAdding a comment\u003c/p\u003e",
+        "current_user": {
+          "can_edit": true
+        },
+        "discussion_id": "a3ed36e29b1957efb3b68c53e2d7a2b24b1df052",
+        "emoji_awardable": true,
+        "award_emoji": [],
+        "toggle_award_path": "/gitlab-org/gitlab-ce/notes/1471/toggle_award_emoji",
+        "report_abuse_path": "/abuse_reports/new?ref_url=http%3A%2F%2Flocalhost%3A3000%2Fgitlab-org%2Fgitlab-ce%2Fissues%2F29%23note_1471\u0026user_id=1",
+        "path": "/gitlab-org/gitlab-ce/notes/1471"
+      }],
+      "individual_note": false
+    }],
+  },
+};
+
+export function individualNoteInterceptor(request, next) {
+  const body = INDIVIDUAL_NOTE_RESPONSE_MAP[request.method.toUpperCase()][request.url];
+
+  next(request.respondWith(JSON.stringify(body), {
+    status: 200,
+  }));
+}
+
+export function discussionNoteInterceptor(request, next) {
+  const body = DISCUSSION_NOTE_RESPONSE_MAP[request.method.toUpperCase()][request.url];
+
+  next(request.respondWith(JSON.stringify(body), {
+    status: 200,
+  }));
+}
