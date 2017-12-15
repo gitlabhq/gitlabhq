@@ -44,9 +44,9 @@ module Gitlab
       end
 
       def abort_if_no_geo_config!
-        @geo_config_exists ||= File.exist?(Rails.root.join(GEO_DATABASE_CONFIG))
+        @geo_config_exists ||= File.exist?(Rails.root.join(GEO_DATABASE_CONFIG)) # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
-        unless @geo_config_exists
+        unless @geo_config_exists # rubocop:disable Gitlab/ModuleWithInstanceVariables
           abort("Failed to open #{GEO_DATABASE_CONFIG}. Consult the documentation on how to set up GitLab Geo.")
         end
       end

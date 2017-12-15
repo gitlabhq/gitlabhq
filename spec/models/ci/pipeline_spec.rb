@@ -120,7 +120,7 @@ describe Ci::Pipeline, :mailer do
     end
 
     it "calculates average when there is one build without coverage" do
-      FactoryGirl.create(:ci_build, pipeline: pipeline)
+      FactoryBot.create(:ci_build, pipeline: pipeline)
       expect(pipeline.coverage).to be_nil
     end
   end
@@ -439,7 +439,7 @@ describe Ci::Pipeline, :mailer do
 
     describe 'merge request metrics' do
       let(:project) { create(:project, :repository) }
-      let(:pipeline) { FactoryGirl.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
+      let(:pipeline) { FactoryBot.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
       let!(:merge_request) { create(:merge_request, source_project: project, source_branch: pipeline.ref) }
 
       before do

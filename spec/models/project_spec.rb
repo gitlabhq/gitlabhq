@@ -327,12 +327,12 @@ describe Project do
 
   describe 'project token' do
     it 'sets an random token if none provided' do
-      project = FactoryGirl.create :project, runners_token: ''
+      project = FactoryBot.create :project, runners_token: ''
       expect(project.runners_token).not_to eq('')
     end
 
     it 'does not set an random token if one provided' do
-      project = FactoryGirl.create :project, runners_token: 'my-token'
+      project = FactoryBot.create :project, runners_token: 'my-token'
       expect(project.runners_token).to eq('my-token')
     end
   end

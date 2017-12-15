@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :geo_node do
     # Start at a number higher than the current port to avoid the GeoNode
     # "lock out" validation

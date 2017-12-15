@@ -40,7 +40,7 @@ module ExtractsPath
   def extract_ref(id)
     pair = ['', '']
 
-    return pair unless @project
+    return pair unless @project # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
     if id =~ /^(\h{40})(.+)/
       # If the ref appears to be a SHA, we're done, just split the string
@@ -104,6 +104,7 @@ module ExtractsPath
   #
   # Automatically renders `not_found!` if a valid tree path could not be
   # resolved (e.g., when a user inserts an invalid path or ref).
+  # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def assign_ref_vars
     # assign allowed options
     allowed_options = ["filter_ref"]
@@ -131,9 +132,10 @@ module ExtractsPath
   rescue RuntimeError, NoMethodError, InvalidPathError
     render_404
   end
+  # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
   def tree
-    @tree ||= @repo.tree(@commit.id, @path)
+    @tree ||= @repo.tree(@commit.id, @path) # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 
   private
@@ -146,8 +148,8 @@ module ExtractsPath
   end
 
   def ref_names
-    return [] unless @project
+    return [] unless @project # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
-    @ref_names ||= @project.repository.ref_names
+    @ref_names ||= @project.repository.ref_names # rubocop:disable Gitlab/ModuleWithInstanceVariables
   end
 end

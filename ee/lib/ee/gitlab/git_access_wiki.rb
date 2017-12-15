@@ -6,7 +6,7 @@ module EE
       private
 
       def project_or_wiki
-        @project.wiki
+        project.wiki
       end
     end
   end

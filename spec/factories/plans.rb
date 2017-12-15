@@ -1,5 +1,5 @@
 # EE-only
-FactoryGirl.define do
+FactoryBot.define do
   factory :plan do
     factory :free_plan do
       name EE::Namespace::FREE_PLAN

@@ -107,6 +107,7 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
   - [Work In Progress Merge Requests](user/project/merge_requests/work_in_progress_merge_requests.md)
   - [Merge Request discussion resolution](user/discussions/index.md#moving-a-single-discussion-to-a-new-issue): Resolve discussions, move discussions in a merge request to an issue, only allow merge requests to be merged if all discussions are resolved.
   - **(EES/EEP)** [Merge Request approval](user/project/merge_requests/merge_request_approvals.md): Make sure every merge request is approved by one or more people before getting merged.
+  - **(EEU)** [Static Application Security Testing](user/project/merge_requests/sast.md): Scan your code for vulnerabilities and display the results in merge requests.
   - [Checkout merge requests locally](user/project/merge_requests/index.md#checkout-merge-requests-locally)
   - [Cherry-pick](user/project/merge_requests/cherry_pick_changes.md)
 - [Milestones](user/project/milestones/index.md): Organize issues and merge requests into a cohesive group, optionally setting a due date.

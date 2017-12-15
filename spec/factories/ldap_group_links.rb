@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :ldap_group_link do
     cn 'group1'
     group_access Gitlab::Access::GUEST

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :path_lock do
     project
     user

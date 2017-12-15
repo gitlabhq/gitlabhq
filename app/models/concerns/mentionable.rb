@@ -44,13 +44,11 @@ module Mentionable
   end
 
   def all_references(current_user = nil, extractor: nil)
-    @extractors ||= {}
-
     # Use custom extractor if it's passed in the function parameters.
     if extractor
-      @extractors[current_user] = extractor
+      extractors[current_user] = extractor
     else
-      extractor = @extractors[current_user] ||= Gitlab::ReferenceExtractor.new(project, current_user)
+      extractor = extractors[current_user] ||= Gitlab::ReferenceExtractor.new(project, current_user)
 
       extractor.reset_memoized_values
     end
@@ -67,6 +65,10 @@ module Mentionable
     end
 
     extractor
+  end
+
+  def extractors
+    @extractors ||= {}
   end
 
   def mentioned_users(current_user = nil)

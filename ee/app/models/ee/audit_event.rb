@@ -10,7 +10,7 @@ module EE
       return unless entity_type && entity_id
 
       # Avoiding exception if the record doesn't exist
-      @entity ||= entity_type.constantize.find_by_id(entity_id)
+      @entity ||= entity_type.constantize.find_by_id(entity_id) # rubocop:disable Gitlab/ModuleWithInstanceVariables
     end
 
     def present

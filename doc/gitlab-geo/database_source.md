@@ -6,12 +6,12 @@ using the Omnibus GitLab packages, follow the
 [**database replication for Omnibus GitLab**](database.md) guide.
 
 >**Note:**
-Stages of the setup process must be completed in the documented order.
+The stages of the setup process must be completed in the documented order.
 Before attempting the steps in this stage, [complete all prior stages][toc].
 
 This document describes the minimal steps you have to take in order to
-replicate your GitLab database into another server. You may have to change
-some values according to your database setup, how big it is, etc.
+replicate your primary GitLab database to a secondary node's database. You may
+have to change some values according to your database setup, how big it is, etc.
 
 You are encouraged to first read through all the steps before executing them
 in your testing/production environment.
@@ -26,19 +26,19 @@ connect to secondary database servers (which are read-only too).
 In many databases documentation you will see "primary" being referenced as "master"
 and "secondary" as either "slave" or "standby" server (read-only).
 
-Since GitLab 9.4: We recommend using [PostgreSQL replication
+We recommend using [PostgreSQL replication
 slots](https://medium.com/@tk512/replication-slots-in-postgresql-b4b03d277c75)
 to ensure the primary retains all the data necessary for the secondaries to
 recover. See below for more details.
 
-### Prerequisites
-
 The following guide assumes that:
 
-- You are using PostgreSQL 9.6 or later which includes the [`pg_basebackup` tool][pgback].
-- You have a primary server already set up (the GitLab server you are
-  replicating from), and you have a new secondary server set up on the same OS
-  and PostgreSQL version. Also make sure the GitLab version is the same on all nodes.
+- You are using PostgreSQL 9.6 or later
+  which includes the [`pg_basebackup` tool][pgback].
+- You have a primary node already set up (the GitLab server you are
+  replicating from), running PostgreSQL 9.6 or later, and
+  you have a new secondary server set up with the same versions of the OS,
+  PostgreSQL, and GitLab on all nodes.
 - The IP of the primary server for our examples will be `1.2.3.4`, whereas the
   secondary's IP will be `5.6.7.8`. Note that the primary and secondary servers
   **must** be able to communicate over these addresses. These IP addresses can either
@@ -48,7 +48,7 @@ The following guide assumes that:
 
 1. SSH into your GitLab **primary** server and login as root:
 
-    ```
+    ```bash
     sudo -i
     ```
 
@@ -58,13 +58,14 @@ The following guide assumes that:
     bundle exec rake geo:set_primary_node
     ```
 
-1. Create a replication user named `gitlab_replicator`:
+1. Create a [replication user](https://wiki.postgresql.org/wiki/Streaming_Replication) named `gitlab_replicator`:
 
     ```bash
     sudo -u postgres psql -c "CREATE USER gitlab_replicator REPLICATION ENCRYPTED PASSWORD 'thepassword';"
     ```
 
 1. Set up TLS support for the PostgreSQL primary server
+
     > **Warning**: Only skip this step if you **know** that PostgreSQL traffic
     > between the primary and secondary will be secured through some other
     > means, e.g., a known-safe physical network path or a site-to-site VPN that
@@ -185,7 +186,7 @@ The following guide assumes that:
     zone, but when the respective times are converted to UTC time, the clocks
     must be synchronized to within 60 seconds of each other.
 
-    If you are using Ubuntu, verify NTP sync is enabled:
+    Verify NTP sync is enabled, using:
 
     ```bash
     timedatectl status | grep 'NTP synchronized'
@@ -196,57 +197,15 @@ The following guide assumes that:
 
 ### Step 2. Add the secondary GitLab node
 
-To prevent the secondary geo node trying to act as the primary once the
-database is replicated, the secondary geo node must be configured on the
-primary before the database is replicated.
-
-1. Visit the **primary** node's **Admin Area ➔ Geo Nodes**
-   (`/admin/geo_nodes`) in your browser.
-1. Add the secondary node by providing its full URL. **Do NOT** check the box
-   'This is a primary node'.
-1. Optionally, choose which namespaces should be replicated by the
-   secondary node. Leave blank to replicate all. Read more in
-   [selective replication](#selective-replication).
-1. Click the **Add node** button.
-
-The new secondary geo node will have the status **Unhealthy**. This is expected
-because we have not yet configured the secondary server. This is the next step.
+Follow the steps in ["add the secondary GitLab node"](database.md#step-2-add-the-secondary-gitlab-node).
 
 ### Step 3. Configure the secondary server
 
-1. SSH into your GitLab **secondary** server and login as root:
-
-    ```
-    sudo -i
-    ```
-
-1. Set up PostgreSQL TLS verification on the secondary
-
-    Copy the generated `server.crt` file onto the secondary server from the
-    primary, then install it in the right place:
-
-    ```bash
-    install -D -o postgres -g postgres -m 0400 -T server.crt ~postgres/.postgresql/root.crt
-    ```
-
-    PostgreSQL will now only recognize that exact certificate when verifying TLS
-    connections. The certificate can only be replicated by someone with access
-    to the private key, which is **only** present on the primary node.
-
-1. Test that the remote connection to the primary server works:
-
-    ```
-    sudo -u postgres psql --list -U gitlab_replicator -d "dbname=gitlabhq_production sslmode=verify-ca" -W -h 1.2.3.4
-    ```
-
-    When prompted enter the password you set in the first step for the
-    `gitlab_replicator` user. If all worked correctly, you should see the
-    database prompt.
-
-    A failure to connect here indicates that the TLS or networking configuration
-    is incorrect. Ensure that you've used the correct certificates and IP
-    addresses throughout. If you have a firewall, ensure that the secondary is
-    permitted to access the primary on port 5432.
+Follow the first steps in ["configure the secondary server"](database.md#step-3-configure-the-secondary-server),
+but note that since you are installing from source, the username and
+group listed as `gitlab-psql` in those steps should be replaced by `postgres`
+instead. After completing the "Test that the remote connection to the
+primary server works" step, continue here:
 
 1. Edit `postgresql.conf` to configure the secondary for streaming replication
    (for Debian/Ubuntu that would be `/etc/postgresql/9.*/main/postgresql.conf`):
@@ -261,45 +220,26 @@ because we have not yet configured the secondary server. This is the next step.
 
 1. Restart PostgreSQL for the changes to take effect.
 
-1. Optional since GitLab 9.1, and required for GitLab 10.0 or higher:
-   [Enable tracking database on the secondary server](#enable-tracking-database-on-the-secondary-server)
-
-1. Otherwise, continue to [initiate the replication process](#step-3-initiate-the-replication-process).
-
-#### Enable tracking database on the secondary server
-
-Geo secondary nodes use a tracking database to keep track of replication status
-and recover automatically from some replication issues.
-
-It is added in GitLab 9.1, and since GitLab 10.0 it is required.
-
-1. Verify that clock synchronization is enabled.
-
-    >**Important:**
-    For Geo to work correctly, all nodes must have their clocks
-    synchronized. It is not required for all nodes to be set to the same time
-    zone, but when the respective times are converted to UTC time, the clocks
-    must be synchronized to within 60 seconds of each other.
-
-    If you are using Ubuntu, verify NTP sync is enabled:
+1. Verify that clock synchronization is enabled, using:
 
     ```bash
     timedatectl status | grep 'NTP synchronized'
     ```
 
-    Refer to your Linux distribution documentation to setup clock
-    synchronization. This can easily be done using any NTP-compatible daemon.
+#### Enable tracking database on the secondary server
 
-1. Create `database_geo.yml` with the information of your secondary PostgreSQL
-   database.  Note that GitLab will set up another database instance separate
-   from the primary, since this is where the secondary will track its internal
-   state:
+Geo secondary nodes use a tracking database to keep track of replication status
+and recover automatically from some replication issues. Follow the steps below to create
+the tracking database.
 
-    ```
+1. On the secondary node, run the following command to create `database_geo.yml` with the
+information of your secondary PostgreSQL instance:
+
+    ```bash
     sudo cp /home/git/gitlab/config/database_geo.yml.postgresql /home/git/gitlab/config/database_geo.yml
     ```
 
-1. Edit the content of `database_geo.yml` in `production:` like the example below:
+1. Edit the content of `database_geo.yml` in `production:` as in the example below:
 
     ```yaml
     #
@@ -315,19 +255,20 @@ It is added in GitLab 9.1, and since GitLab 10.0 it is required.
       host: /var/opt/gitlab/geo-postgresql
     ```
 
-1. Create the database `gitlabhq_geo_production` in that PostgreSQL
-   instance.
+1. Create the database `gitlabhq_geo_production` on the PostgreSQL instance of the secondary
+node.
 
 1. Set up the Geo tracking database:
 
-    ```
+    ```bash
     bundle exec rake geo:db:migrate
     ```
 
 ### Step 4. Initiate the replication process
 
-Below we provide a script that connects to the primary server, replicates the
-database and creates the needed files for replication.
+Below we provide a script that connects the database on the secondary node to
+the database on the primary node, replicates the database, and creates the
+needed files for streaming replication.
 
 The directories used are the defaults for Debian/Ubuntu. If you have changed
 any defaults, configure it as you see fit replacing the directories and paths.
@@ -397,7 +338,7 @@ data before running `pg_basebackup`.
     ```
 
     When prompted, enter the IP/FQDN of the primary, and the password you set up
-    for the `gitlab_replicator` user in the first step. 
+    for the `gitlab_replicator` user in the first step.
 
     You should use `verify-ca` for the `sslmode`. You can use `disable` if you
     are happy to skip PostgreSQL TLS authentication altogether (e.g., you know
@@ -413,7 +354,7 @@ The replication process is now over.
 
 ## MySQL replication
 
-We don't support MySQL replication for GitLab Geo.
+MySQL replication is not supported for GitLab Geo.
 
 ## Troubleshooting
 

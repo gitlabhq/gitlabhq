@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :cluster_applications_ingress, class: Clusters::Applications::Ingress do
     cluster factory: %i(cluster provided_by_gcp)
 
