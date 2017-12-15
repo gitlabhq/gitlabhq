@@ -8,7 +8,7 @@
       %br
       %span.descr
         Pipelines need to be configured to enable this feature.
-        = link_to icon('question-circle'), help_page_path('user/project/merge_requests/merge_when_pipeline_succeeds', anchor: 'only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds')
+        = link_to icon('question-circle'), help_page_path('user/project/merge_requests/merge_when_pipeline_succeeds', anchor: 'only-allow-merge-requests-to-be-merged-if-the-pipeline-succeeds'), target: '_blank'
   .checkbox
     = form.label :only_allow_merge_if_all_discussions_are_resolved do
       = form.check_box :only_allow_merge_if_all_discussions_are_resolved
