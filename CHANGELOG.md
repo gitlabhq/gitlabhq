@@ -2,6 +2,26 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.2.5 (2017-12-15)
+
+### Fixed (8 changes)
+
+- Create a fork network for forks with a deleted source. !15595
+- Correctly link to a forked project from the new fork page. !15653
+- Fix the fork project functionality for projects with hashed storage. !15671
+- Fix updateEndpoint undefined error for issue_show app root. !15698
+- Fix broken illustration images for monitoring page empty states. !15889
+- Fix related branches/Merge requests failing to load when the hostname setting is changed.
+- Fix gitlab:import:repos Rake task moving repositories into the wrong location.
+- Gracefully handle case when repository's root ref does not exist.
+
+### Performance (3 changes)
+
+- Keep track of all circuitbreaker keys in a set. !15613
+- Only load branch names for protected branch checks.
+- Optimize API /groups/:id/projects by preloading associations.
+
+
 ## 10.2.4 (2017-12-07)
 
 ### Security (3 changes)
