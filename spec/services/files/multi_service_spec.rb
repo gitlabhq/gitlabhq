@@ -6,14 +6,20 @@ describe Files::MultiService do
   let(:project) { create(:project, :repository) }
   let(:user) { create(:user) }
   let(:branch_name) { project.default_branch }
+  let(:file_path) { 'files/ruby/popen.rb' }
   let(:action) { 'update' }
+
+  let!(:original_commit_id) do
+    Gitlab::Git::Commit.last_for_path(project.repository, branch_name, file_path).sha
+  end
 
   let(:actions) do
     [
       {
         action: action,
-        file_path: 'files/ruby/popen.rb',
-        content: 'New content'
+        file_path: file_path,
+        content: 'New content',
+        last_commit_id: original_commit_id
       }
     ]
   end
@@ -50,5 +56,40 @@ describe Files::MultiService do
         expect(results[:message]).to match(/Unknown action/)
       end
     end
+
+    describe 'Updating files' do
+      context 'when the file has been previously updated' do
+        before do
+          update_file(file_path)
+        end
+
+        it 'rejects the commit' do
+          results = subject.execute
+
+          expect(results[:status]).to eq(:error)
+          expect(results[:message]).to match(file_path)
+        end
+      end
+
+      context 'when the file have not been modified' do
+        it 'accepts the commit' do
+          results = subject.execute
+
+          expect(results[:status]).to eq(:success)
+        end
+      end
+    end
+  end
+
+  def update_file(path)
+    params = {
+      file_path: path,
+      start_branch: branch_name,
+      branch_name: branch_name,
+      commit_message: 'Update file',
+      file_content: 'New content'
+    }
+
+    Files::UpdateService.new(project, user, params).execute
   end
 end
