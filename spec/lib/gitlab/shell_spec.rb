@@ -51,6 +51,7 @@ describe Gitlab::Shell do
     end
   end
 
+<<<<<<< HEAD
   describe '#add_key' do
     context 'when authorized_keys_enabled is true' do
       it 'removes trailing garbage' do
@@ -356,6 +357,8 @@ describe Gitlab::Shell do
     end
   end
 
+=======
+>>>>>>> upstream/master
   describe Gitlab::Shell::KeyAdder do
     describe '#add_key' do
       it 'removes trailing garbage' do
@@ -646,6 +649,7 @@ describe Gitlab::Shell do
       it 'raises an exception when the command fails' do
         allow(gitlab_projects).to receive(:output) { 'error' }
         expect(gitlab_projects).to receive(:import_project) { false }
+<<<<<<< HEAD
 
         expect do
           gitlab_shell.import_repository(project.repository_storage_path, project.disk_path, import_url)
@@ -705,6 +709,67 @@ describe Gitlab::Shell do
           .with('downstream-remote', ['master'])
           .and_return(false)
 
+=======
+
+        expect do
+          gitlab_shell.import_repository(project.repository_storage_path, project.disk_path, import_url)
+        end.to raise_error(Gitlab::Shell::Error, "error")
+      end
+    end
+
+    describe '#push_remote_branches' do
+      subject(:result) do
+        gitlab_shell.push_remote_branches(
+          project.repository_storage_path,
+          project.disk_path,
+          'downstream-remote',
+          ['master']
+        )
+      end
+
+      it 'executes the command' do
+        expect(gitlab_projects).to receive(:push_branches)
+          .with('downstream-remote', timeout, true, ['master'])
+          .and_return(true)
+
+        is_expected.to be_truthy
+      end
+
+      it 'fails to execute the command' do
+        allow(gitlab_projects).to receive(:output) { 'error' }
+        expect(gitlab_projects).to receive(:push_branches)
+          .with('downstream-remote', timeout, true, ['master'])
+          .and_return(false)
+
+        expect { result }.to raise_error(Gitlab::Shell::Error, 'error')
+      end
+    end
+
+    describe '#delete_remote_branches' do
+      subject(:result) do
+        gitlab_shell.delete_remote_branches(
+          project.repository_storage_path,
+          project.disk_path,
+          'downstream-remote',
+          ['master']
+        )
+      end
+
+      it 'executes the command' do
+        expect(gitlab_projects).to receive(:delete_remote_branches)
+          .with('downstream-remote', ['master'])
+          .and_return(true)
+
+        is_expected.to be_truthy
+      end
+
+      it 'fails to execute the command' do
+        allow(gitlab_projects).to receive(:output) { 'error' }
+        expect(gitlab_projects).to receive(:delete_remote_branches)
+          .with('downstream-remote', ['master'])
+          .and_return(false)
+
+>>>>>>> upstream/master
         expect { result }.to raise_error(Gitlab::Shell::Error, 'error')
       end
     end

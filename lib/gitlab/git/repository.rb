@@ -538,8 +538,15 @@ module Gitlab
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
       def merge_base_commit(from, to)
-        rugged.merge_base(from, to)
+        gitaly_migrate(:merge_base) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.find_merge_base(from, to)
+          else
+            rugged.merge_base(from, to)
+          end
+        end
       end
+      alias_method :merge_base, :merge_base_commit
 
       # Gitaly note: JV: check gitlab-ee before removing this method.
       def rugged_is_ancestor?(ancestor_id, descendant_id)

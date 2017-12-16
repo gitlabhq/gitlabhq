@@ -148,6 +148,10 @@ has a `.gitlab-ci.yml` or not:
   do that in a branch to test Auto DevOps before committing to `master`.
 
 NOTE: **Note:**
+Starting with GitLab 10.3, when enabling Auto DevOps, a pipeline is
+automatically run on the default branch.
+
+NOTE: **Note:**
 If you are a GitLab Administrator, you can enable Auto DevOps instance wide
 in **Admin Area > Settings > Continuous Integration and Deployment**. Doing that,
 all the projects that haven't explicitly set an option will have Auto DevOps
@@ -210,6 +214,18 @@ report is created, it's uploaded as an artifact which you can later download and
 check out.
 
 Any security warnings are also [shown in the merge request widget](../../user/project/merge_requests/sast.md).
+
+### Auto SAST
+
+> Introduced in [GitLab Enterprise Edition Ultimate][ee] 10.3.
+
+Static Application Security Testing (SAST) uses the
+[gl-sast Docker image](https://gitlab.com/gitlab-org/gl-sast) to run static
+analysis on the current code and checks for potential security issues. Once the
+report is created, it's uploaded as an artifact which you can later download and
+check out.
+
+Any security warnings are also [shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/sast.html).
 
 ### Auto Review Apps
 

@@ -7,8 +7,8 @@ import IssuableForm from './issuable_form';
 import LabelsSelect from './labels_select';
 /* global MilestoneSelect */
 import NewBranchForm from './new_branch_form';
-/* global NotificationsForm */
-/* global NotificationsDropdown */
+import NotificationsForm from './notifications_form';
+import notificationsDropdown from './notifications_dropdown';
 import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
 /* global LineHighlighter */
@@ -39,6 +39,7 @@ import Flash from './flash';
 import CommitsList from './commits';
 import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
+import SecretValues from './behaviors/secret_values';
 import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
 import GroupsList from './groups_list';
@@ -95,7 +96,6 @@ import memberExpirationDate from './member_expiration_date';
 import DueDateSelectors from './due_date_select';
 import Diff from './diff';
 import ProjectLabelSubscription from './project_label_subscription';
-import ProjectVariables from './project_variables';
 import SearchAutocomplete from './search_autocomplete';
 import Activities from './activities';
 
@@ -455,7 +455,7 @@ import initGroupAnalytics from './init_group_analytics';
           const newGroupChildWrapper = document.querySelector('.js-new-project-subgroup');
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
-          new NotificationsDropdown();
+          notificationsDropdown();
           new ProjectsList();
 
           if (newGroupChildWrapper) {
@@ -589,8 +589,18 @@ import initGroupAnalytics from './init_group_analytics';
         case 'projects:settings:ci_cd:show':
           // Initialize expandable settings panels
           initSettingsPanels();
+
+          const runnerToken = document.querySelector('.js-secret-runner-token');
+          if (runnerToken) {
+            const runnerTokenSecretValue = new SecretValues(runnerToken);
+            runnerTokenSecretValue.init();
+          }
         case 'groups:settings:ci_cd:show':
-          new ProjectVariables();
+          const secretVariableTable = document.querySelector('.js-secret-variable-table');
+          if (secretVariableTable) {
+            const secretVariableTableValues = new SecretValues(secretVariableTable);
+            secretVariableTableValues.init();
+          }
           break;
         case 'ci:lints:create':
         case 'ci:lints:show':
@@ -702,7 +712,7 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'profiles':
           new NotificationsForm();
-          new NotificationsDropdown();
+          notificationsDropdown();
           break;
         case 'projects':
           new Project();
@@ -726,7 +736,7 @@ import initGroupAnalytics from './init_group_analytics';
             case 'show':
               new Star();
               new ProjectNew();
-              new NotificationsDropdown();
+              notificationsDropdown();
               break;
             case 'wikis':
               new Wikis();

@@ -21,6 +21,7 @@ module Omnibus
 
       if id
         puts "Triggered https://gitlab.com/#{Omnibus::PROJECT_PATH}/pipelines/#{id}"
+        puts "Waiting for downstream pipeline status"
       else
         raise "Trigger failed! The response from the trigger is: #{res.body}"
       end
@@ -39,7 +40,9 @@ module Omnibus
         "ref" => ENV["OMNIBUS_BRANCH"] || "master",
         "variables[GITLAB_VERSION]" => ENV["CI_COMMIT_SHA"],
         "variables[ALTERNATIVE_SOURCES]" => true,
-        "variables[ee]" => ee? ? 'true' : 'false'
+        "variables[ee]" => ee? ? 'true' : 'false',
+        "variables[TRIGGERED_USER]" => ENV["GITLAB_USER_NAME"],
+        "variables[TRIGGER_SOURCE]" => "https://gitlab.com/gitlab-org/#{ENV['CI_PROJECT_NAME']}/-/jobs/#{ENV['CI_JOB_ID']}"
       }
     end
 
@@ -63,14 +66,14 @@ module Omnibus
 
     def wait!
       loop do
-        raise 'Pipeline timeout!' if timeout?
+        raise "Pipeline timed out after waiting for #{duration} minutes!" if timeout?
 
         case status
         when :created, :pending, :running
-          puts "Waiting another #{INTERVAL} seconds ..."
+          print "."
           sleep INTERVAL
         when :success
-          puts "Omnibus pipeline succeeded!"
+          puts "Omnibus pipeline succeeded in #{duration} minutes!"
           break
         else
           raise "Omnibus pipeline did not succeed!"
@@ -82,6 +85,10 @@ module Omnibus
 
     def timeout?
       Time.now.to_i > (@start + MAX_DURATION)
+    end
+
+    def duration
+      (Time.now.to_i - @start) / 60
     end
 
     def status

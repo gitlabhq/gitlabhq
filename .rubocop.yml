@@ -1197,10 +1197,15 @@ Gitlab/ModuleWithInstanceVariables:
   Exclude:
     # We ignore Rails helpers right now because it's hard to workaround it
     - app/helpers/**/*_helper.rb
+<<<<<<< HEAD
     - ee/app/helpers/**/*_helper.rb
     # We ignore Rails mailers right now because it's hard to workaround it
     - app/mailers/emails/**/*.rb
     - ee/**/emails/**/*.rb
+=======
+    # We ignore Rails mailers right now because it's hard to workaround it
+    - app/mailers/emails/**/*.rb
+>>>>>>> upstream/master
     # We ignore spec helpers because it usually doesn't matter
     - spec/support/**/*.rb
     - features/steps/**/*.rb

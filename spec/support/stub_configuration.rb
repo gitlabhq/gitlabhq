@@ -10,6 +10,7 @@ module StubConfiguration
 
     # Ensure that we don't use the Markdown cache when stubbing these values
     allow_any_instance_of(ApplicationSetting).to receive(:cached_html_up_to_date?).and_return(false)
+<<<<<<< HEAD
   end
 
   def stub_application_setting_on_object(object, messages)
@@ -20,6 +21,8 @@ module StubConfiguration
     messages.each do |setting, value|
       allow(object).to receive_message_chain(:current_application_settings, setting) { value }
     end
+=======
+>>>>>>> upstream/master
   end
 
   def stub_not_protect_default_branch
