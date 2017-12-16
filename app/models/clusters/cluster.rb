@@ -27,7 +27,7 @@ module Clusters
     accepts_nested_attributes_for :platform_kubernetes, update_only: true
 
     validates :name, cluster_name: true
-    validate :unique_environment_scope, if: :has_project?
+    validate :unique_environment_scope
     validate :restrict_modification, on: :update
 
     delegate :status, to: :provider, allow_nil: true
@@ -109,10 +109,6 @@ module Clusters
       end
 
       true
-    end
-
-    def has_project?
-      projects.exists?
     end
   end
 end
