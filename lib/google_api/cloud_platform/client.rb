@@ -55,7 +55,7 @@ module GoogleApi
         service = Google::Apis::CloudbillingV1::CloudbillingService.new
         service.authorization = access_token
 
-        service.get_project_billing_info(project_name)
+        service.get_project_billing_info("projects/#{project_name}")
       end
 
       def projects_zones_clusters_get(project_id, zone, cluster_id)
