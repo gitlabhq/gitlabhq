@@ -138,6 +138,56 @@ describe Projects::Clusters::GcpController do
     end
   end
 
+  describe 'POST check' do
+    let(:user) { create(:user) }
+
+    before do
+      project.add_master(user)
+      sign_in(user)
+    end
+
+    describe 'functionality' do
+      context 'when access token is valid' do
+        before do
+          stub_google_api_validate_token
+        end
+
+        it 'calls check worker asynchronously' do
+          expect(CheckGcpProjectBillingWorker).to receive(:perform_async)
+
+          expect(go).to have_http_status(:no_content)
+        end
+      end
+
+      context 'when access token is expired' do
+        before do
+          stub_google_api_expired_token
+        end
+
+        it { expect(go).to redirect_to(gcp_login_project_clusters_path(project)) }
+      end
+
+      context 'when access token is not stored in session' do
+        it { expect(go).to redirect_to(gcp_login_project_clusters_path(project)) }
+      end
+    end
+
+    describe 'security' do
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
+
+    def go
+      post :run_check, namespace_id: project.namespace, project_id: project, format: :json
+    end
+  end
+
   describe 'GET new' do
     describe 'functionality' do
       let(:user) { create(:user) }
