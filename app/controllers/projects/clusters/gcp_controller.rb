@@ -4,7 +4,7 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
   before_action :authorize_google_project_billing, only: [:check]
   before_action :authorize_create_cluster!, only: [:new, :create]
 
-  STATUS_POLLING_INTERVAL = 10_000
+  STATUS_POLLING_INTERVAL = 1.minute.to_i
 
   def login
     begin
