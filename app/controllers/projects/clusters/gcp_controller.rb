@@ -1,14 +1,14 @@
 class Projects::Clusters::GcpController < Projects::ApplicationController
   before_action :authorize_read_cluster!
   before_action :authorize_google_api, except: [:login]
-  before_action :authorize_google_project_billing, only: [:check]
+  before_action :authorize_google_project_billing, except: [:login, :check]
   before_action :authorize_create_cluster!, only: [:new, :create]
 
   STATUS_POLLING_INTERVAL = 1.minute.to_i
 
   def login
     begin
-      state = generate_session_key_redirect(gcp_check_namespace_project_clusters_path.to_s)
+      state = generate_session_key_redirect(gcp_new_namespace_project_clusters_path.to_s)
 
       @authorize_url = GoogleApi::CloudPlatform::Client.new(
         nil, callback_google_api_auth_url,
@@ -77,6 +77,7 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
     Gitlab::Redis::SharedState.with do |redis|
       unless redis.get(CheckGcpProjectBillingWorker.redis_shared_state_key_for(token_in_session)) == 'true'
         CheckGcpProjectBillingWorker.perform_async(token_in_session)
+        redirect_to action: 'check'
       end
     end
   end

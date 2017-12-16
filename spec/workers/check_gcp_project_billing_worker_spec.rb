@@ -7,7 +7,7 @@ describe CheckGcpProjectBillingWorker do
 
     context 'when there is no lease' do
       before do
-        allow_any_instance_of(CheckGcpProjectBillingWorker).to receive(:try_obtain_lease_for).and_return('randomuuid')
+        allow_any_instance_of(described_class).to receive(:try_obtain_lease_for).and_return('randomuuid')
       end
 
       it 'calls the service' do
@@ -21,7 +21,7 @@ describe CheckGcpProjectBillingWorker do
 
         expect(CheckGcpProjectBillingService).to receive_message_chain(:new, :execute).and_return(true)
         expect(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis_double)
-        expect(redis_double).to receive(:set).with(CheckGcpProjectBillingWorker.redis_shared_state_key_for(token), anything)
+        expect(redis_double).to receive(:set).with(described_class.redis_shared_state_key_for(token), anything)
 
         subject
       end
@@ -29,7 +29,7 @@ describe CheckGcpProjectBillingWorker do
 
     context 'when there is a lease' do
       before do
-        allow_any_instance_of(CheckGcpProjectBillingWorker).to receive(:try_obtain_lease_for).and_return(false)
+        allow_any_instance_of(described_class).to receive(:try_obtain_lease_for).and_return(false)
       end
 
       it 'does not call the service' do

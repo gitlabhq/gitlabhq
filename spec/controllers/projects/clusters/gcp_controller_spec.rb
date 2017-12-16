@@ -17,7 +17,6 @@ describe Projects::Clusters::GcpController do
 
       context 'when omniauth has been configured' do
         let(:key) { 'secret-key' }
-
         let(:session_key_for_redirect_uri) do
           GoogleApi::CloudPlatform::Client.session_key_for_redirect_uri(key)
         end
@@ -30,7 +29,7 @@ describe Projects::Clusters::GcpController do
           go
 
           expect(assigns(:authorize_url)).to include(key)
-          expect(session[session_key_for_redirect_uri]).to eq(gcp_check_project_clusters_path(project))
+          expect(session[session_key_for_redirect_uri]).to eq(gcp_new_project_clusters_path(project))
         end
       end
 
@@ -72,47 +71,54 @@ describe Projects::Clusters::GcpController do
     end
 
     describe 'functionality' do
-      context 'when redis has wanted billing status' do
-        let(:token) { 'bogustoken' }
+      context 'when access token is valid' do
         before do
-          redis_double = double
-          allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis_double)
-          allow(redis_double).to receive(:get).and_return('true')
+          stub_google_api_validate_token
         end
 
-        it 'should render json with billing status' do
-          go
+        context 'when redis has wanted billing status' do
+          let(:token) { 'bogustoken' }
 
-          expect(response).to have_http_status(:ok)
-          expect(response.body).to include_json(billing: 'true')
+          before do
+            redis_double = double
+            allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis_double)
+            allow(redis_double).to receive(:get).and_return('true')
+          end
+
+          it 'should render json with billing status' do
+            go
+
+            expect(response).to have_http_status(:ok)
+            expect(JSON.parse(response.body)).to include('billing' => 'true')
+          end
         end
 
-        it 'should not start worker' do
-          expect(CheckGcpProjectBillingWorker).not_to receive(:perform_async)
+        context 'when redis does not have billing status' do
+          before do
+            redis_double = double
+            allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis_double)
+            allow(redis_double).to receive(:get).and_return(nil)
+          end
 
-          go
+          it 'should render json with null billing status' do
+            go
+
+            expect(response).to have_http_status(:ok)
+            expect(JSON.parse(response.body)).to include('billing' => nil)
+          end
         end
       end
 
-      context 'when redis does not have billing status' do
+      context 'when access token is expired' do
         before do
-          redis_double = double
-          allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis_double)
-          allow(redis_double).to receive(:get).and_return(nil)
+          stub_google_api_expired_token
         end
 
-        it 'should render json with null billing status' do
-          go
+        it { expect(go).to redirect_to(gcp_login_project_clusters_path(project)) }
+      end
 
-          expect(response).to have_http_status(:ok)
-          expect(response.body).to include_json(billing: nil)
-        end
-
-        it 'should start worker' do
-          expect(CheckGcpProjectBillingWorker).to receive(:perform_async)
-
-          go
-        end
+      context 'when access token is not stored in session' do
+        it { expect(go).to redirect_to(gcp_login_project_clusters_path(project)) }
       end
     end
 
@@ -146,10 +152,36 @@ describe Projects::Clusters::GcpController do
           stub_google_api_validate_token
         end
 
-        it 'has new object' do
-          go
+        context 'when google project billing status is true' do
+          before do
+            stub_google_project_billing_status
+          end
 
-          expect(assigns(:cluster)).to be_an_instance_of(Clusters::Cluster)
+          it 'has new object' do
+            go
+
+            expect(assigns(:cluster)).to be_an_instance_of(Clusters::Cluster)
+          end
+        end
+
+        context 'when google project billing status is not true' do
+          before do
+            redis_double = double
+            allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis_double)
+            allow(redis_double).to receive(:get).and_return(nil)
+          end
+
+          it 'redirects to check page' do
+            allow(CheckGcpProjectBillingWorker).to receive(:perform_async)
+
+            expect(go).to redirect_to(gcp_check_project_clusters_path(project))
+          end
+
+          it 'calls gcp project billing check worker' do
+            expect(CheckGcpProjectBillingWorker).to receive(:perform_async)
+
+            go
+          end
         end
       end
 
@@ -207,14 +239,40 @@ describe Projects::Clusters::GcpController do
           stub_google_api_validate_token
         end
 
-        context 'when creates a cluster on gke' do
-          it 'creates a new cluster' do
-            expect(ClusterProvisionWorker).to receive(:perform_async)
-            expect { go }.to change { Clusters::Cluster.count }
-              .and change { Clusters::Providers::Gcp.count }
-            expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
-            expect(project.clusters.first).to be_gcp
-            expect(project.clusters.first).to be_kubernetes
+        context 'when google project billing status is true' do
+          before do
+            stub_google_project_billing_status
+          end
+
+          context 'when creates a cluster on gke' do
+            it 'creates a new cluster' do
+              expect(ClusterProvisionWorker).to receive(:perform_async)
+              expect { go }.to change { Clusters::Cluster.count }
+                .and change { Clusters::Providers::Gcp.count }
+              expect(response).to redirect_to(project_cluster_path(project, project.clusters.first))
+              expect(project.clusters.first).to be_gcp
+              expect(project.clusters.first).to be_kubernetes
+            end
+          end
+        end
+
+        context 'when google project billing status is not true' do
+          before do
+            redis_double = double
+            allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis_double)
+            allow(redis_double).to receive(:get).and_return(nil)
+          end
+
+          it 'redirects to check page' do
+            allow(CheckGcpProjectBillingWorker).to receive(:perform_async)
+
+            expect(go).to redirect_to(gcp_check_project_clusters_path(project))
+          end
+
+          it 'calls gcp project billing check worker' do
+            expect(CheckGcpProjectBillingWorker).to receive(:perform_async)
+
+            go
           end
         end
       end
