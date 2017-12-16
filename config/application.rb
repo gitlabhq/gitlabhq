@@ -109,7 +109,7 @@ module Gitlab
     config.assets.precompile << "locale/**/app.js"
     config.assets.precompile << "manifest.json"
     config.assets.precompile << "service_workers/workers/*.js"
-
+    
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 

@@ -91,7 +91,11 @@ class ProfilesController < Profiles::ApplicationController
       :username,
       :website_url,
       :organization,
-      :preferred_language
+      :preferred_language,
+      :webpush_endpoint,
+      :webpush_p256dh,
+      :webpush_auth,
+      :subscribed_pipelines
     )
   end
 end

@@ -13,6 +13,15 @@ module Users
 
       user_exists = @user.persisted?
 
+      if @params[:subscribed_pipelines]
+        @params[:subscribed_pipelines].split(/\,/).each do |pipeline_id|
+          Ci::Pipeline.find(pipeline_id).try do |pipeline|
+            p '🔥'
+            @user.subscribed_pipelines << pipeline
+          end
+        end
+      end
+
       assign_attributes(&block)
 
       if @user.save(validate: validate)

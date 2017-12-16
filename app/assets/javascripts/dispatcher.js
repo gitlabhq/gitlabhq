@@ -93,7 +93,6 @@ import ProjectLabelSubscription from './project_label_subscription';
 import ProjectVariables from './project_variables';
 import SearchAutocomplete from './search_autocomplete';
 import Activities from './activities';
-import PipelineNotificationClient from './service_workers/clients/pipeline_notification_client';
 
 (function() {
   var Dispatcher;
@@ -395,8 +394,6 @@ import PipelineNotificationClient from './service_workers/clients/pipeline_notif
         case 'projects:pipelines:builds':
         case 'projects:pipelines:failures':
         case 'projects:pipelines:show':
-          PipelineNotificationClient.init();
-
           const { controllerAction } = document.querySelector('.js-pipeline-container').dataset;
           const pipelineStatusUrl = `${document.querySelector('.js-pipeline-tab-link a').getAttribute('href')}/status.json`;
 

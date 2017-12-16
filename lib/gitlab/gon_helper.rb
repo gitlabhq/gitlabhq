@@ -3,6 +3,7 @@
 module Gitlab
   module GonHelper
     include WebpackHelper
+    include WebpushHelper
     include Gitlab::CurrentSettings
 
     def add_gon_variables
@@ -21,7 +22,8 @@ module Gitlab
       gon.revision               = Gitlab::REVISION
       gon.gitlab_logo            = ActionController::Base.helpers.asset_path('gitlab_logo.png')
       gon.sprite_icons           = IconsHelper.sprite_icon_path
-      gon.pipeline_notification_worker_path = ActionController::Base.helpers.asset_path('service_workers/workers/pipeline_notification_worker.js')
+      gon.pipeline_notification_worker_path = ActionController::Base.helpers.asset_path('service_workers/workers/pipeline_notification_worker.js', skip_pipeline: true)
+      gon.vapid_key = vapid_credentials[:public_key]
 
       if current_user
         gon.current_user_id = current_user.id

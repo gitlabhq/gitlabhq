@@ -134,6 +134,9 @@ class User < ActiveRecord::Base
 
   has_many :custom_attributes, class_name: 'UserCustomAttribute'
 
+  has_many :pipeline_subscriptions, class_name: 'Ci::PipelineSubscription'
+  has_many :subscribed_pipelines, through: :pipeline_subscriptions, class_name: 'Ci::Pipeline', source: :pipeline
+
   #
   # Validations
   #
@@ -161,6 +164,11 @@ class User < ActiveRecord::Base
   validate :owns_public_email, if: :public_email_changed?
   validate :signup_domain_valid?, on: :create, if: ->(user) { !user.created_by_id }
   validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
+
+  validates :webpush_p256dh, uniqueness: true, allow_nil: true
+  validates :webpush_auth, uniqueness: true, allow_nil: true
+  validates :webpush_endpoint, uniqueness: true, allow_nil: true
+  
 
   before_validation :sanitize_attrs
   before_validation :set_notification_email, if: :email_changed?

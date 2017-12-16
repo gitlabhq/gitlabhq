@@ -1,13 +1,18 @@
 function onPush(event) {
   console.log('PipelineNotificatinWorker onPush', event);
+  console.log('JSON', event.data.json());
+  console.log('logo', gon);
+  console.log('test');
 
   const title = (event.data && event.data.text()) || 'Yay a message';
 
   event.waitUntil(
     self.registration.showNotification(title, {
+      // body: 'We have received a push message',
+      // icon: gon.gitlab_logo,
       body: 'We have received a push message',
-      icon: '/assets/path/to/icon.png',
-      tag: 'push-simple-demo-notification-tag',
+      icon: '/test/test.png',
+      tag: 'pipeline-notification-worker',
     }),
   );
 }

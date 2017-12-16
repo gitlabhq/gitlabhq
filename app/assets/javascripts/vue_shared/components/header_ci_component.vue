@@ -4,6 +4,7 @@ import loadingIcon from './loading_icon.vue';
 import timeagoTooltip from './time_ago_tooltip.vue';
 import tooltip from '../directives/tooltip';
 import userAvatarImage from './user_avatar/user_avatar_image.vue';
+import pushNotificationsSubscribeButton from './push_notifications_subscribe_button.vue';
 
 /**
  * Renders header component for job and pipeline page based on UI mockups
@@ -56,6 +57,7 @@ export default {
     loadingIcon,
     timeagoTooltip,
     userAvatarImage,
+    pushNotificationsSubscribeButton,
   },
 
   computed: {
@@ -141,7 +143,9 @@ export default {
             aria-hidden="true">
           </i>
         </button>
+
       </template>
+      <push-notifications-subscribe-button />
       <button
         v-if="hasSidebarButton"
         type="button"

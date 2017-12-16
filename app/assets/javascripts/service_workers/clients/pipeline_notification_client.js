@@ -15,28 +15,31 @@ export default {
   subscriptionOptions: {
     userVisibleOnly: true,
     applicationServerKey: urlBase64ToUint8Array(
-      'BMV-YKtRZpthj5tS1sW4BBaNEqZ67gAQYH_lFLR156QD1pi4TJGZGw46rCBFbFoqV2cMNI6ilD9PZ3DPPt2nEdI',
+      gon.vapid_key,
     ),
   },
+  registration: {},
 
   init() {
     if (!navigator.serviceWorker) throw new Error('Your browser does not support service workers');
 
-    return this.install();
+    return this.requestNotificationPermission()
+      .then(() => this.register());
   },
 
-  install() {
-    return this.requestNotificationPermission()
-      .then(() => this.worker.register(this.workerPath))
+  register() {
+    return this.worker.register(this.workerPath)
       .then((registration) => {
-        console.log('PipelineNotificationClient install', registration);
-
-        return registration;
-      })
-      .then(registration => registration.pushManager.subscribe(this.subscriptionOptions))
-      .then((pushSubscription) => {
-        console.log('PipelineNotificationClient pushSubscription', pushSubscription.toJSON());
+        this.registration = registration;
       });
+  },
+
+  getSubscription() {
+    return this.registration.pushManager.getSubscription();
+  },
+
+  subscribe() {
+    return this.registration.pushManager.subscribe(this.subscriptionOptions);
   },
 
   requestNotificationPermission() {

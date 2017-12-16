@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171213160445) do
+ActiveRecord::Schema.define(version: 20171216024411) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -135,10 +135,6 @@ ActiveRecord::Schema.define(version: 20171213160445) do
     t.boolean "hashed_storage_enabled", default: false, null: false
     t.boolean "project_export_enabled", default: true, null: false
     t.boolean "auto_devops_enabled", default: false, null: false
-    t.integer "circuitbreaker_failure_count_threshold", default: 3
-    t.integer "circuitbreaker_failure_reset_time", default: 1800
-    t.integer "circuitbreaker_storage_timeout", default: 15
-    t.integer "circuitbreaker_access_retries", default: 3
     t.boolean "throttle_unauthenticated_enabled", default: false, null: false
     t.integer "throttle_unauthenticated_requests_per_period", default: 3600, null: false
     t.integer "throttle_unauthenticated_period_in_seconds", default: 3600, null: false
@@ -148,12 +144,16 @@ ActiveRecord::Schema.define(version: 20171213160445) do
     t.boolean "throttle_authenticated_web_enabled", default: false, null: false
     t.integer "throttle_authenticated_web_requests_per_period", default: 7200, null: false
     t.integer "throttle_authenticated_web_period_in_seconds", default: 3600, null: false
-    t.integer "circuitbreaker_check_interval", default: 1, null: false
-    t.boolean "password_authentication_enabled_for_web"
-    t.boolean "password_authentication_enabled_for_git", default: true
+    t.integer "circuitbreaker_failure_count_threshold", default: 3
+    t.integer "circuitbreaker_failure_reset_time", default: 1800
+    t.integer "circuitbreaker_storage_timeout", default: 15
+    t.integer "circuitbreaker_access_retries", default: 3
     t.integer "gitaly_timeout_default", default: 55, null: false
     t.integer "gitaly_timeout_medium", default: 30, null: false
     t.integer "gitaly_timeout_fast", default: 10, null: false
+    t.boolean "password_authentication_enabled_for_web"
+    t.boolean "password_authentication_enabled_for_git", default: true, null: false
+    t.integer "circuitbreaker_check_interval", default: 1, null: false
   end
 
   create_table "audit_events", force: :cascade do |t|
@@ -364,6 +364,14 @@ ActiveRecord::Schema.define(version: 20171213160445) do
   add_index "ci_pipeline_schedules", ["next_run_at", "active"], name: "index_ci_pipeline_schedules_on_next_run_at_and_active", using: :btree
   add_index "ci_pipeline_schedules", ["project_id"], name: "index_ci_pipeline_schedules_on_project_id", using: :btree
 
+  create_table "ci_pipeline_subscriptions", force: :cascade do |t|
+    t.integer "ci_pipeline_id"
+    t.integer "user_id"
+  end
+
+  add_index "ci_pipeline_subscriptions", ["ci_pipeline_id"], name: "index_ci_pipeline_subscriptions_on_ci_pipeline_id", using: :btree
+  add_index "ci_pipeline_subscriptions", ["user_id"], name: "index_ci_pipeline_subscriptions_on_user_id", using: :btree
+
   create_table "ci_pipeline_variables", force: :cascade do |t|
     t.string "key", null: false
     t.text "value"
@@ -394,8 +402,8 @@ ActiveRecord::Schema.define(version: 20171213160445) do
     t.integer "auto_canceled_by_id"
     t.integer "pipeline_schedule_id"
     t.integer "source"
-    t.integer "config_source"
     t.boolean "protected"
+    t.integer "config_source"
     t.integer "failure_reason"
   end
 
@@ -648,8 +656,8 @@ ActiveRecord::Schema.define(version: 20171213160445) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "confirmation_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
+    t.datetime_with_timezone "confirmed_at"
+    t.datetime_with_timezone "confirmation_sent_at"
   end
 
   add_index "emails", ["confirmation_token"], name: "index_emails_on_confirmation_token", unique: true, using: :btree
@@ -800,8 +808,8 @@ ActiveRecord::Schema.define(version: 20171213160445) do
   add_index "gpg_signatures", ["project_id"], name: "index_gpg_signatures_on_project_id", using: :btree
 
   create_table "group_custom_attributes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.integer "group_id", null: false
     t.string "key", null: false
     t.string "value", null: false
@@ -1330,8 +1338,8 @@ ActiveRecord::Schema.define(version: 20171213160445) do
   add_index "project_auto_devops", ["project_id"], name: "index_project_auto_devops_on_project_id", unique: true, using: :btree
 
   create_table "project_custom_attributes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.integer "project_id", null: false
     t.string "key", null: false
     t.string "value", null: false
@@ -1404,8 +1412,10 @@ ActiveRecord::Schema.define(version: 20171213160445) do
     t.string "avatar"
     t.string "import_status"
     t.integer "star_count", default: 0, null: false
+    t.boolean "merge_requests_rebase_enabled", default: false, null: false
     t.string "import_type"
     t.string "import_source"
+    t.boolean "merge_requests_ff_only_enabled", default: false, null: false
     t.text "import_error"
     t.integer "ci_id"
     t.boolean "shared_runners_enabled", default: true, null: false
@@ -1421,6 +1431,7 @@ ActiveRecord::Schema.define(version: 20171213160445) do
     t.boolean "only_allow_merge_if_pipeline_succeeds", default: false, null: false
     t.boolean "has_external_issue_tracker"
     t.string "repository_storage", default: "default", null: false
+    t.boolean "repository_read_only"
     t.boolean "request_access_enabled", default: false, null: false
     t.boolean "has_external_wiki"
     t.string "ci_config_path"
@@ -1435,9 +1446,6 @@ ActiveRecord::Schema.define(version: 20171213160445) do
     t.datetime "last_repository_updated_at"
     t.integer "storage_version", limit: 2
     t.boolean "resolve_outdated_diff_discussions"
-    t.boolean "repository_read_only"
-    t.boolean "merge_requests_ff_only_enabled", default: false
-    t.boolean "merge_requests_rebase_enabled", default: false, null: false
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
@@ -1761,8 +1769,8 @@ ActiveRecord::Schema.define(version: 20171213160445) do
   add_index "user_agent_details", ["subject_id", "subject_type"], name: "index_user_agent_details_on_subject_id_and_subject_type", using: :btree
 
   create_table "user_custom_attributes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.integer "user_id", null: false
     t.string "key", null: false
     t.string "value", null: false
@@ -1846,6 +1854,9 @@ ActiveRecord::Schema.define(version: 20171213160445) do
     t.string "preferred_language"
     t.string "rss_token"
     t.integer "theme_id", limit: 2
+    t.string "webpush_p256dh"
+    t.string "webpush_auth"
+    t.string "webpush_endpoint"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -1929,6 +1940,8 @@ ActiveRecord::Schema.define(version: 20171213160445) do
   add_foreign_key "ci_pipeline_schedule_variables", "ci_pipeline_schedules", column: "pipeline_schedule_id", name: "fk_41c35fda51", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedules", "projects", name: "fk_8ead60fcc4", on_delete: :cascade
   add_foreign_key "ci_pipeline_schedules", "users", column: "owner_id", name: "fk_9ea99f58d2", on_delete: :nullify
+  add_foreign_key "ci_pipeline_subscriptions", "ci_pipelines"
+  add_foreign_key "ci_pipeline_subscriptions", "users"
   add_foreign_key "ci_pipeline_variables", "ci_pipelines", column: "pipeline_id", name: "fk_f29c5f4380", on_delete: :cascade
   add_foreign_key "ci_pipelines", "ci_pipeline_schedules", column: "pipeline_schedule_id", name: "fk_3d34ab2e06", on_delete: :nullify
   add_foreign_key "ci_pipelines", "ci_pipelines", column: "auto_canceled_by_id", name: "fk_262d4c2d19", on_delete: :nullify
@@ -1946,6 +1959,7 @@ ActiveRecord::Schema.define(version: 20171213160445) do
   add_foreign_key "cluster_providers_gcp", "clusters", on_delete: :cascade
   add_foreign_key "clusters", "users", on_delete: :nullify
   add_foreign_key "clusters_applications_helm", "clusters", on_delete: :cascade
+  add_foreign_key "clusters_applications_ingress", "clusters", on_delete: :cascade
   add_foreign_key "container_repositories", "projects"
   add_foreign_key "deploy_keys_projects", "projects", name: "fk_58a901ca7e", on_delete: :cascade
   add_foreign_key "deployments", "projects", name: "fk_b9a3851b82", on_delete: :cascade
