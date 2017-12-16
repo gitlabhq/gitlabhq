@@ -385,11 +385,8 @@ module Gitlab
       success
     end
 
-<<<<<<< HEAD
-=======
     # Delete branch from remote repository
     #
->>>>>>> upstream/master
     # storage - project's storage path
     # project_name - project's disk path
     # remote_name - remote name
