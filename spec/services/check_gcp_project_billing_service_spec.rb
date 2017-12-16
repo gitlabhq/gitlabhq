@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CheckGCPProjectBillingService do
+describe CheckGcpProjectBillingService do
   let(:service) { described_class.new }
 
   describe '#execute' do

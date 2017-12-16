@@ -1,4 +1,4 @@
-class CheckGCPProjectBillingService
+class CheckGcpProjectBillingService
   def execute(token)
     client = GoogleApi::CloudPlatform::Client.new(token, nil)
     client.projects_list.any? do |project|
