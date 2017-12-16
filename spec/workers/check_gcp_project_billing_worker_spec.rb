@@ -12,12 +12,13 @@ describe CheckGcpProjectBillingWorker do
     end
 
     it 'stores billing status in redis' do
-      expect(CheckGcpProjectBillingService).to receive_message_chain(:new, :execute).and_return(true)
-      subject
+      redis_double = double
 
-      Gitlab::Redis::SharedState.with do |redis|
-        expect(redis.get("gitlab:gcp:#{token}:billing_enabled")).to eq('true')
-      end
+      expect(CheckGcpProjectBillingService).to receive_message_chain(:new, :execute).and_return(true)
+      expect(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis_double)
+      expect(redis_double).to receive(:set).with(CheckGcpProjectBillingWorker.redis_shared_state_key_for(token), anything)
+
+      subject
     end
   end
 end
