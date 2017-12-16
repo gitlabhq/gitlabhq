@@ -225,6 +225,7 @@ constraints(ProjectUrlConstrainer.new) do
             get '/user/new', to: 'clusters/user#new'
             post '/user', to: 'clusters/user#create'
 
+            get '/gcp/check', to: 'clusters/gcp#check'
             get '/gcp/new', to: 'clusters/gcp#new'
             get '/gcp/login', to: 'clusters/gcp#login'
             post '/gcp', to: 'clusters/gcp#create'

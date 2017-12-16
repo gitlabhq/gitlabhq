@@ -1,17 +1,32 @@
 class Projects::Clusters::GcpController < Projects::ApplicationController
   before_action :authorize_read_cluster!
   before_action :authorize_google_api, except: [:login]
+  before_action :authorize_google_project_billing, only: [:check]
   before_action :authorize_create_cluster!, only: [:new, :create]
+
+  STATUS_POLLING_INTERVAL = 10_000
 
   def login
     begin
-      state = generate_session_key_redirect(gcp_new_namespace_project_clusters_path.to_s)
+      state = generate_session_key_redirect(gcp_check_namespace_project_clusters_path.to_s)
 
       @authorize_url = GoogleApi::CloudPlatform::Client.new(
         nil, callback_google_api_auth_url,
         state: state).authorize_url
     rescue GoogleApi::Auth::ConfigMissingError
       # no-op
+    end
+  end
+
+  def check
+    respond_to do |format|
+      format.json do
+        Gitlab::PollingInterval.set_header(response, interval: STATUS_POLLING_INTERVAL)
+
+        Gitlab::Redis::SharedState.with do |redis|
+          render json: { billing: redis.get(CheckGcpProjectBillingWorker.redis_shared_state_key_for(token_in_session)) }
+        end
+      end
     end
   end
 
@@ -55,6 +70,14 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
     unless GoogleApi::CloudPlatform::Client.new(token_in_session, nil)
                                            .validate_token(expires_at_in_session)
       redirect_to action: 'login'
+    end
+  end
+
+  def authorize_google_project_billing
+    Gitlab::Redis::SharedState.with do |redis|
+      unless redis.get(CheckGcpProjectBillingWorker.redis_shared_state_key_for(token_in_session)) == 'true'
+        CheckGcpProjectBillingWorker.perform_async(token_in_session)
+      end
     end
   end
 

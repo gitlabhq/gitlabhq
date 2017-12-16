@@ -30,7 +30,7 @@ describe Projects::Clusters::GcpController do
           go
 
           expect(assigns(:authorize_url)).to include(key)
-          expect(session[session_key_for_redirect_uri]).to eq(gcp_new_project_clusters_path(project))
+          expect(session[session_key_for_redirect_uri]).to eq(gcp_check_project_clusters_path(project))
         end
       end
 
@@ -60,6 +60,75 @@ describe Projects::Clusters::GcpController do
 
     def go
       get :login, namespace_id: project.namespace, project_id: project
+    end
+  end
+
+  describe 'GET check' do
+    let(:user) { create(:user) }
+
+    before do
+      project.add_master(user)
+      sign_in(user)
+    end
+
+    describe 'functionality' do
+      context 'when redis has wanted billing status' do
+        let(:token) { 'bogustoken' }
+        before do
+          redis_double = double
+          allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis_double)
+          allow(redis_double).to receive(:get).and_return('true')
+        end
+
+        it 'should render json with billing status' do
+          go
+
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include_json(billing: 'true')
+        end
+
+        it 'should not start worker' do
+          expect(CheckGcpProjectBillingWorker).not_to receive(:perform_async)
+
+          go
+        end
+      end
+
+      context 'when redis does not have billing status' do
+        before do
+          redis_double = double
+          allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis_double)
+          allow(redis_double).to receive(:get).and_return(nil)
+        end
+
+        it 'should render json with null billing status' do
+          go
+
+          expect(response).to have_http_status(:ok)
+          expect(response.body).to include_json(billing: nil)
+        end
+
+        it 'should start worker' do
+          expect(CheckGcpProjectBillingWorker).to receive(:perform_async)
+
+          go
+        end
+      end
+    end
+
+    describe 'security' do
+      it { expect { go }.to be_allowed_for(:admin) }
+      it { expect { go }.to be_allowed_for(:owner).of(project) }
+      it { expect { go }.to be_allowed_for(:master).of(project) }
+      it { expect { go }.to be_denied_for(:developer).of(project) }
+      it { expect { go }.to be_denied_for(:reporter).of(project) }
+      it { expect { go }.to be_denied_for(:guest).of(project) }
+      it { expect { go }.to be_denied_for(:user) }
+      it { expect { go }.to be_denied_for(:external) }
+    end
+
+    def go
+      get :check, namespace_id: project.namespace, project_id: project, format: :json
     end
   end
 
