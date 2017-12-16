@@ -62,8 +62,8 @@ describe GoogleApi::CloudPlatform::Client do
     it { is_expected.to eq(projects) }
   end
 
-  def projects_get_billing_info
-    subject { client.projects_get_billing_info }
+  describe '#projects_get_billing_info' do
+    subject { client.projects_get_billing_info('project') }
     let(:billing_info) { double }
 
     before do
