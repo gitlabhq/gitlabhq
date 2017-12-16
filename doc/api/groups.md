@@ -375,10 +375,7 @@ Parameters:
 | `lfs_enabled` | boolean | no | Enable/disable Large File Storage (LFS) for the projects in this group |
 | `request_access_enabled` | boolean | no | Allow users to request member access. |
 | `parent_id` | integer | no | The parent group id for creating nested group. |
-<<<<<<< HEAD
 | `shared_runners_minutes_limit` | integer | no | (admin-only) Pipeline minutes quota for this group. |
-=======
->>>>>>> upstream/master
 
 ## Transfer project to group
 
