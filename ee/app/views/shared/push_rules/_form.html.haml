@@ -25,9 +25,7 @@
     = f.label :prevent_secrets, "Prevent committing secrets to Git", class: "label-light append-bottom-0"
     %p.light.append-bottom-0
       GitLab will reject any files that are likely to contain secrets.
-      The list of file names we reject is available in the
-      = link_to "documentation", help_page_path('push_rules/push_rules')
-      \.
+      The list of file names we reject is available in the #{link_to "documentation", help_page_path('push_rules/push_rules')}.
 
 .form-group
   = f.label :commit_message_regex, "Commit message", class: 'label-light'
