@@ -135,14 +135,11 @@ module ExtractsPath
 
   def tree
     @tree ||= @repo.tree(@commit.id, @path) # rubocop:disable Gitlab/ModuleWithInstanceVariables
-<<<<<<< HEAD
-=======
   end
 
   def lfs_blob_ids
     blob_ids = tree.blobs.map(&:id)
     @lfs_blob_ids = Gitlab::Git::Blob.batch_lfs_pointers(@project.repository, blob_ids).map(&:id) # rubocop:disable Gitlab/ModuleWithInstanceVariables
->>>>>>> upstream/master
   end
 
   private
