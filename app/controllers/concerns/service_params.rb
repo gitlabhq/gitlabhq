@@ -68,11 +68,7 @@ module ServiceParams
 
   def service_params
     dynamic_params = @service.event_channel_names + @service.event_names # rubocop:disable Gitlab/ModuleWithInstanceVariables
-<<<<<<< HEAD
     service_params = params.permit(:id, service: allowed_service_params + dynamic_params)
-=======
-    service_params = params.permit(:id, service: ALLOWED_PARAMS_CE + dynamic_params)
->>>>>>> upstream/master
 
     if service_params[:service].is_a?(Hash)
       FILTER_BLANK_PARAMS.each do |param|
