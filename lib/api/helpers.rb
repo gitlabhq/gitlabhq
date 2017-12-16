@@ -434,7 +434,6 @@ module API
 
     private
 
-<<<<<<< HEAD
     def private_token
       params[APIGuard::PRIVATE_TOKEN_PARAM] || env[APIGuard::PRIVATE_TOKEN_HEADER]
     end
@@ -457,9 +456,7 @@ module API
       warden.try(:authenticate) if verified_request?
     end
 
-=======
     # rubocop:disable Gitlab/ModuleWithInstanceVariables
->>>>>>> upstream/master
     def initial_current_user
       return @initial_current_user if defined?(@initial_current_user) # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
