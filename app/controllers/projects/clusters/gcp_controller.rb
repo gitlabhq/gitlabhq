@@ -27,6 +27,8 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
           render json: { billing: redis.get(CheckGcpProjectBillingWorker.redis_shared_state_key_for(token_in_session)) }
         end
       end
+
+      format.html { render :check }
     end
   end
 
