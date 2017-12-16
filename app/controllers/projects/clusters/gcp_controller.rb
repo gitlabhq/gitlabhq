@@ -1,7 +1,7 @@
 class Projects::Clusters::GcpController < Projects::ApplicationController
   before_action :authorize_read_cluster!
   before_action :authorize_google_api, except: [:login]
-  before_action :authorize_google_project_billing, except: [:login, :check]
+  before_action :authorize_google_project_billing, except: [:login, :check, :run_check]
   before_action :authorize_create_cluster!, only: [:new, :create]
 
   STATUS_POLLING_INTERVAL = 1.minute.to_i
@@ -29,6 +29,15 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
       end
 
       format.html { render :check }
+    end
+  end
+
+  def run_check
+    respond_to do |format|
+      format.json do
+        CheckGcpProjectBillingWorker.perform_async(token_in_session)
+        head :no_content
+      end
     end
   end
 
