@@ -14,6 +14,11 @@ export default {
       type: Boolean,
       required: true,
     },
+    isSubscribed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
   components: {
     ciHeader,
@@ -42,6 +47,10 @@ export default {
       this.$set(this.actions[index], 'isLoading', true);
 
       eventHub.$emit('headerPostAction', action);
+    },
+
+    emitSetIsSubscribed(...args) {
+      eventHub.$emit('setIsSubscribed', ...args);
     },
 
     getActions() {
@@ -88,7 +97,9 @@ export default {
       :time="pipeline.created_at"
       :user="pipeline.user"
       :actions="actions"
+      :is-subscribed="isSubscribed"
       @actionClicked="postAction"
+      @setIsSubscribed="emitSetIsSubscribed"
       />
     <loading-icon
       v-if="isLoading"

@@ -29,6 +29,7 @@ export default {
 
   register() {
     return this.worker.register(this.workerPath)
+      .then(this.worker.ready)
       .then((registration) => {
         this.registration = registration;
       });

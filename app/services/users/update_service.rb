@@ -1,3 +1,5 @@
+require 'byebug'
+
 module Users
   class UpdateService < BaseService
     include NewUserNotifier
@@ -13,13 +15,14 @@ module Users
 
       user_exists = @user.persisted?
 
-      if @params[:subscribed_pipelines]
-        @params[:subscribed_pipelines].split(/\,/).each do |pipeline_id|
-          Ci::Pipeline.find(pipeline_id).try do |pipeline|
-            p '🔥'
-            @user.subscribed_pipelines << pipeline
-          end
+      if @params[:subscribed_pipeline]
+        Ci::Pipeline.find(@params[:subscribed_pipeline]).try do |pipeline|
+          p '🔥'
+          p pipeline
+          @user.subscribed_pipelines << pipeline
         end
+
+        @params.delete(:subscribed_pipeline)
       end
 
       assign_attributes(&block)

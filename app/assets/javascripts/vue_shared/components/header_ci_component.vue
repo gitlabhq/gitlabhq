@@ -4,7 +4,7 @@ import loadingIcon from './loading_icon.vue';
 import timeagoTooltip from './time_ago_tooltip.vue';
 import tooltip from '../directives/tooltip';
 import userAvatarImage from './user_avatar/user_avatar_image.vue';
-import pushNotificationsSubscribeButton from './push_notifications_subscribe_button.vue';
+import pipelinePushNotificationsSubscribeButton from './pipeline_push_notifications_subscribe_button.vue';
 
 /**
  * Renders header component for job and pipeline page based on UI mockups
@@ -46,6 +46,11 @@ export default {
       required: false,
       default: false,
     },
+    isSubscribed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   directives: {
@@ -57,7 +62,7 @@ export default {
     loadingIcon,
     timeagoTooltip,
     userAvatarImage,
-    pushNotificationsSubscribeButton,
+    pipelinePushNotificationsSubscribeButton,
   },
 
   computed: {
@@ -69,6 +74,10 @@ export default {
   methods: {
     onClickAction(action) {
       this.$emit('actionClicked', action);
+    },
+
+    emitSetIsSubscribed(...args) {
+      this.$emit('setIsSubscribed', ...args);
     },
   },
 };
@@ -143,9 +152,10 @@ export default {
             aria-hidden="true">
           </i>
         </button>
-
       </template>
-      <push-notifications-subscribe-button />
+
+      <pipeline-push-notifications-subscribe-button :pipeline-id="itemId" :is-subscribed="isSubscribed" @setIsSubscribed="emitSetIsSubscribed" />
+
       <button
         v-if="hasSidebarButton"
         type="button"

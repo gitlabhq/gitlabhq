@@ -1,5 +1,6 @@
 function onPush(event) {
   console.log('PipelineNotificatinWorker onPush', event);
+  debugger;
   console.log('JSON', event.data.json());
   console.log('logo', gon);
   console.log('test');

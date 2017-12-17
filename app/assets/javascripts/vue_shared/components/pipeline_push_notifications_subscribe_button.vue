@@ -3,10 +3,29 @@ import PipelineNotificationClient from '../../service_workers/clients/pipeline_n
 import axios from '../../lib/utils/axios_utils';
 
 export default {
+  props: {
+    pipelineId: {
+      type: Number,
+      required: true,
+    },
+
+    isSubscribed: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+
   data() {
     return {
       hasPermission: true,
     };
+  },
+
+  computed: {
+    actionName() {
+      return this.isSubscribed ? 'Unsubscribe' : 'Subscribe';
+    },
   },
 
   methods: {
@@ -20,22 +39,22 @@ export default {
         })
         .then((subscription) => {
           const subscriptionData = subscription.toJSON();
-          
+
           // lazy
-          return axios.put('/profile', {
+          return axios.put('/profile.json', {
             user: {
               webpush_endpoint: subscriptionData.endpoint,
               webpush_p256dh: subscriptionData.keys.p256dh,
               webpush_auth: subscriptionData.keys.auth,
-              subscribed_pipelines: '68,69',
+              subscribed_pipeline: this.pipelineId,
             },
           });
         })
         .then(() => {
+          this.$emit('setIsSubscribed', true);
           this.hasPermission = true;
         })
-        .catch((error) => {
-          console.log(error);
+        .catch(() => {
           this.hasPermission = false;
         });
     },
@@ -51,6 +70,6 @@ export default {
   type="button"
   @click="subscribe"
 >
-  Subscribe to push notifications
+  {{ actionName }} to push notifications
 </button>
 </template>

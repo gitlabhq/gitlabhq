@@ -7,9 +7,16 @@ class PipelineWebpushWorker
 
   queue_namespace :pipeline_default
 
-  def perform(pipeline_id, subscribers)
+  def perform(pipeline_id)
+    p "🔥"
+    p pipeline_id
     Ci::Pipeline.find(pipeline_id).try do |pipeline|
-      subscribers.each do |subscriber|
+      p "😂test"
+      p pipeline
+      p pipeline.webpush_subscribers
+      pipeline.webpush_subscribers.each do |subscriber|
+        p "❤️"
+        p subscriber
         Webpush.payload_send(
           message: "#{pipeline_id} has updated",
           endpoint: subscriber.webpush_endpoint,

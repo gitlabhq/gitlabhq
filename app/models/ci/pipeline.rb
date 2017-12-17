@@ -31,7 +31,7 @@ module Ci
     has_many :auto_canceled_pipelines, class_name: 'Ci::Pipeline', foreign_key: 'auto_canceled_by_id'
     has_many :auto_canceled_jobs, class_name: 'CommitStatus', foreign_key: 'auto_canceled_by_id'
 
-    has_many :pipeline_subscriptions, class_name: 'Ci::PipelineSubscription'
+    has_many :pipeline_subscriptions, class_name: 'Ci::PipelineSubscription', foreign_key: 'ci_pipeline_id'
     has_many :webpush_subscribers, through: :pipeline_subscriptions, class_name: 'User', source: :user
 
     delegate :id, to: :project, prefix: true
@@ -139,7 +139,7 @@ module Ci
         next if transition.loopback?
 
         pipeline.run_after_commit do
-          PipelineWebpushWorker.perform_async(pipeline.id, pipeline.webpush_subscribers)
+          PipelineWebpushWorker.perform_async(pipeline.id)
           PipelineHooksWorker.perform_async(pipeline.id)
           ExpirePipelineCacheWorker.perform_async(pipeline.id)
         end

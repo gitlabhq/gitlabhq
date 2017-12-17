@@ -15,8 +15,16 @@ class ProfilesController < Profiles::ApplicationController
       if result[:status] == :success
         message = "Profile was successfully updated"
 
-        format.html { redirect_back_or_default(default: { action: 'show' }, options: { notice: message }) }
-        format.json { render json: { message: message } }
+        p '😂'
+
+        format.html do
+          p '😘'
+          redirect_back_or_default(default: { action: 'show' }, options: { notice: message })
+        end
+        format.json do
+          p '🙄'
+          render json: { message: message }
+        end
       else
         format.html { redirect_back_or_default(default: { action: 'show' }, options: { alert: result[:message] }) }
         format.json { render json: result }
@@ -95,7 +103,7 @@ class ProfilesController < Profiles::ApplicationController
       :webpush_endpoint,
       :webpush_p256dh,
       :webpush_auth,
-      :subscribed_pipelines
+      :subscribed_pipeline
     )
   end
 end

@@ -12,6 +12,7 @@ export default class pipelinesMediator {
 
     this.state = {};
     this.state.isLoading = false;
+    this.state.isSubscribed = options.isSubscribed === 'true';
   }
 
   fetchPipeline() {
