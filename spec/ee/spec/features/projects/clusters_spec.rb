@@ -27,6 +27,34 @@ feature 'EE Clusters' do
           expect(page).not_to have_selector('.js-add-cluster.disabled')
           expect(page).to have_selector('.js-add-cluster')
         end
+
+        context 'when user tries to create a cluster with a duplicate environment scope' do
+          before do
+            allow_any_instance_of(Projects::Clusters::GcpController)
+              .to receive(:token_in_session).and_return('token')
+            allow_any_instance_of(Projects::Clusters::GcpController)
+              .to receive(:expires_at_in_session).and_return(1.hour.since.to_i.to_s)
+            allow_any_instance_of(GoogleApi::CloudPlatform::Client)
+              .to receive(:projects_zones_clusters_create) do
+              OpenStruct.new(
+                self_link: 'projects/gcp-project-12345/zones/us-central1-a/operations/ope-123',
+                status: 'RUNNING'
+              )
+            end
+            allow(WaitForClusterCreationWorker).to receive(:perform_in).and_return(nil)
+
+            click_link 'Add cluster'
+            click_link 'Create on GKE'
+          end
+
+          it 'users sees an error' do
+            fill_in 'cluster_provider_gcp_attributes_gcp_project_id', with: 'gcp-project-123'
+            fill_in 'cluster_name', with: 'dev-cluster'
+            fill_in 'cluster_environment_scope', with: cluster.environment_scope
+            click_button 'Create cluster'
+            expect(page).to have_css('#error_explanation')
+          end
+        end
       end
     end
 
