@@ -1,0 +1,5 @@
+---
+title: show None when issue is in closed list and no labels assigned
+merge_request: 15976
+author: Christiaan Van den Poel
+type: fixed
