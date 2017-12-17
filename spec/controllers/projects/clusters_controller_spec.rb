@@ -4,7 +4,7 @@ describe Projects::ClustersController do
   include AccessMatchersForController
   include GoogleApi::CloudPlatformHelpers
 
-  set(:project) { create(:project) }
+  let(:project) { create(:project) }
 
   describe 'GET index' do
     describe 'functionality' do
@@ -287,7 +287,7 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
-      set(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+      let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
       let(:params) do
         { cluster: { enabled: false } }
@@ -371,7 +371,7 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
-      let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+      let(:cluster) { create(:cluster, :provided_by_gcp, environment_scope: 'prod/*', projects: [project]) }
 
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }
