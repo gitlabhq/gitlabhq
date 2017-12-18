@@ -82,18 +82,26 @@
   }
 }
 
-.md-header-toolbar {
-  margin-left: auto;
+.nav-links {
+  li.md-header-toolbar {
+    margin-left: auto;
+    display: none;
 
-  @media(max-width: $screen-xs-max) {
-    flex: none;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    padding-top: $gl-padding-top;
-    padding-bottom: $gl-padding-top;
+    &.active {
+      display: block;
+    }
+
+    @media(max-width: $screen-xs-max) {
+      flex: none;
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      padding-top: $gl-padding-top;
+      padding-bottom: $gl-padding-top;
+    }
   }
 }
+
 
 .referenced-users {
   color: $gl-text-color;
