@@ -13,7 +13,7 @@
     - if @project.feature_available?(:multiple_clusters)
       = field.text_field :environment_scope, class: 'form-control', placeholder: s_('ClusterIntegration|Environment scope')
     - else
-      = field.text_field :environment_scope, class: 'form-control', disabled: true, placeholder: s_('ClusterIntegration|Environment scope')
+      = field.text_field :environment_scope, class: 'form-control', readonly: true, placeholder: s_('ClusterIntegration|Environment scope')
 
   = field.fields_for :provider_gcp, @cluster.provider_gcp do |provider_gcp_field|
     .form-group
