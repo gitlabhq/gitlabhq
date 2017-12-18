@@ -62,7 +62,7 @@ describe 'Admin::Hooks' do
     end
   end
 
-  describe 'Remove existing hook' do
+  describe 'Remove existing hook', :js do
     before do
       create(:system_hook)
     end
