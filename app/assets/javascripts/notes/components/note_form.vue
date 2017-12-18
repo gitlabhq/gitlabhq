@@ -1,9 +1,10 @@
 <script>
-  import { mapGetters } from 'vuex';
+  import { mapGetters, mapActions } from 'vuex';
   import eventHub from '../event_hub';
   import issueWarning from '../../vue_shared/components/issue/issue_warning.vue';
   import markdownField from '../../vue_shared/components/markdown/field.vue';
   import issuableStateMixin from '../mixins/issuable_state';
+  import resolvable from '../mixins/resolvable';
 
   export default {
     name: 'issueNoteForm',
@@ -22,7 +23,7 @@
         required: false,
         default: 'Save comment',
       },
-      discussion: {
+      note: {
         type: Object,
         required: false,
         default: () => ({}),
@@ -31,17 +32,13 @@
         type: Boolean,
         required: true,
       },
-      canResolve: { // FIXME -- @fatihacet
-        type: Boolean,
-        required: false,
-        default: true,
-      },
     },
     data() {
       return {
-        note: this.noteBody,
+        updatedNoteBody: this.noteBody,
         conflictWhileEditing: false,
         isSubmitting: false,
+        isResolving: false,
       };
     },
     components: {
@@ -72,20 +69,23 @@
         return this.getUserDataByProp('id');
       },
       isDisabled() {
-        return !this.note.length || this.isSubmitting;
+        return !this.updatedNoteBody.length || this.isSubmitting;
       },
     },
     methods: {
+      ...mapActions([
+        'toggleResolveNote',
+      ]),
       handleUpdate() {
         this.isSubmitting = true;
 
-        this.$emit('handleFormUpdate', this.note, this.$refs.editNoteForm, () => {
+        this.$emit('handleFormUpdate', this.updatedNoteBody, this.$refs.editNoteForm, () => {
           this.isSubmitting = false;
         });
       },
       editMyLastNote() {
-        if (this.note === '') {
-          const lastNoteInDiscussion = this.getDiscussionLastNote(this.discussion);
+        if (this.updatedNoteBody === '') {
+          const lastNoteInDiscussion = this.getDiscussionLastNote(this.updatedNoteBody);
 
           if (lastNoteInDiscussion) {
             eventHub.$emit('enterEditMode', {
@@ -96,19 +96,35 @@
       },
       cancelHandler(shouldConfirm = false) {
         // Sends information about confirm message and if the textarea has changed
-        this.$emit('cancelFormEdition', shouldConfirm, this.noteBody !== this.note);
+        this.$emit('cancelFormEdition', shouldConfirm, this.noteBody !== this.updatedNoteBody);
+      },
+      resolve() {
+        this.isResolving = true;
+        const endpoint = this.note.resolve_path;
+        const isResolved = this.discussionResolved;
+        const discussion = true;
+
+        this.toggleResolveNote({ endpoint, isResolved, discussion })
+          .then((res) => {
+            this.isResolving = false;
+          })
+          .catch((res) => {
+            const msg = 'Something went wrong while resolving this discussion. Please try again.';
+            Flash(msg, 'alert', this.$el);
+          });
       },
     },
     mixins: [
       issuableStateMixin,
+      resolvable,
     ],
     mounted() {
       this.$refs.textarea.focus();
     },
     watch: {
       noteBody() {
-        if (this.note === this.noteBody) {
-          this.note = this.noteBody;
+        if (this.updatedNoteBody === this.noteBody) {
+          this.updatedNoteBody = this.noteBody;
         } else {
           this.conflictWhileEditing = true;
         }
@@ -150,7 +166,7 @@
           class="note-textarea js-gfm-input js-autosize markdown-area js-vue-issue-note-form js-vue-textarea"
           :data-supports-quick-actions="!isEditing"
           aria-label="Description"
-          v-model="note"
+          v-model="updatedNoteBody"
           ref="textarea"
           slot="textarea"
           placeholder="Write a comment or drag your files here..."
@@ -168,9 +184,10 @@
           {{saveButtonTitle}}
         </button>
         <button
-          v-if="canResolve"
+          v-if="note.resolvable"
+          @click.prevent="resolve"
           class="btn btn-nr btn-default append-right-10 js-comment-resolve-button">
-            Resolve discussion
+            {{resolveButtonTitle}}
         </button>
         <button
           @click="cancelHandler()"

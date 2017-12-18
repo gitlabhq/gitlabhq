@@ -152,4 +152,18 @@ export default {
       noteObj.notes.splice(noteObj.notes.indexOf(comment), 1, note);
     }
   },
+
+  [types.UPDATE_DISCUSSION](state, note) {
+    let index = 0;
+
+    state.notes.forEach((n, i) => {
+      if (n.id === note.id) {
+        index = i;
+      }
+    });
+
+    note.expanded = true;
+
+    state.notes.splice(index, 1, note);
+  },
 };

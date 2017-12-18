@@ -37,10 +37,16 @@ class Projects::NotesController < Projects::ApplicationController
 
     discussion = note.discussion
 
-    render json: {
-      resolved_by: note.resolved_by.try(:name),
-      discussion_headline_html: (view_to_html_string('discussions/_headline', discussion: discussion) if discussion)
-    }
+    if cookies[:vue_mr_discussions] == 'true'
+      Notes::RenderService.new(current_user).execute([note], project)
+
+      render json: note_serializer.represent(note)
+    else
+      render json: {
+        resolved_by: note.resolved_by.try(:name),
+        discussion_headline_html: (view_to_html_string('discussions/_headline', discussion: discussion) if discussion)
+      }
+    end
   end
 
   def unresolve
@@ -50,9 +56,15 @@ class Projects::NotesController < Projects::ApplicationController
 
     discussion = note.discussion
 
-    render json: {
-      discussion_headline_html: (view_to_html_string('discussions/_headline', discussion: discussion) if discussion)
-    }
+    if cookies[:vue_mr_discussions] == 'true'
+      Notes::RenderService.new(current_user).execute([note], project)
+
+      render json: note_serializer.represent(note)
+    else
+      render json: {
+        discussion_headline_html: (view_to_html_string('discussions/_headline', discussion: discussion) if discussion)
+      }
+    end
   end
 
   private

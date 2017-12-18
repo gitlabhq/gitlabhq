@@ -115,10 +115,6 @@
         this.toggleResolveNote({ endpoint, isResolved })
           .then((res) => {
             this.isResolving = false;
-            // FIXME -- @fatihacet
-            // Request should return JSON with full note
-            // We should also update the resolved_by and other properties too
-            this.note.resolved = !this.note.resolved;
           })
           .catch((res) => {
             const msg = 'Something went wrong while resolving this discussion. Please try again.';

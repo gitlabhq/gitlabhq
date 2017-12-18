@@ -28,4 +28,3 @@ export const getQuickActionText = (note) => {
 export const hasQuickActions = note => REGEX_QUICK_ACTIONS.test(note);
 
 export const stripQuickActions = note => note.replace(REGEX_QUICK_ACTIONS, '').trim();
-

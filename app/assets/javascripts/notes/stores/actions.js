@@ -61,9 +61,14 @@ export const createNewNote = ({ commit }, { endpoint, data }) => service
 export const removePlaceholderNotes = ({ commit }) =>
   commit(types.REMOVE_PLACEHOLDER_NOTES);
 
-export const toggleResolveNote = ({ commit }, { endpoint, isResolved }) => service
+export const toggleResolveNote = ({ commit }, { endpoint, isResolved, discussion }) => service
   .toggleResolveNote(endpoint, isResolved)
-  .then(res => res.json());
+  .then(res => res.json())
+  .then((res) => {
+    const mutationType = discussion ? types.UPDATE_DISCUSSION : types.UPDATE_NOTE;
+
+    commit(mutationType, res);
+  });
 
 export const saveNote = ({ commit, dispatch }, noteData) => {
   const { note } = noteData.data.note;
@@ -192,11 +197,11 @@ export const poll = ({ commit, state, getters }) => {
 };
 
 export const stopPolling = () => {
-  eTagPoll.stop();
+  // eTagPoll.stop();
 };
 
 export const restartPolling = () => {
-  eTagPoll.restart();
+  // eTagPoll.restart();
 };
 
 export const fetchData = ({ commit, state, getters }) => {
