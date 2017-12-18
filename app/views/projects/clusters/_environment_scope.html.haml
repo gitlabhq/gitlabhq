@@ -4,4 +4,4 @@
   = link_to s_("ClusterIntegration|Learn more about environments."), help_page_path('ci/environments')
 
 .form-group
-  = field.text_field :environment_scope, class: 'form-control js-select-on-focus', readonly: has_multiple_clusters?(@project), placeholder: s_('ClusterIntegration|Environment scope')
+  = field.text_field :environment_scope, class: 'form-control js-select-on-focus', readonly: !has_multiple_clusters?(@project), placeholder: s_('ClusterIntegration|Environment scope')
