@@ -161,7 +161,7 @@ stages:
 ##
 # Trigger a package build in omnibus-gitlab repository
 #
-package-qa:
+qa-package:
   image: ruby:2.4-alpine
   before_script: []
   stage: build
@@ -396,7 +396,7 @@ static-analysis:
 # Documentation checks:
 # - Check validity of relative links
 # - Make sure cURL examples in API docs use the full switches
-docs lint:
+docs-lint:
   <<: *dedicated-runner
   <<: *except-qa
   image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
@@ -414,7 +414,7 @@ docs lint:
     # Check the internal links
     - bundle exec nanoc check internal_links
 
-downtime_check:
+downtime-check:
   <<: *rake-exec
   except:
     - master
@@ -423,7 +423,7 @@ downtime_check:
     - /(^docs[\/-].*|.*-docs$)/
     - /(^qa[\/-].*|.*-qa$)/
 
-ee_compat_check:
+ee-compat-check:
   <<: *rake-exec
   except:
     - master
@@ -503,7 +503,7 @@ db:rollback-mysql:
   <<: *db-rollback
   <<: *use-mysql
 
-.db-seed_fu: &db-seed_fu
+.db-seed-fu: &db-seed_fu
   <<: *dedicated-runner
   <<: *except-docs
   <<: *except-qa
@@ -523,11 +523,11 @@ db:rollback-mysql:
     paths:
       - log/development.log
 
-db:seed_fu-pg:
+db:seed-fu-pg:
   <<: *db-seed_fu
   <<: *use-pg
 
-db:seed_fu-mysql:
+db:seed-fu-mysql:
   <<: *db-seed_fu
   <<: *use-mysql
 
@@ -538,7 +538,7 @@ db:check-schema-pg:
     - source scripts/schema_changed.sh
 
 # Frontend-related jobs
-gitlab:assets:compile:
+gitlab:assets-compile:
   <<: *dedicated-runner
   <<: *except-docs
   <<: *except-qa
@@ -635,7 +635,7 @@ coverage:
     - coverage/index.html
     - coverage/assets/
 
-lint:javascript:report:
+lint:javascript-report:
   <<: *dedicated-runner
   <<: *except-docs
   <<: *except-qa
@@ -679,7 +679,7 @@ pages:
 
 # Insurance in case a gem needed by one of our releases gets yanked from
 # rubygems.org in the future.
-cache gems:
+cache-gems:
   <<: *dedicated-runner
   <<: *pull-cache
   only:
@@ -695,7 +695,7 @@ cache gems:
     - master@gitlab-org/gitlab-ce
     - master@gitlab-org/gitlab-ee
 
-gitlab-git_test:
+gitlab-git-test:
   <<: *pull-cache
   <<: *except-docs
   <<: *except-qa
