@@ -1516,25 +1516,25 @@ module Gitlab
       #
       # M       app/views/events/_event.atom.builder
       def parse_log_by_shell_output(lines, with_change_summary)
-        commits = []
-        change_summary = {}
+        lines.map!(&:chomp) # get rid of unnecessary `\n`s.
+
+        commit_shas = []
+        change_summaries = {}
 
         # By default `lines` are just a list of commit SHAs.
         # If `with_change_summary` is true, it means that `lines` are SHAs + changed files summary.
         if with_change_summary
           lines.each_with_index do |line, index|
-            next if line == "\n" # do nothing with "\n". It's just a separator.
+            next if line.empty? # do nothing with an empty line. It's just a separator.
 
-            # If the next line is "\n" then the current line is SHA.
-            if lines[index + 1] == "\n"
-              sha = line.chomp("\n")
+            # If the next line is empty then the current line is SHA.
+            if lines[index + 1]&.empty?
+              commit_shas << line
+              change_summaries[line] = []
 
-              commits << sha
-              change_summary[sha] = []
-
-            # If the next line is NOT "\n" then the current line is a summary item.
+            # If the next line is NOT empty then the current line is a summary item.
             else
-              type, old_path, new_path = line.chomp("\n").split("\t")
+              type, old_path, new_path = line.split("\t")
 
               # If there's only old_path, it means that a file was just added,
               # Both `old_path` and `new_path` in this case should be the same.
@@ -1546,20 +1546,17 @@ module Gitlab
                 type: type
               }
 
-              change_summary[commits.last] << summary
+              change_summaries[commit_shas.last] << summary
             end
           end
-        else
-          # If `with_change_summary` is false then `lines` are an array of SHAs.
-          commits = lines.map { |line| line.chomp("\n") }
         end
 
-        # `commits` is an array of strings (SHAs).
-        commits.map do |commit|
-          summary = change_summary[commit]
-          commit = Rugged::Commit.new(rugged, commit)
+        # `commit_shas` is an array of strings (SHAs).
+        commit_shas.map do |sha|
+          summaries = change_summaries[sha]
+          commit = Rugged::Commit.new(rugged, sha)
 
-          Commit.decorate(self, commit, change_summary: summary)
+          Commit.decorate(self, commit, change_summary: summaries)
         end
       end
 
