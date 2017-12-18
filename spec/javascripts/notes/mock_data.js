@@ -355,59 +355,45 @@ export const replacedImageDiffHtml = `
 `;
 
 export const diffDiscussionMock = {
-  ...discussionMock,
-  notes: [
-    {
-      ...discussionMock.notes[0],
-      truncated_diff_lines: `<tr class="line_holder" id=""> <td class="diff-line-num old_line" data-linenumber="327"> 327 </td><td class="diff-line-num new_line" data-linenumber="327"> 327 </td><td class="line_content noteable_line"> <span id="LC327" class="line" lang="kotlin"> <span class="n">isConfidential</span> <span class="p">))</span> </span> </td></tr><tr class="line_holder" id=""> <td class="diff-line-num old_line" data-linenumber="328"> 328 </td><td class="diff-line-num new_line" data-linenumber="328"> 328 </td><td class="line_content noteable_line"> <span id="LC328" class="line" lang="kotlin"> <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> </span> </td></tr><tr class="line_holder" id=""> <td class="diff-line-num old_line" data-linenumber="329"> 329 </td><td class="diff-line-num new_line" data-linenumber="329"> 329 </td><td class="line_content noteable_line"> <span id="LC329" class="line" lang="kotlin"> <span class="n">observeUpdate</span> <span class="p">(</span> <span class="n">App</span> <span class="p">.</span> <span class="k">get</span> <span class="p">().</span> <span class="n">gitLab</span> <span class="p">.</span> <span class="n">updateIssue</span> <span class="p">(</span> <span class="n">project</span> <span class="p">.</span> <span class="n">id</span> <span class="p">,</span> </span> </td></tr><tr class="line_holder old" id=""> <td class="diff-line-num old old_line" data-linenumber="330"> 330 </td><td class="diff-line-num new_line old" data-linenumber="330"> </td><td class="line_content noteable_line old"> <span id="LC330" class="line" lang="kotlin"> <span class="n">issue</span> <span class="o">!!</span> <span class="p">.</span> <span class="n">id</span> <span class="p">,</span> </span> </td></tr>`,
-      diff_discussion: true,
-      diff_file: {
-        submodule: false,
-        submoduleLink: '<a href="/bha">Submodule</a>', // submodule_link(blob, diff_file.content_sha, diff_file.repository)
-        discussionPath: '/something',
-        renamedFile: false,
-        deletedFile: false,
-        modeChanged: false,
-        aMode: '100755',
-        bMode: '100644',
-        filePath: 'some/file/path.rb',
-        oldPath: '',
-        newPath: '',
-        fileTypeIcon: 'fa-file-image-o', // file_type_icon_class('file', diff_file.b_mode, diff_file.file_path)
-        text: true,
-      },
-    },
-    discussionMock.notes[1],
-    discussionMock.notes[1],
-  ],
+  ...discussionMock.notes[0],
+  truncated_diff_lines: `<tr class="line_holder" id=""> <td class="diff-line-num old_line" data-linenumber="327"> 327 </td><td class="diff-line-num new_line" data-linenumber="327"> 327 </td><td class="line_content noteable_line"> <span id="LC327" class="line" lang="kotlin"> <span class="n">isConfidential</span> <span class="p">))</span> </span> </td></tr><tr class="line_holder" id=""> <td class="diff-line-num old_line" data-linenumber="328"> 328 </td><td class="diff-line-num new_line" data-linenumber="328"> 328 </td><td class="line_content noteable_line"> <span id="LC328" class="line" lang="kotlin"> <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> </span> </td></tr><tr class="line_holder" id=""> <td class="diff-line-num old_line" data-linenumber="329"> 329 </td><td class="diff-line-num new_line" data-linenumber="329"> 329 </td><td class="line_content noteable_line"> <span id="LC329" class="line" lang="kotlin"> <span class="n">observeUpdate</span> <span class="p">(</span> <span class="n">App</span> <span class="p">.</span> <span class="k">get</span> <span class="p">().</span> <span class="n">gitLab</span> <span class="p">.</span> <span class="n">updateIssue</span> <span class="p">(</span> <span class="n">project</span> <span class="p">.</span> <span class="n">id</span> <span class="p">,</span> </span> </td></tr><tr class="line_holder old" id=""> <td class="diff-line-num old old_line" data-linenumber="330"> 330 </td><td class="diff-line-num new_line old" data-linenumber="330"> </td><td class="line_content noteable_line old"> <span id="LC330" class="line" lang="kotlin"> <span class="n">issue</span> <span class="o">!!</span> <span class="p">.</span> <span class="n">id</span> <span class="p">,</span> </span> </td></tr>`,
+  diff_discussion: true,
+  diff_file: {
+    submodule: false,
+    submoduleLink: '<a href="/bha">Submodule</a>', // submodule_link(blob, diff_file.content_sha, diff_file.repository)
+    discussionPath: '/something',
+    renamedFile: false,
+    deletedFile: false,
+    modeChanged: false,
+    aMode: '100755',
+    bMode: '100644',
+    filePath: 'some/file/path.rb',
+    oldPath: '',
+    newPath: '',
+    fileTypeIcon: 'fa-file-image-o', // file_type_icon_class('file', diff_file.b_mode, diff_file.file_path)
+    text: true,
+  },
 }
 
 export const imageDiffDiscussionMock = {
-  ...diffDiscussionMock,
-  notes: [
-    {
-      ...discussionMock.notes[0],
-      diff_discussion: true,
-      diff_file: {
-        submodule: false,
-        submoduleLink: '<a href="/bha">Submodule</a>', // submodule_link(blob, diff_file.content_sha, diff_file.repository)
-        discussionPath: '/something',
-        renamedFile: false,
-        deletedFile: false,
-        modeChanged: false,
-        aMode: '100755',
-        bMode: '100644',
-        filePath: 'some/file/path.rb',
-        oldPath: '',
-        newPath: '',
-        fileTypeIcon: 'fa-file-image-o', // file_type_icon_class('file', diff_file.b_mode, diff_file.file_path)
-        text: false,
-      },
-      replaced_image_diff_html: replacedImageDiffHtml,
-    },
-    discussionMock.notes[1],
-    discussionMock.notes[1],
-  ],
+  ...discussionMock.notes[0],
+  diff_discussion: true,
+  diff_file: {
+    submodule: false,
+    submoduleLink: '<a href="/bha">Submodule</a>', // submodule_link(blob, diff_file.content_sha, diff_file.repository)
+    discussionPath: '/something',
+    renamedFile: false,
+    deletedFile: false,
+    modeChanged: false,
+    aMode: '100755',
+    bMode: '100644',
+    filePath: 'some/file/path.rb',
+    oldPath: '',
+    newPath: '',
+    fileTypeIcon: 'fa-file-image-o', // file_type_icon_class('file', diff_file.b_mode, diff_file.file_path)
+    text: false,
+  },
+  replaced_image_diff_html: replacedImageDiffHtml,
 }
 
 export const loggedOutnoteableData = {

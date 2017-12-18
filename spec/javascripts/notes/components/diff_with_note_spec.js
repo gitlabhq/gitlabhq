@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import DiffWithNote from '~/notes/components/diff_with_note.vue';
 import mountComponent from '../../helpers/vue_mount_component_helper';
-import { diffDiscussionMock } from '../mock_data';
+import { diffDiscussionMock, imageDiffDiscussionMock } from '../mock_data';
 
-describe('diff_with_note', () => {
+fdescribe('diff_with_note', () => {
   let vm;
   const Component = Vue.extend(DiffWithNote);
   const props = {
@@ -23,9 +23,6 @@ describe('diff_with_note', () => {
 
   describe('text diff', () => {
     it('shows text diff', () => {
-      props.discussion.notes[0].diff_file.text = true;
-      props.discussion.notes[0].diff_file.filePath = 'some/path';
-
       vm = mountComponent(Component, props);
 
       expect(selectors.container).toHaveClass('text-file');
@@ -36,7 +33,8 @@ describe('diff_with_note', () => {
 
   describe('image diff', () => {
     it('shows image diff', () => {
-      props.discussion.notes[0].diff_file.text = false;
+      props.discussion = imageDiffDiscussionMock;
+
       vm = mountComponent(Component, props);
 
       expect(selectors.container).toHaveClass('js-image-file');
