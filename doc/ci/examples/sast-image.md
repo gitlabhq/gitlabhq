@@ -20,15 +20,15 @@ sast:image:
     - setup_docker
     - docker run -d --name db arminc/clair-db:latest
     - docker run -p 6060:6060 --link db:postgres -d --name clair arminc/clair-local-scan:v2.0.1
-    - apk update && apk add ca-certificates wget && update-ca-certificates
+    - apk add -U wget ca-certificates
     - docker pull ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG}
     - wget https://github.com/arminc/clair-scanner/releases/download/v6/clair-scanner_linux_386
     - mv clair-scanner_linux_386 clair-scanner
     - chmod +x clair-scanner
     - touch clair-whitelist.yml
-    - ./clair-scanner -c http://docker:6060 --ip $(hostname -i) -r gl-clair-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true
+    - ./clair-scanner -c http://docker:6060 --ip $(hostname -i) -r gl-sast-image-report.json -l clair.log -w clair-whitelist.yml ${CI_APPLICATION_REPOSITORY}:${CI_APPLICATION_TAG} || true
   artifacts:
-    paths: [gl-clair-report.json]
+    paths: [gl-sast-image-report.json]
 ```
 
 The above example will create a `sast:image` job in your CI pipeline and will allow
@@ -41,7 +41,7 @@ TIP: **Tip:**
 Starting with GitLab Enterprise Edition Ultimate 10.3, this information will
 be automatically extracted and shown right in the merge request widget. To do
 so, the CI job must be named `sast:image` and the artifact path must be
-`gl-clair-report.json`.
+`gl-sast-image-report.json`.
 [Learn more on application security testing results shown in merge requests](../../user/project/merge_requests/sast-image.md).
 
 [ee]: https://about.gitlab.com/gitlab-ee/
