@@ -14,19 +14,26 @@
   cluster_status_reason: @cluster.status_reason,
   help_path: help_page_path('user/project/clusters/index.md', anchor: 'installing-applications') } }
 
-
   .js-cluster-application-notice
     .flash-container
 
   = render 'banner'
-  %section.settings.no-animate.expanded
-    = form_for @cluster, url: namespace_project_cluster_path(@project.namespace, @project, @cluster), as: :cluster do |field|
-      = form_errors(@cluster)
-      = render 'enabled', field: field
-      = render 'environment_scope', field: field
-      - if can?(current_user, :update_cluster, @cluster)
-        .form-group
-          = field.submit _('Save changes'), class: 'btn btn-success'
+  %section.settings.no-animate.expanded#cluster-integration
+    .settings-content
+      .hidden.js-cluster-error.alert.alert-danger.alert-block.append-bottom-10{ role: 'alert' }
+        = s_('ClusterIntegration|Something went wrong while creating your cluster on Google Kubernetes Engine')
+        %p.js-error-reason
+      .hidden.js-cluster-creating.alert.alert-info.alert-block.append-bottom-10{ role: 'alert' }
+        = s_('ClusterIntegration|Cluster is being created on Google Kubernetes Engine...')
+      .hidden.js-cluster-success.alert.alert-success.alert-block.append-bottom-10{ role: 'alert' }
+        = s_('ClusterIntegration|Cluster was successfully created on Google Kubernetes Engine. Refresh the page to see cluster\'s details')
+      = form_for @cluster, url: namespace_project_cluster_path(@project.namespace, @project, @cluster), as: :cluster do |field|
+        = form_errors(@cluster)
+        = render 'enabled', field: field
+        = render 'environment_scope', field: field
+        - if can?(current_user, :update_cluster, @cluster)
+          .form-group
+            = field.submit _('Save changes'), class: 'btn btn-success'
 
   .cluster-applications-table#js-cluster-applications
 
