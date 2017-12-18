@@ -19,6 +19,22 @@ describe('Pagination component', () => {
   });
 
   describe('render', () => {
+    it('should not render anything', () => {
+      component = mountComponet({
+        pageInfo: {
+          nextPage: 1,
+          page: 1,
+          perPage: 20,
+          previousPage: null,
+          total: 15,
+          totalPages: 1,
+        },
+        change: spy,
+      });
+
+      expect(component.$el.innerHTML).not.toBeDefined();
+    });
+
     describe('prev button', () => {
       it('should be disabled and non clickable', () => {
         component = mountComponet({
