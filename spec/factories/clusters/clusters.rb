@@ -4,7 +4,7 @@ FactoryGirl.define do
     name 'test-cluster'
 
     trait :project do
-      after(:create) do |cluster, evaluator|
+      before(:create) do |cluster, evaluator|
         cluster.projects << create(:project)
       end
     end
