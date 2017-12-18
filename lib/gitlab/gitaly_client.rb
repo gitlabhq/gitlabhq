@@ -26,9 +26,12 @@ module Gitlab
       end
     end
 
+    CachedConnection = Struct.new(:stub, :expire_at)
+
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'.freeze
     MAXIMUM_GITALY_CALLS = 35
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
+    MAXIMUM_CONNECTION_AGE = 1.hour
 
     MUTEX = Mutex.new
     METRICS_MUTEX = Mutex.new
@@ -66,20 +69,26 @@ module Gitlab
 
     def self.stub(name, storage)
       MUTEX.synchronize do
-        @stubs ||= {}
-        @stubs[storage] ||= {}
-        @stubs[storage][name] ||= begin
+        @connections ||= {}
+        @connections[storage] ||= {}
+        connection = @connections[storage][name]
+
+        unless connection && connection.expire_at > Time.now
           klass = Gitaly.const_get(name.to_s.camelcase.to_sym).const_get(:Stub)
           addr = address(storage)
           addr = addr.sub(%r{^tcp://}, '') if URI(addr).scheme == 'tcp'
-          klass.new(addr, :this_channel_is_insecure)
+          stub = klass.new(addr, :this_channel_is_insecure)
+          expire_at = Time.now + (0.9 + Random.rand(0.2)) * MAXIMUM_CONNECTION_AGE
+          connection = @connections[storage][name] = CachedConnection.new(stub, expire_at)
         end
+
+        connection.stub
       end
     end
 
     def self.clear_stubs!
       MUTEX.synchronize do
-        @stubs = nil
+        @connections = nil
       end
     end
 
