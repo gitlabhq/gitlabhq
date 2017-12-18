@@ -101,7 +101,7 @@ hr {
   text-overflow: ellipsis;
   white-space: nowrap;
 
-  > div,
+  > div:not(.block),
   .str-truncated {
     display: inline;
   }
@@ -475,5 +475,8 @@ img.emoji {
 .append-bottom-20 { margin-bottom: 20px; }
 .append-bottom-default { margin-bottom: $gl-padding; }
 .inline { display: inline-block; }
+.block { display: block; }
+.flex { display: flex; }
 .center { text-align: center; }
 .vertical-align-middle { vertical-align: middle; }
+.flex-align-self-center { align-self: center; }

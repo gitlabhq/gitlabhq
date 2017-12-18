@@ -31,9 +31,8 @@ $token_spacing_bottom: 0.5em;
     opacity: 0;
   }
 
-  li:not(.card) .issue-info-container {
+  li .issue-info-container {
     padding-left: $gl-padding;
-    padding-right: $gl-padding;
   }
 
   a.issue-main-info:hover {

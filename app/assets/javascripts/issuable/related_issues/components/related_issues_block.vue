@@ -2,7 +2,7 @@
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import eventHub from '../event_hub';
-import issueToken from './issue_token.vue';
+import issueItem from './issue_item.vue';
 import addIssuableForm from './add_issuable_form.vue';
 
 export default {
@@ -70,7 +70,7 @@ export default {
   components: {
     loadingIcon,
     addIssuableForm,
-    issueToken,
+    issueItem,
   },
   computed: {
     hasRelatedIssues() {
@@ -94,7 +94,14 @@ export default {
       eventHub.$emit('toggleAddRelatedIssuesForm');
     },
     reordered(event) {
+      this.removeDraggingCursor();
       console.log(event);
+    },
+    addDraggingCursor() {
+      document.body.classList.add('is-dragging');
+    },
+    removeDraggingCursor() {
+      document.body.classList.remove('is-dragging');
     },
   },
   mounted() {
@@ -105,6 +112,7 @@ export default {
         fallbackClass: 'is-dragging',
         fallbackOnBody: true,
         ghostClass: 'is-ghost',
+        onStart: this.addDraggingCursor,
         onEnd: this.reordered,
       });
     }
@@ -191,7 +199,7 @@ export default {
               card: canReorder
             }"
           >
-            <issue-token
+            <issue-item
               event-namespace="relatedIssue"
               :id-key="issue.id"
               :display-reference="issue.reference"
