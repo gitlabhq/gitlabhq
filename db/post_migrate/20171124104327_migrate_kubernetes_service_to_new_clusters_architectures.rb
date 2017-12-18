@@ -88,6 +88,7 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
           provider_type: Cluster.provider_types[:user],
           platform_type: Cluster.platform_types[:kubernetes],
           projects: [kubernetes_service.project],
+          environment_scope: '*', # KubernetesService is considered as a default cluster
           platform_kubernetes_attributes: {
             api_url: kubernetes_service.api_url,
             ca_cert: kubernetes_service.ca_pem,
