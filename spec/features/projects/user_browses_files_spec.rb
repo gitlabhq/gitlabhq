@@ -155,7 +155,6 @@ describe 'User browses files' do
     end
   end
 
-
   context 'when browsing a raw file' do
     before do
       visit(project_blob_path(project, File.join(RepoHelpers.sample_commit.id, RepoHelpers.sample_blob.path)))
