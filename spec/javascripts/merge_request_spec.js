@@ -1,7 +1,6 @@
 /* eslint-disable space-before-function-paren, no-return-assign */
-/* global MergeRequest */
 
-import '~/merge_request';
+import MergeRequest from '~/merge_request';
 import CloseReopenReportToggle from '~/close_reopen_report_toggle';
 import IssuablesHelper from '~/helpers/issuables_helper';
 

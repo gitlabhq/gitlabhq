@@ -45,14 +45,12 @@ import './layout_nav';
 import LazyLoader from './lazy_loader';
 import './line_highlighter';
 import initLogoAnimation from './logo';
-import './merge_request';
 import './merge_request_tabs';
 import './milestone_select';
 import './notes';
 import './preview_markdown';
 import './projects_dropdown';
 import './render_gfm';
-import './right_sidebar';
 import initBreadcrumbs from './breadcrumb';
 
 import './dispatcher';
