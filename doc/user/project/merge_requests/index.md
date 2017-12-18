@@ -189,7 +189,6 @@ list of approvers that will need to approve every merge request in a project.
 
 [Read more about merge request approvals.](merge_request_approvals.md)
 
-
 ## Code Quality reports
 
 > Introduced in [GitLab Enterprise Edition Starter][products] 9.3.
@@ -220,6 +219,17 @@ If your application offers a web interface and you are using [GitLab CI/CD][ci],
 GitLab runs the [Sitespeed.io container][sitespeed-container] and displays the difference in overall performance scores between the source and target branches.
 
 [Read more about Browser Performance Testing.](browser_performance_testing.md)
+
+## Static Application Security Testing for Docker images
+
+> Introduced in [GitLab Enterprise Edition Ultimate][products] 10.4.
+
+If you are using [GitLab CI/CD][ci], you can analyze your Docker images for known
+vulnerabilities.
+Going a step further, GitLab can show the vulnerability report right in the
+merge request widget area.
+
+[Read more about SAST Docker image reports.](sast_docker.md)
 
 ## Live preview with Review Apps
 
@@ -346,9 +356,8 @@ And to check out a particular merge request:
 git checkout origin/merge-requests/1
 ```
 
-[protected branches]: ../protected_branches.md
-
 [products]: https://about.gitlab.com/products/ "GitLab products page"
+[protected branches]: ../protected_branches.md
 [ci]: ../../../ci/README.md
 [cc]: https://codeclimate.com/
 [cd]: https://hub.docker.com/r/codeclimate/codeclimate/
