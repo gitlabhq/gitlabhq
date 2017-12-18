@@ -41,6 +41,7 @@ describe NotesHelper do
 
   describe '#discussion_path' do
     let(:project) { create(:project, :repository) }
+    let(:anchor) { discussion.line_code }
 
     context 'for a merge request discusion' do
       let(:merge_request) { create(:merge_request, source_project: project, target_project: project, importing: true) }
@@ -151,6 +152,15 @@ describe NotesHelper do
           expect(helper.discussion_path(discussion)).to be_nil
         end
       end
+
+      context 'for a contextual commit discussion' do
+        let(:commit) { merge_request.commits.last }
+        let(:discussion) { create(:diff_note_on_merge_request, noteable: merge_request, project: project, commit_id: commit.id).to_discussion }
+
+        it 'returns the merge request diff discussion scoped in the commit' do
+          expect(helper.discussion_path(discussion)).to eq(diffs_project_merge_request_path(project, merge_request, commit_id: commit.id, anchor: anchor))
+        end
+      end
     end
 
     context 'for a commit discussion' do
@@ -160,7 +170,7 @@ describe NotesHelper do
         let(:discussion) { create(:diff_note_on_commit, project: project).to_discussion }
 
         it 'returns the commit path with the line code' do
-          expect(helper.discussion_path(discussion)).to eq(project_commit_path(project, commit, anchor: discussion.line_code))
+          expect(helper.discussion_path(discussion)).to eq(project_commit_path(project, commit, anchor: anchor))
         end
       end
 
@@ -168,7 +178,7 @@ describe NotesHelper do
         let(:discussion) { create(:legacy_diff_note_on_commit, project: project).to_discussion }
 
         it 'returns the commit path with the line code' do
-          expect(helper.discussion_path(discussion)).to eq(project_commit_path(project, commit, anchor: discussion.line_code))
+          expect(helper.discussion_path(discussion)).to eq(project_commit_path(project, commit, anchor: anchor))
         end
       end
 
