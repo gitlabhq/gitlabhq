@@ -25,6 +25,11 @@ export default {
     'html-output': Html,
     'image-output': Image,
   },
+  data() {
+    return {
+      outputType: '',
+    };
+  },
   methods: {
     dataForType(output, type) {
       let data = output.data[type];

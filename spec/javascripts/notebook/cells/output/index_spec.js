@@ -10,7 +10,7 @@ describe('Output component', () => {
   const createComponent = (output) => {
     vm = new Component({
       propsData: {
-        output,
+        outputs: [output],
         count: 1,
       },
     });
@@ -51,10 +51,6 @@ describe('Output component', () => {
     it('renders as an image', () => {
       expect(vm.$el.querySelector('img')).not.toBeNull();
     });
-
-    it('does not render the prompt', () => {
-      expect(vm.$el.querySelector('.prompt span')).toBeNull();
-    });
   });
 
   describe('html output', () => {
@@ -68,11 +64,7 @@ describe('Output component', () => {
 
     it('renders raw HTML', () => {
       expect(vm.$el.querySelector('p')).not.toBeNull();
-      expect(vm.$el.textContent.trim()).toBe('test');
-    });
-
-    it('does not render the prompt', () => {
-      expect(vm.$el.querySelector('.prompt span')).toBeNull();
+      expect(vm.$el.textContent.trim()).toContain('test');
     });
   });
 
@@ -87,10 +79,6 @@ describe('Output component', () => {
 
     it('renders as an svg', () => {
       expect(vm.$el.querySelector('svg')).not.toBeNull();
-    });
-
-    it('does not render the prompt', () => {
-      expect(vm.$el.querySelector('.prompt span')).toBeNull();
     });
   });
 
