@@ -1,43 +1,37 @@
 require 'spec_helper'
 
 describe MergeRequestSerializer do
-  let(:user) { create(:user) }
-  let(:resource) { create(:merge_request) }
-  let(:json_entity) do
+  let(:user) { build_stubbed(:user) }
+  let(:merge_request) { build_stubbed(:merge_request) }
+
+  let(:serializer) do
     described_class.new(current_user: user)
-      .represent(resource, serializer: serializer)
-      .with_indifferent_access
   end
 
-  context 'widget merge request serialization' do
-    let(:serializer) { 'widget' }
+  describe '#represent' do
+    let(:opts) { { serializer: serializer_entity } }
+    subject { serializer.represent(merge_request, serializer: serializer_entity) }
 
-    it 'matches issue json schema' do
-      expect(json_entity).to match_schema('entities/merge_request_widget')
+    context 'when passing basic serializer param' do
+      let(:serializer_entity) { 'basic' }
+
+      it 'calls super class #represent with correct params' do
+        expect_any_instance_of(BaseSerializer).to receive(:represent)
+          .with(merge_request, opts, MergeRequestBasicEntity)
+
+        subject
+      end
     end
-  end
 
-  context 'sidebar merge request serialization' do
-    let(:serializer) { 'sidebar' }
+    context 'when serializer param is falsy' do
+      let(:serializer_entity) { nil }
 
-    it 'matches basic merge request json schema' do
-      expect(json_entity).to match_schema('entities/merge_request_basic')
-    end
-  end
+      it 'calls super class #represent with correct params' do
+        expect_any_instance_of(BaseSerializer).to receive(:represent)
+          .with(merge_request, opts, MergeRequestEntity)
 
-  context 'basic merge request serialization' do
-    let(:serializer) { 'basic' }
-
-    it 'matches basic merge request json schema' do
-      expect(json_entity).to match_schema('entities/merge_request_basic')
-    end
-  end
-
-  context 'no serializer' do
-    let(:serializer) { nil }
-
-    it 'raises an error' do
-      expect { json_entity }.to raise_error(NoMethodError)
+        subject
+      end
     end
   end
 end

@@ -25,7 +25,7 @@
     -# haml-lint:disable InlineJavaScript
     :javascript
       window.gl = window.gl || {};
-      window.gl.mrWidgetData = #{serialize_issuable(@merge_request, serializer: 'widget')}
+      window.gl.mrWidgetData = #{serialize_issuable(@merge_request)}
 
     #js-vue-mr-widget.mr-widget
 
