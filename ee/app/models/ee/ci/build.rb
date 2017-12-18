@@ -10,7 +10,7 @@ module EE
       CODEQUALITY_FILE = 'codeclimate.json'.freeze
       SAST_FILE = 'gl-sast-report.json'.freeze
       PERFORMANCE_FILE = 'performance.json'.freeze
-      CLAIR_FILE = 'gl-clair-report.json'.freeze
+      CLAIR_FILE = 'gl-sast-image-report.json'.freeze
 
       included do
         scope :codequality, ->() { where(name: %w[codequality codeclimate]) }
