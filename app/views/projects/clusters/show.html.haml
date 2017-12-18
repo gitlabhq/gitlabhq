@@ -18,8 +18,14 @@
     .flash-container
 
   %section.settings.no-animate.expanded
-    = render 'banner'
-    = render 'enabled'
+    = form_for @cluster, url: namespace_project_cluster_path(@project.namespace, @project, @cluster), as: :cluster do |field|
+      = form_errors(@cluster)
+      = render 'banner', field: field
+      = render 'enabled', field: field
+      = render 'environment_scope', field: field
+      - if can?(current_user, :update_cluster, @cluster)
+        .form-group
+          = field.submit _('Save changes'), class: 'btn btn-success'
 
   .cluster-applications-table#js-cluster-applications
 
