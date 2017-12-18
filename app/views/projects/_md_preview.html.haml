@@ -17,7 +17,7 @@
         %a.js-md-preview-button{ href: "#md-preview-holder", tabindex: -1 }
           Preview
 
-      %li.md-header-toolbar
+      %li.md-header-toolbar.active
         = markdown_toolbar_button({ icon: "bold", data: { "md-tag" => "**" }, title: "Add bold text" })
         = markdown_toolbar_button({ icon: "italic", data: { "md-tag" => "*" }, title: "Add italic text" })
         = markdown_toolbar_button({ icon: "quote", data: { "md-tag" => "> ", "md-prepend" => true }, title: "Insert a quote" })
