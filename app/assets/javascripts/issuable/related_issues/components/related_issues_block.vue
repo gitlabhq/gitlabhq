@@ -96,6 +96,8 @@ export default {
     reordered(event) {
       this.removeDraggingCursor();
       console.log(event);
+
+      this.$emit('saveReorder', event);
     },
     addDraggingCursor() {
       document.body.classList.add('is-dragging');

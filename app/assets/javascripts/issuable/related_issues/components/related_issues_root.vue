@@ -160,6 +160,9 @@ export default {
           Flash('An error occurred while fetching issues.');
         });
     },
+    saveIssueOrder() {
+      this.service.saveIssueOrder(1, 1);
+    },
 
     onInput(newValue, caretPos) {
       const rawReferences = newValue
@@ -239,5 +242,6 @@ export default {
     :input-value="inputValue"
     :auto-complete-sources="autoCompleteSources"
     :title="title"
+    @saveReorder="saveIssueOrder"
   />
 </template>

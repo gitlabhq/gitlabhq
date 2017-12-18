@@ -6,6 +6,7 @@ Vue.use(vueResource);
 class RelatedIssuesService {
   constructor(endpoint) {
     this.relatedIssuesResource = Vue.resource(endpoint);
+    this.reorderIssuesResource = Vue.resource(`${endpoint}{/id}/order`);
   }
 
   fetchRelatedIssues() {
@@ -15,6 +16,14 @@ class RelatedIssuesService {
   addRelatedIssues(newIssueReferences) {
     return this.relatedIssuesResource.save({}, {
       issue_references: newIssueReferences,
+    });
+  }
+
+  saveIssueOrder(issueId, position) {
+    return this.reorderIssuesResource.save({
+      id: issueId,
+    }, {
+      position,
     });
   }
 
