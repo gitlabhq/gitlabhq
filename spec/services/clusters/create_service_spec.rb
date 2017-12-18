@@ -81,7 +81,7 @@ describe Clusters::CreateService do
     end
 
     context 'when project has a cluster' do
-      let!(:cluster) { create(:cluster, :provided_by_gcp, environment_scope: 'prod/*', projects: [project]) }
+      let!(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
       before do
         allow(project).to receive(:feature_available?).and_call_original

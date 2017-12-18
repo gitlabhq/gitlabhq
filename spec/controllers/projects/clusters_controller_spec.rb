@@ -4,7 +4,7 @@ describe Projects::ClustersController do
   include AccessMatchersForController
   include GoogleApi::CloudPlatformHelpers
 
-  let(:project) { create(:project) }
+  set(:project) { create(:project) }
 
   describe 'GET index' do
     describe 'functionality' do
@@ -18,7 +18,7 @@ describe Projects::ClustersController do
       context 'when project has one or more clusters' do
         let(:project) { create(:project) }
         let!(:enabled_cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
-        let!(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, environment_scope: 'prod/*', projects: [project]) }
+        let!(:disabled_cluster) { create(:cluster, :disabled, :provided_by_gcp, projects: [project]) }
         it 'lists available clusters' do
           go
 
@@ -32,8 +32,7 @@ describe Projects::ClustersController do
 
           before do
             allow(Clusters::Cluster).to receive(:paginates_per).and_return(1)
-            create(:cluster, :provided_by_gcp, environment_scope: 'staging/*', projects: [project])
-            create(:cluster, :provided_by_gcp, environment_scope: 'review/*', projects: [project])
+            create_list(:cluster, 2, :provided_by_gcp, projects: [project])
             get :index, namespace_id: project.namespace, project_id: project, page: last_page
           end
 
@@ -287,7 +286,7 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
-      let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
+      set(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
       let(:params) do
         { cluster: { enabled: false } }
@@ -371,7 +370,7 @@ describe Projects::ClustersController do
     end
 
     describe 'security' do
-      let(:cluster) { create(:cluster, :provided_by_gcp, environment_scope: 'prod/*', projects: [project]) }
+      set(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
 
       it { expect { go }.to be_allowed_for(:admin) }
       it { expect { go }.to be_allowed_for(:owner).of(project) }

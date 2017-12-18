@@ -2,6 +2,7 @@ FactoryBot.define do
   factory :cluster, class: Clusters::Cluster do
     user
     name 'test-cluster'
+    sequence(:environment_scope) { |n| "production#{n}/*" }
 
     trait :project do
       before(:create) do |cluster, evaluator|
