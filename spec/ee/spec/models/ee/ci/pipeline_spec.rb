@@ -16,20 +16,22 @@ describe Ci::Pipeline do
   end
 
   ARTIFACTS_METHODS = {
-    codeclimate_artifact: Ci::Build::CODEQUALITY_FILE,
-    performance_artifact: Ci::Build::PERFORMANCE_FILE,
-    sast_artifact: Ci::Build::SAST_FILE,
-    clair_artifact: Ci::Build::CLAIR_FILE
+    codeclimate_artifact: [Ci::Build::CODEQUALITY_FILE, 'codequality'],
+    performance_artifact: [Ci::Build::PERFORMANCE_FILE, 'performance'],
+    sast_artifact:        [Ci::Build::SAST_FILE, 'sast'],
+    clair_artifact:       [Ci::Build::CLAIR_FILE, 'sast:image']
   }.freeze
 
-  ARTIFACTS_METHODS.each do |method, filename|
+  ARTIFACTS_METHODS.each do |method, options|
     describe method.to_s do
       context 'has corresponding job' do
         let!(:build) do
+          filename, name = options
+
           create(
             :ci_build,
             :artifacts,
-            name: method.to_s.sub('_artifact', ''),
+            name: name,
             pipeline: pipeline,
             options: {
               artifacts: {
