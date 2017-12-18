@@ -11,10 +11,7 @@
 
   .form-group
     = field.label :environment_scope, s_('ClusterIntegration|Environment scope')
-    - if @project.feature_available?(:multiple_clusters)
-      = field.text_field :environment_scope, class: 'form-control js-select-on-focus', placeholder: s_('ClusterIntegration|Environment scope')
-    - else
-      = field.text_field :environment_scope, class: 'form-control js-select-on-focus', readonly: true, placeholder: s_('ClusterIntegration|Environment scope')
+    = field.text_field :environment_scope, class: 'form-control js-select-on-focus', readonly: has_multiple_clusters?(@project), placeholder: s_('ClusterIntegration|Environment scope')
 
   = field.fields_for :platform_kubernetes, @cluster.platform_kubernetes do |platform_kubernetes_field|
     .form-group
