@@ -20,6 +20,12 @@ module Gitlab
         DiffViewer::Image
       ].sort_by { |v| v.binary? ? 0 : 1 }.freeze
 
+      class << self
+        def file_identifier(file_path, new_file, deleted_file, renamed_file)
+          [file_path, new_file, deleted_file, renamed_file].join('-')
+        end
+      end
+
       def initialize(diff, repository:, diff_refs: nil, fallback_diff_refs: nil)
         @diff = diff
         @repository = repository
@@ -163,7 +169,7 @@ module Gitlab
       end
 
       def file_identifier
-        "#{file_path}-#{new_file?}-#{deleted_file?}-#{renamed_file?}"
+        self.class.file_identifier(file_path, new_file?, deleted_file?, renamed_file?)
       end
 
       def diffable?

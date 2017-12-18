@@ -1571,7 +1571,7 @@ module Gitlab
         deleted_file = type.starts_with?('D')
         renamed_file = type.starts_with?('R')
 
-        [path, new_file, deleted_file, renamed_file].join('-')
+        Gitlab::Diff::File.file_identifier(path, new_file, deleted_file, renamed_file)
       end
 
       # We are trying to deprecate this method because it does a lot of work
