@@ -11,7 +11,7 @@ import NewBranchForm from './new_branch_form';
 /* global NotificationsDropdown */
 import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
-/* global LineHighlighter */
+import LineHighlighter from './line_highlighter';
 import BuildArtifacts from './build_artifacts';
 import CILintEditor from './ci_lint_editor';
 import groupsSelect from './groups_select';
@@ -21,7 +21,7 @@ import NamespaceSelect from './namespace_select';
 import NewCommitForm from './new_commit_form';
 import Project from './project';
 import projectAvatar from './project_avatar';
-/* global MergeRequest */
+import MergeRequest from './merge_request';
 import Compare from './compare';
 import initCompareAutocomplete from './compare_autocomplete';
 /* global PathLocks */
@@ -30,7 +30,7 @@ import ProjectNew from './project_new';
 import projectImport from './project_import';
 import Labels from './labels';
 import LabelManager from './label_manager';
-/* global Sidebar */
+import Sidebar from './right_sidebar';
 /* global WeightSelect */
 /* global AdminEmailSelect */
 
