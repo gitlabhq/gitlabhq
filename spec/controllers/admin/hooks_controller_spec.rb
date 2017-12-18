@@ -14,6 +14,7 @@ describe Admin::HooksController do
         push_events: true,
         tag_push_events: true,
         repository_update_events: true,
+        merge_requests_events: true,
         token: "TEST TOKEN",
         url: "http://example.com"
       }

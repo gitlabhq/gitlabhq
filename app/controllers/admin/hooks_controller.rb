@@ -62,6 +62,7 @@ class Admin::HooksController < Admin::ApplicationController
       :push_events,
       :tag_push_events,
       :repository_update_events,
+      :merge_requests_events,
       :token,
       :url
     )
