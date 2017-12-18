@@ -16,7 +16,7 @@ module EE
         scope :codequality, ->() { where(name: %w[codequality codeclimate]) }
         scope :performance, ->() { where(name: %w[performance deploy]) }
         scope :sast, ->() { where(name: 'sast') }
-        scope :clair, ->() { where(name: 'clair') }
+        scope :clair, ->() { where(name: 'sast:image') }
 
         after_save :stick_build_if_status_changed
       end

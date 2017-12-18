@@ -30,7 +30,7 @@ describe MergeRequestEntity do
   end
 
   it 'has clair data' do
-    build = create(:ci_build, name: 'clair')
+    build = create(:ci_build, name: 'sast:image')
 
     allow(subject).to receive(:expose_clair_data?).and_return(true)
     allow(merge_request).to receive(:clair_artifact).and_return(build)
