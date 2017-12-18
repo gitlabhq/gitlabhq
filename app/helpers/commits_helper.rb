@@ -114,11 +114,7 @@ module CommitsHelper
   end
 
   def link_to_show_diff(commit)
-    link_to(
-      _('Toggle diff'),
-      'javascript:void(0)',
-      class: 'btn btn-default js-show-diff-button', data: { diff_commit_id: commit.id }
-    )
+    content_tag(:button, _('Toggle diff'), class: 'btn btn-default js-show-diff-button', data: { diff_commit_id: commit.id })
   end
 
   def revert_commit_link(commit, continue_to_path, btn_class: nil, has_tooltip: true)

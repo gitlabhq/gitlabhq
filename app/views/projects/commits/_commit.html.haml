@@ -59,7 +59,7 @@
           = link_to_show_diff(commit) if render_diffs_link
 
           - if view_details && merge_request
-          = link_to "View details", project_commit_path(project, commit.id, merge_request_iid: merge_request.iid), class: "btn btn-default"
+            = link_to "View details", project_commit_path(project, commit.id, merge_request_iid: merge_request.iid), class: "btn btn-default"
 
   -# Render the `Click to expand it` link for diffs.
   - if render_diffs_link
