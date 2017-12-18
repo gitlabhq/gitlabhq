@@ -91,11 +91,11 @@ describe Projects::MergeRequestsController do
         end
       end
 
-      context 'without basic serializer param' do
-        it 'renders the merge request in the json format' do
-          go(format: :json)
+      context 'with widget serializer param' do
+        it 'renders widget MR entity as json' do
+          go(serializer: 'widget', format: :json)
 
-          expect(response).to match_response_schema('entities/merge_request')
+          expect(response).to match_response_schema('entities/merge_request_widget')
         end
       end
     end

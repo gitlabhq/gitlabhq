@@ -1,8 +1,5 @@
-class MergeRequestEntity < IssuableEntity
-  include TimeTrackableEntity
-
+class MergeRequestWidgetEntity < IssuableEntity
   expose :state
-  expose :deleted_at
   expose :in_progress_merge_commit_sha
   expose :merge_commit_sha
   expose :merge_error
