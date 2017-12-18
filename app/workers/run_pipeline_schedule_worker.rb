@@ -2,7 +2,7 @@ class RunPipelineScheduleWorker
   include ApplicationWorker
   include PipelineQueue
 
-  enqueue_in group: :creation
+  queue_namespace :pipeline_creation
 
   def perform(schedule_id, user_id)
     schedule = Ci::PipelineSchedule.find_by(id: schedule_id)
