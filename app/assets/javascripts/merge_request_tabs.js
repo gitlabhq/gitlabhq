@@ -1,5 +1,4 @@
 /* eslint-disable no-new, class-methods-use-this */
-/* global notes */
 
 import Cookies from 'js-cookie';
 import Flash from './flash';
@@ -16,6 +15,7 @@ import initDiscussionTab from './image_diff/init_discussion_tab';
 import Diff from './diff';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import syntaxHighlight from './syntax_highlight';
+import Notes from './notes';
 
 /* eslint-disable max-len */
 // MergeRequestTabs
@@ -325,7 +325,7 @@ import syntaxHighlight from './syntax_highlight';
           if (anchor && anchor.length > 0) {
             const notesContent = anchor.closest('.notes_content');
             const lineType = notesContent.hasClass('new') ? 'new' : 'old';
-            notes.toggleDiffNote({
+            Notes.instance.toggleDiffNote({
               target: anchor,
               lineType,
               forceShow: true,
