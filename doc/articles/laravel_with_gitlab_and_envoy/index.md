@@ -502,8 +502,8 @@ stages:
 unit_test:
   stage: test
   script:
-    - composer install
     - cp .env.example .env
+    - composer install
     - php artisan key:generate
     - php artisan migrate
     - vendor/bin/phpunit
