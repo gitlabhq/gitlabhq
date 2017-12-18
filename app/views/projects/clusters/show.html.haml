@@ -14,13 +14,14 @@
   cluster_status_reason: @cluster.status_reason,
   help_path: help_page_path('user/project/clusters/index.md', anchor: 'installing-applications') } }
 
+
   .js-cluster-application-notice
     .flash-container
 
+  = render 'banner'
   %section.settings.no-animate.expanded
     = form_for @cluster, url: namespace_project_cluster_path(@project.namespace, @project, @cluster), as: :cluster do |field|
       = form_errors(@cluster)
-      = render 'banner', field: field
       = render 'enabled', field: field
       = render 'environment_scope', field: field
       - if can?(current_user, :update_cluster, @cluster)
