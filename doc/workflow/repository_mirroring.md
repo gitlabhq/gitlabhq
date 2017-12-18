@@ -84,6 +84,16 @@ this branch to prevent any changes from being lost.
 
 ![Diverged branch](repository_mirroring/repository_mirroring_diverged_branch.png)
 
+### Trigger update using API
+
+>[Introduced][ee-3453] in GitLab Enterprise Edition 10.3.
+
+Pull mirroring uses polling to detect new branches and commits added upstream,
+often many minutes afterwards. If you notify GitLab by [API][pull-api], updates
+will be pulled immediately.
+
+Read the [Pull Mirror Trigger API docs][pull-api].
+
 ### Pull only protected branches
 
 >[Introduced][ee-3326] in GitLab Enterprise Edition 10.3.
@@ -201,15 +211,15 @@ to keep the mirror running.
 
 ### How it works
 
-Once you activate the pull mirroring feature, the mirror will be inserted into a queue.
-A scheduler will start every minute and schedule a fixed amount of mirrors for update, based
-on the configured maximum capacity.
+Once you activate the pull mirroring feature, the mirror will be inserted into
+a queue. A scheduler will start every minute and schedule a fixed amount of
+mirrors for update, based on the configured maximum capacity.
 
-If the mirror successfully updates it will be enqueued once again with a small backoff
-period.
+If the mirror successfully updates it will be enqueued once again with a small
+backoff period.
 
-If the mirror fails (eg: branch diverged from upstream), the project's
-backoff period will be penalized each time it fails up to a maximum amount of time.
+If the mirror fails (eg: branch diverged from upstream), the project's backoff
+period will be penalized each time it fails up to a maximum amount of time.
 
 ## Pushing to a remote repository
 
@@ -264,7 +274,7 @@ To set up a mirror from GitLab to GitHub, you need to follow these steps:
 1. And either wait or trigger the "Update Now" button:
 
     ![update now](repository_mirroring/repository_mirroring_gitlab_push_to_a_remote_repository_update_now.png)
-
+    
 ## Forcing an update
 
 While mirrors are scheduled to update automatically, you can always force an update (either **push** or
@@ -304,6 +314,9 @@ custom Git hooks][hooks] on the GitLab server.
 [ee-3117]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3117
 [ee-3326]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3326
 [ee-3350]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3350
+[ee-3453]: https://gitlab.com/gitlab-org/gitlab-ee/merge_requests/3453
 [perms]: ../user/permissions.md
 [hooks]: ../administration/custom_hooks.html
 [deploy-key]: ../ssh/README.md#deploy-keys
+[webhook]: ../user/project/integrations/webhooks.html#push-events
+[pull-api]: ../api/projects.html#start-the-pull-mirroring-process-for-a-project
