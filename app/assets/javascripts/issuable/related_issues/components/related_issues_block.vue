@@ -95,9 +95,11 @@ export default {
     },
     reordered(event) {
       this.removeDraggingCursor();
-      console.log(event);
 
-      this.$emit('saveReorder', event);
+      this.$emit('saveReorder', {
+        issueId: parseInt(event.item.dataset.key, 10),
+        newOrder: event.newIndex + 1,
+      });
     },
     addDraggingCursor() {
       document.body.classList.add('is-dragging');
@@ -200,6 +202,7 @@ export default {
               'sortable-row': canReorder,
               card: canReorder
             }"
+            :data-key="issue.id"
           >
             <issue-item
               event-namespace="relatedIssue"

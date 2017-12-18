@@ -160,8 +160,12 @@ export default {
           Flash('An error occurred while fetching issues.');
         });
     },
-    saveIssueOrder() {
-      this.service.saveIssueOrder(1, 1);
+    saveIssueOrder({ issueId, newOrder = 1 }) {
+      const issue = _.find(this.state.relatedIssues, issue => issue.id === issueId);
+
+      if (issue) {
+        this.service.saveIssueOrder(issue.epic_issue_id, newOrder);
+      }
     },
 
     onInput(newValue, caretPos) {

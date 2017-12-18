@@ -16,7 +16,8 @@ module IssuableLinks
           state: referenced_issue.state,
           reference: reference(referenced_issue),
           path: project_issue_path(referenced_issue.project, referenced_issue.iid),
-          destroy_relation_path: destroy_relation_path(referenced_issue)
+          destroy_relation_path: destroy_relation_path(referenced_issue),
+          epic_issue_id: referenced_issue.epic_issue_id
         }
       end
     end

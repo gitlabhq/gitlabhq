@@ -1,4 +1,5 @@
 import tooltip from '../../../vue_shared/directives/tooltip';
+import eventHub from '../event_hub';
 
 const mixins = {
   data() {

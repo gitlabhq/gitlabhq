@@ -20,7 +20,7 @@ class RelatedIssuesService {
   }
 
   saveIssueOrder(issueId, position) {
-    return this.reorderIssuesResource.save({
+    return this.reorderIssuesResource.update({
       id: issueId,
     }, {
       position,
