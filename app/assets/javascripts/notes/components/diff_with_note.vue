@@ -23,13 +23,13 @@
         return text ? 'text-file' : 'js-image-file';
       },
       diffRows() {
-        return $(this.discussion.truncated_diff_lines);
+        return $(this.discussion.notes[0].truncated_diff_lines);
       },
       diffFile() {
-        return this.discussion.diff_file || {};
+        return this.discussion.notes[0].diff_file || {};
       },
       replacedImageDiffHtml() {
-        return this.discussion.replaced_image_diff_html;
+        return this.discussion.notes[0].replaced_image_diff_html;
       },
     },
     mounted() {
