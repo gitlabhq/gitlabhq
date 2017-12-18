@@ -4,9 +4,9 @@ module QA
       Runtime::Browser.visit(:geo_primary, QA::Page::Main::Login) do
         Page::Main::Login.act { sign_in_using_credentials }
 
-        Scenario::Gitlab::Project::Create.perform do |scenario|
-          scenario.name = 'geo-project'
-          scenario.description = 'Geo test project'
+        Factory::Resource::Project.fabricate! do |project|
+          project.name = 'geo-project'
+          project.description = 'Geo test project'
         end
 
         geo_project_name = Page::Project::Show.act { project_name }

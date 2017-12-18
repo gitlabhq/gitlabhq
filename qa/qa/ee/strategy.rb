@@ -11,7 +11,7 @@ module QA
         return unless ENV['EE_LICENSE']
 
         QA::Runtime::Browser.visit(:gitlab, QA::Page::Main::Login) do
-          EE::Scenario::License::Add.perform(ENV['EE_LICENSE'])
+          EE::Factory::License.fabricate!(ENV['EE_LICENSE'])
         end
       end
     end
