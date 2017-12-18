@@ -1,5 +1,20 @@
 module EpicIssues
   class ListService < IssuableLinks::ListService
+    def execute
+      issues.map do |referenced_issue|
+        {
+          id: referenced_issue.id,
+          title: referenced_issue.title,
+          state: referenced_issue.state,
+          reference: reference(referenced_issue),
+          path: project_issue_path(referenced_issue.project, referenced_issue.iid),
+          destroy_relation_path: destroy_relation_path(referenced_issue),
+          epic_issue_id: referenced_issue.epic_issue_id,
+          position: referenced_issue.position
+        }
+      end
+    end
+
     private
 
     def issues
