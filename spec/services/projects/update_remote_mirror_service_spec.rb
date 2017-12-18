@@ -4,6 +4,7 @@ describe Projects::UpdateRemoteMirrorService do
   let(:project) { create(:project, :repository) }
   let(:remote_project) { create(:forked_project_with_submodules) }
   let(:repository) { project.repository }
+  let(:raw_repository) { repository.raw }
   let(:remote_mirror) { project.remote_mirrors.create!(url: remote_project.http_url_to_repo, enabled: true, only_protected_branches: false) }
 
   subject { described_class.new(project, project.creator) }
@@ -11,11 +12,10 @@ describe Projects::UpdateRemoteMirrorService do
   describe "#execute" do
     before do
       create_branch(repository, 'existing-branch')
-      allow(repository).to receive(:remote_tags) { generate_tags(repository, 'v1.0.0', 'v1.1.0') }
-
-      gitlab_shell = Gitlab::Shell.new
-      allow(repository).to receive(:gitlab_shell).and_return(gitlab_shell)
-      allow(gitlab_shell).to receive(:push_remote_branches).and_return(true)
+      allow(raw_repository).to receive(:remote_tags) do
+        generate_tags(repository, 'v1.0.0', 'v1.1.0')
+      end
+      allow(raw_repository).to receive(:push_remote_branches).and_return(true)
     end
 
     it 'does nothing when unlicensed' do
@@ -46,7 +46,7 @@ describe Projects::UpdateRemoteMirrorService do
       it "push all the branches the first time" do
         allow(repository).to receive(:fetch_remote)
 
-        expect(repository).to receive(:push_remote_branches).with(remote_mirror.ref_name, local_branch_names)
+        expect(raw_repository).to receive(:push_remote_branches).with(remote_mirror.ref_name, local_branch_names)
 
         subject.execute(remote_mirror)
       end
@@ -54,7 +54,7 @@ describe Projects::UpdateRemoteMirrorService do
       it "does not push anything is remote is up to date" do
         allow(repository).to receive(:fetch_remote) { sync_remote(repository, remote_mirror.ref_name, local_branch_names) }
 
-        expect(repository).not_to receive(:push_remote_branches)
+        expect(raw_repository).not_to receive(:push_remote_branches)
 
         subject.execute(remote_mirror)
       end
@@ -65,7 +65,7 @@ describe Projects::UpdateRemoteMirrorService do
         allow(repository).to receive(:fetch_remote) { sync_remote(repository, remote_mirror.ref_name, current_branches) }
         create_branch(repository, 'my-new-branch')
 
-        expect(repository).to receive(:push_remote_branches).with(remote_mirror.ref_name, ['my-new-branch'])
+        expect(raw_repository).to receive(:push_remote_branches).with(remote_mirror.ref_name, ['my-new-branch'])
 
         subject.execute(remote_mirror)
       end
@@ -76,7 +76,7 @@ describe Projects::UpdateRemoteMirrorService do
           update_branch(repository, 'existing-branch')
         end
 
-        expect(repository).to receive(:push_remote_branches).with(remote_mirror.ref_name, ['existing-branch'])
+        expect(raw_repository).to receive(:push_remote_branches).with(remote_mirror.ref_name, ['existing-branch'])
 
         subject.execute(remote_mirror)
       end
@@ -98,7 +98,7 @@ describe Projects::UpdateRemoteMirrorService do
             update_branch(repository, protected_branch_name)
           end
 
-          expect(repository).to receive(:push_remote_branches).with(remote_mirror.ref_name, [protected_branch_name])
+          expect(raw_repository).to receive(:push_remote_branches).with(remote_mirror.ref_name, [protected_branch_name])
 
           subject.execute(remote_mirror)
         end
@@ -109,7 +109,7 @@ describe Projects::UpdateRemoteMirrorService do
             update_branch(repository, 'existing-branch')
           end
 
-          expect(repository).not_to receive(:push_remote_branches).with(remote_mirror.ref_name, ['existing-branch'])
+          expect(raw_repository).not_to receive(:push_remote_branches).with(remote_mirror.ref_name, ['existing-branch'])
 
           subject.execute(remote_mirror)
         end
@@ -123,7 +123,7 @@ describe Projects::UpdateRemoteMirrorService do
               update_remote_branch(repository, remote_mirror.ref_name, 'markdown')
             end
 
-            expect(repository).to receive(:push_remote_branches).with(remote_mirror.ref_name, ['markdown'])
+            expect(raw_repository).to receive(:push_remote_branches).with(remote_mirror.ref_name, ['markdown'])
 
             subject.execute(remote_mirror)
           end
@@ -138,7 +138,7 @@ describe Projects::UpdateRemoteMirrorService do
               delete_branch(repository, 'existing-branch')
             end
 
-            expect(repository).to receive(:delete_remote_branches).with(remote_mirror.ref_name, ['existing-branch'])
+            expect(raw_repository).to receive(:delete_remote_branches).with(remote_mirror.ref_name, ['existing-branch'])
 
             subject.execute(remote_mirror)
           end
@@ -163,7 +163,7 @@ describe Projects::UpdateRemoteMirrorService do
                 delete_branch(repository, protected_branch_name)
               end
 
-              expect(repository).not_to receive(:delete_remote_branches).with(remote_mirror.ref_name, [protected_branch_name])
+              expect(raw_repository).not_to receive(:delete_remote_branches).with(remote_mirror.ref_name, [protected_branch_name])
 
               subject.execute(remote_mirror)
             end
@@ -174,7 +174,7 @@ describe Projects::UpdateRemoteMirrorService do
                 delete_branch(repository, 'existing-branch')
               end
 
-              expect(repository).not_to receive(:delete_remote_branches).with(remote_mirror.ref_name, ['existing-branch'])
+              expect(raw_repository).not_to receive(:delete_remote_branches).with(remote_mirror.ref_name, ['existing-branch'])
 
               subject.execute(remote_mirror)
             end
@@ -196,7 +196,7 @@ describe Projects::UpdateRemoteMirrorService do
                   create_remote_branch(repository, remote_mirror.ref_name, 'remote-branch', rev.id)
                 end
 
-                expect(repository).not_to receive(:delete_remote_branches)
+                expect(raw_repository).not_to receive(:delete_remote_branches)
 
                 subject.execute(remote_mirror)
               end
@@ -211,7 +211,7 @@ describe Projects::UpdateRemoteMirrorService do
                   create_remote_branch(repository, remote_mirror.ref_name, protected_branch_name, masterrev.id)
                 end
 
-                expect(repository).to receive(:delete_remote_branches).with(remote_mirror.ref_name, [protected_branch_name])
+                expect(raw_repository).to receive(:delete_remote_branches).with(remote_mirror.ref_name, [protected_branch_name])
 
                 subject.execute(remote_mirror)
               end
@@ -229,7 +229,7 @@ describe Projects::UpdateRemoteMirrorService do
                 create_remote_branch(repository, remote_mirror.ref_name, 'remote-branch', rev.id)
               end
 
-              expect(repository).not_to receive(:delete_remote_branches)
+              expect(raw_repository).not_to receive(:delete_remote_branches)
 
               subject.execute(remote_mirror)
             end
@@ -244,7 +244,7 @@ describe Projects::UpdateRemoteMirrorService do
                 create_remote_branch(repository, remote_mirror.ref_name, 'remote-branch', masterrev.id)
               end
 
-              expect(repository).to receive(:delete_remote_branches).with(remote_mirror.ref_name, ['remote-branch'])
+              expect(raw_repository).to receive(:delete_remote_branches).with(remote_mirror.ref_name, ['remote-branch'])
 
               subject.execute(remote_mirror)
             end
@@ -271,9 +271,9 @@ describe Projects::UpdateRemoteMirrorService do
 
       context 'when there are some tags to push' do
         it 'pushes tags to remote' do
-          allow(repository).to receive(:remote_tags) { {} }
+          allow(raw_repository).to receive(:remote_tags) { {} }
 
-          expect(repository).to receive(:push_remote_branches).with(remote_mirror.ref_name, ['v1.0.0', 'v1.1.0'])
+          expect(raw_repository).to receive(:push_remote_branches).with(remote_mirror.ref_name, ['v1.0.0', 'v1.1.0'])
 
           subject.execute(remote_mirror)
         end
@@ -282,11 +282,11 @@ describe Projects::UpdateRemoteMirrorService do
       context 'when there are some tags to delete' do
         it 'deletes tags from remote' do
           remote_tags = generate_tags(repository, 'v1.0.0', 'v1.1.0')
-          allow(repository).to receive(:remote_tags) { remote_tags }
+          allow(raw_repository).to receive(:remote_tags) { remote_tags }
 
           repository.rm_tag(create(:user), 'v1.0.0')
 
-          expect(repository).to receive(:delete_remote_branches).with(remote_mirror.ref_name, ['v1.0.0'])
+          expect(raw_repository).to receive(:delete_remote_branches).with(remote_mirror.ref_name, ['v1.0.0'])
 
           subject.execute(remote_mirror)
         end
