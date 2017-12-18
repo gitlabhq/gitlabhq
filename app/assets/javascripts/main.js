@@ -45,12 +45,10 @@ import './layout_nav';
 import LazyLoader from './lazy_loader';
 import './line_highlighter';
 import initLogoAnimation from './logo';
-import './merge_request';
 import './milestone_select';
 import './preview_markdown';
 import './projects_dropdown';
 import './render_gfm';
-import './right_sidebar';
 import initBreadcrumbs from './breadcrumb';
 
 import './dispatcher';

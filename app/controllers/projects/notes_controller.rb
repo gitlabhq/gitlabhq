@@ -11,7 +11,7 @@ class Projects::NotesController < Projects::ApplicationController
   # Controller actions are returned from AbstractController::Base and methods of parent classes are
   #   excluded in order to return only specific controller related methods.
   # That is ok for the app (no :create method in ancestors)
-  #   but fails for tests because there is a :create method on FactoryGirl (one of the ancestors)
+  #   but fails for tests because there is a :create method on FactoryBot (one of the ancestors)
   #
   # see https://github.com/rails/rails/blob/v4.2.7/actionpack/lib/abstract_controller/base.rb#L78
   #
