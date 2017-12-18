@@ -25,14 +25,14 @@ class ScheduleEventMigrations < ActiveRecord::Migration
         # We push multiple jobs at a time to reduce the time spent in
         # Sidekiq/Redis operations. We're using this buffer based approach so we
         # don't need to run additional queries for every range.
-        BackgroundMigrationWorker.perform_bulk(jobs)
+        BackgroundMigrationWorker.bulk_perform_async(jobs)
         jobs.clear
       end
 
       jobs << ['MigrateEventsToPushEventPayloads', [min, max]]
     end
 
-    BackgroundMigrationWorker.perform_bulk(jobs) unless jobs.empty?
+    BackgroundMigrationWorker.bulk_perform_async(jobs) unless jobs.empty?
   end
 
   def down

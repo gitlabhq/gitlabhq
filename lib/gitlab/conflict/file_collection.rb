@@ -4,11 +4,11 @@ module Gitlab
       attr_reader :merge_request, :resolver
 
       def initialize(merge_request)
-        source_repo = merge_request.source_project.repository.raw
         our_commit = merge_request.source_branch_head.raw
         their_commit = merge_request.target_branch_head.raw
         target_repo = merge_request.target_project.repository.raw
-        @resolver = Gitlab::Git::Conflict::Resolver.new(source_repo, our_commit, target_repo, their_commit)
+        @source_repo = merge_request.source_project.repository.raw
+        @resolver = Gitlab::Git::Conflict::Resolver.new(target_repo, our_commit.id, their_commit.id)
         @merge_request = merge_request
       end
 
@@ -18,7 +18,9 @@ module Gitlab
           target_branch: merge_request.target_branch,
           commit_message: commit_message || default_commit_message
         }
-        resolver.resolve_conflicts(user, files, args)
+        resolver.resolve_conflicts(@source_repo, user, files, args)
+      ensure
+        @merge_request.clear_memoized_shas
       end
 
       def files

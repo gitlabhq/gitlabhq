@@ -50,6 +50,11 @@
     &:not(.disabled) {
       cursor: pointer;
     }
+
+    svg {
+      width: $gl-padding;
+      height: $gl-padding;
+    }
   }
 }
 
@@ -137,10 +142,6 @@
     padding: 0 3px;
     width: calc(100% + 35px);
   }
-}
-
-.issuable-sidebar {
-  @include new-style-dropdown;
 }
 
 .pikaday-container {

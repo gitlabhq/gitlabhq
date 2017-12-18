@@ -945,7 +945,7 @@ describe API::Runner do
         context 'when artifacts are being stored inside of tmp path' do
           before do
             # by configuring this path we allow to pass temp file from any path
-            allow(ArtifactUploader).to receive(:artifacts_upload_path).and_return('/')
+            allow(JobArtifactUploader).to receive(:artifacts_upload_path).and_return('/')
           end
 
           context 'when job has been erased' do
@@ -980,15 +980,6 @@ describe API::Runner do
             context 'when uses accelerated file post' do
               before do
                 upload_artifacts(file_upload, headers_with_token, true)
-              end
-
-              it_behaves_like 'successful artifacts upload'
-            end
-
-            context 'when updates artifact' do
-              before do
-                upload_artifacts(file_upload2, headers_with_token)
-                upload_artifacts(file_upload, headers_with_token)
               end
 
               it_behaves_like 'successful artifacts upload'
@@ -1106,7 +1097,7 @@ describe API::Runner do
                 expect(response).to have_gitlab_http_status(201)
                 expect(stored_artifacts_file.original_filename).to eq(artifacts.original_filename)
                 expect(stored_metadata_file.original_filename).to eq(metadata.original_filename)
-                expect(stored_artifacts_size).to eq(71759)
+                expect(stored_artifacts_size).to eq(72821)
               end
             end
 
@@ -1131,7 +1122,7 @@ describe API::Runner do
             # by configuring this path we allow to pass file from @tmpdir only
             # but all temporary files are stored in system tmp directory
             @tmpdir = Dir.mktmpdir
-            allow(ArtifactUploader).to receive(:artifacts_upload_path).and_return(@tmpdir)
+            allow(JobArtifactUploader).to receive(:artifacts_upload_path).and_return(@tmpdir)
           end
 
           after do

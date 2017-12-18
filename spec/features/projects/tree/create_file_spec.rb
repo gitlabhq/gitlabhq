@@ -20,7 +20,7 @@ feature 'Multi-file editor new file', :js do
 
     click_link('New file')
 
-    page.within('.popup-dialog') do
+    page.within('.modal') do
       find('.form-control').set('filename')
 
       click_button('Create file')

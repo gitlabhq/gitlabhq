@@ -16,6 +16,7 @@ import Autosize from 'autosize';
 import 'vendor/jquery.caret'; // required by jquery.atwho
 import 'vendor/jquery.atwho';
 import AjaxCache from '~/lib/utils/ajax_cache';
+import { getLocationHash } from './lib/utils/url_utility';
 import Flash from './flash';
 import CommentTypeToggle from './comment_type_toggle';
 import GLForm from './gl_form';
@@ -24,6 +25,7 @@ import Autosave from './autosave';
 import TaskList from './task_list';
 import { ajaxPost, isInViewport, getPagePath, scrollToElement, isMetaKey } from './lib/utils/common_utils';
 import imageDiffHelper from './image_diff/helpers/index';
+import { localTimeAgo } from './lib/utils/datetime_utility';
 
 window.autosize = Autosize;
 
@@ -310,7 +312,7 @@ export default class Notes {
 
   setupNewNote($note) {
     // Update datetime format on the recent note
-    gl.utils.localTimeAgo($note.find('.js-timeago'), false);
+    localTimeAgo($note.find('.js-timeago'), false);
 
     this.collapseLongCommitList();
     this.taskList.init();
@@ -330,7 +332,7 @@ export default class Notes {
   }
 
   static updateNoteTargetSelector($note) {
-    const hash = gl.utils.getLocationHash();
+    const hash = getLocationHash();
     // Needs to be an explicit true/false for the jQuery `toggleClass(force)`
     const addTargetClass = Boolean(hash && $note.filter(`#${hash}`).length > 0);
     $note.toggleClass('target', addTargetClass);
@@ -462,7 +464,7 @@ export default class Notes {
       this.renderDiscussionAvatar(diffAvatarContainer, noteEntity);
     }
 
-    gl.utils.localTimeAgo($('.js-timeago'), false);
+    localTimeAgo($('.js-timeago'), false);
     Notes.checkMergeRequestStatus();
     return this.updateNotesCount(1);
   }

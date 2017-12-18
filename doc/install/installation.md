@@ -80,7 +80,7 @@ Make sure you have the right version of Git installed
     # Install Git
     sudo apt-get install -y git-core
 
-    # Make sure Git is version 2.13.6 or higher
+    # Make sure Git is version 2.14.3 or higher
     git --version
 
 Is the system packaged Git too old? Remove it and compile from source.
@@ -299,9 +299,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 10-2-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 10-3-stable gitlab
 
-**Note:** You can change `10-2-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `10-3-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 

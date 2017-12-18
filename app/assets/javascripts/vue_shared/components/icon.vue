@@ -36,6 +36,30 @@
         required: false,
         default: '',
       },
+
+      width: {
+        type: Number,
+        required: false,
+        default: null,
+      },
+
+      height: {
+        type: Number,
+        required: false,
+        default: null,
+      },
+
+      y: {
+        type: Number,
+        required: false,
+        default: null,
+      },
+
+      x: {
+        type: Number,
+        required: false,
+        default: null,
+      },
     },
 
     computed: {
@@ -51,7 +75,11 @@
 
 <template>
   <svg
-    :class="[iconSizeClass, cssClasses]">
+    :class="[iconSizeClass, cssClasses]"
+    :width="width"
+    :height="height"
+    :x="x"
+    :y="y">
     <use
       v-bind="{'xlink:href':spriteHref}"/>
   </svg>

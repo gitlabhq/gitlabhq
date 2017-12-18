@@ -2,6 +2,7 @@ require 'carrierwave/orm/activerecord'
 
 class Group < Namespace
   include Gitlab::ConfigHelper
+  include AfterCommitQueue
   include AccessRequestable
   include Avatarable
   include Referable
@@ -287,6 +288,18 @@ class Group < Namespace
     return path_was unless has_parent?
 
     "#{parent.full_path}/#{path_was}"
+  end
+
+  def group_member(user)
+    if group_members.loaded?
+      group_members.find { |gm| gm.user_id == user.id }
+    else
+      group_members.find_by(user_id: user)
+    end
+  end
+
+  def hashed_storage?(_feature)
+    false
   end
 
   private

@@ -82,10 +82,10 @@ module TestEnv
 
     setup_gitaly
 
-    # Create repository for FactoryGirl.create(:project)
+    # Create repository for FactoryBot.create(:project)
     setup_factory_repo
 
-    # Create repository for FactoryGirl.create(:forked_project_with_submodules)
+    # Create repository for FactoryBot.create(:forked_project_with_submodules)
     setup_forked_repo
   end
 
@@ -120,6 +120,7 @@ module TestEnv
     FileUtils.mkdir_p(repos_path)
     FileUtils.mkdir_p(backup_path)
     FileUtils.mkdir_p(pages_path)
+    FileUtils.mkdir_p(artifacts_path)
   end
 
   def clean_gitlab_test_path
@@ -231,6 +232,10 @@ module TestEnv
 
   def pages_path
     Gitlab.config.pages.path
+  end
+
+  def artifacts_path
+    Gitlab.config.artifacts.path
   end
 
   # When no cached assets exist, manually hit the root path to create them

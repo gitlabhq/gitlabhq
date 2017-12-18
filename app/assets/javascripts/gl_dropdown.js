@@ -2,6 +2,7 @@
 /* global fuzzaldrinPlus */
 import _ from 'underscore';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
+import { visitUrl } from './lib/utils/url_utility';
 import { isObject } from './lib/utils/type_utility';
 
 var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote, GitLabDropdownInput;
@@ -514,10 +515,11 @@ GitLabDropdown = (function() {
 
     const dropdownToggle = this.dropdown.find('.dropdown-menu-toggle');
     const hasFilterBulkUpdate = dropdownToggle.hasClass('js-filter-bulk-update');
+    const shouldRefreshOnOpen = dropdownToggle.hasClass('js-gl-dropdown-refresh-on-open');
     const hasMultiSelect = dropdownToggle.hasClass('js-multiselect');
 
     // Makes indeterminate items effective
-    if (this.fullData && hasFilterBulkUpdate) {
+    if (this.fullData && (shouldRefreshOnOpen || hasFilterBulkUpdate)) {
       this.parseData(this.fullData);
     }
 
@@ -851,7 +853,7 @@ GitLabDropdown = (function() {
     if ($el.length) {
       var href = $el.attr('href');
       if (href && href !== '#') {
-        gl.utils.visitUrl(href);
+        visitUrl(href);
       } else {
         $el.trigger('click');
       }

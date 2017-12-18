@@ -32,7 +32,7 @@ module Gitlab
 
       def execute(cmd)
         output, status = Gitlab::Popen.popen(cmd)
-        @shared.error(Gitlab::ImportExport::Error.new(output.to_s)) unless status.zero?
+        @shared.error(Gitlab::ImportExport::Error.new(output.to_s)) unless status.zero? # rubocop:disable Gitlab/ModuleWithInstanceVariables
         status.zero?
       end
 

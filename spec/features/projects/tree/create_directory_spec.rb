@@ -20,7 +20,7 @@ feature 'Multi-file editor new directory', :js do
 
     click_link('New directory')
 
-    page.within('.popup-dialog') do
+    page.within('.modal') do
       find('.form-control').set('foldername')
 
       click_button('Create directory')

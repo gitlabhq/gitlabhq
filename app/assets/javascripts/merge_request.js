@@ -3,7 +3,7 @@
 
 import 'vendor/jquery.waitforimages';
 import TaskList from './task_list';
-import './merge_request_tabs';
+import MergeRequestTabs from './merge_request_tabs';
 import IssuablesHelper from './helpers/issuables_helper';
 import { addDelimiter } from './lib/utils/text_utility';
 
@@ -51,7 +51,7 @@ import { addDelimiter } from './lib/utils/text_utility';
       if (window.mrTabs) {
         window.mrTabs.unbindEvents();
       }
-      window.mrTabs = new gl.MergeRequestTabs(this.opts);
+      window.mrTabs = new MergeRequestTabs(this.opts);
     };
 
     MergeRequest.prototype.showAllCommits = function() {
@@ -129,7 +129,7 @@ import { addDelimiter } from './lib/utils/text_utility';
     };
 
     MergeRequest.prototype.hideCloseButton = function() {
-      const el = document.querySelector('.merge-request .issuable-actions');
+      const el = document.querySelector('.merge-request .js-issuable-actions');
       const closeDropdownItem = el.querySelector('li.close-item');
       if (closeDropdownItem) {
         closeDropdownItem.classList.add('hidden');

@@ -1,7 +1,7 @@
 <script>
   import { mapActions } from 'vuex';
   import { __ } from '../../../locale';
-  import popupDialog from '../../../vue_shared/components/popup_dialog.vue';
+  import modal from '../../../vue_shared/components/modal.vue';
 
   export default {
     props: {
@@ -20,7 +20,7 @@
       };
     },
     components: {
-      popupDialog,
+      modal,
     },
     methods: {
       ...mapActions([
@@ -68,7 +68,7 @@
 </script>
 
 <template>
-  <popup-dialog
+  <modal
     :title="modalTitle"
     :primary-button-label="buttonLabel"
     kind="success"
@@ -94,5 +94,5 @@
         </div>
       </fieldset>
     </form>
-  </popup-dialog>
+  </modal>
 </template>

@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: gitlab-ee\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-11-02 14:42+0100\n"
-"PO-Revision-Date: 2017-11-03 12:30-0400\n"
+"PO-Revision-Date: 2017-11-21 16:43-0500\n"
 "Last-Translator: gitlab <mbartlett+crowdin@gitlab.com>\n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -36,8 +36,8 @@ msgstr "%{commit_author_link} a validé %{commit_timeago}"
 
 msgid "%{count} participant"
 msgid_plural "%{count} participants"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%{count} participant•e"
+msgstr[1] "%{count} participant•e•s"
 
 msgid "%{number_commits_behind} commits behind %{default_branch}, %{number_commits_ahead} commits ahead"
 msgstr "%{number_commits_behind} validations de retard sur %{default_branch}, %{number_commits_ahead} validations d'avance"
@@ -60,10 +60,10 @@ msgid "(checkout the %{link} for information on how to install it)."
 msgstr "(Lisez %{link} pour savoir comment l'installer)."
 
 msgid "+ %{moreCount} more"
-msgstr ""
+msgstr "+ %{moreCount} de plus"
 
 msgid "- show less"
-msgstr ""
+msgstr "- en montrer moins"
 
 msgid "1 pipeline"
 msgid_plural "%d pipelines"
@@ -125,7 +125,7 @@ msgid "AdminHealthPageLink|health page"
 msgstr "État des services"
 
 msgid "Advanced settings"
-msgstr ""
+msgstr "Paramètres avancés"
 
 msgid "All"
 msgstr "Tous"
@@ -504,14 +504,14 @@ msgstr "L'intégration du cluster est activée pour ce projet."
 msgid "ClusterIntegration|Cluster integration is enabled for this project. Disabling this integration will not affect your cluster, it will only temporarily turn off GitLab's connection to it."
 msgstr "L'intégration de cluster est activée pour ce projet. La désactivation de cette intégration n’affectera pas votre cluster, il coupera temporairement la connexion de GitLab à celui-ci."
 
-msgid "ClusterIntegration|Cluster is being created on Google Container Engine..."
-msgstr "Le cluster est en cours de création sur Google Container Engine…"
+msgid "ClusterIntegration|Cluster is being created on Google Kubernetes Engine..."
+msgstr "Le cluster est en cours de création sur Google Kubernetes Engine…"
 
 msgid "ClusterIntegration|Cluster name"
 msgstr "Nom du cluster"
 
-msgid "ClusterIntegration|Cluster was successfully created on Google Container Engine"
-msgstr "Le cluster a été correctement créé sur Google Container Engine"
+msgid "ClusterIntegration|Cluster was successfully created on Google Kubernetes Engine"
+msgstr "Le cluster a été correctement créé sur Google Kubernetes Engine"
 
 msgid "ClusterIntegration|Copy cluster name"
 msgstr "Copier le nom du cluster"
@@ -519,8 +519,8 @@ msgstr "Copier le nom du cluster"
 msgid "ClusterIntegration|Create cluster"
 msgstr "Créer le cluster"
 
-msgid "ClusterIntegration|Create new cluster on Google Container Engine"
-msgstr "Créer un nouveau cluster sur Google Container Engine"
+msgid "ClusterIntegration|Create new cluster on Google Kubernetes Engine"
+msgstr "Créer un nouveau cluster sur Google Kubernetes Engine"
 
 msgid "ClusterIntegration|Enable cluster integration"
 msgstr "Activer l’intégration du cluster"
@@ -528,11 +528,11 @@ msgstr "Activer l’intégration du cluster"
 msgid "ClusterIntegration|Google Cloud Platform project ID"
 msgstr "ID de projet Google Cloud Platform"
 
-msgid "ClusterIntegration|Google Container Engine"
-msgstr "Google Container Engine"
+msgid "ClusterIntegration|Google Kubernetes Engine"
+msgstr "Google Kubernetes Engine"
 
-msgid "ClusterIntegration|Google Container Engine project"
-msgstr "Google Container Engine"
+msgid "ClusterIntegration|Google Kubernetes Engine project"
+msgstr "Google Kubernetes Engine"
 
 msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
 msgstr "En savoir plus sur %{link_to_documentation}"
@@ -585,8 +585,8 @@ msgstr "Voir les zones"
 msgid "ClusterIntegration|Something went wrong on our end."
 msgstr "Un problème est survenu de notre côté."
 
-msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine"
-msgstr "Un problème est survenu lors de la création de votre cluster sur Google Container Engine."
+msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Kubernetes Engine"
+msgstr "Un problème est survenu lors de la création de votre cluster sur Google Kubernetes Engine."
 
 msgid "ClusterIntegration|Toggle Cluster"
 msgstr "Activer/désactiver le cluster"
@@ -594,14 +594,14 @@ msgstr "Activer/désactiver le cluster"
 msgid "ClusterIntegration|With a cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
 msgstr "Avec un cluster associé à ce projet, vous pouvez utiliser des applications de revue, déployer vos applications, exécuter vos pipelines et bien plus encore, de manière très simple."
 
-msgid "ClusterIntegration|Your account must have %{link_to_container_engine}"
-msgstr "Votre compte doit disposer de %{link_to_container_engine}"
+msgid "ClusterIntegration|Your account must have %{link_to_kubernetes_engine}"
+msgstr "Votre compte doit disposer de %{link_to_kubernetes_engine}"
 
 msgid "ClusterIntegration|Zone"
 msgstr "Zone"
 
-msgid "ClusterIntegration|access to Google Container Engine"
-msgstr "Accéder à Google Container Engine"
+msgid "ClusterIntegration|access to Google Kubernetes Engine"
+msgstr "Accéder à Google Kubernetes Engine"
 
 msgid "ClusterIntegration|cluster"
 msgstr "cluster"
@@ -625,8 +625,8 @@ msgstr[1] "Validations"
 
 msgid "Commit %d file"
 msgid_plural "Commit %d files"
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "Valider %d fichier"
+msgstr[1] "Valider %d fichiers"
 
 msgid "Commit Message"
 msgstr "Message de validation"
@@ -692,10 +692,10 @@ msgid "ContainerRegistry|Size"
 msgstr "Taille"
 
 msgid "ContainerRegistry|Tag"
-msgstr "Étiquette"
+msgstr "Tag"
 
 msgid "ContainerRegistry|Tag ID"
-msgstr "ID d‘étiquette"
+msgstr "ID du tag"
 
 msgid "ContainerRegistry|Use different image names"
 msgstr "Utilisez des noms d’images différents"
@@ -704,7 +704,7 @@ msgid "ContainerRegistry|With the Docker Container Registry integrated into GitL
 msgstr "Avec le registre de conteneur Docker intégré à GitLab, chaque projet peut avoir son propre espace pour stocker ses images Docker."
 
 msgid "Contribution guide"
-msgstr "Guilde de contribution"
+msgstr "Guide de contribution"
 
 msgid "Contributors"
 msgstr "Contributeurs"
@@ -737,7 +737,7 @@ msgid "Create empty bare repository"
 msgstr "Créer un dépôt vide"
 
 msgid "Create file"
-msgstr ""
+msgstr "Créer un fichier"
 
 msgid "Create merge request"
 msgstr "Créer une demande de fusion"
@@ -746,10 +746,10 @@ msgid "Create new branch"
 msgstr "Créer une nouvelle branche"
 
 msgid "Create new directory"
-msgstr ""
+msgstr "Créer un nouveau dossier"
 
 msgid "Create new file"
-msgstr ""
+msgstr "Créer un nouveau fichier"
 
 msgid "Create new..."
 msgstr "Créer nouveau..."
@@ -922,7 +922,7 @@ msgid "Failed to remove the pipeline schedule"
 msgstr "Échec de la suppression du pipeline programmé"
 
 msgid "File name"
-msgstr ""
+msgstr "Nom du fichier"
 
 msgid "Files"
 msgstr "Fichiers"
@@ -1364,10 +1364,10 @@ msgid "Notifications"
 msgstr "Notifications"
 
 msgid "Number of access attempts"
-msgstr ""
+msgstr "Nombre de tentatives d'accès"
 
 msgid "Number of failures before backing off"
-msgstr ""
+msgstr "Nombre d'échecs avant annulation"
 
 msgid "OfSearchInADropdown|Filter"
 msgstr "Filtre"
@@ -1625,7 +1625,7 @@ msgid "ProjectSettings|This setting will be applied to all projects unless overr
 msgstr "Ce paramètre s’appliquera à tous les projets à moins qu’un administrateur ne le modifie."
 
 msgid "ProjectSettings|Users can only push commits to this repository that were committed with one of their own verified emails."
-msgstr ""
+msgstr "Les utilisateurs peuvent uniquement pousser sur ce dépôt des validations qui ont été validées avec une de leurs adresses courriels vérifiées."
 
 msgid "Projects"
 msgstr "Projets"
@@ -1664,7 +1664,7 @@ msgid "Push events"
 msgstr "Évènements de poussée"
 
 msgid "PushRule|Committer restriction"
-msgstr ""
+msgstr "Restriction du validateur"
 
 msgid "Read more"
 msgstr "Lire plus"
@@ -1682,7 +1682,7 @@ msgid "Registry"
 msgstr "Registre"
 
 msgid "Related Commits"
-msgstr "Validations liés"
+msgstr "Validations liées"
 
 msgid "Related Deployed Jobs"
 msgstr "Tâches de déploiement liées"
@@ -1730,7 +1730,7 @@ msgid "SSH Keys"
 msgstr "Clés SSH"
 
 msgid "Save"
-msgstr ""
+msgstr "Enregistrer"
 
 msgid "Save changes"
 msgstr "Enregistrer les modifications"
@@ -1939,10 +1939,10 @@ msgid "Subgroups"
 msgstr "Sous-groupes"
 
 msgid "Subscribe"
-msgstr ""
+msgstr "S’abonner"
 
 msgid "Switch branch/tag"
-msgstr "Changer de branche / d'étiquette"
+msgstr "Changer de branche / tag"
 
 msgid "System Hooks"
 msgstr "Crochets système"
@@ -1968,7 +1968,7 @@ msgid "The Advanced Global Search in GitLab is a powerful search service that sa
 msgstr "La Recherche Globale Avancée de GitLab est un outils qui vous fait gagner du temps. Au lieu de créer du code similaire et perdre du temps, vous pouvez maintenant chercher dans le code d'autres équipes pour vous aider sur votre projet."
 
 msgid "The circuitbreaker backoff threshold should be lower than the failure count threshold"
-msgstr ""
+msgstr "Le seuil d’interruption du disjoncteur devrait être inférieur au seuil de nombre de défaillance"
 
 msgid "The coding stage shows the time from the first commit to creating the merge request. The data will automatically be added here once you create your first merge request."
 msgstr "L’étape de développement montre le temps entre la première validation et la création de la demande de fusion. Les données seront automatiquement ajoutées ici une fois que vous aurez créé votre première demande de fusion."
@@ -1983,10 +1983,10 @@ msgid "The issue stage shows the time it takes from creating an issue to assigni
 msgstr "L'étape des tickets montre le temps nécessaire entre la création d'un ticket et son assignation à un jalon, ou son ajout à une liste d'un tableau de tickets. Commencez par créer des tickets pour voir des données pour cette étape."
 
 msgid "The number of attempts GitLab will make to access a storage."
-msgstr ""
+msgstr "Le nombre de tentatives que GitLab va effectuer pour accéder au stockage."
 
 msgid "The number of failures after which GitLab will start temporarily disabling access to a storage shard on a host"
-msgstr ""
+msgstr "Le nombre d'échecs avant que GitLab ne commence à désactiver l'accès à la partition de stockage sur l'hôte"
 
 msgid "The number of failures of after which GitLab will completely prevent access to the storage. The number of failures can be reset in the admin interface: %{link_to_health_page} or using the %{api_documentation_link}."
 msgstr "Nombre d’échecs avant que GitLab n’empêche tout accès au stockage. Ce nombre d’échecs peut être réinitialisé dans l’interface d’administration : %{link_to_health_page} ou en suivant le %{api_documentation_link}."
@@ -2224,7 +2224,7 @@ msgid "Unstar"
 msgstr "Supprimer des favoris"
 
 msgid "Unsubscribe"
-msgstr ""
+msgstr "Se désabonner"
 
 msgid "Upgrade your plan to activate Advanced Global Search."
 msgstr "Mettez à jour votre abonnement pour activer la Recherche Globale Avancée."

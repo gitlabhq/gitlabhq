@@ -1,8 +1,8 @@
 class CreatePipelineWorker
-  include Sidekiq::Worker
+  include ApplicationWorker
   include PipelineQueue
 
-  enqueue_in group: :creation
+  queue_namespace :pipeline_creation
 
   def perform(project_id, user_id, ref, source, params = {})
     project = Project.find(project_id)

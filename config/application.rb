@@ -34,6 +34,10 @@ module Gitlab
 
     config.generators.templates.push("#{config.root}/generator_templates")
 
+    # Rake tasks ignore the eager loading settings, so we need to set the
+    # autoload paths explicitly
+    config.autoload_paths = config.eager_load_paths.dup
+
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
     # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
@@ -159,7 +163,7 @@ module Gitlab
     config.middleware.insert_after ActionDispatch::Flash, 'Gitlab::Middleware::ReadOnly'
 
     config.generators do |g|
-      g.factory_girl false
+      g.factory_bot false
     end
 
     config.after_initialize do

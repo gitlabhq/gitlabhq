@@ -1,17 +1,25 @@
 module Ci
   class Build < CommitStatus
+    prepend ArtifactMigratable
     include TokenAuthenticatable
     include AfterCommitQueue
     include Presentable
     include Importable
+
+    MissingDependenciesError = Class.new(StandardError)
 
     belongs_to :runner
     belongs_to :trigger_request
     belongs_to :erased_by, class_name: 'User'
 
     has_many :deployments, as: :deployable
+
     has_one :last_deployment, -> { order('deployments.id DESC') }, as: :deployable, class_name: 'Deployment'
     has_many :trace_sections, class_name: 'Ci::BuildTraceSection'
+
+    has_many :job_artifacts, class_name: 'Ci::JobArtifact', foreign_key: :job_id, dependent: :destroy # rubocop:disable Cop/ActiveRecordDependent
+    has_one :job_artifacts_archive, -> { where(file_type: Ci::JobArtifact.file_types[:archive]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
+    has_one :job_artifacts_metadata, -> { where(file_type: Ci::JobArtifact.file_types[:metadata]) }, class_name: 'Ci::JobArtifact', inverse_of: :job, foreign_key: :job_id
 
     # The "environment" field for builds is a String, and is the unexpanded name
     def persisted_environment
@@ -31,15 +39,37 @@ module Ci
 
     scope :unstarted, ->() { where(runner_id: nil) }
     scope :ignore_failures, ->() { where(allow_failure: false) }
-    scope :with_artifacts, ->() { where.not(artifacts_file: [nil, '']) }
+    scope :with_artifacts, ->() do
+      where('(artifacts_file IS NOT NULL AND artifacts_file <> ?) OR EXISTS (?)',
+        '', Ci::JobArtifact.select(1).where('ci_builds.id = ci_job_artifacts.job_id'))
+    end
     scope :with_artifacts_not_expired, ->() { with_artifacts.where('artifacts_expire_at IS NULL OR artifacts_expire_at > ?', Time.now) }
     scope :with_expired_artifacts, ->() { with_artifacts.where('artifacts_expire_at < ?', Time.now) }
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
     scope :ref_protected, -> { where(protected: true) }
 
-    mount_uploader :artifacts_file, ArtifactUploader
-    mount_uploader :artifacts_metadata, ArtifactUploader
+    scope :matches_tag_ids, -> (tag_ids) do
+      matcher = ::ActsAsTaggableOn::Tagging
+        .where(taggable_type: CommitStatus)
+        .where(context: 'tags')
+        .where('taggable_id = ci_builds.id')
+        .where.not(tag_id: tag_ids).select('1')
+
+      where("NOT EXISTS (?)", matcher)
+    end
+
+    scope :with_any_tags, -> do
+      matcher = ::ActsAsTaggableOn::Tagging
+        .where(taggable_type: CommitStatus)
+        .where(context: 'tags')
+        .where('taggable_id = ci_builds.id').select('1')
+
+      where("EXISTS (?)", matcher)
+    end
+
+    mount_uploader :legacy_artifacts_file, LegacyArtifactUploader, mount_on: :artifacts_file
+    mount_uploader :legacy_artifacts_metadata, LegacyArtifactUploader, mount_on: :artifacts_metadata
 
     acts_as_taggable
 
@@ -110,6 +140,10 @@ module Ci
         if build.retries_count < build.retries_max
           Ci::Build.retry(build, build.user)
         end
+      end
+
+      before_transition any => [:running] do |build|
+        build.validates_dependencies! unless Feature.enabled?('ci_disable_validates_dependencies')
       end
     end
 
@@ -326,14 +360,6 @@ module Ci
       project.running_or_pending_build_count(force: true)
     end
 
-    def artifacts?
-      !artifacts_expired? && artifacts_file.exists?
-    end
-
-    def artifacts_metadata?
-      artifacts? && artifacts_metadata.exists?
-    end
-
     def artifacts_metadata_entry(path, **options)
       metadata = Gitlab::Ci::Build::Artifacts::Metadata.new(
         artifacts_metadata.path,
@@ -386,6 +412,7 @@ module Ci
 
     def keep_artifacts!
       self.update(artifacts_expire_at: nil)
+      self.job_artifacts.update_all(expire_at: nil)
     end
 
     def coverage_regex
@@ -457,6 +484,19 @@ module Ci
       options[:dependencies]&.empty?
     end
 
+    def validates_dependencies!
+      dependencies.each do |dependency|
+        raise MissingDependenciesError unless dependency.valid_dependency?
+      end
+    end
+
+    def valid_dependency?
+      return false if artifacts_expired?
+      return false if erased?
+
+      true
+    end
+
     def hide_secrets(trace)
       return unless trace
 
@@ -473,11 +513,7 @@ module Ci
     private
 
     def update_artifacts_size
-      self.artifacts_size = if artifacts_file.exists?
-                              artifacts_file.size
-                            else
-                              nil
-                            end
+      self.artifacts_size = legacy_artifacts_file&.size
     end
 
     def erase_trace!

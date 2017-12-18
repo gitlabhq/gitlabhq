@@ -42,6 +42,8 @@ Sidekiq.configure_server do |config|
 
   Gitlab::SidekiqThrottler.execute!
 
+  Gitlab::SidekiqVersioning.install!
+
   config = Gitlab::Database.config ||
     Rails.application.config.database_configuration[Rails.env]
   config['pool'] = Sidekiq.options[:concurrency]
@@ -59,20 +61,4 @@ Sidekiq.configure_client do |config|
   config.client_middleware do |chain|
     chain.add Gitlab::SidekiqStatus::ClientMiddleware
   end
-end
-
-# The Sidekiq client API always adds the queue to the Sidekiq queue
-# list, but mail_room and gitlab-shell do not. This is only necessary
-# for monitoring.
-config = YAML.load_file(Rails.root.join('config', 'sidekiq_queues.yml').to_s)
-
-begin
-  Sidekiq.redis do |conn|
-    conn.pipelined do
-      config[:queues].each do |queue|
-        conn.sadd('queues', queue[0])
-      end
-    end
-  end
-rescue Redis::BaseError, SocketError, Errno::ENOENT, Errno::EADDRNOTAVAIL, Errno::EAFNOSUPPORT, Errno::ECONNRESET, Errno::ECONNREFUSED
 end

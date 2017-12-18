@@ -23,25 +23,26 @@ The following table depicts the various user permission levels in a project.
 |---------------------------------------|---------|------------|-------------|----------|--------|
 | Create new issue                      | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | Create confidential issue             | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
-| View confidential issues              | (✓) [^2] | ✓          | ✓           | ✓        | ✓      |
+| View confidential issues              | (✓) [^2] | ✓         | ✓           | ✓        | ✓      |
 | Leave comments                        | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | Lock discussions (issues and merge requests) |  |            |             | ✓        | ✓      |
 | See a list of jobs                    | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
-| See a job   log                       | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
+| See a job log                         | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | Download and browse job artifacts     | ✓ [^3]  | ✓          | ✓           | ✓        | ✓      |
 | View wiki pages                       | ✓ [^1]  | ✓          | ✓           | ✓        | ✓      |
 | Pull project code                     | [^1]    | ✓          | ✓           | ✓        | ✓      |
 | Download project                      | [^1]    | ✓          | ✓           | ✓        | ✓      |
+| Assign issues and merge requests      |         | ✓          | ✓           | ✓        | ✓      |
+| Label issues and merge requests       |         | ✓          | ✓           | ✓        | ✓      |
 | Create code snippets                  |         | ✓          | ✓           | ✓        | ✓      |
 | Manage issue tracker                  |         | ✓          | ✓           | ✓        | ✓      |
 | Manage labels                         |         | ✓          | ✓           | ✓        | ✓      |
 | See a commit status                   |         | ✓          | ✓           | ✓        | ✓      |
 | See a container registry              |         | ✓          | ✓           | ✓        | ✓      |
 | See environments                      |         | ✓          | ✓           | ✓        | ✓      |
-| Create new environments               |         |            | ✓           | ✓        | ✓      |
-| Use environment terminals             |         |            |             | ✓        | ✓      |
-| Stop environments                     |         |            | ✓           | ✓        | ✓      |
 | See a list of merge requests          |         | ✓          | ✓           | ✓        | ✓      |
+| Create new environments               |         |            | ✓           | ✓        | ✓      |
+| Stop environments                     |         |            | ✓           | ✓        | ✓      |
 | Manage/Accept merge requests          |         |            | ✓           | ✓        | ✓      |
 | Create new merge request              |         |            | ✓           | ✓        | ✓      |
 | Create new branches                   |         |            | ✓           | ✓        | ✓      |
@@ -55,10 +56,11 @@ The following table depicts the various user permission levels in a project.
 | Update a container registry           |         |            | ✓           | ✓        | ✓      |
 | Remove a container registry image     |         |            | ✓           | ✓        | ✓      |
 | Create/edit/delete project milestones |         |            | ✓           | ✓        | ✓      |
+| Use environment terminals             |         |            |             | ✓        | ✓      |
 | Add new team members                  |         |            |             | ✓        | ✓      |
 | Push to protected branches            |         |            |             | ✓        | ✓      |
 | Enable/disable branch protection      |         |            |             | ✓        | ✓      |
-| Turn on/off protected branch push for devs|         |            |             | ✓        | ✓      |
+| Turn on/off protected branch push for devs|     |            |             | ✓        | ✓      |
 | Enable/disable tag protections        |         |            |             | ✓        | ✓      |
 | Rewrite/remove Git tags               |         |            |             | ✓        | ✓      |
 | Edit project                          |         |            |             | ✓        | ✓      |
@@ -69,14 +71,15 @@ The following table depicts the various user permission levels in a project.
 | Manage variables                      |         |            |             | ✓        | ✓      |
 | Manage pages                          |         |            |             | ✓        | ✓      |
 | Manage pages domains and certificates |         |            |             | ✓        | ✓      |
+| Manage clusters                       |         |            |             | ✓        | ✓      |
+| Edit comments (posted by any user)    |         |            |             | ✓        | ✓      |
 | Switch visibility level               |         |            |             |          | ✓      |
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |
 | Delete issues                         |         |            |             |          | ✓      |
+| Remove pages                          |         |            |             |          | ✓      |
 | Force push to protected branches [^4] |         |            |             |          |        |
 | Remove protected branches [^4]        |         |            |             |          |        |
-| Remove pages                          |         |            |             |          | ✓      |
-| Manage clusters                       |         |            |             | ✓        | ✓      |
 
 ## Project features permissions
 

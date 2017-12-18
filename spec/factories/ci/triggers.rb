@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :ci_trigger_without_token, class: Ci::Trigger do
     owner
 

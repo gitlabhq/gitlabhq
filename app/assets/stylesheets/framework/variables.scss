@@ -5,10 +5,9 @@ $grid-size: 8px;
 $gutter_collapsed_width: 62px;
 $gutter_width: 290px;
 $gutter_inner_width: 250px;
-$sidebar-transition-duration: .15s;
+$sidebar-transition-duration: .3s;
 $sidebar-breakpoint: 1024px;
 $default-transition-duration: .15s;
-$right-sidebar-transition-duration: .3s;
 $contextual-sidebar-width: 220px;
 $contextual-sidebar-collapsed-width: 50px;
 
@@ -246,9 +245,6 @@ $btn-sm-side-margin: 7px;
 $btn-xs-side-margin: 5px;
 $issue-status-expired: $orange-500;
 $issuable-sidebar-color: $gl-text-color-secondary;
-$show-aside-bg: #eee;
-$show-aside-color: #777;
-$show-aside-shadow: #ddd;
 $group-path-color: #999;
 $namespace-kind-color: #aaa;
 $panel-heading-link-color: #777;
@@ -337,6 +333,7 @@ $regular_font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-San
 * Dropdowns
 */
 $dropdown-width: 300px;
+$dropdown-max-height: 215px;
 $dropdown-vertical-offset: 4px;
 $dropdown-link-color: #555;
 $dropdown-link-hover-bg: $row-hover;
@@ -353,6 +350,7 @@ $dropdown-loading-bg: rgba(#fff, .6);
 $dropdown-chevron-size: 10px;
 $dropdown-toggle-active-border-color: darken($border-color, 14%);
 $dropdown-item-hover-bg: $gray-darker;
+$dropdown-fade-mask-height: 32px;
 
 /*
 * Filtered Search
@@ -406,7 +404,6 @@ $location-icon-color: #e7e9ed;
  *  Notes
  */
 $notes-light-color: $gl-text-color-secondary;
-$notes-role-color: $gl-text-color-secondary;
 $note-disabled-comment-color: #b2b2b2;
 $note-targe3-outside: #fffff0;
 $note-targe3-inside: #ffffd3;
@@ -555,6 +552,7 @@ $jq-ui-default-color: #777;
 /*
 * Label
 */
+$label-padding: 7px;
 $label-gray-bg: #f8fafc;
 $label-inverse-bg: #333;
 $label-remove-border: rgba(0, 0, 0, .1);
@@ -564,6 +562,8 @@ $label-border-radius: 100px;
 * Animation
 */
 $fade-in-duration: 200ms;
+$fade-mask-transition-duration: .1s;
+$fade-mask-transition-curve: ease-in-out;
 
 /*
 * Lint
@@ -718,7 +718,7 @@ $issuable-warning-icon-margin: 4px;
 Image Commenting cursor
 */
 $image-comment-cursor-left-offset: 12;
-$image-comment-cursor-top-offset: 30;
+$image-comment-cursor-top-offset: 12;
 
 /*
 Popup

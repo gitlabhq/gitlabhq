@@ -27,7 +27,7 @@
 - elsif discussion_locked
   .disabled-comment.text-center.prepend-top-default
     %span.issuable-note-warning
-      %span.icon= sprite_icon('lock', size: 14)
+      = sprite_icon('lock', size: 16, css_class: 'icon')
       %span
         This
         = issuable.class.to_s.titleize.downcase

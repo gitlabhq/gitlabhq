@@ -1,6 +1,7 @@
 /* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, max-len */
 /* global Notes */
 
+import * as urlUtils from '~/lib/utils/url_utility';
 import 'autosize';
 import '~/gl_form';
 import '~/lib/utils/text_utility';
@@ -168,8 +169,7 @@ import '~/notes';
       });
 
       it('sets target when hash matches', () => {
-        spyOn(gl.utils, 'getLocationHash');
-        gl.utils.getLocationHash.and.returnValue(hash);
+        spyOn(urlUtils, 'getLocationHash').and.returnValue(hash);
 
         Notes.updateNoteTargetSelector($note);
 
@@ -178,8 +178,7 @@ import '~/notes';
       });
 
       it('unsets target when hash does not match', () => {
-        spyOn(gl.utils, 'getLocationHash');
-        gl.utils.getLocationHash.and.returnValue('note_doesnotexist');
+        spyOn(urlUtils, 'getLocationHash').and.returnValue('note_doesnotexist');
 
         Notes.updateNoteTargetSelector($note);
 
@@ -187,8 +186,7 @@ import '~/notes';
       });
 
       it('unsets target when there is not a hash fragment anymore', () => {
-        spyOn(gl.utils, 'getLocationHash');
-        gl.utils.getLocationHash.and.returnValue(null);
+        spyOn(urlUtils, 'getLocationHash').and.returnValue(null);
 
         Notes.updateNoteTargetSelector($note);
 
@@ -224,7 +222,6 @@ import '~/notes';
         notes.note_ids = [];
         notes.updatedNotesTrackingMap = {};
 
-        spyOn(gl.utils, 'localTimeAgo');
         spyOn(Notes, 'isNewNote').and.callThrough();
         spyOn(Notes, 'isUpdatedNote').and.callThrough();
         spyOn(Notes, 'animateAppendNote').and.callThrough();
@@ -351,7 +348,6 @@ import '~/notes';
         ]);
         notes.note_ids = [];
 
-        spyOn(gl.utils, 'localTimeAgo');
         spyOn(Notes, 'isNewNote');
         spyOn(Notes, 'animateAppendNote');
         Notes.isNewNote.and.returnValue(true);

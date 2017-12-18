@@ -52,6 +52,13 @@ module API
         groups
       end
 
+      def find_group_projects(params)
+        group = find_group!(params[:id])
+        projects = GroupProjectsFinder.new(group: group, current_user: current_user, params: project_finder_params).execute
+        projects = reorder_projects(projects)
+        paginate(projects)
+      end
+
       def present_groups(params, groups)
         options = {
           with: Entities::Group,
@@ -170,11 +177,10 @@ module API
         use :pagination
       end
       get ":id/projects" do
-        group = find_group!(params[:id])
-        projects = GroupProjectsFinder.new(group: group, current_user: current_user, params: project_finder_params).execute
-        projects = reorder_projects(projects)
+        projects = find_group_projects(params)
         entity = params[:simple] ? Entities::BasicProjectDetails : Entities::Project
-        present paginate(projects), with: entity, current_user: current_user
+
+        present entity.prepare_relation(projects), with: entity, current_user: current_user
       end
 
       desc 'Get a list of subgroups in this group.' do

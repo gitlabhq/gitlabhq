@@ -118,18 +118,22 @@ module BlobHelper
     icon("#{file_type_icon_class('file', mode, name)} fw")
   end
 
-  def blob_raw_path
+  def blob_raw_url(only_path: false)
     if @build && @entry
-      raw_project_job_artifacts_path(@project, @build, path: @entry.path)
+      raw_project_job_artifacts_url(@project, @build, path: @entry.path, only_path: only_path)
     elsif @snippet
       if @snippet.project_id
-        raw_project_snippet_path(@project, @snippet)
+        raw_project_snippet_url(@project, @snippet, only_path: only_path)
       else
-        raw_snippet_path(@snippet)
+        raw_snippet_url(@snippet, only_path: only_path)
       end
     elsif @blob
-      project_raw_path(@project, @id)
+      project_raw_url(@project, @id, only_path: only_path)
     end
+  end
+
+  def blob_raw_path
+    blob_raw_url(only_path: true)
   end
 
   # SVGs can contain malicious JavaScript; only include whitelisted

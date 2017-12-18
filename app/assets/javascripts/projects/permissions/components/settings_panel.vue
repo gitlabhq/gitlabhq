@@ -1,6 +1,6 @@
 <script>
 import projectFeatureSetting from './project_feature_setting.vue';
-import projectFeatureToggle from './project_feature_toggle.vue';
+import projectFeatureToggle from '../../../vue_shared/components/toggle_button.vue';
 import projectSettingRow from './project_setting_row.vue';
 import { visibilityOptions, visibilityLevelDescriptions } from '../constants';
 import { toggleHiddenClassBySelector } from '../external';

@@ -21,7 +21,6 @@ describe Gitlab::Metrics::Samplers::InfluxSampler do
     it 'samples various statistics' do
       expect(sampler).to receive(:sample_memory_usage)
       expect(sampler).to receive(:sample_file_descriptors)
-      expect(sampler).to receive(:sample_objects)
       expect(sampler).to receive(:sample_gc)
       expect(sampler).to receive(:flush)
 
@@ -69,28 +68,6 @@ describe Gitlab::Metrics::Samplers::InfluxSampler do
         .and_call_original
 
       sampler.sample_file_descriptors
-    end
-  end
-
-  if Gitlab::Metrics.mri?
-    describe '#sample_objects' do
-      it 'adds a metric containing the amount of allocated objects' do
-        expect(sampler).to receive(:add_metric)
-          .with(/object_counts/, an_instance_of(Hash), an_instance_of(Hash))
-          .at_least(:once)
-          .and_call_original
-
-        sampler.sample_objects
-      end
-
-      it 'ignores classes without a name' do
-        expect(Allocations).to receive(:to_hash).and_return({ Class.new => 4 })
-
-        expect(sampler).not_to receive(:add_metric)
-          .with('object_counts', an_instance_of(Hash), type: nil)
-
-        sampler.sample_objects
-      end
     end
   end
 

@@ -7,6 +7,7 @@ class User < ActiveRecord::Base
   include Gitlab::ConfigHelper
   include Gitlab::CurrentSettings
   include Gitlab::SQL::Pattern
+  include AfterCommitQueue
   include Avatarable
   include Referable
   include Sortable
@@ -16,6 +17,7 @@ class User < ActiveRecord::Base
   include FeatureGate
   include CreatedAtFilterable
   include IgnorableColumn
+  include BulkMemberAccessLoad
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -313,6 +315,8 @@ class User < ActiveRecord::Base
     #
     # Returns an ActiveRecord::Relation.
     def search(query)
+      query = query.downcase
+
       order = <<~SQL
         CASE
           WHEN users.name = %{query} THEN 0
@@ -322,8 +326,11 @@ class User < ActiveRecord::Base
         END
       SQL
 
-      fuzzy_search(query, [:name, :email, :username])
-        .reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
+      where(
+        fuzzy_arel_match(:name, query)
+          .or(fuzzy_arel_match(:username, query))
+          .or(arel_table[:email].eq(query))
+      ).reorder(order % { query: ActiveRecord::Base.connection.quote(query) }, :name)
     end
 
     # searches user by given pattern
@@ -331,15 +338,17 @@ class User < ActiveRecord::Base
     # This method uses ILIKE on PostgreSQL and LIKE on MySQL.
 
     def search_with_secondary_emails(query)
+      query = query.downcase
+
       email_table = Email.arel_table
       matched_by_emails_user_ids = email_table
         .project(email_table[:user_id])
-        .where(Email.fuzzy_arel_match(:email, query))
+        .where(email_table[:email].eq(query))
 
       where(
         fuzzy_arel_match(:name, query)
-          .or(fuzzy_arel_match(:email, query))
           .or(fuzzy_arel_match(:username, query))
+          .or(arel_table[:email].eq(query))
           .or(arel_table[:id].in(matched_by_emails_user_ids))
       )
     end
@@ -487,7 +496,11 @@ class User < ActiveRecord::Base
   end
 
   def two_factor_u2f_enabled?
-    u2f_registrations.exists?
+    if u2f_registrations.loaded?
+      u2f_registrations.any?
+    else
+      u2f_registrations.exists?
+    end
   end
 
   def namespace_uniq
@@ -725,7 +738,7 @@ class User < ActiveRecord::Base
 
   def ldap_user?
     if identities.loaded?
-      identities.find { |identity| identity.provider.start_with?('ldap') && !identity.extern_uid.nil? }
+      identities.find { |identity| Gitlab::OAuth::Provider.ldap_provider?(identity.provider) && !identity.extern_uid.nil? }
     else
       identities.exists?(["provider LIKE ? AND extern_uid IS NOT NULL", "ldap%"])
     end
@@ -899,6 +912,7 @@ class User < ActiveRecord::Base
 
   def post_destroy_hook
     log_info("User \"#{name}\" (#{email})  was removed")
+
     system_hook_service.execute_hooks_for(self, :destroy)
   end
 
@@ -998,7 +1012,11 @@ class User < ActiveRecord::Base
   end
 
   def notification_settings_for(source)
-    notification_settings.find_or_initialize_by(source: source)
+    if notification_settings.loaded?
+      notification_settings.find { |notification| notification.source == source }
+    else
+      notification_settings.find_or_initialize_by(source: source)
+    end
   end
 
   # Lazy load global notification setting
@@ -1043,13 +1061,13 @@ class User < ActiveRecord::Base
   end
 
   def todos_done_count(force: false)
-    Rails.cache.fetch(['users', id, 'todos_done_count'], force: force) do
+    Rails.cache.fetch(['users', id, 'todos_done_count'], force: force, expires_in: 20.minutes) do
       TodosFinder.new(self, state: :done).execute.count
     end
   end
 
   def todos_pending_count(force: false)
-    Rails.cache.fetch(['users', id, 'todos_pending_count'], force: force) do
+    Rails.cache.fetch(['users', id, 'todos_pending_count'], force: force, expires_in: 20.minutes) do
       TodosFinder.new(self, state: :pending).execute.count
     end
   end
@@ -1132,6 +1150,34 @@ class User < ActiveRecord::Base
   def lock_access!
     Gitlab::AppLogger.info("Account Locked: username=#{username}")
     super
+  end
+
+  # Determine the maximum access level for a group of projects in bulk.
+  #
+  # Returns a Hash mapping project ID -> maximum access level.
+  def max_member_access_for_project_ids(project_ids)
+    max_member_access_for_resource_ids(Project, project_ids) do |project_ids|
+      project_authorizations.where(project: project_ids)
+                            .group(:project_id)
+                            .maximum(:access_level)
+    end
+  end
+
+  def max_member_access_for_project(project_id)
+    max_member_access_for_project_ids([project_id])[project_id]
+  end
+
+  # Determine the maximum access level for a group of groups in bulk.
+  #
+  # Returns a Hash mapping project ID -> maximum access level.
+  def max_member_access_for_group_ids(group_ids)
+    max_member_access_for_resource_ids(Group, group_ids) do |group_ids|
+      group_members.where(source: group_ids).group(:source_id).maximum(:access_level)
+    end
+  end
+
+  def max_member_access_for_group(group_id)
+    max_member_access_for_group_ids([group_id])[group_id]
   end
 
   protected
