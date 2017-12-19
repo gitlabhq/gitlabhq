@@ -12,7 +12,7 @@ module Gitlab
           Gitaly::Repository.new(
             storage_name: repository_storage,
             relative_path: relative_path,
-            gl_repository: gl_repository,
+            gl_repository: gl_repository.to_s,
             git_object_directory: git_object_directory.to_s,
             git_alternate_object_directories: git_alternate_object_directories
           )
