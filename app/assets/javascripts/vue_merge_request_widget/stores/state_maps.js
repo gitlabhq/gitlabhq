@@ -31,6 +31,23 @@ const statesToShowHelpWidget = [
   'autoMergeFailed',
 ];
 
+export const stateKey = {
+  archived: 'archived',
+  missingBranch: 'missingBranch',
+  nothingToMerge: 'nothingToMerge',
+  checking: 'checking',
+  conflicts: 'conflicts',
+  workInProgress: 'workInProgress',
+  pipelineFailed: 'pipelineFailed',
+  unresolvedDiscussions: 'unresolvedDiscussions',
+  pipelineBlocked: 'pipelineBlocked',
+  shaMismatch: 'shaMismatch',
+  autoMergeFailed: 'autoMergeFailed',
+  mergeWhenPipelineSucceeds: 'mergeWhenPipelineSucceeds',
+  notAllowedToMerge: 'notAllowedToMerge',
+  readyToMerge: 'readyToMerge',
+};
+
 export default {
   stateToComponentMap,
   statesToShowHelpWidget,
