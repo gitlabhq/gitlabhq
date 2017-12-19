@@ -216,7 +216,7 @@
           this.autosave = new Autosave(
             $(this.$refs.textarea),
             ['Note', 'Issue', this.getNoteableData.id],
-            'issue'
+            'issue',
           );
         }
       },

@@ -153,7 +153,8 @@ export default {
     }
   },
 
-  [types.UPDATE_DISCUSSION](state, note) {
+  [types.UPDATE_DISCUSSION](state, noteData) {
+    const note = noteData;
     let index = 0;
 
     state.notes.forEach((n, i) => {
@@ -162,8 +163,7 @@ export default {
       }
     });
 
-    note.expanded = true;
-
+    note.expanded = true; // override expand flag to prevent collapse
     state.notes.splice(index, 1, note);
   },
 };
