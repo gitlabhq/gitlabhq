@@ -28,7 +28,6 @@
   .dropdown-menu,
   .dropdown-menu-nav {
     @include set-visible;
-    display: block;
     min-height: 40px;
 
     @media (max-width: $screen-xs-max) {
@@ -45,6 +44,11 @@
   [data-toggle="dropdown"] {
     outline: 0;
   }
+}
+
+// Get search dropdown to line up with other nav dropdowns
+.search-input-container .dropdown-menu {
+  margin-top: 11px;
 }
 
 .dropdown-toggle {

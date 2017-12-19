@@ -145,13 +145,6 @@ input[type="checkbox"]:hover {
       background-color: $nav-badge-bg;
       border-color: $border-color;
     }
-
-    .dropdown-menu {
-      transition-duration: 100ms, 75ms;
-      transition-delay: 75ms, 100ms;
-      transform: translateY(7px);
-      opacity: 1;
-    }
   }
 
   &.has-value {
