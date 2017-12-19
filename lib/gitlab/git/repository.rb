@@ -1080,7 +1080,11 @@ module Gitlab
         end
       end
 
-      def write_ref(ref_path, ref, old_ref: nil, force: false)
+      def write_ref(ref_path, ref, force: false)
+        update_ref(ref_path, ref, force: force)
+      end
+
+      def update_ref(ref_path, ref, old_ref: nil, force: false)
         raise ArgumentError, "invalid ref_path #{ref_path.inspect}" if ref_path.include?(' ')
         raise ArgumentError, "invalid ref #{ref.inspect}" if ref.include?("\x00")
         raise ArgumentError, "invalid old_ref #{old_ref.inspect}" if old_ref.include?("\x00")
