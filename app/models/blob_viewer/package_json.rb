@@ -16,8 +16,20 @@ module BlobViewer
       @package_name ||= package_name_from_json('name')
     end
 
+    def package_type
+      private? ? 'private package' : super
+    end
+
     def package_url
+      return nil if private?
+
       "https://www.npmjs.com/package/#{package_name}"
+    end
+
+    private
+
+    def private?
+      !!json_data['private']
     end
   end
 end
