@@ -165,7 +165,7 @@ export default {
 
       if (issue) {
         this.service.saveRelatedIssueOrder({
-          endpoint: issue.related_path,
+          endpoint: issue.relation_path,
           position: newOrder,
         });
       }
