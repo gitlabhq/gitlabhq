@@ -11,12 +11,14 @@
   .status-neutral,
   .status-red, {
     height: 100%;
+    font-size: $tooltip-font-size;
     font-weight: normal;
     color: $white-light;
     line-height: 20px;
 
     &.has-value {
-      padding: 0 10px;
+      min-width: 25px;
+      padding: 0 5px;
     }
 
     &:hover {
