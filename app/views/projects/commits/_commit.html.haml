@@ -1,8 +1,13 @@
-- view_details      = local_assigns.fetch(:view_details, false)
-- merge_request     = local_assigns.fetch(:merge_request, nil)
-- project           = local_assigns.fetch(:project) { merge_request&.project }
-- ref               = local_assigns.fetch(:ref) { merge_request&.source_branch }
-- render_diffs_link = @path_blob && commit.change_summary
+- view_details   = local_assigns.fetch(:view_details, false)
+- merge_request  = local_assigns.fetch(:merge_request, nil)
+- project        = local_assigns.fetch(:project) { merge_request&.project }
+- ref            = local_assigns.fetch(:ref) { merge_request&.source_branch }
+
+- if commit.change_summary
+  - file_identifier = commit.change_summary.first[:file_identifier]
+  - new_path        = commit.change_summary.first[:paths][:new_path]
+  - old_path        = commit.change_summary.first[:paths][:old_path]
+  - file_path       = @path == new_path ? new_path : old_path
 
 - link = commit_path(project, commit, merge_request: merge_request)
 - cache_key = [project.full_path,
@@ -55,19 +60,17 @@
         = clipboard_button(text: commit.id, title: _("Copy commit SHA to clipboard"))
 
         .btn-group{ role: 'group' }
-          = link_to_browse_code(project, commit)
-          = link_to_show_diff(commit) if render_diffs_link
+          = link_to_browse_code(project, commit, file_path)
+          = link_to_show_diff(commit) if commit.change_summary
 
           - if view_details && merge_request
             = link_to "View details", project_commit_path(project, commit.id, merge_request_iid: merge_request.iid), class: "btn btn-default"
 
   -# Render the `Click to expand it` link for diffs.
-  - if render_diffs_link
+  - if commit.change_summary
     .files
-      .diff-file.file-holder.file-holder-no-border{ data: diff_file_html_data(project, @path, commit.id) }
+      .diff-file.file-holder.file-holder-no-border{ data: diff_file_html_data(project, file_path, commit.id) }
         .diff-content
           .diff-viewer
-            - file_identifier = commit.change_summary.first[:file_identifier]
-
             = render partial: 'projects/diffs/collapsed', locals: { commit: commit, file_identifier: file_identifier }
 

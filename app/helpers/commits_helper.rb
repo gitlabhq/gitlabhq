@@ -89,27 +89,15 @@ module CommitsHelper
     end.join(' ').html_safe
   end
 
-  def link_to_browse_code(project, commit)
+  def link_to_browse_code(project, commit, path)
     return unless current_controller?(:commits)
 
+    button_class = 'btn btn-default'
+
     if @path.blank?
-      return link_to(
-        _("Browse files"),
-        project_tree_path(project, commit),
-        class: "btn btn-default"
-      )
-    elsif @repo.blob_at(commit.id, @path)
-      return link_to(
-        _("Browse file"),
-        project_blob_path(project, tree_join(commit.id, @path)),
-        class: "btn btn-default"
-      )
-    elsif @path.present?
-      return link_to(
-        _("Browse directory"),
-        project_tree_path(project, tree_join(commit.id, @path)),
-        class: "btn btn-default"
-      )
+      link_to(_('Browse files'), project_tree_path(project, commit), class: button_class)
+    else
+      link_to(_('Browse file'), project_blob_path(project, tree_join(commit.id, path)), class: button_class)
     end
   end
 
