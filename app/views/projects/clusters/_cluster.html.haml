@@ -4,7 +4,7 @@
     .table-mobile-content
       = link_to cluster.name, namespace_project_cluster_path(@project.namespace, @project, cluster)
   .table-section.section-30
-    .table-mobile-header{ role: "rowheader" }= s_("ClusterIntegration|Environment pattern")
+    .table-mobile-header{ role: "rowheader" }= s_("ClusterIntegration|Environment scope")
     .table-mobile-content= cluster.environment_scope
   .table-section.section-30
     .table-mobile-header{ role: "rowheader" }= s_("ClusterIntegration|Project namespace")
