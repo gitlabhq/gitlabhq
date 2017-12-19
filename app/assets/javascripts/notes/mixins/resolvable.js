@@ -11,13 +11,20 @@ export default {
     discussionResolved() {
       const { notes, resolved } = this.note;
 
-      if (notes) {
+      if (notes) { // Decide resolved state using store. Only valid for discussions.
         return notes.reduce((state, note) => state && note.resolved && !note.system, true);
       }
 
       return resolved;
     },
     resolveButtonTitle() {
+      if (this.updatedNoteBody) {
+        if (this.discussionResolved) {
+          return 'Comment and unresolve discussion';
+        }
+
+        return 'Comment and resolve discussion';
+      }
       return this.discussionResolved ? 'Unresolve discussion' : 'Resolve discussion';
     },
   },
