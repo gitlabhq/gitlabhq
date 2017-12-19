@@ -1495,9 +1495,9 @@ module Gitlab
         end
 
         raw_output = IO.popen(cmd) { |io| io.read }
-        lines = offset_in_ruby ? raw_output.lines.drop(offset) : raw_output.lines
+        offset = offset_in_ruby ? offset : 0
 
-        parse_log_by_shell_output(lines, load_change_summary)
+        parse_log_by_shell_output(raw_output.lines, load_change_summary, offset)
       end
 
       # Parse the output of `git log` (see `log_by_shell` method above).
@@ -1515,10 +1515,10 @@ module Gitlab
       # 631801674f0cc6b0ccf7ba7dc8ad621d21e62105
       #
       # M       app/views/events/_event.atom.builder
-      def parse_log_by_shell_output(lines, with_change_summary)
+      def parse_log_by_shell_output(lines, with_change_summary, offset)
         lines.map!(&:chomp) # get rid of unnecessary `\n`s.
 
-        commit_shas = []
+        commit_shas = with_change_summary ? [] : lines
         change_summaries = {}
 
         # By default `lines` are just a list of commit SHAs.
@@ -1552,7 +1552,7 @@ module Gitlab
         end
 
         # `commit_shas` is an array of strings (SHAs).
-        commit_shas.map do |sha|
+        commit_shas.drop(offset).map do |sha|
           summaries = change_summaries[sha]
           commit = Rugged::Commit.new(rugged, sha)
 
