@@ -709,7 +709,7 @@ describe Project do
     context 'when environment is specified' do
       let(:environment) { create(:environment, project: project, name: 'review/name') }
       let!(:default_cluster) { create(:cluster, :provided_by_user, projects: [project], environment_scope: '*') }
-      let!(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
+      let!(:cluster) { create(:cluster, :provided_by_user, environment_scope: 'review/*', projects: [project]) }
 
       subject { project.deployment_platform(environment: environment) }
 
@@ -782,8 +782,6 @@ describe Project do
       end
 
       context 'when environment scope has _' do
-        let!(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
-
         before do
           stub_licensed_features(multiple_clusters: true)
         end
@@ -807,8 +805,6 @@ describe Project do
       # it doesn't break in case some data sneaked in somehow as we're
       # not checking this integrity in database level.
       context 'when environment scope has %' do
-        let!(:cluster) { create(:cluster, :provided_by_user, projects: [project]) }
-
         before do
           stub_licensed_features(multiple_clusters: true)
         end
@@ -827,15 +823,14 @@ describe Project do
         end
       end
 
-      context 'when variables with the same name have different environment scopes' do
-        let!(:partially_matched_cluster) { create(:cluster, :provided_by_user, projects: [project], environment_scope: 'review/*') }
+      context 'when perfectly matched cluster exists' do
         let!(:perfectly_matched_cluster) { create(:cluster, :provided_by_user, projects: [project], environment_scope: 'review/name') }
 
         before do
           stub_licensed_features(multiple_clusters: true)
         end
 
-        it 'puts variables matching environment scope more in the end' do
+        it 'returns perfectly matched cluster as highest precedence' do
           is_expected.to eq(perfectly_matched_cluster.platform_kubernetes)
         end
       end

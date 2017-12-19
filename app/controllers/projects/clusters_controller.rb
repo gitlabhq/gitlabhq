@@ -70,23 +70,11 @@ class Projects::ClustersController < Projects::ApplicationController
                                  .present(current_user: current_user)
   end
 
-  def create_params
-    params.require(:cluster).permit(
-      :enabled,
-      :name,
-      :provider_type,
-      provider_gcp_attributes: [
-        :gcp_project_id,
-        :zone,
-        :num_nodes,
-        :machine_type
-      ])
-  end
-
   def update_params
     if cluster.managed?
       params.require(:cluster).permit(
         :enabled,
+        :environment_scope,
         platform_kubernetes_attributes: [
           :namespace
         ]
@@ -95,6 +83,7 @@ class Projects::ClustersController < Projects::ApplicationController
       params.require(:cluster).permit(
         :enabled,
         :name,
+        :environment_scope,
         platform_kubernetes_attributes: [
           :api_url,
           :token,
