@@ -36,7 +36,7 @@ module Gitlab
       end
 
       def duration_milliseconds
-        (duration * 1000).to_i
+        duration.in_milliseconds.to_i
       end
 
       def allocated_memory

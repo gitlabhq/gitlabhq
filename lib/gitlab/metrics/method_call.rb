@@ -27,7 +27,7 @@ module Gitlab
         @transaction = transaction
         @name = name
         @labels = { module: @module_name, method: @method_name }
-        @real_time_seconds = 0
+        @real_time_seconds = 0.0
         @cpu_time = 0
         @call_count = 0
       end
@@ -53,7 +53,7 @@ module Gitlab
       end
 
       def real_time_milliseconds
-        (real_time_seconds * 1000.0).to_i
+        real_time_seconds.in_milliseconds.to_i
       end
 
       # Returns a Metric instance of the current method call.
