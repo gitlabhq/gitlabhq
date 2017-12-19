@@ -39,6 +39,7 @@
         conflictWhileEditing: false,
         isSubmitting: false,
         isResolving: false,
+        resolveAsThread: true,
       };
     },
     components: {
@@ -97,21 +98,6 @@
       cancelHandler(shouldConfirm = false) {
         // Sends information about confirm message and if the textarea has changed
         this.$emit('cancelFormEdition', shouldConfirm, this.noteBody !== this.updatedNoteBody);
-      },
-      resolve() {
-        this.isResolving = true;
-        const endpoint = this.note.resolve_path;
-        const isResolved = this.discussionResolved;
-        const discussion = true;
-
-        this.toggleResolveNote({ endpoint, isResolved, discussion })
-          .then((res) => {
-            this.isResolving = false;
-          })
-          .catch((res) => {
-            const msg = 'Something went wrong while resolving this discussion. Please try again.';
-            Flash(msg, 'alert', this.$el);
-          });
       },
     },
     mixins: [
@@ -185,7 +171,7 @@
         </button>
         <button
           v-if="note.resolvable"
-          @click.prevent="resolve"
+          @click.prevent="resolveHandler"
           class="btn btn-nr btn-default append-right-10 js-comment-resolve-button">
             {{resolveButtonTitle}}
         </button>
