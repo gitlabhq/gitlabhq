@@ -6,7 +6,7 @@ describe BlocksJsonSerialization do
   end
 
   it 'blocks as_json' do
-    expect { DummyModel.new.to_json }
+    expect { DummyModel.new.as_json }
       .to raise_error(described_class::JsonSerializationError, /DummyModel/)
   end
 
