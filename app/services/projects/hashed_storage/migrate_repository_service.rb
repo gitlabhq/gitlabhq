@@ -39,6 +39,13 @@ module Projects
           yield
         end
 
+        # We'd need to keep track of project full path otherwise directory tree
+        # created with hashed storage enabled cannot be usefully imported using
+        # the import rake task.
+        if result
+          project.write_repository_config(:fullpath, project.full_path)
+        end
+
         result
       end
 
