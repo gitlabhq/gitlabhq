@@ -276,6 +276,4 @@ With [GitLab Contribution Analytics](contribution_analytics/index.md)
 you have an overview of the contributions (pushes, merge requests,
 and issues) performed my your group members.
 
-[permissions]: ../permissions.md#permissions
-[reserved]:  ../reserved_names.md
 [ee]: https://about.gitlab.com/products/
