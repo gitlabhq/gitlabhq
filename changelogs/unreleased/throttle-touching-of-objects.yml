@@ -1,0 +1,5 @@
+---
+title: Throttle the number of UPDATEs triggered by touch
+merge_request:
+author:
+type: performance
