@@ -87,12 +87,12 @@ module Projects
     def after_create_actions
       log_info("#{@project.owner.name} created a new project \"#{@project.name_with_namespace}\"")
 
-      # We'd need to keep track of project full path otherwise directory tree
-      # created with hashed storage enabled cannot be usefully imported using
-      # the import rake task.
-      @project.write_repository_config(:fullpath, @project.full_path)
-
       unless @project.gitlab_project_import?
+        # We'd need to keep track of project full path otherwise directory tree
+        # created with hashed storage enabled cannot be usefully imported using
+        # the import rake task.
+        @project.write_repository_config(:fullpath, @project.full_path)
+
         @project.create_wiki unless skip_wiki?
         create_services_from_active_templates(@project)
 
