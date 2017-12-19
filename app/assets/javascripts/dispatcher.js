@@ -31,9 +31,12 @@ import projectImport from './project_import';
 import Labels from './labels';
 import LabelManager from './label_manager';
 import Sidebar from './right_sidebar';
+<<<<<<< HEAD
 /* global WeightSelect */
 /* global AdminEmailSelect */
 
+=======
+>>>>>>> upstream/master
 import IssuableTemplateSelectors from './templates/issuable_template_selectors';
 import Flash from './flash';
 import CommitsList from './commits';

@@ -1,6 +1,9 @@
 class MergeRequestWidgetEntity < IssuableEntity
+<<<<<<< HEAD:app/serializers/merge_request_widget_entity.rb
   prepend ::EE::MergeRequestWidgetEntity
 
+=======
+>>>>>>> upstream/master:app/serializers/merge_request_widget_entity.rb
   expose :state
   expose :in_progress_merge_commit_sha
   expose :merge_commit_sha

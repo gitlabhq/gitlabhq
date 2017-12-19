@@ -241,6 +241,10 @@ module Ci
       statuses.select(:stage).distinct.count
     end
 
+    def total_size
+      statuses.count(:id)
+    end
+
     def stages_names
       statuses.order(:stage_idx).distinct
         .pluck(:stage, :stage_idx).map(&:first)

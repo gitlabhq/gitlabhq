@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import MergeRequestStore from 'ee/vue_merge_request_widget/stores/mr_widget_store';
 import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
 import mockData, {
@@ -10,6 +11,11 @@ import mockData, {
   dockerReport,
   dockerReportParsed,
 } from '../mock_data';
+=======
+import MergeRequestStore from '~/vue_merge_request_widget/stores/mr_widget_store';
+import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
+import mockData from '../mock_data';
+>>>>>>> upstream/master
 
 describe('MergeRequestStore', () => {
   let store;
@@ -60,6 +66,18 @@ describe('MergeRequestStore', () => {
       it('should set isPipelineSkipped=false when the CI status is anything except `skipped`', () => {
         store.setData({ ...mockData, ci_status: 'foobarbaz' });
         expect(store.isPipelineSkipped).toBe(false);
+      });
+    });
+
+    describe('isNothingToMergeState', () => {
+      it('returns true when nothingToMerge', () => {
+        store.state = stateKey.nothingToMerge;
+        expect(store.isNothingToMergeState).toEqual(true);
+      });
+
+      it('returns false when not nothingToMerge', () => {
+        store.state = 'state';
+        expect(store.isNothingToMergeState).toEqual(false);
       });
     });
   });

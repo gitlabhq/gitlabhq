@@ -41,9 +41,15 @@ describe 'Issues' do
     describe 'Edit issue' do
       let!(:issue) do
         create(:issue,
+<<<<<<< HEAD
               author: user,
               assignees: [user],
               project: project)
+=======
+               author: user,
+               assignees: [user],
+               project: project)
+>>>>>>> upstream/master
       end
 
       before do
@@ -59,9 +65,15 @@ describe 'Issues' do
     describe 'Editing issue assignee' do
       let!(:issue) do
         create(:issue,
+<<<<<<< HEAD
               author: user,
               assignees: [user],
               project: project)
+=======
+               author: user,
+               assignees: [user],
+               project: project)
+>>>>>>> upstream/master
       end
 
       it 'allows user to select unassigned', :js do
@@ -126,6 +138,7 @@ describe 'Issues' do
           fill_in 'issue_title', with: 'bug 345'
           fill_in 'issue_description', with: 'bug description'
           find('#issuable-due-date').click
+<<<<<<< HEAD
 
           page.within '.pika-single' do
             click_button date.day
@@ -148,6 +161,30 @@ describe 'Issues' do
 
           click_button 'Save changes'
 
+=======
+
+          page.within '.pika-single' do
+            click_button date.day
+          end
+
+          expect(find('#issuable-due-date').value).to eq date.to_s
+
+          click_button 'Save changes'
+
+          page.within '.issuable-sidebar' do
+            expect(page).to have_content date.to_s(:medium)
+          end
+        end
+
+        it 'warns about version conflict' do
+          issue.update(title: "New title")
+
+          fill_in 'issue_title', with: 'bug 345'
+          fill_in 'issue_description', with: 'bug description'
+
+          click_button 'Save changes'
+
+>>>>>>> upstream/master
           expect(page).to have_content 'Someone edited the issue the same time you did'
         end
       end
@@ -171,6 +208,7 @@ describe 'Issues' do
         expect(page).to have_content 'foobar'
         expect(page.all('.no-comments').first.text).to eq "0"
       end
+<<<<<<< HEAD
 
       it 'shows weight on issue row' do
         create(:issue, author: user, project: project, weight: 2)
@@ -208,8 +246,46 @@ describe 'Issues' do
         expect(page).to have_content 'foobar'
         expect(page).not_to have_content 'barbaz'
         expect(page).not_to have_content 'gitlab'
+=======
+    end
+
+    describe 'Filter issue' do
+      before do
+        %w(foobar barbaz gitlab).each do |title|
+          create(:issue,
+                 author: user,
+                 assignees: [user],
+                 project: project,
+                 title: title)
+        end
+
+        @issue = Issue.find_by(title: 'foobar')
+        @issue.milestone = create(:milestone, project: project)
+        @issue.assignees = []
+        @issue.save
       end
 
+      let(:issue) { @issue }
+
+      it 'allows filtering by issues with no specified assignee' do
+        visit project_issues_path(project, assignee_id: IssuableFinder::NONE)
+
+        expect(page).to have_content 'foobar'
+        expect(page).not_to have_content 'barbaz'
+        expect(page).not_to have_content 'gitlab'
+      end
+
+      it 'allows filtering by a specified assignee' do
+        visit project_issues_path(project, assignee_id: user.id)
+
+        expect(page).not_to have_content 'foobar'
+        expect(page).to have_content 'barbaz'
+        expect(page).to have_content 'gitlab'
+>>>>>>> upstream/master
+      end
+    end
+
+<<<<<<< HEAD
       it 'allows filtering by a specified assignee' do
         visit project_issues_path(project, assignee_id: user.id)
 
@@ -219,6 +295,8 @@ describe 'Issues' do
       end
     end
 
+=======
+>>>>>>> upstream/master
     describe 'filter issue' do
       titles = %w[foo bar baz]
       titles.each_with_index do |title, index|
@@ -242,10 +320,17 @@ describe 'Issues' do
         baz.updated_at = Time.now + 100
         baz.save
         visit project_issues_path(project, sort: sort_value_recently_updated)
+<<<<<<< HEAD
 
         expect(first_issue).to include('baz')
       end
 
+=======
+
+        expect(first_issue).to include('baz')
+      end
+
+>>>>>>> upstream/master
       describe 'sorting by due date' do
         before do
           foo.update(due_date: 1.day.from_now)
@@ -268,6 +353,7 @@ describe 'Issues' do
 
         context 'with a filter on labels' do
           let(:label) { create(:label, project: project) }
+<<<<<<< HEAD
 
           before do
             create(:label_link, label: label, target: foo)
@@ -278,6 +364,18 @@ describe 'Issues' do
 
             visit project_issues_path(project, label_names: [label.name], sort: sort_value_due_date_later)
 
+=======
+
+          before do
+            create(:label_link, label: label, target: foo)
+          end
+
+          it 'sorts by least recently due date by excluding nil due dates' do
+            bar.update(due_date: nil)
+
+            visit project_issues_path(project, label_names: [label.name], sort: sort_value_due_date_later)
+
+>>>>>>> upstream/master
             expect(first_issue).to include('foo')
           end
         end
@@ -297,6 +395,7 @@ describe 'Issues' do
             expect(page).not_to have_content('bar')
             expect(page).to have_content('baz')
           end
+<<<<<<< HEAD
         end
 
         it 'filters by any' do
@@ -316,6 +415,27 @@ describe 'Issues' do
 
           visit project_issues_path(project, due_date: Issue::DueThisWeek.name)
 
+=======
+        end
+
+        it 'filters by any' do
+          visit project_issues_path(project, due_date: Issue::AnyDueDate.name)
+
+          page.within '.issues-holder' do
+            expect(page).to have_content('foo')
+            expect(page).to have_content('bar')
+            expect(page).to have_content('baz')
+          end
+        end
+
+        it 'filters by due this week' do
+          foo.update(due_date: Date.today.beginning_of_week + 2.days)
+          bar.update(due_date: Date.today.end_of_week)
+          baz.update(due_date: Date.today - 8.days)
+
+          visit project_issues_path(project, due_date: Issue::DueThisWeek.name)
+
+>>>>>>> upstream/master
           page.within '.issues-holder' do
             expect(page).to have_content('foo')
             expect(page).to have_content('bar')
@@ -435,6 +555,7 @@ describe 'Issues' do
 
     describe 'update assignee from issue#show' do
       let(:issue) { create(:issue, project: project, author: user, assignees: [user]) }
+<<<<<<< HEAD
 
       context 'by authorized user' do
         it 'allows user to select unassigned', :js do
@@ -494,6 +615,63 @@ describe 'Issues' do
             click_link user.name
 
             find('.dropdown-menu-toggle').click
+=======
+
+      context 'by authorized user' do
+        it 'allows user to select unassigned', :js do
+          visit project_issue_path(project, issue)
+
+          page.within('.assignee') do
+            expect(page).to have_content "#{user.name}"
+
+            click_link 'Edit'
+            click_link 'Unassigned'
+            first('.title').click
+            expect(page).to have_content 'No assignee'
+          end
+
+          # wait_for_requests does not work with vue-resource at the moment
+          sleep 1
+
+          expect(issue.reload.assignees).to be_empty
+        end
+
+        it 'allows user to select an assignee', :js do
+          issue2 = create(:issue, project: project, author: user)
+          visit project_issue_path(project, issue2)
+
+          page.within('.assignee') do
+            expect(page).to have_content "No assignee"
+          end
+
+          page.within '.assignee' do
+            click_link 'Edit'
+          end
+
+          page.within '.dropdown-menu-user' do
+            click_link user.name
+          end
+
+          page.within('.assignee') do
+            expect(page).to have_content user.name
+          end
+        end
+
+        it 'allows user to unselect themselves', :js do
+          issue2 = create(:issue, project: project, author: user)
+          visit project_issue_path(project, issue2)
+
+          page.within '.assignee' do
+            click_link 'Edit'
+            click_link user.name
+
+            page.within '.value .author' do
+              expect(page).to have_content user.name
+            end
+
+            click_link 'Edit'
+            click_link user.name
+>>>>>>> upstream/master
 
             page.within '.value .assign-yourself' do
               expect(page).to have_content "No assignee"
@@ -519,6 +697,7 @@ describe 'Issues' do
       end
     end
 
+<<<<<<< HEAD
     describe 'update weight from issue#show', :js do
       let!(:issue) { create(:issue, project: project) }
 
@@ -540,6 +719,25 @@ describe 'Issues' do
       end
     end
 
+    describe 'update milestone from issue#show' do
+      let!(:issue) { create(:issue, project: project, author: user) }
+      let!(:milestone) { create(:milestone, project: project) }
+
+      context 'by authorized user' do
+        it 'allows user to select unassigned', :js do
+          visit project_issue_path(project, issue)
+
+          page.within('.milestone') do
+            expect(page).to have_content "None"
+          end
+
+          find('.block.milestone .edit-link').click
+          sleep 2 # wait for ajax stuff to complete
+          first('.dropdown-content li').click
+          sleep 2
+          page.within('.milestone') do
+            expect(page).to have_content 'None'
+=======
     describe 'update milestone from issue#show' do
       let!(:issue) { create(:issue, project: project, author: user) }
       let!(:milestone) { create(:milestone, project: project) }
@@ -580,8 +778,50 @@ describe 'Issues' do
             page.within '.value' do
               expect(page).to have_content 'None'
             end
+>>>>>>> upstream/master
+          end
+
+          expect(issue.reload.milestone).to be_nil
+        end
+<<<<<<< HEAD
+
+        it 'allows user to de-select milestone', :js do
+          visit project_issue_path(project, issue)
+
+          page.within('.milestone') do
+            click_link 'Edit'
+            click_link milestone.title
+
+            page.within '.value' do
+              expect(page).to have_content milestone.title
+            end
+
+            click_link 'Edit'
+            click_link milestone.title
+
+            page.within '.value' do
+              expect(page).to have_content 'None'
+            end
           end
         end
+      end
+
+      context 'by unauthorized user' do
+        let(:guest) { create(:user) }
+
+        before do
+          project.team << [guest, :guest]
+          issue.milestone = milestone
+          issue.save
+        end
+
+        it 'shows milestone text', :js do
+          sign_out(:user)
+          sign_in(guest)
+
+          visit project_issue_path(project, issue)
+          expect(page).to have_content milestone.title
+=======
       end
 
       context 'by unauthorized user' do
@@ -603,6 +843,31 @@ describe 'Issues' do
       end
     end
 
+    describe 'new issue' do
+      let!(:issue) { create(:issue, project: project) }
+
+      context 'by unauthenticated user' do
+        before do
+          sign_out(:user)
+        end
+
+        it 'redirects to signin then back to new issue after signin' do
+          visit project_issues_path(project)
+
+          page.within '.nav-controls' do
+            click_link 'New issue'
+          end
+
+          expect(current_path).to eq new_user_session_path
+
+          gitlab_sign_in(create(:user))
+
+          expect(current_path).to eq new_project_issue_path(project)
+>>>>>>> upstream/master
+        end
+      end
+
+<<<<<<< HEAD
     describe 'new issue' do
       let!(:issue) { create(:issue, project: project) }
 
@@ -670,6 +935,52 @@ describe 'Issues' do
           visit new_project_issue_path(project, issuable_template: 'bug')
         end
 
+=======
+      context 'dropzone upload file', :js do
+        before do
+          visit new_project_issue_path(project)
+        end
+
+        it 'uploads file when dragging into textarea' do
+          dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
+
+          expect(page.find_field("issue_description").value).to have_content 'banana_sample'
+        end
+
+        it "doesn't add double newline to end of a single attachment markdown" do
+          dropzone_file Rails.root.join('spec', 'fixtures', 'banana_sample.gif')
+
+          expect(page.find_field("issue_description").value).not_to match /\n\n$/
+        end
+
+        it "cancels a file upload correctly" do
+          slow_requests do
+            dropzone_file([Rails.root.join('spec', 'fixtures', 'dk.png')], 0, false)
+
+            click_button 'Cancel'
+          end
+
+          expect(page).to have_button('Attach a file')
+          expect(page).not_to have_button('Cancel')
+          expect(page).not_to have_selector('.uploading-progress-container', visible: true)
+        end
+      end
+
+      context 'form filled by URL parameters' do
+        let(:project) { create(:project, :public, :repository) }
+
+        before do
+          project.repository.create_file(
+            user,
+            '.gitlab/issue_templates/bug.md',
+            'this is a test "bug" template',
+            message: 'added issue template',
+            branch_name: 'master')
+
+          visit new_project_issue_path(project, issuable_template: 'bug')
+        end
+
+>>>>>>> upstream/master
         it 'fills in template' do
           expect(find('.js-issuable-selector .dropdown-toggle-text')).to have_content('bug')
         end
