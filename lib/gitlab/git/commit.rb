@@ -228,6 +228,19 @@ module Gitlab
             end
           end
         end
+
+        # Only to be used when the object ids will not necessarily have a
+        # relation to each other. The last 10 commits for a branch for example,
+        # should go through .where
+        def batch_by_oid(repo, oids)
+          repo.gitaly_migrate(:list_commits_by_oid) do |is_enabled|
+            if is_enabled
+              repo.gitaly_commit_client.list_commits_by_oid(oids)
+            else
+              oids.map { |oid| find(repo, oid) }.compact
+            end
+          end
+        end
       end
 
       def initialize(repository, raw_commit, head = nil)
