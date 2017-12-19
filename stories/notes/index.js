@@ -50,7 +50,6 @@ function makeStory(note = {}) {
 stories.addDecorator(withKnobs);
 
 const diff_file = { ...discussionMock.notes[0].diff_file };
-discussionMock.diff_file = {};
 const notes = [...discussionMock.notes];
 
 stories.add('placeholder comment', () => makeStory({
@@ -67,7 +66,10 @@ stories.add('single comment', () => makeStory({
 stories.add('with replies', () => makeStory(discussionMock));
 
 stories.add('text diff', () => makeStory({
-  ...diffDiscussionMock,
+  ...discussionMock,
+  notes: [
+    diffDiscussionMock,
+  ],
 }));
 
 stories.add('image diff', () => makeStory({
