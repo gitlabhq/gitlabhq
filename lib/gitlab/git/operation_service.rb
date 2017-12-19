@@ -131,7 +131,7 @@ module Gitlab
 
         oldrev = branch.target
 
-        if oldrev == repository.rugged.merge_base(newrev, branch.target)
+        if oldrev == repository.merge_base(newrev, branch.target)
           oldrev
         else
           raise Gitlab::Git::CommitError.new('Branch diverged')

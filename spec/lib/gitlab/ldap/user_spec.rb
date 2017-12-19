@@ -41,7 +41,6 @@ describe Gitlab::LDAP::User do
 
     it "does not mark existing ldap user as changed" do
       create(:omniauth_user, email: 'john@example.com', extern_uid: 'uid=john smith,ou=people,dc=example,dc=com', provider: 'ldapmain')
-      ldap_user.gl_user.user_synced_attributes_metadata(provider: 'ldapmain', email: true)
       expect(ldap_user.changed?).to be_falsey
     end
   end
@@ -147,11 +146,15 @@ describe Gitlab::LDAP::User do
         expect(ldap_user.gl_user.email).to eq(info[:email])
       end
 
-      it "has user_synced_attributes_metadata email set to true" do
+      it "has email set as synced" do
         expect(ldap_user.gl_user.user_synced_attributes_metadata.email_synced).to be_truthy
       end
 
-      it "has synced_attribute_provider set to ldapmain" do
+      it "has email set as read-only" do
+        expect(ldap_user.gl_user.read_only_attribute?(:email)).to be_truthy
+      end
+
+      it "has synced attributes provider set to ldapmain" do
         expect(ldap_user.gl_user.user_synced_attributes_metadata.provider).to eql 'ldapmain'
       end
     end
@@ -165,8 +168,12 @@ describe Gitlab::LDAP::User do
         expect(ldap_user.gl_user.temp_oauth_email?).to be_truthy
       end
 
-      it "has synced attribute email set to false" do
+      it "has email set as not synced" do
         expect(ldap_user.gl_user.user_synced_attributes_metadata.email_synced).to be_falsey
+      end
+
+      it "does not have email set as read-only" do
+        expect(ldap_user.gl_user.read_only_attribute?(:email)).to be_falsey
       end
     end
   end

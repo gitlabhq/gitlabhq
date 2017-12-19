@@ -1,7 +1,7 @@
 /* eslint-disable no-var, comma-dangle, object-shorthand */
 
 import * as urlUtils from '~/lib/utils/url_utility';
-import '~/merge_request_tabs';
+import MergeRequestTabs from '~/merge_request_tabs';
 import '~/commit/pipelines/pipelines_bundle';
 import '~/breakpoints';
 import '~/lib/utils/common_utils';
@@ -31,7 +31,7 @@ import 'vendor/jquery.scrollTo';
     );
 
     beforeEach(function () {
-      this.class = new gl.MergeRequestTabs({ stubLocation: stubLocation });
+      this.class = new MergeRequestTabs({ stubLocation: stubLocation });
       setLocation();
 
       this.spies = {
