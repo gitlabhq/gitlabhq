@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequestWidgetEntity do
+describe MergeRequestEntity do
   let(:project)  { create :project, :repository }
   let(:resource) { create(:merge_request, source_project: project, target_project: project) }
   let(:user)     { create(:user) }
@@ -33,6 +33,33 @@ describe MergeRequestWidgetEntity do
         expect(subject[:pipeline]).to be_nil
       end
     end
+  end
+
+  it 'includes issues_links' do
+    issues_links = subject[:issues_links]
+
+    expect(issues_links).to include(:closing, :mentioned_but_not_closing,
+                                    :assign_to_closing)
+  end
+
+  it 'has Issuable attributes' do
+    expect(subject).to include(:id, :iid, :author_id, :description, :lock_version, :milestone_id,
+                               :title, :updated_by_id, :created_at, :updated_at, :milestone, :labels)
+  end
+
+  it 'has time estimation attributes' do
+    expect(subject).to include(:time_estimate, :total_time_spent, :human_time_estimate, :human_total_time_spent)
+  end
+
+  it 'has important MergeRequest attributes' do
+    expect(subject).to include(:state, :deleted_at, :diff_head_sha, :merge_commit_message,
+                               :has_conflicts, :has_ci, :merge_path,
+                               :conflict_resolution_path,
+                               :cancel_merge_when_pipeline_succeeds_path,
+                               :create_issue_to_resolve_discussions_path,
+                               :source_branch_path, :target_branch_commits_path,
+                               :target_branch_tree_path, :commits_count, :merge_ongoing,
+                               :ff_only_enabled)
   end
 
   it 'has email_patches_path' do
@@ -87,6 +114,18 @@ describe MergeRequestWidgetEntity do
         expect(subject[:diff_head_sha]).to eq('sha')
       end
     end
+  end
+
+  it 'includes merge_event' do
+    create(:event, :merged, author: user, project: resource.project, target: resource)
+
+    expect(subject[:merge_event]).to include(:author, :updated_at)
+  end
+
+  it 'includes closed_event' do
+    create(:event, :closed, author: user, project: resource.project, target: resource)
+
+    expect(subject[:closed_event]).to include(:author, :updated_at)
   end
 
   describe 'diverged_commits_count' do
