@@ -364,26 +364,6 @@ module Gitlab
       end
     end
 
-    # Delete branch from remote repository
-    #
-    # storage - project's storage path
-    # project_name - project's disk path
-    # remote_name - remote name
-    # branch_names - remote branch names
-    #
-    # Ex.
-    #   delete_remote_branches('/path/to/storage', 'gitlab-org/gitlab-test', 'upstream', ['feature'])
-    #
-    def delete_remote_branches(storage, project_name, remote_name, branch_names)
-      cmd = gitlab_projects(storage, "#{project_name}.git")
-
-      success = cmd.delete_remote_branches(remote_name, branch_names)
-
-      raise Error, cmd.output unless success
-
-      success
-    end
-
     protected
 
     def gitlab_shell_path

@@ -1877,6 +1877,29 @@ describe Gitlab::Git::Repository, seed_helper: true do
         expect { subject }.to raise_error(Gitlab::Git::CommandError, 'error')
       end
     end
+
+    describe '#delete_remote_branches' do
+      subject do
+        repository.delete_remote_branches('downstream-remote', ['master'])
+      end
+
+      it 'executes the command' do
+        expect(gitlab_projects).to receive(:delete_remote_branches)
+          .with('downstream-remote', ['master'])
+          .and_return(true)
+
+        is_expected.to be_truthy
+      end
+
+      it 'raises an error if the command fails' do
+        allow(gitlab_projects).to receive(:output) { 'error' }
+        expect(gitlab_projects).to receive(:delete_remote_branches)
+          .with('downstream-remote', ['master'])
+          .and_return(false)
+
+        expect { subject }.to raise_error(Gitlab::Git::CommandError, 'error')
+      end
+    end
   end
 
   def create_remote_branch(repository, remote_name, branch_name, source_branch_name)

@@ -31,10 +31,6 @@ module EE
       refs.map { |sha| commit(sha.strip) }
     end
 
-    def delete_remote_branches(remote, branches)
-      gitlab_shell.delete_remote_branches(repository_storage_path, disk_path, remote, branches)
-    end
-
     def rebase(user, merge_request)
       raw.rebase(user, merge_request.id, branch: merge_request.source_branch,
                                          branch_sha: merge_request.source_branch_sha,
