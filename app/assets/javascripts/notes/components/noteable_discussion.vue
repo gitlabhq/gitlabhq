@@ -1,5 +1,6 @@
 <script>
   import { mapActions, mapGetters } from 'vuex';
+  import resolveDiscussionsSvg from 'icons/_icon_mr_issue.svg';
   import Flash from '../../flash';
   import { SYSTEM_NOTE } from '../constants';
   import userAvatarLink from '../../vue_shared/components/user_avatar/user_avatar_link.vue';
@@ -14,7 +15,6 @@
   import noteable from '../mixins/noteable';
   import resolvable from '../mixins/resolvable';
   import tooltip from '../../vue_shared/directives/tooltip';
-  import resolveDiscussionsSvg from 'icons/_icon_mr_issue.svg';
 
   export default {
     mixins: [
