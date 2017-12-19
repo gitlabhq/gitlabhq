@@ -65,12 +65,18 @@ but you can do it manually if you have `root` access to the machine.
     ```
 
     A new secondary is not added at this time. You should add a new secondary
-    after you have verified the newly promoted primary is working correctly.
+    after you have completed the entire process of promoting the secondary to
+    the primary node.
 
     Refer to [Geo Replication database documention](
     database.html#step-1-configure-the-primary-server) for more details.
 
-1. Run `sudo gitlab-ctl promote-to-primary-node`
+1. Promote the secondary geo node to primary node. Execute:
+
+    ```
+    sudo gitlab-ctl promote-to-primary-node
+    ```
+
 1. Verify you can connect to the newly promoted primary using the URL used
    previously for the secondary.
 1. Update the DNS records for the primary to reflect the public address of the
