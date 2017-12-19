@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import MergeRequestStore from 'ee/vue_merge_request_widget/stores/mr_widget_store';
 import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
 import mockData, {
@@ -11,11 +10,6 @@ import mockData, {
   dockerReport,
   dockerReportParsed,
 } from '../mock_data';
-=======
-import MergeRequestStore from '~/vue_merge_request_widget/stores/mr_widget_store';
-import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
-import mockData from '../mock_data';
->>>>>>> upstream/master
 
 describe('MergeRequestStore', () => {
   let store;
