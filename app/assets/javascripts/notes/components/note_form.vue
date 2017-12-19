@@ -77,11 +77,16 @@
       ...mapActions([
         'toggleResolveNote',
       ]),
-      handleUpdate() {
+      handleUpdate(shouldResolve) {
+        const beforeSubmitDiscussionState = this.discussionResolved;
         this.isSubmitting = true;
 
         this.$emit('handleFormUpdate', this.updatedNoteBody, this.$refs.editNoteForm, () => {
           this.isSubmitting = false;
+
+          if (shouldResolve) {
+            this.resolveHandler(beforeSubmitDiscussionState);
+          }
         });
       },
       editMyLastNote() {
@@ -171,7 +176,7 @@
         </button>
         <button
           v-if="note.resolvable"
-          @click.prevent="resolveHandler"
+          @click.prevent="handleUpdate(true)"
           class="btn btn-nr btn-default append-right-10 js-comment-resolve-button">
             {{resolveButtonTitle}}
         </button>
