@@ -33,6 +33,7 @@ import LabelManager from './label_manager';
 import Sidebar from './right_sidebar';
 /* global WeightSelect */
 /* global AdminEmailSelect */
+
 import IssuableTemplateSelectors from './templates/issuable_template_selectors';
 import Flash from './flash';
 import CommitsList from './commits';
