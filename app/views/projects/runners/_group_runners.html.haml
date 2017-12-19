@@ -20,8 +20,11 @@
 - elsif @group_runners.empty?
   This group does not provide any group Runners yet.
 
-  = render partial: 'ci/runner/how_to_setup_runner',
-           locals: { registration_token: @project.group.runners_token, type: 'group' }
+  - if can?(current_user, :admin_pipeline, @project.group)
+    = render partial: 'ci/runner/how_to_setup_runner',
+             locals: { registration_token: @project.group.runners_token, type: 'group' }
+  - else
+    Ask your group master to setup a group Runner.
 
 - else
   %h4.underlined-title Available group Runners : #{@group_runners.count}
