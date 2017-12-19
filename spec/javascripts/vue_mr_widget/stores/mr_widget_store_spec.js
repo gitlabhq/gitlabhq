@@ -1,4 +1,5 @@
 import MergeRequestStore from 'ee/vue_merge_request_widget/stores/mr_widget_store';
+import { stateKey } from '~/vue_merge_request_widget/stores/state_maps';
 import mockData, {
   headIssues,
   baseIssues,
@@ -95,6 +96,18 @@ describe('MergeRequestStore', () => {
       const security = MergeRequestStore.parseIssues(securityIssues, 'path')[0];
       expect(security.name).toEqual(securityIssues[0].message);
       expect(security.path).toEqual(securityIssues[0].file);
+    });
+  });
+
+  describe('isNothingToMergeState', () => {
+    it('returns true when nothingToMerge', () => {
+      store.state = stateKey.nothingToMerge;
+      expect(store.isNothingToMergeState).toEqual(true);
+    });
+
+    it('returns false when not nothingToMerge', () => {
+      store.state = 'state';
+      expect(store.isNothingToMergeState).toEqual(false);
     });
   });
 
