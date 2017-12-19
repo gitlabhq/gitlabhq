@@ -38,7 +38,6 @@ import loadAwardsHandler from './awards_handler';
 import bp from './breakpoints';
 import './confirm_danger_modal';
 import Flash, { removeFlashClickListener } from './flash';
-import './gl_dropdown';
 import initTodoToggle from './header';
 import initImporterStatus from './importer_status';
 import './layout_nav';

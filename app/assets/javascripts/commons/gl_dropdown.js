@@ -2,8 +2,8 @@
 /* global fuzzaldrinPlus */
 import _ from 'underscore';
 import fuzzaldrinPlus from 'fuzzaldrin-plus';
-import { visitUrl } from './lib/utils/url_utility';
-import { isObject } from './lib/utils/type_utility';
+import { visitUrl } from '../lib/utils/url_utility';
+import { isObject } from '../lib/utils/type_utility';
 
 var GitLabDropdown, GitLabDropdownFilter, GitLabDropdownRemote, GitLabDropdownInput;
 
