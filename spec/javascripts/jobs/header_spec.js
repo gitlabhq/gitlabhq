@@ -1,5 +1,6 @@
 import Vue from 'vue';
 import headerComponent from '~/jobs/components/header.vue';
+import mountComponent from '../helpers/vue_mount_component_helper';
 
 describe('Job details header', () => {
   let HeaderComponent;
@@ -35,7 +36,7 @@ describe('Job details header', () => {
       isLoading: false,
     };
 
-    vm = new HeaderComponent({ propsData: props }).$mount();
+    vm = mountComponent(HeaderComponent, props);
   });
 
   afterEach(() => {
