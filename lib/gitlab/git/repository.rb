@@ -21,6 +21,7 @@ module Gitlab
       REBASE_WORKTREE_PREFIX = 'rebase'.freeze
       SQUASH_WORKTREE_PREFIX = 'squash'.freeze
       GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'.freeze
+      GITLAB_PROJECTS_TIMEOUT = Gitlab.config.gitlab_shell.git_timeout
 
       NoRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
@@ -83,7 +84,7 @@ module Gitlab
       # Rugged repo object
       attr_reader :rugged
 
-      attr_reader :storage, :gl_repository, :relative_path
+      attr_reader :gitlab_projects, :storage, :gl_repository, :relative_path
 
       # This initializer method is only used on the client side (gitlab-ce).
       # Gitaly-ruby uses a different initializer.
@@ -93,6 +94,12 @@ module Gitlab
         @gl_repository = gl_repository
 
         storage_path = Gitlab.config.repositories.storages[@storage]['path']
+        @gitlab_projects = Gitlab::Git::GitlabProjects.new(
+          storage_path,
+          relative_path,
+          global_hooks_path: Gitlab.config.gitlab_shell.hooks_path,
+          logger: Rails.logger
+        )
         @path = File.join(storage_path, @relative_path)
         @name = @relative_path.split("/").last
         @attributes = Gitlab::Git::Attributes.new(path)
@@ -1266,6 +1273,12 @@ module Gitlab
         fresh_worktree?(worktree_path(SQUASH_WORKTREE_PREFIX, squash_id))
       end
 
+      def push_remote_branches(remote_name, branch_names, forced: true)
+        success = @gitlab_projects.push_branches(remote_name, GITLAB_PROJECTS_TIMEOUT, forced, branch_names)
+
+        success || gitlab_projects_error
+      end
+
       def gitaly_repository
         Gitlab::GitalyClient::Util.repository(@storage, @relative_path, @gl_repository)
       end
@@ -1942,6 +1955,10 @@ module Gitlab
 
       def fetch_remote(remote_name = 'origin', env: nil)
         run_git(['fetch', remote_name], env: env).last.zero?
+      end
+
+      def gitlab_projects_error
+        raise CommandError, @gitlab_projects.output
       end
     end
   end
