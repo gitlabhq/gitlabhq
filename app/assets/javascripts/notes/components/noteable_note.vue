@@ -8,10 +8,12 @@
   import noteBody from './note_body.vue';
   import eventHub from '../event_hub';
   import noteable from '../mixins/noteable';
+  import resolvable from '../mixins/resolvable';
 
   export default {
     mixins: [
       noteable,
+      resolvable,
     ],
     data() {
       return {
@@ -105,20 +107,6 @@
               this.recoverNoteContent(noteText);
               callback();
             });
-          });
-      },
-      resolveHandler() {
-        this.isResolving = true;
-        const endpoint = `${this.note.path}/resolve`; // FIXME -- @fatihacet
-        const isResolved = this.note.resolved;
-
-        this.toggleResolveNote({ endpoint, isResolved })
-          .then((res) => {
-            this.isResolving = false;
-          })
-          .catch((res) => {
-            const msg = 'Something went wrong while resolving this discussion. Please try again.';
-            Flash(msg, 'alert', this.$el);
           });
       },
       formCancelHandler(shouldConfirm, isDirty) {

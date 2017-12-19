@@ -26,6 +26,7 @@
       return {
         isReplying: false,
         isResolving: false,
+        resolveAsThread: true,
       };
     },
     components: {
@@ -81,6 +82,7 @@
         'saveNote',
         'toggleDiscussion',
         'removePlaceholderNotes',
+        'toggleResolveNote',
       ]),
       componentName(note) {
         if (note.isPlaceholderNote) {
@@ -228,6 +230,7 @@
                         class="btn-group"
                         role="group">
                         <button
+                          @click="resolveHandler"
                           type="button"
                           class="btn btn-default">
                             <i
