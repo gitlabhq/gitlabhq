@@ -151,7 +151,7 @@ describe Groups::EpicIssuesController do
     let!(:epic_issue2) { create(:epic_issue, epic: epic, issue: issue2, position: 2) }
 
     subject do
-      put :update, group_id: group, epic_id: epic.to_param, id: epic_issue1.id, position: 1
+      put :update, group_id: group, epic_id: epic.to_param, id: epic_issue1.id, epic: { position: 1 }
     end
 
     context 'when user has permissions to admin the epic' do
@@ -184,7 +184,7 @@ describe Groups::EpicIssuesController do
 
     context 'when the epic from the association does not equal epic from the path' do
       subject do
-        put :update, group_id: group, epic_id: another_epic.to_param, id: epic_issue1.id, position: 2
+        put :update, group_id: group, epic_id: another_epic.to_param, id: epic_issue1.id, epic: { position: 2 }
       end
 
       let(:another_epic) { create(:epic, group: group) }
