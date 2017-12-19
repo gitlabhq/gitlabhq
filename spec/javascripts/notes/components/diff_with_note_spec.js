@@ -3,7 +3,7 @@ import DiffWithNote from '~/notes/components/diff_with_note.vue';
 import mountComponent from '../../helpers/vue_mount_component_helper';
 import { diffDiscussionMock, imageDiffDiscussionMock } from '../mock_data';
 
-fdescribe('diff_with_note', () => {
+describe('diff_with_note', () => {
   let vm;
   const Component = Vue.extend(DiffWithNote);
   const props = {
@@ -17,17 +17,29 @@ fdescribe('diff_with_note', () => {
       return this.container.querySelector('.diff-content table');
     },
     get diffRows() {
-      return this.container.querySelectorAll('.diff-content table tr');
+      return this.container.querySelectorAll('.diff-content .line-holder');
+    },
+    get noteRow() {
+      return this.container.querySelector('.diff-content .notes-holder');
     },
   };
 
   describe('text diff', () => {
-    it('shows text diff', () => {
+    beforeEach(() => {
       vm = mountComponent(Component, props);
+    });
 
+    it('shows text diff', () => {
       expect(selectors.container).toHaveClass('text-file');
       expect(selectors.diffTable).toExist();
-      expect(selectors.diffRows.length).toBe(6);
+    });
+
+    it('shows diff lines', () => {
+      expect(selectors.diffRows.length).toBe(4);
+    });
+
+    it('shows notes row', () => {
+      expect(selectors.noteRow).toExist();
     });
   });
 

@@ -355,7 +355,7 @@ export const replacedImageDiffHtml = `
 `;
 
 export const diffDiscussionMock = {
-  ...discussionMock.notes[0],
+  ...discussionMock,
   truncated_diff_lines: `<tr class="line_holder" id=""> <td class="diff-line-num old_line" data-linenumber="327"> 327 </td><td class="diff-line-num new_line" data-linenumber="327"> 327 </td><td class="line_content noteable_line"> <span id="LC327" class="line" lang="kotlin"> <span class="n">isConfidential</span> <span class="p">))</span> </span> </td></tr><tr class="line_holder" id=""> <td class="diff-line-num old_line" data-linenumber="328"> 328 </td><td class="diff-line-num new_line" data-linenumber="328"> 328 </td><td class="line_content noteable_line"> <span id="LC328" class="line" lang="kotlin"> <span class="p">}</span> <span class="k">else</span> <span class="p">{</span> </span> </td></tr><tr class="line_holder" id=""> <td class="diff-line-num old_line" data-linenumber="329"> 329 </td><td class="diff-line-num new_line" data-linenumber="329"> 329 </td><td class="line_content noteable_line"> <span id="LC329" class="line" lang="kotlin"> <span class="n">observeUpdate</span> <span class="p">(</span> <span class="n">App</span> <span class="p">.</span> <span class="k">get</span> <span class="p">().</span> <span class="n">gitLab</span> <span class="p">.</span> <span class="n">updateIssue</span> <span class="p">(</span> <span class="n">project</span> <span class="p">.</span> <span class="n">id</span> <span class="p">,</span> </span> </td></tr><tr class="line_holder old" id=""> <td class="diff-line-num old old_line" data-linenumber="330"> 330 </td><td class="diff-line-num new_line old" data-linenumber="330"> </td><td class="line_content noteable_line old"> <span id="LC330" class="line" lang="kotlin"> <span class="n">issue</span> <span class="o">!!</span> <span class="p">.</span> <span class="n">id</span> <span class="p">,</span> </span> </td></tr>`,
   diff_discussion: true,
   diff_file: {
@@ -376,7 +376,7 @@ export const diffDiscussionMock = {
 }
 
 export const imageDiffDiscussionMock = {
-  ...discussionMock.notes[0],
+  ...discussionMock,
   diff_discussion: true,
   diff_file: {
     submodule: false,

@@ -1,24 +1,12 @@
 import Vue from 'vue';
 import DiffFileHeader from '~/notes/components/diff_file_header.vue';
+import { diffDiscussionMock } from '../mock_data';
 import mountComponent from '../../helpers/vue_mount_component_helper';
 
 describe('diff_file_header', () => {
   let vm;
   const props = {
-    diffFile: {
-      submodule: false,
-      submoduleLink: '<a href="/bha">Submodule</a>', // submodule_link(blob, diff_file.content_sha, diff_file.repository)
-      discussionPath: '',
-      renamedFile: false,
-      deletedFile: false,
-      modeChanged: false,
-      aMode: '',
-      bMode: '',
-      filePath: '/some/file/path',
-      oldPath: '',
-      newPath: '',
-      fileTypeIcon: 'fa-file-image-o', // file_type_icon_class('file', diff_file.b_mode, diff_file.file_path)
-    },
+    diffFile: diffDiscussionMock.diff_file,
   };
   const Component = Vue.extend(DiffFileHeader);
   const selectors = {
@@ -37,6 +25,7 @@ describe('diff_file_header', () => {
     beforeEach(() => {
       props.diffFile.submodule = true;
       props.diffFile.submoduleLink = '<a href="/bha">Submodule</a>';
+
       vm = mountComponent(Component, props);
     });
 
@@ -72,6 +61,7 @@ describe('diff_file_header', () => {
 
     it('shows plain title if no link given', () => {
       props.diffFile.discussionPath = undefined;
+
       vm = mountComponent(Component, props);
 
       expect(selectors.titleWrapper.tagName).not.toBe('A');
