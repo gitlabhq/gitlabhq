@@ -1,6 +1,6 @@
 require_relative '../support/repo_helpers'
 
-FactoryGirl.define do
+FactoryBot.define do
   factory :commit do
     transient do
       author nil

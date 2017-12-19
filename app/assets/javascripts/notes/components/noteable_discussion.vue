@@ -13,6 +13,10 @@
   import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
   import autosave from '../mixins/autosave';
   import noteable from '../mixins/noteable';
+<<<<<<< HEAD
+=======
+  import resolvable from '../mixins/resolvable';
+>>>>>>> origin/acet-mr-notes-index
   import tooltip from '../../vue_shared/directives/tooltip';
   import resolveDiscussionsSvg from 'icons/_icon_mr_issue.svg';
 
@@ -20,11 +24,19 @@
     mixins: [
       autosave,
       noteable,
+<<<<<<< HEAD
+=======
+      resolvable,
+>>>>>>> origin/acet-mr-notes-index
     ],
     data() {
       return {
         isReplying: false,
         isResolving: false,
+<<<<<<< HEAD
+=======
+        resolveAsThread: true,
+>>>>>>> origin/acet-mr-notes-index
       };
     },
     components: {
@@ -108,6 +120,7 @@
         'saveNote',
         'toggleDiscussion',
         'removePlaceholderNotes',
+        'toggleResolveNote',
       ]),
       componentName(note) {
         if (note.isPlaceholderNote) {
@@ -254,10 +267,11 @@
                           title="Add a reply">Reply...</button>
                       </div>
                       <div
-                        v-if="isResolvable"
+                        v-if="note.resolvable"
                         class="btn-group"
                         role="group">
                         <button
+                          @click="resolveHandler"
                           type="button"
                           class="btn btn-default">
                             <i
@@ -268,13 +282,13 @@
                         </button>
                       </div>
                       <div
-                        v-if="isResolvable && !isResolved"
+                        v-if="note.resolvable && !note.resolved"
                         class="btn-group discussion-actions">
                         <div
                           class="btn-group"
                           role="group">
                           <a
-                            :href="resolveWithIssuePath"
+                            :href="note.resolve_with_issue_path"
                             v-tooltip
                             class="new-issue-for-discussion btn btn-default discussion-create-issue-btn"
                             title="Resolve this discussion in a new issue"
@@ -288,7 +302,7 @@
                   <note-form
                     v-if="isReplying"
                     save-button-title="Comment"
-                    :discussion="note"
+                    :note="note"
                     :is-editing="false"
                     @handleFormUpdate="saveReply"
                     @cancelFormEdition="cancelReplyForm"

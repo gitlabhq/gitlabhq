@@ -1,4 +1,4 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.5-golang-1.8-git-2.13-chrome-62.0-node-8.x-yarn-1.2-postgresql-9.6"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.5-golang-1.8-git-2.14-chrome-63.0-node-8.x-yarn-1.2-postgresql-9.6"
 
 .default-cache: &default-cache
   key: "ruby-235-with-yarn"
@@ -76,10 +76,15 @@ stages:
   except:
     - /(^docs[\/-].*|.*-docs$)/
 
+.except-qa: &except-qa
+  except:
+    - /(^qa[\/-].*|.*-qa$)/
+
 .rspec-metadata: &rspec-metadata
   <<: *dedicated-runner
   <<: *pull-cache
   <<: *except-docs
+  <<: *except-qa
   stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
@@ -118,6 +123,7 @@ stages:
   <<: *dedicated-runner
   <<: *pull-cache
   <<: *except-docs
+  <<: *except-qa
   stage: test
   script:
     - JOB_NAME=( $CI_JOB_NAME )
@@ -169,6 +175,7 @@ package-qa:
 
 # Review docs base
 .review-docs: &review-docs
+  <<: *except-qa
   image: ruby:2.4-alpine
   before_script:
     - gem install gitlab --no-doc
@@ -214,6 +221,7 @@ review-docs-cleanup:
 retrieve-tests-metadata:
   <<: *tests-metadata-state
   <<: *except-docs
+  <<: *except-qa
   stage: prepare
   cache:
     key: tests_metadata
@@ -265,6 +273,7 @@ flaky-examples-check:
   except:
     - master
     - /(^docs[\/-].*|.*-docs$)/
+    - /(^qa[\/-].*|.*-qa$)/
   artifacts:
     expire_in: 30d
     paths:
@@ -369,6 +378,7 @@ spinach-mysql 3 4: *spinach-metadata-mysql
   <<: *ruby-static-analysis
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *except-qa
   <<: *pull-cache
   stage: test
   script:
@@ -387,6 +397,7 @@ static-analysis:
 # - Make sure cURL examples in API docs use the full switches
 docs lint:
   <<: *dedicated-runner
+  <<: *except-qa
   image: "registry.gitlab.com/gitlab-org/gitlab-build-images:nanoc-bootstrap-ruby-2.4-alpine"
   stage: test
   cache: {}
@@ -409,6 +420,7 @@ downtime_check:
     - tags
     - /^[\d-]+-stable(-ee)?$/
     - /(^docs[\/-].*|.*-docs$)/
+    - /(^qa[\/-].*|.*-qa$)/
 
 ee_compat_check:
   <<: *rake-exec
@@ -430,6 +442,7 @@ ee_compat_check:
 .db-migrate-reset: &db-migrate-reset
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *except-qa
   <<: *pull-cache
   stage: test
   script:
@@ -447,6 +460,7 @@ db:migrate:reset-mysql:
   <<: *dedicated-runner
   <<: *pull-cache
   <<: *except-docs
+  <<: *except-qa
   stage: test
   variables:
     SETUP_DB: "false"
@@ -473,6 +487,7 @@ migration:path-mysql:
 .db-rollback: &db-rollback
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *except-qa
   <<: *pull-cache
   stage: test
   script:
@@ -490,6 +505,7 @@ db:rollback-mysql:
 .db-seed_fu: &db-seed_fu
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *except-qa
   <<: *pull-cache
   stage: test
   variables:
@@ -524,6 +540,7 @@ db:check-schema-pg:
 gitlab:assets:compile:
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *except-qa
   <<: *pull-cache
   stage: test
   dependencies: []
@@ -547,6 +564,7 @@ karma:
   <<: *use-pg
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *except-qa
   <<: *pull-cache
   stage: test
   variables:
@@ -599,6 +617,7 @@ qa:internal:
 coverage:
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *except-qa
   <<: *pull-cache
   stage: post-test
   services: []
@@ -618,6 +637,7 @@ coverage:
 lint:javascript:report:
   <<: *dedicated-runner
   <<: *except-docs
+  <<: *except-qa
   <<: *pull-cache
   stage: post-test
   dependencies:
@@ -677,6 +697,7 @@ cache gems:
 gitlab_git_test:
   <<: *pull-cache
   <<: *except-docs
+  <<: *except-qa
   variables:
     SETUP_DB: "false"
   script:

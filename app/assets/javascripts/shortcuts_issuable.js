@@ -1,8 +1,8 @@
 /* global Mousetrap */
-/* global sidebar */
 
 import _ from 'underscore';
 import 'mousetrap';
+import Sidebar from './right_sidebar';
 import ShortcutsNavigation from './shortcuts_navigation';
 import { CopyAsGFM } from './behaviors/copy_as_gfm';
 
@@ -69,7 +69,7 @@ export default class ShortcutsIssuable extends ShortcutsNavigation {
   }
 
   static openSidebarDropdown(name) {
-    sidebar.openDropdown(name);
+    Sidebar.instance.openDropdown(name);
     return false;
   }
 }

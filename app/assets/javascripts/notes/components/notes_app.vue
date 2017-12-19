@@ -50,7 +50,7 @@
         'getNotesDataByProp',
       ]),
       noteableType() {
-        // FIXME: Get this from JSON data.
+        // FIXME -- @fatihacet Get this from JSON data.
         const { NOTEABLE_TYPE, MERGE_REQUEST_NOTEABLE_TYPE } = constants;
 
         return this.noteableData.merge_params ? MERGE_REQUEST_NOTEABLE_TYPE : NOTEABLE_TYPE;
@@ -99,7 +99,7 @@
       initPolling() {
         this.setLastFetchedAt(this.getNotesDataByProp('lastFetchedAt'));
 
-        this.poll();
+        // this.poll();
       },
       checkLocationHash() {
         const hash = getLocationHash();

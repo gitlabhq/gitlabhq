@@ -89,7 +89,7 @@ sast:
     POSTGRES_DB: "false"
   allow_failure: true
   script:
-    - /app/bin/run .
+    - sast .
   artifacts:
     paths: [gl-sast-report.json]
 
@@ -230,6 +230,17 @@ production:
 
     docker run ${cc_opts} codeclimate/codeclimate:0.69.0 init
     docker run ${cc_opts} codeclimate/codeclimate:0.69.0 analyze -f json > codeclimate.json
+  }
+
+  function sast() {
+    case "$CI_SERVER_VERSION" in
+      *-ee)
+        /app/bin/run "$@"
+        ;;
+      *)
+        echo "GitLab EE is required"
+        ;;
+    esac
   }
 
   function deploy() {

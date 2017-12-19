@@ -11,7 +11,7 @@ class Projects::NotesController < Projects::ApplicationController
   # Controller actions are returned from AbstractController::Base and methods of parent classes are
   #   excluded in order to return only specific controller related methods.
   # That is ok for the app (no :create method in ancestors)
-  #   but fails for tests because there is a :create method on FactoryGirl (one of the ancestors)
+  #   but fails for tests because there is a :create method on FactoryBot (one of the ancestors)
   #
   # see https://github.com/rails/rails/blob/v4.2.7/actionpack/lib/abstract_controller/base.rb#L78
   #
@@ -37,10 +37,16 @@ class Projects::NotesController < Projects::ApplicationController
 
     discussion = note.discussion
 
-    render json: {
-      resolved_by: note.resolved_by.try(:name),
-      discussion_headline_html: (view_to_html_string('discussions/_headline', discussion: discussion) if discussion)
-    }
+    if cookies[:vue_mr_discussions] == 'true'
+      Notes::RenderService.new(current_user).execute([note], project)
+
+      render json: note_serializer.represent(note)
+    else
+      render json: {
+        resolved_by: note.resolved_by.try(:name),
+        discussion_headline_html: (view_to_html_string('discussions/_headline', discussion: discussion) if discussion)
+      }
+    end
   end
 
   def unresolve
@@ -50,9 +56,15 @@ class Projects::NotesController < Projects::ApplicationController
 
     discussion = note.discussion
 
-    render json: {
-      discussion_headline_html: (view_to_html_string('discussions/_headline', discussion: discussion) if discussion)
-    }
+    if cookies[:vue_mr_discussions] == 'true'
+      Notes::RenderService.new(current_user).execute([note], project)
+
+      render json: note_serializer.represent(note)
+    else
+      render json: {
+        discussion_headline_html: (view_to_html_string('discussions/_headline', discussion: discussion) if discussion)
+      }
+    end
   end
 
   private

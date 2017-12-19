@@ -154,6 +154,7 @@ module Gitlab
 
       # When enabled this should be set before being used as the usual pattern
       # "@foo ||= bar" is _not_ thread-safe.
+      # rubocop:disable Gitlab/ModuleWithInstanceVariables
       def pool
         if influx_metrics_enabled?
           if @pool.nil?
@@ -170,6 +171,7 @@ module Gitlab
           @pool
         end
       end
+      # rubocop:enable Gitlab/ModuleWithInstanceVariables
     end
   end
 end

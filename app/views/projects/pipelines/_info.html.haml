@@ -13,7 +13,7 @@
     .well-segment.pipeline-info
       .icon-container
         = icon('clock-o')
-      = pluralize @pipeline.statuses.count(:id), "job"
+      = pluralize @pipeline.total_size, "job"
       - if @pipeline.ref
         from
         = link_to @pipeline.ref, project_ref_path(@project, @pipeline.ref), class: "ref-name"

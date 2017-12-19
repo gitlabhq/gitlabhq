@@ -7,11 +7,11 @@ import IssuableForm from './issuable_form';
 import LabelsSelect from './labels_select';
 /* global MilestoneSelect */
 import NewBranchForm from './new_branch_form';
-/* global NotificationsForm */
-/* global NotificationsDropdown */
+import NotificationsForm from './notifications_form';
+import notificationsDropdown from './notifications_dropdown';
 import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
-/* global LineHighlighter */
+import LineHighlighter from './line_highlighter';
 import BuildArtifacts from './build_artifacts';
 import CILintEditor from './ci_lint_editor';
 import groupsSelect from './groups_select';
@@ -21,7 +21,7 @@ import NamespaceSelect from './namespace_select';
 import NewCommitForm from './new_commit_form';
 import Project from './project';
 import projectAvatar from './project_avatar';
-/* global MergeRequest */
+import MergeRequest from './merge_request';
 import Compare from './compare';
 import initCompareAutocomplete from './compare_autocomplete';
 import ProjectFindFile from './project_find_file';
@@ -29,12 +29,13 @@ import ProjectNew from './project_new';
 import projectImport from './project_import';
 import Labels from './labels';
 import LabelManager from './label_manager';
-/* global Sidebar */
+import Sidebar from './right_sidebar';
 import IssuableTemplateSelectors from './templates/issuable_template_selectors';
 import Flash from './flash';
 import CommitsList from './commits';
 import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
+import SecretValues from './behaviors/secret_values';
 import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
 import GroupsList from './groups_list';
@@ -90,7 +91,6 @@ import memberExpirationDate from './member_expiration_date';
 import DueDateSelectors from './due_date_select';
 import Diff from './diff';
 import ProjectLabelSubscription from './project_label_subscription';
-import ProjectVariables from './project_variables';
 import SearchAutocomplete from './search_autocomplete';
 import Activities from './activities';
 
@@ -416,7 +416,7 @@ import Activities from './activities';
           const newGroupChildWrapper = document.querySelector('.js-new-project-subgroup');
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
-          new NotificationsDropdown();
+          notificationsDropdown();
           new ProjectsList();
 
           if (newGroupChildWrapper) {
@@ -529,8 +529,18 @@ import Activities from './activities';
         case 'projects:settings:ci_cd:show':
           // Initialize expandable settings panels
           initSettingsPanels();
+
+          const runnerToken = document.querySelector('.js-secret-runner-token');
+          if (runnerToken) {
+            const runnerTokenSecretValue = new SecretValues(runnerToken);
+            runnerTokenSecretValue.init();
+          }
         case 'groups:settings:ci_cd:show':
-          new ProjectVariables();
+          const secretVariableTable = document.querySelector('.js-secret-variable-table');
+          if (secretVariableTable) {
+            const secretVariableTableValues = new SecretValues(secretVariableTable);
+            secretVariableTableValues.init();
+          }
           break;
         case 'ci:lints:create':
         case 'ci:lints:show':
@@ -619,7 +629,7 @@ import Activities from './activities';
           break;
         case 'profiles':
           new NotificationsForm();
-          new NotificationsDropdown();
+          notificationsDropdown();
           break;
         case 'projects':
           new Project();
@@ -642,7 +652,7 @@ import Activities from './activities';
             case 'show':
               new Star();
               new ProjectNew();
-              new NotificationsDropdown();
+              notificationsDropdown();
               break;
             case 'wikis':
               new Wikis();

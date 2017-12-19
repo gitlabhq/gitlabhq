@@ -145,7 +145,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       .new(project, current_user, wip_event: 'unwip')
       .execute(@merge_request)
 
-    render json: serializer.represent(@merge_request)
+    render json: serialize_widget(@merge_request)
   end
 
   def commit_change_content
@@ -161,7 +161,7 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
       .new(@project, current_user)
       .cancel(@merge_request)
 
-    render json: serializer.represent(@merge_request)
+    render json: serialize_widget(@merge_request)
   end
 
   def merge
@@ -316,6 +316,10 @@ class Projects::MergeRequestsController < Projects::MergeRequests::ApplicationCo
 
       :success
     end
+  end
+
+  def serialize_widget(merge_request)
+    serializer.represent(merge_request, serializer: 'widget')
   end
 
   def serializer

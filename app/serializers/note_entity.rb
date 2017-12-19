@@ -23,6 +23,16 @@ class NoteEntity < API::Entities::Note
     end
   end
 
+  expose :resolved do |note|
+    note.resolved?
+  end
+
+  expose :resolvable do |note|
+    note.resolvable?
+  end
+
+  expose :resolved_by, using: NoteUserEntity
+
   expose :system_note_icon_name, if: -> (note, _) { note.system? } do |note|
     SystemNoteHelper.system_note_icon_name(note)
   end

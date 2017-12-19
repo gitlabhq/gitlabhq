@@ -116,7 +116,7 @@ describe Ci::Pipeline, :mailer do
     end
 
     it "calculates average when there is one build without coverage" do
-      FactoryGirl.create(:ci_build, pipeline: pipeline)
+      FactoryBot.create(:ci_build, pipeline: pipeline)
       expect(pipeline.coverage).to be_nil
     end
   end
@@ -435,7 +435,7 @@ describe Ci::Pipeline, :mailer do
 
     describe 'merge request metrics' do
       let(:project) { create(:project, :repository) }
-      let(:pipeline) { FactoryGirl.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
+      let(:pipeline) { FactoryBot.create(:ci_empty_pipeline, status: 'created', project: project, ref: 'master', sha: project.repository.commit('master').id) }
       let!(:merge_request) { create(:merge_request, source_project: project, source_branch: pipeline.ref) }
 
       before do
@@ -1528,6 +1528,18 @@ describe Ci::Pipeline, :mailer do
         .count
 
       expect(query_count).to eq(1)
+    end
+  end
+
+  describe '#total_size' do
+    let!(:build_job1) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
+    let!(:build_job2) { create(:ci_build, pipeline: pipeline, stage_idx: 0) }
+    let!(:test_job_failed_and_retried) { create(:ci_build, :failed, :retried, pipeline: pipeline, stage_idx: 1) }
+    let!(:second_test_job) { create(:ci_build, pipeline: pipeline, stage_idx: 1) }
+    let!(:deploy_job) { create(:ci_build, pipeline: pipeline, stage_idx: 2) }
+
+    it 'returns all jobs (including failed and retried)' do
+      expect(pipeline.total_size).to eq(5)
     end
   end
 end

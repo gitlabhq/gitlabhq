@@ -19,6 +19,11 @@ export default {
   createNewNote(endpoint, data) {
     return Vue.http.post(endpoint, data, { emulateJSON: true });
   },
+  toggleResolveNote(endpoint, isResolved) {
+    const method = isResolved ? 'delete' : 'post';
+
+    return Vue.http[method](endpoint);
+  },
   poll(data = {}) {
     const { endpoint, lastFetchedAt } = data;
     const options = {
