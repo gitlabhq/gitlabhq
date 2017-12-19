@@ -776,4 +776,71 @@ describe Ci::Runner do
       expect(runner.project?).to be true
     end
   end
+
+  describe '#accessible_projects' do
+    let!(:shared_runner) { create(:ci_runner, :shared) }
+    let!(:shared_project) { create(:project, shared_runners_enabled: true) }
+
+    let!(:project_runner) { create(:ci_runner) }
+    let!(:project_project) { create(:project, runners: [project_runner], shared_runners_enabled: false) }
+
+    let!(:group_runner) { create(:ci_runner) }
+
+    let!(:parent_group) { create(:group) }
+    let!(:parent_group_project) do
+      create(:project, group: parent_group, shared_runners_enabled: false)
+    end
+
+    let!(:group) { create :group, runners: [group_runner], parent: parent_group }
+    let!(:group_project) do
+      create(:project, group: group, shared_runners_enabled: false)
+    end
+
+    let!(:nested_group_project) do
+      nested_group = create :group, parent: group
+      create(:project, group: nested_group, shared_runners_enabled: false)
+    end
+
+    it 'returns the project with a shared runner' do
+      expect(shared_runner.reload.accessible_projects).to eq [shared_project]
+    end
+
+    it 'returns the project with a project runner' do
+      expect(project_runner.reload.accessible_projects).to eq [project_project]
+    end
+
+    it 'returns the projects with a group and nested group runner' do
+      expect(group_runner.reload.accessible_projects).to eq [group_project, nested_group_project]
+    end
+
+    context 'deleted' do
+      before do
+        shared_project.update_attributes!(pending_delete: true)
+        project_project.update_attributes!(pending_delete: true)
+        group_project.update_attributes!(pending_delete: true)
+        nested_group_project.update_attributes!(pending_delete: true)
+      end
+
+      it 'returns no projects' do
+        expect(shared_runner.reload.accessible_projects).to be_empty
+        expect(project_runner.reload.accessible_projects).to be_empty
+        expect(group_runner.reload.accessible_projects).to be_empty
+      end
+    end
+
+    context 'builds disabled' do
+      before do
+        shared_project.update_attributes!(builds_enabled: false)
+        project_project.update_attributes!(builds_enabled: false)
+        group_project.update_attributes!(builds_enabled: false)
+        nested_group_project.update_attributes!(builds_enabled: false)
+      end
+
+      it 'returns no projects' do
+        expect(shared_runner.reload.accessible_projects).to be_empty
+        expect(project_runner.reload.accessible_projects).to be_empty
+        expect(group_runner.reload.accessible_projects).to be_empty
+      end
+    end
+  end
 end

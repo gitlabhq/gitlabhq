@@ -14,14 +14,7 @@ module Ci
     end
 
     def execute
-      builds =
-        if runner.shared?
-          builds_for_shared_runner
-        elsif runner.group?
-          builds_for_group_runner
-        else
-          builds_for_specific_runner
-        end
+      builds = builds_for_runner
 
       valid = true
 
@@ -70,62 +63,27 @@ module Ci
 
     private
 
-    def builds_for_shared_runner
-      builds_for_scheduled_runner(
-        running_builds_for_shared_runners,
-        projects: { shared_runners_enabled: true }
-      )
+    def builds_for_runner
+      new_builds
+        .joins("LEFT JOIN (#{running_projects.to_sql}) AS running_projects ON ci_builds.project_id=running_projects.project_id")
+        .order('COALESCE(running_projects.running_builds, 0) ASC', 'ci_builds.id ASC')
     end
 
-    def builds_for_group_runner
-      builds_for_scheduled_runner(
-        running_builds_for_group_runners,
-        projects: { group_runners_enabled: true }
-      )
+    # New builds from the accessible projects
+    def new_builds
+      filter_builds(Ci::Build.pending.unstarted)
     end
 
-    def builds_for_scheduled_runner(build_join, project_where)
-      project_where = project_where.deep_merge(projects: { pending_delete: false })
-
-      # don't run projects which have not enabled group runners and builds
-      builds = new_builds
-        .joins(:project).where(project_where)
-        .joins('LEFT JOIN project_features ON ci_builds.project_id = project_features.project_id')
-        .where('project_features.builds_access_level IS NULL or project_features.builds_access_level > 0')
-
-      # Implement fair scheduling
-      # this returns builds that are ordered by number of running builds
-      # we prefer projects that don't use group runners at all
-      builds
-        .joins("LEFT JOIN (#{build_join.to_sql}) AS project_builds ON ci_builds.project_id=project_builds.project_id")
-        .order('COALESCE(project_builds.running_builds, 0) ASC', 'ci_builds.id ASC')
-    end
-
-    def builds_for_specific_runner
-      new_builds.where(project: runner.projects.without_deleted.with_builds_enabled).order('created_at ASC')
-    end
-
-    def running_builds_for_shared_runners
-      running_builds_for_runners(Ci::Runner.shared)
-    end
-
-    def running_builds_for_group_runners
-      running_builds_for_runners(Ci::Runner.joins(:runner_groups))
-    end
-
-    def running_builds_for_runners(runners)
-      Ci::Build.running.where(runner: runners)
+    # Count running builds from the accessible projects
+    def running_projects
+      filter_builds(Ci::Build.running)
         .group(:project_id).select(:project_id, 'count(*) AS running_builds')
     end
 
-    def new_builds
-      builds = Ci::Build.pending.unstarted
+    # Filter the builds from the accessible projects
+    def filter_builds(builds)
       builds = builds.ref_protected if runner.ref_protected?
-      builds
-    end
-
-    def shared_runner_build_limits_feature_enabled?
-      ENV['DISABLE_SHARED_RUNNER_BUILD_MINUTES_LIMIT'].to_s != 'true'
+      builds.where(project: runner.accessible_projects)
     end
 
     def register_failure
