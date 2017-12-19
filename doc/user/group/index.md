@@ -65,7 +65,7 @@ together in a single list view.
 
 > **Notes:**
 - For a list of words that are not allowed to be used as group names see the
-  [reserved names][reserved].
+  [reserved names](../reserved_names.md).
 
 You can create a group in GitLab from:
 
@@ -97,7 +97,7 @@ Add members to a group by navigating to the group's dashboard, and clicking **Me
 
 ![add members to group](img/add_new_members.png)
 
-Select the [permission level][permissions] and add the new member. You can also set the expiring
+Select the [permission level](../permissions.md#permissions) and add the new member. You can also set the expiring
 date for that user, from which they will no longer have access to your group.
 
 One of the benefits of putting multiple projects in one group is that you can
@@ -152,16 +152,9 @@ There are two different ways to add a new project to a group:
 
     ![Select group](img/select_group_dropdown.png)
 
-## Transfer an existing project into a group
+## Transfer projects into groups
 
-You can transfer an existing project into a group as long as you have at least **Master** [permissions][permissions] to that group
-and if you are an **Owner** of the project.
-
-![Transfer a project to a new namespace](img/transfer_project_to_other_group.png)
-
-Find this option under your project's settings.
-
-GitLab administrators can use the admin interface to move any project to any namespace if needed.
+Learn how to [transfer a project into a group](../project/index.md#transfer-an-existing-project-into-a-group).
 
 ## Sharing a project with a group
 
@@ -246,11 +239,7 @@ Learn more about [Member Lock](https://docs.gitlab.com/ee/user/group/index.html#
 - **Projects**: view all projects within that group, add members to each project,
 access each project's settings, and remove any project from the same screen.
 - **Webhooks**: configure [webhooks](../project/integrations/webhooks.md)
-and [push rules](https://docs.gitlab.com/ee/push_rules/push_rules.html#push-rules) to your group (Push Rules is available in [GitLab Enteprise Edition Starter][ee].)
+and [push rules](https://docs.gitlab.com/ee/push_rules/push_rules.html#push-rules) to your group (Push Rules is available in [GitLab Enteprise Edition Starter](https://about.gitlab.com/products/).)
 - **Audit Events**: view [Audit Events](https://docs.gitlab.com/ee/administration/audit_events.html#audit-events)
 for the group (GitLab admins only, available in [GitLab Enterprise Edition Starter][ee]).
 - **Pipelines quota**: keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group
-
-[permissions]: ../permissions.md#permissions
-[ee]: https://about.gitlab.com/products/
-[reserved]:  ../reserved_names.md
