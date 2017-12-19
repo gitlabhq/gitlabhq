@@ -105,6 +105,17 @@ Read through the documentation on [project settings](settings/index.md).
 - [Export a project from GitLab](settings/import_export.md#exporting-a-project-and-its-data)
 - [Importing and exporting projects between GitLab instances](settings/import_export.md)
 
+## Transfer an existing project into a group
+
+You can transfer an existing project into a [group](../group/index.md) as long as you have at least **Master** [permissions](../permissions.md#permissions) to that group
+and if you are an **Owner** of the project.
+
+![Transfer a project to a new namespace](img/transfer_project_to_other_group.png)
+
+Find this option under your project's **General settings > Advanced settings**.
+
+GitLab administrators can use the admin interface to move any project to any namespace if needed.
+
 ## Project's members
 
 Learn how to [add members to your projects](members/index.md).
