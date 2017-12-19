@@ -21,15 +21,21 @@ module BlobViewer
     end
 
     def package_url
-      return nil if private?
-
-      "https://www.npmjs.com/package/#{package_name}"
+      private? ? homepage : npm_url
     end
 
     private
 
     def private?
       !!json_data['private']
+    end
+
+    def homepage
+      json_data['homepage']
+    end
+
+    def npm_url
+      "https://www.npmjs.com/package/#{package_name}"
     end
   end
 end

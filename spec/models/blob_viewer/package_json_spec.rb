@@ -45,7 +45,8 @@ describe BlobViewer::PackageJson do
       {
         "name": "module-name",
         "version": "10.3.1",
-        "private": true
+        "private": true,
+        "homepage": "myawesomepackage.com"
       }
       SPEC
     end
@@ -53,10 +54,10 @@ describe BlobViewer::PackageJson do
     subject { described_class.new(blob) }
 
     describe '#package_url' do
-      it 'returns nil' do
+      it 'returns homepage if any' do
         expect(subject).to receive(:prepare!)
 
-        expect(subject.package_url).to be_nil
+        expect(subject.package_url).to eq('myawesomepackage.com')
       end
     end
 
