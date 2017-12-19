@@ -17,13 +17,12 @@ for more information.
 We don't provide yet an automated way to promote a node and do fail-over,
 but you can do it manually if you have `root` access to the machine.
 
-You must make the changes in the exact specific order:
+For system with only one secondary and one primary node (2-node system):
 
 1. Take down your primary node (or make sure it will not go up during this
    process or you may lose data)
-1. Wait for any database replication to finish
-1. Modify the `gitlab.rb` for both nodes to reflect their new statuses
 1. Log-in to your secondary node with a user with `sudo` permission
+1. Modify the `gitlab.rb` to reflect its new status
 1. Run `sudo gitlab-ctl promote-to-primary-node`
 
 To bring your old primary node back into use as a working secondary, you need to
