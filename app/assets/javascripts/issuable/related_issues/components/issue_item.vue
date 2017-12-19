@@ -1,5 +1,4 @@
 <script>
-import eventHub from '../event_hub';
 import relatedIssueMixin from '../mixins/related_issues_mixin';
 
 export default {

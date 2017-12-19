@@ -34,7 +34,6 @@ const SPACE_FACTOR = 1;
 
 export default {
   name: 'RelatedIssuesRoot',
-
   props: {
     endpoint: {
       type: String,
@@ -66,7 +65,6 @@ export default {
       default: true,
     },
   },
-
   data() {
     this.store = new RelatedIssuesStore();
 
@@ -78,24 +76,21 @@ export default {
       inputValue: '',
     };
   },
-
   components: {
     relatedIssuesBlock: RelatedIssuesBlock,
   },
-
   computed: {
     autoCompleteSources() {
       if (!this.allowAutoComplete) return {};
       return gl.GfmAutoComplete && gl.GfmAutoComplete.dataSources;
     },
   },
-
   methods: {
     onRelatedIssueRemoveRequest(idToRemove) {
       const issueToRemove = _.find(this.state.relatedIssues, issue => issue.id === idToRemove);
 
       if (issueToRemove) {
-        this.service.removeRelatedIssue(issueToRemove.relation_path)
+        RelatedIssuesService.remove(issueToRemove.relation_path)
           .then(res => res.json())
           .then((data) => {
             this.store.setRelatedIssues(data.issues);
@@ -161,16 +156,15 @@ export default {
         });
     },
     saveIssueOrder({ issueId, newOrder = 1 }) {
-      const issue = _.find(this.state.relatedIssues, issue => issue.id === issueId);
+      const issueToReorder = _.find(this.state.relatedIssues, issue => issue.id === issueId);
 
-      if (issue) {
-        this.service.saveRelatedIssueOrder({
-          endpoint: issue.relation_path,
+      if (issueToReorder) {
+        RelatedIssuesService.saveOrder({
+          endpoint: issueToReorder.relation_path,
           position: newOrder,
         });
       }
     },
-
     onInput(newValue, caretPos) {
       const rawReferences = newValue
         .split(/\s/);
@@ -210,7 +204,6 @@ export default {
       this.inputValue = '';
     },
   },
-
   created() {
     eventHub.$on('relatedIssue-removeRequest', this.onRelatedIssueRemoveRequest);
     eventHub.$on('toggleAddRelatedIssuesForm', this.onToggleAddRelatedIssuesForm);
@@ -223,7 +216,6 @@ export default {
     this.service = new RelatedIssuesService(this.endpoint);
     this.fetchRelatedIssues();
   },
-
   beforeDestroy() {
     eventHub.$off('relatedIssue-removeRequest', this.onRelatedIssueRemoveRequest);
     eventHub.$off('toggleAddRelatedIssuesForm', this.onToggleAddRelatedIssuesForm);

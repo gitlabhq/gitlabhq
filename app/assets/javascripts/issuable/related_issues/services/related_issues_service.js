@@ -18,7 +18,7 @@ class RelatedIssuesService {
     });
   }
 
-  saveRelatedIssueOrder({ endpoint, position }) {
+  static saveOrder({ endpoint, position }) {
     return Vue.http.put(endpoint, {
       epic: {
         position,
@@ -26,8 +26,7 @@ class RelatedIssuesService {
     });
   }
 
-  // eslint-disable-next-line class-methods-use-this
-  removeRelatedIssue(endpoint) {
+  static remove(endpoint) {
     return Vue.http.delete(endpoint);
   }
 }

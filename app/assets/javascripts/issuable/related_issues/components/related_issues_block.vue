@@ -1,4 +1,5 @@
 <script>
+import Sortable from 'vendor/Sortable';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
 import eventHub from '../event_hub';
