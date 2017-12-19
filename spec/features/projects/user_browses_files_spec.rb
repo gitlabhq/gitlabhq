@@ -30,14 +30,6 @@ describe 'User browses files' do
       expect(page).to have_content('LICENSE')
     end
 
-    it 'shows the "Browse directory" link' do
-      click_link('files')
-      click_link('History')
-
-      expect(page).to have_link('Browse directory')
-      expect(page).not_to have_link('Browse Code')
-    end
-
     it 'shows the "Browse file" link' do
       page.within('.tree-table') do
         click_link('README.md')
@@ -48,11 +40,11 @@ describe 'User browses files' do
       expect(page).not_to have_link('Browse files')
     end
 
-    it 'shows the "Browse Code" link' do
+    it 'shows the "Browse files" link' do
       click_link('History')
 
       expect(page).to have_link('Browse files')
-      expect(page).not_to have_link('Browse directory')
+      expect(page).not_to have_link('Browse file', href: /\/blob\//) # extra `href` needs because rspec thinks 'Browse files' == 'Browse file'
     end
 
     it 'redirects to the permalink URL' do
