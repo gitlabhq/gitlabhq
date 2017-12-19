@@ -258,7 +258,7 @@ describe 'Related issues', :js do
 
           wait_for_requests
 
-          items = all('.js-related-issues-token-list-item .js-issue-token-title')
+          items = all('.js-related-issues-token-list-item .issue-token-title-text')
 
           # Form gets hidden after submission
           expect(page).not_to have_selector('.js-add-related-issues-form-area')
@@ -275,7 +275,7 @@ describe 'Related issues', :js do
 
           wait_for_requests
 
-          items = all('.js-related-issues-token-list-item .js-issue-token-title')
+          items = all('.js-related-issues-token-list-item .issue-token-title-text')
 
           expect(items.count).to eq(1)
           expect(items[0].text).to eq(issue_project_b_a.title)
@@ -289,7 +289,7 @@ describe 'Related issues', :js do
 
           wait_for_requests
 
-          items = all('.js-related-issues-token-list-item .js-issue-token-title')
+          items = all('.js-related-issues-token-list-item .issue-token-title-text')
 
           expect(items.count).to eq(1)
           expect(items[0].text).to eq(issue_project_b_a.title)
@@ -311,7 +311,7 @@ describe 'Related issues', :js do
         end
 
         it 'shows related issues' do
-          items = all('.js-related-issues-token-list-item .js-issue-token-title')
+          items = all('.js-related-issues-token-list-item .issue-token-title-text')
 
           expect(items.count).to eq(2)
           expect(items[0].text).to eq(issue_b.title)
@@ -319,7 +319,7 @@ describe 'Related issues', :js do
         end
 
         it 'allows us to remove a related issues' do
-          items_before = all('.js-related-issues-token-list-item .js-issue-token-title')
+          items_before = all('.js-related-issues-token-list-item .issue-token-title-text')
 
           expect(items_before.count).to eq(2)
 
@@ -327,7 +327,7 @@ describe 'Related issues', :js do
 
           wait_for_requests
 
-          items_after = all('.js-related-issues-token-list-item .js-issue-token-title')
+          items_after = all('.js-related-issues-token-list-item .issue-token-title-text')
 
           expect(items_after.count).to eq(1)
         end
@@ -339,7 +339,7 @@ describe 'Related issues', :js do
 
           wait_for_requests
 
-          items = all('.js-related-issues-token-list-item .js-issue-token-title')
+          items = all('.js-related-issues-token-list-item .issue-token-title-text')
 
           expect(items.count).to eq(3)
           expect(items[0].text).to eq(issue_b.title)
@@ -355,7 +355,7 @@ describe 'Related issues', :js do
 
           wait_for_requests
 
-          items = all('.js-related-issues-token-list-item .js-issue-token-title')
+          items = all('.js-related-issues-token-list-item .issue-token-title-text')
 
           expect(items.count).to eq(2)
           expect(items[0].text).to eq(issue_b.title)
@@ -370,7 +370,7 @@ describe 'Related issues', :js do
 
           wait_for_requests
 
-          items = all('.js-related-issues-token-list-item .js-issue-token-title')
+          items = all('.js-related-issues-token-list-item .issue-token-title-text')
 
           expect(items.count).to eq(2)
           expect(items[0].text).to eq(issue_b.title)
