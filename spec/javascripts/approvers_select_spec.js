@@ -1,4 +1,4 @@
-import ApproversSelect from '~/approvers_select';
+import ApproversSelect from 'ee/approvers_select';
 import ClassSpecHelper from './helpers/class_spec_helper';
 
 describe('ApproversSelect', () => {

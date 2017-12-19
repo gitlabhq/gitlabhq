@@ -1,8 +1,8 @@
 /* eslint-disable class-methods-use-this, no-unneeded-ternary, quote-props, no-new */
 
-import UsersSelect from './users_select';
-import groupsSelect from './groups_select';
-import projectSelect from './project_select';
+import UsersSelect from '~/users_select';
+import groupsSelect from '~/groups_select';
+import projectSelect from '~/project_select';
 
 class AuditLogs {
   constructor() {

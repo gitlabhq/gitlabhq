@@ -24,15 +24,12 @@ import projectAvatar from './project_avatar';
 import MergeRequest from './merge_request';
 import Compare from './compare';
 import initCompareAutocomplete from './compare_autocomplete';
-/* global PathLocks */
 import ProjectFindFile from './project_find_file';
 import ProjectNew from './project_new';
 import projectImport from './project_import';
 import Labels from './labels';
 import LabelManager from './label_manager';
 import Sidebar from './right_sidebar';
-/* global WeightSelect */
-/* global AdminEmailSelect */
 
 import IssuableTemplateSelectors from './templates/issuable_template_selectors';
 import Flash from './flash';
@@ -100,10 +97,15 @@ import SearchAutocomplete from './search_autocomplete';
 import Activities from './activities';
 
 // EE-only
-import ApproversSelect from './approvers_select';
-import AuditLogs from './audit_logs';
-import initGeoInfoModal from './init_geo_info_modal';
-import initGroupAnalytics from './init_group_analytics';
+import ApproversSelect from 'ee/approvers_select'; // eslint-disable-line import/first
+import AuditLogs from 'ee/audit_logs'; // eslint-disable-line import/first
+import initGeoInfoModal from 'ee/init_geo_info_modal'; // eslint-disable-line import/first
+import initGroupAnalytics from 'ee/init_group_analytics'; // eslint-disable-line import/first
+import AdminEmailSelect from 'ee/admin_email_select'; // eslint-disable-line import/first
+import initPathLocks from 'ee/path_locks'; // eslint-disable-line import/first
+import WeightSelect from 'ee/weight_select'; // eslint-disable-line import/first
+import initApprovals from 'ee/approvals'; // eslint-disable-line import/first
+import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line import/first
 
 (function() {
   var Dispatcher;
@@ -147,7 +149,7 @@ import initGroupAnalytics from './init_group_analytics';
             path,
            } = JSON.parse(dataEl.innerHTML);
 
-          PathLocks.init(toggle_path, path);
+          initPathLocks(toggle_path, path);
         }
       }
 
@@ -324,6 +326,8 @@ import initGroupAnalytics from './init_group_analytics';
           new MilestoneSelect();
           new IssuableTemplateSelectors();
           new AutoWidthDropdownSelect($('.js-target-branch-select')).init();
+
+          initApprovals();
           break;
         case 'projects:tags:new':
           new ZenMode();
@@ -496,7 +500,7 @@ import initGroupAnalytics from './init_group_analytics';
           new NewCommitForm($('.js-create-dir-form'));
 
           if (document.querySelector('.js-tree-content').dataset.pathLocksAvailable === 'true') {
-            PathLocks.init(
+            initPathLocks(
               document.querySelector('.js-tree-content').dataset.pathLocksToggle,
               document.querySelector('.js-tree-content').dataset.pathLocksPath,
             );
@@ -658,6 +662,9 @@ import initGroupAnalytics from './init_group_analytics';
         case 'groups:analytics:show':
           initGroupAnalytics();
           break;
+        case 'groups:ldap_group_links:index':
+          initLDAPGroupsSelect();
+          break;
       }
       switch (path[0]) {
         case 'sessions':
@@ -684,6 +691,13 @@ import initGroupAnalytics from './init_group_analytics';
               break;
             case 'groups':
               new UsersSelect();
+
+              switch (path[2]) {
+                case 'edit':
+                  initLDAPGroupsSelect();
+                  break;
+              }
+
               break;
             case 'projects':
               document.querySelectorAll('.js-namespace-select')

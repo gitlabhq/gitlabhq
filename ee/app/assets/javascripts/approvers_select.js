@@ -1,4 +1,4 @@
-import Api from './api';
+import Api from '~/api';
 
 export default class ApproversSelect {
   constructor() {

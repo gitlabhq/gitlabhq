@@ -1,7 +1,7 @@
 <script>
-/* global BoardService, WeightSelect */
+/* global BoardService */
 
-import '~/weight_select';
+import WeightSelect from 'ee/weight_select';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 
 const ANY_WEIGHT = 'Any Weight';
