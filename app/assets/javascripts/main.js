@@ -40,6 +40,7 @@ import './confirm_danger_modal';
 import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
 import initTodoToggle from './header';
+import conditionallyLoadProjectDropdown from './projects_dropdown_loader';
 import initImporterStatus from './importer_status';
 import './layout_nav';
 import LazyLoader from './lazy_loader';
@@ -47,7 +48,6 @@ import './line_highlighter';
 import initLogoAnimation from './logo';
 import './milestone_select';
 import './preview_markdown';
-import './projects_dropdown';
 import './render_gfm';
 import initBreadcrumbs from './breadcrumb';
 
@@ -92,6 +92,7 @@ $(function () {
   initImporterStatus();
   initTodoToggle();
   initLogoAnimation();
+  conditionallyLoadProjectDropdown();
 
   // Set the default path for all cookies to GitLab's root directory
   Cookies.defaults.path = gon.relative_url_root || '/';
