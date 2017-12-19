@@ -30,6 +30,9 @@
       shouldRenderContent() {
         return !this.isLoading && Object.keys(this.job).length;
       },
+      wasTriggered() {
+        return this.job.started;
+      },
     },
     methods: {
       getActions() {
@@ -63,7 +66,8 @@
       :time="job.created_at"
       :user="job.user"
       :actions="actions"
-      :hasSidebarButton="true"
+      :has-sidebar-button="true"
+      :triggered="wasTriggered"
       />
     <loading-icon
       v-if="isLoading"
