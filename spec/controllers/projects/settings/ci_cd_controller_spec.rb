@@ -17,6 +17,17 @@ describe Projects::Settings::CiCdController do
       expect(response).to have_gitlab_http_status(200)
       expect(response).to render_template(:show)
     end
+
+    it 'sets assignable project runners' do
+      group = create(:group, runners: [create(:ci_runner)], parent: create(:group))
+      group.add_master(user)
+      project_runner = create(:ci_runner, projects: [create(:project, group: group)])
+      create(:ci_runner, :shared)
+
+      get :show, namespace_id: project.namespace, project_id: project
+
+      expect(assigns(:assignable_runners)).to eq [project_runner]
+    end
   end
 
   describe '#reset_cache' do

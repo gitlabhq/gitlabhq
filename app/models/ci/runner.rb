@@ -27,9 +27,13 @@ module Ci
     scope :paused, -> { where(active: false) }
     scope :online, -> { where('contacted_at > ?', contact_time_deadline) }
     scope :ordered, -> { order(id: :desc) }
+
     scope :belonging_to_project, -> (project_id) {
       joins(:runner_projects).where(ci_runner_projects: { project_id: project_id })
     }
+
+    scope :belonging_to_any_project, -> { joins(:runner_projects) }
+
     scope :belonging_to_group, -> (project_id) {
       project_groups = ::Group.joins(:projects).where(projects: { id: project_id })
       hierarchy_groups = Gitlab::GroupHierarchy.new(project_groups).base_and_ancestors
@@ -46,7 +50,8 @@ module Ci
       # FIXME: That `to_sql` is needed to workaround a weird Rails bug.
       #        Without that, placeholders would miss one and couldn't match.
       where(locked: false)
-        .where.not("id IN (#{project.runners.select(:id).to_sql})").specific
+        .where.not("ci_runners.id IN (#{project.runners.select(:id).to_sql})")
+        .specific
     end
 
     validate :tag_constraints
