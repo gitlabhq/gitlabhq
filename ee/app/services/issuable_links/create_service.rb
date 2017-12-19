@@ -12,14 +12,22 @@ module IssuableLinks
       end
 
       create_issue_links
+      after_create
       success
     end
 
     private
 
     def create_issue_links
+      @created_links = []
+
       referenced_issues.each do |referenced_issue|
-        create_notes(referenced_issue) if relate_issues(referenced_issue)
+        link = relate_issues(referenced_issue)
+
+        next unless link.persisted?
+
+        @created_links << link
+        create_notes(referenced_issue)
       end
     end
 
@@ -59,6 +67,9 @@ module IssuableLinks
 
     def relate_issues(referenced_issue)
       raise NotImplementedError
+    end
+
+    def after_create
     end
   end
 end

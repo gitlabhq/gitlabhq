@@ -25,5 +25,9 @@ module IssueLinks
     def can_destroy_issue_link?(project)
       Ability.allowed?(current_user, :admin_issue_link, project)
     end
+
+    def to_hash(issue)
+      super.merge(destroy_relation_path: destroy_relation_path(issue))
+    end
   end
 end

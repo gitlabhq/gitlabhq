@@ -34,7 +34,7 @@ describe Groups::EpicIssuesController do
           'state' => issue.state,
           'reference' => "#{project.full_path}##{issue.iid}",
           'path' => "/#{project.full_path}/issues/#{issue.iid}",
-          'destroy_relation_path' => "/groups/#{group.full_path}/-/epics/#{epic.iid}/issues/#{epic_issues.id}"
+          'relation_path' => "/groups/#{group.full_path}/-/epics/#{epic.iid}/issues/#{epic_issues.id}"
          }
       ]
       expect(JSON.parse(response.body)).to eq(expected_result)
@@ -145,13 +145,13 @@ describe Groups::EpicIssuesController do
     end
   end
 
-  describe 'PUT #order' do
+  describe 'PUT #update' do
     let(:issue2) { create(:issue, project: project) }
     let!(:epic_issue1) { create(:epic_issue, epic: epic, issue: issue, position: 1) }
     let!(:epic_issue2) { create(:epic_issue, epic: epic, issue: issue2, position: 2) }
 
     subject do
-      put :order, group_id: group, epic_id: epic.to_param, id: epic_issue1.id, position: 2
+      put :update, group_id: group, epic_id: epic.to_param, id: epic_issue1.id, position: 1
     end
 
     context 'when user has permissions to admin the epic' do
@@ -184,7 +184,7 @@ describe Groups::EpicIssuesController do
 
     context 'when the epic from the association does not equal epic from the path' do
       subject do
-        put :order, group_id: group, epic_id: another_epic.to_param, id: epic_issue1.id, position: 2
+        put :update, group_id: group, epic_id: another_epic.to_param, id: epic_issue1.id, position: 2
       end
 
       let(:another_epic) { create(:epic, group: group) }

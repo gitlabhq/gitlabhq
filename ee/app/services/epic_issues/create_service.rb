@@ -2,10 +2,19 @@ module EpicIssues
   class CreateService < IssuableLinks::CreateService
     private
 
+    def after_create
+      issuable.epic_issues
+        .where('id NOT IN (?)', @created_links.map(&:id))
+        .update_all("position = position + #{@created_links.count}")
+    end
+
     def relate_issues(referenced_issue)
-      link = EpicIssue.find_or_initialize_by(issue: referenced_issue)
+      link = existing_links.find { |link| link.issue == referenced_issue } || EpicIssue.new(issue: referenced_issue)
       link.epic = issuable
-      link.save!
+      link.position = @created_links.count + 1
+      link.save
+
+      link
     end
 
     def create_notes(referenced_issue)
@@ -25,6 +34,10 @@ module EpicIssues
 
     def issuable_group_descendants
       @descendants ||= issuable.group.self_and_descendants
+    end
+
+    def existing_links
+      @existing_links ||= EpicIssue.where(issue_id: referenced_issues.map(&:id))
     end
   end
 end

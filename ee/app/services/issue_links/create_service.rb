@@ -1,7 +1,7 @@
 module IssueLinks
   class CreateService < IssuableLinks::CreateService
     def relate_issues(referenced_issue)
-      IssueLink.new(source: issuable, target: referenced_issue).save
+      IssueLink.create(source: issuable, target: referenced_issue)
     end
 
     def linkable_issues(issues)

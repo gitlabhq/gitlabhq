@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe EpicIssues::OrderService do
+describe EpicIssues::UpdateService do
   describe '#execute' do
     let(:user) { create(:user) }
     let(:group) { create(:group) }
@@ -24,30 +24,39 @@ describe EpicIssues::OrderService do
     end
 
     context 'moving issue to the first position' do
-      it 'orders issues correctly' do
-        order_issue(epic_issue3, 1)
+      context 'when all positions are filled' do
+        before do
+          order_issue(epic_issue3, 0)
+        end
 
-        expect(ordered_epics).to eq([epic_issue3, epic_issue1, epic_issue2, epic_issue4])
+        it 'orders issues correctly' do
+          expect(ordered_epics).to eq([epic_issue3, epic_issue1, epic_issue2, epic_issue4])
+        end
+
+        it 'updates all affected issues positions by 1' do
+          expect(epic_issue3.reload.position).to eq(1)
+          expect(epic_issue1.reload.position).to eq(2)
+          expect(epic_issue2.reload.position).to eq(3)
+          expect(epic_issue4.reload.position).to eq(4)
+        end
       end
 
-      context 'when some order values are missing ' do
+      context 'when some position values are missing ' do
         before do
           epic_issue1.update_attribute(:position, 3)
           epic_issue2.update_attribute(:position, 6)
           epic_issue3.update_attribute(:position, 10)
           epic_issue4.update_attribute(:position, 15)
+
+          order_issue(epic_issue3, 0)
         end
 
         it 'orders issues correctly' do
-          order_issue(epic_issue3, 1)
-
           expect(ordered_epics).to eq([epic_issue3, epic_issue1, epic_issue2, epic_issue4])
         end
 
         it 'updates all affected issues positions by 1' do
-          order_issue(epic_issue3, 1)
-
-          expect(epic_issue3.reload.position).to eq(1)
+          expect(epic_issue3.reload.position).to eq(3)
           expect(epic_issue1.reload.position).to eq(4)
           expect(epic_issue2.reload.position).to eq(7)
           expect(epic_issue4.reload.position).to eq(15)
@@ -56,10 +65,21 @@ describe EpicIssues::OrderService do
     end
 
     context 'moving issue to the third position' do
-      it 'orders issues correctly' do
-        order_issue(epic_issue1, 3)
+      context 'when all positions are filled' do
+        before do
+          order_issue(epic_issue1, 2)
+        end
 
-        expect(ordered_epics).to eq([epic_issue2, epic_issue3, epic_issue1, epic_issue4])
+        it 'orders issues correctly' do
+          expect(ordered_epics).to eq([epic_issue2, epic_issue3, epic_issue1, epic_issue4])
+        end
+
+        it 'updates all affected issues positions by 1' do
+          expect(epic_issue2.reload.position).to eq(1)
+          expect(epic_issue3.reload.position).to eq(2)
+          expect(epic_issue1.reload.position).to eq(3)
+          expect(epic_issue4.reload.position).to eq(4)
+        end
       end
 
       context 'when some order values are missing ' do
@@ -68,20 +88,18 @@ describe EpicIssues::OrderService do
           epic_issue2.update_attribute(:position, 6)
           epic_issue3.update_attribute(:position, 10)
           epic_issue4.update_attribute(:position, 15)
+
+          order_issue(epic_issue1, 2)
         end
 
         it 'orders issues correctly' do
-          order_issue(epic_issue1, 10)
-
           expect(ordered_epics).to eq([epic_issue2, epic_issue3, epic_issue1, epic_issue4])
         end
 
         it 'updates all affected issues positions by 1' do
-          order_issue(epic_issue3, 1)
-
-          expect(epic_issue3.reload.position).to eq(1)
-          expect(epic_issue1.reload.position).to eq(4)
-          expect(epic_issue2.reload.position).to eq(7)
+          expect(epic_issue2.reload.position).to eq(5)
+          expect(epic_issue3.reload.position).to eq(9)
+          expect(epic_issue1.reload.position).to eq(10)
           expect(epic_issue4.reload.position).to eq(15)
         end
       end

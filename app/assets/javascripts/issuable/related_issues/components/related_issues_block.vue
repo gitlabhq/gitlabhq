@@ -98,7 +98,7 @@ export default {
 
       this.$emit('saveReorder', {
         issueId: parseInt(event.item.dataset.key, 10),
-        newOrder: event.newIndex + 1,
+        newOrder: event.newIndex,
       });
     },
     addDraggingCursor() {

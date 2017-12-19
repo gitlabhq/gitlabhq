@@ -1,16 +1,16 @@
 module EpicIssues
-  class OrderService < BaseService
-    attr_reader :epic_issue, :current_user, :new_position, :old_position
+  class UpdateService < BaseService
+    attr_reader :epic_issue, :current_user, :old_position, :params
 
     def initialize(epic_issue, user, params)
       @epic_issue = epic_issue
       @current_user = user
-      @new_position = params[:position].to_i
       @old_position = epic_issue.position
+      @params = params
     end
 
     def execute
-      move_issue
+      move_issue if params[:position]
       success
     end
 
@@ -41,6 +41,13 @@ module EpicIssues
 
     def update_operator
       new_position > old_position ? '-' : '+'
+    end
+
+    def new_position
+      @new_position ||= begin
+        replacing_issue = epic.epic_issues.order(:position).limit(1).offset(params[:position])[0]
+        replacing_issue.position
+      end
     end
   end
 end
