@@ -6,7 +6,7 @@
       - addtotree_toggle_attributes = { href: '#', 'data-toggle': 'dropdown', 'data-target': '.add-to-tree-dropdown' }
     - else
       - addtotree_toggle_attributes = { title: _("You can only add files when you are on a branch"), data: { container: 'body' }, class: 'disabled has-tooltip' }
-  
+
   %ul.breadcrumb.repo-breadcrumb
     %li
       = link_to project_tree_path(@project, @ref) do
@@ -14,7 +14,7 @@
     - path_breadcrumbs do |title, path|
       %li
         = link_to truncate(title, length: 40), project_tree_path(@project, tree_join(@ref, path))
-  
+
     - if current_user
       %li
         %a.btn.add-to-tree{ addtotree_toggle_attributes }
@@ -58,7 +58,7 @@
                                                                                           continue:       continue_params)
                   = link_to fork_path, method: :post do
                     #{ _('New directory') }
-  
+
               %li.divider
               %li
                 = link_to new_project_branch_path(@project) do

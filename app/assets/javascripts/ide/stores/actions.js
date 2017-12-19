@@ -15,7 +15,7 @@ export const closeDiscardPopup = ({ commit }) =>
 export const discardAllChanges = ({ commit, getters, dispatch }) => {
   const changedFiles = getters.changedFiles;
 
-  changedFiles.forEach(file => {
+  changedFiles.forEach((file) => {
     commit(types.DISCARD_FILE_CHANGES, file);
 
     if (file.tempFile) {
@@ -66,7 +66,7 @@ export const setPanelCollapsedStatus = ({ commit }, { side, collapsed }) => {
 export const checkCommitStatus = ({ state }) =>
   service
     .getBranchData(state.currentProjectId, state.currentBranchId)
-    .then(data => {
+    .then((data) => {
       const { id } = data.commit;
       const selectedBranch =
         state.projects[state.currentProjectId].branches[state.currentBranchId];
@@ -85,7 +85,7 @@ export const commitChanges = (
 ) =>
   service
     .commit(state.currentProjectId, payload)
-    .then(data => {
+    .then((data) => {
       const { branch } = payload;
       if (!data.short_id) {
         flash(data.message);
@@ -122,7 +122,7 @@ export const commitChanges = (
           reference: data.id,
         });
 
-        getters.changedFiles.forEach(entry => {
+        getters.changedFiles.forEach((entry) => {
           commit(types.SET_LAST_COMMIT_DATA, {
             entry,
             lastCommit,

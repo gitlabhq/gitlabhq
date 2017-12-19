@@ -230,7 +230,7 @@ describe('Multi-file store actions', () => {
       store.state.currentProjectId = 'abcproject';
       store.state.currentBranchId = 'master';
       store.state.projects.abcproject = {
-        new_merge_request_path: 'newMergeRequestUrl?branch=',
+        web_url: 'webUrl',
         branches: {
           master: {
             workingReference: '1',
@@ -327,7 +327,7 @@ describe('Multi-file store actions', () => {
 
         store.dispatch('commitChanges', { payload, newMr: true })
           .then(() => {
-            expect(urlUtils.visitUrl).toHaveBeenCalledWith('newMergeRequestUrl?branch=master');
+            expect(urlUtils.visitUrl).toHaveBeenCalledWith('webUrl/merge_requests/new?merge_request%5Bsource_branch%5D=master');
 
             done();
           }).catch(done.fail);
