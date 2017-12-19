@@ -1,0 +1,8 @@
+%table.table-striped.table-bordered
+  - viewer.parse do |row, index|
+    %tr
+      - row.each do |column|
+        - if index == 0
+          %th= column
+        - else
+          %td= column
