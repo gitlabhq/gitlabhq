@@ -1,5 +1,5 @@
 module EE
-  module MergeRequestEntity
+  module MergeRequestWidgetEntity
     extend ActiveSupport::Concern
 
     prepended do

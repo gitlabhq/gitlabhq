@@ -1,11 +1,11 @@
 module QA
   module EE
-    module Scenario
+    module Factory
       module Geo
-        class Node < QA::Scenario::Template
+        class Node < QA::Factory::Base
           attr_accessor :address
 
-          def perform
+          def fabricate!
             QA::Page::Main::Login.act { sign_in_using_credentials }
             QA::Page::Main::Menu.act { go_to_admin_area }
             QA::Page::Admin::Menu.act { go_to_geo_nodes }

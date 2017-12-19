@@ -104,8 +104,8 @@ class GeoNodeStatus {
     graphItems.forEach((item) => {
       $itemEl.find(item.itemSel)
         .toggleClass('has-value has-tooltip', !!item.itemCount)
-        .attr('data-original-title', `${item.itemTooltip}: ${item.itemPercent}%`)
-        .text(item.itemCount || '')
+        .attr('data-original-title', `${item.itemTooltip}: ${item.itemCount}`)
+        .text(`${item.itemPercent}%` || '')
         .css('width', `${item.itemPercent}%`);
     });
   }
