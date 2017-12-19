@@ -2626,6 +2626,14 @@ describe Project do
           project.rename_repo
         end
       end
+
+      it 'updates project full path in .git/config' do
+        allow(project_storage).to receive(:rename_repo).and_return(true)
+
+        expect(project).to receive(:write_repository_config).with(:fullpath, project.full_path)
+
+        project.rename_repo
+      end
     end
 
     describe '#pages_path' do
@@ -2780,6 +2788,12 @@ describe Project do
             project.rename_repo
           end
         end
+      end
+
+      it 'updates project full path in .git/config' do
+        expect(project).to receive(:write_repository_config).with(:fullpath, project.full_path)
+
+        project.rename_repo
       end
     end
 

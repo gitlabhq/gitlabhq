@@ -1420,6 +1420,11 @@ class Project < ActiveRecord::Base
   end
 
   def after_rename_repo
+    # We'd need to keep track of project full path otherwise directory tree
+    # created with hashed storage enabled cannot be usefully imported using
+    # the import rake task.
+    write_repository_config(:fullpath, full_path)
+
     path_before_change = previous_changes['path'].first
 
     # We need to check if project had been rolled out to move resource to hashed storage or not and decide

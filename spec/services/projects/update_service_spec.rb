@@ -61,7 +61,7 @@ describe Projects::UpdateService do
         end
       end
 
-      context 'When project visibility is higher than parent group' do
+      context 'when project visibility is higher than parent group' do
         let(:group) { create(:group, visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
 
         before do
