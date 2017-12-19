@@ -21,7 +21,7 @@ module Issues
 
     def csv_builder
       @csv_builder ||=
-        CsvBuilder.new(@issues.includes(:author, :assignees, :timelogs), header_to_value_hash)
+        CsvBuilder.new(@issues.preload(:author, :assignees, :timelogs), header_to_value_hash)
     end
 
     private
