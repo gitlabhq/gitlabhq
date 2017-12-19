@@ -1432,6 +1432,11 @@ class Project < ActiveRecord::Base
     Gitlab::PagesTransfer.new.rename_project(path_before_change, self.path, namespace.full_path)
   end
 
+  def write_repository_config(key, value, prefix: :gitlab)
+    key = [prefix, key].compact.join('.')
+    repo.config[key] = value
+  end
+
   def rename_repo_notify!
     send_move_instructions(full_path_was)
     expires_full_path_cache
