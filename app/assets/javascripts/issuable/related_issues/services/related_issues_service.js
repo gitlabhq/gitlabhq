@@ -6,7 +6,6 @@ Vue.use(vueResource);
 class RelatedIssuesService {
   constructor(endpoint) {
     this.relatedIssuesResource = Vue.resource(endpoint);
-    this.reorderIssuesResource = Vue.resource(`${endpoint}{/id}/order`);
   }
 
   fetchRelatedIssues() {
@@ -19,11 +18,11 @@ class RelatedIssuesService {
     });
   }
 
-  saveIssueOrder(issueId, position) {
-    return this.reorderIssuesResource.update({
-      id: issueId,
-    }, {
-      position,
+  saveRelatedIssueOrder({ endpoint, position }) {
+    return Vue.http.put(endpoint, {
+      epic: {
+        position,
+      },
     });
   }
 

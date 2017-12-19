@@ -95,7 +95,7 @@ export default {
       const issueToRemove = _.find(this.state.relatedIssues, issue => issue.id === idToRemove);
 
       if (issueToRemove) {
-        this.service.removeRelatedIssue(issueToRemove.destroy_relation_path)
+        this.service.removeRelatedIssue(issueToRemove.relation_path)
           .then(res => res.json())
           .then((data) => {
             this.store.setRelatedIssues(data.issues);
@@ -164,7 +164,10 @@ export default {
       const issue = _.find(this.state.relatedIssues, issue => issue.id === issueId);
 
       if (issue) {
-        this.service.saveIssueOrder(issue.epic_issue_id, newOrder);
+        this.service.saveRelatedIssueOrder({
+          endpoint: issue.related_path,
+          position: newOrder,
+        });
       }
     },
 
