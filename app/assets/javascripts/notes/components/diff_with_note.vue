@@ -63,7 +63,8 @@
       class="diff-content code js-syntax-highlight"
     >
       <table>
-        <tr
+        <component
+          :is="html.className ? 'tr' : 'template'"
           :class="html.className"
           v-for="html in diffRows"
           v-html="html.outerHTML"

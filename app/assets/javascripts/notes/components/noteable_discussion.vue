@@ -91,7 +91,7 @@
         return '#'; // FIXME
       },
       isDiffDiscussion() {
-        return (this.discussion.diff_discussion && this.discussion.diff_file);
+        return (this.diff_discussion && this.diff_file);
       },
       wrapperComponent() {
         if (this.isDiffDiscussion) {
