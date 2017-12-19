@@ -8,7 +8,7 @@ module API
 
     helpers do
       def find_merge_requests(args = {})
-        args = params.merge(args)
+        args = declared_params.merge(args)
 
         args[:milestone_title] = args.delete(:milestone)
         args[:label_name] = args.delete(:labels)
