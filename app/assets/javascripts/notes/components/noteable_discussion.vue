@@ -13,10 +13,7 @@
   import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
   import autosave from '../mixins/autosave';
   import noteable from '../mixins/noteable';
-<<<<<<< HEAD
-=======
   import resolvable from '../mixins/resolvable';
->>>>>>> origin/acet-mr-notes-index
   import tooltip from '../../vue_shared/directives/tooltip';
   import resolveDiscussionsSvg from 'icons/_icon_mr_issue.svg';
 
@@ -24,19 +21,13 @@
     mixins: [
       autosave,
       noteable,
-<<<<<<< HEAD
-=======
       resolvable,
->>>>>>> origin/acet-mr-notes-index
     ],
     data() {
       return {
         isReplying: false,
         isResolving: false,
-<<<<<<< HEAD
-=======
         resolveAsThread: true,
->>>>>>> origin/acet-mr-notes-index
       };
     },
     components: {
