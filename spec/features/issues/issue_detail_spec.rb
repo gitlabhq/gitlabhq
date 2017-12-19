@@ -24,7 +24,7 @@ feature 'Issue Detail', :js do
       visit project_issue_path(project, issue)
       wait_for_requests
 
-      click_link 'Edit'
+      page.find('.js-issuable-edit').click
       fill_in 'issuable-title', with: 'issue title'
       click_button 'Save'
       wait_for_requests
