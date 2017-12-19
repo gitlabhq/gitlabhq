@@ -8,7 +8,7 @@ module BlobHelper
     %w(credits changelog news copying copyright license authors)
   end
 
-  def edit_path(project = @project, ref = @ref, path = @path, options = {})
+  def edit_blob_path(project = @project, ref = @ref, path = @path, options = {})
     project_edit_blob_path(project,
                                      tree_join(ref, path),
                                      options[:link_opts])
@@ -26,10 +26,10 @@ module BlobHelper
       button_tag 'Edit', class: "#{common_classes} disabled has-tooltip", title: "You can only edit files when you are on a branch", data: { container: 'body' }
     # This condition applies to anonymous or users who can edit directly
     elsif !current_user || (current_user && can_modify_blob?(blob, project, ref))
-      link_to 'Edit', edit_path(project, ref, path, options), class: "#{common_classes} btn-sm"
+      link_to 'Edit', edit_blob_path(project, ref, path, options), class: "#{common_classes} btn-sm"
     elsif current_user && can?(current_user, :fork_project, project)
       continue_params = {
-        to: edit_path(project, ref, path, options),
+        to: edit_blob_path(project, ref, path, options),
         notice: edit_in_new_fork_notice,
         notice_now: edit_in_new_fork_notice_now
       }
@@ -42,7 +42,7 @@ module BlobHelper
   end
 
   def ide_edit_path(project = @project, ref = @ref, path = @path, options = {})
-    "#{ide_path}/project#{edit_path(project, ref, path, options)}"
+    "#{ide_path}/project#{edit_blob_path(project, ref, path, options)}"
   end
 
   def ide_edit_text
@@ -50,7 +50,7 @@ module BlobHelper
   end
 
   def ide_blob_link(project = @project, ref = @ref, path = @path, options = {})
-    return unless show_new_repo?
+    return unless show_new_ide?
 
     blob = options.delete(:blob)
     blob ||= project.repository.blob_at(ref, path) rescue nil
@@ -62,7 +62,7 @@ module BlobHelper
     if !on_top_of_branch?(project, ref)
       button_tag ide_edit_text, class: "#{common_classes} disabled has-tooltip", title: _('You can only edit files when you are on a branch'), data: { container: 'body' }
     # This condition applies to anonymous or users who can edit directly
-    elsif !current_user || (current_user && can_modify_blob?(blob, project, ref))
+    elsif current_user && can_modify_blob?(blob, project, ref)
       link_to ide_edit_text, ide_edit_path(project, ref, path, options), class: "#{common_classes} btn-sm"
     elsif current_user && can?(current_user, :fork_project, project)
       continue_params = {
@@ -73,8 +73,8 @@ module BlobHelper
       fork_path = project_forks_path(project, namespace_key: current_user.namespace.id, continue: continue_params)
 
       button_tag ide_edit_text,
-        class: "#{common_classes}",
-        data: { action: 'edit', fork_path: fork_path }
+        class: common_classes,
+        data: { fork_path: fork_path }
     end
   end
 

@@ -4,4 +4,10 @@
   %body{ class: "#{user_application_theme} #{@body_class}", data: { page: body_data_page } }
     = render 'peek/bar'
     = render "layouts/header/default"
+    = render 'shared/outdated_browser'
+    .mobile-overlay
+    .alert-wrapper
+      = render "layouts/broadcast"
+      = yield :flash_message
+      = render "layouts/flash"
     = yield

@@ -6,14 +6,16 @@ import * as types from './mutation_types';
 
 export const redirectToUrl = (_, url) => visitUrl(url);
 
-export const setInitialData = ({ commit }, data) => commit(types.SET_INITIAL_DATA, data);
+export const setInitialData = ({ commit }, data) =>
+  commit(types.SET_INITIAL_DATA, data);
 
-export const closeDiscardPopup = ({ commit }) => commit(types.TOGGLE_DISCARD_POPUP, false);
+export const closeDiscardPopup = ({ commit }) =>
+  commit(types.TOGGLE_DISCARD_POPUP, false);
 
 export const discardAllChanges = ({ commit, getters, dispatch }) => {
   const changedFiles = getters.changedFiles;
 
-  changedFiles.forEach((file) => {
+  changedFiles.forEach(file => {
     commit(types.DISCARD_FILE_CHANGES, file);
 
     if (file.tempFile) {
@@ -26,7 +28,10 @@ export const closeAllFiles = ({ state, dispatch }) => {
   state.openFiles.forEach(file => dispatch('closeFile', { file }));
 };
 
-export const toggleEditMode = ({ state, commit, getters, dispatch }, force = false) => {
+export const toggleEditMode = (
+  { state, commit, getters, dispatch },
+  force = false,
+) => {
   const changedFiles = getters.changedFiles;
 
   if (changedFiles.length && !force) {
@@ -58,69 +63,84 @@ export const setPanelCollapsedStatus = ({ commit }, { side, collapsed }) => {
   }
 };
 
-export const checkCommitStatus = ({ state }) => service.getBranchData(
-  state.currentProjectId,
-  state.currentBranchId,
-)
-  .then((data) => {
-    const { id } = data.commit;
-    const selectedBranch = state.projects[state.currentProjectId].branches[state.currentBranchId];
+export const checkCommitStatus = ({ state }) =>
+  service
+    .getBranchData(state.currentProjectId, state.currentBranchId)
+    .then(data => {
+      const { id } = data.commit;
+      const selectedBranch =
+        state.projects[state.currentProjectId].branches[state.currentBranchId];
 
-    if (selectedBranch.workingReference !== id) {
-      return true;
-    }
+      if (selectedBranch.workingReference !== id) {
+        return true;
+      }
 
-    return false;
-  })
-  .catch(() => flash('Error checking branch data. Please try again.'));
+      return false;
+    })
+    .catch(() => flash('Error checking branch data. Please try again.'));
 
-export const commitChanges = ({ commit, state, dispatch, getters }, { payload, newMr }) =>
-  service.commit(state.currentProjectId, payload)
-  .then((data) => {
-    const { branch } = payload;
-    if (!data.short_id) {
-      flash(data.message);
-      return;
-    }
+export const commitChanges = (
+  { commit, state, dispatch, getters },
+  { payload, newMr },
+) =>
+  service
+    .commit(state.currentProjectId, payload)
+    .then(data => {
+      const { branch } = payload;
+      if (!data.short_id) {
+        flash(data.message);
+        return;
+      }
 
-    const selectedProject = state.projects[state.currentProjectId];
-    const lastCommit = {
-      commit_path: `${selectedProject.web_url}/commit/${data.id}`,
-      commit: {
-        message: data.message,
-        authored_date: data.committed_date,
-      },
-    };
+      const selectedProject = state.projects[state.currentProjectId];
+      const lastCommit = {
+        commit_path: `${selectedProject.web_url}/commit/${data.id}`,
+        commit: {
+          message: data.message,
+          authored_date: data.committed_date,
+        },
+      };
 
-    flash(`Your changes have been committed. Commit ${data.short_id} with ${data.stats.additions} additions, ${data.stats.deletions} deletions.`, 'notice');
+      flash(
+        `Your changes have been committed. Commit ${data.short_id} with ${
+          data.stats.additions
+        } additions, ${data.stats.deletions} deletions.`,
+        'notice',
+      );
 
-    if (newMr) {
-      dispatch('redirectToUrl', `${selectedProject.new_merge_request_path}${branch}`);
-    } else {
-      commit(types.SET_BRANCH_WORKING_REFERENCE, {
-        projectId: state.currentProjectId,
-        branchId: state.currentBranchId,
-        reference: data.id,
-      });
-
-      getters.changedFiles.forEach((entry) => {
-        commit(types.SET_LAST_COMMIT_DATA, {
-          entry,
-          lastCommit,
+      if (newMr) {
+        dispatch(
+          'redirectToUrl',
+          `${
+            selectedProject.web_url
+          }/merge_requests/new?merge_request%5Bsource_branch%5D=${branch}`,
+        );
+      } else {
+        commit(types.SET_BRANCH_WORKING_REFERENCE, {
+          projectId: state.currentProjectId,
+          branchId: state.currentBranchId,
+          reference: data.id,
         });
-      });
 
-      dispatch('discardAllChanges');
-      dispatch('closeAllFiles');
+        getters.changedFiles.forEach(entry => {
+          commit(types.SET_LAST_COMMIT_DATA, {
+            entry,
+            lastCommit,
+          });
+        });
 
-      window.scrollTo(0, 0);
-    }
-  })
-  .catch(() => flash('Error committing changes. Please try again.'));
+        dispatch('discardAllChanges');
+        dispatch('closeAllFiles');
 
-export const createTempEntry = ({ state, dispatch }, {
-  projectId, branchId, parent, name, type, content = '', base64 = false,
-}) => {
+        window.scrollTo(0, 0);
+      }
+    })
+    .catch(() => flash('Error committing changes. Please try again.'));
+
+export const createTempEntry = (
+  { state, dispatch },
+  { projectId, branchId, parent, name, type, content = '', base64 = false },
+) => {
   const selectedParent = parent || state.trees[`${projectId}/${branchId}`];
   if (type === 'tree') {
     dispatch('createTempTree', {

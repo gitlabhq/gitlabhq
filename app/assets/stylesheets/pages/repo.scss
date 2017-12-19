@@ -36,6 +36,10 @@
   }
 }
 
+.with-performance-bar .ide-view {
+  height: calc(100vh - #{$header-height});
+}
+
 .ide-file-list {
   flex: 1;
 

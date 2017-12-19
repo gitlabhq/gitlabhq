@@ -3,9 +3,9 @@
     = render 'shared/ref_switcher', destination: 'tree', path: @path, show_create: true
 
     - if on_top_of_branch?
-    - addtotree_toggle_attributes = { href: '#', 'data-toggle': 'dropdown', 'data-target': '.add-to-tree-dropdown' }
-  - else
-    - addtotree_toggle_attributes = { title: _("You can only add files when you are on a branch"), data: { container: 'body' }, class: 'disabled has-tooltip' }
+      - addtotree_toggle_attributes = { href: '#', 'data-toggle': 'dropdown', 'data-target': '.add-to-tree-dropdown' }
+    - else
+      - addtotree_toggle_attributes = { title: _("You can only add files when you are on a branch"), data: { container: 'body' }, class: 'disabled has-tooltip' }
   
   %ul.breadcrumb.repo-breadcrumb
     %li
@@ -68,12 +68,10 @@
                   #{ _('New tag') }
 
 .tree-controls
-  - if show_new_repo?
+  - if show_new_ide?
     = succeed " " do
       = link_to ide_edit_path(@project, @id), class: 'btn btn-default' do
-        = _('Multi Edit')
-        %span.label.label-primary
-          = _('Beta')
+        = ide_edit_text
 
   = link_to s_('Commits|History'), project_commits_path(@project, @id), class: 'btn'
 

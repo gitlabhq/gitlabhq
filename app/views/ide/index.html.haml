@@ -1,6 +1,3 @@
-- breadcrumb_title "IDE"
-- @no_container = true
-
 - page_title 'IDE'
 
 - content_for :page_specific_javascripts do
@@ -12,4 +9,4 @@
 #ide.ide-loading
   .text-center
     = icon('spinner spin 2x')
-    %h2.clgray _('IDE Loading ...')
+    %h2.clgray= _('IDE Loading ...')
