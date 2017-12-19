@@ -29,10 +29,10 @@ export default {
     },
   },
   methods: {
-    resolveHandler() {
+    resolveHandler(resolvedState = false) {
       this.isResolving = true;
       const endpoint = this.note.resolve_path || `${this.note.path}/resolve`;
-      const isResolved = this.discussionResolved;
+      const isResolved = this.discussionResolved || resolvedState;
       const discussion = this.resolveAsThread;
 
       this.toggleResolveNote({ endpoint, isResolved, discussion })

@@ -230,7 +230,7 @@
                         class="btn-group"
                         role="group">
                         <button
-                          @click="resolveHandler"
+                          @click="resolveHandler()"
                           type="button"
                           class="btn btn-default">
                             <i
