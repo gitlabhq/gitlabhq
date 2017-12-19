@@ -52,6 +52,7 @@ module Gitlab
         )
         response = GitalyClient.call(@repository.storage, :operation_service,
           :user_create_branch, request)
+
         if response.pre_receive_error.present?
           raise Gitlab::Git::HooksService::PreReceiveError.new(response.pre_receive_error)
         end

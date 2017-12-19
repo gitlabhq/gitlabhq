@@ -1069,6 +1069,7 @@ class Repository
           else
             cache.fetch(key, &block)
           end
+
         instance_variable_set(ivar, value)
       rescue Rugged::ReferenceError, Gitlab::Git::Repository::NoRepository
         # Even if the above `#exists?` check passes these errors might still

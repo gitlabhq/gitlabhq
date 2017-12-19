@@ -224,6 +224,7 @@ module Network
           space_base = parents.first.space
         end
       end
+
       space_base
     end
 
