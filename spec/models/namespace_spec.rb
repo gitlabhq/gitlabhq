@@ -240,6 +240,20 @@ describe Namespace do
         end
       end
     end
+
+    it 'updates project full path in .git/config for each project inside namespace' do
+      parent = create(:group, name: 'mygroup', path: 'mygroup')
+      subgroup = create(:group, name: 'mysubgroup', path: 'mysubgroup', parent: parent)
+      project_in_parent_group = create(:project, :repository, namespace: parent, name: 'foo1')
+      hashed_project_in_subgroup = create(:project, :repository, :hashed, namespace: subgroup, name: 'foo2')
+      legacy_project_in_subgroup = create(:project, :repository, namespace: subgroup, name: 'foo3')
+
+      parent.update(path: 'mygroup_new')
+
+      expect(project_in_parent_group.repo.config['gitlab.fullpath']).to eq "mygroup_new/#{project_in_parent_group.path}"
+      expect(hashed_project_in_subgroup.repo.config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{hashed_project_in_subgroup.path}"
+      expect(legacy_project_in_subgroup.repo.config['gitlab.fullpath']).to eq "mygroup_new/mysubgroup/#{legacy_project_in_subgroup.path}"
+    end
   end
 
   describe '#rm_dir', 'callback' do
