@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import AjaxCache from '~/lib/utils/ajax_cache';
 import UsersCache from '~/lib/utils/users_cache';
 

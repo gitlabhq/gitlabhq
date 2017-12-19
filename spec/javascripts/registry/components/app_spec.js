@@ -1,3 +1,4 @@
+import _ from 'underscore';
 import Vue from 'vue';
 import registry from '~/registry/components/app.vue';
 import mountComponent from '../../helpers/vue_mount_component_helper';
