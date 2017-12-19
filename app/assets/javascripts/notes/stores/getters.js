@@ -29,3 +29,25 @@ export const getCurrentUserLastNote = state => _.flatten(
 
 export const getDiscussionLastNote = state => discussion => reverseNotes(discussion.notes)
   .find(el => isLastNote(el, state));
+
+export const discussionCount = (state) => {
+  const discussions = state.notes.filter(n => !n.individual_note);
+
+  return discussions.length;
+};
+
+export const resolvedDiscussionCount = (state) => {
+  let count = 0;
+
+  state.notes.forEach((n) => {
+    if (n.notes) {
+      const resolved = n.notes.reduce((flag, note) => flag && note.resolved && !note.system, true);
+
+      if (resolved) {
+        count += 1;
+      }
+    }
+  });
+
+  return count;
+};
