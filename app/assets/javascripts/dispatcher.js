@@ -111,6 +111,8 @@ import Activities from './activities';
         return false;
       }
 
+      const fail = () => Flash('Error loading dynamic module');
+
       path = page.split(':');
       shortcut_handler = null;
 
@@ -545,7 +547,7 @@ import Activities from './activities';
           new CILintEditor();
           break;
         case 'users:show':
-          new UserCallout();
+          import('./pages/users/show').then(m => m.default()).catch(fail);
           break;
         case 'admin:conversational_development_index:show':
           new UserCallout();
