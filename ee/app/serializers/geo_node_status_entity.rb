@@ -8,6 +8,7 @@ class GeoNodeStatusEntity < Grape::Entity
     node.healthy? ? 'Healthy' : node.health
   end
   expose :health_status
+  expose :missing_oauth_application, as: :missing_oauth_application
 
   expose :attachments_count
   expose :attachments_synced_count
@@ -62,6 +63,10 @@ class GeoNodeStatusEntity < Grape::Entity
 
   def namespaces
     object.geo_node.namespaces
+  end
+
+  def missing_oauth_application
+    object.geo_node.missing_oauth_application?
   end
 
   def version
