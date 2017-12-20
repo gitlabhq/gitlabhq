@@ -254,7 +254,6 @@ project:
 - builds
 - runner_projects
 - runners
-- active_runners
 - variables
 - triggers
 - pipeline_schedules
@@ -277,6 +276,7 @@ project:
 - fork_network
 - custom_attributes
 - lfs_file_locks
+- settings
 award_emoji:
 - awardable
 - user
