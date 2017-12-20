@@ -96,6 +96,7 @@ constraints(ProjectUrlConstrainer.new) do
           post :toggle_subscription
           post :remove_wip
           post :assign_related_issues
+          post :rebase
 
           scope constraints: { format: nil }, action: :show do
             get :commits, defaults: { tab: 'commits' }
