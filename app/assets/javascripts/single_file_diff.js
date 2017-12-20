@@ -36,7 +36,7 @@ export default class SingleFileDiff {
 
     // `Show diff` button on each commit of the file history page.
     // E.g. http://example.com/user/project/commits/master/README.md
-    $(`.js-show-diff-button[data-diff-commit-id='${this.file.dataset.diffCommitId}']`).on('click', (function (event) {
+    $('#commits-list').on('click', `.js-show-diff-button[data-diff-commit-id='${this.file.dataset.diffCommitId}']`, (function (event) {
       this.toggleDiff($(event.target));
     }).bind(this));
   }

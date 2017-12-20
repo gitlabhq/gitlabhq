@@ -7,9 +7,7 @@ const UNFOLD_COUNT = 20;
 let isBound = false;
 
 export default class Diff {
-  constructor() {
-    const $diffFile = $('.files .diff-file');
-
+  constructor($diffFile = $('.files .diff-file')) {
     $diffFile.each((index, file) => {
       if (!$.data(file, 'singleFileDiff')) {
         $.data(file, 'singleFileDiff', new SingleFileDiff(file));

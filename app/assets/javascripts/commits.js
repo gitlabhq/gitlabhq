@@ -1,10 +1,11 @@
-/* eslint-disable func-names, wrap-iife, consistent-return,
+/* eslint-disable func-names, wrap-iife, consistent-return, no-new,
   no-return-assign, no-param-reassign, one-var-declaration-per-line, no-unused-vars,
   prefer-template, object-shorthand, prefer-arrow-callback */
 
 import { pluralize } from './lib/utils/text_utility';
 import { localTimeAgo } from './lib/utils/datetime_utility';
 import Pager from './pager';
+import Diff from './diff';
 
 export default (function () {
   const CommitsList = {};
@@ -93,6 +94,7 @@ export default (function () {
     }
 
     localTimeAgo($processedData.find('.js-timeago'));
+    new Diff($processedData.find('.files .diff-file'));
 
     return processedData;
   };
