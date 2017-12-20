@@ -105,16 +105,52 @@ Read through the documentation on [project settings](settings/index.md).
 - [Export a project from GitLab](settings/import_export.md#exporting-a-project-and-its-data)
 - [Importing and exporting projects between GitLab instances](settings/import_export.md)
 
-## Transfer an existing project into a group
+## Transferring an existing project into another namespace
 
-You can transfer an existing project into a [group](../group/index.md) as long as you have at least **Master** [permissions](../permissions.md#permissions) to that group
-and if you are an **Owner** of the project.
+You can transfer an existing project into a [group](../group/index.md) as long
+as you have at least **Master** [permissions](../permissions.md#permissions) to
+that group and if you are an **Owner** of the project.
 
-![Transfer a project to a new namespace](img/transfer_project_to_other_group.png)
+Similarly, if you are an owner of a group, you can transfer any of its projects
+under your own user.
 
-Find this option under your project's **General settings > Advanced settings**.
+1. Navigate to your project's **Settings > General > Advanced settings**.
+1. Under "Transfer project", choose the namespace you want to transfer the
+   project to.
+1. Confirm the transfer by typing the project's path as instructed.
 
-GitLab administrators can use the admin interface to move any project to any namespace if needed.
+Once done, you will be taken to the new project's namespace. At this point,
+read what happens with the
+[redirects from the old project to the new one](#redirects-when-transferring-or-renaming-projects).
+
+NOTE: **Note:**
+GitLab administrators can use the admin interface to move any project to any
+namespace if needed.
+
+## Renaming a project
+
+
+## Redirects when transferring or renaming projects
+
+When [transferring](#transfer-an-existing-project-into-a-group) or
+[renaming](#renaming-a-project) a project, it is essential to smoothly
+transition from the old location to the new one. GitLab provides two kinds
+of redirects: web UI and Git push/pull redirects.
+
+When visiting the old project's URL from your browser, you will be automatically
+to the new location.
+
+Starting with GitLab 10.3, Git actions will also redirect. This means that any
+build scripts, automation, or Git clients will continue to work after a
+rename, making any transition a lot smoother.
+
+Every time you push/pull to a repository that has changed its location,
+a redirect warning message to update your remote will be displayed instead of
+rejecting your action.
+
+NOTE: **Note:**
+To avoid pulling from or pushing to an entirely incorrect repository, the old
+path will be reserved.
 
 ## Project's members
 
