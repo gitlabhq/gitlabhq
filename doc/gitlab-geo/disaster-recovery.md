@@ -43,13 +43,13 @@ It does not enable GitLab Geo on the newly promoted primary.
     sudo -i
     ```
 
-1. Optional. Update the primary domains DNS record.
+1. Optional: Update the primary domain's DNS record.
     
     Updating the DNS records for the primary domain to point to the secondary
     node will prevent the need to update all references to the primary domain
     to the secondary domain, like changing Git remotes and API URLs.
 
-    After updating the primary domains DNS records to point to the secondary,
+    After updating the primary domain's DNS records to point to the secondary,
     edit `/etc/gitlab/gitlab.rb` on the the secondary to reflect the new URL:
 
     ```
