@@ -9,7 +9,6 @@ module EE
 
     prepended do
       include Elastic::ProjectsSearch
-      prepend GeoAwareAvatar
       prepend ImportStatusStateMachine
 
       before_validation :mark_remote_mirrors_for_removal

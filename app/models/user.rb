@@ -20,7 +20,6 @@ class User < ActiveRecord::Base
   include BulkMemberAccessLoad
   include BlocksJsonSerialization
 
-  prepend EE::GeoAwareAvatar
   prepend EE::User
 
   DEFAULT_NOTIFICATION_LEVEL = :participating

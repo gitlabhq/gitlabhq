@@ -1191,26 +1191,6 @@ describe User do
         expect(user.avatar_url).to eq(user.avatar.url)
         expect(user.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, user.avatar.url].join)
       end
-
-      context 'when in a geo secondary node' do
-        let(:avatar_path) { user.avatar_path(only_path: true) }
-        let(:geo_host) { 'http://geo.example.com' }
-        let(:geo_avatar_url) { [geo_host, avatar_path].join }
-
-        before do
-          allow(Gitlab::Geo).to receive(:secondary?) { true }
-          allow(Gitlab::Geo).to receive_message_chain(:primary_node, :url) { geo_host }
-        end
-
-        it 'shows correct avatar url' do
-          expect(user.avatar_url).to eq(geo_avatar_url)
-          expect(user.avatar_url(only_path: false)).to eq(geo_avatar_url)
-
-          allow(ActionController::Base).to receive(:asset_host).and_return(geo_host)
-
-          expect(user.avatar_url).to eq(geo_avatar_url)
-        end
-      end
     end
   end
 
