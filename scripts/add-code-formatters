@@ -1,4 +1,4 @@
 #!/bin/sh
 
 touch ./.git/hooks/pre-commit
-ln -s -f ./pre-commit .git/hooks/pre-commit
+ln -s ./pre-commit .git/hooks/pre-commit
