@@ -197,11 +197,11 @@ username, you can create a new group and transfer projects to it.
 Changing a group's path can have unintended side effects.
 
 * Existing web URLs for the group and anything under it (i.e. projects) will
-redirect to the new URLs
-* Existing Git remote URLs for projects under the group will no longer work, but
-Git responses will show an error with the new remote URL
-* The original namespace can be claimed again by any group or user, which will
-destroy web redirects and Git remote warnings
+redirect to the new URLs.
+* Existing Git remote URLs for projects under the group will redirect to the new remote URL, and they
+will show a warning with the new remote URL.
+* The redirect to the new URL is permanent, that implies the original namespace 
+can't be claimed again by any group or user.
 * If you are vacating the path so it can be claimed by another group or user,
 you may need to rename the group name as well since both names and paths must be
 unique
