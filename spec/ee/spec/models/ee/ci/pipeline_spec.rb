@@ -18,8 +18,8 @@ describe Ci::Pipeline do
   ARTIFACTS_METHODS = {
     codeclimate_artifact: [Ci::Build::CODEQUALITY_FILE, 'codequality'],
     performance_artifact: [Ci::Build::PERFORMANCE_FILE, 'performance'],
-    sast_artifact:        [Ci::Build::SAST_FILE, 'sast'],
-    clair_artifact:       [Ci::Build::CLAIR_FILE, 'sast:image']
+    sast_artifact: [Ci::Build::SAST_FILE, 'sast'],
+    sast_container_artifact: [Ci::Build::SAST_CONTAINER_FILE, 'sast:container']
   }.freeze
 
   ARTIFACTS_METHODS.each do |method, options|

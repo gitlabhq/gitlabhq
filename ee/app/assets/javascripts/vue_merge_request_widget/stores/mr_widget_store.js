@@ -73,7 +73,7 @@ export default class MergeRequestStore extends CEMergeRequestStore {
   }
 
   initDockerReport(data) {
-    this.clair = data.clair;
+    this.sast_container = data.sast_container;
     this.dockerReport = {
       approved: [],
       unapproved: [],

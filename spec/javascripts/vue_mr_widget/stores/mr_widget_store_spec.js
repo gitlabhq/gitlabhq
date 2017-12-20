@@ -113,9 +113,9 @@ describe('MergeRequestStore', () => {
 
   describe('initDockerReport', () => {
     it('sets the defaults', () => {
-      store.initDockerReport({ clair: { path: 'clair.json' } });
+      store.initDockerReport({ sast_container: { path: 'gl-sast-container.json' } });
 
-      expect(store.clair).toEqual({ path: 'clair.json' });
+      expect(store.sast_container).toEqual({ path: 'gl-sast-container.json' });
       expect(store.dockerReport).toEqual({
         approved: [],
         unapproved: [],
