@@ -12,7 +12,7 @@ feature 'image diff notes', :js do
 
     # Stub helper to return any blob file as image from public app folder.
     # This is necessary to run this specs since we don't display repo images in capybara.
-    allow_any_instance_of(DiffHelper).to receive(:diff_file_blob_raw_path).and_return('/apple-touch-icon.png')
+    allow_any_instance_of(DiffHelper).to receive(:diff_file_blob_raw_url).and_return('/apple-touch-icon.png')
   end
 
   context 'create commit diff notes' do
@@ -192,7 +192,7 @@ feature 'image diff notes', :js do
     it 'resizes image in onion skin view mode' do
       find('.view-modes-menu .onion-skin').click
 
-      expect(find('.onion-skin-frame')['style']).to match('width: 228px; height: 240px;')
+      expect(find('.onion-skin-frame')['style']).to match('width: 243px; height: 240px;')
     end
 
     it 'resets onion skin view mode opacity when toggling between view modes' do
