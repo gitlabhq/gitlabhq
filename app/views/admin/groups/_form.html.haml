@@ -22,6 +22,10 @@
 
   - if @group.shared_runner_minutes_supported?
     = render 'namespaces/shared_runners_minutes_setting', f: f
+    - unless @group.new_record?
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          = render 'namespaces/shared_runners_minutes_setting_reset', link_reset_minutes: admin_group_reset_runners_minutes_path(@group)
 
   - if @group.new_record?
     .form-group
