@@ -8,6 +8,7 @@
   import noteableDiscussion from './noteable_discussion.vue';
   import systemNote from '../../vue_shared/components/notes/system_note.vue';
   import commentForm from './comment_form.vue';
+  import discussionCounter from './discussion_counter.vue';
   import placeholderNote from '../../vue_shared/components/notes/placeholder_note.vue';
   import placeholderSystemNote from '../../vue_shared/components/notes/placeholder_system_note.vue';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
@@ -43,11 +44,13 @@
       loadingIcon,
       placeholderNote,
       placeholderSystemNote,
+      discussionCounter,
     },
     computed: {
       ...mapGetters([
         'notes',
         'getNotesDataByProp',
+        'discussionCount',
       ]),
       noteableType() {
         // FIXME -- @fatihacet Get this from JSON data.
@@ -140,18 +143,20 @@
       <loading-icon />
     </div>
 
-    <ul
-      v-if="!isLoading"
-      id="notes-list"
-      class="notes main-notes-list timeline">
+    <template v-if="!isLoading">
+      <discussion-counter v-if="discussionCount > 0" />
+      <ul
+        id="notes-list"
+        class="notes main-notes-list timeline">
 
-      <component
-        v-for="note in notes"
-        :is="getComponentName(note)"
-        :note="getComponentData(note)"
-        :key="note.id"
-        />
-    </ul>
+        <component
+          v-for="note in notes"
+          :is="getComponentName(note)"
+          :note="getComponentData(note)"
+          :key="note.id"
+          />
+      </ul>
+    </template>
 
     <comment-form
       :noteable-type="noteableType"
