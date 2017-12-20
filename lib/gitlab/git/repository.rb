@@ -1087,10 +1087,12 @@ module Gitlab
       def update_ref(ref_path, ref, old_ref: nil, force: false)
         raise ArgumentError, "invalid ref_path #{ref_path.inspect}" if ref_path.include?(' ')
         raise ArgumentError, "invalid ref #{ref.inspect}" if ref.include?("\x00")
-        raise ArgumentError, "invalid old_ref #{old_ref.inspect}" if old_ref.include?("\x00")
+        raise ArgumentError, "invalid old_ref #{old_ref.inspect}" if old_ref && old_ref.include?("\x00")
 
         ref = "refs/heads/#{ref}" unless ref.start_with?("refs") || ref =~ /\A[a-f0-9]+\z/i
-        old_ref = "refs/heads/#{old_ref}" unless old_ref.start_with?("refs") || old_ref =~ /\A[a-f0-9]+\z/i
+        if old_ref
+          old_ref = "refs/heads/#{old_ref}" unless old_ref.start_with?("refs") || old_ref =~ /\A[a-f0-9]+\z/i
+        end
 
         run_git!(%W[update-ref --stdin -z]) do |stdin|
           stdin.write("update #{ref_path}\x00#{ref}\x00#{old_ref}\x00")
