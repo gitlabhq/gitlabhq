@@ -29,8 +29,6 @@ describe API::Runners do
 
   let!(:group_runner) { create(:ci_runner, description: 'Group runner', groups: [group]) }
 
-  let!(:two_groups_runner) { create(:ci_runner, description: 'Two groups runner', groups: [group, group2]) }
-
   before do
     # Set project access for users
     create(:project_member, :master, user: user, project: project)
@@ -49,7 +47,7 @@ describe API::Runners do
         expect(response).to include_pagination_headers
         expect(json_response).to be_an Array
         expect(descriptions).to contain_exactly(
-          'Project runner', 'Group runner', 'Two projects runner', 'Two groups runner'
+          'Project runner', 'Group runner', 'Two projects runner'
         )
         expect(shared).to be_falsey
       end
@@ -420,11 +418,6 @@ describe API::Runners do
 
             expect(response).to have_http_status(204)
           end.to change { Ci::Runner.specific.count }.by(-1)
-        end
-
-        it 'does not delete group runner with more than one associated group' do
-          delete api("/runners/#{two_groups_runner.id}", user)
-          expect(response).to have_http_status(403)
         end
 
         it 'deletes group runner for one owned group' do
