@@ -1,7 +1,7 @@
-- view_details   = local_assigns.fetch(:view_details, false)
-- merge_request  = local_assigns.fetch(:merge_request, nil)
-- project        = local_assigns.fetch(:project) { merge_request&.project }
-- ref            = local_assigns.fetch(:ref) { merge_request&.source_branch }
+- view_details  = local_assigns.fetch(:view_details, false)
+- merge_request = local_assigns.fetch(:merge_request, nil)
+- project       = local_assigns.fetch(:project) { merge_request&.project }
+- ref           = local_assigns.fetch(:ref) { merge_request&.source_branch }
 
 - if commit.change_summary
   - file_identifier = commit.change_summary.first[:file_identifier]
