@@ -113,6 +113,44 @@ Get Atlassian Bamboo CI service settings for a project.
 GET /projects/:id/services/bamboo
 ```
 
+## Bugzilla
+
+Bugzilla Issue Tracker
+
+### Create/Edit Buildkite service
+
+Set Bugzilla service for a project.
+
+```
+PUT /projects/:id/services/bugzilla
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `new_issue_url` | string | true |  New Issue url |
+| `issues_url` | string | true | Issue url |
+| `project_url` | string | true | Project url |
+| `description` | string | false | Description |
+| `title` | string | false | Title |
+
+### Delete Bugzilla Service
+
+Delete Bugzilla service for a project.
+
+```
+DELETE /projects/:id/services/bugzilla
+```
+
+### Get Bugzilla Service Settings
+
+Get Bugzilla service settings for a project.
+
+```
+GET /projects/:id/services/bugzilla
+```
+
 ## Buildkite
 
 Continuous integration and deployments
