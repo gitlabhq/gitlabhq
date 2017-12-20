@@ -44,6 +44,8 @@ module SortingHelper
 
   def groups_sort_options_hash
     {
+      sort_value_name => sort_title_name,
+      sort_value_name_desc => sort_title_name_desc,
       sort_value_recently_created => sort_title_recently_created,
       sort_value_oldest_created => sort_title_oldest_created,
       sort_value_recently_updated => sort_title_recently_updated,

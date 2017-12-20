@@ -73,6 +73,41 @@ describe GroupDescendantsFinder do
         expect(finder.execute).to contain_exactly(matching_project)
       end
     end
+
+    context 'sorting by name' do
+      let!(:project1) { create(:project, namespace: group, name: 'a', path: 'project-a') }
+      let!(:project2) { create(:project, namespace: group, name: 'z', path: 'project-z') }
+      let(:params) do
+        {
+          sort: 'name_asc'
+        }
+      end
+
+      it 'sorts elements by name' do
+        expect(subject.execute).to eq(
+          [
+            project1,
+            project2
+          ]
+        )
+      end
+
+      context 'with nested groups', :nested_groups do
+        let!(:subgroup1) { create(:group, parent: group, name: 'a', path: 'sub-a') }
+        let!(:subgroup2) { create(:group, parent: group, name: 'z', path: 'sub-z') }
+
+        it 'sorts elements by name' do
+          expect(subject.execute).to eq(
+            [
+              subgroup1,
+              subgroup2,
+              project1,
+              project2
+            ]
+          )
+        end
+      end
+    end
   end
 
   context 'with nested groups', :nested_groups do
