@@ -26,7 +26,8 @@ module IssuableLinks
         title: issue.title,
         state: issue.state,
         reference: reference(issue),
-        path: project_issue_path(issue.project, issue.iid)
+        path: project_issue_path(issue.project, issue.iid),
+        relation_path: relation_path(issue)
       }
     end
   end
