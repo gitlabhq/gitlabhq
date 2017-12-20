@@ -67,7 +67,7 @@
           - if view_details && merge_request
             = link_to "View details", project_commit_path(project, commit.id, merge_request_iid: merge_request.iid), class: "btn btn-default"
 
-  -# Render the `Click to expand it` link for diffs.
+  -# Render the diff container.
   - if commit.change_summary
     .files
       .diff-file.file-holder.file-holder-no-border{ data: diff_file_html_data(project, file_path, commit.id) }
