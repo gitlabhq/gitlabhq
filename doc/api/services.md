@@ -790,6 +790,40 @@ Get PivotalTracker service settings for a project.
 GET /projects/:id/services/pivotaltracker
 ```
 
+## Prometheus
+
+Prometheus is a powerful time-series monitoring service.
+
+### Create/Edit Prometheus service
+
+Set Prometheus service for a project.
+
+```
+PUT /projects/:id/services/prometheus
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `api_url` | string | true | Prometheus API Base URL, like http://prometheus.example.com/ |
+
+### Delete Prometheus service
+
+Delete Prometheus service for a project.
+
+```
+DELETE /projects/:id/services/prometheus
+```
+
+### Get Prometheus service settings
+
+Get Prometheus service settings for a project.
+
+```
+GET /projects/:id/services/prometheus
+```
+
 ## Pushover
 
 Pushover makes it easy to get real-time notifications on your Android device, iPhone, iPad, and Desktop.
