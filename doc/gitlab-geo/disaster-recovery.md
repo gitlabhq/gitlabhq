@@ -81,7 +81,7 @@ It does not enable GitLab Geo on the newly promoted primary.
 1. Success! The secondary node has now been promoted to primary node.
 
     If you updated the DNS records for the primary domain, these changes may
-    not have yet propogated depending on the previous DNS records TTL.
+    not have yet propagated depending on the previous DNS records TTL.
 
 ## Add secondary nodes to a promoted primary
 
