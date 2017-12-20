@@ -1,0 +1,5 @@
+---
+title: Adds scripts to add code formatters in pre-commit via prettier
+merge_request:
+author:
+type: added
