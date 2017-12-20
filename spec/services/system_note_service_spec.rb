@@ -961,53 +961,6 @@ describe SystemNoteService do
     end
   end
 
-  describe '.change_time_spent' do
-    # We need a custom noteable in order to the shared examples to be green.
-    let(:noteable) do
-      mr = create(:merge_request, source_project: project)
-      mr.spend_time(duration: 360000, user: author)
-      mr.save!
-      mr
-    end
-
-    subject do
-      described_class.change_time_spent(noteable, project, author)
-    end
-
-    it_behaves_like 'a system note' do
-      let(:action) { 'time_tracking' }
-    end
-
-    context 'when time was added' do
-      it 'sets the note text' do
-        spend_time!(277200)
-
-        expect(subject.note).to eq "added 1w 4d 5h of time spent"
-      end
-    end
-
-    context 'when time was subtracted' do
-      it 'sets the note text' do
-        spend_time!(-277200)
-
-        expect(subject.note).to eq "subtracted 1w 4d 5h of time spent"
-      end
-    end
-
-    context 'when time was removed' do
-      it 'sets the note text' do
-        spend_time!(:reset)
-
-        expect(subject.note).to eq "removed time spent"
-      end
-    end
-
-    def spend_time!(seconds)
-      noteable.spend_time(duration: seconds, user: author)
-      noteable.save!
-    end
-  end
-
   describe '.discussion_continued_in_issue' do
     let(:discussion) { create(:diff_note_on_merge_request, project: project).to_discussion }
     let(:merge_request) { discussion.noteable }
@@ -1060,7 +1013,7 @@ describe SystemNoteService do
     # We need a custom noteable in order to the shared examples to be green.
     let(:noteable) do
       mr = create(:merge_request, source_project: project)
-      mr.spend_time(duration: 360000, user: author)
+      mr.spend_time(duration: 360000, user_id: author.id)
       mr.save!
       mr
     end
@@ -1098,7 +1051,7 @@ describe SystemNoteService do
     end
 
     def spend_time!(seconds)
-      noteable.spend_time(duration: seconds, user: author)
+      noteable.spend_time(duration: seconds, user_id: author.id)
       noteable.save!
     end
   end
