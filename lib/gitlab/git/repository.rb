@@ -940,11 +940,6 @@ module Gitlab
         false
       end
 
-      # Returns true if a remote exists.
-      def remote_exists?(name)
-        rugged.remotes[name].present?
-      end
-
       # Update the specified remote using the values in the +options+ hash
       #
       # Example
