@@ -22,12 +22,9 @@ class DiffDiscussion < Discussion
 
   def merge_request_version_params
     return unless for_merge_request?
-    return {} if active?
 
-    if on_merge_request_commit?
-      { commit_id: commit_id }
-    else
-      noteable.version_params_for(position.diff_refs)
+    version_params.tap do |params|
+      params[:commit_id] = commit_id if on_merge_request_commit?
     end
   end
 
@@ -36,5 +33,13 @@ class DiffDiscussion < Discussion
       original_position: original_position.to_json,
       position: position.to_json
     )
+  end
+
+  private
+
+  def version_params
+    return {} if active?
+
+    noteable.version_params_for(position.diff_refs)
   end
 end

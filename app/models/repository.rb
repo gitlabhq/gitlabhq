@@ -118,6 +118,18 @@ class Repository
     @commit_cache[oid] = find_commit(oid)
   end
 
+  def commits_by(oids:)
+    return [] unless oids.present?
+
+    commits = Gitlab::Git::Commit.batch_by_oid(raw_repository, oids)
+
+    if commits.present?
+      Commit.decorate(commits, @project)
+    else
+      []
+    end
+  end
+
   def commits(ref, path: nil, limit: nil, offset: nil, skip_merges: false, after: nil, before: nil)
     options = {
       repo: raw_repository,
@@ -219,6 +231,12 @@ class Repository
     return false unless raw_repository
 
     branch_names.include?(branch_name)
+  end
+
+  def tag_exists?(tag_name)
+    return false unless raw_repository
+
+    tag_names.include?(tag_name)
   end
 
   def ref_exists?(ref)
