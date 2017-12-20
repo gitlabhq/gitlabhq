@@ -1828,6 +1828,62 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
+  describe 'remotes' do
+    let(:repository) do
+      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
+    end
+    let(:remote_name) { 'my-remote' }
+
+    after do
+      ensure_seeds
+    end
+
+    describe '#add_remote' do
+      let(:url) { 'http://my-repo.git' }
+      let(:mirror_refmap) { '+refs/*:refs/*' }
+
+      it 'creates a new remote via Gitaly' do
+        expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
+          .to receive(:add_remote).with(remote_name, url, mirror_refmap)
+
+        repository.add_remote(remote_name, url, mirror_refmap: mirror_refmap)
+      end
+
+      context 'with Gitaly disabled', :skip_gitaly_mock do
+        it 'creates a new remote via Rugged' do
+          expect_any_instance_of(Rugged::RemoteCollection).to receive(:create)
+            .with(remote_name, url)
+          expect_any_instance_of(Rugged::Config).to receive(:[]=)
+          .with("remote.#{remote_name}.mirror", true)
+          expect_any_instance_of(Rugged::Config).to receive(:[]=)
+          .with("remote.#{remote_name}.prune", true)
+          expect_any_instance_of(Rugged::Config).to receive(:[]=)
+            .with("remote.#{remote_name}.fetch", mirror_refmap)
+
+          repository.add_remote(remote_name, url, mirror_refmap: mirror_refmap)
+        end
+      end
+    end
+
+    describe '#remove_remote' do
+      it 'removes the remote via Gitaly' do
+        expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
+          .to receive(:remove_remote).with(remote_name)
+
+        repository.remove_remote(remote_name)
+      end
+
+      context 'with Gitaly disabled', :skip_gitaly_mock do
+        it 'removes the remote via Rugged' do
+          expect_any_instance_of(Rugged::RemoteCollection).to receive(:delete)
+            .with(remote_name)
+
+          repository.remove_remote(remote_name)
+        end
+      end
+    end
+  end
+
   def create_remote_branch(repository, remote_name, branch_name, source_branch_name)
     source_branch = repository.branches.find { |branch| branch.name == source_branch_name }
     rugged = repository.rugged
