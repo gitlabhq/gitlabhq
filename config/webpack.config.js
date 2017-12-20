@@ -129,6 +129,29 @@ var config = {
         }
       },
       {
+        test: /katex.css$/,
+        include: /node_modules\/katex\/dist/,
+        exclude: /(vendor\/assets)/,
+        use: [
+          { loader: 'style-loader' },
+          { 
+            loader: 'css-loader',
+            options: {
+              name: '[name].[hash].[ext]'
+            }
+          },
+        ],
+      },
+      {
+        test: /\.(eot|ttf|woff|woff2)$/,
+        include: /node_modules\/katex\/dist\/fonts/,
+        exclude: /(vendor\/assets)/,
+        loader: 'file-loader',
+        options: {
+          name: '[name].[hash].[ext]',
+        }
+      },
+      {
         test: /monaco-editor\/\w+\/vs\/loader\.js$/,
         use: [
           { loader: 'exports-loader', options: 'l.global' },

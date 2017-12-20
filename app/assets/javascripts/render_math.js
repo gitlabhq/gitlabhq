@@ -1,4 +1,5 @@
 // import katex from 'katex';
+// import katexCSS from 'katex/dist/katex.css';
 import Flash from './flash';
 
 // Renders math using KaTeX in any element with the
@@ -28,16 +29,13 @@ function renderWithKaTeX(elements, katex) {
 
 export default function renderMath($els) {
   if (!$els.length) return;
-
   import(/* webpackChunkName: 'katex' */ 'katex').then((katex) => {
-    $.get(gon.katex_css_url, () => {
-      const css = $('<link>', {
-        rel: 'stylesheet',
-        type: 'text/css',
-        href: gon.katex_css_url,
-      });
-      css.appendTo('head');
+    import(/* webpackChunkName: 'katex' */ 'katex/dist/katex.css')
+    .then(() => {
       renderWithKaTeX($els, katex);
+    })
+    .catch((err) => {
+      Flash(`Can't load katex css ${err}`);
     });
   }).catch((err) => {
     Flash(`Can't load katex module: ${err}`);
