@@ -6,7 +6,9 @@
 
 If your application offers a web interface and you are using [GitLab CI/CD](../../../ci/README.md), you can quickly determine the performance impact of pending code changes. GitLab uses [Sitespeed.io](https://www.sitespeed.io), a free and open source tool for measuring the performance of web sites, to analyze the performance of specific pages.
 
-GitLab runs the [Sitespeed.io container](https://hub.docker.com/r/sitespeedio/sitespeed.io/) and compares the overall scores for each page between the source and target branches of a merge request. The difference for each page is then shown right on the merge request:
+GitLab runs the [Sitespeed.io container](https://hub.docker.com/r/sitespeedio/sitespeed.io/) and compares the performance scores for each page between the source and target branches of a merge request. The [Sitespeed.io performance score](https://examples.sitespeed.io/6.0/2017-11-23-23-43-35/help.html#performanceAdvice) is a composite value based on best practices, and we will be expanding support for [additional metrics](https://gitlab.com/gitlab-org/gitlab-ee/issues/4370) in a subsequent release.
+
+The difference for each page is then shown right on the merge request:
 
 ![Performance Widget](img/browser_performance_testing.png)
 
