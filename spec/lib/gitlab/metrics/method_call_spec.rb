@@ -8,8 +8,7 @@ describe Gitlab::Metrics::MethodCall do
     it 'measures the performance of the supplied block' do
       method_call.measure { 'foo' }
 
-      expect(method_call.real_time_seconds).to be_a_kind_of(Numeric)
-      expect(method_call.real_time_milliseconds).to be_a_kind_of(Numeric)
+      expect(method_call.real_time).to be_a_kind_of(Numeric)
       expect(method_call.cpu_time).to be_a_kind_of(Numeric)
       expect(method_call.call_count).to eq(1)
     end
@@ -65,14 +64,17 @@ describe Gitlab::Metrics::MethodCall do
 
   describe '#to_metric' do
     it 'returns a Metric instance' do
+      expect(method_call).to receive(:real_time).and_return(4.0001)
+      expect(method_call).to receive(:cpu_time).and_return(3.0001)
+
       method_call.measure { 'foo' }
       metric = method_call.to_metric
 
       expect(metric).to be_an_instance_of(Gitlab::Metrics::Metric)
       expect(metric.series).to eq('rails_method_calls')
 
-      expect(metric.values[:duration]).to be_a_kind_of(Numeric)
-      expect(metric.values[:cpu_duration]).to be_a_kind_of(Numeric)
+      expect(metric.values[:duration]).to eq(4000)
+      expect(metric.values[:cpu_duration]).to eq(3000)
       expect(metric.values[:call_count]).to be_an(Integer)
 
       expect(metric.tags).to eq({ method: 'Foo#bar' })
@@ -85,13 +87,13 @@ describe Gitlab::Metrics::MethodCall do
     end
 
     it 'returns false when the total call time is not above the threshold' do
-      expect(method_call).to receive(:real_time_seconds).and_return(0.009)
+      expect(method_call).to receive(:real_time).and_return(0.009)
 
       expect(method_call.above_threshold?).to eq(false)
     end
 
     it 'returns true when the total call time is above the threshold' do
-      expect(method_call).to receive(:real_time_seconds).and_return(9)
+      expect(method_call).to receive(:real_time).and_return(9)
 
       expect(method_call.above_threshold?).to eq(true)
     end
@@ -132,7 +134,7 @@ describe Gitlab::Metrics::MethodCall do
   describe '#real_time' do
     context 'without timings' do
       it 'returns 0.0' do
-        expect(method_call.real_time_seconds).to eq(0.0)
+        expect(method_call.real_time).to eq(0.0)
       end
     end
 
@@ -140,7 +142,7 @@ describe Gitlab::Metrics::MethodCall do
       it 'returns the total real time' do
         method_call.measure { 'foo' }
 
-        expect(method_call.real_time_seconds >= 0.0).to be(true)
+        expect(method_call.real_time >= 0.0).to be(true)
       end
     end
   end

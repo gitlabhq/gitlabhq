@@ -4,7 +4,7 @@ module Gitlab
     class MethodCall
       MUTEX = Mutex.new
       BASE_LABELS = { module: nil, method: nil }.freeze
-      attr_reader :real_time_seconds, :cpu_time, :call_count, :labels
+      attr_reader :real_time, :cpu_time, :call_count, :labels
 
       def self.call_duration_histogram
         return @call_duration_histogram if @call_duration_histogram
@@ -27,33 +27,29 @@ module Gitlab
         @transaction = transaction
         @name = name
         @labels = { module: @module_name, method: @method_name }
-        @real_time_seconds = 0.0
-        @cpu_time = 0
+        @real_time = 0.0
+        @cpu_time = 0.0
         @call_count = 0
       end
 
       # Measures the real and CPU execution time of the supplied block.
       def measure
-        start_real_seconds = System.monotonic_time
+        start_real = System.monotonic_time
         start_cpu = System.cpu_time
         retval = yield
 
-        real_time_seconds = System.monotonic_time - start_real_seconds
+        real_time = System.monotonic_time - start_real
         cpu_time = System.cpu_time - start_cpu
 
-        @real_time_seconds += real_time_seconds
+        @real_time += real_time
         @cpu_time += cpu_time
         @call_count += 1
 
         if call_measurement_enabled? && above_threshold?
-          self.class.call_duration_histogram.observe(@transaction.labels.merge(labels), real_time_seconds)
+          self.class.call_duration_histogram.observe(@transaction.labels.merge(labels), real_time)
         end
 
         retval
-      end
-
-      def real_time_milliseconds
-        real_time_seconds.in_milliseconds.to_i
       end
 
       # Returns a Metric instance of the current method call.
@@ -61,8 +57,8 @@ module Gitlab
         Metric.new(
           Instrumentation.series,
           {
-            duration: real_time_milliseconds,
-            cpu_duration: cpu_time,
+            duration: real_time.in_milliseconds.to_i,
+            cpu_duration: cpu_time.in_milliseconds.to_i,
             call_count: call_count
           },
           method: @name
@@ -72,7 +68,7 @@ module Gitlab
       # Returns true if the total runtime of this method exceeds the method call
       # threshold.
       def above_threshold?
-        real_time_milliseconds >= Metrics.method_call_threshold
+        real_time.in_milliseconds >= Metrics.method_call_threshold
       end
 
       def call_measurement_enabled?

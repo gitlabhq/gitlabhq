@@ -35,19 +35,19 @@ module Gitlab
       if Process.const_defined?(:CLOCK_THREAD_CPUTIME_ID)
         def self.cpu_time
           Process
-            .clock_gettime(Process::CLOCK_THREAD_CPUTIME_ID, :millisecond)
+            .clock_gettime(Process::CLOCK_THREAD_CPUTIME_ID, :float_second)
         end
       else
         def self.cpu_time
           Process
-            .clock_gettime(Process::CLOCK_PROCESS_CPUTIME_ID, :millisecond)
+            .clock_gettime(Process::CLOCK_PROCESS_CPUTIME_ID, :float_second)
         end
       end
 
       # Returns the current real time in a given precision.
       #
-      # Returns the time as a Fixnum.
-      def self.real_time(precision = :millisecond)
+      # Returns the time as a Float for precision = :float_second.
+      def self.real_time(precision = :float_second)
         Process.clock_gettime(Process::CLOCK_REALTIME, precision)
       end
 
