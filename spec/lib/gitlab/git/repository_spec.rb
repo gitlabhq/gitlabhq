@@ -1643,6 +1643,21 @@ describe Gitlab::Git::Repository, seed_helper: true do
             expect(repository.commit(local_ref).sha).to eq(expected_oid)
           end
         end
+
+        context 'when the ref exists locally' do
+          let(:source_branch) { 'master' }
+          let(:expected_oid) { SeedRepo::LastCommit::ID }
+
+          it 'writes the ref' do
+            # Sanity check: the commit should already exist
+            expect(repository.commit(expected_oid)).not_to be_nil
+
+            # Make sure the ref exists
+            expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to eq(true)
+            # Writing it once more should succeed
+            expect(repository.fetch_source_branch!(source_repository, source_branch, local_ref)).to eq(true)
+          end
+        end
       end
 
       context 'when the branch does not exist' do
