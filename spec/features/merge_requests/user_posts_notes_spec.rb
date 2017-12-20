@@ -66,6 +66,21 @@ describe 'Merge requests > User posts notes', :js do
     end
   end
 
+  describe 'when previewing a note' do
+    it 'shows the toolbar buttons when editing a note' do
+      page.within('.js-main-target-form') do
+        expect(page).to have_css('.md-header-toolbar.active')
+      end
+    end
+
+    it 'hides the toolbar buttons when previewing a note' do
+      find('.js-md-preview-button').click
+      page.within('.js-main-target-form') do
+        expect(page).not_to have_css('.md-header-toolbar.active')
+      end
+    end
+  end
+
   describe 'when editing a note' do
     it 'there should be a hidden edit form' do
       is_expected.to have_css('.note-edit-form:not(.mr-note-edit-form)', visible: false, count: 1)
