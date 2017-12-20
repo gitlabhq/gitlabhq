@@ -1,7 +1,27 @@
-import d3 from 'd3';
+import { select, mouse } from 'd3-selection';
+import { bisector, max } from 'd3-array';
+import { timeFormat } from 'd3-time-format';
+import { scaleTime, scaleLinear } from 'd3-scale';
+import { axisBottom, axisLeft } from 'd3-axis';
+import { line } from 'd3-shape';
+import { transition } from 'd3-transition';
+import { easeLinear } from 'd3-ease';
 
+const d3 = {
+  select,
+  mouse,
+  bisector,
+  max,
+  timeFormat,
+  scaleTime,
+  scaleLinear,
+  axisBottom,
+  axisLeft,
+  line,
+  transition,
+  easeLinear };
 const margin = { top: 5, right: 65, bottom: 30, left: 50 };
-const parseDate = d3.time.format('%Y-%m-%d').parse;
+// const parseDate = d3.timeFormat('%Y-%m-%d');
 const bisectDate = d3.bisector(d => d.date).left;
 const tooltipPadding = { x: 8, y: 3 };
 const tooltipDistance = 15;
@@ -56,8 +76,8 @@ export default class BurndownChart {
       .on('mousemove', () => this.handleMousemove());
 
     // parse start and due dates
-    this.startDate = parseDate(startDate);
-    this.dueDate = parseDate(dueDate);
+    this.startDate = new Date(startDate);
+    this.dueDate = new Date(dueDate);
 
     // get width and height
     const dimensions = this.canvas.node().getBoundingClientRect();
@@ -71,31 +91,29 @@ export default class BurndownChart {
     this.yMax = 1;
 
     // create scales
-    this.xScale = d3.time.scale()
+    this.xScale = d3.scaleTime()
       .range([0, this.chartWidth])
       .domain([this.startDate, this.xMax]);
 
-    this.yScale = d3.scale.linear()
+    this.yScale = d3.scaleLinear()
       .range([this.chartHeight, 0])
       .domain([0, this.yMax]);
 
     // create axes
-    this.xAxis = d3.svg.axis()
+    this.xAxis = d3.axisBottom()
       .scale(this.xScale)
-      .orient('bottom')
-      .tickFormat(d3.time.format('%b %-d'))
+      .tickFormat(d3.timeFormat('%b %-d'))
       .tickPadding(6)
       .tickSize(4, 0);
 
-    this.yAxis = d3.svg.axis()
+    this.yAxis = d3.axisLeft()
       .scale(this.yScale)
-      .orient('left')
       .tickPadding(6)
       .tickSize(4, 0);
 
     // create lines
-    this.line = d3.svg.line()
-      .x(d => this.xScale(d.date))
+    this.line = d3.line()
+      .x(d => this.xScale(new Date(d.date)))
       .y(d => this.yScale(d.value));
 
     // render the chart
@@ -105,7 +123,7 @@ export default class BurndownChart {
   // set data and force re-render
   setData(data, { label = 'Remaining', animate } = {}) {
     this.data = data.map(datum => ({
-      date: parseDate(datum[0]),
+      date: new Date(datum[0]),
       value: parseInt(datum[1], 10),
     })).sort((a, b) => (a.date - b.date));
 
@@ -273,7 +291,7 @@ export default class BurndownChart {
     this.renderedTooltipPoint = datum;
 
     // generate tooltip content
-    const format = d3.time.format('%b %-d, %Y');
+    const format = d3.timeFormat('%b %-d, %Y');
     const tooltip = `${datum.value} ${this.label} / ${format(datum.date)}`;
 
     // move the tooltip point of origin to the point on the graph
@@ -338,28 +356,14 @@ export default class BurndownChart {
   }
 
   static animateLinePath(path, duration = 1000, cb) {
-    // hack to run a callback at transition end
-    function after(transition, callback) {
-      let i = 0;
-      transition
-        .each(() => (i += 1))
-        .each('end', function end(...args) {
-          i -= 1;
-          if (i === 0) {
-            callback.apply(this, args);
-          }
-        });
-    }
-
     const lineLength = path.node().getTotalLength();
+    const linearTransition = d3.transition().duration(duration).ease(d3.easeLinear);
     path
       .attr('stroke-dasharray', `${lineLength} ${lineLength}`)
       .attr('stroke-dashoffset', lineLength)
-      .transition()
-        .duration(duration)
-        .ease('linear')
+      .transition(linearTransition)
         .attr('stroke-dashoffset', 0)
-        .call(after, () => {
+        .on('end', () => {
           path.attr('stroke-dasharray', null);
           if (cb) cb();
         });
