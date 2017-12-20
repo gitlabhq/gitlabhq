@@ -35,6 +35,7 @@ With **[GitLab Enterprise Edition][ee]**, you can also:
 - Request [approvals](#merge-request-approvals) from your managers (available in GitLab Enterprise Edition Starter)
 - [Squash and merge](#squash-and-merge) for a cleaner commit history (available in GitLab Enterprise Edition Starter)
 - Analyze the impact of your changes with [Code Quality reports](#code-quality-reports) (available in GitLab Enterprise Edition Starter)
+- Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing) (available in GitLab Enterprise Edition Premium)
 
 ## Use cases
 
@@ -210,6 +211,16 @@ merge request widget area.
 
 [Read more about Static Application Security Testing reports.](sast.md)
 
+## Browser Performance Testing
+
+> Introduced in [GitLab Enterprise Edition Premium][products] 10.3.
+
+If your application offers a web interface and you are using [GitLab CI/CD][ci], you can quickly determine the performance impact of pending code changes. GitLab uses [Sitespeed.io][sitespeed], a free and open source tool for measuring the performance of web sites, to analyze the performance of specific pages.
+
+GitLab runs the [Sitespeed.io container][sitespeed-container] and displays the difference in overall performance scores between the source and target branches.
+
+[Read more about Browser Performance Testing.](browser_performance_testing.md)
+
 ## Live preview with Review Apps
 
 If you configured [Review Apps](https://about.gitlab.com/features/review-apps/) for your project,
@@ -342,3 +353,5 @@ git checkout origin/merge-requests/1
 [cc]: https://codeclimate.com/
 [cd]: https://hub.docker.com/r/codeclimate/codeclimate/
 [ee]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition"
+[sitespeed]: https://www.sitespeed.io
+[sitespeed-container]: https://hub.docker.com/r/sitespeedio/sitespeed.io/
