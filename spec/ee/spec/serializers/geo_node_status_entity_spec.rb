@@ -22,6 +22,10 @@ describe GeoNodeStatusEntity, :postgresql do
   it { is_expected.to have_key(:repositories_failed_count) }
   it { is_expected.to have_key(:repositories_synced_count)}
   it { is_expected.to have_key(:repositories_synced_in_percentage) }
+  it { is_expected.to have_key(:wikis_count) }
+  it { is_expected.to have_key(:wikis_failed_count) }
+  it { is_expected.to have_key(:wikis_synced_count)}
+  it { is_expected.to have_key(:wikis_synced_in_percentage) }
   it { is_expected.to have_key(:last_successful_status_check_timestamp) }
   it { is_expected.to have_key(:namespaces) }
 

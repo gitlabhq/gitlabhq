@@ -23,9 +23,14 @@ class Geo::ProjectRegistry < Geo::BaseRegistry
     )
   end
 
-  def self.synced
+  def self.synced_repos
     where.not(last_repository_synced_at: nil, last_repository_successful_sync_at: nil)
-      .where(resync_repository: false, resync_wiki: false)
+        .where(resync_repository: false)
+  end
+
+  def self.synced_wikis
+    where.not(last_wiki_synced_at: nil, last_wiki_successful_sync_at: nil)
+        .where(resync_wiki: false)
   end
 
   def repository_sync_due?(scheduled_time)
