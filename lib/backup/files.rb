@@ -18,7 +18,7 @@ module Backup
       FileUtils.rm_f(backup_tarball)
 
       if ENV['STRATEGY'] == 'copy'
-        cmd = %W(cp -a #{app_files_dir} #{Gitlab.config.backup.path})
+        cmd = %W(rsync -a --exclude=lost+found #{app_files_dir} #{Gitlab.config.backup.path})
         output, status = Gitlab::Popen.popen(cmd)
 
         unless status.zero?
@@ -26,10 +26,10 @@ module Backup
           abort 'Backup failed'
         end
 
-        run_pipeline!([%W(tar -C #{@backup_files_dir} -cf - .), %w(gzip -c -1)], out: [backup_tarball, 'w', 0600])
+        run_pipeline!([%W(tar --exclude=lost+found -C #{@backup_files_dir} -cf - .), %w(gzip -c -1)], out: [backup_tarball, 'w', 0600])
         FileUtils.rm_rf(@backup_files_dir)
       else
-        run_pipeline!([%W(tar -C #{app_files_dir} -cf - .), %w(gzip -c -1)], out: [backup_tarball, 'w', 0600])
+        run_pipeline!([%W(tar --exclude=lost+found -C #{app_files_dir} -cf - .), %w(gzip -c -1)], out: [backup_tarball, 'w', 0600])
       end
     end
 
