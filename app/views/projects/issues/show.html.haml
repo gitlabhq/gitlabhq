@@ -39,8 +39,6 @@
         = icon('caret-down')
       .dropdown-menu.dropdown-menu-align-right.hidden-lg
         %ul
-          - if can_update_issue
-            %li= link_to 'Edit', edit_project_issue_path(@project, @issue), class: 'js-issuable-edit'
           - unless current_user == @issue.author
             %li= link_to 'Report abuse', new_abuse_report_path(user_id: @issue.author.id, ref_url: issue_url(@issue))
           - if can_update_issue
@@ -51,9 +49,6 @@
           - if can_update_issue || can_report_spam
             %li.divider
           %li= link_to 'New issue', new_project_issue_path(@project), title: 'New issue', id: 'new_issue_link'
-
-    - if can_update_issue
-      = link_to 'Edit', edit_project_issue_path(@project, @issue), class: 'hidden-xs hidden-sm btn btn-grouped js-issuable-edit'
 
     = render 'shared/issuable/close_reopen_button', issuable: @issue, can_update: can_update_issue
 

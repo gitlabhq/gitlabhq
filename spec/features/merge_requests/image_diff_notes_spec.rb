@@ -10,8 +10,6 @@ feature 'image diff notes', :js do
     project.team << [user, :master]
     sign_in user
 
-    page.driver.set_cookie('sidebar_collapsed', 'true')
-
     # Stub helper to return any blob file as image from public app folder.
     # This is necessary to run this specs since we don't display repo images in capybara.
     allow_any_instance_of(DiffHelper).to receive(:diff_file_blob_raw_path).and_return('/apple-touch-icon.png')
@@ -141,13 +139,13 @@ feature 'image diff notes', :js do
         end
 
         it 'allows expanding/collapsing the discussion notes' do
-          page.all('.js-diff-notes-toggle')[0].trigger('click')
-          page.all('.js-diff-notes-toggle')[1].trigger('click')
+          page.all('.js-diff-notes-toggle')[0].click
+          page.all('.js-diff-notes-toggle')[1].click
 
           expect(page).not_to have_content('image diff test comment')
 
-          page.all('.js-diff-notes-toggle')[0].trigger('click')
-          page.all('.js-diff-notes-toggle')[1].trigger('click')
+          page.all('.js-diff-notes-toggle')[0].click
+          page.all('.js-diff-notes-toggle')[1].click
 
           expect(page).to have_content('image diff test comment')
         end
@@ -196,13 +194,31 @@ feature 'image diff notes', :js do
 
       expect(find('.onion-skin-frame')['style']).to match('width: 228px; height: 240px;')
     end
-  end
-end
 
-def create_image_diff_note
-  find('.js-add-image-diff-note-button', match: :first).click
-  page.all('.js-add-image-diff-note-button')[0].trigger('click')
-  find('.diff-content .note-textarea').native.send_keys('image diff test comment')
-  click_button 'Comment'
-  wait_for_requests
+    it 'resets onion skin view mode opacity when toggling between view modes' do
+      find('.view-modes-menu .onion-skin').click
+
+      # Simulate dragging onion-skin slider
+      drag_and_drop_by(find('.dragger'), -30, 0)
+
+      expect(find('.onion-skin-frame .frame.added', visible: false)['style']).not_to match('opacity: 1;')
+
+      find('.view-modes-menu .swipe').click
+      find('.view-modes-menu .onion-skin').click
+
+      expect(find('.onion-skin-frame .frame.added', visible: false)['style']).to match('opacity: 1;')
+    end
+  end
+
+  def drag_and_drop_by(element, right_by, down_by)
+    page.driver.browser.action.drag_and_drop_by(element.native, right_by, down_by).perform
+  end
+
+  def create_image_diff_note
+    find('.js-add-image-diff-note-button', match: :first).click
+    page.all('.js-add-image-diff-note-button')[0].click
+    find('.diff-content .note-textarea').native.send_keys('image diff test comment')
+    click_button 'Comment'
+    wait_for_requests
+  end
 end
