@@ -162,6 +162,8 @@ export default {
         RelatedIssuesService.saveOrder({
           endpoint: issueToReorder.relation_path,
           position: newOrder,
+        }).catch(() => {
+          Flash('An error occurred while reordering issues.');
         });
       }
     },
