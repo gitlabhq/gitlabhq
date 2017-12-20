@@ -1,0 +1,5 @@
+---
+title: Geo - Use relative path for avatar images on a secondary node
+merge_request: 3857
+author:
+type: fixed
