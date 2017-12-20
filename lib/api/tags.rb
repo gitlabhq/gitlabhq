@@ -10,6 +10,19 @@ module API
       requires :id, type: String, desc: 'The ID of a project'
     end
     resource :projects, requirements: API::PROJECT_ENDPOINT_REQUIREMENTS do
+      desc 'Get a single repository tag' do
+        success Entities::Tag
+      end
+      params do
+        requires :tag_name, type: String, desc: 'The name of the tag'
+      end
+      get ':id/repository/tags/:tag_name', requirements: TAG_ENDPOINT_REQUIREMENTS do
+        tag = user_project.repository.find_tag(params[:tag_name])
+        not_found!('Tag') unless tag
+
+        present tag, with: Entities::Tag, project: user_project
+      end
+
       desc 'Get a project repository tags' do
         success Entities::Tag
       end
@@ -24,19 +37,6 @@ module API
         tags = ::Kaminari.paginate_array(::TagsFinder.new(user_project.repository, sort: "#{params[:order_by]}_#{params[:sort]}").execute)
 
         present paginate(tags), with: Entities::Tag, project: user_project
-      end
-
-      desc 'Get a single repository tag' do
-        success Entities::Tag
-      end
-      params do
-        requires :tag_name, type: String, desc: 'The name of the tag'
-      end
-      get ':id/repository/tags/:tag_name', requirements: TAG_ENDPOINT_REQUIREMENTS do
-        tag = user_project.repository.find_tag(params[:tag_name])
-        not_found!('Tag') unless tag
-
-        present tag, with: Entities::Tag, project: user_project
       end
 
       desc 'Create a new repository tag' do
@@ -79,7 +79,9 @@ module API
           result = ::Tags::DestroyService.new(user_project, current_user)
                     .execute(params[:tag_name])
 
-          if result[:status] != :success
+          if result[:status] == :success
+            body false
+          else
             render_api_error!(result[:message], result[:return_code])
           end
         end

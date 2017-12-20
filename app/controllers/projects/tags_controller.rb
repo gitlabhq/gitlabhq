@@ -5,7 +5,6 @@ class Projects::TagsController < Projects::ApplicationController
   before_action :require_non_empty_project
   before_action :authorize_download_code!
   before_action :authorize_push_code!, only: [:new, :create]
-  before_action :authorize_admin_project!, only: [:destroy]
 
   def index
     params[:sort] = params[:sort].presence || sort_value_recently_updated
@@ -41,31 +40,6 @@ class Projects::TagsController < Projects::ApplicationController
       @message = params[:message]
       @release_description = params[:release_description]
       render action: 'new'
-    end
-  end
-
-  def destroy
-    result = Tags::DestroyService.new(project, current_user).execute(params[:id])
-
-    respond_to do |format|
-      if result[:status] == :success
-        format.html do
-          redirect_to project_tags_path(@project), status: 303
-        end
-
-        format.js
-      else
-        @error = result[:message]
-
-        format.html do
-          redirect_to project_tags_path(@project),
-            alert: @error, status: 303
-        end
-
-        format.js do
-          render status: :unprocessable_entity
-        end
-      end
     end
   end
 end

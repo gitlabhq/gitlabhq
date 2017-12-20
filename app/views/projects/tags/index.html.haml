@@ -29,6 +29,8 @@
 
   .tags
     - if @tags.any?
+      #delete-tag-modal
+
       %ul.flex-list.content-list
         = render partial: 'tag', collection: @tags
 

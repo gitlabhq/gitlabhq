@@ -1,4 +1,6 @@
 module TagsHelper
+  include ::API::Helpers::RelatedResourcesHelpers
+
   def tag_path(tag)
     "/tags/#{tag}"
   end

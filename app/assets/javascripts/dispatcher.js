@@ -199,6 +199,12 @@ var Dispatcher;
             .catch(fail);
           shortcut_handler = true;
           break;
+        case 'projects:tags:index':
+        case 'projects:tags:show':
+          import('./pages/projects/tags/shared')
+            .then(callDefault)
+            .catch(fail);
+          break;
         case 'projects:tags:new':
           import('./pages/projects/tags/new')
             .then(callDefault)

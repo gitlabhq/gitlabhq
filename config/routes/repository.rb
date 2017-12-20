@@ -51,7 +51,7 @@ scope format: false do
 
     resources :branches, only: [:index, :new, :create, :destroy]
     delete :merged_branches, controller: 'branches', action: :destroy_all_merged
-    resources :tags, only: [:index, :show, :new, :create, :destroy] do
+    resources :tags, only: [:index, :show, :new, :create] do
       resource :release, only: [:edit, :update]
     end
 

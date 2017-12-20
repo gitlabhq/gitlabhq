@@ -1,0 +1,11 @@
+
+%button.js-delete-tag-button.btn.btn-remove.remove-row.has-tooltip.prepend-left-10.disabled{ type: 'button',
+  title: s_('TagsPage|Delete tag'),
+  data: { toggle: 'modal',
+    target: '#delete-tag-modal',
+    protected: protected_tag?(project, tag),
+    tag_name: tag.name,
+    url: api_v4_projects_repository_tags_path(id: project.id, tag_name: tag.name),
+    redirect_url: project_tags_path(project),
+    container: 'body' } }
+  = sprite_icon('remove', size: 16)

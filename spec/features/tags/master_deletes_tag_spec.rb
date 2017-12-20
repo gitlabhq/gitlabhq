@@ -14,20 +14,21 @@ feature 'Master deletes tag' do
     scenario 'deletes the tag' do
       expect(page).to have_content 'v1.1.0'
 
-      delete_first_tag
+      delete_tag 'v1.1.0'
 
       expect(page).not_to have_content 'v1.1.0'
     end
   end
 
-  context 'from a specific tag page' do
+  context 'from a specific tag page', :js do
     scenario 'deletes the tag' do
       click_on 'v1.0.0'
       expect(current_path).to eq(
         project_tag_path(project, 'v1.0.0'))
 
-      click_on 'Delete tag'
+      delete_tag 'v1.0.0'
 
+      expect(page).to have_content 'v1.1.0'
       expect(current_path).to eq(
         project_tags_path(project))
       expect(page).not_to have_content 'v1.0.0'
@@ -42,7 +43,7 @@ feature 'Master deletes tag' do
       end
 
       scenario 'shows the error message' do
-        delete_first_tag
+        delete_tag first('.ref-name').text
 
         expect(page).to have_content('Do not delete tags')
       end
@@ -55,16 +56,20 @@ feature 'Master deletes tag' do
       end
 
       scenario 'shows the error message' do
-        delete_first_tag
+        delete_tag first('.ref-name').text
 
         expect(page).to have_content('Do not delete tags')
       end
     end
   end
 
-  def delete_first_tag
-    page.within('.content') do
-      accept_confirm { first('.btn-remove').click }
+  def delete_tag(tag_name)
+    find('#delete-tag-modal.modal', visible: false) # wait for Vue component to be loaded
+    find(".js-delete-tag-button[data-tag-name=\"#{tag_name}\"]" % { tag_name: tag_name }).click
+
+    page.within '#delete-tag-modal' do
+      fill_in 'delete-tag-modal-input', with: tag_name
+      click_on 'Delete tag'
     end
   end
 end
