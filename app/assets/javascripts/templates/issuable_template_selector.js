@@ -10,6 +10,7 @@ export default class IssuableTemplateSelector extends TemplateSelector {
     this.namespacePath = this.dropdown.data('namespace-path');
     this.issuableType = this.$dropdownContainer.data('issuable-type');
     this.titleInput = $(`#${this.issuableType}_title`);
+    this.dirty = false;
 
     const initialQuery = {
       name: this.dropdown.data('selected'),
@@ -18,16 +19,22 @@ export default class IssuableTemplateSelector extends TemplateSelector {
     if (initialQuery.name) this.requestFile(initialQuery);
 
     $('.reset-template', this.dropdown.parent()).on('click', () => {
+      this.dirty = false;
       this.setInputValueToTemplateContent();
     });
 
     $('.no-template', this.dropdown.parent()).on('click', () => {
-      if (this.currentTemplate) {
+      if (this.currentTemplate && !this.dirty) {
         this.currentTemplate.content = '';
+        this.dirty = false;
+        this.setInputValueToTemplateContent();
       }
 
-      this.setInputValueToTemplateContent();
       $('.dropdown-toggle-text', this.dropdown).text('Choose a template');
+    });
+
+    this.editor.on('input', () => {
+      this.dirty = true;
     });
   }
 
