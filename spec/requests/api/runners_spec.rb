@@ -12,7 +12,7 @@ describe API::Runners do
   let(:group2) { create(:group).tap { |group| group.add_owner(user) } }
 
   let!(:shared_runner) { create(:ci_runner, :shared, description: 'Shared runner') }
-  let!(:unused_specific_runner) { create(:ci_runner) }
+  let!(:unused_project_runner) { create(:ci_runner) }
 
   let!(:project_runner) do
     create(:ci_runner, description: 'Project runner').tap do |runner|
@@ -360,7 +360,7 @@ describe API::Runners do
       context 'when runner is not shared' do
         it 'deletes unused runner' do
           expect do
-            delete api("/runners/#{unused_specific_runner.id}", admin)
+            delete api("/runners/#{unused_project_runner.id}", admin)
 
             expect(response).to have_gitlab_http_status(204)
           end.to change { Ci::Runner.specific.count }.by(-1)
@@ -450,8 +450,8 @@ describe API::Runners do
     set(:job_1) { create(:ci_build) }
     let!(:job_2) { create(:ci_build, :running, runner: shared_runner, project: project) }
     let!(:job_3) { create(:ci_build, :failed, runner: shared_runner, project: project) }
-    let!(:job_4) { create(:ci_build, :running, runner: specific_runner, project: project) }
-    let!(:job_5) { create(:ci_build, :failed, runner: specific_runner, project: project) }
+    let!(:job_4) { create(:ci_build, :running, runner: project_runner, project: project) }
+    let!(:job_5) { create(:ci_build, :failed, runner: project_runner, project: project) }
 
     context 'admin user' do
       context 'when runner exists' do
@@ -469,7 +469,7 @@ describe API::Runners do
 
         context 'when runner is specific' do
           it 'return jobs' do
-            get api("/runners/#{specific_runner.id}/jobs", admin)
+            get api("/runners/#{project_runner.id}/jobs", admin)
 
             expect(response).to have_gitlab_http_status(200)
             expect(response).to include_pagination_headers
@@ -481,7 +481,7 @@ describe API::Runners do
 
         context 'when valid status is provided' do
           it 'return filtered jobs' do
-            get api("/runners/#{specific_runner.id}/jobs?status=failed", admin)
+            get api("/runners/#{project_runner.id}/jobs?status=failed", admin)
 
             expect(response).to have_gitlab_http_status(200)
             expect(response).to include_pagination_headers
@@ -494,7 +494,7 @@ describe API::Runners do
 
         context 'when invalid status is provided' do
           it 'return 400' do
-            get api("/runners/#{specific_runner.id}/jobs?status=non-existing", admin)
+            get api("/runners/#{project_runner.id}/jobs?status=non-existing", admin)
 
             expect(response).to have_gitlab_http_status(400)
           end
@@ -522,7 +522,7 @@ describe API::Runners do
 
         context 'when runner is specific' do
           it 'return jobs' do
-            get api("/runners/#{specific_runner.id}/jobs", user)
+            get api("/runners/#{project_runner.id}/jobs", user)
 
             expect(response).to have_gitlab_http_status(200)
             expect(response).to include_pagination_headers
@@ -534,7 +534,7 @@ describe API::Runners do
 
         context 'when valid status is provided' do
           it 'return filtered jobs' do
-            get api("/runners/#{specific_runner.id}/jobs?status=failed", user)
+            get api("/runners/#{project_runner.id}/jobs?status=failed", user)
 
             expect(response).to have_gitlab_http_status(200)
             expect(response).to include_pagination_headers
@@ -547,7 +547,7 @@ describe API::Runners do
 
         context 'when invalid status is provided' do
           it 'return 400' do
-            get api("/runners/#{specific_runner.id}/jobs?status=non-existing", user)
+            get api("/runners/#{project_runner.id}/jobs?status=non-existing", user)
 
             expect(response).to have_gitlab_http_status(400)
           end
@@ -565,7 +565,7 @@ describe API::Runners do
 
     context 'other authorized user' do
       it 'does not return jobs' do
-        get api("/runners/#{specific_runner.id}/jobs", user2)
+        get api("/runners/#{project_runner.id}/jobs", user2)
 
         expect(response).to have_gitlab_http_status(403)
       end
@@ -573,7 +573,7 @@ describe API::Runners do
 
     context 'unauthorized user' do
       it 'does not return jobs' do
-        get api("/runners/#{specific_runner.id}/jobs")
+        get api("/runners/#{project_runner.id}/jobs")
 
         expect(response).to have_gitlab_http_status(401)
       end
@@ -657,7 +657,7 @@ describe API::Runners do
       context 'user is admin' do
         it 'enables any specific runner' do
           expect do
-            post api("/projects/#{project.id}/runners", admin), runner_id: unused_specific_runner.id
+            post api("/projects/#{project.id}/runners", admin), runner_id: unused_project_runner.id
           end.to change { project.runners.count }.by(+1)
           expect(response).to have_gitlab_http_status(201)
         end
@@ -665,7 +665,7 @@ describe API::Runners do
 
       context 'user is not admin' do
         it 'does not enable runner without access to' do
-          post api("/projects/#{project.id}/runners", user), runner_id: unused_specific_runner.id
+          post api("/projects/#{project.id}/runners", user), runner_id: unused_project_runner.id
 
           expect(response).to have_gitlab_http_status(403)
         end
