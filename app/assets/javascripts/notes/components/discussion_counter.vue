@@ -68,7 +68,7 @@
         </span>
       </div>
       <div
-        v-if="resolveAllDiscussionsIssuePath"
+        v-if="resolveAllDiscussionsIssuePath && !allResolved"
         class="btn-group"
         role="group">
         <a
