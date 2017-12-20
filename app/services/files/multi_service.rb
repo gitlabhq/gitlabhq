@@ -1,5 +1,7 @@
 module Files
   class MultiService < Files::BaseService
+    UPDATE_FILE_ACTIONS = %w(update move delete).freeze
+
     def create_commit!
       repository.multi_action(
         user: current_user,
@@ -20,7 +22,7 @@ module Files
 
       params[:actions].each do |action|
         validate_action!(action)
-        validate_file_status(action)
+        validate_file_status!(action)
       end
     end
 
@@ -30,14 +32,13 @@ module Files
       end
     end
 
-    def validate_file_status(action)
-      return unless action[:last_commit_id]
+    def validate_file_status!(action)
+      return unless UPDATE_FILE_ACTIONS.include?(action[:action])
 
-      current_commit = Gitlab::Git::Commit.last_for_path(
-        @start_project.repository, @start_branch, action[:file_path])
+      file_path = action[:previous_path] || action[:file_path]
 
-      if current_commit.sha != action[:last_commit_id]
-        raise_error("The file has changed since you started editing it: #{action[:file_path]}")
+      if file_has_changed?(file_path, action[:last_commit_id])
+        raise_error("The file has changed since you started editing it: #{file_path}")
       end
     end
   end
