@@ -43,14 +43,18 @@ module SortingHelper
   end
 
   def groups_sort_options_hash
-    options = {
+    {
       sort_value_recently_created => sort_title_recently_created,
       sort_value_oldest_created => sort_title_oldest_created,
       sort_value_recently_updated => sort_title_recently_updated,
       sort_value_oldest_updated => sort_title_oldest_updated
     }
+  end
 
-    options
+  def admin_groups_sort_options_hash
+    groups_sort_options_hash.merge(
+      sort_value_largest_group => sort_title_largest_group
+    )
   end
 
   def member_sort_options_hash
