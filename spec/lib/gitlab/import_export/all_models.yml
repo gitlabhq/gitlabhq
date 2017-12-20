@@ -258,7 +258,6 @@ project:
 - builds
 - runner_projects
 - runners
-- active_runners
 - variables
 - triggers
 - pipeline_schedules
@@ -286,6 +285,7 @@ project:
 - internal_ids
 - project_deploy_tokens
 - deploy_tokens
+- settings
 award_emoji:
 - awardable
 - user
