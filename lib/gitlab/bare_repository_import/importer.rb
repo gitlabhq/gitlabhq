@@ -14,13 +14,13 @@ module Gitlab
         repos_to_import.each do |repo_path|
           bare_repo = Gitlab::BareRepositoryImport::Repository.new(import_path, repo_path)
 
-          if bare_repo.hashed? || bare_repo.wiki?
+          unless bare_repo.processable?
             log " * Skipping repo #{bare_repo.repo_path}".color(:yellow)
 
             next
           end
 
-          log "Processing #{repo_path}".color(:yellow)
+          log "Processing #{repo_path} -> #{bare_repo.project_full_path}".color(:yellow)
 
           new(user, bare_repo).create_project_if_needed
         end
@@ -61,6 +61,11 @@ module Gitlab
 
         if project.persisted? && mv_repo(project)
           log " * Created #{project.name} (#{project_full_path})".color(:green)
+
+          # We'd need to keep track of project full path otherwise directory tree
+          # created with hashed storage enabled cannot be usefully imported using
+          # the import rake task.
+          project.write_repository_config(:fullpath, project.full_path)
 
           ProjectCacheWorker.perform_async(project.id)
         else
