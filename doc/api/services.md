@@ -803,11 +803,33 @@ Set Slack service for a project.
 PUT /projects/:id/services/slack
 ```
 
-Parameters:
+>**Note:** Specific event parameters (e.g. `push_events` flag and `push_channel`) were [introduced in v10.4][11435]
 
-- `webhook` (**required**) - https://hooks.slack.com/services/...
-- `username` (optional) - username
-- `channel` (optional) - #channel
+#### Parameters
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `webhook` | string | true | https://hooks.slack.com/services/... |
+| `username` | string | false | username |
+| `channel` | string | false | Default channel to use if others are not configured |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
+| `notify_only_default_branch` | boolean | false | Send notifications only for the default branch |
+| `push_events` | boolean | false | Enable notifications for push events |
+| `issues_events` | boolean | false | Enable notifications for issue events |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events |
+| `note_events` | boolean | false | Enable notifications for note events |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
+| `push_channel` | string | false | The name of the channel to receive push events notifications |
+| `issue_channel` | string | false | The name of the channel to receive issues events notifications |
+| `confidential_issue_channel` | string | false | The name of the channel to receive confidential issues events notifications |
+| `merge_request_channel` | string | false | The name of the channel to receive merge request events notifications |
+| `note_channel` | string | false | The name of the channel to receive note events notifications |
+| `tag_push_channel` | string | false | The name of the channel to receive tag push events notifications |
+| `pipeline_channel` | string | false | The name of the channel to receive pipeline events notifications |
+| `wiki_page_channel` | string | false | The name of the channel to receive wiki page events notifications |
 
 ### Delete Slack service
 
@@ -837,11 +859,33 @@ Set Mattermost service for a project.
 PUT /projects/:id/services/mattermost
 ```
 
-Parameters:
+>**Note:** Specific event parameters (e.g. `push_events` flag and `push_channel`) were [introduced in v10.4][11435]
 
-- `webhook` (**required**) - https://mattermost.example/hooks/1298aff...
-- `username` (optional) - username
-- `channel` (optional) - #channel
+#### Parameters
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `webhook` | string | true | The Mattermost webhook. e.g. http://mattermost_host/hooks/... |
+| `username` | string | false | username |
+| `channel` | string | false | Default channel to use if others are not configured |
+| `notify_only_broken_pipelines` | boolean | false | Send notifications for broken pipelines |
+| `notify_only_default_branch` | boolean | false | Send notifications only for the default branch |
+| `push_events` | boolean | false | Enable notifications for push events |
+| `issues_events` | boolean | false | Enable notifications for issue events |
+| `confidential_issues_events` | boolean | false | Enable notifications for confidential issue events |
+| `merge_requests_events` | boolean | false | Enable notifications for merge request events |
+| `tag_push_events` | boolean | false | Enable notifications for tag push events |
+| `note_events` | boolean | false | Enable notifications for note events |
+| `pipeline_events` | boolean | false | Enable notifications for pipeline events |
+| `wiki_page_events` | boolean | false | Enable notifications for wiki page events |
+| `push_channel` | string | false | The name of the channel to receive push events notifications |
+| `issue_channel` | string | false | The name of the channel to receive issues events notifications |
+| `confidential_issue_channel` | string | false | The name of the channel to receive confidential issues events notifications |
+| `merge_request_channel` | string | false | The name of the channel to receive merge request events notifications |
+| `note_channel` | string | false | The name of the channel to receive note events notifications |
+| `tag_push_channel` | string | false | The name of the channel to receive tag push events notifications |
+| `pipeline_channel` | string | false | The name of the channel to receive pipeline events notifications |
+| `wiki_page_channel` | string | false | The name of the channel to receive wiki page events notifications |
 
 ### Delete Mattermost notifications service
 
@@ -933,3 +977,5 @@ Get MockCI service settings for a project.
 ```
 GET /projects/:id/services/mock-ci
 ```
+
+[11435]: https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/11435
