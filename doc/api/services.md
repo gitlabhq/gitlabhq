@@ -955,6 +955,40 @@ Get Slack service settings for a project.
 GET /projects/:id/services/slack
 ```
 
+## Microsoft Teams
+
+Group Chat Software
+
+### Create/Edit Microsoft Teams service
+
+Set Microsoft Teams service for a project.
+
+```
+PUT /projects/:id/services/microsoft_teams
+```
+
+Parameters:
+
+| Parameter | Type | Required | Description |
+| --------- | ---- | -------- | ----------- |
+| `webhook` | string | true | The Microsoft Teams webhook. e.g. https://outlook.office.com/webhook/... |
+
+### Delete Microsoft Teams service
+
+Delete Microsoft Teams service for a project.
+
+```
+DELETE /projects/:id/services/microsoft_teams
+```
+
+### Get Microsoft Teams service settings
+
+Get Microsoft Teams service settings for a project.
+
+```
+GET /projects/:id/services/microsoft_teams
+```
+
 ## Mattermost notifications
 
 Receive event notifications in Mattermost
