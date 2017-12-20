@@ -8,6 +8,7 @@
   - new_path        = commit.change_summary.first[:paths][:new_path]
   - old_path        = commit.change_summary.first[:paths][:old_path]
   - file_path       = @path == new_path ? new_path : old_path
+  - url_params      = params.merge(action: :diff_for_path, controller: :commit, id: commit.id, file_identifier: file_identifier)
 
 - link = commit_path(project, commit, merge_request: merge_request)
 - cache_key = [project.full_path,
@@ -72,5 +73,4 @@
       .diff-file.file-holder.file-holder-no-border{ data: diff_file_html_data(project, file_path, commit.id) }
         .diff-content
           .diff-viewer
-            = render partial: 'projects/diffs/collapsed', locals: { commit: commit, file_identifier: file_identifier }
-
+            .nothing-here-block.diff-collapsed{ data: { diff_for_path: url_for(url_params) } }
