@@ -1,22 +1,41 @@
 module Geo
   class ProjectRegistryFinder < RegistryFinder
-    def count_projects
+    def count_repositories
       current_node.projects.count
     end
 
-    def count_synced_project_registries
+    def count_wikis
+      current_node.projects.with_wiki_enabled.count
+    end
+
+    def count_synced_repositories
       relation =
         if selective_sync?
-          legacy_find_synced_projects
+          legacy_find_synced_repositories
         else
-          find_synced_project_registries
+          find_synced_repositories
         end
 
       relation.count
     end
 
-    def count_failed_project_registries
-      find_failed_project_registries.count
+    def count_synced_wikis
+      relation =
+        if use_legacy_queries?
+          legacy_find_synced_wikis
+        else
+          fdw_find_enabled_wikis
+        end
+
+      relation.count
+    end
+
+    def count_failed_repositories
+      find_failed_project_registries('repository').count
+    end
+
+    def count_failed_wikis
+      find_failed_project_registries('wiki').count
     end
 
     def find_failed_project_registries(type = nil)
@@ -54,8 +73,8 @@ module Geo
 
     protected
 
-    def find_synced_project_registries
-      Geo::ProjectRegistry.synced
+    def find_synced_repositories
+      Geo::ProjectRegistry.synced_repos
     end
 
     def find_filtered_failed_project_registries(type = nil)
@@ -84,10 +103,19 @@ module Geo
     end
 
     # @return [ActiveRecord::Relation<Geo::Fdw::Project>]
+    def fdw_find_enabled_wikis
+      feature_fdw_table = Geo::Fdw::ProjectFeature.table_name
+
+      Geo::ProjectRegistry.synced_wikis
+          .joins("INNER JOIN #{feature_fdw_table} ON #{feature_fdw_table}.project_id = project_registry.project_id")
+          .where("#{feature_fdw_table}.wiki_access_level > ?", ::ProjectFeature::DISABLED)
+    end
+
+    # @return [ActiveRecord::Relation<Geo::Fdw::Project>]
     def fdw_find_projects_updated_recently
       Geo::Fdw::Project.joins("INNER JOIN project_registry ON project_registry.project_id = #{fdw_table}.id")
-        .merge(Geo::ProjectRegistry.dirty)
-        .merge(Geo::ProjectRegistry.retry_due)
+          .merge(Geo::ProjectRegistry.dirty)
+          .merge(Geo::ProjectRegistry.retry_due)
     end
 
     #
@@ -112,11 +140,25 @@ module Geo
       )
     end
 
+    # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of synced projects
+    def legacy_find_synced_repositories
+      legacy_find_project_registries(Geo::ProjectRegistry.synced_repos)
+    end
+
+    # @return [ActiveRecord::Relation<Geo::ProjectRegistry>] list of synced projects
+    def legacy_find_synced_wikis
+      legacy_inner_join_registry_ids(
+        current_node.projects.with_wiki_enabled,
+          Geo::ProjectRegistry.synced_wikis.pluck(:project_id),
+          Project
+      )
+    end
+
     # @return [ActiveRecord::Relation<Project>] list of synced projects
-    def legacy_find_synced_projects
+    def legacy_find_project_registries(project_registries)
       legacy_inner_join_registry_ids(
         current_node.projects,
-        Geo::ProjectRegistry.synced.pluck(:project_id),
+        project_registries.pluck(:project_id),
         Project
       )
     end

@@ -217,6 +217,25 @@ describe GeoNodeStatus, :geo do
     end
   end
 
+  describe '#wikis_failed_count' do
+    before do
+      create(:geo_project_registry, :sync_failed, project: project_1)
+      create(:geo_project_registry, :sync_failed, project: project_3)
+      create(:geo_project_registry, :repository_syncing, project: project_4)
+      create(:geo_project_registry, :wiki_syncing)
+    end
+
+    it 'returns the right number of failed repos with no group restrictions' do
+      expect(subject.wikis_failed_count).to eq(2)
+    end
+
+    it 'returns the right number of failed repos with group restrictions' do
+      secondary.update_attribute(:namespaces, [group])
+
+      expect(subject.wikis_failed_count).to eq(1)
+    end
+  end
+
   describe '#repositories_synced_in_percentage' do
     it 'returns 0 when no projects are available' do
       expect(subject.repositories_synced_in_percentage).to eq(0)
@@ -239,6 +258,33 @@ describe GeoNodeStatus, :geo do
       create(:geo_project_registry, :synced, project: project_1)
 
       expect(subject.repositories_synced_in_percentage).to be_within(0.0001).of(50)
+    end
+  end
+
+  # Disable transactions via :delete method because a foreign table
+  # can't see changes inside a transaction of a different connection.
+  describe '#wikis_synced_in_percentage', :delete do
+    it 'returns 0 when no projects are available' do
+      expect(subject.wikis_synced_in_percentage).to eq(0)
+    end
+
+    it 'returns 0 when project count is unknown' do
+      allow(subject).to receive(:wikis_count).and_return(nil)
+
+      expect(subject.wikis_synced_in_percentage).to eq(0)
+    end
+
+    it 'returns the right percentage with no group restrictions' do
+      create(:geo_project_registry, :synced, project: project_1)
+
+      expect(subject.wikis_synced_in_percentage).to be_within(0.0001).of(25)
+    end
+
+    it 'returns the right percentage with group restrictions' do
+      secondary.update_attribute(:namespaces, [group])
+      create(:geo_project_registry, :synced, project: project_1)
+
+      expect(subject.wikis_synced_in_percentage).to be_within(0.0001).of(50)
     end
   end
 
