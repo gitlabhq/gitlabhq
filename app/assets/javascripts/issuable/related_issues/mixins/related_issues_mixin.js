@@ -41,11 +41,6 @@ const mixins = {
       required: false,
       default: false,
     },
-    canReorder: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
   },
   directives: {
     tooltip,

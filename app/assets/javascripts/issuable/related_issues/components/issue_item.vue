@@ -4,6 +4,13 @@ import relatedIssueMixin from '../mixins/related_issues_mixin';
 export default {
   name: 'IssueItem',
   mixins: [relatedIssueMixin],
+  props: {
+    canReorder: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
   computed: {
     stateTitle() {
       return this.isOpen ? 'Open' : 'Closed';
