@@ -452,4 +452,28 @@ describe('Filtered Search Manager', () => {
       expect(modifedParams[1]).toBe(this.paramsArr[1]);
     });
   });
+
+  describe('handle input', () => {
+    beforeEach(() => {
+      initializeManager();
+    });
+
+    it('does not tokenize http:', () => {
+      const inputValue = 'http://gitlab ';
+      manager.filteredSearchInput.value = inputValue;
+      manager.filteredSearchInput.dispatchEvent(new Event('input'));
+
+      expect(manager.filteredSearchInput.value).toEqual(inputValue);
+      expect(getVisualTokens().length).toEqual(0);
+    });
+
+    it('tokenizes label:', () => {
+      const inputValue = 'label:~somelabel ';
+      manager.filteredSearchInput.value = inputValue;
+      manager.filteredSearchInput.dispatchEvent(new Event('input'));
+
+      expect(manager.filteredSearchInput.value.trim()).toEqual('');
+      expect(getVisualTokens().length).toEqual(1);
+    });
+  });
 });

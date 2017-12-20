@@ -362,8 +362,9 @@ class FilteredSearchManager {
 
   handleInputVisualToken() {
     const input = this.filteredSearchInput;
+    const validTokenNames = this.filteredSearchTokenKeys.getKeys();
     const { tokens, searchToken }
-      = this.tokenizer.processTokens(input.value, this.filteredSearchTokenKeys.getKeys());
+      = this.tokenizer.processTokens(input.value, validTokenNames);
     const { isLastVisualTokenValid }
       = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
 
@@ -377,17 +378,18 @@ class FilteredSearchManager {
       if (fragments.length > 1) {
         const inputValues = fragments[0].split(' ');
         const tokenKey = _.last(inputValues);
+        if (validTokenNames.includes(tokenKey.toLowerCase())) {
+          if (inputValues.length > 1) {
+            inputValues.pop();
+            const searchTerms = inputValues.join(' ');
 
-        if (inputValues.length > 1) {
-          inputValues.pop();
-          const searchTerms = inputValues.join(' ');
+            input.value = input.value.replace(searchTerms, '');
+            gl.FilteredSearchVisualTokens.addSearchVisualToken(searchTerms);
+          }
 
-          input.value = input.value.replace(searchTerms, '');
-          gl.FilteredSearchVisualTokens.addSearchVisualToken(searchTerms);
+          gl.FilteredSearchVisualTokens.addFilterVisualToken(tokenKey);
+          input.value = input.value.replace(`${tokenKey}:`, '');
         }
-
-        gl.FilteredSearchVisualTokens.addFilterVisualToken(tokenKey);
-        input.value = input.value.replace(`${tokenKey}:`, '');
       }
     } else {
       // Keep listening to token until we determine that the user is done typing the token value
