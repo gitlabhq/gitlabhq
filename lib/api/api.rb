@@ -124,6 +124,7 @@ module API
     mount ::API::DeployKeys
     mount ::API::Deployments
     mount ::API::Environments
+    mount ::API::EpicIssues
     mount ::API::Events
     mount ::API::Features
     mount ::API::Files
