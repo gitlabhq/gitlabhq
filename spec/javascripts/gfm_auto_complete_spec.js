@@ -131,10 +131,19 @@ describe('GfmAutoComplete', function () {
 
     describe('should not match special sequences', () => {
       const ShouldNotBeFollowedBy = flags.concat(['\x00', '\x10', '\x3f', '\n', ' ']);
+      const ShouldNotBePrependedBy = ['`'];
 
       flagsUseDefaultMatcher.forEach((atSign) => {
         ShouldNotBeFollowedBy.forEach((followedSymbol) => {
           const seq = atSign + followedSymbol;
+
+          it(`should not match "${seq}"`, () => {
+            expect(defaultMatcher(atwhoInstance, atSign, seq)).toBe(null);
+          });
+        });
+
+        ShouldNotBePrependedBy.forEach((prependedSymbol) => {
+          const seq = prependedSymbol + atSign;
 
           it(`should not match "${seq}"`, () => {
             expect(defaultMatcher(atwhoInstance, atSign, seq)).toBe(null);
