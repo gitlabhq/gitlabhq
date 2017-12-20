@@ -1440,6 +1440,9 @@ class Project < ActiveRecord::Base
   def write_repository_config(key, value, prefix: :gitlab)
     key = [prefix, key].compact.join('.')
     repo.config[key] = value
+  rescue Gitlab::Git::Repository::NoRepository => e
+    Rails.logger.error("Error writing key #{key} to .git/config for project #{full_path} (#{id}): #{e.message}.")
+    nil
   end
 
   def rename_repo_notify!
