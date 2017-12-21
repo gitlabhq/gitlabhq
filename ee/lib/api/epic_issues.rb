@@ -2,12 +2,22 @@ module API
   class EpicIssues < Grape::API
     before do
       authenticate!
-      check_epics!
+      authorize_can_admin!
     end
 
     helpers do
-      def check_epics!
-        forbidden! unless ::License.feature_available?(:epics) # TODO: check for group feature instead
+      def authorize_can_admin!
+        forbidden! unless user_group.feature_available?(:epics) # TODO: check for group feature instead
+        authorize!(:admin_epic, epic)
+        forbidden! if link.epic != epic
+      end
+
+      def epic
+        @epic ||= user_group.epics.find_by(iid: params[:epic_iid])
+      end
+
+      def link
+        @link ||= EpicIssue.find(params[:epic_issue_id])
       end
     end
 
@@ -24,15 +34,10 @@ module API
         requires :position, type: Integer, desc: 'The new position of the issue in the epic (index starting with 0)'
       end
       put ':id/-/epics/:epic_iid/issues/:epic_issue_id' do
-        epic = user_group.epics.find_by(iid: params[:epic_iid])
-        authorize!(:admin_epic, epic)
+        result = ::EpicIssues::UpdateService.new(link, current_user, { position: params[:position].to_i }).execute
 
-        link = EpicIssue.find(params[:epic_issue_id])
-        forbidden! if link.epic != epic
-
-        result = ::EpicIssues::UpdateService
-          .new(link, current_user, { position: params[:position].to_i }).execute
-
+        # For now we return empty body
+        # The issues list in the correct order in body will be returned as part of #4250
         render_api_error!({ error: "Issue could not be moved!" }, 400) unless result
       end
     end

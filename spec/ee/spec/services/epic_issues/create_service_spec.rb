@@ -187,7 +187,7 @@ describe EpicIssues::CreateService do
               expect(subject).to eq(status: :success)
             end
 
-            it 'creates 2 system notes for each assiues' do
+            it 'creates 2 system notes for each issue' do
               expect { subject }.to change { Note.count }.from(0).to(4)
             end
           end

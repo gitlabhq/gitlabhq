@@ -104,5 +104,27 @@ describe EpicIssues::UpdateService do
         end
       end
     end
+
+    context 'moving issues to the last position' do
+      context 'when index of the last possition is correct' do
+        before do
+          order_issue(epic_issue1, 3)
+        end
+
+        it 'orders issues correctly' do
+          expect(ordered_epics).to eq([epic_issue2, epic_issue3, epic_issue4, epic_issue1])
+        end
+      end
+
+      context 'when index of the last possition is too high' do
+        before do
+          order_issue(epic_issue1, 100)
+        end
+
+        it 'orders issues correctly' do
+          expect(ordered_epics).to eq([epic_issue2, epic_issue3, epic_issue4, epic_issue1])
+        end
+      end
+    end
   end
 end

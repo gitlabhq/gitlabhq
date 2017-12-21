@@ -16,6 +16,11 @@ module IssuableLinks
 
     private
 
+    def relation_path(issue)
+      raise NotImplementedError
+    end
+
+
     def reference(issue)
       issue.to_reference(issuable.project)
     end

@@ -28,7 +28,6 @@ module EpicIssues
     def issues_to_move
       @issues_to_move ||= epic.epic_issues
         .where('position >= ? AND position <= ? AND id != ?', from, to, epic_issue.id)
-        .order(:position)
     end
 
     def from
@@ -45,8 +44,11 @@ module EpicIssues
 
     def new_position
       @new_position ||= begin
-        replacing_issue = epic.epic_issues.order(:position).limit(1).offset(params[:position])[0]
-        replacing_issue.position
+        replacing_issue = epic.epic_issues.order(:position).limit(1).offset(params[:position])
+
+        return replacing_issue[0].position if replacing_issue.present?
+
+        epic.epic_issues.order(:position).last.position
       end
     end
   end

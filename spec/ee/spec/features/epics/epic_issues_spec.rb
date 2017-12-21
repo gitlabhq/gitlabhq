@@ -13,8 +13,8 @@ describe 'Epic Issues', :js do
 
   let!(:epic_issues) do
     [
-      create(:epic_issue, epic: epic, issue: public_issue),
-      create(:epic_issue, epic: epic, issue: private_issue)
+      create(:epic_issue, epic: epic, issue: public_issue, position: 1),
+      create(:epic_issue, epic: epic, issue: private_issue, position: 2)
     ]
   end
 
