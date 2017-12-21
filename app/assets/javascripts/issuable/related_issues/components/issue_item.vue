@@ -1,4 +1,5 @@
 <script>
+import { __ } from '~/locale';
 import relatedIssueMixin from '../mixins/related_issues_mixin';
 
 export default {
@@ -13,7 +14,7 @@ export default {
   },
   computed: {
     stateTitle() {
-      return this.isOpen ? 'Open' : 'Closed';
+      return this.isOpen ? __('Open') : __('Closed');
     },
   },
 };

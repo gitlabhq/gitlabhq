@@ -1,4 +1,5 @@
 <script>
+import { __ } from '~/locale';
 import relatedIssueMixin from '../mixins/related_issues_mixin';
 
 export default {
@@ -18,7 +19,7 @@ export default {
     stateTitle() {
       if (this.isCondensed) return '';
 
-      return this.isOpen ? 'Open' : 'Closed';
+      return this.isOpen ? __('Open') : __('Closed');
     },
     innerComponentType() {
       return this.isCondensed ? 'span' : 'div';
