@@ -371,7 +371,7 @@ feature 'Jobs' do
     end
 
     context 'Playable manual action' do
-      let(:build) { create(:ci_build, :playable, pipeline: pipeline) }
+      let(:job) { create(:ci_build, :playable, pipeline: pipeline) }
 
       before do
         project.add_developer(user)

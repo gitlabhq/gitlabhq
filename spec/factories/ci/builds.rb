@@ -7,12 +7,10 @@ FactoryBot.define do
     stage_idx 0
     ref 'master'
     tag false
-    status 'pending'
-    created_at 'Di 29. Okt 09:50:00 CET 2013'
-    started_at 'Di 29. Okt 09:51:28 CET 2013'
-    finished_at 'Di 29. Okt 09:53:28 CET 2013'
     commands 'ls -a'
     protected false
+    created_at 'Di 29. Okt 09:50:00 CET 2013'
+    pending
 
     options do
       {
@@ -29,23 +27,37 @@ FactoryBot.define do
 
     pipeline factory: :ci_pipeline
 
+    trait :started do
+      started_at 'Di 29. Okt 09:51:28 CET 2013'
+    end
+
+    trait :finished do
+      started
+      finished_at 'Di 29. Okt 09:53:28 CET 2013'
+    end
+
     trait :success do
+      finished
       status 'success'
     end
 
     trait :failed do
+      finished
       status 'failed'
     end
 
     trait :canceled do
+      finished
       status 'canceled'
     end
 
     trait :skipped do
+      started
       status 'skipped'
     end
 
     trait :running do
+      started
       status 'running'
     end
 
@@ -112,11 +124,6 @@ FactoryBot.define do
 
     after(:build) do |build, evaluator|
       build.project ||= build.pipeline.project
-    end
-
-    factory :ci_not_started_build do
-      started_at nil
-      finished_at nil
     end
 
     trait :tag do
