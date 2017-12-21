@@ -1,9 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, prefer-rest-params, max-len, no-restricted-syntax, vars-on-top, no-use-before-define, no-param-reassign, new-cap, no-underscore-dangle, wrap-iife, comma-dangle, no-return-assign, prefer-arrow-callback, quotes, prefer-template, newline-per-chained-call, no-else-return, no-shadow */
 import _ from 'underscore';
-<<<<<<< HEAD
-import d3 from 'd3';
-import { dateTickFormat } from '../lib/utils/tick_formats';
-=======
 import { extent, max } from 'd3-array';
 import { select, event as d3Event } from 'd3-selection';
 import { scaleTime, scaleLinear } from 'd3-scale';
@@ -11,9 +7,9 @@ import { axisLeft, axisBottom } from 'd3-axis';
 import { area } from 'd3-shape';
 import { brushX } from 'd3-brush';
 import { timeParse } from 'd3-time-format';
+import { dateTickFormat } from '../lib/utils/tick_formats';
 
 const d3 = { extent, max, select, scaleTime, scaleLinear, axisLeft, axisBottom, area, brushX, timeParse };
->>>>>>> origin/master
 
 const extend = function(child, parent) { for (var key in parent) { if (hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 const hasProp = {}.hasOwnProperty;
@@ -147,16 +143,10 @@ export const ContributorsMasterGraph = (function(superClass) {
   };
 
   ContributorsMasterGraph.prototype.create_axes = function() {
-<<<<<<< HEAD
-    this.x_axis = d3.svg.axis()
+    this.x_axis = d3.axisBottom()
       .scale(this.x)
-      .orient('bottom')
       .tickFormat(dateTickFormat);
-    return this.y_axis = d3.svg.axis().scale(this.y).orient("left").ticks(5);
-=======
-    this.x_axis = d3.axisBottom().scale(this.x);
     return this.y_axis = d3.axisLeft().scale(this.y).ticks(5);
->>>>>>> origin/master
   };
 
   ContributorsMasterGraph.prototype.create_svg = function() {
@@ -248,17 +238,11 @@ export const ContributorsAuthorGraph = (function(superClass) {
   };
 
   ContributorsAuthorGraph.prototype.create_axes = function() {
-<<<<<<< HEAD
-    this.x_axis = d3.svg.axis()
+    this.x_axis = d3.axisBottom()
       .scale(this.x)
-      .orient('bottom')
       .ticks(8)
       .tickFormat(dateTickFormat);
-    return this.y_axis = d3.svg.axis().scale(this.y).orient("left").ticks(5);
-=======
-    this.x_axis = d3.axisBottom().scale(this.x).ticks(8);
     return this.y_axis = d3.axisLeft().scale(this.y).ticks(5);
->>>>>>> origin/master
   };
 
   ContributorsAuthorGraph.prototype.create_area = function(x, y) {
