@@ -97,6 +97,7 @@
 - update_user_activity
 - upload_checksum
 - web_hook
+- check_gcp_project_billing
 
 # EE-specific queues
 - cronjob:clear_shared_runners_minutes
