@@ -139,7 +139,8 @@ export default {
       <div
         v-if="group.description"
         class="description">
-        {{group.description}}
+        <span v-html="group.description">
+        </span>
       </div>
     </div>
     <group-folder
