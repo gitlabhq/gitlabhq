@@ -2,7 +2,7 @@
 import Sortable from 'vendor/Sortable';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
-import sortableConfig from '~/sortable_config';
+import sortableConfig from '~/sortable/sortable_config';
 import eventHub from '../event_hub';
 import issueItem from './issue_item.vue';
 import addIssuableForm from './add_issuable_form.vue';
@@ -115,7 +115,7 @@ export default {
       this.sortable = Sortable.create(this.$refs.list, Object.assign({}, sortableConfig, {
         onStart: this.addDraggingCursor,
         onEnd: this.reordered,
-      });
+      }));
     }
   },
 };
