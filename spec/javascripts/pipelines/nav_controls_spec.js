@@ -57,7 +57,7 @@ describe('Pipelines Nav Controls', () => {
       propsData: mockData,
     }).$mount();
 
-    expect(component.$el.querySelectorAll('.btn-default')[0].textContent).toContain('Reset runner caches');
+    expect(component.$el.querySelectorAll('.btn-default')[0].textContent).toContain('Clear runner caches');
     expect(component.$el.querySelectorAll('.btn-default')[0].getAttribute('href')).toEqual(mockData.resetCachePath);
   });
 
