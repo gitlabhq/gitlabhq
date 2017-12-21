@@ -1,8 +1,8 @@
 /* global monaco */
-import monacoLoader from '~/repo/monaco_loader';
-import editor from '~/repo/lib/editor';
-import DecorationsController from '~/repo/lib/decorations/controller';
-import Model from '~/repo/lib/common/model';
+import monacoLoader from '~/ide/monaco_loader';
+import editor from '~/ide/lib/editor';
+import DecorationsController from '~/ide/lib/decorations/controller';
+import Model from '~/ide/lib/common/model';
 import { file } from '../../helpers';
 
 describe('Multi-file editor library decorations controller', () => {

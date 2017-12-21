@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :forked_project_link do
     association :forked_to_project, factory: [:project, :repository]
     association :forked_from_project, factory: [:project, :repository]

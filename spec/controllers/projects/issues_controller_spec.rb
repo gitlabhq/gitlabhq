@@ -874,7 +874,7 @@ describe Projects::IssuesController do
       end
 
       it 'delegates the update of the todos count cache to TodoService' do
-        expect_any_instance_of(TodoService).to receive(:destroy_issuable).with(issue, owner).once
+        expect_any_instance_of(TodoService).to receive(:destroy_target).with(issue).once
 
         delete :destroy, namespace_id: project.namespace, project_id: project, id: issue.iid
       end

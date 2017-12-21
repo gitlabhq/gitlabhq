@@ -1,10 +1,13 @@
 require 'rainbow/ext/string'
+require 'gitlab/utils/strong_memoize'
 
 module Gitlab
   TaskFailedError = Class.new(StandardError)
   TaskAbortedByUserError = Class.new(StandardError)
 
   module TaskHelpers
+    include Gitlab::Utils::StrongMemoize
+
     extend self
 
     # Ask if the user wants to continue
@@ -105,16 +108,16 @@ module Gitlab
     end
 
     def gitlab_user?
-      return @is_gitlab_user unless @is_gitlab_user.nil?
-
-      current_user = run_command(%w(whoami)).chomp
-      @is_gitlab_user = current_user == gitlab_user
+      strong_memoize(:is_gitlab_user) do
+        current_user = run_command(%w(whoami)).chomp
+        current_user == gitlab_user
+      end
     end
 
     def warn_user_is_not_gitlab
-      return if @warned_user_not_gitlab
+      return if gitlab_user?
 
-      unless gitlab_user?
+      strong_memoize(:warned_user_not_gitlab) do
         current_user = run_command(%w(whoami)).chomp
 
         puts " Warning ".color(:black).background(:yellow)
@@ -122,8 +125,6 @@ module Gitlab
         puts "  Things may work\/fail for the wrong reasons."
         puts "  For correct results you should run this as user #{gitlab_user.color(:magenta)}."
         puts ""
-
-        @warned_user_not_gitlab = true
       end
     end
 

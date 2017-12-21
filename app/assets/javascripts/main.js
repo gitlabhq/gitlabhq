@@ -1,6 +1,5 @@
 /* eslint-disable func-names, space-before-function-paren, no-var, quotes, consistent-return, prefer-arrow-callback, comma-dangle, object-shorthand, no-new, max-len, no-multi-spaces, import/newline-after-import, import/first */
 /* global ConfirmDangerModal */
-/* global Aside */
 
 import jQuery from 'jquery';
 import _ from 'underscore';
@@ -28,42 +27,28 @@ import './commit/image_file';
 
 // lib/utils
 import { handleLocationHash } from './lib/utils/common_utils';
-import './lib/utils/datetime_utility';
+import { localTimeAgo, renderTimeago } from './lib/utils/datetime_utility';
 import { getLocationHash, visitUrl } from './lib/utils/url_utility';
 
 // behaviors
 import './behaviors/';
 
 // everything else
-import './activities';
-import './admin';
-import './aside';
 import loadAwardsHandler from './awards_handler';
 import bp from './breakpoints';
 import './confirm_danger_modal';
 import Flash, { removeFlashClickListener } from './flash';
 import './gl_dropdown';
-import './gl_field_error';
-import './gl_field_errors';
-import './gl_form';
 import initTodoToggle from './header';
 import initImporterStatus from './importer_status';
-import './layout_nav';
+import initLayoutNav from './layout_nav';
 import LazyLoader from './lazy_loader';
 import './line_highlighter';
 import initLogoAnimation from './logo';
-import './merge_request';
-import './merge_request_tabs';
 import './milestone_select';
-import './notes';
-import './notifications_dropdown';
-import './notifications_form';
-import './pager';
 import './preview_markdown';
-import './project_import';
 import './projects_dropdown';
 import './render_gfm';
-import './right_sidebar';
 import initBreadcrumbs from './breadcrumb';
 
 import './dispatcher';
@@ -104,6 +89,7 @@ $(function () {
   var fitSidebarForSize;
 
   initBreadcrumbs();
+  initLayoutNav();
   initImporterStatus();
   initTodoToggle();
   initLogoAnimation();
@@ -186,7 +172,7 @@ $(function () {
     return $(this).parents('form').submit();
   // Form submitter
   });
-  gl.utils.localTimeAgo($('abbr.timeago, .js-timeago'), true);
+  localTimeAgo($('abbr.timeago, .js-timeago'), true);
   // Disable form buttons while a form is submitting
   $body.on('ajax:complete, ajax:beforeSend, submit', 'form', function (e) {
     var buttons;
@@ -273,11 +259,8 @@ $(function () {
     return fitSidebarForSize();
   });
   loadAwardsHandler();
-  new Aside();
 
-  gl.utils.renderTimeago();
-
-  $(document).trigger('init.scrolling-tabs');
+  renderTimeago();
 
   $('form.filter-form').on('submit', function (event) {
     const link = document.createElement('a');

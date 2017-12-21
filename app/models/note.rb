@@ -360,6 +360,16 @@ class Note < ActiveRecord::Base
     end
   end
 
+  def references
+    refs = [noteable]
+
+    if part_of_discussion?
+      refs += discussion.notes.take_while { |n| n.id < id }
+    end
+
+    refs
+  end
+
   def expire_etag_cache
     return unless noteable&.discussions_rendered_on_frontend?
 

@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from '~/repo/stores';
-import repoEditButton from '~/repo/components/repo_edit_button.vue';
+import store from '~/ide/stores';
+import repoEditButton from '~/ide/components/repo_edit_button.vue';
 import { file, resetStore } from '../helpers';
 
 describe('RepoEditButton', () => {
@@ -32,7 +32,7 @@ describe('RepoEditButton', () => {
     vm.$mount();
 
     expect(vm.$el.querySelector('.btn')).not.toBeNull();
-    expect(vm.$el.querySelector('.btn').textContent.trim()).toBe('Edit');
+    expect(vm.$el.querySelector('.btn').textContent.trim()).toBe('Cancel edit');
   });
 
   it('renders edit button with cancel text', () => {
@@ -50,7 +50,7 @@ describe('RepoEditButton', () => {
     vm.$el.querySelector('.btn').click();
 
     vm.$nextTick(() => {
-      expect(vm.$el.querySelector('.btn').textContent.trim()).toBe('Cancel edit');
+      expect(vm.$el.querySelector('.btn').textContent.trim()).toBe('Edit');
 
       done();
     });

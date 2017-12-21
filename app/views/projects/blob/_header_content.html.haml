@@ -8,3 +8,6 @@
 
   %small
     = number_to_human_size(blob.raw_size)
+
+  - if blob.stored_externally? && blob.external_storage == :lfs
+    %span.label.label-lfs.append-right-5 LFS

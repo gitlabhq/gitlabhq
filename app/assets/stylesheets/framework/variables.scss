@@ -219,6 +219,7 @@ $gl-input-padding: 10px;
 $gl-vert-padding: 6px;
 $gl-padding-top: 10px;
 $gl-sidebar-padding: 22px;
+$gl-bar-padding: 3px;
 
 /*
  * Misc
@@ -245,9 +246,6 @@ $btn-sm-side-margin: 7px;
 $btn-xs-side-margin: 5px;
 $issue-status-expired: $orange-500;
 $issuable-sidebar-color: $gl-text-color-secondary;
-$show-aside-bg: #eee;
-$show-aside-color: #777;
-$show-aside-shadow: #ddd;
 $group-path-color: #999;
 $namespace-kind-color: #aaa;
 $panel-heading-link-color: #777;

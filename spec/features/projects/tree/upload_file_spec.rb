@@ -15,6 +15,14 @@ feature 'Multi-file editor upload file', :js do
     visit project_tree_path(project, :master)
 
     wait_for_requests
+
+    click_link('Multi Edit')
+
+    wait_for_requests
+  end
+
+  after do
+    set_cookie('new_repo', 'false')
   end
 
   it 'uploads text file' do
@@ -41,6 +49,5 @@ feature 'Multi-file editor upload file', :js do
 
     expect(page).to have_selector('.multi-file-tab', text: 'dk.png')
     expect(page).not_to have_selector('.monaco-editor')
-    expect(page).to have_content('The source could not be displayed for this temporary file.')
   end
 end

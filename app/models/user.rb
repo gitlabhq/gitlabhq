@@ -18,6 +18,7 @@ class User < ActiveRecord::Base
   include CreatedAtFilterable
   include IgnorableColumn
   include BulkMemberAccessLoad
+  include BlocksJsonSerialization
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
@@ -738,7 +739,7 @@ class User < ActiveRecord::Base
 
   def ldap_user?
     if identities.loaded?
-      identities.find { |identity| identity.provider.start_with?('ldap') && !identity.extern_uid.nil? }
+      identities.find { |identity| Gitlab::OAuth::Provider.ldap_provider?(identity.provider) && !identity.extern_uid.nil? }
     else
       identities.exists?(["provider LIKE ? AND extern_uid IS NOT NULL", "ldap%"])
     end

@@ -13,7 +13,7 @@ describe RepositoryCheckQueue do
   end
 
   it 'sets the queue name of a worker' do
-    expect(worker.sidekiq_options['queue'].to_s).to eq('repository_check')
+    expect(worker.sidekiq_options['queue'].to_s).to eq('repository_check:dummy')
   end
 
   it 'disables retrying of failed jobs' do

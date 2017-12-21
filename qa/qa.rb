@@ -13,6 +13,29 @@ module QA
   end
 
   ##
+  # GitLab QA fabrication mechanisms
+  #
+  module Factory
+    autoload :Base, 'qa/factory/base'
+    autoload :Dependency, 'qa/factory/dependency'
+    autoload :Product, 'qa/factory/product'
+
+    module Resource
+      autoload :Sandbox, 'qa/factory/resource/sandbox'
+      autoload :Group, 'qa/factory/resource/group'
+      autoload :Project, 'qa/factory/resource/project'
+    end
+
+    module Repository
+      autoload :Push, 'qa/factory/repository/push'
+    end
+
+    module Settings
+      autoload :HashedStorage, 'qa/factory/settings/hashed_storage'
+    end
+  end
+
+  ##
   # GitLab QA Scenarios
   #
   module Scenario
@@ -32,31 +55,6 @@ module QA
 
       module Integration
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
-      end
-    end
-
-    ##
-    # GitLab instance scenarios.
-    #
-    module Gitlab
-      module Group
-        autoload :Create, 'qa/scenario/gitlab/group/create'
-      end
-
-      module Project
-        autoload :Create, 'qa/scenario/gitlab/project/create'
-      end
-
-      module Repository
-        autoload :Push, 'qa/scenario/gitlab/repository/push'
-      end
-
-      module Sandbox
-        autoload :Prepare, 'qa/scenario/gitlab/sandbox/prepare'
-      end
-
-      module Admin
-        autoload :HashedStorage, 'qa/scenario/gitlab/admin/hashed_storage'
       end
     end
   end

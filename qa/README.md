@@ -33,7 +33,14 @@ You can also supply specific tests to run as another parameter. For example, to
 test the EE license specs, you can run:
 
 ```
-EE_LICENSE="<YOUR LICENSE KEY>" bin/qa Test::Instance http://localhost qa/ee
+EE_LICENSE="<YOUR LICENSE KEY>" bin/qa Test::Instance http://localhost qa/specs/features/ee
+```
+
+Since the arguments would be passed to `rspec`, you could use all `rspec`
+options there. For example, passing `--backtrace` and also line number:
+
+```
+bin/qa Test::Instance http://localhost qa/specs/features/login/standard_spec.rb:3 --backtrace
 ```
 
 ### Overriding the authenticated user

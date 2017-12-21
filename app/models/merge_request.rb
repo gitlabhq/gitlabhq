@@ -53,8 +53,8 @@ class MergeRequest < ActiveRecord::Base
   serialize :merge_params, Hash # rubocop:disable Cop/ActiveRecordSerialize
 
   after_create :ensure_merge_request_diff, unless: :importing?
-  after_update :reload_diff_if_branch_changed
   after_update :clear_memoized_shas
+  after_update :reload_diff_if_branch_changed
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
@@ -83,6 +83,14 @@ class MergeRequest < ActiveRecord::Base
 
     event :unlock_mr do
       transition locked: :opened
+    end
+
+    before_transition any => :opened do |merge_request|
+      merge_request.merge_jid = nil
+
+      merge_request.run_after_commit do
+        UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
+      end
     end
 
     state :opened
@@ -879,11 +887,11 @@ class MergeRequest < ActiveRecord::Base
 
   def state_icon_name
     if merged?
-      "check"
+      "git-merge"
     elsif closed?
-      "times"
+      "close"
     else
-      "circle-o"
+      "issue-open-m"
     end
   end
 

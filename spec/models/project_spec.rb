@@ -289,12 +289,12 @@ describe Project do
 
   describe 'project token' do
     it 'sets an random token if none provided' do
-      project = FactoryGirl.create :project, runners_token: ''
+      project = FactoryBot.create :project, runners_token: ''
       expect(project.runners_token).not_to eq('')
     end
 
     it 'does not set an random token if one provided' do
-      project = FactoryGirl.create :project, runners_token: 'my-token'
+      project = FactoryBot.create :project, runners_token: 'my-token'
       expect(project.runners_token).to eq('my-token')
     end
   end
@@ -1863,11 +1863,10 @@ describe Project do
       project.change_head(project.default_branch)
     end
 
-    it 'creates the new reference' do
-      expect(project.repository.raw_repository).to receive(:write_ref).with('HEAD',
+    it 'creates the new reference with rugged' do
+      expect(project.repository.rugged.references).to receive(:create).with('HEAD',
                                                                             "refs/heads/#{project.default_branch}",
                                                                             force: true)
-
       project.change_head(project.default_branch)
     end
 

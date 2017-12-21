@@ -84,6 +84,7 @@ POST /projects/:id/repository/commits
 | `previous_path` | string | no | Original full path to the file being moved. Ex. `lib/class1.rb` |
 | `content` | string | no | File content, required for all except `delete`. Optional for `move` |
 | `encoding` | string | no | `text` or `base64`. `text` is default. |
+| `last_commit_id` | string | no | Last known file commit id. Will be only considered in update, move and delete actions. |
 
 ```bash
 PAYLOAD=$(cat << 'JSON'

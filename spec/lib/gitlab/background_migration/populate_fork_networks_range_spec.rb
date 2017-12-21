@@ -2,10 +2,11 @@ require 'spec_helper'
 
 describe Gitlab::BackgroundMigration::PopulateForkNetworksRange, :migration, schema: 20170929131201 do
   let(:migration) { described_class.new }
-  let(:base1) { create(:project) }
+  let(:projects) { table(:projects) }
+  let(:base1) { projects.create }
 
-  let(:base2) { create(:project) }
-  let(:base2_fork1) { create(:project) }
+  let(:base2) { projects.create }
+  let(:base2_fork1) { projects.create }
 
   let!(:forked_project_links) { table(:forked_project_links) }
   let!(:fork_networks) { table(:fork_networks) }
@@ -18,10 +19,10 @@ describe Gitlab::BackgroundMigration::PopulateForkNetworksRange, :migration, sch
     # A normal fork link
     forked_project_links.create(id: 1,
                                 forked_from_project_id: base1.id,
-                                forked_to_project_id: create(:project).id)
+                                forked_to_project_id: projects.create.id)
     forked_project_links.create(id: 2,
                                 forked_from_project_id: base1.id,
-                                forked_to_project_id: create(:project).id)
+                                forked_to_project_id: projects.create.id)
     forked_project_links.create(id: 3,
                                 forked_from_project_id: base2.id,
                                 forked_to_project_id: base2_fork1.id)
@@ -29,10 +30,10 @@ describe Gitlab::BackgroundMigration::PopulateForkNetworksRange, :migration, sch
     # create a fork of a fork
     forked_project_links.create(id: 4,
                                 forked_from_project_id: base2_fork1.id,
-                                forked_to_project_id: create(:project).id)
+                                forked_to_project_id: projects.create.id)
     forked_project_links.create(id: 5,
-                                forked_from_project_id: create(:project).id,
-                                forked_to_project_id: create(:project).id)
+                                forked_from_project_id: projects.create.id,
+                                forked_to_project_id: projects.create.id)
 
     # Stub out the calls to the other migrations
     allow(BackgroundMigrationWorker).to receive(:perform_in)
@@ -63,7 +64,7 @@ describe Gitlab::BackgroundMigration::PopulateForkNetworksRange, :migration, sch
   end
 
   it 'creates a fork network for the fork of which the source was deleted' do
-    fork = create(:project)
+    fork = projects.create
     forked_project_links.create(id: 6, forked_from_project_id: 99999, forked_to_project_id: fork.id)
 
     migration.perform(5, 8)

@@ -1,12 +1,10 @@
 /* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, max-len */
-/* global Notes */
-
 import * as urlUtils from '~/lib/utils/url_utility';
 import 'autosize';
 import '~/gl_form';
 import '~/lib/utils/text_utility';
 import '~/render_gfm';
-import '~/notes';
+import Notes from '~/notes';
 
 (function() {
   window.gon || (window.gon = {});
@@ -222,7 +220,6 @@ import '~/notes';
         notes.note_ids = [];
         notes.updatedNotesTrackingMap = {};
 
-        spyOn(gl.utils, 'localTimeAgo');
         spyOn(Notes, 'isNewNote').and.callThrough();
         spyOn(Notes, 'isUpdatedNote').and.callThrough();
         spyOn(Notes, 'animateAppendNote').and.callThrough();
@@ -349,7 +346,6 @@ import '~/notes';
         ]);
         notes.note_ids = [];
 
-        spyOn(gl.utils, 'localTimeAgo');
         spyOn(Notes, 'isNewNote');
         spyOn(Notes, 'animateAppendNote');
         Notes.isNewNote.and.returnValue(true);

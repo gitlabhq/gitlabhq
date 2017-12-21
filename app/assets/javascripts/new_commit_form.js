@@ -6,11 +6,12 @@ export default class NewCommitForm {
     this.branchName = form.find('.js-branch-name');
     this.originalBranch = form.find('.js-original-branch');
     this.createMergeRequest = form.find('.js-create-merge-request');
-    this.createMergeRequestContainer = form.find('.js-create-merge-request-container');
+    this.createMergeRequestContainer = form.find(
+      '.js-create-merge-request-container',
+    );
     this.branchName.keyup(this.renderDestination);
     this.renderDestination();
   }
-
   renderDestination() {
     var different;
     different = this.branchName.val() !== this.originalBranch.val();
@@ -23,6 +24,6 @@ export default class NewCommitForm {
       this.createMergeRequestContainer.hide();
       this.createMergeRequest.prop('checked', false);
     }
-    return this.wasDifferent = different;
+    return (this.wasDifferent = different);
   }
 }

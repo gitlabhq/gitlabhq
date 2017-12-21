@@ -59,10 +59,16 @@ describe Repository do
   end
 
   describe 'tags_sorted_by' do
-    context 'name' do
-      subject { repository.tags_sorted_by('name').map(&:name) }
+    context 'name_desc' do
+      subject { repository.tags_sorted_by('name_desc').map(&:name) }
 
       it { is_expected.to eq(['v1.1.0', 'v1.0.0']) }
+    end
+
+    context 'name_asc' do
+      subject { repository.tags_sorted_by('name_asc').map(&:name) }
+
+      it { is_expected.to eq(['v1.0.0', 'v1.1.0']) }
     end
 
     context 'updated' do
@@ -230,6 +236,54 @@ describe Repository do
       expect(Gitlab::Git::Commit).to receive(:where).with(a_hash_including(follow: false)).and_call_original
 
       repository.commits('master')
+    end
+  end
+
+  describe '#commits_by' do
+    set(:project) { create(:project, :repository) }
+
+    shared_examples 'batch commits fetching' do
+      let(:oids) { TestEnv::BRANCH_SHA.values }
+
+      subject { project.repository.commits_by(oids: oids) }
+
+      it 'finds each commit' do
+        expect(subject).not_to include(nil)
+        expect(subject.size).to eq(oids.size)
+      end
+
+      it 'returns only Commit instances' do
+        expect(subject).to all( be_a(Commit) )
+      end
+
+      context 'when some commits are not found ' do
+        let(:oids) do
+          ['deadbeef'] + TestEnv::BRANCH_SHA.values.first(10)
+        end
+
+        it 'returns only found commits' do
+          expect(subject).not_to include(nil)
+          expect(subject.size).to eq(10)
+        end
+      end
+
+      context 'when no oids are passed' do
+        let(:oids) { [] }
+
+        it 'does not call #batch_by_oid' do
+          expect(Gitlab::Git::Commit).not_to receive(:batch_by_oid)
+
+          subject
+        end
+      end
+    end
+
+    context 'when Gitaly list_commits_by_oid is enabled' do
+      it_behaves_like 'batch commits fetching'
+    end
+
+    context 'when Gitaly list_commits_by_oid is enabled', :disable_gitaly do
+      it_behaves_like 'batch commits fetching'
     end
   end
 
@@ -1007,7 +1061,7 @@ describe Repository do
 
       it 'runs without errors' do
         # old_rev is an ancestor of new_rev
-        expect(repository.rugged.merge_base(old_rev, new_rev)).to eq(old_rev)
+        expect(repository.merge_base(old_rev, new_rev)).to eq(old_rev)
 
         # old_rev is not a direct ancestor (parent) of new_rev
         expect(repository.rugged.lookup(new_rev).parent_ids).not_to include(old_rev)
@@ -1029,7 +1083,7 @@ describe Repository do
 
       it 'raises an exception' do
         # The 'master' branch is NOT an ancestor of new_rev.
-        expect(repository.rugged.merge_base(old_rev, new_rev)).not_to eq(old_rev)
+        expect(repository.merge_base(old_rev, new_rev)).not_to eq(old_rev)
 
         # Updating 'master' to new_rev would lose the commits on 'master' that
         # are not contained in new_rev. This should not be allowed.
@@ -1154,6 +1208,15 @@ describe Repository do
 
       expect(repository.branch_exists?('foobar')).to eq(true)
       expect(repository.branch_exists?('master')).to eq(false)
+    end
+  end
+
+  describe '#tag_exists?' do
+    it 'uses tag_names' do
+      allow(repository).to receive(:tag_names).and_return(['foobar'])
+
+      expect(repository.tag_exists?('foobar')).to eq(true)
+      expect(repository.tag_exists?('master')).to eq(false)
     end
   end
 
@@ -1916,23 +1979,6 @@ describe Repository do
 
       File.delete(path)
     end
-
-    it "attempting to call keep_around when exists a lock does not fail" do
-      ref = repository.send(:keep_around_ref_name, sample_commit.id)
-      path = File.join(repository.path, ref)
-      lock_path = "#{path}.lock"
-
-      FileUtils.mkdir_p(File.dirname(path))
-      File.open(lock_path, 'w') { |f| f.write('') }
-
-      begin
-        expect { repository.keep_around(sample_commit.id) }.not_to raise_error(Gitlab::Git::Repository::GitError)
-
-        expect(File.exist?(lock_path)).to be_falsey
-      ensure
-        File.delete(path)
-      end
-    end
   end
 
   describe '#update_ref' do
@@ -2357,6 +2403,113 @@ describe Repository do
         expect(subject).to be_a(Gitlab::Git::Repository)
         expect(subject.relative_path).to eq(project.disk_path + '.wiki.git')
         expect(subject.gl_repository).to eq("wiki-#{project.id}")
+      end
+    end
+  end
+
+  describe '#contributors' do
+    let(:author_a) { build(:author, email: 'tiagonbotelho@hotmail.com', name: 'tiagonbotelho') }
+    let(:author_b) { build(:author, email: 'gitlab@winniehell.de', name: 'Winnie') }
+    let(:author_c) { build(:author, email: 'douwe@gitlab.com', name: 'Douwe Maan') }
+    let(:stubbed_commits) do
+      [build(:commit, author: author_a),
+       build(:commit, author: author_a),
+       build(:commit, author: author_b),
+       build(:commit, author: author_c),
+       build(:commit, author: author_c),
+       build(:commit, author: author_c)]
+    end
+    let(:order_by) { nil }
+    let(:sort) { nil }
+
+    before do
+      allow(repository).to receive(:commits).with(nil, limit: 2000, offset: 0, skip_merges: true).and_return(stubbed_commits)
+    end
+
+    subject { repository.contributors(order_by: order_by, sort: sort) }
+
+    def expect_contributors(*contributors)
+      expect(subject.map(&:email)).to eq(contributors.map(&:email))
+    end
+
+    it 'returns the array of Gitlab::Contributor for the repository' do
+      expect_contributors(author_a, author_b, author_c)
+    end
+
+    context 'order_by email' do
+      let(:order_by) { 'email' }
+
+      context 'asc' do
+        let(:sort) { 'asc' }
+
+        it 'returns all the contributors ordered by email asc case insensitive' do
+          expect_contributors(author_c, author_b, author_a)
+        end
+      end
+
+      context 'desc' do
+        let(:sort) { 'desc' }
+
+        it 'returns all the contributors ordered by email desc case insensitive' do
+          expect_contributors(author_a, author_b, author_c)
+        end
+      end
+    end
+
+    context 'order_by name' do
+      let(:order_by) { 'name' }
+
+      context 'asc' do
+        let(:sort) { 'asc' }
+
+        it 'returns all the contributors ordered by name asc case insensitive' do
+          expect_contributors(author_c, author_a, author_b)
+        end
+      end
+
+      context 'desc' do
+        let(:sort) { 'desc' }
+
+        it 'returns all the contributors ordered by name desc case insensitive' do
+          expect_contributors(author_b, author_a, author_c)
+        end
+      end
+    end
+
+    context 'order_by commits' do
+      let(:order_by) { 'commits' }
+
+      context 'asc' do
+        let(:sort) { 'asc' }
+
+        it 'returns all the contributors ordered by commits asc' do
+          expect_contributors(author_b, author_a, author_c)
+        end
+      end
+
+      context 'desc' do
+        let(:sort) { 'desc' }
+
+        it 'returns all the contributors ordered by commits desc' do
+          expect_contributors(author_c, author_a, author_b)
+        end
+      end
+    end
+
+    context 'invalid ordering' do
+      let(:order_by) { 'unknown' }
+
+      it 'returns the contributors unsorted' do
+        expect_contributors(author_a, author_b, author_c)
+      end
+    end
+
+    context 'invalid sorting' do
+      let(:order_by) { 'name' }
+      let(:sort) { 'unknown' }
+
+      it 'returns the contributors unsorted' do
+        expect_contributors(author_a, author_b, author_c)
       end
     end
   end
