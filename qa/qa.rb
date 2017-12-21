@@ -86,6 +86,11 @@ module QA
     module Project
       autoload :New, 'qa/page/project/new'
       autoload :Show, 'qa/page/project/show'
+
+      module Settings
+        autoload :Repository, 'qa/page/project/settings/repository'
+        autoload :DeployKey, 'qa/page/project/settings/deploy_key'
+      end
     end
 
     module Admin
