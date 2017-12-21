@@ -459,7 +459,7 @@ describe('Filtered Search Manager', () => {
     });
 
     it('does not tokenize http:', () => {
-      const inputValue = 'http://gitlab ';
+      const inputValue = 'http:';
       manager.filteredSearchInput.value = inputValue;
       manager.filteredSearchInput.dispatchEvent(new Event('input'));
 
@@ -468,12 +468,22 @@ describe('Filtered Search Manager', () => {
     });
 
     it('tokenizes label:', () => {
-      const inputValue = 'label:~somelabel ';
+      const inputValue = 'label:';
       manager.filteredSearchInput.value = inputValue;
       manager.filteredSearchInput.dispatchEvent(new Event('input'));
 
       expect(manager.filteredSearchInput.value.trim()).toEqual('');
       expect(getVisualTokens().length).toEqual(1);
+    });
+
+    it('tokenizes pasted in string', () => {
+      const inputValue = 'test: label: ';
+      manager.filteredSearchInput.value = inputValue;
+      manager.filteredSearchInput.dispatchEvent(new Event('input'));
+
+      expect(manager.filteredSearchInput.value.trim()).toEqual('test:');
+      expect(getVisualTokens()[0].innerText.trim()).toBe('label');
+      expect(getVisualTokens().length).toBe(1);
     });
   });
 });
