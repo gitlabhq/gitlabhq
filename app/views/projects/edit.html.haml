@@ -58,7 +58,7 @@
               - if @project.avatar_in_git
                 Project avatar in repository: #{ @project.avatar_in_git }
             %a.choose-btn.btn.js-choose-project-avatar-button
-              Browse file...
+              Choose file...
             %span.file_name.prepend-left-default.js-avatar-filename No file chosen
             = f.file_field :avatar, class: "js-project-avatar-input hidden"
             .help-block The maximum file size allowed is 200KB.
