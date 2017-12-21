@@ -2,6 +2,7 @@
 import Sortable from 'vendor/Sortable';
 import loadingIcon from '~/vue_shared/components/loading_icon.vue';
 import tooltip from '~/vue_shared/directives/tooltip';
+import sortableConfig from '~/sortable_config';
 import eventHub from '../event_hub';
 import issueItem from './issue_item.vue';
 import addIssuableForm from './add_issuable_form.vue';
@@ -111,12 +112,7 @@ export default {
   },
   mounted() {
     if (this.canReorder) {
-      this.sortable = Sortable.create(this.$refs.list, {
-        animation: 200,
-        forceFallback: true,
-        fallbackClass: 'is-dragging',
-        fallbackOnBody: true,
-        ghostClass: 'is-ghost',
+      this.sortable = Sortable.create(this.$refs.list, Object.assign({}, sortableConfig, {
         onStart: this.addDraggingCursor,
         onEnd: this.reordered,
       });
