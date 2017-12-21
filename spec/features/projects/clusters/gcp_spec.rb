@@ -22,6 +22,7 @@ feature 'Gcp Cluster', :js do
 
     context 'when user has a GCP project with billing enabled' do
       before do
+        allow(CheckGcpProjectBillingWorker).to receive(:perform_async)
         stub_google_project_billing_status
       end
 
