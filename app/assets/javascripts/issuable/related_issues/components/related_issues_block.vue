@@ -197,7 +197,7 @@ export default {
           <li
             :key="issue.id"
             v-for="issue in relatedIssues"
-            class="js-related-issues-token-list-item "
+            class="js-related-issues-token-list-item"
             :class="{
               'user-can-drag': canReorder,
               'sortable-row': canReorder,
