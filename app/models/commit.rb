@@ -86,6 +86,20 @@ class Commit
     def valid_hash?(key)
       !!(/\A#{COMMIT_SHA_PATTERN}\z/ =~ key)
     end
+
+    def lazy(project, oid)
+      BatchLoader.for({ project: project, oid: oid }).batch do |items, loader|
+        items_by_project = items.group_by { |i| i[:project] }
+
+        items_by_project.each do |project, commit_ids|
+          oids = commit_ids.map { |i| i[:oid] }
+
+          project.repository.commits_by(oids: oids).each do |commit|
+            loader.call({ project: commit.project, oid: commit.id }, commit) if commit
+          end
+        end
+      end
+    end
   end
 
   attr_accessor :raw
@@ -103,7 +117,7 @@ class Commit
   end
 
   def ==(other)
-    (self.class === other) && (raw == other.raw)
+    other.is_a?(self.class) && raw == other.raw
   end
 
   def self.reference_prefix
@@ -224,8 +238,8 @@ class Commit
     notes.includes(:author)
   end
 
-  def method_missing(m, *args, &block)
-    @raw.__send__(m, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
+  def method_missing(method, *args, &block)
+    @raw.__send__(method, *args, &block) # rubocop:disable GitlabSecurity/PublicSend
   end
 
   def respond_to_missing?(method, include_private = false)

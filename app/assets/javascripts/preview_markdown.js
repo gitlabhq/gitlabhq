@@ -117,12 +117,10 @@
   }());
 
   markdownPreview = new window.MarkdownPreview();
-
   previewButtonSelector = '.js-md-preview-button';
-
   writeButtonSelector = '.js-md-write-button';
-
   lastTextareaPreviewed = null;
+  const markdownToolbar = $('.md-header-toolbar');
 
   $.fn.setupMarkdownPreview = function () {
     var $form = $(this);
@@ -146,6 +144,7 @@
     // toggle content
     $form.find('.md-write-holder').hide();
     $form.find('.md-preview-holder').show();
+    markdownToolbar.removeClass('active');
     markdownPreview.showPreview($form);
   });
 
@@ -167,6 +166,7 @@
     $form.find('.md-write-holder').show();
     $form.find('textarea.markdown-area').focus();
     $form.find('.md-preview-holder').hide();
+    markdownToolbar.addClass('active');
 
     markdownPreview.hideReferencedCommands($form);
   });

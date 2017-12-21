@@ -51,7 +51,10 @@ export default class Shortcuts {
   }
 
   onToggleHelp(e) {
-    e.preventDefault();
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+
     Shortcuts.toggleHelp(this.enabledHelp);
   }
 
@@ -112,6 +115,9 @@ export default class Shortcuts {
 
   static focusSearch(e) {
     $('#search').focus();
-    e.preventDefault();
+
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
   }
 }

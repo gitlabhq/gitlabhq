@@ -24,7 +24,7 @@ module TimeTrackable
   # rubocop:disable Gitlab/ModuleWithInstanceVariables
   def spend_time(options)
     @time_spent = options[:duration]
-    @time_spent_user = options[:user]
+    @time_spent_user = User.find(options[:user_id])
     @spent_at = options[:spent_at]
     @original_total_time_spent = nil
 

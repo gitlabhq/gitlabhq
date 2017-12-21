@@ -84,9 +84,12 @@ export default (function() {
     return _.each(author_commits, (function(_this) {
       return function(d) {
         _this.redraw_author_commit_info(d);
-        $(_this.authors[d.author_name].list_item).appendTo("ol");
-        _this.authors[d.author_name].set_data(d.dates);
-        return _this.authors[d.author_name].redraw();
+        if (_this.authors[d.author_name] != null) {
+          $(_this.authors[d.author_name].list_item).appendTo("ol");
+          _this.authors[d.author_name].set_data(d.dates);
+          return _this.authors[d.author_name].redraw();
+        }
+        return '';
       };
     })(this));
   };
@@ -108,10 +111,14 @@ export default (function() {
   };
 
   ContributorsStatGraph.prototype.redraw_author_commit_info = function(author) {
-    var author_commit_info, author_list_item;
-    author_list_item = $(this.authors[author.author_name].list_item);
-    author_commit_info = this.format_author_commit_info(author);
-    return author_list_item.find("span").html(author_commit_info);
+    var author_commit_info, author_list_item, $author;
+    $author = this.authors[author.author_name];
+    if ($author != null) {
+      author_list_item = $(this.authors[author.author_name].list_item);
+      author_commit_info = this.format_author_commit_info(author);
+      return author_list_item.find("span").html(author_commit_info);
+    }
+    return '';
   };
 
   return ContributorsStatGraph;

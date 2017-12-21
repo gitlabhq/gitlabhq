@@ -39,6 +39,7 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
     params.require(:cluster).permit(
       :enabled,
       :name,
+      :environment_scope,
       provider_gcp_attributes: [
         :gcp_project_id,
         :zone,
