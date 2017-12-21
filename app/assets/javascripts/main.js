@@ -52,13 +52,7 @@ import './render_gfm';
 import initBreadcrumbs from './breadcrumb';
 
 // EE-only scripts
-import './admin_email_select';
-import './application_settings';
-import './approvals';
-import './ee_trial_banner';
-import './ldap_groups_select';
-import './path_locks';
-import './weight_select';
+import initEETrialBanner from 'ee/ee_trial_banner';
 
 import './dispatcher';
 
@@ -295,4 +289,7 @@ $(function () {
       removeFlashClickListener(flashEl);
     });
   }
+
+  // EE specific calls
+  initEETrialBanner();
 });
