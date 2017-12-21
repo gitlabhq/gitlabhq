@@ -34,7 +34,7 @@ module Storage
       # So we basically we mute exceptions in next actions
       begin
         send_update_instructions
-        write_projects_full_path_config
+        write_projects_repository_config
 
         true
       rescue

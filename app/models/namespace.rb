@@ -269,8 +269,8 @@ class Namespace < ActiveRecord::Base
     RedirectRoute.permanent.exists?(path: path)
   end
 
-  def write_projects_full_path_config
-    all_projects.each do |project|
+  def write_projects_repository_config
+    all_projects.find_each do |project|
       project.expires_full_path_cache # we need to clear cache to validate renames correctly
       project.write_repository_config
     end
