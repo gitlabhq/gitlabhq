@@ -98,6 +98,14 @@ describe Projects::MergeRequestsController do
           expect(response).to match_response_schema('entities/merge_request_widget')
         end
       end
+
+      context 'when no serialiser was passed' do
+        it 'renders widget MR entity as json' do
+          go(serializer: nil, format: :json)
+
+          expect(response).to match_response_schema('entities/merge_request_widget')
+        end
+      end
     end
 
     describe "as diff" do
