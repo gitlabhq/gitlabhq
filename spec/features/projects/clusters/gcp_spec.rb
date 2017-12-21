@@ -137,7 +137,9 @@ feature 'Gcp Cluster', :js do
       end
 
       it 'user sees a check page' do
-        expect(page).to have_link('Continue')
+        pending 'the frontend still has not been implemented' do
+          expect(page).to have_link('Continue')
+        end
       end
     end
   end
