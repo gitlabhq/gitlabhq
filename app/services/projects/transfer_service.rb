@@ -101,7 +101,7 @@ module Projects
     end
 
     def write_repository_config(full_path)
-      project.write_repository_config(:gl_fullpath, full_path)
+      project.write_repository_config(gl_full_path: full_path)
     end
 
     def refresh_permissions
