@@ -27,7 +27,13 @@ describe ::Gitlab::BareRepositoryImport::Repository do
         expect(subject.processable?).to eq(false)
       end
 
-      it 'returns true when group and project name are present' do
+      it 'returns true if group path is missing' do
+        subject = described_class.new('/full/path/', '/full/path/repo.git')
+
+        expect(subject.processable?).to eq(true)
+      end
+
+      it 'returns true when group path and project name are present' do
         expect(subject.processable?).to eq(true)
       end
     end
@@ -97,7 +103,7 @@ describe ::Gitlab::BareRepositoryImport::Repository do
         expect(subject.processable?).to eq(false)
       end
 
-      it 'returns true when group and project name are present' do
+      it 'returns true when group path and project name are present' do
         expect(subject.processable?).to eq(true)
       end
     end

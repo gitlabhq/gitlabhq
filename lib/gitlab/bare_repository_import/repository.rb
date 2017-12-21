@@ -33,8 +33,9 @@ module Gitlab
 
       def processable?
         return false if wiki?
+        return false if hashed? && (group_path.blank? || project_name.blank?)
 
-        group_path.present? && project_name.present?
+        true
       end
 
       private
