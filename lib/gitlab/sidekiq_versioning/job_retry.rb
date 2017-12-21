@@ -15,6 +15,12 @@ module Gitlab
         end
       end
 
+      def attempt_retry(worker, job, queue, exception)
+        job['error_worker_version'] = worker&.class&.version || 'unknown'
+
+        super(worker, job, queue, exception)
+      end
+
       private
 
       def worker_name_error?(e, class_name)
