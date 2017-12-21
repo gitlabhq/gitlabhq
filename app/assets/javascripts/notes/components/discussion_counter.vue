@@ -85,6 +85,7 @@
         class="btn-group"
         role="group">
         <button
+          v-tooltip
           title="Jump to first unresolved discussion"
           data-container="body"
           class="btn btn-default discussion-next-btn">
