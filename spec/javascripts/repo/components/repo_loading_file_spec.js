@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from '~/repo/stores';
-import repoLoadingFile from '~/repo/components/repo_loading_file.vue';
+import store from '~/ide/stores';
+import repoLoadingFile from '~/ide/components/repo_loading_file.vue';
 import { resetStore } from '../helpers';
 
 describe('RepoLoadingFile', () => {
@@ -48,6 +48,7 @@ describe('RepoLoadingFile', () => {
 
   it('renders 1 column of animated LoC if isMini', (done) => {
     vm = createComponent();
+    vm.$store.state.leftPanelCollapsed = true;
     vm.$store.state.openFiles.push('test');
 
     vm.$nextTick(() => {
