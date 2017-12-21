@@ -181,7 +181,7 @@ before_script:
   ## Assuming you created the SSH_KNOWN_HOSTS variable, uncomment the
   ## following two lines.
   ##
-  - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts'
+  - echo "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
   - chmod 644 ~/.ssh/known_hosts
 
   ##
