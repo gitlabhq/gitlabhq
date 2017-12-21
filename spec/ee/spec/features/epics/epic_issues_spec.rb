@@ -35,7 +35,7 @@ describe 'Epic Issues', :js do
       within('.related-issues-block ul.issuable-list') do
         expect(page).to have_selector('li', count: 1)
         expect(page).to have_content(public_issue.title)
-        expect(page).not_to have_selector('button.js-issue-token-remove-button')
+        expect(page).not_to have_selector('button.js-issue-item-remove-button')
       end
     end
 
@@ -71,7 +71,7 @@ describe 'Epic Issues', :js do
         expect(page).to have_content(public_issue.title)
         expect(page).to have_content(private_issue.title)
 
-        first('li button.js-issue-token-remove-button').click
+        first('li button.js-issue-item-remove-button').click
       end
 
       wait_for_requests
