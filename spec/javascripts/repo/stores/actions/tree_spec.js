@@ -1,10 +1,30 @@
 import Vue from 'vue';
-import * as urlUtils from '~/lib/utils/url_utility';
-import store from '~/repo/stores';
-import service from '~/repo/services';
+import store from '~/ide/stores';
+import service from '~/ide/services';
 import { file, resetStore } from '../../helpers';
 
 describe('Multi-file store tree actions', () => {
+  let projectTree;
+
+  const basicCallParameters = {
+    endpoint: 'rootEndpoint',
+    projectId: 'abcproject',
+    branch: 'master',
+  };
+
+  beforeEach(() => {
+    store.state.currentProjectId = 'abcproject';
+    store.state.currentBranchId = 'master';
+    store.state.projects.abcproject = {
+      web_url: '',
+      branches: {
+        master: {
+          workingReference: '1',
+        },
+      },
+    };
+  });
+
   afterEach(() => {
     resetStore(store);
   });
@@ -24,38 +44,32 @@ describe('Multi-file store tree actions', () => {
           submodules: [{ name: 'submodule' }],
         }),
       }));
-      spyOn(history, 'pushState');
-
-      Object.assign(store.state.endpoints, {
-        rootEndpoint: 'rootEndpoint',
-      });
     });
 
     it('calls service getTreeData', (done) => {
-      store.dispatch('getTreeData')
-        .then(() => {
-          expect(service.getTreeData).toHaveBeenCalledWith('rootEndpoint');
+      store.dispatch('getTreeData', basicCallParameters)
+      .then(() => {
+        expect(service.getTreeData).toHaveBeenCalledWith('rootEndpoint');
 
-          done();
-        }).catch(done.fail);
+        done();
+      }).catch(done.fail);
     });
 
     it('adds data into tree', (done) => {
-      store.dispatch('getTreeData')
-        .then(Vue.nextTick)
+      store.dispatch('getTreeData', basicCallParameters)
         .then(() => {
-          expect(store.state.tree.length).toBe(3);
-          expect(store.state.tree[0].type).toBe('tree');
-          expect(store.state.tree[1].type).toBe('submodule');
-          expect(store.state.tree[2].type).toBe('blob');
+          projectTree = store.state.trees['abcproject/master'];
+          expect(projectTree.tree.length).toBe(3);
+          expect(projectTree.tree[0].type).toBe('tree');
+          expect(projectTree.tree[1].type).toBe('submodule');
+          expect(projectTree.tree[2].type).toBe('blob');
 
           done();
         }).catch(done.fail);
     });
 
     it('sets parent tree URL', (done) => {
-      store.dispatch('getTreeData')
-        .then(Vue.nextTick)
+      store.dispatch('getTreeData', basicCallParameters)
         .then(() => {
           expect(store.state.parentTreeUrl).toBe('parent_tree_url');
 
@@ -64,10 +78,9 @@ describe('Multi-file store tree actions', () => {
     });
 
     it('sets last commit path', (done) => {
-      store.dispatch('getTreeData')
-        .then(Vue.nextTick)
+      store.dispatch('getTreeData', basicCallParameters)
         .then(() => {
-          expect(store.state.lastCommitPath).toBe('last_commit_path');
+          expect(store.state.trees['abcproject/master'].lastCommitPath).toBe('last_commit_path');
 
           done();
         }).catch(done.fail);
@@ -76,8 +89,7 @@ describe('Multi-file store tree actions', () => {
     it('sets root if not currently at root', (done) => {
       store.state.isInitialRoot = false;
 
-      store.dispatch('getTreeData')
-        .then(Vue.nextTick)
+      store.dispatch('getTreeData', basicCallParameters)
         .then(() => {
           expect(store.state.isInitialRoot).toBeTruthy();
           expect(store.state.isRoot).toBeTruthy();
@@ -87,33 +99,9 @@ describe('Multi-file store tree actions', () => {
     });
 
     it('sets page title', (done) => {
-      store.dispatch('getTreeData')
+      store.dispatch('getTreeData', basicCallParameters)
         .then(() => {
           expect(document.title).toBe('test');
-
-          done();
-        }).catch(done.fail);
-    });
-
-    it('toggles loading', (done) => {
-      store.dispatch('getTreeData')
-        .then(() => {
-          expect(store.state.loading).toBeTruthy();
-
-          return Vue.nextTick();
-        })
-        .then(() => {
-          expect(store.state.loading).toBeFalsy();
-
-          done();
-        }).catch(done.fail);
-    });
-
-    it('calls pushState with endpoint', (done) => {
-      store.dispatch('getTreeData')
-        .then(Vue.nextTick)
-        .then(() => {
-          expect(history.pushState).toHaveBeenCalledWith(jasmine.anything(), '', 'rootEndpoint');
 
           done();
         }).catch(done.fail);
@@ -125,10 +113,9 @@ describe('Multi-file store tree actions', () => {
       store._actions.getLastCommitData = [getLastCommitDataSpy]; // eslint-disable-line
       store.state.prevLastCommitPath = 'test';
 
-      store.dispatch('getTreeData')
-        .then(Vue.nextTick)
+      store.dispatch('getTreeData', basicCallParameters)
         .then(() => {
-          expect(getLastCommitDataSpy).toHaveBeenCalledWith(store.state);
+          expect(getLastCommitDataSpy).toHaveBeenCalledWith(projectTree);
 
           store._actions.getLastCommitData = oldGetLastCommitData; // eslint-disable-line
 
@@ -149,6 +136,8 @@ describe('Multi-file store tree actions', () => {
       store._actions.getTreeData = [getTreeDataSpy]; // eslint-disable-line
 
       tree = {
+        projectId: 'abcproject',
+        branchId: 'master',
         opened: false,
         tree: [],
       };
@@ -175,10 +164,11 @@ describe('Multi-file store tree actions', () => {
         tree,
       }).then(() => {
         expect(getTreeDataSpy).toHaveBeenCalledWith({
+          projectId: 'abcproject',
+          branch: 'master',
           endpoint: 'test',
           tree,
         });
-        expect(store.state.previousUrl).toBe('test');
 
         done();
       }).catch(done.fail);
@@ -199,155 +189,29 @@ describe('Multi-file store tree actions', () => {
         done();
       }).catch(done.fail);
     });
-
-    it('pushes new state', (done) => {
-      spyOn(history, 'pushState');
-      Object.assign(tree, {
-        opened: true,
-        parentTreeUrl: 'testing',
-      });
-
-      store.dispatch('toggleTreeOpen', {
-        endpoint: 'test',
-        tree,
-      }).then(() => {
-        expect(history.pushState).toHaveBeenCalledWith(jasmine.anything(), '', 'testing');
-
-        done();
-      }).catch(done.fail);
-    });
-  });
-
-  describe('clickedTreeRow', () => {
-    describe('tree', () => {
-      let toggleTreeOpenSpy;
-      let oldToggleTreeOpen;
-
-      beforeEach(() => {
-        toggleTreeOpenSpy = jasmine.createSpy('toggleTreeOpen');
-
-        oldToggleTreeOpen = store._actions.toggleTreeOpen; // eslint-disable-line
-        store._actions.toggleTreeOpen = [toggleTreeOpenSpy]; // eslint-disable-line
-      });
-
-      afterEach(() => {
-        store._actions.toggleTreeOpen = oldToggleTreeOpen; // eslint-disable-line
-      });
-
-      it('opens tree', (done) => {
-        const tree = {
-          url: 'a',
-          type: 'tree',
-        };
-
-        store.dispatch('clickedTreeRow', tree)
-          .then(() => {
-            expect(toggleTreeOpenSpy).toHaveBeenCalledWith({
-              endpoint: tree.url,
-              tree,
-            });
-
-            done();
-          }).catch(done.fail);
-      });
-    });
-
-    describe('submodule', () => {
-      let row;
-
-      beforeEach(() => {
-        spyOn(urlUtils, 'visitUrl');
-
-        row = {
-          url: 'submoduleurl',
-          type: 'submodule',
-          loading: false,
-        };
-      });
-
-      it('toggles loading for row', (done) => {
-        store.dispatch('clickedTreeRow', row)
-          .then(() => {
-            expect(row.loading).toBeTruthy();
-
-            done();
-          }).catch(done.fail);
-      });
-
-      it('opens submodule URL', (done) => {
-        store.dispatch('clickedTreeRow', row)
-          .then(() => {
-            expect(urlUtils.visitUrl).toHaveBeenCalledWith('submoduleurl');
-
-            done();
-          }).catch(done.fail);
-      });
-    });
-
-    describe('blob', () => {
-      let row;
-
-      beforeEach(() => {
-        row = {
-          type: 'blob',
-          opened: false,
-        };
-      });
-
-      it('calls getFileData', (done) => {
-        const getFileDataSpy = jasmine.createSpy('getFileData');
-        const oldGetFileData = store._actions.getFileData; // eslint-disable-line
-        store._actions.getFileData = [getFileDataSpy]; // eslint-disable-line
-
-        store.dispatch('clickedTreeRow', row)
-          .then(() => {
-            expect(getFileDataSpy).toHaveBeenCalledWith(row);
-
-            store._actions.getFileData = oldGetFileData; // eslint-disable-line
-
-            done();
-          }).catch(done.fail);
-      });
-
-      it('calls setFileActive when file is opened', (done) => {
-        const setFileActiveSpy = jasmine.createSpy('setFileActive');
-        const oldSetFileActive = store._actions.setFileActive; // eslint-disable-line
-        store._actions.setFileActive = [setFileActiveSpy]; // eslint-disable-line
-
-        row.opened = true;
-
-        store.dispatch('clickedTreeRow', row)
-          .then(() => {
-            expect(setFileActiveSpy).toHaveBeenCalledWith(row);
-
-            store._actions.setFileActive = oldSetFileActive; // eslint-disable-line
-
-            done();
-          }).catch(done.fail);
-      });
-    });
   });
 
   describe('createTempTree', () => {
-    it('creates temp tree', (done) => {
-      store.dispatch('createTempTree', 'test')
-        .then(() => {
-          expect(store.state.tree[0].tempFile).toBeTruthy();
-          expect(store.state.tree[0].name).toBe('test');
-          expect(store.state.tree[0].type).toBe('tree');
-
-          done();
-        }).catch(done.fail);
+    beforeEach(() => {
+      store.state.trees['abcproject/mybranch'] = {
+        tree: [],
+      };
+      projectTree = store.state.trees['abcproject/mybranch'];
     });
 
-    it('creates .gitkeep file in temp tree', (done) => {
-      store.dispatch('createTempTree', 'test')
-        .then(() => {
-          expect(store.state.tree[0].tree[0].tempFile).toBeTruthy();
-          expect(store.state.tree[0].tree[0].name).toBe('.gitkeep');
+    it('creates temp tree', (done) => {
+      store.dispatch('createTempTree', {
+        projectId: store.state.currentProjectId,
+        branchId: store.state.currentBranchId,
+        name: 'test',
+        parent: projectTree,
+      })
+      .then(() => {
+        expect(projectTree.tree[0].name).toBe('test');
+        expect(projectTree.tree[0].type).toBe('tree');
 
-          done();
-        }).catch(done.fail);
+        done();
+      }).catch(done.fail);
     });
 
     it('creates new folder inside another tree', (done) => {
@@ -357,35 +221,46 @@ describe('Multi-file store tree actions', () => {
         tree: [],
       };
 
-      store.state.tree.push(tree);
+      projectTree.tree.push(tree);
 
-      store.dispatch('createTempTree', 'testing/test')
-        .then(() => {
-          expect(store.state.tree[0].name).toBe('testing');
-          expect(store.state.tree[0].tree[0].tempFile).toBeTruthy();
-          expect(store.state.tree[0].tree[0].name).toBe('test');
-          expect(store.state.tree[0].tree[0].type).toBe('tree');
+      store.dispatch('createTempTree', {
+        projectId: store.state.currentProjectId,
+        branchId: store.state.currentBranchId,
+        name: 'testing/test',
+        parent: projectTree,
+      })
+      .then(() => {
+        expect(projectTree.tree[0].name).toBe('testing');
+        expect(projectTree.tree[0].tree[0].tempFile).toBeTruthy();
+        expect(projectTree.tree[0].tree[0].name).toBe('test');
+        expect(projectTree.tree[0].tree[0].type).toBe('tree');
 
-          done();
-        }).catch(done.fail);
+        done();
+      }).catch(done.fail);
     });
 
     it('does not create new tree if already exists', (done) => {
       const tree = {
         type: 'tree',
         name: 'testing',
+        endpoint: 'test',
         tree: [],
       };
 
-      store.state.tree.push(tree);
+      projectTree.tree.push(tree);
 
-      store.dispatch('createTempTree', 'testing/test')
-        .then(() => {
-          expect(store.state.tree[0].name).toBe('testing');
-          expect(store.state.tree[0].tempFile).toBeUndefined();
+      store.dispatch('createTempTree', {
+        projectId: store.state.currentProjectId,
+        branchId: store.state.currentBranchId,
+        name: 'testing/test',
+        parent: projectTree,
+      })
+      .then(() => {
+        expect(projectTree.tree[0].name).toBe('testing');
+        expect(projectTree.tree[0].tempFile).toBeUndefined();
 
-          done();
-        }).catch(done.fail);
+        done();
+      }).catch(done.fail);
     });
   });
 
@@ -405,12 +280,17 @@ describe('Multi-file store tree actions', () => {
         }]),
       }));
 
-      store.state.tree.push(file('testing', '1', 'tree'));
-      store.state.lastCommitPath = 'lastcommitpath';
+      store.state.trees['abcproject/mybranch'] = {
+        tree: [],
+      };
+
+      projectTree = store.state.trees['abcproject/mybranch'];
+      projectTree.tree.push(file('testing', '1', 'tree'));
+      projectTree.lastCommitPath = 'lastcommitpath';
     });
 
     it('calls service with lastCommitPath', (done) => {
-      store.dispatch('getLastCommitData')
+      store.dispatch('getLastCommitData', projectTree)
         .then(() => {
           expect(service.getTreeLastCommit).toHaveBeenCalledWith('lastcommitpath');
 
@@ -419,22 +299,22 @@ describe('Multi-file store tree actions', () => {
     });
 
     it('updates trees last commit data', (done) => {
-      store.dispatch('getLastCommitData')
-        .then(Vue.nextTick)
+      store.dispatch('getLastCommitData', projectTree)
+      .then(Vue.nextTick)
         .then(() => {
-          expect(store.state.tree[0].lastCommit.message).toBe('commit message');
+          expect(projectTree.tree[0].lastCommit.message).toBe('commit message');
 
           done();
         }).catch(done.fail);
     });
 
     it('does not update entry if not found', (done) => {
-      store.state.tree[0].name = 'a';
+      projectTree.tree[0].name = 'a';
 
-      store.dispatch('getLastCommitData')
+      store.dispatch('getLastCommitData', projectTree)
         .then(Vue.nextTick)
         .then(() => {
-          expect(store.state.tree[0].lastCommit.message).not.toBe('commit message');
+          expect(projectTree.tree[0].lastCommit.message).not.toBe('commit message');
 
           done();
         }).catch(done.fail);

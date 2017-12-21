@@ -98,6 +98,9 @@ password as they will be needed when configuring GitLab in the next section.
 - GitLab 8.14 introduced a new way to integrate with JIRA which greatly simplified
   the configuration options you have to enter. If you are using an older version,
   [follow this documentation][jira-repo-old-docs].
+- In order to support Oracle's Access Manager, GitLab will send additional cookies
+  to enable Basic Auth. The cookie being added to each request is `OBBasicAuth` with
+  a value of `fromDialog`.
 
 To enable JIRA integration in a project, navigate to the
 [Integrations page](project_services.md#accessing-the-project-services), click

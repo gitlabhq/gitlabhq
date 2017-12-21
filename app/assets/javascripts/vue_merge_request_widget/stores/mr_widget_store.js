@@ -1,5 +1,6 @@
 import Timeago from 'timeago.js';
 import { getStateKey } from '../dependencies';
+import { stateKey } from './state_maps';
 import { formatDate } from '../../lib/utils/datetime_utility';
 
 export default class MergeRequestStore {
@@ -118,6 +119,10 @@ export default class MergeRequestStore {
           this.state = null;
       }
     }
+  }
+
+  get isNothingToMergeState() {
+    return this.state === stateKey.nothingToMerge;
   }
 
   static getEventObject(event) {

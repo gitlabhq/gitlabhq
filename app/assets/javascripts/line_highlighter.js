@@ -175,4 +175,4 @@ LineHighlighter.prototype.__setLocationHash__ = function(value) {
   }, document.title, value);
 };
 
-window.LineHighlighter = LineHighlighter;
+export default LineHighlighter;

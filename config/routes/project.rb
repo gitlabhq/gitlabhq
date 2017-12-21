@@ -179,6 +179,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :pipeline_schedules, except: [:show] do
         member do
+          post :play
           post :take_ownership
         end
       end

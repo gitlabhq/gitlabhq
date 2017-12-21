@@ -1101,17 +1101,12 @@ module Gitlab
         end
       end
 
-      def write_ref(ref_path, ref, force: false)
+      def write_ref(ref_path, ref)
         raise ArgumentError, "invalid ref_path #{ref_path.inspect}" if ref_path.include?(' ')
         raise ArgumentError, "invalid ref #{ref.inspect}" if ref.include?("\x00")
 
-        ref = "refs/heads/#{ref}" unless ref.start_with?("refs") || ref =~ /\A[a-f0-9]+\z/i
-
-        rugged.references.create(ref_path, ref, force: force)
-      rescue Rugged::ReferenceError => ex
-        raise GitError, "could not create ref #{ref_path}: #{ex}"
-      rescue Rugged::OSError => ex
-        raise GitError, "could not create ref #{ref_path}: #{ex}"
+        input = "update #{ref_path}\x00#{ref}\x00\x00"
+        run_git!(%w[update-ref --stdin -z]) { |stdin| stdin.write(input) }
       end
 
       def fetch_ref(source_repository, source_ref:, target_ref:)

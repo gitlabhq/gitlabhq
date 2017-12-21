@@ -6,11 +6,6 @@
 = content_for :meta_tags do
   = auto_discovery_link_tag(:atom, project_commits_url(@project, @ref, rss_url_options), title: "#{@project.name}:#{@ref} commits")
 
-- if show_new_repo?
-  - content_for :page_specific_javascripts do
-    = webpack_bundle_tag 'common_vue'
-    = webpack_bundle_tag 'repo'
-
-%div{ class: [(container_class unless show_new_repo?), ("limit-container-width" unless fluid_layout)] }
+%div{ class: [(container_class), ("limit-container-width" unless fluid_layout)] }
   = render 'projects/last_push'
   = render 'projects/files', commit: @last_commit, project: @project, ref: @ref, content_url: project_tree_path(@project, @id)

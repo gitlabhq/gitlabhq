@@ -1,9 +1,9 @@
 /* eslint-disable comma-dangle, space-before-function-paren, no-new */
 /* global MilestoneSelect */
-/* global Sidebar */
 
 import Vue from 'vue';
 import Flash from '../../flash';
+import Sidebar from '../../right_sidebar';
 import eventHub from '../../sidebar/event_hub';
 import assigneeTitle from '../../sidebar/components/assignees/assignee_title';
 import assignees from '../../sidebar/components/assignees/assignees';

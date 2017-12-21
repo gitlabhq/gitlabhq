@@ -6,7 +6,7 @@ Vue.use(VueResource);
 export default class MRWidgetService {
   constructor(endpoints) {
     this.mergeResource = Vue.resource(endpoints.mergePath);
-    this.mergeCheckResource = Vue.resource(endpoints.statusPath);
+    this.mergeCheckResource = Vue.resource(`${endpoints.statusPath}?serializer=widget`);
     this.cancelAutoMergeResource = Vue.resource(endpoints.cancelAutoMergePath);
     this.removeWIPResource = Vue.resource(endpoints.removeWIPPath);
     this.removeSourceBranchResource = Vue.resource(endpoints.sourceBranchPath);

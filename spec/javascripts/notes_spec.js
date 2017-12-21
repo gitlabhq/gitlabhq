@@ -1,12 +1,10 @@
 /* eslint-disable space-before-function-paren, no-unused-expressions, no-var, object-shorthand, comma-dangle, max-len */
-/* global Notes */
-
 import * as urlUtils from '~/lib/utils/url_utility';
 import 'autosize';
 import '~/gl_form';
 import '~/lib/utils/text_utility';
 import '~/render_gfm';
-import '~/notes';
+import Notes from '~/notes';
 
 (function() {
   window.gon || (window.gon = {});

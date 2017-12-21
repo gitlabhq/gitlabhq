@@ -11,7 +11,7 @@ import NotificationsForm from './notifications_form';
 import notificationsDropdown from './notifications_dropdown';
 import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
-/* global LineHighlighter */
+import LineHighlighter from './line_highlighter';
 import BuildArtifacts from './build_artifacts';
 import CILintEditor from './ci_lint_editor';
 import groupsSelect from './groups_select';
@@ -21,7 +21,7 @@ import NamespaceSelect from './namespace_select';
 import NewCommitForm from './new_commit_form';
 import Project from './project';
 import projectAvatar from './project_avatar';
-/* global MergeRequest */
+import MergeRequest from './merge_request';
 import Compare from './compare';
 import initCompareAutocomplete from './compare_autocomplete';
 import ProjectFindFile from './project_find_file';
@@ -29,7 +29,7 @@ import ProjectNew from './project_new';
 import projectImport from './project_import';
 import Labels from './labels';
 import LabelManager from './label_manager';
-/* global Sidebar */
+import Sidebar from './right_sidebar';
 import IssuableTemplateSelectors from './templates/issuable_template_selectors';
 import Flash from './flash';
 import CommitsList from './commits';
@@ -73,7 +73,6 @@ import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
 import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
-import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
 import NewGroupChild from './groups/new_group_child';
 import AbuseReports from './abuse_reports';
@@ -110,6 +109,8 @@ import Activities from './activities';
       if (!page) {
         return false;
       }
+
+      const fail = () => Flash('Error loading dynamic module');
 
       path = page.split(':');
       shortcut_handler = null;
@@ -447,9 +448,6 @@ import Activities from './activities';
           break;
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
-
-          if (UserFeatureHelper.isNewRepoEnabled()) break;
-
           new TreeView();
           new BlobViewer();
           new NewCommitForm($('.js-create-dir-form'));
@@ -468,7 +466,6 @@ import Activities from './activities';
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
-          if (UserFeatureHelper.isNewRepoEnabled()) break;
           new BlobViewer();
           initBlob();
           break;
@@ -545,7 +542,7 @@ import Activities from './activities';
           new CILintEditor();
           break;
         case 'users:show':
-          new UserCallout();
+          import('./pages/users/show').then(m => m.default()).catch(fail);
           break;
         case 'admin:conversational_development_index:show':
           new UserCallout();
