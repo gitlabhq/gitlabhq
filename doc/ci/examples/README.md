@@ -27,8 +27,7 @@ Apart from those, here is an collection of tutorials and guides on setting up yo
 
 ### Java
 
-- **Articles:**
-  - [Continuous Delivery of a Spring Boot application with GitLab CI and Kubernetes](https://about.gitlab.com/2016/12/14/continuous-delivery-of-a-spring-boot-application-with-gitlab-ci-and-kubernetes/)
+- [Continuous Delivery of a Spring Boot application with GitLab CI and Kubernetes](https://about.gitlab.com/2016/12/14/continuous-delivery-of-a-spring-boot-application-with-gitlab-ci-and-kubernetes/)
 
 ### Scala
 
@@ -41,18 +40,15 @@ Apart from those, here is an collection of tutorials and guides on setting up yo
 ### Elixir
 
 - [Test a Phoenix application](test-phoenix-application.md)
-- **Articles:**
-  - [Building an Elixir Release into a Docker image using GitLab CI](https://about.gitlab.com/2016/08/11/building-an-elixir-release-into-docker-image-using-gitlab-ci-part-1/)
+- [Building an Elixir Release into a Docker image using GitLab CI](https://about.gitlab.com/2016/08/11/building-an-elixir-release-into-docker-image-using-gitlab-ci-part-1/)
 
 ### iOS
 
-- **Articles:**
-  - [Setting up GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/)
+- [Setting up GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/)
 
 ### Android
 
-- **Articles:**
-  - [Setting up GitLab CI for Android projects](https://about.gitlab.com/2016/11/30/setting-up-gitlab-ci-for-android-projects/)
+- [Setting up GitLab CI for Android projects](https://about.gitlab.com/2016/11/30/setting-up-gitlab-ci-for-android-projects/)
 
 ### Code quality analysis
 
@@ -63,20 +59,19 @@ Apart from those, here is an collection of tutorials and guides on setting up yo
 - [Using `dpl` as deployment tool](deployment/README.md)
 - [Repositories with examples for various languages](https://gitlab.com/groups/gitlab-examples)
 - [The .gitlab-ci.yml file for GitLab itself](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.gitlab-ci.yml)
-- **Articles:**
-  - [Continuous Deployment with GitLab: how to build and deploy a Debian Package with GitLab CI](https://about.gitlab.com/2016/10/12/automated-debian-package-build-with-gitlab-ci/)
+- [Continuous Deployment with GitLab: how to build and deploy a Debian Package with GitLab CI](https://about.gitlab.com/2016/10/12/automated-debian-package-build-with-gitlab-ci/)
+- [How to deploy Maven projects to Artifactory with GitLab CI/CD](artifactory_and_gitlab/index.md)
 
-## GitLab CI for GitLab Pages
+## GitLab CI/CD for GitLab Pages
 
 - [Example projects](https://gitlab.com/pages)
-- **Articles:**
-  - [Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](../../user/project/pages/getting_started_part_four.md)
-  - [SSGs Part 3: Build any SSG site with GitLab Pages](https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/):
-  examples for Ruby-, NodeJS-, Python-, and GoLang-based SSGs
-  - [Building a new GitLab docs site with Nanoc, GitLab CI, and GitLab Pages](https://about.gitlab.com/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/)
-  - [Publish code coverage reports with GitLab Pages](https://about.gitlab.com/2016/11/03/publish-code-coverage-report-with-gitlab-pages/)
+- [Creating and Tweaking `.gitlab-ci.yml` for GitLab Pages](../../user/project/pages/getting_started_part_four.md)
+- [SSGs Part 3: Build any SSG site with GitLab Pages](https://about.gitlab.com/2016/06/17/ssg-overview-gitlab-pages-part-3-examples-ci/):
+examples for Ruby-, NodeJS-, Python-, and GoLang-based SSGs
+- [Building a new GitLab docs site with Nanoc, GitLab CI, and GitLab Pages](https://about.gitlab.com/2016/12/07/building-a-new-gitlab-docs-site-with-nanoc-gitlab-ci-and-gitlab-pages/)
+- [Publish code coverage reports with GitLab Pages](https://about.gitlab.com/2016/11/03/publish-code-coverage-report-with-gitlab-pages/)
 
-See the topic [GitLab Pages](../../user/project/pages/index.md) for a complete overview.
+See the documentation on [GitLab Pages](../../user/project/pages/index.md) for a complete overview.
 
 ## More
 
