@@ -176,8 +176,13 @@ var config = {
         return chunk.name;
       }
       return chunk.mapModules((m) => {
-        var chunkPath = m.request.split('!').pop();
-        return path.relative(m.context, chunkPath);
+        const pagesBase = path.join(ROOT_PATH, 'app/assets/javascripts/pages');
+        if (m.resource.indexOf(pagesBase) === 0) {
+          return path.relative(pagesBase, m.resource)
+            .replace(/\/index\.[a-z]+$/, '')
+            .replace(/\//g, '__');
+        }
+        return path.relative(m.context, m.resource);
       }).join('_');
     }),
 
