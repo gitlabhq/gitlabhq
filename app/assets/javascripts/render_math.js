@@ -1,5 +1,3 @@
-// import katex from 'katex';
-// import katexCSS from 'katex/dist/katex.css';
 import Flash from './flash';
 
 // Renders math using KaTeX in any element with the
