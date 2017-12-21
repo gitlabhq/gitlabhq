@@ -6,6 +6,7 @@ import '~/commons';
 
 import Vue from 'vue';
 import VueResource from 'vue-resource';
+import Translate from '~/vue_shared/translate';
 
 const isHeadlessChrome = /\bHeadlessChrome\//.test(navigator.userAgent);
 Vue.config.devtools = !isHeadlessChrome;
@@ -24,6 +25,7 @@ Vue.config.errorHandler = function (err) {
 };
 
 Vue.use(VueResource);
+Vue.use(Translate);
 
 // enable test fixtures
 jasmine.getFixtures().fixturesPath = '/base/spec/javascripts/fixtures';
@@ -61,11 +63,20 @@ beforeEach(() => {
   Vue.http.interceptors = builtinVueHttpInterceptors.slice();
 });
 
-// render all of our tests
+// eslint-disable-next-line no-undef
+let testFile = TEST_FILE;
+if (testFile) {
+  console.log(`Running only ${testFile}`);
+  testFile = testFile.replace(/^spec\/javascripts\//, '');
+  testFile = testFile.replace(/\.js$/, '');
+}
+
 const testsContext = require.context('.', true, /_spec$/);
 testsContext.keys().forEach(function (path) {
   try {
-    testsContext(path);
+    if (!testFile || path.indexOf(testFile) > -1) {
+      testsContext(path);
+    }
   } catch (err) {
     console.error('[ERROR] Unable to load spec: ', path);
     describe('Test bundle', function () {

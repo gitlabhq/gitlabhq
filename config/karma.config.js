@@ -12,7 +12,15 @@ if (webpackConfig.plugins) {
       plugin instanceof webpack.DefinePlugin
     );
   });
+} else {
+  webpackConfig.plugins = [];
 }
+
+webpackConfig.plugins.push(
+  new webpack.DefinePlugin({
+    TEST_FILE: JSON.stringify(process.env.TEST_FILE),
+  })
+);
 
 webpackConfig.devtool = 'cheap-inline-source-map';
 
