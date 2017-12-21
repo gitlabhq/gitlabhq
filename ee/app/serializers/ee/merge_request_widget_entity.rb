@@ -51,11 +51,11 @@ module EE
         end
       end
 
-      expose :clair, if: -> (mr, _) { expose_clair_data?(mr, current_user) } do
+      expose :sast_container, if: -> (mr, _) { expose_sast_container_data?(mr, current_user) } do
         expose :path do |merge_request|
           raw_project_build_artifacts_url(merge_request.source_project,
-                                          merge_request.clair_artifact,
-                                          path: Ci::Build::CLAIR_FILE)
+                                          merge_request.sast_container_artifact,
+                                          path: Ci::Build::SAST_CONTAINER_FILE)
         end
 
         expose :blob_path, if: -> (mr, _) { mr.head_pipeline_sha } do |merge_request|
@@ -77,10 +77,10 @@ module EE
         mr.has_performance_data?
     end
 
-    def expose_clair_data?(mr, current_user)
-      mr.project.feature_available?(:sast_image) &&
-        mr.has_clair_data? &&
-        can?(current_user, :read_build, mr.clair_artifact)
+    def expose_sast_container_data?(mr, current_user)
+      mr.project.feature_available?(:sast_container) &&
+        mr.has_sast_container_data? &&
+        can?(current_user, :read_build, mr.sast_container_artifact)
     end
   end
 end

@@ -41,7 +41,7 @@ export default {
       return this.mr.sast;
     },
     shouldRenderDockerReport() {
-      return this.mr.clair;
+      return this.mr.sastContainer;
     },
     codequalityText() {
       const { newIssues, resolvedIssues } = this.mr.codeclimateMetrics;
@@ -245,7 +245,7 @@ export default {
     },
 
     fetchDockerReport() {
-      const { path } = this.mr.clair;
+      const { path } = this.mr.sastContainer;
       this.isLoadingDocker = true;
 
       this.service.fetchReport(path)
@@ -340,8 +340,8 @@ export default {
         v-if="shouldRenderDockerReport"
         type="docker"
         :status="dockerStatus"
-        :loading-text="translateText('clair').loading"
-        :error-text="translateText('clair').error"
+        :loading-text="translateText('sast:container').loading"
+        :error-text="translateText('sast:container').error"
         :success-text="dockerText"
         :unresolved-issues="mr.dockerReport.unapproved"
         :neutral-issues="mr.dockerReport.approved"
