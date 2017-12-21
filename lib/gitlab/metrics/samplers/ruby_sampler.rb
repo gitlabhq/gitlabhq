@@ -52,7 +52,7 @@ module Gitlab
           metrics[:memory_usage].set(labels, System.memory_usage)
           metrics[:file_descriptors].set(labels, System.file_descriptor_count)
 
-          metrics[:sampler_duration].observe(labels.merge(worker_label), (System.monotonic_time - start_time) / 1000.0)
+          metrics[:sampler_duration].observe(labels.merge(worker_label), System.monotonic_time - start_time)
         ensure
           GC::Profiler.clear
         end
