@@ -323,7 +323,7 @@ describe 'Related issues', :js do
 
           expect(items_before.count).to eq(2)
 
-          first('.js-issue-token-remove-button').click
+          first('.js-issue-item-remove-button').click
 
           wait_for_requests
 
