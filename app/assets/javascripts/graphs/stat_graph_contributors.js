@@ -1,9 +1,15 @@
 /* eslint-disable func-names, space-before-function-paren, wrap-iife, no-var, one-var, camelcase, one-var-declaration-per-line, quotes, no-param-reassign, quote-props, comma-dangle, prefer-template, max-len, no-return-assign, no-shadow */
 
 import _ from 'underscore';
+<<<<<<< HEAD
+=======
+import { timeFormat } from 'd3-time-format';
+>>>>>>> origin/master
 import { ContributorsGraph, ContributorsAuthorGraph, ContributorsMasterGraph } from './stat_graph_contributors_graph';
 import ContributorsStatGraphUtil from './stat_graph_contributors_util';
 import { n__, s__, createDateTimeFormat, sprintf } from '../locale';
+
+const d3 = { timeFormat };
 
 export default (function() {
   function ContributorsStatGraph() {
@@ -84,9 +90,12 @@ export default (function() {
     return _.each(author_commits, (function(_this) {
       return function(d) {
         _this.redraw_author_commit_info(d);
-        $(_this.authors[d.author_name].list_item).appendTo("ol");
-        _this.authors[d.author_name].set_data(d.dates);
-        return _this.authors[d.author_name].redraw();
+        if (_this.authors[d.author_name] != null) {
+          $(_this.authors[d.author_name].list_item).appendTo("ol");
+          _this.authors[d.author_name].set_data(d.dates);
+          return _this.authors[d.author_name].redraw();
+        }
+        return '';
       };
     })(this));
   };
@@ -96,6 +105,7 @@ export default (function() {
   };
 
   ContributorsStatGraph.prototype.change_date_header = function() {
+<<<<<<< HEAD
     const x_domain = ContributorsGraph.prototype.x_domain;
     const formattedDateRange = sprintf(
       s__('ContributorsPage|%{startDate} – %{endDate}'),
@@ -105,13 +115,24 @@ export default (function() {
       },
     );
     return $('#date_header').text(formattedDateRange);
+=======
+    var print, print_date_format, x_domain;
+    x_domain = ContributorsGraph.prototype.x_domain;
+    print_date_format = d3.timeFormat("%B %e %Y");
+    print = print_date_format(x_domain[0]) + " - " + print_date_format(x_domain[1]);
+    return $("#date_header").text(print);
+>>>>>>> origin/master
   };
 
   ContributorsStatGraph.prototype.redraw_author_commit_info = function(author) {
-    var author_commit_info, author_list_item;
-    author_list_item = $(this.authors[author.author_name].list_item);
-    author_commit_info = this.format_author_commit_info(author);
-    return author_list_item.find("span").html(author_commit_info);
+    var author_commit_info, author_list_item, $author;
+    $author = this.authors[author.author_name];
+    if ($author != null) {
+      author_list_item = $(this.authors[author.author_name].list_item);
+      author_commit_info = this.format_author_commit_info(author);
+      return author_list_item.find("span").html(author_commit_info);
+    }
+    return '';
   };
 
   return ContributorsStatGraph;

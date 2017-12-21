@@ -62,7 +62,8 @@ class GeoNodeStatus < ActiveRecord::Base
     latest_event = Geo::EventLog.latest_event
     self.last_event_id = latest_event&.id
     self.last_event_date = latest_event&.created_at
-    self.repositories_count = projects_finder.count_projects
+    self.repositories_count = projects_finder.count_repositories
+    self.wikis_count = projects_finder.count_wikis
     self.lfs_objects_count = lfs_objects_finder.count_lfs_objects
     self.attachments_count = attachments_finder.count_attachments
     self.last_successful_status_check_at = Time.now
@@ -71,8 +72,10 @@ class GeoNodeStatus < ActiveRecord::Base
       self.db_replication_lag_seconds = Gitlab::Geo::HealthCheck.db_replication_lag_seconds
       self.cursor_last_event_id = Geo::EventLogState.last_processed&.event_id
       self.cursor_last_event_date = Geo::EventLog.find_by(id: self.cursor_last_event_id)&.created_at
-      self.repositories_synced_count = projects_finder.count_synced_project_registries
-      self.repositories_failed_count = projects_finder.count_failed_project_registries
+      self.repositories_synced_count = projects_finder.count_synced_repositories
+      self.repositories_failed_count = projects_finder.count_failed_repositories
+      self.wikis_synced_count = projects_finder.count_synced_wikis
+      self.wikis_failed_count = projects_finder.count_failed_wikis
       self.lfs_objects_synced_count = lfs_objects_finder.count_synced_lfs_objects
       self.lfs_objects_failed_count = lfs_objects_finder.count_failed_lfs_objects
       self.attachments_synced_count = attachments_finder.count_synced_attachments
@@ -118,6 +121,10 @@ class GeoNodeStatus < ActiveRecord::Base
 
   def repositories_synced_in_percentage
     sync_percentage(repositories_count, repositories_synced_count)
+  end
+
+  def wikis_synced_in_percentage
+    sync_percentage(wikis_count, wikis_synced_count)
   end
 
   def lfs_objects_synced_in_percentage

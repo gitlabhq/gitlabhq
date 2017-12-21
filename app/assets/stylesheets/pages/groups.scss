@@ -273,38 +273,3 @@ table.pipeline-project-metrics tr td {
   border-radius: $label-border-radius;
   font-weight: $gl-font-weight-normal;
 }
-
-.plan-badge {
-  margin-right: 15px;
-
-  svg {
-    position: relative;
-    top: 3px;
-    height: 16px;
-    width: 16px;
-  }
-
-  &.inline {
-    display: inline-block;
-    margin: 0 4px;
-  }
-
-  &[data-plan="gold"] {
-    color: darken($gl-gold-plan, 20%);
-    svg g { fill: $gl-gold-plan; }
-  }
-
-  &[data-plan="silver"] {
-    color: darken($gl-silver-plan, 20%);
-    svg g { fill: $gl-silver-plan; }
-  }
-
-  &[data-plan="bronze"] {
-    color: darken($gl-bronze-plan, 20%);
-    svg g { fill: $gl-bronze-plan; }
-  }
-
-  &:not([data-plan]) {
-    svg g { fill: $gl-no-plan; }
-  }
-}

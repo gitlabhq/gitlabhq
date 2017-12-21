@@ -62,6 +62,10 @@ Apart from those, here is an collection of tutorials and guides on setting up yo
 
 - [Scan your code for vulnerabilities](sast.md)
 
+### Browser Performance Testing with Sitespeed.io
+
+- [Analyze browser performance with Sitespeed.io](browser_performance.md)
+
 ### Other
 
 - [Using `dpl` as deployment tool](deployment/README.md)

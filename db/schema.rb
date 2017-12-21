@@ -970,6 +970,9 @@ ActiveRecord::Schema.define(version: 20171213160445) do
     t.datetime "updated_at", null: false
     t.datetime "last_successful_status_check_at"
     t.string "status_message"
+    t.integer "wikis_count"
+    t.integer "wikis_synced_count"
+    t.integer "wikis_failed_count"
   end
 
   add_index "geo_node_statuses", ["geo_node_id"], name: "index_geo_node_statuses_on_geo_node_id", unique: true, using: :btree
