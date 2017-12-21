@@ -179,6 +179,12 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def reset_cache
+    if ResetProjectCacheService.new(@project, current_user).execute
+      flash[:notice] = _("Project cache successfully reset.")
+    else
+      flash[:error] = _("Unable to reset project cache.")
+    end
+    redirect_to project_pipelines_path(@project)
   end
 
   def export
