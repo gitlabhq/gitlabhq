@@ -272,7 +272,7 @@ class Namespace < ActiveRecord::Base
   def write_projects_full_path_config
     all_projects.each do |project|
       project.expires_full_path_cache # we need to clear cache to validate renames correctly
-      project.write_repository_config(:fullpath, project.full_path)
+      project.write_repository_config
     end
   end
 end

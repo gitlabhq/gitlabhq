@@ -101,10 +101,7 @@ module Projects
     end
 
     def write_repository_config(full_path)
-      # We'd need to keep track of project full path otherwise directory tree
-      # created with hashed storage enabled cannot be usefully imported using
-      # the import rake task.
-      project.write_repository_config(:fullpath, full_path)
+      project.write_repository_config(:gl_fullpath, full_path)
     end
 
     def refresh_permissions

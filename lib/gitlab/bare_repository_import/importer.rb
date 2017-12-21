@@ -20,7 +20,7 @@ module Gitlab
             next
           end
 
-          log "Processing #{repo_path} -> #{bare_repo.project_full_path}".color(:yellow)
+          log "Processing #{repo_path}".color(:yellow)
 
           new(user, bare_repo).create_project_if_needed
         end
@@ -62,10 +62,7 @@ module Gitlab
         if project.persisted? && mv_repo(project)
           log " * Created #{project.name} (#{project_full_path})".color(:green)
 
-          # We'd need to keep track of project full path otherwise directory tree
-          # created with hashed storage enabled cannot be usefully imported using
-          # the import rake task.
-          project.write_repository_config(:fullpath, project.full_path)
+          project.write_repository_config
 
           ProjectCacheWorker.perform_async(project.id)
         else
