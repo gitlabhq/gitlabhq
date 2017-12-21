@@ -97,3 +97,4 @@
 - update_user_activity
 - upload_checksum
 - web_hook
+- check_gcp_project_billing
