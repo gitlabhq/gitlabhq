@@ -134,6 +134,24 @@ class GeoNode < ActiveRecord::Base
     namespaces.exists?
   end
 
+  def replication_slots_count
+    return unless Gitlab::Database.replication_slots_supported? && primary?
+
+    PgReplicationSlot.count
+  end
+
+  def replication_slots_used_count
+    return unless Gitlab::Database.replication_slots_supported? && primary?
+
+    PgReplicationSlot.used_slots_count
+  end
+
+  def replication_slots_max_retained_wal_bytes
+    return unless Gitlab::Database.replication_slots_supported? && primary?
+
+    PgReplicationSlot.max_retained_wal
+  end
+
   def find_or_build_status
     status || build_status
   end

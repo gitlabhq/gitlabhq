@@ -16,6 +16,9 @@ class GeoNodeStatus < ActiveRecord::Base
     attachments_count: 'Total number of file attachments available on primary',
     attachments_synced_count: 'Number of attachments synced on secondary',
     attachments_failed_count: 'Number of attachments failed to sync on secondary',
+    replication_slots_count: 'Total number of replication slots on the primary',
+    replication_slots_used_count: 'Number of replication slots in use on the primary',
+    replication_slots_max_retained_wal_bytes: 'Maximum number of bytes retained in the WAL on the primary',
     last_event_id: 'Database ID of the latest event log entry on the primary',
     last_event_timestamp: 'Time of the latest event log entry on the primary',
     cursor_last_event_id: 'Last database ID of the event log processed by the secondary',
@@ -67,6 +70,12 @@ class GeoNodeStatus < ActiveRecord::Base
     self.lfs_objects_count = lfs_objects_finder.count_lfs_objects
     self.attachments_count = attachments_finder.count_attachments
     self.last_successful_status_check_at = Time.now
+
+    if Gitlab::Geo.primary?
+      self.replication_slots_count = geo_node.replication_slots_count
+      self.replication_slots_used_count = geo_node.replication_slots_used_count
+      self.replication_slots_max_retained_wal_bytes = geo_node.replication_slots_max_retained_wal_bytes
+    end
 
     if Gitlab::Geo.secondary?
       self.db_replication_lag_seconds = Gitlab::Geo::HealthCheck.db_replication_lag_seconds
@@ -120,19 +129,23 @@ class GeoNodeStatus < ActiveRecord::Base
   end
 
   def repositories_synced_in_percentage
-    sync_percentage(repositories_count, repositories_synced_count)
+    calc_percentage(repositories_count, repositories_synced_count)
   end
 
   def wikis_synced_in_percentage
-    sync_percentage(wikis_count, wikis_synced_count)
+    calc_percentage(wikis_count, wikis_synced_count)
   end
 
   def lfs_objects_synced_in_percentage
-    sync_percentage(lfs_objects_count, lfs_objects_synced_count)
+    calc_percentage(lfs_objects_count, lfs_objects_synced_count)
   end
 
   def attachments_synced_in_percentage
-    sync_percentage(attachments_count, attachments_synced_count)
+    calc_percentage(attachments_count, attachments_synced_count)
+  end
+
+  def replication_slots_used_in_percentage
+    calc_percentage(replication_slots_count, replication_slots_used_count)
   end
 
   def [](key)
@@ -153,9 +166,9 @@ class GeoNodeStatus < ActiveRecord::Base
     @projects_finder ||= Geo::ProjectRegistryFinder.new(current_node: geo_node)
   end
 
-  def sync_percentage(total, synced)
+  def calc_percentage(total, count)
     return 0 if !total.present? || total.zero?
 
-    (synced.to_f / total.to_f) * 100.0
+    (count.to_f / total.to_f) * 100.0
   end
 end
