@@ -7,10 +7,6 @@
     = field.label :environment_scope, s_('ClusterIntegration|Environment scope')
     = field.text_field :environment_scope, class: 'form-control', readonly: !has_multiple_clusters?(@project), placeholder: s_('ClusterIntegration|Environment scope')
 
-  .form-group
-    = field.label :environment_scope, s_('ClusterIntegration|Environment scope')
-    = field.text_field :environment_scope, class: 'form-control', readonly: !has_multiple_clusters?(@project), placeholder: s_('ClusterIntegration|Environment scope')
-
   = field.fields_for :platform_kubernetes, @cluster.platform_kubernetes do |platform_kubernetes_field|
     .form-group
       = platform_kubernetes_field.label :api_url, s_('ClusterIntegration|API URL')

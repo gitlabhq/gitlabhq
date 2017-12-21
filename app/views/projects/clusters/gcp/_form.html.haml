@@ -11,10 +11,6 @@
     = field.label :environment_scope, s_('ClusterIntegration|Environment scope')
     = field.text_field :environment_scope, class: 'form-control', readonly: !has_multiple_clusters?(@project), placeholder: s_('ClusterIntegration|Environment scope')
 
-  .form-group
-    = field.label :environment_scope, s_('ClusterIntegration|Environment scope')
-    = field.text_field :environment_scope, class: 'form-control', readonly: !has_multiple_clusters?(@project), placeholder: s_('ClusterIntegration|Environment scope')
-
   = field.fields_for :provider_gcp, @cluster.provider_gcp do |provider_gcp_field|
     .form-group
       = provider_gcp_field.label :gcp_project_id, s_('ClusterIntegration|Google Cloud Platform project ID')
