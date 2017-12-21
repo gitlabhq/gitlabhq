@@ -18,29 +18,6 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
     end
   end
 
-  def check
-    respond_to do |format|
-      format.json do
-        Gitlab::PollingInterval.set_header(response, interval: STATUS_POLLING_INTERVAL)
-
-        Gitlab::Redis::SharedState.with do |redis|
-          render json: { billing: redis.get(CheckGcpProjectBillingWorker.redis_shared_state_key_for(token_in_session)) }
-        end
-      end
-
-      format.html { render :check }
-    end
-  end
-
-  def run_check
-    respond_to do |format|
-      format.json do
-        CheckGcpProjectBillingWorker.perform_async(token_in_session)
-        head :no_content
-      end
-    end
-  end
-
   def new
     @cluster = ::Clusters::Cluster.new.tap do |cluster|
       cluster.build_provider_gcp
@@ -84,14 +61,6 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
     end
   end
 
-  def authorize_google_project_billing
-    Gitlab::Redis::SharedState.with do |redis|
-      unless redis.get(CheckGcpProjectBillingWorker.redis_shared_state_key_for(token_in_session)) == 'true'
-        CheckGcpProjectBillingWorker.perform_async(token_in_session)
-        redirect_to action: 'check'
-      end
-    end
-  end
 
   def token_in_session
     @token_in_session ||=
