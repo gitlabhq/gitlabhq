@@ -6,7 +6,7 @@ class AddPositionToEpicIssues < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:epic_issues, :position, :integer, default: Arel.sql('id'), allow_null: false)
+    add_column_with_default(:epic_issues, :position, :integer, default: 1, allow_null: false)
   end
 
   def down

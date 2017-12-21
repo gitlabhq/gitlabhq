@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171214115254) do
+ActiveRecord::Schema.define(version: 20171221154744) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -765,7 +765,7 @@ ActiveRecord::Schema.define(version: 20171214115254) do
   create_table "epic_issues", force: :cascade do |t|
     t.integer "epic_id", null: false
     t.integer "issue_id", null: false
-    t.integer "position", default: 0, null: false
+    t.integer "position", default: 1, null: false
   end
 
   add_index "epic_issues", ["epic_id"], name: "index_epic_issues_on_epic_id", using: :btree
