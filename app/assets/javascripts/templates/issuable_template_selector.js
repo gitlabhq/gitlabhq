@@ -39,6 +39,7 @@ export default class IssuableTemplateSelector extends TemplateSelector {
   }
 
   requestFile(query) {
+    this.dirty = false;
     this.startLoadingSpinner();
     Api.issueTemplate(this.namespacePath, this.projectPath, query.name, this.issuableType, (err, currentTemplate) => {
       this.currentTemplate = currentTemplate;
