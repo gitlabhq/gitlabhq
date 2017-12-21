@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe PipelineSerializer do
+  set(:project) { create(:project, :repository) }
   set(:user) { create(:user) }
 
   let(:serializer) do
@@ -16,7 +17,7 @@ describe PipelineSerializer do
       end
 
       context 'when a single object is being serialized' do
-        let(:resource) { create(:ci_empty_pipeline) }
+        let(:resource) { create(:ci_empty_pipeline, project: project) }
 
         it 'serializers the pipeline object' do
           expect(subject[:id]).to eq resource.id
@@ -24,7 +25,7 @@ describe PipelineSerializer do
       end
 
       context 'when multiple objects are being serialized' do
-        let(:resource) { create_list(:ci_pipeline, 2) }
+        let(:resource) { create_list(:ci_pipeline, 2, project: project) }
 
         it 'serializers the array of pipelines' do
           expect(subject).not_to be_empty
@@ -100,7 +101,6 @@ describe PipelineSerializer do
 
     context 'number of queries' do
       let(:resource) { Ci::Pipeline.all }
-      let(:project) { create(:project) }
 
       before do
         # Since RequestStore.active? is true we have to allow the

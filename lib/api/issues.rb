@@ -8,7 +8,7 @@ module API
 
     helpers do
       def find_issues(args = {})
-        args = params.merge(args)
+        args = declared_params.merge(args)
 
         args.delete(:id)
         args[:milestone_title] = args.delete(:milestone)

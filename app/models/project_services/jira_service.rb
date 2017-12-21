@@ -46,6 +46,8 @@ class JiraService < IssueTrackerService
       context_path: url.path,
       auth_type: :basic,
       read_timeout: 120,
+      use_cookies: true,
+      additional_cookies: ['OBBasicAuth=fromDialog'],
       use_ssl: url.scheme == 'https'
     }
   end

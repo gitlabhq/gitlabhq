@@ -11,7 +11,7 @@ This exported module should be used instead of directly using `axios` to ensure 
 
 ## Usage
 ```javascript
-  import axios from '~/lib/utils/axios_utils';
+  import axios from './lib/utils/axios_utils';
 
   axios.get(url)
     .then((response) => {

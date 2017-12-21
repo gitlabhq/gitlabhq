@@ -32,10 +32,10 @@ var config = {
     boards:               './boards/boards_bundle.js',
     common:               './commons/index.js',
     common_vue:           './vue_shared/vue_resource_interceptor.js',
-    common_d3:            ['d3'],
     cycle_analytics:      './cycle_analytics/cycle_analytics_bundle.js',
     commit_pipelines:     './commit/pipelines/pipelines_bundle.js',
     deploy_keys:          './deploy_keys/index.js',
+    docs:                 './docs/docs_bundle.js',
     diff_notes:           './diff_notes/diff_notes_bundle.js',
     environments:         './environments/environments_bundle.js',
     environments_folder:  './environments/folder/environments_folder_bundle.js',
@@ -224,6 +224,9 @@ var config = {
         'monitoring',
         'users',
       ],
+      minChunks: function (module, count) {
+        return module.resource && /d3-/.test(module.resource);
+      },
     }),
 
     // create cacheable common library bundles

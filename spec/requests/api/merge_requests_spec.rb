@@ -150,6 +150,26 @@ describe API::MergeRequests do
         expect(json_response.length).to eq(1)
         expect(json_response.first['id']).to eq(merge_request3.id)
       end
+
+      context 'search params' do
+        before do
+          merge_request.update(title: 'Search title', description: 'Search description')
+        end
+
+        it 'returns merge requests matching given search string for title' do
+          get api("/merge_requests", user), search: merge_request.title
+
+          expect(json_response.length).to eq(1)
+          expect(json_response.first['id']).to eq(merge_request.id)
+        end
+
+        it 'returns merge requests for project matching given search string for description' do
+          get api("/merge_requests", user), project_id: project.id, search: merge_request.description
+
+          expect(json_response.length).to eq(1)
+          expect(json_response.first['id']).to eq(merge_request.id)
+        end
+      end
     end
   end
 

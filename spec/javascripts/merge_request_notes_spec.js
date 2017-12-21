@@ -1,11 +1,9 @@
-/* global Notes */
-
 import 'autosize';
 import '~/gl_form';
 import '~/lib/utils/text_utility';
 import '~/render_gfm';
 import '~/render_math';
-import '~/notes';
+import Notes from '~/notes';
 
 const upArrowKeyCode = 38;
 

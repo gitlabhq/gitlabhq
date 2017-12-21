@@ -16,27 +16,18 @@
 
 @mixin set-visible {
   transform: translateY(0);
-  visibility: visible;
-  opacity: 1;
-  transition-duration: 100ms, 150ms, 25ms;
-  transition-delay: 35ms, 50ms, 25ms;
+  display: block;
 }
 
 @mixin set-invisible {
   transform: translateY(-10px);
-  visibility: hidden;
-  opacity: 0;
-  transition-property: opacity, transform, visibility;
-  transition-duration: 70ms, 250ms, 250ms;
-  transition-timing-function: linear, $dropdown-animation-timing;
-  transition-delay: 25ms, 50ms, 0ms;
+  display: none;
 }
 
 .open {
   .dropdown-menu,
   .dropdown-menu-nav {
     @include set-visible;
-    display: block;
     min-height: 40px;
 
     @media (max-width: $screen-xs-max) {
@@ -53,6 +44,11 @@
   [data-toggle="dropdown"] {
     outline: 0;
   }
+}
+
+// Get search dropdown to line up with other nav dropdowns
+.search-input-container .dropdown-menu {
+  margin-top: 11px;
 }
 
 .dropdown-toggle {
@@ -214,7 +210,6 @@
 .dropdown-menu,
 .dropdown-menu-nav {
   @include set-invisible;
-  display: block;
   position: absolute;
   width: auto;
   top: 100%;
