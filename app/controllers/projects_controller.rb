@@ -178,6 +178,9 @@ class ProjectsController < Projects::ApplicationController
     )
   end
 
+  def reset_cache
+  end
+
   def export
     @project.add_export_job(current_user: current_user)
 
