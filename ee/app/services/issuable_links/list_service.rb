@@ -20,7 +20,6 @@ module IssuableLinks
       raise NotImplementedError
     end
 
-
     def reference(issue)
       issue.to_reference(issuable.project)
     end
