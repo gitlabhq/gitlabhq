@@ -9,35 +9,34 @@ fail-over with minimal effort, in a disaster situation.
 
 See [current limitations](README.md#current-limitations) for more information.
 
-## Promoting a secondary node
+## Promoting a secondary geo replica
 
 > **Warning:** Disaster Recovery does not yet support systems with multiple
-> secondary nodes (3-node systems or greater).
+> secondary geo replicas (e.g. one primary and two or more secondaries).
 
-We don't provide yet an automated way to promote a node and do fail-over,
-but you can do it manually if you have `root` access to the machine.
+We don't currently provide an automated way to promote a geo replica and do a
+fail-over, but you can do it manually if you have `root` access to the machine.
 
-This process promotes a secondary node to a primary node by the shortest path.
+This process promotes a secondary geo replica to a primary in the least steps.
 It does not enable GitLab Geo on the newly promoted primary.
 
-1. Take down your **primary** node.
-
-    SSH into your primary node and stop GitLab.
+1. SSH into your **primary** and stop disable GitLab.
 
     ```
     sudo gitlab-ctl stop
+
     ```
 
-    If you do not have SSH access to your primary node take the machine
-    offline. Depending on the nature of your primary node this may mean
-    physically disconnecting the machine, stopping a virtual server,
-    reconfiguring load balancers, or changing DNS records (see next step).
+    If you do not have SSH access to your primary take the machine offline.
+    Depending on the nature of your primary this may mean physically
+    disconnecting the machine, stopping a virtual server, reconfiguring load
+    balancers, or changing DNS records (see next step).
 
     Preventing the original primary from coming online during this process is
     necessary to ensure data isn't added to the original primary that will not
     be replicated to the newly promoted primary.
 
-1. SSH in to your **secondary** node and login as root:
+1. SSH in to your **secondary** and login as root:
 
     ```
     sudo -i
@@ -46,8 +45,8 @@ It does not enable GitLab Geo on the newly promoted primary.
 1. Optional: Update the primary domain's DNS record.
     
     Updating the DNS records for the primary domain to point to the secondary
-    node will prevent the need to update all references to the primary domain
-    to the secondary domain, like changing Git remotes and API URLs.
+    will prevent the need to update all references to the primary domain to the
+    secondary domain, like changing Git remotes and API URLs.
 
     After updating the primary domain's DNS records to point to the secondary,
     edit `/etc/gitlab/gitlab.rb` on the the secondary to reflect the new URL:
@@ -57,7 +56,7 @@ It does not enable GitLab Geo on the newly promoted primary.
     external_url 'https://gitlab.example.com'
     ```
 
-1. Edit `/etc/gitlab/gitlab.rb` to reflect its new status as primary node.
+1. Edit `/etc/gitlab/gitlab.rb` to reflect its new status as primary.
 
     Remove the following line:
 
@@ -68,9 +67,9 @@ It does not enable GitLab Geo on the newly promoted primary.
 
     A new secondary should not be added at this time. If you want to add a new
     secondary, do this after you have completed the entire process of promoting
-    the secondary node to the primary node.
+    the secondary to the primary .
 
-1. Promote the secondary geo node to primary node. Execute:
+1. Promote the secondary to primary. Execute:
 
     ```
     gitlab-ctl promote-to-primary-node
@@ -78,15 +77,15 @@ It does not enable GitLab Geo on the newly promoted primary.
 
 1. Verify you can connect to the newly promoted primary using the URL used
    previously for the secondary.
-1. Success! The secondary node has now been promoted to primary node.
+1. Success! The secondary has now been promoted to primary.
 
     If you updated the DNS records for the primary domain, these changes may
     not have yet propagated depending on the previous DNS records TTL.
 
-## Add secondary nodes to a promoted primary
+## Add secondary geo replicas to a promoted primary
 
-Promoting a secondary node to primary using the process above does not enable
+Promoting a secondary to primary using the process above does not enable
 GitLab Geo on the new primary.
 
-To bring a new secondary node online, follow the [GitLab Geo setup
-instructions](README.md#setup-instructions).
+To bring a new secondary online, follow the [GitLab Geo setup instructions](
+README.md#setup-instructions).
