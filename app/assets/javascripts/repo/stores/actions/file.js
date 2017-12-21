@@ -103,7 +103,7 @@ export const createTempFile = ({ state, commit, dispatch }, { tree, name, conten
   dispatch('setFileActive', file);
 
   if (!state.editMode && !file.base64) {
-    dispatch('toggleEditMode', true);
+    dispatch('toggleEditMode');
   }
 
   return Promise.resolve(file);

@@ -12,7 +12,6 @@
     },
     data() {
       return {
-        openModal: false,
         modalType: '',
       };
     },
@@ -24,10 +23,7 @@
     methods: {
       createNewItem(type) {
         this.modalType = type;
-        this.toggleModalOpen();
-      },
-      toggleModalOpen() {
-        this.openModal = !this.openModal;
+        this.$refs.newModal.show();
       },
     },
   };
@@ -80,10 +76,9 @@
       </li>
     </ul>
     <new-modal
-      v-if="openModal"
+      ref="newModal"
       :type="modalType"
       :path="path"
-      @toggle="toggleModalOpen"
     />
   </div>
 </template>

@@ -1,7 +1,11 @@
 <script>
+import { mapActions, mapState } from 'vuex';
+
+import store from '../stores/modal';
+
 export default {
   name: 'modal',
-
+  store,
   props: {
     title: {
       type: String,
@@ -49,6 +53,9 @@ export default {
   },
 
   computed: {
+    ...mapState([
+      'isVisible',
+    ]),
     btnKindClass() {
       return {
         [`btn-${this.kind}`]: true,
@@ -62,8 +69,12 @@ export default {
   },
 
   methods: {
+    ...mapActions([
+      'hide',
+    ]),
     close() {
       this.$emit('toggle', false);
+      this.hide();
     },
     emitSubmit(status) {
       this.$emit('submit', status);
@@ -73,7 +84,9 @@ export default {
 </script>
 
 <template>
-<div class="modal-open">
+<div
+  v-if="isVisible"
+  class="modal-open">
   <div
     class="modal show"
     role="dialog"

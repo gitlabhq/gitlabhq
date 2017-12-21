@@ -22,7 +22,6 @@
       return {
         enteredPassword: '',
         enteredUsername: '',
-        isOpen: false,
       };
     },
     components: {
@@ -70,19 +69,16 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
         return this.enteredUsername === this.username;
       },
       onSubmit(status) {
-        if (status) {
-          if (!this.canSubmit()) {
-            return;
-          }
-
-          this.$refs.form.submit();
+        if (!this.canSubmit()) {
+          return;
         }
 
-        this.toggleOpen(false);
+        this.$refs.form.submit();
+        this.$refs.modal.hide();
       },
-      toggleOpen(isOpen) {
-        this.isOpen = isOpen;
-      },
+    },
+    mounted() {
+      this.$nextTick(() => this.$refs.modal.show());
     },
   };
 </script>
@@ -90,12 +86,11 @@ Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
 <template>
   <div>
     <modal
-      v-if="isOpen"
+      ref="modal"
       :title="s__('Profiles|Delete your account?')"
       :text="text"
       :kind="`danger ${!canSubmit() && 'disabled'}`"
       :primary-button-label="s__('Profiles|Delete account')"
-      @toggle="toggleOpen"
       @submit="onSubmit">
 
       <template slot="body" slot-scope="props">

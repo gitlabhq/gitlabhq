@@ -25,11 +25,6 @@ export default {
       required: true,
     },
   },
-  data() {
-    return {
-      modalStatus: false,
-    };
-  },
   computed: {
     leaveBtnTitle() {
       return COMMON_STR.LEAVE_BTN_TITLE;
@@ -43,13 +38,11 @@ export default {
   },
   methods: {
     onLeaveGroup() {
-      this.modalStatus = true;
+      this.$refs.modal.show();
     },
-    leaveGroup(leaveConfirmed) {
-      this.modalStatus = false;
-      if (leaveConfirmed) {
-        eventHub.$emit('leaveGroup', this.group, this.parentGroup);
-      }
+    leaveGroup() {
+      eventHub.$emit('leaveGroup', this.group, this.parentGroup);
+      this.$refs.modal.hide();
     },
   },
 };
@@ -83,7 +76,7 @@ export default {
         aria-hidden="true"/>
     </a>
     <modal
-      v-show="modalStatus"
+      ref="modal"
       :primary-button-label="__('Leave')"
       kind="warning"
       :title="__('Are you sure?')"

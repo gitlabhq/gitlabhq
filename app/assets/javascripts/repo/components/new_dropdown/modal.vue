@@ -32,10 +32,10 @@
           type: this.type,
         });
 
-        this.toggleModalOpen();
+        this.$refs.modal.hide();
       },
-      toggleModalOpen() {
-        this.$emit('toggle');
+      show() {
+        this.$refs.modal.show();
       },
     },
     computed: {
@@ -69,10 +69,10 @@
 
 <template>
   <modal
+    ref="modal"
     :title="modalTitle"
     :primary-button-label="buttonLabel"
     kind="success"
-    @toggle="toggleModalOpen"
     @submit="createEntryInStore"
   >
     <form

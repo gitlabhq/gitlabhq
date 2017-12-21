@@ -9,7 +9,6 @@ export default {
   computed: {
     ...mapState([
       'editMode',
-      'discardPopupOpen',
     ]),
     ...mapGetters([
       'canEditFile',
@@ -44,13 +43,12 @@ export default {
       </span>
     </button>
     <modal
-      v-if="discardPopupOpen"
+      ref="modal"
       class="text-left"
       :primary-button-label="__('Discard changes')"
       kind="warning"
       :title="__('Are you sure?')"
       :text="__('Are you sure you want to discard your changes?')"
-      @toggle="closeDiscardPopup"
       @submit="toggleEditMode(true)"
     />
   </div>

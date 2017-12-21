@@ -16,7 +16,6 @@ export default {
   },
   data() {
     return {
-      showNewBranchModal: false,
       submitCommitsLoading: false,
       startNewMR: false,
       commitMessage: '',
@@ -58,7 +57,7 @@ export default {
         start_branch: createNewBranch ? this.currentBranch : undefined,
       };
 
-      this.showNewBranchModal = false;
+      this.$refs.modal.hide();
       this.submitCommitsLoading = true;
 
       this.commitChanges({ payload, newMr: this.startNewMR })
@@ -76,7 +75,7 @@ export default {
       this.checkCommitStatus()
         .then((branchChanged) => {
           if (branchChanged) {
-            this.showNewBranchModal = true;
+            this.$refs.modal.show();
           } else {
             this.makeCommit();
           }
@@ -100,12 +99,11 @@ export default {
   }"
 >
   <modal
-    v-if="showNewBranchModal"
+    ref="modal"
     :primary-button-label="__('Create new branch')"
     kind="primary"
     :title="__('Branch has changed')"
     :text="__('This branch has changed since you started editing. Would you like to create a new branch?')"
-    @toggle="showNewBranchModal = false"
     @submit="makeCommit(true)"
   />
   <button
