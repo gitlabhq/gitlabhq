@@ -5,9 +5,6 @@ class Projects::BlobController < Projects::ApplicationController
   include RendersBlob
   include ActionView::Helpers::SanitizeHelper
 
-  # Raised when given an invalid file path
-  InvalidPathError = Class.new(StandardError)
-
   prepend_before_action :authenticate_user!, only: [:edit]
 
   before_action :require_non_empty_project, except: [:new, :create]
@@ -61,7 +58,6 @@ class Projects::BlobController < Projects::ApplicationController
     create_commit(Files::UpdateService, success_path: -> { after_edit_path },
                                         failure_view: :edit,
                                         failure_path: project_blob_path(@project, @id))
-
   rescue Files::UpdateService::FileChangedError
     @conflict = true
     render :edit
@@ -132,7 +128,6 @@ class Projects::BlobController < Projects::ApplicationController
   def assign_blob_vars
     @id = params[:id]
     @ref, @path = extract_ref(@id)
-
   rescue InvalidPathError
     render_404
   end

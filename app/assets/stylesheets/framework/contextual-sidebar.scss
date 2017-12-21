@@ -9,12 +9,6 @@
     padding-left: $contextual-sidebar-width;
   }
 
-  // Override position: absolute
-  .right-sidebar {
-    position: fixed;
-    height: calc(100% - #{$header-height});
-  }
-
   .issues-bulk-update.right-sidebar.right-sidebar-expanded .issuable-sidebar-header {
     padding: 10px 0 15px;
   }
@@ -29,7 +23,6 @@
 .context-header {
   position: relative;
   margin-right: 2px;
-  width: $contextual-sidebar-width;
 
   a {
     transition: padding $sidebar-transition-duration;

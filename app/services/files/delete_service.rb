@@ -11,5 +11,15 @@ module Files
         start_project: @start_project,
         start_branch_name: @start_branch)
     end
+
+    private
+
+    def validate!
+      super
+
+      if file_has_changed?(@file_path, @last_commit_sha)
+        raise FileChangedError, "You are attempting to delete a file that has been previously updated."
+      end
+    end
   end
 end

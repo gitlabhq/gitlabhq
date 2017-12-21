@@ -278,17 +278,6 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     expect(page).to have_content('Your changes could not be committed')
   end
 
-  step 'I create bare repo' do
-    click_link 'Create empty bare repository'
-  end
-
-  step 'I click on "README" link' do
-    click_link 'README'
-
-    # Remove pre-receive hook so we can push without auth
-    FileUtils.rm_f(File.join(@project.repository.path, 'hooks', 'pre-receive'))
-  end
-
   step "I switch ref to 'test'" do
     first('.js-project-refs-dropdown').click
 

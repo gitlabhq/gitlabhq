@@ -18,6 +18,7 @@ class User < ActiveRecord::Base
   include CreatedAtFilterable
   include IgnorableColumn
   include BulkMemberAccessLoad
+  include BlocksJsonSerialization
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
