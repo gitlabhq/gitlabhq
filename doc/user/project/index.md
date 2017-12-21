@@ -93,6 +93,9 @@ from your fork to the upstream project
 
 ## Project settings
 
+Set the project's visibility level and  the access levels to its various pages
+and perform actions like archiving, renaming or transferring a project.
+
 Read through the documentation on [project settings](settings/index.md).
 
 ## Import or export a project
@@ -105,53 +108,6 @@ Read through the documentation on [project settings](settings/index.md).
 - [Export a project from GitLab](settings/import_export.md#exporting-a-project-and-its-data)
 - [Importing and exporting projects between GitLab instances](settings/import_export.md)
 
-## Transferring an existing project into another namespace
-
-You can transfer an existing project into a [group](../group/index.md) as long
-as you have at least **Master** [permissions](../permissions.md#permissions) to
-that group and if you are an **Owner** of the project.
-
-Similarly, if you are an owner of a group, you can transfer any of its projects
-under your own user.
-
-1. Navigate to your project's **Settings > General > Advanced settings**.
-1. Under "Transfer project", choose the namespace you want to transfer the
-   project to.
-1. Confirm the transfer by typing the project's path as instructed.
-
-Once done, you will be taken to the new project's namespace. At this point,
-read what happens with the
-[redirects from the old project to the new one](#redirects-when-transferring-or-renaming-projects).
-
-NOTE: **Note:**
-GitLab administrators can use the admin interface to move any project to any
-namespace if needed.
-
-## Renaming a project
-
-
-## Redirects when transferring or renaming projects
-
-When [transferring](#transfer-an-existing-project-into-a-group) or
-[renaming](#renaming-a-project) a project, it is essential to smoothly
-transition from the old location to the new one. GitLab provides two kinds
-of redirects: web UI and Git push/pull redirects.
-
-When visiting the old project's URL from your browser, you will be automatically
-to the new location.
-
-Starting with GitLab 10.3, Git actions will also redirect. This means that any
-build scripts, automation, or Git clients will continue to work after a
-rename, making any transition a lot smoother.
-
-Every time you push/pull to a repository that has changed its location,
-a redirect warning message to update your remote will be displayed instead of
-rejecting your action.
-
-NOTE: **Note:**
-To avoid pulling from or pushing to an entirely incorrect repository, the old
-path will be reserved.
-
 ## Project's members
 
 Learn how to [add members to your projects](members/index.md).
@@ -163,3 +119,32 @@ when a project is part of a group (under a
 [group namespace](../group/index.md#namespaces)).
 If you choose to leave a project you will no longer be a project
 member, therefore, unable to contribute.
+
+## Redirects when changing repository paths
+
+When a repository path changes, it is essential to smoothly transition from the
+old location to the new one. GitLab provides two kinds of redirects: the web UI
+and Git push/pull redirects.
+
+Depending on the situation, different things apply.
+
+When [transferring a project](settings/index.md#transferring-an-existing-project-into-another-namespace),
+or [renaming a user](../profile/index.md#changing-your-username) or
+[changing a group path](../group/index.md#changing-a-group-s-path):
+
+- **The redirect to the new URL is permanent**, which means that the original
+  namespace can't be claimed again by any group or user.
+- Existing web URLs for the namespace and anything under it (e.g., projects) will
+  redirect to the new URLs.
+- Starting with GitLab 10.3, existing Git remote URLs for projects under the
+  namespace will redirect to the new remote URL. Every time you push/pull to a
+  repository that has changed its location, a warning message to update
+  your remote will be displayed instead of rejecting your action.
+  This means that any automation scripts, or Git clients will continue to
+  work after a rename, making any transition a lot smoother.
+  To avoid pulling from or pushing to an entirely incorrect repository, the old
+  path will be reserved.
+
+When [renaming-a-repository](settings/index.md#renaming-a-repository), the same
+things apply, except for the Git push/pull actions which will be rejected with a
+warning message to change to the new remote URL.
