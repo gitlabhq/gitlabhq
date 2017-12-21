@@ -14,7 +14,6 @@ module Gitlab
       gon.relative_url_root      = Gitlab.config.gitlab.relative_url_root
       gon.shortcuts_path         = help_page_path('shortcuts')
       gon.user_color_scheme      = Gitlab::ColorSchemes.for_user(current_user).css_class
-      gon.katex_css_url          = ActionController::Base.helpers.asset_path('katex.css')
       gon.sentry_dsn             = current_application_settings.clientside_sentry_dsn if current_application_settings.clientside_sentry_enabled
       gon.gitlab_url             = Gitlab.config.gitlab.url
       gon.revision               = Gitlab::REVISION
