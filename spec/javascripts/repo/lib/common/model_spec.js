@@ -1,6 +1,6 @@
 /* global monaco */
-import monacoLoader from '~/repo/monaco_loader';
-import Model from '~/repo/lib/common/model';
+import monacoLoader from '~/ide/monaco_loader';
+import Model from '~/ide/lib/common/model';
 import { file } from '../../helpers';
 
 describe('Multi-file editor library model', () => {

@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from '~/repo/stores';
-import repoPreview from '~/repo/components/repo_preview.vue';
+import store from '~/ide/stores';
+import repoPreview from '~/ide/components/repo_preview.vue';
 import { file, resetStore } from '../helpers';
 
 describe('RepoPreview', () => {

@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from '~/repo/stores';
-import repoPrevDirectory from '~/repo/components/repo_prev_directory.vue';
+import store from '~/ide/stores';
+import repoPrevDirectory from '~/ide/components/repo_prev_directory.vue';
 import { resetStore } from '../helpers';
 
 describe('RepoPrevDirectory', () => {

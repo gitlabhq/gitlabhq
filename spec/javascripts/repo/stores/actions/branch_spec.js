@@ -1,5 +1,5 @@
-import store from '~/repo/stores';
-import service from '~/repo/services';
+import store from '~/ide/stores';
+import service from '~/ide/services';
 import { resetStore } from '../../helpers';
 
 describe('Multi-file store branch actions', () => {
@@ -16,19 +16,25 @@ describe('Multi-file store branch actions', () => {
       }));
       spyOn(history, 'pushState');
 
-      store.state.project.id = 2;
-      store.state.currentBranch = 'testing';
+      store.state.currentProjectId = 'abcproject';
+      store.state.currentBranchId = 'testing';
+      store.state.projects.abcproject = {
+        branches: {
+          master: {
+            workingReference: '1',
+          },
+        },
+      };
     });
 
     it('creates new branch', (done) => {
       store.dispatch('createNewBranch', 'master')
         .then(() => {
-          expect(store.state.currentBranch).toBe('testing');
-          expect(service.createBranch).toHaveBeenCalledWith(2, {
+          expect(store.state.currentBranchId).toBe('testing');
+          expect(service.createBranch).toHaveBeenCalledWith('abcproject', {
             branch: 'master',
             ref: 'testing',
           });
-          expect(history.pushState).toHaveBeenCalled();
 
           done();
         })

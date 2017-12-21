@@ -1,5 +1,5 @@
 import Vue from 'vue';
-import listItem from '~/repo/components/commit_sidebar/list_item.vue';
+import listItem from '~/ide/components/commit_sidebar/list_item.vue';
 import mountComponent from '../../../helpers/vue_mount_component_helper';
 import { file } from '../../helpers';
 
