@@ -1,4 +1,5 @@
 import tooltip from '../../../vue_shared/directives/tooltip';
+import icon from '../../../vue_shared/components/icon.vue';
 import eventHub from '../event_hub';
 
 const mixins = {
@@ -42,6 +43,9 @@ const mixins = {
       default: false,
     },
   },
+  components: {
+    icon,
+  },
   directives: {
     tooltip,
   },
@@ -57,6 +61,12 @@ const mixins = {
     },
     hasTitle() {
       return this.title.length > 0;
+    },
+    iconName() {
+      return this.isOpen ? 'issue-open-m' : 'cut';
+    },
+    iconClass() {
+      return this.isOpen ? 'issue-token-state-icon-open' : 'issue-token-state-icon-closed';
     },
     computedLinkElementType() {
       return this.path.length > 0 ? 'a' : 'span';

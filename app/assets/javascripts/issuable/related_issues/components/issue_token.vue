@@ -69,18 +69,15 @@ export default {
           'issue-token-reference': isCondensed,
           'issuable-info': !isCondensed,
         }">
-        <i
-          ref="stateIcon"
+        <icon
           v-if="hasState"
           v-tooltip
-          class="fa"
-          :class="{
-            'issue-token-state-icon-open fa-circle-o': isOpen,
-            'issue-token-state-icon-closed fa-minus': isClosed,
-          }"
+          :css-classes="iconClass"
+          :name="iconName"
+          :size="12"
           :title="stateTitle"
           :aria-label="state"
-        >
+        />
         </i>{{ displayReference }}
       </component>
     </component>
