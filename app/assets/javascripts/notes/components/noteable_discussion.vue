@@ -80,7 +80,7 @@
         return null;
       },
       hasUnresolvedDiscussion() {
-        return this.discussionCount - this.resolvedDiscussionCount > 1;
+        return this.discussionCount - this.resolvedDiscussionCount > 0;
       },
     },
     methods: {
