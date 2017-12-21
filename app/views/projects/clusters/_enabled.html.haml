@@ -1,7 +1,16 @@
 = form_for @cluster, url: namespace_project_cluster_path(@project.namespace, @project, @cluster), as: :cluster do |field|
   = form_errors(@cluster)
-  .form-group.append-bottom-20
-    %label.append-bottom-10
+  .form-group
+    %h5= s_('ClusterIntegration|Integration status')
+    %p
+      - if @cluster.enabled?
+        - if can?(current_user, :update_cluster, @cluster)
+          = s_('ClusterIntegration|Cluster integration is enabled for this project. Disabling this integration will not affect your cluster, it will only temporarily turn off GitLab\'s connection to it.')
+        - else
+          = s_('ClusterIntegration|Cluster integration is enabled for this project.')
+      - else
+        = s_('ClusterIntegration|Cluster integration is disabled for this project.')
+    %label
       = field.hidden_field :enabled, { class: 'js-toggle-input'}
 
       %button{ type: 'button',
@@ -12,6 +21,13 @@
           = sprite_icon('status_success_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-checked')
           = sprite_icon('status_failed_borderless', size: 16, css_class: 'toggle-icon-svg toggle-status-unchecked')
 
-    - if can?(current_user, :update_cluster, @cluster)
-      .form-group
-        = field.submit _('Save'), class: 'btn btn-success'
+  .form-group
+    %h5= s_('ClusterIntegration|Environment scope')
+    %p
+      = s_("ClusterIntegration|Choose which of your project's environments will use this cluster.")
+      = link_to s_("ClusterIntegration|Learn more about environments"), help_page_path('ci/environments')
+    = field.text_field :environment_scope, class: 'form-control js-select-on-focus', readonly: !has_multiple_clusters?(@project), placeholder: s_('ClusterIntegration|Environment scope')
+
+  - if can?(current_user, :update_cluster, @cluster)
+    .form-group
+      = field.submit _('Save changes'), class: 'btn btn-success'
