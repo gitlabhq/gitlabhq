@@ -2,7 +2,7 @@ import timeago from 'timeago.js';
 import dateFormat from 'vendor/date.format';
 import { pluralize } from './text_utility';
 import {
-  lang,
+  languageCode,
   s__,
 } from '../../locale';
 
@@ -24,7 +24,15 @@ export const getDayName = date => ['Sunday', 'Monday', 'Tuesday', 'Wednesday', '
  */
 export const formatDate = datetime => dateFormat(datetime, 'mmm d, yyyy h:MMtt Z');
 
+/**
+ * Timeago uses underscores instead of dashes to separate language from country code.
+ *
+ * see https://github.com/hustcc/timeago.js/tree/v3.0.0/locales
+ */
+const timeagoLanguageCode = languageCode().replace(/-/g, '_');
+
 let timeagoInstance;
+
 /**
  * Sets a timeago Instance
  */
@@ -67,8 +75,8 @@ export function getTimeago() {
       ][index];
     };
 
-    timeago.register(lang, locale);
-    timeago.register(`${lang}-remaining`, localeRemaining);
+    timeago.register(timeagoLanguageCode, locale);
+    timeago.register(`${timeagoLanguageCode}-remaining`, localeRemaining);
     timeagoInstance = timeago();
   }
 
@@ -83,7 +91,7 @@ export const renderTimeago = ($els) => {
   const timeagoEls = $els || document.querySelectorAll('.js-timeago-render');
 
   // timeago.js sets timeouts internally for each timeago value to be updated in real time
-  getTimeago().render(timeagoEls, lang);
+  getTimeago().render(timeagoEls, timeagoLanguageCode);
 };
 
 /**
@@ -118,7 +126,7 @@ export const timeFor = (time, expiredLabel) => {
   if (new Date(time) < new Date()) {
     return expiredLabel || s__('Timeago|Past due');
   }
-  return getTimeago().format(time, `${lang}-remaining`).trim();
+  return getTimeago().format(time, `${timeagoLanguageCode}-remaining`).trim();
 };
 
 export const getDayDifference = (a, b) => {
