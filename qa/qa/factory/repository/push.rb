@@ -1,16 +1,13 @@
-require "pry-byebug"
-
 module QA
   module Factory
     module Repository
       class Push < Factory::Base
-        PAGE_REGEX_CHECK =
-          %r{\/#{Runtime::Namespace.sandbox_name}\/qa-test[^\/]+\/{1}[^\/]+\z}.freeze
+        attr_writer :file_name, :file_content, :commit_message, :branch_name
 
-        attr_writer :file_name,
-                    :file_content,
-                    :commit_message,
-                    :branch_name
+        dependency Factory::Resource::Project, as: :project do |project|
+          project.name = 'project-with-code'
+          project.description = 'Project with repository'
+        end
 
         def initialize
           @file_name = 'file.txt'
@@ -20,12 +17,10 @@ module QA
         end
 
         def fabricate!
+          project.visit!
+
           Git::Repository.perform do |repository|
             repository.location = Page::Project::Show.act do
-              unless PAGE_REGEX_CHECK.match(current_path)
-                raise "To perform this scenario the current page should be project show."
-              end
-
               choose_repository_clone_http
               repository_location
             end
