@@ -1,4 +1,4 @@
-import { computeDiff } from '~/repo/lib/diff/diff';
+import { computeDiff } from '~/ide/lib/diff/diff';
 
 describe('Multi-file editor library diff calculator', () => {
   describe('computeDiff', () => {

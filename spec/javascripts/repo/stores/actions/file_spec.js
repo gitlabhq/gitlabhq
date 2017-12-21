@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from '~/repo/stores';
-import service from '~/repo/services';
+import store from '~/ide/stores';
+import service from '~/ide/services';
 import { file, resetStore } from '../../helpers';
 
 describe('Multi-file store file actions', () => {
@@ -24,8 +24,6 @@ describe('Multi-file store file actions', () => {
       localFile.parentTreeUrl = 'parentTreeUrl';
 
       store.state.openFiles.push(localFile);
-
-      spyOn(history, 'pushState');
     });
 
     afterEach(() => {
@@ -77,15 +75,6 @@ describe('Multi-file store file actions', () => {
           expect(localFile.opened).toBeFalsy();
           expect(localFile.active).toBeFalsy();
           expect(store.state.openFiles.length).toBe(0);
-
-          done();
-        }).catch(done.fail);
-    });
-
-    it('calls pushState when no open files are left', (done) => {
-      store.dispatch('closeFile', { file: localFile })
-        .then(() => {
-          expect(history.pushState).toHaveBeenCalledWith(jasmine.anything(), '', 'parentTreeUrl');
 
           done();
         }).catch(done.fail);
@@ -322,8 +311,26 @@ describe('Multi-file store file actions', () => {
   });
 
   describe('createTempFile', () => {
+    let projectTree;
+
     beforeEach(() => {
       document.body.innerHTML += '<div class="flash-container"></div>';
+
+      store.state.currentProjectId = 'abcproject';
+      store.state.currentBranchId = 'master';
+      store.state.projects.abcproject = {
+        branches: {
+          master: {
+            workingReference: '1',
+          },
+        },
+      };
+
+      store.state.trees['abcproject/mybranch'] = {
+        tree: [],
+      };
+
+      projectTree = store.state.trees['abcproject/mybranch'];
     });
 
     afterEach(() => {
@@ -332,11 +339,13 @@ describe('Multi-file store file actions', () => {
 
     it('creates temp file', (done) => {
       store.dispatch('createTempFile', {
-        tree: store.state,
         name: 'test',
+        projectId: 'abcproject',
+        branchId: 'mybranch',
+        parent: projectTree,
       }).then((f) => {
         expect(f.tempFile).toBeTruthy();
-        expect(store.state.tree.length).toBe(1);
+        expect(store.state.trees['abcproject/mybranch'].tree.length).toBe(1);
 
         done();
       }).catch(done.fail);
@@ -344,8 +353,10 @@ describe('Multi-file store file actions', () => {
 
     it('adds tmp file to open files', (done) => {
       store.dispatch('createTempFile', {
-        tree: store.state,
         name: 'test',
+        projectId: 'abcproject',
+        branchId: 'mybranch',
+        parent: projectTree,
       }).then((f) => {
         expect(store.state.openFiles.length).toBe(1);
         expect(store.state.openFiles[0].name).toBe(f.name);
@@ -356,8 +367,10 @@ describe('Multi-file store file actions', () => {
 
     it('sets tmp file as active', (done) => {
       store.dispatch('createTempFile', {
-        tree: store.state,
         name: 'test',
+        projectId: 'abcproject',
+        branchId: 'mybranch',
+        parent: projectTree,
       }).then((f) => {
         expect(f.active).toBeTruthy();
 
@@ -367,8 +380,10 @@ describe('Multi-file store file actions', () => {
 
     it('enters edit mode if file is not base64', (done) => {
       store.dispatch('createTempFile', {
-        tree: store.state,
         name: 'test',
+        projectId: 'abcproject',
+        branchId: 'mybranch',
+        parent: projectTree,
       }).then(() => {
         expect(store.state.editMode).toBeTruthy();
 
@@ -376,24 +391,14 @@ describe('Multi-file store file actions', () => {
       }).catch(done.fail);
     });
 
-    it('does not enter edit mode if file is base64', (done) => {
-      store.dispatch('createTempFile', {
-        tree: store.state,
-        name: 'test',
-        base64: true,
-      }).then(() => {
-        expect(store.state.editMode).toBeFalsy();
-
-        done();
-      }).catch(done.fail);
-    });
-
     it('creates flash message is file already exists', (done) => {
-      store.state.tree.push(file('test', '1', 'blob'));
+      store.state.trees['abcproject/mybranch'].tree.push(file('test', '1', 'blob'));
 
       store.dispatch('createTempFile', {
-        tree: store.state,
         name: 'test',
+        projectId: 'abcproject',
+        branchId: 'mybranch',
+        parent: projectTree,
       }).then(() => {
         expect(document.querySelector('.flash-alert')).not.toBeNull();
 
@@ -402,11 +407,13 @@ describe('Multi-file store file actions', () => {
     });
 
     it('increases level of file', (done) => {
-      store.state.level = 1;
+      store.state.trees['abcproject/mybranch'].level = 1;
 
       store.dispatch('createTempFile', {
-        tree: store.state,
         name: 'test',
+        projectId: 'abcproject',
+        branchId: 'mybranch',
+        parent: projectTree,
       }).then((f) => {
         expect(f.level).toBe(2);
 
