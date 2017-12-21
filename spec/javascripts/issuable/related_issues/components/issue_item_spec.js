@@ -27,11 +27,11 @@ describe('issueItem', () => {
   });
 
   it('does not render token state', () => {
-    expect(vm.$el.querySelector('.text-secondary i')).toBeNull();
+    expect(vm.$el.querySelector('.text-secondary svg')).toBeNull();
   });
 
   it('does not render remove button', () => {
-    expect(vm.$el.querySelector('.js-issue-token-remove-button')).toBeNull();
+    expect(vm.$refs.removeButton).toBeUndefined();
   });
 
   describe('token title', () => {
@@ -50,13 +50,13 @@ describe('issueItem', () => {
     beforeEach((done) => {
       vm.state = 'opened';
       Vue.nextTick(() => {
-        tokenState = vm.$el.querySelector('.text-secondary i');
+        tokenState = vm.$el.querySelector('.text-secondary svg');
         done();
       });
     });
 
     it('renders if hasState', () => {
-      expect(tokenState).not.toBeNull();
+      expect(tokenState).toBeDefined();
     });
 
     it('renders state title', () => {
@@ -68,14 +68,14 @@ describe('issueItem', () => {
     });
 
     it('renders open icon when open state', () => {
-      expect(tokenState.classList.contains('fa-circle-o')).toEqual(true);
+      expect(tokenState.classList.contains('issue-token-state-icon-open')).toEqual(true);
     });
 
     it('renders close icon when close state', (done) => {
       vm.state = 'closed';
 
       Vue.nextTick(() => {
-        expect(tokenState.classList.contains('fa-minus')).toEqual(true);
+        expect(tokenState.classList.contains('issue-token-state-icon-closed')).toEqual(true);
         done();
       });
     });
@@ -87,13 +87,13 @@ describe('issueItem', () => {
     beforeEach((done) => {
       vm.canRemove = true;
       Vue.nextTick(() => {
-        removeBtn = vm.$el.querySelector('.js-issue-token-remove-button');
+        removeBtn = vm.$refs.removeButton;
         done();
       });
     });
 
     it('renders if canRemove', () => {
-      expect(removeBtn).not.toBeNull();
+      expect(removeBtn).toBeDefined();
     });
 
     it('renders disabled button when removeDisabled', (done) => {
