@@ -125,7 +125,7 @@ Here is an collection of tutorials and guides on setting up your CI pipeline.
   - [Analyze code quality with the Code Climate CLI](examples/code_climate.md)
 - **Articles**
   - [How to test and deploy Laravel/PHP applications with GitLab CI/CD and Envoy](../articles/laravel_with_gitlab_and_envoy/index.md)
-  - [How to deploy Maven projects to Artifactory with GitLab CI/CD](../articles/artifactory_and_gitlab/index.md)
+  - [How to deploy Maven projects to Artifactory with GitLab CI/CD](examples/artifactory_and_gitlab/index.md)
   - [Automated Debian packaging](https://about.gitlab.com/2016/10/12/automated-debian-package-build-with-gitlab-ci/)
   - [Spring boot application with GitLab CI and Kubernetes](https://about.gitlab.com/2016/12/14/continuous-delivery-of-a-spring-boot-application-with-gitlab-ci-and-kubernetes/)
   - [Setting up GitLab CI for iOS projects](https://about.gitlab.com/2016/03/10/setting-up-gitlab-ci-for-ios-projects/)
