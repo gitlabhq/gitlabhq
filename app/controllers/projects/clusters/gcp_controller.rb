@@ -1,7 +1,7 @@
 class Projects::Clusters::GcpController < Projects::ApplicationController
   before_action :authorize_read_cluster!
   before_action :authorize_google_api, except: [:login]
-  before_action :authorize_google_project_billing, except: [:login, :check, :run_check]
+  before_action :authorize_google_project_billing, only: [:new]
   before_action :authorize_create_cluster!, only: [:new, :create]
 
   STATUS_POLLING_INTERVAL = 1.minute.to_i
@@ -25,15 +25,20 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
   end
 
   def create
-    @cluster = ::Clusters::CreateService
-      .new(project, current_user, create_params)
-      .execute(token_in_session)
+    case google_project_billing_status
+    when 'true'
+      @cluster = ::Clusters::CreateService
+        .new(project, current_user, create_params)
+        .execute(token_in_session)
 
-    if @cluster.persisted?
-      redirect_to project_cluster_path(project, @cluster)
+      return redirect_to project_cluster_path(project, @cluster) if @cluster.persisted?
+    when 'false'
+      flash[:error] = _('Please enable billing for one of your projects to be able to create a cluster.')
     else
-      render :new
+      flash[:error] = _('We could not verify that one of your projects on GCP has billing enabled. Please try again.')
     end
+
+    render :new
   end
 
   private
@@ -61,6 +66,15 @@ class Projects::Clusters::GcpController < Projects::ApplicationController
     end
   end
 
+  def authorize_google_project_billing
+    CheckGcpProjectBillingWorker.perform_async(token_in_session)
+  end
+
+  def google_project_billing_status
+    Gitlab::Redis::SharedState.with do |redis|
+      redis.get(CheckGcpProjectBillingWorker.redis_shared_state_key_for(token_in_session))
+    end
+  end
 
   def token_in_session
     @token_in_session ||=
