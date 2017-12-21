@@ -13,7 +13,7 @@ module GoogleApi
     def stub_google_project_billing_status
       redis_double = double
       allow(Gitlab::Redis::SharedState).to receive(:with).and_yield(redis_double)
-      allow(redis_double).to receive(:get).and_return('true')
+      allow(redis_double).to receive(:get).with(CheckGcpProjectBillingWorker.redis_shared_state_key_for).and_return('true')
     end
 
     def stub_cloud_platform_get_zone_cluster(project_id, zone, cluster_id, **options)
