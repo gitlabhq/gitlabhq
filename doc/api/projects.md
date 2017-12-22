@@ -37,6 +37,7 @@ GET /projects
 | `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
 | `statistics` | boolean | no | Include project statistics |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
 | `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
 
@@ -220,6 +221,7 @@ GET /users/:user_id/projects
 | `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
 | `statistics` | boolean | no | Include project statistics |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
 | `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
 
@@ -388,6 +390,7 @@ GET /projects/:id
 | --------- | ---- | -------- | ----------- |
 | `id` | integer/string | yes | The ID or [URL-encoded path of the project](README.md#namespaced-path-encoding) |
 | `statistics` | boolean | no | Include project statistics |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 
 ```json
 {
@@ -664,6 +667,7 @@ GET /projects/:id/forks
 | `membership` | boolean | no | Limit by projects that the current user is a member of |
 | `starred` | boolean | no | Limit by projects starred by the current user |
 | `statistics` | boolean | no | Include project statistics |
+| `with_custom_attributes` | boolean | no | Include [custom attributes](custom_attributes.md) in response (admins only) |
 | `with_issues_enabled` | boolean | no | Limit by enabled issues feature |
 | `with_merge_requests_enabled` | boolean | no | Limit by enabled merge requests feature |
 

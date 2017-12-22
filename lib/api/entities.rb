@@ -22,6 +22,7 @@ module API
       end
 
       expose :avatar_path, if: ->(user, options) { options.fetch(:only_path, false) && user.avatar_path }
+      expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
 
       expose :web_url do |user, options|
         Gitlab::Routing.url_helpers.user_url(user)
@@ -108,6 +109,8 @@ module API
       end
       expose :star_count, :forks_count
       expose :last_activity_at
+
+      expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
 
       def self.preload_relation(projects_relation, options =  {})
         projects_relation.preload(:project_feature, :route)
@@ -229,6 +232,8 @@ module API
       if ::Group.supports_nested_groups?
         expose :parent_id
       end
+
+      expose :custom_attributes, using: 'API::Entities::CustomAttribute', if: :with_custom_attributes
 
       expose :statistics, if: :statistics do
         with_options format_with: -> (value) { value.to_i } do
