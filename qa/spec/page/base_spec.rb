@@ -5,7 +5,7 @@ describe QA::Page::Base do
     end
   end
 
-  describe 'DSL for defining view partials', '.view' do
+  describe '.view', 'DSL for defining view partials' do
     subject do
       Class.new(described_class) do
         view 'path/to/some/view.html.haml' do
@@ -30,6 +30,21 @@ describe QA::Page::Base do
         expect(elements).to all(be_an_instance_of QA::Page::Element)
         expect(elements.map(&:name)).to eq [:something, :something_else]
       end
+    end
+  end
+
+  describe '.errors' do
+    let(:view) { double('view') }
+
+    before do
+      allow(described_class).to receive(:views)
+        .and_return([view])
+
+      allow(view).to receive(:errors).and_return(['some error'])
+    end
+
+    it 'iterates views composite and returns errors' do
+      expect(described_class.errors).to eq ['some error']
     end
   end
 end
