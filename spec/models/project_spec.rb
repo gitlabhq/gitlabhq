@@ -1047,18 +1047,6 @@ describe Project do
         expect(project.avatar_url).to eq(project.avatar.url)
         expect(project.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, project.avatar.url].join)
       end
-
-      context 'When in a geo secondary node' do
-        let(:geo_url) { 'http://geo.example.com' }
-        let(:avatar_path) { project.avatar_path(only_path: true) }
-
-        before do
-          allow(Gitlab::Geo).to receive(:secondary?) { true }
-          allow(Gitlab::Geo).to receive_message_chain(:primary_node, :url) { geo_url }
-        end
-
-        it { is_expected.to eq "#{geo_url}#{avatar_path}" }
-      end
     end
 
     context 'when avatar file in git' do
