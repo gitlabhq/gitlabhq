@@ -1,6 +1,0 @@
----
-title: Avoid deactivation when pipeline schedules execute a branch includes `[ci skip]`
-  comment
-merge_request: 15405
-author:
-type: fixed

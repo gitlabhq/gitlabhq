@@ -1,7 +1,7 @@
 import Vue from 'vue';
-import store from '~/repo/stores';
-import repoEditor from '~/repo/components/repo_editor.vue';
-import monacoLoader from '~/repo/monaco_loader';
+import store from '~/ide/stores';
+import repoEditor from '~/ide/components/repo_editor.vue';
+import monacoLoader from '~/ide/monaco_loader';
 import { file, resetStore } from '../helpers';
 
 describe('RepoEditor', () => {

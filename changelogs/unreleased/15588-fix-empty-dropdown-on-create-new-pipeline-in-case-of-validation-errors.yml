@@ -1,5 +1,0 @@
----
-title: Initializes the branches dropdown when the 'Start new pipeline' failed due to validation errors
-merge_request: 15588
-author: Christiaan Van den Poel
-type: fixed

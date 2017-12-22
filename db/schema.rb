@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171213160445) do
+ActiveRecord::Schema.define(version: 20171220191323) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -566,6 +566,15 @@ ActiveRecord::Schema.define(version: 20171213160445) do
     t.string "version", null: false
     t.string "cluster_ip"
     t.text "status_reason"
+  end
+
+  create_table "clusters_applications_prometheus", force: :cascade do |t|
+    t.integer "cluster_id", null: false
+    t.integer "status", null: false
+    t.string "version", null: false
+    t.text "status_reason"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
   end
 
   create_table "container_repositories", force: :cascade do |t|
