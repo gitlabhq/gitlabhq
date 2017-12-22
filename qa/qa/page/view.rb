@@ -9,11 +9,15 @@ module QA
       end
 
       def pathname
-        Pathname.new(File.join( __dir__, '../../../', @path))
+        @pathname ||= Pathname.new(File.join( __dir__, '../../../', @path))
           .cleanpath.expand_path
       end
 
       def errors
+        unless pathname.readable?
+          return ["Missing view partial `#{pathname}`!"]
+        end
+
         ##
         # Reduce required elements by streaming view and making assertions on
         # elements' existence.
