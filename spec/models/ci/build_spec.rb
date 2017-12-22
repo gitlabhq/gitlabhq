@@ -255,6 +255,42 @@ describe Ci::Build do
     end
   end
 
+  describe '#cache' do
+    let(:options) { { cache: { key: "key", paths: ["public"], policy: "pull-push" } } }
+
+    subject { build.cache }
+
+    context 'when build has cache' do
+      before do
+        allow(build).to receive(:options).and_return(options)
+      end
+
+      context 'when project has cache_index' do
+        before do
+          allow_any_instance_of(Project).to receive(:cache_index).and_return(1)
+        end
+
+        it { is_expected.to include(key: "key:1") }
+      end
+
+      context 'when project does not have cache_index' do
+        before do
+          allow_any_instance_of(Project).to receive(:cache_index).and_return(nil)
+        end
+
+        it { is_expected.to eq([options[:cache]]) }
+      end
+    end
+
+    context 'when build does not have cache' do
+      before do
+        allow(build).to receive(:options).and_return({})
+      end
+
+      it { is_expected.to eq([nil]) }
+    end
+  end
+
   describe '#depends_on_builds' do
     let!(:build) { create(:ci_build, pipeline: pipeline, name: 'build', stage_idx: 0, stage: 'build') }
     let!(:rspec_test) { create(:ci_build, pipeline: pipeline, name: 'rspec', stage_idx: 1, stage: 'test') }

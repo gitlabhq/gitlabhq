@@ -461,7 +461,11 @@ module Ci
     end
 
     def cache
-      [options[:cache]]
+      if options[:cache] && project.cache_index
+        options[:cache].merge(key: "#{options[:cache][:key]}:#{project.cache_index}")
+      else
+        [options[:cache]]
+      end
     end
 
     def credentials
