@@ -68,6 +68,12 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
         expect(Project.find_by_full_path(project_path)).not_to be_nil
       end
 
+      it 'does not schedule an import' do
+        expect_any_instance_of(Project).not_to receive(:import_schedule)
+
+        importer.create_project_if_needed
+      end
+
       it 'creates the Git repo in disk' do
         FileUtils.mkdir_p(File.join(base_dir, "#{project_path}.git"))
 
@@ -160,6 +166,8 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
     it 'creates the Wiki git repo in disk' do
       FileUtils.mkdir_p(File.join(base_dir, "#{project_path}.git"))
       FileUtils.mkdir_p(File.join(base_dir, "#{project_path}.wiki.git"))
+
+      expect(Projects::CreateService).to receive(:new).with(admin, hash_including(skip_import: true)).and_call_original
 
       importer.create_project_if_needed
 

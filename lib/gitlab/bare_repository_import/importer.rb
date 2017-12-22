@@ -55,6 +55,8 @@ module Gitlab
                                               name: project_name,
                                               path: project_name,
                                               skip_disk_validation: true,
+                                              skip_wiki: bare_repo.wiki_exists?,
+                                              skip_import: true,
                                               import_type: 'gitlab_project',
                                               namespace_id: group&.id).execute
 

@@ -12,6 +12,7 @@ module Projects
       forked_from_project_id = params.delete(:forked_from_project_id)
       import_data = params.delete(:import_data)
       @skip_wiki = params.delete(:skip_wiki)
+      @skip_import = params.delete(:skip_import)
 
       @project = Project.new(params)
 
@@ -57,7 +58,7 @@ module Projects
       after_create_actions if @project.persisted?
 
       if @project.errors.empty?
-        @project.import_schedule if @project.import?
+        @project.import_schedule if @project.import? && !@skip_import
       else
         fail(error: @project.errors.full_messages.join(', '))
       end
