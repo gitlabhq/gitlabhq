@@ -48,6 +48,7 @@
         'getNoteableData',
         'discussionCount',
         'resolvedDiscussionCount',
+        'unresolvedDiscussions',
       ]),
       discussion() {
         return this.note.notes[0];
@@ -80,7 +81,7 @@
         return null;
       },
       hasUnresolvedDiscussion() {
-        return this.discussionCount - this.resolvedDiscussionCount > 0;
+        return this.unresolvedDiscussions.length > 0;
       },
     },
     methods: {
@@ -148,6 +149,21 @@
               callback(err);
             });
           });
+      },
+      jumpToDiscussion() {
+        const unresolvedIds = this.unresolvedDiscussions.map(d => d.id);
+        const index = unresolvedIds.indexOf(this.note.id);
+
+        if (index >= 0 && index !== unresolvedIds.length) {
+          const nextId = unresolvedIds[index + 1];
+          const el = document.querySelector(`[data-discussion-id="${nextId}"]`);
+
+          if (el) {
+            $.scrollTo(el, {
+              offset: -125, // navbar and MR tabs height
+            });
+          }
+        }
       },
     },
     created() {
@@ -270,6 +286,7 @@
                           class="btn-group"
                           role="group">
                           <button
+                            @click="jumpToDiscussion"
                             v-tooltip
                             class="btn btn-default discussion-next-btn"
                             title="Jump to next unresolved discussion"
