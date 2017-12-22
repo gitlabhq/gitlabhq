@@ -62,7 +62,7 @@
     directives: {
       tooltip,
     },
-  }
+  };
 </script>
 
 <template>

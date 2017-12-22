@@ -895,7 +895,6 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-
   def discussions_rendered_on_frontend?
     true
   end

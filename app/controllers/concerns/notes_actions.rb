@@ -21,8 +21,6 @@ module NotesActions
     notes = prepare_notes_for_rendering(notes)
     notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
-
-
     notes_json[:notes] =
       if (noteable.is_a?(MergeRequest) && cookies[:vue_mr_discussions]) || noteable.discussions_rendered_on_frontend?
         note_serializer.represent(notes)
