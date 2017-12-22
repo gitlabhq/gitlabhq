@@ -176,67 +176,22 @@ describe Gitlab::Geo, :geo do
   end
 
   describe '.configure_cron_jobs!' do
-    JOBS = %w(ldap_test geo_repository_sync_worker geo_file_download_dispatch_worker geo_metrics_update_worker).freeze
+    let(:manager) { double('cron_manager').as_null_object }
 
-    def init_cron_job(job_name, class_name)
-      job = Sidekiq::Cron::Job.new(
-        name: job_name,
-        cron: '0 * * * *',
-        class: class_name
-      )
-
-      job.enable!
+    before do
+      allow(Gitlab::Geo::CronManager).to receive(:new) { manager }
     end
 
-    before(:all) do
-      JOBS.each { |job| init_cron_job(job, job.camelize) }
-    end
-
-    after(:all) do
-      JOBS.each { |job| Sidekiq::Cron::Job.find(job)&.destroy }
-    end
-
-    it 'activates cron jobs for primary' do
-      described_class.configure_cron_jobs!
-
-      expect(Sidekiq::Cron::Job.find('geo_repository_sync_worker')).not_to be_enabled
-      expect(Sidekiq::Cron::Job.find('geo_file_download_dispatch_worker')).not_to be_enabled
-      expect(Sidekiq::Cron::Job.find('geo_metrics_update_worker')).to be_enabled
-      expect(Sidekiq::Cron::Job.find('ldap_test')).to be_enabled
-    end
-
-    it 'does not activate cron jobs for secondary' do
-      stub_current_geo_node(secondary_node)
+    it 'creates a cron watcher' do
+      expect(manager).to receive(:create_watcher!)
 
       described_class.configure_cron_jobs!
-
-      expect(Sidekiq::Cron::Job.find('ldap_test')).not_to be_enabled
-      expect(Sidekiq::Cron::Job.find('geo_metrics_update_worker')).to be_enabled
-      expect(Sidekiq::Cron::Job.find('geo_repository_sync_worker')).to be_enabled
-      expect(Sidekiq::Cron::Job.find('geo_file_download_dispatch_worker')).to be_enabled
     end
 
-    it 'deactivates all jobs when Geo is not active' do
-      stub_current_geo_node(nil)
+    it 'runs the cron manager' do
+      expect(manager).to receive(:execute)
 
       described_class.configure_cron_jobs!
-
-      expect(Sidekiq::Cron::Job.find('geo_repository_sync_worker')).not_to be_enabled
-      expect(Sidekiq::Cron::Job.find('geo_file_download_dispatch_worker')).not_to be_enabled
-      expect(Sidekiq::Cron::Job.find('geo_metrics_update_worker')).not_to be_enabled
-      expect(Sidekiq::Cron::Job.find('ldap_test')).to be_enabled
-    end
-
-    it 'reactivates cron jobs when node turns off Geo' do
-      stub_current_geo_node(secondary_node)
-
-      described_class.configure_cron_jobs!
-      expect(Sidekiq::Cron::Job.find('ldap_test')).not_to be_enabled
-
-      allow(described_class).to receive(:secondary?).and_return(false)
-
-      described_class.configure_cron_jobs!
-      expect(Sidekiq::Cron::Job.find('ldap_test')).to be_enabled
     end
   end
 end
