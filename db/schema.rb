@@ -568,6 +568,15 @@ ActiveRecord::Schema.define(version: 20171220191323) do
     t.text "status_reason"
   end
 
+  create_table "clusters_applications_prometheus", force: :cascade do |t|
+    t.integer "cluster_id", null: false
+    t.integer "status", null: false
+    t.string "version", null: false
+    t.text "status_reason"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+  end
+
   create_table "container_repositories", force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "name", null: false

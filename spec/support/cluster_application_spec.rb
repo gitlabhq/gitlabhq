@@ -1,8 +1,5 @@
-require 'rails_helper'
-
-describe Clusters::Applications::Helm do
-  it { is_expected.to belong_to(:cluster) }
-  it { is_expected.to validate_presence_of(:cluster) }
+shared_examples 'cluster application specs' do
+  let(:factory_name) { described_class.to_s.downcase.gsub("::", "_") }
 
   describe '#name' do
     it 'is .application_name' do
@@ -14,14 +11,8 @@ describe Clusters::Applications::Helm do
     end
   end
 
-  describe '#version' do
-    it 'defaults to Gitlab::Kubernetes::Helm::HELM_VERSION' do
-      expect(subject.version).to eq(Gitlab::Kubernetes::Helm::HELM_VERSION)
-    end
-  end
-
   describe '#status' do
-    let(:cluster) { create(:cluster) }
+    let(:cluster) { create(:cluster, :provided_by_gcp) }
 
     subject { described_class.new(cluster: cluster) }
 
@@ -29,8 +20,20 @@ describe Clusters::Applications::Helm do
       expect(subject.status_name).to be(:not_installable)
     end
 
-    context 'when platform kubernetes is defined' do
-      let(:cluster) { create(:cluster, :provided_by_gcp) }
+    context 'when application helm is scheduled' do
+      before do
+        create(factory_name, :scheduled, cluster: cluster)
+      end
+
+      it 'defaults to :not_installable' do
+        expect(subject.status_name).to be(:not_installable)
+      end
+    end
+
+    context 'when application helm is installed' do
+      before do
+        create(:clusters_applications_helm, :installed, cluster: cluster)
+      end
 
       it 'defaults to :installable' do
         expect(subject.status_name).to be(:installable)
@@ -40,13 +43,13 @@ describe Clusters::Applications::Helm do
 
   describe '#install_command' do
     it 'has all the needed information' do
-      expect(subject.install_command).to have_attributes(name: subject.name, install_helm: true)
+      expect(subject.install_command).to have_attributes(name: subject.name, install_helm: false)
     end
   end
 
   describe 'status state machine' do
     describe '#make_installing' do
-      subject { create(:clusters_applications_helm, :scheduled) }
+      subject { create(factory_name, :scheduled) }
 
       it 'is installing' do
         subject.make_installing!
@@ -56,7 +59,7 @@ describe Clusters::Applications::Helm do
     end
 
     describe '#make_installed' do
-      subject { create(:clusters_applications_helm, :installing) }
+      subject { create(factory_name, :installing) }
 
       it 'is installed' do
         subject.make_installed
@@ -66,7 +69,7 @@ describe Clusters::Applications::Helm do
     end
 
     describe '#make_errored' do
-      subject { create(:clusters_applications_helm, :installing) }
+      subject { create(factory_name, :installing) }
       let(:reason) { 'some errors' }
 
       it 'is errored' do
@@ -78,7 +81,7 @@ describe Clusters::Applications::Helm do
     end
 
     describe '#make_scheduled' do
-      subject { create(:clusters_applications_helm, :installable) }
+      subject { create(factory_name, :installable) }
 
       it 'is scheduled' do
         subject.make_scheduled
@@ -87,7 +90,7 @@ describe Clusters::Applications::Helm do
       end
 
       describe 'when was errored' do
-        subject { create(:clusters_applications_helm, :errored) }
+        subject { create(factory_name, :errored) }
 
         it 'clears #status_reason' do
           expect(subject.status_reason).not_to be_nil
