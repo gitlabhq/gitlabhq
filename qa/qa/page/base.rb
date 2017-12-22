@@ -48,6 +48,10 @@ module QA
         @evaluator ||= Page::Base::DSL.new
       end
 
+      def self.validator
+        Page::Validator.new(self)
+      end
+
       class DSL
         attr_reader :views
 

@@ -7,6 +7,18 @@ module QA
         @name = name
         @pattern = pattern
       end
+
+      def expression?
+        @pattern.is_a?(Regexp)
+      end
+
+      def matches?(line)
+        if expression?
+          line =~ pattern
+        else
+          line.includes?(pattern)
+        end
+      end
     end
   end
 end
