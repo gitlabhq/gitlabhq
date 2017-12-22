@@ -1,6 +1,6 @@
 import Vue from 'vue';
-import store from '~/repo/stores';
-import repoFile from '~/repo/components/repo_file.vue';
+import store from '~/ide/stores';
+import repoFile from '~/ide/components/repo_file.vue';
 import { file, resetStore } from '../helpers';
 
 describe('RepoFile', () => {
@@ -35,11 +35,10 @@ describe('RepoFile', () => {
     const fileIcon = vm.$el.querySelector('.file-icon');
 
     expect(vm.$el.querySelector(`.${vm.file.icon}`).style.marginLeft).toEqual('0px');
-    expect(name.href).toMatch(`/${vm.file.url}`);
+    expect(name.href).toMatch('');
     expect(name.textContent.trim()).toEqual(vm.file.name);
     expect(fileIcon.classList.contains(vm.file.icon)).toBeTruthy();
     expect(fileIcon.style.marginLeft).toEqual(`${vm.file.level * 10}px`);
-    expect(vm.$el.querySelectorAll('.animation-container').length).toBe(2);
   });
 
   it('does render if hasFiles is true and is loading tree', () => {
@@ -75,16 +74,16 @@ describe('RepoFile', () => {
     });
   });
 
-  it('fires clickedTreeRow when the link is clicked', () => {
+  it('fires clickFile when the link is clicked', () => {
     vm = createComponent({
       file: file(),
     });
 
-    spyOn(vm, 'clickedTreeRow');
+    spyOn(vm, 'clickFile');
 
     vm.$el.click();
 
-    expect(vm.clickedTreeRow).toHaveBeenCalledWith(vm.file);
+    expect(vm.clickFile).toHaveBeenCalledWith(vm.file);
   });
 
   describe('submodule', () => {

@@ -1,5 +1,5 @@
-import mutations from '~/repo/stores/mutations/file';
-import state from '~/repo/stores/state';
+import mutations from '~/ide/stores/mutations/file';
+import state from '~/ide/stores/state';
 import { file } from '../../helpers';
 
 describe('Multi-file store file mutations', () => {

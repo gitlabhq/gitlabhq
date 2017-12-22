@@ -14,7 +14,7 @@ module EE
       delegate :performance_artifact, to: :head_pipeline, prefix: :head, allow_nil: true
       delegate :performance_artifact, to: :base_pipeline, prefix: :base, allow_nil: true
       delegate :sast_artifact, to: :head_pipeline, allow_nil: true
-      delegate :clair_artifact, to: :head_pipeline, allow_nil: true
+      delegate :sast_container_artifact, to: :head_pipeline, allow_nil: true
       delegate :sha, to: :head_pipeline, prefix: :head_pipeline, allow_nil: true
       delegate :sha, to: :base_pipeline, prefix: :base_pipeline, allow_nil: true
     end
@@ -56,8 +56,8 @@ module EE
       sast_artifact&.success?
     end
 
-    def has_clair_data?
-      clair_artifact&.success?
+    def has_sast_container_data?
+      sast_container_artifact&.success?
     end
   end
 end

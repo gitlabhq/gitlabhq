@@ -54,9 +54,9 @@
     lodash "^4.2.0"
     to-fast-properties "^2.0.0"
 
-"@gitlab-org/gitlab-svgs@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.3.0.tgz#07f2aa75d6e0e857eaa20c38a3bad7e6c22c420c"
+"@gitlab-org/gitlab-svgs@^1.4.0":
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/@gitlab-org/gitlab-svgs/-/gitlab-svgs-1.4.0.tgz#83c0a76485c1378babf2e83456b4d2442efa98e8"
 
 "@types/jquery@^2.0.40":
   version "2.0.48"
@@ -6527,6 +6527,10 @@ vue-resource@^1.3.4:
   resolved "https://registry.yarnpkg.com/vue-resource/-/vue-resource-1.3.4.tgz#9fc0bdf6a2f5cab430129fc99d347b3deae7b099"
   dependencies:
     got "^7.0.0"
+
+vue-router@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/vue-router/-/vue-router-3.0.1.tgz#d9b05ad9c7420ba0f626d6500d693e60092cc1e9"
 
 vue-style-loader@^3.0.0:
   version "3.0.3"

@@ -1,5 +1,0 @@
----
-title: Fix search results when a filename would contain a special character.
-merge_request: 15606
-author: haseebeqx
-type: fixed

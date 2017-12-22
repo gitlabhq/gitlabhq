@@ -970,6 +970,9 @@ ActiveRecord::Schema.define(version: 20171213160445) do
     t.datetime "updated_at", null: false
     t.datetime "last_successful_status_check_at"
     t.string "status_message"
+    t.integer "replication_slots_count"
+    t.integer "replication_slots_used_count"
+    t.integer "replication_slots_max_retained_wal_bytes"
     t.integer "wikis_count"
     t.integer "wikis_synced_count"
     t.integer "wikis_failed_count"

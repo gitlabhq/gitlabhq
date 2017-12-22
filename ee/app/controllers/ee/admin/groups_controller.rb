@@ -1,3 +1,4 @@
+# rubocop:disable Gitlab/ModuleWithInstanceVariables
 module EE
   module Admin
     module GroupsController
