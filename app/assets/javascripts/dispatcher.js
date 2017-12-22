@@ -73,7 +73,6 @@ import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
 import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
-import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
 import NewGroupChild from './groups/new_group_child';
 import AbuseReports from './abuse_reports';
@@ -110,6 +109,8 @@ import Activities from './activities';
       if (!page) {
         return false;
       }
+
+      const fail = () => Flash('Error loading dynamic module');
 
       path = page.split(':');
       shortcut_handler = null;
@@ -448,9 +449,6 @@ import Activities from './activities';
           break;
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
-
-          if (UserFeatureHelper.isNewRepoEnabled()) break;
-
           new TreeView();
           new BlobViewer();
           new NewCommitForm($('.js-create-dir-form'));
@@ -469,7 +467,6 @@ import Activities from './activities';
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
-          if (UserFeatureHelper.isNewRepoEnabled()) break;
           new BlobViewer();
           initBlob();
           break;
@@ -546,7 +543,7 @@ import Activities from './activities';
           new CILintEditor();
           break;
         case 'users:show':
-          new UserCallout();
+          import('./pages/users/show').then(m => m.default()).catch(fail);
           break;
         case 'admin:conversational_development_index:show':
           new UserCallout();
