@@ -8,8 +8,8 @@ describe API::AccessRequests do
 
   set(:project) do
     create(:project, :public, :access_requestable, creator_id: master.id, namespace: master.namespace) do |project|
-      project.team << [developer, :developer]
-      project.team << [master, :master]
+      project.add_developer(developer)
+      project.add_master(master)
       project.request_access(access_requester)
     end
   end

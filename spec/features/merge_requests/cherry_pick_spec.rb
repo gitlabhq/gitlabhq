@@ -8,7 +8,7 @@ describe 'Cherry-pick Merge Requests', :js do
 
   before do
     sign_in user
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   context "Viewing a merged merge request" do

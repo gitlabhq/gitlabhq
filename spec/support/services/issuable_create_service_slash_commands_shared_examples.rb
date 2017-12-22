@@ -3,7 +3,7 @@
 
 shared_examples 'new issuable record that supports quick actions' do
   let!(:project) { create(:project, :repository) }
-  let(:user) { create(:user).tap { |u| project.team << [u, :master] } }
+  let(:user) { create(:user).tap { |u| project.add_master(u) } }
   let(:assignee) { create(:user) }
   let!(:milestone) { create(:milestone, project: project) }
   let!(:labels) { create_list(:label, 3, project: project) }
@@ -12,7 +12,7 @@ shared_examples 'new issuable record that supports quick actions' do
   let(:issuable) { described_class.new(project, user, params).execute }
 
   before do
-    project.team << [assignee, :master]
+    project.add_master(assignee)
   end
 
   context 'with labels in command only' do

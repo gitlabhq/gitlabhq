@@ -8,7 +8,7 @@ describe 'Pipelines', :js do
 
     before do
       sign_in(user)
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     describe 'GET /:project/pipelines' do

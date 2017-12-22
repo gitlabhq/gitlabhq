@@ -95,7 +95,7 @@ feature 'Cycle Analytics', :js do
       before do
         user.update_attribute(:preferred_language, 'es')
 
-        project.team << [user, :master]
+        project.add_master(user)
         sign_in(user)
         visit project_cycle_analytics_path(project)
         wait_for_requests

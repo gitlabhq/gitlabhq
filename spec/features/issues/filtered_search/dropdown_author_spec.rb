@@ -28,9 +28,9 @@ describe 'Dropdown author', :js do
   end
 
   before do
-    project.team << [user, :master]
-    project.team << [user_john, :master]
-    project.team << [user_jacob, :master]
+    project.add_master(user)
+    project.add_master(user_john)
+    project.add_master(user_jacob)
     sign_in(user)
     create(:issue, project: project)
 
@@ -195,7 +195,7 @@ describe 'Dropdown author', :js do
       expect(initial_size).to be > 0
 
       new_user = create(:user)
-      project.team << [new_user, :master]
+      project.add_master(new_user)
       find('.filtered-search-box .clear-search').click
       filtered_search.set('author')
       send_keys_to_filtered_search(':')

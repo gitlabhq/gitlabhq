@@ -8,7 +8,7 @@ describe 'Create notes on issues', :js do
     let(:note_text) { "Check #{mention.to_reference}" }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
       sign_in(user)
       visit project_issue_path(project, issue)
 

@@ -11,7 +11,7 @@ describe MarkupHelper do
 
   before do
     # Ensure the generated reference links aren't redacted
-    project.team << [user, :master]
+    project.add_master(user)
 
     # Helper expects a @project instance variable
     helper.instance_variable_set(:@project, project)
