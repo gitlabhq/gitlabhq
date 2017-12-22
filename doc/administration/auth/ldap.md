@@ -47,6 +47,10 @@ in the application settings.
 
 ## Configuration
 
+For a complete guide on configuring LDAP with GitLab Community Edition, please check
+the admin guide [How to configure LDAP with GitLab CE](how_to_configure_ldap_gitlab_ce/index.md).
+For GitLab Enterprise Editions, see also [How to configure LDAP with GitLab EE](how_to_configure_ldap_gitlab_ee/index.md).
+
 To enable LDAP integration you need to add your LDAP server settings in
 `/etc/gitlab/gitlab.rb` or `/home/git/gitlab/config/gitlab.yml`.
 
