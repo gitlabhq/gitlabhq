@@ -17,6 +17,8 @@ module QA
   #
   module Factory
     autoload :Base, 'qa/factory/base'
+    autoload :Dependency, 'qa/factory/dependency'
+    autoload :Product, 'qa/factory/product'
 
     module Resource
       autoload :Sandbox, 'qa/factory/resource/sandbox'

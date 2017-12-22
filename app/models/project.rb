@@ -1148,7 +1148,7 @@ class Project < ActiveRecord::Base
   def change_head(branch)
     if repository.branch_exists?(branch)
       repository.before_change_head
-      repository.write_ref('HEAD', "refs/heads/#{branch}", force: true)
+      repository.write_ref('HEAD', "refs/heads/#{branch}")
       repository.copy_gitattributes(branch)
       repository.after_change_head
       reload_default_branch

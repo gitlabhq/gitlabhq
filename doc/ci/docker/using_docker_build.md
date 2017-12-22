@@ -164,6 +164,21 @@ not without its own challenges:
 - By default, `docker:dind` uses `--storage-driver vfs` which is the slowest
   form offered. To use a different driver, see
   [Using the overlayfs driver](#using-the-overlayfs-driver).
+- Since the `docker:dind` container and the runner container don't share their
+  root filesystem, the job's working directory can be used as a mount point for
+  children containers. For example, if you have files you want to share with a
+  child container, you may create a subdirectory under `/builds/$CI_PROJECT_PATH`
+  and use it as your mount point (for a more thorough explanation, check [issue
+  #41227](https://gitlab.com/gitlab-org/gitlab-ce/issues/41227)):
+
+    ```yaml
+    variables:
+      MOUNT_POINT: /builds/$CI_PROJECT_PATH/mnt
+
+    script:
+      - mkdir -p "$MOUNT_POINT"
+      - docker run -v "$MOUNT_POINT:/mnt" my-docker-image
+    ```
 
 An example project using this approach can be found here: https://gitlab.com/gitlab-examples/docker.
 

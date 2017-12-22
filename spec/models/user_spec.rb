@@ -12,6 +12,7 @@ describe User do
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
     it { is_expected.to include_module(TokenAuthenticatable) }
+    it { is_expected.to include_module(BlocksJsonSerialization) }
   end
 
   describe 'delegations' do
