@@ -72,6 +72,8 @@ module QA
   #
   module Page
     autoload :Base, 'qa/page/base'
+    autoload :View, 'qa/page/view'
+    autoload :Element, 'qa/page/element'
 
     module Main
       autoload :Login, 'qa/page/main/login'
