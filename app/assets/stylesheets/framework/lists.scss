@@ -125,10 +125,8 @@ ul.content-list {
     }
 
     .description {
-      p {
-        @include str-truncated;
-        margin-bottom: 0;
-      }
+      @include str-truncated;
+      color: $gl-text-color-secondary;
     }
 
     .controls {
@@ -314,7 +312,7 @@ ul.indent-list {
         border: 2px solid $white-normal;
 
         &.identicon {
-          line-height: 30px;
+          line-height: 15px;
         }
       }
     }
@@ -351,6 +349,7 @@ ul.indent-list {
   }
 
   .item-type-icon {
+    margin-top: 2px;
     width: 20px;
   }
 
@@ -444,6 +443,32 @@ ul.indent-list {
       display: block;
       padding: 20px 10px;
     }
+
+    .stats {
+      line-height: 46px;
+
+      > span {
+        display: inline-flex;
+        align-items: center;
+        height: 16px;
+      }
+
+      .stat-value {
+        margin: 2px 0 0 5px;
+      }
+    }
+  }
+
+  .project-row-contents .stats {
+    line-height: inherit;
+
+    span:first-child {
+      margin-left: 25px;
+    }
+
+    .last-updated {
+      color: $gl-text-color-secondary;
+    }
   }
 }
 
@@ -455,12 +480,12 @@ ul.indent-list {
 
 ul.group-list-tree {
   li.group-row {
-    &.has-description .title {
-      line-height: inherit;
+    .title {
+      line-height: $list-text-height;
     }
 
-    &:not(.has-description) .title {
-      line-height: $list-text-height;
+    &.has-description .title {
+      line-height: inherit;
     }
   }
 }
