@@ -58,6 +58,10 @@ module QA
       module Integration
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
       end
+
+      module Sanity
+        autoload :Selectors, 'qa/scenario/test/sanity/selectors'
+      end
     end
   end
 
