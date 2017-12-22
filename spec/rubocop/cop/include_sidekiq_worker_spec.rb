@@ -1,6 +1,8 @@
 require 'spec_helper'
+
 require 'rubocop'
 require 'rubocop/rspec/support'
+
 require_relative '../../../rubocop/cop/include_sidekiq_worker'
 
 describe RuboCop::Cop::IncludeSidekiqWorker do
@@ -13,7 +15,7 @@ describe RuboCop::Cop::IncludeSidekiqWorker do
     let(:correct_source) { 'include ApplicationWorker' }
 
     it 'registers an offense ' do
-      inspect_source(cop, source)
+      inspect_source(source)
 
       aggregate_failures do
         expect(cop.offenses.size).to eq(1)
@@ -23,7 +25,7 @@ describe RuboCop::Cop::IncludeSidekiqWorker do
     end
 
     it 'autocorrects to the right version' do
-      autocorrected = autocorrect_source(cop, source)
+      autocorrected = autocorrect_source(source)
 
       expect(autocorrected).to eq(correct_source)
     end

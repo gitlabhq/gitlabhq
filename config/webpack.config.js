@@ -141,6 +141,7 @@ var config = {
     ],
 
     noParse: [/monaco-editor\/\w+\/vs\//],
+    strictExportPresence: true,
   },
 
   plugins: [
