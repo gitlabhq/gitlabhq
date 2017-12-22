@@ -39,15 +39,14 @@ describe ::Gitlab::BareRepositoryImport::Repository do
     end
 
     describe '#project_full_path' do
-      it 'returns the project full path' do
-        expect(subject.repo_path).to eq('/full/path/to/repo.git')
+      it 'returns the project full path with trailing slash in the root path' do
         expect(subject.project_full_path).to eq('to/repo')
       end
 
-      it 'with no trailing slash in the root path' do
-        repo_path = described_class.new('/full/path', '/full/path/to/repo.git')
+      it 'returns the project full path with no trailing slash in the root path' do
+        subject = described_class.new('/full/path', '/full/path/to/repo.git')
 
-        expect(repo_path.project_full_path).to eq('to/repo')
+        expect(subject.project_full_path).to eq('to/repo')
       end
     end
   end
@@ -109,7 +108,13 @@ describe ::Gitlab::BareRepositoryImport::Repository do
     end
 
     describe '#project_full_path' do
-      it 'returns the project full path' do
+      it 'returns the project full path with trailing slash in the root path' do
+        expect(subject.project_full_path).to eq('to/repo')
+      end
+
+      it 'returns the project full path with no trailing slash in the root path' do
+        subject = described_class.new(root_path[0...-1], repo_path)
+
         expect(subject.project_full_path).to eq('to/repo')
       end
     end
