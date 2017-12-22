@@ -14,7 +14,7 @@ FactoryBot.define do
 
     trait :closed do
       state :closed
-      closed_at Time.now
+      closed_at { Time.now }
     end
 
     factory :closed_issue, traits: [:closed]

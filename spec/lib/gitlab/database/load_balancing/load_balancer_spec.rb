@@ -79,9 +79,7 @@ describe Gitlab::Database::LoadBalancing::LoadBalancer do
     it 'uses the primary if no secondaries are available' do
       allow(lb).to receive(:connection_error?).and_return(true)
 
-      lb.host_list.hosts.each do |host|
-        expect(host).to receive(:online?).and_return(false)
-      end
+      expect(lb.host_list.hosts).to all(receive(:online?).and_return(false))
 
       expect(lb).to receive(:read_write).and_call_original
 
@@ -154,9 +152,7 @@ describe Gitlab::Database::LoadBalancing::LoadBalancer do
 
   describe '#all_caught_up?' do
     it 'returns true if all hosts caught up to the write location' do
-      lb.host_list.hosts.each do |host|
-        expect(host).to receive(:caught_up?).with('foo').and_return(true)
-      end
+      expect(lb.host_list.hosts).to all(receive(:caught_up?).with('foo').and_return(true))
 
       expect(lb.all_caught_up?('foo')).to eq(true)
     end

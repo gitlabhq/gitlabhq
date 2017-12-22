@@ -62,7 +62,7 @@ module Elastic
       def self.elastic_search(query, options: {})
         query_hash =
           if query =~ /\!(\d+)\z/
-            iid_query_hash($1)
+            iid_query_hash(Regexp.last_match(1))
           else
             basic_query_hash(%w(title^2 description), query)
           end
