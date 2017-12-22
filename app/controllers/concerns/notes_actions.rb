@@ -21,8 +21,10 @@ module NotesActions
     notes = prepare_notes_for_rendering(notes)
     notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
+
+
     notes_json[:notes] =
-      if noteable.discussions_rendered_on_frontend?
+      if (noteable.is_a?(MergeRequest) && cookies[:vue_mr_discussions]) || noteable.discussions_rendered_on_frontend?
         note_serializer.represent(notes)
       else
         notes.map { |note| note_json(note) }
@@ -95,7 +97,7 @@ module NotesActions
     if note.persisted?
       attrs[:valid] = true
 
-      if noteable.discussions_rendered_on_frontend?
+      if (noteable.is_a?(MergeRequest) && cookies[:vue_mr_discussions]) || noteable.discussions_rendered_on_frontend?
         attrs.merge!(note_serializer.represent(note))
       else
         attrs.merge!(
