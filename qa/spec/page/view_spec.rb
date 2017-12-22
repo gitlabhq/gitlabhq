@@ -57,5 +57,9 @@ describe QA::Page::View do
           .to match %r(Missing element `.*` in `.*/some/file.html` view)
       end
     end
+
+    context 'when view partial has not been found' do
+      pending
+    end
   end
 end

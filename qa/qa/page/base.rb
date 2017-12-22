@@ -48,8 +48,8 @@ module QA
         @evaluator ||= Page::Base::DSL.new
       end
 
-      def self.validator
-        Page::Validator.new(self)
+      def self.errors
+        @errors ||= views.map(&:errors).flatten
       end
 
       class DSL

@@ -8,15 +8,14 @@ module QA
         @pattern = pattern
       end
 
-      def expression?
-        @pattern.is_a?(Regexp)
-      end
-
       def matches?(line)
-        if expression?
-          line =~ pattern
+        case @pattern
+        when Regexp
+          !!(line =~ @pattern)
+        when String
+          line.include?(@pattern)
         else
-          line.includes?(pattern)
+          raise ArgumentError, 'Pattern should be either String or Regexp!'
         end
       end
     end

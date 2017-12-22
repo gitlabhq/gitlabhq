@@ -15,8 +15,8 @@ module QA
 
       def errors
         ##
-        # Reduce required elements by streaming views and making assertions on
-        # elements' patterns.
+        # Reduce required elements by streaming view and making assertions on
+        # elements' existence.
         #
         @missing ||= @elements.dup.tap do |elements|
           File.new(pathname.to_s).foreach do |line|
