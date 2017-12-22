@@ -1,5 +1,0 @@
----
-title: Fix the fork project functionality for projects with hashed storage
-merge_request: 15671
-author:
-type: fixed
