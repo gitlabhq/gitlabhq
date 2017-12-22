@@ -92,7 +92,7 @@
           .build-loader-animation.js-build-refresh
     - else
       - illustration = @build.playable? ? 'illustrations/manual_action.svg' : 'illustrations/job_not_triggered.svg'
-      - illustration_size = @build.playable? ? 'svg-394' : 'sgv-306'
+      - illustration_size = @build.playable? ? 'svg-394' : 'svg-306'
       - title = @build.playable? ? _('This job requires a manual action') : _('This job has not been triggered yet')
       - content = @build.playable? ? _('This job depends on a user to trigger its process. Often they are used to deploy code to production environments.') : _('This job depends on upstream jobs that need to succeed in order for this job to be triggered.')
       .row.empty-state
