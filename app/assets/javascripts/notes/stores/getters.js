@@ -36,18 +36,30 @@ export const discussionCount = (state) => {
   return discussions.length;
 };
 
-export const resolvedDiscussionCount = (state) => {
-  let count = 0;
+export const unresolvedDiscussions = (state, getters) => {
+  const resolvedMap = getters.resolvedDiscussionsById;
+
+  return state.notes.filter(n => !n.individual_note && !resolvedMap[n.id]);
+};
+
+export const resolvedDiscussionsById = (state) => {
+  const map = {};
 
   state.notes.forEach((n) => {
     if (n.notes) {
       const resolved = n.notes.reduce((flag, note) => flag && note.resolved && !note.system, true);
 
       if (resolved) {
-        count += 1;
+        map[n.id] = n;
       }
     }
   });
 
-  return count;
+  return map;
+};
+
+export const resolvedDiscussionCount = (state, getters) => {
+  const resolvedMap = getters.resolvedDiscussionsById;
+
+  return Object.keys(resolvedMap).length;
 };

@@ -172,7 +172,9 @@
 </script>
 
 <template>
-  <li class="note note-discussion timeline-entry">
+  <li
+    :data-discussion-id="note.id"
+    class="note note-discussion timeline-entry">
     <div class="timeline-entry-inner">
       <div class="timeline-icon">
         <user-avatar-link

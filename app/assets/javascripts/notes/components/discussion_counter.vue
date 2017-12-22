@@ -13,6 +13,7 @@
         'getUserData',
         'getNoteableData',
         'discussionCount',
+        'unresolvedDiscussions',
         'resolvedDiscussionCount',
       ]),
       isLoggedIn() {
@@ -29,6 +30,22 @@
       },
       resolveAllDiscussionsIssuePath() {
         return this.getNoteableData.create_issue_to_resolve_discussions_path;
+      },
+      firstUnresolvedDiscussionId() {
+        const item = this.unresolvedDiscussions[0];
+
+        return item ? item.id : null;
+      },
+    },
+    methods: {
+      jumpToFirstDiscussion() {
+        const el = document.querySelector(`[data-discussion-id="${this.firstUnresolvedDiscussionId}"]`);
+
+        if (el) {
+          $.scrollTo(el, {
+            offset: -125, // navbar and MR tabs height
+          });
+        }
       },
     },
     created() {
@@ -85,6 +102,7 @@
         class="btn-group"
         role="group">
         <button
+          @click="jumpToFirstDiscussion"
           v-tooltip
           title="Jump to first unresolved discussion"
           data-container="body"
