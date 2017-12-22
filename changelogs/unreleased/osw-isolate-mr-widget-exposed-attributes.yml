@@ -1,5 +1,0 @@
----
-title: Stop sending milestone and labels data over the wire for MR widget requests
-merge_request:
-author:
-type: performance

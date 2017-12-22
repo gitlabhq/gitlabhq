@@ -1,5 +1,0 @@
----
-title: Make sure head pippeline always corresponds with the head sha of an MR
-merge_request:
-author:
-type: fixed
