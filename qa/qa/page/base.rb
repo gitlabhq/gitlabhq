@@ -56,8 +56,8 @@ module QA
         end
 
         def view(path, &block)
-          Page::Element.evaluate(&block).tap do |elements|
-            @views.push(Page::View.new(path, elements))
+          Page::View.evaluate(&block).tap do |view|
+            @views.push(Page::View.new(path, view.elements))
           end
         end
       end
