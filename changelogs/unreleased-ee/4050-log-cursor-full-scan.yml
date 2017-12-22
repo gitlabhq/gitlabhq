@@ -1,5 +1,0 @@
----
-title: Remove the full-scan option from the Geo log cursor
-merge_request: 3412
-author:
-type: removed

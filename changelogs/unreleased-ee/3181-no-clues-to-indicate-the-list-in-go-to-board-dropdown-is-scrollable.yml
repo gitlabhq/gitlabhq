@@ -1,6 +1,0 @@
----
-title: Add fade mask to the bottom of the boards selector dropdown list if it can
-  be scrolled down
-merge_request: 3384
-author:
-type: other

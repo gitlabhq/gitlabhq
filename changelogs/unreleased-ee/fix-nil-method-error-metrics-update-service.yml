@@ -1,5 +1,0 @@
----
-title: Fix a bug in the Geo metrics update service
-merge_request: 3623
-author:
-type: fixed

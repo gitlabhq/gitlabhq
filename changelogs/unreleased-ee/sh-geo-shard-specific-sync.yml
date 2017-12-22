@@ -1,5 +1,0 @@
----
-title: 'Geo: Increase parallelism by scheduling project repositories by shard'
-merge_request: 3606
-author:
-type: added

@@ -1,6 +1,0 @@
----
-title: Strip leading & trailing whitespaces in CI/CD secret variable's environment
-  scope
-merge_request: 3563
-author:
-type: fixed

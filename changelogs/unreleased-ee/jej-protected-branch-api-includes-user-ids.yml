@@ -1,5 +1,0 @@
----
-title: EE Protected Branches API access levels include user_id/group_id where relevant
-merge_request: 3535
-author:
-type: changed
