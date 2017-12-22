@@ -94,7 +94,7 @@ describe Project do
       let(:developer) { create(:user) }
       before do
         project.request_access(requester)
-        project.team << [developer, :developer]
+        project.add_developer(developer)
       end
 
       it_behaves_like 'members and requesters associations' do
@@ -566,7 +566,7 @@ describe Project do
     let(:user)    { create(:user) }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     context 'with default issues tracker' do
@@ -1601,35 +1601,35 @@ describe Project do
     let(:user)    { create(:user) }
 
     it 'returns false when default_branch_protection is in full protection and user is developer' do
-      project.team << [user, :developer]
+      project.add_developer(user)
       stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_FULL)
 
       expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
     end
 
     it 'returns false when default_branch_protection only lets devs merge and user is dev' do
-      project.team << [user, :developer]
+      project.add_developer(user)
       stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
 
       expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
     end
 
     it 'returns true when default_branch_protection lets devs push and user is developer' do
-      project.team << [user, :developer]
+      project.add_developer(user)
       stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
 
       expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
     end
 
     it 'returns true when default_branch_protection is unprotected and user is developer' do
-      project.team << [user, :developer]
+      project.add_developer(user)
       stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
 
       expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
     end
 
     it 'returns true when user is master' do
-      project.team << [user, :master]
+      project.add_master(user)
 
       expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
     end

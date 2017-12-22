@@ -18,7 +18,7 @@ feature 'Issue Sidebar' do
     let(:issue2) { create(:issue, project: project, author: user2) }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
       visit_issue(project, issue2)
 
       find('.block.assignee .edit-link').click
@@ -78,7 +78,7 @@ feature 'Issue Sidebar' do
 
   context 'as a allowed user' do
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
       visit_issue(project, issue)
     end
 
@@ -156,7 +156,7 @@ feature 'Issue Sidebar' do
 
   context 'as a guest' do
     before do
-      project.team << [user, :guest]
+      project.add_guest(user)
       visit_issue(project, issue)
     end
 
@@ -167,7 +167,7 @@ feature 'Issue Sidebar' do
 
   context 'updating weight', :js do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       visit_issue(project, issue)
     end
 

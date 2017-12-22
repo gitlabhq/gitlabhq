@@ -12,7 +12,7 @@ feature 'Issues > User uses quick actions', :js do
     let(:project) { create(:project, :public) }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in(user)
       visit project_issue_path(project, issue)
     end
@@ -50,7 +50,7 @@ feature 'Issues > User uses quick actions', :js do
       context 'when the current user cannot update the due date' do
         let(:guest) { create(:user) }
         before do
-          project.team << [guest, :guest]
+          project.add_guest(guest)
           gitlab_sign_out
           sign_in(guest)
           visit project_issue_path(project, issue)
@@ -90,7 +90,7 @@ feature 'Issues > User uses quick actions', :js do
       context 'when the current user cannot update the due date' do
         let(:guest) { create(:user) }
         before do
-          project.team << [guest, :guest]
+          project.add_guest(guest)
           gitlab_sign_out
           sign_in(guest)
           visit project_issue_path(project, issue)
@@ -138,7 +138,7 @@ feature 'Issues > User uses quick actions', :js do
       context 'when the current user cannot update the weight' do
         let(:guest) { create(:user) }
         before do
-          project.team << [guest, :guest]
+          project.add_guest(guest)
           gitlab_sign_out
           sign_in(guest)
           visit project_issue_path(project, issue)
@@ -176,7 +176,7 @@ feature 'Issues > User uses quick actions', :js do
       context 'when the current user cannot update the weight' do
         let(:guest) { create(:user) }
         before do
-          project.team << [guest, :guest]
+          project.add_guest(guest)
           gitlab_sign_out
           sign_in(guest)
           visit project_issue_path(project, issue)
@@ -214,7 +214,7 @@ feature 'Issues > User uses quick actions', :js do
       context 'when the current user cannot update the issue' do
         let(:guest) { create(:user) }
         before do
-          project.team << [guest, :guest]
+          project.add_guest(guest)
           gitlab_sign_out
           sign_in(guest)
           visit project_issue_path(project, issue)
@@ -239,7 +239,7 @@ feature 'Issues > User uses quick actions', :js do
         let(:target_project) { create(:project, :public) }
 
         before do
-          target_project.team << [user, :master]
+          target_project.add_master(user)
           sign_in(user)
           visit project_issue_path(project, issue)
         end
@@ -296,7 +296,7 @@ feature 'Issues > User uses quick actions', :js do
         let(:wontfix_target)  { create(:label, project: target_project, title: 'wontfix') }
 
         before do
-          target_project.team << [user, :master]
+          target_project.add_master(user)
           sign_in(user)
           visit project_issue_path(project, issue)
         end

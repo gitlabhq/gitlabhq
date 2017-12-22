@@ -191,7 +191,7 @@ describe Gitlab::Elastic::ProjectSearchResults do
     end
 
     it 'lists project confidential issues for project members' do
-      project.team << [member, :developer]
+      project.add_developer(member)
 
       results = described_class.new(member, query, project.id)
       issues = results.objects('issues')
@@ -203,7 +203,7 @@ describe Gitlab::Elastic::ProjectSearchResults do
     end
 
     it 'does not list project confidential issues for project members with guest role' do
-      project.team << [member, :guest]
+      project.add_guest(member)
 
       results = described_class.new(member, query, project.id)
       issues = results.objects('issues')

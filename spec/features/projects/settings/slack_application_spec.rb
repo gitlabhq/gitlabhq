@@ -9,7 +9,7 @@ feature 'Slack application' do
 
   background do
     gitlab_sign_in(user)
-    project.team << [user, :master]
+    project.add_master(user)
 
     create(:slack_integration, service: service)
 

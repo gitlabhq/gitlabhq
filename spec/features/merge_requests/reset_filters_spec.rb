@@ -17,7 +17,7 @@ feature 'Merge requests filter clear button', :js do
 
   before do
     mr2.labels << bug
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   context 'when a milestone filter has been applied' do

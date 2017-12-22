@@ -17,9 +17,9 @@ describe NotesHelper do
 
   before do
     group.add_owner(owner)
-    project.team << [master, :master]
-    project.team << [reporter, :reporter]
-    project.team << [guest, :guest]
+    project.add_master(master)
+    project.add_reporter(reporter)
+    project.add_guest(guest)
   end
 
   describe "#notes_max_access_for_users" do
@@ -31,7 +31,7 @@ describe NotesHelper do
 
     it 'handles access in different projects' do
       second_project = create(:project)
-      second_project.team << [master, :reporter]
+      second_project.add_reporter(master)
       other_note = create(:note, author: master, project: second_project)
 
       expect(helper.note_max_access_for_user(master_note)).to eq(Gitlab::Access::MASTER)

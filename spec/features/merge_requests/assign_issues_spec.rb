@@ -9,7 +9,7 @@ feature 'Merge request issue assignment', :js do
   let(:service) { MergeRequests::AssignIssuesService.new(merge_request, user, user, project) }
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   def visit_merge_request(current_user = nil)

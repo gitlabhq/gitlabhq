@@ -7,7 +7,7 @@ feature 'Project remote mirror', :feature do
 
   describe 'On a project', :js do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in user
     end
 

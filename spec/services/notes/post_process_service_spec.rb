@@ -7,7 +7,7 @@ describe Notes::PostProcessService do
 
   describe '#execute' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       note_opts = {
         note: 'Awesome comment',
         noteable_type: 'Issue',

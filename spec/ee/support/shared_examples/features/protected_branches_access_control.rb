@@ -8,7 +8,7 @@ shared_examples "protected branches > access control > EE" do
     let(:groups) { create_list(:group, 5) }
 
     before do
-      users.each { |user| project.team << [user, :developer] }
+      users.each { |user| project.add_developer(user) }
       groups.each { |group| project.project_group_links.create(group: group, group_access: Gitlab::Access::DEVELOPER) }
     end
 
@@ -83,7 +83,7 @@ shared_examples "protected branches > access control > EE" do
 
     it "prepends selected users that can #{git_operation} to" do
       users = create_list(:user, 21)
-      users.each { |user| project.team << [user, :developer] }
+      users.each { |user| project.add_developer(user) }
 
       visit project_protected_branches_path(project)
 

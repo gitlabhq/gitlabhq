@@ -8,7 +8,7 @@ feature 'Pages' do
   background do
     allow(Gitlab.config.pages).to receive(:enabled).and_return(true)
 
-    project.team << [user, role]
+    project.add_role(user, role)
 
     sign_in(user)
   end

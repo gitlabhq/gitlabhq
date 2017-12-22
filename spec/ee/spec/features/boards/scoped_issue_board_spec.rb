@@ -415,7 +415,7 @@ describe 'Scoped issue boards', :js do
     before do
       stub_licensed_features(scoped_issue_boards: false)
 
-      project.team << [user, :master]
+      project.add_master(user)
       login_as(user)
 
       visit project_boards_path(project)

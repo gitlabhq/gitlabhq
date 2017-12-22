@@ -4,7 +4,7 @@ feature 'project owner sees a link to create a license file in empty project', :
   let(:project_master) { create(:user) }
   let(:project) { create(:project) }
   background do
-    project.team << [project_master, :master]
+    project.add_master(project_master)
     sign_in(project_master)
   end
 

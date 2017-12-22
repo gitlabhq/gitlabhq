@@ -32,7 +32,7 @@ feature 'Clicking toggle commit message link', :js do
   end
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
 
     sign_in user
 

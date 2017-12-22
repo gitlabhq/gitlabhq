@@ -5,7 +5,7 @@ feature 'Projects > Members > Member is removed from project' do
   let(:project) { create(:project) }
 
   background do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
     visit project_project_members_path(project)
   end

@@ -10,7 +10,7 @@ describe 'Branches' do
   context 'logged in as developer' do
     before do
       sign_in(user)
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     describe 'Initial branches page' do
@@ -80,7 +80,7 @@ describe 'Branches' do
   context 'logged in as master' do
     before do
       sign_in(user)
-      project.team << [user, :master]
+      project.add_master(user)
     end
 
     describe 'Initial branches page' do

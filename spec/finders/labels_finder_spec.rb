@@ -27,7 +27,7 @@ describe LabelsFinder do
       create(:label, project: project_3, title: 'Label 3')
       create(:group_label, group: group_3, title: 'Group Label 4')
 
-      project_1.team << [user, :developer]
+      project_1.add_developer(user)
     end
 
     context 'with no filter' do
@@ -73,7 +73,7 @@ describe LabelsFinder do
 
           # project_3 has a label associated to it, which we don't want coming
           # back when we ask for the isolated project's labels
-          project_3.team << [admin, :reporter]
+          project_3.add_reporter(admin)
           finder = described_class.new(admin, project_id: isolated_project.id)
 
           expect(finder.execute).to be_empty

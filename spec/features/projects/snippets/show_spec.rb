@@ -6,7 +6,7 @@ feature 'Project snippet', :js do
   let(:snippet) { create(:project_snippet, project: project, file_name: file_name, content: content) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 

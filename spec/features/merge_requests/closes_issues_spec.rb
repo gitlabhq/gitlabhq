@@ -18,7 +18,7 @@ feature 'Merge Request closing issues message', :js do
   let(:merge_request_title) { 'Merge Request Title' }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
 
     sign_in user
 
@@ -78,7 +78,7 @@ feature 'Merge Request closing issues message', :js do
 
   context 'approvals are enabled while closing issues', :js do
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     let(:project) { create(:project, :public, :repository, approvals_before_merge: 1) }
