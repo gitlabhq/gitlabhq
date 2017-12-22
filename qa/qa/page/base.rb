@@ -5,6 +5,9 @@ module QA
     class Base
       include Capybara::DSL
       include Scenario::Actable
+      extend SingleForwardable
+
+      def_delegators :evaluator, :view, :views
 
       def refresh
         visit current_url
@@ -39,6 +42,24 @@ module QA
 
       def self.path
         raise NotImplementedError
+      end
+
+      def self.evaluator
+        @evaluator ||= Page::Base::DSL.new
+      end
+
+      class DSL
+        attr_reader :views
+
+        def initialize
+          @views = []
+        end
+
+        def view(path, &block)
+          Page::Element.evaluate(&block).tap do |elements|
+            @views.push(Page::View.new(path, elements))
+          end
+        end
       end
     end
   end
