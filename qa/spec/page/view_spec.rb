@@ -30,36 +30,47 @@ describe QA::Page::View do
       allow(File).to receive(:new).and_return(file)
     end
 
-    context 'when pattern is found' do
+    context 'when view partial is present' do
       before do
-        allow(file).to receive(:foreach)
-          .and_yield('some element').once
-        allow(element).to receive(:matches?)
-          .with('some element').and_return(true)
+        allow(subject.pathname).to receive(:readable?)
+          .and_return(true)
       end
 
-      it 'walks through the view and asserts on elements existence' do
-        expect(subject.errors).to be_empty
-      end
-    end
+      context 'when pattern is found' do
+        before do
+          allow(file).to receive(:foreach)
+            .and_yield('some element').once
+          allow(element).to receive(:matches?)
+            .with('some element').and_return(true)
+        end
 
-    context 'when pattern has not been found' do
-      before do
-        allow(file).to receive(:foreach)
-          .and_yield('some element').once
-        allow(element).to receive(:matches?)
-          .with('some element').and_return(false)
+        it 'walks through the view and asserts on elements existence' do
+          expect(subject.errors).to be_empty
+        end
       end
 
-      it 'returns an array of errors related to missing elements' do
-        expect(subject.errors).not_to be_empty
-        expect(subject.errors.first)
-          .to match %r(Missing element `.*` in `.*/some/file.html` view)
+      context 'when pattern has not been found' do
+        before do
+          allow(file).to receive(:foreach)
+            .and_yield('some element').once
+          allow(element).to receive(:matches?)
+            .with('some element').and_return(false)
+        end
+
+        it 'returns an array of errors related to missing elements' do
+          expect(subject.errors).not_to be_empty
+          expect(subject.errors.first)
+            .to match %r(Missing element `.*` in `.*/some/file.html` view)
+        end
       end
     end
 
     context 'when view partial has not been found' do
-      pending
+      it 'returns an error when it is not able to find the partial' do
+        expect(subject.errors).to be_one
+        expect(subject.errors.first)
+          .to match %r(Missing view partial `.*/some/file.html`!)
+      end
     end
   end
 end
