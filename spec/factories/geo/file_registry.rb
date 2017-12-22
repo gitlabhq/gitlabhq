@@ -12,6 +12,10 @@ FactoryBot.define do
       file_type :lfs
     end
 
+    trait :job_artifact do
+      file_type :job_artifact
+    end
+
     trait :with_file do
       after(:build, :stub) do |registry, _|
         file =
