@@ -1,5 +1,0 @@
----
-title: Fix item name and namespace text overflow in Projects dropdown
-merge_request: 15451
-author:
-type: fixed
