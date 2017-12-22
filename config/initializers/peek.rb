@@ -18,7 +18,7 @@ Peek.into Peek::Views::Rblineprof
 Peek.into Peek::Views::GC
 Peek.into Peek::Views::Gitaly
 
-# rubocop:disable Style/ClassAndModuleCamelCase
+# rubocop:disable Naming/ClassAndModuleCamelCase
 class PEEK_DB_CLIENT
   class << self
     attr_accessor :query_details

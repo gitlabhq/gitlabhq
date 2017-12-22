@@ -29,7 +29,7 @@ module RuboCop
 
           opts.each_node(:pair) do |pair|
             if hash_key_type(pair) == :sym && hash_key_name(pair) == :default
-              add_offense(node, :selector)
+              add_offense(node, location: :selector)
             end
           end
         end
