@@ -5,7 +5,7 @@ import IssuableIndex from './issuable_index';
 import Milestone from './milestone';
 import IssuableForm from './issuable_form';
 import LabelsSelect from './labels_select';
-/* global MilestoneSelect */
+import MilestoneSelect from './milestone_select';
 import NewBranchForm from './new_branch_form';
 import NotificationsForm from './notifications_form';
 import notificationsDropdown from './notifications_dropdown';
