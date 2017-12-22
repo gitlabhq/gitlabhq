@@ -1447,7 +1447,7 @@ ActiveRecord::Schema.define(version: 20171222183504) do
     t.boolean "repository_read_only"
     t.boolean "merge_requests_ff_only_enabled", default: false
     t.boolean "merge_requests_rebase_enabled", default: false, null: false
-    t.integer "cache_index", default: 0, null: false
+    t.integer "cache_index"
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree

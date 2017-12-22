@@ -7,13 +7,7 @@ class AddCacheIndexToProject < ActiveRecord::Migration
   # Set this constant to true if this migration requires downtime.
   DOWNTIME = false
 
-  disable_ddl_transaction!
-
-  def up
-    add_column_with_default(:projects, :cache_index, :integer, default: 0)
-  end
-
-  def down
-    remove_column(:projects, :cache_index)
+  def change
+    add_column :projects, :cache_index, :integer
   end
 end
