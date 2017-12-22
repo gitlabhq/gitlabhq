@@ -180,5 +180,28 @@ describe Geo::FileUploadService do
         expect(service.execute).to be_nil
       end
     end
+
+    context 'job artifact' do
+      let(:job_artifact) { create(:ci_job_artifact, :with_file) }
+      let(:params) { { id: job_artifact.id, type: 'job_artifact' } }
+      let(:job_artifact_transfer) { Gitlab::Geo::JobArtifactTransfer.new(job_artifact) }
+      let(:transfer_request) { Gitlab::Geo::TransferRequest.new(job_artifact_transfer.request_data) }
+      let(:req_header) { transfer_request.headers['Authorization'] }
+
+      it 'sends job artifact file' do
+        service = described_class.new(params, req_header)
+
+        response = service.execute
+
+        expect(response[:code]).to eq(:ok)
+        expect(response[:file].path).to eq(job_artifact.file.path)
+      end
+
+      it 'returns nil if no authorization' do
+        service = described_class.new(params, nil)
+
+        expect(service.execute).to be_nil
+      end
+    end
   end
 end
