@@ -766,6 +766,8 @@ ActiveRecord::Schema.define(version: 20171221154744) do
     t.integer "epic_id", null: false
     t.integer "issue_id", null: false
     t.integer "position", default: 1, null: false
+    t.datetime_with_timezone "created_at"
+    t.datetime_with_timezone "updated_at"
   end
 
   add_index "epic_issues", ["epic_id"], name: "index_epic_issues_on_epic_id", using: :btree
