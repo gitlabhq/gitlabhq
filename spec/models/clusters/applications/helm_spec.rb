@@ -40,13 +40,13 @@ describe Clusters::Applications::Helm do
 
   describe '#install_command' do
     it 'has all the needed information' do
-      expect(subject.install_command).to have_attributes(name: subject.name, install_helm: true, chart: nil)
+      expect(subject.install_command).to have_attributes(name: subject.name, install_helm: true)
     end
   end
 
   describe 'status state machine' do
     describe '#make_installing' do
-      subject { create(:cluster_applications_helm, :scheduled) }
+      subject { create(:clusters_applications_helm, :scheduled) }
 
       it 'is installing' do
         subject.make_installing!
@@ -56,7 +56,7 @@ describe Clusters::Applications::Helm do
     end
 
     describe '#make_installed' do
-      subject { create(:cluster_applications_helm, :installing) }
+      subject { create(:clusters_applications_helm, :installing) }
 
       it 'is installed' do
         subject.make_installed
@@ -66,7 +66,7 @@ describe Clusters::Applications::Helm do
     end
 
     describe '#make_errored' do
-      subject { create(:cluster_applications_helm, :installing) }
+      subject { create(:clusters_applications_helm, :installing) }
       let(:reason) { 'some errors' }
 
       it 'is errored' do
@@ -78,7 +78,7 @@ describe Clusters::Applications::Helm do
     end
 
     describe '#make_scheduled' do
-      subject { create(:cluster_applications_helm, :installable) }
+      subject { create(:clusters_applications_helm, :installable) }
 
       it 'is scheduled' do
         subject.make_scheduled
@@ -87,7 +87,7 @@ describe Clusters::Applications::Helm do
       end
 
       describe 'when was errored' do
-        subject { create(:cluster_applications_helm, :errored) }
+        subject { create(:clusters_applications_helm, :errored) }
 
         it 'clears #status_reason' do
           expect(subject.status_reason).not_to be_nil

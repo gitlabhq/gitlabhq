@@ -61,7 +61,9 @@ module Gitlab
       end
 
       def line_for_position(pos)
-        diff_lines.find { |line| position(line) == pos }
+        return nil unless pos.position_type == 'text'
+
+        diff_lines.find { |line| line.old_line == pos.old_line && line.new_line == pos.new_line }
       end
 
       def position_for_line_code(code)

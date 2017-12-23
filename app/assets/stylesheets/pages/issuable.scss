@@ -122,7 +122,7 @@
 }
 
 .right-sidebar {
-  position: absolute;
+  position: fixed;
   top: $header-height;
   bottom: 0;
   right: 0;
@@ -503,7 +503,7 @@
   top: $header-height + $performance-bar-height;
 
   .issuable-sidebar {
-    height: calc(100% - #{$header-height} - #{$performance-bar-height});
+    height: calc(100% - #{$performance-bar-height});
   }
 }
 

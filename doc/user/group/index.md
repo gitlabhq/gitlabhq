@@ -196,6 +196,7 @@ access further configurations for your group.
 Changing a group's path can have unintended side effects. Read
 [how redirects will behave](../project/index.md#redirects-when-changing-repository-paths)
 before proceeding.
+<<<<<<< HEAD
 
 If you are vacating the path so it can be claimed by another group or user,
 you may need to rename the group name as well since both names and paths must
@@ -207,6 +208,19 @@ To change your group path:
 1. Enter a new name under "Group path".
 1. Hit **Save group**.
 
+=======
+
+If you are vacating the path so it can be claimed by another group or user,
+you may need to rename the group name as well since both names and paths must
+be unique.
+
+To change your group path:
+
+1. Navigate to your group's **Settings > General**.
+1. Enter a new name under "Group path".
+1. Hit **Save group**.
+
+>>>>>>> upstream/master
 CAUTION: **Caution:**
 It is currently not possible to rename a namespace if it contains a
 project with [Container Registry](../project/container_registry.md) tags,
@@ -268,6 +282,7 @@ request to add new user to project through API will not be possible.
 - **Projects**: view all projects within that group, add members to each project,
 access each project's settings, and remove any project from the same screen.
 - **Webhooks**: configure [webhooks](../project/integrations/webhooks.md)
+<<<<<<< HEAD
 and [push rules](../../push_rules/push_rules.md) to your group
 (Push Rules is available in [GitLab Enteprise Edition Starter][ee].)
 - **Audit Events**: view [Audit Events](../../administration/audit_events.md)
@@ -282,3 +297,9 @@ you have an overview of the contributions (pushes, merge requests,
 and issues) performed my your group members.
 
 [ee]: https://about.gitlab.com/products/
+=======
+and [push rules](https://docs.gitlab.com/ee/push_rules/push_rules.html#push-rules) to your group (Push Rules is available in [GitLab Enteprise Edition Starter](https://about.gitlab.com/products/).)
+- **Audit Events**: view [Audit Events](https://docs.gitlab.com/ee/administration/audit_events.html#audit-events)
+for the group (GitLab admins only, available in [GitLab Enterprise Edition Starter][ee]).
+- **Pipelines quota**: keep track of the [pipeline quota](../admin_area/settings/continuous_integration.md) for the group
+>>>>>>> upstream/master

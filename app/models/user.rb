@@ -19,8 +19,11 @@ class User < ActiveRecord::Base
   include IgnorableColumn
   include BulkMemberAccessLoad
   include BlocksJsonSerialization
+<<<<<<< HEAD
 
   prepend EE::User
+=======
+>>>>>>> upstream/master
 
   DEFAULT_NOTIFICATION_LEVEL = :participating
 
