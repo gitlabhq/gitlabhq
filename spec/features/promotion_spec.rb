@@ -12,7 +12,7 @@ describe 'Promotions', :js do
 
   describe 'if you have a license' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
     end
 
     it 'should show no promotion at all' do
@@ -27,7 +27,7 @@ describe 'Promotions', :js do
       before do
         allow(License).to receive(:current).and_return(nil)
         stub_application_setting(check_namespace_plan: false)
-        project.team << [user, :master]
+        project.add_master(user)
       end
 
       it 'should have the contact admin line' do
@@ -47,8 +47,8 @@ describe 'Promotions', :js do
   describe 'for project features in general', :js do
     context 'for .com' do
       before do
-        project.team << [user, :master]
-        otherproject.team << [user, :master]
+        project.add_master(user)
+        otherproject.add_master(user)
 
         stub_application_setting(check_namespace_plan: true)
         allow(Gitlab).to receive(:com?) { true }
@@ -73,7 +73,7 @@ describe 'Promotions', :js do
       allow(License).to receive(:current).and_return(nil)
       stub_application_setting(check_namespace_plan: false)
 
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in(user)
     end
 
@@ -100,7 +100,7 @@ describe 'Promotions', :js do
       allow(License).to receive(:current).and_return(nil)
       stub_application_setting(check_namespace_plan: false)
 
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in(user)
     end
 
@@ -127,7 +127,7 @@ describe 'Promotions', :js do
       allow(License).to receive(:current).and_return(nil)
       stub_application_setting(check_namespace_plan: false)
 
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in(user)
     end
 
@@ -155,7 +155,7 @@ describe 'Promotions', :js do
       allow(License).to receive(:current).and_return(nil)
       stub_application_setting(check_namespace_plan: false)
 
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in(user)
     end
 
@@ -182,7 +182,7 @@ describe 'Promotions', :js do
       stub_application_setting(check_namespace_plan: true)
       allow(Gitlab).to receive(:com?) { true }
 
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in(user)
     end
 
@@ -209,7 +209,7 @@ describe 'Promotions', :js do
       stub_application_setting(check_namespace_plan: true)
       allow(Gitlab).to receive(:com?) { true }
 
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in(user)
     end
 
@@ -236,7 +236,7 @@ describe 'Promotions', :js do
       allow(License).to receive(:current).and_return(nil)
       stub_application_setting(check_namespace_plan: false)
 
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in(user)
     end
 
@@ -252,7 +252,7 @@ describe 'Promotions', :js do
       allow(License).to receive(:current).and_return(nil)
       stub_application_setting(check_namespace_plan: false)
 
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in(user)
     end
 
@@ -269,7 +269,7 @@ describe 'Promotions', :js do
       allow(License).to receive(:current).and_return(nil)
       stub_application_setting(check_namespace_plan: false)
 
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in(user)
     end
 
@@ -286,7 +286,7 @@ describe 'Promotions', :js do
       allow(License).to receive(:current).and_return(nil)
       stub_application_setting(check_namespace_plan: false)
 
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in(user)
     end
 

@@ -1670,7 +1670,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       let(:branch_name) { "to-be-deleted-soon" }
 
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
         repository.create_branch(branch_name)
       end
 

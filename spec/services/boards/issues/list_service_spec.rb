@@ -37,7 +37,7 @@ describe Boards::Issues::ListService do
     let!(:closed_issue5) { create(:labeled_issue, :closed, project: project, labels: [development]) }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     it 'delegates search to IssuesFinder' do

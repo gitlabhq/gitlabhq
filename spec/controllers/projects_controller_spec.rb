@@ -102,7 +102,7 @@ describe ProjectsController do
         render_views
 
         before do
-          project.team << [user, :developer]
+          project.add_developer(user)
           project.project_feature.update_attribute(:repository_access_level, ProjectFeature::DISABLED)
         end
 
@@ -236,7 +236,7 @@ describe ProjectsController do
           allow_any_instance_of(EE::Project)
             .to receive(:above_size_limit?).and_return(true)
 
-          project.team << [user, :master]
+          project.add_master(user)
         end
 
         it 'shows the over size limit warning message for project members' do
@@ -460,7 +460,7 @@ describe ProjectsController do
 
     before do
       sign_in(user)
-      project.team << [user, :developer]
+      project.add_developer(user)
       allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
     end
 
@@ -488,7 +488,7 @@ describe ProjectsController do
 
     before do
       sign_in(user)
-      project.team << [user, :developer]
+      project.add_developer(user)
       allow(Gitlab.config.incoming_email).to receive(:enabled).and_return(true)
     end
 

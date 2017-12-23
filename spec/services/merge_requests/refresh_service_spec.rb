@@ -394,8 +394,8 @@ describe MergeRequests::RefreshService do
       let(:commit) { project.commit }
 
       before do
-        project.team << [commit_author, :developer]
-        project.team << [user, :developer]
+        project.add_developer(commit_author)
+        project.add_developer(user)
 
         allow(commit).to receive_messages(
           safe_message: "Closes #{issue.to_reference}",

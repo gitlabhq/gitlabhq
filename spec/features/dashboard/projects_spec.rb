@@ -6,7 +6,7 @@ feature 'Dashboard Projects' do
   let(:project2) { create(:project, :public, name: 'Community project') }
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
     sign_in(user)
   end
 

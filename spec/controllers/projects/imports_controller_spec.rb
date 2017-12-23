@@ -6,7 +6,7 @@ describe Projects::ImportsController do
 
   before do
     sign_in(user)
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe 'GET #show' do
@@ -15,7 +15,7 @@ describe Projects::ImportsController do
 
       before do
         sign_in(user)
-        project.team << [user, :master]
+        project.add_master(user)
       end
 
       it 'renders template' do

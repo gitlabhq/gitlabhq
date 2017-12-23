@@ -45,7 +45,7 @@ describe Snippet, elastic: true do
 
     it 'returns public, internal snippets, and project private snippets for project members' do
       member = create(:user)
-      project.team << [member, :developer]
+      project.add_developer(member)
 
       result = described_class.elastic_search_code('password', options: { user: member })
 

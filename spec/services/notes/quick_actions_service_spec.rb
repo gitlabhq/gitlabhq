@@ -3,11 +3,11 @@ require 'spec_helper'
 describe Notes::QuickActionsService do
   shared_context 'note on noteable' do
     let(:project) { create(:project) }
-    let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
+    let(:master) { create(:user).tap { |u| project.add_master(u) } }
     let(:assignee) { create(:user) }
 
     before do
-      project.team << [assignee, :master]
+      project.add_master(assignee)
     end
   end
 
@@ -226,7 +226,7 @@ describe Notes::QuickActionsService do
   context 'Issue assignees' do
     describe '/assign' do
       let(:project) { create(:project) }
-      let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
+      let(:master) { create(:user).tap { |u| project.add_master(u) } }
       let(:assignee) { create(:user) }
       let(:master) { create(:user) }
       let(:service) { described_class.new(project, master) }
@@ -237,8 +237,8 @@ describe Notes::QuickActionsService do
       end
 
       before do
-        project.team << [master, :master]
-        project.team << [assignee, :master]
+        project.add_master(master)
+        project.add_master(assignee)
       end
 
       it 'adds only one assignee from the list' do

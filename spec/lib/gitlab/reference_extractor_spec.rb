@@ -15,8 +15,8 @@ describe Gitlab::ReferenceExtractor do
     @u_bar = create(:user, username: 'bar')
     @u_offteam = create(:user, username: 'offteam')
 
-    project.team << [@u_foo, :reporter]
-    project.team << [@u_bar, :guest]
+    project.add_guest(@u_foo)
+    project.add_guest(@u_bar)
 
     subject.analyze('@foo, @baduser, @bar, and @offteam')
     expect(subject.users).to match_array([@u_foo, @u_bar, @u_offteam])
@@ -27,8 +27,8 @@ describe Gitlab::ReferenceExtractor do
     @u_bar = create(:user, username: 'bar')
     @u_offteam = create(:user, username: 'offteam')
 
-    project.team << [@u_foo, :reporter]
-    project.team << [@u_bar, :guest]
+    project.add_reporter(@u_foo)
+    project.add_reporter(@u_bar)
 
     subject.analyze(%Q{
       Inline code: `@foo`
@@ -243,7 +243,7 @@ describe Gitlab::ReferenceExtractor do
     let(:issue) { create(:issue, project: other_project) }
 
     before do
-      other_project.team << [project.creator, :developer]
+      other_project.add_developer(project.creator)
     end
 
     it 'handles project issue references' do
@@ -261,7 +261,7 @@ describe Gitlab::ReferenceExtractor do
     let(:text) { "Ref. #{issue.to_reference} and #{label.to_reference}" }
 
     before do
-      project.team << [project.creator, :developer]
+      project.add_developer(project.creator)
       subject.analyze(text)
     end
 

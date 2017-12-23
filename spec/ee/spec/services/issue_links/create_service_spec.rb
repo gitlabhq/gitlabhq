@@ -13,7 +13,7 @@ describe IssueLinks::CreateService do
     before do
       stub_licensed_features(related_issues: true)
 
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     subject { described_class.new(issue, user, params).execute }
@@ -89,7 +89,7 @@ describe IssueLinks::CreateService do
       end
 
       before do
-        another_project.team << [user, :developer]
+        another_project.add_developer(user)
       end
 
       it 'creates relationships' do

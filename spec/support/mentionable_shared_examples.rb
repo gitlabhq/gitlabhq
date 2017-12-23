@@ -58,7 +58,7 @@ shared_context 'mentionable context' do
 
     set_mentionable_text.call(ref_string)
 
-    project.team << [author, :developer]
+    project.add_developer(author)
   end
 end
 

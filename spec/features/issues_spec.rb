@@ -25,7 +25,8 @@ describe 'Issues' do
       sign_in(user)
       user2 = create(:user)
 
-      project.team << [[user, user2], :developer]
+      project.add_developer(user)
+      project.add_developer(user2)
     end
 
     describe 'empty state' do
@@ -394,7 +395,7 @@ describe 'Issues' do
 
       before do
         stub_incoming_email_setting(enabled: true, address: "p+%{key}@gl.ab")
-        project1.team << [user, :master]
+        project1.add_master(user)
         visit namespace_project_issues_path(user.namespace, project1)
       end
 
@@ -506,7 +507,7 @@ describe 'Issues' do
         let(:guest) { create(:user) }
 
         before do
-          project.team << [[guest], :guest]
+          project.add_guest(guest)
         end
 
         it 'shows assignee text', :js do
@@ -588,7 +589,7 @@ describe 'Issues' do
         let(:guest) { create(:user) }
 
         before do
-          project.team << [guest, :guest]
+          project.add_guest(guest)
           issue.milestone = milestone
           issue.save
         end

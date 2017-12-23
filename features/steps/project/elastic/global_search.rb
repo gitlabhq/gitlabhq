@@ -19,7 +19,7 @@ class Spinach::Features::GlobalSearch < Spinach::FeatureSteps
 
   step 'project has all data available for the search' do
     @project = create :project
-    @project.team << [current_user, :master]
+    @project.add_master(current_user)
 
     @issue = create :issue, title: 'bla-bla initial', project: @project
     @merge_request = create :merge_request, title: 'bla-bla initial', source_project: @project

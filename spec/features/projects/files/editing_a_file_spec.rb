@@ -16,7 +16,7 @@ feature 'User wants to edit a file' do
   end
 
   background do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in user
     visit project_edit_blob_path(project,
                                            File.join(project.default_branch, '.gitignore'))
