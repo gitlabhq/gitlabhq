@@ -20,8 +20,8 @@ describe Issues::MoveService do
 
   shared_context 'user can move issue' do
     before do
-      old_project.team << [user, :reporter]
-      new_project.team << [user, :reporter]
+      old_project.add_reporter(user)
+      new_project.add_reporter(user)
 
       labels = Array.new(2) { |x| "label%d" % (x + 1) }
 
@@ -313,7 +313,7 @@ describe Issues::MoveService do
 
       context 'user is reporter only in new project' do
         before do
-          new_project.team << [user, :reporter]
+          new_project.add_reporter(user)
         end
 
         it { expect { move }.to raise_error(StandardError, /permissions/) }
@@ -321,7 +321,7 @@ describe Issues::MoveService do
 
       context 'user is reporter only in old project' do
         before do
-          old_project.team << [user, :reporter]
+          old_project.add_reporter(user)
         end
 
         it { expect { move }.to raise_error(StandardError, /permissions/) }
@@ -329,8 +329,8 @@ describe Issues::MoveService do
 
       context 'user is reporter in one project and guest in another' do
         before do
-          new_project.team << [user, :guest]
-          old_project.team << [user, :reporter]
+          new_project.add_guest(user)
+          old_project.add_reporter(user)
         end
 
         it { expect { move }.to raise_error(StandardError, /permissions/) }
@@ -358,8 +358,8 @@ describe Issues::MoveService do
 
     context 'movable issue with no assigned labels' do
       before do
-        old_project.team << [user, :reporter]
-        new_project.team << [user, :reporter]
+        old_project.add_reporter(user)
+        new_project.add_reporter(user)
 
         labels = Array.new(2) { |x| "label%d" % (x + 1) }
 

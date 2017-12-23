@@ -9,9 +9,9 @@ describe MergeRequests::CloseService do
   let!(:todo) { create(:todo, :assigned, user: user, project: project, target: merge_request, author: user2) }
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :developer]
-    project.team << [guest, :guest]
+    project.add_master(user)
+    project.add_developer(user2)
+    project.add_guest(guest)
   end
 
   describe '#execute' do

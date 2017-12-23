@@ -125,8 +125,8 @@ describe Event do
     let(:event) { described_class.new(project: project, target: target, author_id: author.id) }
 
     before do
-      project.team << [member, :developer]
-      project.team << [guest, :guest]
+      project.add_developer(member)
+      project.add_guest(guest)
     end
 
     context 'commit note event' do

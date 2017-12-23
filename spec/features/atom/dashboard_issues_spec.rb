@@ -8,8 +8,8 @@ describe "Dashboard Issues Feed"  do
     let!(:project2) { create(:project) }
 
     before do
-      project1.team << [user, :master]
-      project2.team << [user, :master]
+      project1.add_master(user)
+      project2.add_master(user)
     end
 
     describe "atom feed" do

@@ -8,7 +8,7 @@ describe API::MergeRequestDiffs, 'MergeRequestDiffs' do
   before do
     merge_request.merge_request_diffs.create(head_commit_sha: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9')
     merge_request.merge_request_diffs.create(head_commit_sha: '5937ac0a7beb003549fc5fd26fc247adbce4a52e')
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe 'GET /projects/:id/merge_requests/:merge_request_iid/versions' do

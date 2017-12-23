@@ -226,7 +226,7 @@ class Project < ActiveRecord::Base
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
   delegate :add_user, :add_users, to: :team
-  delegate :add_guest, :add_reporter, :add_developer, :add_master, to: :team
+  delegate :add_guest, :add_reporter, :add_developer, :add_master, :add_role, to: :team
 
   # Validations
   validates :creator, presence: true, on: :create

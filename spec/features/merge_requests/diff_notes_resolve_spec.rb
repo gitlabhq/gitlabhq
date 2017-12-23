@@ -18,7 +18,7 @@ feature 'Diff notes resolve', :js do
 
   context 'no discussions' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in user
       note.destroy
       visit_merge_request
@@ -32,7 +32,7 @@ feature 'Diff notes resolve', :js do
 
   context 'as authorized user' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in user
       visit_merge_request
     end
@@ -429,7 +429,7 @@ feature 'Diff notes resolve', :js do
     let(:guest) { create(:user) }
 
     before do
-      project.team << [guest, :guest]
+      project.add_guest(guest)
       sign_in guest
     end
 

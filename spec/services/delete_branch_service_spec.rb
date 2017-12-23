@@ -9,7 +9,7 @@ describe DeleteBranchService do
   describe '#execute' do
     context 'when user has access to push to repository' do
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
 
       it 'removes the branch' do
