@@ -5,7 +5,7 @@ module Gitlab
     # Class for tracking timing information about method calls
     class MethodCall
       @@measurement_enabled_cache = Concurrent::AtomicBoolean.new(false)
-      @@measurement_enabled_cache_expires_at = Concurrent::AtomicFixnum.new(Time.now.to_i)
+      @@measurement_enabled_cache_expires_at = Concurrent::AtomicReference.new(Time.now.to_i)
       MUTEX = Mutex.new
       BASE_LABELS = { module: nil, method: nil }.freeze
       attr_reader :real_time, :cpu_time, :call_count, :labels
