@@ -1799,11 +1799,7 @@ d3-timer@1:
   version "1.0.7"
   resolved "https://registry.yarnpkg.com/d3-timer/-/d3-timer-1.0.7.tgz#df9650ca587f6c96607ff4e60cc38229e8dd8531"
 
-<<<<<<< HEAD
-d3-transition@1, d3-transition@^1.1.1:
-=======
 d3-transition@1:
->>>>>>> upstream/master
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/d3-transition/-/d3-transition-1.1.1.tgz#d8ef89c3b848735b060e54a39b32aaebaa421039"
   dependencies:
