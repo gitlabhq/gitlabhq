@@ -19,7 +19,7 @@ class StorageShard
   def self.all
     Settings.repositories.storages.map do |name, params|
       config = params.symbolize_keys.merge(name: name)
-      config.slice!(allowed_params)
+      config.slice!(*allowed_params)
       StorageShard.new(config)
     end
   end
