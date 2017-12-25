@@ -9,30 +9,26 @@ describe Gitlab::Utils::Override do
     end
   end
 
-  shared_examples 'good derivation' do
-    subject do
-      derived.module_eval do
-        override :good
-        def good
-          super.succ
-        end
+  def good
+    derived.module_eval do
+      override :good
+      def good
+        super.succ
       end
-
-      derived
     end
+
+    derived
   end
 
-  shared_examples 'bad derivation' do
-    subject do
-      derived.module_eval do
-        override :bad
-        def bad
-          true
-        end
+  def bad
+    derived.module_eval do
+      override :bad
+      def bad
+        true
       end
-
-      derived
     end
+
+    derived
   end
 
   describe '#override' do
@@ -41,36 +37,28 @@ describe Gitlab::Utils::Override do
         stub_env('STATIC_VERIFICATION', 'true')
       end
 
-      it_behaves_like 'good derivation' do
-        it 'checks ok for overriding method' do
-          result = subject.new(0).good
+      it 'checks ok for overriding method' do
+        result = good.new(0).good
 
-          expect(result).to eq(1)
-        end
+        expect(result).to eq(1)
       end
 
-      it_behaves_like 'bad derivation' do
-        it 'raises NotImplementedError when it is not overriding anything' do
-          expect { subject }.to raise_error(NotImplementedError)
-        end
+      it 'raises NotImplementedError when it is not overriding anything' do
+        expect { bad }.to raise_error(NotImplementedError)
       end
     end
 
-    context 'when STATIC_VERIFICATION is not set' do
-      it_behaves_like 'good derivation' do
-        it 'does not complain when it is overriding anything' do
-          result = subject.new(0).good
+  context 'when STATIC_VERIFICATION is not set' do
+      it 'does not complain when it is overriding anything' do
+        result = good.new(0).good
 
-          expect(result).to eq(1)
-        end
+        expect(result).to eq(1)
       end
 
-      it_behaves_like 'bad derivation' do
-        it 'does not complain when it is not overriding anything' do
-          result = subject.new(0).bad
+      it 'does not complain when it is not overriding anything' do
+        result = bad.new(0).bad
 
-          expect(result).to eq(true)
-        end
+        expect(result).to eq(true)
       end
     end
   end
