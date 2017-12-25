@@ -784,6 +784,16 @@ describe API::Internal do
         expect(json_response["redirected_message"]).to eq(project_moved.redirect_message)
       end
     end
+
+    context 'with an orphaned write deploy key' do
+      it 'does not try to notify that project moved' do
+        allow_any_instance_of(Gitlab::Identifier).to receive(:identify).and_return(nil)
+
+        post api("/internal/post_receive"), valid_params
+
+        expect(response).to have_gitlab_http_status(200)
+      end
+    end
   end
 
   describe 'POST /internal/pre_receive' do
