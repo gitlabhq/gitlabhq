@@ -75,7 +75,7 @@ class GeoNodeStatus < ActiveRecord::Base
     self.lfs_objects_count = lfs_objects_finder.count_lfs_objects
     self.attachments_count = attachments_finder.count_attachments
     self.last_successful_status_check_at = Time.now
-    self.storage_shards = StorageShard.current_shards
+    self.storage_shards = StorageShard.all
 
     if Gitlab::Geo.primary?
       self.replication_slots_count = geo_node.replication_slots_count
@@ -152,6 +152,12 @@ class GeoNodeStatus < ActiveRecord::Base
 
   def replication_slots_used_in_percentage
     calc_percentage(replication_slots_count, replication_slots_used_count)
+  end
+
+  def storage_shards_match?
+    return unless Gitlab::Geo.primary?
+
+    storage_shards.as_json == StorageShard.all.as_json
   end
 
   def [](key)

@@ -398,7 +398,7 @@ describe GeoNodeStatus, :geo do
 
   describe '#storage_shards' do
     it "returns the current node's shard config" do
-      expect(subject[:storage_shards].as_json).to eq(StorageShard.current_shards.as_json)
+      expect(subject[:storage_shards].as_json).to eq(StorageShard.all.as_json)
     end
   end
 

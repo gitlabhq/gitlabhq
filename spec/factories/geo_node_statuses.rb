@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :geo_node_status do
     sequence(:id)
     geo_node
-    storage_shards { [{ name: 'default', path: '/tmp/test' }] }
+    storage_shards { StorageShard.all.as_json }
 
     trait :healthy do
       health nil

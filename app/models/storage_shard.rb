@@ -5,11 +5,10 @@ class StorageShard
   include ActiveModel::Model
 
   attr_accessor :name, :path, :gitaly_address, :gitaly_token
-  attr_accessor :failure_count_threshold, :failure_reset_time, :failure_wait_time
-  attr_accessor :storage_timeout
 
   validates :name, presence: true
   validates :path, presence: true
+  validates :gitaly_address, presence: true
 
   # Generates an array of StorageShard objects from the currrent storage
   # configuration using the gitlab.yml array of key/value pairs:
@@ -17,10 +16,15 @@ class StorageShard
   # {"default"=>{"path"=>"/home/git/repositories", ...}
   #
   # The key is the shard name, and the values are the parameters for that shard.
-  def self.current_shards
+  def self.all
     Settings.repositories.storages.map do |name, params|
       config = params.symbolize_keys.merge(name: name)
+      config.slice!(allowed_params)
       StorageShard.new(config)
     end
+  end
+
+  def self.allowed_params
+    return %w(name path gitaly_address gitaly_token).freeze
   end
 end

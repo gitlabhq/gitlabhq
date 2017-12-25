@@ -78,15 +78,6 @@ class GeoNodeStatus {
     };
   }
 
-  static sortByStorageName(config) {
-    return config.sort((a, b) => a.name.localeCompare(b.name));
-  }
-
-  static storageConfigEquals(first, second) {
-    return _.isEqual(GeoNodeStatus.sortByStorageName(first),
-                     GeoNodeStatus.sortByStorageName(second));
-  }
-
   static renderSyncGraph($itemEl, syncStats) {
     const graphItems = [
       {
@@ -224,10 +215,9 @@ class GeoNodeStatus {
       this.$secondaryVersion.text(`${status.version} (${status.revision}) - ${versionMismatch}`);
     }
 
-    if (!this.primaryStorageConfiguration || !status.storage_shards) {
+    if (!status.storage_shards_match) {
       this.$secondaryStorage.text('UNKNOWN');
-    } else if (GeoNodeStatus.storageConfigEquals(
-      this.primaryStorageConfiguration, status.storage_shards)) {
+    } else if (status.storage_shards_match) {
       this.$secondaryStorage.removeClass(`${storageMismatchClass}`);
       this.$secondaryStorage.text('OK');
     } else {

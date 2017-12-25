@@ -29,10 +29,7 @@
             - if node.current?
               .node-badge.current-node Current node
             - if node.primary?
-              - if node.current?
-                .node-badge.primary-node{ data: { storage_shards: @current_storage_shards.to_json } } Primary
-              - else
-                .node-badge.primary-node
+              .node-badge.primary-node Primary
               %p
                 %span.help-block Primary node
               %p
