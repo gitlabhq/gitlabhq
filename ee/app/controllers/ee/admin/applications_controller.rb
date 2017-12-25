@@ -1,11 +1,12 @@
 module EE
   module Admin
     module ApplicationsController
+      extend ::Gitlab::Utils::Override
+
       protected
 
+      override :redirect_to_admin_page
       def redirect_to_admin_page
-        raise NotImplementedError unless defined?(super)
-
         log_audit_event
 
         super

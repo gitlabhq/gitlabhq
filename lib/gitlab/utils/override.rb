@@ -14,7 +14,7 @@ module Gitlab
             klass.private_instance_methods(include_super).include?(name)
         end
 
-        attr_reader :subject, :method_names
+        attr_reader :subject
 
         def initialize(subject)
           @subject = subject
@@ -78,7 +78,7 @@ module Gitlab
       def override(method_name)
         return unless ENV['STATIC_VERIFICATION']
 
-        if kind_of?(Class)
+        if is_a?(Class)
           Extension.verify_class!(self, method_name)
         else # We delay the check for modules
           Override.extensions[self] ||= Extension.new(self)
@@ -87,11 +87,11 @@ module Gitlab
       end
 
       def included(base = nil)
-        return super if base == nil # Rails concern, ignoring it
+        return super if base.nil? # Rails concern, ignoring it
 
         super
 
-        if base.kind_of?(Class) # We could check for Class in `override`
+        if base.is_a?(Class) # We could check for Class in `override`
           # This could be `nil` if `override` was never called
           Override.extensions[self]&.add_class(base)
         end

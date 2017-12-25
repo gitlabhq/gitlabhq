@@ -1,9 +1,10 @@
 module EE
   module Groups
     module DestroyService
-      def execute
-        raise NotImplementedError unless defined?(super)
+      extend ::Gitlab::Utils::Override
 
+      override :execute
+      def execute
         super.tap { |group| log_audit_event unless group&.persisted? }
       end
 

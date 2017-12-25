@@ -8,6 +8,7 @@
 module EE
   module ProtectedRefAccess
     extend ActiveSupport::Concern
+    extend ::Gitlab::Utils::Override
 
     included do
       belongs_to :user
@@ -40,12 +41,12 @@ module EE
     end
 
     # Is this a role-based access level?
+    override :role?
     def role?
-      raise NotImplementedError unless defined?(super)
-
       type == :role
     end
 
+    override :humanize
     def humanize
       return self.user.name if self.user.present?
       return self.group.name if self.group.present?
@@ -53,6 +54,7 @@ module EE
       super
     end
 
+    override :check_access
     def check_access(user)
       return true if user.admin?
       return user.id == self.user_id if self.user.present?

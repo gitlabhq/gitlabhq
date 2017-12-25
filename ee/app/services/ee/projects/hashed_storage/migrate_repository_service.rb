@@ -2,9 +2,10 @@ module EE
   module Projects
     module HashedStorage
       module MigrateRepositoryService
-        def execute
-          raise NotImplementedError.new unless defined?(super)
+        extend ::Gitlab::Utils::Override
 
+        override :execute
+        def execute
           super do
             ::Geo::HashedStorageMigratedEventStore.new(
               project,
