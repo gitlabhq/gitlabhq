@@ -13,7 +13,7 @@ tasks = [
   %w[yarn run eslint],
   %w[bundle exec rubocop --parallel],
   %w[bundle exec rake gettext:lint],
-  %w[env STATIC_VERIFICATION=true bundle exec rake dev:load],
+  %w[bundle exec rake lint:static_verification],
   %w[scripts/lint-changelog-yaml],
   %w[scripts/lint-conflicts.sh]
 ]
