@@ -214,7 +214,7 @@ class GeoNodeStatus {
       this.$secondaryVersion.text(`${status.version} (${status.revision}) - ${versionMismatch}`);
     }
 
-    if (status.storage_shards_match === null) {
+    if (status.storage_shards_match == null) {
       this.$secondaryStorage.text('UNKNOWN');
     } else if (status.storage_shards_match) {
       this.$secondaryStorage.removeClass(`${storageMismatchClass}`);
