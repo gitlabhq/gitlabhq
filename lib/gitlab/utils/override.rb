@@ -86,7 +86,9 @@ module Gitlab
         end
       end
 
-      def included(base)
+      def included(base = nil)
+        return super if base == nil # Rails concern, ignoring it
+
         super
 
         if base.kind_of?(Class) # We could check for Class in `override`
