@@ -25,6 +25,6 @@ class StorageShard
   end
 
   def self.allowed_params
-    return %w(name path gitaly_address gitaly_token).freeze
+    return %i(name path gitaly_address gitaly_token).freeze
   end
 end
