@@ -87,9 +87,9 @@ still having access the class's implementation with `super`.
 
 There are a few gotchas with it:
 
-- you should always add a `raise NotImplementedError unless defined?(super)`
-  guard clause in the "overrider" method to ensure that if the method gets
-  renamed in CE, the EE override won't be silently forgotten.
+- you should always `extend ::Gitlab::Utils::Override` and use `override` to
+  guard the "overrider" method to ensure that if the method gets renamed in
+  CE, the EE override won't be silently forgotten.
 - when the "overrider" would add a line in the middle of the CE
   implementation, you should refactor the CE method and split it in
   smaller methods. Or create a "hook" method that is empty in CE,
@@ -134,6 +134,9 @@ There are a few gotchas with it:
   guards:
   ``` ruby
     module EE::Base
+      extend ::Gitlab::Utils::Override
+
+      override :do_something
       def do_something
         # Follow the above pattern to call super and extend it
       end
@@ -174,10 +177,11 @@ implementation:
 
 ```ruby
 module EE
-  class ApplicationController
-    def after_sign_out_path_for(resource)
-      raise NotImplementedError unless defined?(super)
+  module ApplicationController
+    extend ::Gitlab::Utils::Override
 
+    override :after_sign_out_path_for
+    def after_sign_out_path_for(resource)
       if Gitlab::Geo.secondary?
         Gitlab::Geo.primary_node.oauth_logout_url(@geo_logout_state)
       else
@@ -209,7 +213,6 @@ In EE, the implementation `ee/app/models/ee/users.rb` would be:
 
 ```ruby
 def full_private_access?
-  raise NotImplementedError unless defined?(super)
   super || auditor?
 end
 ```
