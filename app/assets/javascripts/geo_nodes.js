@@ -42,7 +42,6 @@ class GeoNodeStatus {
     this.$advancedStatus.on('click', GeoNodeStatus.toggleShowAdvancedStatus.bind(this));
     this.primaryVersion = $('.js-primary-version').text();
     this.primaryRevision = $('.js-primary-revision').text().replace(/\W/g, '');
-    this.primaryStorageConfiguration = $('.primary-node').data('storageShards');
 
     this.statusInterval = new SmartInterval({
       callback: this.getStatus.bind(this),

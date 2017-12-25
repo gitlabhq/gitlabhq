@@ -157,7 +157,7 @@ class GeoNodeStatus < ActiveRecord::Base
   def storage_shards_match?
     return unless Gitlab::Geo.primary?
 
-    storage_shards.as_json == StorageShard.all.as_json
+    storage_shards.as_json == StorageShardSerializer.new.represent(StorageShard.all).as_json
   end
 
   def [](key)
