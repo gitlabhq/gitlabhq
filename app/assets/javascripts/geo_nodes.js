@@ -14,9 +14,8 @@ const unhealthyIcon = 'fa-times';
 const unknownIcon = 'fa-times';
 const notAvailable = 'Not Available';
 const versionMismatch = 'Does not match the primary node version';
-const versionMismatchClass = 'geo-node-version-mismatch';
+const nodeMismatchClass = 'geo-node-mismatch';
 const storageMismatch = 'Does not match the primary storage configuration';
-const storageMismatchClass = 'geo-node-storage-mismatch';
 
 class GeoNodeStatus {
   constructor(el) {
@@ -207,20 +206,20 @@ class GeoNodeStatus {
 
     if (!this.primaryVersion || (this.primaryVersion === status.version
       && this.primaryRevision === status.revision)) {
-      this.$secondaryVersion.removeClass(`${versionMismatchClass}`);
+      this.$secondaryVersion.removeClass(`${nodeMismatchClass}`);
       this.$secondaryVersion.text(`${status.version} (${status.revision})`);
     } else {
-      this.$secondaryVersion.addClass(`${versionMismatchClass}`);
+      this.$secondaryVersion.addClass(`${nodeMismatchClass}`);
       this.$secondaryVersion.text(`${status.version} (${status.revision}) - ${versionMismatch}`);
     }
 
     if (status.storage_shards_match == null) {
       this.$secondaryStorage.text('UNKNOWN');
     } else if (status.storage_shards_match) {
-      this.$secondaryStorage.removeClass(`${storageMismatchClass}`);
+      this.$secondaryStorage.removeClass(`${nodeMismatchClass}`);
       this.$secondaryStorage.text('OK');
     } else {
-      this.$secondaryStorage.addClass(`${storageMismatchClass}`);
+      this.$secondaryStorage.addClass(`${nodeMismatchClass}`);
       this.$secondaryStorage.text(storageMismatch);
     }
 
