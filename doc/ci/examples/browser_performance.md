@@ -13,7 +13,6 @@ Once you set up the Runner, add a new job to `.gitlab-ci.yml`, called `performan
   services:
     - docker:dind
   script:
-<<<<<<< HEAD
     - mkdir gitlab-exporter
     - wget -O ./gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/master/index.js
     - mkdir sitespeed-results
@@ -28,18 +27,6 @@ This will create a `performance` job in your CI/CD pipeline and will run Sitespe
 
 For GitLab [Enterprise Edition Premium](https://about.gitlab.com/gitlab-ee/) users, this information can be automatically
 extracted and shown right in the merge request widget. [Learn more on performance diffs in merge requests](../../user/project/merge_requests/browser_performance_testing.md).
-=======
-    - mkdir sitespeed-results
-    - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io --outputFolder sitespeed-results https://my.website.com
-  artifacts:
-    paths:
-    - sitespeed-results/
-```
-
-This will create a `performance` job in your CI/CD pipeline and will run Sitespeed.io against the webpage you define. The full HTML Sitespeed.io report will be saved as an artifact, and if you have Pages enabled it can be viewed directly in your browser. For further customization options of Sitespeed.io, including the ability to provide a list of URLs to test, please consult their [documentation](https://www.sitespeed.io/documentation/sitespeed.io/configuration/).
-
-For GitLab [Enterprise Edition Premium](https://about.gitlab.com/gitlab-ee/) users, a performance score can be automatically
-extracted and shown right in the merge request widget. Learn more about [Browser Performance Testing](https://docs.gitlab.com/ee/user/project/merge_requests/browser_performance_testing.html).
 
 ## Performance testing on Review Apps
 
@@ -62,6 +49,5 @@ A simple `performance` job would look like:
     - docker run --shm-size=1g --rm -v "$(pwd)":/sitespeed.io sitespeedio/sitespeed.io --outputFolder sitespeed-results $CI_ENVIRONMENT_URL
   artifacts:
     paths:
-    - sitespeed-results/
+    - [performance.json]
 ```
->>>>>>> upstream/master
