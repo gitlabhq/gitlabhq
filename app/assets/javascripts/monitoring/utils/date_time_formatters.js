@@ -4,15 +4,9 @@ import { bisector } from 'd3-array';
 
 const d3 = { time, bisector, timeSecond, timeMinute, timeHour, timeDay, timeMonth, timeYear };
 
-<<<<<<< HEAD
-export const dateFormatWithName = d3.time('%a, %b %-d');
-export const dateFormat = d3.time('%b %-d, %Y');
-export const timeFormat = d3.time('%-I:%M%p');
-=======
 export const dateFormat = d3.time('%b %-d, %Y');
 export const timeFormat = d3.time('%-I:%M%p');
 export const dateFormatWithName = d3.time('%a, %b %-d');
->>>>>>> upstream/master
 export const bisectDate = d3.bisector(d => d.time).left;
 
 export function timeScaleFormat(date) {
