@@ -71,6 +71,16 @@ module Gitlab
       end
     end
 
+    def encode_binary(s)
+      return "" if s.nil?
+
+      s.dup.force_encoding(Encoding::ASCII_8BIT)
+    end
+
+    def binary_stringio(s)
+      StringIO.new(s || '').tap { |io| io.set_encoding(Encoding::ASCII_8BIT) }
+    end
+
     private
 
     def clean(message)

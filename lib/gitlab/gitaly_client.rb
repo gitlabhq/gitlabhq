@@ -330,22 +330,6 @@ module Gitlab
       Google::Protobuf::Timestamp.new(seconds: t.to_i)
     end
 
-    def self.encode(s)
-      return "" if s.nil?
-
-      s.dup.force_encoding(Encoding::ASCII_8BIT)
-    end
-
-    def self.binary_stringio(s)
-      io = StringIO.new(s || '')
-      io.set_encoding(Encoding::ASCII_8BIT)
-      io
-    end
-
-    def self.encode_repeated(a)
-      Google::Protobuf::RepeatedField.new(:bytes, a.map { |s| self.encode(s) } )
-    end
-
     # The default timeout on all Gitaly calls
     def self.default_timeout
       return 0 if Sidekiq.server?
