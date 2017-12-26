@@ -131,8 +131,11 @@ describe GeoNodeStatusEntity, :postgresql do
 
   describe '#storage_shards' do
     it 'returns the config' do
-      expect(subject[:storage_shards].first[:name]).to eq('default')
-      expect(subject[:storage_shards].first[:path]).to eq('/tmp/test')
+      shards = StorageShard.all
+
+      expect(subject[:storage_shards].count).to eq(shards.count)
+      expect(subject[:storage_shards].first[:name]).to eq(shards.first.name)
+      expect(subject[:storage_shards].first[:path]).to eq(shards.first.path)
     end
   end
 end
