@@ -1,0 +1,5 @@
+---
+title: Fix Error 500s with anonymous clones for a project that has moved
+merge_request:
+author:
+type: fixed
