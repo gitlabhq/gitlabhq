@@ -1,5 +1,0 @@
----
-title: Fix errors when selecting numeric-only labels in the labels autocomplete selector
-merge_request: 14607
-author: haseebeqx
-type: fixed

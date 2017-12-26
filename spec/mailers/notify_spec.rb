@@ -417,7 +417,7 @@ describe Notify do
       context 'for a project in a user namespace' do
         let(:project) do
           create(:project, :public, :access_requestable) do |project|
-            project.team << [project.owner, :master, project.owner]
+            project.add_master(project.owner, current_user: project.owner)
           end
         end
 
@@ -520,7 +520,7 @@ describe Notify do
     end
 
     describe 'project invitation' do
-      let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
+      let(:master) { create(:user).tap { |u| project.add_master(u) } }
       let(:project_member) { invite_to_project(project, inviter: master) }
 
       subject { described_class.member_invited_email('project', project_member.id, project_member.invite_token) }
@@ -540,7 +540,7 @@ describe Notify do
 
     describe 'project invitation accepted' do
       let(:invited_user) { create(:user, name: 'invited user') }
-      let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
+      let(:master) { create(:user).tap { |u| project.add_master(u) } }
       let(:project_member) do
         invitee = invite_to_project(project, inviter: master)
         invitee.accept_invite!(invited_user)
@@ -563,7 +563,7 @@ describe Notify do
     end
 
     describe 'project invitation declined' do
-      let(:master) { create(:user).tap { |u| project.team << [u, :master] } }
+      let(:master) { create(:user).tap { |u| project.add_master(u) } }
       let(:project_member) do
         invitee = invite_to_project(project, inviter: master)
         invitee.decline_invite!

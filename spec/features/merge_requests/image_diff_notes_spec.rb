@@ -7,7 +7,7 @@ feature 'image diff notes', :js do
   let(:project) { create(:project, :public, :repository) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in user
 
     # Stub helper to return any blob file as image from public app folder.

@@ -12,7 +12,7 @@ feature 'Prioritize labels' do
 
   context 'when user belongs to project team' do
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
 
       sign_in user
     end

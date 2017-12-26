@@ -195,7 +195,7 @@ describe MergeRequest do
 
   describe '#cache_merge_request_closes_issues!' do
     before do
-      subject.project.team << [subject.author, :developer]
+      subject.project.add_developer(subject.author)
       subject.target_branch = subject.project.default_branch
     end
 
@@ -481,7 +481,7 @@ describe MergeRequest do
     let(:commit2) { double('commit2', safe_message: "Fixes #{issue1.to_reference}") }
 
     before do
-      subject.project.team << [subject.author, :developer]
+      subject.project.add_developer(subject.author)
       allow(subject).to receive(:commits).and_return([commit0, commit1, commit2])
     end
 
@@ -509,7 +509,7 @@ describe MergeRequest do
     let(:commit) { double('commit', safe_message: "Fixes #{closing_issue.to_reference}") }
 
     it 'detects issues mentioned in description but not closed' do
-      subject.project.team << [subject.author, :developer]
+      subject.project.add_developer(subject.author)
       subject.description = "Is related to #{mentioned_issue.to_reference} and #{closing_issue.to_reference}"
 
       allow(subject).to receive(:commits).and_return([commit])
@@ -521,7 +521,7 @@ describe MergeRequest do
 
     context 'when the project has an external issue tracker' do
       before do
-        subject.project.team << [subject.author, :developer]
+        subject.project.add_developer(subject.author)
         commit = double(:commit, safe_message: 'Fixes TEST-3')
 
         create(:jira_service, project: subject.project)
@@ -660,7 +660,7 @@ describe MergeRequest do
     it 'includes its closed issues in the body' do
       issue = create(:issue, project: subject.project)
 
-      subject.project.team << [subject.author, :developer]
+      subject.project.add_developer(subject.author)
       subject.description = "This issue Closes #{issue.to_reference}"
 
       allow(subject.project).to receive(:default_branch)
@@ -1688,7 +1688,7 @@ describe MergeRequest do
     let(:mr_sha)        { merge_request.diff_head_sha }
 
     before do
-      project.team << [developer, :developer]
+      project.add_developer(developer)
     end
 
     context 'when autocomplete_precheck is set to true' do

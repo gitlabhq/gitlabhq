@@ -1,5 +1,0 @@
----
-title: Fix N+1 query when displaying events
-merge_request:
-author:
-type: performance

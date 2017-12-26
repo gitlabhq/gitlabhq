@@ -1,4 +1,4 @@
-image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.5-golang-1.8-git-2.14-chrome-63.0-node-8.x-yarn-1.2-postgresql-9.6"
+image: "dev.gitlab.org:5005/gitlab/gitlab-build-images:ruby-2.3.6-golang-1.9-git-2.14-chrome-63.0-node-8.x-yarn-1.2-postgresql-9.6"
 
 .dedicated-runner: &dedicated-runner
   retry: 1
@@ -594,11 +594,19 @@ codequality:
   script:
     - cp .rubocop.yml .rubocop.yml.bak
     - grep -v "rubocop-gitlab-security" .rubocop.yml.bak > .rubocop.yml
-    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc codeclimate/codeclimate analyze -f json > raw_codeclimate.json
+    - docker run --env CODECLIMATE_CODE="$PWD" --volume "$PWD":/code --volume /var/run/docker.sock:/var/run/docker.sock --volume /tmp/cc:/tmp/cc dev.gitlab.org:5005/gitlab/gitlab-build-images:gitlab-codeclimate-v2 analyze -f json > raw_codeclimate.json
     - cat raw_codeclimate.json | docker run -i stedolan/jq -c 'map({check_name,fingerprint,location})' > codeclimate.json
     - mv .rubocop.yml.bak .rubocop.yml
   artifacts:
     paths: [codeclimate.json]
+
+sast:
+  image: registry.gitlab.com/gitlab-org/gl-sast:latest
+  before_script: []
+  script:
+    - /app/bin/run .
+  artifacts:
+    paths: [gl-sast-report.json]
 
 qa:internal:
   <<: *dedicated-runner

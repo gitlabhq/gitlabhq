@@ -3,7 +3,7 @@
     %td
       = pipeline_schedule.description
     %td.branch-name-cell
-      = icon('code-fork')
+      = sprite_icon('fork', size: 12)
       - if pipeline_schedule.ref.present?
         = link_to pipeline_schedule.ref, project_ref_path(@project, pipeline_schedule.ref), class: "ref-name"
     %td

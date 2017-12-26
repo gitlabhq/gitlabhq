@@ -15,7 +15,7 @@ feature 'Jobs' do
   end
 
   before do
-    project.team << [user, user_access_level]
+    project.add_role(user, user_access_level)
     sign_in(user)
   end
 

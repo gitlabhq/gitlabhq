@@ -7,7 +7,7 @@ feature 'Milestone' do
 
   before do
     create(:group_member, group: group, user: user)
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 

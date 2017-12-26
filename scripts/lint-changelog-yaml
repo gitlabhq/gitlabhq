@@ -8,11 +8,13 @@ invalid_changelogs = Dir['changelogs/**/*'].reject do |changelog|
 
   begin
     YAML.load_file(changelog)
-  rescue
+  rescue => exception
+    puts exception
   end
 end
 
 if invalid_changelogs.any?
+  puts
   puts "Invalid changelogs found!\n"
   puts invalid_changelogs.sort
   exit 1

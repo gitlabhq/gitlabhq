@@ -8,7 +8,8 @@
 %li{ class: "js-branch-#{branch.name}" }
   %div
     = link_to project_tree_path(@project, branch.name), class: 'item-title str-truncated ref-name' do
-      = icon('code-fork', class: 'append-right-5') + "#{branch.name}"
+      = sprite_icon('fork', size: 12)
+      = branch.name
     &nbsp;
     - if branch.name == @repository.root_ref
       %span.label.label-primary default
