@@ -59,12 +59,12 @@ export default {
       :title="s__('Members')"
       :value=item.memberCount
     />
-    <span
+    <item-stats-value
       v-if="isProject"
-      class="project-stars">
-      <icon name="star"/>
-      <span class="stat-value">{{item.starCount}}</span>
-    </span>
+      css-class="project-stars"
+      icon-name="star"
+      :value=item.starCount
+    />
     <item-stats-value
       css-class="item-visibility"
       tooltip-placement="left"
