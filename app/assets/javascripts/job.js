@@ -1,7 +1,7 @@
 import _ from 'underscore';
 import { visitUrl } from './lib/utils/url_utility';
 import bp from './breakpoints';
-import { bytesToKiB } from './lib/utils/number_utils';
+import { numberToHumanSize } from './lib/utils/number_utils';
 import { setCiStatusFavicon } from './lib/utils/common_utils';
 import { timeFor } from './lib/utils/datetime_utility';
 
@@ -193,7 +193,7 @@ export default class Job {
         // we need to show a message warning the user about that.
         if (this.logBytes < log.total) {
           // size is in bytes, we need to calculate KiB
-          const size = bytesToKiB(this.logBytes);
+          const size = numberToHumanSize(this.logBytes);
           $('.js-truncated-info-size').html(`${size}`);
           this.$truncatedInfo.removeClass('hidden');
         } else {
