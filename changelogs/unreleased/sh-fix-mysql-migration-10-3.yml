@@ -1,0 +1,5 @@
+---
+title: Fix migration for removing orphaned issues.moved_to_id values in MySQL
+merge_request:
+author:
+type: fixed
