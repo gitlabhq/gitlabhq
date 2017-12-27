@@ -1741,11 +1741,7 @@ d3-drag@1:
     d3-dispatch "1"
     d3-selection "1"
 
-<<<<<<< HEAD
 d3-ease@1, d3-ease@^1.0.3:
-=======
-d3-ease@1:
->>>>>>> upstream/master
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/d3-ease/-/d3-ease-1.0.3.tgz#68bfbc349338a380c44d8acc4fbc3304aa2d8c0e"
 
