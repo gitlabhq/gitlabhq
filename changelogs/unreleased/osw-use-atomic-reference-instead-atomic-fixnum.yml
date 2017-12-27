@@ -1,5 +1,0 @@
----
-title: Adjust failure when starting GitLab instance on x86 systems
-merge_request:
-author: Mike Limansky
-type: fixed
