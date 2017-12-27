@@ -2,10 +2,7 @@
   import { mapState } from 'vuex';
   import timeAgoMixin from '../../vue_shared/mixins/timeago';
   import skeletonLoadingContainer from '../../vue_shared/components/skeleton_loading_container.vue';
-<<<<<<< HEAD:app/assets/javascripts/ide/components/repo_file.vue
   import fileStatusIcon from './repo_file_status_icon.vue';
-=======
->>>>>>> upstream/master:app/assets/javascripts/ide/components/repo_file.vue
   import newDropdown from './new_dropdown/index.vue';
 
   export default {
@@ -15,10 +12,7 @@
     components: {
       skeletonLoadingContainer,
       newDropdown,
-<<<<<<< HEAD:app/assets/javascripts/ide/components/repo_file.vue
       fileStatusIcon,
-=======
->>>>>>> upstream/master:app/assets/javascripts/ide/components/repo_file.vue
     },
     props: {
       file: {
