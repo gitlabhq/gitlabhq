@@ -4,7 +4,7 @@ require Rails.root.join('db', 'migrate', '20171106151218_issues_moved_to_id_fore
 # The schema version has to be far enough in advance to have the
 # only_mirror_protected_branches column in the projects table to create a
 # project via FactoryBot.
-describe IssuesMovedToIdForeignKey, :migration, schema: 20171109115718 do
+describe IssuesMovedToIdForeignKey, :migration, schema: 20171114150259 do
   let!(:issue_first) { create(:issue, moved_to_id: issue_second.id) }
   let!(:issue_second) { create(:issue, moved_to_id: issue_third.id) }
   let!(:issue_third) { create(:issue) }

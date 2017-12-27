@@ -15,7 +15,9 @@ class IssuesMovedToIdForeignKey < ActiveRecord::Migration
     self.table_name = 'issues'
 
     def self.with_orphaned_moved_to_issues
-      where('NOT EXISTS (SELECT true FROM issues WHERE issues.id = issues.moved_to_id)')
+      # Be careful to use a second table here for comparison otherwise we'll null
+      # out all rows that don't have id == moved_to_id!
+      where('NOT EXISTS (SELECT true FROM issues b WHERE issues.moved_to_id = b.id)')
         .where('moved_to_id IS NOT NULL')
     end
   end
