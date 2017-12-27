@@ -11,16 +11,12 @@ module Search
     end
 
     def execute
-<<<<<<< HEAD
       if current_application_settings.elasticsearch_search?
         Gitlab::Elastic::SearchResults.new(current_user, params[:search], elastic_projects, elastic_global)
       else
-        Gitlab::SearchResults.new(current_user, projects, params[:search])
+        Gitlab::SearchResults.new(current_user, projects, params[:search],
+                                  default_project_filter: default_project_filter)
       end
-=======
-      Gitlab::SearchResults.new(current_user, projects, params[:search],
-                                default_project_filter: default_project_filter)
->>>>>>> upstream/master
     end
 
     def projects
