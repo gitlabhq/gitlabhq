@@ -1066,31 +1066,6 @@ describe Project do
     end
   end
 
-  describe '#merge_method' do
-    where(:ff, :rebase, :rebase_licensed, :method) do
-      true  | true  | true  | :ff
-      true  | true  | false | :ff
-      true  | false | true  | :ff
-      true  | false | false | :ff
-      false | true  | true  | :rebase_merge
-      false | true  | false | :merge
-      false | false | true  | :merge
-      false | false | false | :merge
-    end
-
-    with_them do
-      let(:project) { build(:project, merge_requests_rebase_enabled: rebase, merge_requests_ff_only_enabled: ff) }
-
-      subject { project.merge_method }
-
-      before do
-        stub_licensed_features(merge_request_rebase: rebase_licensed)
-      end
-
-      it { is_expected.to eq(method) }
-    end
-  end
-
   describe '#rename_repo' do
     context 'when running on a primary node' do
       set(:primary) { create(:geo_node, :primary) }

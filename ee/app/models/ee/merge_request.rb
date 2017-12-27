@@ -19,13 +19,6 @@ module EE
       delegate :sha, to: :base_pipeline, prefix: :base_pipeline, allow_nil: true
     end
 
-    def rebase_in_progress?
-      # The source project can be deleted
-      return false unless source_project
-
-      source_project.repository.rebase_in_progress?(id)
-    end
-
     def squash_in_progress?
       # The source project can be deleted
       return false unless source_project

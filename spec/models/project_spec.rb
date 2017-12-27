@@ -456,14 +456,21 @@ describe Project do
   end
 
   describe '#merge_method' do
-    it 'returns "ff" merge_method when ff is enabled' do
-      project = build(:project, merge_requests_ff_only_enabled: true)
-      expect(project.merge_method).to be :ff
+    using RSpec::Parameterized::TableSyntax
+
+    where(:ff, :rebase, :method) do
+      true  | true  | :ff
+      true  | false | :ff
+      false | true  | :rebase_merge
+      false | false | :merge
     end
 
-    it 'returns "merge" merge_method when ff is disabled' do
-      project = build(:project, merge_requests_ff_only_enabled: false)
-      expect(project.merge_method).to be :merge
+    with_them do
+      let(:project) { build(:project, merge_requests_rebase_enabled: rebase, merge_requests_ff_only_enabled: ff) }
+
+      subject { project.merge_method }
+
+      it { is_expected.to eq(method) }
     end
   end
 

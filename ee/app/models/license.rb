@@ -19,7 +19,6 @@ class License < ActiveRecord::Base
     jenkins_integration
     ldap_group_sync
     merge_request_approvers
-    merge_request_rebase
     merge_request_squash
     multiple_ldap_servers
     multiple_issue_assignees
@@ -79,7 +78,6 @@ class License < ActiveRecord::Base
     issue_weights
     jenkins_integration
     merge_request_approvers
-    merge_request_rebase
     merge_request_squash
     multiple_issue_assignees
     multiple_issue_boards
