@@ -28,12 +28,8 @@ export const checkPageAndAction = (page, action) => {
 };
 
 export const isInIssuePage = () => checkPageAndAction('issues', 'show');
-
-export const isInNoteablePage = () => {
-  const isInMRPage = checkPageAndAction('merge_requests', 'show');
-
-  return isInIssuePage() || isInMRPage;
-};
+export const isInMRPage = () => checkPageAndAction('merge_requests', 'show');
+export const isInNoteablePage = () => isInIssuePage() || isInMRPage();
 
 export const ajaxGet = url => $.ajax({
   type: 'GET',
