@@ -27,12 +27,12 @@ module Gitlab
           raise Gitlab::Git::CommandError.new(e)
         end
 
-        def resolve_conflicts(source_repository, user, files, source_branch:, target_branch:, commit_message:)
+        def resolve_conflicts(source_repository, resolution, source_branch:, target_branch:)
           source_repository.gitaly_migrate(:conflicts_resolve_conflicts) do |is_enabled|
             if is_enabled
-              gitaly_conflicts_client(source_repository).resolve_conflicts(@target_repository, user, files, source_branch, target_branch, commit_message)
+              gitaly_conflicts_client(source_repository).resolve_conflicts(@target_repository, resolution, source_branch, target_branch)
             else
-              rugged_resolve_conflicts(source_repository, user, files, source_branch, target_branch, commit_message)
+              rugged_resolve_conflicts(source_repository, resolution, source_branch, target_branch)
             end
           end
         end
@@ -87,12 +87,12 @@ module Gitlab
           conflict_files(@target_repository, target_index)
         end
 
-        def rugged_resolve_conflicts(source_repository, user, files, source_branch, target_branch, commit_message)
+        def rugged_resolve_conflicts(source_repository, resolution, source_branch, target_branch)
           source_repository.with_repo_branch_commit(@target_repository, target_branch) do
             index = source_repository.rugged.merge_commits(@our_commit_oid, @their_commit_oid)
             conflicts = conflict_files(source_repository, index)
 
-            files.each do |file_params|
+            resolution.files.each do |file_params|
               conflict_file = conflict_for_path(conflicts, file_params[:old_path], file_params[:new_path])
 
               write_resolved_file_to_index(source_repository, index, conflict_file, file_params)
@@ -105,11 +105,11 @@ module Gitlab
             end
 
             commit_params = {
-              message: commit_message,
+              message: resolution.commit_message,
               parents: [@our_commit_oid, @their_commit_oid]
             }
 
-            source_repository.commit_index(user, source_branch, index, commit_params)
+            source_repository.commit_index(resolution.user, source_branch, index, commit_params)
           end
         end
       end

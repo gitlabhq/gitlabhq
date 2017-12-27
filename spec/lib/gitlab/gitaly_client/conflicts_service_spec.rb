@@ -65,9 +65,12 @@ describe Gitlab::GitalyClient::ConflictsService do
     let(:source_branch) { 'master' }
     let(:target_branch) { 'feature' }
     let(:commit_message) { 'Solving conflicts' }
+    let(:resolution) do
+      Gitlab::Git::Conflict::Resolution.new(user, files, commit_message)
+    end
 
     subject do
-      client.resolve_conflicts(source_repository, user, files, source_branch, target_branch, commit_message)
+      client.resolve_conflicts(source_repository, resolution, source_branch, target_branch)
     end
 
     it 'sends an RPC request' do
