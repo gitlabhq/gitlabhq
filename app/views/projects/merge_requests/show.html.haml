@@ -8,10 +8,10 @@
 - page_card_attributes @merge_request.card_attributes
 - content_for :page_specific_javascripts do
   = webpack_bundle_tag('common_vue')
+  = webpack_bundle_tag('diff_notes')
+
   - if has_vue_discussions_cookie
     = webpack_bundle_tag('mr_notes')
-  - else
-    = webpack_bundle_tag('diff_notes')
 
 .merge-request{ data: { mr_action: j(params[:tab].presence || 'show'), url: merge_request_path(@merge_request, format: :json), project_path: project_path(@merge_request.project) } }
   = render "projects/merge_requests/mr_title"
@@ -84,7 +84,9 @@
       #notes.notes.tab-pane.voting_notes
         .row
           %section.col-md-12
+            %script.js-notes-data{ type: "application/json" }= initial_notes_data(true).to_json.html_safe
             .issuable-discussion.js-vue-notes-event
+              = render "projects/merge_requests/discussion"
               - if has_vue_discussions_cookie
                 #js-vue-mr-discussions{ data: { discussions_path: discussions_project_merge_request_path(@project, @merge_request, format: :json),
                 register_path: new_session_path(:user, redirect_to_referer: 'yes', anchor: 'register-pane'),
@@ -95,9 +97,6 @@
                 last_fetched_at: Time.now.to_i,
                 issue_data: serialize_issuable(@merge_request),
                 current_user_data: UserSerializer.new.represent(current_user).to_json} }
-
-              - else
-                = render "projects/merge_requests/discussion"
 
       #commits.commits.tab-pane
         -# This tab is always loaded via AJAX

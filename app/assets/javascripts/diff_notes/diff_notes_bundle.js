@@ -2,6 +2,7 @@
 /* global ResolveCount */
 
 import Vue from 'vue';
+import Cookies from 'js-cookie';
 import './models/discussion';
 import './models/note';
 import './stores/comments';
@@ -67,12 +68,14 @@ $(() => {
 
   gl.diffNotesCompileComponents();
 
-  new Vue({
-    el: '#resolve-count-app',
-    components: {
-      'resolve-count': ResolveCount
-    }
-  });
+  if (!Cookies.get('vue_mr_discussions')) {
+    new Vue({
+      el: '#resolve-count-app',
+      components: {
+        'resolve-count': ResolveCount
+      }
+    });
+  }
 
   $(window).trigger('resize.nav');
 });

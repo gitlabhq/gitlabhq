@@ -355,7 +355,7 @@ export default class Notes {
     }
 
     if (!noteEntity.valid) {
-      if (noteEntity.errors.commands_only) {
+      if (noteEntity.errors && noteEntity.errors.commands_only) {
         if (noteEntity.commands_changes &&
             Object.keys(noteEntity.commands_changes).length > 0) {
           $notesList.find('.system-note.being-posted').remove();

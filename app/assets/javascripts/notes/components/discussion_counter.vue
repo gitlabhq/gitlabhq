@@ -40,6 +40,11 @@
     methods: {
       jumpToFirstDiscussion() {
         const el = document.querySelector(`[data-discussion-id="${this.firstUnresolvedDiscussionId}"]`);
+        const activeTab = window.mrTabs.currentAction;
+
+        if (activeTab === 'commits' || activeTab === 'pipelines') {
+          window.mrTabs.activateTab('show');
+        }
 
         if (el) {
           $.scrollTo(el, {

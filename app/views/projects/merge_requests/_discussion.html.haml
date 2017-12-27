@@ -8,4 +8,4 @@
       %button.btn.btn-nr.btn-default.append-right-10.js-comment-resolve-button{ "v-if" => "showButton", type: "submit", data: { project_path: "#{project_path(@merge_request.project)}" } }
         {{ buttonText }}
 
-#notes.js-old-notes= render "shared/notes/notes_with_form", :autocomplete => true
+#notes= render "shared/notes/notes_with_form", :autocomplete => true

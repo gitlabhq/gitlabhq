@@ -100,7 +100,7 @@
       initPolling() {
         this.setLastFetchedAt(this.getNotesDataByProp('lastFetchedAt'));
 
-        // this.poll();
+        this.poll();
       },
       checkLocationHash() {
         const hash = getLocationHash();
