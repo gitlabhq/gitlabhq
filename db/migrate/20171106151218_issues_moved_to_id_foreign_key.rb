@@ -15,18 +15,26 @@ class IssuesMovedToIdForeignKey < ActiveRecord::Migration
     self.table_name = 'issues'
 
     def self.with_orphaned_moved_to_issues
-      # Be careful to use a second table here for comparison otherwise we'll null
-      # out all rows that don't have id == moved_to_id!
-      where('NOT EXISTS (SELECT true FROM issues b WHERE issues.moved_to_id = b.id)')
-        .where('moved_to_id IS NOT NULL')
+      if Gitlab::Database.postgresql?
+        # Be careful to use a second table here for comparison otherwise we'll null
+        # out all rows that don't have id == moved.to_id!
+        where('NOT EXISTS (SELECT true FROM issues B WHERE issues.moved_to_id = B.id)')
+          .where('moved_to_id IS NOT NULL')
+      else
+        # MySQL doesn't allow modification of the same table in a subquery,
+        # and using a temporary table isn't automatically guaranteed to work
+        # due to the MySQL query optimizer. See
+        # https://dev.mysql.com/doc/refman/5.7/en/update.html for more
+        # details.
+        joins('LEFT JOIN issues AS b ON issues.moved_to_id = b.id')
+          .where('issues.moved_to_id IS NOT NULL AND b.id IS NULL')
+      end
     end
   end
 
   def up
-    if Gitlab::Database.postgresql?
-      postgresql_remove_orphaned_moved_to_ids
-    else
-      mysql_remove_orphaned_moved_to_ids
+    Issue.with_orphaned_moved_to_issues.each_batch(of: 100) do |batch|
+      batch.update_all(moved_to_id: nil)
     end
 
     add_concurrent_foreign_key(
@@ -44,24 +52,5 @@ class IssuesMovedToIdForeignKey < ActiveRecord::Migration
   def down
     remove_foreign_key_without_error(:issues, column: :moved_to_id)
     remove_concurrent_index(:issues, :moved_to_id)
-  end
-
-  private
-
-  def postgresql_remove_orphaned_moved_to_ids
-    Issue.with_orphaned_moved_to_issues.each_batch(of: 100) do |batch|
-      batch.update_all(moved_to_id: nil)
-    end
-  end
-
-  # MySQL doesn't allow modification of the same table in a subquery. See
-  # https://dev.mysql.com/doc/refman/5.7/en/update.html for more details.
-  def mysql_remove_orphaned_moved_to_ids
-    execute <<~SQL
-      UPDATE issues AS a
-      LEFT JOIN issues AS b ON a.moved_to_id = b.id
-      SET a.moved_to_id = NULL
-      WHERE a.moved_to_id IS NOT NULL AND b.id IS NULL;
-    SQL
   end
 end
