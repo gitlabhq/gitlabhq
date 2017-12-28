@@ -1,5 +1,5 @@
 module QA
-  feature 'add deploy key', :core do
+  feature 'deploy keys support', :core do
     before do
       Runtime::Browser.visit(:gitlab, Page::Main::Login)
       Page::Main::Login.act { sign_in_using_credentials }
@@ -18,15 +18,15 @@ module QA
     given(:deploy_key_data) { Runtime::User.ssh_key }
 
     scenario 'user adds a deploy key' do
-      Page::Project::Settings::DeployKeys.perform do |deploy_key|
-        deploy_key.fill_new_deploy_key_title(deploy_key_title)
-        deploy_key.fill_new_deploy_key_key(deploy_key_data)
+      Page::Project::Settings::DeployKeys.perform do |page|
+        page.fill_new_deploy_key_title(deploy_key_title)
+        page.fill_new_deploy_key_key(deploy_key_data)
 
-        deploy_key.add_key
+        page.add_key
       end
 
-      Page::Project::Settings::DeployKeys.perform do |deploy_key|
-        expect(deploy_key).to have_key_title(deploy_key_title)
+      Page::Project::Settings::DeployKeys.perform do |page|
+        expect(page).to have_key_title(deploy_key_title)
       end
     end
   end
