@@ -2,6 +2,13 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.3.2 (2017-12-28)
+
+### Fixed (1 change)
+
+- Fix migration for removing orphaned issues.moved_to_id values in MySQL and PostgreSQL.
+
+
 ## 10.3.1 (2017-12-27)
 
 ### Fixed (3 changes)
