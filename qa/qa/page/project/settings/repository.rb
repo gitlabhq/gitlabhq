@@ -5,11 +5,7 @@ module QA
         class Repository < Page::Base
           def expand(title)
             page.within('#content-body') do
-              find(
-                :xpath,
-                "//button[contains(text(), 'Expand')]" +
-                  "[../h4[contains(text(), '#{title}')]]"
-              ).click
+              find('.qa-expand-deploy-keys').click
             end
           end
         end
