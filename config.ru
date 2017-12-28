@@ -17,6 +17,11 @@ end
 
 require ::File.expand_path('../config/environment',  __FILE__)
 
+warmup do |app|
+  client = Rack::MockRequest.new(app)
+  client.get('/')
+end
+
 map ENV['RAILS_RELATIVE_URL_ROOT'] || "/" do
   run Gitlab::Application
 end
