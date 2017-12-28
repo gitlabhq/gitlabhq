@@ -1,5 +1,9 @@
 Please view this file on the master branch, on stable branches it's out of date.
 
+## 10.3.2 (2017-12-28)
+
+- No changes.
+
 ## 10.3.1 (2017-12-27)
 
 ### Changed (1 change)
