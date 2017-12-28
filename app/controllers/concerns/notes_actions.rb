@@ -22,7 +22,7 @@ module NotesActions
     notes = notes.reject { |n| n.cross_reference_not_visible_for?(current_user) }
 
     notes_json[:notes] =
-      if (noteable.is_a?(MergeRequest) && cookies[:vue_mr_discussions]) || noteable.discussions_rendered_on_frontend?
+      if use_note_serializer?
         note_serializer.represent(notes)
       else
         notes.map { |note| note_json(note) }
@@ -95,7 +95,7 @@ module NotesActions
     if note.persisted?
       attrs[:valid] = true
 
-      if (noteable.is_a?(MergeRequest) && cookies[:vue_mr_discussions]) || noteable.discussions_rendered_on_frontend?
+      if use_note_serializer?
         attrs.merge!(note_serializer.represent(note))
       else
         attrs.merge!(
@@ -231,6 +231,14 @@ module NotesActions
       return access_denied! unless can?(current_user, :create_note, the_project)
 
       the_project
+    end
+  end
+
+  def use_note_serializer?
+    if noteable.is_a?(MergeRequest)
+      cookies[:vue_mr_discussions]
+    else
+      noteable.discussions_rendered_on_frontend?
     end
   end
 end
