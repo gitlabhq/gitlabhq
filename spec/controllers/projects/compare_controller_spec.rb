@@ -8,7 +8,7 @@ describe Projects::CompareController do
 
   before do
     sign_in(user)
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   it 'compare shows some diffs' do

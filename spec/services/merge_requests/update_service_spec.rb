@@ -16,9 +16,9 @@ describe MergeRequests::UpdateService, :mailer do
   end
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :developer]
-    project.team << [user3, :developer]
+    project.add_master(user)
+    project.add_developer(user2)
+    project.add_developer(user3)
   end
 
   describe 'execute' do
@@ -385,8 +385,8 @@ describe MergeRequests::UpdateService, :mailer do
       let!(:subscriber) { create(:user) { |u| label.toggle_subscription(u, project) } }
 
       before do
-        project.team << [non_subscriber, :developer]
-        project.team << [subscriber, :developer]
+        project.add_developer(non_subscriber)
+        project.add_developer(subscriber)
       end
 
       it 'sends notifications for subscribers of newly added labels' do

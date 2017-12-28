@@ -19,7 +19,7 @@ shared_examples 'issuable record that supports quick actions in its description 
   let(:new_url_opts) { {} }
 
   before do
-    project.team << [master, :master]
+    project.add_master(master)
 
     gitlab_sign_in(master)
   end

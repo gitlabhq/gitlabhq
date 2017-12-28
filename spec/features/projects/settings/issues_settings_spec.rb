@@ -5,7 +5,7 @@ feature 'Project settings > Issues', :js do
   let(:user) { create(:user) }
 
   background do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 

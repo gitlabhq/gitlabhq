@@ -15,7 +15,7 @@ describe Boards::Issues::MoveService do
     let!(:closed)  { create(:closed_list, board: board1) }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     context 'when moving an issue between lists' do

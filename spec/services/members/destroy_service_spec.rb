@@ -71,7 +71,7 @@ describe Members::DestroyService do
 
   context 'when a member is found' do
     before do
-      project.team << [member_user, :developer]
+      project.add_developer(member_user)
       group.add_developer(member_user)
     end
     let(:params) { { user_id: member_user.id } }
@@ -88,7 +88,7 @@ describe Members::DestroyService do
 
     context 'when current user can destroy the given member' do
       before do
-        project.team << [user, :master]
+        project.add_master(user)
         group.add_owner(user)
       end
 

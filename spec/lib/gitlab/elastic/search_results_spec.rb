@@ -196,8 +196,8 @@ describe Gitlab::Elastic::SearchResults do
       end
 
       it 'lists confidential issues for project members' do
-        project_1.team << [member, :developer]
-        project_2.team << [member, :developer]
+        project_1.add_developer(member)
+        project_2.add_developer(member)
 
         results = described_class.new(member, query, limit_project_ids)
         issues = results.objects('issues')
@@ -281,8 +281,8 @@ describe Gitlab::Elastic::SearchResults do
       end
 
       it 'lists confidential issues for project members' do
-        project_2.team << [member, :developer]
-        project_3.team << [member, :developer]
+        project_2.add_developer(member)
+        project_3.add_developer(member)
 
         results = described_class.new(member, query, limit_project_ids)
         issues = results.objects('issues')

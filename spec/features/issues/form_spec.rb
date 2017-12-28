@@ -15,8 +15,8 @@ describe 'New/edit issue', :js do
   before do
     stub_licensed_features(multiple_issue_assignees: false, issue_weights: false)
 
-    project.team << [user, :master]
-    project.team << [user2, :master]
+    project.add_master(user)
+    project.add_master(user2)
     sign_in(user)
   end
 

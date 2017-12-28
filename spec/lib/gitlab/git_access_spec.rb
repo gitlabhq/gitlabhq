@@ -275,7 +275,7 @@ describe Gitlab::GitAccess do
 
   describe '#check_command_disabled!' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
     end
 
     context 'over http' do
@@ -404,7 +404,7 @@ describe Gitlab::GitAccess do
 
       describe 'reporter user' do
         before do
-          project.team << [user, :reporter]
+          project.add_reporter(user)
         end
 
         context 'pull code' do
@@ -417,7 +417,7 @@ describe Gitlab::GitAccess do
 
         context 'when member of the project' do
           before do
-            project.team << [user, :reporter]
+            project.add_reporter(user)
           end
 
           context 'pull code' do
@@ -498,7 +498,7 @@ describe Gitlab::GitAccess do
           if role == :admin
             user.update_attribute(:admin, true)
           else
-            project.team << [user, role]
+            project.add_role(user, role)
           end
 
           aggregate_failures do
@@ -944,7 +944,7 @@ describe Gitlab::GitAccess do
 
     context 'when project is authorized' do
       before do
-        project.team << [user, :reporter]
+        project.add_reporter(user)
       end
 
       it { expect { push_access_check }.to raise_unauthorized(described_class::ERROR_MESSAGES[:upload]) }

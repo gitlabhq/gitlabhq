@@ -38,7 +38,7 @@ describe Gitlab::CycleAnalytics::Permissions do
 
   context 'user is master' do
     before do
-      project.team << [user, :master]
+      project.add_master(user)
     end
 
     it 'has permissions to issue stage' do
@@ -72,7 +72,7 @@ describe Gitlab::CycleAnalytics::Permissions do
 
   context 'user has no build permissions' do
     before do
-      project.team << [user, :guest]
+      project.add_guest(user)
     end
 
     it 'has permissions to issue stage' do
@@ -90,7 +90,7 @@ describe Gitlab::CycleAnalytics::Permissions do
 
   context 'user has no merge request permissions' do
     before do
-      project.team << [user, :guest]
+      project.add_guest(user)
     end
 
     it 'has permissions to issue stage' do
@@ -108,7 +108,7 @@ describe Gitlab::CycleAnalytics::Permissions do
 
   context 'user has no issue permissions' do
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
       project.project_feature.update_attribute(:issues_access_level, ProjectFeature::DISABLED)
     end
 

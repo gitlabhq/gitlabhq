@@ -17,11 +17,11 @@ describe TodoService do
   let(:service) { described_class.new }
 
   before do
-    project.team << [guest, :guest]
-    project.team << [author, :developer]
-    project.team << [member, :developer]
-    project.team << [john_doe, :developer]
-    project.team << [skipped, :developer]
+    project.add_guest(guest)
+    project.add_developer(author)
+    project.add_developer(member)
+    project.add_developer(john_doe)
+    project.add_developer(skipped)
   end
 
   describe 'Issues' do
@@ -560,9 +560,9 @@ describe TodoService do
         let(:mr_approvers) { create(:merge_request, source_project: project, author: author, description: approver_mentions) }
 
         before do
-          project.team << [approver_1, :developer]
-          project.team << [approver_2, :developer]
-          project.team << [approver_3, :developer]
+          project.add_developer(approver_1)
+          project.add_developer(approver_2)
+          project.add_developer(approver_3)
 
           create(:approver, user: approver_1, target: mr_approvers)
           create(:approver, user: approver_2, target: mr_approvers)

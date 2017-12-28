@@ -461,7 +461,7 @@ describe API::Groups do
       end
 
       it "only returns projects to which user has access" do
-        project3.team << [user3, :developer]
+        project3.add_developer(user3)
 
         get api("/groups/#{group1.id}/projects", user3)
 
