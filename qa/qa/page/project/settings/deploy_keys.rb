@@ -2,7 +2,7 @@ module QA
   module Page
     module Project
       module Settings
-        class DeployKey < Repository
+        class DeployKeys < Repository
           def initialize
             super
 

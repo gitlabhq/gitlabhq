@@ -89,7 +89,7 @@ module QA
 
       module Settings
         autoload :Repository, 'qa/page/project/settings/repository'
-        autoload :DeployKey, 'qa/page/project/settings/deploy_key'
+        autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
       end
     end
 
