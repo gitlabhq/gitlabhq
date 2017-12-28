@@ -346,6 +346,10 @@ ul.indent-list {
 
   .folder-caret {
     width: 15px;
+
+    svg {
+      margin-bottom: 2px;
+    }
   }
 
   .item-type-icon {
@@ -354,7 +358,7 @@ ul.indent-list {
   }
 
   > .group-row:not(.has-children) {
-    .folder-caret .fa {
+    .folder-caret {
       opacity: 0;
     }
   }
@@ -437,6 +441,7 @@ ul.indent-list {
 
     .avatar-container > a {
       width: 100%;
+      text-decoration: none;
     }
 
     &.has-more-items {
@@ -451,6 +456,7 @@ ul.indent-list {
         display: inline-flex;
         align-items: center;
         height: 16px;
+        min-width: 30px;
       }
 
       .stat-value {
