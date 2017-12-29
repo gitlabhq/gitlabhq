@@ -93,6 +93,7 @@ module QA
       autoload :Show, 'qa/page/project/show'
 
       module Settings
+        autoload :Common, 'qa/page/project/settings/common'
         autoload :Repository, 'qa/page/project/settings/repository'
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
       end
