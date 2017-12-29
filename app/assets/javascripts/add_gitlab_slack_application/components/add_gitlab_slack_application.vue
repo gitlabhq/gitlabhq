@@ -165,7 +165,7 @@
       <h3 class="center">How it works</h3>
 
       <div class="well gitlab-slack-well center-block">
-        <code class="code center-block append-bottom-10">/project-name issue show &lt;id&gt;</code>
+        <code class="code center-block append-bottom-10">/gitlab &lt;project-alias&gt; issue show &lt;id&gt;</code>
         <span>
           <div
             class="gitlab-slack-right-arrow inline append-right-5"
