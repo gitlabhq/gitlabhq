@@ -30,8 +30,9 @@ module Gitlab
 
         license = ::License.current
 
+        usage_data[:edition] = license_edition(license)
+
         if license
-          usage_data[:edition] = license_edition(license.plan)
           usage_data[:license_md5] = license.md5
           usage_data[:historical_max_users] = ::HistoricalData.max_historical_user_count
           usage_data[:licensee] = license.licensee
@@ -138,8 +139,10 @@ module Gitlab
         }
       end
 
-      def license_edition(plan)
-        case plan
+      def license_edition(license)
+        return 'EE Free' unless license
+
+        case license.plan
         when 'ultimate'
           'EEU'
         when 'premium'
