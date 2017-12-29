@@ -24,6 +24,7 @@ module QA
       autoload :Sandbox, 'qa/factory/resource/sandbox'
       autoload :Group, 'qa/factory/resource/group'
       autoload :Project, 'qa/factory/resource/project'
+      autoload :DeployKey, 'qa/factory/resource/deploy_key'
     end
 
     module Repository
