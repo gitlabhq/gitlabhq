@@ -32,7 +32,9 @@ options:
 
 ## AWS Elastic File System
 
-GitLab does not recommend using AWS Elastic File System (EFS).
+GitLab strongly recommends against using AWS Elastic File System (EFS).
+Our support team will not be able to assist on performance issues related to
+file system access.
 
 Customers and users have reported that AWS EFS does not perform well for GitLab's
 use-case. There are several issues that can cause problems. For these reasons
