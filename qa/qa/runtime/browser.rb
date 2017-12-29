@@ -31,6 +31,10 @@ module QA
         new.visit(address, page, &block)
       end
 
+      def self.url_for(instance, page)
+        Runtime::Scenario.send("#{instance}_address") + page&.path
+      end
+
       def self.configure!
         return if Capybara.drivers.include?(:chrome)
 

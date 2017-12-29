@@ -82,6 +82,7 @@ module QA
     module Main
       autoload :Login, 'qa/page/main/login'
       autoload :OAuth, 'qa/page/main/oauth'
+      autoload :Home, 'qa/page/main/home'
     end
 
     module Menu
@@ -109,6 +110,7 @@ module QA
         autoload :Common, 'qa/page/project/settings/common'
         autoload :Repository, 'qa/page/project/settings/repository'
         autoload :DeployKeys, 'qa/page/project/settings/deploy_keys'
+        autoload :Main, 'qa/page/project/settings/main'
       end
     end
 
