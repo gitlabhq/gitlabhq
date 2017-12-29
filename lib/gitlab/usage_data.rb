@@ -41,6 +41,7 @@ module Gitlab
           usage_data[:license_expires_at] = license.expires_at
           usage_data[:license_plan] = license.plan
           usage_data[:license_add_ons] = license.add_ons
+          usage_data[:license_trial] = license.trial?
         end
 
         usage_data
