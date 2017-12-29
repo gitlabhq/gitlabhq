@@ -10,7 +10,7 @@ shared_examples 'approvals' do
 
   before do
     merge_request.update_attribute :approvals_before_merge, 2
-    project.team << [approver.user, :developer]
+    project.add_developer(approver.user)
   end
 
   describe 'approve' do

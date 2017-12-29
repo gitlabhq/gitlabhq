@@ -10,16 +10,6 @@ They are written by members of the GitLab Team and by
 Part of the articles listed below link to the [GitLab Blog](https://about.gitlab.com/blog/),
 where they were originally published.
 
-## Authentication
-
-Explore GitLab's supported [authentications methods](../topics/authentication/index.md):
-
-| Article title | Category | Publishing date |
-| :------------ | :------: | --------------: |
-| **LDAP** |
-| [How to configure LDAP with GitLab CE](how_to_configure_ldap_gitlab_ce/index.md)| Admin guide | 2017-05-03 |
-| [How to configure LDAP with GitLab EE](https://docs.gitlab.com/ee/articles/how_to_configure_ldap_gitlab_ee/) | Admin guide | 2017-05-03 |
-
 ## Build, test, and deploy with GitLab CI/CD
 
 Build, test, and deploy the software you develop with [GitLab CI/CD](../ci/README.md):

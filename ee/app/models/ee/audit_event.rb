@@ -3,7 +3,7 @@ module EE
     extend ActiveSupport::Concern
 
     def author_name
-      details[:author_name].blank? ? user&.name : details[:author_name]
+      details[:author_name].presence || user&.name
     end
 
     def entity

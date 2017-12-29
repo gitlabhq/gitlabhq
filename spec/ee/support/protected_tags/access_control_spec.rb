@@ -4,7 +4,7 @@ RSpec.shared_examples "protected tags > access control > EE" do
   let(:roles) { ProtectedRefAccess::HUMAN_ACCESS_LEVELS.except(0) }
 
   before do
-    users.each { |user| project.team << [user, :developer] }
+    users.each { |user| project.add_developer(user) }
     groups.each { |group| project.project_group_links.create(group: group, group_access: Gitlab::Access::DEVELOPER) }
   end
 
@@ -74,7 +74,7 @@ RSpec.shared_examples "protected tags > access control > EE" do
 
   it "prepends selected users that can create" do
     users = create_list(:user, 21)
-    users.each { |user| project.team << [user, :developer] }
+    users.each { |user| project.add_developer(user) }
 
     visit project_protected_tags_path(project)
 

@@ -4,15 +4,12 @@ feature 'Profile > Pipeline Quota' do
   before do
     # This would make sure that the user won't try to create another namespace
     allow_any_instance_of(User).to receive(:ensure_namespace_correct)
+    gitlab_sign_in(user)
   end
 
   let(:user) { create(:user) }
   let(:namespace) { create(:namespace, owner: user) }
   let!(:project) { create(:project, namespace: namespace, shared_runners_enabled: true) }
-
-  before do
-    gitlab_sign_in(user)
-  end
 
   it 'is linked within the profile page' do
     visit profile_path

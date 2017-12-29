@@ -14,7 +14,7 @@ describe QuickActions::InterpretService do
   before do
     stub_licensed_features(multiple_issue_assignees: false)
 
-    project.team << [developer, :developer]
+    project.add_developer(developer)
   end
 
   describe '#execute' do
@@ -482,7 +482,7 @@ describe QuickActions::InterpretService do
       let(:content) { "/assign @#{developer.username} @#{developer2.username}" }
 
       before do
-        project.team << [developer2, :developer]
+        project.add_developer(developer2)
       end
 
       context 'Issue' do

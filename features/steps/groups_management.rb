@@ -13,7 +13,7 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
   step '"Mary Jane" has master access for project "Open"' do
     @user = User.find_by(name: "Mary Jane") || create(:user, name: "Mary Jane")
     @project = Project.find_by(name: "Open")
-    @project.team << [@user, :master]
+    @project.add_master(@user)
   end
 
   step "Group membership lock is enabled" do

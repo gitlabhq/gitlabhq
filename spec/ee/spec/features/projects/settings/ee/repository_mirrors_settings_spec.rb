@@ -35,7 +35,7 @@ describe 'Project settings > [EE] repository' do
     let(:user2) { create(:user) }
 
     before do
-      project.team << [user2, :master]
+      project.add_master(user2)
 
       visit project_settings_repository_path(project)
     end

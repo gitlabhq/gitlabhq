@@ -24,10 +24,10 @@ class Projects::DeployKeysController < Projects::ApplicationController
   def create
     @key = DeployKeys::CreateService.new(current_user, create_params).execute
 
-    unless @key.valid? && @project.deploy_keys << @key
-      flash[:alert] = @key.errors.full_messages.join(', ').html_safe
-    else
+    if @key.valid? && @project.deploy_keys << @key
       log_audit_event(@key.title, action: :create)
+    else
+      flash[:alert] = @key.errors.full_messages.join(', ').html_safe
     end
 
     redirect_to_repository_settings(@project)

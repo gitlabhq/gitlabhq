@@ -28,13 +28,11 @@ module Geo
     private
 
     def move_repositories!
-      begin
-        project.ensure_storage_path_exists
-        move_project_repository && move_wiki_repository
-      rescue => ex
-        log_error('Repository cannot be renamed', error: ex)
-        false
-      end
+      project.ensure_storage_path_exists
+      move_project_repository && move_wiki_repository
+    rescue => ex
+      log_error('Repository cannot be renamed', error: ex)
+      false
     end
 
     def move_project_repository

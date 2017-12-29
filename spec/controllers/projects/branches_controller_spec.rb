@@ -6,8 +6,8 @@ describe Projects::BranchesController do
   let(:developer) { create(:user) }
 
   before do
-    project.team << [user, :master]
-    project.team << [user, :developer]
+    project.add_master(user)
+    project.add_developer(user)
 
     allow(project).to receive(:branches).and_return(['master', 'foo/bar/baz'])
     allow(project).to receive(:tags).and_return(['v1.0.0', 'v2.0.0'])

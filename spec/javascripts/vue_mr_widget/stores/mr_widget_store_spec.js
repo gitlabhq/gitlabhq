@@ -62,6 +62,18 @@ describe('MergeRequestStore', () => {
         expect(store.isPipelineSkipped).toBe(false);
       });
     });
+
+    describe('isNothingToMergeState', () => {
+      it('returns true when nothingToMerge', () => {
+        store.state = stateKey.nothingToMerge;
+        expect(store.isNothingToMergeState).toEqual(true);
+      });
+
+      it('returns false when not nothingToMerge', () => {
+        store.state = 'state';
+        expect(store.isNothingToMergeState).toEqual(false);
+      });
+    });
   });
 
   describe('compareCodeclimateMetrics', () => {

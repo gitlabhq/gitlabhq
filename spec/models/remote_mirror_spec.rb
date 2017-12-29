@@ -202,7 +202,7 @@ describe RemoteMirror do
       end
 
       it 'returns false when last update started before the timestamp' do
-        expect(remote_mirror.updated_since?(Time.now + 5.minutes)).to be  false
+        expect(remote_mirror.updated_since?(Time.now + 5.minutes)).to be false
       end
     end
 

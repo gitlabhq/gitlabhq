@@ -9,7 +9,7 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
   REMOTE_STORE = 2
 
   class << self
-    def storage_options(options)
+    def storage_options(options) # rubocop:disable Style/TrivialAccessors
       @storage_options = options
     end
 

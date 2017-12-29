@@ -238,7 +238,7 @@ describe Issue do
       let(:issue) { create(:issue, project: project) }
 
       before do
-        project.team << [user, :reporter]
+        project.add_reporter(user)
       end
 
       it { is_expected.to eq true }
@@ -254,7 +254,7 @@ describe Issue do
 
         context 'destination project allowed' do
           before do
-            to_project.team << [user, :reporter]
+            to_project.add_reporter(user)
           end
 
           it { is_expected.to eq true }
@@ -262,7 +262,7 @@ describe Issue do
 
         context 'destination project not allowed' do
           before do
-            to_project.team << [user, :guest]
+            to_project.add_guest(user)
           end
 
           it { is_expected.to eq false }
@@ -571,7 +571,7 @@ describe Issue do
 
         context 'when the user is the project owner' do
           before do
-            project.team << [user, :master]
+            project.add_master(user)
           end
 
           it 'returns true for a regular issue' do
@@ -595,7 +595,7 @@ describe Issue do
 
       context 'using a public project' do
         before do
-          project.team << [user, Gitlab::Access::DEVELOPER]
+          project.add_developer(user)
         end
 
         it 'returns true for a regular issue' do
@@ -615,7 +615,7 @@ describe Issue do
         let(:project) { create(:project, :internal) }
 
         before do
-          project.team << [user, Gitlab::Access::DEVELOPER]
+          project.add_developer(user)
         end
 
         it 'returns true for a regular issue' do
@@ -635,7 +635,7 @@ describe Issue do
         let(:project) { create(:project, :private) }
 
         before do
-          project.team << [user, Gitlab::Access::DEVELOPER]
+          project.add_developer(user)
         end
 
         it 'returns true for a regular issue' do

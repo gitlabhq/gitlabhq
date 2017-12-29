@@ -374,7 +374,7 @@ describe Projects::JobsController do
     let(:role) { :master }
 
     before do
-      project.team << [user, role]
+      project.add_role(user, role)
       sign_in(user)
 
       post_erase

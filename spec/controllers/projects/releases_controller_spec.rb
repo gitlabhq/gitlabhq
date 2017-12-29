@@ -7,7 +7,7 @@ describe Projects::ReleasesController do
   let!(:tag)     { release.tag }
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
     sign_in(user)
   end
 

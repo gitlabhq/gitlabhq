@@ -92,7 +92,7 @@ module Geo
     end
 
     def resources_remain?
-      pending_resources.size > 0
+      !pending_resources.empty?
     end
 
     def over_time?

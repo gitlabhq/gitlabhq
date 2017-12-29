@@ -98,17 +98,15 @@ module Gitlab
       end
 
       def open_temp_file(target_filename)
-        begin
-          # Make sure the file is in the same directory to prevent moves across filesystems
-          pathname = Pathname.new(target_filename)
-          temp = Tempfile.new(TEMP_PREFIX, pathname.dirname.to_s)
-          temp.chmod(default_permissions)
-          temp.binmode
-          temp
-        rescue StandardError => e
-          log_error("Error creating temporary file", error: e)
-          nil
-        end
+        # Make sure the file is in the same directory to prevent moves across filesystems
+        pathname = Pathname.new(target_filename)
+        temp = Tempfile.new(TEMP_PREFIX, pathname.dirname.to_s)
+        temp.chmod(default_permissions)
+        temp.binmode
+        temp
+      rescue StandardError => e
+        log_error("Error creating temporary file", error: e)
+        nil
       end
     end
   end

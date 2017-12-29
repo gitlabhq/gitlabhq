@@ -8,7 +8,7 @@
     %li.js-builds-tab-link
       = link_to builds_project_pipeline_path(@project, @pipeline), data: {target: 'div#js-tab-builds', action: 'builds', toggle: 'tab' }, class: 'builds-tab' do
         Jobs
-        %span.badge.js-builds-counter= pipeline.statuses.count
+        %span.badge.js-builds-counter= pipeline.total_size
     - if failed_builds.present?
       %li.js-failures-tab-link
         = link_to failures_project_pipeline_path(@project, @pipeline), data: {target: 'div#js-tab-failures', action: 'failures', toggle: 'tab' }, class: 'failures-tab' do

@@ -301,7 +301,7 @@ describe License do
 
       context "when the license is valid" do
         it "returns the license" do
-          expect(described_class.current)
+          expect(described_class.current).to be_present
         end
       end
     end

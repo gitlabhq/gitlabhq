@@ -211,7 +211,7 @@ describe GeoNode, type: :model do
   end
 
   describe '#oauth_logout_url' do
-    let(:fake_state) { URI.encode('fakestate') }
+    let(:fake_state) { CGI.escape('fakestate') }
     let(:oauth_logout_url) { "https://localhost:3000/gitlab/oauth/geo/logout?state=#{fake_state}" }
 
     it 'returns oauth logout url based on node uri' do

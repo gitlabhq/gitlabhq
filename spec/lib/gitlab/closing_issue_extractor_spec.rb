@@ -13,8 +13,8 @@ describe Gitlab::ClosingIssueExtractor do
   subject { described_class.new(project, project.creator) }
 
   before do
-    project.team  << [project.creator, :developer]
-    project2.team << [project.creator, :master]
+    project.add_developer(project.creator)
+    project2.add_master(project.creator)
   end
 
   describe "#closed_by_message" do
@@ -297,7 +297,7 @@ describe Gitlab::ClosingIssueExtractor do
       context 'with an external issue tracker reference' do
         it 'extracts the referenced issue' do
           jira_project = create(:jira_project, name: 'JIRA_EXT1')
-          jira_project.team << [jira_project.creator, :master]
+          jira_project.add_master(jira_project.creator)
           jira_issue = ExternalIssue.new("#{jira_project.name}-1", project: jira_project)
           closing_issue_extractor = described_class.new(jira_project, jira_project.creator)
           message = "Resolve #{jira_issue.to_reference}"

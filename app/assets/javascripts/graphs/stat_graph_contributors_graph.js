@@ -7,6 +7,7 @@ import { axisLeft, axisBottom } from 'd3-axis';
 import { area } from 'd3-shape';
 import { brushX } from 'd3-brush';
 import { timeParse } from 'd3-time-format';
+import { dateTickFormat } from '../lib/utils/tick_formats';
 
 const d3 = { extent, max, select, scaleTime, scaleLinear, axisLeft, axisBottom, area, brushX, timeParse };
 
@@ -101,9 +102,12 @@ export const ContributorsMasterGraph = (function(superClass) {
   extend(ContributorsMasterGraph, superClass);
 
   function ContributorsMasterGraph(data1) {
+    const $parentElement = $('#contributors-master');
+    const parentPadding = parseFloat($parentElement.css('padding-left')) + parseFloat($parentElement.css('padding-right'));
+
     this.data = data1;
     this.update_content = this.update_content.bind(this);
-    this.width = $('.content').width() - 70;
+    this.width = $('.content').width() - parentPadding - (this.MARGIN.left + this.MARGIN.right);
     this.height = 200;
     this.x = null;
     this.y = null;
@@ -139,7 +143,9 @@ export const ContributorsMasterGraph = (function(superClass) {
   };
 
   ContributorsMasterGraph.prototype.create_axes = function() {
-    this.x_axis = d3.axisBottom().scale(this.x);
+    this.x_axis = d3.axisBottom()
+      .scale(this.x)
+      .tickFormat(dateTickFormat);
     return this.y_axis = d3.axisLeft().scale(this.y).ticks(5);
   };
 
@@ -232,7 +238,10 @@ export const ContributorsAuthorGraph = (function(superClass) {
   };
 
   ContributorsAuthorGraph.prototype.create_axes = function() {
-    this.x_axis = d3.axisBottom().scale(this.x).ticks(8);
+    this.x_axis = d3.axisBottom()
+      .scale(this.x)
+      .ticks(8)
+      .tickFormat(dateTickFormat);
     return this.y_axis = d3.axisLeft().scale(this.y).ticks(5);
   };
 

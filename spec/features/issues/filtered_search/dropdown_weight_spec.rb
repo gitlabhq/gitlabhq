@@ -25,7 +25,7 @@ describe 'Dropdown weight', :js do
   end
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
     create(:issue, project: project)
 

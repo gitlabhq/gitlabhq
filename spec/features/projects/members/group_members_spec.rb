@@ -11,7 +11,7 @@ feature 'Projects members' do
   let(:group_requester) { create(:user) }
 
   background do
-    project.team << [developer, :developer]
+    project.add_developer(developer)
     group.add_owner(user)
     sign_in(user)
   end

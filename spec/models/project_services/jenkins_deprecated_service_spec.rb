@@ -10,13 +10,13 @@ describe JenkinsDeprecatedService, use_clean_rails_memory_store_caching: true do
 
   describe 'commits methods' do
     def status_body_for_icon(state)
-      <<eos
+      <<ICON_STATUS_HTML
       <h1 class="build-caption page-headline">
         <img src="/static/8b0a9b52/images/48x48/#{state}" alt="Success" tooltip="Success" style="width: 48px; height: 48px; " class="icon-#{state} icon-xlg" />
         Build #188
         (Oct 15, 2014 9:45:21 PM)
       </h1>
-eos
+ICON_STATUS_HTML
     end
 
     describe '#calculate_reactive_cache' do
@@ -83,11 +83,7 @@ eos
       end
 
       describe '#build_page' do
-        it { expect(@service.build_page("2ab7834c", 'master')).to eq("http://jenkins.gitlab.org/job/#{project.name}_master/scm/bySHA1/2ab7834c") }
-      end
-
-      describe '#build_page with branch' do
-        it { expect(@service.build_page("2ab7834c", 'test_branch')).to eq("http://jenkins.gitlab.org/job/#{project.name}_test_branch/scm/bySHA1/2ab7834c") }
+        it { expect(@service.build_page("2ab7834c", 'feature/my-branch')).to eq("http://jenkins.gitlab.org/job/#{project.name}_feature_my-branch/scm/bySHA1/2ab7834c") }
       end
     end
 
