@@ -15,18 +15,22 @@ module QA
     end
 
     given(:deploy_key_title) { 'deploy key title' }
-    given(:deploy_key_data) { Runtime::User.ssh_key }
+    given(:deploy_key_value) { Runtime::User.ssh_key }
 
     scenario 'user adds a deploy key' do
-      Page::Project::Settings::DeployKeys.perform do |page|
-        page.fill_new_deploy_key_title(deploy_key_title)
-        page.fill_new_deploy_key_key(deploy_key_data)
+      Page::Project::Settings::Repository.perform do |setting|
+        setting.expand_deploy_keys do |page|
+          page.fill_key_title(deploy_key_title)
+          page.fill_key_value(deploy_key_value)
 
-        page.add_key
+          page.add_key
+        end
       end
 
-      Page::Project::Settings::DeployKeys.perform do |page|
-        expect(page).to have_key_title(deploy_key_title)
+      Page::Project::Settings::Repository.perform do |setting|
+        setting.expand_deploy_keys do |page|
+          expect(page).to have_key_title(deploy_key_title)
+        end
       end
     end
   end

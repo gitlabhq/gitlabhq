@@ -2,18 +2,12 @@ module QA
   module Page
     module Project
       module Settings
-        class DeployKeys < Repository
-          def initialize
-            super
-
-            expand('Deploy Keys')
-          end
-
-          def fill_new_deploy_key_title(title)
+        class DeployKeys < Page::Base
+          def fill_key_title(title)
             fill_in 'deploy_key_title', with: title
           end
 
-          def fill_new_deploy_key_key(key)
+          def fill_key_value(key)
             fill_in 'deploy_key_key', with: key
           end
 
