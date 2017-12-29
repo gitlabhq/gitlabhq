@@ -9,7 +9,7 @@ module QA
         scenario.description = 'project for adding deploy key test'
       end
 
-      Page::Project::Show.act do
+      Page::Menu::Side.act do
         click_repository_setting
       end
     end

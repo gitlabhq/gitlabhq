@@ -73,6 +73,10 @@ module QA
       autoload :OAuth, 'qa/page/main/oauth'
     end
 
+    module Menu
+      autoload :Side, 'qa/page/menu/side'
+    end
+
     module Dashboard
       autoload :Projects, 'qa/page/dashboard/projects'
       autoload :Groups, 'qa/page/dashboard/groups'
