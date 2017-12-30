@@ -55,7 +55,7 @@ describe Gitlab::Geo::CronManager, :geo do
       end
 
       it 'enables common jobs' do
-        common_jobs.each { |job| expect(job).to be_enabled }
+        expect(common_jobs).to all(be_enabled)
       end
 
       it 'enables non-geo jobs' do
@@ -71,11 +71,11 @@ describe Gitlab::Geo::CronManager, :geo do
       end
 
       it 'enables secondary-only jobs' do
-        secondary_jobs.each { |job| expect(job).to be_enabled }
+        expect(secondary_jobs).to all(be_enabled)
       end
 
       it 'enables common jobs' do
-        common_jobs.each { |job| expect(job).to be_enabled }
+        expect(common_jobs).to all(be_enabled)
       end
 
       it 'disables non-geo jobs' do
