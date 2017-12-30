@@ -190,6 +190,18 @@ release.
 | ~P3   | Schedule for a subsequent release | Nice-to-have feature | Tab nabbing, Path disclosure                  |
 | ~P4   | Trivial, may not do               | Suggestion           | New feature, Remove dangerous protocol        |
 
+### Severity labels (~S1, ~S2, etc.)
+
+Severity labels help us clearly communicate the impact of a ~bug on users.
+
+| Label | Meaning                                  | Support _e.g._       |
+|-------|------------------------------------------|----------------------|
+| ~S1   | Major feature broken (no workaround)     |                      |
+| ~S2   | Major feature broken (workaround exists) |                      |
+| ~S3   | Minor feature broken                     |                      |
+| ~S4   | Cosmetic problem                         |                      |
+
+
 ### Label for community contributors (~"Accepting Merge Requests")
 
 Issues that are beneficial to our users, 'nice to haves', that we currently do
