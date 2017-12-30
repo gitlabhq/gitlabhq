@@ -178,16 +178,17 @@ indicate if an issue needs backend work, frontend work, or both.
 Team labels are always capitalized so that they show up as the first label for
 any issue.
 
-### Priority labels (~Deliverable and ~Stretch)
+### Priority labels (~P1, ~P2, etc.)
 
 Priority labels help us clearly communicate expectations of the work for the
-release. There are two levels of priority labels:
+release.
 
-- ~Deliverable: Issues that are expected to be delivered in the current
-  milestone.
-- ~Stretch: Issues that are a stretch goal for delivering in the current
-  milestone. If these issues are not done in the current release, they will
-  strongly be considered for the next release.
+| Label | Meaning                           | Product _e.g._       | Security _e.g._                               |
+|-------|-----------------------------------|----------------------|-----------------------------------------------|
+| ~P1   | Handle immediately                | Critical feature     | SQL Injection, Authentication Bypass          |
+| ~P2   | Handle in the current release     | Important feature    | Cross-site Scripting, Resource exhaustion DoS |
+| ~P3   | Schedule for a subsequent release | Nice-to-have feature | Tab nabbing, Path disclosure                  |
+| ~P4   | Trivial, may not do               | Suggestion           | New feature, Remove dangerous protocol        |
 
 ### Label for community contributors (~"Accepting Merge Requests")
 
