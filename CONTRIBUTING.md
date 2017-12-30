@@ -160,23 +160,9 @@ Examples of subject labels are ~wiki, ~"container registry", ~ldap, ~api,
 
 Subject labels are always all-lowercase.
 
-### Team labels (~"CI/CD", ~Discussion, ~Edge, ~Platform, etc.)
+### Team Boards
 
-Team labels specify what team is responsible for this issue.
-Assigning a team label makes sure issues get the attention of the appropriate
-people.
-
-The current team labels are ~Build, ~"CI/CD", ~Discussion, ~Documentation, ~Edge,
-~Geo, ~Gitaly, ~Platform, ~Prometheus, ~Release, and ~"UX".
-
-The descriptions on the [labels page][labels-page] explain what falls under the
-responsibility of each team.
-
-Within those team labels, we also have the ~backend and ~frontend labels to
-indicate if an issue needs backend work, frontend work, or both.
-
-Team labels are always capitalized so that they show up as the first label for
-any issue.
+An issue should be placed on the issue board of the team that will likely handle the issue _e.g._ CI/CD, Discussion, Platform
 
 ### Priority labels (~P1, ~P2, etc.)
 
