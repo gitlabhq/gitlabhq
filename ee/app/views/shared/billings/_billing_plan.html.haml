@@ -30,7 +30,7 @@
 
     - if purchase_link
       .plan-action
-        - href = purchase_link.href
+        - href = purchase_link.href&.concat("&gl_namespace_id=#{namespace.id}")
 
         - case purchase_link.action
         - when 'downgrade'
