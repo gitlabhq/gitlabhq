@@ -9,7 +9,7 @@ describe Projects::ServicesController do
 
   before do
     sign_in(user)
-    project.team << [user, :master]
+    project.add_master(user)
   end
 
   describe '#test' do

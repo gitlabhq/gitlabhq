@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :geo_project_registry, class: Geo::ProjectRegistry do
     project
     last_repository_synced_at nil
@@ -40,6 +40,7 @@ FactoryGirl.define do
       resync_repository true
       resync_wiki true
       repository_retry_count 1
+      wiki_retry_count 1
     end
 
     trait :repository_sync_failed do

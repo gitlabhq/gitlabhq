@@ -22,8 +22,12 @@ class Admin::GeoNodesController < Admin::ApplicationController
     else
       @nodes = GeoNode.all
 
-      render :index
+      render :new
     end
+  end
+
+  def new
+    @node = GeoNode.new
   end
 
   def update

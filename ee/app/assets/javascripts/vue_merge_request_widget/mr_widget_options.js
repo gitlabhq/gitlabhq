@@ -1,4 +1,4 @@
-import { n__ } from '~/locale';
+import { n__, s__, sprintf } from '~/locale';
 import CEWidgetOptions from '~/vue_merge_request_widget/mr_widget_options';
 import WidgetApprovals from './components/approvals/mr_widget_approvals';
 import GeoSecondaryNode from './components/states/mr_widget_secondary_geo_node';
@@ -16,9 +16,13 @@ export default {
   data() {
     return {
       isLoadingCodequality: false,
+      isLoadingPerformance: false,
       isLoadingSecurity: false,
+      isLoadingDocker: false,
       loadingCodequalityFailed: false,
+      loadingPerformanceFailed: false,
       loadingSecurityFailed: false,
+      loadingDockerFailed: false,
     };
   },
   computed: {
@@ -29,8 +33,15 @@ export default {
       const { codeclimate } = this.mr;
       return codeclimate && codeclimate.head_path && codeclimate.base_path;
     },
+    shouldRenderPerformance() {
+      const { performance } = this.mr;
+      return performance && performance.head_path && performance.base_path;
+    },
     shouldRenderSecurityReport() {
       return this.mr.sast;
+    },
+    shouldRenderDockerReport() {
+      return this.mr.sastContainer;
     },
     codequalityText() {
       const { newIssues, resolvedIssues } = this.mr.codeclimateMetrics;
@@ -65,6 +76,39 @@ export default {
       return text.join('');
     },
 
+    performanceText() {
+      const { improved, degraded } = this.mr.performanceMetrics;
+      const text = [];
+
+      if (!improved.length && !degraded.length) {
+        text.push('No changes to performance metrics');
+      } else if (improved.length || degraded.length) {
+        text.push('Performance metrics');
+
+        if (improved.length) {
+          text.push(n__(
+            ' improved on %d point',
+            ' improved on %d points',
+            improved.length,
+          ));
+        }
+
+        if (improved.length > 0 && degraded.length > 0) {
+          text.push(' and');
+        }
+
+        if (degraded.length) {
+          text.push(n__(
+            ' degraded on %d point',
+            ' degraded on %d points',
+            degraded.length,
+          ));
+        }
+      }
+
+      return text.join('');
+    },
+
     securityText() {
       if (this.mr.securityReport.length) {
         return n__(
@@ -77,25 +121,76 @@ export default {
       return 'No security vulnerabilities detected';
     },
 
-    codequalityStatus() {
-      if (this.isLoadingCodequality) {
-        return 'loading';
-      } else if (this.loadingCodequalityFailed) {
-        return 'error';
+    dockerText() {
+      const { vulnerabilities, approved, unapproved } = this.mr.dockerReport;
+
+      if (!vulnerabilities.length) {
+        return s__('ciReport|No vulnerabilities were found');
       }
-      return 'success';
+
+      if (!unapproved.length && approved.length) {
+        return n__(
+          'Found %d approved vulnerability',
+          'Found %d approved vulnerabilities',
+          approved.length,
+        );
+      } else if (unapproved.length && !approved.length) {
+        return n__(
+          'Found %d vulnerability',
+          'Found %d vulnerabilities',
+          unapproved.length,
+        );
+      }
+
+      return `${n__(
+        'Found %d vulnerability,',
+        'Found %d vulnerabilities,',
+        vulnerabilities.length,
+      )} ${n__(
+        'of which %d is approved',
+        'of which %d are approved',
+        approved.length,
+      )}`;
+    },
+
+    codequalityStatus() {
+      return this.checkReportStatus(this.isLoadingCodequality, this.loadingCodequalityFailed);
+    },
+
+    performanceStatus() {
+      return this.checkReportStatus(this.isLoadingPerformance, this.loadingPerformanceFailed);
     },
 
     securityStatus() {
-      if (this.isLoadingSecurity) {
-        return 'loading';
-      } else if (this.loadingSecurityFailed) {
-        return 'error';
-      }
-      return 'success';
+      return this.checkReportStatus(this.isLoadingSecurity, this.loadingSecurityFailed);
+    },
+
+    dockerStatus() {
+      return this.checkReportStatus(this.isLoadingDocker, this.loadingDockerFailed);
+    },
+
+    dockerInformationText() {
+      return sprintf(
+        s__('ciReport|Unapproved vulnerabilities (red) can be marked as approved. %{helpLink}'), {
+          helpLink: `<a href="https://gitlab.com/gitlab-org/clair-scanner#example-whitelist-yaml-file" target="_blank" rel="noopener noreferrer nofollow">
+            ${s__('ciReport|Learn more about whitelisting')}
+          </a>`,
+        },
+        false,
+      );
     },
   },
   methods: {
+    checkReportStatus(loading, error) {
+      if (loading) {
+        return 'loading';
+      } else if (error) {
+        return 'error';
+      }
+
+      return 'success';
+    },
+
     fetchCodeQuality() {
       const { head_path, head_blob_path, base_path, base_blob_path } = this.mr.codeclimate;
 
@@ -115,6 +210,25 @@ export default {
         });
     },
 
+    fetchPerformance() {
+      const { head_path, base_path } = this.mr.performance;
+
+      this.isLoadingPerformance = true;
+
+      Promise.all([
+        this.service.fetchReport(head_path),
+        this.service.fetchReport(base_path),
+      ])
+        .then((values) => {
+          this.mr.comparePerformanceMetrics(values[0], values[1]);
+          this.isLoadingPerformance = false;
+        })
+        .catch(() => {
+          this.isLoadingPerformance = false;
+          this.loadingPerformanceFailed = true;
+        });
+    },
+
     fetchSecurity() {
       const { path, blob_path } = this.mr.sast;
       this.isLoadingSecurity = true;
@@ -129,14 +243,44 @@ export default {
           this.loadingSecurityFailed = true;
         });
     },
+
+    fetchDockerReport() {
+      const { path } = this.mr.sastContainer;
+      this.isLoadingDocker = true;
+
+      this.service.fetchReport(path)
+        .then((data) => {
+          this.mr.setDockerReport(data);
+          this.isLoadingDocker = false;
+        })
+        .catch(() => {
+          this.isLoadingDocker = false;
+          this.loadingDockerFailed = true;
+        });
+    },
+
+    translateText(type) {
+      return {
+        error: s__(`ciReport|Failed to load ${type} report`),
+        loading: s__(`ciReport|Loading ${type} report`),
+      };
+    },
   },
   created() {
     if (this.shouldRenderCodeQuality) {
       this.fetchCodeQuality();
     }
 
+    if (this.shouldRenderPerformance) {
+      this.fetchPerformance();
+    }
+
     if (this.shouldRenderSecurityReport) {
       this.fetchSecurity();
+    }
+
+    if (this.shouldRenderDockerReport) {
+      this.fetchDockerReport();
     }
   },
   template: `
@@ -151,31 +295,57 @@ export default {
       <mr-widget-deployment
         v-if="shouldRenderDeployments"
         :mr="mr"
-        :service="service" />
+        :service="service"
+        />
       <mr-widget-approvals
         v-if="shouldRenderApprovals"
         :mr="mr"
-        :service="service" />
+        :service="service"
+        />
       <collapsible-section
         class="js-codequality-widget"
         v-if="shouldRenderCodeQuality"
         type="codequality"
         :status="codequalityStatus"
-        loading-text="Loading codeclimate report"
-        error-text="Failed to load codeclimate report"
+        :loading-text="translateText('codeclimate').loading"
+        :error-text="translateText('codeclimate').error"
         :success-text="codequalityText"
-        :unresolvedIssues="mr.codeclimateMetrics.newIssues"
-        :resolvedIssues="mr.codeclimateMetrics.resolvedIssues"
+        :unresolved-issues="mr.codeclimateMetrics.newIssues"
+        :resolved-issues="mr.codeclimateMetrics.resolvedIssues"
+        />
+      <collapsible-section
+        class="js-performance-widget"
+        v-if="shouldRenderPerformance"
+        type="performance"
+        :status="performanceStatus"
+        :loading-text="translateText('performance').loading"
+        :error-text="translateText('performance').error"
+        :success-text="performanceText"
+        :unresolved-issues="mr.performanceMetrics.degraded"
+        :resolved-issues="mr.performanceMetrics.improved"
+        :neutral-issues="mr.performanceMetrics.neutral"
         />
       <collapsible-section
         class="js-sast-widget"
         v-if="shouldRenderSecurityReport"
         type="security"
         :status="securityStatus"
-        loading-text="Loading security report"
-        error-text="Failed to load security report"
+        :loading-text="translateText('security').loading"
+        :error-text="translateText('security').error"
         :success-text="securityText"
-        :unresolvedIssues="mr.securityReport"
+        :unresolved-issues="mr.securityReport"
+        />
+      <collapsible-section
+        class="js-docker-widget"
+        v-if="shouldRenderDockerReport"
+        type="docker"
+        :status="dockerStatus"
+        :loading-text="translateText('sast:container').loading"
+        :error-text="translateText('sast:container').error"
+        :success-text="dockerText"
+        :unresolved-issues="mr.dockerReport.unapproved"
+        :neutral-issues="mr.dockerReport.approved"
+        :info-text="dockerInformationText"
         />
       <div class="mr-widget-section">
         <component
@@ -184,7 +354,8 @@ export default {
           :service="service" />
         <mr-widget-related-links
           v-if="shouldRenderRelatedLinks"
-          :related-links="mr.relatedLinks" />
+          :related-links="mr.relatedLinks"
+          />
       </div>
       <div class="mr-widget-footer" v-if="shouldRenderMergeHelp">
         <mr-widget-merge-help />

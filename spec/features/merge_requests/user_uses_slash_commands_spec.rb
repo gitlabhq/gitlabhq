@@ -15,7 +15,7 @@ feature 'Merge Requests > User uses quick actions', :js do
     let!(:milestone) { create(:milestone, project: project, title: 'ASAP') }
 
     before do
-      project.team << [user, :master]
+      project.add_master(user)
       sign_in(user)
       visit project_merge_request_path(project, merge_request)
     end
@@ -58,7 +58,7 @@ feature 'Merge Requests > User uses quick actions', :js do
       context 'when the current user cannot toggle the WIP prefix' do
         let(:guest) { create(:user) }
         before do
-          project.team << [guest, :guest]
+          project.add_guest(guest)
           sign_out(:user)
           sign_in(guest)
           visit project_merge_request_path(project, merge_request)
@@ -104,7 +104,7 @@ feature 'Merge Requests > User uses quick actions', :js do
       context 'when the current user cannot merge the MR' do
         let(:guest) { create(:user) }
         before do
-          project.team << [guest, :guest]
+          project.add_guest(guest)
           sign_out(:user)
           sign_in(guest)
           visit project_merge_request_path(project, merge_request)
@@ -134,7 +134,7 @@ feature 'Merge Requests > User uses quick actions', :js do
 
       before do
         sign_out(:user)
-        another_project.team << [user, :master]
+        another_project.add_master(user)
         sign_in(user)
       end
 
@@ -188,7 +188,7 @@ feature 'Merge Requests > User uses quick actions', :js do
       context 'when current user can not change target branch' do
         let(:guest) { create(:user) }
         before do
-          project.team << [guest, :guest]
+          project.add_guest(guest)
           sign_out(:user)
           sign_in(guest)
           visit project_merge_request_path(project, merge_request)

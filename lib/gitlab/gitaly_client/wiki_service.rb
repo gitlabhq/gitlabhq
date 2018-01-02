@@ -18,12 +18,11 @@ module Gitlab
           commit_details: gitaly_commit_details(commit_details)
         )
 
-        strio = StringIO.new(content)
+        strio = GitalyClient.binary_stringio(content)
 
         enum = Enumerator.new do |y|
           until strio.eof?
-            chunk = strio.read(MAX_MSG_SIZE)
-            request.content = GitalyClient.encode(chunk)
+            request.content = strio.read(MAX_MSG_SIZE)
 
             y.yield request
 
@@ -46,12 +45,11 @@ module Gitlab
           commit_details: gitaly_commit_details(commit_details)
         )
 
-        strio = StringIO.new(content)
+        strio = GitalyClient.binary_stringio(content)
 
         enum = Enumerator.new do |y|
           until strio.eof?
-            chunk = strio.read(MAX_MSG_SIZE)
-            request.content = GitalyClient.encode(chunk)
+            request.content = strio.read(MAX_MSG_SIZE)
 
             y.yield request
 

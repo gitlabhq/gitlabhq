@@ -159,6 +159,15 @@ module MarkdownMatchers
     end
   end
 
+  # EpicReferenceFilter
+  matcher :reference_epics do
+    set_default_markdown_messages
+
+    match do |actual|
+      expect(actual).to have_selector('a.gfm.gfm-epic', count: 5)
+    end
+  end
+
   # TaskListFilter
   matcher :parse_task_lists do
     set_default_markdown_messages

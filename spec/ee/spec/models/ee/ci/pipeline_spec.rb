@@ -15,59 +15,42 @@ describe Ci::Pipeline do
     end
   end
 
-  describe '#codeclimate_artifact' do
-    context 'has codequality job' do
-      let!(:build) do
-        create(
-          :ci_build,
-          :artifacts,
-          name: 'codequality',
-          pipeline: pipeline,
-          options: {
-            artifacts: {
-              paths: ['codeclimate.json']
+  ARTIFACTS_METHODS = {
+    codeclimate_artifact: [Ci::Build::CODEQUALITY_FILE, 'codequality'],
+    performance_artifact: [Ci::Build::PERFORMANCE_FILE, 'performance'],
+    sast_artifact: [Ci::Build::SAST_FILE, 'sast'],
+    sast_container_artifact: [Ci::Build::SAST_CONTAINER_FILE, 'sast:container']
+  }.freeze
+
+  ARTIFACTS_METHODS.each do |method, options|
+    describe method.to_s do
+      context 'has corresponding job' do
+        let!(:build) do
+          filename, name = options
+
+          create(
+            :ci_build,
+            :artifacts,
+            name: name,
+            pipeline: pipeline,
+            options: {
+              artifacts: {
+                paths: [filename]
+              }
             }
-          }
-        )
+          )
+        end
+
+        it { expect(pipeline.send(method)).to eq(build) }
       end
 
-      it { expect(pipeline.codeclimate_artifact).to eq(build) }
-    end
+      context 'no codequality job' do
+        before do
+          create(:ci_build, pipeline: pipeline)
+        end
 
-    context 'no codequality job' do
-      before do
-        create(:ci_build, pipeline: pipeline)
+        it { expect(pipeline.send(method)).to be_nil }
       end
-
-      it { expect(pipeline.codeclimate_artifact).to be_nil }
-    end
-  end
-
-  describe '#sast_artifact' do
-    context 'has sast job' do
-      let!(:build) do
-        create(
-          :ci_build,
-          :artifacts,
-          name: 'sast',
-          pipeline: pipeline,
-          options: {
-            artifacts: {
-              paths: ['gl-sast-report.json']
-            }
-          }
-        )
-      end
-
-      it { expect(pipeline.sast_artifact).to eq(build) }
-    end
-
-    context 'no sast job' do
-      before do
-        create(:ci_build, pipeline: pipeline)
-      end
-
-      it { expect(pipeline.sast_artifact).to be_nil }
     end
   end
 end

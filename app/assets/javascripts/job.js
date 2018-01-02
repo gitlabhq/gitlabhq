@@ -1,7 +1,9 @@
 import _ from 'underscore';
+import { visitUrl } from './lib/utils/url_utility';
 import bp from './breakpoints';
 import { bytesToKiB } from './lib/utils/number_utils';
 import { setCiStatusFavicon } from './lib/utils/common_utils';
+import { timeFor } from './lib/utils/datetime_utility';
 
 export default class Job {
   constructor(options) {
@@ -9,7 +11,7 @@ export default class Job {
     this.state = null;
     this.options = options || $('.js-build-options').data();
 
-    this.pageUrl = this.options.pageUrl;
+    this.pagePath = this.options.pagePath;
     this.buildStatus = this.options.buildStatus;
     this.state = this.options.logState;
     this.buildStage = this.options.buildStage;
@@ -167,11 +169,11 @@ export default class Job {
 
   getBuildTrace() {
     return $.ajax({
-      url: `${this.pageUrl}/trace.json`,
+      url: `${this.pagePath}/trace.json`,
       data: { state: this.state },
     })
       .done((log) => {
-        setCiStatusFavicon(`${this.pageUrl}/status.json`);
+        setCiStatusFavicon(`${this.pagePath}/status.json`);
 
         if (log.state) {
           this.state = log.state;
@@ -209,7 +211,7 @@ export default class Job {
         }
 
         if (log.status !== this.buildStatus) {
-          gl.utils.visitUrl(this.pageUrl);
+          visitUrl(this.pagePath);
         }
       })
       .fail(() => {
@@ -260,7 +262,7 @@ export default class Job {
     if ($date.length) {
       const date = $date.text();
       return $date.text(
-        gl.utils.timeFor(new Date(date.replace(/([0-9]+)-([0-9]+)-([0-9]+)/g, '$1/$2/$3')), ' '),
+        timeFor(new Date(date.replace(/([0-9]+)-([0-9]+)-([0-9]+)/g, '$1/$2/$3'))),
       );
     }
   }

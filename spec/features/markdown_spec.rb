@@ -42,6 +42,15 @@ describe 'GitLab Markdown' do
     @doc ||= Nokogiri::HTML::DocumentFragment.parse(html)
   end
 
+  before do
+    stub_licensed_features(epics: true)
+    @feat = MarkdownFeature.new
+
+    # `markdown` helper expects a `@project` and `@group` variable
+    @project = @feat.project
+    @group = @feat.group
+  end
+
   # Shared behavior that all pipelines should exhibit
   shared_examples 'all pipelines' do
     describe 'Redcarpet extensions' do
@@ -204,13 +213,6 @@ describe 'GitLab Markdown' do
     end
   end
 
-  before do
-    @feat = MarkdownFeature.new
-
-    # `markdown` helper expects a `@project` variable
-    @project = @feat.project
-  end
-
   context 'default pipeline' do
     before do
       @html = markdown(@feat.raw_markdown)
@@ -244,6 +246,7 @@ describe 'GitLab Markdown' do
         expect(doc).to reference_commits
         expect(doc).to reference_labels
         expect(doc).to reference_milestones
+        expect(doc).to reference_epics
       end
     end
 
@@ -301,6 +304,7 @@ describe 'GitLab Markdown' do
         expect(doc).to reference_commits
         expect(doc).to reference_labels
         expect(doc).to reference_milestones
+        expect(doc).to reference_epics
       end
     end
 

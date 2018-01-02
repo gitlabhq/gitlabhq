@@ -1,6 +1,7 @@
 import Vue from 'vue';
-import store from '~/repo/stores';
-import service from '~/repo/services';
+import * as urlUtils from '~/lib/utils/url_utility';
+import store from '~/ide/stores';
+import service from '~/ide/services';
 import { resetStore, file } from '../helpers';
 
 describe('Multi-file store actions', () => {
@@ -10,11 +11,11 @@ describe('Multi-file store actions', () => {
 
   describe('redirectToUrl', () => {
     it('calls visitUrl', (done) => {
-      spyOn(gl.utils, 'visitUrl');
+      spyOn(urlUtils, 'visitUrl');
 
       store.dispatch('redirectToUrl', 'test')
         .then(() => {
-          expect(gl.utils.visitUrl).toHaveBeenCalledWith('test');
+          expect(urlUtils.visitUrl).toHaveBeenCalledWith('test');
 
           done();
         })
@@ -109,6 +110,7 @@ describe('Multi-file store actions', () => {
 
     it('can force closed if there are changed files', (done) => {
       store.state.editMode = true;
+
       store.state.openFiles.push(file());
       store.state.openFiles[0].changed = true;
 
@@ -124,7 +126,6 @@ describe('Multi-file store actions', () => {
     it('discards file changes', (done) => {
       const f = file();
       store.state.editMode = true;
-      store.state.tree.push(f);
       store.state.openFiles.push(f);
       f.changed = true;
 
@@ -140,8 +141,6 @@ describe('Multi-file store actions', () => {
 
   describe('toggleBlobView', () => {
     it('sets edit mode view if in edit mode', (done) => {
-      store.state.editMode = true;
-
       store.dispatch('toggleBlobView')
         .then(() => {
           expect(store.state.currentBlobView).toBe('repo-editor');
@@ -152,6 +151,8 @@ describe('Multi-file store actions', () => {
     });
 
     it('sets preview mode view if not in edit mode', (done) => {
+      store.state.editMode = false;
+
       store.dispatch('toggleBlobView')
       .then(() => {
         expect(store.state.currentBlobView).toBe('repo-preview');
@@ -164,9 +165,15 @@ describe('Multi-file store actions', () => {
 
   describe('checkCommitStatus', () => {
     beforeEach(() => {
-      store.state.project.id = 2;
-      store.state.currentBranch = 'master';
-      store.state.currentRef = '1';
+      store.state.currentProjectId = 'abcproject';
+      store.state.currentBranchId = 'master';
+      store.state.projects.abcproject = {
+        branches: {
+          master: {
+            workingReference: '1',
+          },
+        },
+      };
     });
 
     it('calls service', (done) => {
@@ -176,7 +183,7 @@ describe('Multi-file store actions', () => {
 
       store.dispatch('checkCommitStatus')
         .then(() => {
-          expect(service.getBranchData).toHaveBeenCalledWith(2, 'master');
+          expect(service.getBranchData).toHaveBeenCalledWith('abcproject', 'master');
 
           done();
         })
@@ -220,7 +227,17 @@ describe('Multi-file store actions', () => {
 
       document.body.innerHTML += '<div class="flash-container"></div>';
 
-      store.state.project.id = 123;
+      store.state.currentProjectId = 'abcproject';
+      store.state.currentBranchId = 'master';
+      store.state.projects.abcproject = {
+        web_url: 'webUrl',
+        branches: {
+          master: {
+            workingReference: '1',
+          },
+        },
+      };
+
       payload = {
         branch: 'master',
       };
@@ -247,7 +264,7 @@ describe('Multi-file store actions', () => {
       it('calls service', (done) => {
         store.dispatch('commitChanges', { payload, newMr: false })
           .then(() => {
-            expect(service.commit).toHaveBeenCalledWith(123, payload);
+            expect(service.commit).toHaveBeenCalledWith('abcproject', payload);
 
             done();
           }).catch(done.fail);
@@ -283,17 +300,6 @@ describe('Multi-file store actions', () => {
           }).catch(done.fail);
       });
 
-      it('toggles edit mode', (done) => {
-        store.state.editMode = true;
-
-        store.dispatch('commitChanges', { payload, newMr: false })
-          .then(() => {
-            expect(store.state.editMode).toBeFalsy();
-
-            done();
-          }).catch(done.fail);
-      });
-
       it('closes all files', (done) => {
         store.state.openFiles.push(file());
         store.state.openFiles[0].opened = true;
@@ -316,23 +322,12 @@ describe('Multi-file store actions', () => {
           }).catch(done.fail);
       });
 
-      it('updates commit ref', (done) => {
-        store.dispatch('commitChanges', { payload, newMr: false })
-          .then(() => {
-            expect(store.state.currentRef).toBe('123456');
-
-            done();
-          }).catch(done.fail);
-      });
-
       it('redirects to new merge request page', (done) => {
-        spyOn(gl.utils, 'visitUrl');
-
-        store.state.endpoints.newMergeRequestUrl = 'newMergeRequestUrl?branch=';
+        spyOn(urlUtils, 'visitUrl');
 
         store.dispatch('commitChanges', { payload, newMr: true })
           .then(() => {
-            expect(gl.utils.visitUrl).toHaveBeenCalledWith('newMergeRequestUrl?branch=master');
+            expect(urlUtils.visitUrl).toHaveBeenCalledWith('webUrl/merge_requests/new?merge_request%5Bsource_branch%5D=master');
 
             done();
           }).catch(done.fail);
@@ -362,15 +357,30 @@ describe('Multi-file store actions', () => {
   });
 
   describe('createTempEntry', () => {
+    beforeEach(() => {
+      store.state.trees['abcproject/mybranch'] = {
+        tree: [],
+      };
+      store.state.projects.abcproject = {
+        web_url: '',
+      };
+    });
+
     it('creates a temp tree', (done) => {
+      const projectTree = store.state.trees['abcproject/mybranch'];
+
       store.dispatch('createTempEntry', {
+        projectId: 'abcproject',
+        branchId: 'mybranch',
+        parent: projectTree,
         name: 'test',
         type: 'tree',
       })
       .then(() => {
-        expect(store.state.tree.length).toBe(1);
-        expect(store.state.tree[0].tempFile).toBeTruthy();
-        expect(store.state.tree[0].type).toBe('tree');
+        const baseTree = projectTree.tree;
+        expect(baseTree.length).toBe(1);
+        expect(baseTree[0].tempFile).toBeTruthy();
+        expect(baseTree[0].type).toBe('tree');
 
         done();
       })
@@ -378,14 +388,20 @@ describe('Multi-file store actions', () => {
     });
 
     it('creates temp file', (done) => {
+      const projectTree = store.state.trees['abcproject/mybranch'];
+
       store.dispatch('createTempEntry', {
+        projectId: 'abcproject',
+        branchId: 'mybranch',
+        parent: projectTree,
         name: 'test',
         type: 'blob',
       })
       .then(() => {
-        expect(store.state.tree.length).toBe(1);
-        expect(store.state.tree[0].tempFile).toBeTruthy();
-        expect(store.state.tree[0].type).toBe('blob');
+        const baseTree = projectTree.tree;
+        expect(baseTree.length).toBe(1);
+        expect(baseTree[0].tempFile).toBeTruthy();
+        expect(baseTree[0].type).toBe('blob');
 
         done();
       })

@@ -1,3 +1,68 @@
+.geo-admin-container {
+  .page-title,
+  .page-title-separator {
+    margin-top: 10px;
+  }
+
+  .title-text {
+    line-height: 34px;
+  }
+
+  .page-subtitle {
+    margin-bottom: 24px;
+  }
+}
+
+.geo-node-status {
+  td {
+    vertical-align: top;
+  }
+
+  .help-block {
+    width: 135px;
+    text-align: right;
+  }
+
+  .node-info {
+    font-weight: $gl-font-weight-bold;
+  }
+
+  .event-timestamp {
+    font-weight: normal;
+    color: $theme-gray-800;
+  }
+
+  .sync-status {
+    font-weight: normal;
+
+    svg {
+      vertical-align: middle;
+    }
+
+    .sync-status-icon svg,
+    .sync-status-timestamp {
+      fill: $theme-gray-700;
+      color: $theme-gray-700;
+    }
+
+    &.sync-status-failure {
+      .sync-status-icon svg,
+      .sync-status-timestamp {
+        fill: $red-700;
+        color: $red-700;
+      }
+    }
+  }
+}
+
+.advanced-geo-node-status-toggler {
+  display: block;
+
+  .show-advance-chevron {
+    margin-top: 2px;
+  }
+}
+
 .geo-node-healthy {
   color: $gl-success;
 }
@@ -50,6 +115,20 @@
   display: inline-block;
   margin-top: 5px;
   white-space: pre-wrap;
+}
+
+.geo-nodes {
+  .health-message {
+    padding: 1px 8px;
+    background-color: $red-100;
+    color: $red-500;
+    border-radius: $border-radius-default;
+    font-weight: 500;
+  }
+}
+
+.geo-node-version-mismatch {
+  color: $gl-danger;
 }
 
 .node-badge {

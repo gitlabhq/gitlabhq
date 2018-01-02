@@ -1,6 +1,8 @@
 module EE
   module Gitlab
     module GitAccess
+      prepend GeoGitAccess
+
       def check(cmd, changes)
         raise NotImplementedError.new unless defined?(super)
 

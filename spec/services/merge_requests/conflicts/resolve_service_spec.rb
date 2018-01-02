@@ -213,7 +213,7 @@ describe MergeRequests::Conflicts::ResolveService do
         MergeRequests::Conflicts::ListService.new(merge_request).conflicts.resolver
       end
       let(:regex_conflict) do
-        resolver.conflict_for_path('files/ruby/regex.rb', 'files/ruby/regex.rb')
+        resolver.conflict_for_path(resolver.conflicts, 'files/ruby/regex.rb', 'files/ruby/regex.rb')
       end
 
       let(:invalid_params) do

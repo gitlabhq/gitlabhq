@@ -44,7 +44,7 @@ class Repository
                       issue_template_names merge_request_template_names).freeze
 
   # Methods that use cache_method but only memoize the value
-  MEMOIZED_CACHED_METHODS = %i(license empty_repo?).freeze
+  MEMOIZED_CACHED_METHODS = %i(license).freeze
 
   # Certain method caches should be refreshed when certain types of files are
   # changed. This Hash maps file types (as returned by Gitlab::FileDetector) to
@@ -122,6 +122,18 @@ class Repository
     return @commit_cache[oid] if @commit_cache.key?(oid)
 
     @commit_cache[oid] = find_commit(oid)
+  end
+
+  def commits_by(oids:)
+    return [] unless oids.present?
+
+    commits = Gitlab::Git::Commit.batch_by_oid(raw_repository, oids)
+
+    if commits.present?
+      Commit.decorate(commits, @project)
+    else
+      []
+    end
   end
 
   def commits(ref, path: nil, limit: nil, offset: nil, skip_merges: false, after: nil, before: nil)
@@ -225,6 +237,12 @@ class Repository
     return false unless raw_repository
 
     branch_names.include?(branch_name)
+  end
+
+  def tag_exists?(tag_name)
+    return false unless raw_repository
+
+    tag_names.include?(tag_name)
   end
 
   def ref_exists?(ref)
@@ -504,7 +522,11 @@ class Repository
   end
   cache_method :exists?
 
-  delegate :empty?, to: :raw_repository
+  def empty?
+    return true unless exists?
+
+    !has_visible_content?
+  end
   cache_method :empty?
 
   # The size of this repository in megabytes.
@@ -693,7 +715,9 @@ class Repository
 
   def tags_sorted_by(value)
     case value
-    when 'name'
+    when 'name_asc'
+      VersionSorter.sort(tags) { |tag| tag.name }
+    when 'name_desc'
       VersionSorter.rsort(tags) { |tag| tag.name }
     when 'updated_desc'
       tags_sorted_by_committed_date.reverse
@@ -704,10 +728,14 @@ class Repository
     end
   end
 
-  def contributors
+  # Params:
+  #
+  # order_by: name|email|commits
+  # sort: asc|desc default: 'asc'
+  def contributors(order_by: nil, sort: 'asc')
     commits = self.commits(nil, limit: 2000, offset: 0, skip_merges: true)
 
-    commits.group_by(&:author_email).map do |email, commits|
+    commits = commits.group_by(&:author_email).map do |email, commits|
       contributor = Gitlab::Contributor.new
       contributor.email = email
 
@@ -721,6 +749,7 @@ class Repository
 
       contributor
     end
+    Commit.order_by(collection: commits, order_by: order_by, sort: sort)
   end
 
   def refs_contains_sha(ref_type, sha)
@@ -976,7 +1005,7 @@ class Repository
   def merge_base(first_commit_id, second_commit_id)
     first_commit_id = commit(first_commit_id).try(:id) || first_commit_id
     second_commit_id = commit(second_commit_id).try(:id) || second_commit_id
-    rugged.merge_base(first_commit_id, second_commit_id)
+    raw_repository.merge_base(first_commit_id, second_commit_id)
   rescue Rugged::ReferenceError
     nil
   end
@@ -993,13 +1022,8 @@ class Repository
     end
   end
 
-  def empty_repo?
-    !exists? || !has_visible_content?
-  end
-  cache_method :empty_repo?, memoize_only: true
-
   def search_files_by_content(query, ref)
-    return [] if empty_repo? || query.blank?
+    return [] if empty? || query.blank?
 
     offset = 2
     args = %W(grep -i -I -n --before-context #{offset} --after-context #{offset} -E -e #{Regexp.escape(query)} #{ref || root_ref})
@@ -1008,7 +1032,7 @@ class Repository
   end
 
   def search_files_by_name(query, ref)
-    return [] if empty_repo? || query.blank?
+    return [] if empty? || query.blank?
 
     args = %W(ls-tree --full-tree -r #{ref || root_ref} --name-status | #{Regexp.escape(query)})
 
@@ -1021,8 +1045,7 @@ class Repository
       tmp_remote_name = true
     end
 
-    add_remote(remote_name, url)
-    set_remote_as_mirror(remote_name, refmap: refmap)
+    add_remote(remote_name, url, mirror_refmap: refmap)
     fetch_remote(remote_name, forced: forced)
   ensure
     remove_remote(remote_name) if tmp_remote_name

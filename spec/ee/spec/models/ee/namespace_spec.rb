@@ -15,7 +15,7 @@ describe Namespace do
       let!(:namespace) { create :namespace, plan: namespace_plan }
 
       context 'plan is set' do
-        let(:namespace_plan) { EE::Namespace::BRONZE_PLAN }
+        let(:namespace_plan) { :bronze_plan }
 
         it 'returns namespaces with plan' do
           expect(described_class.with_plan).to eq([namespace])
@@ -48,7 +48,7 @@ describe Namespace do
 
       context 'with a valid plan name' do
         it 'is valid' do
-          group.plan = Namespace::BRONZE_PLAN
+          group.plan = create(:bronze_plan)
 
           expect(group).to be_valid
         end
@@ -123,7 +123,7 @@ describe Namespace do
   end
 
   describe '#feature_available?' do
-    let(:plan_license) { Namespace::BRONZE_PLAN }
+    let(:plan_license) { :bronze_plan }
     let(:group) { create(:group, plan: plan_license) }
     let(:feature) { :service_desk }
 
@@ -155,7 +155,7 @@ describe Namespace do
       end
 
       context 'when feature available on the plan' do
-        let(:plan_license) { Namespace::GOLD_PLAN }
+        let(:plan_license) { :gold_plan }
 
         context 'when feature available for current group' do
           it 'returns true' do
@@ -176,7 +176,7 @@ describe Namespace do
 
       context 'when feature not available in the plan' do
         let(:feature) { :deploy_board }
-        let(:plan_license) { Namespace::BRONZE_PLAN }
+        let(:plan_license) { :bronze_plan }
 
         it 'returns false' do
           is_expected.to be_falsy
@@ -194,8 +194,7 @@ describe Namespace do
 
     context 'when free plan has limit defined' do
       before do
-        Plan.find_by(name: Namespace::FREE_PLAN)
-          .update_column(:active_pipelines_limit, 40)
+        create(:free_plan, active_pipelines_limit: 40)
       end
 
       it 'returns a free plan limits' do
@@ -205,7 +204,7 @@ describe Namespace do
 
     context 'when associated plan has no limit defined' do
       before do
-        namespace.plan = Namespace::GOLD_PLAN
+        namespace.plan = create(:gold_plan)
       end
 
       it 'returns zero' do
@@ -215,7 +214,7 @@ describe Namespace do
 
     context 'when limit is defined' do
       before do
-        namespace.plan = Namespace::GOLD_PLAN
+        namespace.plan = create(:gold_plan)
         namespace.plan.update_column(:active_pipelines_limit, 10)
       end
 
@@ -234,8 +233,7 @@ describe Namespace do
 
     context 'when free plan has limit defined' do
       before do
-        Plan.find_by(name: Namespace::FREE_PLAN)
-          .update_column(:pipeline_size_limit, 40)
+        create(:free_plan, pipeline_size_limit: 40)
       end
 
       it 'returns a free plan limits' do
@@ -245,7 +243,7 @@ describe Namespace do
 
     context 'when associated plan has no limits defined' do
       before do
-        namespace.plan = Namespace::GOLD_PLAN
+        namespace.plan = create(:gold_plan)
       end
 
       it 'returns zero' do
@@ -255,7 +253,7 @@ describe Namespace do
 
     context 'when limit is defined' do
       before do
-        namespace.plan = Namespace::GOLD_PLAN
+        namespace.plan = create(:gold_plan)
         namespace.plan.update_column(:pipeline_size_limit, 15)
       end
 
@@ -482,7 +480,7 @@ describe Namespace do
   describe '#actual_plan' do
     context 'when namespace has a plan associated' do
       before do
-        namespace.plan = Namespace::GOLD_PLAN
+        namespace.plan = create(:gold_plan)
       end
 
       it 'returns an associated plan' do
@@ -492,6 +490,10 @@ describe Namespace do
     end
 
     context 'when namespace does not have plan associated' do
+      before do
+        create(:free_plan)
+      end
+
       it 'returns a free plan object' do
         expect(namespace.plan).to be_nil
         expect(namespace.actual_plan.name).to eq 'free'
@@ -502,7 +504,7 @@ describe Namespace do
   describe '#actual_plan_name' do
     context 'when namespace has a plan associated' do
       before do
-        namespace.plan = Namespace::GOLD_PLAN
+        namespace.plan = create(:gold_plan)
       end
 
       it 'returns an associated plan name' do

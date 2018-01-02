@@ -17,11 +17,6 @@
         type: String,
         required: true,
       },
-      canAttachFile: {
-        type: Boolean,
-        required: false,
-        default: true,
-      },
       enableAutocomplete: {
         type: Boolean,
         required: false,
@@ -47,13 +42,12 @@
     <markdown-field
       :markdown-preview-path="markdownPreviewPath"
       :markdown-docs-path="markdownDocsPath"
-      :can-attach-file="canAttachFile"
       :enable-autocomplete="enableAutocomplete"
     >
       <textarea
         id="issue-description"
         class="note-textarea js-gfm-input js-autosize markdown-area"
-        data-supports-quick-actionss="false"
+        data-supports-quick-actions="false"
         aria-label="Description"
         v-model="formState.description"
         ref="textarea"

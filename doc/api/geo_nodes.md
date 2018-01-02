@@ -93,11 +93,17 @@ Example response:
     "repositories_failed_count": 1,
     "repositories_synced_count": 40,
     "repositories_synced_in_percentage": "97.56%",
+    "wikis_count": 41,
+    "wikis_failed_count": 0,
+    "wikis_synced_count": 41,
+    "wikis_synced_in_percentage": "100.00%",
     "last_event_id": 23,
     "last_event_timestamp": 1509681166,
     "cursor_last_event_id": 23,
     "cursor_last_event_timestamp": 1509681166,
-    "last_successful_status_check_timestamp": 1510125024
+    "last_successful_status_check_timestamp": 1510125024,
+    "version": "10.3.0",
+    "revision": "33d33a096a"
   }
 ]
 ```
@@ -136,7 +142,9 @@ Example response:
   "last_event_timestamp": 1509681166,
   "cursor_last_event_id": 23,
   "cursor_last_event_timestamp": 1509681166,
-  "last_successful_status_check_timestamp": 1510125268
+  "last_successful_status_check_timestamp": 1510125268,
+  "version": "10.3.0",
+  "revision": "33d33a096a"
 }
 ```
 

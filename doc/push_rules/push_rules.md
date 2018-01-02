@@ -1,6 +1,6 @@
 # Push Rules
 
-> Available in [GitLab Enterprise Edition Starter][ee].
+> Available in [GitLab Enterprise Editions][ee].
 
 Gain additional control over pushes to your repository.
 
@@ -61,16 +61,16 @@ The following options are available.
 
 | Push rule | GitLab version | Description |
 | --------- | :------------: | ----------- |
-| Removal of tags with `git push` | 7.10 | Forbid users to remove git tags with `git push`. Tags will still be able to be deleted through the web UI. |
-| Check whether author is a GitLab user | 7.10 | Restrict commits by author (email) to existing GitLab users. |
-| Check whether committer is the current authenticated user | 10.2 | GitLab will reject any commit that was not committed by the current authenticated user |
-| Check whether commit is signed through GPG | 10.1 | Reject commit when it is not signed through GPG. Read [signing commits with GPG][signing-commits]. |
-| Prevent committing secrets to Git | 8.12 | GitLab will reject any files that are likely to contain secrets. Read [what files are forbidden](#prevent-pushing-secrets-to-the-repository). |
-| Restrict by commit message | 7.10 | Only commit messages that match this Ruby regular expression are allowed to be pushed. Leave empty to allow any commit message. |
-| Restrict by branch name | 9.3 | Only branch names that match this Ruby regular expression are allowed to be pushed. Leave empty to allow any branch name. |
-| Restrict by commit author's email | 7.10 | Only commit author's email that match this Ruby regular expression are allowed to be pushed. Leave empty to allow any email. |
-| Prohibited file names | 7.10 | Any committed filenames that match this Ruby regular expression are not allowed to be pushed. Leave empty to allow any filenames. |
-| Maximum file size | 7.12 | Pushes that contain added or updated files that exceed this file size (in MB) are rejected. Set to 0 to allow files of any size. |
+| Removal of tags with `git push` | **EES** 7.10 | Forbid users to remove git tags with `git push`. Tags will still be able to be deleted through the web UI. |
+| Check whether author is a GitLab user | **EES** 7.10 | Restrict commits by author (email) to existing GitLab users. |
+| Check whether committer is the current authenticated user | **EEP** 10.2 | GitLab will reject any commit that was not committed by the current authenticated user |
+| Check whether commit is signed through GPG | **EEP** 10.1 | Reject commit when it is not signed through GPG. Read [signing commits with GPG][signing-commits]. |
+| Prevent committing secrets to Git | **EES** 8.12 | GitLab will reject any files that are likely to contain secrets. Read [what files are forbidden](#prevent-pushing-secrets-to-the-repository). |
+| Restrict by commit message | **EES** 7.10 | Only commit messages that match this Ruby regular expression are allowed to be pushed. Leave empty to allow any commit message. |
+| Restrict by branch name | **EES** 9.3 | Only branch names that match this Ruby regular expression are allowed to be pushed. Leave empty to allow any branch name. |
+| Restrict by commit author's email | **EES** 7.10 | Only commit author's email that match this Ruby regular expression are allowed to be pushed. Leave empty to allow any email. |
+| Prohibited file names | **EES** 7.10 | Any committed filenames that match this Ruby regular expression are not allowed to be pushed. Leave empty to allow any filenames. |
+| Maximum file size | **EES** 7.12 | Pushes that contain added or updated files that exceed this file size (in MB) are rejected. Set to 0 to allow files of any size. |
 
 >**Tip:**
 You can check your regular expressions at <http://rubular.com>.
@@ -86,6 +86,9 @@ By selecting the checkbox *Prevent committing secrets to Git*, GitLab prevents
 pushes to the repository when a file matches a regular expression as read from
 [`files_blacklist.yml`][list] (make sure you are at the right branch
 as your GitLab version when viewing this file).
+
+NOTE: **Note**:
+Files already committed won't get restricted by this push rule.
 
 Below is an example list of what will be rejected by these regular expressions:
 

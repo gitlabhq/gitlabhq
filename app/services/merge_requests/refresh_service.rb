@@ -6,7 +6,7 @@ module MergeRequests
       @oldrev, @newrev = oldrev, newrev
       @branch_name = Gitlab::Git.ref_name(ref)
 
-      find_new_commits
+      Gitlab::GitalyClient.allow_n_plus_1_calls(&method(:find_new_commits))
       # Be sure to close outstanding MRs before reloading them to avoid generating an
       # empty diff during a manual merge
       close_merge_requests
@@ -77,6 +77,7 @@ module MergeRequests
         end
 
         merge_request.mark_as_unchecked
+        UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
       end
     end
 

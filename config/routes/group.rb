@@ -52,6 +52,12 @@ constraints(GroupUrlConstrainer.new) do
       patch :override, on: :member ## EE-specific
     end
 
+    resources :uploads, only: [:create] do
+      collection do
+        get ":secret/:filename", action: :show, as: :show, constraints: { filename: /[^\/]+/ }
+      end
+    end
+
     ## EE-specific
     resource :analytics, only: [:show]
     resource :ldap, only: [] do

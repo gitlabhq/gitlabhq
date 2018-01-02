@@ -104,15 +104,23 @@ module DiffHelper
     ].join(' ').html_safe
   end
 
-  def diff_file_blob_raw_path(diff_file)
-    project_raw_path(@project, tree_join(diff_file.content_sha, diff_file.file_path))
+  def diff_file_blob_raw_url(diff_file, only_path: false)
+    project_raw_url(@project, tree_join(diff_file.content_sha, diff_file.file_path), only_path: only_path)
   end
 
-  def diff_file_old_blob_raw_path(diff_file)
+  def diff_file_old_blob_raw_url(diff_file, only_path: false)
     sha = diff_file.old_content_sha
     return unless sha
 
-    project_raw_path(@project, tree_join(diff_file.old_content_sha, diff_file.old_path))
+    project_raw_url(@project, tree_join(diff_file.old_content_sha, diff_file.old_path), only_path: only_path)
+  end
+
+  def diff_file_blob_raw_path(diff_file)
+    diff_file_blob_raw_url(diff_file, only_path: true)
+  end
+
+  def diff_file_old_blob_raw_path(diff_file)
+    diff_file_old_blob_raw_url(diff_file, only_path: true)
   end
 
   def diff_file_html_data(project, diff_file_path, diff_commit_id)

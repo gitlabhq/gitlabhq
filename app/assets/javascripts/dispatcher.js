@@ -5,40 +5,38 @@ import IssuableIndex from './issuable_index';
 import Milestone from './milestone';
 import IssuableForm from './issuable_form';
 import LabelsSelect from './labels_select';
-/* global MilestoneSelect */
+import MilestoneSelect from './milestone_select';
 import NewBranchForm from './new_branch_form';
-/* global NotificationsForm */
-/* global NotificationsDropdown */
+import NotificationsForm from './notifications_form';
+import notificationsDropdown from './notifications_dropdown';
 import groupAvatar from './group_avatar';
 import GroupLabelSubscription from './group_label_subscription';
-/* global LineHighlighter */
+import LineHighlighter from './line_highlighter';
 import BuildArtifacts from './build_artifacts';
 import CILintEditor from './ci_lint_editor';
 import groupsSelect from './groups_select';
-/* global Search */
-/* global Admin */
+import Search from './search';
+import initAdmin from './admin';
 import NamespaceSelect from './namespace_select';
 import NewCommitForm from './new_commit_form';
 import Project from './project';
 import projectAvatar from './project_avatar';
-/* global MergeRequest */
-/* global Compare */
-/* global CompareAutocomplete */
-/* global PathLocks */
-/* global ProjectFindFile */
+import MergeRequest from './merge_request';
+import Compare from './compare';
+import initCompareAutocomplete from './compare_autocomplete';
+import ProjectFindFile from './project_find_file';
 import ProjectNew from './project_new';
 import projectImport from './project_import';
 import Labels from './labels';
 import LabelManager from './label_manager';
-/* global Sidebar */
-/* global WeightSelect */
-/* global AdminEmailSelect */
+import Sidebar from './right_sidebar';
 
 import IssuableTemplateSelectors from './templates/issuable_template_selectors';
 import Flash from './flash';
 import CommitsList from './commits';
 import Issue from './issue';
 import BindInOut from './behaviors/bind_in_out';
+import SecretValues from './behaviors/secret_values';
 import DeleteModal from './branches/branches_delete_modal';
 import Group from './group';
 import GroupsList from './groups_list';
@@ -77,7 +75,6 @@ import initLegacyFilters from './init_legacy_filters';
 import initIssuableSidebar from './init_issuable_sidebar';
 import initProjectVisibilitySelector from './project_visibility';
 import GpgBadges from './gpg_badges';
-import UserFeatureHelper from './helpers/user_feature_helper';
 import initChangesDropdown from './init_changes_dropdown';
 import NewGroupChild from './groups/new_group_child';
 import AbuseReports from './abuse_reports';
@@ -95,13 +92,19 @@ import memberExpirationDate from './member_expiration_date';
 import DueDateSelectors from './due_date_select';
 import Diff from './diff';
 import ProjectLabelSubscription from './project_label_subscription';
-import ProjectVariables from './project_variables';
+import SearchAutocomplete from './search_autocomplete';
+import Activities from './activities';
 
 // EE-only
-import ApproversSelect from './approvers_select';
-import AuditLogs from './audit_logs';
-import initGeoInfoModal from './init_geo_info_modal';
-import initGroupAnalytics from './init_group_analytics';
+import ApproversSelect from 'ee/approvers_select'; // eslint-disable-line import/first
+import AuditLogs from 'ee/audit_logs'; // eslint-disable-line import/first
+import initGeoInfoModal from 'ee/init_geo_info_modal'; // eslint-disable-line import/first
+import initGroupAnalytics from 'ee/init_group_analytics'; // eslint-disable-line import/first
+import AdminEmailSelect from 'ee/admin_email_select'; // eslint-disable-line import/first
+import initPathLocks from 'ee/path_locks'; // eslint-disable-line import/first
+import WeightSelect from 'ee/weight_select'; // eslint-disable-line import/first
+import initApprovals from 'ee/approvals'; // eslint-disable-line import/first
+import initLDAPGroupsSelect from 'ee/ldap_groups_select'; // eslint-disable-line import/first
 
 (function() {
   var Dispatcher;
@@ -119,6 +122,8 @@ import initGroupAnalytics from './init_group_analytics';
       if (!page) {
         return false;
       }
+
+      const fail = () => Flash('Error loading dynamic module');
 
       path = page.split(':');
       shortcut_handler = null;
@@ -145,7 +150,7 @@ import initGroupAnalytics from './init_group_analytics';
             path,
            } = JSON.parse(dataEl.innerHTML);
 
-          PathLocks.init(toggle_path, path);
+          initPathLocks(toggle_path, path);
         }
       }
 
@@ -322,6 +327,8 @@ import initGroupAnalytics from './init_group_analytics';
           new MilestoneSelect();
           new IssuableTemplateSelectors();
           new AutoWidthDropdownSelect($('.js-target-branch-select')).init();
+
+          initApprovals();
           break;
         case 'projects:tags:new':
           new ZenMode();
@@ -330,18 +337,21 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'projects:snippets:show':
           initNotes();
+          new ZenMode();
           break;
         case 'projects:snippets:new':
         case 'projects:snippets:edit':
         case 'projects:snippets:create':
         case 'projects:snippets:update':
           new GLForm($('.snippet-form'), true);
+          new ZenMode();
           break;
         case 'snippets:new':
         case 'snippets:edit':
         case 'snippets:create':
         case 'snippets:update':
           new GLForm($('.snippet-form'), false);
+          new ZenMode();
           break;
         case 'projects:releases:edit':
           new ZenMode();
@@ -362,7 +372,7 @@ import initGroupAnalytics from './init_group_analytics';
           shortcut_handler = new ShortcutsIssuable(true);
           break;
         case 'dashboard:activity':
-          new gl.Activities();
+          new Activities();
           break;
         case 'projects:commit:show':
           new Diff();
@@ -383,7 +393,7 @@ import initGroupAnalytics from './init_group_analytics';
           $('.commit-info.branches').load(document.querySelector('.js-commit-box').dataset.commitPath);
           break;
         case 'projects:activity':
-          new gl.Activities();
+          new Activities();
           shortcut_handler = new ShortcutsNavigation();
           break;
         case 'projects:commits:show':
@@ -404,8 +414,7 @@ import initGroupAnalytics from './init_group_analytics';
 
           if ($('#tree-slider').length) new TreeView();
           if ($('.blob-viewer').length) new BlobViewer();
-          if ($('.project-show-activity').length) new gl.Activities();
-
+          if ($('.project-show-activity').length) new Activities();
           $('#tree-slider').waitForImages(function() {
             ajaxGet(document.querySelector('.js-tree-content').dataset.logsPath);
           });
@@ -445,13 +454,13 @@ import initGroupAnalytics from './init_group_analytics';
           });
           break;
         case 'groups:activity':
-          new gl.Activities();
+          new Activities();
           break;
         case 'groups:show':
           const newGroupChildWrapper = document.querySelector('.js-new-project-subgroup');
           shortcut_handler = new ShortcutsNavigation();
           new NotificationsForm();
-          new NotificationsDropdown();
+          notificationsDropdown();
           new ProjectsList();
 
           if (newGroupChildWrapper) {
@@ -484,15 +493,12 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'projects:tree:show':
           shortcut_handler = new ShortcutsNavigation();
-
-          if (UserFeatureHelper.isNewRepoEnabled()) break;
-
           new TreeView();
           new BlobViewer();
           new NewCommitForm($('.js-create-dir-form'));
 
           if (document.querySelector('.js-tree-content').dataset.pathLocksAvailable === 'true') {
-            PathLocks.init(
+            initPathLocks(
               document.querySelector('.js-tree-content').dataset.pathLocksToggle,
               document.querySelector('.js-tree-content').dataset.pathLocksPath,
             );
@@ -513,7 +519,6 @@ import initGroupAnalytics from './init_group_analytics';
           shortcut_handler = true;
           break;
         case 'projects:blob:show':
-          if (UserFeatureHelper.isNewRepoEnabled()) break;
           new BlobViewer();
           initBlob();
           break;
@@ -586,21 +591,24 @@ import initGroupAnalytics from './init_group_analytics';
           // Initialize expandable settings panels
           initSettingsPanels();
 
-          import(/* webpackChunkName: "ci-cd-settings" */ './projects/ci_cd_settings_bundle')
-            .then(ciCdSettings => ciCdSettings.default())
-            .catch((err) => {
-              Flash(s__('ProjectSettings|Problem setting up the CI/CD settings JavaScript'));
-              throw err;
-            });
+          const runnerToken = document.querySelector('.js-secret-runner-token');
+          if (runnerToken) {
+            const runnerTokenSecretValue = new SecretValues(runnerToken);
+            runnerTokenSecretValue.init();
+          }
         case 'groups:settings:ci_cd:show':
-          new ProjectVariables();
+          const secretVariableTable = document.querySelector('.js-secret-variable-table');
+          if (secretVariableTable) {
+            const secretVariableTableValues = new SecretValues(secretVariableTable);
+            secretVariableTableValues.init();
+          }
           break;
         case 'ci:lints:create':
         case 'ci:lints:show':
           new CILintEditor();
           break;
         case 'users:show':
-          new UserCallout();
+          import('./pages/users/show').then(m => m.default()).catch(fail);
           break;
         case 'admin:conversational_development_index:show':
           new UserCallout();
@@ -609,6 +617,7 @@ import initGroupAnalytics from './init_group_analytics';
           new LineHighlighter();
           new BlobViewer();
           initNotes();
+          new ZenMode();
           break;
         case 'import:fogbugz:new_user_map':
           new UsersSelect();
@@ -650,6 +659,9 @@ import initGroupAnalytics from './init_group_analytics';
         case 'groups:analytics:show':
           initGroupAnalytics();
           break;
+        case 'groups:ldap_group_links:index':
+          initLDAPGroupsSelect();
+          break;
       }
       switch (path[0]) {
         case 'sessions':
@@ -666,7 +678,7 @@ import initGroupAnalytics from './init_group_analytics';
           // needed in rspec
           gl.u2fAuthenticate = u2fAuthenticate;
         case 'admin':
-          new Admin();
+          initAdmin();
           switch (path[1]) {
             case 'broadcast_messages':
               initBroadcastMessagesForm();
@@ -676,6 +688,13 @@ import initGroupAnalytics from './init_group_analytics';
               break;
             case 'groups':
               new UsersSelect();
+
+              switch (path[2]) {
+                case 'edit':
+                  initLDAPGroupsSelect();
+                  break;
+              }
+
               break;
             case 'projects':
               document.querySelectorAll('.js-namespace-select')
@@ -704,14 +723,14 @@ import initGroupAnalytics from './init_group_analytics';
           break;
         case 'profiles':
           new NotificationsForm();
-          new NotificationsDropdown();
+          notificationsDropdown();
           break;
         case 'projects':
           new Project();
           projectAvatar();
           switch (path[1]) {
             case 'compare':
-              new CompareAutocomplete();
+              initCompareAutocomplete();
               break;
             case 'edit':
               shortcut_handler = new ShortcutsNavigation();
@@ -728,7 +747,7 @@ import initGroupAnalytics from './init_group_analytics';
             case 'show':
               new Star();
               new ProjectNew();
-              new NotificationsDropdown();
+              notificationsDropdown();
               break;
             case 'wikis':
               new Wikis();
@@ -773,7 +792,7 @@ import initGroupAnalytics from './init_group_analytics';
     Dispatcher.prototype.initSearch = function() {
       // Only when search form is present
       if ($('.search').length) {
-        return new gl.SearchAutocomplete();
+        return new SearchAutocomplete();
       }
     };
 

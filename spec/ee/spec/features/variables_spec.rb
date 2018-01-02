@@ -12,7 +12,7 @@ describe 'Project variables EE', :js do
       variable_environment_scope: variable_environment_scope)
 
     login_as(user)
-    project.team << [user, :master]
+    project.add_master(user)
     project.variables << variable
 
     visit project_settings_ci_cd_path(project)

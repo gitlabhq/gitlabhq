@@ -5,7 +5,7 @@ describe Gitlab::Ci::Pipeline::Chain::Sequence do
   set(:user) { create(:user) }
 
   let(:pipeline) { build_stubbed(:ci_pipeline) }
-  let(:command) { double('command' ) }
+  let(:command) { Gitlab::Ci::Pipeline::Chain::Command.new }
   let(:first_step) { spy('first step') }
   let(:second_step) { spy('second step') }
   let(:sequence) { [first_step, second_step] }

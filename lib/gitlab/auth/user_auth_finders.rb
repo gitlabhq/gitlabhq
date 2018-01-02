@@ -57,7 +57,7 @@ module Gitlab
         job = ::Ci::Build.find_by(token: token)
         raise UnauthorizedError unless job
 
-        @job_token_authentication = true
+        @job_token_authentication = true # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
         job.user
       end

@@ -118,7 +118,7 @@ describe('MonitoringDeployment', () => {
       ).not.toEqual('display: none;');
     });
 
-    it('shows the refText inside a text element with the deploy-info-text class', () => {
+    it('contains date, refs and the "deployed" text', () => {
       reducedDeploymentData[0].showDeploymentFlag = true;
       const component = createComponent({
         showDeployInfo: true,
@@ -129,8 +129,31 @@ describe('MonitoringDeployment', () => {
       });
 
       expect(
-        component.$el.querySelector('.deploy-info-text').firstChild.nodeValue.trim(),
-      ).toEqual(component.refText(reducedDeploymentData[0]));
+        component.$el.querySelectorAll('.deploy-info-text'),
+      ).toContainText('Deployed');
+
+      expect(
+        component.$el.querySelectorAll('.deploy-info-text'),
+      ).toContainText('Wed, May 31');
+
+      expect(
+        component.$el.querySelectorAll('.deploy-info-text'),
+      ).toContainText(component.refText(reducedDeploymentData[0]));
+    });
+
+    it('contains a link to the commit contents', () => {
+      reducedDeploymentData[0].showDeploymentFlag = true;
+      const component = createComponent({
+        showDeployInfo: true,
+        deploymentData: reducedDeploymentData,
+        graphHeight: 300,
+        graphWidth: 440,
+        graphHeightOffset: 120,
+      });
+
+      expect(
+        component.$el.querySelectorAll('.deploy-info-text-link')[0].parentElement.getAttribute('xlink:href'),
+      ).not.toEqual('');
     });
 
     it('should contain a hidden gradient', () => {

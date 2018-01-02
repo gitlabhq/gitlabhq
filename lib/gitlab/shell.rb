@@ -66,7 +66,7 @@ module Gitlab
     # Init new repository
     #
     # storage - project's storage name
-    # name - project path with namespace
+    # name - project disk path
     #
     # Ex.
     #   add_repository("/path/to/storage", "gitlab/gitlab-ci")
@@ -94,17 +94,21 @@ module Gitlab
     # Import repository
     #
     # storage - project's storage path
-    # name - project path with namespace
+    # name - project disk path
+    # url - URL to import from
     #
     # Ex.
-    #   import_repository("/path/to/storage", "gitlab/gitlab-ci", "https://github.com/randx/six.git")
+    #   import_repository("/path/to/storage", "gitlab/gitlab-ci", "https://gitlab.com/gitlab-org/gitlab-test.git")
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
     def import_repository(storage, name, url)
       # The timeout ensures the subprocess won't hang forever
-      cmd = [gitlab_shell_projects_path, 'import-project',
-             storage, "#{name}.git", url, "#{Gitlab.config.gitlab_shell.git_timeout}"]
-      gitlab_shell_fast_execute_raise_error(cmd)
+      cmd = gitlab_projects(storage, "#{name}.git")
+      success = cmd.import_project(url, git_timeout)
+
+      raise Error, cmd.output unless success
+
+      success
     end
 
     # Fetch remote for repository
@@ -132,30 +136,15 @@ module Gitlab
 
     # Move repository
     # storage - project's storage path
-    # path - project path with namespace
-    # new_path - new project path with namespace
+    # path - project disk path
+    # new_path - new project disk path
     #
     # Ex.
     #   mv_repository("/path/to/storage", "gitlab/gitlab-ci", "randx/gitlab-ci-new")
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
     def mv_repository(storage, path, new_path)
-      gitlab_shell_fast_execute([gitlab_shell_projects_path, 'mv-project',
-                                 storage, "#{path}.git", "#{new_path}.git"])
-    end
-
-    # Move repository storage
-    #
-    # current_storage - project's current storage path
-    # path - project path with namespace
-    # new_storage - new storage path
-    #
-    # Ex.
-    #   mv_storage("/path/to/storage", "randx/gitlab-ci", "/new/storage/path")
-    #
-    def mv_storage(current_storage, path, new_storage)
-      Gitlab::Utils.system_silent([gitlab_shell_projects_path, 'mv-storage',
-                                   current_storage, "#{path}.git", new_storage])
+      gitlab_projects(storage, "#{path}.git").mv_project("#{new_path}.git")
     end
 
     # Fork repository to new path
@@ -169,30 +158,21 @@ module Gitlab
     #
     # Gitaly note: JV: not easy to migrate because this involves two Gitaly servers, not one.
     def fork_repository(forked_from_storage, forked_from_disk_path, forked_to_storage, forked_to_disk_path)
-      gitlab_shell_fast_execute(
-        [
-          gitlab_shell_projects_path,
-          'fork-repository',
-          forked_from_storage,
-          "#{forked_from_disk_path}.git",
-          forked_to_storage,
-          "#{forked_to_disk_path}.git"
-        ]
-      )
+      gitlab_projects(forked_from_storage, "#{forked_from_disk_path}.git")
+        .fork_repository(forked_to_storage, "#{forked_to_disk_path}.git")
     end
 
     # Remove repository from file system
     #
     # storage - project's storage path
-    # name - project path with namespace
+    # name - project disk path
     #
     # Ex.
     #   remove_repository("/path/to/storage", "gitlab/gitlab-ci")
     #
     # Gitaly migration: https://gitlab.com/gitlab-org/gitaly/issues/387
     def remove_repository(storage, name)
-      gitlab_shell_fast_execute([gitlab_shell_projects_path,
-                                 'rm-project', storage, "#{name}.git"])
+      gitlab_projects(storage, "#{name}.git").rm_project
     end
 
     # Add new key to gitlab-shell
@@ -384,56 +364,45 @@ module Gitlab
       end
     end
 
-    # Create (if necessary) and link the secret token file
-    def generate_and_link_secret_token
-      secret_file = Gitlab.config.gitlab_shell.secret_file
-      unless File.size?(secret_file)
-        # Generate a new token of 16 random hexadecimal characters and store it in secret_file.
-        token = SecureRandom.hex(16)
-        File.write(secret_file, token)
-      end
-
-      link_path = File.join(gitlab_shell_path, '.gitlab_shell_secret')
-      if File.exist?(gitlab_shell_path) && !File.exist?(link_path)
-        FileUtils.symlink(secret_file, link_path)
-      end
-    end
-
     # Push branch to remote repository
     #
-    # project_name - project's name with namespace
+    # storage - project's storage path
+    # project_name - project's disk path
     # remote_name - remote name
-    # branch_name - remote branch name
+    # branch_names - remote branch names to push
+    # forced - should we use --force flag
     #
     # Ex.
-    #   push_remote_branches('upstream', 'feature')
+    #   push_remote_branches('/path/to/storage', 'gitlab-org/gitlab-test' 'upstream', ['feature'])
     #
     def push_remote_branches(storage, project_name, remote_name, branch_names, forced: true)
-      args = [gitlab_shell_projects_path, 'push-branches', storage, "#{project_name}.git", remote_name, '600']
-      args << '--force' if forced
-      args += [*branch_names]
+      cmd = gitlab_projects(storage, "#{project_name}.git")
 
-      output, status = Popen.popen(args)
-      raise Error, output unless status.zero?
+      success = cmd.push_branches(remote_name, git_timeout, forced, branch_names)
 
-      true
+      raise Error, cmd.output unless success
+
+      success
     end
 
     # Delete branch from remote repository
     #
-    # project_name - project's name with namespace
+    # storage - project's storage path
+    # project_name - project's disk path
     # remote_name - remote name
-    # branch_name - remote branch name
+    # branch_names - remote branch names
     #
     # Ex.
-    #   delete_remote_branches('upstream', 'feature')
+    #   delete_remote_branches('/path/to/storage', 'gitlab-org/gitlab-test', 'upstream', ['feature'])
     #
     def delete_remote_branches(storage, project_name, remote_name, branch_names)
-      args = [gitlab_shell_projects_path, 'delete-remote-branches', storage, "#{project_name}.git", remote_name, *branch_names]
-      output, status = Popen.popen(args)
-      raise Error, output unless status.zero?
+      cmd = gitlab_projects(storage, "#{project_name}.git")
 
-      true
+      success = cmd.delete_remote_branches(remote_name, branch_names)
+
+      raise Error, cmd.output unless success
+
+      success
     end
 
     protected
@@ -474,24 +443,35 @@ module Gitlab
 
     private
 
-    def local_fetch_remote(storage, name, remote, ssh_auth: nil, forced: false, no_tags: false)
-      args = [gitlab_shell_projects_path, 'fetch-remote', storage, name, remote, "#{Gitlab.config.gitlab_shell.git_timeout}"]
-      args << '--force' if forced
-      args << '--no-tags' if no_tags
+    def gitlab_projects(shard_path, disk_path)
+      Gitlab::Git::GitlabProjects.new(
+        shard_path,
+        disk_path,
+        global_hooks_path: Gitlab.config.gitlab_shell.hooks_path,
+        logger: Rails.logger
+      )
+    end
 
-      vars = {}
+    def local_fetch_remote(storage_path, repository_relative_path, remote, ssh_auth: nil, forced: false, no_tags: false)
+      vars = { force: forced, tags: !no_tags }
 
       if ssh_auth&.ssh_import?
         if ssh_auth.ssh_key_auth? && ssh_auth.ssh_private_key.present?
-          vars['GITLAB_SHELL_SSH_KEY'] = ssh_auth.ssh_private_key
+          vars[:ssh_key] = ssh_auth.ssh_private_key
         end
 
         if ssh_auth.ssh_known_hosts.present?
-          vars['GITLAB_SHELL_KNOWN_HOSTS'] = ssh_auth.ssh_known_hosts
+          vars[:known_hosts] = ssh_auth.ssh_known_hosts
         end
       end
 
-      gitlab_shell_fast_execute_raise_error(args, vars)
+      cmd = gitlab_projects(storage_path, repository_relative_path)
+
+      success = cmd.fetch_remote(remote, git_timeout, vars)
+
+      raise Error, cmd.output unless success
+
+      success
     end
 
     def gitlab_shell_fast_execute(cmd)
@@ -525,6 +505,10 @@ module Gitlab
       end
 
       Gitlab::GitalyClient::NamespaceService.new(storage)
+    end
+
+    def git_timeout
+      Gitlab.config.gitlab_shell.git_timeout
     end
 
     def gitaly_migrate(method, &block)

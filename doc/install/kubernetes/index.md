@@ -1,5 +1,5 @@
 # Installing GitLab on Kubernetes
-> **Note**: These charts have been tested on Google Container Engine and Azure Container Service. Other Kubernetes installations may work as well, if not please [open an issue](https://gitlab.com/charts/charts.gitlab.io/issues).
+> **Note**: These charts have been tested on Google Kubernetes Engine and Azure Container Service. Other Kubernetes installations may work as well, if not please [open an issue](https://gitlab.com/charts/charts.gitlab.io/issues).
 
 The easiest method to deploy GitLab on [Kubernetes](https://kubernetes.io/) is
 to take advantage of GitLab's Helm charts. [Helm] is a package

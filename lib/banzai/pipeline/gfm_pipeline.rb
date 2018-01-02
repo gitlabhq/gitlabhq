@@ -15,7 +15,6 @@ module Banzai
 
           Filter::MathFilter,
           Filter::MermaidFilter,
-          Filter::UploadLinkFilter,
           Filter::VideoLinkFilter,
           Filter::ImageLazyLoadFilter,
           Filter::ImageLinkFilter,
@@ -24,6 +23,7 @@ module Banzai
           Filter::AutolinkFilter,
           Filter::ExternalLinkFilter,
 
+          Filter::EpicReferenceFilter,
           Filter::UserReferenceFilter,
           Filter::IssueReferenceFilter,
           Filter::ExternalIssueReferenceFilter,

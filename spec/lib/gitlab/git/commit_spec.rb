@@ -278,6 +278,35 @@ describe Gitlab::Git::Commit, seed_helper: true do
       it { is_expected.not_to include(SeedRepo::FirstCommit::ID) }
     end
 
+    shared_examples '.shas_with_signatures' do
+      let(:signed_shas) { %w[5937ac0a7beb003549fc5fd26fc247adbce4a52e 570e7b2abdd848b95f2f578043fc23bd6f6fd24d] }
+      let(:unsigned_shas) { %w[19e2e9b4ef76b422ce1154af39a91323ccc57434 c642fe9b8b9f28f9225d7ea953fe14e74748d53b] }
+      let(:first_signed_shas) { %w[5937ac0a7beb003549fc5fd26fc247adbce4a52e c642fe9b8b9f28f9225d7ea953fe14e74748d53b] }
+
+      it 'has 2 signed shas' do
+        ret = described_class.shas_with_signatures(repository, signed_shas)
+        expect(ret).to eq(signed_shas)
+      end
+
+      it 'has 0 signed shas' do
+        ret = described_class.shas_with_signatures(repository, unsigned_shas)
+        expect(ret).to eq([])
+      end
+
+      it 'has 1 signed sha' do
+        ret = described_class.shas_with_signatures(repository, first_signed_shas)
+        expect(ret).to contain_exactly(first_signed_shas.first)
+      end
+    end
+
+    describe '.shas_with_signatures with gitaly on' do
+      it_should_behave_like '.shas_with_signatures'
+    end
+
+    describe '.shas_with_signatures with gitaly disabled', :disable_gitaly do
+      it_should_behave_like '.shas_with_signatures'
+    end
+
     describe '.find_all' do
       shared_examples 'finding all commits' do
         it 'should return a return a collection of commits' do

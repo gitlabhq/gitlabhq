@@ -33,4 +33,64 @@ describe LfsObject do
       end
     end
   end
+
+  describe '#schedule_migration_to_object_storage' do
+    before do
+      stub_lfs_setting(enabled: true)
+    end
+
+    subject { create(:lfs_object, :with_file) }
+
+    context 'when object storage is disabled' do
+      before do
+        stub_lfs_object_storage(enabled: false)
+      end
+
+      it 'does not schedule the migration' do
+        expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
+
+        subject
+      end
+    end
+
+    context 'when object storage is enabled' do
+      context 'when background upload is enabled' do
+        context 'when is licensed' do
+          before do
+            stub_lfs_object_storage(background_upload: true)
+          end
+
+          it 'schedules the model for migration' do
+            expect(ObjectStorageUploadWorker).to receive(:perform_async).with('LfsObjectUploader', described_class.name, :file, kind_of(Numeric))
+
+            subject
+          end
+        end
+
+        context 'when is unlicensed' do
+          before do
+            stub_lfs_object_storage(background_upload: true, licensed: false)
+          end
+
+          it 'does not schedule the migration' do
+            expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
+
+            subject
+          end
+        end
+      end
+
+      context 'when background upload is disabled' do
+        before do
+          stub_lfs_object_storage(background_upload: false)
+        end
+
+        it 'schedules the model for migration' do
+          expect(ObjectStorageUploadWorker).not_to receive(:perform_async)
+
+          subject
+        end
+      end
+    end
+  end
 end

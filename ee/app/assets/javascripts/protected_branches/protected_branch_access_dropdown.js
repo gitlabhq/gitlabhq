@@ -145,8 +145,8 @@ export default class ProtectedBranchAccessDropdown {
   addSelectedItem(selectedItem) {
     let itemToAdd = {};
 
-    // If the item already exists, just use it
     let index = -1;
+    let alreadyAdded = false;
     const selectedItems = this.getAllSelectedItems();
 
     // Compare IDs based on selectedItem.type
@@ -155,6 +155,10 @@ export default class ProtectedBranchAccessDropdown {
       switch (selectedItem.type) {
         case LEVEL_TYPES.ROLE:
           comparator = LEVEL_ID_PROP.ROLE;
+          // If the item already exists, just use it
+          if (item[comparator] === selectedItem.id) {
+            alreadyAdded = true;
+          }
           break;
         case LEVEL_TYPES.GROUP:
           comparator = LEVEL_ID_PROP.GROUP;
@@ -170,6 +174,10 @@ export default class ProtectedBranchAccessDropdown {
         index = i;
       }
     });
+
+    if (alreadyAdded) {
+      return;
+    }
 
     if (index !== -1 && selectedItems[index]._destroy) {
       delete selectedItems[index]._destroy;

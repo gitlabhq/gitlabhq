@@ -215,7 +215,7 @@ export default {
     "head_blob_path": "/root/acets-app/blob/abcdef",
     "base_path": "base.json",
     "base_blob_path": "/root/acets-app/blob/abcdef"
-  }
+  },
 };
 
 export const headIssues = [
@@ -308,6 +308,57 @@ export const parsedBaseIssues = [
   },
 ];
 
+export const headPerformance = [
+  {
+    subject: '/some/path',
+    metrics: [
+      {
+        name: 'Sitespeed Score',
+        value: 85,
+      },
+    ],
+  },
+  {
+    subject: '/some/other/path',
+    metrics: [
+      {
+        name: 'Sitespeed Score',
+        value: 79,
+      },
+    ],
+  },
+  {
+    subject: '/yet/another/path',
+    metrics: [
+      {
+        name: 'Sitespeed Score',
+        value: 80,
+      },
+    ],
+  },
+];
+
+export const basePerformance = [
+  {
+    subject: '/some/path',
+    metrics: [
+      {
+        name: 'Sitespeed Score',
+        value: 84,
+      },
+    ],
+  },
+  {
+    subject: '/some/other/path',
+    metrics: [
+      {
+        name: 'Sitespeed Score',
+        value: 80,
+      },
+    ],
+  },
+];
+
 export const codequalityParsedIssues = [
   {
     name: 'Insecure Dependency',
@@ -377,3 +428,90 @@ export const parsedSecurityIssuesStore = [
     urlPath: 'path/Gemfile.lock',
   },
 ];
+
+export const dockerReport = {
+  unapproved: [
+    'CVE-2017-12944',
+    'CVE-2017-16232'
+  ],
+  vulnerabilities: [
+    {
+      vulnerability: 'CVE-2017-12944',
+      namespace: 'debian:8',
+      severity: 'Medium'
+    },
+    {
+        vulnerability: 'CVE-2017-16232',
+        namespace: 'debian:8',
+        severity: 'Negligible'
+    },
+    {
+        vulnerability: 'CVE-2014-8130',
+        namespace: 'debian:8',
+        severity: 'Negligible'
+    }
+  ]
+};
+
+export const dockerReportParsed = {
+  unapproved: [
+    {
+      vulnerability: 'CVE-2017-12944',
+      namespace: 'debian:8',
+      severity: 'Medium',
+      name: 'CVE-2017-12944',
+      priority: 'Medium',
+      path: 'debian:8',
+      nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-12944'
+    },
+    {
+      vulnerability: 'CVE-2017-16232',
+      namespace: 'debian:8',
+      severity: 'Negligible',
+      name: 'CVE-2017-16232',
+      priority: 'Negligible',
+      path: 'debian:8',
+      nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-16232'
+    },
+  ],
+  approved: [
+    {
+      vulnerability: 'CVE-2014-8130',
+      namespace: 'debian:8',
+      severity: 'Negligible',
+      name: 'CVE-2014-8130',
+      priority: 'Negligible',
+      path: 'debian:8',
+      nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-8130'
+    },
+  ],
+  vulnerabilities: [
+    {
+      vulnerability: 'CVE-2017-12944',
+      namespace: 'debian:8',
+      severity: 'Medium',
+      name: 'CVE-2017-12944',
+      priority: 'Medium',
+      path: 'debian:8',
+      nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-12944'
+    },
+    {
+      vulnerability: 'CVE-2017-16232',
+      namespace: 'debian:8',
+      severity: 'Negligible',
+      name: 'CVE-2017-16232',
+      priority: 'Negligible',
+      path: 'debian:8',
+      nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-16232'
+    },
+    {
+      vulnerability: 'CVE-2014-8130',
+      namespace: 'debian:8',
+      severity: 'Negligible',
+      name: 'CVE-2014-8130',
+      priority: 'Negligible',
+      path: 'debian:8',
+      nameLink: 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2014-8130'
+    }
+  ]
+};

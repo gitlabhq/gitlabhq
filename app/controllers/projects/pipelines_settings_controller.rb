@@ -29,7 +29,6 @@ class Projects::PipelinesSettingsController < Projects::ApplicationController
       :runners_token, :builds_enabled, :build_allow_git_fetch,
       :build_timeout_in_minutes, :build_coverage_regex, :public_builds,
       :auto_cancel_pending_pipelines, :ci_config_path,
-      :run_auto_devops_pipeline_implicit, :run_auto_devops_pipeline_explicit,
       auto_devops_attributes: [:id, :domain, :enabled]
     )
   end

@@ -1,5 +1,0 @@
----
-title: Remove duplicate read-only flash message on admin pages
-merge_request: 3495
-author:
-type: fixed

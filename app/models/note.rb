@@ -18,6 +18,7 @@ class Note < ActiveRecord::Base
   include IgnorableColumn
   include Editable
   include Gitlab::SQL::Pattern
+  include ThrottledTouch
 
   module SpecialRole
     FIRST_TIME_CONTRIBUTOR = :first_time_contributor
@@ -58,7 +59,7 @@ class Note < ActiveRecord::Base
   participant :author
 
   belongs_to :project
-  belongs_to :noteable, polymorphic: true, touch: true # rubocop:disable Cop/PolymorphicAssociations
+  belongs_to :noteable, polymorphic: true # rubocop:disable Cop/PolymorphicAssociations
   belongs_to :author, class_name: "User"
   belongs_to :updated_by, class_name: "User"
   belongs_to :last_edited_by, class_name: 'User'
@@ -122,6 +123,7 @@ class Note < ActiveRecord::Base
   before_validation :set_discussion_id, on: :create
   after_save :keep_around_commit, if: :for_project_noteable?
   after_save :expire_etag_cache
+  after_save :touch_noteable
   after_destroy :expire_etag_cache
 
   class << self
@@ -236,16 +238,18 @@ class Note < ActiveRecord::Base
     for_personal_snippet?
   end
 
+  def commit
+    @commit ||= project.commit(commit_id) if commit_id.present?
+  end
+
   # override to return commits, which are not active record
   def noteable
-    if for_commit?
-      @commit ||= project.commit(commit_id)
-    else
-      super
-    end
-  # Temp fix to prevent app crash
-  # if note commit id doesn't exist
+    return commit if for_commit?
+
+    super
   rescue
+    # Temp fix to prevent app crash
+    # if note commit id doesn't exist
     nil
   end
 
@@ -364,6 +368,16 @@ class Note < ActiveRecord::Base
     end
   end
 
+  def references
+    refs = [noteable]
+
+    if part_of_discussion?
+      refs += discussion.notes.take_while { |n| n.id < id }
+    end
+
+    refs
+  end
+
   def expire_etag_cache
     return unless noteable&.discussions_rendered_on_frontend?
 
@@ -373,6 +387,45 @@ class Note < ActiveRecord::Base
       target_id: noteable_id
     )
     Gitlab::EtagCaching::Store.new.touch(key)
+  end
+
+  def touch(*args)
+    # We're not using an explicit transaction here because this would in all
+    # cases result in all future queries going to the primary, even if no writes
+    # are performed.
+    #
+    # We touch the noteable first so its SELECT query can run before our writes,
+    # ensuring it runs on a secondary (if no prior write took place).
+    touch_noteable
+    super
+  end
+
+  # By default Rails will issue an "SELECT *" for the relation, which is
+  # overkill for just updating the timestamps. To work around this we manually
+  # touch the data so we can SELECT only the columns we need.
+  def touch_noteable
+    # Commits are not stored in the DB so we can't touch them.
+    return if for_commit?
+
+    assoc = association(:noteable)
+
+    noteable_object =
+      if assoc.loaded?
+        noteable
+      else
+        # If the object is not loaded (e.g. when notes are loaded async) we
+        # _only_ want the data we actually need.
+        assoc.scope.select(:id, :updated_at).take
+      end
+
+    noteable_object&.touch
+
+    # We return the noteable object so we can re-use it in EE for ElasticSearch.
+    noteable_object
+  end
+
+  def banzai_render_context(field)
+    super.merge(noteable: noteable)
   end
 
   private

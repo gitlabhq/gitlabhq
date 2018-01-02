@@ -254,7 +254,7 @@ module Elasticsearch
                    from_rev
                  end
 
-          return from, to_rev
+          [from, to_rev]
         end
 
         def index_new_branch?(from)
@@ -282,16 +282,18 @@ module Elasticsearch
           else
             repository_for_indexing.index.each do |blob|
               b = LiteBlob.new(repository_for_indexing, blob)
-              result.push(
-                {
-                  type: 'blob',
-                  id: "#{target_sha}_#{b.path}",
-                  rid: repository_id,
-                  oid: b.id,
-                  content: b.data,
-                  commit_sha: target_sha
-                }
-              ) if b.text?
+
+              if b.text?
+                result.push(
+                  {
+                    type: 'blob',
+                    id: "#{target_sha}_#{b.path}",
+                    rid: repository_id,
+                    oid: b.id,
+                    content: b.data,
+                    commit_sha: target_sha
+                  })
+              end
             end
           end
 
@@ -304,16 +306,18 @@ module Elasticsearch
           tree.each_blob do |blob|
             blob[:path] = path + blob[:name]
             b = LiteBlob.new(repository_for_indexing, blob)
-            result.push(
-              {
-                type: 'blob',
-                id: "#{repository_for_indexing.head.target.oid}_#{path}#{blob[:name]}",
-                rid: repository_id,
-                oid: b.id,
-                content: b.data,
-                commit_sha: repository_for_indexing.head.target.oid
-              }
-            ) if b.text?
+
+            if b.text?
+              result.push(
+                {
+                  type: 'blob',
+                  id: "#{repository_for_indexing.head.target.oid}_#{path}#{blob[:name]}",
+                  rid: repository_id,
+                  oid: b.id,
+                  content: b.data,
+                  commit_sha: repository_for_indexing.head.target.oid
+                })
+            end
           end
 
           tree.each_tree do |nested_tree|
@@ -363,11 +367,7 @@ module Elasticsearch
 
         unless defined?(path_to_repo)
           def path_to_repo
-            if @path_to_repo.blank?
-              raise NotImplementedError, 'Please, define "path_to_repo" method, or set "path_to_repo" via "repository_for_indexing" method'
-            else
-              @path_to_repo
-            end
+            @path_to_repo.presence || raise(NotImplementedError, 'Please, define "path_to_repo" method, or set "path_to_repo" via "repository_for_indexing" method')
           end
         end
 
@@ -443,9 +443,8 @@ module Elasticsearch
           end
 
           if options[:highlight]
-            es_fields = fields.map { |field| field.split('^').first }.inject({}) do |memo, field|
+            es_fields = fields.map { |field| field.split('^').first }.each_with_object({}) do |field, memo|
               memo[field.to_sym] = {}
-              memo
             end
 
             query_hash[:highlight] = {

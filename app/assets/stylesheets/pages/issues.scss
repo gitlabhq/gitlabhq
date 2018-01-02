@@ -134,31 +134,14 @@ ul.related-merge-requests > li {
 }
 
 @media (max-width: $screen-xs-max) {
-  .detail-page-header,
-  .issuable-header {
-    display: block;
-
+  .detail-page-header {
     .issuable-meta {
       line-height: 18px;
-    }
-  }
-
-  .issuable-actions {
-    margin-top: 10px;
-
-    .issue-btn-group {
-      width: 100%;
-
-      .btn {
-        width: 100%;
-      }
     }
   }
 }
 
 .issue-form {
-  @include new-style-dropdown;
-
   .select2-container {
     width: 250px !important;
   }
@@ -184,7 +167,7 @@ ul.related-merge-requests > li {
   }
 }
 
-.issue-email-modal-btn {
+.issuable-email-modal-btn {
   padding: 0;
   color: $gl-link-color;
   background-color: transparent;

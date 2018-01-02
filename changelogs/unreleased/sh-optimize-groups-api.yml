@@ -1,5 +1,0 @@
----
-title: Optimize API /groups/:id/projects by preloading associations
-merge_request:
-author:
-type: performance

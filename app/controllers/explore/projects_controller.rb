@@ -1,5 +1,6 @@
 class Explore::ProjectsController < Explore::ApplicationController
   include ParamsBackwardCompatibility
+  include RendersMemberAccess
 
   before_action :set_non_archived_param
 
@@ -49,10 +50,12 @@ class Explore::ProjectsController < Explore::ApplicationController
   private
 
   def load_projects
-    ProjectsFinder.new(current_user: current_user, params: params)
-      .execute
-      .includes(:route, namespace: :route)
-      .page(params[:page])
-      .without_count
+    projects = ProjectsFinder.new(current_user: current_user, params: params)
+                 .execute
+                 .includes(:route, namespace: :route)
+                 .page(params[:page])
+                 .without_count
+
+    prepare_projects_for_rendering(projects)
   end
 end

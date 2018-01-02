@@ -13,7 +13,7 @@ feature 'Dashboard Todos' do
     end
 
     it 'shows "All done" message' do
-      expect(page).to have_content 'Todos let you see what you should do next.'
+      expect(page).to have_content 'Todos let you see what you should do next'
     end
   end
 

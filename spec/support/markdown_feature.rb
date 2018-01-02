@@ -8,7 +8,7 @@
 # The class renders `spec/fixtures/markdown.md.erb` using ERB, allowing for
 # reference to the factory-created objects.
 class MarkdownFeature
-  include FactoryGirl::Syntax::Methods
+  include FactoryBot::Syntax::Methods
 
   def user
     @user ||= create(:user)
@@ -24,7 +24,7 @@ class MarkdownFeature
 
   def project
     @project ||= create(:project, :repository, group: group).tap do |project|
-      project.team << [user, :master]
+      project.add_master(user)
     end
   end
 
@@ -79,13 +79,21 @@ class MarkdownFeature
     @group_milestone ||= create(:milestone, name: 'group-milestone', group: group)
   end
 
+  def epic
+    @epic ||= create(:epic, title: 'epic', group: group)
+  end
+
+  def epic_other_group
+    @epic ||= create(:epic, title: 'epic')
+  end
+
   # Cross-references -----------------------------------------------------------
 
   def xproject
     @xproject ||= begin
       group = create(:group, :nested)
       create(:project, :repository, namespace: group) do |project|
-        project.team << [user, :developer]
+        project.add_developer(user)
       end
     end
   end

@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :upload do
     model { build(:project) }
     path { "uploads/-/system/project/avatar/avatar.jpg" }
@@ -13,6 +13,12 @@ FactoryGirl.define do
     trait :issuable_upload do
       path { "#{SecureRandom.hex}/myfile.jpg" }
       uploader "FileUploader"
+    end
+
+    trait :namespace_upload do
+      path { "#{SecureRandom.hex}/myfile.jpg" }
+      model { build(:group) }
+      uploader "NamespaceFileUploader"
     end
   end
 end

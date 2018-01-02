@@ -1,4 +1,4 @@
-.nav-sidebar{ class: ("sidebar-icons-only" if collapsed_sidebar?) }
+.nav-sidebar{ class: ("sidebar-collapsed-desktop" if collapsed_sidebar?) }
   .nav-sidebar-inner-scroll
     - can_edit = can?(current_user, :admin_project, @project)
     .context-header

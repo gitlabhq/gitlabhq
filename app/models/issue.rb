@@ -13,6 +13,10 @@ class Issue < ActiveRecord::Base
   include FasterCacheKeys
   include RelativePositioning
   include TimeTrackable
+  include ThrottledTouch
+  include IgnorableColumn
+
+  ignore_column :assignee_id, :branch_name
 
   WEIGHT_RANGE = 1..9
   WEIGHT_ALL = 'Everything'.freeze

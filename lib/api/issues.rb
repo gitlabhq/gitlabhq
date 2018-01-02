@@ -8,7 +8,7 @@ module API
 
     helpers do
       def find_issues(args = {})
-        args = params.merge(args)
+        args = declared_params.merge(args)
 
         args.delete(:id)
         args[:milestone_title] = args.delete(:milestone)
@@ -166,6 +166,8 @@ module API
         use :issue_params
       end
       post ':id/issues' do
+        authorize! :create_issue, user_project
+
         # Setting created_at time only allowed for admins and project owners
         unless current_user.admin? || user_project.owner == current_user
           params.delete(:created_at)

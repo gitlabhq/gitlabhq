@@ -167,6 +167,72 @@ describe MergeRequest do
     end
   end
 
+  describe '#base_pipeline' do
+    let!(:pipeline) { create(:ci_empty_pipeline, project: subject.project, sha: subject.diff_base_sha) }
+
+    it { expect(subject.base_pipeline).to eq(pipeline) }
+  end
+
+  describe '#base_codeclimate_artifact' do
+    before do
+      allow(subject.base_pipeline).to receive(:codeclimate_artifact)
+        .and_return(1)
+    end
+
+    it 'delegates to merge request diff' do
+      expect(subject.base_codeclimate_artifact).to eq(1)
+    end
+  end
+
+  describe '#head_codeclimate_artifact' do
+    before do
+      allow(subject.head_pipeline).to receive(:codeclimate_artifact)
+        .and_return(1)
+    end
+
+    it 'delegates to merge request diff' do
+      expect(subject.head_codeclimate_artifact).to eq(1)
+    end
+  end
+
+  describe '#base_performance_artifact' do
+    before do
+      allow(subject.base_pipeline).to receive(:performance_artifact)
+        .and_return(1)
+    end
+
+    it 'delegates to merge request diff' do
+      expect(subject.base_performance_artifact).to eq(1)
+    end
+  end
+
+  describe '#head_performance_artifact' do
+    before do
+      allow(subject.head_pipeline).to receive(:performance_artifact)
+        .and_return(1)
+    end
+
+    it 'delegates to merge request diff' do
+      expect(subject.head_performance_artifact).to eq(1)
+    end
+  end
+
+  describe '#has_codeclimate_data?' do
+    context 'with codeclimate artifact' do
+      before do
+        artifact = double(success?: true)
+        allow(subject.head_pipeline).to receive(:codeclimate_artifact).and_return(artifact)
+        allow(subject.base_pipeline).to receive(:codeclimate_artifact).and_return(artifact)
+      end
+
+      it { expect(subject.has_codeclimate_data?).to be_truthy }
+    end
+
+    context 'without codeclimate artifact' do
+      it { expect(subject.has_codeclimate_data?).to be_falsey }
+    end
+  end
+
   describe '#sast_artifact' do
     it { is_expected.to delegate_method(:sast_artifact).to(:head_pipeline) }
   end
@@ -179,5 +245,9 @@ describe MergeRequest do
     end
 
     it { expect(merge_request.has_sast_data?).to be_truthy }
+  end
+
+  describe '#sast_container_artifact' do
+    it { is_expected.to delegate_method(:sast_container_artifact).to(:head_pipeline) }
   end
 end

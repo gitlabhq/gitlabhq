@@ -36,27 +36,27 @@ describe('ItemActionsComponent', () => {
 
   describe('methods', () => {
     describe('onLeaveGroup', () => {
-      it('should change `dialogStatus` prop to `true` which shows confirmation dialog', () => {
-        expect(vm.dialogStatus).toBeFalsy();
+      it('should change `modalStatus` prop to `true` which shows confirmation dialog', () => {
+        expect(vm.modalStatus).toBeFalsy();
         vm.onLeaveGroup();
-        expect(vm.dialogStatus).toBeTruthy();
+        expect(vm.modalStatus).toBeTruthy();
       });
     });
 
     describe('leaveGroup', () => {
-      it('should change `dialogStatus` prop to `false` and emit `leaveGroup` event with required params when called with `leaveConfirmed` as `true`', () => {
+      it('should change `modalStatus` prop to `false` and emit `leaveGroup` event with required params when called with `leaveConfirmed` as `true`', () => {
         spyOn(eventHub, '$emit');
-        vm.dialogStatus = true;
+        vm.modalStatus = true;
         vm.leaveGroup(true);
-        expect(vm.dialogStatus).toBeFalsy();
+        expect(vm.modalStatus).toBeFalsy();
         expect(eventHub.$emit).toHaveBeenCalledWith('leaveGroup', vm.group, vm.parentGroup);
       });
 
-      it('should change `dialogStatus` prop to `false` and should NOT emit `leaveGroup` event when called with `leaveConfirmed` as `false`', () => {
+      it('should change `modalStatus` prop to `false` and should NOT emit `leaveGroup` event when called with `leaveConfirmed` as `false`', () => {
         spyOn(eventHub, '$emit');
-        vm.dialogStatus = true;
+        vm.modalStatus = true;
         vm.leaveGroup(false);
-        expect(vm.dialogStatus).toBeFalsy();
+        expect(vm.modalStatus).toBeFalsy();
         expect(eventHub.$emit).not.toHaveBeenCalled();
       });
     });
@@ -99,9 +99,9 @@ describe('ItemActionsComponent', () => {
       newVm.$destroy();
     });
 
-    it('should show modal dialog when `dialogStatus` is set to `true`', () => {
-      vm.dialogStatus = true;
-      const modalDialogEl = vm.$el.querySelector('.modal.popup-dialog');
+    it('should show modal dialog when `modalStatus` is set to `true`', () => {
+      vm.modalStatus = true;
+      const modalDialogEl = vm.$el.querySelector('.modal');
       expect(modalDialogEl).toBeDefined();
       expect(modalDialogEl.querySelector('.modal-title').innerText.trim()).toBe('Are you sure?');
       expect(modalDialogEl.querySelector('.btn.btn-warning').innerText.trim()).toBe('Leave');

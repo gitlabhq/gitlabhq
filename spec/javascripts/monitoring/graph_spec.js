@@ -4,6 +4,8 @@ import MonitoringMixins from '~/monitoring/mixins/monitoring_mixins';
 import eventHub from '~/monitoring/event_hub';
 import { deploymentData, convertDatesMultipleSeries, singleRowMetricsMultipleSeries } from './mock_data';
 
+const tagsPath = 'http://test.host/frontend-fixtures/environments-project/tags';
+const projectPath = 'http://test.host/frontend-fixtures/environments-project';
 const createComponent = (propsData) => {
   const Component = Vue.extend(Graph);
 
@@ -25,6 +27,8 @@ describe('Graph', () => {
       classType: 'col-md-6',
       updateAspectRatio: false,
       deploymentData,
+      tagsPath,
+      projectPath,
     });
 
     expect(component.$el.querySelector('.text-center').innerText.trim()).toBe(component.graphData.title);
@@ -37,6 +41,8 @@ describe('Graph', () => {
         classType: 'col-md-6',
         updateAspectRatio: false,
         deploymentData,
+        tagsPath,
+        projectPath,
       });
 
       const transformedHeight = `${component.graphHeight - 100}`;
@@ -50,6 +56,8 @@ describe('Graph', () => {
         classType: 'col-md-6',
         updateAspectRatio: false,
         deploymentData,
+        tagsPath,
+        projectPath,
       });
 
       const viewBoxArray = component.outerViewBox.split(' ');
@@ -65,6 +73,8 @@ describe('Graph', () => {
       classType: 'col-md-6',
       updateAspectRatio: false,
       deploymentData,
+      tagsPath,
+      projectPath,
     });
     spyOn(eventHub, '$emit');
 
@@ -81,6 +91,8 @@ describe('Graph', () => {
       classType: 'col-md-6',
       updateAspectRatio: false,
       deploymentData,
+      tagsPath,
+      projectPath,
     });
 
     expect(component.yAxisLabel).toEqual(component.graphData.y_label);
@@ -98,6 +110,8 @@ describe('Graph', () => {
         hoveredDate: new Date('Sun Aug 27 2017 06:11:51 GMT-0500 (CDT)'),
         currentDeployXPos: null,
       },
+      tagsPath,
+      projectPath,
     });
 
     component.positionFlag();

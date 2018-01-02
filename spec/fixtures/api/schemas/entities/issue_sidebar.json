@@ -1,8 +1,6 @@
 {
   "type": "object",
   "properties" : {
-    "id": { "type": "integer" },
-    "iid": { "type": "integer" },
     "subscribed": { "type": "boolean" },
     "time_estimate": { "type": "integer" },
     "total_time_spent": { "type": "integer" },
@@ -15,6 +13,14 @@
     "assignees": {
       "type": "array",
       "items": { "$ref": "../public_api/v4/user/basic.json" }
+    },
+    "epic": {
+      "type": ["object", "null"],
+      "properties": {
+        "id": { "type": "integer" },
+        "title": { "type": "string" },
+        "url": { "type": "string" }
+      }
     },
     "weight": { "type": ["integer", "null"] }
   },

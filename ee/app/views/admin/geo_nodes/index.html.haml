@@ -1,0 +1,146 @@
+- page_title 'Geo nodes'
+- @content_class = "geo-admin-container"
+%h2.page-title.clearfix
+  %span.title-text.pull-left
+    Geo Nodes
+  = link_to "New node", new_admin_geo_node_path, class: 'btn btn-create pull-right'
+%hr.page-title-separator
+
+%p.page-subtitle.light
+  With #{link_to 'GitLab Geo', help_page_path('gitlab-geo/README'), class: 'vlink'} you can install a special
+  read-only and replicated instance anywhere.
+  Before you add nodes, follow the
+  #{link_to 'Setup instructions', help_page_path('gitlab-geo/README', anchor: 'setup-instructions'), class: 'vlink' }
+  in the
+  %strong exact order
+  they appear.
+
+- if @nodes.any?
+  .panel.panel-default
+    .panel-heading
+      Geo nodes (#{@nodes.count})
+    %ul.well-list.geo-nodes
+      - @nodes.each do |node|
+        %li{ id: dom_id(node), class: node_class(node), data: { status_url: status_admin_geo_node_path(node, format: :json) } }
+          .node-block
+            = node_status_icon(node)
+            %strong= node.url
+            - if node.current?
+              .node-badge.current-node Current node
+            - if node.primary?
+              .node-badge.primary-node Primary
+              %p
+                %span.help-block Primary node
+              %p
+                %span.help-block
+                  GitLab version:
+                  %span.js-primary-version= Gitlab::VERSION
+                  %small.js-primary-revision
+                    = "(#{Gitlab::REVISION})"
+            - else
+              = status_loading_icon
+              %table.geo-node-status.js-geo-node-status.hidden
+                %tr
+                  %td
+                    .help-block
+                      GitLab version:
+                  %td
+                    .node-info.prepend-top-5.prepend-left-5.js-secondary-version
+                - if node.enabled?
+                  %tr
+                    %td
+                      .help-block.prepend-top-10
+                        Health Status:
+                    %td
+                      .health-status.prepend-top-10.prepend-left-5.js-health-status
+                %tr
+                  %td
+                    .help-block.prepend-top-10
+                      Repositories:
+                  %td
+                    .node-info.prepend-top-10.prepend-left-5.stacked-progress-bar.js-repositories
+                      %span.status-unavailable.js-stats-unavailable
+                        Not available
+                      %span.status-green.js-synced
+                      %span.status-neutral.js-waiting
+                      %span.status-red.js-failed
+                %tr
+                  %td
+                    .help-block.prepend-top-10
+                      Wikis:
+                  %td
+                    .node-info.prepend-top-10.prepend-left-5.stacked-progress-bar.js-wikis
+                      %span.status-unavailable.js-stats-unavailable
+                        Not available
+                      %span.status-green.js-synced
+                      %span.status-neutral.js-waiting
+                      %span.status-red.js-failed
+                %tr
+                  %td
+                    .help-block.prepend-top-10
+                      LFS objects:
+                  %td
+                    .node-info.prepend-top-10.prepend-left-5.stacked-progress-bar.js-lfs-objects
+                      %span.status-unavailable.js-stats-unavailable
+                        Not available
+                      %span.status-green.js-synced
+                      %span.status-neutral.js-waiting
+                      %span.status-red.js-failed
+                %tr
+                  %td
+                    .help-block.prepend-top-10
+                      Attachments:
+                  %td
+                    .node-info.prepend-top-10.prepend-left-5.stacked-progress-bar.js-attachments
+                      %span.status-unavailable.js-stats-unavailable
+                        Not available
+                      %span.status-green.js-synced
+                      %span.status-neutral.js-waiting
+                      %span.status-red.js-failed
+                %tr
+                  %td
+                    .help-block.prepend-top-10
+                      Sync settings:
+                  %td
+                    .node-info.prepend-top-10.prepend-left-5.js-sync-settings
+                      %span.js-sync-type
+                      %span.has-tooltip.sync-status.js-sync-status
+                        %i.sync-status-icon.js-sync-status-icon
+                        %span.sync-status-timestamp.js-sync-status-timestamp
+                %tr.js-advanced-status.hidden
+                  %td
+                    .help-block.prepend-top-10
+                      Database replication lag:
+                  %td
+                    .node-info.prepend-top-10.prepend-left-5.js-db-replication-lag
+                %tr.js-advanced-status.hidden
+                  %td
+                    .help-block.prepend-top-10
+                      Last event ID seen from primary:
+                  %td
+                    .node-info.prepend-top-10.prepend-left-5.js-last-event-seen
+                      %span.js-event-id
+                      %span.event-timestamp.js-event-timestamp.has-tooltip
+                %tr.js-advanced-status.hidden
+                  %td
+                    .help-block.prepend-top-10
+                      Last event ID processed by cursor:
+                  %td
+                    .node-info.prepend-top-10.prepend-left-5.js-last-cursor-event
+                      %span.js-event-id
+                      %span.event-timestamp.js-event-timestamp.has-tooltip
+              %button.btn-link.advanced-geo-node-status-toggler.js-advanced-geo-node-status-toggler
+                %span> Advanced
+                %span.js-advance-toggle.show-advance-chevron.pull-right.inline.prepend-left-5
+                  = sprite_icon('angle-down', css_class: 's16')
+              %p.health-message.hidden.js-health-message
+
+          - if Gitlab::Database.read_write?
+            .node-actions
+              - if Gitlab::Geo.license_allows?
+                - if node.missing_oauth_application?
+                  = link_to "Repair authentication", repair_admin_geo_node_path(node), method: :post, title: 'OAuth application is missing', class: 'btn btn-default btn-sm'
+                - if node.secondary?
+                  = toggle_node_button(node)
+                = link_to "Edit", edit_admin_geo_node_path(node), class: 'btn btn-sm'
+              = link_to "Remove", admin_geo_node_path(node), data: { confirm: 'Are you sure?' }, method: :delete, class: 'btn btn-remove btn-sm'

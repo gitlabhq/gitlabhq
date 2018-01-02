@@ -56,7 +56,7 @@ describe API::Settings, 'Settings' do
           dsa_key_restriction: 2048,
           ecdsa_key_restriction: 384,
           ed25519_key_restriction: 256,
-          circuitbreaker_failure_wait_time: 2
+          circuitbreaker_check_interval: 2
 
         expect(response).to have_gitlab_http_status(200)
         expect(json_response['default_projects_limit']).to eq(3)
@@ -77,7 +77,7 @@ describe API::Settings, 'Settings' do
         expect(json_response['dsa_key_restriction']).to eq(2048)
         expect(json_response['ecdsa_key_restriction']).to eq(384)
         expect(json_response['ed25519_key_restriction']).to eq(256)
-        expect(json_response['circuitbreaker_failure_wait_time']).to eq(2)
+        expect(json_response['circuitbreaker_check_interval']).to eq(2)
       end
     end
 

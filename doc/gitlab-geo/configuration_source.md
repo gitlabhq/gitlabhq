@@ -12,11 +12,9 @@ This is the final step in setting up a secondary Geo node. Stages of the setup
 process must be completed in the documented order. Before attempting the steps
 in this stage, [complete all prior stages](README.md#using-gitlab-installed-from-source).
 
-The basic steps of configuring a secondary node are:
-
-1. replicate required configurations between the primary and the secondaries;
-1. configure a second, tracking database on each secondary;
-1. start GitLab on the secondary node's machine.
+The basic steps of configuring a secondary node are to replicate required
+configurations between the primary and the secondaries; to configure a tracking
+database on each secondary; and to start GitLab on the secondary node.
 
 You are encouraged to first read through all the steps before executing them
 in your testing/production environment.
@@ -59,6 +57,13 @@ Then save and close the file.
     service gitlab restart
     ```
 
+The secondary will start automatically replicating missing data from the
+primary in a process known as backfill. Meanwhile, the primary node will start
+to notify changes to the secondary, which will act on those notifications
+immediately. Make sure the secondary instance is running and accessible.
+
+### Step 2. (Optional) Enabling hashed storage
+
 Once restarted, the secondary will automatically start replicating missing data
 from the primary in a process known as backfill. Meanwhile, the primary node
 will start to notify the secondary of any changes, so that the secondary can
@@ -89,14 +94,14 @@ update-ca-certificates
 
 ### Step 4. Enable Git access over HTTP/HTTPS
 
-GitLab Geo synchronizes repositories over HTTP/HTTPS, and so requires this clone
+GitLab Geo synchronizes repositories over HTTP/HTTPS, and therefore requires this clone
 method to be enabled. Navigate to **Admin Area ➔ Settings**
 (`/admin/application_settings`) on the primary node, and set
 `Enabled Git access protocols` to `Both SSH and HTTP(S)` or `Only HTTP(S)`.
 
-### Verify proper functioning of the secondary node
+### Step 5. Verify proper functioning of the secondary node
 
-Read [Verify proper functioning of the secondary node](configuration.md#verify-proper-functioning-of-the-secondary-node).
+Read [Verify proper functioning of the secondary node](configuration.md#step-5-verify-proper-functioning-of-the-secondary-node).
 
 
 ## Selective replication

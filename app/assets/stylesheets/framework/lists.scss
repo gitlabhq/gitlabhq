@@ -132,8 +132,6 @@ ul.content-list {
     }
 
     .controls {
-      @include new-style-dropdown;
-
       float: right;
 
       > .control-text {
@@ -463,13 +461,11 @@ ul.indent-list {
 
 ul.group-list-tree {
   li.group-row {
-    &.has-description {
-      .title {
-        line-height: inherit;
-      }
+    &.has-description .title {
+      line-height: inherit;
     }
 
-    .title {
+    &:not(.has-description) .title {
       line-height: $list-text-height;
     }
   }

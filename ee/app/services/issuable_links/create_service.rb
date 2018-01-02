@@ -19,7 +19,7 @@ module IssuableLinks
 
     def create_issue_links
       referenced_issues.each do |referenced_issue|
-        create_notes(referenced_issue) if relate_issues(referenced_issue) && create_notes?
+        create_notes(referenced_issue) if relate_issues(referenced_issue)
       end
     end
 
@@ -49,17 +49,8 @@ module IssuableLinks
       extractor.issues
     end
 
-    def create_notes(referenced_issue)
-      SystemNoteService.relate_issue(issuable, referenced_issue, current_user)
-      SystemNoteService.relate_issue(referenced_issue, issuable, current_user)
-    end
-
     def extractor_context
       {}
-    end
-
-    def create_notes?
-      true
     end
 
     def linkable_issues(issues)

@@ -19,6 +19,51 @@ describe Gitlab::Git::Repository, seed_helper: true do
 
   let(:repository) { Gitlab::Git::Repository.new('default', TEST_REPO_PATH, '') }
 
+  describe '.create_hooks' do
+    let(:repo_path) { File.join(TestEnv.repos_path, 'hook-test.git') }
+    let(:hooks_dir) { File.join(repo_path, 'hooks') }
+    let(:target_hooks_dir) { Gitlab.config.gitlab_shell.hooks_path }
+    let(:existing_target) { File.join(repo_path, 'foobar') }
+
+    before do
+      FileUtils.rm_rf(repo_path)
+      FileUtils.mkdir_p(repo_path)
+    end
+
+    context 'hooks is a directory' do
+      let(:existing_file) { File.join(hooks_dir, 'my-file') }
+
+      before do
+        FileUtils.mkdir_p(hooks_dir)
+        FileUtils.touch(existing_file)
+        described_class.create_hooks(repo_path, target_hooks_dir)
+      end
+
+      it { expect(File.readlink(hooks_dir)).to eq(target_hooks_dir) }
+      it { expect(Dir[File.join(repo_path, "hooks.old.*/my-file")].count).to eq(1) }
+    end
+
+    context 'hooks is a valid symlink' do
+      before do
+        FileUtils.mkdir_p existing_target
+        File.symlink(existing_target, hooks_dir)
+        described_class.create_hooks(repo_path, target_hooks_dir)
+      end
+
+      it { expect(File.readlink(hooks_dir)).to eq(target_hooks_dir) }
+    end
+
+    context 'hooks is a broken symlink' do
+      before do
+        FileUtils.rm_f(existing_target)
+        File.symlink(existing_target, hooks_dir)
+        described_class.create_hooks(repo_path, target_hooks_dir)
+      end
+
+      it { expect(File.readlink(hooks_dir)).to eq(target_hooks_dir) }
+    end
+  end
+
   describe "Respond to" do
     subject { repository }
 
@@ -257,7 +302,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
   end
 
   describe '#empty?' do
-    it { expect(repository.empty?).to be_falsey }
+    it { expect(repository).not_to be_empty }
   end
 
   describe '#ref_names' do
@@ -1625,7 +1670,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       let(:branch_name) { "to-be-deleted-soon" }
 
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
         repository.create_branch(branch_name)
       end
 

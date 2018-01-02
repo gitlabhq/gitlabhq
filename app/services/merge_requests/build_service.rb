@@ -12,8 +12,12 @@ module MergeRequests
       merge_request.target_branch   = find_target_branch
       merge_request.can_be_created  = branches_valid?
 
-      compare_branches if branches_present?
-      assign_title_and_description if merge_request.can_be_created
+      # compare branches only if branches are valid, otherwise
+      # compare_branches may raise an error
+      if merge_request.can_be_created
+        compare_branches
+        assign_title_and_description
+      end
 
       merge_request
     end

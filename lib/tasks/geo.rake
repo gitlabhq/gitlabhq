@@ -1,17 +1,16 @@
-require 'gitlab/geo'
-require 'gitlab/geo/database_tasks'
-
 task spec: ['geo:db:test:prepare']
 
 namespace :geo do
+  GEO_LICENSE_ERROR_TEXT = 'GitLab Geo is not supported with this license. Please contact sales@gitlab.com.'.freeze
+
   namespace :db do |ns|
     desc 'Drops the Geo tracking database from config/database_geo.yml for the current RAILS_ENV.'
-    task :drop do
+    task drop: [:environment] do
       Gitlab::Geo::DatabaseTasks.drop_current
     end
 
     desc 'Creates the Geo tracking database from config/database_geo.yml for the current RAILS_ENV.'
-    task :create do
+    task create: [:environment] do
       Gitlab::Geo::DatabaseTasks.create_current
     end
 
@@ -56,8 +55,20 @@ namespace :geo do
       puts Rails.application.secrets.db_key_base
     end
 
+    desc 'Refresh Foreign Tables definition in Geo Secondary node'
+    task refresh_foreign_tables: [:environment] do
+      if Gitlab::Geo::GeoTasks.foreign_server_configured?
+        print "\nRefreshing foreign tables for FDW: #{Gitlab::Geo::FDW_SCHEMA} ... "
+        Gitlab::Geo::GeoTasks.refresh_foreign_tables!
+        puts 'Done!'
+      else
+        puts "Error: Cannot refresh foreign tables, there is no foreign server configured."
+        exit 1
+      end
+    end
+
     # IMPORTANT: This task won't dump the schema if ActiveRecord::Base.dump_schema_after_migration is set to false
-    task :_dump do
+    task _dump: [:environment] do
       if Gitlab::Geo::DatabaseTasks.dump_schema_after_migration?
         ns["schema:dump"].invoke
       end
@@ -140,20 +151,29 @@ namespace :geo do
       task purge: [:environment] do
         Gitlab::Geo::DatabaseTasks::Test.purge
       end
+
+      task refresh_foreign_tables: [:environment] do
+        old_env = ActiveRecord::Tasks::DatabaseTasks.env
+        ActiveRecord::Tasks::DatabaseTasks.env = 'test'
+
+        ns['geo:db:refresh_foreign_tables'].invoke
+
+        ActiveRecord::Tasks::DatabaseTasks.env = old_env
+      end
     end
   end
 
   desc 'Make this node the Geo primary'
   task set_primary_node: :environment do
-    abort 'GitLab Geo is not supported with this license. Please contact sales@gitlab.com.' unless Gitlab::Geo.license_allows?
+    abort GEO_LICENSE_ERROR_TEXT unless Gitlab::Geo.license_allows?
     abort 'GitLab Geo primary node already present' if Gitlab::Geo.primary_node.present?
 
-    set_primary_geo_node
+    Gitlab::Geo::GeoTasks.set_primary_geo_node
   end
 
   desc 'Make this secondary node the primary'
   task set_secondary_as_primary: :environment do
-    abort 'GitLab Geo is not supported with this license. Please contact sales@gitlab.com.' unless Gitlab::Geo.license_allows?
+    abort GEO_LICENSE_ERROR_TEXT unless Gitlab::Geo.license_allows?
 
     ActiveRecord::Base.transaction do
       primary_node = Gitlab::Geo.primary_node
@@ -172,13 +192,5 @@ namespace :geo do
 
       current_node.update!(primary: true)
     end
-  end
-
-  def set_primary_geo_node
-    node = GeoNode.new(primary: true, url: GeoNode.current_node_url)
-    puts "Saving primary GeoNode with URL #{node.url}".color(:green)
-    node.save
-
-    puts "Error saving GeoNode:\n#{node.errors.full_messages.join("\n")}".color(:red) unless node.persisted?
   end
 end

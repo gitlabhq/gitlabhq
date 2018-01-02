@@ -174,7 +174,7 @@ describe Project do
 
               context 'allowed by Plan License AND Global License' do
                 let(:allowed_on_global_license) { true }
-                let(:plan_license) { Plan.find_by(name: 'gold') }
+                let(:plan_license) { create(:gold_plan) }
 
                 it 'returns true' do
                   is_expected.to eq(true)
@@ -183,7 +183,7 @@ describe Project do
 
               context 'not allowed by Plan License but project and namespace are public' do
                 let(:allowed_on_global_license) { true }
-                let(:plan_license) { Plan.find_by(name: 'bronze') }
+                let(:plan_license) { create(:bronze_plan) }
 
                 it 'returns true' do
                   allow(namespace).to receive(:public?) { true }
@@ -196,7 +196,7 @@ describe Project do
               unless License.plan_includes_feature?(License::STARTER_PLAN, feature_sym)
                 context 'not allowed by Plan License' do
                   let(:allowed_on_global_license) { true }
-                  let(:plan_license) { Plan.find_by(name: 'bronze') }
+                  let(:plan_license) { create(:bronze_plan) }
 
                   it 'returns false' do
                     is_expected.to eq(false)
@@ -206,7 +206,7 @@ describe Project do
 
               context 'not allowed by Global License' do
                 let(:allowed_on_global_license) { false }
-                let(:plan_license) { Plan.find_by(name: 'gold') }
+                let(:plan_license) { create(:gold_plan) }
 
                 it 'returns false' do
                   is_expected.to eq(false)
@@ -451,7 +451,7 @@ describe Project do
     end
 
     it 'does nothing when remote mirror is disabled globally and not overridden' do
-      stub_application_setting(remote_mirror_available: false)
+      stub_application_setting(mirror_available: false)
       project.remote_mirror_available_overridden = false
 
       expect_any_instance_of(RemoteMirror).not_to receive(:sync)
@@ -679,7 +679,7 @@ describe Project do
       end
 
       context 'Service Desk available in namespace plan' do
-        let(:namespace) { create(:namespace, plan: Namespace::SILVER_PLAN) }
+        let(:namespace) { create(:namespace, plan: :silver_plan) }
 
         it 'is enabled' do
           expect(project.service_desk_enabled?).to be_truthy
@@ -700,6 +700,140 @@ describe Project do
 
     it 'uses project full path as service desk address key' do
       expect(project.service_desk_address).to eq("test+#{project.full_path}@mail.com")
+    end
+  end
+
+  describe '#deployment_platform' do
+    let(:project) { create(:project) }
+
+    context 'when environment is specified' do
+      let(:environment) { create(:environment, project: project, name: 'review/name') }
+      let!(:default_cluster) { create(:cluster, :provided_by_user, projects: [project], environment_scope: '*') }
+      let!(:cluster) { create(:cluster, :provided_by_user, environment_scope: 'review/*', projects: [project]) }
+
+      subject { project.deployment_platform(environment: environment) }
+
+      shared_examples 'matching environment scope' do
+        context 'when multiple clusters is available' do
+          before do
+            stub_licensed_features(multiple_clusters: true)
+          end
+
+          it 'returns environment specific cluster' do
+            is_expected.to eq(cluster.platform_kubernetes)
+          end
+        end
+
+        context 'when multiple clusters is unavailable' do
+          before do
+            stub_licensed_features(multiple_clusters: false)
+          end
+
+          it 'returns a kubernetes platform' do
+            is_expected.to be_kind_of(Clusters::Platforms::Kubernetes)
+          end
+        end
+      end
+
+      shared_examples 'not matching environment scope' do
+        context 'when multiple clusters is available' do
+          before do
+            stub_licensed_features(multiple_clusters: true)
+          end
+
+          it 'returns default cluster' do
+            is_expected.to eq(default_cluster.platform_kubernetes)
+          end
+        end
+
+        context 'when multiple clusters is unavailable' do
+          before do
+            stub_licensed_features(multiple_clusters: false)
+          end
+
+          it 'returns a kubernetes platform' do
+            is_expected.to be_kind_of(Clusters::Platforms::Kubernetes)
+          end
+        end
+      end
+
+      context 'when environment scope is exactly matched' do
+        before do
+          cluster.update!(environment_scope: 'review/name')
+        end
+
+        it_behaves_like 'matching environment scope'
+      end
+
+      context 'when environment scope is matched by wildcard' do
+        before do
+          cluster.update!(environment_scope: 'review/*')
+        end
+
+        it_behaves_like 'matching environment scope'
+      end
+
+      context 'when environment scope does not match' do
+        before do
+          cluster.update!(environment_scope: 'review/*/special')
+        end
+
+        it_behaves_like 'not matching environment scope'
+      end
+
+      context 'when environment scope has _' do
+        before do
+          stub_licensed_features(multiple_clusters: true)
+        end
+
+        it 'does not treat it as wildcard' do
+          cluster.update!(environment_scope: 'foo_bar/*')
+
+          is_expected.to eq(default_cluster.platform_kubernetes)
+        end
+
+        it 'matches literally for _' do
+          cluster.update!(environment_scope: 'foo_bar/*')
+          environment.update!(name: 'foo_bar/test')
+
+          is_expected.to eq(cluster.platform_kubernetes)
+        end
+      end
+
+      # The environment name and scope cannot have % at the moment,
+      # but we're considering relaxing it and we should also make sure
+      # it doesn't break in case some data sneaked in somehow as we're
+      # not checking this integrity in database level.
+      context 'when environment scope has %' do
+        before do
+          stub_licensed_features(multiple_clusters: true)
+        end
+
+        it 'does not treat it as wildcard' do
+          cluster.update_attribute(:environment_scope, '*%*')
+
+          is_expected.to eq(default_cluster.platform_kubernetes)
+        end
+
+        it 'matches literally for %' do
+          cluster.update_attribute(:environment_scope, 'foo%bar/*')
+          environment.update_attribute(:name, 'foo%bar/test')
+
+          is_expected.to eq(cluster.platform_kubernetes)
+        end
+      end
+
+      context 'when perfectly matched cluster exists' do
+        let!(:perfectly_matched_cluster) { create(:cluster, :provided_by_user, projects: [project], environment_scope: 'review/name') }
+
+        before do
+          stub_licensed_features(multiple_clusters: true)
+        end
+
+        it 'returns perfectly matched cluster as highest precedence' do
+          is_expected.to eq(perfectly_matched_cluster.platform_kubernetes)
+        end
+      end
     end
   end
 
@@ -1024,7 +1158,7 @@ describe Project do
         end
 
         context 'and namespace has a plan' do
-          let(:namespace) { create(:group, :private, plan: Namespace::BRONZE_PLAN) }
+          let(:namespace) { create(:group, :private, plan: :bronze_plan) }
 
           it_behaves_like 'project without disabled services'
         end
@@ -1051,7 +1185,7 @@ describe Project do
 
     context 'when remote mirror global setting is disabled' do
       before do
-        stub_application_setting(remote_mirror_available: false)
+        stub_application_setting(mirror_available: false)
       end
 
       it 'returns true when overridden' do
@@ -1062,6 +1196,32 @@ describe Project do
 
       it 'returns false when not overridden' do
         expect(project.remote_mirror_available?).to be(false)
+      end
+    end
+  end
+
+  describe '#pull_mirror_available?' do
+    let(:project) { create(:project) }
+
+    context 'when mirror global setting is enabled' do
+      it 'returns true' do
+        expect(project.pull_mirror_available?).to be(true)
+      end
+    end
+
+    context 'when mirror global setting is disabled' do
+      before do
+        stub_application_setting(mirror_available: false)
+      end
+
+      it 'returns true when overridden' do
+        project.pull_mirror_available_overridden = true
+
+        expect(project.pull_mirror_available?).to be(true)
+      end
+
+      it 'returns false when not overridden' do
+        expect(project.pull_mirror_available?).to be(false)
       end
     end
   end

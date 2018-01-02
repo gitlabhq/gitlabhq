@@ -1,7 +1,7 @@
 <script>
   import Flash from '~/flash';
   import GitlabSlackService from '../services/gitlab_slack_service';
-  import * as UrlUtility from '../../lib/utils/url_utility';
+  import { redirectTo } from '../../lib/utils/url_utility';
 
   export default {
     props: {
@@ -75,7 +75,7 @@
 
       addToSlack() {
         GitlabSlackService.addToSlack(this.slackLinkPath, this.selectedProjectId)
-          .then(response => UrlUtility.redirectTo(response.data.add_to_slack_link))
+          .then(response => redirectTo(response.data.add_to_slack_link))
           .catch(() => Flash('Unable to build Slack link.'));
       },
     },
@@ -165,7 +165,7 @@
       <h3 class="center">How it works</h3>
 
       <div class="well gitlab-slack-well center-block">
-        <code class="code center-block append-bottom-10">/project-name issue show &lt;id&gt;</code>
+        <code class="code center-block append-bottom-10">/gitlab &lt;project-alias&gt; issue show &lt;id&gt;</code>
         <span>
           <div
             class="gitlab-slack-right-arrow inline append-right-5"

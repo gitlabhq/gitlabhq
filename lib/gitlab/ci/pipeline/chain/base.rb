@@ -3,14 +3,13 @@ module Gitlab
     module Pipeline
       module Chain
         class Base
-          attr_reader :pipeline, :project, :current_user
+          attr_reader :pipeline, :command
+
+          delegate :project, :current_user, to: :command
 
           def initialize(pipeline, command)
             @pipeline = pipeline
             @command = command
-
-            @project = command.project
-            @current_user = command.current_user
           end
 
           def perform!

@@ -7,6 +7,8 @@ module Ci
     include Importable
     prepend EE::Ci::Build
 
+    MissingDependenciesError = Class.new(StandardError)
+
     belongs_to :runner
     belongs_to :trigger_request
     belongs_to :erased_by, class_name: 'User'
@@ -50,6 +52,25 @@ module Ci
     scope :last_month, ->() { where('created_at > ?', Date.today - 1.month) }
     scope :manual_actions, ->() { where(when: :manual, status: COMPLETED_STATUSES + [:manual]) }
     scope :ref_protected, -> { where(protected: true) }
+
+    scope :matches_tag_ids, -> (tag_ids) do
+      matcher = ::ActsAsTaggableOn::Tagging
+        .where(taggable_type: CommitStatus)
+        .where(context: 'tags')
+        .where('taggable_id = ci_builds.id')
+        .where.not(tag_id: tag_ids).select('1')
+
+      where("NOT EXISTS (?)", matcher)
+    end
+
+    scope :with_any_tags, -> do
+      matcher = ::ActsAsTaggableOn::Tagging
+        .where(taggable_type: CommitStatus)
+        .where(context: 'tags')
+        .where('taggable_id = ci_builds.id').select('1')
+
+      where("EXISTS (?)", matcher)
+    end
 
     mount_uploader :legacy_artifacts_file, LegacyArtifactUploader, mount_on: :artifacts_file
     mount_uploader :legacy_artifacts_metadata, LegacyArtifactUploader, mount_on: :artifacts_metadata
@@ -123,6 +144,10 @@ module Ci
         if build.retries_count < build.retries_max
           Ci::Build.retry(build, build.user)
         end
+      end
+
+      before_transition any => [:running] do |build|
+        build.validates_dependencies! unless Feature.enabled?('ci_disable_validates_dependencies')
       end
     end
 
@@ -234,7 +259,7 @@ module Ci
       variables += pipeline.predefined_variables
       variables += runner.predefined_variables if runner
       variables += project.container_registry_variables
-      variables += project.deployment_variables if has_environment?
+      variables += project.deployment_variables(environment: environment) if has_environment?
       variables += project.auto_devops_variables
       variables += yaml_variables
       variables += user_variables
@@ -467,6 +492,19 @@ module Ci
 
     def empty_dependencies?
       options[:dependencies]&.empty?
+    end
+
+    def validates_dependencies!
+      dependencies.each do |dependency|
+        raise MissingDependenciesError unless dependency.valid_dependency?
+      end
+    end
+
+    def valid_dependency?
+      return false if artifacts_expired?
+      return false if erased?
+
+      true
     end
 
     def hide_secrets(trace)

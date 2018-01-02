@@ -124,7 +124,31 @@ module Gitlab
       end
 
       def user_cherry_pick(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
-        request = Gitaly::UserCherryPickRequest.new(
+        call_cherry_pick_or_revert(:cherry_pick,
+                                   user: user,
+                                   commit: commit,
+                                   branch_name: branch_name,
+                                   message: message,
+                                   start_branch_name: start_branch_name,
+                                   start_repository: start_repository)
+      end
+
+      def user_revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
+        call_cherry_pick_or_revert(:revert,
+                                   user: user,
+                                   commit: commit,
+                                   branch_name: branch_name,
+                                   message: message,
+                                   start_branch_name: start_branch_name,
+                                   start_repository: start_repository)
+      end
+
+      private
+
+      def call_cherry_pick_or_revert(rpc, user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
+        request_class = "Gitaly::User#{rpc.to_s.camelcase}Request".constantize
+
+        request = request_class.new(
           repository: @gitaly_repo,
           user: Gitlab::Git::User.from_gitlab(user).to_gitaly,
           commit: commit.to_gitaly_commit,
@@ -137,11 +161,15 @@ module Gitlab
         response = GitalyClient.call(
           @repository.storage,
           :operation_service,
-          :user_cherry_pick,
+          :"user_#{rpc}",
           request,
           remote_storage: start_repository.storage
         )
 
+        handle_cherry_pick_or_revert_response(response)
+      end
+
+      def handle_cherry_pick_or_revert_response(response)
         if response.pre_receive_error.presence
           raise Gitlab::Git::HooksService::PreReceiveError, response.pre_receive_error
         elsif response.commit_error.presence

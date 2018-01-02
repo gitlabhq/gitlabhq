@@ -1,5 +1,6 @@
 import 'vendor/peek';
 import 'vendor/peek.performance_bar';
+import { getParameterValues } from './lib/utils/url_utility';
 
 export default class PerformanceBar {
   constructor(opts) {
@@ -39,7 +40,7 @@ export default class PerformanceBar {
   }
 
   handleLineProfileLink(e) {
-    const lineProfilerParameter = gl.utils.getParameterValues('lineprofiler');
+    const lineProfilerParameter = getParameterValues('lineprofiler');
     const lineProfilerParameterRegex = new RegExp(`lineprofiler=${lineProfilerParameter[0]}`);
     const shouldToggleModal = lineProfilerParameter.length > 0 &&
       lineProfilerParameterRegex.test(e.currentTarget.href);

@@ -8,7 +8,7 @@ class Admin::HealthCheckController < Admin::ApplicationController
   end
 
   def reset_storage_health
-    Gitlab::Git::Storage::CircuitBreaker.reset_all!
+    Gitlab::Git::Storage::FailureInfo.reset_all!
     redirect_to admin_health_check_path,
                 notice: _('Git storage health information has been reset')
   end

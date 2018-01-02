@@ -20,19 +20,13 @@ License admin area.
 
 Otherwise, you can:
 
-1. Navigate manually to the **Admin Area** by clicking the wrench icon in the
-   upper right corner.
+1. Navigate manually to the **Admin Area** by clicking the wrench icon in the menu bar.
 
     ![Admin area icon](img/admin_wrench.png)
 
-1. And then going to the **License** tab.
+1. And then going to the **License** tab and click on **Upload New License**.
 
     ![License admin area](img/license_admin_area.png)
-
-
->**Note:**
-If you don't see the banner mentioned above, that means that either you are not
-logged in as admin or a license is already uploaded.
 
 ---
 

@@ -5,10 +5,11 @@ describe SystemNoteService do
   include Gitlab::Routing
 
   set(:group)    { create(:group) }
-  set(:project)  { create(:project, :repository, group: group) }
+  let(:project)  { create(:project, :repository, group: group) }
   set(:author)   { create(:user) }
   let(:noteable) { create(:issue, project: project) }
   let(:issue)    { noteable }
+  let(:epic)     { create(:epic) }
 
   shared_examples_for 'a system note' do
     let(:expected_noteable) { noteable }
@@ -693,9 +694,9 @@ describe SystemNoteService do
   describe '.new_commit_summary' do
     it 'escapes HTML titles' do
       commit = double(title: '<pre>This is a test</pre>', short_id: '12345678')
-      escaped = '* 12345678 - &lt;pre&gt;This is a test&lt;&#x2F;pre&gt;'
+      escaped = '&lt;pre&gt;This is a test&lt;&#x2F;pre&gt;'
 
-      expect(described_class.new_commit_summary([commit])).to eq([escaped])
+      expect(described_class.new_commit_summary([commit])).to all(match(%r[- #{escaped}]))
     end
   end
 
@@ -960,53 +961,6 @@ describe SystemNoteService do
     end
   end
 
-  describe '.change_time_spent' do
-    # We need a custom noteable in order to the shared examples to be green.
-    let(:noteable) do
-      mr = create(:merge_request, source_project: project)
-      mr.spend_time(duration: 360000, user: author)
-      mr.save!
-      mr
-    end
-
-    subject do
-      described_class.change_time_spent(noteable, project, author)
-    end
-
-    it_behaves_like 'a system note' do
-      let(:action) { 'time_tracking' }
-    end
-
-    context 'when time was added' do
-      it 'sets the note text' do
-        spend_time!(277200)
-
-        expect(subject.note).to eq "added 1w 4d 5h of time spent"
-      end
-    end
-
-    context 'when time was subtracted' do
-      it 'sets the note text' do
-        spend_time!(-277200)
-
-        expect(subject.note).to eq "subtracted 1w 4d 5h of time spent"
-      end
-    end
-
-    context 'when time was removed' do
-      it 'sets the note text' do
-        spend_time!(:reset)
-
-        expect(subject.note).to eq "removed time spent"
-      end
-    end
-
-    def spend_time!(seconds)
-      noteable.spend_time(duration: seconds, user: author)
-      noteable.save!
-    end
-  end
-
   describe '.discussion_continued_in_issue' do
     let(:discussion) { create(:diff_note_on_merge_request, project: project).to_discussion }
     let(:merge_request) { discussion.noteable }
@@ -1059,7 +1013,7 @@ describe SystemNoteService do
     # We need a custom noteable in order to the shared examples to be green.
     let(:noteable) do
       mr = create(:merge_request, source_project: project)
-      mr.spend_time(duration: 360000, user: author)
+      mr.spend_time(duration: 360000, user_id: author.id)
       mr.save!
       mr
     end
@@ -1097,7 +1051,7 @@ describe SystemNoteService do
     end
 
     def spend_time!(seconds)
-      noteable.spend_time(duration: seconds, user: author)
+      noteable.spend_time(duration: seconds, user_id: author.id)
       noteable.save!
     end
   end
@@ -1300,6 +1254,75 @@ describe SystemNoteService do
           expect(described_class.discussion_lock(issuable, author).note)
             .to eq("locked this #{type.to_s.titleize.downcase}")
         end
+      end
+    end
+  end
+
+  describe '.epic_issue' do
+    let(:noteable) { epic }
+    let(:project) { nil }
+
+    context 'issue added to an epic' do
+      subject { described_class.epic_issue(epic, issue, author, :added)  }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'epic_issue_added' }
+      end
+
+      it 'creates the note text correctly' do
+        expect(subject.note).to eq("added issue #{issue.to_reference(epic.group)}")
+      end
+    end
+
+    context 'issue removed from an epic' do
+      subject { described_class.epic_issue(epic, issue, author, :removed)  }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'epic_issue_removed' }
+      end
+
+      it 'creates the note text correctly' do
+        expect(subject.note).to eq("removed issue #{issue.to_reference(epic.group)}")
+      end
+    end
+
+    context 'invalid type' do
+      it 'raises an error' do
+        expect { described_class.issue_on_epic(issue, epic, author, :invalid) }
+          .not_to change { Note.count }
+      end
+    end
+  end
+
+  describe '.issue_on_epic' do
+    context 'issue added to an epic' do
+      subject { described_class.issue_on_epic(issue, epic, author, :added)  }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'issue_added_to_epic' }
+      end
+
+      it 'creates the note text correctly' do
+        expect(subject.note).to eq("added to epic #{epic.to_reference(issue.project)}")
+      end
+    end
+
+    context 'issue removed from an epic' do
+      subject { described_class.issue_on_epic(issue, epic, author, :removed)  }
+
+      it_behaves_like 'a system note' do
+        let(:action) { 'issue_removed_from_epic' }
+      end
+
+      it 'creates the note text correctly' do
+        expect(subject.note).to eq("removed from epic #{epic.to_reference(issue.project)}")
+      end
+    end
+
+    context 'invalid type' do
+      it 'does not create a new note' do
+        expect { described_class.issue_on_epic(issue, epic, author, :invalid) }
+          .not_to change { Note.count }
       end
     end
   end

@@ -14,25 +14,29 @@ module Ci
     def execute(source, ignore_skip_ci: false, save_on_errors: true, trigger_request: nil, schedule: nil, mirror_update: false, &block)
       @pipeline = Ci::Pipeline.new
 
-      command = OpenStruct.new(source: source,
-                               origin_ref: params[:ref],
-                               checkout_sha: params[:checkout_sha],
-                               after_sha: params[:after],
-                               before_sha: params[:before],
-                               trigger_request: trigger_request,
-                               schedule: schedule,
-                               ignore_skip_ci: ignore_skip_ci,
-                               save_incompleted: save_on_errors,
-                               allow_mirror_update: mirror_update,
-                               seeds_block: block,
-                               project: project,
-                               current_user: current_user)
+      command = Gitlab::Ci::Pipeline::Chain::Command.new(
+        source: source,
+        origin_ref: params[:ref],
+        checkout_sha: params[:checkout_sha],
+        after_sha: params[:after],
+        before_sha: params[:before],
+        trigger_request: trigger_request,
+        schedule: schedule,
+        ignore_skip_ci: ignore_skip_ci,
+        save_incompleted: save_on_errors,
+        seeds_block: block,
+        project: project,
+        current_user: current_user,
+
+        # EE specific
+        allow_mirror_update: mirror_update
+      )
 
       sequence = Gitlab::Ci::Pipeline::Chain::Sequence
         .new(pipeline, command, SEQUENCE)
 
       sequence.build! do |pipeline, sequence|
-        update_merge_requests_head_pipeline if pipeline.persisted?
+        schedule_head_pipeline_update
 
         if sequence.complete?
           cancel_pending_pipelines if project.auto_cancel_pending_pipelines?
@@ -41,15 +45,18 @@ module Ci
           pipeline.process!
         end
       end
+
+      pipeline
     end
 
     private
 
-    def update_merge_requests_head_pipeline
-      return unless pipeline.latest?
+    def commit
+      @commit ||= project.commit(origin_sha || origin_ref)
+    end
 
-      MergeRequest.where(source_project: @pipeline.project, source_branch: @pipeline.ref)
-        .update_all(head_pipeline_id: @pipeline.id)
+    def sha
+      commit.try(:id)
     end
 
     def cancel_pending_pipelines
@@ -71,6 +78,16 @@ module Ci
     def pipeline_created_counter
       @pipeline_created_counter ||= Gitlab::Metrics
         .counter(:pipelines_created_total, "Counter of pipelines created")
+    end
+
+    def schedule_head_pipeline_update
+      related_merge_requests.each do |merge_request|
+        UpdateHeadPipelineForMergeRequestWorker.perform_async(merge_request.id)
+      end
+    end
+
+    def related_merge_requests
+      MergeRequest.opened.where(source_project: pipeline.project, source_branch: pipeline.ref)
     end
   end
 end

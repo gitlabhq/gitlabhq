@@ -18,6 +18,12 @@ Each separate argument denotes a group of queues that have to be processed by a
 Sidekiq process. Multiple queues can be processed by the same process by
 separating them with a comma instead of a space.
 
+Instead of a queue, a queue namespace can also be provided, to have the process
+automatically listen on all queues in that namespace without needing to
+explicitly list all the queue names. For more information about queue namespaces,
+see the relevant section in the
+[Sidekiq style guide](../../development/sidekiq_style_guide.md#queue-namespaces).
+
 For example, say you want to start 2 extra processes: one to process the
 "process_commit" queue, and one to process the "post_receive" queue. This can be
 done as follows:
@@ -90,10 +96,10 @@ default value is "development".
 
 ## All Queues With Exceptions
 
-You're able to run all queues in `sidekiq_queues.yml` file on a single or 
+You're able to run all queues in `sidekiq_queues.yml` file on a single or
 multiple processes with exceptions using the `--negate` flag.
 
-For example, say you want to run a single process for all queues, 
+For example, say you want to run a single process for all queues,
 except "process_commit" and "post_receive". You can do so by executing:
 
 ```bash

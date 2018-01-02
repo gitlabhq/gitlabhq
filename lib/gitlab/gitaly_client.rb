@@ -27,7 +27,7 @@ module Gitlab
     end
 
     SERVER_VERSION_FILE = 'GITALY_SERVER_VERSION'.freeze
-    MAXIMUM_GITALY_CALLS = 30
+    MAXIMUM_GITALY_CALLS = 35
     CLIENT_NAME = (Sidekiq.server? ? 'gitlab-sidekiq' : 'gitlab-web').freeze
 
     MUTEX = Mutex.new
@@ -334,6 +334,12 @@ module Gitlab
       return "" if s.nil?
 
       s.dup.force_encoding(Encoding::ASCII_8BIT)
+    end
+
+    def self.binary_stringio(s)
+      io = StringIO.new(s || '')
+      io.set_encoding(Encoding::ASCII_8BIT)
+      io
     end
 
     def self.encode_repeated(a)

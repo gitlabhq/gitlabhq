@@ -6,7 +6,7 @@ module EE
       private
 
       def notify_success(user_exists)
-        notify_new_user(@user, nil) unless user_exists
+        notify_new_user(@user, nil) unless user_exists # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
         audit_changes(:email, as: 'email address')
         audit_changes(:encrypted_password, as: 'password', skip_changes: true)

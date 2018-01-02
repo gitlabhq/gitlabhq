@@ -23,17 +23,31 @@ module Ci
 
       valid = true
 
+      if Feature.enabled?('ci_job_request_with_tags_matcher')
+        # pick builds that does not have other tags than runner's one
+        builds = builds.matches_tag_ids(runner.tags.ids)
+
+        # pick builds that have at least one tag
+        unless runner.run_untagged?
+          builds = builds.with_any_tags
+        end
+      end
+
       builds.find do |build|
         next unless runner.can_pick?(build)
 
         begin
           # In case when 2 runners try to assign the same build, second runner will be declined
           # with StateMachines::InvalidTransition or StaleObjectError when doing run! or save method.
-          build.runner_id = runner.id
-          build.run!
-          register_success(build)
+          begin
+            build.runner_id = runner.id
+            build.run!
+            register_success(build)
 
-          return Result.new(build, true)
+            return Result.new(build, true)
+          rescue Ci::Build::MissingDependenciesError
+            build.drop!(:missing_dependency_failure)
+          end
         rescue StateMachines::InvalidTransition, ActiveRecord::StaleObjectError
           # We are looping to find another build that is not conflicting
           # It also indicates that this build can be picked and passed to runner.

@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this, no-unneeded-ternary, quote-props */
-
+import { visitUrl } from './lib/utils/url_utility';
 import UsersSelect from './users_select';
 import { isMetaClick } from './lib/utils/common_utils';
 
@@ -150,7 +150,7 @@ export default class Todos {
 
       window.open(todoLink, windowTarget);
     } else {
-      gl.utils.visitUrl(todoLink);
+      visitUrl(todoLink);
     }
   }
 }

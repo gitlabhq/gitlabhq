@@ -228,7 +228,7 @@ describe Gitlab::BackgroundMigration::MigrateEventsToPushEventPayloads, :migrati
   let(:projects) { table(:projects) }
   let(:project) { projects.create(namespace_id: namespace.id, creator_id: author.id) }
 
-  # We can not rely on FactoryGirl as the state of Event may change in ways that
+  # We can not rely on FactoryBot as the state of Event may change in ways that
   # the background migration does not expect, hence we use the Event class of
   # the migration itself.
   def create_push_event(project, author, data = nil)

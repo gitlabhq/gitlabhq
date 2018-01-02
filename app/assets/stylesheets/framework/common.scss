@@ -241,19 +241,6 @@ li.note {
   }
 }
 
-.browser-alert {
-  padding: 10px;
-  text-align: center;
-  background: $error-bg;
-  color: $white-light;
-  font-weight: $gl-font-weight-bold;
-
-  a {
-    color: $white-light;
-    text-decoration: underline;
-  }
-}
-
 .warning_message {
   border-left: 4px solid $warning-message-border;
   color: $warning-message-color;

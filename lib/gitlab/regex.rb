@@ -38,7 +38,7 @@ module Gitlab
     end
 
     def environment_name_regex_chars
-      'a-zA-Z0-9_/\\$\\{\\}\\. -'
+      'a-zA-Z0-9_/\\$\\{\\}\\. \\-'
     end
 
     def environment_name_regex

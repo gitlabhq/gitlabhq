@@ -6,7 +6,7 @@ describe Projects::RefsController do
 
   before do
     sign_in(user)
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   describe 'GET #logs_tree' do

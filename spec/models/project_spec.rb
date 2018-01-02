@@ -94,7 +94,7 @@ describe Project do
       let(:developer) { create(:user) }
       before do
         project.request_access(requester)
-        project.team << [developer, :developer]
+        project.add_developer(developer)
       end
 
       it_behaves_like 'members and requesters associations' do
@@ -327,12 +327,12 @@ describe Project do
 
   describe 'project token' do
     it 'sets an random token if none provided' do
-      project = FactoryGirl.create :project, runners_token: ''
+      project = FactoryBot.create :project, runners_token: ''
       expect(project.runners_token).not_to eq('')
     end
 
     it 'does not set an random token if one provided' do
-      project = FactoryGirl.create :project, runners_token: 'my-token'
+      project = FactoryBot.create :project, runners_token: 'my-token'
       expect(project.runners_token).to eq('my-token')
     end
   end
@@ -351,7 +351,6 @@ describe Project do
       it { is_expected.to delegate_method(method).to(:team) }
     end
 
-    it { is_expected.to delegate_method(:empty_repo?).to(:repository) }
     it { is_expected.to delegate_method(:members).to(:team).with_prefix(true) }
     it { is_expected.to delegate_method(:name).to(:owner).with_prefix(true).with_arguments(allow_nil: true) }
   end
@@ -497,7 +496,7 @@ describe Project do
     end
   end
 
-  describe "#new_issue_address" do
+  describe "#new_issuable_address" do
     let(:project) { create(:project, path: "somewhere") }
     let(:user) { create(:user) }
 
@@ -509,7 +508,13 @@ describe Project do
       it 'returns the address to create a new issue' do
         address = "p+#{project.full_path}+#{user.incoming_email_token}@gl.ab"
 
-        expect(project.new_issue_address(user)).to eq(address)
+        expect(project.new_issuable_address(user, 'issue')).to eq(address)
+      end
+
+      it 'returns the address to create a new merge request' do
+        address = "p+#{project.full_path}+merge-request+#{user.incoming_email_token}@gl.ab"
+
+        expect(project.new_issuable_address(user, 'merge_request')).to eq(address)
       end
     end
 
@@ -519,7 +524,11 @@ describe Project do
       end
 
       it 'returns nil' do
-        expect(project.new_issue_address(user)).to be_nil
+        expect(project.new_issuable_address(user, 'issue')).to be_nil
+      end
+
+      it 'returns nil' do
+        expect(project.new_issuable_address(user, 'merge_request')).to be_nil
       end
     end
   end
@@ -557,7 +566,7 @@ describe Project do
     let(:user)    { create(:user) }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     context 'with default issues tracker' do
@@ -775,6 +784,24 @@ describe Project do
       project = create(:redmine_project)
 
       expect(project.default_issues_tracker?).to be_falsey
+    end
+  end
+
+  describe '#empty_repo?' do
+    context 'when the repo does not exist' do
+      let(:project) { build_stubbed(:project) }
+
+      it 'returns true' do
+        expect(project.empty_repo?).to be(true)
+      end
+    end
+
+    context 'when the repo exists' do
+      let(:project) { create(:project, :repository) }
+      let(:empty_project) { create(:project, :empty_repo) }
+
+      it { expect(empty_project.empty_repo?).to be(true) }
+      it { expect(project.empty_repo?).to be(false) }
     end
   end
 
@@ -1019,18 +1046,6 @@ describe Project do
       it 'shows correct url' do
         expect(project.avatar_url).to eq(project.avatar.url)
         expect(project.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, project.avatar.url].join)
-      end
-
-      context 'When in a geo secondary node' do
-        let(:geo_url) { 'http://geo.example.com' }
-        let(:avatar_path) { project.avatar_path(only_path: true) }
-
-        before do
-          allow(Gitlab::Geo).to receive(:secondary?) { true }
-          allow(Gitlab::Geo).to receive_message_chain(:primary_node, :url) { geo_url }
-        end
-
-        it { is_expected.to eq "#{geo_url}#{avatar_path}" }
       end
     end
 
@@ -1574,35 +1589,35 @@ describe Project do
     let(:user)    { create(:user) }
 
     it 'returns false when default_branch_protection is in full protection and user is developer' do
-      project.team << [user, :developer]
+      project.add_developer(user)
       stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_FULL)
 
       expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
     end
 
     it 'returns false when default_branch_protection only lets devs merge and user is dev' do
-      project.team << [user, :developer]
+      project.add_developer(user)
       stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_MERGE)
 
       expect(project.user_can_push_to_empty_repo?(user)).to be_falsey
     end
 
     it 'returns true when default_branch_protection lets devs push and user is developer' do
-      project.team << [user, :developer]
+      project.add_developer(user)
       stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_DEV_CAN_PUSH)
 
       expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
     end
 
     it 'returns true when default_branch_protection is unprotected and user is developer' do
-      project.team << [user, :developer]
+      project.add_developer(user)
       stub_application_setting(default_branch_protection: Gitlab::Access::PROTECTION_NONE)
 
       expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
     end
 
     it 'returns true when user is master' do
-      project.team << [user, :master]
+      project.add_master(user)
 
       expect(project.user_can_push_to_empty_repo?(user)).to be_truthy
     end
@@ -2383,6 +2398,55 @@ describe Project do
         let(:project) { cluster.project }
 
         it_behaves_like 'same behavior between KubernetesService and Platform::Kubernetes'
+      end
+
+      context 'when multiple clusters (EEP) is enabled' do
+        before do
+          stub_licensed_features(multiple_clusters: true)
+        end
+
+        let(:project) { create(:project) }
+
+        let!(:default_cluster) do
+          create(:cluster,
+                 platform_type: :kubernetes,
+                 projects: [project],
+                 environment_scope: '*',
+                 platform_kubernetes: default_cluster_kubernetes)
+        end
+
+        let!(:review_env_cluster) do
+          create(:cluster,
+                 platform_type: :kubernetes,
+                 projects: [project],
+                 environment_scope: 'review/*',
+                 platform_kubernetes: review_env_cluster_kubernetes)
+        end
+
+        let(:default_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'default-AAA') }
+        let(:review_env_cluster_kubernetes) { create(:cluster_platform_kubernetes, token: 'review-AAA') }
+
+        subject { project.deployment_variables(environment: environment) }
+
+        context 'when environment name is review/name' do
+          let!(:environment) { create(:environment, project: project, name: 'review/name') }
+
+          it 'returns variables from this service' do
+            expect(subject).to include(
+              { key: 'KUBE_TOKEN', value: 'review-AAA', public: false }
+            )
+          end
+        end
+
+        context 'when environment name is other' do
+          let!(:environment) { create(:environment, project: project, name: 'staging/name') }
+
+          it 'returns variables from this service' do
+            expect(subject).to include(
+              { key: 'KUBE_TOKEN', value: 'default-AAA', public: false }
+            )
+          end
+        end
       end
     end
   end

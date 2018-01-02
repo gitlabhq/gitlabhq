@@ -7,7 +7,7 @@ describe 'Project variables', :js do
 
   before do
     sign_in(user)
-    project.team << [user, :master]
+    project.add_master(user)
     project.variables << variable
 
     visit project_settings_ci_cd_path(project)
@@ -65,14 +65,14 @@ describe 'Project variables', :js do
       expect(page).to have_content('******')
     end
 
-    click_button('Reveal Values')
+    click_button('Reveal values')
 
     page.within('.variables-table') do
       expect(page).to have_content('key')
       expect(page).to have_content('key value')
     end
 
-    click_button('Hide Values')
+    click_button('Hide values')
 
     page.within('.variables-table') do
       expect(page).to have_content('key')

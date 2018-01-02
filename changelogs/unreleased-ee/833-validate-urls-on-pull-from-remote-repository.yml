@@ -1,5 +1,0 @@
----
-title: Fix error when entering an invalid url to push to or pull from a remote repository
-merge_request: 3389
-author:
-type: fixed

@@ -43,7 +43,9 @@ Annex to Git LFS.
 
 If you know what you are doing and want to skip the reading, this is what you
 need to do (we assume you have [git-annex enabled][annex-gitlab-use] in your
-repository). Fire up a terminal, navigate to your Git repository and:
+repository and that you have made backups in case something goes wrong).
+Fire up a terminal, navigate to your Git repository and:
+
 
 1. Disable `git-annex`:
 
@@ -57,6 +59,7 @@ repository). Fire up a terminal, navigate to your Git repository and:
 1. Enable `git-lfs`:
 
     ```
+    git lfs install
     git lfs track <files>
     git add .
     git commit -m "commit message"
@@ -81,9 +84,22 @@ deprecated in Git Annex version 6, so you may need to upgrade your repository
 if the server also has Git Annex 6 installed. Read more in the
 [Git Annex troubleshooting tips][annex-tips] section.
 
+1. Backup your repository
+
+    ```bash
+    cd repository
+    git annex sync --content
+    cd ..
+    git clone repository repository-backup
+    cd repository-backup
+    git annex get
+    cd ..
+    ```
+
 1. Use `annex direct`:
 
     ```bash
+    cd repository
     git annex direct
     ```
 
@@ -197,6 +213,17 @@ On GitLab, navigate to your project's **Repository ➔ Branches** and delete all
 branches created by Git Annex: `git-annex`, and all under `synced/`.
 
 ![repository branches](images/git-annex-branches.png)
+
+You can also do this on the commandline with:
+
+    ```bash
+    git branch -d synced/master
+    git branch -d synced/git-annex
+    git push origin :synced/master
+    git push origin :synced/git-annex
+    git push origin :git-annex
+    git remote prune origin
+    ```
 
 If there are still some Annex objects inside your repository (`.git/annex/`)
 or references inside `.git/config`, run `annex uninit` again:

@@ -68,7 +68,8 @@ describe Note, elastic: true do
 
   it "does not create ElasticIndexerWorker job for system messages" do
     project = create :project, :repository
-    issue = create :issue, project: project
+    # We have to set one minute delay because of https://gitlab.com/gitlab-org/gitlab-ce/merge_requests/15682
+    issue = create :issue, project: project, updated_at: 1.minute.ago
 
     # Only issue should be updated
     expect(ElasticIndexerWorker).to receive(:perform_async).with(:update, 'Issue', anything, anything)
@@ -124,7 +125,7 @@ describe Note, elastic: true do
       issue = create :issue, :confidential, author: user
 
       member = create(:user)
-      issue.project.team << [member, :developer]
+      issue.project.add_developer(member)
 
       Sidekiq::Testing.inline! do
         create_notes_for(issue, 'bla-bla term')
@@ -141,7 +142,7 @@ describe Note, elastic: true do
       issue = create :issue, :confidential, author: user
 
       member = create(:user)
-      issue.project.team << [member, :guest]
+      issue.project.add_guest(member)
 
       Sidekiq::Testing.inline! do
         create_notes_for(issue, 'bla-bla term')

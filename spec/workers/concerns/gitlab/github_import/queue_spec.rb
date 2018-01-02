@@ -11,6 +11,6 @@ describe Gitlab::GithubImport::Queue do
       include Gitlab::GithubImport::Queue
     end
 
-    expect(worker.sidekiq_options['queue']).to eq('github_importer')
+    expect(worker.sidekiq_options['queue']).to eq('github_importer:dummy')
   end
 end

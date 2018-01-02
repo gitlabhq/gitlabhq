@@ -13,13 +13,14 @@ GitLab offers the most scalable Git-based fully integrated platform for software
 - **GitLab Community Edition (CE)** is an [opensource product](https://gitlab.com/gitlab-org/gitlab-ce/),
 self-hosted, free to use. Every feature available in GitLab CE is also available on GitLab Enterprise Edition (Starter and Premium) and GitLab.com.
 - **GitLab Enterprise Edition (EE)** is an [opencore product](https://gitlab.com/gitlab-org/gitlab-ee/),
-self-hosted, fully featured solution of GitLab, available under distinct [subscriptions](https://about.gitlab.com/products/): **GitLab Enterprise Edition Starter (EES)** and **GitLab Enterprise Edition Premium (EEP)**.
+self-hosted, fully featured solution of GitLab, available under distinct [subscriptions](https://about.gitlab.com/products/): **GitLab Enterprise Edition Starter (EES)**, **GitLab Enterprise Edition Premium (EEP)**, and **GitLab Enterprise Edition Ultimate (EEU)**.
 - **GitLab.com**: SaaS GitLab solution, with [free and paid subscriptions](https://about.gitlab.com/gitlab-com/). GitLab.com is hosted by GitLab, Inc., and administrated by GitLab (users don't have access to admin settings).
 
 > **GitLab EE** contains all features available in **GitLab CE**,
 plus premium features available in each version: **Enterprise Edition Starter**
-(**EES**) and **Enterprise Edition Premium** (**EEP**). Everything available in
-**EES** is also available in **EEP**.
+(**EES**), **Enterprise Edition Premium** (**EEP**), and **Enterprise Edition Ultimate**
+(**EEU**). Everything available in **EES** is also available in **EEP**. Every feature
+available in **EEP** is also available in **EEU**.
 
 ----
 
@@ -32,8 +33,8 @@ Shortcuts to GitLab's most visited docs:
 | [Using Docker images](ci/docker/using_docker_images.md) | [GitLab Pages](user/project/pages/index.md) |
 
 - [User documentation](user/index.md)
-- [Administrator documentation](#administrator-documentation)
-- [Technical Articles](articles/index.md)
+- [Administrator documentation](administration/index.md)
+- [Contributor documentation](#contributor-documentation)
 
 ## Getting started with GitLab
 
@@ -63,6 +64,7 @@ Shortcuts to GitLab's most visited docs:
 - [Groups](user/group/index.md): Organize your projects in groups.
   - [Subgroups](user/group/subgroups/index.md)
   - **(EEU)** [Epics](user/group/epics/index.md)
+  - **(EES/EEP)** [Contribution Analytics](user/group/contribution_analytics/index.md): See detailed statistics of group contributors.
 - [Search through GitLab](user/search/index.md): Search for issues, merge requests, projects, groups, todos, and issues in Issue Boards.
   - **(EES/EEP)** [Advanced Global Search](user/search/advanced_global_search.md): Leverage Elasticsearch for faster, more advanced code search across your entire GitLab instance.
   - **(EES/EEP)** [Advanced Syntax Search](user/search/advanced_search_syntax.md): Use advanced queries for more targeted search results.
@@ -70,7 +72,6 @@ Shortcuts to GitLab's most visited docs:
 - [Wikis](user/project/wiki/index.md): Enhance your repository documentation with built-in wikis.
 - [GitLab Pages](user/project/pages/index.md): Build, test, and deploy your static website with GitLab Pages.
 - **(EEP)** [GitLab Service Desk](user/project/service_desk.md): A simple way to allow people to create issues in your GitLab instance without needing their own user account.
-- **(EES/EEP)** [Contribution Analytics](analytics/contribution_analytics.md): See detailed statistics of projects' contributors.
 
 ### Repository
 
@@ -106,6 +107,7 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
   - [Work In Progress Merge Requests](user/project/merge_requests/work_in_progress_merge_requests.md)
   - [Merge Request discussion resolution](user/discussions/index.md#moving-a-single-discussion-to-a-new-issue): Resolve discussions, move discussions in a merge request to an issue, only allow merge requests to be merged if all discussions are resolved.
   - **(EES/EEP)** [Merge Request approval](user/project/merge_requests/merge_request_approvals.md): Make sure every merge request is approved by one or more people before getting merged.
+  - **(EEU)** [Static Application Security Testing](user/project/merge_requests/sast.md): Scan your code for vulnerabilities and display the results in merge requests.
   - [Checkout merge requests locally](user/project/merge_requests/index.md#checkout-merge-requests-locally)
   - [Cherry-pick](user/project/merge_requests/cherry_pick_changes.md)
 - [Milestones](user/project/milestones/index.md): Organize issues and merge requests into a cohesive group, optionally setting a due date.
@@ -150,97 +152,23 @@ Manage your [repositories](user/project/repository/index.md) from the UI (user i
 
 ## Administrator documentation
 
-Learn how to administer your GitLab instance. Regular users don't
-have access to GitLab administration tools and settings.
+[Administration documentation](administration/index.md) applies to admin users of GitLab
+self-hosted instances:
 
-### Install, update, upgrade, migrate
+- GitLab Community Edition
+- GitLab [Enterprise Editions](https://about.gitlab.com/gitlab-ee/)
+  - Enterprise Edition Starter (EES)
+  - Enterprise Edition Premium (EEP)
+  - Enterprise Edition Ultimate (EEU)
 
-- [Install](install/README.md): Requirements, directory structures and installation from source.
-- [Mattermost](https://docs.gitlab.com/omnibus/gitlab-mattermost/): Integrate [Mattermost](https://about.mattermost.com/) with your GitLab installation.
-- [Migrate GitLab CI to CE/EE](migrate_ci_to_ce/README.md): If you have an old GitLab installation (older than 8.0), follow this guide to migrate your existing GitLab CI data to GitLab CE/EE.
-- [Restart GitLab](administration/restart_gitlab.md): Learn how to restart GitLab and its components.
-- [Update](update/README.md): Update guides to upgrade your installation.
-- [Upload your GitLab License](user/admin_area/license.md) Upload the license you purchased for GitLab Enterprise Edition to unlock its features.
-
-### User permissions
-
-- [Access restrictions](user/admin_area/settings/visibility_and_access_controls.md#enabled-git-access-protocols): Define which Git access protocols can be used to talk to GitLab
-- [Authentication/Authorization](topics/authentication/index.md#gitlab-administrators): Enforce 2FA, configure external authentication with LDAP, SAML, CAS and additional Omniauth providers.
-  - **(EES/EEP)** [Sync LDAP](administration/auth/ldap-ee.md)
-  - **(EES/EEP)** [Kerberos authentication](integration/kerberos.md)
-
-### Features
-
-- [Container Registry](administration/container_registry.md): Configure Docker Registry with GitLab.
-- [Custom Git hooks](administration/custom_hooks.md): Custom Git hooks (on the filesystem) for when webhooks aren't enough.
-- [Git LFS configuration](workflow/lfs/lfs_administration.md): Learn how to use LFS under GitLab.
-- [GitLab Pages configuration](administration/pages/index.md): Configure GitLab Pages.
-- [High Availability](administration/high_availability/README.md): Configure multiple servers for scaling or high availability.
-- [User cohorts](user/admin_area/user_cohorts.md): View user activity over time.
-- [Web terminals](administration/integration/terminal.md): Provide terminal access to environments from within GitLab.
-- **(EES/EEP)** [Audit logs and events](administration/audit_events.md): View the changes made within the GitLab server.
-- **(EES/EEP)** [Elasticsearch](integration/elasticsearch.md): Enable Elasticsearch which powers GitLab's Advanced Global Search. Useful when you deal with a huge amount of data.
-- **(EES/EEP)** [Email users](tools/email.md): Email GitLab users from within GitLab.
-- **(EES/EEP)** [Limit project size](user/admin_area/settings/account_and_limit_settings.md): Set a hard limit for your repositories' size.
-- **(EEP)** [Auditor users](administration/auditor_users.md): Users with read-only access to all projects, groups, and other resources on the GitLab instance.
-- **(EEP)** [GitLab GEO](gitlab-geo/README.md): Replicate your GitLab instance to other geographical locations as a read-only fully operational version.
-- **(EEP)** [Pivotal Tile](install/pivotal/index.md): Deploy GitLab as a pre-configured appliance using Ops Manager (BOSH) for Pivotal Cloud Foundry.
-- **(EES/EEP)** [Database load balancing](administration/database_load_balancing.md): Distribute database queries among multiple database servers.
-- **(EES/EEP)** [Omnibus support for external MySQL DB](https://docs.gitlab.com/omnibus/settings/database.html#using-a-mysql-database-management-server-enterprise-edition-only): Omnibus package supports configuring an external MySQL database.
-- **(EES/EEP)** [Omnibus support for log forwarding](https://docs.gitlab.com/omnibus/settings/logs.html#udp-log-shipping-gitlab-enterprise-edition-only)
-- GitLab CI
-    - [CI admin settings](user/admin_area/settings/continuous_integration.md): Define max artifacts size and expiration time.
-
-### Integrations
-
-- [Integrations](integration/README.md): How to integrate with systems such as JIRA, Redmine, Twitter.
-- [Mattermost](user/project/integrations/mattermost.md): Set up GitLab with Mattermost.
-- **(EES/EEP)** [Jenkins](integration/jenkins.md): Set up GitLab with Jenkins.
-
-
-### Monitoring
-
-- [GitLab performance monitoring with InfluxDB](administration/monitoring/performance/introduction.md): Configure GitLab and InfluxDB for measuring performance metrics.
-- [GitLab performance monitoring with Prometheus](administration/monitoring/prometheus/index.md): Configure GitLab and Prometheus for measuring performance metrics.
-- [Monitoring uptime](user/admin_area/monitoring/health_check.md): Check the server status using the health check endpoint.
-- [Monitoring GitHub imports](administration/monitoring/github_imports.md)
-
-### Performance
-
-- [Housekeeping](administration/housekeeping.md): Keep your Git repository tidy and fast.
-- [Operations](administration/operations.md): Keeping GitLab up and running.
-- [Polling](administration/polling.md): Configure how often the GitLab UI polls for updates.
-- [Request Profiling](administration/monitoring/performance/request_profiling.md): Get a detailed profile on slow requests.
-- [Performance Bar](administration/monitoring/performance/performance_bar.md): Get performance information for the current page.
-
-### Customization
-
-- [Adjust your instance's timezone](workflow/timezone.md): Customize the default time zone of GitLab.
-- [Environment variables](administration/environment_variables.md): Supported environment variables that can be used to override their defaults values in order to configure GitLab.
-- [Header logo](customization/branded_page_and_email_header.md): Change the logo on the overall page and email header.
-- [Issue closing pattern](administration/issue_closing_pattern.md): Customize how to close an issue from commit messages.
-- [Libravatar](customization/libravatar.md): Use Libravatar instead of Gravatar for user avatars.
-- [Welcome message](customization/welcome_message.md): Add a custom welcome message to the sign-in page.
-- [New project page](customization/new_project_page.md): Customize the new project page.
-
-### Admin tools
-
-- [Gitaly](administration/gitaly/index.md): Configuring Gitaly, GitLab's Git repository storage service
-- [Raketasks](raketasks/README.md): Backups, maintenance, automatic webhook setup and the importing of projects.
-    - [Backup and restore](raketasks/backup_restore.md): Backup and restore your GitLab instance.
-- [Reply by email](administration/reply_by_email.md): Allow users to comment on issues and merge requests by replying to notification emails.
-- [Repository checks](administration/repository_checks.md): Periodic Git repository checks.
-- [Repository storage paths](administration/repository_storage_paths.md): Manage the paths used to store repositories.
-- [Security](security/README.md): Learn what you can do to further secure your GitLab instance.
-- [System hooks](system_hooks/system_hooks.md): Notifications when users, projects and keys are changed.
-
-### Troubleshooting
-
-- [Debugging tips](administration/troubleshooting/debug.md): Tips to debug problems when things go wrong
-- [Log system](administration/logs.md): Where to look for logs.
-- [Sidekiq Troubleshooting](administration/troubleshooting/sidekiq.md): Debug when Sidekiq appears hung and is not processing jobs.
+Learn how to install, configure, update, upgrade, integrate, and maintain your own instance.
+Regular users don't have access to GitLab administration tools and settings.
 
 ## Contributor documentation
+
+GitLab Community Edition is [opensource](https://gitlab.com/gitlab-org/gitlab-ce/)
+and Enterprise Editions are [opencore](https://gitlab.com/gitlab-org/gitlab-ee/).
+Learn how to contribute to GitLab:
 
 - [Development](development/README.md): All styleguides and explanations how to contribute.
 - [Legal](legal/README.md): Contributor license agreements.

@@ -1,6 +1,24 @@
 module Projects
   class ForkService < BaseService
-    def execute
+    def execute(fork_to_project = nil)
+      if fork_to_project
+        link_existing_project(fork_to_project)
+      else
+        fork_new_project
+      end
+    end
+
+    private
+
+    def link_existing_project(fork_to_project)
+      return if fork_to_project.forked?
+
+      link_fork_network(fork_to_project)
+
+      fork_to_project
+    end
+
+    def fork_new_project
       new_params = {
         forked_from_project_id: @project.id,
         visibility_level:       allowed_visibility_level,
@@ -21,14 +39,10 @@ module Projects
       builds_access_level = @project.project_feature.builds_access_level
       new_project.project_feature.update_attributes(builds_access_level: builds_access_level)
 
-      refresh_forks_count
-
       link_fork_network(new_project)
 
       new_project
     end
-
-    private
 
     def fork_network
       if @project.fork_network
@@ -43,9 +57,17 @@ module Projects
       end
     end
 
-    def link_fork_network(new_project)
-      fork_network.fork_network_members.create(project: new_project,
+    def link_fork_network(fork_to_project)
+      fork_network.fork_network_members.create(project: fork_to_project,
                                                forked_from_project: @project)
+
+      # TODO: remove this when ForkedProjectLink model is removed
+      unless fork_to_project.forked_project_link
+        fork_to_project.create_forked_project_link(forked_to_project: fork_to_project,
+                                                   forked_from_project: @project)
+      end
+
+      refresh_forks_count
     end
 
     def refresh_forks_count

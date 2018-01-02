@@ -464,7 +464,9 @@ namespace :gitlab do
         SystemCheck::Geo::HttpConnectionCheck,
         SystemCheck::Geo::HTTPCloneEnabledCheck,
         SystemCheck::Geo::ClocksSynchronizationCheck,
-        SystemCheck::App::GitUserDefaultSSHConfigCheck
+        SystemCheck::App::GitUserDefaultSSHConfigCheck,
+        SystemCheck::Geo::AuthorizedKeysCheck,
+        SystemCheck::Geo::AuthorizedKeysFlagCheck
       ]
 
       SystemCheck.run('Geo', checks)

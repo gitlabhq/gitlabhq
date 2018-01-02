@@ -1,5 +1,6 @@
 module EE
   module AuditEventService
+    # rubocop:disable Gitlab/ModuleWithInstanceVariables
     def for_member(member)
       action = @details[:action]
       old_access_level = @details[:old_access_level]
@@ -199,5 +200,6 @@ module EE
         }
       end
     end
+    # rubocop:enable Gitlab/ModuleWithInstanceVariables
   end
 end

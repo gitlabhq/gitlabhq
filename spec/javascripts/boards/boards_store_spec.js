@@ -8,7 +8,6 @@
 
 import Vue from 'vue';
 import Cookies from 'js-cookie';
-import '~/lib/utils/url_utility';
 import '~/boards/models/issue';
 import '~/boards/models/label';
 import '~/boards/models/list';

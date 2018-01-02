@@ -86,6 +86,8 @@ module MarkupHelper
     return '' unless text.present?
 
     context[:project] ||= @project
+    context[:group] ||= @group
+
     html = markdown_unsafe(text, context)
     prepare_for_rendering(html, context)
   end

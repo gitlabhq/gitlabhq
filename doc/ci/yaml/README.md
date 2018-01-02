@@ -1153,6 +1153,20 @@ deploy:
   script: make deploy
 ```
 
+#### When a dependent job will fail
+
+> Introduced in GitLab 10.3.
+
+If the artifacts of the job that is set as a dependency have been
+[expired](#artifacts-expire_in) or
+[erased](../../user/project/pipelines/job_artifacts.md#erasing-artifacts), then
+the dependent job will fail.
+
+NOTE: **Note:**
+You can ask your administrator to
+[flip this switch](../../administration/job_artifacts.md#validation-for-dependencies)
+and bring back the old behavior.
+
 ### before_script and after_script
 
 It's possible to overwrite the globally defined `before_script` and `after_script`:

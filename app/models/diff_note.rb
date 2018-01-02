@@ -22,10 +22,11 @@ class DiffNote < Note
   validates :noteable_type, inclusion: { in: NOTEABLE_TYPES }
   validate :positions_complete
   validate :verify_supported
+  validate :diff_refs_match_commit, if: :for_commit?
 
   before_validation :set_original_position, on: :create
   before_validation :update_position, on: :create, if: :on_text?
-  before_validation :set_line_code
+  before_validation :set_line_code, if: :on_text?
   after_save :keep_around_commits
 
   def discussion_class(*)
@@ -63,10 +64,6 @@ class DiffNote < Note
 
   def diff_line
     @diff_line ||= diff_file&.line_for_position(self.original_position)
-  end
-
-  def for_line?(line)
-    diff_file.position(line) == self.original_position
   end
 
   def original_line_code
@@ -138,6 +135,12 @@ class DiffNote < Note
     return if self.original_position.complete? && self.position.complete?
 
     errors.add(:position, "is invalid")
+  end
+
+  def diff_refs_match_commit
+    return if self.original_position.diff_refs == self.commit.diff_refs
+
+    errors.add(:commit_id, 'does not match the diff refs')
   end
 
   def keep_around_commits

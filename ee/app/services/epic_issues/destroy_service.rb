@@ -2,10 +2,6 @@ module EpicIssues
   class DestroyService < IssuableLinks::DestroyService
     private
 
-    def create_notes?
-      false
-    end
-
     def source
       @source ||= link.epic
     end
@@ -16,6 +12,11 @@ module EpicIssues
 
     def permission_to_remove_relation?
       can?(current_user, :admin_epic_issue, target) && can?(current_user, :admin_epic, source)
+    end
+
+    def create_notes
+      SystemNoteService.epic_issue(source, target, current_user, :removed)
+      SystemNoteService.issue_on_epic(target, source, current_user, :removed)
     end
   end
 end

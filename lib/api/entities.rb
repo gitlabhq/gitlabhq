@@ -16,9 +16,12 @@ module API
 
     class UserBasic < UserSafe
       expose :state
+
       expose :avatar_url do |user, options|
         user.avatar_url(only_path: false)
       end
+
+      expose :avatar_path, if: ->(user, options) { options.fetch(:only_path, false) && user.avatar_path }
 
       expose :web_url do |user, options|
         Gitlab::Routing.url_helpers.user_url(user)
@@ -271,8 +274,21 @@ module API
     end
 
     class GroupDetail < Group
-      expose :projects, using: Entities::Project
-      expose :shared_projects, using: Entities::Project
+      expose :projects, using: Entities::Project do |group, options|
+        GroupProjectsFinder.new(
+          group: group,
+          current_user: options[:current_user],
+          options: { only_owned: true }
+        ).execute
+      end
+
+      expose :shared_projects, using: Entities::Project do |group, options|
+        GroupProjectsFinder.new(
+          group: group,
+          current_user: options[:current_user],
+          options: { only_shared: true }
+        ).execute
+      end
 
       # EE-only
       expose :shared_runners_minutes_limit

@@ -9,6 +9,30 @@ module QA
     autoload :User, 'qa/runtime/user'
     autoload :Namespace, 'qa/runtime/namespace'
     autoload :Scenario, 'qa/runtime/scenario'
+    autoload :Browser, 'qa/runtime/browser'
+  end
+
+  ##
+  # GitLab QA fabrication mechanisms
+  #
+  module Factory
+    autoload :Base, 'qa/factory/base'
+    autoload :Dependency, 'qa/factory/dependency'
+    autoload :Product, 'qa/factory/product'
+
+    module Resource
+      autoload :Sandbox, 'qa/factory/resource/sandbox'
+      autoload :Group, 'qa/factory/resource/group'
+      autoload :Project, 'qa/factory/resource/project'
+    end
+
+    module Repository
+      autoload :Push, 'qa/factory/repository/push'
+    end
+
+    module Settings
+      autoload :HashedStorage, 'qa/factory/settings/hashed_storage'
+    end
   end
 
   ##
@@ -33,27 +57,6 @@ module QA
         autoload :Mattermost, 'qa/scenario/test/integration/mattermost'
       end
     end
-
-    ##
-    # GitLab instance scenarios.
-    #
-    module Gitlab
-      module Group
-        autoload :Create, 'qa/scenario/gitlab/group/create'
-      end
-
-      module Project
-        autoload :Create, 'qa/scenario/gitlab/project/create'
-      end
-
-      module Sandbox
-        autoload :Prepare, 'qa/scenario/gitlab/sandbox/prepare'
-      end
-
-      module Admin
-        autoload :HashedStorage, 'qa/scenario/gitlab/admin/hashed_storage'
-      end
-    end
   end
 
   ##
@@ -65,7 +68,6 @@ module QA
     autoload :Base, 'qa/page/base'
 
     module Main
-      autoload :Entry, 'qa/page/main/entry'
       autoload :Login, 'qa/page/main/login'
       autoload :Menu, 'qa/page/main/menu'
       autoload :OAuth, 'qa/page/main/oauth'

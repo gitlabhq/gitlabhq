@@ -204,7 +204,7 @@ describe IssuablesHelper do
         'canUpdate' => true,
         'canDestroy' => true,
         'canAdmin' => true,
-        'issuableRef' => nil,
+        'issuableRef' => "&#{epic.iid}",
         'markdownPreviewPath' => "/groups/#{@group.full_path}/preview_markdown",
         'markdownDocsPath' => '/help/user/markdown',
         'issuableTemplates' => nil,

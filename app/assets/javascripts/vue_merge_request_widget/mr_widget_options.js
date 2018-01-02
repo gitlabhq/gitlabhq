@@ -1,3 +1,4 @@
+import Project from '~/project';
 import SmartInterval from '~/smart_interval';
 import Flash from '../flash';
 import {
@@ -61,7 +62,7 @@ export default {
       return this.mr.hasCI;
     },
     shouldRenderRelatedLinks() {
-      return !!this.mr.relatedLinks;
+      return !!this.mr.relatedLinks && !this.mr.isNothingToMergeState;
     },
     shouldRenderDeployments() {
       return this.mr.deployments.length;
@@ -140,6 +141,7 @@ export default {
             const el = document.createElement('div');
             el.innerHTML = res.body;
             document.body.appendChild(el);
+            Project.initRefSwitcher();
           }
         })
         .catch(() => new Flash('Something went wrong. Please try again.'));

@@ -26,7 +26,7 @@ module EE
       return unless ::Gitlab::Geo.secondary?
 
       oauth = ::Gitlab::Geo::OauthSession.new(access_token: session[:access_token])
-      @geo_logout_state = oauth.generate_logout_state
+      @geo_logout_state = oauth.generate_logout_state # rubocop:disable Gitlab/ModuleWithInstanceVariables
     end
 
     def log_failed_login

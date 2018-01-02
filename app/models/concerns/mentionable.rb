@@ -44,13 +44,11 @@ module Mentionable
   end
 
   def all_references(current_user = nil, extractor: nil)
-    @extractors ||= {}
-
     # Use custom extractor if it's passed in the function parameters.
     if extractor
-      @extractors[current_user] = extractor
+      extractors[current_user] = extractor
     else
-      extractor = @extractors[current_user] ||= Gitlab::ReferenceExtractor.new(project, current_user)
+      extractor = extractors[current_user] ||= Gitlab::ReferenceExtractor.new(project, current_user)
 
       extractor.reset_memoized_values
     end
@@ -61,12 +59,16 @@ module Mentionable
         cache_key: [self, attr],
         author: author,
         skip_project_check: skip_project_check?
-      )
+      ).merge(mentionable_params)
 
       extractor.analyze(text, options)
     end
 
     extractor
+  end
+
+  def extractors
+    @extractors ||= {}
   end
 
   def mentioned_users(current_user = nil)
@@ -82,7 +84,7 @@ module Mentionable
     return [] unless matches_cross_reference_regex?
 
     refs = all_references(current_user)
-    refs = (refs.issues + refs.merge_requests + refs.commits)
+    refs = (refs.issues + refs.merge_requests + refs.commits + refs.epics)
 
     # We're using this method instead of Array diffing because that requires
     # both of the object's `hash` values to be the same, which may not be the
@@ -156,5 +158,9 @@ module Mentionable
 
   def skip_project_check?
     false
+  end
+
+  def mentionable_params
+    {}
   end
 end

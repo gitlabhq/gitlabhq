@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :epic_issue do
     epic
     issue

@@ -504,14 +504,14 @@ msgstr "L'intégration du cluster est activée pour ce projet."
 msgid "ClusterIntegration|Cluster integration is enabled for this project. Disabling this integration will not affect your cluster, it will only temporarily turn off GitLab's connection to it."
 msgstr "L'intégration de cluster est activée pour ce projet. La désactivation de cette intégration n’affectera pas votre cluster, il coupera temporairement la connexion de GitLab à celui-ci."
 
-msgid "ClusterIntegration|Cluster is being created on Google Container Engine..."
-msgstr "Le cluster est en cours de création sur Google Container Engine…"
+msgid "ClusterIntegration|Cluster is being created on Google Kubernetes Engine..."
+msgstr "Le cluster est en cours de création sur Google Kubernetes Engine…"
 
 msgid "ClusterIntegration|Cluster name"
 msgstr "Nom du cluster"
 
-msgid "ClusterIntegration|Cluster was successfully created on Google Container Engine"
-msgstr "Le cluster a été correctement créé sur Google Container Engine"
+msgid "ClusterIntegration|Cluster was successfully created on Google Kubernetes Engine"
+msgstr "Le cluster a été correctement créé sur Google Kubernetes Engine"
 
 msgid "ClusterIntegration|Copy cluster name"
 msgstr "Copier le nom du cluster"
@@ -519,8 +519,8 @@ msgstr "Copier le nom du cluster"
 msgid "ClusterIntegration|Create cluster"
 msgstr "Créer le cluster"
 
-msgid "ClusterIntegration|Create new cluster on Google Container Engine"
-msgstr "Créer un nouveau cluster sur Google Container Engine"
+msgid "ClusterIntegration|Create new cluster on Google Kubernetes Engine"
+msgstr "Créer un nouveau cluster sur Google Kubernetes Engine"
 
 msgid "ClusterIntegration|Enable cluster integration"
 msgstr "Activer l’intégration du cluster"
@@ -528,11 +528,11 @@ msgstr "Activer l’intégration du cluster"
 msgid "ClusterIntegration|Google Cloud Platform project ID"
 msgstr "ID de projet Google Cloud Platform"
 
-msgid "ClusterIntegration|Google Container Engine"
-msgstr "Google Container Engine"
+msgid "ClusterIntegration|Google Kubernetes Engine"
+msgstr "Google Kubernetes Engine"
 
-msgid "ClusterIntegration|Google Container Engine project"
-msgstr "Google Container Engine"
+msgid "ClusterIntegration|Google Kubernetes Engine project"
+msgstr "Google Kubernetes Engine"
 
 msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
 msgstr "En savoir plus sur %{link_to_documentation}"
@@ -585,8 +585,8 @@ msgstr "Voir les zones"
 msgid "ClusterIntegration|Something went wrong on our end."
 msgstr "Un problème est survenu de notre côté."
 
-msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine"
-msgstr "Un problème est survenu lors de la création de votre cluster sur Google Container Engine."
+msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Kubernetes Engine"
+msgstr "Un problème est survenu lors de la création de votre cluster sur Google Kubernetes Engine."
 
 msgid "ClusterIntegration|Toggle Cluster"
 msgstr "Activer/désactiver le cluster"
@@ -594,14 +594,14 @@ msgstr "Activer/désactiver le cluster"
 msgid "ClusterIntegration|With a cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
 msgstr "Avec un cluster associé à ce projet, vous pouvez utiliser des applications de revue, déployer vos applications, exécuter vos pipelines et bien plus encore, de manière très simple."
 
-msgid "ClusterIntegration|Your account must have %{link_to_container_engine}"
-msgstr "Votre compte doit disposer de %{link_to_container_engine}"
+msgid "ClusterIntegration|Your account must have %{link_to_kubernetes_engine}"
+msgstr "Votre compte doit disposer de %{link_to_kubernetes_engine}"
 
 msgid "ClusterIntegration|Zone"
 msgstr "Zone"
 
-msgid "ClusterIntegration|access to Google Container Engine"
-msgstr "Accéder à Google Container Engine"
+msgid "ClusterIntegration|access to Google Kubernetes Engine"
+msgstr "Accéder à Google Kubernetes Engine"
 
 msgid "ClusterIntegration|cluster"
 msgstr "cluster"

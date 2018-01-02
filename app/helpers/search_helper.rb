@@ -149,7 +149,7 @@ module SearchHelper
         id: "filtered-search-#{type}",
         placeholder: 'Search or filter results...',
         data: {
-          'username-params' => @users.to_json(only: [:id, :username])
+          'username-params' => UserSerializer.new.represent(@users)
         },
         autocomplete: 'off'
       }

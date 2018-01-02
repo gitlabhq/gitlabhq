@@ -10,7 +10,7 @@ describe Boards::Lists::CreateService do
     subject(:service) { described_class.new(project, user, label_id: label.id) }
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
     end
 
     context 'when board lists is empty' do

@@ -287,6 +287,10 @@ class GfmAutoComplete {
   }
 
   setupLabels($input) {
+    const fetchData = this.fetchData.bind(this);
+    const LABEL_COMMAND = { LABEL: '/label', UNLABEL: '/unlabel', RELABEL: '/relabel' };
+    let command = '';
+
     $input.atwho({
       at: '~',
       alias: 'labels',
@@ -309,7 +313,44 @@ class GfmAutoComplete {
             title: sanitize(m.title),
             color: m.color,
             search: m.title,
+            set: m.set,
           }));
+        },
+        matcher(flag, subtext) {
+          const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
+          const subtextNodes = subtext.split(/\n+/g).pop().split(GfmAutoComplete.regexSubtext);
+
+          // Check if ~ is followed by '/label', '/relabel' or '/unlabel' commands.
+          command = subtextNodes.find((node) => {
+            if (node === LABEL_COMMAND.LABEL ||
+                node === LABEL_COMMAND.RELABEL ||
+                node === LABEL_COMMAND.UNLABEL) { return node; }
+            return null;
+          });
+
+          return match && match.length ? match[1] : null;
+        },
+        filter(query, data, searchKey) {
+          if (GfmAutoComplete.isLoading(data)) {
+            fetchData(this.$inputor, this.at);
+            return data;
+          }
+
+          if (data === GfmAutoComplete.defaultLoadingData) {
+            return $.fn.atwho.default.callbacks.filter(query, data, searchKey);
+          }
+
+          // The `LABEL_COMMAND.RELABEL` is intentionally skipped
+          // because we want to return all the labels (unfiltered) for that command.
+          if (command === LABEL_COMMAND.LABEL) {
+            // Return labels with set: undefined.
+            return data.filter(label => !label.set);
+          } else if (command === LABEL_COMMAND.UNLABEL) {
+            // Return labels with set: true.
+            return data.filter(label => label.set);
+          }
+
+          return data;
         },
       },
     });
@@ -346,20 +387,7 @@ class GfmAutoComplete {
         return resultantValue;
       },
       matcher(flag, subtext) {
-        // The below is taken from At.js source
-        // Tweaked to commands to start without a space only if char before is a non-word character
-        // https://github.com/ichord/At.js
-        const atSymbolsWithBar = Object.keys(this.app.controllers).join('|');
-        const atSymbolsWithoutBar = Object.keys(this.app.controllers).join('');
-        const targetSubtext = subtext.split(/\s+/g).pop();
-        const resultantFlag = flag.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
-
-        const accentAChar = decodeURI('%C3%80');
-        const accentYChar = decodeURI('%C3%BF');
-
-        const regexp = new RegExp(`^(?:\\B|[^a-zA-Z0-9_${atSymbolsWithoutBar}]|\\s)${resultantFlag}(?!${atSymbolsWithBar})((?:[A-Za-z${accentAChar}-${accentYChar}0-9_'.+-]|[^\\x00-\\x7a])*)$`, 'gi');
-
-        const match = regexp.exec(targetSubtext);
+        const match = GfmAutoComplete.defaultMatcher(flag, subtext, this.app.controllers);
 
         if (match) {
           return match[1];
@@ -420,7 +448,26 @@ class GfmAutoComplete {
     return dataToInspect &&
       (dataToInspect === loadingState || dataToInspect.name === loadingState);
   }
+
+  static defaultMatcher(flag, subtext, controllers) {
+    // The below is taken from At.js source
+    // Tweaked to commands to start without a space only if char before is a non-word character
+    // https://github.com/ichord/At.js
+    const atSymbolsWithBar = Object.keys(controllers).join('|');
+    const atSymbolsWithoutBar = Object.keys(controllers).join('');
+    const targetSubtext = subtext.split(GfmAutoComplete.regexSubtext).pop();
+    const resultantFlag = flag.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&');
+
+    const accentAChar = decodeURI('%C3%80');
+    const accentYChar = decodeURI('%C3%BF');
+
+    const regexp = new RegExp(`^(?:\\B|[^a-zA-Z0-9_${atSymbolsWithoutBar}]|\\s)${resultantFlag}(?!${atSymbolsWithBar})((?:[A-Za-z${accentAChar}-${accentYChar}0-9_'.+-]|[^\\x00-\\x7a])*)$`, 'gi');
+
+    return regexp.exec(targetSubtext);
+  }
 }
+
+GfmAutoComplete.regexSubtext = new RegExp(/\s+/g);
 
 GfmAutoComplete.defaultLoadingData = ['loading'];
 

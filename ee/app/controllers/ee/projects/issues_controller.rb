@@ -11,8 +11,8 @@ module EE
       end
 
       def service_desk
-        @issues = @issuables
-        @users.push(::User.support_bot)
+        @issues = @issuables # rubocop:disable Gitlab/ModuleWithInstanceVariables
+        @users.push(::User.support_bot) # rubocop:disable Gitlab/ModuleWithInstanceVariables
       end
 
       def export_csv

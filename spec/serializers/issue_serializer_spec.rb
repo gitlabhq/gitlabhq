@@ -20,8 +20,12 @@ describe IssueSerializer do
   context 'sidebar issue serialization' do
     let(:serializer) { 'sidebar' }
 
+    before do
+      create(:epic_issue, issue: resource)
+    end
+
     it 'matches sidebar issue json schema' do
-      expect(json_entity).to match_schema('entities/issue_sidebar')
+      expect(json_entity).to match_schema('entities/issue_sidebar', strict: true)
     end
   end
 end

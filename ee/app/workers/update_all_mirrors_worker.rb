@@ -31,7 +31,7 @@ class UpdateAllMirrorsWorker
       last = projects.last.mirror_data.next_execution_timestamp
 
       projects.each do |project|
-        next unless project.feature_available?(:repository_mirrors)
+        next unless project.mirror?
 
         capacity -= 1
         project.import_schedule

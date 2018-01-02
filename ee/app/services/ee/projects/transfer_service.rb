@@ -8,12 +8,12 @@ module EE
 
         super
 
-        EE::Audit::ProjectChangesAuditor.new(@current_user, project).execute
+        EE::Audit::ProjectChangesAuditor.new(current_user, project).execute
 
         ::Geo::RepositoryRenamedEventStore.new(
           project,
           old_path: project.path,
-          old_path_with_namespace: @old_path
+          old_path_with_namespace: @old_path # rubocop:disable Gitlab/ModuleWithInstanceVariables
         ).create
       end
     end

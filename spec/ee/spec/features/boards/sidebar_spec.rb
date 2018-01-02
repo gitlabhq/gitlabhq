@@ -23,7 +23,7 @@ describe 'Issue Boards', :js do
   before do
     stub_licensed_features(multiple_issue_assignees: true)
 
-    project.team << [user, :master]
+    project.add_master(user)
     project.team.add_developer(user2)
 
     gitlab_sign_in(user)

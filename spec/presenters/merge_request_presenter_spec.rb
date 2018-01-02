@@ -31,7 +31,7 @@ describe MergeRequestPresenter do
       let(:pipeline) { build_stubbed(:ci_pipeline) }
 
       before do
-        allow(resource).to receive(:head_pipeline).and_return(pipeline)
+        allow(resource).to receive(:actual_head_pipeline).and_return(pipeline)
       end
 
       context 'success with warnings' do
@@ -116,7 +116,7 @@ describe MergeRequestPresenter do
     end
 
     before do
-      project.team << [user, :developer]
+      project.add_developer(user)
 
       allow(resource.project).to receive(:default_branch)
         .and_return(resource.target_branch)
@@ -270,7 +270,7 @@ describe MergeRequestPresenter do
     context 'when can create issue and issues enabled' do
       it 'returns path' do
         allow(project).to receive(:issues_enabled?) { true }
-        project.team << [user, :master]
+        project.add_master(user)
 
         is_expected
           .to eq("/#{resource.project.full_path}/issues/new?merge_request_to_resolve_discussions_of=#{resource.iid}")
@@ -288,7 +288,7 @@ describe MergeRequestPresenter do
     context 'when issues disabled' do
       it 'returns nil' do
         allow(project).to receive(:issues_enabled?) { false }
-        project.team << [user, :master]
+        project.add_master(user)
 
         is_expected.to be_nil
       end
@@ -307,7 +307,7 @@ describe MergeRequestPresenter do
     context 'when merge request enabled and has permission' do
       it 'has remove_wip_path' do
         allow(project).to receive(:merge_requests_enabled?) { true }
-        project.team << [user, :master]
+        project.add_master(user)
 
         is_expected
           .to eq("/#{resource.project.full_path}/merge_requests/#{resource.iid}/remove_wip")

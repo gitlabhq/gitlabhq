@@ -5,10 +5,9 @@ $grid-size: 8px;
 $gutter_collapsed_width: 62px;
 $gutter_width: 290px;
 $gutter_inner_width: 250px;
-$sidebar-transition-duration: .15s;
+$sidebar-transition-duration: .3s;
 $sidebar-breakpoint: 1024px;
 $default-transition-duration: .15s;
-$right-sidebar-transition-duration: .3s;
 $contextual-sidebar-width: 220px;
 $contextual-sidebar-collapsed-width: 50px;
 
@@ -221,6 +220,7 @@ $gl-input-padding: 10px;
 $gl-vert-padding: 6px;
 $gl-padding-top: 10px;
 $gl-sidebar-padding: 22px;
+$gl-bar-padding: 3px;
 
 /*
  * Misc
@@ -247,9 +247,6 @@ $btn-sm-side-margin: 7px;
 $btn-xs-side-margin: 5px;
 $issue-status-expired: $orange-500;
 $issuable-sidebar-color: $gl-text-color-secondary;
-$show-aside-bg: #eee;
-$show-aside-color: #777;
-$show-aside-shadow: #ddd;
 $group-path-color: #999;
 $project-path-color: #999;
 $namespace-kind-color: #aaa;
@@ -415,7 +412,6 @@ $location-icon-color: #e7e9ed;
  *  Notes
  */
 $notes-light-color: $gl-text-color-secondary;
-$notes-role-color: $gl-text-color-secondary;
 $note-disabled-comment-color: #b2b2b2;
 $note-targe3-outside: #fffff0;
 $note-targe3-inside: #ffffd3;
@@ -564,6 +560,7 @@ $jq-ui-default-color: #777;
 /*
 * Label
 */
+$label-padding: 7px;
 $label-gray-bg: #f8fafc;
 $label-inverse-bg: #333;
 $label-remove-border: rgba(0, 0, 0, .1);
@@ -744,7 +741,7 @@ $issuable-warning-icon-margin: 4px;
 Image Commenting cursor
 */
 $image-comment-cursor-left-offset: 12;
-$image-comment-cursor-top-offset: 30;
+$image-comment-cursor-top-offset: 12;
 
 /*
 Add GitLab Slack Application

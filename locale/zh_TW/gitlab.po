@@ -497,13 +497,13 @@ msgstr "此專案已經啟用叢集整合"
 msgid "ClusterIntegration|Cluster integration is enabled for this project. Disabling this integration will not affect your cluster, it will only temporarily turn off GitLab's connection to it."
 msgstr "此專案已啟用叢集整合。禁止叢集整合不會影響您的叢集，它只是暫時關閉 GitLab 的連接。"
 
-msgid "ClusterIntegration|Cluster is being created on Google Container Engine..."
+msgid "ClusterIntegration|Cluster is being created on Google Kubernetes Engine..."
 msgstr "在 Google 容器引擎中建立新的叢集"
 
 msgid "ClusterIntegration|Cluster name"
 msgstr "叢集名稱"
 
-msgid "ClusterIntegration|Cluster was successfully created on Google Container Engine"
+msgid "ClusterIntegration|Cluster was successfully created on Google Kubernetes Engine"
 msgstr "在 Google 容器引擎上成功建立叢集"
 
 msgid "ClusterIntegration|Copy cluster name"
@@ -512,7 +512,7 @@ msgstr "複製叢集名稱"
 msgid "ClusterIntegration|Create cluster"
 msgstr "建立叢集"
 
-msgid "ClusterIntegration|Create new cluster on Google Container Engine"
+msgid "ClusterIntegration|Create new cluster on Google Kubernetes Engine"
 msgstr "在 Google 容器引擎中建立新的叢集"
 
 msgid "ClusterIntegration|Enable cluster integration"
@@ -521,10 +521,10 @@ msgstr "啟動叢集整合"
 msgid "ClusterIntegration|Google Cloud Platform project ID"
 msgstr "Google 雲端專案 ID"
 
-msgid "ClusterIntegration|Google Container Engine"
+msgid "ClusterIntegration|Google Kubernetes Engine"
 msgstr "Google 容器引擎"
 
-msgid "ClusterIntegration|Google Container Engine project"
+msgid "ClusterIntegration|Google Kubernetes Engine project"
 msgstr "Google 容器引擎專案"
 
 msgid "ClusterIntegration|Learn more about %{link_to_documentation}"
@@ -578,8 +578,8 @@ msgstr "查看區域"
 msgid "ClusterIntegration|Something went wrong on our end."
 msgstr "內部發生了錯誤"
 
-msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine"
-msgstr "在 Google Container Engine 上建立叢集時發生了錯誤"
+msgid "ClusterIntegration|Something went wrong while creating your cluster on Google Kubernetes Engine"
+msgstr "在 Google Kubernetes Engine 上建立叢集時發生了錯誤"
 
 msgid "ClusterIntegration|Toggle Cluster"
 msgstr "叢集開關"
@@ -587,14 +587,14 @@ msgstr "叢集開關"
 msgid "ClusterIntegration|With a cluster associated to this project, you can use review apps, deploy your applications, run your pipelines, and much more in an easy way."
 msgstr "當叢集連結到此專案，你可以使用複閱應用 (review apps)，部署你的應用程式，執行你的流水線 (pipelines)，還有更多容易上手的方式可以使用。"
 
-msgid "ClusterIntegration|Your account must have %{link_to_container_engine}"
-msgstr "您的帳號必須有 %{link_to_container_engine}"
+msgid "ClusterIntegration|Your account must have %{link_to_kubernetes_engine}"
+msgstr "您的帳號必須有 %{link_to_kubernetes_engine}"
 
 msgid "ClusterIntegration|Zone"
 msgstr "區域"
 
-msgid "ClusterIntegration|access to Google Container Engine"
-msgstr "存取 Google Container Engine"
+msgid "ClusterIntegration|access to Google Kubernetes Engine"
+msgstr "存取 Google Kubernetes Engine"
 
 msgid "ClusterIntegration|cluster"
 msgstr "叢集"

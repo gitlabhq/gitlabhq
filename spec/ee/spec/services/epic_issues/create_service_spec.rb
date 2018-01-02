@@ -25,6 +25,32 @@ describe EpicIssues::CreateService do
       it 'returns success status' do
         expect(subject).to eq(status: :success)
       end
+
+      it 'creates 2 system notes' do
+        expect { subject }.to change { Note.count }.from(0).to(2)
+      end
+
+      it 'creates a note for epic correctly' do
+        subject
+        note = Note.find_by(noteable_id: epic.id, noteable_type: 'Epic')
+
+        expect(note.note).to eq("added issue #{issue.to_reference(epic.group)}")
+        expect(note.author).to eq(user)
+        expect(note.project).to be_nil
+        expect(note.noteable_type).to eq('Epic')
+        expect(note.system_note_metadata.action).to eq('epic_issue_added')
+      end
+
+      it 'creates a note for issue correctly' do
+        subject
+        note = Note.find_by(noteable_id: issue.id, noteable_type: 'Issue')
+
+        expect(note.note).to eq("added to epic #{epic.to_reference(issue.project)}")
+        expect(note.author).to eq(user)
+        expect(note.project).to eq(issue.project)
+        expect(note.noteable_type).to eq('Issue')
+        expect(note.system_note_metadata.action).to eq('issue_added_to_epic')
+      end
     end
 
     shared_examples 'returns an error' do
@@ -57,6 +83,10 @@ describe EpicIssues::CreateService do
           it 'returns an error' do
             expect(assign_issue([])).to eq(message: 'No Issue found for given params', status: :error, http_status: 404)
           end
+
+          it 'does not create a system note' do
+            expect { assign_issue([]) }.not_to change { Note.count }
+          end
         end
 
         context 'when there is an issue to relate' do
@@ -72,6 +102,9 @@ describe EpicIssues::CreateService do
             include_examples 'returns success'
 
             it 'does not perofrm N + 1 queries' do
+              allow(SystemNoteService).to receive(:epic_issue)
+              allow(SystemNoteService).to receive(:issue_on_epic)
+
               params = { issue_references: [valid_reference] }
               control_count = ActiveRecord::QueryRecorder.new { described_class.new(epic, user, params).execute }.count
 

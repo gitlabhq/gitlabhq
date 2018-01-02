@@ -1,7 +1,8 @@
 import Vue from 'vue';
-import store from '~/repo/stores';
-import service from '~/repo/services';
-import repoCommitSection from '~/repo/components/repo_commit_section.vue';
+import * as urlUtils from '~/lib/utils/url_utility';
+import store from '~/ide/stores';
+import service from '~/ide/services';
+import repoCommitSection from '~/ide/components/repo_commit_section.vue';
 import getSetTimeoutPromise from '../../helpers/set_timeout_promise_helper';
 import { file, resetStore } from '../helpers';
 
@@ -15,6 +16,18 @@ describe('RepoCommitSection', () => {
       store,
     }).$mount();
 
+    comp.$store.state.currentProjectId = 'abcproject';
+    comp.$store.state.currentBranchId = 'master';
+    comp.$store.state.projects.abcproject = {
+      web_url: '',
+      branches: {
+        master: {
+          workingReference: '1',
+        },
+      },
+    };
+
+    comp.$store.state.rightPanelCollapsed = false;
     comp.$store.state.currentBranch = 'master';
     comp.$store.state.openFiles = [file(), file()];
     comp.$store.state.openFiles.forEach(f => Object.assign(f, {
@@ -28,7 +41,19 @@ describe('RepoCommitSection', () => {
   beforeEach((done) => {
     vm = createComponent();
 
-    vm.collapsed = false;
+    spyOn(service, 'getTreeData').and.returnValue(Promise.resolve({
+      headers: {
+        'page-title': 'test',
+      },
+      json: () => Promise.resolve({
+        last_commit_path: 'last_commit_path',
+        parent_tree_url: 'parent_tree_url',
+        path: '/',
+        trees: [{ name: 'tree' }],
+        blobs: [{ name: 'blob' }],
+        submodules: [{ name: 'submodule' }],
+      }),
+    }));
 
     Vue.nextTick(done);
   });
@@ -44,7 +69,6 @@ describe('RepoCommitSection', () => {
     const submitCommit = vm.$el.querySelector('form .btn');
 
     expect(vm.$el.querySelector('.multi-file-commit-form')).not.toBeNull();
-    expect(vm.$el.querySelector('.multi-file-commit-panel-section header').textContent.trim()).toEqual('Staged');
     expect(changedFileElements.length).toEqual(2);
 
     changedFileElements.forEach((changedFile, i) => {
@@ -97,7 +121,7 @@ describe('RepoCommitSection', () => {
     });
 
     it('redirects to MR creation page if start new MR checkbox checked', (done) => {
-      spyOn(gl.utils, 'visitUrl');
+      spyOn(urlUtils, 'visitUrl');
       vm.startNewMR = true;
 
       vm.makeCommit();
@@ -105,7 +129,7 @@ describe('RepoCommitSection', () => {
       getSetTimeoutPromise()
         .then(() => Vue.nextTick())
         .then(() => {
-          expect(gl.utils.visitUrl).toHaveBeenCalled();
+          expect(urlUtils.visitUrl).toHaveBeenCalled();
         })
         .then(done)
         .catch(done.fail);

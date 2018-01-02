@@ -16,6 +16,7 @@ namespace :admin do
       put :unlock
       put :confirm
       post :impersonate
+      post :reset_runners_minutes
       patch :disable_two_factor
       delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
     end
@@ -44,6 +45,7 @@ namespace :admin do
 
     scope(as: :group) do
       put :members_update
+      post :reset_runners_minutes
       get :edit, action: :edit
       get '/', action: :show
       patch '/', action: :update
@@ -127,7 +129,7 @@ namespace :admin do
     get :download, on: :member
   end
 
-  resources :geo_nodes, only: [:index, :create, :edit, :update, :destroy] do
+  resources :geo_nodes, only: [:index, :create, :new, :edit, :update, :destroy] do
     member do
       post :repair
       post :toggle

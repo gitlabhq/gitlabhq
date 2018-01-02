@@ -80,7 +80,7 @@ Make sure you have the right version of Git installed
     # Install Git
     sudo apt-get install -y git-core
 
-    # Make sure Git is version 2.13.6 or higher
+    # Make sure Git is version 2.14.3 or higher
     git --version
 
 Is the system packaged Git too old? Remove it and compile from source.
@@ -133,9 +133,9 @@ Remove the old Ruby 1.8 if present:
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.5.tar.gz
-    echo '3247e217d6745c27ef23bdc77b6abdb4b57a118f  ruby-2.3.5.tar.gz' | shasum -c - && tar xzf ruby-2.3.5.tar.gz
-    cd ruby-2.3.5
+    curl --remote-name --progress https://cache.ruby-lang.org/pub/ruby/2.3/ruby-2.3.6.tar.gz
+    echo '4e6a0f828819e15d274ae58485585fc8b7caace0  ruby-2.3.6.tar.gz' | shasum -c - && tar xzf ruby-2.3.6.tar.gz
+    cd ruby-2.3.6
     ./configure --disable-install-rdoc
     make
     sudo make install
@@ -299,9 +299,9 @@ sudo usermod -aG redis git
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 10-2-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 10-3-stable gitlab
 
-**Note:** You can change `10-2-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `10-3-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -367,7 +367,7 @@ sudo usermod -aG redis git
 
     # Enable packfile bitmaps
     sudo -u git -H git config --global repack.writeBitmaps true
-    
+
     # Enable push options
     sudo -u git -H git config --global receive.advertisePushOptions true
 

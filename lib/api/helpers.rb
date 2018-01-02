@@ -3,6 +3,7 @@ module API
     prepend EE::API::Helpers
 
     include Gitlab::Utils
+    include Gitlab::Utils::StrongMemoize
     include Helpers::Pagination
 
     SUDO_HEADER = "HTTP_SUDO".freeze
@@ -34,6 +35,11 @@ module API
       end
     end
 
+    # rubocop:disable Gitlab/ModuleWithInstanceVariables
+    # We can't rewrite this with StrongMemoize because `sudo!` would
+    # actually write to `@current_user`, and `sudo?` would immediately
+    # call `current_user` again which reads from `@current_user`.
+    # We should rewrite this in a way that using StrongMemoize is possible
     def current_user
       return @current_user if defined?(@current_user)
 
@@ -47,6 +53,7 @@ module API
 
       @current_user
     end
+    # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
     def sudo?
       initial_current_user != current_user
@@ -432,7 +439,7 @@ module API
     end
 
     def job_token_authentication?
-      initial_current_user && @job_token_authentication
+      initial_current_user && @job_token_authentication # rubocop:disable Gitlab/ModuleWithInstanceVariables
     end
 
     def warden
@@ -449,15 +456,17 @@ module API
       warden.try(:authenticate) if verified_request?
     end
 
+    # rubocop:disable Gitlab/ModuleWithInstanceVariables
     def initial_current_user
-      return @initial_current_user if defined?(@initial_current_user)
+      return @initial_current_user if defined?(@initial_current_user) # rubocop:disable Gitlab/ModuleWithInstanceVariables
 
       begin
-        @initial_current_user = Gitlab::Auth::UniqueIpsLimiter.limit_user! { find_current_user! }
+        @initial_current_user = Gitlab::Auth::UniqueIpsLimiter.limit_user! { find_current_user! } # rubocop:disable Gitlab/ModuleWithInstanceVariables
       rescue Gitlab::Auth::UnauthorizedError
         unauthorized!
       end
     end
+    # rubocop:enable Gitlab/ModuleWithInstanceVariables
 
     def sudo!
       return unless sudo_identifier
@@ -477,7 +486,7 @@ module API
       sudoed_user = find_user(sudo_identifier)
       not_found!("User with ID or username '#{sudo_identifier}'") unless sudoed_user
 
-      @current_user = sudoed_user
+      @current_user = sudoed_user # rubocop:disable Gitlab/ModuleWithInstanceVariables
     end
 
     def sudo_identifier

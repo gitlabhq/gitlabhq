@@ -63,8 +63,8 @@ describe Banzai::ReferenceParser::UserParser do
         let(:contributor) { create(:user) }
 
         before do
-          project.team << [user, :developer]
-          project.team << [contributor, :developer]
+          project.add_developer(user)
+          project.add_developer(contributor)
         end
 
         it 'returns the members of a project' do
@@ -162,7 +162,7 @@ describe Banzai::ReferenceParser::UserParser do
     context 'when the link has a data-author attribute' do
       it 'returns the nodes when the user is a member of the project' do
         other_project = create(:project)
-        other_project.team << [user, :developer]
+        other_project.add_developer(user)
 
         link['data-project'] = other_project.id.to_s
         link['data-author'] = user.id.to_s

@@ -14,8 +14,8 @@ describe 'New/edit issue', :js do
   let!(:issue)     { create(:issue, project: project, assignees: [user], milestone: milestone) }
 
   before do
-    project.team << [user, :master]
-    project.team << [user2, :master]
+    project.add_master(user)
+    project.add_master(user2)
 
     allow_any_instance_of(ApplicationHelper).to receive(:collapsed_sidebar?).and_return(true)
 

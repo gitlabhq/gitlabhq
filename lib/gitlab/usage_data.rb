@@ -140,6 +140,8 @@ module Gitlab
 
       def license_edition(plan)
         case plan
+        when 'ultimate'
+          'EEU'
         when 'premium'
           'EEP'
         when 'starter'

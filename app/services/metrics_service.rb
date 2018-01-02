@@ -20,7 +20,7 @@ class MetricsService
   end
 
   def metrics_text
-    "#{health_metrics_text}#{prometheus_metrics_text}"
+    prometheus_metrics_text.concat(health_metrics_text)
   end
 
   private

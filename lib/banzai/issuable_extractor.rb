@@ -28,8 +28,8 @@ module Banzai
       issue_parser = Banzai::ReferenceParser::IssueParser.new(project, user)
       merge_request_parser = Banzai::ReferenceParser::MergeRequestParser.new(project, user)
 
-      issuables_for_nodes = issue_parser.issues_for_nodes(nodes).merge(
-        merge_request_parser.merge_requests_for_nodes(nodes)
+      issuables_for_nodes = issue_parser.records_for_nodes(nodes).merge(
+        merge_request_parser.records_for_nodes(nodes)
       )
 
       # The project for the issue/MR might be pending for deletion!

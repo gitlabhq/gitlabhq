@@ -2,7 +2,8 @@
 /* global BoardService */
 
 import Flash from '~/flash';
-import PopupDialog from '~/vue_shared/components/popup_dialog.vue';
+import modal from '../../vue_shared/components/modal.vue';
+import { visitUrl } from '../../lib/utils/url_utility';
 import BoardMilestoneSelect from './milestone_select.vue';
 import BoardWeightSelect from './weight_select.vue';
 import BoardLabelsSelect from './labels_select.vue';
@@ -73,7 +74,7 @@ export default {
     BoardLabelsSelect,
     BoardMilestoneSelect,
     BoardWeightSelect,
-    PopupDialog,
+    modal,
   },
   computed: {
     isNewForm() {
@@ -138,7 +139,7 @@ export default {
       if (this.isDeleteForm) {
         gl.boardService.deleteBoard(this.currentBoard)
           .then(() => {
-            gl.utils.visitUrl(Store.rootPath);
+            visitUrl(Store.rootPath);
           })
           .catch(() => {
             Flash('Failed to delete board. Please try again.');
@@ -148,7 +149,7 @@ export default {
         gl.boardService.createBoard(this.board)
           .then(resp => resp.json())
           .then((data) => {
-            gl.utils.visitUrl(data.board_path);
+            visitUrl(data.board_path);
           })
           .catch(() => {
             Flash('Unable to save your changes. Please try again.');
@@ -178,7 +179,7 @@ export default {
 </script>
 
 <template>
-  <popup-dialog
+  <modal
     v-show="currentPage"
     modal-dialog-class="board-config-modal"
     :hide-footer="readonly"
@@ -274,5 +275,5 @@ export default {
         </div>
       </form>
     </template>
-  </popup-dialog>
+  </modal>
 </template>

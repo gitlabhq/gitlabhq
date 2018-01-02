@@ -8,8 +8,9 @@ module EpicIssues
       link.save!
     end
 
-    def create_notes?
-      false
+    def create_notes(referenced_issue)
+      SystemNoteService.epic_issue(issuable, referenced_issue, current_user, :added)
+      SystemNoteService.issue_on_epic(referenced_issue, issuable, current_user, :added)
     end
 
     def extractor_context

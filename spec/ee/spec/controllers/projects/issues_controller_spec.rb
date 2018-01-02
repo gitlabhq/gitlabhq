@@ -60,7 +60,7 @@ describe Projects::IssuesController do
 
     context 'licensed by namespace' do
       let(:globally_licensed) { true }
-      let(:namespace) { create(:group, :private, plan: Namespace::BRONZE_PLAN) }
+      let(:namespace) { create(:group, :private, plan: :bronze_plan) }
       let(:project) { create(:project, namespace: namespace) }
 
       before do

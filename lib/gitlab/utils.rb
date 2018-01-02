@@ -47,13 +47,6 @@ module Gitlab
       Random.rand(Float::MAX.to_i).to_s(36)
     end
 
-    # EE below
-    def try_megabytes_to_bytes(size)
-      Integer(size).megabytes
-    rescue ArgumentError
-      size
-    end
-
     # See: http://stackoverflow.com/questions/2108727/which-in-ruby-checking-if-program-exists-in-path-from-ruby
     # Cross-platform way of finding an executable in the $PATH.
     #
@@ -69,6 +62,13 @@ module Gitlab
       end
 
       nil
+    end
+
+    # EE below
+    def try_megabytes_to_bytes(size)
+      Integer(size).megabytes
+    rescue ArgumentError
+      size
     end
   end
 end

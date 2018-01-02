@@ -1,10 +1,11 @@
 require 'spec_helper'
 
 describe Gitlab::ReferenceExtractor do
-  let(:project) { create(:project) }
+  let(:group)   { create(:group) }
+  let(:project) { create(:project, group: group) }
 
   before do
-    project.team << [project.creator, :developer]
+    group.add_developer(project.creator)
   end
 
   subject { described_class.new(project, project.creator) }
@@ -14,8 +15,8 @@ describe Gitlab::ReferenceExtractor do
     @u_bar = create(:user, username: 'bar')
     @u_offteam = create(:user, username: 'offteam')
 
-    project.team << [@u_foo, :reporter]
-    project.team << [@u_bar, :guest]
+    project.add_guest(@u_foo)
+    project.add_guest(@u_bar)
 
     subject.analyze('@foo, @baduser, @bar, and @offteam')
     expect(subject.users).to match_array([@u_foo, @u_bar, @u_offteam])
@@ -26,8 +27,8 @@ describe Gitlab::ReferenceExtractor do
     @u_bar = create(:user, username: 'bar')
     @u_offteam = create(:user, username: 'offteam')
 
-    project.team << [@u_foo, :reporter]
-    project.team << [@u_bar, :guest]
+    project.add_reporter(@u_foo)
+    project.add_reporter(@u_bar)
 
     subject.analyze(%Q{
       Inline code: `@foo`
@@ -115,6 +116,15 @@ describe Gitlab::ReferenceExtractor do
     end
   end
 
+  it 'does not include anchors from table of contents in issue references' do
+    issue1 = create(:issue, project: project)
+    issue2 = create(:issue, project: project)
+
+    subject.analyze("not real issue <h4>#{issue1.iid}</h4>, real issue #{issue2.to_reference}")
+
+    expect(subject.issues).to match_array([issue2])
+  end
+
   it 'accesses valid issue objects' do
     @i0 = create(:issue, project: project)
     @i1 = create(:issue, project: project)
@@ -151,6 +161,20 @@ describe Gitlab::ReferenceExtractor do
     subject.analyze("$#{@s0.id}, $999, $#{@s2.id}, $#{@s1.id}")
 
     expect(subject.snippets).to match_array([@s0, @s1])
+  end
+
+  it 'accesses valid epics' do
+    stub_licensed_features(epics: true)
+
+    @e0 = create(:epic, group: group)
+    @e1 = create(:epic, group: group)
+    @e2 = create(:epic, group: create(:group, :private))
+
+    text = "#{@e0.to_reference(group)}, &999, #{@e1.to_reference(group)}, #{@e2.to_reference(group)}"
+
+    subject.analyze(text, { group: group })
+
+    expect(subject.epics).to match_array([@e0, @e1])
   end
 
   it 'accesses valid commits' do
@@ -219,7 +243,7 @@ describe Gitlab::ReferenceExtractor do
     let(:issue) { create(:issue, project: other_project) }
 
     before do
-      other_project.team << [project.creator, :developer]
+      other_project.add_developer(project.creator)
     end
 
     it 'handles project issue references' do
@@ -237,7 +261,7 @@ describe Gitlab::ReferenceExtractor do
     let(:text) { "Ref. #{issue.to_reference} and #{label.to_reference}" }
 
     before do
-      project.team << [project.creator, :developer]
+      project.add_developer(project.creator)
       subject.analyze(text)
     end
 
@@ -249,5 +273,35 @@ describe Gitlab::ReferenceExtractor do
   describe '.references_pattern' do
     subject { described_class.references_pattern }
     it { is_expected.to be_kind_of Regexp }
+  end
+
+  describe 'referables prefixes' do
+    def prefixes
+      described_class::REFERABLES.each_with_object({}) do |referable, result|
+        klass = referable.to_s.camelize.constantize
+
+        next unless klass.respond_to?(:reference_prefix)
+
+        prefix = klass.reference_prefix
+        result[prefix] ||= []
+        result[prefix] << referable
+      end
+    end
+
+    it 'returns all supported prefixes' do
+      expect(prefixes.keys.uniq).to match_array(%w(@ # ~ % ! $ &))
+    end
+
+    it 'does not allow one prefix for multiple referables if not allowed specificly' do
+      # make sure you are not overriding existing prefix before changing this hash
+      multiple_allowed = {
+        '@' => 3
+      }
+
+      prefixes.each do |prefix, referables|
+        expected_count = multiple_allowed[prefix] || 1
+        expect(referables.count).to eq(expected_count)
+      end
+    end
   end
 end

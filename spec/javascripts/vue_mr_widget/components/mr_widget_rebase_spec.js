@@ -1,4 +1,5 @@
 import Vue from 'vue';
+import eventHub from '~/vue_merge_request_widget/event_hub';
 import component from 'ee/vue_merge_request_widget/components/states/mr_widget_rebase.vue';
 import mountComponent from '../../helpers/vue_mount_component_helper';
 
@@ -73,6 +74,44 @@ describe('Merge request widget rebase component', () => {
       expect(text).toContain('Rebase the source branch onto');
       expect(text).toContain('foo');
       expect(text).toContain('to allow this merge request to be merged.');
+    });
+  });
+
+  describe('methods', () => {
+    it('checkRebaseStatus', (done) => {
+      spyOn(eventHub, '$emit');
+      vm = mountComponent(Component, {
+        mr: {},
+        service: {
+          rebase() {
+            return Promise.resolve();
+          },
+          poll() {
+            return Promise.resolve({
+              json() {
+                return {
+                  rebase_in_progress: false,
+                  merge_error: null,
+                };
+              },
+            });
+          },
+        },
+      });
+
+      vm.rebase();
+
+      // Wait for the rebase request
+      vm.$nextTick()
+        // Wait for the polling request
+        .then(vm.$nextTick())
+        // Wait for the eventHub to be called
+        .then(vm.$nextTick())
+        .then(() => {
+          expect(eventHub.$emit).toHaveBeenCalledWith('MRWidgetUpdateRequested');
+        })
+        .then(done)
+        .catch(done.fail);
     });
   });
 });

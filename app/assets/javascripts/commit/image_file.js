@@ -121,7 +121,7 @@ export default class ImageFile {
       return $('.swipe.view', this.file).each((function(_this) {
         return function(index, view) {
           var $swipeWrap, $swipeBar, $swipeFrame, wrapPadding, ref;
-          ref = this.prepareFrames(view), maxWidth = ref[0], maxHeight = ref[1];
+          ref = _this.prepareFrames(view), maxWidth = ref[0], maxHeight = ref[1];
           $swipeFrame = $('.swipe-frame', view);
           $swipeWrap = $('.swipe-wrap', view);
           $swipeBar = $('.swipe-bar', view);
@@ -158,7 +158,7 @@ export default class ImageFile {
       return $('.onion-skin.view', this.file).each((function(_this) {
         return function(index, view) {
           var $frame, $track, $dragger, $frameAdded, framePadding, ref, dragging = false;
-          ref = this.prepareFrames(view), maxWidth = ref[0], maxHeight = ref[1];
+          ref = _this.prepareFrames(view), maxWidth = ref[0], maxHeight = ref[1];
           $frame = $('.onion-skin-frame', view);
           $frameAdded = $('.frame.added', view);
           $track = $('.drag-track', view);
@@ -176,6 +176,7 @@ export default class ImageFile {
             left: dragTrackWidth
           });
 
+          $frameAdded.css('opacity', 1);
           framePadding = parseInt($frameAdded.css('right').replace('px', ''), 10);
 
           _this.initDraggable($dragger, framePadding, function(e, left) {

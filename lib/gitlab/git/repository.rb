@@ -18,9 +18,9 @@ module Gitlab
         GIT_ALTERNATE_OBJECT_DIRECTORIES_RELATIVE
       ].freeze
       SEARCH_CONTEXT_LINES = 3
-      GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'.freeze
       REBASE_WORKTREE_PREFIX = 'rebase'.freeze
       SQUASH_WORKTREE_PREFIX = 'squash'.freeze
+      GITALY_INTERNAL_URL = 'ssh://gitaly/internal.git'.freeze
 
       NoRepository = Class.new(StandardError)
       InvalidBlobName = Class.new(StandardError)
@@ -39,10 +39,32 @@ module Gitlab
           repo = Rugged::Repository.init_at(repo_path, bare)
           repo.close
 
-          if symlink_hooks_to.present?
-            hooks_path = File.join(repo_path, 'hooks')
-            FileUtils.rm_rf(hooks_path)
-            FileUtils.ln_s(symlink_hooks_to, hooks_path)
+          create_hooks(repo_path, symlink_hooks_to) if symlink_hooks_to.present?
+
+          true
+        end
+
+        def create_hooks(repo_path, global_hooks_path)
+          local_hooks_path = File.join(repo_path, 'hooks')
+          real_local_hooks_path = :not_found
+
+          begin
+            real_local_hooks_path = File.realpath(local_hooks_path)
+          rescue Errno::ENOENT
+            # real_local_hooks_path == :not_found
+          end
+
+          # Do nothing if hooks already exist
+          unless real_local_hooks_path == File.realpath(global_hooks_path)
+            if File.exist?(local_hooks_path)
+              # Move the existing hooks somewhere safe
+              FileUtils.mv(
+                local_hooks_path,
+                "#{local_hooks_path}.old.#{Time.now.to_i}")
+            end
+
+            # Create the hooks symlink
+            FileUtils.ln_sf(global_hooks_path, local_hooks_path)
           end
 
           true
@@ -75,9 +97,6 @@ module Gitlab
         @name = @relative_path.split("/").last
         @attributes = Gitlab::Git::Attributes.new(path)
       end
-
-      delegate  :empty?,
-                to: :rugged
 
       def ==(other)
         path == other.path
@@ -206,6 +225,13 @@ module Gitlab
           end
         end
       end
+
+      # Git repository can contains some hidden refs like:
+      #   /refs/notes/*
+      #   /refs/git-as-svn/*
+      #   /refs/pulls/*
+      # This refs by default not visible in project page and not cloned to client side.
+      alias_method :has_visible_content?, :has_local_branches?
 
       def has_local_branches_rugged?
         rugged.branches.each(:local).any? do |ref|
@@ -513,8 +539,15 @@ module Gitlab
 
       # Returns the SHA of the most recent common ancestor of +from+ and +to+
       def merge_base_commit(from, to)
-        rugged.merge_base(from, to)
+        gitaly_migrate(:merge_base) do |is_enabled|
+          if is_enabled
+            gitaly_repository_client.find_merge_base(from, to)
+          else
+            rugged.merge_base(from, to)
+          end
+        end
       end
+      alias_method :merge_base, :merge_base_commit
 
       # Gitaly note: JV: check gitlab-ee before removing this method.
       def rugged_is_ancestor?(ancestor_id, descendant_id)
@@ -777,24 +810,21 @@ module Gitlab
       end
 
       def revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
-        OperationService.new(user, self).with_branch(
-          branch_name,
-          start_branch_name: start_branch_name,
-          start_repository: start_repository
-        ) do |start_commit|
+        gitaly_migrate(:revert) do |is_enabled|
+          args = {
+            user: user,
+            commit: commit,
+            branch_name: branch_name,
+            message: message,
+            start_branch_name: start_branch_name,
+            start_repository: start_repository
+          }
 
-          Gitlab::Git.check_namespace!(commit, start_repository)
-
-          revert_tree_id = check_revert_content(commit, start_commit.sha)
-          raise CreateTreeError unless revert_tree_id
-
-          committer = user_to_committer(user)
-
-          create_commit(message: message,
-                        author: committer,
-                        committer: committer,
-                        tree: revert_tree_id,
-                        parents: [start_commit.sha])
+          if is_enabled
+            gitaly_operations_client.user_revert(args)
+          else
+            rugged_revert(args)
+          end
         end
       end
 
@@ -887,8 +917,11 @@ module Gitlab
         end
       end
 
-      def add_remote(remote_name, url)
+      # If `mirror_refmap` is present the remote is set as mirror with that mapping
+      def add_remote(remote_name, url, mirror_refmap: nil)
         rugged.remotes.create(remote_name, url)
+
+        set_remote_as_mirror(remote_name, refmap: mirror_refmap) if mirror_refmap
       rescue Rugged::ConfigError
         remote_update(remote_name, url: url)
       end
@@ -1008,7 +1041,7 @@ module Gitlab
         Gitlab::Git.check_namespace!(start_repository)
         start_repository = RemoteRepository.new(start_repository) unless start_repository.is_a?(RemoteRepository)
 
-        return yield nil if start_repository.empty_repo?
+        return yield nil if start_repository.empty?
 
         if start_repository.same_repository?(self)
           yield commit(start_branch_name)
@@ -1124,24 +1157,8 @@ module Gitlab
         Gitlab::Git::Commit.find(self, ref)
       end
 
-      # Refactoring aid; allows us to copy code from app/models/repository.rb
-      def empty_repo?
-        !exists? || !has_visible_content?
-      end
-
-      #
-      # Git repository can contains some hidden refs like:
-      #   /refs/notes/*
-      #   /refs/git-as-svn/*
-      #   /refs/pulls/*
-      # This refs by default not visible in project page and not cloned to client side.
-      #
-      # This method return true if repository contains some content visible in project page.
-      #
-      def has_visible_content?
-        return @has_visible_content if defined?(@has_visible_content)
-
-        @has_visible_content = has_local_branches?
+      def empty?
+        !has_visible_content?
       end
 
       def fetch_repository_as_mirror(repository)
@@ -1158,8 +1175,7 @@ module Gitlab
           end
         end
 
-        add_remote(remote_name, url)
-        set_remote_as_mirror(remote_name)
+        add_remote(remote_name, url, mirror_refmap: :all_refs)
         fetch_remote(remote_name, env: env)
       ensure
         remove_remote(remote_name)
@@ -1189,9 +1205,15 @@ module Gitlab
       end
 
       def fsck
-        output, status = run_git(%W[--git-dir=#{path} fsck], nice: true)
+        gitaly_migrate(:git_fsck) do |is_enabled|
+          msg, status = if is_enabled
+                          gitaly_fsck
+                        else
+                          shell_fsck
+                        end
 
-        raise GitError.new("Could not fsck repository:\n#{output}") unless status.zero?
+          raise GitError.new("Could not fsck repository: #{msg}") unless status.zero?
+        end
       end
 
       def rebase(user, rebase_id, branch:, branch_sha:, remote_repository:, remote_branch:)
@@ -1337,6 +1359,14 @@ module Gitlab
         worktree_info_path = File.join(worktree_git_path, 'info')
         FileUtils.mkdir_p(worktree_info_path)
         File.write(File.join(worktree_info_path, 'sparse-checkout'), files)
+      end
+
+      def gitaly_fsck
+        gitaly_repository_client.fsck
+      end
+
+      def shell_fsck
+        run_git(%W[--git-dir=#{path} fsck], nice: true)
       end
 
       def rugged_fetch_source_branch(source_repository, source_branch, local_ref)
@@ -1780,6 +1810,28 @@ module Gitlab
         # Use binary mode to prevent Rails from converting ASCII-8BIT to UTF-8
         File.open(info_attributes_path, "wb") do |file|
           file.write(gitattributes_content)
+        end
+      end
+
+      def rugged_revert(user:, commit:, branch_name:, message:, start_branch_name:, start_repository:)
+        OperationService.new(user, self).with_branch(
+          branch_name,
+          start_branch_name: start_branch_name,
+          start_repository: start_repository
+        ) do |start_commit|
+
+          Gitlab::Git.check_namespace!(commit, start_repository)
+
+          revert_tree_id = check_revert_content(commit, start_commit.sha)
+          raise CreateTreeError unless revert_tree_id
+
+          committer = user_to_committer(user)
+
+          create_commit(message: message,
+                        author: committer,
+                        committer: committer,
+                        tree: revert_tree_id,
+                        parents: [start_commit.sha])
         end
       end
 

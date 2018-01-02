@@ -86,7 +86,7 @@ module ButtonHelper
     button_content << content_tag(:span, description, class: 'dropdown-menu-inner-content') if description
 
     content_tag (href ? :a : :span),
-      button_content,
+      (href ? button_content : title),
       class: "#{title.downcase}-selector",
       href: (href if href),
       data: {

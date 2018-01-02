@@ -7,7 +7,7 @@ describe API::ProjectMilestones do
   let!(:milestone) { create(:milestone, project: project, title: 'version2', description: 'open milestone') }
 
   before do
-    project.team << [user, :developer]
+    project.add_developer(user)
   end
 
   it_behaves_like 'group and project milestones', "/projects/:id/milestones"  do

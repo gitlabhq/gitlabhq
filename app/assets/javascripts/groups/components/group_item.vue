@@ -1,4 +1,5 @@
 <script>
+import { visitUrl } from '../../lib/utils/url_utility';
 import tooltip from '../../vue_shared/directives/tooltip';
 import identicon from '../../vue_shared/components/identicon.vue';
 import eventHub from '../event_hub';
@@ -60,7 +61,7 @@ export default {
         if (this.hasChildren) {
           eventHub.$emit('toggleChildren', this.group);
         } else {
-          gl.utils.visitUrl(this.group.relativePath);
+          visitUrl(this.group.relativePath);
         }
       }
     },
@@ -123,18 +124,23 @@ export default {
           :title="group.fullName"
           class="no-expand"
           data-placement="top"
-        >
-          {{group.name}}
-        </a>
+        >{{
+          // ending bracket must be by closing tag to prevent
+          // link hover text-decoration from over-extending
+          group.name
+        }}</a>
         <span
           v-if="group.permission"
-          class="access-type"
+          class="user-access-role"
         >
-          {{s__('GroupsTreeRole|as')}} {{group.permission}}
+          {{group.permission}}
         </span>
       </div>
       <div
-        class="description">{{group.description}}</div>
+        v-if="group.description"
+        class="description">
+        {{group.description}}
+      </div>
     </div>
     <group-folder
       v-if="group.isOpen && hasChildren"

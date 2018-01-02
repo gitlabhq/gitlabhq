@@ -1,10 +1,11 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :cluster, class: Clusters::Cluster do
     user
     name 'test-cluster'
+    sequence(:environment_scope) { |n| "production#{n}/*" }
 
     trait :project do
-      after(:create) do |cluster, evaluator|
+      before(:create) do |cluster, evaluator|
         cluster.projects << create(:project)
       end
     end

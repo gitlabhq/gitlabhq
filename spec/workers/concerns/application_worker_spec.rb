@@ -17,6 +17,14 @@ describe ApplicationWorker do
     end
   end
 
+  describe '.queue_namespace' do
+    it 'sets the queue name based on the class name' do
+      worker.queue_namespace :some_namespace
+
+      expect(worker.queue).to eq('some_namespace:foo_bar_dummy')
+    end
+  end
+
   describe '.queue' do
     it 'returns the queue name' do
       worker.sidekiq_options queue: :some_queue

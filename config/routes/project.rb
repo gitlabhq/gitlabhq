@@ -214,6 +214,7 @@ constraints(ProjectUrlConstrainer.new) do
 
       resources :pipeline_schedules, except: [:show] do
         member do
+          post :play
           post :take_ownership
         end
       end
@@ -490,7 +491,7 @@ constraints(ProjectUrlConstrainer.new) do
         get :download_export
         get :activity
         get :refs
-        put :new_issue_address
+        put :new_issuable_address
       end
     end
   end

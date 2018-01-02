@@ -92,6 +92,34 @@ describe ButtonHelper do
     end
   end
 
+  describe 'ssh and http clone buttons' do
+    let(:user) { create(:user) }
+    let(:project) { build_stubbed(:project) }
+
+    def http_button_element
+      element = helper.http_clone_button(project, append_link: false)
+
+      Nokogiri::HTML::DocumentFragment.parse(element).first_element_child
+    end
+
+    def ssh_button_element
+      element = helper.ssh_clone_button(project, append_link: false)
+
+      Nokogiri::HTML::DocumentFragment.parse(element).first_element_child
+    end
+
+    before do
+      allow(helper).to receive(:current_user).and_return(user)
+    end
+
+    it 'only shows the title of any of the clone buttons when append_link is false' do
+      expect(http_button_element.text).to eq('HTTP')
+      expect(http_button_element.search('.dropdown-menu-inner-content').first).to eq(nil)
+      expect(ssh_button_element.text).to eq('SSH')
+      expect(ssh_button_element.search('.dropdown-menu-inner-content').first).to eq(nil)
+    end
+  end
+
   describe 'clipboard_button' do
     let(:user) { create(:user) }
     let(:project) { build_stubbed(:project) }

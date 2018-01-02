@@ -1,5 +1,6 @@
 import Cookies from 'js-cookie';
 import Mousetrap from 'mousetrap';
+import { refreshCurrentPage, visitUrl } from './lib/utils/url_utility';
 import findAndFollowLink from './shortcuts_dashboard_navigation';
 
 const defaultStopCallback = Mousetrap.stopCallback;
@@ -38,7 +39,7 @@ export default class Shortcuts {
 
     if (typeof findFileURL !== 'undefined' && findFileURL !== null) {
       Mousetrap.bind('t', () => {
-        gl.utils.visitUrl(findFileURL);
+        visitUrl(findFileURL);
       });
     }
 
@@ -50,7 +51,10 @@ export default class Shortcuts {
   }
 
   onToggleHelp(e) {
-    e.preventDefault();
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
+
     Shortcuts.toggleHelp(this.enabledHelp);
   }
 
@@ -62,7 +66,7 @@ export default class Shortcuts {
     } else {
       Cookies.set(performanceBarCookieName, 'true', { path: '/' });
     }
-    gl.utils.refreshCurrentPage();
+    refreshCurrentPage();
   }
 
   static toggleMarkdownPreview(e) {
@@ -111,6 +115,9 @@ export default class Shortcuts {
 
   static focusSearch(e) {
     $('#search').focus();
-    e.preventDefault();
+
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
   }
 }

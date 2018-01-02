@@ -32,7 +32,7 @@ module Gitlab
 
         def init_metrics
           metrics = {}
-          metrics[:sampler_duration] = Metrics.histogram(with_prefix(:sampler_duration, :seconds), 'Sampler time', {})
+          metrics[:sampler_duration] = Metrics.histogram(with_prefix(:sampler_duration, :seconds), 'Sampler time', { worker: nil })
           metrics[:total_time] = Metrics.gauge(with_prefix(:gc, :time_total), 'Total GC time', labels, :livesum)
           GC.stat.keys.each do |key|
             metrics[key] = Metrics.gauge(with_prefix(:gc, key), to_doc_string(key), labels, :livesum)
@@ -48,12 +48,11 @@ module Gitlab
         def sample
           start_time = System.monotonic_time
           sample_gc
-          sample_objects
 
           metrics[:memory_usage].set(labels, System.memory_usage)
           metrics[:file_descriptors].set(labels, System.file_descriptor_count)
 
-          metrics[:sampler_duration].observe(labels.merge(worker_label), (System.monotonic_time - start_time) / 1000.0)
+          metrics[:sampler_duration].observe(labels.merge(worker_label), System.monotonic_time - start_time)
         ensure
           GC::Profiler.clear
         end
@@ -68,41 +67,15 @@ module Gitlab
           end
         end
 
-        def sample_objects
-          list_objects.each do |name, count|
-            metrics[:objects_total].set(labels.merge(class: name), count)
-          end
-        end
-
-        if Metrics.mri?
-          def list_objects
-            sample = Allocations.to_hash
-            counts = sample.each_with_object({}) do |(klass, count), hash|
-              name = klass.name
-
-              next unless name
-
-              hash[name] = count
-            end
-
-            # Symbols aren't allocated so we'll need to add those manually.
-            counts['Symbol'] = Symbol.all_symbols.length
-            counts
-          end
-        else
-          def list_objects
-          end
-        end
-
         def worker_label
           return {} unless defined?(Unicorn::Worker)
 
           worker_no = ::Prometheus::Client::Support::Unicorn.worker_id
 
           if worker_no
-            { unicorn: worker_no }
+            { worker: worker_no }
           else
-            { unicorn: 'master' }
+            { worker: 'master' }
           end
         end
       end

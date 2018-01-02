@@ -1,7 +1,6 @@
 /* eslint-disable space-before-function-paren, no-return-assign */
-/* global MergeRequest */
 
-import '~/merge_request';
+import MergeRequest from '~/merge_request';
 import CloseReopenReportToggle from '~/close_reopen_report_toggle';
 import IssuablesHelper from '~/helpers/issuables_helper';
 
@@ -63,7 +62,7 @@ import IssuablesHelper from '~/helpers/issuables_helper';
       describe('merge request of another user', () => {
         beforeEach(() => {
           loadFixtures('merge_requests/merge_request_with_task_list.html.raw');
-          this.el = document.querySelector('.merge-request .issuable-actions');
+          this.el = document.querySelector('.js-issuable-actions');
           const merge = new MergeRequest();
           merge.hideCloseButton();
         });
@@ -83,7 +82,7 @@ import IssuablesHelper from '~/helpers/issuables_helper';
       describe('merge request of current_user', () => {
         beforeEach(() => {
           loadFixtures('merge_requests/merge_request_of_current_user.html.raw');
-          this.el = document.querySelector('.merge-request .issuable-actions');
+          this.el = document.querySelector('.js-issuable-actions');
           const merge = new MergeRequest();
           merge.hideCloseButton();
         });

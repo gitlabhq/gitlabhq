@@ -14,7 +14,7 @@ describe API::Notes do
   let(:private_user)    { create(:user) }
   let(:private_project) do
     create(:project, namespace: private_user.namespace)
-    .tap { |p| p.team << [private_user, :master] }
+    .tap { |p| p.add_master(private_user) }
   end
   let(:private_issue)    { create(:issue, project: private_project) }
 
@@ -29,7 +29,7 @@ describe API::Notes do
   end
 
   before do
-    project.team << [user, :reporter]
+    project.add_reporter(user)
   end
 
   describe "GET /projects/:id/noteable/:noteable_id/notes" do

@@ -5,11 +5,13 @@
 # - let(:set_mentionable_text) { lambda { |txt| "block that assigns txt to the subject's mentionable_text" } }
 
 shared_context 'mentionable context' do
+  let(:group)   { create(:group) }
   let(:project) { subject.project }
   let(:author)  { subject.author }
 
   let(:mentioned_issue)  { create(:issue, project: project) }
   let!(:mentioned_mr)     { create(:merge_request, source_project: project) }
+  let(:mentioned_epic)  { create(:epic, group: group) }
   let(:mentioned_commit) { project.commit("HEAD~1") }
 
   let(:ext_proj)   { create(:project, :public, :repository) }
@@ -27,6 +29,7 @@ shared_context 'mentionable context' do
       These references are new:
         Issue:  #{mentioned_issue.to_reference}
         Merge:  #{mentioned_mr.to_reference}
+        Epic:  #{mentioned_epic.to_reference(project)}
         Commit: #{mentioned_commit.to_reference}
 
       This reference is a repeat and should only be mentioned once:
@@ -43,6 +46,8 @@ shared_context 'mentionable context' do
   end
 
   before do
+    stub_licensed_features(epics: true)
+
     # Wire the project's repository to return the mentioned commit, and +nil+
     # for any unrecognized commits.
     allow_any_instance_of(::Repository).to receive(:commit).and_call_original
@@ -53,7 +58,7 @@ shared_context 'mentionable context' do
 
     set_mentionable_text.call(ref_string)
 
-    project.team << [author, :developer]
+    project.add_developer(author)
   end
 end
 
@@ -67,9 +72,10 @@ shared_examples 'a mentionable' do
   it "extracts references from its reference property" do
     # De-duplicate and omit itself
     refs = subject.referenced_mentionables
-    expect(refs.size).to eq(6)
+    expect(refs.size).to eq(7)
     expect(refs).to include(mentioned_issue)
     expect(refs).to include(mentioned_mr)
+    expect(refs).to include(mentioned_epic)
     expect(refs).to include(mentioned_commit)
     expect(refs).to include(ext_issue)
     expect(refs).to include(ext_mr)
@@ -77,7 +83,7 @@ shared_examples 'a mentionable' do
   end
 
   it 'creates cross-reference notes' do
-    mentioned_objects = [mentioned_issue, mentioned_mr, mentioned_commit,
+    mentioned_objects = [mentioned_issue, mentioned_mr, mentioned_epic, mentioned_commit,
                          ext_issue, ext_mr, ext_commit]
 
     mentioned_objects.each do |referenced|
@@ -97,6 +103,7 @@ shared_examples 'an editable mentionable' do
   let(:new_issues) do
     [create(:issue, project: project), create(:issue, project: ext_proj)]
   end
+  let(:new_epic) { create(:epic, group: group) }
 
   it 'creates new cross-reference notes when the mentionable text is edited' do
     subject.save
@@ -106,6 +113,8 @@ shared_examples 'an editable mentionable' do
       These references already existed:
 
       Issue:  #{mentioned_issue.to_reference}
+
+      Issue:  #{mentioned_epic.to_reference(project)}
 
       Commit: #{mentioned_commit.to_reference}
 
@@ -117,23 +126,26 @@ shared_examples 'an editable mentionable' do
 
       ---
 
-      These two references are introduced in an edit:
+      These three references are introduced in an edit:
 
       Issue: #{new_issues[0].to_reference}
 
       Cross: #{new_issues[1].to_reference(project)}
+
+      Epic: #{new_epic.to_reference(project)}
     MSG
 
-    # These three objects were already referenced, and should not receive new
+    # These four objects were already referenced, and should not receive new
     # notes
-    [mentioned_issue, mentioned_commit, ext_issue].each do |oldref|
+    [mentioned_issue, mentioned_commit, mentioned_epic, ext_issue].each do |oldref|
       expect(SystemNoteService).not_to receive(:cross_reference)
         .with(oldref, any_args)
     end
 
-    # These two issues are new and should receive reference notes
+    # These two issues and an epic are new and should receive reference notes
     # In the case of MergeRequests remember that cannot mention commits included in the MergeRequest
-    new_issues.each do |newref|
+    new_mentionables = new_issues + [new_epic]
+    new_mentionables.each do |newref|
       expect(SystemNoteService).to receive(:cross_reference)
         .with(newref, subject.local_reference, author)
     end

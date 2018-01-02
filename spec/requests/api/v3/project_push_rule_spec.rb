@@ -7,8 +7,8 @@ describe API::V3::ProjectPushRule, 'ProjectPushRule', api: true  do
   let!(:project) { create(:project, :repository, creator_id: user.id, namespace: user.namespace) }
 
   before do
-    project.team << [user, :master]
-    project.team << [user3, :developer]
+    project.add_master(user)
+    project.add_developer(user3)
   end
 
   describe "DELETE /projects/:id/push_rule" do

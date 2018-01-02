@@ -25,7 +25,7 @@ describe API::Issues, :mailer do
   set(:milestone) { create(:milestone, title: '1.0.0', project: project) }
 
   before(:all) do
-    project.team << [user, :reporter]
+    project.add_reporter(user)
   end
 
   describe "GET /issues" do

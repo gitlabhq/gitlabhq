@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :gitlab_license, class: "Gitlab::License" do
     skip_create
 

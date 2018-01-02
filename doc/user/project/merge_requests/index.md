@@ -27,6 +27,7 @@ With GitLab merge requests, you can:
 - [Resolve merge conflicts from the UI](#resolve-conflicts)
 - Enable [fast-forward merge requests](#fast-forward-merge-requests)
 - Enable [semi-linear history merge requests](#semi-linear-history-merge-requests) as another security layer to guarantee the pipeline is passing in the target branch
+- [Create new merge requests by email](#create-new-merge-requests-by-email)
 
 With **[GitLab Enterprise Edition][ee]**, you can also:
 
@@ -34,6 +35,7 @@ With **[GitLab Enterprise Edition][ee]**, you can also:
 - Request [approvals](#merge-request-approvals) from your managers (available in GitLab Enterprise Edition Starter)
 - [Squash and merge](#squash-and-merge) for a cleaner commit history (available in GitLab Enterprise Edition Starter)
 - Analyze the impact of your changes with [Code Quality reports](#code-quality-reports) (available in GitLab Enterprise Edition Starter)
+- Determine the performance impact of changes with [Browser Performance Testing](#browser-performance-testing) (available in GitLab Enterprise Edition Premium)
 
 ## Use cases
 
@@ -138,6 +140,20 @@ those conflicts in the GitLab UI.
 
 [Learn more about resolving merge conflicts in the UI.](resolve_conflicts.md)
 
+## Create new merge requests by email
+
+You can create a new merge request by sending an email to a user-specific email
+address. The address can be obtained on the merge requests page by clicking on
+a **Email a new merge request to this project** button.  The subject will be
+used as the source branch name for the new merge request and the target branch
+will be the default branch for the project. The message body (if not empty)
+will be used as the merge request description. You need
+["Reply by email"](../../../administration/reply_by_email.md) enabled to use
+this feature. If it's not enabled to your instance, you may ask your GitLab
+administrator to do so.
+
+![Create new merge requests by email](img/create_from_email.png)
+
 ## Revert changes
 
 GitLab implements Git's powerful feature to revert any commit with introducing
@@ -183,6 +199,27 @@ the [Code Climate][cc] analyzer [Docker image][cd]. Going a step further, GitLab
 can show the Code Climate report right in the merge request widget area.
 
 [Read more about Code Quality reports.](code_quality_diff.md)
+
+## Static Application Security Testing
+
+> Introduced in [GitLab Enterprise Edition Ultimate][products] 10.3.
+
+If you are using [GitLab CI/CD][ci], you can analyze your source code for known
+vulnerabilities using Static Application Security Testing (SAST).
+Going a step further, GitLab can show the vulnerability report right in the
+merge request widget area.
+
+[Read more about Static Application Security Testing reports.](sast.md)
+
+## Browser Performance Testing
+
+> Introduced in [GitLab Enterprise Edition Premium][products] 10.3.
+
+If your application offers a web interface and you are using [GitLab CI/CD][ci], you can quickly determine the performance impact of pending code changes. GitLab uses [Sitespeed.io][sitespeed], a free and open source tool for measuring the performance of web sites, to analyze the performance of specific pages.
+
+GitLab runs the [Sitespeed.io container][sitespeed-container] and displays the difference in overall performance scores between the source and target branches.
+
+[Read more about Browser Performance Testing.](browser_performance_testing.md)
 
 ## Live preview with Review Apps
 
@@ -316,3 +353,5 @@ git checkout origin/merge-requests/1
 [cc]: https://codeclimate.com/
 [cd]: https://hub.docker.com/r/codeclimate/codeclimate/
 [ee]: https://about.gitlab.com/gitlab-ee/ "GitLab Enterprise Edition"
+[sitespeed]: https://www.sitespeed.io
+[sitespeed-container]: https://hub.docker.com/r/sitespeedio/sitespeed.io/

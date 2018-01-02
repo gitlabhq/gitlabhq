@@ -5,7 +5,7 @@ describe Projects::Settings::IntegrationsController do
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 
@@ -77,7 +77,7 @@ describe Projects::Settings::IntegrationsController do
         end
 
         context 'and namespace has a plan' do
-          let(:namespace) { create(:group, :private, plan: Namespace::BRONZE_PLAN) }
+          let(:namespace) { create(:group, :private, plan: :bronze_plan) }
 
           it_behaves_like 'endpoint without disabled services'
         end

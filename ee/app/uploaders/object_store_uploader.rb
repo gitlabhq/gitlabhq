@@ -9,7 +9,7 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
   REMOTE_STORE = 2
 
   class << self
-    def storage_options(options)
+    def storage_options(options) # rubocop:disable Style/TrivialAccessors
       @storage_options = options
     end
 
@@ -116,10 +116,13 @@ class ObjectStoreUploader < CarrierWave::Uploader::Base
     end
   end
 
-  def schedule_migration_to_object_storage(new_file)
-    if self.class.object_store_enabled? && licensed? && file_storage?
-      ObjectStorageUploadWorker.perform_async(self.class.name, model.class.name, mounted_as, model.id)
-    end
+  def schedule_migration_to_object_storage(*args)
+    return unless self.class.object_store_enabled?
+    return unless self.class.background_upload_enabled?
+    return unless self.licensed?
+    return unless self.file_storage?
+
+    ObjectStorageUploadWorker.perform_async(self.class.name, model.class.name, mounted_as, model.id)
   end
 
   def fog_directory

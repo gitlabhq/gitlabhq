@@ -1,6 +1,6 @@
 import { bytesToKiB } from '~/lib/utils/number_utils';
+import * as urlUtils from '~/lib/utils/url_utility';
 import '~/lib/utils/datetime_utility';
-import '~/lib/utils/url_utility';
 import Job from '~/job';
 import '~/breakpoints';
 
@@ -28,7 +28,7 @@ describe('Job', () => {
       });
 
       it('copies build options', function () {
-        expect(this.job.pageUrl).toBe(JOB_URL);
+        expect(this.job.pagePath).toBe(JOB_URL);
         expect(this.job.buildStatus).toBe('success');
         expect(this.job.buildStage).toBe('test');
         expect(this.job.state).toBe('');
@@ -65,7 +65,7 @@ describe('Job', () => {
         const deferred2 = $.Deferred();
         const deferred3 = $.Deferred();
         spyOn($, 'ajax').and.returnValues(deferred1.promise(), deferred2.promise(), deferred3.promise());
-        spyOn(gl.utils, 'visitUrl');
+        spyOn(urlUtils, 'visitUrl');
 
         deferred1.resolve({
           html: '<span>Update<span>',
@@ -103,7 +103,7 @@ describe('Job', () => {
 
         spyOn($, 'ajax').and.returnValues(deferred1.promise(), deferred2.promise(), deferred3.promise());
 
-        spyOn(gl.utils, 'visitUrl');
+        spyOn(urlUtils, 'visitUrl');
 
         deferred1.resolve({
           html: '<span>Update<span>',
@@ -134,7 +134,7 @@ describe('Job', () => {
     describe('truncated information', () => {
       describe('when size is less than total', () => {
         it('shows information about truncated log', () => {
-          spyOn(gl.utils, 'visitUrl');
+          spyOn(urlUtils, 'visitUrl');
           const deferred = $.Deferred();
           spyOn($, 'ajax').and.returnValue(deferred.promise());
 
@@ -153,7 +153,7 @@ describe('Job', () => {
 
         it('shows the size in KiB', () => {
           const size = 50;
-          spyOn(gl.utils, 'visitUrl');
+          spyOn(urlUtils, 'visitUrl');
           const deferred = $.Deferred();
 
           spyOn($, 'ajax').and.returnValue(deferred.promise());
@@ -179,7 +179,7 @@ describe('Job', () => {
 
           spyOn($, 'ajax').and.returnValues(deferred1.promise(), deferred2.promise(), deferred3.promise());
 
-          spyOn(gl.utils, 'visitUrl');
+          spyOn(urlUtils, 'visitUrl');
 
           deferred1.resolve({
             html: '<span>Update</span>',
@@ -214,7 +214,7 @@ describe('Job', () => {
 
         it('renders the raw link', () => {
           const deferred = $.Deferred();
-          spyOn(gl.utils, 'visitUrl');
+          spyOn(urlUtils, 'visitUrl');
 
           spyOn($, 'ajax').and.returnValue(deferred.promise());
           deferred.resolve({
@@ -236,7 +236,7 @@ describe('Job', () => {
       describe('when size is equal than total', () => {
         it('does not show the trunctated information', () => {
           const deferred = $.Deferred();
-          spyOn(gl.utils, 'visitUrl');
+          spyOn(urlUtils, 'visitUrl');
 
           spyOn($, 'ajax').and.returnValue(deferred.promise());
           deferred.resolve({
@@ -257,7 +257,7 @@ describe('Job', () => {
     describe('output trace', () => {
       beforeEach(() => {
         const deferred = $.Deferred();
-        spyOn(gl.utils, 'visitUrl');
+        spyOn(urlUtils, 'visitUrl');
 
         spyOn($, 'ajax').and.returnValue(deferred.promise());
         deferred.resolve({

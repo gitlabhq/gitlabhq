@@ -21,7 +21,7 @@ class RemoteMirror < ActiveRecord::Base
   validate  :url_availability, if: -> (mirror) { mirror.url_changed? || mirror.enabled? }
   validates :url, addressable_url: true, if: :url_changed?
 
-  after_save :set_override_remote_mirror_available, unless: -> { Gitlab::CurrentSettings.current_application_settings.remote_mirror_available }
+  after_save :set_override_remote_mirror_available, unless: -> { Gitlab::CurrentSettings.current_application_settings.mirror_available }
   after_save :refresh_remote, if: :mirror_url_changed?
   after_update :reset_fields, if: :mirror_url_changed?
   after_destroy :remove_remote
@@ -117,7 +117,7 @@ class RemoteMirror < ActiveRecord::Base
   end
 
   def url=(value)
-    return super(value) unless Gitlab::UrlSanitizer.valid?(value)
+    super(value) && return unless Gitlab::UrlSanitizer.valid?(value)
 
     mirror_url = Gitlab::UrlSanitizer.new(value)
     self.credentials = mirror_url.credentials

@@ -331,8 +331,6 @@
 }
 
 .project-repo-buttons {
-  @include new-style-dropdown;
-
   .project-action-button .dropdown-menu {
     max-height: 250px;
     overflow-y: auto;
@@ -910,8 +908,6 @@ a.allowed-to-push {
 
 .new-protected-branch,
 .new-protected-tag {
-  @include new-style-dropdown;
-
   label {
     margin-top: 6px;
     font-weight: $gl-font-weight-normal;
@@ -938,8 +934,6 @@ a.allowed-to-push {
 
 .protected-branches-list,
 .protected-tags-list {
-  @include new-style-dropdown;
-
   margin-bottom: 30px;
 
   .settings-message {
@@ -1182,75 +1176,7 @@ a.allowed-to-push {
   }
 }
 
-/* EE-specific styles */
-.project-mirror-settings {
-  .fingerprint-verified {
-    color: $green-500;
-  }
-
-  .ssh-public-key,
-  .btn-copy-ssh-public-key {
-    float: left;
-  }
-
-  .ssh-public-key {
-    width: 95%;
-    word-wrap: break-word;
-    word-break: break-all;
-  }
-
-  .btn-copy-ssh-public-key {
-    margin-left: 5px;
-  }
-
-  .known-hosts {
-    font-family: $monospace_font;
-  }
-
-  .btn-show-advanced {
-    min-width: 135px;
-
-    .label-show {
-      display: none;
-    }
-
-    .label-hide {
-      display: inline;
-    }
-
-    .fa.fa-chevron::before {
-      content: "\f077";
-    }
-
-    &.show-advanced {
-      .label-show {
-        display: inline;
-      }
-
-      .label-hide {
-        display: none;
-      }
-
-      .fa.fa-chevron::before {
-        content: "\f078";
-      }
-    }
-  }
-
-  .fingerprints-list {
-    code {
-      display: block;
-      padding: 8px;
-      margin-bottom: 5px;
-    }
-
-    &.invalidate {
-      text-decoration: line-through;
-    }
-  }
-
-  .changing-auth-method {
-    display: flex;
-    justify-content: center;
-  }
+.issuable-footer {
+  padding-top: $gl-padding;
+  padding-bottom: 37px;
 }

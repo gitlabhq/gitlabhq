@@ -46,6 +46,13 @@ describe ::Gitlab::BareRepositoryImport::Repository do
   describe '#project_full_path' do
     it 'returns the project full path' do
       expect(project_repo_path.repo_path).to eq('/full/path/to/repo.git')
+      expect(project_repo_path.project_full_path).to eq('to/repo')
+    end
+
+    it 'with no trailing slash in the root path' do
+      repo_path = described_class.new('/full/path', '/full/path/to/repo.git')
+
+      expect(repo_path.project_full_path).to eq('to/repo')
     end
   end
 end

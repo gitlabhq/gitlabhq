@@ -4,7 +4,9 @@ export default class MergeRequestStore extends CEMergeRequestStore {
   constructor(data) {
     super(data);
     this.initCodeclimate(data);
+    this.initPerformanceReport(data);
     this.initSecurityReport(data);
+    this.initDockerReport(data);
   }
 
   setData(data) {
@@ -57,13 +59,60 @@ export default class MergeRequestStore extends CEMergeRequestStore {
     };
   }
 
+  initPerformanceReport(data) {
+    this.performance = data.performance;
+    this.performanceMetrics = {
+      improved: [],
+      degraded: [],
+    };
+  }
+
   initSecurityReport(data) {
     this.sast = data.sast;
     this.securityReport = [];
   }
 
+  initDockerReport(data) {
+    this.sastContainer = data.sast_container;
+    this.dockerReport = {
+      approved: [],
+      unapproved: [],
+      vulnerabilities: [],
+    };
+  }
+
   setSecurityReport(issues, path) {
     this.securityReport = MergeRequestStore.parseIssues(issues, path);
+  }
+
+  setDockerReport(data = {}) {
+    const parsedVulnerabilities = MergeRequestStore
+      .parseDockerVulnerabilities(data.vulnerabilities);
+
+    this.dockerReport.vulnerabilities = parsedVulnerabilities || [];
+
+    // There is a typo in the original repo:
+    // https://github.com/arminc/clair-scanner/pull/39/files
+    // Fix this when the above PR is accepted
+    const unapproved = data.unapproved || data.unaproved || [];
+
+    // Approved can be calculated by subtracting unapproved from vulnerabilities.
+    this.dockerReport.approved = parsedVulnerabilities
+      .filter(item => !unapproved.find(el => el === item.vulnerability)) || [];
+
+    this.dockerReport.unapproved = parsedVulnerabilities
+      .filter(item => unapproved.find(el => el === item.vulnerability)) || [];
+  }
+
+  static parseDockerVulnerabilities(data) {
+    return data.map(el => ({
+      name: el.vulnerability,
+      priority: el.severity,
+      path: el.namespace,
+      // external link to provide better description
+      nameLink: `https://cve.mitre.org/cgi-bin/cvename.cgi?name=${el.vulnerability}`,
+      ...el,
+    }));
   }
 
   compareCodeclimateMetrics(headIssues, baseIssues, headBlobPath, baseBlobPath) {
@@ -79,6 +128,49 @@ export default class MergeRequestStore extends CEMergeRequestStore {
       parsedHeadIssues,
     );
   }
+
+  comparePerformanceMetrics(headMetrics, baseMetrics) {
+    const headMetricsIndexed = MergeRequestStore.normalizePerformanceMetrics(headMetrics);
+    const baseMetricsIndexed = MergeRequestStore.normalizePerformanceMetrics(baseMetrics);
+
+    const improved = [];
+    const degraded = [];
+    const neutral = [];
+
+    Object.keys(headMetricsIndexed).forEach((subject) => {
+      const subjectMetrics = headMetricsIndexed[subject];
+      Object.keys(subjectMetrics).forEach((metric) => {
+        const headMetricData = subjectMetrics[metric];
+
+        if (baseMetricsIndexed[subject] && baseMetricsIndexed[subject][metric]) {
+          const baseMetricData = baseMetricsIndexed[subject][metric];
+          const metricData = {
+            name: metric,
+            path: subject,
+            score: headMetricData.value,
+            delta: headMetricData.value - baseMetricData.value,
+          };
+
+          if (headMetricData.value > baseMetricData.value) {
+            improved.push(metricData);
+          } else if (headMetricData.value < baseMetricData.value) {
+            degraded.push(metricData);
+          } else {
+            neutral.push(metricData);
+          }
+        } else {
+          neutral.push({
+            name: metric,
+            path: subject,
+            score: headMetricData.value,
+          });
+        }
+      });
+    });
+
+    this.performanceMetrics = { improved, degraded, neutral };
+  }
+
   /**
    * In order to reuse the same component we need
    * to set both codequality and security issues to have the same data structure:
@@ -135,5 +227,19 @@ export default class MergeRequestStore extends CEMergeRequestStore {
 
   static filterByFingerprint(firstArray, secondArray) {
     return firstArray.filter(item => !secondArray.find(el => el.fingerprint === item.fingerprint));
+  }
+
+  // normalize performance metrics by indexing on performance subject and metric name
+  static normalizePerformanceMetrics(performanceData) {
+    const indexedSubjects = {};
+    performanceData.forEach(({ subject, metrics }) => {
+      const indexedMetrics = {};
+      metrics.forEach(({ name, ...data }) => {
+        indexedMetrics[name] = data;
+      });
+      indexedSubjects[subject] = indexedMetrics;
+    });
+
+    return indexedSubjects;
   }
 }

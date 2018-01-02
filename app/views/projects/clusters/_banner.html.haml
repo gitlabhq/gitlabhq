@@ -2,14 +2,14 @@
 .settings-content
 
   .hidden.js-cluster-error.alert.alert-danger.alert-block.append-bottom-10{ role: 'alert' }
-    = s_('ClusterIntegration|Something went wrong while creating your cluster on Google Container Engine')
+    = s_('ClusterIntegration|Something went wrong while creating your cluster on Google Kubernetes Engine')
     %p.js-error-reason
 
   .hidden.js-cluster-creating.alert.alert-info.alert-block.append-bottom-10{ role: 'alert' }
-    = s_('ClusterIntegration|Cluster is being created on Google Container Engine...')
+    = s_('ClusterIntegration|Cluster is being created on Google Kubernetes Engine...')
 
   .hidden.js-cluster-success.alert.alert-success.alert-block.append-bottom-10{ role: 'alert' }
-    = s_('ClusterIntegration|Cluster was successfully created on Google Container Engine. Refresh the page to see cluster\'s details')
+    = s_('ClusterIntegration|Cluster was successfully created on Google Kubernetes Engine. Refresh the page to see cluster\'s details')
 
   %p
     - if @cluster.enabled?

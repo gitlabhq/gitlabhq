@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :award_emoji do
     name "thumbsup"
     user

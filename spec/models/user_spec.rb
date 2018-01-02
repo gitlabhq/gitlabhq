@@ -12,6 +12,7 @@ describe User do
     it { is_expected.to include_module(Referable) }
     it { is_expected.to include_module(Sortable) }
     it { is_expected.to include_module(TokenAuthenticatable) }
+    it { is_expected.to include_module(BlocksJsonSerialization) }
   end
 
   describe 'delegations' do
@@ -787,7 +788,7 @@ describe User do
 
     before do
       # add user to project
-      project.team << [user, :master]
+      project.add_master(user)
 
       # create invite to projet
       create(:project_member, :developer, project: project, invite_token: '1234', invite_email: 'inviteduser1@example.com')
@@ -941,11 +942,11 @@ describe User do
 
     describe 'email matching' do
       it 'returns users with a matching Email' do
-        expect(described_class.search(user.email)).to eq([user, user2])
+        expect(described_class.search(user.email)).to eq([user])
       end
 
-      it 'returns users with a partially matching Email' do
-        expect(described_class.search(user.email[0..2])).to eq([user, user2])
+      it 'does not return users with a partially matching Email' do
+        expect(described_class.search(user.email[0..2])).not_to include(user, user2)
       end
 
       it 'returns users with a matching Email regardless of the casing' do
@@ -1001,8 +1002,8 @@ describe User do
       expect(search_with_secondary_emails(user.email)).to eq([user])
     end
 
-    it 'returns users with a partially matching email' do
-      expect(search_with_secondary_emails(user.email[0..2])).to eq([user])
+    it 'does not return users with a partially matching email' do
+      expect(search_with_secondary_emails(user.email[0..2])).not_to include([user])
     end
 
     it 'returns users with a matching email regardless of the casing' do
@@ -1025,29 +1026,8 @@ describe User do
       expect(search_with_secondary_emails(email.email)).to eq([email.user])
     end
 
-    it 'returns users with a matching part of secondary email' do
-      expect(search_with_secondary_emails(email.email[1..4])).to eq([email.user])
-    end
-
-    it 'return users with a matching part of secondary email regardless of case' do
-      expect(search_with_secondary_emails(email.email[1..4].upcase)).to eq([email.user])
-      expect(search_with_secondary_emails(email.email[1..4].downcase)).to eq([email.user])
-      expect(search_with_secondary_emails(email.email[1..4].capitalize)).to eq([email.user])
-    end
-
-    it 'returns multiple users with matching secondary emails' do
-      email1 = create(:email, email: '1_testemail@example.com')
-      email2 = create(:email, email: '2_testemail@example.com')
-      email3 = create(:email, email: 'other@email.com')
-      email3.user.update_attributes!(email: 'another@mail.com')
-
-      expect(
-        search_with_secondary_emails('testemail@example.com').map(&:id)
-      ).to include(email1.user.id, email2.user.id)
-
-      expect(
-        search_with_secondary_emails('testemail@example.com').map(&:id)
-      ).not_to include(email3.user.id)
+    it 'does not return users with a matching part of secondary email' do
+      expect(search_with_secondary_emails(email.email[1..4])).not_to include([email.user])
     end
   end
 
@@ -1210,26 +1190,6 @@ describe User do
       it 'shows correct avatar url' do
         expect(user.avatar_url).to eq(user.avatar.url)
         expect(user.avatar_url(only_path: false)).to eq([Gitlab.config.gitlab.url, user.avatar.url].join)
-      end
-
-      context 'when in a geo secondary node' do
-        let(:avatar_path) { user.avatar_path(only_path: true) }
-        let(:geo_host) { 'http://geo.example.com' }
-        let(:geo_avatar_url) { [geo_host, avatar_path].join }
-
-        before do
-          allow(Gitlab::Geo).to receive(:secondary?) { true }
-          allow(Gitlab::Geo).to receive_message_chain(:primary_node, :url) { geo_host }
-        end
-
-        it 'shows correct avatar url' do
-          expect(user.avatar_url).to eq(geo_avatar_url)
-          expect(user.avatar_url(only_path: false)).to eq(geo_avatar_url)
-
-          allow(ActionController::Base).to receive(:asset_host).and_return(geo_host)
-
-          expect(user.avatar_url).to eq(geo_avatar_url)
-        end
       end
     end
   end
@@ -1537,8 +1497,8 @@ describe User do
     let!(:merge_event) { create(:event, :created, project: project3, target: merge_request, author: subject) }
 
     before do
-      project1.team << [subject, :master]
-      project2.team << [subject, :master]
+      project1.add_master(subject)
+      project2.add_master(subject)
     end
 
     it "includes IDs for projects the user has pushed to" do
@@ -1637,7 +1597,7 @@ describe User do
         user = create(:user)
         project = create(:project, :private)
 
-        project.team << [user, Gitlab::Access::MASTER]
+        project.add_master(user)
 
         expect(user.authorized_projects(Gitlab::Access::REPORTER))
           .to contain_exactly(project)
@@ -1656,7 +1616,7 @@ describe User do
       user2   = create(:user)
       project = create(:project, :private, namespace: user1.namespace)
 
-      project.team << [user2, Gitlab::Access::DEVELOPER]
+      project.add_developer(user2)
 
       expect(user2.authorized_projects).to include(project)
     end
@@ -1701,7 +1661,7 @@ describe User do
       user2   = create(:user)
       project = create(:project, :private, namespace: user1.namespace)
 
-      project.team << [user2, Gitlab::Access::DEVELOPER]
+      project.add_developer(user2)
 
       expect(user2.authorized_projects).to include(project)
 
@@ -1791,7 +1751,7 @@ describe User do
     shared_examples :member do
       context 'when the user is a master' do
         before do
-          add_user(Gitlab::Access::MASTER)
+          add_user(:master)
         end
 
         it 'loads' do
@@ -1801,7 +1761,7 @@ describe User do
 
       context 'when the user is a developer' do
         before do
-          add_user(Gitlab::Access::DEVELOPER)
+          add_user(:developer)
         end
 
         it 'does not load' do
@@ -1825,7 +1785,7 @@ describe User do
       let(:project) { create(:project) }
 
       def add_user(access)
-        project.team << [user, access]
+        project.add_role(user, access)
       end
 
       it_behaves_like :member
@@ -1838,8 +1798,8 @@ describe User do
     let(:user) { create(:user) }
 
     before do
-      project1.team << [user, :reporter]
-      project2.team << [user, :guest]
+      project1.add_reporter(user)
+      project2.add_guest(user)
     end
 
     it 'returns the projects when using a single project ID' do
@@ -1981,8 +1941,8 @@ describe User do
     let(:user) { create(:user) }
 
     before do
-      project1.team << [user, :reporter]
-      project2.team << [user, :guest]
+      project1.add_reporter(user)
+      project2.add_guest(user)
 
       user.project_authorizations.delete_all
       user.refresh_authorized_projects
@@ -2554,6 +2514,189 @@ describe User do
       user.delete_async(deleted_by: deleted_by)
 
       expect(user).not_to be_blocked
+    end
+  end
+
+  describe '#max_member_access_for_project_ids' do
+    shared_examples 'max member access for projects' do
+      let(:user) { create(:user) }
+      let(:group) { create(:group) }
+      let(:owner_project) { create(:project, group: group) }
+      let(:master_project) { create(:project) }
+      let(:reporter_project) { create(:project) }
+      let(:developer_project) { create(:project) }
+      let(:guest_project) { create(:project) }
+      let(:no_access_project) { create(:project) }
+
+      let(:projects) do
+        [owner_project, master_project, reporter_project, developer_project, guest_project, no_access_project].map(&:id)
+      end
+
+      let(:expected) do
+        {
+          owner_project.id => Gitlab::Access::OWNER,
+          master_project.id => Gitlab::Access::MASTER,
+          reporter_project.id => Gitlab::Access::REPORTER,
+          developer_project.id => Gitlab::Access::DEVELOPER,
+          guest_project.id => Gitlab::Access::GUEST,
+          no_access_project.id => Gitlab::Access::NO_ACCESS
+        }
+      end
+
+      before do
+        create(:group_member, user: user, group: group)
+        master_project.add_master(user)
+        reporter_project.add_reporter(user)
+        developer_project.add_developer(user)
+        guest_project.add_guest(user)
+      end
+
+      it 'returns correct roles for different projects' do
+        expect(user.max_member_access_for_project_ids(projects)).to eq(expected)
+      end
+    end
+
+    context 'with RequestStore enabled', :request_store do
+      include_examples 'max member access for projects'
+
+      def access_levels(projects)
+        user.max_member_access_for_project_ids(projects)
+      end
+
+      it 'does not perform extra queries when asked for projects who have already been found' do
+        access_levels(projects)
+
+        expect { access_levels(projects) }.not_to exceed_query_limit(0)
+
+        expect(access_levels(projects)).to eq(expected)
+      end
+
+      it 'only requests the extra projects when uncached projects are passed' do
+        second_master_project = create(:project)
+        second_developer_project = create(:project)
+        second_master_project.add_master(user)
+        second_developer_project.add_developer(user)
+
+        all_projects = projects + [second_master_project.id, second_developer_project.id]
+
+        expected_all = expected.merge(second_master_project.id => Gitlab::Access::MASTER,
+                                      second_developer_project.id => Gitlab::Access::DEVELOPER)
+
+        access_levels(projects)
+
+        queries = ActiveRecord::QueryRecorder.new { access_levels(all_projects) }
+
+        expect(queries.count).to eq(1)
+        expect(queries.log_message).to match(/\W(#{second_master_project.id}, #{second_developer_project.id})\W/)
+        expect(access_levels(all_projects)).to eq(expected_all)
+      end
+    end
+
+    context 'with RequestStore disabled' do
+      include_examples 'max member access for projects'
+    end
+  end
+
+  describe '#max_member_access_for_group_ids' do
+    shared_examples 'max member access for groups' do
+      let(:user) { create(:user) }
+      let(:owner_group) { create(:group) }
+      let(:master_group) { create(:group) }
+      let(:reporter_group) { create(:group) }
+      let(:developer_group) { create(:group) }
+      let(:guest_group) { create(:group) }
+      let(:no_access_group) { create(:group) }
+
+      let(:groups) do
+        [owner_group, master_group, reporter_group, developer_group, guest_group, no_access_group].map(&:id)
+      end
+
+      let(:expected) do
+        {
+          owner_group.id => Gitlab::Access::OWNER,
+          master_group.id => Gitlab::Access::MASTER,
+          reporter_group.id => Gitlab::Access::REPORTER,
+          developer_group.id => Gitlab::Access::DEVELOPER,
+          guest_group.id => Gitlab::Access::GUEST,
+          no_access_group.id => Gitlab::Access::NO_ACCESS
+        }
+      end
+
+      before do
+        owner_group.add_owner(user)
+        master_group.add_master(user)
+        reporter_group.add_reporter(user)
+        developer_group.add_developer(user)
+        guest_group.add_guest(user)
+      end
+
+      it 'returns correct roles for different groups' do
+        expect(user.max_member_access_for_group_ids(groups)).to eq(expected)
+      end
+    end
+
+    context 'with RequestStore enabled', :request_store do
+      include_examples 'max member access for groups'
+
+      def access_levels(groups)
+        user.max_member_access_for_group_ids(groups)
+      end
+
+      it 'does not perform extra queries when asked for groups who have already been found' do
+        access_levels(groups)
+
+        expect { access_levels(groups) }.not_to exceed_query_limit(0)
+
+        expect(access_levels(groups)).to eq(expected)
+      end
+
+      it 'only requests the extra groups when uncached groups are passed' do
+        second_master_group = create(:group)
+        second_developer_group = create(:group)
+        second_master_group.add_master(user)
+        second_developer_group.add_developer(user)
+
+        all_groups = groups + [second_master_group.id, second_developer_group.id]
+
+        expected_all = expected.merge(second_master_group.id => Gitlab::Access::MASTER,
+                                      second_developer_group.id => Gitlab::Access::DEVELOPER)
+
+        access_levels(groups)
+
+        queries = ActiveRecord::QueryRecorder.new { access_levels(all_groups) }
+
+        expect(queries.count).to eq(1)
+        expect(queries.log_message).to match(/\W(#{second_master_group.id}, #{second_developer_group.id})\W/)
+        expect(access_levels(all_groups)).to eq(expected_all)
+      end
+    end
+
+    context 'with RequestStore disabled' do
+      include_examples 'max member access for groups'
+    end
+  end
+
+  describe "#username_previously_taken?" do
+    let(:user1) { create(:user, username: 'foo') }
+
+    context 'when the username has been taken before' do
+      before do
+        user1.username = 'bar'
+        user1.save!
+      end
+
+      it 'should raise an ActiveRecord::RecordInvalid exception' do
+        user2 = build(:user, username: 'foo')
+        expect { user2.save! }.to raise_error(ActiveRecord::RecordInvalid, /Path foo has been taken before/)
+      end
+    end
+
+    context 'when the username has not been taken before' do
+      it 'should be valid' do
+        expect(RedirectRoute.count).to eq(0)
+        user2 = build(:user, username: 'baz')
+        expect(user2).to be_valid
+      end
     end
   end
 end

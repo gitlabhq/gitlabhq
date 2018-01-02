@@ -490,8 +490,6 @@ ul.notes {
 }
 
 .note-actions {
-  @include new-style-dropdown;
-
   align-self: flex-start;
   flex-shrink: 0;
   display: inline-flex;
@@ -619,25 +617,16 @@ ul.notes {
 }
 
 .note-role {
-  position: relative;
-  display: inline-block;
-  color: $notes-role-color;
-  font-size: 12px;
-  line-height: 20px;
   margin: 0 3px;
-
-  &.note-role-access {
-    padding: 0 7px;
-    border: 1px solid $border-color;
-    border-radius: $label-border-radius;
-  }
-
-  &.note-role-special {
-    text-shadow: 0 0 15px $gl-text-color-inverted;
-  }
 }
 
-
+.note-role-special {
+  position: relative;
+  display: inline-block;
+  color: $gl-text-color-secondary;
+  font-size: 12px;
+  text-shadow: 0 0 15px $gl-text-color-inverted;
+}
 
 /**
  * Line note button on the side of diffs

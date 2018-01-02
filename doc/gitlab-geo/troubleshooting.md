@@ -88,7 +88,7 @@ the default thirty minutes. Adjust as required for your installation.
 Determine if you have any unused replication slots in the primary database.  This can cause large amounts of log data to build up in `pg_xlog`.
 Removing the unused slots can reduce the amount of space used in the `pg_xlog`.
 
-- Start a PostgreSQL console session:
+1. Start a PostgreSQL console session:
 
     ```bash
     sudo gitlab-psql gitlabhq_production
@@ -96,17 +96,22 @@ Removing the unused slots can reduce the amount of space used in the `pg_xlog`.
 
     Note that using `gitlab-rails dbconsole` will not work, because managing replication slots requires superuser permissions.
 
-- View your replication slots with
+2. View your replication slots with
 
      ```sql
      SELECT * FROM pg_replication_slots;
      ```
 
- - If there is an unused/inactive slot, you can remove it with
+Slots where `active` is `f` are not active.
 
-     ```sql
-     SELECT pg_drop_replication_slot('name_of_extra_slot');
-     ```
+- When this slot should be active, because you have a secondary configured using that slot,
+log in to that secondary and check the PostgreSQL logs why the replication is not running.
+
+- If you are no longer using the slot (e.g. you no longer have Geo enabled), you can remove it with in the PostgreSQL console session:
+
+    ```sql
+    SELECT pg_drop_replication_slot('name_of_extra_slot');
+    ```
 
 #### Very large repositories never successfully synchronize on the secondary
 

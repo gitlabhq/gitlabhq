@@ -44,6 +44,21 @@ body.modal-open {
   }
 }
 
-.modal.popup-dialog {
-  display: block;
+.modal {
+  background-color: $black-transparent;
+  z-index: 2100;
+
+  @media (min-width: $screen-md-min) {
+    .modal-dialog {
+      margin: 30px auto;
+    }
+  }
+}
+
+.recaptcha-modal .recaptcha-form {
+  display: inline-block;
+
+  .recaptcha {
+    margin: 0;
+  }
 }

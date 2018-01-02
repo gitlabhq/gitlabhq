@@ -1,5 +1,7 @@
 import Timeago from 'timeago.js';
 import { getStateKey } from '../dependencies';
+import { stateKey } from './state_maps';
+import { formatDate } from '../../lib/utils/datetime_utility';
 
 export default class MergeRequestStore {
   constructor(data) {
@@ -121,10 +123,14 @@ export default class MergeRequestStore {
     }
   }
 
+  get isNothingToMergeState() {
+    return this.state === stateKey.nothingToMerge;
+  }
+
   static getEventObject(event) {
     return {
       author: MergeRequestStore.getAuthorObject(event),
-      updatedAt: gl.utils.formatDate(MergeRequestStore.getEventUpdatedAtDate(event)),
+      updatedAt: formatDate(MergeRequestStore.getEventUpdatedAtDate(event)),
       formattedUpdatedAt: MergeRequestStore.getEventDate(event),
     };
   }

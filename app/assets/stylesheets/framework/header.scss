@@ -1,10 +1,4 @@
-.content-wrapper.page-with-new-nav {
-  margin-top: $header-height;
-}
-
 .navbar-gitlab {
-  @include new-style-dropdown;
-
   &.navbar-gitlab {
     padding: 0 16px;
     z-index: 1000;

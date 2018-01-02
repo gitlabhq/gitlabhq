@@ -10,9 +10,9 @@ describe Gitlab::Ci::Pipeline::Chain::Create do
   end
 
   let(:command) do
-    double('command', project: project,
-                      current_user: user,
-                      seeds_block: nil)
+    Gitlab::Ci::Pipeline::Chain::Command.new(
+      project: project,
+      current_user: user, seeds_block: nil)
   end
 
   let(:step) { described_class.new(pipeline, command) }

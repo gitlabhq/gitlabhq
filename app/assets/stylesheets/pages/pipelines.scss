@@ -170,6 +170,12 @@
       fill: $gl-text-color-secondary;
     }
 
+    .sprite {
+      width: 12px;
+      height: 12px;
+      fill: $gl-text-color;
+    }
+
     .fa {
       font-size: 12px;
       color: $gl-text-color;
@@ -321,8 +327,6 @@
 
 // Pipeline visualization
 .pipeline-actions {
-  @include new-style-dropdown;
-
   border-bottom: 0;
 }
 
@@ -730,9 +734,6 @@ a.linked-pipeline-mini-item {
   }
 }
 
-@include new-style-dropdown('.big-pipeline-graph-dropdown-menu');
-@include new-style-dropdown('.mini-pipeline-graph-dropdown-menu');
-
 // dropdown content for big and mini pipeline
 .big-pipeline-graph-dropdown-menu,
 .mini-pipeline-graph-dropdown-menu {
@@ -831,7 +832,6 @@ a.linked-pipeline-mini-item {
       font-weight: normal;
       line-height: $line-height-base;
       white-space: nowrap;
-      border-radius: 3px;
 
       .ci-job-name-component {
         align-items: center;

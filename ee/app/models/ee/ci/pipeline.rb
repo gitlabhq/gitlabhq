@@ -17,8 +17,16 @@ module EE
         artifacts.codequality.find(&:has_codeclimate_json?)
       end
 
+      def performance_artifact
+        artifacts.performance.find(&:has_performance_json?)
+      end
+
       def sast_artifact
         artifacts.sast.find(&:has_sast_json?)
+      end
+
+      def sast_container_artifact
+        artifacts.sast_container.find(&:has_sast_container_json?)
       end
     end
   end

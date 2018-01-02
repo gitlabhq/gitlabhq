@@ -1,3 +1,4 @@
+import { getLocationHash } from './url_utility';
 
 export const getPagePath = (index = 0) => $('body').attr('data-page').split(':')[index];
 
@@ -65,7 +66,7 @@ export const disableButtonIfEmptyField = (fieldSelector, buttonSelector, eventNa
 // automatically adjust scroll position for hash urls taking the height of the navbar into account
 // https://github.com/twitter/bootstrap/issues/1768
 export const handleLocationHash = () => {
-  let hash = window.gl.utils.getLocationHash();
+  let hash = getLocationHash();
   if (!hash) return;
 
   // This is required to handle non-unicode characters in hash

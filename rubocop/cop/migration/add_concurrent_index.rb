@@ -21,7 +21,7 @@ module RuboCop
           node.each_ancestor(:def) do |def_node|
             next unless method_name(def_node) == :change
 
-            add_offense(def_node, :name)
+            add_offense(def_node, location: :name)
           end
         end
 

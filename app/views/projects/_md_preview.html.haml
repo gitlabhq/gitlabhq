@@ -2,7 +2,7 @@
 
 - if defined?(@merge_request) && @merge_request.discussion_locked?
   .issuable-note-warning
-    = icon('lock', class: 'icon')
+    = sprite_icon('lock', size: 16, css_class: 'icon')
     %span
       = _('This merge request is locked.')
       = _('Only project members can comment.')
@@ -17,7 +17,7 @@
         %a.js-md-preview-button{ href: "#md-preview-holder", tabindex: -1 }
           Preview
 
-      %li.md-header-toolbar
+      %li.md-header-toolbar.active
         = markdown_toolbar_button({ icon: "bold", data: { "md-tag" => "**" }, title: "Add bold text" })
         = markdown_toolbar_button({ icon: "italic", data: { "md-tag" => "*" }, title: "Add italic text" })
         = markdown_toolbar_button({ icon: "quote", data: { "md-tag" => "> ", "md-prepend" => true }, title: "Insert a quote" })
@@ -25,7 +25,7 @@
         = markdown_toolbar_button({ icon: "list-bulleted", data: { "md-tag" => "* ", "md-prepend" => true }, title: "Add a bullet list" })
         = markdown_toolbar_button({ icon: "list-numbered", data: { "md-tag" => "1. ", "md-prepend" => true }, title: "Add a numbered list" })
         = markdown_toolbar_button({ icon: "task-done", data: { "md-tag" => "* [ ] ", "md-prepend" => true }, title: "Add a task list" })
-        %button.toolbar-btn.toolbar-fullscreen-btn.js-zen-enter.has-tooltip{ type: "button", tabindex: -1, aria: { label: "Go full screen" }, title: "Go full screen", data: { container: "body" } }
+        %button.toolbar-btn.toolbar-fullscreen-btn.js-zen-enter.has-tooltip{ type: "button", tabindex: -1, "aria-label": "Go full screen", title: "Go full screen", data: { container: "body" } }
           = sprite_icon("screen-full")
 
   .md-write-holder
