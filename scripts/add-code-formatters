@@ -1,4 +1,15 @@
 #!/bin/sh
+if [ ! -f ../GDK_ROOT ]; then
+  echo "Please run script from gitlab (e.g. gitlab-development-kit/gitlab) root directory."
+  exit 1
+fi
 
-touch ./.git/hooks/pre-commit
-ln -s ./pre-commit .git/hooks/pre-commit
+PRECOMMIT=$(git rev-parse --git-dir)/hooks/pre-commit
+
+if [ -f $PRECOMMIT ]; then
+  echo "Pre-commit script already installed."
+  exit 1
+fi
+
+ln -s ./pre-commit $PRECOMMIT
+echo "Pre-commit script installed successfully"
