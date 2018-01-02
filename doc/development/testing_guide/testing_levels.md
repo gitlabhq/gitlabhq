@@ -121,7 +121,7 @@ running feature tests (i.e. using Capybara) against it.
 The actual test scenarios and steps are [part of GitLab Rails] so that they're
 always in-sync with the codebase.
 
-Read a separate document about [end-to-end tests](../end_to_end_tests.md) to
+Read a separate document about [end-to-end tests](end_to_end_tests.md) to
 learn more.
 
 [multiple pieces]: ../architecture.md#components
