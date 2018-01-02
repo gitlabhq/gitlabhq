@@ -14,6 +14,18 @@ module Clusters
         'stable/prometheus'
       end
 
+      def namespace
+        Gitlab::Kubernetes::Helm::NAMESPACE
+      end
+
+      def service_name
+        'prometheus-prometheus-server'
+      end
+
+      def service_port
+        80
+      end
+
       def chart_values_file
         "#{Rails.root}/vendor/#{name}/values.yaml"
       end

@@ -54,12 +54,16 @@ class PrometheusService < MonitoringService
     { success: false, result: err }
   end
 
+  def with_reactive_cache(cl, *args)
+    yield calculate_reactive_cache(cl, *args)
+  end
+
   def environment_metrics(environment)
     with_reactive_cache(Gitlab::Prometheus::Queries::EnvironmentQuery.name, environment.id, &method(:rename_data_to_metrics))
   end
 
   def deployment_metrics(deployment)
-    metrics = with_reactive_cache(Gitlab::Prometheus::Queries::DeploymentQuery.name, deployment.id, &method(:rename_data_to_metrics))
+    metrics = with_reactive_cache(Gitlab::Prometheus::Queries::DeploymentQuery.name, deployment.environment.id, deployment.id, &method(:rename_data_to_metrics))
     metrics&.merge(deployment_time: deployment.created_at.to_i) || {}
   end
 
@@ -68,18 +72,24 @@ class PrometheusService < MonitoringService
   end
 
   def additional_deployment_metrics(deployment)
-    with_reactive_cache(Gitlab::Prometheus::Queries::AdditionalMetricsDeploymentQuery.name, deployment.id, &:itself)
+    with_reactive_cache(Gitlab::Prometheus::Queries::AdditionalMetricsDeploymentQuery.name, deployment.environment.id, deployment.id, &:itself)
   end
 
   def matched_metrics
-    with_reactive_cache(Gitlab::Prometheus::Queries::MatchedMetricsQuery.name, &:itself)
+    with_reactive_cache(Gitlab::Prometheus::Queries::MatchedMetricsQuery.name, nil, &:itself)
+  end
+
+  def manual_mode?
+    false
   end
 
   # Cache metrics for specific environment
-  def calculate_reactive_cache(query_class_name, *args)
+  def calculate_reactive_cache(query_class_name, environment_id, *args)
     return unless active? && project && !project.pending_delete?
+    client = client_for_environment(environment_id)
 
-    data = Kernel.const_get(query_class_name).new(client).query(*args)
+
+    data = Kernel.const_get(query_class_name).new(client).query(environment_id, *args)
     {
       success: true,
       data: data,
@@ -89,11 +99,50 @@ class PrometheusService < MonitoringService
     { success: false, result: err.message }
   end
 
-  def client
-    @prometheus ||= Gitlab::PrometheusClient.new(api_url: api_url)
+  def client(environment_id)
+    if manual_mode?
+      Gitlab::PrometheusClient.new(api_url: api_url)
+    else
+      cluster(environment_id)
+    end
+  end
+
+  def find_cluster_with_prometheus(environment_id)
+    clusters = if environment_id
+                 ::Environment.find_by(id: environment_id).try(:enabled_clusters) || []
+               else
+                 project.clusters.enabled.select { |c| c.environment_scope == '*' || c.environment_scope == '' }
+               end
+
+    clusters.detect { |cluster| cluster.application_prometheus.installed? }
   end
 
   private
+
+  def client_for_environment(environment_id)
+    cluster = find_cluster_with_prometheus(environment_id)
+    return unless cluster
+
+    prometheus = cluster.application_prometheus
+
+    client_through_kube_proxy(cluster.kubeclient,
+                              'service',
+                              prometheus.service_name,
+                              prometheus.service_port,
+                              prometheus.namespace) if cluster.kubeclient
+  end
+
+  def client_through_kube_proxy(kube_client, kind, name, port, namespace = '')
+    rest_client = kube_client.rest_client
+    base_url = rest_client.url
+    proxy_url = kube_client.proxy_url(kind, name, port, namespace)
+
+    Rails.logger.warn rest_client[proxy_url.sub(base_url, '')]
+    Rails.logger.warn proxy_url.sub(base_url, '')
+
+    Gitlab::PrometheusClient.new(api_url: api_url, rest_client: rest_client[proxy_url.sub(base_url, '')], headers: kube_client.headers)
+  end
+
 
   def rename_data_to_metrics(metrics)
     metrics[:metrics] = metrics.delete :data

@@ -163,6 +163,18 @@ class Environment < ActiveRecord::Base
     end
   end
 
+  def enabled_clusters
+    slug = self.slug
+    result = project.clusters.enabled.select do |cluster|
+      scope = cluster.environment_scope || '*'
+      File.fnmatch(scope, slug)
+    end
+
+    # sort results by descending order based on environment_scope being longer
+    # thus more closely matching environment slug
+    result.sort_by { |cluster| cluster.environment_scope.length }.reverse!
+  end
+
   def slug
     super.presence || generate_slug
   end
