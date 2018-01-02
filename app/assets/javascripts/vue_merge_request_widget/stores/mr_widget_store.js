@@ -127,6 +127,10 @@ export default class MergeRequestStore {
   }
 
   static buildMetrics(metrics) {
+    if (!metrics) {
+      return {};
+    }
+
     return {
       mergedBy: MergeRequestStore.formatUserObject(metrics.merged_by),
       closedBy: MergeRequestStore.formatUserObject(metrics.closed_by),

@@ -72,6 +72,7 @@ describe MergeRequestWidgetEntity do
 
     context 'when metrics does not exists' do
       before do
+        resource.mark_as_merged!
         resource.metrics.destroy!
         resource.reload
       end
