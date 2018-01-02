@@ -93,11 +93,23 @@ module Gitlab
       #  :per_page - The number of items per page.
       #  :limit    - Total number of items to return.
       def page_versions(page_path, options = {})
-        current_page = gollum_page_by_path(page_path)
+        puts '-' * 80
+        puts options
+        puts '-' * 80
+        puts
 
-        commits_from_page(current_page, options).map do |gitlab_git_commit|
-          gollum_page = gollum_wiki.page(current_page.title, gitlab_git_commit.id)
-          Gitlab::Git::WikiPageVersion.new(gitlab_git_commit, gollum_page&.format)
+        byebug
+        @repository.gitaly_migrate(:wiki_page_versions) do |is_enabled|
+          if is_enabled
+            gitaly_wiki_client.page_versions(page_path, pagination_params(options))
+          else
+            current_page = gollum_page_by_path(page_path)
+
+            commits_from_page(current_page, options).map do |gitlab_git_commit|
+              gollum_page = gollum_wiki.page(current_page.title, gitlab_git_commit.id)
+              Gitlab::Git::WikiPageVersion.new(gitlab_git_commit, gollum_page&.format)
+            end
+          end
         end
       end
 
@@ -124,15 +136,21 @@ module Gitlab
       #  :per_page - The number of items per page.
       #  :limit    - Total number of items to return.
       def commits_from_page(gollum_page, options = {})
-        unless options[:limit]
-          options[:offset] = ([1, options.delete(:page).to_i].max - 1) * Gollum::Page.per_page
-          options[:limit] = (options.delete(:per_page) || Gollum::Page.per_page).to_i
-        end
+        pagination_options = pagination_params(options)
 
         @repository.log(ref: gollum_page.last_version.id,
                         path: gollum_page.path,
-                        limit: options[:limit],
-                        offset: options[:offset])
+                        limit: pagination_options[:limit],
+                        offset: pagination_options[:offset])
+      end
+
+      def pagination_params(options)
+        return options if options[:limit]
+
+        options = options.dup
+        options[:offset] = ([1, options.delete(:page).to_i].max - 1) * Gollum::Page.per_page
+        options[:limit] = (options.delete(:per_page) || Gollum::Page.per_page).to_i
+        options
       end
 
       def gollum_wiki

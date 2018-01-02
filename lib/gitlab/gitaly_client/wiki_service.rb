@@ -101,6 +101,48 @@ module Gitlab
         pages
       end
 
+      # options:
+      #  :page     - The Integer page number.
+      #  :per_page - The number of items per page.
+      #  :limit    - Total number of items to return.
+      def page_versions(page_path, options)
+        request = Gitaly::WikiGetPageVersionsRequest.new(
+          repository: @gitaly_repo,
+          page_path: encode_binary(page_path)
+        )
+
+        min_index = options[:offset].to_i
+        max_index = min_index + options[:limit].to_i
+        byebug
+
+        stream = GitalyClient.call(@repository.storage, :wiki_service, :wiki_get_page_versions, request)
+
+        version_index = 0
+        versions = []
+
+        # Allow limit and offset to be send to Gitaly: TODO
+        stream.each do |message|
+          puts '§' * 80
+          puts version_index
+
+          message.versions.each do |version|
+            case version_index
+            when min_index...max_index
+              versions << new_wiki_page_version(version)
+            when max_index..Float::INFINITY
+              return versions
+            end
+
+            version_index += 1
+            puts version_index
+          end
+        end
+
+        # when we're requesting page 99 but the stream doesn't go that far, whatever
+        # is fetched thus far
+        versions
+      end
+
       def find_file(name, revision)
         request = Gitaly::WikiFindFileRequest.new(
           repository: @gitaly_repo,
@@ -129,7 +171,7 @@ module Gitlab
 
       private
 
-      # If a block is given and the yielded value is true, iteration will be
+      # If a block is given and the yielded value is truthy, iteration will be
       # stopped early at that point; else the iterator is consumed entirely.
       # The iterator is traversed with `next` to allow resuming the iteration.
       def wiki_page_from_iterator(iterator)
@@ -146,16 +188,20 @@ module Gitlab
           else
             wiki_page = GitalyClient::WikiPage.new(page.to_h)
 
-            version = Gitlab::Git::WikiPageVersion.new(
-              Gitlab::Git::Commit.decorate(@repository, page.version.commit),
-              page.version.format
-            )
+            version = new_wiki_page_version(page.version)
           end
         end
 
         [wiki_page, version]
       rescue StopIteration
         [wiki_page, version]
+      end
+
+      def new_wiki_page_version(version)
+        Gitlab::Git::WikiPageVersion.new(
+          Gitlab::Git::Commit.decorate(@repository, version.commit),
+          version.format
+        )
       end
 
       def gitaly_commit_details(commit_details)
