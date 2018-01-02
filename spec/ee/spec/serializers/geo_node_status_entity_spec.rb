@@ -7,6 +7,10 @@ describe GeoNodeStatusEntity, :postgresql do
 
   subject { entity.as_json }
 
+  before do
+    allow(Gitlab::Geo).to receive(:primary?).and_return(true)
+  end
+
   it { is_expected.to have_key(:geo_node_id) }
   it { is_expected.to have_key(:healthy) }
   it { is_expected.to have_key(:health) }
