@@ -91,7 +91,7 @@ describe('RepoTab', () => {
     });
 
     it('renders a tooltip', () => {
-      expect(vm.$el.querySelector('span').dataset.originalTitle).toContain('Locked by testuser');
+      expect(vm.$el.querySelector('span:nth-child(2)').dataset.originalTitle).toContain('Locked by testuser');
     });
   });
 

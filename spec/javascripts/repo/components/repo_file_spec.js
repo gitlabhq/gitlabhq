@@ -45,7 +45,7 @@ describe('RepoFile', () => {
     expect(vm.$el.querySelector('.fa-spin.fa-spinner')).toBeFalsy();
   });
 
-  it('does not render commit message and datetime if mini', (done) => {
+  it('does not render commit message and datetime if mini', (done) => { 
     vm = createComponent({
       file: file(),
     });
@@ -122,7 +122,7 @@ describe('RepoFile', () => {
     });
 
     it('renders a tooltip', () => {
-      expect(vm.$el.querySelector('.repo-file-name span').dataset.originalTitle).toContain('Locked by testuser');
+      expect(vm.$el.querySelector('.repo-file-name span:nth-child(2)').dataset.originalTitle).toContain('Locked by testuser');
     });
   });
 });
