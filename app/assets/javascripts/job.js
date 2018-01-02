@@ -100,8 +100,9 @@ export default class Job {
   }
 
   toggleScroll() {
-    const currentPosition = $(document).scrollTop();
-    const scrollHeight = $(document).height();
+    const $document = $(document);
+    const currentPosition = $document.scrollTop();
+    const scrollHeight = $document.height();
 
     const windowHeight = $(window).height();
     if (this.canScroll()) {
