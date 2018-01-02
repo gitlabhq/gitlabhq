@@ -8,7 +8,6 @@ class Admin::GeoNodesController < Admin::ApplicationController
   def index
     @nodes = GeoNode.all.order(:id)
     @node = GeoNode.new
-    @current_storage_shards = StorageShardSerializer.new.represent(StorageShard.all)
 
     unless Gitlab::Geo.license_allows?
       flash_now(:alert, 'You need a different license to enable Geo replication')
