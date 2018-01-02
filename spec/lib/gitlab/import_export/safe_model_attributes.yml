@@ -14,7 +14,6 @@ Issue:
 - iid
 - updated_by_id
 - confidential
-- deleted_at
 - closed_at
 - due_date
 - moved_to_id
@@ -162,7 +161,6 @@ MergeRequest:
 - merge_when_pipeline_succeeds
 - merge_user_id
 - merge_commit_sha
-- deleted_at
 - in_progress_merge_commit_sha
 - lock_version
 - milestone_id
@@ -299,7 +297,6 @@ Ci::Trigger:
 - id
 - token
 - project_id
-- deleted_at
 - created_at
 - updated_at
 - owner_id
@@ -315,7 +312,6 @@ Ci::PipelineSchedule:
 - project_id
 - owner_id
 - active
-- deleted_at
 - created_at
 - updated_at
 Clusters::Cluster:

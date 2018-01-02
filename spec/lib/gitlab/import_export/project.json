@@ -56,7 +56,6 @@
       "iid": 10,
       "updated_by_id": null,
       "confidential": false,
-      "deleted_at": null,
       "due_date": null,
       "moved_to_id": null,
       "test_ee_field": "test",
@@ -350,7 +349,6 @@
       "iid": 9,
       "updated_by_id": null,
       "confidential": false,
-      "deleted_at": null,
       "due_date": null,
       "moved_to_id": null,
       "milestone": {
@@ -586,7 +584,6 @@
       "iid": 8,
       "updated_by_id": null,
       "confidential": false,
-      "deleted_at": null,
       "due_date": null,
       "moved_to_id": null,
       "label_links": [
@@ -820,7 +817,6 @@
       "iid": 7,
       "updated_by_id": null,
       "confidential": false,
-      "deleted_at": null,
       "due_date": null,
       "moved_to_id": null,
       "notes": [
@@ -1033,7 +1029,6 @@
       "iid": 6,
       "updated_by_id": null,
       "confidential": false,
-      "deleted_at": null,
       "due_date": null,
       "moved_to_id": null,
       "notes": [
@@ -1246,7 +1241,6 @@
       "iid": 5,
       "updated_by_id": null,
       "confidential": false,
-      "deleted_at": null,
       "due_date": null,
       "moved_to_id": null,
       "notes": [
@@ -1459,7 +1453,6 @@
       "iid": 4,
       "updated_by_id": null,
       "confidential": false,
-      "deleted_at": null,
       "due_date": null,
       "moved_to_id": null,
       "notes": [
@@ -1672,7 +1665,6 @@
       "iid": 3,
       "updated_by_id": null,
       "confidential": false,
-      "deleted_at": null,
       "due_date": null,
       "moved_to_id": null,
       "notes": [
@@ -1885,7 +1877,6 @@
       "iid": 2,
       "updated_by_id": null,
       "confidential": false,
-      "deleted_at": null,
       "due_date": null,
       "moved_to_id": null,
       "notes": [
@@ -2098,7 +2089,6 @@
       "iid": 1,
       "updated_by_id": null,
       "confidential": false,
-      "deleted_at": null,
       "due_date": null,
       "moved_to_id": null,
       "notes": [
@@ -2504,7 +2494,6 @@
       "merge_when_pipeline_succeeds": true,
       "merge_user_id": null,
       "merge_commit_sha": null,
-      "deleted_at": null,
       "notes": [
         {
           "id": 671,
@@ -2949,7 +2938,6 @@
       "merge_when_pipeline_succeeds": false,
       "merge_user_id": null,
       "merge_commit_sha": null,
-      "deleted_at": null,
       "notes": [
         {
           "id": 679,
@@ -3229,7 +3217,6 @@
       "merge_when_pipeline_succeeds": false,
       "merge_user_id": null,
       "merge_commit_sha": null,
-      "deleted_at": null,
       "notes": [
         {
           "id": 777,
@@ -3509,7 +3496,6 @@
       "merge_when_pipeline_succeeds": false,
       "merge_user_id": null,
       "merge_commit_sha": null,
-      "deleted_at": null,
       "notes": [
         {
           "id": 785,
@@ -4199,7 +4185,6 @@
       "merge_when_pipeline_succeeds": false,
       "merge_user_id": null,
       "merge_commit_sha": null,
-      "deleted_at": null,
       "notes": [
         {
           "id": 793,
@@ -4735,7 +4720,6 @@
       "merge_when_pipeline_succeeds": false,
       "merge_user_id": null,
       "merge_commit_sha": null,
-      "deleted_at": null,
       "notes": [
         {
           "id": 801,
@@ -5224,7 +5208,6 @@
       "merge_when_pipeline_succeeds": false,
       "merge_user_id": null,
       "merge_commit_sha": null,
-      "deleted_at": null,
       "notes": [
         {
           "id": 809,
@@ -5479,7 +5462,6 @@
       "merge_when_pipeline_succeeds": false,
       "merge_user_id": null,
       "merge_commit_sha": null,
-      "deleted_at": null,
       "notes": [
         {
           "id": 817,
@@ -6169,7 +6151,6 @@
       "merge_when_pipeline_succeeds": false,
       "merge_user_id": null,
       "merge_commit_sha": null,
-      "deleted_at": null,
       "notes": [
         {
           "id": 825,
@@ -6969,7 +6950,6 @@
       "id": 123,
       "token": "cdbfasdf44a5958c83654733449e585",
       "project_id": 5,
-      "deleted_at": null,
       "created_at": "2017-01-16T15:25:28.637Z",
       "updated_at": "2017-01-16T15:25:28.637Z"
     }
