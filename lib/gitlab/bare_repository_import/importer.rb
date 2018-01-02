@@ -77,8 +77,6 @@ module Gitlab
 
         if bare_repo.wiki_exists?
           FileUtils.mv(wiki_path, File.join(project.repository_storage_path, project.disk_path + '.wiki.git'))
-        else
-          project.create_wiki
         end
 
         true

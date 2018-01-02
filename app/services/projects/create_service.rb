@@ -88,7 +88,7 @@ module Projects
     def after_create_actions
       log_info("#{@project.owner.name} created a new project \"#{@project.name_with_namespace}\"")
 
-      unless @project.gitlab_project_import?
+      if !@project.gitlab_project_import? || @skip_import
         @project.create_wiki unless skip_wiki?
         create_services_from_active_templates(@project)
 
