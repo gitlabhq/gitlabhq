@@ -45,7 +45,7 @@ describe('RepoFile', () => {
     expect(vm.$el.querySelector('.fa-spin.fa-spinner')).toBeFalsy();
   });
 
-  it('does not render commit message and datetime if mini', (done) => { 
+  it('does not render commit message and datetime if mini', (done) => {
     vm = createComponent({
       file: file(),
     });
