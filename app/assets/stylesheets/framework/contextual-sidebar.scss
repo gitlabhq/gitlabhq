@@ -23,6 +23,7 @@
 .context-header {
   position: relative;
   margin-right: 2px;
+  width: $contextual-sidebar-width;
 
   a {
     transition: padding $sidebar-transition-duration;
