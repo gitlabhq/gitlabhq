@@ -63,6 +63,7 @@
     "last_successful_status_check_timestamp": { "type": ["integer", "null"] },
     "namespaces": { "type": "array" },
     "storage_shards": { "type": "array" },
+    "storage_shards_match": { "type": "boolean" },
     "version": { "type": ["string"] },
     "revision": { "type": ["string"] }
   },

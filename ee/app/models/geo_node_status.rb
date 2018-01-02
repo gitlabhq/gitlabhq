@@ -154,10 +154,12 @@ class GeoNodeStatus < ActiveRecord::Base
     calc_percentage(replication_slots_count, replication_slots_used_count)
   end
 
+  # This method only is useful when the storage shard information is loaded
+  # from a remote node via JSON.
   def storage_shards_match?
     return unless Gitlab::Geo.primary?
 
-    storage_shards.as_json == StorageShardSerializer.new.represent(StorageShard.all).as_json
+    shards_match?(storage_shards.as_json, current_shards.as_json)
   end
 
   def [](key)
@@ -165,6 +167,18 @@ class GeoNodeStatus < ActiveRecord::Base
   end
 
   private
+
+  def current_shards
+    StorageShardSerializer.new.represent(StorageShard.all)
+  end
+
+  def shards_match?(first, second)
+    sort_by_name(first) == sort_by_name(second)
+  end
+
+  def sort_by_name(shards)
+    shards.sort_by { |shard| shard['name'] }
+  end
 
   def attachments_finder
     @attachments_finder ||= Geo::AttachmentRegistryFinder.new(current_node: geo_node)

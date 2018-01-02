@@ -2,7 +2,7 @@ FactoryBot.define do
   factory :geo_node_status do
     sequence(:id)
     geo_node
-    storage_shards { StorageShard.all }
+    storage_shards { StorageShardSerializer.new.represent(StorageShard.all) }
 
     trait :healthy do
       health nil

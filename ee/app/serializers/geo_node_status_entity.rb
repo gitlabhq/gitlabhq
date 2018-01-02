@@ -70,7 +70,7 @@ class GeoNodeStatusEntity < Grape::Entity
   end
 
   expose :storage_shards_match?, as: :storage_shards_match, if: -> (status, options) do
-    status.storage_shards_match.present?
+    Gitlab::Geo.primary? && status.storage_shards.present?
   end
 
   private

@@ -33,6 +33,7 @@ describe GeoNodeStatusEntity, :postgresql do
   it { is_expected.to have_key(:last_successful_status_check_timestamp) }
   it { is_expected.to have_key(:namespaces) }
   it { is_expected.to have_key(:storage_shards) }
+  it { is_expected.to have_key(:storage_shards_match) }
 
   describe '#healthy' do
     context 'when node is healthy' do

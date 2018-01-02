@@ -406,16 +406,41 @@ describe GeoNodeStatus, :geo do
     it 'returns a new GeoNodeStatus excluding parameters' do
       status = create(:geo_node_status)
 
-      data = status.as_json
+      data = GeoNodeStatusSerializer.new.represent(status).as_json
       data['id'] = 10000
-      data['storage_shards'] = Settings.repositories.storages
 
       result = GeoNodeStatus.from_json(data)
 
       expect(result.id).to be_nil
       expect(result.attachments_count).to eq(status.attachments_count)
-      expect(result.cursor_last_event_date).to eq(status.cursor_last_event_date)
+      expect(result.cursor_last_event_date).to eq(Time.at(status.cursor_last_event_timestamp))
       expect(result.storage_shards.count).to eq(Settings.repositories.storages.count)
+    end
+  end
+
+  describe '#storage_shards_match?' do
+    before do
+      allow(Gitlab::Geo).to receive(:primary?).and_return(true)
+    end
+
+    it 'returns false if the storage shards do not match' do
+      status = create(:geo_node_status)
+      status.storage_shards.first['name'] = 'broken-shard'
+      data = status.as_json
+
+      result = GeoNodeStatus.from_json(data)
+
+      expect(status.storage_shards_match?).to be false
+    end
+
+    it 'returns true if the storage shards match in different order' do
+      status = create(:geo_node_status)
+
+      status.storage_shards.shuffle!
+      data = status.as_json
+      result = GeoNodeStatus.from_json(data)
+
+      expect(status.storage_shards_match?).to be true
     end
   end
 end
