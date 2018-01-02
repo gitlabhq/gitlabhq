@@ -797,14 +797,16 @@ describe User do
       end
 
       it "creates external user by default" do
-        user = build(:user)
+        user = create(:user)
 
         expect(user.external).to be_truthy
+        expect(user.can_create_group).to be_falsey
+        expect(user.projects_limit).to be 0
       end
 
       describe 'with default overrides' do
         it "creates a non-external user" do
-          user = build(:user, external: false)
+          user = create(:user, external: false)
 
           expect(user.external).to be_falsey
         end

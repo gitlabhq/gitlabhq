@@ -38,6 +38,10 @@ module StubConfiguration
     allow(Gitlab.config.backup).to receive_messages(to_settings(messages))
   end
 
+  def stub_lfs_setting(messages)
+    allow(Gitlab.config.lfs).to receive_messages(to_settings(messages))
+  end
+
   def stub_storage_settings(messages)
     # Default storage is always required
     messages['default'] ||= Gitlab.config.repositories.storages.default

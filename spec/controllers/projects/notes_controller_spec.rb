@@ -105,6 +105,19 @@ describe Projects::NotesController do
           expect(note_json[:discussion_html]).to be_nil
           expect(note_json[:diff_discussion_html]).to be_nil
         end
+
+        context 'when user cannot read commit' do
+          before do
+            allow(Ability).to receive(:allowed?).and_call_original
+            allow(Ability).to receive(:allowed?).with(user, :download_code, project).and_return(false)
+          end
+
+          it 'renders 404' do
+            get :index, params
+
+            expect(response).to have_gitlab_http_status(404)
+          end
+        end
       end
     end
 

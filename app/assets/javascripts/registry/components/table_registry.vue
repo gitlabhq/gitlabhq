@@ -8,6 +8,7 @@
   import tooltip from '../../vue_shared/directives/tooltip';
   import timeagoMixin from '../../vue_shared/mixins/timeago';
   import { errorMessages, errorMessagesTypes } from '../constants';
+  import { numberToHumanSize } from '../../lib/utils/number_utils';
 
   export default {
     props: {
@@ -39,6 +40,10 @@
 
       layers(item) {
         return item.layers ? n__('%d layer', '%d layers', item.layers) : '';
+      },
+
+      formatSize(size) {
+        return numberToHumanSize(size);
       },
 
       handleDeleteRegistry(registry) {
@@ -97,7 +102,7 @@
             </span>
         </td>
         <td>
-          {{item.size}}
+          {{formatSize(item.size)}}
           <template v-if="item.size && item.layers">
             &middot;
           </template>

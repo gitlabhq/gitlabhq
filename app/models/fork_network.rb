@@ -12,4 +12,8 @@ class ForkNetwork < ActiveRecord::Base
   def find_forks_in(other_projects)
     projects.where(id: other_projects)
   end
+
+  def merge_requests
+    MergeRequest.where(target_project: projects)
+  end
 end

@@ -17,7 +17,9 @@ module Gitlab
         # without having to instantiate all the others that come after it.
         Enumerator.new do |yielder|
           @lines.each do |line|
-            next if filename?(line)
+            # We're expecting a filename parameter only in a meta-part of the diff content
+            # when type is defined then we're already in a content-part
+            next if filename?(line) && type.nil?
 
             full_line = line.delete("\n")
 

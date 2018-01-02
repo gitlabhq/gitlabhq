@@ -110,7 +110,7 @@ class Environment < ActiveRecord::Base
   end
 
   def ref_path
-    "refs/#{Repository::REF_ENVIRONMENTS}/#{generate_slug}"
+    "refs/#{Repository::REF_ENVIRONMENTS}/#{slug}"
   end
 
   def formatted_external_url
@@ -162,6 +162,10 @@ class Environment < ActiveRecord::Base
     if has_additional_metrics?
       project.prometheus_service.additional_environment_metrics(self)
     end
+  end
+
+  def slug
+    super.presence || generate_slug
   end
 
   # An environment name is not necessarily suitable for use in URLs, DNS

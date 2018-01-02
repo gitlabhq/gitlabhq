@@ -51,10 +51,20 @@ module Gitlab
             FROM projects
             WHERE forked_project_links.forked_from_project_id = projects.id
           )
+          AND NOT EXISTS (
+            SELECT true
+            FROM forked_project_links AS parent_links
+            WHERE parent_links.forked_to_project_id = forked_project_links.forked_from_project_id
+            AND NOT EXISTS (
+              SELECT true
+              FROM projects
+              WHERE parent_links.forked_from_project_id = projects.id
+            )
+          )
           AND forked_project_links.id BETWEEN #{start_id} AND #{end_id}
         MISSING_MEMBERS
 
-        ForkNetworkMember.count_by_sql(count_sql) > 0
+        ForkedProjectLink.count_by_sql(count_sql) > 0
       end
 
       def log(message)

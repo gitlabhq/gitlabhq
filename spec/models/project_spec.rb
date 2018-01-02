@@ -1907,6 +1907,20 @@ describe Project do
         expect(forked_project.in_fork_network_of?(other_project)).to be_falsy
       end
     end
+
+    describe '#fork_source' do
+      let!(:second_fork) { fork_project(forked_project) }
+
+      it 'returns the direct source if it exists' do
+        expect(second_fork.fork_source).to eq(forked_project)
+      end
+
+      it 'returns the root of the fork network when the directs source was deleted' do
+        forked_project.destroy
+
+        expect(second_fork.fork_source).to eq(project)
+      end
+    end
   end
 
   describe '#pushes_since_gc' do

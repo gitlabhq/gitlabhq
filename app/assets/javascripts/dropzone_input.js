@@ -127,11 +127,9 @@ window.DropzoneInput = (function() {
     // removeAllFiles(true) stops uploading files (if any)
     // and remove them from dropzone files queue.
     $cancelButton.on('click', (e) => {
-      const target = e.target.closest('.js-main-target-form').querySelector('.div-dropzone');
-
       e.preventDefault();
       e.stopPropagation();
-      Dropzone.forElement(target).removeAllFiles(true);
+      Dropzone.forElement($formDropzone.get(0)).removeAllFiles(true);
     });
 
     // If 'error' event is fired, we store a failed files,

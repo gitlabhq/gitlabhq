@@ -97,7 +97,15 @@ module ProjectsHelper
 
   def remove_fork_project_message(project)
     _("You are going to remove the fork relationship to source project %{forked_from_project}. Are you ABSOLUTELY sure?") %
-      { forked_from_project: @project.forked_from_project.name_with_namespace }
+      { forked_from_project: fork_source_name(project) }
+  end
+
+  def fork_source_name(project)
+    if @project.fork_source
+      @project.fork_source.full_name
+    else
+      @project.fork_network&.deleted_root_project_name
+    end
   end
 
   def project_nav_tabs
@@ -127,8 +135,8 @@ module ProjectsHelper
   def can_change_visibility_level?(project, current_user)
     return false unless can?(current_user, :change_visibility_level, project)
 
-    if project.forked?
-      project.forked_from_project.visibility_level > Gitlab::VisibilityLevel::PRIVATE
+    if project.fork_source
+      project.fork_source.visibility_level > Gitlab::VisibilityLevel::PRIVATE
     else
       true
     end

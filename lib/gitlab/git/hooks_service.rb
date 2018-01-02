@@ -8,7 +8,7 @@ module Gitlab
       def execute(pusher, repository, oldrev, newrev, ref)
         @repository  = repository
         @gl_id       = pusher.gl_id
-        @gl_username = pusher.name
+        @gl_username = pusher.username
         @oldrev      = oldrev
         @newrev      = newrev
         @ref         = ref

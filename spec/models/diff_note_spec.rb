@@ -283,6 +283,12 @@ describe DiffNote do
         expect(diff_line).to be nil
         expect(subject).to be_valid
       end
+
+      it "does not update the position" do
+        expect(subject).not_to receive(:update_position)
+
+        subject.save
+      end
     end
 
     it "returns true for on_image?" do

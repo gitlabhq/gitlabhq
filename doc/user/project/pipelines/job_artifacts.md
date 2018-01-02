@@ -52,7 +52,8 @@ directly in the job artifacts browser without the need to download them.
 
 >**Note:**
 With [GitLab 10.1][ce-14399], HTML files in a public project can be previewed
-directly in a new tab without the need to download them.
+directly in a new tab without the need to download them when
+[GitLab Pages](../../../administration/pages/index.md) is enabled
 
 After a job finishes, if you visit the job's specific page, there are three
 buttons. You can download the artifacts archive or browse its contents, whereas
@@ -69,7 +70,8 @@ browse inside them.
 
 Below you can see how browsing looks like. In this case we have browsed inside
 the archive and at this point there is one directory, a couple files, and
-one HTML file that you can view directly online (opens in a new tab).
+one HTML file that you can view directly online when
+[GitLab Pages](../../../administration/pages/index.md) is enabled (opens in a new tab).
 
 ![Job artifacts browser](img/job_artifacts_browser.png)
 

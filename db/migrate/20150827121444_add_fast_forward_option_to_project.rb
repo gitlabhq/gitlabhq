@@ -8,7 +8,11 @@ class AddFastForwardOptionToProject < ActiveRecord::Migration
   disable_ddl_transaction!
 
   def up
-    add_column_with_default(:projects, :merge_requests_ff_only_enabled, :boolean, default: false)
+    # We put condition here because of a mistake we made a couple of years ago
+    # see https://gitlab.com/gitlab-org/gitlab-ce/issues/39382#note_45716103
+    unless column_exists?(:projects, :merge_requests_ff_only_enabled)
+      add_column_with_default(:projects, :merge_requests_ff_only_enabled, :boolean, default: false)
+    end
   end
 
   def down

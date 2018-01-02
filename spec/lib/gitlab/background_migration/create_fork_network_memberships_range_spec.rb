@@ -93,7 +93,14 @@ describe Gitlab::BackgroundMigration::CreateForkNetworkMembershipsRange, :migrat
   end
 
   it 'knows it is finished for this range' do
-    expect(migration.missing_members?(1, 7)).to be_falsy
+    expect(migration.missing_members?(1, 8)).to be_falsy
+  end
+
+  it 'does not miss members for forks of forks for which the root was deleted' do
+    forked_project_links.create(id: 9, forked_from_project_id: base1_fork1.id, forked_to_project_id: create(:project).id)
+    base1.destroy
+
+    expect(migration.missing_members?(7, 10)).to be_falsy
   end
 
   context 'with more forks' do
