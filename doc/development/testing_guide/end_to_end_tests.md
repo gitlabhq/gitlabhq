@@ -36,21 +36,24 @@ Below you can read more about how to use it and how does it work.
 
 Currently, we are _multi-project pipeline_-like approach to run QA pipelines.
 
-1. Developer triggers manual action in the CE or EE merge request, that starts
-a chain of pipelines.
-1. Triggering this action enqueues a new CI job that is going to be picked by a
-runner.
+1. Developer triggers a manual action, that can be found in CE and EE merge
+requests, what starts a chain of pipelines.
+
 1. The script, that is being executed, triggers a pipeline in GitLab Omnibus
-projects, and waits for the resulting status. We call it _status attribution_.
-1. GitLab packages are being built in the pipeline started in Omnibus. Packages
-are going to be sent to Container Registry.
+projects, and waits for the resulting status. We call this a _status attribution_.
+
+1. GitLab packages are being built in Omnibus pipeline. Packages are going to be
+pushed to Container Registry.
+
 1. When packages are ready, and available in the registry, a final step in the
-pipeline that is now running in Omnibus triggers a new pipeline in the GitLab
-QA project. It also waits for the resulting status.
+pipeline, that is now running in Omnibus, triggers a new pipeline in the GitLab
+QA project. It also waits for a resulting status.
+
 1. GitLab QA pulls images from the registry, spins-up containers and runs tests
-against test environment that has been just orchestrated.
+against a test environment that has been just orchestrated by `gitlab-qa` tool.
+
 1. The result of GitLab QA pipeline is being propagated upstream, through
-Omnibus, to CE / EE merge request.
+Omnibus, back to CE / EE merge request.
 
 #### How do I write tests?
 
@@ -58,8 +61,9 @@ In order to write new tests, you first need to learn more about GitLab QA
 architecture. There is some documentation about it in GitLab QA project
 [here][gitlab-qa-architecture].
 
-Once you decided we to put test environment orchestration scenarios and
+Once you decided were to put test environment orchestration scenarios and
 instance specs, take a looks at [relevant documentation][instance-qa-readme]
+and examples in [the `qa/` directory][instance-qa-examples].
 
 ## Where can I ask for help?
 
@@ -70,6 +74,7 @@ and start a new discussion there.
 [omnibus-gitlab]: https://gitlab.com/gitlab-org/omnibus-gitlab
 [gitlab-qa]: https://gitlab.com/gitlab-org/gitlab-qa
 [gitlab-qa-pipelines]: https://gitlab.com/gitlab-org/gitlab-qa/pipelines
-[instance-qa-readme]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa/README.md
 [gitlab-qa-architecture]: https://gitlab.com/gitlab-org/gitlab-qa/blob/master/docs/architecture.md
 [gitlab-qa-issues]: https://gitlab.com/gitlab-org/gitlab-qa/issues
+[instance-qa-readme]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa/README.md
+[instance-qa-examples]: https://gitlab.com/gitlab-org/gitlab-ce/tree/master/qa/qa
