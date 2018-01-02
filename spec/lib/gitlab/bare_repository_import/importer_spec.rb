@@ -137,6 +137,7 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
       project = Project.find_by_full_path("#{admin.full_path}/#{project_path}")
 
       expect(File).to exist(File.join(project.repository_storage_path, project.disk_path + '.git'))
+      expect(File).to exist(File.join(project.repository_storage_path, project.disk_path + '.wiki.git'))
     end
 
     it 'moves an existing project to the correct path' do
