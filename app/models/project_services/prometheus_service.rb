@@ -7,17 +7,25 @@ class PrometheusService < MonitoringService
 
   #  Access to prometheus is directly through the API
   prop_accessor :api_url
+  boolean_accessor :manual_configuration
 
-  with_options presence: true, if: :activated? do
+  with_options presence: true, if: :manual_configuration? do
     validates :api_url, url: true
   end
 
+  before_save :synchronize_service_state!
+
   after_save :clear_reactive_cache!
+
 
   def initialize_properties
     if properties.nil?
       self.properties = {}
     end
+  end
+
+  def show_active_box?
+    false
   end
 
   def title
@@ -34,6 +42,18 @@ class PrometheusService < MonitoringService
 
   def fields
     [
+      { type: 'fieldset',
+        legend: 'Manual Configuration',
+        fields: [
+          {
+            type: 'checkbox',
+            name: 'manual_configuration',
+            title: s_('PrometheusService|Active'),
+            required: true
+          }
+        ]
+      },
+
       {
         type: 'text',
         name: 'api_url',
@@ -79,15 +99,10 @@ class PrometheusService < MonitoringService
     with_reactive_cache(Gitlab::Prometheus::Queries::MatchedMetricsQuery.name, nil, &:itself)
   end
 
-  def manual_mode?
-    false
-  end
-
   # Cache metrics for specific environment
   def calculate_reactive_cache(query_class_name, environment_id, *args)
     return unless active? && project && !project.pending_delete?
     client = client(environment_id)
-
 
     data = Kernel.const_get(query_class_name).new(client).query(environment_id, *args)
     {
@@ -100,12 +115,13 @@ class PrometheusService < MonitoringService
   end
 
   def client(environment_id)
-    if manual_mode?
+    if manual_configuration?
       Gitlab::PrometheusClient.new(RestClient::Resource.new(api_url))
     else
       cluster = find_cluster_with_prometheus(environment_id)
+      raise Gitlab::PrometheusError, "couldn't find cluster with Prometheus installed" unless cluster
 
-      Gitlab::PrometheusClient.new(cluster.application_prometheus.proxy_client) if cluster
+      Gitlab::PrometheusClient.new(cluster.application_prometheus.proxy_client)
     end
   end
 
@@ -124,5 +140,9 @@ class PrometheusService < MonitoringService
   def rename_data_to_metrics(metrics)
     metrics[:metrics] = metrics.delete :data
     metrics
+  end
+
+  def synchronize_service_state!
+    self.active = manual_configuration
   end
 end
