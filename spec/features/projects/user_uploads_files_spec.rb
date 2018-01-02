@@ -14,7 +14,7 @@ describe 'User uploads files' do
   let(:user) { create(:user) }
 
   before do
-    project.team << [user, :master]
+    project.add_master(user)
     sign_in(user)
   end
 
@@ -50,7 +50,7 @@ describe 'User uploads files' do
 
   context 'when an user does not have write access' do
     before do
-      project2.team << [user, :reporter]
+      project2.add_reporter(user)
       visit(project2_tree_path_root_ref)
     end
 

@@ -701,21 +701,6 @@ describe Gitlab::Git::Repository, seed_helper: true do
     end
   end
 
-  describe '#remote_exists?' do
-    before(:all) do
-      @repo = Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
-      @repo.add_remote("new_remote", SeedHelper::GITLAB_GIT_TEST_REPO_URL)
-    end
-
-    it 'returns true for an existing remote' do
-      expect(@repo.remote_exists?('new_remote')).to eq(true)
-    end
-
-    it 'returns false for a non-existing remote' do
-      expect(@repo.remote_exists?('foo')).to eq(false)
-    end
-  end
-
   describe "#log" do
     let(:commit_with_old_name) do
       Gitlab::Git::Commit.decorate(repository, @commit_with_old_name_id)
@@ -1670,7 +1655,7 @@ describe Gitlab::Git::Repository, seed_helper: true do
       let(:branch_name) { "to-be-deleted-soon" }
 
       before do
-        project.team << [user, :developer]
+        project.add_developer(user)
         repository.create_branch(branch_name)
       end
 
@@ -1840,6 +1825,62 @@ describe Gitlab::Git::Repository, seed_helper: true do
       expect(repository.ref_exists?("refs/keep/c")).to be(true)
       expect(repository.ref_exists?("refs/also-keep/d")).to be(true)
       expect(repository.ref_exists?("refs/heads/master")).to be(true)
+    end
+  end
+
+  describe 'remotes' do
+    let(:repository) do
+      Gitlab::Git::Repository.new('default', TEST_MUTABLE_REPO_PATH, '')
+    end
+    let(:remote_name) { 'my-remote' }
+
+    after do
+      ensure_seeds
+    end
+
+    describe '#add_remote' do
+      let(:url) { 'http://my-repo.git' }
+      let(:mirror_refmap) { '+refs/*:refs/*' }
+
+      it 'creates a new remote via Gitaly' do
+        expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
+          .to receive(:add_remote).with(remote_name, url, mirror_refmap)
+
+        repository.add_remote(remote_name, url, mirror_refmap: mirror_refmap)
+      end
+
+      context 'with Gitaly disabled', :skip_gitaly_mock do
+        it 'creates a new remote via Rugged' do
+          expect_any_instance_of(Rugged::RemoteCollection).to receive(:create)
+            .with(remote_name, url)
+          expect_any_instance_of(Rugged::Config).to receive(:[]=)
+          .with("remote.#{remote_name}.mirror", true)
+          expect_any_instance_of(Rugged::Config).to receive(:[]=)
+          .with("remote.#{remote_name}.prune", true)
+          expect_any_instance_of(Rugged::Config).to receive(:[]=)
+            .with("remote.#{remote_name}.fetch", mirror_refmap)
+
+          repository.add_remote(remote_name, url, mirror_refmap: mirror_refmap)
+        end
+      end
+    end
+
+    describe '#remove_remote' do
+      it 'removes the remote via Gitaly' do
+        expect_any_instance_of(Gitlab::GitalyClient::RemoteService)
+          .to receive(:remove_remote).with(remote_name)
+
+        repository.remove_remote(remote_name)
+      end
+
+      context 'with Gitaly disabled', :skip_gitaly_mock do
+        it 'removes the remote via Rugged' do
+          expect_any_instance_of(Rugged::RemoteCollection).to receive(:delete)
+            .with(remote_name)
+
+          repository.remove_remote(remote_name)
+        end
+      end
     end
   end
 

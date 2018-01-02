@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171219121201) do
+ActiveRecord::Schema.define(version: 20171220191323) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -568,6 +568,15 @@ ActiveRecord::Schema.define(version: 20171219121201) do
     t.text "status_reason"
   end
 
+  create_table "clusters_applications_prometheus", force: :cascade do |t|
+    t.integer "cluster_id", null: false
+    t.integer "status", null: false
+    t.string "version", null: false
+    t.text "status_reason"
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
+  end
+
   create_table "container_repositories", force: :cascade do |t|
     t.integer "project_id", null: false
     t.string "name", null: false
@@ -648,8 +657,8 @@ ActiveRecord::Schema.define(version: 20171219121201) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "confirmation_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
+    t.datetime_with_timezone "confirmed_at"
+    t.datetime_with_timezone "confirmation_sent_at"
   end
 
   add_index "emails", ["confirmation_token"], name: "index_emails_on_confirmation_token", unique: true, using: :btree
@@ -1761,8 +1770,8 @@ ActiveRecord::Schema.define(version: 20171219121201) do
   add_index "user_agent_details", ["subject_id", "subject_type"], name: "index_user_agent_details_on_subject_id_and_subject_type", using: :btree
 
   create_table "user_custom_attributes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.integer "user_id", null: false
     t.string "key", null: false
     t.string "value", null: false
@@ -1980,6 +1989,7 @@ ActiveRecord::Schema.define(version: 20171219121201) do
   add_foreign_key "labels", "projects", name: "fk_7de4989a69", on_delete: :cascade
   add_foreign_key "lists", "boards", name: "fk_0d3f677137", on_delete: :cascade
   add_foreign_key "lists", "labels", name: "fk_7a5553d60f", on_delete: :cascade
+  add_foreign_key "members", "users", name: "fk_2e88fb7ce9", on_delete: :cascade
   add_foreign_key "merge_request_diff_commits", "merge_request_diffs", on_delete: :cascade
   add_foreign_key "merge_request_diff_files", "merge_request_diffs", on_delete: :cascade
   add_foreign_key "merge_request_diffs", "merge_requests", name: "fk_8483f3258f", on_delete: :cascade

@@ -1440,7 +1440,7 @@ describe Ci::Pipeline, :mailer do
     end
 
     before do
-      project.team << [pipeline.user, Gitlab::Access::DEVELOPER]
+      project.add_developer(pipeline.user)
 
       pipeline.user.global_notification_setting
         .update(level: 'custom', failed_pipeline: true, success_pipeline: true)

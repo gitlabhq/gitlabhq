@@ -1,5 +1,0 @@
----
-title: Make sure user email is read only when synced with LDAP
-merge_request: 15915
-author:
-type: fixed

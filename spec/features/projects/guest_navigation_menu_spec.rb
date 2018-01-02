@@ -5,7 +5,7 @@ describe 'Guest navigation menu' do
   let(:guest) { create(:user) }
 
   before do
-    project.team << [guest, :guest]
+    project.add_guest(guest)
 
     sign_in(guest)
   end
