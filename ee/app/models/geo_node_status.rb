@@ -159,7 +159,7 @@ class GeoNodeStatus < ActiveRecord::Base
   def storage_shards_match?
     return unless Gitlab::Geo.primary?
 
-    shards_match?(storage_shards.as_json, current_shards.as_json)
+    shards_match?(current_shards, primary_shards)
   end
 
   def [](key)
@@ -169,7 +169,15 @@ class GeoNodeStatus < ActiveRecord::Base
   private
 
   def current_shards
-    StorageShardSerializer.new.represent(StorageShard.all)
+    serialize_storage_shards(storage_shards)
+  end
+
+  def primary_shards
+    serialize_storage_shards(StorageShard.all)
+  end
+
+  def serialize_storage_shards(shards)
+    StorageShardSerializer.new.represent(shards).as_json
   end
 
   def shards_match?(first, second)

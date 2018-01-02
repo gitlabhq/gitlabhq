@@ -425,22 +425,22 @@ describe GeoNodeStatus, :geo do
 
     it 'returns false if the storage shards do not match' do
       status = create(:geo_node_status)
-      status.storage_shards.first['name'] = 'broken-shard'
-      data = status.as_json
+      data = GeoNodeStatusSerializer.new.represent(status).as_json
+      data['storage_shards'].first['name'] = 'broken-shard'
 
       result = GeoNodeStatus.from_json(data)
 
-      expect(status.storage_shards_match?).to be false
+      expect(result.storage_shards_match?).to be false
     end
 
     it 'returns true if the storage shards match in different order' do
       status = create(:geo_node_status)
 
       status.storage_shards.shuffle!
-      data = status.as_json
+      data = GeoNodeStatusSerializer.new.represent(status).as_json
       result = GeoNodeStatus.from_json(data)
 
-      expect(status.storage_shards_match?).to be true
+      expect(result.storage_shards_match?).to be true
     end
   end
 end
