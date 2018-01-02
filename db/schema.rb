@@ -356,7 +356,6 @@ ActiveRecord::Schema.define(version: 20171230123729) do
     t.integer "project_id"
     t.integer "owner_id"
     t.boolean "active", default: true
-    t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -466,7 +465,6 @@ ActiveRecord::Schema.define(version: 20171230123729) do
 
   create_table "ci_triggers", force: :cascade do |t|
     t.string "token"
-    t.datetime "deleted_at"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer "project_id"
@@ -860,7 +858,6 @@ ActiveRecord::Schema.define(version: 20171230123729) do
     t.integer "iid"
     t.integer "updated_by_id"
     t.boolean "confidential", default: false, null: false
-    t.datetime "deleted_at"
     t.date "due_date"
     t.integer "moved_to_id"
     t.integer "lock_version"
@@ -877,7 +874,6 @@ ActiveRecord::Schema.define(version: 20171230123729) do
 
   add_index "issues", ["author_id"], name: "index_issues_on_author_id", using: :btree
   add_index "issues", ["confidential"], name: "index_issues_on_confidential", using: :btree
-  add_index "issues", ["deleted_at"], name: "index_issues_on_deleted_at", using: :btree
   add_index "issues", ["description"], name: "index_issues_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
   add_index "issues", ["milestone_id"], name: "index_issues_on_milestone_id", using: :btree
   add_index "issues", ["moved_to_id"], name: "index_issues_on_moved_to_id", where: "(moved_to_id IS NOT NULL)", using: :btree
@@ -1086,7 +1082,6 @@ ActiveRecord::Schema.define(version: 20171230123729) do
     t.boolean "merge_when_pipeline_succeeds", default: false, null: false
     t.integer "merge_user_id"
     t.string "merge_commit_sha"
-    t.datetime "deleted_at"
     t.string "in_progress_merge_commit_sha"
     t.integer "lock_version"
     t.text "title_html"
@@ -1105,7 +1100,6 @@ ActiveRecord::Schema.define(version: 20171230123729) do
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
   add_index "merge_requests", ["author_id"], name: "index_merge_requests_on_author_id", using: :btree
   add_index "merge_requests", ["created_at"], name: "index_merge_requests_on_created_at", using: :btree
-  add_index "merge_requests", ["deleted_at"], name: "index_merge_requests_on_deleted_at", using: :btree
   add_index "merge_requests", ["description"], name: "index_merge_requests_on_description_trigram", using: :gin, opclasses: {"description"=>"gin_trgm_ops"}
   add_index "merge_requests", ["head_pipeline_id"], name: "index_merge_requests_on_head_pipeline_id", using: :btree
   add_index "merge_requests", ["latest_merge_request_diff_id"], name: "index_merge_requests_on_latest_merge_request_diff_id", using: :btree
@@ -1165,7 +1159,6 @@ ActiveRecord::Schema.define(version: 20171230123729) do
     t.boolean "share_with_group_lock", default: false
     t.integer "visibility_level", default: 20, null: false
     t.boolean "request_access_enabled", default: false, null: false
-    t.datetime "deleted_at"
     t.text "description_html"
     t.boolean "lfs_enabled"
     t.integer "parent_id"
@@ -1175,7 +1168,6 @@ ActiveRecord::Schema.define(version: 20171230123729) do
   end
 
   add_index "namespaces", ["created_at"], name: "index_namespaces_on_created_at", using: :btree
-  add_index "namespaces", ["deleted_at"], name: "index_namespaces_on_deleted_at", using: :btree
   add_index "namespaces", ["name", "parent_id"], name: "index_namespaces_on_name_and_parent_id", unique: true, using: :btree
   add_index "namespaces", ["name"], name: "index_namespaces_on_name_trigram", using: :gin, opclasses: {"name"=>"gin_trgm_ops"}
   add_index "namespaces", ["owner_id"], name: "index_namespaces_on_owner_id", using: :btree
