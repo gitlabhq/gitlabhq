@@ -176,7 +176,6 @@ describe 'Dropdown hint', :js do
       it 'reuses existing author text' do
         filtered_search.send_keys('author:')
         filtered_search.send_keys(:backspace)
-        filtered_search.send_keys(:backspace)
         click_hint('author')
 
         expect_tokens([{ name: 'author' }])
@@ -185,7 +184,6 @@ describe 'Dropdown hint', :js do
 
       it 'reuses existing assignee text' do
         filtered_search.send_keys('assignee:')
-        filtered_search.send_keys(:backspace)
         filtered_search.send_keys(:backspace)
         click_hint('assignee')
 
@@ -196,7 +194,6 @@ describe 'Dropdown hint', :js do
       it 'reuses existing milestone text' do
         filtered_search.send_keys('milestone:')
         filtered_search.send_keys(:backspace)
-        filtered_search.send_keys(:backspace)
         click_hint('milestone')
 
         expect_tokens([{ name: 'milestone' }])
@@ -206,7 +203,6 @@ describe 'Dropdown hint', :js do
       it 'reuses existing label text' do
         filtered_search.send_keys('label:')
         filtered_search.send_keys(:backspace)
-        filtered_search.send_keys(:backspace)
         click_hint('label')
 
         expect_tokens([{ name: 'label' }])
@@ -215,7 +211,6 @@ describe 'Dropdown hint', :js do
 
       it 'reuses existing emoji text' do
         filtered_search.send_keys('my-reaction:')
-        filtered_search.send_keys(:backspace)
         filtered_search.send_keys(:backspace)
         click_hint('my-reaction')
 
