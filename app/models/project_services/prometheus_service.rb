@@ -86,7 +86,7 @@ class PrometheusService < MonitoringService
   # Cache metrics for specific environment
   def calculate_reactive_cache(query_class_name, environment_id, *args)
     return unless active? && project && !project.pending_delete?
-    client = client_for_environment(environment_id)
+    client = client(environment_id)
 
 
     data = Kernel.const_get(query_class_name).new(client).query(environment_id, *args)
@@ -101,11 +101,15 @@ class PrometheusService < MonitoringService
 
   def client(environment_id)
     if manual_mode?
-      Gitlab::PrometheusClient.new(api_url: api_url)
+      Gitlab::PrometheusClient.new(RestClient::Resource.new(api_url))
     else
-      cluster(environment_id)
+      cluster = find_cluster_with_prometheus(environment_id)
+
+      Gitlab::PrometheusClient.new(cluster.application_prometheus.proxy_client) if cluster
     end
   end
+
+  private
 
   def find_cluster_with_prometheus(environment_id)
     clusters = if environment_id
@@ -116,33 +120,6 @@ class PrometheusService < MonitoringService
 
     clusters.detect { |cluster| cluster.application_prometheus.installed? }
   end
-
-  private
-
-  def client_for_environment(environment_id)
-    cluster = find_cluster_with_prometheus(environment_id)
-    return unless cluster
-
-    prometheus = cluster.application_prometheus
-
-    client_through_kube_proxy(cluster.kubeclient,
-                              'service',
-                              prometheus.service_name,
-                              prometheus.service_port,
-                              prometheus.namespace) if cluster.kubeclient
-  end
-
-  def client_through_kube_proxy(kube_client, kind, name, port, namespace = '')
-    rest_client = kube_client.rest_client
-    base_url = rest_client.url
-    proxy_url = kube_client.proxy_url(kind, name, port, namespace)
-
-    Rails.logger.warn rest_client[proxy_url.sub(base_url, '')]
-    Rails.logger.warn proxy_url.sub(base_url, '')
-
-    Gitlab::PrometheusClient.new(api_url: api_url, rest_client: rest_client[proxy_url.sub(base_url, '')], headers: kube_client.headers)
-  end
-
 
   def rename_data_to_metrics(metrics)
     metrics[:metrics] = metrics.delete :data

@@ -14,10 +14,6 @@ module Clusters
         'stable/prometheus'
       end
 
-      def namespace
-        Gitlab::Kubernetes::Helm::NAMESPACE
-      end
-
       def service_name
         'prometheus-prometheus-server'
       end
@@ -32,6 +28,17 @@ module Clusters
 
       def install_command
         Gitlab::Kubernetes::Helm::InstallCommand.new(name, chart: chart, chart_values_file: chart_values_file)
+      end
+
+      def proxy_client
+        return unless cluster.kubeclient
+
+        kube_client = cluster.kubeclient
+        proxy_url = kube_client.proxy_url('service', service_name, service_port, Gitlab::Kubernetes::Helm::NAMESPACE)
+
+        # ensures headers containing auth data are appended to original k8s client options
+        options = kube_client.rest_client.options.merge(headers: kube_client.headers)
+        RestClient::Resource.new(proxy_url, options)
       end
     end
   end

@@ -3,12 +3,10 @@ module Gitlab
 
   # Helper methods to interact with Prometheus network services & resources
   class PrometheusClient
-    attr_reader :api_url, :rest_client, :headers
+    attr_reader :rest_client, :headers
 
-    def initialize(api_url:, rest_client: nil, headers: nil)
-      @api_url = api_url
+    def initialize(rest_client)
       @rest_client = rest_client || RestClient::Resource.new(api_url)
-      @headers = headers || {}
     end
 
     def ping
@@ -49,7 +47,7 @@ module Gitlab
     end
 
     def get(path, args)
-      response = rest_client[path].get(headers.merge(params: args))
+      response = rest_client[path].get(params: args)
       handle_response(response)
     rescue SocketError
       raise PrometheusError, "Can't connect to #{url}"
@@ -60,7 +58,7 @@ module Gitlab
     end
 
     def handle_response(response)
-      json_data = json_response(response)
+      json_data = JSON.parse(response.body)
       if response.code == 200 && json_data['status'] == 'success'
         json_data['data'] || {}
       elsif response.code == 400
@@ -68,10 +66,6 @@ module Gitlab
       else
         raise PrometheusError, "#{response.code} - #{response.body}"
       end
-    end
-
-    def json_response(response)
-      JSON.parse(response.body)
     end
 
     def get_result(expected_type)
