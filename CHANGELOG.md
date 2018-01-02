@@ -2,6 +2,15 @@
 documentation](doc/development/changelog.md) for instructions on adding your own
 entry.
 
+## 10.3.3 (2018-01-02)
+
+### Fixed (3 changes)
+
+- Fix links to old commits in merge request comments.
+- Fix 404 errors after a user edits an issue description and solves the reCAPTCHA.
+- Gracefully handle orphaned write deploy keys in /internal/post_receive.
+
+
 ## 10.3.2 (2017-12-28)
 
 ### Fixed (1 change)

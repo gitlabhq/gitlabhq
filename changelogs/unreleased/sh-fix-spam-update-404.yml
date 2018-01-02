@@ -1,5 +1,0 @@
----
-title: Fix 404 errors after a user edits an issue description and solves the reCAPTCHA
-merge_request:
-author:
-type: fixed
