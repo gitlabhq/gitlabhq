@@ -252,12 +252,14 @@ describe('Filtered Search Manager', () => {
       it('removes last token', () => {
         spyOn(gl.FilteredSearchVisualTokens, 'removeLastTokenPartial').and.callThrough();
         dispatchBackspaceEvent(input, 'keyup');
+        dispatchBackspaceEvent(input, 'keyup');
 
         expect(gl.FilteredSearchVisualTokens.removeLastTokenPartial).toHaveBeenCalled();
       });
 
       it('sets the input', () => {
         spyOn(gl.FilteredSearchVisualTokens, 'getLastTokenPartial').and.callThrough();
+        dispatchDeleteEvent(input, 'keyup');
         dispatchDeleteEvent(input, 'keyup');
 
         expect(gl.FilteredSearchVisualTokens.getLastTokenPartial).toHaveBeenCalled();
@@ -275,6 +277,18 @@ describe('Filtered Search Manager', () => {
       expect(gl.FilteredSearchVisualTokens.removeLastTokenPartial).not.toHaveBeenCalled();
       expect(gl.FilteredSearchVisualTokens.getLastTokenPartial).not.toHaveBeenCalled();
       expect(input.value).toEqual('text');
+    });
+
+    it('does not remove previous token on single backspace press', () => {
+      spyOn(gl.FilteredSearchVisualTokens, 'removeLastTokenPartial').and.callThrough();
+      spyOn(gl.FilteredSearchVisualTokens, 'getLastTokenPartial').and.callThrough();
+
+      input.value = 't';
+      dispatchDeleteEvent(input, 'keyup');
+
+      expect(gl.FilteredSearchVisualTokens.removeLastTokenPartial).not.toHaveBeenCalled();
+      expect(gl.FilteredSearchVisualTokens.getLastTokenPartial).not.toHaveBeenCalled();
+      expect(input.value).toEqual('t');
     });
   });
 
