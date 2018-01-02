@@ -23,8 +23,8 @@ $(navEl).on('show.bs.dropdown', (e) => {
   dropdownOpened(e);
 });
 
-// eslint-disable-next-line no-new
-new Vue({
+// eslint-disable-next-line no-new, no-unused-expressions
+(el && navEl) && new Vue({ // If elements are not in the DOM do nothing
   el,
   components: {
     projectsDropdownApp,

@@ -9,6 +9,6 @@ export default function conditionallyLoadProjectDropdown() {
     .then((importedFunc) => {
       importedFunc.default(e);
     })
-    .catch(()=> {});
+    .catch(() => {});
   });
 }
