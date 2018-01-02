@@ -8,6 +8,7 @@ class PrometheusService < MonitoringService
   #  Access to prometheus is directly through the API
   prop_accessor :api_url
   boolean_accessor :manual_configuration
+  boolean_accessor :prometheus_installed
 
   with_options presence: true, if: :manual_configuration? do
     validates :api_url, url: true
@@ -20,7 +21,7 @@ class PrometheusService < MonitoringService
 
   def initialize_properties
     if properties.nil?
-      self.properties = {}
+      self.properties = { prometheus_installed: false }
     end
   end
 
@@ -118,7 +119,7 @@ class PrometheusService < MonitoringService
     if manual_configuration?
       Gitlab::PrometheusClient.new(RestClient::Resource.new(api_url))
     else
-      cluster = find_cluster_with_prometheus(environment_id)
+      cluster = cluster_with_prometheus(environment_id)
       raise Gitlab::PrometheusError, "couldn't find cluster with Prometheus installed" unless cluster
 
       Gitlab::PrometheusClient.new(cluster.application_prometheus.proxy_client)
@@ -127,7 +128,7 @@ class PrometheusService < MonitoringService
 
   private
 
-  def find_cluster_with_prometheus(environment_id)
+  def cluster_with_prometheus(environment_id = nil)
     clusters = if environment_id
                  ::Environment.find_by(id: environment_id).try(:enabled_clusters) || []
                else
@@ -143,6 +144,7 @@ class PrometheusService < MonitoringService
   end
 
   def synchronize_service_state!
-    self.active = manual_configuration
+    self.active = prometheus_installed? || manual_configuration? || cluster_with_prometheus.present?
+    self.prometheus_installed = !manual_configuration? && cluster_with_prometheus.present?
   end
 end
