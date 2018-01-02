@@ -32,8 +32,10 @@
     "target_branch": { "type": "string" },
     "target_project_id": { "type": "integer" },
     "metrics": {
-      "type": "object",
-      "$ref": "merge_request_metrics.json"
+      "oneOf": [
+        { "type": "null" },
+        { "$ref": "merge_request_metrics.json" }
+      ]
     },
     "author": { "type": ["object", "null"] },
     "merge_user": { "type": ["object", "null"] },
