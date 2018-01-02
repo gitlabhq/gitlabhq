@@ -657,8 +657,8 @@ ActiveRecord::Schema.define(version: 20171220191323) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string "confirmation_token"
-    t.datetime "confirmed_at"
-    t.datetime "confirmation_sent_at"
+    t.datetime_with_timezone "confirmed_at"
+    t.datetime_with_timezone "confirmation_sent_at"
   end
 
   add_index "emails", ["confirmation_token"], name: "index_emails_on_confirmation_token", unique: true, using: :btree
@@ -1770,8 +1770,8 @@ ActiveRecord::Schema.define(version: 20171220191323) do
   add_index "user_agent_details", ["subject_id", "subject_type"], name: "index_user_agent_details_on_subject_id_and_subject_type", using: :btree
 
   create_table "user_custom_attributes", force: :cascade do |t|
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime_with_timezone "created_at", null: false
+    t.datetime_with_timezone "updated_at", null: false
     t.integer "user_id", null: false
     t.string "key", null: false
     t.string "value", null: false
