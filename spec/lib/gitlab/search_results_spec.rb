@@ -51,6 +51,17 @@ describe Gitlab::SearchResults do
 
       expect(results.objects('merge_requests')).to include merge_request_2
     end
+
+    it 'includes project filter by default' do
+      expect(results).to receive(:project_ids_relation).and_call_original
+      results.objects('merge_requests')
+    end
+
+    it 'it skips project filter if default is used' do
+      allow(results).to receive(:default_project_filter).and_return(true)
+      expect(results).not_to receive(:project_ids_relation)
+      results.objects('merge_requests')
+    end
   end
 
   it 'does not list issues on private projects' do

@@ -14,7 +14,15 @@ module AfterCommitQueue
 
   def run_after_commit_or_now(&block)
     if AfterCommitQueue.inside_transaction?
-      run_after_commit(&block)
+      if ActiveRecord::Base.connection.current_transaction.records.include?(self)
+        run_after_commit(&block)
+      else
+        # If the current transaction does not include this record, we can run
+        # the block now, even if it queues a Sidekiq job.
+        Sidekiq::Worker.skipping_transaction_check do
+          instance_eval(&block)
+        end
+      end
     else
       instance_eval(&block)
     end

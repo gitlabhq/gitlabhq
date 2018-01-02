@@ -2021,23 +2021,6 @@ describe Repository do
 
       File.delete(path)
     end
-
-    it "attempting to call keep_around when exists a lock does not fail" do
-      ref = repository.send(:keep_around_ref_name, sample_commit.id)
-      path = File.join(repository.path, ref)
-      lock_path = "#{path}.lock"
-
-      FileUtils.mkdir_p(File.dirname(path))
-      File.open(lock_path, 'w') { |f| f.write('') }
-
-      begin
-        expect { repository.keep_around(sample_commit.id) }.not_to raise_error(Gitlab::Git::Repository::GitError)
-
-        expect(File.exist?(lock_path)).to be_falsey
-      ensure
-        File.delete(path)
-      end
-    end
   end
 
   describe '#update_ref' do
