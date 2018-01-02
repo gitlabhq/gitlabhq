@@ -70,12 +70,13 @@ module QA
 
     module Main
       autoload :Login, 'qa/page/main/login'
-      autoload :Menu, 'qa/page/main/menu'
       autoload :OAuth, 'qa/page/main/oauth'
     end
 
     module Menu
+      autoload :Main, 'qa/page/menu/main'
       autoload :Side, 'qa/page/menu/side'
+      autoload :Admin, 'qa/page/menu/admin'
     end
 
     module Dashboard
@@ -100,7 +101,6 @@ module QA
     end
 
     module Admin
-      autoload :Menu, 'qa/page/admin/menu'
       autoload :Settings, 'qa/page/admin/settings'
     end
 
