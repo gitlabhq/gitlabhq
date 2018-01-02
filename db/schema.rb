@@ -1989,6 +1989,7 @@ ActiveRecord::Schema.define(version: 20171220191323) do
   add_foreign_key "labels", "projects", name: "fk_7de4989a69", on_delete: :cascade
   add_foreign_key "lists", "boards", name: "fk_0d3f677137", on_delete: :cascade
   add_foreign_key "lists", "labels", name: "fk_7a5553d60f", on_delete: :cascade
+  add_foreign_key "members", "users", name: "fk_2e88fb7ce9", on_delete: :cascade
   add_foreign_key "merge_request_diff_commits", "merge_request_diffs", on_delete: :cascade
   add_foreign_key "merge_request_diff_files", "merge_request_diffs", on_delete: :cascade
   add_foreign_key "merge_request_diffs", "merge_requests", name: "fk_8483f3258f", on_delete: :cascade
