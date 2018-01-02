@@ -95,7 +95,7 @@
         class="repo-file-name"
       >
         <file-icon
-          :fileName="file.name"
+          :file-name="file.name"
           :loading="file.loading"
           :folder="file.type === 'tree'"
           :opened="file.opened"

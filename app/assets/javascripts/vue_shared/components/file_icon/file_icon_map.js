@@ -582,9 +582,8 @@ const fileNameIcons = {
   '.drone.yml': 'drone',
 };
 
-export const getIconForFile = name =>
-  fileNameIcons[name] ||
-  fileExtensionIcons[name ? name.split('.').pop() : ''] ||
-  '';
-
-export default getIconForFile;
+export default function getIconForFile(name) {
+  return fileNameIcons[name] ||
+         fileExtensionIcons[name ? name.split('.').pop() : ''] ||
+         '';
+}

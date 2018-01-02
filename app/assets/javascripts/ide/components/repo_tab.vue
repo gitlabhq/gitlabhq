@@ -71,7 +71,7 @@ export default {
       :title="tab.url"
     >
       <file-icon
-        :fileName="tab.name"
+        :file-name="tab.name"
         :size="16"
       >
       </file-icon>

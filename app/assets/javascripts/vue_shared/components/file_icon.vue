@@ -1,5 +1,5 @@
 <script>
-  import { getIconForFile } from './file_icon/file_icon_map';
+  import getIconForFile from './file_icon/file_icon_map';
   import loadingIcon from '../../vue_shared/components/loading_icon.vue';
   import icon from '../../vue_shared/components/icon.vue';
 
@@ -43,7 +43,7 @@
       size: {
         type: Number,
         required: false,
-        default: 0,
+        default: 16,
       },
 
       cssClasses: {
@@ -82,7 +82,7 @@
     <icon
       v-if="!loading && folder"
       :name="folderIconName"
-      :size="size || 16"
+      :size="size"
     />
     <loading-icon
       v-if="loading"
