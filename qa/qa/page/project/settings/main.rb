@@ -3,10 +3,10 @@ module QA
     module Project
       module Settings
         class Main < Page::Base
+          include Common
+
           def expand_advanced_settings
-            within('section.advanced-settings') do
-              find_button('Expand').click
-            end
+            expand_section('section.advanced-settings')
           end
 
           def rename_to(path)
