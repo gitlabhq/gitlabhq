@@ -1,5 +1,5 @@
 require 'spec_helper'
-require Rails.root.join('db', 'migrate', '20171221154744_set_epic_issue_position_values.rb')
+require Rails.root.join('db', 'post_migrate', '20171221154744_set_epic_issue_position_values.rb')
 
 describe SetEpicIssuePositionValues, :migration do
   let(:groups) { table(:namespaces) }
