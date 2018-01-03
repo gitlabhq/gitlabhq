@@ -358,10 +358,6 @@
   }
 
   .sidebar-top-level-items > li {
-    &.active a {
-      padding-left: 12px;
-    }
-
     .sidebar-sub-level-items {
       &:not(.flyout-list) {
         display: none;
