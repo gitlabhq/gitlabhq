@@ -195,11 +195,16 @@ module Gitlab
       end
 
       def branch_name_allowed_by_push_rule?(push_rule)
-        return true unless push_rule
-        return true if @branch_name.blank?
-        return true if @branch_name == @project.default_branch
+        return true if skip_branch_name_push_rule?(push_rule)
 
         push_rule.branch_name_allowed?(@branch_name)
+      end
+
+      def skip_branch_name_push_rule?(push_rule)
+        push_rule.nil? ||
+          deletion? ||
+          @branch_name.blank? ||
+          @branch_name == @project.default_branch
       end
 
       def tag_deletion_denied_by_push_rule?(push_rule)
