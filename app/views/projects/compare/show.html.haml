@@ -1,5 +1,5 @@
 - @no_container = true
-- add_to_breadcrumbs "Compare Revisions", project_compare_index_path(@project)
+- add_to_breadcrumbs _("Compare Revisions"), project_compare_index_path(@project)
 - page_title "#{params[:from]}...#{params[:to]}"
 
 %div{ class: container_class }
@@ -13,12 +13,13 @@
     .light-well
       .center
         %h4
-          There isn't anything to compare.
+          = s_("CompareBranches|There isn't anything to compare.")
         %p.slead
           - if params[:to] == params[:from]
-            %span.ref-name= params[:from]
-            and
-            %span.ref-name= params[:to]
-            are the same.
+            - source_branch = capture do
+              %span.ref-name= params[:from]
+            - target_branch = capture do
+              %span.ref-name= params[:to]
+            = (s_("CompareBranches|%{source_branch} and %{target_branch} are the same.") % { source_branch: source_branch, target_branch: target_branch }).html_safe
           - else
-            You'll need to use different branch names to get a valid comparison.
+            = _("You'll need to use different branch names to get a valid comparison.")

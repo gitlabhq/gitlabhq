@@ -126,7 +126,7 @@ module Gitlab
       end
 
       def exists?
-        Gitlab::GitalyClient.migrate(:repository_exists, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |enabled|
+        Gitlab::GitalyClient.migrate(:repository_exists) do |enabled|
           if enabled
             gitaly_repository_client.exists?
           else
@@ -188,7 +188,7 @@ module Gitlab
       end
 
       def local_branches(sort_by: nil)
-        gitaly_migrate(:local_branches, status: Gitlab::GitalyClient::MigrationStatus::OPT_OUT) do |is_enabled|
+        gitaly_migrate(:local_branches) do |is_enabled|
           if is_enabled
             gitaly_ref_client.local_branches(sort_by: sort_by)
           else
@@ -919,7 +919,7 @@ module Gitlab
 
       # If `mirror_refmap` is present the remote is set as mirror with that mapping
       def add_remote(remote_name, url, mirror_refmap: nil)
-        gitaly_migrate(:operation_user_add_tag) do |is_enabled|
+        gitaly_migrate(:remote_add_remote) do |is_enabled|
           if is_enabled
             gitaly_remote_client.add_remote(remote_name, url, mirror_refmap)
           else
@@ -929,7 +929,7 @@ module Gitlab
       end
 
       def remove_remote(remote_name)
-        gitaly_migrate(:operation_user_add_tag) do |is_enabled|
+        gitaly_migrate(:remote_remove_remote) do |is_enabled|
           if is_enabled
             gitaly_remote_client.remove_remote(remote_name)
           else
@@ -1292,6 +1292,10 @@ module Gitlab
 
       def gitaly_remote_client
         @gitaly_remote_client ||= Gitlab::GitalyClient::RemoteService.new(self)
+      end
+
+      def gitaly_conflicts_client(our_commit_oid, their_commit_oid)
+        Gitlab::GitalyClient::ConflictsService.new(self, our_commit_oid, their_commit_oid)
       end
 
       def gitaly_migrate(method, status: Gitlab::GitalyClient::MigrationStatus::OPT_IN, &block)

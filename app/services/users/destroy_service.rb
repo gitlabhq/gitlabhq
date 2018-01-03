@@ -31,6 +31,11 @@ module Users
         return user
       end
 
+      # Calling all before/after_destroy hooks for the user because
+      # there is no dependent: destroy in the relationship. And the removal
+      # is done by a foreign_key. Otherwise they won't be called
+      user.members.find_each { |member| member.run_callbacks(:destroy) }
+
       user.solo_owned_groups.each do |group|
         Groups::DestroyService.new(group, current_user).execute
       end

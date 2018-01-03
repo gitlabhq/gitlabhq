@@ -61,6 +61,7 @@
     "mousetrap": "^1.4.6",
     "name-all-modules-plugin": "^1.0.1",
     "pikaday": "^1.6.1",
+    "prettier": "^1.9.2",
     "prismjs": "^1.6.0",
     "raphael": "^2.2.7",
     "raven-js": "^3.14.0",

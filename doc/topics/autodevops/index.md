@@ -20,6 +20,7 @@ project in an easy and automatic way:
 1. [Auto Test](#auto-test)
 1. [Auto Code Quality](#auto-code-quality)
 1. [Auto SAST (Static Application Security Testing)](#auto-sast)
+1. [Auto Browser Performance Testing](#auto-browser-performance-testing)
 1. [Auto Review Apps](#auto-review-apps)
 1. [Auto Deploy](#auto-deploy)
 1. [Auto Monitoring](#auto-monitoring)
@@ -207,6 +208,20 @@ report is created, it's uploaded as an artifact which you can later download and
 check out.
 
 Any security warnings are also [shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/sast.html).
+
+### Auto Browser Performance Testing
+
+> Introduced in [GitLab Enterprise Edition Premium][ee] 10.4.
+
+Auto Browser Performance Testing utilizes the [Sitespeed.io container](https://hub.docker.com/r/sitespeedio/sitespeed.io/) to measure the performance of a web page. A JSON report is created and uploaded as an artifact, which includes the overall performance score for each page. By default, the root page of Review and Production environments will be tested. If you would like to add additional URL's to test, simply add the paths to a file named `.gitlab-urls.txt` in the root directory, one per line. For example:
+
+```
+/
+/features
+/direction
+```
+
+In GitLab Enterprise Edition Premium, performance differences between the source and target branches are [shown in the merge request widget](https://docs.gitlab.com/ee/user/project/merge_requests/browser_performance_testing.html).
 
 ### Auto Review Apps
 
