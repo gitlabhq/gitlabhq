@@ -41,6 +41,7 @@ stages:
   - staging
   - canary
   - production
+  - performance
   - cleanup
 
 build:
@@ -83,6 +84,21 @@ codequality:
   artifacts:
     paths: [codeclimate.json]
 
+performance:
+  stage: performance
+  image: 
+    name: sitespeedio/sitespeed.io:6.0.3
+    entrypoint: [""]
+  script:
+    - performance
+  artifacts:
+    paths:
+    - performance.json
+  only:
+    refs:
+      - branches
+    kubernetes: active
+
 sast:
   image: registry.gitlab.com/gitlab-org/gl-sast:latest
   variables:
@@ -103,10 +119,13 @@ review:
     - install_tiller
     - create_secret
     - deploy
+    - persist_environment_url
   environment:
     name: review/$CI_COMMIT_REF_NAME
     url: http://$CI_PROJECT_PATH_SLUG-$CI_ENVIRONMENT_SLUG.$AUTO_DEVOPS_DOMAIN
     on_stop: stop_review
+  artifacts:
+    paths: [environment_url.txt]
   only:
     refs:
       - branches
@@ -201,9 +220,12 @@ production:
     - create_secret
     - deploy
     - delete canary
+    - persist_environment_url
   environment:
     name: production
     url: http://$CI_PROJECT_PATH_SLUG.$AUTO_DEVOPS_DOMAIN
+  artifacts:
+    paths: [environment_url.txt]
 #  when: manual
   only:
     refs:
@@ -414,6 +436,29 @@ production:
       --docker-password="$CI_REGISTRY_PASSWORD" \
       --docker-email="$GITLAB_USER_EMAIL" \
       -o yaml --dry-run | kubectl replace -n "$KUBE_NAMESPACE" --force -f -
+  }
+  
+  function performance() {
+    export CI_ENVIRONMENT_URL=$(cat environment_url.txt)
+    
+    mkdir gitlab-exporter
+    wget -O gitlab-exporter/index.js https://gitlab.com/gitlab-org/gl-performance/raw/10-3/index.js
+    
+    mkdir sitespeed-results
+    
+    if [ -f .gitlab-urls.txt ]
+    then
+      sed -i -e 's@^@'"$CI_ENVIRONMENT_URL"'@' .gitlab-urls.txt
+      /start.sh --plugins.add gitlab-exporter --outputFolder sitespeed-results .gitlab-urls.txt
+    else
+      /start.sh --plugins.add gitlab-exporter --outputFolder sitespeed-results $CI_ENVIRONMENT_URL
+    fi
+    
+    mv sitespeed-results/data/performance.json performance.json
+  }
+  
+  function persist_environment_url() {
+      echo $CI_ENVIRONMENT_URL > environment_url.txt
   }
 
   function delete() {
