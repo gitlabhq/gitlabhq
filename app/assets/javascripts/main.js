@@ -46,7 +46,7 @@ import LazyLoader from './lazy_loader';
 import './line_highlighter';
 import initLogoAnimation from './logo';
 import './milestone_select';
-import './preview_markdown';
+import './preview_markup';
 import './projects_dropdown';
 import './render_gfm';
 import initBreadcrumbs from './breadcrumb';
