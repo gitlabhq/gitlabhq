@@ -491,6 +491,26 @@ module API
       expose :issue_link_id
     end
 
+    class Epic < Grape::Entity
+      expose :id
+      expose :iid
+      expose :title
+      expose :description
+      expose :author, using: Entities::UserBasic
+      expose :start_date
+      expose :end_date
+    end
+
+    class EpicIssue < Issue
+      expose :epic_issue_id
+    end
+
+    class EpicIssueLink < Grape::Entity
+      expose :id
+      expose :epic, using: Entities::Epic
+      expose :issue, using: Entities::IssueBasic
+    end
+
     class IssueLink < Grape::Entity
       expose :source, as: :source_issue, using: Entities::IssueBasic
       expose :target, as: :target_issue, using: Entities::IssueBasic
