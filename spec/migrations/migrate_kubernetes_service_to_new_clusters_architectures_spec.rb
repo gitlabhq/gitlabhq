@@ -91,7 +91,7 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
     end
   end
 
-  context 'when synced KubernetesService exists' do
+  context 'when managed KubernetesService exists' do
     let(:project) { create(:project) }
     let(:cluster) { create(:cluster, :provided_by_gcp, projects: [project]) }
     let!(:platform_kubernetes) { cluster.platform_kubernetes }
@@ -105,15 +105,16 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
              ca_pem: platform_kubernetes.ca_cert)
     end
 
-    it 'does not migrate the KubernetesService' do # Because the corresponding Platform::Kubernetes already exists
+    it 'does not migrate the KubernetesService and disables the kubernetes_service' do # Because the corresponding Platform::Kubernetes already exists
       expect{ migrate! }.not_to change { Clusters::Cluster.count }
 
-      expect(kubernetes_service).to be_active
-      expect(kubernetes_service.properties['migrated']).to be_falsy
+      kubernetes_service.reload
+      expect(kubernetes_service).not_to be_active
+      expect(kubernetes_service.properties['migrated']).to be_truthy
     end
   end
 
-  context 'when production cluster has already been existsed' do
+  context 'when production cluster has already been existed' do # i.e. There are no environment_scope conflicts
     let(:project) { create(:project) }
     let!(:cluster) { create(:cluster, :provided_by_gcp, environment_scope: 'production/*', projects: [project]) }
     let!(:kubernetes_service) { create(:kubernetes_service, api_url: 'https://debug.kube.com', active: true, project: project) }
@@ -123,6 +124,7 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
 
       kubernetes_service.reload
       project.clusters.last.tap do |cluster|
+        expect(cluster.environment_scope).to eq('*')
         expect(cluster.platform_kubernetes.api_url).to eq(kubernetes_service.api_url)
         expect(cluster.platform_kubernetes.ca_pem).to eq(kubernetes_service.ca_pem)
         expect(cluster.platform_kubernetes.token).to eq(kubernetes_service.token)
@@ -132,16 +134,44 @@ describe MigrateKubernetesServiceToNewClustersArchitectures, :migration do
     end
   end
 
-  context 'when default cluster has already been existsed' do
+  context 'when default cluster has already been existed' do
     let(:project) { create(:project) }
     let!(:cluster) { create(:cluster, :provided_by_gcp, environment_scope: '*', projects: [project]) }
     let!(:kubernetes_service) { create(:kubernetes_service, api_url: 'https://debug.kube.com', active: true, project: project) }
 
-    it 'does not migrate the KubernetesService' do # Because environment_scope is duplicated
-      expect{ migrate! }.not_to change { Clusters::Cluster.count }
+    it 'migrates the KubernetesService to Platform::Kubernetes with dedicated environment_scope' do # Because environment_scope is duplicated
+      expect{ migrate! }.to change { Clusters::Cluster.count }.by(1)
 
-      expect(kubernetes_service).to be_active
-      expect(kubernetes_service.properties['migrated']).to be_falsy
+      kubernetes_service.reload
+      project.clusters.last.tap do |cluster|
+        expect(cluster.environment_scope).to eq('migrated/*')
+        expect(cluster.platform_kubernetes.api_url).to eq(kubernetes_service.api_url)
+        expect(cluster.platform_kubernetes.ca_pem).to eq(kubernetes_service.ca_pem)
+        expect(cluster.platform_kubernetes.token).to eq(kubernetes_service.token)
+        expect(kubernetes_service).not_to be_active
+        expect(kubernetes_service.properties['migrated']).to be_truthy
+      end
+    end
+  end
+
+  context 'when default cluster and migrated cluster has already been existed' do
+    let(:project) { create(:project) }
+    let!(:cluster) { create(:cluster, :provided_by_gcp, environment_scope: '*', projects: [project]) }
+    let!(:migrated_cluster) { create(:cluster, :provided_by_gcp, environment_scope: 'migrated/*', projects: [project]) }
+    let!(:kubernetes_service) { create(:kubernetes_service, api_url: 'https://debug.kube.com', active: true, project: project) }
+
+    it 'migrates the KubernetesService to Platform::Kubernetes with dedicated environment_scope' do # Because environment_scope is duplicated
+      expect{ migrate! }.to change { Clusters::Cluster.count }.by(1)
+
+      kubernetes_service.reload
+      project.clusters.last.tap do |cluster|
+        expect(cluster.environment_scope).to eq('migrated0/*')
+        expect(cluster.platform_kubernetes.api_url).to eq(kubernetes_service.api_url)
+        expect(cluster.platform_kubernetes.ca_pem).to eq(kubernetes_service.ca_pem)
+        expect(cluster.platform_kubernetes.token).to eq(kubernetes_service.token)
+        expect(kubernetes_service).not_to be_active
+        expect(kubernetes_service.properties['migrated']).to be_truthy
+      end
     end
   end
 

@@ -51,36 +51,41 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
 
     belongs_to :project, class_name: 'Project'
 
-    # 10.1 ~ 10.2
-    # When users created a cluster, KubernetesService was automatically configured
-    # by Platforms::Kubernetes parameters.
-    # Because Platforms::Kubernetes delegated some logic to KubernetesService.
-    #
-    # 10.3
-    # When users create a cluster, KubernetesService is no longer synchronized.
-    # Because we copied delegated logic in Platforms::Kubernetes.
-    #
-    # NOTE: 
-    # - "unmanaged" means "unmanaged by Platforms::Kubernetes(New archetecture)"
-    # - We only want to migrate records which are not synchronized with Platforms::Kubernetes.
-    scope :unmanaged_kubernetes_service, -> do
+    scope :kubernetes_service, -> do
       where("services.category = 'deployment'")
       .where("services.type = 'KubernetesService'")
       .where("services.template = FALSE")
-      .where("NOT EXISTS (?)",
-        PlatformsKubernetes
-          .joins('INNER JOIN projects ON projects.id = services.project_id')
-          .joins('INNER JOIN cluster_projects ON cluster_projects.project_id = projects.id')
-          .where('cluster_projects.cluster_id = cluster_platforms_kubernetes.cluster_id')
-          .where("services.properties LIKE CONCAT('%', cluster_platforms_kubernetes.api_url, '%')")
-          .select('1') )
       .order('services.project_id')
     end
   end
 
+  def find_dedicated_environement_scope(project)
+    environment_scopes = project.clusters.map(&:environment_scope)
+
+    return '*' if environment_scopes.exclude?('*') # KubernetesService should be added as a default cluster (environment_scope: '*') at first place
+    return 'migrated/*' if environment_scopes.exclude?('migrated/*') # If it's conflicted, the KubernetesService added as a migrated cluster
+
+    unique_iid = 0
+
+    # If it's still conflicted, finding an unique environment scope incrementaly
+    while true
+      candidate = "migrated#{unique_iid}/*"
+      return candidate if environment_scopes.exclude?(candidate)
+      unique_iid += 1
+    end
+  end
+
+  # KubernetesService might be already managed by clusters
+  def managed_by_clusters?(kubernetes_service)
+    kubernetes_service.project.clusters
+      .joins('INNER JOIN cluster_platforms_kubernetes ON clusters.id = cluster_platforms_kubernetes.cluster_id')
+      .where('cluster_platforms_kubernetes.api_url = ?', kubernetes_service.api_url)
+      .exists?
+  end
+
   def up
-    Service.unmanaged_kubernetes_service
-      .find_each(batch_size: 1) do |kubernetes_service|
+    Service.kubernetes_service.find_each(batch_size: 1) do |kubernetes_service|
+      unless managed_by_clusters?(kubernetes_service)
         Cluster.create(
           enabled: kubernetes_service.active,
           user_id: nil, # KubernetesService doesn't have
@@ -88,7 +93,7 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
           provider_type: Cluster.provider_types[:user],
           platform_type: Cluster.platform_types[:kubernetes],
           projects: [kubernetes_service.project],
-          environment_scope: '*', # KubernetesService is considered as a default cluster
+          environment_scope: find_dedicated_environement_scope(kubernetes_service.project),
           platform_kubernetes_attributes: {
             api_url: kubernetes_service.api_url,
             ca_cert: kubernetes_service.ca_pem,
@@ -98,6 +103,7 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
             encrypted_password_iv: nil, # KubernetesService doesn't have
             token: kubernetes_service.token # encrypted_token and encrypted_token_iv
           } )
+      end
 
       # Disable the KubernetesService. Platforms::Kubernetes will be used from next time.
       kubernetes_service.active = false
