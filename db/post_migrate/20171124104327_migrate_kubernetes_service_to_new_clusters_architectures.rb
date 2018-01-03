@@ -55,10 +55,10 @@ class MigrateKubernetesServiceToNewClustersArchitectures < ActiveRecord::Migrati
     belongs_to :project, class_name: 'MigrateKubernetesServiceToNewClustersArchitectures::Project'
 
     scope :kubernetes_service, -> do
-      where("services.category = 'deployment'")
-      .where("services.type = 'KubernetesService'")
-      .where("services.template = FALSE")
-      .order('services.project_id')
+      where(category: 'deployment')
+      .where(type: 'KubernetesService')
+      .where(template: false)
+      .order(project_id: :asc)
     end
   end
 
