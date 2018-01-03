@@ -20,7 +20,11 @@ export default {
       return this.parentGroup.childrenCount > MAX_CHILDREN_COUNT;
     },
     moreChildrenStats() {
-      return n__('One more item', '%d more items', this.parentGroup.childrenCount - this.parentGroup.children.length);
+      return n__(
+        'One more item',
+        '%d more items',
+        this.parentGroup.childrenCount - this.parentGroup.children.length
+      );
     },
   },
 };

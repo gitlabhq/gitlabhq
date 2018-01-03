@@ -287,7 +287,8 @@ export default {
       if (this.model &&
         this.model.last_deployment &&
         this.model.last_deployment.deployable) {
-        return `${this.model.last_deployment.deployable.name} #${this.model.last_deployment.deployable.id}`;
+        const deployable = this.model.last_deployment.deployable;
+        return `${deployable.name} #${deployable.id}`;
       }
       return '';
     },

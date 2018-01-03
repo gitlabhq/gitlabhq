@@ -18,11 +18,6 @@ function initIde(el) {
     components: {
       ide,
     },
-    methods: {
-      ...mapActions([
-        'setInitialData',
-      ]),
-    },
     created() {
       const data = el.dataset;
 
@@ -38,6 +33,11 @@ function initIde(el) {
         isRoot: convertPermissionToBoolean(data.root),
         isInitialRoot: convertPermissionToBoolean(data.root),
       });
+    },
+    methods: {
+      ...mapActions([
+        'setInitialData',
+      ]),
     },
     render(createElement) {
       return createElement('ide');

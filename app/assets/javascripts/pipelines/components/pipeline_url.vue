@@ -30,8 +30,16 @@
           html: true,
           trigger: 'focus',
           placement: 'top',
-          title: '<div class="autodevops-title">This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b></div>',
-          content: `<a class="autodevops-link" href="${this.autoDevopsHelpPath}" target="_blank" rel="noopener noreferrer nofollow">Learn more about Auto DevOps</a>`,
+          title: `<div class="autodevops-title">
+            This pipeline makes use of a predefined CI/CD configuration enabled by <b>Auto DevOps.</b>
+          </div>`,
+          content: `<a
+            class="autodevops-link"
+            href="${this.autoDevopsHelpPath}"
+            target="_blank"
+            rel="noopener noreferrer nofollow">
+            Learn more about Auto DevOps
+          </a>`,
         };
       },
     },

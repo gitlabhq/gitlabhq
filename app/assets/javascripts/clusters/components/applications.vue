@@ -21,7 +21,9 @@ export default {
   computed: {
     generalApplicationDescription() {
       return sprintf(
-        _.escape(s__('ClusterIntegration|Install applications on your cluster. Read more about %{helpLink}')), {
+        _.escape(s__(`ClusterIntegration|Install applications on your cluster.
+Read more about %{helpLink}`)),
+        {
           helpLink: `<a href="${this.helpPath}">
             ${_.escape(s__('ClusterIntegration|installing applications'))}
           </a>`,
@@ -43,12 +45,15 @@ export default {
       ));
 
       const extraCostParagraph = sprintf(
-        _.escape(s__('ClusterIntegration|%{boldNotice} This will add some extra resources like a load balancer, which incur additional costs. See %{pricingLink}')), {
-          boldNotice: `<strong>${_.escape(s__('ClusterIntegration|Note:'))}</strong>`,
-          pricingLink: `<a href="https://cloud.google.com/compute/pricing#lb" target="_blank" rel="noopener noreferrer">
-            ${_.escape(s__('ClusterIntegration|GKE pricing'))}
-          </a>`,
-        },
+        _.escape(s__(`ClusterIntegration|%{boldNotice} This will add some
+extra resources like a load balancer,
+which incur additional costs. See %{pricingLink}`)),
+          {
+            boldNotice: `<strong>${_.escape(s__('ClusterIntegration|Note:'))}</strong>`,
+            pricingLink: `<a href="https://cloud.google.com/compute/pricing#lb" target="_blank" rel="noopener noreferrer">
+              ${_.escape(s__('ClusterIntegration|GKE pricing'))}
+            </a>`,
+          },
         false,
       );
 
@@ -69,11 +74,14 @@ export default {
     },
     prometheusDescription() {
       return sprintf(
-        _.escape(s__('ClusterIntegration|Prometheus is an open-source monitoring system with %{gitlabIntegrationLink} to monitor deployed applications.')), {
-          gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html", target="_blank" rel="noopener noreferrer">
-            ${_.escape(s__('ClusterIntegration|Gitlab Integration'))}
-          </a>`,
-        },
+        _.escape(s__(`ClusterIntegration|Prometheus is an open-source monitoring system
+with %{gitlabIntegrationLink} to monitor deployed applications.`)),
+          {
+            gitlabIntegrationLink: `<a href="https://docs.gitlab.com/ce/user/project/integrations/prometheus.html"
+target="_blank" rel="noopener noreferrer">
+              ${_.escape(s__('ClusterIntegration|Gitlab Integration'))}
+            </a>`,
+          },
         false,
       );
     },

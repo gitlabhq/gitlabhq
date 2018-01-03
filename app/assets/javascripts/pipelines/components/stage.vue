@@ -116,7 +116,9 @@ export default {
 
   computed: {
     dropdownClass() {
-      return this.dropdownContent.length > 0 ? 'js-builds-dropdown-container' : 'js-builds-dropdown-loading';
+      return this.dropdownContent.length > 0 ?
+        'js-builds-dropdown-container' :
+        'js-builds-dropdown-loading';
     },
 
     triggerButtonClass() {

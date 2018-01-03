@@ -49,7 +49,9 @@ export default {
       const createNewBranch = newBranch || this.startNewMR;
 
       const payload = {
-        branch: createNewBranch ? `${this.currentBranchId}-${new Date().getTime().toString()}` : this.currentBranchId,
+        branch: createNewBranch ?
+          `${this.currentBranchId}-${new Date().getTime().toString()}` :
+          this.currentBranchId,
         commit_message: this.commitMessage,
         actions: this.changedFiles.map(f => ({
           action: f.tempFile ? 'create' : 'update',

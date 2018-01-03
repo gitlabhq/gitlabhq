@@ -1,6 +1,11 @@
 <script>
 import tooltip from '../../vue_shared/directives/tooltip';
-import { ITEM_TYPE, VISIBILITY_TYPE_ICON, GROUP_VISIBILITY_TYPE, PROJECT_VISIBILITY_TYPE } from '../constants';
+import {
+  ITEM_TYPE,
+  VISIBILITY_TYPE_ICON,
+  GROUP_VISIBILITY_TYPE,
+  PROJECT_VISIBILITY_TYPE,
+} from '../constants';
 
 export default {
   directives: {

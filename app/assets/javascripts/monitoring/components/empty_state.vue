@@ -33,13 +33,15 @@
           gettingStarted: {
             svgUrl: this.emptyGettingStartedSvgPath,
             title: 'Get started with performance monitoring',
-            description: 'Stay updated about the performance and health of your environment by configuring Prometheus to monitor your deployments.',
+            description: `Stay updated about the performance and health
+of your environment by configuring Prometheus to monitor your deployments.`,
             buttonText: 'Configure Prometheus',
           },
           loading: {
             svgUrl: this.emptyLoadingSvgPath,
             title: 'Waiting for performance data',
-            description: 'Creating graphs uses the data from the Prometheus server. If this takes a long time, ensure that data is available.',
+            description: `Creating graphs uses the data from the Prometheus server.
+If this takes a long time, ensure that data is available.`,
             buttonText: 'View documentation',
           },
           unableToConnect: {

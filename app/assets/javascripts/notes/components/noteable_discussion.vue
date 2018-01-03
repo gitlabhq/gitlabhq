@@ -130,7 +130,8 @@
             this.removePlaceholderNotes();
             this.isReplying = true;
             this.$nextTick(() => {
-              const msg = 'Your comment could not be submitted! Please check your network connection and try again.';
+              const msg = `Your comment could not be submitted!
+Please check your network connection and try again.`;
               Flash(msg, 'alert', this.$el);
               this.$refs.noteForm.note = noteText;
               callback(err);

@@ -39,7 +39,10 @@ export default {
     updateConfidentialAttribute(confidential) {
       this.service.update('issue', { confidential })
         .then(() => location.reload())
-        .catch(() => new Flash('Something went wrong trying to change the confidentiality of this issue'));
+        .catch(() => {
+          Flash(`Something went wrong trying to
+change the confidentiality of this issue`);
+        });
     },
   },
 };

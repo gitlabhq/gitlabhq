@@ -101,16 +101,16 @@ followed by any global declarations, then a blank newline prior to any imports o
     ```
 
     Import statements are following usual naming guidelines, for example object literals use camel case:
-    
+
     ```javascript
       // some_object file
       export default {
         key: 'value',
       };
-      
+
       // bad
       import ObjectLiteral from 'some_object';
-      
+
       // good
       import objectLiteral from 'some_object';
     ```
@@ -254,6 +254,10 @@ A forEach will cause side effects, it will be mutating the array being iterated.
   ```
 
 ### Vue.js
+
+#### `eslint-vue-plugin`
+We default to [eslint-vue-plugin][eslint-plugin-vue], with the `plugin:vue/recommended`.
+Please check this [rules][eslint-plugin-vue-rules] for more documentation.
 
 #### Basic Rules
 1. The service has it's own file
@@ -513,8 +517,8 @@ On those a default key should not be provided.
   1. `props`
   1. `mixins`
   1. `directives`
-  1. `data`
   1. `components`
+  1. `data`
   1. `computedProps`
   1. `methods`
   1. `beforeCreate`
@@ -582,3 +586,5 @@ The goal of this accord is to make sure we are all on the same page.
 [eslintrc]: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/.eslintrc
 [eslint-this]: http://eslint.org/docs/rules/class-methods-use-this
 [eslint-new]: http://eslint.org/docs/rules/no-new
+[eslint-plugin-vue]: https://github.com/vuejs/eslint-plugin-vue
+[eslint-plugin-vue-rules]: https://github.com/vuejs/eslint-plugin-vue#bulb-rules

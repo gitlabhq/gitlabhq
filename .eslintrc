@@ -4,7 +4,10 @@
     "browser": true,
     "es6": true
   },
-  "extends": "airbnb-base",
+  "extends": [
+    "airbnb-base",
+    "plugin:vue/recommended"
+  ],
   "globals": {
     "__webpack_public_path__": true,
     "_": false,
@@ -12,7 +15,9 @@
     "gon": false,
     "localStorage": false
   },
-  "parser": "babel-eslint",
+  "parserOptions": {
+    "parser": "babel-eslint"
+  },
   "plugins": [
     "filenames",
     "import",

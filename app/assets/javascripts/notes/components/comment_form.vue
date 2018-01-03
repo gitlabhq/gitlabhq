@@ -65,7 +65,9 @@
         if (this.note.length) {
           const actionText = this.isIssueOpen ? 'close' : 'reopen';
 
-          return this.noteType === constants.COMMENT ? `Comment & ${actionText} issue` : `Start discussion & ${actionText} issue`;
+          return this.noteType === constants.COMMENT ?
+            `Comment & ${actionText} issue` :
+            `Start discussion & ${actionText} issue`;
         }
 
         return this.isIssueOpen ? 'Close issue' : 'Reopen issue';
@@ -159,7 +161,9 @@
             .catch(() => {
               this.isSubmitting = false;
               this.discard(false);
-              const msg = 'Your comment could not be submitted! Please check your network connection and try again.';
+              const msg =
+                `Your comment could not be submitted!
+Please check your network connection and try again.`;
               Flash(msg, 'alert', this.$el);
               this.note = noteData.data.note.note; // Restore textarea content.
               this.removePlaceholderNotes();
@@ -207,7 +211,11 @@
       },
       initAutoSave() {
         if (this.isLoggedIn) {
-          this.autosave = new Autosave($(this.$refs.textarea), ['Note', 'Issue', this.getNoteableData.id], 'issue');
+          this.autosave = new Autosave(
+            $(this.$refs.textarea),
+            ['Note', 'Issue', this.getNoteableData.id],
+            'issue',
+          );
         }
       },
       initTaskList() {

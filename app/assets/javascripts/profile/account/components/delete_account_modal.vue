@@ -51,7 +51,8 @@
       text() {
         return sprintf(
           s__(`Profiles|
-You are about to permanently delete %{yourAccount}, and all of the issues, merge requests, and groups linked to your account.
+You are about to permanently delete %{yourAccount}, and all of the issues, merge requests,
+and groups linked to your account.
 Once you confirm %{deleteAccount}, it cannot be undone or recovered.`),
           {
             yourAccount: `<strong>${s__('Profiles|your account')}</strong>`,

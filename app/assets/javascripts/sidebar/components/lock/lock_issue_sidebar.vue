@@ -54,7 +54,8 @@ export default {
         discussion_locked: locked,
       })
       .then(() => location.reload())
-      .catch(() => Flash(this.__(`Something went wrong trying to change the locked state of this ${this.issuableDisplayName}`)));
+      .catch(() => Flash(this.__(`Something went wrong trying to
+change the locked state of this ${this.issuableDisplayName}`)));
     },
   },
 };

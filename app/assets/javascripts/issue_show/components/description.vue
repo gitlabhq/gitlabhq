@@ -88,7 +88,11 @@
 
         if (taskRegexMatches) {
           $tasks.text(this.taskStatus);
-          $tasksShort.text(`${taskRegexMatches[1]}/${taskRegexMatches[2]} task${taskRegexMatches[2] > 1 ? 's' : ''}`);
+          $tasksShort.text(
+            `${taskRegexMatches[1]}/${taskRegexMatches[2]} task${taskRegexMatches[2] > 1 ?
+            's' :
+            ''}`
+          );
         } else {
           $tasks.text('');
           $tasksShort.text('');
