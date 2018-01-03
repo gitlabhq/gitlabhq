@@ -16,6 +16,7 @@ class FilteredSearchManager {
     this.clearSearchButton = this.container.querySelector('.clear-search');
     this.tokensContainer = this.container.querySelector('.tokens-container');
     this.filteredSearchTokenKeys = gl.FilteredSearchTokenKeys;
+    this.backspaceCount = 0;
 
     this.recentSearchesStore = new RecentSearchesStore({
       isLocalStorageAvailable: RecentSearchesService.isAvailable(),
@@ -127,7 +128,7 @@ class FilteredSearchManager {
     this.handleInputVisualTokenWrapper = this.handleInputVisualToken.bind(this);
     this.checkForEnterWrapper = this.checkForEnter.bind(this);
     this.onClearSearchWrapper = this.onClearSearch.bind(this);
-    this.checkForBackspaceWrapper = this.checkForBackspace.call(this);
+    this.checkForBackspaceWrapper = this.checkForBackspace.bind(this);
     this.removeSelectedTokenKeydownWrapper = this.removeSelectedTokenKeydown.bind(this);
     this.unselectEditTokensWrapper = this.unselectEditTokens.bind(this);
     this.editTokenWrapper = this.editToken.bind(this);
@@ -180,34 +181,31 @@ class FilteredSearchManager {
     this.unbindStateEvents();
   }
 
-  checkForBackspace() {
-    let backspaceCount = 0;
+  checkForBackspace(e) {
 
     // closure for keeping track of the number of backspace keystrokes
-    return (e) => {
-      // 8 = Backspace Key
-      // 46 = Delete Key
-      if (e.keyCode === 8 || e.keyCode === 46) {
-        const { lastVisualToken } = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
-        const { tokenName, tokenValue } = gl.DropdownUtils.getVisualTokenValues(lastVisualToken);
-        const canEdit = tokenName && this.canEdit && this.canEdit(tokenName, tokenValue);
+    // 8 = Backspace Key, 46 = Delete Key
+    if (e.keyCode === 8 || e.keyCode === 46) {
+      const { lastVisualToken } = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+      const { tokenName, tokenValue } = gl.DropdownUtils.getVisualTokenValues(lastVisualToken);
+      const canEdit = tokenName && this.canEdit && this.canEdit(tokenName, tokenValue);
 
-        if (this.filteredSearchInput.value === '' && lastVisualToken && canEdit) {
-          backspaceCount += 1;
+      if (this.filteredSearchInput.value === '' && lastVisualToken && canEdit) {
+        this.backspaceCount += 1;
 
-          if (backspaceCount === 2) {
-            backspaceCount = 0;
-            this.filteredSearchInput.value = gl.FilteredSearchVisualTokens.getLastTokenPartial();
-            gl.FilteredSearchVisualTokens.removeLastTokenPartial();
-          }
+        if (this.backspaceCount === 2) {
+          this.backspaceCount = 0;
+          this.filteredSearchInput.value = gl.FilteredSearchVisualTokens.getLastTokenPartial();
+          gl.FilteredSearchVisualTokens.removeLastTokenPartial();
         }
-
-        // Reposition dropdown so that it is aligned with cursor
-        this.dropdownManager.updateCurrentDropdownOffset();
-      } else {
-        backspaceCount = 0;
       }
-    };
+
+
+      // Reposition dropdown so that it is aligned with cursor
+      this.dropdownManager.updateCurrentDropdownOffset();
+    } else {
+      this.backspaceCount = 1;
+    }
   }
 
   checkForEnter(e) {
@@ -243,6 +241,10 @@ class FilteredSearchManager {
 
   addInputContainerFocus() {
     addClassIfElementExists(this.filteredSearchInput.closest('.filtered-search-box'), 'focus');
+    const { lastVisualToken } = gl.FilteredSearchVisualTokens.getLastVisualTokenBeforeInput();
+    if(lastVisualToken !== null) {
+      this.backspaceCount = 1;
+    }
   }
 
   removeInputContainerFocus(e) {
