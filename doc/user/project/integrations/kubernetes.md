@@ -1,6 +1,9 @@
 ---
-last_updated: 2017-09-25
+last_updated: 2017-12-28
 ---
+
+CAUTION: **Warning:**
+Kubernetes service integration has been deprecated on GitLab 10.4. Fields on Kubernetes integration page are now uneditable, you can configure your clusters using the new [Clusters](../clusters/index.md) page.
 
 # GitLab Kubernetes / OpenShift integration
 
