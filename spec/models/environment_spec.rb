@@ -154,6 +154,36 @@ describe Environment do
     end
   end
 
+  describe '#first_deployment' do
+    let(:project)       { create(:project, :repository) }
+    let!(:deployment)   { create(:deployment, environment: environment) }
+    let!(:deployment1)  { create(:deployment, environment: environment) }
+    let(:empty_environment) { create(:environment) }
+
+    it 'returns deployment id for the environment' do
+      expect(environment.first_deployment).to eq(deployment)
+    end
+
+    it 'return nil when no deployment is found' do
+      expect(empty_environment.first_deployment).to eq(nil)
+    end
+  end
+
+  describe '#last_deployment' do
+    let(:project) { create(:project, :repository) }
+    let!(:deployment) { create(:deployment, environment: environment) }
+    let!(:deployment1) { create(:deployment, environment: environment) }
+    let(:empty_environment) { create(:environment) }
+
+    it 'returns deployment id for the environment' do
+      expect(environment.last_deployment).to eq(deployment1)
+    end
+
+    it 'return nil when no deployment is found' do
+      expect(empty_environment.last_deployment).to eq(nil)
+    end
+  end
+
   describe '#environment_type' do
     subject { environment.environment_type }
 

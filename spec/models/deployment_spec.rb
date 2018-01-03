@@ -29,6 +29,38 @@ describe Deployment do
     end
   end
 
+  describe '#last?' do
+    let(:environment) { create(:environment) }
+    let!(:first_deployment) { create(:deployment, environment: environment) }
+    let!(:middle_deployment) { create(:deployment, environment: environment) }
+    let!(:last_deployment) { create(:deployment, environment: environment) }
+
+    it 'is true for last deployment ' do
+      expect(last_deployment.last?).to be(true)
+    end
+
+    it 'is false for previous deployments' do
+      expect(middle_deployment.last?).to be(false)
+      expect(first_deployment.last?).to be(false)
+    end
+  end
+
+  describe '#first?' do
+    let(:environment) { create(:environment) }
+    let!(:first_deployment) { create(:deployment, environment: environment) }
+    let!(:second_deployment) { create(:deployment, environment: environment) }
+    let!(:last_deployment) { create(:deployment, environment: environment) }
+
+    it 'is true for first deployment' do
+      expect(first_deployment.first?).to be(true)
+    end
+
+    it 'is false for subsequent deployments' do
+      expect(second_deployment.first?).to be(false)
+      expect(last_deployment.first?).to be(false)
+    end
+  end
+
   describe '#includes_commit?' do
     let(:project) { create(:project, :repository) }
     let(:environment) { create(:environment, project: project) }

@@ -17,6 +17,9 @@
           "last?": {
             "type": "boolean"
           },
+          "first?": {
+            "type": "boolean"
+          },
           "ref": {
             "additionalProperties": false,
             "properties": {
@@ -42,6 +45,7 @@
           "iid",
           "tag",
           "last?",
+          "first?",
           "ref",
           "id"
         ],

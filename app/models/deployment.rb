@@ -30,6 +30,10 @@ class Deployment < ActiveRecord::Base
     self == environment.last_deployment
   end
 
+  def first?
+    self == environment.first_deployment
+  end
+
   def create_ref
     project.repository.create_ref(ref, ref_path)
   end
