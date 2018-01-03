@@ -21,5 +21,18 @@ describe 'gitlab:git rake tasks' do
     it 'outputs the right git command' do
       expect { run_rake_task('gitlab:git:fsck') }.to output(/Performed Checking integrity/).to_stdout
     end
+
+    it 'errors out about config.lock issues' do
+      FileUtils.touch(Settings.absolute('tmp/tests/default_storage/@repo/1/2/test.git/config.lock'))
+
+      expect { run_rake_task('gitlab:git:fsck') }.to output(/file exists\? ... yes/).to_stdout
+    end
+
+    it 'errors out about ref lock issues' do
+      FileUtils.mkdir_p(Settings.absolute('tmp/tests/default_storage/@repo/1/2/test.git/refs/heads'))
+      FileUtils.touch(Settings.absolute('tmp/tests/default_storage/@repo/1/2/test.git/refs/heads/blah.lock'))
+
+      expect { run_rake_task('gitlab:git:fsck') }.to output(/Ref lock files exist:/).to_stdout
+    end
   end
 end
