@@ -187,12 +187,11 @@ class MergeRequestWidgetEntity < IssuableEntity
   def build_metrics(merge_request)
     # There's no need to query and serialize metrics data for merge requests that are not
     # merged or closed.
-    case merge_request.state
-    when 'merged'
-      merge_request.metrics&.merged_by_id ? merge_request.metrics : build_metrics_from_events(merge_request)
-    when 'closed'
-      merge_request.metrics&.latest_closed_by_id ? merge_request.metrics : build_metrics_from_events(merge_request)
-    end
+    return unless merge_request.merged? || merge_request.closed?
+    return merge_request.metrics if merge_request.merged? && merge_request.metrics&.merged_by_id
+    return merge_request.metrics if merge_request.closed? && merge_request.metrics&.latest_closed_by_id
+
+    build_metrics_from_events(merge_request)
   end
 
   def build_metrics_from_events(merge_request)
