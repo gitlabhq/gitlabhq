@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
   factory :prometheus_metric, class: PrometheusMetric do
     title 'title'
     query 'avg(metric)'
