@@ -9,6 +9,9 @@ const Api = {
   projectsPath: '/api/:version/projects.json',
   projectPath: '/api/:version/projects/:id',
   projectLabelsPath: '/:namespace_path/:project_path/labels',
+  mergeRequestPath: '/api/:version/projects/:id/merge_requests/:mrid',
+  mergeRequestChangesPath: '/api/:version/projects/:id/merge_requests/:mrid/changes',
+  mergeRequestNotesPath: '/api/:version/projects/:id/merge_requests/:mrid/notes',
   groupLabelsPath: '/groups/:namespace_path/labels',
   licensePath: '/api/:version/templates/licenses/:key',
   gitignorePath: '/api/:version/templates/gitignores/:key',
@@ -86,6 +89,33 @@ const Api = {
   project(projectPath) {
     const url = Api.buildUrl(Api.projectPath)
             .replace(':id', encodeURIComponent(projectPath));
+
+    return axios.get(url);
+  },
+
+  // Return Merge Request for project
+  mergeRequest(projectPath, mergeRequestId) {
+    const url = Api.buildUrl(Api.mergeRequestPath)
+            .replace(':id', encodeURIComponent(projectPath))
+            .replace(':mrid', mergeRequestId);
+
+    return axios.get(url);
+  },
+
+  // Return Merge Request Changes
+  mergeRequestChanges(projectPath, mergeRequestId) {
+    const url = Api.buildUrl(Api.mergeRequestChangesPath)
+            .replace(':id', encodeURIComponent(projectPath))
+            .replace(':mrid', mergeRequestId);
+
+    return axios.get(url);
+  },
+
+  // Return Merge Request Notes
+  mergeRequestNotes(projectPath, mergeRequestId) {
+    const url = Api.buildUrl(Api.mergeRequestNotesPath)
+            .replace(':id', encodeURIComponent(projectPath))
+            .replace(':mrid', mergeRequestId);
 
     return axios.get(url);
   },

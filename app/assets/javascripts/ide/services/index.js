@@ -26,6 +26,15 @@ export default {
   getProjectData(namespace, project) {
     return Api.project(`${namespace}/${project}`);
   },
+  getProjectMergeRequestData(projectId, mergeRequestId) {
+    return Api.mergeRequest(projectId, mergeRequestId);
+  },
+  getProjectMergeRequestChanges(projectId, mergeRequestId) {
+    return Api.mergeRequestChanges(projectId, mergeRequestId);
+  },
+  getProjectMergeRequestNotes(projectId, mergeRequestId) {
+    return Api.mergeRequestNotes(projectId, mergeRequestId);
+  },
   getBranchData(projectId, currentBranchId) {
     return Api.branchSingle(projectId, currentBranchId);
   },

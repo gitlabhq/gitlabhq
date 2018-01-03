@@ -47,7 +47,7 @@ const router = new VueRouter({
           component: EmptyRouterComponent,
         },
         {
-          path: 'mr/:mrid',
+          path: 'merge_requests/:mrid',
           component: EmptyRouterComponent,
         },
       ],
@@ -87,6 +87,71 @@ router.beforeEach((to, from, next) => {
           flash('Error while loading the branch files. Please try again.', 'alert', document, null, false, true);
           throw e;
         });
+      } else if (to.params.mrid) {
+        store.dispatch('getMergeRequestData', {
+          projectId: fullProjectId,
+          mergeRequestId: to.params.mrid,
+        })
+        .then((mr) => {
+          store.dispatch('getBranchData', {
+            projectId: fullProjectId,
+            branchId: mr.source_branch,
+          });
+
+          store.dispatch('getTreeData', {
+            projectId: fullProjectId,
+            branch: mr.source_branch,
+            endpoint: `/tree/${mr.source_branch}`,
+          })
+          .then(() => {
+            const treeEntry = getTreeEntry(store, `${to.params.namespace}/${to.params.project}/${mr.source_branch}`, '/');
+            if (treeEntry) {
+              store.dispatch('handleTreeEntryAction', treeEntry);
+            }
+
+            store.dispatch('getMergeRequestChanges', {
+              projectId: fullProjectId,
+              mergeRequestId: to.params.mrid,
+            })
+            .then((mrChanges) => {
+              mrChanges.changes.forEach((change) => {
+                console.log('CHANGE : ', change);
+
+                const changeTreeEntry = getTreeEntry(store, `${to.params.namespace}/${to.params.project}/${mr.source_branch}`, change.new_path);
+
+                console.log('Tree ENtry for the change ' , changeTreeEntry);
+
+                if (changeTreeEntry) {
+                  store.dispatch('handleTreeEntryAction', changeTreeEntry);
+                }
+              });
+            })
+            .catch((e) => {
+              flash('Error while loading the merge request changes. Please try again.');
+              throw e;
+            });
+
+            store.dispatch('getMergeRequestNotes', {
+              projectId: fullProjectId,
+              mergeRequestId: to.params.mrid,
+            })
+            .then((mrNotes) => {
+              console.log('NOTES : ', mrNotes);
+            })
+            .catch((e) => {
+              flash('Error while loading the merge request notes. Please try again.');
+              throw e;
+            });
+
+          })
+          .catch((e) => {
+            flash('Error while loading the branch files. Please try again.');
+            throw e;
+          });
+        })
+        .catch((e) => {
+          throw e;
+        });
       }
     })
     .catch((e) => {
@@ -97,5 +162,7 @@ router.beforeEach((to, from, next) => {
 
   next();
 });
+
+
 
 export default router;
