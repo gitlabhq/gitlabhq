@@ -120,7 +120,7 @@ module Projects
       Project.transaction do
         @project.create_or_update_import_data(data: import_data[:data], credentials: import_data[:credentials]) if import_data
 
-        if @project.save && !@project.import? && !@project.bare_repository_import?
+        if @project.save && !@project.import?
           raise 'Failed to create repository' unless @project.create_repository
         end
       end
@@ -165,7 +165,7 @@ module Projects
 
     def import_schedule
       if @project.errors.empty?
-        @project.import_schedule if @project.import?
+        @project.import_schedule if @project.import? && !@project.bare_repository_import?
       else
         fail(error: @project.errors.full_messages.join(', '))
       end
