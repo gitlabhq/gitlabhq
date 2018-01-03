@@ -679,6 +679,10 @@ class Project < ActiveRecord::Base
     Gitlab::UrlSanitizer.new(import_url).masked_url
   end
 
+  def bare_repository_import?
+    import_type == 'bare_repository'
+  end
+
   def gitlab_project_import?
     import_type == 'gitlab_project'
   end

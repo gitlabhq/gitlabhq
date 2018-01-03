@@ -12,7 +12,6 @@ module Projects
       forked_from_project_id = params.delete(:forked_from_project_id)
       import_data = params.delete(:import_data)
       @skip_wiki = params.delete(:skip_wiki)
-      @skip_import = params.delete(:skip_import)
 
       @project = Project.new(params)
 
@@ -88,7 +87,7 @@ module Projects
     def after_create_actions
       log_info("#{@project.owner.name} created a new project \"#{@project.name_with_namespace}\"")
 
-      if !@project.gitlab_project_import? || @skip_import
+      unless @project.gitlab_project_import?
         @project.create_wiki unless skip_wiki?
         create_services_from_active_templates(@project)
 
@@ -121,7 +120,7 @@ module Projects
       Project.transaction do
         @project.create_or_update_import_data(data: import_data[:data], credentials: import_data[:credentials]) if import_data
 
-        if @project.save && !@project.import?
+        if @project.save && !@project.import? && !@project.bare_repository_import?
           raise 'Failed to create repository' unless @project.create_repository
         end
       end
@@ -166,7 +165,7 @@ module Projects
 
     def import_schedule
       if @project.errors.empty?
-        @project.import_schedule if @project.import? && !@skip_import
+        @project.import_schedule if @project.import?
       else
         fail(error: @project.errors.full_messages.join(', '))
       end

@@ -169,7 +169,7 @@ describe Gitlab::BareRepositoryImport::Importer, repository: true do
       FileUtils.mkdir_p(File.join(base_dir, "#{project_path}.wiki.git"))
 
       expect(Projects::CreateService).to receive(:new).with(admin, hash_including(skip_wiki: true,
-                                                                                  skip_import: true)).and_call_original
+                                                                                  import_type: 'bare_repository')).and_call_original
 
       importer.create_project_if_needed
 
