@@ -1,7 +1,7 @@
 module QA
   module Page
-    module Admin
-      class Menu < Page::Base
+    module Menu
+      class Admin < Page::Base
         def go_to_geo_nodes
           click_link 'Geo Nodes'
         end
