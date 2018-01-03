@@ -2,13 +2,19 @@ module API
   class EpicIssues < Grape::API
     before do
       authenticate!
-      authorize_can_admin!
+      authorize_epics!
     end
 
     helpers do
+      def authorize_epics!
+        forbidden! unless user_group.feature_available?(:epics)
+      end
+
       def authorize_can_admin!
-        forbidden! unless user_group.feature_available?(:epics) # TODO: check for group feature instead
         authorize!(:admin_epic, epic)
+      end
+
+      def check_epic_link!
         forbidden! if link.epic != epic
       end
 
@@ -34,6 +40,9 @@ module API
         requires :position, type: Integer, desc: 'The new position of the issue in the epic (index starting with 0)'
       end
       put ':id/-/epics/:epic_iid/issues/:epic_issue_id' do
+        authorize_can_admin!
+        check_epic_link!
+
         result = ::EpicIssues::UpdateService.new(link, current_user, { position: params[:position].to_i }).execute
 
         # For now we return empty body
