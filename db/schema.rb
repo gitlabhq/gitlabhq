@@ -1513,6 +1513,7 @@ ActiveRecord::Schema.define(version: 20180320182229) do
     t.boolean "merge_requests_ff_only_enabled", default: false
     t.boolean "merge_requests_rebase_enabled", default: false, null: false
     t.integer "jobs_cache_index"
+    t.boolean "pages_https_only", default: true
   end
 
   add_index "projects", ["ci_id"], name: "index_projects_on_ci_id", using: :btree
