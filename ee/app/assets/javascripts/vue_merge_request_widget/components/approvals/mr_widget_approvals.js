@@ -28,7 +28,7 @@ export default {
   computed: {
     status() {
       if (this.mr.approvals.approvals_left > 0) {
-        return 'failed';
+        return 'warning';
       }
       return 'success';
     },
